@@ -38,20 +38,6 @@ Icons are small images displayed by your web browser next to the site's URL and 
 icon = site/my_icon.ico
 }}}
 
-Note that this icon is ignored by Internet Explorer, which only accepts a file named `favicon.ico` at the root of the host. To make the project icon work in IE as well as other browsers, you can store the icon in the document root of the host and then reference it from `trac.ini` as follows:
-
-{{{#!ini
-[project]
-icon = /favicon.ico
-}}}
-
-If your browser does not show your favicon in the address bar, append a "?" to the file extension:
-
-{{{#!ini
-[project]
-icon = /favicon.ico?
-}}}
-
 == Custom Navigation Entries
 
 The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them, but not for adding new ones.
@@ -72,8 +58,7 @@ See also TracNavigation for a more detailed explanation of the mainnav and metan
 
 Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as `site.html` inside your projects `templates/` directory (each Trac project can have their own `site.html`), eg `/path/to/env/templates/site.html`:
 
-{{{
-#!xml
+{{{#!xml
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       py:strip="">
@@ -124,8 +109,7 @@ More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteH
 Example snippets for `style.css` can be found at [trac:wiki:CookBook/SiteStyleCss CookBook/SiteStyleCss].
 
 If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can be loaded using a workaround - providing it contains no [trac:ClearSilver] processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
-{{{
-#!xml
+{{{#!xml
 <form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
         xmlns:xi="http://www.w3.org/2001/XInclude">
   <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)"> 
@@ -143,8 +127,7 @@ You can use a custom Genshi template to display the list of projects if you are 
 
 The following is the basic template used by Trac to display a list of links to the projects. For projects that could not be loaded, it displays an error message. You can use this as a starting point for your own index template:
 
-{{{
-#!text/html
+{{{#!text/html
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -172,36 +155,34 @@ The following is the basic template used by Trac to display a list of links to t
 Once you've created your custom template you will need to configure the webserver to tell Trac where the template is located (pls verify ... not yet changed to 0.11):
 
 For [wiki:TracModWSGI mod_wsgi]:
-{{{
+{{{#!python
 os.environ['TRAC_ENV_INDEX_TEMPLATE'] = '/path/to/template.html'
 }}}
 
 For [wiki:TracFastCgi FastCGI]:
-{{{
+{{{#!apache
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects \
               -initial-env TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 }}}
 
 For [wiki:TracModPython mod_python]:
-{{{
+{{{#!apache
 PythonOption TracEnvParentDir /parent/dir/of/projects
 PythonOption TracEnvIndexTemplate /path/to/template
 }}}
 
 For [wiki:TracCgi CGI]:
-{{{
+{{{#!apache
 SetEnv TRAC_ENV_INDEX_TEMPLATE /path/to/template
 }}}
 
 For [wiki:TracStandalone], you'll need to set up the `TRAC_ENV_INDEX_TEMPLATE` environment variable in the shell used to launch tracd:
  - Unix
-   {{{
-#!sh
+   {{{#!sh
 $ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
    }}}
  - Windows
-   {{{
-#!sh
+   {{{#!sh
 $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
    }}}
 
@@ -209,11 +190,11 @@ $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 
 The appearance of each individual Trac environment, ie instance of a project, can be customized independently of other projects, even those hosted on the same server. The recommended way is to use a `site.html` template (see [#SiteAppearance]) whenever possible. Using `site.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifiations to the newer version. If not, new Trac features or bug fixes may not work as expected.
 
-With that word of caution, any Trac template may be copied and customized. The default Trac templates are located inside the installed Trac egg (`/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ++`). The [#ProjectList] template file is called `index.html`, while the template responsible for main layout is called `theme.html`. Page assets such as images and CSS style sheets are located in the egg's `trac/htdocs` directory.
+With that word of caution, any Trac template may be copied and customized. The default Trac templates are located inside the installed Trac egg (`/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ...`). The [#ProjectList] template file is called `index.html`, while the template responsible for main layout is called `theme.html`. Page assets such as images and CSS style sheets are located in the egg's `trac/htdocs` directory.
 
 However, do not edit templates or site resources inside the Trac egg. Reinstalling Trac overwrites your modifications. Instead use one of these alternatives:
  * For a modification to one project only, copy the template to project `templates` directory.
- * For a modification shared by several projects, copy the template to a shared location and have each project point to this location using the `[inherit] templates_dir =` trac.ini option.
+ * For a modification shared by several projects, copy the template to a shared location and have each project point to this location using the `[inherit] templates_dir` trac.ini option.
 
 Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
 

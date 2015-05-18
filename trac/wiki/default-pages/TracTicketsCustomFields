@@ -1,7 +1,9 @@
-= Custom Ticket Fields =
+= Custom Ticket Fields
+
 Trac supports adding custom, user-defined fields to the ticket module. Using custom fields, you can add typed, site-specific properties to tickets.
 
-== Configuration ==
+== Configuration
+
 Configuring custom ticket fields is done in the [wiki:TracIni trac.ini] file. All field definitions should be under a section named `[ticket-custom]`.
 
 The syntax of each field definition is:
@@ -10,13 +12,15 @@ The syntax of each field definition is:
  (FIELD_NAME.OPTION = VALUE)
  ...
 }}}
+
 The example below should help to explain the syntax.
 
-=== Available Field Types and Options ===
+=== Available Field Types and Options
+
  * '''text''': A simple (one line) text field.
    * label: Descriptive label.
    * value: Default value.
-   * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
+   * order: Sort order placement. Determines relative placement in forms with respect to other custom fields.
    * format: One of: 
      * `plain` for plain text 
      * `wiki` to interpret the content as WikiFormatting
@@ -24,7 +28,7 @@ The example below should help to explain the syntax.
      * `list` to interpret the content as a list of queryable values, separated by whitespace (''since 1.0'')
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
-   * value: Default value (0 or 1).
+   * value: Default value: 0 or 1.
    * order: Sort order placement.
  * '''select''': Drop-down select box. Uses a list of values.
    * label: Descriptive label.
@@ -46,8 +50,9 @@ The example below should help to explain the syntax.
 
 Macros will be expanded when rendering `textarea` fields with format `wiki`, but not when rendering `text` fields with format `wiki`.
 
-=== Sample Config ===
-{{{
+=== Sample Configuration
+
+{{{#!ini
 [ticket-custom]
 
 test_one = text
@@ -79,14 +84,13 @@ test_six.cols = 60
 test_six.rows = 30
 }}}
 
-''Note: To make entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.''
+'''Note''': To make entering an option for a `select` type field optional, specify a leading `|` in the `fieldname.options` option.
 
-=== Reports Involving Custom Fields ===
+=== Reports Involving Custom Fields
 
 Custom ticket fields are stored in the `ticket_custom` table, not in the `ticket` table. So to display the values from custom fields in a report, you will need a join on the 2 tables. Let's use an example with a custom ticket field called `progress`.
 
-{{{
-#!sql
+{{{#!sql
 SELECT p.value AS __color__,
    id AS ticket, summary, owner, c.value AS progress
   FROM ticket t, enum p, ticket_custom c
@@ -94,18 +98,18 @@ SELECT p.value AS __color__,
 AND p.name = t.priority AND p.type = 'priority'
   ORDER BY p.value
 }}}
-'''Note''' that this will only show tickets that have progress set in them, which is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query. If that's all you want, you're set.
 
-However, if you want to show all ticket entries (with progress defined and without), you need to use a `JOIN` for every custom field that is in the query.
-{{{
-#!sql
+'''Note''': This will only show tickets that have progress set in them, which is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query. If that is all that is required, you're set.
+
+However, if you want to show all ticket entries (with progress defined and without), you need to use a `JOIN` for every custom field that is in the query:
+{{{#!sql
 SELECT p.value AS __color__,
    id AS ticket, summary, component, version, milestone, severity,
    (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter,
-  (CASE WHEN c.value = '0' THEN 'None' ELSE c.value END) AS progress
+   (CASE WHEN c.value = '0' THEN 'None' ELSE c.value END) AS progress
   FROM ticket t
      LEFT OUTER JOIN ticket_custom c ON (t.id = c.ticket AND c.name = 'progress')
      JOIN enum p ON p.name = t.priority AND p.type='priority'
@@ -115,20 +119,19 @@ SELECT p.value AS __color__,
 
 Note in particular the `LEFT OUTER JOIN` statement here.
 
-Note that if your config file uses an uppercase name, e.g.,
-{{{
+Note that if your config file uses an '''uppercase''' name:
+{{{#!ini
 [ticket-custom]
 
 Progress_Type = text
 }}}
-you would use lowercase in the SQL:  `AND c.name = 'progress_type'`
+you would use '''lowercase''' in the SQL: `AND c.name = 'progress_type'`.
 
-=== Updating the database ===
+=== Updating the database
 
-As noted above, any tickets created before a custom field has been defined will not have a value for that field. Here's a bit of SQL (tested with SQLite) that you can run directly on the Trac database to set an initial value for custom ticket fields. Inserts the default value of 'None' into a custom field called 'request_source' for all tickets that have no existing value:
+As noted above, any tickets created before a custom field has been defined will not have a value for that field. Here is some SQL (tested with SQLite) that you can run directly on the Trac database to set an initial value for custom ticket fields. It inserts the default value of 'None' into a custom field called 'request_source' for all tickets that have no existing value:
 
-{{{
-#!sql
+{{{#!sql
 INSERT INTO ticket_custom
    (ticket, name, value)
    SELECT 
@@ -143,8 +146,7 @@ INSERT INTO ticket_custom
 
 If you added multiple custom fields at different points in time, you should be more specific in the subquery on table {{{ticket}}} by adding the exact custom field name to the query:
 
-{{{
-#!sql
+{{{#!sql
 INSERT INTO ticket_custom
    (ticket, name, value)
    SELECT 
