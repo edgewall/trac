@@ -6,11 +6,11 @@ Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based
 
 == Plugin discovery
 
-From the user's point of view, a plugin is either a standalone .py file or an .egg package. Trac looks for plugins in the global shared plugins directory (see [TracIni#GlobalConfiguration Global Configuration]) and in the `plugins` directory of the local TracEnvironment. Components defined in globally-installed plugins should be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file.
+From the user's point of view, a plugin is either a standalone .py file or an .egg package. Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Components defined in globally-installed plugins must be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the trac.ini file. Components defined in the `plugins` directory of the project environment are enabled unless explicitly disabled in the `[components]` section of trac.ini.
 
 == Requirements for Trac eggs
 
-To use egg-based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.6) installed.
+To use egg-based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version >= 0.6) installed.
 
 To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
 
@@ -43,7 +43,7 @@ Once you have the plugin archive, copy it into the `plugins` directory of the [w
 
 To uninstall a plugin installed this way, remove the egg from the `plugins` directory and restart the web server.
 
-'''Note''': the Python version that the egg is built with ''must'' match the Python version with which Trac is run. For example, if you're running Trac under Python 2.5, but have upgraded your standalone Python to 2.6, the eggs won't be recognized.
+'''Note''': the Python version that the egg is built with ''must'' match the Python version with which Trac is run. For example, if you're running Trac under Python 2.6, but have upgraded your standalone Python to 2.7, the eggs won't be recognized.
 
 '''Note''': in a multi-project setup, a pool of Python interpreter instances will be dynamically allocated to projects based on need; since plugins occupy a place in Python's module system, the first version of any given plugin to be loaded will be used for all projects. In other words, you cannot use different versions of a single plugin in two projects of a multi-project setup. It may be safer to install plugins for all projects (see below), and then enable them selectively on a project-by-project basis.
 
@@ -51,12 +51,15 @@ To uninstall a plugin installed this way, remove the egg from the `plugins` dire
 
 ==== With an .egg file
 
-Some plugins, such as [trac:SpamFilter SpamFilter], are downloadable as an `.egg` file that can be installed with `easy_install`:
+Some plugins, such as [trac:SpamFilter SpamFilter], are downloadable as an `.egg` file that can be installed with `easy_install` or `pip`:
 {{{#!sh
 $ easy_install TracSpamFilter
+$ pip install TracSpamFilter
 }}}
 
-If `easy_install` is not on your system, see the Requirements section above to install it. Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python24\Scripts`) to their `PATH` environment variable. See [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information.
+If `easy_install` is not on your system, see the Requirements section above to install it. Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python27\Scripts`) to their `PATH` environment variable, or use the full path to `easy_install` (for example, `C:\Python27\Scripts\easy_install.py`). See [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information.
+
+`pip` is included in Python 2.7.9. In earlier versions of Python it can be installed through the package manager of your OS (e.g. `apt-get install python-pip`) or using the [https://pip.pypa.io/en/latest/installing.html#install-pip get_pip.py]. 
 
 If Trac reports permission errors after installing a zipped egg, and you would rather not bother providing a egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
 {{{#!sh

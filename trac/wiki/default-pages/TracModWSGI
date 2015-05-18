@@ -353,7 +353,7 @@ Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4
 
 ''Note: using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks''
 
-If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you will need version 0.3.4 or greater. See [trac:#10675] for details.
+If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you will need version 3.4 or greater. See [trac:#10675] for details.
 
 === Getting Trac to work nicely with SSPI and 'Require Group'
 
