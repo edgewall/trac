@@ -1,3 +1,11 @@
+Trac 0.12.7 (May 20, 2015)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12.7
+
+Trac 0.12.7 fixes a minor security issue, as well as a half dozen
+other minor issues:
+ - InterWiki filters links through `[wiki] safe_schemes` option if
+   `[wiki] render_unsafe_content` is disabled (#12053).
+
 Trac 0.12.6 (October 23, 2014)
 http://svn.edgewall.org/repos/trac/tags/trac-0.12.6
 
