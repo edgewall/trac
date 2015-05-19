@@ -9,7 +9,7 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 === 1.0.6
 
-//(May 10, 2015)//
+//(May 18, 2015)//
 
 Trac 1.0.6 provides more than 20 fixes and enhancements. The following are some highlights:
  - Hash changeset ids and branch names can be used in revision ranges ([trac:#11050])
