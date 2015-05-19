@@ -28,7 +28,7 @@ def do_upgrade(env, ver, cursor):
                 Column('newvalue'),
                 Index(['ticket']),
                 Index(['time'])]]
-
+    
     db_connector, _ = DatabaseManager(env).get_connector()
     for table in tables:
         for stmt in db_connector.to_sql(table):
@@ -58,3 +58,4 @@ def do_upgrade(env, ver, cursor):
 
     cursor.execute("DROP TABLE session_old")
     cursor.execute("DROP TABLE ticket_change_old")
+

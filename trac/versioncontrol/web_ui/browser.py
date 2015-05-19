@@ -142,7 +142,7 @@ class WikiPropertyRenderer(Component):
 class TimeRange(object):
 
     min = datetime(1, 1, 1, 0, 0, 0, 0, utc) # tz aware version of datetime.min
-
+    
     def __init__(self, base):
         self.oldest = self.newest = base
         self._total = None
@@ -150,7 +150,7 @@ class TimeRange(object):
     def seconds_between(self, dt1, dt2):
         delta = dt1 - dt2
         return delta.days * 24 * 3600 + delta.seconds
-
+    
     def to_seconds(self, dt):
         return self.seconds_between(dt, TimeRange.min)
 
@@ -175,7 +175,7 @@ class TimeRange(object):
 class BrowserModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IWikiSyntaxProvider, IHTMLPreviewAnnotator,
+               IWikiSyntaxProvider, IHTMLPreviewAnnotator, 
                IWikiMacroProvider)
 
     property_renderers = ExtensionPoint(IPropertyRenderer)
@@ -183,7 +183,7 @@ class BrowserModule(Component):
     downloadable_paths = ListOption('browser', 'downloadable_paths',
                                     '/trunk, /branches/*, /tags/*',
         doc="""List of repository paths that can be downloaded.
-
+        
         Leave the option empty if you want to disable all downloads, otherwise
         set it to a comma-separated list of authorized paths (those paths are
         glob patterns, i.e. "*" can be used as a wild card)
@@ -191,7 +191,7 @@ class BrowserModule(Component):
 
     color_scale = BoolOption('browser', 'color_scale', True,
         doc="""Enable colorization of the ''age'' column.
-
+        
         This uses the same color scale as the source code annotation:
         blue is older, red is newer.
         (''since 0.11'')""")
@@ -228,13 +228,13 @@ class BrowserModule(Component):
 
     render_unsafe_content = BoolOption('browser', 'render_unsafe_content',
                                         'false',
-        """Whether raw files should be rendered in the browser, or only made
+        """Whether raw files should be rendered in the browser, or only made 
         downloadable.
-
+ 
         Pretty much any file may be interpreted as HTML by the browser,
         which allows a malicious user to create a file containing cross-site
         scripting attacks.
-
+        
         For open repositories where anyone can check-in a file, it is
         recommended to leave this option disabled (which is the default).""")
 
@@ -247,7 +247,7 @@ class BrowserModule(Component):
 
     def get_custom_colorizer(self):
         """Returns a converter for values from [0.0, 1.0] to a RGB triple."""
-
+        
         def interpolate(old, new, value):
             # Provides a linearly interpolated color triple for `value`
             # which must be a floating point value between 0.0 and 1.0
@@ -260,7 +260,7 @@ class BrowserModule(Component):
                 return len(t) == 3 and t or default
             except ValueError:
                 return default
-
+        
         newest_color = parse_color(self.newest_color, self.NEWEST_COLOR)
         oldest_color = parse_color(self.oldest_color, self.OLDEST_COLOR)
         try:
@@ -283,7 +283,7 @@ class BrowserModule(Component):
             def colorizer(value):
                 return interpolate(oldest_color, newest_color, value)
         return colorizer
-
+        
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -335,7 +335,7 @@ class BrowserModule(Component):
         order = req.args.get('order', 'name').lower()
         desc = req.args.has_key('desc')
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
-
+        
         rm = RepositoryManager(self.env)
         all_repositories = rm.get_all_repositories()
         reponame, repos, path = rm.get_repository_by_path(path)
@@ -356,7 +356,7 @@ class BrowserModule(Component):
             req.redirect(req.href.browser(repos.reponame or None, path)
                          + (qs and '?' + qs or ''))
         reponame = repos and repos.reponame or None
-
+        
         # Find node for the requested path/rev
         context = Context.from_request(req)
         node = None
@@ -415,7 +415,7 @@ class BrowserModule(Component):
             'wiki_format_messages': \
                 self.config['changeset'].getbool('wiki_format_messages'),
             'xhr': xhr,
-        }
+        }                   
         if xhr: # render and return the content only
             return 'dir_entries.html', data, None
 
@@ -449,27 +449,27 @@ class BrowserModule(Component):
                 if path != '/':
                     add_link(req, 'up', path_links[-2]['href'],
                              _('Parent directory'))
-                add_ctxtnav(req, tag.a(_('Last Change'),
+                add_ctxtnav(req, tag.a(_('Last Change'), 
                             href=req.href.changeset(node.created_rev, reponame,
                                                     node.created_path)))
             if node.isfile:
                 annotate = data['file']['annotate']
                 if annotate:
-                    add_ctxtnav(req, _('Normal'),
-                                title=_('View file without annotations'),
+                    add_ctxtnav(req, _('Normal'), 
+                                title=_('View file without annotations'), 
                                 href=req.href.browser(reponame,
-                                                      node.created_path,
+                                                      node.created_path, 
                                                       rev=rev))
                 if annotate != 'blame':
-                    add_ctxtnav(req, _('Blame'),
+                    add_ctxtnav(req, _('Blame'), 
                                 title=_('Annotate each line with the last '
                                         'changed revision '
-                                        '(this can be time consuming...)'),
+                                        '(this can be time consuming...)'), 
                                 href=req.href.browser(reponame,
-                                                      node.created_path,
+                                                      node.created_path, 
                                                       rev=rev,
                                                       annotate='blame'))
-            add_ctxtnav(req, _('Revision Log'),
+            add_ctxtnav(req, _('Revision Log'), 
                         href=req.href.log(reponame, path, rev=rev))
             path_url = repos.get_path_url(path, rev)
             if path_url:
@@ -548,7 +548,7 @@ class BrowserModule(Component):
             def __init__(self, node):
                 for f in entry.__slots__:
                     setattr(self, f, getattr(node, f))
-
+                
         entries = [entry(n) for n in node.get_entries()
                    if n.can_view(req.perm)]
         changes = get_changes(repos, [i.created_rev for i in entries],
@@ -601,7 +601,7 @@ class BrowserModule(Component):
             path = repos.reponame + '/' + path
         if any(fnmatchcase(path, p.strip('/'))
                for p in self.downloadable_paths):
-            zip_href = req.href.changeset(rev or repos.youngest_rev,
+            zip_href = req.href.changeset(rev or repos.youngest_rev, 
                                           repos.reponame or None, node.path,
                                           old=rev,
                                           old_path=repos.reponame or '/',
@@ -644,7 +644,7 @@ class BrowserModule(Component):
                 req.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
             if not self.render_unsafe_content:
                 # Force browser to download files instead of rendering
-                # them, since they might contain malicious code enabling
+                # them, since they might contain malicious code enabling 
                 # XSS attacks
                 req.send_header('Content-Disposition', 'attachment')
             req.end_headers()
@@ -655,7 +655,7 @@ class BrowserModule(Component):
                 req.write(chunk)
                 chunk = content.read(CHUNK_SIZE)
         else:
-            # The changeset corresponding to the last change on `node`
+            # The changeset corresponding to the last change on `node` 
             # is more interesting than the `rev` changeset.
             changeset = repos.get_changeset(node.created_rev)
 
@@ -667,7 +667,7 @@ class BrowserModule(Component):
                          'text/plain')
 
             # add ''Original Format'' alternate link (always)
-            raw_href = req.href.export(rev or repos.youngest_rev,
+            raw_href = req.href.export(rev or repos.youngest_rev, 
                                        repos.reponame or None, node.path)
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
@@ -697,7 +697,7 @@ class BrowserModule(Component):
                 }
 
     # public methods
-
+    
     def render_properties(self, mode, context, props):
         """Prepare rendering of a collection of properties."""
         return filter(None, [self.render_property(name, mode, context, props)
@@ -801,12 +801,12 @@ class BrowserModule(Component):
         Display the list of available repositories.
 
         Can be given the following named arguments:
-
+        
           ''format''::
             Select the rendering format:
             - ''compact'' produces a comma-separated list of repository prefix
               names (default)
-            - ''list'' produces a description list of repository prefix names
+            - ''list'' produces a description list of repository prefix names 
             - ''table'' produces a table view, similar to the one visible in
               the ''Browse View'' page
           ''glob''::
@@ -862,7 +862,7 @@ class BrowserModule(Component):
 
         def repolink(reponame, repos):
             label = reponame or _('(default)')
-            return Markup(tag.a(label,
+            return Markup(tag.a(label, 
                           title=_('View repository %(repo)s', repo=label),
                           href=formatter.href.browser(repos.reponame or None)))
 
@@ -875,7 +875,7 @@ class BrowserModule(Component):
             return Markup(', ').join([repolink(reponame, repos)
                                       for reponame, repos in all_repos])
 
-
+        
 
 class BlameAnnotator(object):
 
@@ -935,7 +935,7 @@ class BlameAnnotator(object):
         path = self.paths.get(rev, None)
         # Note: path will be None if copy/rename is not supported
         # by get_history
-
+        
         # -- compute anchor and style once per revision
         if rev not in self.chgset_data:
             chgset_href = \

@@ -17,3 +17,4 @@ try:
     from trac.dist import extract_javascript_script
 except ImportError:
     pass
+

@@ -126,7 +126,7 @@ schema = [
         Column('description'),
         Column('keywords'),
         Index(['time']),
-        Index(['status'])],
+        Index(['status'])],    
     Table('ticket_change', key=('ticket', 'time', 'field'))[
         Column('ticket', type='int'),
         Column('time', type='int64'),
@@ -181,7 +181,7 @@ def get_reports(db):
 """,
 """
 SELECT p.value AS __color__,
-   id AS ticket, summary, component, version, milestone, t.type AS type,
+   id AS ticket, summary, component, version, milestone, t.type AS type, 
    owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
@@ -203,7 +203,7 @@ for useful RSS export.
 """
 SELECT p.value AS __color__,
    version AS __group__,
-   id AS ticket, summary, component, version, t.type AS type,
+   id AS ticket, summary, component, version, t.type AS type, 
    owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
@@ -226,14 +226,14 @@ for useful RSS export.
 """
 SELECT p.value AS __color__,
    %s AS __group__,
-   id AS ticket, summary, component, version, t.type AS type,
+   id AS ticket, summary, component, version, t.type AS type, 
    owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
+  WHERE status <> 'closed' 
   ORDER BY (milestone IS NULL),milestone, %s, t.type, time
 """ % (db.concat("'Milestone '", 'milestone'), db.cast('p.value', 'int'))),
 #----------------------------------------------------------------------------
@@ -278,24 +278,24 @@ A more complex example to show how to make advanced reports.
 """
 SELECT p.value AS __color__,
    t.milestone AS __group__,
-   (CASE status
+   (CASE status 
       WHEN 'closed' THEN 'color: #777; background: #ddd; border-color: #ccc;'
-      ELSE
+      ELSE 
         (CASE owner WHEN $USER THEN 'font-weight: bold' END)
     END) AS __style__,
-   id AS ticket, summary, component, status,
+   id AS ticket, summary, component, status, 
    resolution,version, t.type AS type, priority, owner,
    changetime AS modified,
    time AS _time,reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'),
+  ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'), 
         (CASE status WHEN 'closed' THEN changetime ELSE (-1) * %s END) DESC
 """ % db.cast('p.value', 'int')),
 #----------------------------------------------------------------------------
 ('My Tickets',
 """
-This report demonstrates the use of the automatically set
+This report demonstrates the use of the automatically set 
 USER dynamic variable, replaced with the username of the
 logged in user when executed.
 """,
@@ -309,7 +309,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE t.status <> 'closed' AND owner = $USER
-  ORDER BY (status = 'accepted') DESC, """ + db.cast('p.value', 'int') +
+  ORDER BY (status = 'accepted') DESC, """ + db.cast('p.value', 'int') + 
   """, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -320,18 +320,18 @@ SELECT p.value AS __color__,
 """,
 """
 SELECT p.value AS __color__,
-   (CASE owner
-     WHEN $USER THEN 'My Tickets'
-     ELSE 'Active Tickets'
+   (CASE owner 
+     WHEN $USER THEN 'My Tickets' 
+     ELSE 'Active Tickets' 
     END) AS __group__,
-   id AS ticket, summary, component, version, milestone, t.type AS type,
+   id AS ticket, summary, component, version, milestone, t.type AS type, 
    owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
+  WHERE status <> 'closed' 
   ORDER BY (COALESCE(owner, '') = $USER) DESC, """
   + db.cast('p.value', 'int') + """, milestone, t.type, time
 """))

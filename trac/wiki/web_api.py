@@ -16,7 +16,7 @@ from trac.mimeview.api import Context
 from trac.resource import Resource
 from trac.web.api import IRequestHandler
 from trac.wiki.formatter import format_to
-
+ 
 
 class WikiRenderer(Component):
     """Wiki text renderer."""
@@ -50,7 +50,7 @@ class WikiRenderer(Component):
                                                   or 0))
         if 'shorten' in req.args:
             options['shorten'] = bool(int(req.args['shorten'] or 0))
-
+        
         resource = Resource(realm, id=id, version=version)
         context = Context.from_request(req, resource)
         rendered = format_to(self.env, flavor, context, text, **options)

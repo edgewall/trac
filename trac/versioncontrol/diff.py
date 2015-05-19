@@ -44,7 +44,7 @@ def _get_opcodes(fromlines, tolines, ignore_blank_lines=False,
                  ignore_case=False, ignore_space_changes=False):
     """
     Generator built on top of SequenceMatcher.get_opcodes().
-
+    
     This function detects line changes that should be ignored and emits them
     as tagged as 'equal', possibly joined with the preceding and/or following
     'equal' block.
@@ -100,7 +100,7 @@ def _group_opcodes(opcodes, n=3):
     provide equivalent here. The opcodes parameter can be any iterable or
     sequence.
 
-    This function can also be used to generate full-context diffs by passing
+    This function can also be used to generate full-context diffs by passing 
     None for the parameter n.
     """
     # Full context produces all the opcodes
@@ -227,7 +227,7 @@ def unified_diff(fromlines, tolines, context=None, ignore_blank_lines=0,
 def get_diff_options(req):
     options_data = {}
     data = {'options': options_data}
-
+    
     def get_bool_option(name, default=0):
         pref = int(req.session.get('diff_' + name, default))
         arg = int(name in req.args)
@@ -251,7 +251,7 @@ def get_diff_options(req):
     if 'update' in req.args and context != pref:
         req.session.set('diff_contextlines', context, 2)
     options_data['contextlines'] = context
-
+    
     arg = int(req.args.get('contextall', 0))
     options_data['contextall'] = arg
     options = ['-U%d' % (arg and -1 or context)]

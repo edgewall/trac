@@ -95,9 +95,9 @@ class WikiProcessor(object):
 
     def __init__(self, formatter, name, args=None):
         """Find the processor by name
-
-        :param formatter: the formatter embedding a call for this processor
-        :param name: the name of the processor
+        
+        :param formatter: the formatter embedding a call for this processor 
+        :param name: the name of the processor 
         :param args: extra parameters for the processor
 
         (since 0.11)
@@ -123,7 +123,7 @@ class WikiProcessor(object):
                               }
 
         self._sanitizer = TracHTMLSanitizer(formatter.wiki.safe_schemes)
-
+        
         self.processor = builtin_processors.get(name)
         if not self.processor:
             # Find a matching wiki macro
@@ -172,13 +172,13 @@ class WikiProcessor(object):
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
                                     message=escape(e.msg)), line)
-
+        
     def _htmlcomment_processor(self, text):
         if "--" in text:
             return system_message(_('Error: Forbidden character sequence '
                                     '"--" in htmlcomment wiki code block'))
         return Markup('<!--\n%s-->\n' % text)
-
+        
     def _elt_processor(self, eltname, format_to, text):
         # Note: as long as _processor_param_re is not re.UNICODE, **args is OK.
         # Also, parse_args is using strict mode when processing [[span(...)]].
@@ -198,7 +198,7 @@ class WikiProcessor(object):
         if 'class' not in self.args:
             self.args['class'] = 'wikipage'
         return self._elt_processor('div', format_to_html, text)
-
+    
     def _span_processor(self, text):
         if self.args is None:
             args, self.args = parse_args(text, strict=True)
@@ -207,10 +207,10 @@ class WikiProcessor(object):
 
     def _td_processor(self, text):
         return self._tablecell_processor('td', text)
-
+    
     def _th_processor(self, text):
         return self._tablecell_processor('th', text)
-
+    
     def _tr_processor(self, text):
         try:
             elt = self._elt_processor('tr', self._format_row, text)
@@ -218,7 +218,7 @@ class WikiProcessor(object):
             return elt
         except ProcessorError, e:
             return system_message(e)
-
+    
     def _table_processor(self, text):
         if not self.args:
             self.args = {}
@@ -228,14 +228,14 @@ class WikiProcessor(object):
             return self._elt_processor('table', self._format_table, text)
         except ProcessorError, e:
             return system_message(e)
-
+    
     def _tablecell_processor(self, eltname, text):
         self.formatter.open_table_row()
         return self._elt_processor(eltname, format_to_html, text)
 
     _has_multiple_tables_re = re.compile(r"</table>.*?<table",
                                          re.MULTILINE | re.DOTALL)
-
+    
     _inner_table_re = re.compile(r"""\s*
       <table[^>]*>\s*
         ((?:<tr[^>]*>)?
@@ -243,7 +243,7 @@ class WikiProcessor(object):
         (?:</tr>)?)\s*
       </table>\s*$
       """, re.MULTILINE | re.DOTALL | re.VERBOSE)
-
+    
     # Note: the need for "parsing" that crude way the formatted content
     #       will go away as soon as we have a WikiDOM to manipulate...
 
@@ -271,7 +271,7 @@ class WikiProcessor(object):
             Formatter(env, context).format(text, out)
             text = self._parse_inner_table(out.getvalue())
         return text
-
+    
     # generic processors
 
     def _legacy_macro_processor(self, text): # TODO: remove in 0.12
@@ -340,7 +340,7 @@ class Formatter(object):
 
     Parses and formats wiki text, in a given `Context`.
     """
-
+    
     flavor = 'default'
 
     # 0.10 compatibility
@@ -365,7 +365,7 @@ class Formatter(object):
         self._safe_schemes = None
         if not self.wiki.render_unsafe_content:
             self._safe_schemes = set(self.wiki.safe_schemes)
-
+            
 
     def split_link(self, target):
         return split_url_into_path_query_fragment(target)
@@ -386,13 +386,13 @@ class Formatter(object):
     def _get_open_tag(self, tag):
         """Retrieve opening tag for direct or indirect `tag`."""
         if not isinstance(tag, tuple):
-            tag = self._indirect_tags[tag]
+            tag = self._indirect_tags[tag]            
         return tag[0]
 
     def _get_close_tag(self, tag):
         """Retrieve closing tag for direct or indirect `tag`."""
         if not isinstance(tag, tuple):
-            tag = self._indirect_tags[tag]
+            tag = self._indirect_tags[tag]            
         return tag[1]
 
     def tag_open_p(self, tag):
@@ -567,7 +567,7 @@ class Formatter(object):
                     label = ns + ':' + target   #  use `http://target`
                 else:                           # for `wiki:target`
                     label = target.lstrip('/')  #  use only `target`
-            else: # e.g. `[search:]`
+            else: # e.g. `[search:]` 
                 label = ns
         else:
             label = self._unquote(label)
@@ -652,7 +652,7 @@ class Formatter(object):
                 sep = target.find(':')
                 if sep != -1:
                     url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
-                else:
+                else: 
                     url = '%s/search?q=%s' % (url, unicode_quote_plus(target))
             else:
                 url = '%s/intertrac/%s' % (url, unicode_quote(target))
@@ -673,7 +673,7 @@ class Formatter(object):
                                                  target, label) or label
 
     def _make_interwiki_link(self, ns, target, label):
-        from trac.wiki.interwiki import InterWikiMap
+        from trac.wiki.interwiki import InterWikiMap        
         interwiki = InterWikiMap(self.env)
         if ns in interwiki:
             url, title = interwiki.url(ns, target)
@@ -694,7 +694,7 @@ class Formatter(object):
                      class_="mail-link", href=url, title=title or None)
 
     # Anchors
-
+    
     def _anchor_formatter(self, match, fullmatch):
         anchor = fullmatch.group('anchorname')
         label = fullmatch.group('anchorlabel') or ''
@@ -729,7 +729,7 @@ class Formatter(object):
                 return self._macro_formatter(match, fullmatch, macro)
         fullmatch = WikiParser._creolelink_re.match(macro_or_link)
         return self._lhref_formatter(match, fullmatch)
-
+    
     def _macro_formatter(self, match, fullmatch, macro=None):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
@@ -804,7 +804,7 @@ class Formatter(object):
         self._tabstops = tabstops
 
     # Lists
-
+    
     def _list_formatter(self, match, fullmatch):
         ldepth = len(fullmatch.group('ldepth'))
         listid = match[ldepth]
@@ -831,7 +831,7 @@ class Formatter(object):
                     start = ord(lstart) - ord('A') + 1
         self._set_list_depth(ldepth, type_, class_, start)
         return ''
-
+        
     def _get_list_depth(self):
         """Return the space offset associated to the deepest opened list."""
         if self._list_stack:
@@ -968,7 +968,7 @@ class Formatter(object):
             self.in_quote = True
 
     # Table
-
+    
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
@@ -1009,7 +1009,7 @@ class Formatter(object):
             last_extra = after_sep + next_sep.start() - 1
             if first_extra < last_extra and \
                    self.line[first_extra] == self.line[last_extra] == ' ':
-                textalign = 'center'
+                textalign = 'center'                
         if textalign:
             attrs += ' style="text-align: %s"' % textalign
         td = '<%s%s>' % (cell, attrs)
@@ -1159,11 +1159,11 @@ class Formatter(object):
         if not self._quote_buffer and depth < self._get_list_depth():
             self.close_list(depth)
         self._quote_buffer.append(line[depth + 1:])
-
+        
     def close_quote_block(self, escape_newlines):
         if self._quote_buffer:
             # avoid an extra <blockquote> when there's consistently one space
-            # after the '>'
+            # after the '>' 
             if all(not line or line[0] in '> ' for line in self._quote_buffer):
                 self._quote_buffer = [line[bool(line and line[0] == ' '):]
                                       for line in self._quote_buffer]
@@ -1174,7 +1174,7 @@ class Formatter(object):
             self._quote_buffer = []
 
     # -- Wiki engine
-
+    
     def handle_match(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
             if match and not itype in self.wikiparser.helper_patterns:
@@ -1219,13 +1219,13 @@ class Formatter(object):
         self.in_table_cell = ''
         self.paragraph_open = 0
         return source
-
+        
 
     def format(self, text, out=None, escape_newlines=False):
         text = self.reset(text, out)
         if isinstance(text, basestring):
             text = text.splitlines()
-
+            
         for line in text:
             # Detect start of code block (new block or embedded block)
             block_start_match = None
@@ -1390,7 +1390,7 @@ class OneLinerFormatter(Formatter):
 class OutlineFormatter(Formatter):
     """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
-
+    
     # Avoid the possible side-effects of rendering WikiProcessors
 
     def _macro_formatter(self, match, fullmatch, macro=None):
@@ -1450,7 +1450,7 @@ class OutlineFormatter(Formatter):
 class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
     flavor = 'link'
-
+    
     def _heading_formatter(self, match, fullmatch):
         return ''
 
@@ -1469,7 +1469,7 @@ class HtmlFormatter(object):
     """Format parsed wiki text to HTML"""
 
     flavor = 'default'
-
+    
     def __init__(self, env, context, wikidom):
         self.env = env
         self.context = context
@@ -1494,7 +1494,7 @@ class InlineHtmlFormatter(object):
 
     Block level content will be disguarded or compacted.
     """
-
+    
     flavor = 'oneliner'
 
     def __init__(self, env, context, wikidom):

@@ -111,7 +111,7 @@ class Ticket(object):
                            % ','.join(std_fields), (tkt_id,))
             row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound(_('Ticket %(id)s does not exist.',
+            raise ResourceNotFound(_('Ticket %(id)s does not exist.', 
                                      id=tkt_id), _('Invalid ticket number'))
 
         self.id = tkt_id
@@ -317,7 +317,7 @@ class Ticket(object):
             for name in self._old.keys():
                 if name in custom_fields:
                     cursor.execute("""
-                        SELECT * FROM ticket_custom
+                        SELECT * FROM ticket_custom 
                         WHERE ticket=%s and name=%s
                         """, (self.id, name))
                     if cursor.fetchone():
@@ -331,7 +331,7 @@ class Ticket(object):
                             VALUES(%s,%s,%s)
                             """, (self.id, name, self[name]))
                 else:
-                    cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s"
+                    cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" 
                                    % name, (self[name], self.id))
                 cursor.execute("""
                     INSERT INTO ticket_change
@@ -340,7 +340,7 @@ class Ticket(object):
                     """, (self.id, when_ts, author, name, self._old[name],
                           self[name]))
 
-            # always save comment, even if empty
+            # always save comment, even if empty 
             # (numbering support for timeline)
             cursor.execute("""
                 INSERT INTO ticket_change
@@ -374,11 +374,11 @@ class Ticket(object):
         if when_ts:
             cursor.execute("""
                 SELECT time,author,field,oldvalue,newvalue, 1 AS permanent
-                FROM ticket_change WHERE ticket=%s AND time=%s
-                  UNION
+                FROM ticket_change WHERE ticket=%s AND time=%s 
+                  UNION 
                 SELECT time,author,'attachment',null,filename, 0 AS permanent
-                FROM attachment WHERE type='ticket' AND id=%s AND time=%s
-                  UNION
+                FROM attachment WHERE type='ticket' AND id=%s AND time=%s 
+                  UNION 
                 SELECT time,author,'comment',null,description, 0 AS permanent
                 FROM attachment WHERE type='ticket' AND id=%s AND time=%s
                 ORDER BY time,permanent,author
@@ -386,13 +386,13 @@ class Ticket(object):
         else:
             cursor.execute("""
                 SELECT time,author,field,oldvalue,newvalue, 1 AS permanent
-                FROM ticket_change WHERE ticket=%s
-                  UNION
+                FROM ticket_change WHERE ticket=%s 
+                  UNION 
                 SELECT time,author,'attachment',null,filename, 0 AS permanent
-                FROM attachment WHERE type='ticket' AND id=%s
-                  UNION
+                FROM attachment WHERE type='ticket' AND id=%s 
+                  UNION 
                 SELECT time,author,'comment',null,description, 0 AS permanent
-                FROM attachment WHERE type='ticket' AND id=%s
+                FROM attachment WHERE type='ticket' AND id=%s 
                 ORDER BY time,permanent,author
                 """, (self.id, sid, sid))
         log = []
@@ -427,7 +427,7 @@ class Ticket(object):
         if row:
             ts, author, comment = row
             cursor.execute("""
-                SELECT field,author,oldvalue,newvalue
+                SELECT field,author,oldvalue,newvalue 
                 FROM ticket_change WHERE ticket=%s AND time=%s
                 """, (self.id, ts))
             fields = {}
@@ -519,7 +519,7 @@ class Ticket(object):
             cursor = db.cursor()
             # Find the current value of the comment
             cursor.execute("""
-                SELECT newvalue FROM ticket_change
+                SELECT newvalue FROM ticket_change 
                 WHERE ticket=%s AND time=%s AND field='comment'
                 """, (self.id, ts))
             old_comment = False
@@ -531,7 +531,7 @@ class Ticket(object):
             # Comment history is stored in fields named "_comment%d"
             # Find the next edit number
             cursor.execute("""
-                SELECT field FROM ticket_change
+                SELECT field FROM ticket_change 
                 WHERE ticket=%%s AND time=%%s AND field %s
                 """ % db.prefix_match(),
                 (self.id, ts, db.prefix_match_value('_comment')))
@@ -539,7 +539,7 @@ class Ticket(object):
             rev = fields and max(int(field[8:]) for field, in fields) + 1 or 0
             cursor.execute("""
                 INSERT INTO ticket_change
-                    (ticket,time,author,field,oldvalue,newvalue)
+                    (ticket,time,author,field,oldvalue,newvalue) 
                 VALUES (%s,%s,%s,%s,%s,%s)
                 """, (self.id, ts, author, '_comment%d' % rev,
                       old_comment or '', str(when_ts)))
@@ -547,7 +547,7 @@ class Ticket(object):
                 # There was no comment field, add one, find the original author
                 # in one of the other changed fields
                 cursor.execute("""
-                    SELECT author FROM ticket_change
+                    SELECT author FROM ticket_change 
                     WHERE ticket=%%s AND time=%%s AND NOT field %s
                     LIMIT 1
                     """ % db.prefix_match(),
@@ -556,14 +556,14 @@ class Ticket(object):
                 for old_author, in cursor:
                     break
                 cursor.execute("""
-                    INSERT INTO ticket_change
-                        (ticket,time,author,field,oldvalue,newvalue)
+                    INSERT INTO ticket_change 
+                        (ticket,time,author,field,oldvalue,newvalue) 
                     VALUES (%s,%s,%s,'comment','',%s)
                     """, (self.id, ts, old_author, comment))
             else:
                 cursor.execute("""
-                    UPDATE ticket_change SET newvalue=%s
-                    WHERE ticket=%s AND time=%s AND
+                    UPDATE ticket_change SET newvalue=%s 
+                    WHERE ticket=%s AND time=%s AND 
                     field='comment'
                     """, (comment, self.id, ts))
 
@@ -582,8 +582,8 @@ class Ticket(object):
             ts0, author0, last_comment = row
             # Get all fields of the form "_comment%d"
             cursor.execute("""
-                SELECT field,author,oldvalue,newvalue
-                FROM ticket_change
+                SELECT field,author,oldvalue,newvalue 
+                FROM ticket_change 
                 WHERE ticket=%%s AND time=%%s AND field %s
                 """ % db.prefix_match(),
                 (self.id, ts0, db.prefix_match_value('_comment')))
@@ -604,8 +604,8 @@ class Ticket(object):
         scnum = str(cnum)
         cursor = db.cursor()
         cursor.execute("""
-            SELECT time,author,newvalue FROM ticket_change
-            WHERE ticket=%%s AND field='comment'
+            SELECT time,author,newvalue FROM ticket_change 
+            WHERE ticket=%%s AND field='comment' 
                 AND (oldvalue=%%s OR oldvalue %s)
             """ % db.like(), (self.id, scnum,
                               '%' + db.like_escape('.' + scnum)))
@@ -617,7 +617,7 @@ class Ticket(object):
         cursor.execute("""
             SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,''),
                             tc2.author,COALESCE(tc2.newvalue,'')
-            FROM ticket_change AS tc1
+            FROM ticket_change AS tc1 
             LEFT OUTER JOIN ticket_change AS tc2
             ON tc2.ticket=%s AND tc2.time=tc1.time AND tc2.field='comment'
             WHERE tc1.ticket=%s ORDER BY tc1.time
@@ -636,8 +636,8 @@ class Ticket(object):
         # Find author if NULL
         if author is None:
             cursor.execute("""
-                SELECT author FROM ticket_change
-                WHERE ticket=%%s AND time=%%s AND NOT field %s
+                SELECT author FROM ticket_change 
+                WHERE ticket=%%s AND time=%%s AND NOT field %s 
                 LIMIT 1
                 """ % db.prefix_match(),
                 (self.id, ts, db.prefix_match_value('_')))
@@ -650,7 +650,7 @@ def simplify_whitespace(name):
     if name:
         return ' '.join(name.split())
     return name
-
+        
 
 class AbstractEnum(object):
     type = None
@@ -746,7 +746,7 @@ class AbstractEnum(object):
             cursor = db.cursor()
             self.env.log.info('Updating %s "%s"' % (self.type, self.name))
             cursor.execute("""
-                UPDATE enum SET name=%s,value=%s
+                UPDATE enum SET name=%s,value=%s 
                 WHERE type=%s AND name=%s
                 """, (self.name, self.value, self.type, self._old_name))
             if self.name != self._old_name:
@@ -765,7 +765,7 @@ class AbstractEnum(object):
             db = env.get_read_db()
         cursor = db.cursor()
         cursor.execute("""
-            SELECT name,value FROM enum WHERE type=%s
+            SELECT name,value FROM enum WHERE type=%s 
             ORDER BY
             """ + db.cast('value', 'int'), (cls.type,))
         for name, value in cursor:
@@ -926,7 +926,7 @@ class Milestone(object):
             db = self.env.get_read_db()
         cursor = db.cursor()
         cursor.execute("""
-            SELECT name,due,completed,description
+            SELECT name,due,completed,description 
             FROM milestone WHERE name=%s
             """, (name,))
         row = cursor.fetchone()
@@ -995,7 +995,7 @@ class Milestone(object):
             cursor = db.cursor()
             self.env.log.debug("Creating new milestone '%s'" % self.name)
             cursor.execute("""
-                INSERT INTO milestone (name,due,completed,description)
+                INSERT INTO milestone (name,due,completed,description) 
                 VALUES (%s,%s,%s,%s)
                 """, (self.name, to_utimestamp(self.due),
                       to_utimestamp(self.completed), self.description))

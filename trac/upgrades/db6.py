@@ -9,3 +9,4 @@ CREATE TABLE ticket_custom (
 
 def do_upgrade(env, ver, cursor):
     cursor.execute(sql)
+

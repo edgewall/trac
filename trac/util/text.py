@@ -147,7 +147,7 @@ def unicode_quote_plus(value, safe=''):
 
 def unicode_unquote(value):
     """A unicode aware version of `urllib.unquote`.
-
+    
     :param str: UTF-8 encoded `str` value (for example, as obtained by
                 `unicode_quote`).
     :rtype: `unicode`
@@ -157,7 +157,7 @@ def unicode_unquote(value):
 
 def unicode_urlencode(params, safe=''):
     """A unicode aware version of `urllib.urlencode`.
-
+    
     Values set to `empty` are converted to the key alone, without the
     equal sign.
     """
@@ -168,7 +168,7 @@ def unicode_urlencode(params, safe=''):
         if v is empty:
             l.append(unicode_quote_plus(k, safe))
         else:
-            l.append(unicode_quote_plus(k, safe) + '=' +
+            l.append(unicode_quote_plus(k, safe) + '=' + 
                      unicode_quote_plus(v, safe))
     return '&'.join(l)
 
@@ -211,7 +211,7 @@ def console_print(out, *args, **kwargs):
     # Windows returns 'cp0' to indicate no encoding
     if cons_charset in (None, 'cp0'):
         cons_charset = 'utf-8'
-    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace')
+    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
                         for a in args]))
     if kwargs.get('newline', True):
         out.write('\n')
@@ -584,7 +584,7 @@ def fix_eol(text, eol):
 
 def unicode_to_base64(text, strip_newlines=True):
     """Safe conversion of ``text`` to base64 representation using
-    utf-8 bytes.
+    utf-8 bytes.  
 
     Strips newlines from output unless ``strip_newlines`` is `False`.
     """

@@ -18,7 +18,7 @@ def execute(hdf, txt, env):
     # From a wiki page
     if hdf:
         hdf['wiki.macro.greeting'] = 'Hello World'
-
+        
     # args will be `None` if the macro is called without parenthesis.
     args = txt or 'No arguments'
 
@@ -58,7 +58,7 @@ class HelloWorldMacro(WikiMacroBase):
           [[HelloWorld]]), then `content` is `None`.
         """
         return 'Hello World, content = ' + unicode(content)
-
+    
     # Note that there's no need to HTML escape the returned data,
     # as the template engine (Genshi) will do it for us.
 # --

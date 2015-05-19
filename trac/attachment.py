@@ -71,7 +71,7 @@ class IAttachmentChangeListener(Interface):
 class IAttachmentManipulator(Interface):
     """Extension point interface for components that need to manipulate
     attachments.
-
+    
     Unlike change listeners, a manipulator can reject changes being committed
     to the database."""
 
@@ -82,7 +82,7 @@ class IAttachmentManipulator(Interface):
     def validate_attachment(req, attachment):
         """Validate an attachment after upload but before being stored in Trac
         environment.
-
+        
         Must return a list of `(field, message)` tuples, one for each problem
         detected. `field` can be any of `description`, `username`, `filename`,
         `content`, or `None` to indicate an overall problem with the
@@ -93,7 +93,7 @@ class ILegacyAttachmentPolicyDelegate(Interface):
     """Interface that can be used by plugins to seemlessly participate to the
        legacy way of checking for attachment permissions.
 
-       This should no longer be necessary once it becomes easier to
+       This should no longer be necessary once it becomes easier to 
        setup fine-grained permissions in the default permission store.
     """
 
@@ -106,7 +106,7 @@ class ILegacyAttachmentPolicyDelegate(Interface):
             :param username: the user string
             :param resource: the `Resource` for the attachment. Note that when
                              ATTACHMENT_CREATE is checked, the resource `.id`
-                             will be `None`.
+                             will be `None`. 
             :param perm: the permission cache for that username and resource
             """
 
@@ -167,7 +167,7 @@ class Attachment(object):
         if filename:
             path = os.path.join(path, unicode_quote(filename))
         return os.path.normpath(path)
-
+    
     @property
     def path(self):
         return self._get_path(self.parent_realm, self.parent_id, self.filename)
@@ -203,7 +203,7 @@ class Attachment(object):
     def reparent(self, new_realm, new_id):
         assert self.filename, 'Cannot reparent non-existent attachment'
         new_id = unicode(new_id)
-
+        
         @self.env.with_transaction()
         def do_reparent(db):
             cursor = db.cursor()
@@ -216,13 +216,13 @@ class Attachment(object):
             commonprefix = os.path.commonprefix([attachments_dir, new_path])
             if commonprefix != attachments_dir:
                 raise TracError(_('Cannot reparent attachment "%(att)s" as '
-                                  '%(realm)s:%(id)s is invalid',
+                                  '%(realm)s:%(id)s is invalid', 
                                   att=self.filename, realm=new_realm,
                                   id=new_id))
 
             if os.path.exists(new_path):
                 raise TracError(_('Cannot reparent attachment "%(att)s" as '
-                                  'it already exists in %(realm)s:%(id)s',
+                                  'it already exists in %(realm)s:%(id)s', 
                                   att=self.filename, realm=new_realm,
                                   id=new_id))
             cursor.execute("""
@@ -247,7 +247,7 @@ class Attachment(object):
         self.parent_realm, self.parent_id = new_realm, new_id
         self.resource = Resource(new_realm, new_id).child('attachment',
                                                           self.filename)
-
+        
         self.env.log.info('Attachment reparented: %s' % self.title)
 
         for listener in AttachmentModule(self.env).change_listeners:
@@ -270,7 +270,7 @@ class Attachment(object):
         commonprefix = os.path.commonprefix([attachments_dir, self.path])
         if commonprefix != attachments_dir:
             raise TracError(_('Cannot create attachment "%(att)s" as '
-                              '%(realm)s:%(id)s is invalid',
+                              '%(realm)s:%(id)s is invalid', 
                               att=filename, realm=self.parent_realm,
                               id=self.parent_id))
 
@@ -356,7 +356,7 @@ class Attachment(object):
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
                     attachment_dir[0], exception_to_unicode(e, traceback=True))
-
+            
     def open(self):
         self.env.log.debug('Trying to open attachment at %s', self.path)
         try:
@@ -379,7 +379,7 @@ class AttachmentModule(Component):
     CHUNK_SIZE = 4096
 
     max_size = IntOption('attachment', 'max_size', 262144,
-        """Maximum allowed file size (in bytes) for ticket and wiki
+        """Maximum allowed file size (in bytes) for ticket and wiki 
         attachments.""")
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
@@ -434,7 +434,7 @@ class AttachmentModule(Component):
         parent_realm = req.args.get('realm')
         path = req.args.get('path')
         filename = None
-
+        
         if not parent_realm or not path:
             raise HTTPBadRequest(_('Bad request'))
 
@@ -450,20 +450,20 @@ class AttachmentModule(Component):
                 parent_id, filename = path[:last_slash], path[last_slash + 1:]
 
         parent = parent_realm(id=parent_id)
-
+        
         # Link the attachment page to parent resource
         parent_name = get_resource_name(self.env, parent)
         parent_url = get_resource_url(self.env, parent, req.href)
         add_link(req, 'up', parent_url, parent_name)
-        add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name),
+        add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name), 
                     parent_url)
-
-        if action != 'new' and not filename:
+        
+        if action != 'new' and not filename: 
             # there's a trailing '/', show the list
             return self._render_list(req, parent)
 
         attachment = Attachment(self.env, parent.child('attachment', filename))
-
+        
         if req.method == 'POST':
             if action == 'new':
                 self._do_save(req, attachment)
@@ -480,7 +480,7 @@ class AttachmentModule(Component):
         return 'attachment.html', data, None
 
     # IWikiSyntaxProvider methods
-
+    
     def get_wiki_syntax(self):
         return []
 
@@ -507,7 +507,7 @@ class AttachmentModule(Component):
                 'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
                 'attachments': attachments,
                 'parent': context.resource}
-
+    
     def get_history(self, start, stop, realm):
         """Return an iterable of tuples describing changes to attachments on
         a particular object realm.
@@ -551,23 +551,23 @@ class AttachmentModule(Component):
                         resource=tag.em(name, title=title))
         elif field == 'description':
             return format_to(self.env, None, context(attachment.parent), descr)
-
+   
     def get_search_results(self, req, resource_realm, terms):
         """Return a search result generator suitable for ISearchSource.
-
-        Search results are attachments on resources of the given
-        `resource_realm.realm` whose filename, description or author match
+        
+        Search results are attachments on resources of the given 
+        `resource_realm.realm` whose filename, description or author match 
         the given terms.
         """
         db = self.env.get_db_cnx()
-        sql_query, args = search_to_sql(db, ['filename', 'description',
+        sql_query, args = search_to_sql(db, ['filename', 'description', 
                                         'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT id,time,filename,description,author "
                        "FROM attachment "
                        "WHERE type = %s "
                        "AND " + sql_query, (resource_realm.realm, ) + args)
-
+        
         for id, time, filename, desc, author in cursor:
             attachment = resource_realm(id=id).child('attachment', filename)
             if 'ATTACHMENT_VIEW' in req.perm(attachment):
@@ -575,9 +575,9 @@ class AttachmentModule(Component):
                        get_resource_shortname(self.env, attachment),
                        from_utimestamp(time), author,
                        shorten_result(desc, terms))
-
+    
     # IResourceManager methods
-
+    
     def get_resource_realms(self):
         yield 'attachment'
 
@@ -596,8 +596,8 @@ class AttachmentModule(Component):
             prefix = 'raw-attachment'
         parent_href = unicode_unquote(get_resource_url(self.env,
                             resource.parent(version=None), Href('')))
-        if not resource.id:
-            # link to list of attachments, which must end with a trailing '/'
+        if not resource.id: 
+            # link to list of attachments, which must end with a trailing '/' 
             # (see process_request)
             return href(prefix, parent_href) + '/'
         else:
@@ -760,7 +760,7 @@ class AttachmentModule(Component):
             # MIME type detection
             str_data = fd.read(1000)
             fd.seek(0)
-
+            
             mime_type = mimeview.get_mimetype(attachment.filename, str_data)
 
             # Eventually send the file directly
@@ -768,7 +768,7 @@ class AttachmentModule(Component):
             if format in ('raw', 'txt'):
                 if not self.render_unsafe_content:
                     # Force browser to download files instead of rendering
-                    # them, since they might contain malicious code enabling
+                    # them, since they might contain malicious code enabling 
                     # XSS attacks
                     req.send_header('Content-Disposition', 'attachment')
                 if format == 'txt':
@@ -781,7 +781,7 @@ class AttachmentModule(Component):
                 req.send_file(attachment.path, mime_type)
 
             # add ''Plain Text'' alternate link if needed
-            if (self.render_unsafe_content and
+            if (self.render_unsafe_content and 
                 mime_type and not mime_type.startswith('text/plain')):
                 plaintext_href = get_resource_url(self.env,
                                                   attachment.resource,
@@ -856,7 +856,7 @@ class AttachmentModule(Component):
 class LegacyAttachmentPolicy(Component):
 
     implements(IPermissionPolicy)
-
+    
     delegates = ExtensionPoint(ILegacyAttachmentPolicyDelegate)
 
     # IPermissionPolicy methods
@@ -892,74 +892,74 @@ class LegacyAttachmentPolicy(Component):
 
 class AttachmentAdmin(Component):
     """trac-admin command provider for attachment administration."""
-
+    
     implements(IAdminCommandProvider)
-
+    
     # IAdminCommandProvider methods
-
+    
     def get_admin_commands(self):
         yield ('attachment list', '<realm:id>',
                """List attachments of a resource
-
+               
                The resource is identified by its realm and identifier.""",
                self._complete_list, self._do_list)
         yield ('attachment add', '<realm:id> <path> [author] [description]',
                """Attach a file to a resource
-
+               
                The resource is identified by its realm and identifier. The
                attachment will be named according to the base name of the file.
                """,
                self._complete_add, self._do_add)
         yield ('attachment remove', '<realm:id> <name>',
                """Remove an attachment from a resource
-
+               
                The resource is identified by its realm and identifier.""",
                self._complete_remove, self._do_remove)
         yield ('attachment export', '<realm:id> <name> [destination]',
                """Export an attachment from a resource to a file or stdout
-
+               
                The resource is identified by its realm and identifier. If no
                destination is specified, the attachment is output to stdout.
                """,
                self._complete_export, self._do_export)
-
+    
     def get_realm_list(self):
         rs = ResourceSystem(self.env)
         return PrefixList([each + ":" for each in rs.get_known_realms()])
-
+    
     def split_resource(self, resource):
         result = resource.split(':', 1)
         if len(result) != 2:
             raise AdminCommandError(_("Invalid resource identifier '%(id)s'",
                                       id=resource))
         return result
-
+    
     def get_attachment_list(self, resource):
         (realm, id) = self.split_resource(resource)
         return [a.filename for a in Attachment.select(self.env, realm, id)]
-
+    
     def _complete_list(self, args):
         if len(args) == 1:
             return self.get_realm_list()
-
+    
     def _complete_add(self, args):
         if len(args) == 1:
             return self.get_realm_list()
         elif len(args) == 2:
             return get_dir_list(args[1])
-
+    
     def _complete_remove(self, args):
         if len(args) == 1:
             return self.get_realm_list()
         elif len(args) == 2:
             return self.get_attachment_list(args[0])
-
+    
     def _complete_export(self, args):
         if len(args) < 3:
             return self._complete_remove(args)
         elif len(args) == 3:
             return get_dir_list(args[2])
-
+    
     def _do_list(self, resource):
         (realm, id) = self.split_resource(resource)
         print_table([(a.filename, pretty_size(a.size), a.author,
@@ -968,7 +968,7 @@ class AttachmentAdmin(Component):
                      for a in Attachment.select(self.env, realm, id)],
                     [_('Name'), _('Size'), _('Author'), _('Date'),
                      _('Description')])
-
+    
     def _do_add(self, resource, path, author='trac', description=''):
         (realm, id) = self.split_resource(resource)
         attachment = Attachment(self.env, realm, id)
@@ -979,12 +979,12 @@ class AttachmentAdmin(Component):
             attachment.insert(os.path.basename(path), f, os.path.getsize(path))
         finally:
             f.close()
-
+    
     def _do_remove(self, resource, name):
         (realm, id) = self.split_resource(resource)
         attachment = Attachment(self.env, realm, id, name)
         attachment.delete()
-
+    
     def _do_export(self, resource, name, destination=None):
         (realm, id) = self.split_resource(resource)
         attachment = Attachment(self.env, realm, id, name)
@@ -1005,3 +1005,4 @@ class AttachmentAdmin(Component):
                     output.close()
         finally:
             input.close()
+

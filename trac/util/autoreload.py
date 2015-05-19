@@ -21,7 +21,7 @@ _SLEEP_TIME = 1
 def _reloader_thread(modification_callback):
     """When this function is run from the main thread, it will force other
     threads to exit when any modules currently loaded change.
-
+    
     @param modification_callback: a function taking a single argument, the
         modified file, which is called every time a modification is detected
     """

@@ -65,7 +65,7 @@ class InterWikiMap(Component):
 
     def url(self, ns, target):
         """Return `(url, title)` for the given InterWiki `ns`.
-
+        
         Expand the colon-separated `target` arguments.
         """
         ns, url, title = self[ns]
@@ -79,7 +79,7 @@ class InterWikiMap(Component):
         url = self._expand_or_append(url, args)
         ntarget, nquery, nfragment = split_url_into_path_query_fragment(url)
         if query and nquery:
-            nquery = '%s&%s' % (nquery, query[1:])
+            nquery = '%s&%s' % (nquery, query[1:]) 
         else:
             nquery = nquery or query
         nfragment = fragment or nfragment # user provided takes precedence
@@ -112,7 +112,7 @@ class InterWikiMap(Component):
 
     @cached
     def interwiki_map(self, db):
-        """Map from upper-cased namespaces to (namespace, prefix, title)
+        """Map from upper-cased namespaces to (namespace, prefix, title) 
         values.
         """
         from trac.wiki.model import WikiPage
@@ -139,7 +139,7 @@ class InterWikiMap(Component):
     def get_macros(self):
         yield 'InterWiki'
 
-    def get_macro_description(self, name):
+    def get_macro_description(self, name): 
         return "Provide a description list for the known InterWiki prefixes."
 
     def expand_macro(self, formatter, name, content):

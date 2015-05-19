@@ -104,7 +104,7 @@ class NormalTests(object):
         cset = repos.child('changeset', HEAD)
         self.assertEqual(True, resource_exists(self.env, cset))
         self.assertEqual(False, resource_exists(self.env, cset(id=123456)))
-
+                         
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
         self.assertEqual('/', self.repos.normalize_path(''))
@@ -153,7 +153,7 @@ class NormalTests(object):
         self.assertEqual(False, self.repos.has_node(u'/tête/dir1', 3))
         self.assertEqual(True, self.repos.has_node(u'/tête/dir1', 4))
         self.assertEqual(True, self.repos.has_node(u'/tête/dir1'))
-
+        
     def test_get_node(self):
         node = self.repos.get_node(u'/tête')
         self.assertEqual(u'tête', node.name)
@@ -265,7 +265,7 @@ class NormalTests(object):
         node = self.repos.get_node(u'/branches/t10386/READ%25ME.txt')
         self.assertEqual([14], node.get_annotations())
 
-    # Revision Log / node history
+    # Revision Log / node history 
 
     def test_get_node_history(self):
         node = self.repos.get_node(u'/tête/README3.txt')
@@ -300,7 +300,7 @@ class NormalTests(object):
 
         node = self.repos.get_node(u'/tête/README3.txt')
         ancestry = node.get_copy_ancestry()
-        self.assertEqual([(u'tête/README2.txt', 13),
+        self.assertEqual([(u'tête/README2.txt', 13), 
                           (u'tête/README.txt', 3)], ancestry)
         for path, rev in ancestry:
             self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
@@ -308,8 +308,8 @@ class NormalTests(object):
         node = self.repos.get_node('/branches/v1x')
         ancestry = node.get_copy_ancestry()
         self.assertEqual([(u'tags/v1.1', 11),
-                          (u'branches/v1x', 9),
-                          (u'tags/v1', 7),
+                          (u'branches/v1x', 9), 
+                          (u'tags/v1', 7), 
                           (u'tête', 6)], ancestry)
         for path, rev in ancestry:
             self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
@@ -331,7 +331,7 @@ class NormalTests(object):
         node = self.repos.get_node(u'/tête/dir1/dir2', 5)
         self.assertEqual(5, node.get_branch_origin())
 
-    # Revision Log / path history
+    # Revision Log / path history 
 
     def test_get_path_history(self):
         history = self.repos.get_path_history(u'/tête/README2.txt', None)
@@ -345,7 +345,7 @@ class NormalTests(object):
         self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
         self.assertEqual((u'tête/README.txt', 3, 'unknown'), history.next())
         self.assertRaises(StopIteration, history.next)
-
+        
     def test_get_path_history_copied_dir(self):
         history = self.repos.get_path_history('/branches/v1x', None)
         self.assertEqual(('branches/v1x', 12, 'copy'), history.next())
@@ -366,7 +366,7 @@ class NormalTests(object):
             new = self.repos.get_node(*expected[1])
             self.assertEqual((new.path, new.rev), (got[1].path, got[1].rev))
         self.assertEqual(expected[2], (got[2], got[3]))
-
+        
     def test_diff_file_different_revs(self):
         diffs = self.repos.get_changes(u'tête/README.txt', 2,
                                        u'tête/README.txt', 3)
@@ -387,7 +387,7 @@ class NormalTests(object):
         diffs = self.repos.get_changes(u'tête/README.txt', 7,
                                       'tags/v1/README.txt', 7)
         self.assertRaises(StopIteration, diffs.next)
-
+ 
     def test_diff_dir_different_revs(self):
         diffs = self.repos.get_changes(u'tête', 4, u'tête', 8)
         self._cmp_diff((None, (u'tête/README2.txt', 8),
@@ -420,7 +420,7 @@ class NormalTests(object):
         diffs = self.repos.get_changes(u'tête', 7,
                                       'tags/v1', 7)
         self.assertRaises(StopIteration, diffs.next)
-
+        
     # Changesets
 
     def test_changeset_repos_creation(self):
@@ -828,9 +828,9 @@ class ScopedTests(object):
         self.assertEqual('native', props['svn:eol-style'])
         self.assertEqual('text/plain', props['svn:mime-type'])
 
-    # Revision Log / node history
+    # Revision Log / node history 
 
-    def test_get_history_scope(self):
+    def test_get_history_scope(self): 
         """Regression test for #9504"""
         node = self.repos.get_node('/')
         history = list(node.get_history())
@@ -857,7 +857,7 @@ class ScopedTests(object):
     def test_get_copy_ancestry(self):
         node = self.repos.get_node(u'/README3.txt')
         ancestry = node.get_copy_ancestry()
-        self.assertEqual([(u'README2.txt', 13),
+        self.assertEqual([(u'README2.txt', 13), 
                           (u'README.txt', 3)], ancestry)
         for path, rev in ancestry:
             self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
@@ -875,7 +875,7 @@ class ScopedTests(object):
         node = self.repos.get_node(u'/dir1/dir2', 5)
         self.assertEqual(5, node.get_branch_origin())
 
-    # Revision Log / path history
+    # Revision Log / path history 
 
     def test_get_path_history(self):
         history = self.repos.get_path_history('dir3', None)
@@ -888,7 +888,7 @@ class ScopedTests(object):
         self.assertEqual(('README3.txt', 14, 'copy'), history.next())
         self.assertEqual(('README2.txt', 6, 'unknown'), history.next())
         self.assertRaises(StopIteration, history.next)
-
+        
     def test_get_path_history_copied_dir(self):
         history = self.repos.get_path_history('dir1/dir3', None)
         self.assertEqual(('dir1/dir3', 5, 'copy'), history.next())
@@ -1025,7 +1025,7 @@ class AnotherNonSelfContainedScopedTests(object):
 # -- Test cases for SubversionRepository
 
 class SubversionRepositoryTestCase(unittest.TestCase):
-
+    
     def setUp(self):
         self.env = EnvironmentStub()
         repositories = self.env.config['repositories']
@@ -1043,7 +1043,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 # -- Test cases for SvnCachedRepository
 
 class SvnCachedRepositoryTestCase(unittest.TestCase):
-
+    
     def setUp(self):
         self.env = EnvironmentStub()
         DbRepositoryProvider(self.env).add_repository(REPOS_NAME, self.path,

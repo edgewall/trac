@@ -115,14 +115,14 @@ class ChromeTestCase(unittest.TestCase):
         self.env.config.set('header_logo', 'src', 'foo.png')
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/common/foo.png', info['logo']['src'])
-        self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png',
+        self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png', 
                     info['logo']['src_abs'])
 
         # Test with a location in project htdocs
         self.env.config.set('header_logo', 'src', 'site/foo.png')
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/site/foo.png', info['logo']['src'])
-        self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png',
+        self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png', 
                     info['logo']['src_abs'])
 
         # Test with a server-relative path to the logo image
@@ -152,7 +152,7 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_icon_links(self):
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      href=Href('/trac.cgi'), base_path='/trac.cgi', 
                       path_info='',
                       add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)
@@ -193,7 +193,7 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
+                      href=Href('/trac.cgi'), path_info='/', 
                       base_path='/trac.cgi',
                       add_redirect_listener=lambda listener: None)
         nav = Chrome(self.env).prepare_request(req)['nav']
@@ -208,7 +208,7 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
+                      href=Href('/trac.cgi'), path_info='/', 
                       base_path='/trac.cgi',
                       add_redirect_listener=lambda listener: None)
         handler = TestNavigationContributor(self.env)
@@ -230,7 +230,7 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test2', 'Test 2'
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      href=Href('/trac.cgi'), base_path='/trac.cgi', 
                       path_info='/',
                       add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)

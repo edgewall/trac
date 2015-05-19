@@ -47,7 +47,7 @@ class ITicketActionController(Interface):
         `action` is a key used to identify that particular action.
         (note that 'history' and 'diff' are reserved and should not be used
         by plugins)
-
+        
         The actions will be presented on the page in descending order of the
         integer weight. The first action in the list is used as the default
         action.
@@ -69,7 +69,7 @@ class ITicketActionController(Interface):
         `label` is a short text that will be used when listing the action,
         `control` is the markup for the action control and `hint` should
         explain what will happen if this action is taken.
-
+        
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.
 
@@ -114,7 +114,7 @@ class ITicketChangeListener(Interface):
 
     def ticket_changed(ticket, comment, author, old_values):
         """Called when a ticket is modified.
-
+        
         `old_values` is a dictionary containing the previous values of the
         fields that have changed.
         """
@@ -132,7 +132,7 @@ class ITicketManipulator(Interface):
 
     def validate_ticket(req, ticket):
         """Validate a ticket after it's been populated from user input.
-
+        
         Must return a list of `(field, message)` tuples, one for each problem
         detected. `field` can be `None` to indicate an overall problem with the
         ticket. Therefore, a return value of `[]` means everything is OK."""
@@ -162,7 +162,7 @@ class TicketSystem(Component):
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
     milestone_change_listeners = ExtensionPoint(IMilestoneChangeListener)
-
+    
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
         ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,
@@ -174,7 +174,7 @@ class TicketSystem(Component):
         Be sure to understand the performance implications before activating
         this option. See
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List].
-
+        
         Please note that e-mail addresses are '''not''' obfuscated in the
         resulting drop-down menu, so this option should not be used if
         e-mail addresses must remain protected.
@@ -218,7 +218,7 @@ class TicketSystem(Component):
         (''since 0.11'').""")
 
     def __init__(self):
-        self.log.debug('action controllers for ticket workflow: %r' %
+        self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
 
     # Public API
@@ -284,7 +284,7 @@ class TicketSystem(Component):
         fields.append({'name': 'reporter', 'type': 'text',
                        'label': N_('Reporter')})
 
-        # Owner field, by default text but can be changed dynamically
+        # Owner field, by default text but can be changed dynamically 
         # into a drop-down depending on configuration (restrict_owner=true)
         field = {'name': 'owner', 'label': N_('Owner')}
         field['type'] = 'text'
@@ -451,16 +451,16 @@ class TicketSystem(Component):
                 from trac.ticket.model import Ticket
                 if Ticket.id_is_valid(num) and \
                         'TICKET_VIEW' in formatter.perm(ticket):
-                    # TODO: watch #6436 and when done, attempt to retrieve
+                    # TODO: watch #6436 and when done, attempt to retrieve 
                     #       ticket directly (try: Ticket(self.env, num) ...)
-                    cursor = formatter.db.cursor()
+                    cursor = formatter.db.cursor() 
                     cursor.execute("SELECT type,summary,status,resolution "
-                                   "FROM ticket WHERE id=%s", (str(num),))
+                                   "FROM ticket WHERE id=%s", (str(num),)) 
                     for type, summary, status, resolution in cursor:
                         title = self.format_summary(summary, status,
                                                     resolution, type)
                         href = formatter.href.ticket(num) + params + fragment
-                        return tag.a(label, class_='%s ticket' % status,
+                        return tag.a(label, class_='%s ticket' % status, 
                                      title=title, href=href)
             else:
                 ranges = str(r)
@@ -492,7 +492,7 @@ class TicketSystem(Component):
             return tag.a(label, href=href, title=title)
         else:
             return label
-
+ 
     # IResourceManager methods
 
     def get_resource_realms(self):

@@ -19,31 +19,31 @@ tasks such as grouping or pagination.
 from math import ceil
 import re
 
-__all__ = ['classes', 'first_last', 'group', 'istext', 'prepared_paginate',
+__all__ = ['classes', 'first_last', 'group', 'istext', 'prepared_paginate', 
            'paginate', 'Paginator']
 
 
 def classes(*args, **kwargs):
     """Helper function for dynamically assembling a list of CSS class names
     in templates.
-
+    
     Any positional arguments are added to the list of class names. All
     positional arguments must be strings:
-
+    
     >>> classes('foo', 'bar')
     u'foo bar'
-
+    
     In addition, the names of any supplied keyword arguments are added if they
     have a truth value:
-
+    
     >>> classes('foo', bar=True)
     u'foo bar'
     >>> classes('foo', bar=False)
     u'foo'
-
+    
     If none of the arguments are added to the list, this function returns
     `None`:
-
+    
     >>> classes(bar=False)
     """
     classes = list(filter(None, args)) + [k for k, v in kwargs.items() if v]
@@ -58,28 +58,28 @@ def first_last(idx, seq):
 def group(iterable, num, predicate=None):
     """Combines the elements produced by the given iterable so that every `n`
     items are returned as a tuple.
-
+    
     >>> items = [1, 2, 3, 4]
     >>> for item in group(items, 2):
     ...     print item
     (1, 2)
     (3, 4)
-
+    
     The last tuple is padded with `None` values if its' length is smaller than
     `num`.
-
+    
     >>> items = [1, 2, 3, 4, 5]
     >>> for item in group(items, 2):
     ...     print item
     (1, 2)
     (3, 4)
     (5, None)
-
+    
     The optional `predicate` parameter can be used to flag elements that should
     not be packed together with other items. Only those elements where the
     predicate function returns True are grouped with other elements, otherwise
     they are returned as a tuple of length 1:
-
+    
     >>> items = [1, 2, 3, 4]
     >>> for item in group(items, 2, lambda x: x != 3):
     ...     print item
@@ -116,14 +116,14 @@ def prepared_paginate(items, num_items, max_per_page):
 
 def paginate(items, page=0, max_per_page=10):
     """Simple generic pagination.
-
+    
     Given an iterable, this function returns:
      * the slice of objects on the requested page,
      * the total number of items, and
      * the total number of pages.
-
+    
     The `items` parameter can be a list, tuple, or iterator:
-
+    
     >>> items = range(12)
     >>> items
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -135,9 +135,9 @@ def paginate(items, page=0, max_per_page=10):
     ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, 2)
     >>> paginate(iter(items), page=1)
     ([10, 11], 12, 2)
-
+    
     This function also works with generators:
-
+    
     >>> def generate():
     ...     for idx in range(12):
     ...         yield idx
@@ -145,10 +145,10 @@ def paginate(items, page=0, max_per_page=10):
     ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, 2)
     >>> paginate(generate(), page=1)
     ([10, 11], 12, 2)
-
+    
     The `max_per_page` parameter can be used to set the number of items that
     should be displayed per page:
-
+    
     >>> items = range(12)
     >>> paginate(items, page=0, max_per_page=6)
     ([0, 1, 2, 3, 4, 5], 12, 2)
@@ -196,7 +196,7 @@ class Paginator(object):
         else:
             items, num_items, num_pages = prepared_paginate(items, num_items,
                                                             max_per_page)
-        offset = page * max_per_page
+        offset = page * max_per_page        
         self.page = page
         self.max_per_page = max_per_page
         self.items = items
@@ -228,7 +228,7 @@ class Paginator(object):
     @property
     def has_previous_page(self):
         return self.page > 0
-
+   
     def get_shown_pages(self, page_index_count = 11):
         if self.has_more_pages == False:
             return range(1, 2)
@@ -285,7 +285,7 @@ try:
 
     _js_quote = dict((c, '\\u%04x' % ord(c)) for c in '&<>')
     _js_quote_re = re.compile('[' + ''.join(_js_quote) + ']')
-
+    
     def to_json(value):
         """Encode `value` to JSON."""
         def replace(match):
@@ -295,7 +295,7 @@ try:
 
 except ImportError:
     from trac.util.text import to_js_string
-
+    
     def to_json(value):
         """Encode `value` to JSON."""
         if isinstance(value, basestring):

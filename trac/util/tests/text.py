@@ -162,15 +162,15 @@ class PrintTableTestCase(unittest.TestCase):
         headers = ('Version', 'Date', 'Name')
         expected = """\
 
-Version     Date         Name
+Version     Date         Name     
 ----------------------------------
-Trac 0.12 | 2010-06-13 | Babel
-Trac 0.11 | 2008-06-22 | Genshi
-Trac 0.10 | 2006-09-28 | Zengia
-Trac 0.9  | 2005-10-31 | Vodun
-Trac 0.8  | 2004-11-15 | Qualia
-Trac 0.7  | 2004-05-18 | Fulci
-Trac 0.6  | 2004-03-23 | Solanum
+Trac 0.12 | 2010-06-13 | Babel    
+Trac 0.11 | 2008-06-22 | Genshi   
+Trac 0.10 | 2006-09-28 | Zengia   
+Trac 0.9  | 2005-10-31 | Vodun    
+Trac 0.8  | 2004-11-15 | Qualia   
+Trac 0.7  | 2004-05-18 | Fulci    
+Trac 0.6  | 2004-03-23 | Solanum  
 Trac 0.5  | 2004-02-23 | Incognito
 
 """
@@ -187,11 +187,11 @@ Trac 0.5  | 2004-02-23 | Incognito
         )
         expected = u"""\
 
-NoneType | None  |
-bool     | True  | True
+NoneType | None  |      
+bool     | True  | True 
 bool     | False | False
-int      | 0     | 0
-float    | 0.0   | 0.0
+int      | 0     | 0    
+float    | 0.0   | 0.0  
 
 """
         self._validate_print_table(expected, data, sep=' | ', ambiwidth=1)
@@ -204,9 +204,9 @@ float    | 0.0   | 0.0
         headers = ('Obfuscated', 'Email')
         expected = u"""\
 
-Obfuscated      Email
+Obfuscated      Email          
 -------------------------------
-foo@localhost | foo@localhost
+foo@localhost | foo@localhost  
 bar@….com     | bar@example.com
 
 """
@@ -221,9 +221,9 @@ bar@….com     | bar@example.com
         headers = ('Obfuscated', 'Email')
         expected = u"""\
 
-Obfuscated      Email
+Obfuscated      Email          
 -------------------------------
-foo@localhost | foo@localhost
+foo@localhost | foo@localhost  
 bar@….com    | bar@example.com
 
 """

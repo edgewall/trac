@@ -18,7 +18,7 @@
 
 from genshi.builder import tag
 
-from trac.resource import ResourceNotFound
+from trac.resource import ResourceNotFound 
 from trac.util.datefmt import datetime, utc
 from trac.util.translation import tag_, _
 from trac.versioncontrol.api import Changeset, NoSuchNode, NoSuchChangeset
@@ -47,7 +47,7 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
                                    order=order, desc=desc)}]
     if reponame:
         links.append({
-            'name': reponame,
+            'name': reponame, 
             'href': href.browser(reponame, rev=rev, order=order, desc=desc)})
     partial_path = ''
     for part in [p for p in path.split('/') if p]:
@@ -60,15 +60,15 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
     return links
 
 def get_existing_node(req, repos, path, rev):
-    try:
-        return repos.get_node(path, rev)
+    try: 
+        return repos.get_node(path, rev) 
     except NoSuchNode, e:
         # TRANSLATOR: You can 'search' in the repository history... (link)
-        search_a = tag.a(_("search"),
+        search_a = tag.a(_("search"), 
                          href=req.href.log(repos.reponame or None, path,
                                            rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(
-            tag.p(e.message, class_="message"),
+            tag.p(e.message, class_="message"), 
             tag.p(tag_("You can %(search)s in the repository history to see "
                        "if that path existed but was later removed",
                        search=search_a))))

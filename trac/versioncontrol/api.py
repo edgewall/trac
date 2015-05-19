@@ -42,13 +42,13 @@ class IRepositoryConnector(Interface):
 
         Yields `(repotype, priority)` pairs, where `repotype` is used to
         match against the configured `[trac] repository_type` value in TracIni.
-
+        
         If multiple provider match a given type, the `priority` is used to
         choose between them (highest number is highest priority).
 
-        If the `priority` returned is negative, this indicates that the
+        If the `priority` returned is negative, this indicates that the 
         connector for the given `repotype` indeed exists but can't be
-        used for some reason. The `error` property can then be used to
+        used for some reason. The `error` property can then be used to 
         store an error message or exception relevant to the problem detected.
         """
 
@@ -62,11 +62,11 @@ class IRepositoryProvider(Interface):
 
     def get_repositories():
         """Generate repository information for known repositories.
-
-        Repository information is a key,value pair, where the value is
+        
+        Repository information is a key,value pair, where the value is 
         a dictionary which must contain at the very least either of the
         following entries:
-         - `'dir'`: the repository directory which can be used by the
+         - `'dir'`: the repository directory which can be used by the 
                     connector to create a `Repository` instance. This defines
                     a "real" repository.
          - `'alias'`: the name of another repository. This defines an alias to
@@ -84,13 +84,13 @@ class IRepositoryProvider(Interface):
 
 class IRepositoryChangeListener(Interface):
     """Listen for changes in repositories."""
-
+    
     def changeset_added(repos, changeset):
         """Called after a changeset has been added to a repository."""
 
     def changeset_modified(repos, changeset, old_changeset):
         """Called after a changeset has been modified in a repository.
-
+        
         The `old_changeset` argument contains the metadata of the changeset
         prior to the modification. It is `None` if the old metadata cannot
         be retrieved.
@@ -104,7 +104,7 @@ class DbRepositoryProvider(Component):
 
     repository_attrs = ('alias', 'description', 'dir', 'hidden', 'name',
                         'type', 'url')
-
+    
     # IRepositoryProvider methods
 
     def get_repositories(self):
@@ -126,7 +126,7 @@ class DbRepositoryProvider(Component):
         return reponames.iteritems()
 
     # IAdminCommandProvider methods
-
+    
     def get_admin_commands(self):
         yield ('repository add', '<repos> <dir> [type]',
                'Add a source repository',
@@ -139,45 +139,45 @@ class DbRepositoryProvider(Component):
                self._complete_repos, self._do_remove)
         yield ('repository set', '<repos> <key> <value>',
                """Set an attribute of a repository
-
+               
                The following keys are supported: %s
                """ % ', '.join(self.repository_attrs),
                self._complete_set, self._do_set)
-
+    
     def get_reponames(self):
         rm = RepositoryManager(self.env)
         return [reponame or '(default)' for reponame
                 in rm.get_all_repositories()]
-
+    
     def _complete_add(self, args):
         if len(args) == 2:
             return get_dir_list(args[-1], True)
         elif len(args) == 3:
             return RepositoryManager(self.env).get_supported_types()
-
+    
     def _complete_alias(self, args):
         if len(args) == 2:
             return self.get_reponames()
-
+    
     def _complete_repos(self, args):
         if len(args) == 1:
             return self.get_reponames()
-
+    
     def _complete_set(self, args):
         if len(args) == 1:
             return self.get_reponames()
         elif len(args) == 2:
             return self.repository_attrs
-
+            
     def _do_add(self, reponame, dir, type_=None):
         self.add_repository(reponame, os.path.abspath(dir), type_)
-
+    
     def _do_alias(self, reponame, target):
         self.add_alias(reponame, target)
-
+    
     def _do_remove(self, reponame):
         self.remove_repository(reponame)
-
+    
     def _do_set(self, reponame, key, value):
         if key not in self.repository_attrs:
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
@@ -192,9 +192,9 @@ class DbRepositoryProvider(Component):
         elif key == 'type':
             printout(_('You may have to run "repository resync %(name)s".',
                        name=reponame))
-
+    
     # Public interface
-
+    
     def add_repository(self, reponame, dir, type_=None):
         """Add a repository."""
         if not os.path.isabs(dir):
@@ -214,7 +214,7 @@ class DbRepositoryProvider(Component):
                                [(id, 'dir', dir),
                                 (id, 'type', type_ or '')])
         rm.reload_repositories()
-
+    
     def add_alias(self, reponame, target):
         """Create an alias repository."""
         if is_default(reponame):
@@ -231,7 +231,7 @@ class DbRepositoryProvider(Component):
                                [(id, 'dir', None),
                                 (id, 'alias', target)])
         rm.reload_repositories()
-
+    
     def remove_repository(self, reponame):
         """Remove a repository."""
         if is_default(reponame):
@@ -245,7 +245,7 @@ class DbRepositoryProvider(Component):
             cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
             cursor.execute("DELETE FROM node_change WHERE repos=%s", (id,))
         rm.reload_repositories()
-
+    
     def modify_repository(self, reponame, changes):
         """Modify attributes of a repository."""
         if is_default(reponame):
@@ -295,7 +295,7 @@ class RepositoryManager(Component):
 
     repository_type = Option('trac', 'repository_type', 'svn',
         """Default repository connector type. (''since 0.10'')
-
+        
         This is also used as the default repository type for repositories
         defined in [[TracIni#repositories-section repositories]] or using the
         "Repositories" admin panel. (''since 0.12'')
@@ -304,7 +304,7 @@ class RepositoryManager(Component):
     repository_dir = Option('trac', 'repository_dir', '',
         """Path to the default repository. This can also be a relative path
         (''since 0.11'').
-
+        
         This option is deprecated, and repositories should be defined in the
         [TracIni#repositories-section repositories] section, or using the
         "Repositories" admin panel. (''since 0.12'')""")
@@ -313,7 +313,7 @@ class RepositoryManager(Component):
         'repository_sync_per_request', '(default)',
         doc="""List of repositories that should be synchronized on every page
         request.
-
+        
         Leave this option empty if you have set up post-commit hooks calling
         `trac-admin $ENV changeset added` on all your repositories
         (recommended). Otherwise, set it to a comma-separated list of
@@ -453,7 +453,7 @@ class RepositoryManager(Component):
 
     def get_repositories(self):
         """Retrieve repositories specified in TracIni.
-
+        
         The `[repositories]` section can be used to specify a list
         of repositories.
         """
@@ -491,7 +491,7 @@ class RepositoryManager(Component):
                     for (type_, prio) in connector.get_supported_types() or []
                     if prio >= 0)
         return list(types)
-
+    
     def get_repositories_by_dir(self, directory):
         """Retrieve the repositories based on the given directory.
 
@@ -527,14 +527,14 @@ class RepositoryManager(Component):
                            "VALUES (%s,%s,%s)", (id, 'name', reponame))
             repo_id[0] = id
         return repo_id[0]
-
+    
     def get_repository(self, reponame):
         """Retrieve the appropriate Repository for the given name.
 
            :param reponame: the key for specifying the repository.
-                            If no name is given, take the default
+                            If no name is given, take the default 
                             repository.
-           :return: if no corresponding repository was defined,
+           :return: if no corresponding repository was defined, 
                     simply return `None`.
         """
         reponame = reponame or ''
@@ -569,9 +569,9 @@ class RepositoryManager(Component):
 
     def get_repository_by_path(self, path):
         """Retrieve a matching Repository for the given path.
-
+        
         :param path: the eventually scoped repository-scoped path
-        :return: a `(reponame, repos, path)` triple, where `path` is
+        :return: a `(reponame, repos, path)` triple, where `path` is 
                  the remaining part of `path` once the `reponame` has
                  been truncated, if needed.
         """
@@ -593,7 +593,7 @@ class RepositoryManager(Component):
     def get_default_repository(self, context):
         """Recover the appropriate repository from the current context.
 
-        Lookup the closest source or changeset resource in the context
+        Lookup the closest source or changeset resource in the context 
         hierarchy and return the name of its associated repository.
         """
         while context:
@@ -617,7 +617,7 @@ class RepositoryManager(Component):
                         all_repositories[reponame] = info
             self._all_repositories = all_repositories
         return self._all_repositories
-
+    
     def get_real_repositories(self):
         """Return a set of all real repositories (i.e. excluding aliases)."""
         repositories = set()
@@ -640,16 +640,16 @@ class RepositoryManager(Component):
         finally:
             self._lock.release()
         self.config.touch()     # Force environment reload
-
+ 
     def notify(self, event, reponame, revs):
         """Notify repositories and change listeners about repository events.
-
+        
         The supported events are the names of the methods defined in the
         `IRepositoryChangeListener` interface.
         """
         self.log.debug("Event %s on %s for changesets %r",
                        event, reponame, revs)
-
+        
         # Notify a repository by name, and all repositories with the same
         # base, or all repositories by base or by repository dir
         repos = self.get_repository(reponame)
@@ -688,7 +688,7 @@ class RepositoryManager(Component):
                                event, repos.reponame or '(default)', rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
-
+    
     def shutdown(self, tid=None):
         if tid:
             assert tid == threading._get_ident()
@@ -699,12 +699,12 @@ class RepositoryManager(Component):
                     repos.close()
             finally:
                 self._lock.release()
-
+        
     # private methods
 
     def _get_connector(self, rtype):
         """Retrieve the appropriate connector for the given repository type.
-
+        
         Note that the self._lock must be held when calling this method.
         """
         if self._connectors is None:
@@ -725,7 +725,7 @@ class RepositoryManager(Component):
             else:
                 raise TracError(
                     _('Unsupported version control system "%(name)s"'
-                      ': %(error)s', name=rtype,
+                      ': %(error)s', name=rtype, 
                       error=to_unicode(connector.error)))
         else:
             raise TracError(
@@ -756,10 +756,10 @@ class Repository(object):
     """Base class for a repository provided by a version control system."""
 
     scope = '/'
-
+    
     def __init__(self, name, params, log):
         """Initialize a repository.
-
+        
            :param name: a unique name identifying the repository, usually a
                         type-specific prefix followed by the path to the
                         repository.
@@ -782,13 +782,13 @@ class Repository(object):
 
     def get_base(self):
         """Return the name of the base repository for this repository.
-
+        
         This function returns the name of the base repository to which scoped
-        repositories belong. For non-scoped repositories, it returns the
+        repositories belong. For non-scoped repositories, it returns the 
         repository name.
         """
         return self.name
-
+        
     def clear(self, youngest_rev=None):
         """Clear any data that may have been cached in instance properties.
 
@@ -799,17 +799,17 @@ class Repository(object):
 
     def sync(self, rev_callback=None, clean=False):
         """Perform a sync of the repository cache, if relevant.
-
+        
         If given, `rev_callback` must be a callable taking a `rev` parameter.
         The backend will call this function for each `rev` it decided to
-        synchronize, once the synchronization changes are committed to the
+        synchronize, once the synchronization changes are committed to the 
         cache. When `clean` is `True`, the cache is cleaned first.
         """
         pass
 
     def sync_changeset(self, rev):
         """Resync the repository cache for the given `rev`, if relevant.
-
+        
         Returns a "metadata-only" changeset containing the metadata prior to
         the resync, or `None` if the old values cannot be retrieved (typically
         when the repository is not cached).
@@ -825,16 +825,16 @@ class Repository(object):
         The generated results must be of the form (category, name, path, rev).
         """
         return []
-
+    
     def get_path_url(self, path, rev):
         """Return the repository URL for the given path and revision.
-
+        
         The returned URL can be `None`, meaning that no URL has been specified
         for the repository, an absolute URL, or a scheme-relative URL starting
         with `//`, in which case the scheme of the request should be prepended.
         """
         return None
-
+    
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the given revision `rev`."""
         raise NotImplementedError
@@ -867,8 +867,8 @@ class Repository(object):
             self.get_node(path, rev)
             return True
         except TracError:
-            return False
-
+            return False        
+    
     def get_node(self, path, rev=None):
         """Retrieve a Node from the repository at the given path.
 
@@ -900,7 +900,7 @@ class Repository(object):
 
     def rev_older_than(self, rev1, rev2):
         """Provides a total order over revisions.
-
+        
         Return `True` if `rev1` is older than `rev2`, i.e. if `rev1`
         comes before `rev2` in the revision sequence.
         """
@@ -908,7 +908,7 @@ class Repository(object):
 
     def get_youngest_rev_in_cache(self, db):
         """Return the youngest revision currently cached.
-
+        
         The way revisions are sequenced is version control specific.
         By default, one assumes that the revisions are sequenced in time
         (... which is ''not'' correct for most VCS, including Subversion).
@@ -936,11 +936,11 @@ class Repository(object):
     def normalize_rev(self, rev):
         """Return a (unique) canonical representation of a revision.
 
-        It's up to the backend to decide which string values of `rev`
-        (usually provided by the user) should be accepted, and how they
+        It's up to the backend to decide which string values of `rev` 
+        (usually provided by the user) should be accepted, and how they 
         should be normalized. Some backends may for instance want to match
         against known tags or branch names.
-
+        
         In addition, if `rev` is `None` or '', the youngest revision should
         be returned.
         """
@@ -953,16 +953,16 @@ class Repository(object):
     def display_rev(self, rev):
         """Return a representation of a revision in the repos for displaying to
         the user.
-
+        
         This can be a shortened revision string, e.g. for repositories using
         long hashes.
         """
         return self.normalize_rev(rev)
-
+        
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=1):
         """Generates changes corresponding to generalized diffs.
-
+        
         Generator that yields change tuples (old_node, new_node, kind, change)
         for each node change between the two arbitrary (path,rev) pairs.
 
@@ -991,7 +991,7 @@ class Node(object):
     #
     # Those properties must be set by subclasses.
     #
-    created_rev = None
+    created_rev = None   
     created_path = None
 
     def __init__(self, repos, path, rev, kind):
@@ -1020,7 +1020,7 @@ class Node(object):
 
     def get_history(self, limit=None):
         """Provide backward history for this Node.
-
+        
         Generator that yields `(path, rev, chg)` tuples, one for each revision
         in which the node was changed. This generator will follow copies and
         moves of a node (if the underlying version control system supports
@@ -1091,7 +1091,7 @@ class Node(object):
         """Return True if view permission is granted on the node."""
         return (self.isdir and 'BROWSER_VIEW' or 'FILE_VIEW') \
                in perm(self.resource)
-
+        
 
 class Changeset(object):
     """Represents a set of changes committed at once in a repository."""
@@ -1116,7 +1116,7 @@ class Changeset(object):
         self.message = message or ''
         self.author = author or ''
         self.date = date
-
+    
     def get_properties(self):
         """Returns the properties (meta-data) of the node, as a dictionary.
 
@@ -1127,7 +1127,7 @@ class Changeset(object):
         This is now replaced by the usage of IPropertyRenderer (see #1601).
         """
         return []
-
+        
     def get_changes(self):
         """Generator that produces a tuple for every change in the changeset.
 

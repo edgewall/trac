@@ -61,7 +61,7 @@ class ReportModule(Component):
     items_per_page_rss = IntOption('report', 'items_per_page_rss', 0,
         """Number of tickets displayed in the rss feeds for reports
         (''since 0.11'')""")
-
+    
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -72,12 +72,12 @@ class ReportModule(Component):
             yield ('mainnav', 'tickets', tag.a(_('View Tickets'),
                                                href=req.href.report()))
 
-    # IPermissionRequestor methods
+    # IPermissionRequestor methods  
 
-    def get_permission_actions(self):
-        actions = ['REPORT_CREATE', 'REPORT_DELETE', 'REPORT_MODIFY',
-                   'REPORT_SQL_VIEW', 'REPORT_VIEW']
-        return actions + [('REPORT_ADMIN', actions)]
+    def get_permission_actions(self):  
+        actions = ['REPORT_CREATE', 'REPORT_DELETE', 'REPORT_MODIFY',  
+                   'REPORT_SQL_VIEW', 'REPORT_VIEW']  
+        return actions + [('REPORT_ADMIN', actions)]  
 
     # IRequestHandler methods
 
@@ -245,14 +245,14 @@ class ReportModule(Component):
         sort = req.args.get('sort', 'report')
         asc = bool(int(req.args.get('asc', 1)))
         format = req.args.get('format')
-
+        
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT id, title FROM report ORDER BY %s%s"
                        % (sort == 'title' and 'title' or 'id',
                           not asc and ' DESC' or ''))
         rows = list(cursor)
-
+        
         if format == 'rss':
             data = {'rows': rows}
             return 'report_list.rss', data, 'application/rss+xml'
@@ -268,14 +268,14 @@ class ReportModule(Component):
             return req.href.report(sort=req.args.get('sort'),
                                    asc=asc and '1' or '0', **kwargs)
 
-        add_link(req, 'alternate',
+        add_link(req, 'alternate', 
                  report_href(format='rss'),
                  _('RSS Feed'), 'application/rss+xml', 'rss')
         add_link(req, 'alternate', report_href(format='csv'),
                  _('Comma-delimited Text'), 'text/plain')
         add_link(req, 'alternate', report_href(format='tab'),
                  _('Tab-delimited Text'), 'text/plain')
-
+        
         reports = [(id, title, 'REPORT_MODIFY' in req.perm('report', id),
                     'REPORT_DELETE' in req.perm('report', id))
                    for id, title in rows]
@@ -356,7 +356,7 @@ class ReportModule(Component):
         asc = bool(int(asc)) # string '0' or '1' to int/boolean
 
         def report_href(**kwargs):
-            """Generate links to this report preserving user variables,
+            """Generate links to this report preserving user variables, 
             and sorting and paging variables.
             """
             params = args.copy()
@@ -366,7 +366,7 @@ class ReportModule(Component):
             if max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = params.get('asc', asc) and '1' or '0'
+            params['asc'] = params.get('asc', asc) and '1' or '0'            
             return req.href.report(id, params)
 
         data = {'action': 'view',
@@ -375,7 +375,7 @@ class ReportModule(Component):
                 'title': title, 'description': description,
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
-                'report_href': report_href,
+                'report_href': report_href, 
                 }
 
         try:
@@ -442,15 +442,15 @@ class ReportModule(Component):
                     # this dict will have enum values for sorting
                     # and will be used in sortkey(), if non-empty:
                     sort_values = {}
-                    if sort_col in ['status', 'resolution', 'priority',
+                    if sort_col in ['status', 'resolution', 'priority', 
                                     'severity']:
                         # must fetch sort values for that columns
                         # instead of comparing them as strings
                         if not db:
                             db = self.env.get_db_cnx()
                         cursor = db.cursor()
-                        cursor.execute("SELECT name," +
-                                       db.cast('value', 'int') +
+                        cursor.execute("SELECT name," + 
+                                       db.cast('value', 'int') + 
                                        " FROM enum WHERE type=%s", (sort_col,))
                         for name, value in cursor:
                             sort_values[name] = value
@@ -569,7 +569,7 @@ class ReportModule(Component):
                            filename=filename)
         else:
             p = max is not None and page or None
-            add_link(req, 'alternate',
+            add_link(req, 'alternate', 
                      report_href(format='rss', page=None),
                      _('RSS Feed'), 'application/rss+xml', 'rss')
             add_link(req, 'alternate', report_href(format='csv', page=p),
@@ -577,12 +577,12 @@ class ReportModule(Component):
             add_link(req, 'alternate', report_href(format='tab', page=p),
                      _('Tab-delimited Text'), 'text/plain')
             if 'REPORT_SQL_VIEW' in req.perm:
-                add_link(req, 'alternate',
+                add_link(req, 'alternate', 
                          req.href.report(id=id, format='sql'),
                          _('SQL Query'), 'text/plain')
 
             # reuse the session vars of the query module so that
-            # the query navigation links on the ticket can be used to
+            # the query navigation links on the ticket can be used to 
             # navigate report results as well
             try:
                 req.session['query_tickets'] = \
@@ -591,7 +591,7 @@ class ReportModule(Component):
                 req.session['query_href'] = \
                     req.session['query_href'] = report_href()
                 # Kludge: we have to clear the other query session
-                # variables, but only if the above succeeded
+                # variables, but only if the above succeeded 
                 for var in ('query_constraints', 'query_time'):
                     if var in req.session:
                         del req.session[var]
@@ -608,12 +608,12 @@ class ReportModule(Component):
 
     def execute_report(self, req, db, id, sql, args):
         """Execute given sql report (0.10 backward compatibility method)
-
+        
         :see: ``execute_paginated_report``
         """
         return self.execute_paginated_report(req, db, id, sql, args)[:2]
 
-    def execute_paginated_report(self, req, db, id, sql, args,
+    def execute_paginated_report(self, req, db, id, sql, args, 
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
@@ -631,7 +631,7 @@ class ReportModule(Component):
             for row in cursor:
                 pass
             num_items = row[0]
-
+    
             # The column name is obtained.
             get_col_name_sql = 'SELECT * FROM ( ' + sql + ' ) AS tab LIMIT 1'
             cursor.execute(get_col_name_sql, args)
@@ -726,7 +726,7 @@ class ReportModule(Component):
                 sql_io.write(repl_literal(expr))
             else:
                 sql_io.write(var_re.sub(repl, expr))
-
+        
         # Remove arguments that don't appear in the SQL query
         for name in set(args) - names:
             del args[name]
@@ -793,9 +793,9 @@ class ReportModule(Component):
         req.end_headers()
         req.write(data)
         raise RequestDone
-
+        
     # IWikiSyntaxProvider methods
-
+    
     def get_link_resolvers(self):
         yield ('report', self._format_link)
 

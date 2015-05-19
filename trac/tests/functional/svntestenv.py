@@ -76,3 +76,4 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
             args = e.args + (output, )
             raise Exception(*args)
         return int(revision)
+

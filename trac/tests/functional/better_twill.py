@@ -47,10 +47,10 @@ if twill:
     class _BrowserProxy(object):
         def __getattribute__(self, name):
             return getattr(twill.get_browser(), name)
-
+        
         def __setattr__(self, name, value):
             setattr(twill.get_browser(), name, value)
-
+            
     # setup short names to reduce typing
     # This twill browser (and the tc commands that use it) are essentially
     # global, and not tied to our test fixture.
@@ -90,7 +90,7 @@ if twill:
                 context = data.splitlines()[max(0, entry.line - 5):
                                             entry.line + 6]
                 msg.append("\n# %s\n# URL: %s\n# Line %d, column %d\n\n%s\n"
-                    % (entry.message, entry.filename,
+                    % (entry.message, entry.filename, 
                        entry.line, entry.column,
                        "\n".join([each.decode('utf-8') for each in context])))
             return "\n".join(msg).encode('ascii', 'xmlcharrefreplace')

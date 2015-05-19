@@ -15,3 +15,4 @@ def rmtree(root):
         os.chmod(path, 0666)
         fn(path)
     return shutil.rmtree(root, onerror=_handle_error)
+

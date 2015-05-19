@@ -66,7 +66,7 @@ class DetachedSession(dict):
                 self.pop(key, None)
                 return
         dict.__setitem__(self, key, value)
-
+        
     def get_session(self, sid, authenticated=False):
         self.env.log.debug('Retrieving session for ID %r', sid)
 
@@ -111,7 +111,7 @@ class DetachedSession(dict):
         # session_attribute tables are prone to deadlocks (#9705).
         # Therefore we first we save the current session, then we
         # eventually purge the tables.
-
+        
         session_saved = [False]
 
         @self.env.with_transaction()
@@ -188,7 +188,7 @@ class DetachedSession(dict):
                 cursor.execute("""
                     DELETE FROM session_attribute
                     WHERE authenticated=0 AND sid IN (
-                      SELECT sid FROM session
+                      SELECT sid FROM session 
                       WHERE authenticated=0 AND last_visit < %s
                     )
                     """, (mintime,))
@@ -266,7 +266,7 @@ class Session(DetachedSession):
                 UPDATE session SET sid=%s WHERE sid=%s AND authenticated=0
                   """, (new_sid, self.sid))
             cursor.execute("""
-                UPDATE session_attribute SET sid=%s
+                UPDATE session_attribute SET sid=%s 
                 WHERE sid=%s and authenticated=0
                 """, (new_sid, self.sid))
         self.sid = new_sid
@@ -286,7 +286,7 @@ class Session(DetachedSession):
                 SELECT authenticated FROM session WHERE sid=%s OR sid=%s
                 """, (sid, self.req.authname))
             authenticated_flags = [row[0] for row in cursor.fetchall()]
-
+            
             if len(authenticated_flags) == 2:
                 # There's already an authenticated session for the user,
                 # we simply delete the anonymous session
@@ -344,7 +344,7 @@ class SessionAdmin(Component):
                sessions, and 'authenticated' all authenticated sessions.
                '*' lists all sessions, and is the default if no sids are
                given.
-
+               
                An sid suffix ':0' operates on an unauthenticated session with
                the given sid, and a suffix ':1' on an authenticated session
                (the default).""",
@@ -361,7 +361,7 @@ class SessionAdmin(Component):
 
         yield ('session set', '<name|email> <sid[:0|1]> <value>',
                """Set the name or email attribute of the given sid
-
+               
                An sid suffix ':0' operates on an unauthenticated session with
                the given sid, and a suffix ':1' on an authenticated session
                (the default).""",
@@ -444,7 +444,7 @@ class SessionAdmin(Component):
                      for r in self._get_list(sids)],
                     [_('SID'), _('Auth'), _('Last Visit'), _('Name'),
                      _('Email')])
-
+        
     def _do_add(self, sid, name=None, email=None):
         sid, authenticated = self._split_sid(sid)
         @self.env.with_transaction()

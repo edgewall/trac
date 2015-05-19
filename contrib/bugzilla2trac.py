@@ -246,7 +246,7 @@ class TracDatabase(object):
         self.loginNameCache = {}
         self.fieldNameCache = {}
         from trac.db.api import DatabaseManager
-        self.using_postgres = DatabaseManager(self.env).connection_uri.startswith("postgres:")
+	self.using_postgres = DatabaseManager(self.env).connection_uri.startswith("postgres:")
 
     def db(self):
         return self._db
@@ -397,7 +397,7 @@ class TracDatabase(object):
         comment = value
 
         if PREFORMAT_COMMENTS:
-            comment = '{{{\n%s\n}}}' % comment
+          comment = '{{{\n%s\n}}}' % comment
 
         if REPLACE_BUG_NO:
             if BUG_NO_RE.search(comment):
@@ -500,7 +500,7 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' AND ', '!='
     else:
         connector, op = ' OR ', '='
-    clause = connector.join(["%s %s '%s'" % (fieldName, op, value)
+    clause = connector.join(["%s %s '%s'" % (fieldName, op, value) 
                              for value in values])
     return ' (' + clause + ')'
 
@@ -540,7 +540,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         trac.db().commit()
 
         c.execute("DELETE FROM attachment")
-        attachments_dir = os.path.join(os.path.normpath(trac.env.path),
+	attachments_dir = os.path.join(os.path.normpath(trac.env.path),
                                 "attachments")
         # Straight from the Python documentation.
         for root, dirs, files in os.walk(attachments_dir, topdown=False):
@@ -594,12 +594,12 @@ def convert(_db, _host, _user, _password, _env, _force):
             sql = ("SELECT p.name AS product, c.name AS comp, "
                    " c.initialowner AS owner "
                    "FROM components c, products p "
-                   "WHERE c.product_id = p.id AND" +
+                   "WHERE c.product_id = p.id AND" + 
                    makeWhereClause('p.name', PRODUCTS))
         else:
             sql = ("SELECT program AS product, value AS comp, "
                    " initialowner AS owner "
-                   "FROM components WHERE" +
+                   "FROM components WHERE" + 
                    makeWhereClause('program', PRODUCTS))
         mysql_cur.execute(sql)
         lines = mysql_cur.fetchall()
@@ -650,7 +650,7 @@ def convert(_db, _host, _user, _password, _env, _force):
     trac.setMilestoneList(milestones, 'value')
 
     print "\n6. Retrieving bugs..."
-    if BZ_VERSION >= 2180:
+    if BZ_VERSION >= 2180: 
         sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
                             FROM bugs AS b, components AS c, products AS p """
         sql += " WHERE" + makeWhereClause('p.name', PRODUCTS)
@@ -691,7 +691,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             # priorities
             ticket['severity'] = ''
             ticket['priority'] = bug['bug_severity']
-
+        
         ticket['owner'] = trac.getLoginName(mysql_cur, bug['assigned_to'])
         ticket['reporter'] = trac.getLoginName(mysql_cur, bug['reporter'])
 
@@ -707,7 +707,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         cc_list = []
         for cc in cc_records:
             cc_list.append(trac.getLoginName(mysql_cur, cc['who']))
-        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]
+        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]  
         ticket['cc'] = string.join(cc_list, ', ')
 
         ticket['version'] = bug['version']
@@ -747,7 +747,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                     ignore = True
 
             if ignore:
-                continue
+                    continue
 
             trac.addTicketComment(ticket=bugid,
                 time = desc['bug_when'],
@@ -851,19 +851,19 @@ def convert(_db, _host, _user, _password, _env, _force):
 
             # Bugzilla splits large summary changes into two records.
             for oldChange in ticketChanges:
-                if (field_name == "summary"
-                    and oldChange['field'] == ticketChange['field']
-                    and oldChange['time'] == ticketChange['time']
-                    and oldChange['author'] == ticketChange['author']):
-                    oldChange['oldvalue'] += " " + ticketChange['oldvalue']
-                    oldChange['newvalue'] += " " + ticketChange['newvalue']
-                    break
-                # cc and attachments.isobsolete sometime appear
-                # in different activities with same time
-                if ((field_name == "cc" or field_name == "attachments.isobsolete") \
-                    and oldChange['time'] == ticketChange['time']):
-                    oldChange['newvalue'] += ", " + ticketChange['newvalue']
-                    break
+              if (field_name == "summary"
+                  and oldChange['field'] == ticketChange['field']
+                  and oldChange['time'] == ticketChange['time']
+                  and oldChange['author'] == ticketChange['author']):
+                  oldChange['oldvalue'] += " " + ticketChange['oldvalue']
+                  oldChange['newvalue'] += " " + ticketChange['newvalue']
+                  break
+              # cc and attachments.isobsolete sometime appear 
+              # in different activities with same time
+              if ((field_name == "cc" or field_name == "attachments.isobsolete") \
+                  and oldChange['time'] == ticketChange['time']):
+                  oldChange['newvalue'] += ", " + ticketChange['newvalue']
+                  break
             else:
                 ticketChanges.append (ticketChange)
 
@@ -904,7 +904,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                               "WHERE attachments.bug_id = %s AND "
                               "attachments.attach_id = attach_data.id" % bugid)
         else:
-            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" %
+            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % 
                               bugid)
         attachments = mysql_cur.fetchall()
         for a in attachments:
@@ -926,7 +926,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             login = LOGIN_MAP[user['login_name']]
         else:
             login = user['login_name']
-
+        
         htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
 
     htpasswd.close()
@@ -954,7 +954,7 @@ Available Options:
   -p | --passwd <MySQL password>   - Bugzilla's user password
   -c | --clean                     - Remove current Trac tickets before
                                      importing
-  -n | --noseverities              - import Bugzilla severities as Trac
+  -n | --noseverities              - import Bugzilla severities as Trac 
                                      priorities and forget Bugzilla priorities
   --help | help                    - This help info
 
@@ -966,36 +966,36 @@ def main():
     global BZ_DB, BZ_HOST, BZ_USER, BZ_PASSWORD, TRAC_ENV, TRAC_CLEAN
     global SEVERITIES, PRIORITIES, PRIORITIES_MAP
     if len (sys.argv) > 1:
-        if sys.argv[1] in ['--help','help'] or len(sys.argv) < 4:
-            usage()
-        iter = 1
-        while iter < len(sys.argv):
-            if sys.argv[iter] in ['--db'] and iter+1 < len(sys.argv):
-                BZ_DB = sys.argv[iter+1]
-                iter = iter + 1
-            elif sys.argv[iter] in ['-h', '--host'] and iter+1 < len(sys.argv):
-                BZ_HOST = sys.argv[iter+1]
-                iter = iter + 1
-            elif sys.argv[iter] in ['-u', '--user'] and iter+1 < len(sys.argv):
-                BZ_USER = sys.argv[iter+1]
-                iter = iter + 1
-            elif sys.argv[iter] in ['-p', '--passwd'] and iter+1 < len(sys.argv):
-                BZ_PASSWORD = sys.argv[iter+1]
-                iter = iter + 1
-            elif sys.argv[iter] in ['--tracenv'] and iter+1 < len(sys.argv):
-                TRAC_ENV = sys.argv[iter+1]
-                iter = iter + 1
-            elif sys.argv[iter] in ['-c', '--clean']:
-                TRAC_CLEAN = 1
+    	if sys.argv[1] in ['--help','help'] or len(sys.argv) < 4:
+    	    usage()
+    	iter = 1
+    	while iter < len(sys.argv):
+    	    if sys.argv[iter] in ['--db'] and iter+1 < len(sys.argv):
+    	        BZ_DB = sys.argv[iter+1]
+    	        iter = iter + 1
+    	    elif sys.argv[iter] in ['-h', '--host'] and iter+1 < len(sys.argv):
+    	        BZ_HOST = sys.argv[iter+1]
+    	        iter = iter + 1
+    	    elif sys.argv[iter] in ['-u', '--user'] and iter+1 < len(sys.argv):
+    	        BZ_USER = sys.argv[iter+1]
+    	        iter = iter + 1
+    	    elif sys.argv[iter] in ['-p', '--passwd'] and iter+1 < len(sys.argv):
+    	        BZ_PASSWORD = sys.argv[iter+1]
+    	        iter = iter + 1
+    	    elif sys.argv[iter] in ['--tracenv'] and iter+1 < len(sys.argv):
+    	        TRAC_ENV = sys.argv[iter+1]
+    	        iter = iter + 1
+    	    elif sys.argv[iter] in ['-c', '--clean']:
+    	        TRAC_CLEAN = 1
             elif sys.argv[iter] in ['-n', '--noseverities']:
                 # treat Bugzilla severites as Trac priorities
                 PRIORITIES = SEVERITIES
                 SEVERITIES = []
                 PRIORITIES_MAP = {}
-            else:
-                print "Error: unknown parameter: " + sys.argv[iter]
-                sys.exit(0)
-            iter = iter + 1
+    	    else:
+    	        print "Error: unknown parameter: " + sys.argv[iter]
+    	        sys.exit(0)
+    	    iter = iter + 1
 
     convert(BZ_DB, BZ_HOST, BZ_USER, BZ_PASSWORD, TRAC_ENV, TRAC_CLEAN)
 

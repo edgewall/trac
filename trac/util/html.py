@@ -142,7 +142,7 @@ class TracHTMLSanitizer(HTMLSanitizer):
                 yield kind, data, pos
 
     def is_safe_css(self, prop, value):
-        """Determine whether the given css property declaration is to be
+        """Determine whether the given css property declaration is to be 
         considered safe for inclusion in the output.
         """
         if prop not in self.safe_css:
@@ -198,7 +198,7 @@ class Deuglifier(object):
             cls._compiled_rules = re.compile('(?:' + '|'.join(cls.rules()) + ')')
         self._compiled_rules = cls._compiled_rules
         return self
-
+    
     def format(self, indata):
         return re.sub(self._compiled_rules, self.replace, indata)
 

@@ -35,7 +35,7 @@ class WikiAdmin(Component):
     implements(IAdminCommandProvider)
 
     # IAdminCommandProvider methods
-
+    
     def get_admin_commands(self):
         yield ('wiki list', '',
                'List wiki pages',
@@ -54,7 +54,7 @@ class WikiAdmin(Component):
                self._complete_import_export, self._do_import)
         yield ('wiki dump', '<directory> [page] [...]',
                """Export wiki pages to files named by title
-
+               
                Individual wiki page names can be specified after the directory.
                A name ending with a * means that all wiki pages starting with
                that prefix should be dumped. If no name is specified, all wiki
@@ -62,23 +62,23 @@ class WikiAdmin(Component):
                self._complete_dump, self._do_dump)
         yield ('wiki load', '<path> [...]',
                """Import wiki pages from files
-
+               
                If a given path is a file, it is imported as a page with the
                name of the file. If a path is a directory, all files in that
                directory are imported.""",
                self._complete_load_replace, self._do_load)
         yield ('wiki replace', '<path> [...]',
                """Replace the content of wiki pages from files (DANGEROUS!)
-
+               
                This command replaces the content of the last version of one
                or more wiki pages with new content. The previous content is
                lost, and no new entry is created in the page history. The
                metadata of the page (time, author) is not changed either.
-
+               
                If a given path is a file, it is imported as a page with the
                name of the file. If a path is a directory, all files in that
                directory are imported.
-
+               
                WARNING: This operation results in the loss of the previous
                content and cannot be undone. It may be advisable to backup
                the current content using "wiki dump" beforehand.""",
@@ -86,10 +86,10 @@ class WikiAdmin(Component):
         yield ('wiki upgrade', '',
                'Upgrade default wiki pages to current version',
                None, self._do_upgrade)
-
+    
     def get_wiki_list(self):
         return list(WikiSystem(self.env).get_pages())
-
+    
     def export_page(self, page, filename, cursor=None):
         if cursor is None:
             db = self.env.get_db_cnx()
@@ -111,7 +111,7 @@ class WikiAdmin(Component):
                 f.write(text.encode('utf-8'))
             finally:
                 f.close()
-
+    
     def import_page(self, filename, title, create_only=[],
                     replace=False):
         if not validate_page_name(title):
@@ -143,7 +143,7 @@ class WikiAdmin(Component):
                 printout(_('  %(title)s is already up to date', title=title))
                 result[0] = False
                 return
-
+        
             if replace and old:
                 cursor.execute("UPDATE wiki SET text=%s WHERE name=%s "
                                "  AND version=(SELECT max(version) FROM wiki "
@@ -174,27 +174,27 @@ class WikiAdmin(Component):
                         printout(_("  %(page)s imported from %(filename)s",
                                    filename=path_to_unicode(filename),
                                    page=page))
-
+    
     def _complete_page(self, args):
         if len(args) == 1:
             return self.get_wiki_list()
-
+    
     def _complete_import_export(self, args):
         if len(args) == 1:
             return self.get_wiki_list()
         elif len(args) == 2:
             return get_dir_list(args[-1])
-
+    
     def _complete_dump(self, args):
         if len(args) == 1:
             return get_dir_list(args[-1], dirs_only=True)
         elif len(args) >= 2:
             return self.get_wiki_list()
-
+    
     def _complete_load_replace(self, args):
         if len(args) >= 1:
             return get_dir_list(args[-1])
-
+    
     def _do_list(self):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -205,7 +205,7 @@ class WikiAdmin(Component):
                                       console_datetime_format))
                      for r in cursor],
                     [_('Title'), _('Edits'), _('Modified')])
-
+    
     def _do_rename(self, name, new_name):
         if new_name == name:
             return
@@ -222,7 +222,7 @@ class WikiAdmin(Component):
             page.rename(new_name)
 
     def _do_remove(self, name):
-        @self.env.with_transaction()
+        @self.env.with_transaction()        
         def do_transaction(db):
             if name.endswith('*'):
                 pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
@@ -234,13 +234,13 @@ class WikiAdmin(Component):
             else:
                 page = model.WikiPage(self.env, name, db=db)
                 page.delete()
-
+    
     def _do_export(self, page, filename=None):
         self.export_page(page, filename)
-
+    
     def _do_import(self, page, filename=None):
         self.import_page(filename, page)
-
+    
     def _do_dump(self, directory, *names):
         if not names:
             names = ['*']
@@ -260,7 +260,7 @@ class WikiAdmin(Component):
                 dst = os.path.join(directory, unicode_quote(p, ''))
                 printout(' %s => %s' % (p, dst))
                 self.export_page(p, dst, cursor)
-
+    
     def _load_or_replace(self, paths, replace):
         @self.env.with_transaction()
         def do_transaction(db):
@@ -273,13 +273,13 @@ class WikiAdmin(Component):
                     if self.import_page(path, page, replace=replace):
                         printout(_("  %(page)s imported from %(filename)s",
                                    filename=path_to_unicode(path), page=page))
-
+    
     def _do_load(self, *paths):
         self._load_or_replace(paths, replace=False)
-
+    
     def _do_replace(self, *paths):
         self._load_or_replace(paths, replace=True)
-
+    
     def _do_upgrade(self):
         self.load_pages(pkg_resources.resource_filename('trac.wiki',
                                                         'default-pages'),

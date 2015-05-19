@@ -149,7 +149,7 @@ def main():
             setattr(parser.values, option.dest, int(value, 8))
         except ValueError:
             raise OptionValueError('Invalid octal umask value: %r' % value)
-
+    
     parser.add_option('-a', '--auth', action='callback', type='string',
                       metavar='DIGESTAUTH', callback=_auth_callback,
                       callback_args=(DigestAuthentication,),

@@ -44,7 +44,7 @@ class PermissionError(StandardError):
             if self.resource:
                 return _('%(perm)s privileges are required to perform '
                          'this operation on %(resource)s',
-                         perm=self.action,
+                         perm=self.action, 
                          resource=get_resource_name(self.env, self.resource))
             else:
                 return _('%(perm)s privileges are required to perform '
@@ -60,7 +60,7 @@ class IPermissionRequestor(Interface):
 
     def get_permission_actions():
         """Return a list of actions defined by this component.
-
+        
         The items in the list may either be simple strings, or
         `(string, sequence)` tuples. The latter are considered to be "meta
         permissions" that group several simple actions under one name for
@@ -74,7 +74,7 @@ class IPermissionStore(Interface):
 
     def get_user_permissions(username):
         """Return all permissions for the user with the specified name.
-
+        
         The permissions are returned as a dictionary where the key is the name
         of the permission, and the value is either `True` for granted
         permissions or `False` for explicitly denied permissions."""
@@ -120,9 +120,9 @@ class IPermissionPolicy(Interface):
         :param resource: the resource on which the check applies.
                          Will be `None`, if the check is a global one and
                          not made on a resource in particular
-        :param perm: the permission cache for that username and resource,
+        :param perm: the permission cache for that username and resource, 
                      which can be used for doing secondary checks on other
-                     permissions. Care must be taken to avoid recursion.
+                     permissions. Care must be taken to avoid recursion.  
 
         :return: `True` if action is allowed, `False` if action is denied,
                  or `None` if indifferent. If `None` is returned, the next
@@ -151,7 +151,7 @@ class IPermissionPolicy(Interface):
 
 class DefaultPermissionStore(Component):
     """Default implementation of permission storage and group management.
-
+    
     This component uses the `permission` table in the database to store both
     permissions and groups.
     """
@@ -162,7 +162,7 @@ class DefaultPermissionStore(Component):
     def get_user_permissions(self, username):
         """Retrieve the permissions for the given user and return them in a
         dictionary.
-
+        
         The permissions are stored in the database as (username, action)
         records. There's simple support for groups by using lowercase names for
         the action column: such a record represents a group and not an actual
@@ -194,7 +194,7 @@ class DefaultPermissionStore(Component):
 
     def get_users_with_permissions(self, permissions):
         """Retrieve a list of users that have any of the specified permissions
-
+        
         Users are returned as a list of usernames.
         """
         # get_user_permissions() takes care of the magic 'authenticated' group.
@@ -350,7 +350,7 @@ class PermissionSystem(Component):
 
     def get_user_permissions(self, username=None):
         """Return the permissions of the specified user.
-
+        
         The return value is a dictionary containing all the actions as keys, and
         a boolean value. `True` means that the permission is granted, `False`
         means the permission is denied."""
@@ -389,7 +389,7 @@ class PermissionSystem(Component):
 
     def get_users_with_permission(self, permission):
         """Return all users that have the specified permission.
-
+        
         Users are returned as a list of user names.
         """
         now = time()
@@ -398,7 +398,7 @@ class PermissionSystem(Component):
             self.permission_cache = {}
             self.last_reap = now
 
-        timestamp, permissions = self.permission_cache.get(permission,
+        timestamp, permissions = self.permission_cache.get(permission, 
                                                            (0, None))
         if now - timestamp <= self.CACHE_EXPIRY:
             return permissions
@@ -466,7 +466,7 @@ class PermissionSystem(Component):
 
     def get_permission_actions(self):
         """Implement the global `TRAC_ADMIN` meta permission.
-
+        
         Implements also the `EMAIL_VIEW` permission which allows for
         showing email addresses even if `[trac] show_email_addresses`
         is `false`.
@@ -485,12 +485,12 @@ class PermissionCache(object):
     """Cache that maintains the permissions of a single user.
 
     Permissions are usually checked using the following syntax:
-
+    
         'WIKI_MODIFY' in perm
 
     One can also apply more fine grained permission checks and
     specify a specific resource for which the permission should be available:
-
+    
         'WIKI_MODIFY' in perm('wiki', 'WikiStart')
 
     If there's already a `page` object available, the check is simply:
@@ -499,7 +499,7 @@ class PermissionCache(object):
 
     If instead of a check, one wants to assert that a given permission is
     available, the following form should be used:
-
+    
         perm.require('WIKI_MODIFY')
 
         or
@@ -532,11 +532,11 @@ class PermissionCache(object):
             return self._resource
 
     def __call__(self, realm_or_resource, id=False, version=False):
-        """Convenience function for using thus:
-            'WIKI_VIEW' in perm(context)
-        or
+        """Convenience function for using thus: 
+            'WIKI_VIEW' in perm(context) 
+        or 
             'WIKI_VIEW' in perm(realm, id, version)
-        or
+        or 
             'WIKI_VIEW' in perm(resource)
 
         """
@@ -587,11 +587,11 @@ class PermissionCache(object):
 
 class PermissionAdmin(Component):
     """trac-admin command provider for permission system administration."""
-
+    
     implements(IAdminCommandProvider)
-
+    
     # IAdminCommandProvider methods
-
+    
     def get_admin_commands(self):
         yield ('permission list', '[user]',
                'List permission rules',
@@ -602,33 +602,33 @@ class PermissionAdmin(Component):
         yield ('permission remove', '<user> <action> [action] [...]',
                'Remove a permission rule',
                self._complete_remove, self._do_remove)
-
+    
     def get_user_list(self):
-        return set(user for (user, action) in
+        return set(user for (user, action) in 
                    PermissionSystem(self.env).get_all_permissions())
-
+    
     def get_user_perms(self, user):
         return [action for (subject, action) in
                 PermissionSystem(self.env).get_all_permissions()
                 if subject == user]
-
+    
     def _complete_list(self, args):
         if len(args) == 1:
             return self.get_user_list()
-
+    
     def _complete_add(self, args):
         if len(args) == 1:
             return self.get_user_list()
         elif len(args) >= 2:
             return (set(PermissionSystem(self.env).get_actions())
                     - set(self.get_user_perms(args[0])) - set(args[1:-1]))
-
+    
     def _complete_remove(self, args):
         if len(args) == 1:
             return self.get_user_list()
         elif len(args) >= 2:
             return set(self.get_user_perms(args[0])) - set(args[1:-1])
-
+    
     def _do_list(self, user=None):
         permsys = PermissionSystem(self.env)
         if user:
@@ -646,10 +646,10 @@ class PermissionAdmin(Component):
         actions = permsys.get_actions()
         actions.sort()
         text = ', '.join(actions)
-        printout(wrap(text, initial_indent=' ', subsequent_indent=' ',
+        printout(wrap(text, initial_indent=' ', subsequent_indent=' ', 
                       linesep='\n'))
         print
-
+    
     def _do_add(self, user, *actions):
         permsys = PermissionSystem(self.env)
         if user.isupper():
@@ -657,7 +657,7 @@ class PermissionAdmin(Component):
                                       'for permission names'))
         for action in actions:
             permsys.grant_permission(user, action)
-
+    
     def _do_remove(self, user, *actions):
         permsys = PermissionSystem(self.env)
         rows = permsys.get_all_permissions()

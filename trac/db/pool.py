@@ -52,7 +52,7 @@ class PooledConnection(ConnectionWrapper):
 
 def try_rollback(cnx):
     """Resets the Connection in a safe way, returning True when it succeeds.
-
+    
     The rollback we do for safety on a Connection can fail at
     critical times because of a timeout on the Connection.
     """
@@ -123,7 +123,7 @@ class ConnectionPoolBackend(object):
                     log.error('Exception caught on %s', op, exc_info=True)
                 err = e
                 cnx = None
-
+        
         if cnx:
             if deferred:
                 # replace placeholder with real Connection
@@ -199,7 +199,7 @@ class ConnectionPoolBackend(object):
                     self._pool.append(cnx)
                     self._pool_key.append(key)
                     self._pool_time.append(time.time())
-                self._available.notify()
+                self._available.notify() 
             finally:
                 self._available.release()
 
@@ -234,3 +234,4 @@ class ConnectionPool(object):
 
     def shutdown(self, tid=None):
         _backend.shutdown(tid)
+

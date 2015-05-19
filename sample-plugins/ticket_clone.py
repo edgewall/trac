@@ -8,13 +8,13 @@ revision = "$Rev$"
 url = "$URL$"
 
 class SimpleTicketCloneButton(Component):
-    """Add a 'Clone' button to the ticket box.
-
+    """Add a 'Clone' button to the ticket box. 
+    
     This button is located next to the 'Reply' to description button,
     and pressing it will send a request for creating a new ticket
     which will be based on the cloned one.
     """
-
+       
     implements(ITemplateStreamFilter)
 
     # ITemplateStreamFilter methods
@@ -48,3 +48,4 @@ class SimpleTicketCloneButton(Component):
                 tag.input(type="hidden", name='preview', value=''),
                 class_="inlinebuttons"),
             method="post", action=req.href.newticket())
+

@@ -41,10 +41,10 @@ class TicketNotificationSystem(Component):
 
     always_notify_updater = BoolOption('notification', 'always_notify_updater',
                                        'true',
-        """Always send notifications to the person who causes the ticket
+        """Always send notifications to the person who causes the ticket 
         property change and to any previous updater of that ticket.""")
-
-    ticket_subject_template = Option('notification', 'ticket_subject_template',
+        
+    ticket_subject_template = Option('notification', 'ticket_subject_template', 
                                      '$prefix #$ticket.id: $summary',
         """A Genshi text template snippet used to get the notification subject.
 
@@ -104,7 +104,7 @@ class TicketNotifyEmail(NotifyEmail):
         change_data = {}
         link = self.env.abs_href.ticket(ticket.id)
         summary = self.ticket['summary']
-
+        
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
             for change in TicketModule(self.env).grouped_changelog_entries(
@@ -141,12 +141,12 @@ class TicketNotifyEmail(NotifyEmail):
                         chgcc = ''
                         if delcc:
                             chgcc += wrap(" * cc: %s (removed)" %
-                                          ', '.join(delcc),
+                                          ', '.join(delcc), 
                                           self.COLS, ' ', ' ', '\n',
                                           self.ambiwidth) + '\n'
                         if addcc:
                             chgcc += wrap(" * cc: %s (added)" %
-                                          ', '.join(addcc),
+                                          ', '.join(addcc), 
                                           self.COLS, ' ', ' ', '\n',
                                           self.ambiwidth) + '\n'
                         if chgcc:
@@ -174,7 +174,7 @@ class TicketNotifyEmail(NotifyEmail):
                         changes_body += ' %s%s' % (chg, '\n')
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
-
+        
         ticket_values = ticket.values.copy()
         ticket_values['id'] = ticket.id
         ticket_values['description'] = wrap(
@@ -183,7 +183,7 @@ class TicketNotifyEmail(NotifyEmail):
             ambiwidth=self.ambiwidth)
         ticket_values['new'] = self.newticket
         ticket_values['link'] = link
-
+        
         subject = self.format_subj(summary)
         if not self.newticket:
             subject = 'Re: ' + subject
@@ -200,7 +200,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_props(self):
         tkt = self.ticket
-        fields = [f for f in tkt.fields
+        fields = [f for f in tkt.fields 
                   if f['name'] not in ('summary', 'cc', 'time', 'changetime')]
         width = [0, 0, 0, 0]
         i = 0
@@ -223,7 +223,7 @@ class TicketNotifyEmail(NotifyEmail):
         width_r = width[2] + width[3] + 5
         half_cols = (self.COLS - 1) / 2
         if width_l + width_r + 1 > self.COLS:
-            if ((width_l > half_cols and width_r > half_cols) or
+            if ((width_l > half_cols and width_r > half_cols) or 
                     (width[0] > half_cols / 2 or width[2] > half_cols / 2)):
                 width_l = half_cols
                 width_r = half_cols
@@ -231,7 +231,7 @@ class TicketNotifyEmail(NotifyEmail):
                 width_l = min((self.COLS - 1) * 2 / 3, width_l)
                 width_r = self.COLS - width_l - 1
             else:
-                width_r = min((self.COLS - 1) * 2 / 3, width_r)
+                width_r = min((self.COLS - 1) * 2 / 3, width_r)         
                 width_l = self.COLS - width_r - 1
         sep = width_l * '-' + '+' + width_r * '-'
         txt = sep + '\n'
@@ -318,18 +318,18 @@ class TicketNotifyEmail(NotifyEmail):
     def format_subj(self, summary):
         template = self.config.get('notification','ticket_subject_template')
         template = NewTextTemplate(template.encode('utf8'))
-
+                                                
         prefix = self.config.get('notification', 'smtp_subject_prefix')
-        if prefix == '__default__':
+        if prefix == '__default__': 
             prefix = '[%s]' % self.env.project_name
-
+        
         data = {
             'prefix': prefix,
             'summary': summary,
             'ticket': self.ticket,
             'env': self.env,
         }
-
+        
         return template.generate(**data).render('text', encoding=None).strip()
 
     def get_recipients(self, tktid):
@@ -337,13 +337,13 @@ class TicketNotifyEmail(NotifyEmail):
                                               'always_notify_reporter')
         notify_owner = self.config.getbool('notification',
                                            'always_notify_owner')
-        notify_updater = self.config.getbool('notification',
+        notify_updater = self.config.getbool('notification', 
                                              'always_notify_updater')
 
         ccrecipients = self.prev_cc
         torecipients = []
         cursor = self.db.cursor()
-
+        
         # Harvest email addresses from the cc, reporter, and owner fields
         cursor.execute("SELECT cc,reporter,owner FROM ticket WHERE id=%s",
                        (tktid,))

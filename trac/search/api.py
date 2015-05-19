@@ -21,7 +21,7 @@ class ISearchSource(Interface):
 
     def get_search_filters(req):
         """Return a list of filters that this search source supports.
-
+        
         Each filter must be a `(name, label[, default])` tuple, where `name` is
         the internal name, `label` is a human-readable name for display and
         `default` is an optional boolean for determining whether this filter
@@ -30,7 +30,7 @@ class ISearchSource(Interface):
 
     def get_search_results(req, terms, filters):
         """Return a list of search results matching each search term in `terms`.
-
+        
         The `filters` parameters is a list of the enabled filters, each item
         being the name of the tuples returned by `get_search_events`.
 
@@ -42,7 +42,7 @@ class ISearchSource(Interface):
 def search_to_sql(db, columns, terms):
     """Convert a search query into an SQL WHERE clause and corresponding
     parameters.
-
+    
     The result is returned as an `(sql, params)` tuple.
     """
     assert columns and terms
