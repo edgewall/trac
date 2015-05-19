@@ -12,7 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 #
-# Include a basic SMTP server, based on L. Smithson 
+# Include a basic SMTP server, based on L. Smithson
 # (lsmithson@open-networks.co.uk) extensible Python SMTP Server
 #
 
@@ -23,7 +23,7 @@ from trac.ticket.web_ui import TicketModule
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.notification import SMTPThreadedServer, parse_smtp_message, \
                                     smtp_address
-                                    
+
 import base64
 from datetime import datetime
 import os
@@ -38,14 +38,14 @@ notifysuite = None
 
 class NotificationTestCase(unittest.TestCase):
     """Notification test cases that send email over SMTP"""
-    
+
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.env.config.set('project', 'name', 'TracTest')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
-        self.env.config.set('notification', 'smtp_always_cc', 
+        self.env.config.set('notification', 'smtp_always_cc',
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
         self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
@@ -139,8 +139,8 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf('From' not in headers)
 
     def test_date(self):
-        """Date format compliance (RFC822) 
-           we do not support 'military' format""" 
+        """Date format compliance (RFC822)
+           we do not support 'military' format"""
         date_str = r"^((?P<day>\w{3}),\s*)*(?P<dm>\d{2})\s+" \
                    r"(?P<month>\w{3})\s+(?P<year>\d{4})\s+" \
                    r"(?P<hour>\d{2}):(?P<min>[0-5][0-9])" \
@@ -178,7 +178,7 @@ class NotificationTestCase(unittest.TestCase):
             # CC list should be private
             self.env.config.set('notification', 'use_public_cc',
                                 public and 'true' or 'false')
-            self.env.config.set('notification', 'smtp_always_bcc', 
+            self.env.config.set('notification', 'smtp_always_bcc',
                                 'joe.foobar@example.net')
             ticket = Ticket(self.env)
             ticket['reporter'] = '"Joe User" <joe.user@example.org>'
@@ -197,25 +197,25 @@ class NotificationTestCase(unittest.TestCase):
                 # Msg should not have a To list
                 self.failIf('To' in headers)
                 # Extract the list of 'To' recipients from the message
-                to = []            
+                to = []
             # Extract the list of 'Cc' recipients from the message
             cc = [rcpt.strip() for rcpt in headers['Cc'].split(',')]
             # Extract the list of the actual SMTP recipients
             rcptlist = notifysuite.smtpd.get_recipients()
-            # Build the list of the expected 'Cc' recipients 
+            # Build the list of the expected 'Cc' recipients
             ccrcpt = self.env.config.get('notification', 'smtp_always_cc')
             cclist = [ccr.strip() for ccr in ccrcpt.split(',')]
             for rcpt in cclist:
-                # Each recipient of the 'Cc' list should appear 
+                # Each recipient of the 'Cc' list should appear
                 # in the 'Cc' header
                 self.failIf(rcpt not in cc)
                 # Check the message has actually been sent to the recipients
                 self.failIf(rcpt not in rcptlist)
-            # Build the list of the expected 'Bcc' recipients 
+            # Build the list of the expected 'Bcc' recipients
             bccrcpt = self.env.config.get('notification', 'smtp_always_bcc')
             bcclist = [bccr.strip() for bccr in bccrcpt.split(',')]
             for rcpt in bcclist:
-                # Check none of the 'Bcc' recipients appears 
+                # Check none of the 'Bcc' recipients appears
                 # in the 'To' header
                 self.failIf(rcpt in to)
                 # Check the message has actually been sent to the recipients
@@ -230,7 +230,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['reporter'] = 'joeuser'
             ticket['summary'] = 'This is a summary'
             ticket.insert()
-            # Be sure that at least one email address is valid, so that we 
+            # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
@@ -273,7 +273,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['cc'] = 'joenodom, joewithdom@example.com'
             ticket['summary'] = 'This is a summary'
             ticket.insert()
-            # Be sure that at least one email address is valid, so that we 
+            # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
@@ -322,13 +322,13 @@ class NotificationTestCase(unittest.TestCase):
         # 'To' list should have been resolved to the real email address
         self.failIf('user-joe@example.com' not in tolist)
         self.failIf('joeuser' in tolist)
-        
+
     def test_ignore_domains(self):
         """Non-SMTP domain exclusion"""
         self.env.config.set('notification', 'ignore_domains',
                             'example.com, example.org')
         self.env.known_users = \
-            [('kerberos@example.com', 'No Email', ''), 
+            [('kerberos@example.com', 'No Email', ''),
              ('kerberos@example.org', 'With Email', 'kerb@example.net')]
         ticket = Ticket(self.env)
         ticket['reporter'] = 'kerberos@example.com'
@@ -348,7 +348,7 @@ class NotificationTestCase(unittest.TestCase):
         # 'To' list should have been resolved to the actual email address
         self.failIf('kerb@example.net' not in tolist)
         self.failIf(len(tolist) != 1)
-        
+
     def test_admit_domains(self):
         """SMTP domain inclusion"""
         self.env.config.set('notification', 'admit_domains',
@@ -488,14 +488,14 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_bcc', '')
         self.env.config.set('notification', 'use_public_cc', 'false')
         self.env.config.set('notification', 'use_short_addr', 'false')
-        self.env.config.set('notification', 'smtp_replyto', 
+        self.env.config.set('notification', 'smtp_replyto',
                             'joeuser@example.net')
         ticket = Ticket(self.env)
         ticket['summary'] = 'Foo'
         ticket.insert()
         ticket['summary'] = 'Bar'
         ticket['component'] = 'New value'
-        ticket.save_changes('joe@example.com', 'this is my comment')        
+        ticket.save_changes('joe@example.com', 'this is my comment')
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
@@ -512,7 +512,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_bcc', '')
         self.env.config.set('notification', 'use_public_cc', 'false')
         self.env.config.set('notification', 'use_short_addr', 'false')
-        self.env.config.set('notification', 'smtp_replyto', 
+        self.env.config.set('notification', 'smtp_replyto',
                             'joeuser@example.net')
         ticket = Ticket(self.env)
         ticket['summary'] = 'Foo'
@@ -520,7 +520,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket.insert()
         ticket['summary'] = 'Bar'
         ticket['component'] = 'New value'
-        ticket.save_changes('joe@example.org', 'this is my comment')        
+        ticket.save_changes('joe@example.org', 'this is my comment')
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
         recipients = notifysuite.smtpd.get_recipients()
@@ -548,7 +548,7 @@ class NotificationTestCase(unittest.TestCase):
         # checks the width of each body line
         for line in body.splitlines():
             self.failIf(len(line) > MAXBODYWIDTH)
-        # attempts to decode the body, following the specified MIME endoding 
+        # attempts to decode the body, following the specified MIME endoding
         # and charset
         try:
             if mime_decoder:
@@ -558,8 +558,8 @@ class NotificationTestCase(unittest.TestCase):
             raise AssertionError, e
         # now processes each line of the body
         bodylines = body.splitlines()
-        # body starts with one of more summary lines, first line is prefixed 
-        # with the ticket number such as #<n>: summary        
+        # body starts with one of more summary lines, first line is prefixed
+        # with the ticket number such as #<n>: summary
         # finds the banner after the summary
         banner_delim_re = re.compile(r'^\-+\+\-+$')
         bodyheader = []

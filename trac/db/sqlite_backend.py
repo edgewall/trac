@@ -134,7 +134,7 @@ def _to_sql(table):
 
 class SQLiteConnector(Component):
     """Database connector for SQLite.
-    
+
     Database URLs should be of the form:
     {{{
     sqlite:path/to/trac.db
@@ -142,7 +142,7 @@ class SQLiteConnector(Component):
     """
     implements(IDatabaseConnector)
 
-    extensions = ListOption('sqlite', 'extensions', 
+    extensions = ListOption('sqlite', 'extensions',
         doc="""Paths to sqlite extensions, relative to Trac environment's
         directory or absolute. (''since 0.12'')""")
 
@@ -205,7 +205,7 @@ class SQLiteConnector(Component):
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
         a table.
-        
+
         Type changes are specified as a `columns` dict mapping column names
         to `(from, to)` SQL type tuples.
         """
@@ -274,7 +274,7 @@ class SQLiteConnection(ConnectionWrapper):
             for ext in extensions:
                 cnx.load_extension(ext)
             cnx.enable_load_extension(False)
-       
+
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):
@@ -327,7 +327,7 @@ class SQLiteConnection(ConnectionWrapper):
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
-    
+
     def update_sequence(self, cursor, table, column='id'):
         # SQLite handles sequence updates automagically
         # http://www.sqlite.org/autoinc.html

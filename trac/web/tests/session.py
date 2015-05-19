@@ -38,7 +38,7 @@ def _prep_session_table(db, spread_visits=False):
         cursor.execute("INSERT INTO session_attribute VALUES "
                        "(%s, %s, 'email', %s)",
                        (sid, authenticated, val))
-    all_list = auth_list + anon_list 
+    all_list = auth_list + anon_list
     db.commit()
     return (auth_list, anon_list, all_list)
 
@@ -206,7 +206,7 @@ class SessionTestCase(unittest.TestCase):
         del session['foo']
         session.save()
         cursor.execute("SELECT COUNT(*) FROM session_attribute "
-                       "WHERE sid='123456' AND name='foo'") 
+                       "WHERE sid='123456' AND name='foo'")
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_purge_anonymous_session(self):
@@ -222,7 +222,7 @@ class SessionTestCase(unittest.TestCase):
                        (int(time.time() - PURGE_AGE - 3600),))
         cursor.execute("INSERT INTO session_attribute VALUES "
                        "('987654', 0, 'foo', 'bar')")
-        
+
         # We need to modify a different session to trigger the purging
         incookie = Cookie()
         incookie['trac_session'] = '123456'
@@ -281,7 +281,7 @@ class SessionTestCase(unittest.TestCase):
                    outcookie=Cookie())
         session = Session(self.env, req)
         self.assertEqual({'foo': 'bar'}, session)
-        
+
         session.get_session('7890')
         session['baz'] = 'moo'
         session.save()
@@ -305,7 +305,7 @@ class SessionTestCase(unittest.TestCase):
         session.save()
         cursor = self.db.cursor()
         cursor.execute("SELECT value FROM session_attribute WHERE sid='john'"
-                       "AND name='foo'") 
+                       "AND name='foo'")
         self.assertEqual('bar', cursor.fetchone()[0])
 
     def test_modify_authenticated_session_var(self):
@@ -324,7 +324,7 @@ class SessionTestCase(unittest.TestCase):
         session['foo'] = 'baz'
         session.save()
         cursor.execute("SELECT value FROM session_attribute "
-                       "WHERE sid='john' AND name='foo'") 
+                       "WHERE sid='john' AND name='foo'")
         self.assertEqual('baz', cursor.fetchone()[0])
 
     def test_authenticated_session_independence_var(self):
@@ -377,12 +377,12 @@ class SessionTestCase(unittest.TestCase):
         del session['foo']
         session.save()
         cursor.execute("SELECT COUNT(*) FROM session_attribute "
-                       "WHERE sid='john' AND name='foo'") 
+                       "WHERE sid='john' AND name='foo'")
         self.assertEqual(0, cursor.fetchone()[0])
 
     def test_update_session(self):
         """
-        Verify that accessing a session after one day updates the sessions 
+        Verify that accessing a session after one day updates the sessions
         'last_visit' variable so that the session doesn't get purged.
         """
         now = time.time()
@@ -455,21 +455,21 @@ class SessionTestCase(unittest.TestCase):
 
         session = DetachedSession(self.env, 'john')
         self.assertEqual('bar', session['foo'])
-        
+
         # Setting the variable to the default value removes the variable
         session.set('foo', 'default', 'default')
         session.save()
         cursor.execute("SELECT COUNT(*) FROM session_attribute "
                        "WHERE sid='john' AND name='foo'")
         self.assertEqual(0, cursor.fetchone()[0])
-        
+
         # Setting the variable to a value different from the default sets it
         session.set('foo', 'something', 'default')
         session.save()
         cursor.execute("SELECT value FROM session_attribute "
                        "WHERE sid='john' AND name='foo'")
         self.assertEqual('something', cursor.fetchone()[0])
-        
+
     def test_session_admin_list(self):
         auth_list, anon_list, all_list = _prep_session_table(self.db)
         sess_admin = SessionAdmin(self.env)
@@ -489,7 +489,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual([i for i in sess_admin._get_list(['name00', 'name01',
                                                            'name02'])],
                          all_list[:3])
-            
+
     def test_session_admin_add(self):
         auth_list, anon_list, all_list = _prep_session_table(self.db)
         sess_admin = SessionAdmin(self.env)

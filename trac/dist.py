@@ -289,15 +289,15 @@ try:
 
 
     def get_command_overriders():
-        # 'bdist_wininst' runs a 'build', so make the latter 
+        # 'bdist_wininst' runs a 'build', so make the latter
         # run a 'compile_catalog' before 'build_py'
         class build(_build):
             sub_commands = [('compile_catalog', None)] + _build.sub_commands
-        
+
         # 'bdist_egg' isn't that nice, all it does is an 'install_lib'
         class install_lib(_install_lib): # playing setuptools' own tricks ;-)
             def l10n_run(self):
-                self.run_command('compile_catalog')                
+                self.run_command('compile_catalog')
             def run(self):
                 from trac.util.compat import any
                 self.l10n_run()

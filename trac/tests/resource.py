@@ -41,7 +41,7 @@ class ResourceTestCase(unittest.TestCase):
         self.assertEqual(r1, r2)
         r2.parent = r2.parent(version=42)
         self.assertNotEqual(r1, r2)
-        
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(resource))

@@ -328,7 +328,7 @@ source:/foo/bar@#L20
 <a class="source" href="/browser/foo/bar#L20">source:/foo/bar@#L20</a>
 </p>
 ------------------------------
-============================== source: link resolver + query 
+============================== source: link resolver + query
 source:/foo?order=size&desc=1
 source:/foo/bar?format=raw
 ------------------------------

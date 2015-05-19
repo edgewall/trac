@@ -40,9 +40,9 @@ from trac.util import translation
 
 def Mock(bases=(), *initargs, **kw):
     """
-    Simple factory for dummy classes that can be used as replacement for the 
+    Simple factory for dummy classes that can be used as replacement for the
     real implementation in tests.
-    
+
     Base classes for the mock can be specified using the first parameter, which
     must be either a tuple of class objects or a single class object. If the
     bases parameter is omitted, the base class of the mock will be object.
@@ -100,7 +100,7 @@ class MockPerm(object):
     overloading."""
 
     username = ''
-    
+
     def has_permission(self, action, realm_or_resource=None, id=False,
                        version=False):
         return True
@@ -303,10 +303,10 @@ class EnvironmentStub(Environment):
 
         self.known_users = []
         translation.activate(Locale and Locale('en', 'US'))
-        
+
     def get_read_db(self):
         return self.get_db_cnx()
-    
+
     def get_db_cnx(self, destroying=False):
         if self.db:
             return self.db # in-memory SQLite
@@ -361,9 +361,9 @@ class EnvironmentStub(Environment):
                 del db
                 dm = DatabaseManager(EnvironmentStub.dbenv)
                 dm.init_db()
-                # we need to make sure the next get_db_cnx() will re-create 
+                # we need to make sure the next get_db_cnx() will re-create
                 # a new connection aware of the new data model - see #8518.
-                dm.shutdown() 
+                dm.shutdown()
 
         db = self.get_db_cnx()
         cursor = db.cursor()
@@ -418,7 +418,7 @@ def locate(fn):
     Returns the fully-qualified path, or None.
     """
     exec_suffix = os.name == 'nt' and '.exe' or ''
-    
+
     for p in ["."] + os.environ['PATH'].split(os.pathsep):
         f = os.path.join(p, fn + exec_suffix)
         if os.path.exists(f):

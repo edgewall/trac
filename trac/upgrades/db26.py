@@ -11,7 +11,7 @@ def do_upgrade(env, ver, cursor):
             cursor.execute("""
                 UPDATE revision SET rev=%s WHERE repos=%s AND rev=%s
                 """, ('%010d' % int(rev), id, rev))
-        
+
         cursor.execute("SELECT DISTINCT rev FROM node_change WHERE repos=%s",
                        (id,))
         for rev in set(row[0] for row in cursor):

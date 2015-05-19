@@ -29,7 +29,7 @@ from trac.util.translation import _
 def with_transaction(env, db=None):
     """Function decorator to emulate a context manager for database
     transactions.
-    
+
     >>> def api_method(p1, p2):
     >>>     result[0] = value1
     >>>     @with_transaction(env)
@@ -37,19 +37,19 @@ def with_transaction(env, db=None):
     >>>         # implementation
     >>>         result[0] = value2
     >>>     return result[0]
-    
+
     In this example, the `implementation()` function is called automatically
     right after its definition, with a database connection as an argument.
     If the function completes, a COMMIT is issued on the connection. If the
     function raises an exception, a ROLLBACK is issued and the exception is
     re-raised. Nested transactions are supported, and a COMMIT will only be
     issued when the outermost transaction block in a thread exits.
-    
+
     This mechanism is intended to replace the current practice of getting a
     database connection with `env.get_db_cnx()` and issuing an explicit commit
     or rollback, for mutating database accesses. Its automatic handling of
     commit, rollback and nesting makes it much more robust.
-    
+
     This decorator will be replaced by a context manager once python 2.4
     support is dropped.
 
@@ -99,22 +99,22 @@ class IDatabaseConnector(Interface):
         """Return the connection URL schemes supported by the connector, and
         their relative priorities as an iterable of `(scheme, priority)`
         tuples.
-        
+
         If `priority` is a negative number, this is indicative of an
-        error  condition with the connector. An error message should be 
+        error  condition with the connector. An error message should be
         attached to the `error` attribute of the connector.
         """
 
     def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
-        
+
     def init_db(path, log=None, **kwargs):
         """Initialize the database."""
 
     def to_sql(table):
         """Return the DDL statements necessary to create the specified table,
         including indices."""
-        
+
     def backup(dest):
         """Backup the database to a location defined by trac.backup_dir"""
 
@@ -158,7 +158,7 @@ class DatabaseManager(Component):
             self._cnx_pool.shutdown(tid)
             if not tid:
                 self._cnx_pool = None
-                
+
     def backup(self, dest=None):
         """Save a backup of the database.
 

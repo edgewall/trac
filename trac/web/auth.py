@@ -37,7 +37,7 @@ from trac.util.translation import _, tag_
 
 class LoginModule(Component):
     """User authentication manager.
-    
+
     This component implements user authentication based on HTTP authentication
     provided by the web-server, combined with cookies for communicating the
     login information across the whole site.
@@ -62,12 +62,12 @@ class LoginModule(Component):
 
     auth_cookie_lifetime = IntOption('trac', 'auth_cookie_lifetime', 0,
         """Lifetime of the authentication cookie, in seconds.
-        
+
         This value determines how long the browser will cache authentication
         information, and therefore, after how much inactivity a user will have
         to log in again. The default value of 0 makes the cookie expire at the
         end of the browsing session. (''since 0.12'')""")
-    
+
     auth_cookie_path = Option('trac', 'auth_cookie_path', '',
         """Path for the authentication cookie. Set this to the common base path
         of several Trac instances if you want them to share the cookie.
@@ -127,7 +127,7 @@ class LoginModule(Component):
         cookie identifying the user on subsequent requests is sent back to the
         client.
 
-        If the Authenticator was created with `ignore_case` set to true, then 
+        If the Authenticator was created with `ignore_case` set to true, then
         the authentication name passed from the web server in req.remote_user
         will be converted to lower case before being used. This is to avoid
         problems on installations authenticating against Windows which is not
@@ -231,7 +231,7 @@ class LoginModule(Component):
         if referer:
             pos = req.base_url.find(':')
             base_scheme = req.base_url[:pos]
-            base_noscheme = req.base_url[pos:]  
+            base_noscheme = req.base_url[pos:]
             base_noscheme_norm = base_noscheme.rstrip('/')
             referer_noscheme = referer[referer.find(':'):]
             # only redirect to referer if it is from the same site
@@ -364,7 +364,7 @@ class DigestAuthentication(PasswordFileAuthentication):
                 self.hash[u] = a1
         if self.hash == {}:
             print >> sys.stderr, "Warning: found no users in realm:", self.realm
-        
+
     def parse_auth_header(self, authorization):
         values = {}
         for value in urllib2.parse_http_list(authorization):

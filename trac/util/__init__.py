@@ -83,13 +83,13 @@ can_rename_open_file = False
 if os.name == 'nt':
     _rename = lambda src, dst: False
     _rename_atomic = lambda src, dst: False
-    
+
     try:
         import ctypes
         MOVEFILE_REPLACE_EXISTING = 0x1
         MOVEFILE_WRITE_THROUGH = 0x8
         MoveFileEx = ctypes.windll.kernel32.MoveFileExW
-        
+
         def _rename(src, dst):
             if not isinstance(src, unicode):
                 src = unicode(src, sys.getfilesystemencoding())
@@ -99,13 +99,13 @@ if os.name == 'nt':
                 return True
             return MoveFileEx(src, dst, MOVEFILE_REPLACE_EXISTING
                                         | MOVEFILE_WRITE_THROUGH)
-        
+
         CreateTransaction = ctypes.windll.ktmw32.CreateTransaction
         CommitTransaction = ctypes.windll.ktmw32.CommitTransaction
         MoveFileTransacted = ctypes.windll.kernel32.MoveFileTransactedW
         CloseHandle = ctypes.windll.kernel32.CloseHandle
         can_rename_open_file = True
-        
+
         def _rename_atomic(src, dst):
             ta = CreateTransaction(None, 0, 0, 0, 0, 10000, 'Trac rename')
             if ta == -1:
@@ -119,7 +119,7 @@ if os.name == 'nt':
                 CloseHandle(ta)
     except Exception:
         pass
-    
+
     def rename(src, dst):
         # Try atomic or pseudo-atomic rename
         if _rename(src, dst):
@@ -144,7 +144,7 @@ else:
 
 class AtomicFile(object):
     """A file that appears atomically with its full content.
-    
+
     This file-like object writes to a temporary file in the same directory
     as the final file. If the file is committed, the temporary file is renamed
     atomically (on Unix, at least) to its final name. If it is rolled back,
@@ -156,7 +156,7 @@ class AtomicFile(object):
         (dir, name) = os.path.split(path)
         (fd, self._temp) = tempfile.mkstemp(prefix=name + '-', dir=dir)
         self._file = os.fdopen(fd, mode, bufsize)
-        
+
         # Try to preserve permissions and group ownership, but failure
         # should not be fatal
         try:
@@ -169,10 +169,10 @@ class AtomicFile(object):
                 os.chown(self._temp, -1, st.st_gid)
         except OSError:
             pass
-    
+
     def __getattr__(self, name):
         return getattr(self._file, name)
-    
+
     def commit(self):
         if self._file is None:
             return
@@ -183,7 +183,7 @@ class AtomicFile(object):
         except Exception:
             os.unlink(self._temp)
             raise
-    
+
     def rollback(self):
         if self._file is None:
             return
@@ -195,7 +195,7 @@ class AtomicFile(object):
                 os.unlink(self._temp)
             except:
                 pass
-    
+
     close = commit
     __del__ = rollback
 
@@ -245,7 +245,7 @@ class NaivePopen:
 
     The optional `input`, which must be a `str` object, is first written
     to a temporary file from which the process will read.
-    
+
     (`capturestderr` may not work under Windows 9x.)
 
     Example: print Popen3('grep spam','\n\nhere spam\n\n').out
@@ -372,7 +372,7 @@ _egg_path_re = re.compile(r'build/bdist\.[^/]+/egg/(.*)')
 def get_lines_from_file(filename, lineno, context=0, globals=None):
     """Return `content` number of lines before and after the specified
     `lineno` from the (source code) file identified by `filename`.
-    
+
     Returns a `(lines_before, line, lines_after)` tuple.
     """
     # The linecache module can load source code from eggs since Python 2.6.
@@ -449,10 +449,10 @@ def get_frame_info(tb):
 def safe__import__(module_name):
     """
     Safe imports: rollback after a failed import.
-    
+
     Initially inspired from the RollbackImporter in PyUnit,
     but it's now much simpler and works better for our needs.
-    
+
     See http://pyunit.sourceforge.net/notes/reloading.html
     """
     already_imported = sys.modules.copy()
@@ -519,7 +519,7 @@ def get_pkginfo(dist):
     `dist` can be either a Distribution instance or, as a shortcut,
     directly the module instance, if one can safely infer a Distribution
     instance from it.
-    
+
     Always returns a dictionary but it will be empty if no Distribution
     instance can be created for the given module.
     """
@@ -575,7 +575,7 @@ try:
 
 except NotImplementedError:
     _entropy = random.Random()
-    
+
     def urandom(n):
         result = []
         hasher = sha1(str(os.getpid()) + str(time.time()))
@@ -665,7 +665,7 @@ def md5crypt(password, salt, magic='$1$'):
 class Ranges(object):
     """
     Holds information about ranges parsed from a string
-    
+
     >>> x = Ranges("1,2,9-15")
     >>> 1 in x
     True
@@ -677,15 +677,15 @@ class Ranges(object):
     False
     >>> [i for i in range(20) if i in x]
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
-    
+
     Also supports iteration, which makes that last example a bit simpler:
-    
+
     >>> list(x)
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
-    
+
     Note that it automatically reduces the list and short-circuits when the
     desired ranges are a relatively small portion of the entire set:
-    
+
     >>> x = Ranges("99")
     >>> 1 in x # really fast
     False
@@ -698,7 +698,7 @@ class Ranges(object):
 
     The members 'a' and 'b' refer to the min and max value of the range, and
     are None if the range is empty:
-    
+
     >>> x.a
     1
     >>> x.b
@@ -709,7 +709,7 @@ class Ranges(object):
 
     Empty ranges are ok, and ranges can be constructed in pieces, if you
     so choose:
-    
+
     >>> x = Ranges()
     >>> x.appendrange("1, 2, 3")
     >>> x.appendrange("5-9")
@@ -719,7 +719,7 @@ class Ranges(object):
 
     ''Code contributed by Tim Hatch''
 
-    Reversed ranges are ignored, unless the Ranges has the `reorder` property 
+    Reversed ranges are ignored, unless the Ranges has the `reorder` property
     set.
 
     >>> str(Ranges("20-10"))
@@ -730,7 +730,7 @@ class Ranges(object):
     """
 
     RE_STR = r"""[0-9]+(?:[-:][0-9]+)?(?:,[0-9]+(?:[-:][0-9]+)?)*"""
-    
+
     def __init__(self, r=None, reorder=False):
         self.pairs = []
         self.a = self.b = None
@@ -738,9 +738,9 @@ class Ranges(object):
         self.appendrange(r)
 
     def appendrange(self, r):
-        """Add ranges to the current one. 
+        """Add ranges to the current one.
 
-        A range is specified as a string of the form "low-high", and 
+        A range is specified as a string of the form "low-high", and
         `r` can be a list of such strings, a string containing comma-separated
         ranges, or `None`.
         """
@@ -768,7 +768,7 @@ class Ranges(object):
         while i + 1 < len(p):
             if p[i+1][0]-1 <= p[i][1]: # this item overlaps with the next
                 # make the first include the second
-                p[i] = (p[i][0], max(p[i][1], p[i+1][1])) 
+                p[i] = (p[i][0], max(p[i][1], p[i+1][1]))
                 del p[i+1] # delete the second, after adjusting my endpoint
             else:
                 i += 1
@@ -776,12 +776,12 @@ class Ranges(object):
             self.a = p[0][0] # min value
             self.b = p[-1][1] # max value
         else:
-            self.a = self.b = None        
+            self.a = self.b = None
 
     def __iter__(self):
         """
         This is another way I came up with to do it.  Is it faster?
-        
+
         from itertools import chain
         return chain(*[xrange(a, b+1) for a, b in self.pairs])
         """
@@ -805,7 +805,7 @@ class Ranges(object):
 
     def __str__(self):
         """Provide a compact string representation of the range.
-        
+
         >>> (str(Ranges("1,2,3,5")), str(Ranges()), str(Ranges('2')))
         ('1-3,5', '', '2')
         >>> str(Ranges('99-1')) # only nondecreasing ranges allowed
@@ -821,7 +821,7 @@ class Ranges(object):
 
     def __len__(self):
         """The length of the entire span, ignoring holes.
-        
+
         >>> (len(Ranges('99')), len(Ranges('1-2')), len(Ranges('')))
         (1, 2, 0)
         """
@@ -832,7 +832,7 @@ class Ranges(object):
 
     def __nonzero__(self):
         """Return True iff the range is not empty.
-        
+
         >>> (bool(Ranges()), bool(Ranges('1-2')))
         (False, True)
         """
@@ -841,7 +841,7 @@ class Ranges(object):
     def truncate(self, max):
         """Truncate the Ranges by setting a maximal allowed value.
 
-        Note that this `max` can be a value in a gap, so the only guarantee 
+        Note that this `max` can be a value in a gap, so the only guarantee
         is that `self.b` will be lesser than or equal to `max`.
 
         >>> r = Ranges("10-20,25-45")
@@ -871,7 +871,7 @@ class Ranges(object):
 
 def to_ranges(revs):
     """Converts a list of revisions to a minimal set of ranges.
-    
+
     >>> to_ranges([2, 12, 3, 6, 9, 1, 5, 11])
     '1-3,5-6,9,11-12'
     >>> to_ranges([])
@@ -954,7 +954,7 @@ def as_int(s, default, min=None, max=None):
 
 def as_bool(value):
     """Convert the given value to a `bool`.
-    
+
     If `value` is a string, return `True` for any of "yes", "true", "enabled",
     "on" or non-zero numbers, ignoring case. For non-string arguments, return
     the argument converted to a `bool`, or `False` if the conversion fails.
@@ -984,4 +984,3 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, \
                               get_date_format_hint, \
                               get_datetime_format_hint, http_date, \
                               parse_date
-

@@ -123,12 +123,12 @@ class ModPythonGateway(WSGIGateway):
 
 _first = True
 _first_lock = threading.Lock()
-            
+
 def handler(req):
     global _first
     try:
         _first_lock.acquire()
-        if _first: 
+        if _first:
             _first = False
             options = req.get_options()
             egg_cache = options.get('PYTHON_EGG_CACHE')

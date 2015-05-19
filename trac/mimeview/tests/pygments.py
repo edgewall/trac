@@ -46,7 +46,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
 
     def _expected(self, expected_id):
         return self.pygments_html.select(
-            '//div[@id="%s"]/*|//div[@id="%s"]/text())' % 
+            '//div[@id="%s"]/*|//div[@id="%s"]/text())' %
             (expected_id, expected_id))
 
     def _test(self, expected_id, result):

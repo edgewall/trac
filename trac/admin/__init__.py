@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 
+#
 # Copyright (C)2006-2009 Edgewall Software
 # All rights reserved.
 #

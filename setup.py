@@ -28,7 +28,7 @@ extra = {}
 
 try:
     import babel
-    
+
     extractors = [
         ('**.py',                'python', None),
         ('**/templates/**.html', 'genshi', None),

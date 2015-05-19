@@ -471,7 +471,7 @@ class DateFormatTestCase(unittest.TestCase):
         del test_to_datetime_microsecond_negative_timestamps
         # negative timestamps not supported on Windows:
         # ValueError: timestamp out of range for platform localtime()/gmtime()
-    
+
     def test_to_datetime_can_convert_dates(self):
         expected = datetime.datetime(2009, 5, 2, tzinfo=datefmt.localtz)
         self.assertEqual(datefmt.to_datetime(expected.date()), expected)
@@ -500,10 +500,10 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.format_datetime(t, 'iso8601',
                                                  datefmt.utc), expected)
         self.assertEqual(datefmt.format_datetime(t, 'iso8601date',
-                                                 datefmt.utc), 
+                                                 datefmt.utc),
                                                  expected.split('T')[0])
         self.assertEqual(datefmt.format_datetime(t, 'iso8601time',
-                                                 datefmt.utc), 
+                                                 datefmt.utc),
                                                  expected.split('T')[1])
 
     def test_format_datetime_gmt01(self):
@@ -519,15 +519,15 @@ class DateFormatTestCase(unittest.TestCase):
                                                  expected.split('T')[0])
         self.assertEqual(datefmt.format_datetime(t, 'iso8601time', gmt01),
                                                  expected.split('T')[1])
-    
+
     def test_format_date_accepts_date_instances(self):
         a_date = datetime.date(2009, 8, 20)
-        self.assertEqual('2009-08-20', 
+        self.assertEqual('2009-08-20',
                          datefmt.format_date(a_date, format='%Y-%m-%d'))
 
 
 class UTimestampTestCase(unittest.TestCase):
-    
+
     def test_sub_second(self):
         t = datetime.datetime(2001, 2, 3, 4, 5, 6, 123456, datefmt.utc)
         ts = datefmt.to_utimestamp(t)

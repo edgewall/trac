@@ -33,7 +33,7 @@ try:
     import MySQLdb
     import MySQLdb.cursors
     has_mysqldb = True
-    
+
     class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
         def _convert_row(self, row):
             return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
@@ -60,7 +60,7 @@ _type_map = {
 
 class MySQLConnector(Component):
     """Database connector for MySQL version 4.1 and greater.
-    
+
     Database URLs should be of the form:
     {{{
     mysql://user[:password]@host[:port]/database
@@ -94,7 +94,7 @@ class MySQLConnector(Component):
                                         ('MySQLdb', self._version)])
             self.required = True
         return cnx
-    
+
     def init_db(self, path, log=None, user=None, password=None, host=None,
                 port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
@@ -121,7 +121,7 @@ class MySQLConnector(Component):
     def _collist(self, table, columns, utf8_size):
         """Take a list of columns and impose limits on each so that indexing
         works properly.
-        
+
         Some Versions of MySQL limit each index prefix to 1000 bytes total,
         with a max of 767 bytes per column.
         """
@@ -177,7 +177,7 @@ class MySQLConnector(Component):
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
         a table.
-        
+
         Type changes are specified as a `columns` dict mapping column names
         to `(from, to)` SQL type tuples.
         """
@@ -205,7 +205,7 @@ class MySQLConnector(Component):
         if 'user' in db_prop:
             args.extend(['-u', db_prop['user']])
         args.extend(['-r', dest_file, db_name])
-        
+
         environ = os.environ.copy()
         if 'password' in db_prop:
             environ['MYSQL_PWD'] = str(db_prop['password'])

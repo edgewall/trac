@@ -78,7 +78,7 @@ class PatchRendererTestCase(unittest.TestCase):
 @@ -1 +1 @@
 -ONELINE
 \ No newline at end of file
-+ONELINE        
++ONELINE
 """)
         self.assertTrue(result)
         self._test('no_newline_in_base', result)

@@ -90,7 +90,7 @@ class TicketSystemTestCase(unittest.TestCase):
                          self._get_actions({'status': 'accepted'}))
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
                          self._get_actions({'status': 'reopened'}))
-        self.assertEqual(['leave', 'reopen'], 
+        self.assertEqual(['leave', 'reopen'],
                          self._get_actions({'status': 'closed'}))
 
     def test_available_actions_no_perms(self):

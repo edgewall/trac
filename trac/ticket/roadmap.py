@@ -57,7 +57,7 @@ class TicketGroupStats(object):
 
     def __init__(self, title, unit):
         """Creates a new TicketGroupStats object.
-        
+
         `title` is the display name of this group of stats (e.g.
           'ticket status').
         `unit` is the units for these stats in plural form, e.g. _('hours')
@@ -82,7 +82,7 @@ class TicketGroupStats(object):
         `css_class` is the css class that will be used to display the division.
         `overall_completion` can be set to true to make this interval count
           towards overall completion of this group of tickets.
-          
+
         (Warning: `countsToProg` argument will be removed in 0.12, use
         `overall_completion` instead)
         """
@@ -106,7 +106,7 @@ class TicketGroupStats(object):
         self.done_percent = 0
         self.done_count = 0
         for interval in self.intervals:
-            interval['percent'] = round(float(interval['count'] / 
+            interval['percent'] = round(float(interval['count'] /
                                         float(self.count) * 100))
             total_percent = total_percent + interval['percent']
             if interval['overall_completion']:
@@ -135,7 +135,7 @@ class DefaultTicketGroupStatsProvider(Component):
     [milestone-groups]
 
     # Definition of a 'closed' group:
-    
+
     closed = closed
 
     # The definition consists in a comma-separated list of accepted status.
@@ -143,7 +143,7 @@ class DefaultTicketGroupStatsProvider(Component):
     # states to one catch-all group.
 
     # Qualifiers for the above group (the group must have been defined first):
-    
+
     closed.order = 0                     # sequence number in the progress bar
     closed.query_args = group=resolution # optional extra param for the query
     closed.overall_completion = true     # count for overall completion
@@ -249,7 +249,7 @@ class DefaultTicketGroupStatsProvider(Component):
                         if '=' in kv]:
                 k, v = [a.strip() for a in arg.split('=', 1)]
                 query_args.setdefault(k, []).append(v)
-            stat.add_interval(group.get('label', group['name']), 
+            stat.add_interval(group.get('label', group['name']),
                               group_cnt, query_args,
                               group.get('css_class', group['name']),
                               as_bool(group.get('overall_completion')))
@@ -303,7 +303,7 @@ class RoadmapModule(Component):
     stats_provider = ExtensionOption('roadmap', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
-        """Name of the component implementing `ITicketGroupStatsProvider`, 
+        """Name of the component implementing `ITicketGroupStatsProvider`,
         which is used to collect statistics on groups of tickets for display
         in the roadmap views.""")
 
@@ -406,7 +406,7 @@ class RoadmapModule(Component):
                 else: return 'CANCELLED'
             else: return ''
 
-        def escape_value(text): 
+        def escape_value(text):
             s = ''.join(map(lambda c: (c in ';,\\') and '\\' + c or c, text))
             return '\\n'.join(re.split(r'[\r\n]+', s))
 
@@ -498,14 +498,14 @@ class MilestoneModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager,
                ISearchSource)
- 
+
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
                                      'DefaultTicketGroupStatsProvider',
-        """Name of the component implementing `ITicketGroupStatsProvider`, 
+        """Name of the component implementing `ITicketGroupStatsProvider`,
         which is used to collect statistics on groups of tickets for display
         in the milestone views.""")
-    
+
 
     # INavigationContributor methods
 
@@ -547,7 +547,7 @@ class MilestoneModule(Component):
             for event in AttachmentModule(self.env).get_timeline_events(
                 req, milestone_realm, start, stop):
                 yield event
-                
+
     def render_timeline_event(self, context, field, event):
         milestone, description = event[3]
         if field == 'url':
@@ -571,7 +571,7 @@ class MilestoneModule(Component):
     def process_request(self, req):
         milestone_id = req.args.get('id')
         req.perm('milestone', milestone_id).require('MILESTONE_VIEW')
-        
+
         add_link(req, 'up', req.href.roadmap(), _('Roadmap'))
 
         db = self.env.get_db_cnx() # TODO: db can be removed
@@ -626,7 +626,7 @@ class MilestoneModule(Component):
 
         old_name = milestone.name
         new_name = req.args.get('name')
-        
+
         milestone.description = req.args.get('description', '')
 
         if 'due' in req.args:
@@ -675,7 +675,7 @@ class MilestoneModule(Component):
 
         if warnings:
             return self._render_editor(req, db, milestone)
-        
+
         # -- actually save changes
         if milestone.exists:
             milestone.update()
@@ -768,7 +768,7 @@ class MilestoneModule(Component):
             'context': context,
             'milestone': milestone,
             'attachments': AttachmentModule(self.env).attachment_data(context),
-            'available_groups': available_groups, 
+            'available_groups': available_groups,
             'grouped_by': by,
             'groups': milestone_groups
             }
@@ -803,7 +803,7 @@ class MilestoneModule(Component):
                 if gstat.count > max_count:
                     max_count = gstat.count
 
-                group_stats.append(gstat) 
+                group_stats.append(gstat)
 
                 gs_dict = {'name': group}
                 gs_dict.update(milestone_stats_data(self.env, req, gstat,
@@ -852,7 +852,7 @@ class MilestoneModule(Component):
             return tag.a(label, class_='missing milestone', href=href + extra,
                          rel='nofollow')
         return tag.a(label, class_='missing milestone')
-        
+
     # IResourceManager methods
 
     def get_resource_realms(self):
@@ -872,11 +872,11 @@ class MilestoneModule(Component):
         """
         >>> from trac.test import EnvironmentStub
         >>> env = EnvironmentStub()
-        
+
         >>> m1 = Milestone(env)
         >>> m1.name = 'M1'
         >>> m1.insert()
-        
+
         >>> MilestoneModule(env).resource_exists(Resource('milestone', 'M1'))
         True
         >>> MilestoneModule(env).resource_exists(Resource('milestone', 'M2'))
@@ -913,7 +913,7 @@ class MilestoneModule(Component):
                 yield (get_resource_url(self.env, milestone, req.href),
                        get_resource_name(self.env, milestone), dt,
                        '', shorten_result(description, terms))
-        
+
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(
             req, milestone_realm, terms):

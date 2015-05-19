@@ -33,7 +33,7 @@ class IterableCursor(object):
     """Wrapper for DB-API cursor objects that makes the cursor iterable
     and escapes all "%"s used inside literal strings with parameterized
     queries.
-    
+
     Iteration will generate the rows of a SELECT query one by one.
     """
     __slots__ = ['cursor', 'log']
@@ -95,7 +95,7 @@ class IterableCursor(object):
 
 class ConnectionWrapper(object):
     """Generic wrapper around connection objects.
-    
+
     :since 0.12: This wrapper no longer makes cursors produced by the
     connection iterable using `IterableCursor`.
     """

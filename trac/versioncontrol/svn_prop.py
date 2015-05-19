@@ -42,7 +42,7 @@ class SubversionPropertyRenderer(Component):
             return 4
         return name in ('svn:mergeinfo', 'svnmerge-blocked',
                         'svnmerge-integrated') and 2 or 0
-    
+
     def render_property(self, name, mode, context, props):
         if name == 'svn:externals':
             return self._render_externals(props[name])
@@ -57,7 +57,7 @@ class SubversionPropertyRenderer(Component):
                 value = value.split()
                 if len(value) != 2:
                     self.log.warn("svn:externals entry %s doesn't contain "
-                            "a space-separated key value pair, skipping.", 
+                            "a space-separated key value pair, skipping.",
                             dummykey)
                     continue
                 key, value = value
@@ -86,7 +86,7 @@ class SubversionPropertyRenderer(Component):
                 prefix.append(pref)
             href = self._externals_map.get(base_url)
             revstr = rev and ' at revision '+rev or ''
-            if not href and (url.startswith('http://') or 
+            if not href and (url.startswith('http://') or
                              url.startswith('https://')):
                 href = url.replace('%', '%%')
             if href:
@@ -138,7 +138,7 @@ class SubversionMergePropertyRenderer(Component):
     def match_property(self, name, mode):
         return name in ('svn:mergeinfo', 'svnmerge-blocked',
                         'svnmerge-integrated') and 4 or 0
-    
+
     def render_property(self, name, mode, context, props):
         """Parse svn:mergeinfo and svnmerge-* properties, converting branch
         names to links and providing links to the revision log for merged
@@ -154,7 +154,7 @@ class SubversionMergePropertyRenderer(Component):
         if has_eligible:
             node = repos.get_node(target_path, target_rev)
             branch_starts = {}
-            for path, rev in node.get_copy_ancestry(): 
+            for path, rev in node.get_copy_ancestry():
                 if path not in branch_starts:
                     branch_starts[path] = rev + 1
         rows = []
@@ -238,7 +238,7 @@ class SubversionMergePropertyRenderer(Component):
 
 def _partition_inheritable(revs):
     """Non-inheritable revision ranges are marked with a trailing '*'."""
-    inheritable, non_inheritable = [], []           
+    inheritable, non_inheritable = [], []
     for r in revs.split(','):
         if r and r[-1] == '*':
             non_inheritable.append(r[:-1])
@@ -375,7 +375,7 @@ class SubversionMergePropertyDiffRenderer(Component):
                     added and tag(added_label, revs_link(added, new_context)),
                     removed and tag(removed_label,
                                     revs_link(removed, old_context)),
-                    added_ni and tag(added_ni_label, 
+                    added_ni and tag(added_ni_label,
                                      revs_link(added_ni, new_context)),
                     removed_ni and tag(removed_ni_label,
                                        revs_link(removed_ni, old_context))
@@ -389,7 +389,7 @@ class SubversionMergePropertyDiffRenderer(Component):
             modified_sources.sort()
             removed_sources.sort()
             changes = tag.table(tag.tbody(
-                [tag.tr(tag.td(c) for c in cols[1:]) 
+                [tag.tr(tag.td(c) for c in cols[1:])
                  for cols in modified_sources],
                 [tag.tr(tag.td(src), tag.td(_('removed'), colspan=4))
                  for spath, src in removed_sources]), class_='props')

@@ -72,7 +72,7 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
         exc_name = 'InternalError'
     if exc_name.lower().startswith('http'):
         exc_name = exc_name[4:]
-    exc_name = 'HTTP' + exc_name        
+    exc_name = 'HTTP' + exc_name
     setattr(sys.modules[__name__], exc_name,
             HTTPException.subclass(exc_name, code))
 del code, exc_name
@@ -185,13 +185,13 @@ class Cookie(SimpleCookie):
 
 class Request(object):
     """Represents a HTTP request/response pair.
-    
+
     This class provides a convenience API over WSGI.
     """
 
     def __init__(self, environ, start_response):
         """Create the request wrapper.
-        
+
         @param environ: The WSGI environment dict
         @param start_response: The WSGI callback for starting the response
         @param callbacks: A dictionary of functions that are used to lazily
@@ -266,14 +266,14 @@ class Request(object):
     @property
     def remote_user(self):
         """ Name of the remote user.
-        
+
         Will be `None` if the user has not logged in using HTTP authentication.
         """
         return self.environ.get('REMOTE_USER')
 
     @property
     def scheme(self):
-        """The scheme of the request URL"""        
+        """The scheme of the request URL"""
         return self.environ['wsgi.url_scheme']
 
     @property
@@ -293,7 +293,7 @@ class Request(object):
 
     def add_redirect_listener(self, listener):
         """Add a callable to be called prior to executing a redirect.
-        
+
         The callable is passed the arguments to the `redirect()` call.
         """
         self.redirect_listeners.append(listener)
@@ -365,13 +365,13 @@ class Request(object):
 
     def redirect(self, url, permanent=False):
         """Send a redirect to the client, forwarding to the specified URL.
-        
+
         The `url` may be relative or absolute, relative URLs will be translated
         appropriately.
         """
         for listener in self.redirect_listeners:
             listener(self, url, permanent)
-        
+
         self.session.save() # has to be done before the redirect is sent
 
         if permanent:
@@ -488,7 +488,7 @@ class Request(object):
 
     def send_file(self, path, mimetype=None):
         """Send a local file to the browser.
-        
+
         This method includes the "Last-Modified", "Content-Type" and
         "Content-Length" headers in the response, corresponding to the file
         attributes. It also checks the last modification time of the local file
@@ -542,8 +542,8 @@ class Request(object):
         which has been specified in the ''Content-Type'' header
         or 'utf-8' otherwise.
 
-        Note that the ''Content-Length'' header must have been specified. 
-        Its value either corresponds to the length of `data`, or, if there 
+        Note that the ''Content-Length'' header must have been specified.
+        Its value either corresponds to the length of `data`, or, if there
         are multiple calls to `write`, to the cumulated length of the `data`
         arguments.
         """
@@ -582,7 +582,7 @@ class Request(object):
         if ctype not in ('application/x-www-form-urlencoded',
                          'multipart/form-data'):
             fp = StringIO('')
-        
+
         # Python 2.6 introduced a backwards incompatible change for
         # FieldStorage where QUERY_STRING is no longer ignored for POST
         # requests. We'll keep the pre 2.6 behaviour for now...
@@ -591,7 +591,7 @@ class Request(object):
         fs = _FieldStorage(fp, environ=self.environ, keep_blank_values=True)
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
-        
+
         args = []
         for value in fs.list or ():
             name = value.name
@@ -705,7 +705,7 @@ class IRequestFilter(Interface):
     def pre_process_request(req, handler):
         """Called after initial handler selection, and can be used to change
         the selected handler or redirect request.
-        
+
         Always returns the request handler, even if unchanged.
         """
 
@@ -713,7 +713,7 @@ class IRequestFilter(Interface):
     def post_process_request(req, template, content_type):
         """Do any post-processing the request might need; typically adding
         values to req.hdf, or changing template or mime type.
-        
+
         Always returns a tuple of (template, content_type), even if
         unchanged.
 
@@ -729,7 +729,7 @@ class IRequestFilter(Interface):
         """Do any post-processing the request might need; typically adding
         values to the template `data` dictionary, or changing template or
         mime type.
-        
+
         `data` may be update in place.
 
         Always returns a tuple of (template, data, content_type), even if

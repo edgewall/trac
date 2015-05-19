@@ -12,7 +12,7 @@ import unittest
 import difflib
 
 # Note: we don't want to replicate 1:1 all the SQL dialect abstraction
-#       methods from the trac.db layer here. 
+#       methods from the trac.db layer here.
 
 class QueryTestCase(unittest.TestCase):
 
@@ -37,7 +37,7 @@ class QueryTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.db = self.env.get_db_cnx()
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
-        
+
     def tearDown(self):
         self.env.reset_db()
 
@@ -639,7 +639,7 @@ class TicketQueryMacroTestCase(unittest.TestCase):
         self.assertEqual(query, qs)
         self.assertEqual(kwargs, kw)
         self.assertEqual(format, f)
-    
+
     def test_owner_and_milestone(self):
         self.assertQueryIs('owner=joe, milestone=milestone1',
                            'owner=joe&milestone=milestone1',
@@ -651,7 +651,7 @@ class TicketQueryMacroTestCase(unittest.TestCase):
                            'owner=joe&or&milestone=milestone1',
                            dict(col='status|summary', max='0', order='id'),
                            'list')
-    
+
     def test_format_arguments(self):
         self.assertQueryIs('owner=joe, milestone=milestone1, col=component|severity, max=15, order=component, format=compact',
                            'owner=joe&milestone=milestone1',
@@ -667,7 +667,7 @@ class TicketQueryMacroTestCase(unittest.TestCase):
                            r'owner=joe|jack&milestone=this\&that\|here,now',
                            dict(col='status|summary', max='0', order='id'),
                            'list')
-        
+
 
 def suite():
     suite = unittest.TestSuite()

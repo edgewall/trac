@@ -67,7 +67,7 @@ class EnvironmentsTestCase(unittest.TestCase):
     def test_star_pattern_tracignore(self):
         create_file(self.tracignore, 'my*\n.hidden_dir')
         self.assertEquals({}, get_environments(self.environ))
-    
+
     def test_combined_tracignore(self):
         create_file(self.tracignore, 'my*i?1\n\n#mydir2')
         self.assertEquals(self.env_paths(['mydir2', '.hidden_dir']),

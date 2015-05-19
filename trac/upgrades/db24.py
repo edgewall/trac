@@ -7,7 +7,7 @@ def do_upgrade(env, ver, cursor):
                    "UNION SELECT repos AS id FROM node_change "
                    "ORDER BY id")
     id_name_list = [(i + 1, name) for i, (name,) in enumerate(cursor)]
-    
+
     cursor.execute("CREATE TEMPORARY TABLE repo_old "
                    "AS SELECT * FROM repository")
     cursor.execute("DROP TABLE repository")
@@ -17,7 +17,7 @@ def do_upgrade(env, ver, cursor):
     cursor.execute("CREATE TEMPORARY TABLE nc_old "
                    "AS SELECT * FROM node_change")
     cursor.execute("DROP TABLE node_change")
-    
+
     tables = [Table('repository', key=('id', 'name'))[
                   Column('id', type='int'),
                   Column('name'),
@@ -38,12 +38,12 @@ def do_upgrade(env, ver, cursor):
                   Column('base_path'),
                   Column('base_rev'),
                   Index(['repos', 'rev'])]]
-    
+
     db_connector, _ = DatabaseManager(env)._get_connector()
     for table in tables:
         for stmt in db_connector.to_sql(table):
             cursor.execute(stmt)
-    
+
     cursor.executemany("INSERT INTO repository (id,name,value) "
                        "VALUES (%s,'name',%s)", id_name_list)
     cursor.executemany("INSERT INTO repository (id,name,value) "

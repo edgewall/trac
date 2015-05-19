@@ -106,7 +106,7 @@ trac:#2041
 #trac²⁰⁴¹
 </p>
 ------------------------------
-""" # " 
+""" # "
 
 def ticket_setup(tc):
     config = tc.env.config
@@ -422,4 +422,3 @@ def suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
-

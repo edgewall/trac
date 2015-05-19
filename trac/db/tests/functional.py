@@ -26,4 +26,3 @@ def functionalSuite(suite=None):
 
 if __name__ == '__main__':
     unittest.main(defaultTest='functionalSuite')
-

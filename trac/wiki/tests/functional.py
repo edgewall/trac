@@ -20,13 +20,13 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         attachment = self._tester.attach_file_to_wiki(pagename)
         base_url = self._tester.url
         page_url = base_url + "/wiki/" + pagename
-        
+
         def click_rename():
             tc.formvalue('rename', 'action', 'rename')
             tc.submit()
             tc.url(page_url + r'\?action=rename')
             tc.find("New name:")
-        
+
         tc.go(page_url)
         tc.find("Rename page")
         click_rename()
@@ -40,7 +40,7 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
         tc.url(page_url)
         tc.find("The new name is invalid")
-        # attempt to rename the page to the current page name       
+        # attempt to rename the page to the current page name
         tc.formvalue('rename-form', 'new_name', pagename)
         tc.submit('submit')
         tc.url(page_url)

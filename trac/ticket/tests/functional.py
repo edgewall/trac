@@ -949,7 +949,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/4447"""
         ticketid = self._tester.create_ticket(summary="Hello World")
-        
+
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
         env.config.set('ticket-custom', 'newfield.label',

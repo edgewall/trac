@@ -77,7 +77,7 @@ class HDFWrapper:
     Traceback (most recent call last):
         ...
     KeyError: 'undef'
-    
+
     It may be preferable to return a default value if the given key does not exit.
     It will return 'None' when the specified key is not present:
 
@@ -109,10 +109,10 @@ class HDFWrapper:
     """
 
     has_clearsilver = None
-    
+
     def __init__(self, loadpaths=[]):
         """Create a new HDF dataset.
-        
+
         The loadpaths parameter can be used to specify a sequence of paths under
         which ClearSilver will search for template files:
 
@@ -136,7 +136,7 @@ class HDFWrapper:
             self.has_clearsilver = True
         except ImportError:
             self.has_clearsilver = False
-        
+
         self['hdf.loadpaths'] = loadpaths
 
     def __repr__(self):
@@ -171,7 +171,7 @@ class HDFWrapper:
 
     def __setitem__(self, name, value):
         """Add data to the HDF dataset.
-        
+
         The `name` parameter is the path of the node in dotted syntax. The
         `value` parameter can be a simple value such as a string or number, but
         also data structures such as dicts and lists.
@@ -207,16 +207,16 @@ class HDFWrapper:
         KeyError: 'test.none'
         """
         self.set_value(name, value, True)
-        
+
     def set_unescaped(self, name, value):
         """
         Add data to the HDF dataset.
-        
+
         This method works the same way as `__setitem__` except that `value`
         is not escaped if it is a string.
         """
         self.set_value(name, value, False)
-        
+
     def set_value(self, name, value, do_escape=True):
         """
         Add data to the HDF dataset.
@@ -227,7 +227,7 @@ class HDFWrapper:
             self.hdf.setValue(prefix.encode('utf-8'), value.encode('utf-8'))
         def set_str(prefix, value):
             self.hdf.setValue(prefix.encode('utf-8'), str(value))
-            
+
         def add_value(prefix, value):
             if value is None:
                 return
@@ -338,10 +338,10 @@ class FormTokenInjector(HTMLParser):
                     self.out.write('<input type="hidden" name="__FORM_TOKEN"'
                                    ' value="%s"/>' % self.token)
                     break
-                    
+
     def handle_startendtag(self, tag, attrs):
         self.out.write(self.get_starttag_text())
-        
+
     def handle_charref(self, name):
         self.out.write('&#%s;' % name)
 

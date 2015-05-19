@@ -31,11 +31,11 @@ class GetMimeTypeTestCase(unittest.TestCase):
     def test_from_suffix_using_MIME_MAP(self):
         self.assertEqual('text/plain', get_mimetype('README', None))
         self.assertEqual('text/plain', get_mimetype('README.txt', None))
-        
+
     def test_from_suffix_using_mimetypes(self):
         accepted = ('image/png', 'image/x-png')
         self.assertTrue(get_mimetype('doc/trac_logo.png', None) in accepted)
-        
+
     def test_from_content_using_CONTENT_RE(self):
         self.assertEqual('text/x-python',
                          get_mimetype('xxx', """
@@ -160,7 +160,7 @@ class GroupLinesTestCase(unittest.TestCase):
                 ]
         lines = list(_group_lines(input))
         self.assertEqual(len(lines), 0)
-                 
+
     def test_newline(self):
         """
         If the text element does not end with a newline, it's not properly

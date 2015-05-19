@@ -120,7 +120,7 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     time2 = to_datetime(time2)
     if time1 > time2:
         time2, time1 = time1, time2
-    
+
     diff = time2 - time1
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
@@ -134,12 +134,12 @@ def pretty_timedelta(time1, time2=None, resolution=None):
             return format_units(r)
     return ''
 
-    
+
 def format_datetime(t=None, format='%x %X', tzinfo=None):
     """Format the `datetime` object `t` into an `unicode` string
 
     If `t` is None, the current time will be used.
-    
+
     The formatting will be done using the given `format`, which consist
     of conventional `strftime` keys. In addition the format can be 'iso8601'
     to specify the international date format (compliant with RFC 3339).
@@ -274,7 +274,7 @@ def parse_date(text, tzinfo=None, hint='date'):
         hint = {'datetime': get_datetime_format_hint,
                 'date': get_date_format_hint}.get(hint, lambda: hint)()
         raise TracError(_('"%(date)s" is an invalid date, or the date format '
-                          'is not known. Try "%(hint)s" instead.', 
+                          'is not known. Try "%(hint)s" instead.',
                           date=text, hint=hint), _('Invalid Date'))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()
@@ -616,7 +616,7 @@ try:
     _gmt_index = bisect(_pytz_zones, 'GMT')
     all_timezones = _pytz_zones[:_gmt_index] + all_timezones[1:] + \
                     _pytz_zones[_gmt_index:]
- 
+
 except ImportError:
     pytz = None
 
@@ -627,4 +627,3 @@ except ImportError:
     def get_timezone(tzname):
         """Fetch timezone instance by name or return `None`"""
         return _tzmap.get(tzname)
-

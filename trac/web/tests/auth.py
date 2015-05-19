@@ -79,8 +79,8 @@ class LoginModuleTestCase(unittest.TestCase):
         # remote_user must be upper case to test that by default, case is
         # preserved.
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie, 
-                   remote_addr='127.0.0.1', remote_user='john', 
+                   incookie=Cookie(), outcookie=outcookie,
+                   remote_addr='127.0.0.1', remote_user='john',
                    authname='john', base_path='/trac.cgi')
         self.module._do_login(req)
 
@@ -92,7 +92,7 @@ class LoginModuleTestCase(unittest.TestCase):
         row = cursor.fetchone()
         self.assertEquals('john', row[0])
         self.assertEquals('127.0.0.1', row[1])
-    
+
     def test_login_ignore_case(self):
         """
         Test that login is succesful when the usernames differ in case, but case
@@ -102,7 +102,7 @@ class LoginModuleTestCase(unittest.TestCase):
 
         outcookie = Cookie()
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie, 
+                   incookie=Cookie(), outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user='John',
                    authname='anonymous', base_path='/trac.cgi')
         self.module._do_login(req)
@@ -152,7 +152,7 @@ class LoginModuleTestCase(unittest.TestCase):
         incookie['trac_auth'] = '123'
         outcookie = Cookie()
         req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=outcookie, 
+                   incookie=incookie, outcookie=outcookie,
                    remote_addr='127.0.0.1', remote_user=None, authname='john',
                    base_path='/trac.cgi')
         self.module._do_logout(req)

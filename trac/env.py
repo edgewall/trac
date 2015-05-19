@@ -58,14 +58,14 @@ class IEnvironmentSetupParticipant(Interface):
 
     def environment_needs_upgrade(db):
         """Called when Trac checks whether the environment needs to be upgraded.
-        
+
         Should return `True` if this participant needs an upgrade to be
         performed, `False` otherwise.
         """
 
     def upgrade_environment(db):
         """Actually perform an environment upgrade.
-        
+
         Implementations of this method don't need to commit any database
         transactions. This is done implicitly for each participant
         if the upgrade succeeds without an error being raised.
@@ -89,31 +89,31 @@ class Environment(Component, ComponentManager):
     implements(ISystemInfoProvider)
 
     required = True
-    
+
     system_info_providers = ExtensionPoint(ISystemInfoProvider)
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
         """Path to the //shared plugins directory//.
-        
+
         Plugins in that directory are loaded in addition to those in the
-        directory of the environment `plugins`, with this one taking 
+        directory of the environment `plugins`, with this one taking
         precedence.
-        
+
         (''since 0.11'')""")
 
     base_url = Option('trac', 'base_url', '',
         """Reference URL for the Trac deployment.
-        
+
         This is the base URL that will be used when producing documents that
         will be used outside of the web browsing context, like for example
         when inserting URLs pointing to Trac resources in notification
         e-mails.""")
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
-            False, 
+            False,
         """Optionally use `[trac] base_url` for redirects.
-        
+
         In some configurations, usually involving running Trac behind a HTTP
         proxy, Trac can't automatically reconstruct the URL that is used to
         access it. You may need to use this option to force Trac to use the
@@ -123,7 +123,7 @@ class Environment(Component, ComponentManager):
 
     secure_cookies = BoolOption('trac', 'secure_cookies', False,
         """Restrict cookies to HTTPS connections.
-        
+
         When true, set the `secure` flag on all cookies so that they are
         only sent to the server on HTTPS connections. Use this if your Trac
         instance is only accessible through HTTPS. (''since 0.11.2'')""")
@@ -144,7 +144,7 @@ class Environment(Component, ComponentManager):
     project_admin_trac_url = Option('project', 'admin_trac_url', '.',
         """Base URL of a Trac instance where errors in this Trac should be
         reported.
-        
+
         This can be an absolute or relative URL, or '.' to reference this
         Trac instance. An empty value will disable the reporting buttons.
         (''since 0.11.3'')""")
@@ -160,7 +160,7 @@ class Environment(Component, ComponentManager):
 
     log_type = Option('logging', 'log_type', 'none',
         """Logging facility to use.
-        
+
         Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
 
     log_file = Option('logging', 'log_file', 'trac.log',
@@ -170,14 +170,14 @@ class Environment(Component, ComponentManager):
 
     log_level = Option('logging', 'log_level', 'DEBUG',
         """Level of verbosity in log.
-        
+
         Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`).""")
 
     log_format = Option('logging', 'log_format', None,
         """Custom logging format.
 
         If nothing is set, the following will be used:
-        
+
         Trac[$(module)s] $(levelname)s: $(message)s
 
         In addition to regular key names supported by the Python logger library
@@ -196,7 +196,7 @@ class Environment(Component, ComponentManager):
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
-        
+
         @param path:   the absolute path to the Trac environment
         @param create: if `True`, the environment is created and populated with
                        default data; otherwise, the environment is expected to
@@ -240,10 +240,10 @@ class Environment(Component, ComponentManager):
         from trac.util.datefmt import pytz
         if pytz is not None:
             yield 'pytz', pytz.__version__
-    
+
     def component_activated(self, component):
         """Initialize additional member variables for components.
-        
+
         Every component activated through the `Environment` object gets three
         member variables: `env` (the environment object), `config` (the
         environment configuration) and `log` (a logger object)."""
@@ -268,11 +268,11 @@ class Environment(Component, ComponentManager):
                     name = name[:-2]
                 self._rules[name.lower()] = value.lower() in ('enabled', 'on')
             return self._rules
-        
+
     def is_component_enabled(self, cls):
         """Implemented to only allow activation of components that are not
         disabled in the configuration.
-        
+
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns `False`, the component
         does not get activated. If it returns `None`, the component only gets
@@ -292,7 +292,7 @@ class Environment(Component, ComponentManager):
                           'administration interface will be used '
                           'instead.')
             return False
-        
+
         rules = self._component_rules
         cname = component_name
         while cname:
@@ -355,11 +355,11 @@ class Environment(Component, ComponentManager):
     def get_repository(self, reponame=None, authname=None):
         """Return the version control repository with the given name, or the
         default repository if `None`.
-        
+
         The standard way of retrieving repositories is to use the methods
         of `RepositoryManager`. This method is retained here for backward
         compatibility.
-        
+
         @param reponame: the name of the repository
         @param authname: the user name for authorization (not used anymore,
                          left here for compatibility with 0.11)
@@ -507,7 +507,7 @@ class Environment(Component, ComponentManager):
 
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
-        
+
         @param backup: whether or not to backup before upgrading
         @param backup_dest: name of the backup file
         @return: whether the upgrade was performed
@@ -553,7 +553,7 @@ class Environment(Component, ComponentManager):
 
 class EnvironmentSetup(Component):
     """Manage automatic environment upgrades."""
-    
+
     required = True
 
     implements(IEnvironmentSetupParticipant)
@@ -681,11 +681,11 @@ def open_environment(env_path=None, use_cache=False):
 
 class EnvironmentAdmin(Component):
     """trac-admin command provider for environment administration."""
-    
+
     implements(IAdminCommandProvider)
-    
+
     # IAdminCommandProvider methods
-    
+
     def get_admin_commands(self):
         yield ('deploy', '<directory>',
                'Extract static resources from Trac and all plugins',
@@ -696,7 +696,7 @@ class EnvironmentAdmin(Component):
         yield ('upgrade', '',
                'Upgrade database to current version',
                None, self._do_upgrade)
-    
+
     def _do_deploy(self, dest):
         target = os.path.normpath(dest)
         chrome_target = os.path.join(target, 'htdocs')
@@ -711,7 +711,7 @@ class EnvironmentAdmin(Component):
             paths = list(provider.get_htdocs_dirs() or [])
             if not len(paths):
                 continue
-            printout('  %s.%s' % (provider.__module__, 
+            printout('  %s.%s' % (provider.__module__,
                                   provider.__class__.__name__))
             for key, root in paths:
                 source = os.path.normpath(root)
@@ -734,7 +734,7 @@ class EnvironmentAdmin(Component):
                 stream.render('text', out=out, encoding='utf-8')
             finally:
                 out.close()
-    
+
     def _do_hotcopy(self, dest):
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
@@ -747,7 +747,7 @@ class EnvironmentAdmin(Component):
         cursor.execute("UPDATE system SET name=NULL WHERE name IS NULL")
 
         try:
-            printout(_('Hotcopying %(src)s to %(dst)s ...', 
+            printout(_('Hotcopying %(src)s to %(dst)s ...',
                        src=path_to_unicode(self.env.path),
                        dst=path_to_unicode(dest)))
             db_str = self.env.config.get('trac', 'database')
@@ -776,11 +776,11 @@ class EnvironmentAdmin(Component):
 
         printout(_("Hotcopy done."))
         return retval
-    
+
     def _do_upgrade(self, no_backup=None):
         if no_backup not in (None, '-b', '--no-backup'):
             raise AdminCommandError(_("Invalid arguments"), show_usage=True)
-        
+
         if not self.env.needs_upgrade():
             printout(_("Database is up to date, no upgrade necessary."))
             return
@@ -812,7 +812,7 @@ class EnvironmentAdmin(Component):
                                "Trac doesn't load plugins from wiki-macros "
                                "anymore. Please remove it by hand.",
                                err=exception_to_unicode(e)))
-        
+
         printout(_("Upgrade done.\n\n"
                    "You may want to upgrade the Trac documentation now by "
                    "running:\n\n  trac-admin %(path)s wiki upgrade",

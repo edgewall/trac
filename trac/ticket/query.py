@@ -24,7 +24,7 @@ from StringIO import StringIO
 
 from genshi.builder import tag
 
-from trac.config import Option, IntOption 
+from trac.config import Option, IntOption
 from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter, Context
@@ -103,7 +103,7 @@ class Query(object):
                 raise ValueError()
         except ValueError:
             raise TracError(_('Query max %(max)s is invalid.', max=max))
-        
+
         if self.max == 0:
             self.has_more_pages = False
             self.offset = 0
@@ -119,7 +119,7 @@ class Query(object):
         self.time_fields = set(f['name'] for f in self.fields
                                if f['type'] == 'time')
         field_names = set(f['name'] for f in self.fields)
-        self.cols = [c for c in cols or [] if c in field_names or 
+        self.cols = [c for c in cols or [] if c in field_names or
                      c == 'id']
         self.rows = [c for c in rows if c in field_names]
         if self.order != 'id' and self.order not in field_names:
@@ -139,7 +139,7 @@ class Query(object):
 
     _clause_splitter = re.compile(r'(?<!\\)&')
     _item_splitter = re.compile(r'(?<!\\)\|')
-    
+
     @classmethod
     def from_string(cls, env, string, **kw):
         kw_strs = ['order', 'group', 'page', 'max', 'format']
@@ -161,7 +161,7 @@ class Query(object):
                 continue
             filter_ = filter_.replace(r'\&', '&').split('=', 1)
             if len(filter_) != 2:
-                raise QuerySyntaxError(_('Query filter requires field and ' 
+                raise QuerySyntaxError(_('Query filter requires field and '
                                          'constraints separated by a "="'))
             field, values = filter_
             # from last chars of `field`, get the mode of comparison
@@ -191,7 +191,7 @@ class Query(object):
             elif field == 'report':
                 report = processed_values[0]
             else:
-                constraints[-1].setdefault(synonyms.get(field, field), 
+                constraints[-1].setdefault(synonyms.get(field, field),
                                            []).extend(processed_values)
         constraints = filter(None, constraints)
         report = kw.pop('report', report)
@@ -202,7 +202,7 @@ class Query(object):
             self.cols = self.get_default_columns()
         if not 'id' in self.cols:
             # make sure 'id' is always present (needed for permission checks)
-            self.cols.insert(0, 'id')        
+            self.cols.insert(0, 'id')
         return self.cols
 
     def get_all_textareas(self):
@@ -234,7 +234,7 @@ class Query(object):
 
     def get_default_columns(self):
         cols = self.get_all_columns()
-        
+
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
         for col in [k for k in self.constraint_cols.keys()
@@ -275,7 +275,7 @@ class Query(object):
         cursor = db.cursor()
 
         count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS foo'
-        # self.env.log.debug("Count results in Query SQL: " + count_sql % 
+        # self.env.log.debug("Count results in Query SQL: " + count_sql %
         #                    tuple([repr(a) for a in args]))
 
         cnt = 0
@@ -314,7 +314,7 @@ class Query(object):
                 raise TracError(_('Page %(page)s is beyond the number of '
                                   'pages in the query', page=self.page))
 
-        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
+        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))
         try:
             cursor.execute(sql, args)
         except:
@@ -403,7 +403,7 @@ class Query(object):
             constraints.extend(clause.iteritems())
             constraints.append(("or", empty))
         del constraints[-1:]
-        
+
         return href.query(constraints,
                           report=id,
                           order=order, desc=desc and 1 or None,
@@ -500,7 +500,7 @@ class Query(object):
 
             if name in self.time_fields:
                 if '..' in value:
-                    (start, end) = [each.strip() for each in 
+                    (start, end) = [each.strip() for each in
                                     value.split('..', 1)]
                 else:
                     (start, end) = (value.strip(), '')
@@ -519,7 +519,7 @@ class Query(object):
                             (end, ))
                 else:
                     return None
-                
+
             if mode == '~' and name == 'keywords':
                 words = value.split()
                 clauses, args = [], []
@@ -628,7 +628,7 @@ class Query(object):
                 sql.append(" OR ")
                 sql.append("id in (%s)" %
                            (','.join([str(id) for id in cached_ids])))
-            
+
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
         if self.group and self.group != self.order:
@@ -666,7 +666,7 @@ class Query(object):
             if name == self.group and not name == self.order:
                 sql.append(",")
         if self.order != 'id':
-            sql.append(",t.id")  
+            sql.append(",t.id")
 
         if errors:
             raise QueryValueError(errors)
@@ -721,7 +721,7 @@ class Query(object):
 
         cols = self.get_columns()
         labels = TicketSystem(self.env).get_ticket_field_labels()
-        wikify = set(f['name'] for f in self.fields 
+        wikify = set(f['name'] for f in self.fields
                      if f['type'] == 'text' and f.get('format') == 'wiki')
 
         headers = [{
@@ -762,11 +762,11 @@ class Query(object):
         last_group_is_partial = False
         if groupsequence and self.max and len(tickets) == self.max + 1:
             del tickets[-1]
-            if len(groupsequence[-1][1]) == 1: 
+            if len(groupsequence[-1][1]) == 1:
                 # additional ticket started a new group
                 del groupsequence[-1] # remove that additional group
             else:
-                # additional ticket stayed in the group 
+                # additional ticket stayed in the group
                 last_group_is_partial = True
                 del groupsequence[-1][1][-1] # remove the additional ticket
 
@@ -774,15 +774,15 @@ class Query(object):
                             self.page - 1,
                             self.max,
                             self.num_items)
-        
+
         if req:
             if results.has_next_page:
-                next_href = self.get_href(req.href, max=self.max, 
+                next_href = self.get_href(req.href, max=self.max,
                                           page=self.page + 1)
                 add_link(req, 'next', next_href, _('Next Page'))
 
             if results.has_previous_page:
-                prev_href = self.get_href(req.href, max=self.max, 
+                prev_href = self.get_href(req.href, max=self.max,
                                           page=self.page - 1)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
         else:
@@ -812,27 +812,27 @@ class Query(object):
                 'groups': groupsequence or [(None, tickets)],
                 'last_group_is_partial': last_group_is_partial,
                 'paginator': results}
-    
+
 class QueryModule(Component):
 
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IContentConverter)
-               
+
     default_query = Option('query', 'default_query',
-        default='status!=closed&owner=$USER', 
+        default='status!=closed&owner=$USER',
         doc="""The default query for authenticated users. The query is either
             in [TracQuery#QueryLanguage query language] syntax, or a URL query
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""") 
-    
-    default_anonymous_query = Option('query', 'default_anonymous_query',  
-        default='status!=closed&cc~=$USER', 
+            (''since 0.11.2'')""")
+
+    default_anonymous_query = Option('query', 'default_anonymous_query',
+        default='status!=closed&cc~=$USER',
         doc="""The default query for anonymous users. The query is either
             in [TracQuery#QueryLanguage query language] syntax, or a URL query
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
-            (''since 0.11.2'')""") 
+            (''since 0.11.2'')""")
 
     items_per_page = IntOption('query', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket queries,
@@ -889,7 +889,7 @@ class QueryModule(Component):
                 name = req.session.get('name')
                 qstring = self.default_anonymous_query
                 user = email or name or None
-                      
+
             self.log.debug('QueryModule: Using default query: %s', str(qstring))
             if qstring.startswith('?'):
                 arg_list = parse_arg_list(qstring[1:])
@@ -920,8 +920,8 @@ class QueryModule(Component):
         if isinstance(cols, basestring):
             cols = [cols]
         # Since we don't show 'id' as an option to the user,
-        # we need to re-insert it here.            
-        if cols and 'id' not in cols: 
+        # we need to re-insert it here.
+        if cols and 'id' not in cols:
             cols.insert(0, 'id')
         rows = args.get('row', [])
         if isinstance(rows, basestring):
@@ -935,7 +935,7 @@ class QueryModule(Component):
                       'desc' in args, args.get('group'),
                       'groupdesc' in args, 'verbose' in args,
                       rows,
-                      args.get('page'), 
+                      args.get('page'),
                       max)
 
         if 'update' in req.args:
@@ -970,7 +970,7 @@ class QueryModule(Component):
         fields = dict((f['name'], f) for f in fields)
         fields['id'] = {'type': 'id'}
         fields.update((k, fields[v]) for k, v in synonyms.iteritems())
-        
+
         clauses = []
         if req is not None:
             # For clients without JavaScript, we remove constraints here if
@@ -985,7 +985,7 @@ class QueryModule(Component):
                     else:
                         index = int(match.group(2))
                     remove_constraints[k[10:match.end(1)]] = index
-            
+
             # Get constraints from form fields, and add a constraint if
             # requested for clients without JavaScript
             add_num = None
@@ -1011,7 +1011,7 @@ class QueryModule(Component):
                     if fields[field]['type'] == 'time':
                         ends = req.args.getlist(k + '_end')
                         if ends:
-                            vals = [start + '..' + end 
+                            vals = [start + '..' + end
                                     for (start, end) in zip(vals, ends)]
                     if k in remove_constraints:
                         idx = remove_constraints[k]
@@ -1033,7 +1033,7 @@ class QueryModule(Component):
                     mode = modes and modes[0]['value'] or ''
                     clause.setdefault(field, []).append(mode)
             clauses.extend(each[1] for each in sorted(constraints.iteritems()))
-        
+
         # Get constraints from query string
         clauses.append({})
         for field, val in arg_list or req.arg_list:
@@ -1042,7 +1042,7 @@ class QueryModule(Component):
             elif field in fields:
                 clauses[-1].setdefault(field, []).append(val)
         clauses = filter(None, clauses)
-        
+
         return clauses
 
     def display_html(self, req, query):
@@ -1108,7 +1108,7 @@ class QueryModule(Component):
         data['title'] = title
 
         data['all_columns'] = query.get_all_columns()
-        # Don't allow the user to remove the id column        
+        # Don't allow the user to remove the id column
         data['all_columns'].remove('id')
         data['all_textareas'] = query.get_all_textareas()
 
@@ -1164,10 +1164,10 @@ class QueryModule(Component):
         return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods
-    
+
     def get_wiki_syntax(self):
         return []
-    
+
     def get_link_resolvers(self):
         yield ('query', self._format_link)
 
@@ -1183,34 +1183,34 @@ class QueryModule(Component):
                              href=query.get_href(formatter.context.href),
                              class_='query')
             except QuerySyntaxError, e:
-                return tag.em(_('[Error: %(error)s]', error=unicode(e)), 
+                return tag.em(_('[Error: %(error)s]', error=unicode(e)),
                               class_='error')
 
 
 class TicketQueryMacro(WikiMacroBase):
     """Wiki macro listing tickets that match certain criteria.
-    
+
     This macro accepts a comma-separated list of keyed parameters,
     in the form "key=value".
 
-    If the key is the name of a field, the value must use the syntax 
+    If the key is the name of a field, the value must use the syntax
     of a filter specifier as defined in TracQuery#QueryLanguage.
-    Note that this is ''not'' the same as the simplified URL syntax 
+    Note that this is ''not'' the same as the simplified URL syntax
     used for `query:` links starting with a `?` character. Commas (`,`)
     can be included in field values by escaping them with a backslash (`\`).
 
     Groups of field constraints to be OR-ed together can be separated by a
     litteral `or` argument.
-    
+
     In addition to filters, several other named parameters can be used
     to control how the results are presented. All of them are optional.
 
     The `format` parameter determines how the list of tickets is
-    presented: 
+    presented:
      - '''list''' -- the default presentation is to list the ticket ID next
        to the summary, with each ticket on a separate line.
      - '''compact''' -- the tickets are presented as a comma-separated
-       list of ticket IDs. 
+       list of ticket IDs.
      - '''count''' -- only the count of matching tickets is displayed
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
@@ -1233,8 +1233,8 @@ class TicketQueryMacro(WikiMacroBase):
     The `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
     ''deprecated in favor of the `rows` parameter''
-    
-    The `rows` parameter can be used to specify which field(s) should 
+
+    The `rows` parameter can be used to specify which field(s) should
     be viewed as a row, e.g. `rows=description|summary`
 
     For compatibility with Trac 0.10, if there's a last positional parameter
@@ -1244,7 +1244,7 @@ class TicketQueryMacro(WikiMacroBase):
     """
 
     _comma_splitter = re.compile(r'(?<!\\),')
-    
+
     @staticmethod
     def parse_args(content):
         """Parse macro arguments and translate them to a query string."""
@@ -1285,7 +1285,7 @@ class TicketQueryMacro(WikiMacroBase):
                                             for item in clause.iteritems())
                                    for clause in clauses)
         return query_string, kwargs, format
-    
+
     def expand_macro(self, formatter, name, content):
         req = formatter.req
         query_string, kwargs, format = self.parse_args(content)
@@ -1299,7 +1299,7 @@ class TicketQueryMacro(WikiMacroBase):
             cnt = query.count(req)
             return tag.span(cnt, title='%d tickets for which %s' %
                             (cnt, query_string), class_='query_count')
-        
+
         tickets = query.execute(req)
 
         if format == 'table':
@@ -1307,14 +1307,14 @@ class TicketQueryMacro(WikiMacroBase):
                                        req=formatter.context.req)
 
             add_stylesheet(req, 'common/css/report.css')
-            
+
             return Chrome(self.env).render_template(
                 req, 'query_results.html', data, None, fragment=True)
 
         # 'table' format had its own permission checks, here we need to
         # do it explicitly:
 
-        tickets = [t for t in tickets 
+        tickets = [t for t in tickets
                    if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
 
         if not tickets:
@@ -1347,7 +1347,7 @@ class TicketQueryMacro(WikiMacroBase):
 
         if format == 'compact':
             if query.group:
-                groups = [(v, ' ', 
+                groups = [(v, ' ',
                            tag.a('#%s' % ','.join([str(t['id']) for t in g]),
                                  href=href, class_='query', title=title))
                           for v, g, href, title in ticket_groups()]

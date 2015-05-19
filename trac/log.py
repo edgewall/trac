@@ -61,7 +61,7 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     logger.addHandler(hdlr)
 
     # Remember our handler so that we can remove it later
-    logger._trac_handler = hdlr 
+    logger._trac_handler = hdlr
 
     return logger, hdlr
 
