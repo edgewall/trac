@@ -597,13 +597,16 @@ class TicketSystem(Component):
         >>> resource_exists(env, t.resource)
         True
         """
-        if self.env.db_query("SELECT id FROM ticket WHERE id=%s",
-                             (resource.id,)):
+        try:
+            id_ = int(resource.id)
+        except (TypeError, ValueError):
+            return False
+        if self.env.db_query("SELECT id FROM ticket WHERE id=%s", (id_,)):
             if resource.version is None:
                 return True
             revcount = self.env.db_query("""
                 SELECT count(DISTINCT time) FROM ticket_change WHERE ticket=%s
-                """, (resource.id,))
+                """, (id_,))
             return revcount[0][0] >= resource.version
         else:
             return False

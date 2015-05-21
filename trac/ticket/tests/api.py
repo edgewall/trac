@@ -14,6 +14,7 @@
 from datetime import datetime, timedelta
 
 from trac.perm import PermissionCache, PermissionSystem
+from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
@@ -236,6 +237,26 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual(['milestone2', 'milestone1',
                           'milestone3', 'milestone4'],
                          updated_milestone_field['options'])
+
+    def test_resource_exists_valid_resource_id(self):
+        Ticket(self.env).insert()
+        r1 = Resource('ticket', 1)
+        r2 = Resource('ticket', 2)
+
+        self.assertTrue(self.ticket_system.resource_exists(r1))
+        self.assertFalse(self.ticket_system.resource_exists(r2))
+
+    def test_resource_exists_invalid_resource_id(self):
+        """Exception is trapped from resource with invalid id."""
+        r1 = Resource('ticket', None)
+        r2 = Resource('ticket', 'abc')
+        r3 = Resource('ticket', '2.')
+        r4 = Resource('ticket', r2)
+
+        self.assertFalse(self.ticket_system.resource_exists(r1))
+        self.assertFalse(self.ticket_system.resource_exists(r2))
+        self.assertFalse(self.ticket_system.resource_exists(r3))
+        self.assertFalse(self.ticket_system.resource_exists(r4))
 
 
 def suite():
