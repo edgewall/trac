@@ -179,6 +179,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
         from pkg_resources import resource_exists, resource_filename
 
         if not has_babel:
+            print("SKIP: RegressionTestTicket11515 (Babel not installed)")
             return
         if not resource_exists('trac', 'locale'):
             return
@@ -192,6 +193,8 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
             if string != translated:
                 break  # the locale has a translation
         else:
+            print("SKIP: RegressionTestTicket11515 "
+                  "(Message catalogs not compiled)")
             return
 
         try:
