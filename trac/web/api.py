@@ -723,9 +723,14 @@ class Request(object):
 
         args = []
         for value in fs.list or ():
-            name = value.name
-            if not value.filename:
-                value = unicode(value.value, 'utf-8')
+            try:
+                name = unicode(value.name, 'utf-8')
+                if not value.filename:
+                    value = unicode(value.value, 'utf-8')
+            except UnicodeDecodeError, e:
+                raise HTTPBadRequest(
+                    _("Invalid encoding in form data: %(msg)s",
+                      msg=exception_to_unicode(e)))
             args.append((name, value))
         return args
 

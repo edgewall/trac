@@ -26,8 +26,8 @@ from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
-from trac.web.api import HTTPInternalError, Request, RequestDone, \
-                         parse_arg_list
+from trac.web.api import HTTPBadRequest, HTTPInternalError, Request, \
+                         RequestDone, parse_arg_list
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
@@ -270,6 +270,16 @@ class RequestTestCase(unittest.TestCase):
                                         'QUERY_STRING': 'action=foo'})
         req = Request(environ, None)
         self.assertEqual('bar', req.args['action'])
+
+    def test_qs_invalid_value_bytes(self):
+        environ = self._make_environ(**{'QUERY_STRING': 'name=%FF'})
+        req = Request(environ, None)
+        self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
+
+    def test_qs_invalid_name_bytes(self):
+        environ = self._make_environ(**{'QUERY_STRING': '%FF=value'})
+        req = Request(environ, None)
+        self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
 
 
 class RequestSendFileTestCase(unittest.TestCase):
