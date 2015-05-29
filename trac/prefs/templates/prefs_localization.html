@@ -21,13 +21,13 @@
   </head>
   <body>
 
-    <table py:with="session_tzname = settings.session.get('tz');
+    <table py:with="session_tzname = session.get('tz');
                     selected_tz = timezone(session_tzname) or utc">
 
       <tr class="field">
         <th><label for="language">Language:</label></th>
         <td>
-          <select py:with="session_language = settings.session.get('language', '').replace('-', '_')"
+          <select py:with="session_language = session.get('language', '').replace('-', '_')"
                   id="language" name="language" disabled="${'disabled' if not languages else None}"
                   title="${_('Translations are currently unavailable') if not languages else None}">
             <option value="">Default language</option>
@@ -121,7 +121,7 @@
         </td>
       </tr>
 
-      <tr class="field" py:with="session_lc_time = settings.session.get('lc_time')">
+      <tr class="field" py:with="session_lc_time = session.get('lc_time')">
         <th><label for="lc_time">Date format:</label></th>
         <td><select id="lc_time" name="lc_time">
           <option value="">Default date format</option>
@@ -139,7 +139,7 @@
         </td>
       </tr>
 
-      <tr class="field" py:with="session_dateinfo = settings.session.get('dateinfo')">
+      <tr class="field" py:with="session_dateinfo = session.get('dateinfo')">
         <th><label for="dateinfo">Time format:</label></th>
         <td><select id="dateinfo" name="dateinfo">
             <option value="">Default format</option>

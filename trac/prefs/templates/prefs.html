@@ -29,7 +29,7 @@
       key stored in a browser cookie. That cookie allows your settings to be
       restored on subsequent visits.</p>
       <ul id="tabs">
-        <li py:for="name, label in sorted(panels)"
+        <li py:for="name, label in panels"
             class="${'active' if name == active_panel else None}"
             id="${('tab_%s' % name) if name else None}">
           <a py:strip="name == active_panel" href="${href.prefs(name)}">${label}</a>
@@ -38,7 +38,7 @@
       <div id="tabcontent" py:with="has_forms = list(select('.//form'))">
         <form id="userprefs" action="" method="post" py:strip="has_forms">
           ${select("*|text()")}
-          <div py:for="(name, title, child) in child_panels"
+          <div py:for="(name, title, child) in children"
                class="prefs_child">
             <h2 id="${name}-section">${title}</h2>
             ${child}

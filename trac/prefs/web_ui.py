@@ -33,17 +33,9 @@ from trac.web.chrome import Chrome, INavigationContributor, \
 
 class PreferencesModule(Component):
 
-    implements(INavigationContributor, IPreferencePanelProvider,
-               IRequestHandler, ITemplateProvider)
+    implements(INavigationContributor, IRequestHandler, ITemplateProvider)
 
     panel_providers = ExtensionPoint(IPreferencePanelProvider)
-    request_handlers = ExtensionPoint(IRequestHandler)
-
-    _form_fields = [
-        'newsid', 'name', 'email', 'default_handler',
-        'tz', 'lc_time', 'dateinfo', 'language', 'accesskeys',
-        'ui.use_symbols', 'ui.hide_help',
-    ]
 
     # INavigationContributor methods
 
@@ -51,8 +43,10 @@ class PreferencesModule(Component):
         return 'prefs'
 
     def get_navigation_items(self, req):
-        yield 'metanav', 'prefs', tag.a(_("Preferences"),
-                                        href=req.href.prefs())
+        panels = self._get_panels(req)[0]
+        if panels:
+            yield 'metanav', 'prefs', tag.a(_("Preferences"),
+                                            href=req.href.prefs())
 
     # IRequestHandler methods
 
@@ -63,90 +57,66 @@ class PreferencesModule(Component):
             return True
 
     def process_request(self, req):
+        panels, providers = self._get_panels(req)
+        if not panels:
+            raise HTTPNotFound(_("No preference panels available"))
+
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
         if xhr and req.method == 'POST' and 'save_prefs' in req.args:
             self._do_save_xhr(req)
 
-        panel_id = req.args.get('panel_id')
-
         panels = []
-        child_panels = []
-        chosen_provider = None
-
-        chrome = Chrome(self.env)
-
+        child_panels = {}
+        providers = {}
         for provider in self.panel_providers:
             for panel in provider.get_preference_panels(req) or []:
                 if len(panel) == 3:
                     name, label, parent = panel
-                    if parent == panel_id:
-                        template, data = \
-                            provider.render_preference_panel(req, name)
-                        child_panels.append((name, label,
-                            chrome.render_template(req, template, data,
-                                                   fragment=True)))
+                    child_panels.setdefault(parent, []).append((name, label))
                 else:
-                    name, label = panel
-                    if name == panel_id or None:
-                        chosen_provider = provider
+                    name = panel[0]
                     panels.append(panel)
+                providers[name] = provider
+        panels = sorted(panels)
+
+        panel_id = req.args.get('panel_id')
+        if panel_id is None:
+            panel_id = panels[1][0] \
+                       if len(panels) > 1 and panels[0][0] == 'advanced' \
+                       else panels[0][0]
+        chosen_provider = providers.get(panel_id)
         if not chosen_provider:
             raise HTTPNotFound(_("Unknown preference panel '%(panel)s'",
                                  panel=panel_id))
 
-        template, data = chosen_provider.render_preference_panel(req,
-                                                                 panel_id)
-        data.update({'active_panel': panel_id,
-                     'panels': panels,
-                     'child_panels': child_panels})
+        session_data = {
+            'session': req.session,
+            'settings': {'session': req.session,  # Compat: remove in 1.3.1
+                         'session_id': req.session.sid},
+        }
+
+        # Render child preference panels.
+        chrome = Chrome(self.env)
+        children = []
+        if child_panels.get(panel_id):
+            for name, label in child_panels[panel_id]:
+                ctemplate, cdata = provider.render_preference_panel(req, name)
+                cdata.update(session_data)
+                rendered = chrome.render_template(req, ctemplate, cdata,
+                                                  fragment=True)
+                children.append((name, label, rendered))
+
+        template, data = \
+            chosen_provider.render_preference_panel(req, panel_id)
+        data.update(session_data)
+        data.update({
+            'active_panel': panel_id,
+            'panels': panels,
+            'children': children,
+        })
 
         add_stylesheet(req, 'common/css/prefs.css')
         return template, data, None
-
-    # IPreferencePanelProvider methods
-
-    def get_preference_panels(self, req):
-        yield None, _("General")
-        yield 'localization', _("Localization")
-        yield 'keybindings', _("Keyboard Shortcuts")
-        yield 'userinterface', _("User Interface")
-        if not req.authname or req.authname == 'anonymous':
-            yield 'advanced', _("Advanced")
-
-    def render_preference_panel(self, req, panel):
-        if req.method == 'POST':
-            if 'restore' in req.args:
-                self._do_load(req)
-            else:
-                self._do_save(req)
-            req.redirect(req.href.prefs(panel or None))
-
-        data = {
-            'settings': {'session': req.session,
-                         'session_id': req.session.sid},
-            'timezones': all_timezones,
-            'timezone': get_timezone,
-            'localtz': localtz,
-            'has_babel': False,
-            'project_default_handler': self.config.get('trac',
-                                                       'default_handler'),
-            'valid_default_handlers': self._valid_default_handlers,
-        }
-
-        if Locale:
-            locale_ids = get_available_locales()
-            locales = [Locale.parse(locale) for locale in locale_ids]
-            # use locale identifiers from get_available_locales() instead
-            # of str(locale) to prevent storing expanded locale identifier
-            # to session, e.g. zh_Hans_CN and zh_Hant_TW, since Babel 1.0.
-            # see #11258.
-            languages = sorted((id, locale.display_name)
-                               for id, locale in zip(locale_ids, locales))
-            data['locales'] = locales
-            data['languages'] = languages
-            data['has_babel'] = True
-
-        return 'prefs_%s.html' % (panel or 'general'), data
 
     # ITemplateProvider methods
 
@@ -158,42 +128,45 @@ class PreferencesModule(Component):
 
     # Internal methods
 
-    @lazy
-    def _valid_default_handlers(self):
-        return sorted(handler.__class__.__name__
-                      for handler in self.request_handlers
-                      if is_valid_default_handler(handler))
+    def _get_panels(self, req):
+        """Return a list of available preference panels."""
+        panels = []
+        providers = {}
+        for provider in self.panel_providers:
+            p = list(provider.get_preference_panels(req) or [])
+            for panel in p:
+                providers[panel[0]] = provider
+            panels += p
+
+        return panels, providers
 
     def _do_save_xhr(self, req):
         for key in req.args:
-            if not key in ['save_prefs', 'panel_id', '__FORM_TOKEN']:
+            if key not in ('save_prefs', 'panel_id', '__FORM_TOKEN'):
                 req.session[key] = req.args[key]
         req.session.save()
         req.send_no_content()
 
-    def _do_save(self, req):
-        language = req.session.get('language')
-        for field in self._form_fields:
-            val = req.args.get(field, '').strip()
-            if val:
-                if field == 'tz' and 'tz' in req.session and \
-                        val not in all_timezones:
-                    del req.session['tz']
-                elif field == 'newsid':
-                    req.session.change_sid(val)
-                elif field == 'accesskeys':
-                    req.session[field] = '1'
-                else:
-                    req.session[field] = val
-            elif field in req.session and (field in req.args or
-                                           field + '_cb' in req.args):
-                del req.session[field]
-        if Locale and req.session.get('language') != language:
-            # reactivate translations with new language setting when changed
-            del req.locale  # for re-negotiating locale
-            deactivate()
-            make_activable(lambda: req.locale, self.env.path)
-        add_notice(req, _("Your preferences have been saved."))
+
+class AdvancedPreferencePanel(Component):
+
+    implements(IPreferencePanelProvider)
+
+    _form_fields = ('newsid',)
+
+    # IPreferencePanelProvider methods
+
+    def get_preference_panels(self, req):
+        if not req.authname or req.authname == 'anonymous':
+            yield 'advanced', _("Advanced")
+
+    def render_preference_panel(self, req, panel):
+        if req.method == 'POST':
+            if 'restore' in req.args:
+                self._do_load(req)
+            else:
+                _do_save(req, panel, self._form_fields)
+        return 'prefs_advanced.html', {'session_id': req.session.sid}
 
     def _do_load(self, req):
         if req.authname == 'anonymous':
@@ -201,3 +174,133 @@ class PreferencesModule(Component):
             if oldsid:
                 req.session.get_session(oldsid)
                 add_notice(req, _("The session has been loaded."))
+
+
+class GeneralPreferencePanel(Component):
+
+    implements(IPreferencePanelProvider)
+
+    _form_fields = ('name', 'email')
+
+    # IPreferencePanelProvider methods
+
+    def get_preference_panels(self, req):
+        yield None, _("General")
+
+    def render_preference_panel(self, req, panel):
+        if req.method == 'POST':
+            _do_save(req, panel, self._form_fields)
+        return 'prefs_general.html', {}
+
+
+class KeyBindingsPreferencePanel(Component):
+
+    implements(IPreferencePanelProvider)
+
+    _form_fields = ('accesskeys',)
+
+    # IPreferencePanelProvider methods
+
+    def get_preference_panels(self, req):
+        yield 'keybindings', _("Keyboard Shortcuts")
+
+    def render_preference_panel(self, req, panel):
+        if req.method == 'POST':
+            _do_save(req, panel, self._form_fields)
+        return 'prefs_keybindings.html', {}
+
+
+class LocalizationPreferencePanel(Component):
+
+    implements(IPreferencePanelProvider)
+
+    _form_fields = ('tz', 'lc_time', 'dateinfo', 'language')
+
+    # IPreferencePanelProvider methods
+
+    def get_preference_panels(self, req):
+        yield 'localization', _("Localization")
+
+    def render_preference_panel(self, req, panel):
+        if req.method == 'POST':
+            if Locale and \
+                    req.args.get('language') != req.session.get('language'):
+                # reactivate translations with new language setting
+                # when changed
+                del req.locale  # for re-negotiating locale
+                deactivate()
+                make_activable(lambda: req.locale, self.env.path)
+            _do_save(req, panel, self._form_fields)
+
+        data = {
+            'timezones': all_timezones,
+            'timezone': get_timezone,
+            'localtz': localtz,
+            'has_babel': False,
+        }
+        if Locale:
+            locale_ids = get_available_locales()
+            locales = [Locale.parse(locale) for locale in locale_ids]
+            # use locale identifiers from get_available_locales() instead
+            # of str(locale) to prevent storing expanded locale identifier
+            # to session, e.g. zh_Hans_CN and zh_Hant_TW, since Babel 1.0.
+            # see #11258.
+            languages = sorted((id_, locale.display_name)
+                               for id_, locale in zip(locale_ids, locales))
+            data['locales'] = locales
+            data['languages'] = languages
+            data['has_babel'] = True
+        return 'prefs_localization.html', data
+
+
+class UserInterfacePreferencePanel(Component):
+
+    implements(IPreferencePanelProvider)
+
+    _request_handlers = ExtensionPoint(IRequestHandler)
+    _form_fields = ('default_handler', 'ui.hide_help', 'ui.use_symbols')
+
+    # IPreferencePanelProvider methods
+
+    def get_preference_panels(self, req):
+        yield 'userinterface', _("User Interface")
+
+    def render_preference_panel(self, req, panel):
+        if req.method == 'POST':
+            _do_save(req, panel, self._form_fields)
+
+        data = {
+            'project_default_handler': self._project_default_handler,
+            'valid_default_handlers': self._valid_default_handlers,
+        }
+        return 'prefs_userinterface.html', data
+
+    # Internal methods
+
+    @property
+    def _project_default_handler(self):
+        return self.config.get('trac', 'default_handler')
+
+    @lazy
+    def _valid_default_handlers(self):
+        return sorted(handler.__class__.__name__
+                      for handler in self._request_handlers
+                      if is_valid_default_handler(handler))
+
+
+def _do_save(req, panel, form_fields):
+    for field in form_fields:
+        val = req.args.get(field, '').strip()
+        if val:
+            if field == 'tz' and 'tz' in req.session and \
+                    val not in all_timezones:
+                del req.session['tz']
+            elif field == 'newsid':
+                req.session.change_sid(val)
+            else:
+                req.session[field] = val
+        elif (field in req.args or field + '_cb' in req.args) and \
+                field in req.session:
+            del req.session[field]
+    add_notice(req, _("Your preferences have been saved."))
+    req.redirect(req.href.prefs(panel))
