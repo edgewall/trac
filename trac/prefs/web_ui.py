@@ -57,12 +57,12 @@ class PreferencesModule(Component):
             return True
 
     def process_request(self, req):
+        if req.is_xhr and req.method == 'POST' and 'save_prefs' in req.args:
+            self._do_save_xhr(req)
+
         panels, providers = self._get_panels(req)
         if not panels:
             raise HTTPNotFound(_("No preference panels available"))
-
-        if req.is_xhr and req.method == 'POST' and 'save_prefs' in req.args:
-            self._do_save_xhr(req)
 
         panels = []
         child_panels = {}
