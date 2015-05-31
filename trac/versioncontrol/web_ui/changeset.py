@@ -220,8 +220,6 @@ class ChangesetModule(Component):
         old = req.args.get('old')
         reponame = req.args.get('reponame')
 
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
-
         # -- support for the revision log ''View changes'' form,
         #    where we need to give the path and revision at the same time
         if old and '@' in old:
@@ -323,7 +321,7 @@ class ChangesetModule(Component):
                 style, ''.join(options), repos.name,
                 diff_opts['contextlines'], diff_opts['contextall'],
                 repos.rev_older_than(new, repos.youngest_rev),
-                chgset.message, xhr,
+                chgset.message, req.is_xhr,
                 pretty_timedelta(chgset.date, None, 3600)])
 
         format = req.args.get('format')
@@ -349,7 +347,7 @@ class ChangesetModule(Component):
                            partial(self._zip_iter_nodes, req, repos, data))
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted, xhr, data)
+        self._render_html(req, repos, chgset, restricted, data)
 
         if chgset:
             diff_params = 'new=%s' % new
@@ -379,7 +377,7 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, xhr, data):
+    def _render_html(self, req, repos, chgset, restricted, data):
         """HTML version"""
         data['restricted'] = restricted
         display_rev = repos.display_rev
@@ -594,7 +592,7 @@ class ChangesetModule(Component):
         # XHR is used for blame support: display the changeset view without
         # the navigation and with the changes concerning the annotated file
         annotated = False
-        if xhr:
+        if req.is_xhr:
             show_diffs = False
             annotated = repos.normalize_path(req.args.get('annotate'))
 
@@ -658,13 +656,14 @@ class ChangesetModule(Component):
                 info = None
             changes.append(info)  # the sequence should be immutable
 
-        data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
-                     'filestats': filestats, 'annotated': annotated,
-                     'files': files,
+        data.update({'has_diffs': has_diffs, 'changes': changes,
+                     'xhr': req.is_xhr,  # Remove in 1.3.1
+                     'filestats': filestats,
+                     'annotated': annotated, 'files': files,
                      'location': self._get_parent_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 
-        if xhr:  # render and return the content only
+        if req.is_xhr:  # render and return the content only
             chrome = Chrome(self.env)
             stream = chrome.render_template(req, 'changeset.html', data,
                                             fragment=True)
@@ -1173,7 +1172,7 @@ class AnyDiffModule(Component):
     def process_request(self, req):
         rm = RepositoryManager(self.env)
 
-        if req.get_header('X-Requested-With') == 'XMLHttpRequest':
+        if req.is_xhr:
             dirname, prefix = posixpath.split(req.args.get('q'))
             prefix = prefix.lower()
             reponame, repos, path = rm.get_repository_by_path(dirname)

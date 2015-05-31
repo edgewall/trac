@@ -337,7 +337,6 @@ class BrowserModule(Component):
         format = req.args.get('format')
         order = req.args.get('order', 'name').lower()
         desc = 'desc' in req.args
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
         rm = RepositoryManager(self.env)
         all_repositories = rm.get_all_repositories()
@@ -416,7 +415,7 @@ class BrowserModule(Component):
                 raise ResourceNotFound(_("No node %(path)s", path=path))
 
         quickjump_data = properties_data = None
-        if node and not xhr:
+        if node and not req.is_xhr:
             properties_data = self.render_properties(
                     'browser', context, node.get_properties())
             quickjump_data = list(repos.get_quickjump_entries(rev))
@@ -435,9 +434,9 @@ class BrowserModule(Component):
             'quickjump_entries': quickjump_data,
             'wiki_format_messages': \
                 self.config['changeset'].getbool('wiki_format_messages'),
-            'xhr': xhr,
+            'xhr': req.is_xhr,  # Remove in 1.3.1
         }
-        if xhr: # render and return the content only
+        if req.is_xhr: # render and return the content only
             return 'dir_entries.html', data, None
 
         if dir_data or repo_data:

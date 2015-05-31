@@ -253,7 +253,8 @@ class GitNormalTestCase(BaseTestCase):
 
     def _create_req(self, **kwargs):
         data = dict(args={}, perm=MockPerm(), href=Href('/'), chrome={},
-                    authname='trac', tz=utc, get_header=lambda name: None)
+                    authname='trac', tz=utc, get_header=lambda name: None,
+                    is_xhr=False)
         data.update(kwargs)
         return Mock(**data)
 

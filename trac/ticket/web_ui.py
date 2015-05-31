@@ -544,7 +544,7 @@ class TicketModule(Component):
         data['fields_map'] = dict((field['name'], i)
                                   for i, field in enumerate(fields))
 
-        if req.get_header('X-Requested-With') == 'XMLHttpRequest':
+        if req.is_xhr:
             data['preview_mode'] = True
             data['chrome_info_script'] = chrome_info_script
             return 'ticket_box.html', data, None
@@ -560,9 +560,8 @@ class TicketModule(Component):
     def _process_ticket_request(self, req):
         id = int(req.args.get('id'))
         version = as_int(req.args.get('version'), None)
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
-        if xhr and 'preview_comment' in req.args:
+        if req.is_xhr and 'preview_comment' in req.args:
             context = web_context(req, self.realm, id, version)
             escape_newlines = self.must_preserve_newlines
             rendered = format_to_html(self.env, context,
@@ -687,7 +686,7 @@ class TicketModule(Component):
         self._insert_ticket_data(req, ticket, data,
                                  get_reporter_id(req, 'author'), field_changes)
 
-        if xhr:
+        if req.is_xhr:
             data['preview_mode'] = bool(data['change_preview']['fields'])
             data['chrome_info_script'] = chrome_info_script
             return 'ticket_preview.html', data, None

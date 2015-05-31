@@ -32,7 +32,7 @@ import urlparse
 
 from genshi.builder import Fragment
 from trac.core import Interface, TracBaseError
-from trac.util import get_last_traceback, unquote
+from trac.util import get_last_traceback, lazy, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _
@@ -397,6 +397,14 @@ class Request(object):
                                  path_info)
 
     # Public API
+
+    @lazy
+    def is_xhr(self):
+        """Returns `True` if the request is an `XMLHttpRequest`.
+
+        :since: 1.1.6
+        """
+        return self.get_header('X-Requested-With') == 'XMLHttpRequest'
 
     @property
     def method(self):

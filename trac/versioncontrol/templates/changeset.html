@@ -86,8 +86,9 @@
         </py:otherwise>
       </div>
 
-      <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
-                                diff.options.ignorewhitespace)"
+      <form py:if="not req.is_xhr and
+                   (has_diffs or diff.options.ignoreblanklines or
+                    diff.options.ignorecase or diff.options.ignorewhitespace)"
             id="prefs" action="">
         <div>
           <py:if test="not changeset">

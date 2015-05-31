@@ -61,8 +61,7 @@ class PreferencesModule(Component):
         if not panels:
             raise HTTPNotFound(_("No preference panels available"))
 
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
-        if xhr and req.method == 'POST' and 'save_prefs' in req.args:
+        if req.is_xhr and req.method == 'POST' and 'save_prefs' in req.args:
             self._do_save_xhr(req)
 
         panels = []
