@@ -40,9 +40,9 @@ from trac.util.datefmt import utc
 from trac.versioncontrol.api import DbRepositoryProvider, Changeset, \
                                     InvalidRepository, Node, \
                                     NoSuchChangeset, RepositoryManager
-from trac.versioncontrol import svn_fs, svn_prop
 from trac.web.href import Href
-from tracopt.versioncontrol.svn.svn_fs import SubversionRepository
+from tracopt.versioncontrol.svn import svn_fs, svn_prop
+
 
 REPOS_PATH = None
 REPOS_NAME = 'repo'
@@ -97,7 +97,7 @@ class SubversionRepositoryTestSetup(TestSetup):
 class NormalTests(object):
 
     def test_invalid_path_raises(self):
-        self.assertRaises(InvalidRepository, SubversionRepository,
+        self.assertRaises(InvalidRepository, svn_fs.SubversionRepository,
                           '/the/invalid/path', [], self.env.log)
 
     def test_resource_exists(self):
