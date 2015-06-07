@@ -104,6 +104,8 @@ facilities.
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.5'],
+        'MySQL': ['MySQL-python >= 1.2.2'],
+        'PostgreSQL': ['psycopg2 >= 2.0'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3.9'],
         'Textile': ['textile>=2.0'],
@@ -119,8 +121,8 @@ facilities.
         trac.admin.console = trac.admin.console
         trac.admin.web_ui = trac.admin.web_ui
         trac.attachment = trac.attachment
-        trac.db.mysql = trac.db.mysql_backend
-        trac.db.postgres = trac.db.postgres_backend
+        trac.db.mysql = trac.db.mysql_backend[MySQL]
+        trac.db.postgres = trac.db.postgres_backend[PostgreSQL]
         trac.db.sqlite = trac.db.sqlite_backend
         trac.mimeview.patch = trac.mimeview.patch
         trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
