@@ -78,9 +78,12 @@ class DatabaseFileTestCase(unittest.TestCase):
         except ConfigurationError, e:
             self.assertIn('requires read _and_ write permissions', unicode(e))
 
+    if os.name == 'posix' and os.getuid() == 0:
+        del test_no_permissions  # For root, os.access() always returns True
+
     def test_error_with_lazy_translation(self):
         self._create_env()
-        os.chmod(self.db_path, 0444)
+        os.remove(self.db_path)
         env = Environment(self.env_path)
         chrome = Chrome(env)
         dispatcher = RequestDispatcher(env)
@@ -94,7 +97,9 @@ class DatabaseFileTestCase(unittest.TestCase):
             self._db_query(env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError, e:
-            self.assertIn('requires read _and_ write permissions', unicode(e))
+            message = unicode(e)
+            self.assertIn('Database "', message)
+            self.assertIn('" not found.', message)
         finally:
             translation.deactivate()
 
