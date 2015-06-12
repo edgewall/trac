@@ -36,6 +36,7 @@ from trac.util.html import escape, find_element
 from trac.util.presentation import separated
 from trac.util.text import unicode_quote, to_unicode, stripws
 from trac.util.translation import _, dgettext, cleandoc_
+from trac.web.chrome import chrome_resource_path
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import (
     format_to_html, format_to_oneliner, extract_link, OutlineFormatter
@@ -662,7 +663,8 @@ class ImageMacro(WikiMacroBase):
             try:
                 desc = get_resource_summary(self.env, attachment)
             except ResourceNotFound:
-                raw_url = formatter.href.chrome('common/attachment.png')
+                raw_url = chrome_resource_path(formatter.context.req,
+                                               'common/attachment.png')
                 desc = _('No image "%(id)s" attached to %(parent)s',
                          id=attachment.id,
                          parent=get_resource_name(self.env, attachment.parent))

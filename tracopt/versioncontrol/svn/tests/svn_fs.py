@@ -33,13 +33,13 @@ from genshi.core import Stream
 import trac.tests.compat
 from trac.test import EnvironmentStub, Mock, MockPerm, TestSetup
 from trac.core import TracError
-from trac.mimeview.api import Context
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import DbRepositoryProvider, Changeset, \
                                     InvalidRepository, Node, \
                                     NoSuchChangeset, RepositoryManager
+from trac.web.chrome import web_context
 from trac.web.href import Href
 from tracopt.versioncontrol.svn import svn_fs, svn_prop
 
@@ -58,7 +58,7 @@ def _create_context():
     req = Mock(base_path='', chrome={}, args={}, session={},
                abs_href=Href('/'), href=Href('/'), locale=None,
                perm=MockPerm(), authname='anonymous', tz=utc)
-    return Context.from_request(req)
+    return web_context(req)
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -858,6 +858,18 @@ En r\xe9sum\xe9 ... \xe7a marche.
         node = unicode(result.select('//tr[1]//td[2]'))
         self.assertIn(' title="13-15"', node)
         self.assertIn(' href="/log/repo/missing?revs=13-15"', node)
+
+    def test_render_needslock(self):
+        htdocs_location = 'http://assets.example.org/common'
+        self.env.config.set('trac', 'htdocs_location', htdocs_location)
+        context = _create_context()
+        context.req.chrome['htdocs_location'] = htdocs_location
+        context = context(self.repos.get_node(u'tête', HEAD).resource)
+        renderer = svn_prop.SubversionPropertyRenderer(self.env)
+        result = renderer.render_property('svn:needs-lock', None, context,
+                                          {'svn:needs-lock': '*'})
+        self.assertIn('src="http://assets.example.org/common/lock-locked.png"',
+                      unicode(result))
 
 
 class ScopedTests(object):

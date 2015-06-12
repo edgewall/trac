@@ -27,6 +27,7 @@ from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
 from trac.util import Ranges, to_ranges
 from trac.util.translation import _, tag_
+from trac.web.chrome import chrome_resource_path
 from tracopt.versioncontrol.svn.svn_fs import _path_within_scope
 
 
@@ -153,8 +154,8 @@ class SubversionPropertyRenderer(Component):
                        for label, href, title in externals_data])
 
     def _render_needslock(self, context):
-        return tag.img(src=context.href.chrome('common/lock-locked.png'),
-                       alt=_("needs lock"), title=_("needs lock"))
+        url = chrome_resource_path(context.req, 'common/lock-locked.png')
+        return tag.img(src=url, alt=_("needs lock"), title=_("needs lock"))
 
     def _render_mergeinfo(self, name, mode, context, props):
         rows = []

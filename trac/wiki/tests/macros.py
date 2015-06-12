@@ -43,6 +43,9 @@ def image_setup(tc):
     attachment = Attachment(tc.env, 'wiki', 'page:fr')
     attachment.description = "image in page:fr"
     attachment.insert('img.png', StringIO(''), 0, 2)
+    htdocs_location = 'http://assets.example.org/common'
+    tc.context.req.chrome['htdocs_location'] = htdocs_location
+    tc.env.config.set('trac', 'htdocs_location', htdocs_location)
 
 def image_teardown(tc):
     shutil.rmtree(os.path.join(tc.env.path, 'files'))
@@ -159,6 +162,12 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <p>
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" />
+</p>
+==============================
+[[Image(notfound.png, nolink)]]
+------------------------------
+<p>
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;notfound.png&#34; attached to WikiStart" title="No image &#34;notfound.png&#34; attached to WikiStart" />
 </p>
 """
 

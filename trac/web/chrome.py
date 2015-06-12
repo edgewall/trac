@@ -143,7 +143,7 @@ def add_stylesheet(req, filename, mimetype='text/css', media=None):
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
     """
-    href = _chrome_resource_path(req, filename)
+    href = chrome_resource_path(req, filename)
     add_link(req, 'stylesheet', href, mimetype=mimetype, media=media)
 
 
@@ -161,7 +161,7 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     if filename in scriptset:
         return False # Already added that script
 
-    href = _chrome_resource_path(req, filename)
+    href = chrome_resource_path(req, filename)
     script = {'href': href, 'type': mimetype, 'charset': charset,
               'prefix': Markup('<!--[if %s]>' % ie_if) if ie_if else None,
               'suffix': Markup('<![endif]-->') if ie_if else None}
@@ -351,7 +351,7 @@ def chrome_info_script(req, use_late=None):
     return fragment
 
 
-def _chrome_resource_path(req, filename):
+def chrome_resource_path(req, filename):
     """Get the path for a chrome resource given its `filename`.
 
     If `filename` is a network-path reference (i.e. starts with a protocol
@@ -367,6 +367,9 @@ def _chrome_resource_path(req, filename):
     else:
         href = req.href if filename.startswith('/') else req.href.chrome
         return href(filename)
+
+
+_chrome_resource_path = chrome_resource_path  # will be removed in 1.3.1
 
 
 def _save_messages(req, url, permanent):
