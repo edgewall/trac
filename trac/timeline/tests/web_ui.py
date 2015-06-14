@@ -14,6 +14,7 @@
 import unittest
 from datetime import datetime, timedelta
 
+from trac.perm import PermissionError
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
@@ -22,6 +23,7 @@ from trac.util.datefmt import (
 from trac.util.html import plaintext
 from trac.web.chrome import Chrome
 from trac.web.href import Href
+from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
 class PrettyDateinfoTestCase(unittest.TestCase):
@@ -89,9 +91,38 @@ class PrettyDateinfoTestCase(unittest.TestCase):
         self.assertEqual(label, self._format_timeline(t, 'absolute', True))
 
 
+class TimelinePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
+
+    authz_policy = """\
+[timeline:*]
+user1 = TIMELINE_VIEW
+user2 =
+    """
+
+    def setUp(self):
+        super(TimelinePermissionsTestCase, self).setUp(TimelineModule)
+
+    def test_get_navigation_items_with_timeline_view(self):
+        req = self.create_request('user1', path_info='/timeline')
+        self.assertEqual('timeline', self.get_navigation_items(req).next()[1])
+
+    def test_get_navigation_items_without_timeline_view(self):
+        req = self.create_request('user2', path_info='/timeline')
+        self.assertEqual([], list(self.get_navigation_items(req)))
+
+    def test_process_request_with_timeline_view(self):
+        req = self.create_request('user1', path_info='/timeline')
+        self.assertEqual('timeline.html', self.process_request(req)[0])
+
+    def test_process_request_without_timeline_view(self):
+        req = self.create_request('user2', path_info='/timeline')
+        self.assertRaises(PermissionError, self.process_request, req)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PrettyDateinfoTestCase))
+    suite.addTest(unittest.makeSuite(TimelinePermissionsTestCase))
     return suite
 
 if __name__ == '__main__':

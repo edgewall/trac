@@ -74,7 +74,7 @@ class TimelineModule(Component):
         return 'timeline'
 
     def get_navigation_items(self, req):
-        if 'TIMELINE_VIEW' in req.perm:
+        if 'TIMELINE_VIEW' in req.perm('timeline'):
             yield ('mainnav', 'timeline',
                    tag.a(_("Timeline"), href=req.href.timeline(), accesskey=2))
 
@@ -89,7 +89,7 @@ class TimelineModule(Component):
         return req.path_info == '/timeline'
 
     def process_request(self, req):
-        req.perm.assert_permission('TIMELINE_VIEW')
+        req.perm('timeline').require('TIMELINE_VIEW')
 
         format = req.args.get('format')
         maxrows = int(req.args.get('max', 50 if format == 'rss' else 0))

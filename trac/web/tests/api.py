@@ -57,6 +57,8 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
         kw = {'perm': perm.PermissionCache(self.env, authname), 'args': {},
               'href': self.env.href, 'abs_href': self.env.abs_href,
               'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': Mock(get=lambda k, d=None: d,
+                              set=lambda k, v, d=None: None),
               'authname': authname, 'chrome': {'notices': [], 'warnings': []},
               'method': None, 'get_header': lambda v: None, 'is_xhr': False}
         kw.update(kwargs)
