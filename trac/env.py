@@ -294,13 +294,11 @@ class Environment(Component, ComponentManager):
 
         if create:
             self.create(options)
+            for setup_participant in self.setup_participants:
+                setup_participant.environment_created()
         else:
             self.verify()
             self.setup_config()
-
-        if create:
-            for setup_participant in self.setup_participants:
-                setup_participant.environment_created()
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.path)
