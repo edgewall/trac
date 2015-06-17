@@ -48,7 +48,7 @@ REPOS_PATH = None
 REPOS_NAME = 'repo'
 URL = 'svn://test'
 
-HEAD = 29
+HEAD = 30
 TETE = 26
 
 NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
@@ -166,7 +166,7 @@ class NormalTests(object):
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(HEAD, node.rev)
         self.assertEqual(HEAD, node.created_rev)
-        self.assertEqual(datetime(2014, 4, 14, 16, 49, 44, 990695, utc),
+        self.assertEqual(datetime(2015, 6, 15, 14, 9, 13, 664490, utc),
                          node.last_modified)
         node = self.repos.get_node(u'/tête')
         self.assertEqual(u'tête', node.name)
@@ -349,31 +349,103 @@ Now with fixed width fields:
 En r\xe9sum\xe9 ... \xe7a marche.
 ''', f.get_processed_content().read())
 
-    def test_get_file_content_with_keyword_substitution_27(self):
-        f = self.repos.get_node(u'/tête/Résumé.txt', 27)
+    def test_get_file_content_with_keyword_substitution_30(self):
+        self.maxDiff = None
+        f = self.repos.get_node(u'/branches/v4/Résumé.txt', 30)
         props = f.get_properties()
-        self.assertEqual('Revision Author URL Date Id Header',
-                         props['svn:keywords'])
-        self.assertEqual('''\
-# Simple test for svn:keywords property substitution (#717)
-# $Rev: 26 $:     Revision of last commit
-# $Author: jomae $:  Author of last commit
-# $Date: 2013-04-28 05:36:06 +0000 (Sun, 28 Apr 2013) $:    Date of last commit (now really substituted)
-# $Id: Résumé.txt 26 2013-04-28 05:36:06Z jomae $:      Combination
-
-Now with fixed width fields:
-# $URL:: svn://test/tête/Résumé.txt                $ the configured URL
-# $HeadURL:: svn://test/tête/Résumé.txt            $ same
-# $URL:: svn://test/tê#$ same, but truncated
-# $Header:: svn://test/t\xc3\xaate/R\xc3\xa9sum\xc3\xa9.txt 26 2013-04-#$ combination with URL
-
-Overlapped keywords:
-# $Xxx$Rev: 26 $Xxx$
-# $Rev: 26 $Xxx$Rev: 26 $
-# $Rev: 26 $Rev$Rev: 26 $
-
-En r\xe9sum\xe9 ... \xe7a marche.
-''', f.get_processed_content().read())
+        expected = [
+            '# Simple test for svn:keywords property substitution (#717)',
+            '# $Rev: 30 $:     Revision of last commit',
+            '# $Author: jomae $:  Author of last commit',
+            '# $Date: 2015-06-15 14:09:13 +0000 (Mon, 15 Jun 2015) $:    ' \
+                'Date of last commit (now really substituted)',
+            '# $Id: Résumé.txt 30 2015-06-15 14:09:13Z jomae $:      ' \
+                'Combination',
+            '',
+            'Now with fixed width fields:',
+            '# $URL:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                '          $ the configured URL',
+            '# $HeadURL:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                '      $ same',
+            '# $URL:: svn://test/bra#$ same, but truncated',
+            '# $Header:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                ' 30 20#$ combination with URL',
+            '',
+            'Overlapped keywords:',
+            '# $Xxx$Rev: 30 $Xxx$',
+            '# $Rev: 30 $Xxx$Rev: 30 $',
+            '# $Rev: 30 $Rev$Rev: 30 $',
+            '',
+            'Custom keyword definitions (#11364)',
+            '# $_Author: jomae $:',
+            '# $_Basename: R\xc3\xa9sum\xc3\xa9.txt $:',
+            '# $_ShortDate: 2015-06-15 14:09:13Z $:',
+            '# $_LongDate: 2015-06-15 14:09:13 +0000 (Mon, 15 Jun 2015) $:',
+            '# $_Path: branches/v4/R\xc3\xa9sum\xc3\xa9.txt $:',
+            '# $_Rev: 30 $:',
+            '# $_RootURL: svn://test $:',
+            '# $_URL: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt $:',
+            '# $_Header: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+                '2015-06-15 14:09:13Z jomae $:',
+            '# $_Id: R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+                '2015-06-15 14:09:13Z jomae $:',
+            '# $_Header2: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+                '2015-06-15 14:09:13Z jomae $:',
+            '# $_Id2: R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+                '2015-06-15 14:09:13Z jomae $:',
+            '# $_t\xc3\xa9t\xc3\xa9: jomae $:',
+            '# $42: jomae $:',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '123456789012345678901234567890123456789: j $:',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '1234567890123456789012345678901234567890:  $:',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901$:',
+            '# $_TooLong: branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+                'br $:',
+            '',
+            'Custom keyword definitions with fixed width',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '1234567890123456789012345678901234:: jomae $',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '1234567890123456789012345678901234::        $',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678:: j#$',
+            '# $123456789012345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678901234567890' \
+                '12345678901234567890123456789012345678::    $',
+        ]
+        self.assertEqual(expected,
+                         f.get_processed_content().read().splitlines())
 
     def test_created_path_rev(self):
         node = self.repos.get_node(u'/tête/README3.txt', 15)
