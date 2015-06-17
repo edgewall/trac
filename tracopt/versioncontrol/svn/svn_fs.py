@@ -1147,9 +1147,11 @@ class FileContentStream(object):
         'header': ['Header'],
         }
     KEYWORDS = reduce(set.union, map(set, KEYWORD_GROUPS.values()))
+    KEYWORD_SPLIT_RE = re.compile(r'[ \t\v\n\b\r\f]+')
+    KEYWORD_EXPAND_RE = re.compile(r'%[abdDPrRu_%HI]')
     NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
     NEWLINES = {'LF': '\n', 'CRLF': '\r\n', 'CR': '\r', 'native': NATIVE_EOL}
-    KEYWORD_MAX_SIZE = 256
+    KEYWORD_MAX_SIZE = 255
     CHUNK_SIZE = 4096
 
     keywords_re = None
@@ -1166,9 +1168,8 @@ class FileContentStream(object):
         # Note: we _must_ use a detached pool here, as the lifetime of
         # this object can exceed those of the node or even the repository
         if keyword_substitution:
-            keywords = (node._get_prop(core.SVN_PROP_KEYWORDS) or '').split()
-            self.keywords = self._get_keyword_values(set(keywords) &
-                                                 set(self.KEYWORDS))
+            self.keywords = self._get_keyword_values(
+                                        node._get_prop(core.SVN_PROP_KEYWORDS))
             self.keywords_re = self._build_keywords_re(self.keywords)
         if self.NEWLINES.get(eol, '\n') != '\n' and \
            node._get_prop(core.SVN_PROP_EOL_STYLE) == 'native':
@@ -1199,30 +1200,51 @@ class FileContentStream(object):
     def _get_revprop(self, name):
         return fs.revision_prop(self.fs_ptr, self.node.rev, name, self.pool())
 
+    def _split_keywords(self, keywords):
+        return filter(None, self.KEYWORD_SPLIT_RE.split(keywords or ''))
+
     def _get_keyword_values(self, keywords):
+        keywords = self._split_keywords(keywords)
         if not keywords:
             return None
 
         node = self.node
         mtime = to_datetime(node.last_modified, utc)
         shortdate = mtime.strftime('%Y-%m-%d %H:%M:%SZ')
+        longdate = mtime.strftime('%Y-%m-%d %H:%M:%S +0000 (%a, %d %b %Y)')
         created_rev = unicode(node.created_rev)
         # Note that the `to_unicode` has a small probability to mess-up binary
         # properties, see #4321.
         author = to_unicode(self._get_revprop(core.SVN_PROP_REVISION_AUTHOR))
-        url = node.repos.get_path_url(node.path, node.rev) or node.path
+        path = node.path.lstrip('/')
+        url = node.repos.get_path_url(path, node.rev) or path
+        root_url = node.repos.get_path_url('', node.rev) or '/'
+        id_ = ' '.join((node.name, created_rev, shortdate, author))
         data = {
-            'rev': created_rev, 'author': author, 'url': url,
-            'date': mtime.strftime('%Y-%m-%d %H:%M:%S +0000 (%a, %d %b %Y)'),
-            'id': ' '.join((posixpath.basename(node.path), created_rev,
-                            shortdate, author)),
+            'rev': created_rev, 'author': author, 'url': url, 'date': longdate,
+            'id': id_,
             'header': ' '.join((url, created_rev, shortdate, author)),
-            }
+            '%a': author, '%b': node.name, '%d': shortdate, '%D': longdate,
+            '%P': path, '%r': created_rev, '%R': root_url, '%u': url,
+            '%_': ' ', '%%': '%', '%I': id_,
+            '%H': ' '.join((path, created_rev, shortdate, author)),
+        }
+
+        def expand(match):
+            match = match.group(0)
+            return data.get(match, match)
+
         values = {}
         for name, aliases in self.KEYWORD_GROUPS.iteritems():
-            if any(kw for kw in aliases if kw in keywords):
-                for kw in aliases:
-                    values[kw] = data[name]
+            if any(kw in keywords for kw in aliases):
+                values.update((kw, data[name]) for kw in aliases)
+        for keyword in keywords:
+            if '=' not in keyword:
+                continue
+            name, definition = keyword.split('=', 1)
+            if name not in self.KEYWORDS:
+                values[name] = self.KEYWORD_EXPAND_RE.sub(expand, definition)
+
         if values:
             return dict((key, value.encode('utf-8'))
                         for key, value in values.iteritems())
@@ -1234,12 +1256,11 @@ class FileContentStream(object):
             return re.compile("""
                 [$]
                 (?P<keyword>%s)
-                (?P<rest>
-                    (?: :[ ][^$\r\n]+?[ ]
-                    |   ::[ ][^$\r\n]+?[ #]
-                    )
+                (?:
+                    :[ ][^$\r\n]+?[ ]   |
+                    ::[ ](?P<fixed>[^$\r\n]+?)[ #]
                 )?
-                [$]""" % '|'.join(keywords),
+                [$]""" % '|'.join(map(re.escape, keywords)),
                 re.VERBOSE)
         else:
             return None
@@ -1306,15 +1327,16 @@ class FileContentStream(object):
             data = data.replace('\n', self.newline)
         return data
 
-    def _translate_keyword(self, buffer, match):
+    def _translate_keyword(self, text, match):
         keyword = match.group('keyword')
         value = self.keywords.get(keyword)
         if value is None:
-            return buffer
-        rest = match.group('rest')
-        if rest is None or not rest.startswith('::'):
-            return '$%s: %s $' % (keyword, value)
-        elif len(rest) - 4 >= len(value):
-            return '$%s:: %-*s $' % (keyword, len(rest) - 4, value)
+            return text
+        fixed = match.group('fixed')
+        if fixed is None:
+            n = self.KEYWORD_MAX_SIZE - len(keyword) - 5
+            return '$%s: %.*s $' % (keyword, n, value) if n >= 0 else text
         else:
-            return '$%s:: %s#$' % (keyword, value[:len(rest) - 4])
+            n = len(fixed)
+            return '$%s:: %-*.*s%s$' % \
+                   (keyword, n, n, value, '#' if n < len(value) else ' ')
