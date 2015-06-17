@@ -1279,7 +1279,7 @@ class TicketModule(Component):
             valid = False
 
         # Validate summary length
-        if len(ticket['summary']) > self.max_summary_size:
+        if len(ticket['summary'] or '') > self.max_summary_size:
             add_warning(req, _("Ticket summary is too long (must be less "
                                "than %(num)s characters)",
                                num=self.max_summary_size))
