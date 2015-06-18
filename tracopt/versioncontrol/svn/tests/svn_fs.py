@@ -298,12 +298,12 @@ class NormalTests(object):
 # $Date$:    Date of last commit (not substituted)
 
 Now with fixed width fields:
-# $URL:: svn://test/tête/Résumé.txt                $ the configured URL
-# $HeadURL:: svn://test/tête/Résumé.txt            $ same
-# $URL:: svn://test/tê#$ same, but truncated
+# $URL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt    $ the configured URL
+# $HeadURL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.tx#$ same
+# $URL:: svn://test/t%C#$ same, but truncated
 
 En r\xe9sum\xe9 ... \xe7a marche.
-''', f.get_processed_content().read())
+'''.splitlines(), f.get_processed_content().read().splitlines())
     # Note: "En résumé ... ça marche." in the content is really encoded in
     #       latin1 in the file, and our substitutions are UTF-8 encoded...
     #       This is expected.
@@ -320,13 +320,13 @@ En r\xe9sum\xe9 ... \xe7a marche.
 # $Id: Résumé.txt 24 2013-04-27 14:38:50Z cboos $:      Combination
 
 Now with fixed width fields:
-# $URL:: svn://test/t\xc3\xaate/R\xc3\xa9sum\xc3\xa9.txt                $ the configured URL
-# $HeadURL:: svn://test/t\xc3\xaate/R\xc3\xa9sum\xc3\xa9.txt            $ same
-# $URL:: svn://test/t\xc3\xaa#$ same, but truncated
+# $URL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt    $ the configured URL
+# $HeadURL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.tx#$ same
+# $URL:: svn://test/t%C#$ same, but truncated
 # $Header::                                           $ combination with URL
 
 En r\xe9sum\xe9 ... \xe7a marche.
-''', f.get_processed_content().read())
+'''.splitlines(), f.get_processed_content().read().splitlines())
 
     def test_get_file_content_with_keyword_substitution_25(self):
         f = self.repos.get_node(u'/tête/Résumé.txt', 25)
@@ -341,13 +341,13 @@ En r\xe9sum\xe9 ... \xe7a marche.
 # $Id: Résumé.txt 25 2013-04-27 14:43:15Z cboos $:      Combination
 
 Now with fixed width fields:
-# $URL:: svn://test/tête/Résumé.txt                $ the configured URL
-# $HeadURL:: svn://test/tête/Résumé.txt            $ same
-# $URL:: svn://test/tê#$ same, but truncated
-# $Header:: svn://test/t\xc3\xaate/R\xc3\xa9sum\xc3\xa9.txt 25 2013-04-#$ combination with URL
+# $URL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt    $ the configured URL
+# $HeadURL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.tx#$ same
+# $URL:: svn://test/t%C#$ same, but truncated
+# $Header:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt#$ combination with URL
 
 En r\xe9sum\xe9 ... \xe7a marche.
-''', f.get_processed_content().read())
+'''.splitlines(), f.get_processed_content().read().splitlines())
 
     def test_get_file_content_with_keyword_substitution_30(self):
         self.maxDiff = None
@@ -363,13 +363,12 @@ En r\xe9sum\xe9 ... \xe7a marche.
                 'Combination',
             '',
             'Now with fixed width fields:',
-            '# $URL:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                '          $ the configured URL',
-            '# $HeadURL:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                '      $ same',
+            '# $URL:: svn://test/branches/v4/R%C3%A9sum%C3%A9.txt  $ ' \
+                'the configured URL',
+            '# $HeadURL:: svn://test/branches/v4/R%C3%A9sum%C3%A9.#$ same',
             '# $URL:: svn://test/bra#$ same, but truncated',
-            '# $Header:: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                ' 30 20#$ combination with URL',
+            '# $Header:: svn://test/branches/v4/R%C3%A9sum%C3%A9.t#$ ' \
+                'combination with URL',
             '',
             'Overlapped keywords:',
             '# $Xxx$Rev: 30 $Xxx$',
@@ -384,7 +383,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
             '# $_Path: branches/v4/R\xc3\xa9sum\xc3\xa9.txt $:',
             '# $_Rev: 30 $:',
             '# $_RootURL: svn://test $:',
-            '# $_URL: svn://test/branches/v4/R\xc3\xa9sum\xc3\xa9.txt $:',
+            '# $_URL: svn://test/branches/v4/R%C3%A9sum%C3%A9.txt $:',
             '# $_Header: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 ' \
                 '2015-06-15 14:09:13Z jomae $:',
             '# $_Id: R\xc3\xa9sum\xc3\xa9.txt 30 ' \
@@ -486,6 +485,24 @@ En r\xe9sum\xe9 ... \xe7a marche.
     def test_get_annotations_with_urlencoded_percent_sign(self):
         node = self.repos.get_node(u'/branches/t10386/READ%25ME.txt')
         self.assertEqual([14], node.get_annotations())
+
+    def test_get_path_url(self):
+        self.assertEqual('svn://test', self.repos.get_path_url('', 42))
+        self.assertEqual('svn://test', self.repos.get_path_url('/', 42))
+        self.assertEqual('svn://test/path/to/file.txt',
+                         self.repos.get_path_url('path/to/file.txt', 42))
+        self.assertEqual('svn://test/path/to/file.txt',
+                         self.repos.get_path_url('/path/to/file.txt', 42))
+        self.assertEqual('svn://test/trunk%25/Resume%25.txt',
+                         self.repos.get_path_url('trunk%/Resume%.txt', 42))
+        self.assertEqual('svn://test/trunk%23/Resume%23.txt',
+                         self.repos.get_path_url('trunk#/Resume#.txt', 42))
+        self.assertEqual('svn://test/trunk%3F/Resume%3F.txt',
+                         self.repos.get_path_url('trunk?/Resume?.txt', 42))
+        self.assertEqual('svn://test/trunk%40/Resume.txt%4042',
+                         self.repos.get_path_url('trunk@/Resume.txt@42', 42))
+        self.assertEqual('svn://test/tr%C3%BCnk/R%C3%A9sum%C3%A9.txt',
+                         self.repos.get_path_url(u'trünk/Résumé.txt', 42))
 
     # Revision Log / node history
 
