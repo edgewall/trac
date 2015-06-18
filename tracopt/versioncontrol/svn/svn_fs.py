@@ -67,6 +67,7 @@ from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import from_utimestamp, to_datetime, utc
+from trac.web.href import Href
 
 
 application_pool = None
@@ -484,9 +485,10 @@ class SubversionRepository(Repository):
         """
         url = self.params.get('url', '').rstrip('/')
         if url:
-            if not path or path == '/':
-                return url
-            return url + '/' + path.lstrip('/')
+            href = Href(url)
+            if path:
+                path = path.lstrip('/')
+            return href(path)
 
     def get_changeset(self, rev):
         """Produce a `SubversionChangeset` from given revision
