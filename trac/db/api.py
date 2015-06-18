@@ -423,6 +423,14 @@ class DatabaseManager(Component):
     def get_exceptions(self):
         return self.get_connector()[0].get_exceptions()
 
+    def get_table_names(self):
+        """Returns a list of the table names.
+
+        :since: 1.1.6
+        """
+        with self.env.db_query as db:
+            return db.get_table_names()
+
     def set_database_version(self, version, name='database_version'):
         """Sets the database version in the SYSTEM table.
 

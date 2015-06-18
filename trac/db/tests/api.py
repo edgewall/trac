@@ -485,13 +485,11 @@ class ConnectionTestCase(unittest.TestCase):
 
         self.assertEqual(43, last_id)
 
-    def test_table_names(self):
+    def test_get_table_names(self):
         schema = default_schema + self.schema
         with self.env.db_query as db:
-            db_tables = db.get_table_names()
-            self.assertEqual(len(schema), len(db_tables))
-            for table in schema:
-                self.assertIn(table.name, db_tables)
+            self.assertEqual(sorted(table.name for table in schema),
+                             sorted(db.get_table_names()))
 
     def test_get_column_names(self):
         schema = default_schema + self.schema
@@ -517,6 +515,11 @@ class DatabaseManagerTestCase(unittest.TestCase):
         `database_version`.
         """
         self.assertEqual(default_db_version, self.dbm.get_database_version())
+
+    def test_get_table_names(self):
+        """Get table names for the default database."""
+        self.assertEqual(sorted(table.name for table in default_schema),
+                         sorted(self.dbm.get_table_names()))
 
     def test_set_default_database_version(self):
         """Set database version for the default entry named
