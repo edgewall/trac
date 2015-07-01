@@ -56,7 +56,7 @@ class QuerySyntaxError(TracError):
 class QueryValueError(TracError):
     """Exception raised when a ticket query has bad constraint values."""
     def __init__(self, errors):
-        TracError.__init__(self, _('Invalid query constraint value'))
+        TracError.__init__(self, _("Invalid query constraint value"))
         self.errors = errors
 
 
@@ -68,19 +68,20 @@ class Query(object):
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
                  rows=None, page=None, max=None, format=None):
         self.env = env
-        self.id = report # if not None, it's the corresponding saved query
+        self.id = report  # if not None, it's the corresponding saved query
         constraints = constraints or []
         if isinstance(constraints, dict):
             constraints = [constraints]
         self.constraints = constraints
         synonyms = TicketSystem(self.env).get_field_synonyms()
-        self.order = synonyms.get(order, order)     # 0.11 compatibility
+        self.order = synonyms.get(order, order)  # 0.11 compatibility
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
         self.format = format
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
+        self.num_items = None
 
         # getting page number (default_page if unspecified)
         if not page:
@@ -90,7 +91,7 @@ class Query(object):
             if self.page < 1:
                 raise ValueError()
         except ValueError:
-            raise TracError(_('Query page %(page)s is invalid.', page=page))
+            raise TracError(_("Query page %(page)s is invalid.", page=page))
 
         # max=0 signifies showing all items on one page
         # max=n will show precisely n items on all pages except the last
@@ -98,14 +99,14 @@ class Query(object):
         if max in ('none', ''):
             max = 0
 
-        if max is None: # meaning unspecified
+        if max is None:  # meaning unspecified
             max = self.items_per_page
         try:
             self.max = int(max)
             if self.max < 0:
                 raise ValueError()
         except ValueError:
-            raise TracError(_('Query max %(max)s is invalid.', max=max))
+            raise TracError(_("Query max %(max)s is invalid.", max=max))
 
         if self.max == 0:
             self.has_more_pages = False
@@ -114,9 +115,9 @@ class Query(object):
             self.has_more_pages = True
             self.offset = self.max * (self.page - 1)
 
-        if rows == None:
+        if rows is None:
             rows = []
-        if verbose and 'description' not in rows: # 0.10 compatibility
+        if verbose and 'description' not in rows:  # 0.10 compatibility
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.time_fields = set(f['name'] for f in self.fields
@@ -170,14 +171,14 @@ class Query(object):
             # from last chars of `field`, get the mode of comparison
             mode = ''
             if field and field[-1] in ('~', '^', '$') \
-                                and not field in cls.substitutions:
+                    and field not in cls.substitutions:
                 mode = field[-1]
                 field = field[:-1]
             if field and field[-1] == '!':
                 mode = '!' + mode
                 field = field[:-1]
             if not field:
-                raise QuerySyntaxError(_('Query filter requires field name'))
+                raise QuerySyntaxError(_("Query filter requires field name"))
             field = kw_synonyms.get(field, field)
             # add mode of comparison and remove escapes
             processed_values = [mode + val.replace(r'\|', '|')
@@ -203,7 +204,7 @@ class Query(object):
     def get_columns(self):
         if not self.cols:
             self.cols = self.get_default_columns()
-        if not 'id' in self.cols:
+        if 'id' not in self.cols:
             # make sure 'id' is always present (needed for permission checks)
             self.cols.insert(0, 'id')
         return self.cols
@@ -263,7 +264,7 @@ class Query(object):
         cols = cols[:7]
         # Make sure the column we order by is visible, if it isn't also
         # the column we group by
-        if not self.order in cols and not self.order == self.group:
+        if self.order not in cols and self.order != self.group:
             cols[-1] = self.order
         return cols
 
@@ -301,9 +302,9 @@ class Query(object):
                 max = self.max
                 if self.group:
                     max += 1
-                sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
+                sql += " LIMIT %d OFFSET %d" % (max, self.offset)
                 if (self.page > int(ceil(float(self.num_items) / self.max)) and
-                    self.num_items != 0):
+                        self.num_items != 0):
                     raise TracError(_("Page %(page)s is beyond the number of "
                                       "pages in the query", page=self.page))
 
@@ -353,7 +354,7 @@ class Query(object):
         Note: `get_resource_url` of a 'query' resource?
         """
         if not isinstance(href, Href):
-            href = href.href # compatibility with the `req` of the 0.10 API
+            href = href.href  # compatibility with the `req` of the 0.10 API
 
         if format is None:
             format = self.format
@@ -425,15 +426,15 @@ class Query(object):
         cols = []
         def add_cols(*args):
             for col in args:
-                if not col in cols:
+                if col not in cols:
                     cols.append(col)
         add_cols(*self.cols)  # remove duplicated cols
-        if self.group and not self.group in cols:
+        if self.group and self.group not in cols:
             add_cols(self.group)
         if self.rows:
             add_cols('reporter', *self.rows)
         add_cols('status', 'priority', 'time', 'changetime', self.order)
-        cols.extend([c for c in self.constraint_cols if not c in cols])
+        cols.extend([c for c in self.constraint_cols if c not in cols])
 
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
         list_fields = [f['name'] for f in self.fields
@@ -441,8 +442,8 @@ class Query(object):
                                     f.get('format') == 'list']
 
         sql = []
-        sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
-                                         if c not in custom_fields]))
+        sql.append("SELECT " + ",".join('t.%s AS %s' % (c, c) for c in cols
+                                        if c not in custom_fields))
         sql.append(",priority.value AS priority_value")
         with self.env.db_query as db:
             for k in [db.quote(k) for k in cols if k in custom_fields]:
@@ -542,7 +543,7 @@ class Query(object):
                 if mode == '~':
                     value = '%' + value + '%'
                 elif mode == '^':
-                    value = value + '%'
+                    value += '%'
                 elif mode == '$':
                     value = '%' + value
                 return ("COALESCE(%s,'') %s%s" % (col, 'NOT ' if neg else '',
@@ -569,8 +570,8 @@ class Query(object):
                             try:
                                 ranges.appendrange(r)
                             except Exception:
-                                errors.append(_('Invalid ticket id list: '
-                                                '%(value)s', value=r))
+                                errors.append(_("Invalid ticket id list: "
+                                                "%(value)s", value=r))
                         ids = []
                         id_clauses = []
                         for a, b in ranges.pairs:
@@ -594,7 +595,7 @@ class Query(object):
                             col = 't.' + db.quote(k)
                         clauses.append("COALESCE(%s,'') %sIN (%s)"
                                        % (col, 'NOT ' if neg else '',
-                                          ','.join(['%s' for val in v])))
+                                          ','.join('%s' for val in v)))
                         args.extend([val[neg:] for val in v])
                     elif v:
                         constraint_sql = [get_constraint_sql(k, val, mode, neg)
@@ -622,7 +623,7 @@ class Query(object):
                 if cached_ids:
                     sql.append(" OR ")
                     sql.append("id in (%s)" %
-                               (','.join([str(id) for id in cached_ids])))
+                               (','.join(str(id) for id in cached_ids)))
 
             sql.append("\nORDER BY ")
             order_cols = [(self.order, self.desc)]
@@ -670,27 +671,23 @@ class Query(object):
 
     @staticmethod
     def get_modes():
-        modes = {}
-        modes['text'] = [
+        modes = {'text': [
             {'name': _("contains"), 'value': "~"},
             {'name': _("doesn't contain"), 'value': "!~"},
             {'name': _("begins with"), 'value': "^"},
             {'name': _("ends with"), 'value': "$"},
             {'name': _("is"), 'value': ""},
             {'name': _("is not"), 'value': "!"},
-        ]
-        modes['textarea'] = [
+        ], 'textarea': [
             {'name': _("contains"), 'value': "~"},
             {'name': _("doesn't contain"), 'value': "!~"},
-        ]
-        modes['select'] = [
+        ], 'select': [
             {'name': _("is"), 'value': ""},
             {'name': _("is not"), 'value': "!"},
-        ]
-        modes['id'] = [
+        ], 'id': [
             {'name': _("is"), 'value': ""},
             {'name': _("is not"), 'value': "!"},
-        ]
+        ]}
         return modes
 
     def template_data(self, context, tickets, orig_list=None, orig_time=None,
@@ -706,7 +703,7 @@ class Query(object):
                         val = val[1:]
                     mode = ''
                     if val[:1] in ('~', '^', '$') \
-                                        and not val in self.substitutions:
+                            and val not in self.substitutions:
                         mode, val = val[:1], val[1:]
                     if req:
                         val = val.replace('$USER', req.authname)
@@ -719,7 +716,7 @@ class Query(object):
         labels = TicketSystem(self.env).get_ticket_field_labels()
 
         headers = [{
-            'name': col, 'label': labels.get(col, _('Ticket')),
+            'name': col, 'label': labels.get(col, _("Ticket")),
             'field': self.fields.by_name(col, {}),
             'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
@@ -768,11 +765,11 @@ class Query(object):
             del tickets[-1]
             if len(groupsequence[-1][1]) == 1:
                 # additional ticket started a new group
-                del groupsequence[-1] # remove that additional group
+                del groupsequence[-1]  # remove that additional group
             else:
                 # additional ticket stayed in the group
                 last_group_is_partial = True
-                del groupsequence[-1][1][-1] # remove the additional ticket
+                del groupsequence[-1][1][-1]  # remove the additional ticket
 
         results = Paginator(tickets,
                             self.page - 1,
@@ -783,12 +780,12 @@ class Query(object):
             if results.has_next_page:
                 next_href = self.get_href(req.href, max=self.max,
                                           page=self.page + 1)
-                add_link(req, 'next', next_href, _('Next Page'))
+                add_link(req, 'next', next_href, _("Next Page"))
 
             if results.has_previous_page:
                 prev_href = self.get_href(req.href, max=self.max,
                                           page=self.page - 1)
-                add_link(req, 'prev', prev_href, _('Previous Page'))
+                add_link(req, 'prev', prev_href, _("Previous Page"))
         else:
             results.show_index = False
 
@@ -796,13 +793,13 @@ class Query(object):
         shown_pages = results.get_shown_pages(21)
         for page in shown_pages:
             pagedata.append([self.get_href(context.href, page=page), None,
-                             str(page), _('Page %(num)d', num=page)])
+                             str(page), _("Page %(num)d", num=page)])
 
         results.shown_pages = [dict(zip(['href', 'class', 'string', 'title'],
                                         p)) for p in pagedata]
         results.current_page = {'href': None, 'class': 'current',
                                 'string': str(results.page + 1),
-                                'title':None}
+                                'title': None}
 
         return {'query': self,
                 'context': context,
@@ -816,6 +813,7 @@ class Query(object):
                 'groups': groupsequence or [(None, tickets)],
                 'last_group_is_partial': last_group_is_partial,
                 'paginator': results}
+
 
 class QueryModule(Component):
 
@@ -848,11 +846,11 @@ class QueryModule(Component):
     # IContentConverter methods
 
     def get_supported_conversions(self):
-        yield ('rss', _('RSS Feed'), 'xml',
+        yield ('rss', _("RSS Feed"), 'xml',
                'trac.ticket.Query', 'application/rss+xml', 8)
-        yield ('csv', _('Comma-delimited Text'), 'csv',
+        yield ('csv', _("Comma-delimited Text"), 'csv',
                'trac.ticket.Query', 'text/csv', 8)
-        yield ('tab', _('Tab-delimited Text'), 'tsv',
+        yield ('tab', _("Tab-delimited Text"), 'tsv',
                'trac.ticket.Query', 'text/tab-separated-values', 8)
 
     def convert_content(self, req, mimetype, query, key):
@@ -876,7 +874,7 @@ class QueryModule(Component):
                  'REPORT_VIEW' not in req.perm('report',
                                                ReportModule.REPORT_LIST_ID)):
             yield ('mainnav', 'tickets',
-                   tag.a(_('View Tickets'), href=req.href.query()))
+                   tag.a(_("View Tickets"), href=req.href.query()))
 
     # IRequestHandler methods
 
@@ -891,7 +889,7 @@ class QueryModule(Component):
 
         constraints = self._get_constraints(req)
         args = req.args
-        if not constraints and not 'order' in req.args:
+        if not constraints and 'order' not in req.args:
             # If no constraints are given in the URL, use the default ones.
             if req.authname and req.authname != 'anonymous':
                 qstring = self.default_query
@@ -941,7 +939,7 @@ class QueryModule(Component):
         format = req.args.get('format')
         max = args.get('max')
         if max is None and format in ('csv', 'tab'):
-            max = 0 # unlimited unless specified explicitly
+            max = 0  # unlimited unless specified explicitly
         order = args.get('order')
         if isinstance(order, (list, tuple)):
             order = order[0] if order else None
@@ -1075,8 +1073,8 @@ class QueryModule(Component):
                 tickets = query.execute(req)
                 # New or outdated query, (re-)initialize session vars
                 req.session['query_constraints'] = query_constraints
-                req.session['query_tickets'] = ' '.join([str(t['id'])
-                                                         for t in tickets])
+                req.session['query_tickets'] = ' '.join(str(t['id'])
+                                                        for t in tickets)
             else:
                 orig_list = [int(id) for id
                              in req.session.get('query_tickets', '').split()]
@@ -1095,9 +1093,8 @@ class QueryModule(Component):
 
         req.session['query_href'] = query.get_href(context.href)
         req.session['query_time'] = to_timestamp(orig_time)
-        req.session['query_tickets'] = ' '.join([str(t['id'])
-                                                 for t in tickets])
-        title = _('Custom Query')
+        req.session['query_tickets'] = ' '.join(str(t['id']) for t in tickets)
+        title = _("Custom Query")
 
         # Only interact with the report module if it is actually enabled.
         #
@@ -1106,10 +1103,10 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         report_resource = Resource('report', query.id)
         if 'REPORT_VIEW' in req.perm(report_resource) and \
-               self.env.is_component_enabled(ReportModule):
+                self.env.is_component_enabled(ReportModule):
             data['report_href'] = req.href.report()
-            add_ctxtnav(req, _('Available Reports'), req.href.report())
-            add_ctxtnav(req, _('Custom Query'), req.href.query())
+            add_ctxtnav(req, _("Available Reports"), req.href.report())
+            add_ctxtnav(req, _("Custom Query"), req.href.query())
             if query.id:
                 for title, description in self.env.db_query("""
                         SELECT title, description FROM report WHERE id=%s
@@ -1236,7 +1233,7 @@ class QueryModule(Component):
                              href=query.get_href(formatter.context.href),
                              class_='query')
             except QuerySyntaxError as e:
-                return tag.em(_('[Error: %(error)s]', error=unicode(e)),
+                return tag.em(_("[Error: %(error)s]", error=unicode(e)),
                               class_='error')
 
 
@@ -1330,15 +1327,15 @@ class TicketQueryMacro(WikiMacroBase):
                 argv.append(arg)
         clauses = filter(None, clauses)
 
-        if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
+        if len(argv) > 0 and 'format' not in kwargs:  # 0.10 compatibility hack
             kwargs['format'] = argv[0]
         if 'order' not in kwargs:
             kwargs['order'] = 'id'
         if 'max' not in kwargs:
-            kwargs['max'] = '0' # unlimited by default
+            kwargs['max'] = '0'  # unlimited by default
 
         format = kwargs.pop('format', 'list').strip().lower()
-        if format in ('list', 'compact'): # we need 'status' and 'summary'
+        if format in ('list', 'compact'):  # we need 'status' and 'summary'
             if 'col' in kwargs:
                 kwargs['col'] = 'status|summary|' + kwargs['col']
             else:
@@ -1388,7 +1385,7 @@ class TicketQueryMacro(WikiMacroBase):
 
             add_stylesheet(req, 'common/css/roadmap.css')
 
-            def query_href(extra_args, group_value = None):
+            def query_href(extra_args, group_value=None):
                 q = query_string + ''.join('&%s=%s' % (kw, v)
                                            for kw in extra_args
                                            if kw not in ['group', 'status']
@@ -1495,7 +1492,7 @@ class TicketQueryMacro(WikiMacroBase):
         else:
             if query.group:
                 return tag.div(
-                    [(tag.p(tag_('%(groupvalue)s %(groupname)s tickets:',
+                    [(tag.p(tag_("%(groupvalue)s %(groupname)s tickets:",
                                  groupvalue=tag.a(v, href=href, class_='query',
                                                   title=title),
                                  groupname=query.group)),
