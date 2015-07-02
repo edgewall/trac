@@ -11,9 +11,16 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
+from datetime import datetime, timedelta
+import difflib
+import unittest
+
 from trac.mimeview.api import Mimeview
 from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
-from trac.ticket.model import Ticket
+from trac.ticket.api import TicketSystem
+from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.api import arg_list_to_args, parse_arg_list
@@ -22,13 +29,12 @@ from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 from trac.wiki.tests import formatter
 
-import unittest
-import difflib
-
 # Note: we don't want to replicate 1:1 all the SQL dialect abstraction
 #       methods from the trac.db layer here.
 
 class QueryTestCase(unittest.TestCase):
+
+    n_tickets = 10
 
     def prettifySQL(self, sql):
         """Returns a prettified version of the SQL as a list of lines to help
@@ -51,9 +57,57 @@ class QueryTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc,
                         locale=locale_en, lc_time=locale_en)
+        self.tktids = self._insert_tickets(
+            owner=[None, '', 'someone', 'someone_else', 'none'],
+            status=[None, '', 'new', 'assigned', 'reopened', 'closed'],
+            priority=[None, '', 'blocker', 'critical', 'major', 'minor',
+                      'trivial'],
+            milestone=[None, '', 'milestone1', 'milestone2'],
+            version=[None, '', '0.0', 'version1', '1.0', '2.0'],
+            keywords=[None, '', 'foo', 'bar', 'baz', 'foo bar', 'bar baz',
+                      'foo baz', 'foo bar baz'])
+        dt = datetime(2008, 7, 1, 12, tzinfo=utc)
+        with self.env.db_transaction:
+            for name in ('milestone1', 'milestone2'):
+                milestone = Milestone(self.env, name)
+                milestone.due = dt
+                milestone.update()
+            for name in ('1.0', '2.0'):
+                version = Version(self.env, name)
+                version.time = dt
+                version.update()
+        tktsys = TicketSystem(self.env)
+        tktsys.reset_ticket_fields()
+        del tktsys.custom_fields
 
     def tearDown(self):
         self.env.reset_db()
+
+    def _insert_tickets(self, owner, status, priority, milestone, version,
+                        keywords):
+        when = datetime(2008, 7, 1, 12, 34, 56, 987654, utc)
+        with self.env.db_transaction:
+            ids = []
+            for idx in xrange(self.n_tickets):
+                t = Ticket(self.env)
+                t['summary'] = 'Summary %d' % idx
+                t['owner'] = owner[idx % len(owner)]
+                t['status'] = status[idx % len(status)]
+                t['priority'] = priority[idx % len(priority)]
+                t['milestone'] = milestone[idx % len(milestone)]
+                t['version'] = version[idx % len(version)]
+                t['keywords'] = keywords[idx % len(keywords)]
+                ids.append(t.insert(when=when + timedelta(days=idx * 10)))
+                t.save_changes(comment='...',
+                               when=when + timedelta(days=idx * 10 + 1))
+        return ids
+
+    def _update_tickets(self, name, values):
+        with self.env.db_transaction:
+            for idx, tktid in enumerate(self.tktids):
+                t = Ticket(self.env, tktid)
+                t[name] = values[idx % len(values)]
+                t.save_changes()
 
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
@@ -65,6 +119,8 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(self.n_tickets, len(tickets))
+        self.assertTrue(tickets[0]['id'] < tickets[-1]['id'])
 
     def test_all_ordered_by_id_desc(self):
         query = Query(self.env, order='id', desc=1)
@@ -76,6 +132,8 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0 DESC,t.id DESC""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(self.n_tickets, len(tickets))
+        self.assertTrue(tickets[0]['id'] > tickets[-1]['id'])
 
     def test_all_ordered_by_id_verbose(self):
         query = Query(self.env, order='id', verbose=1)
@@ -87,6 +145,7 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(self.n_tickets, len(tickets))
 
     def test_all_ordered_by_id_from_unicode(self):
         query = Query.from_string(self.env, u'order=id')
@@ -98,6 +157,7 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(self.n_tickets, len(tickets))
 
     def test_all_ordered_by_priority(self):
         query = Query(self.env) # priority is default order
@@ -110,6 +170,9 @@ ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': self.env.get_read_db().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['blocker', 'blocker', 'critical', 'major', 'minor',
+                          'trivial', '', '', '', ''],
+                         [t['priority'] for t in tickets])
 
     def test_all_ordered_by_priority_desc(self):
         query = Query(self.env, desc=1) # priority is default order
@@ -122,6 +185,9 @@ ORDER BY COALESCE(priority.value,'')='' DESC,%(cast_priority)s DESC,t.id""" % {
           'cast_priority': self.env.get_read_db().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', '', '', 'trivial', 'minor', 'major',
+                          'critical', 'blocker', 'blocker'],
+                         [t['priority'] for t in tickets])
 
     def test_all_ordered_by_version(self):
         query = Query(self.env, order='version')
@@ -134,6 +200,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.version,'')='',COALESCE(version.time,0)=0,version.time,t.version,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['1.0', '2.0', '0.0', '0.0', 'version1', 'version1',
+                          '', '', '', ''],
+                         [t['version'] for t in tickets])
 
     def test_all_ordered_by_version_desc(self):
         query = Query(self.env, order='version', desc=1)
@@ -146,6 +215,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.version,'')='' DESC,COALESCE(version.time,0)=0 DESC,version.time DESC,t.version DESC,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', '', '', 'version1', 'version1', '0.0', '0.0',
+                          '2.0', '1.0'],
+                         [t['version'] for t in tickets])
 
     def test_constrained_by_milestone(self):
         query = Query.from_string(self.env, 'milestone=milestone1', order='id')
@@ -158,6 +230,8 @@ WHERE ((COALESCE(t.milestone,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['milestone1', 'milestone1'],
+                         [t['milestone'] for t in tickets])
 
     def test_all_grouped_by_milestone(self):
         query = Query(self.env, order='id', group='milestone')
@@ -170,6 +244,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.completed,0)=0,milestone.completed,COALESCE(milestone.due,0)=0,milestone.due,t.milestone,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['milestone1', 'milestone1', 'milestone2',
+                          'milestone2', '', '', '', '', '', ''],
+                         [t['milestone'] for t in tickets])
 
     def test_all_grouped_by_milestone_desc(self):
         query = Query(self.env, order='id', group='milestone', groupdesc=1)
@@ -182,6 +259,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC,milestone.completed DESC,COALESCE(milestone.due,0)=0 DESC,milestone.due DESC,t.milestone DESC,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', '', '', '', '', 'milestone2', 'milestone2',
+                          'milestone1', 'milestone1'],
+                         [t['milestone'] for t in tickets])
 
     def test_grouped_by_priority(self):
         query = Query(self.env, group='priority')
@@ -194,6 +274,9 @@ ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': self.env.get_read_db().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['blocker', 'blocker', 'critical', 'major', 'minor',
+                          'trivial', '', '', '', ''],
+                         [t['priority'] for t in tickets])
 
     def test_constrained_by_milestone_not(self):
         query = Query.from_string(self.env, 'milestone!=milestone1', order='id')
@@ -206,6 +289,8 @@ WHERE ((COALESCE(t.milestone,'')!=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'milestone2', '', '', 'milestone2', '', ''],
+                         [t['milestone'] for t in tickets])
 
     def test_constrained_by_status(self):
         query = Query.from_string(self.env, 'status=new|assigned|reopened',
@@ -219,6 +304,8 @@ WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['new', 'assigned', 'reopened'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['new', 'assigned', 'reopened', 'new', 'assigned'],
+                         [t['status'] for t in tickets])
 
     def test_constrained_by_owner_containing(self):
         query = Query.from_string(self.env, 'owner~=someone', order='id')
@@ -231,6 +318,9 @@ WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'someone',
+                          'someone_else'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_owner_not_containing(self):
         query = Query.from_string(self.env, 'owner!~=someone', order='id')
@@ -243,6 +333,8 @@ WHERE ((COALESCE(t.owner,'') NOT %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'none', '', '', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_owner_beginswith(self):
         query = Query.from_string(self.env, 'owner^=someone', order='id')
@@ -255,6 +347,9 @@ WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqual(['someone%'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'someone',
+                          'someone_else'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_owner_endswith(self):
         query = Query.from_string(self.env, 'owner$=someone', order='id')
@@ -267,9 +362,11 @@ WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqual(['%someone'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone'], [t['owner'] for t in tickets])
 
     def test_constrained_by_custom_field(self):
         self.env.config.set('ticket-custom', 'foo', 'text')
+        self._update_tickets('foo', [None, '', 'something'])
         query = Query.from_string(self.env, 'foo=something', order='id')
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
@@ -284,9 +381,11 @@ WHERE ((COALESCE(t.%s,'')=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 4))
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['something'] * 3, [t['foo'] for t in tickets])
 
     def test_grouped_by_custom_field(self):
         self.env.config.set('ticket-custom', 'foo', 'text')
+        self._update_tickets('foo', [None, '', 'something'])
         query = Query(self.env, group='foo', order='id')
         sql, args = query.get_sql()
         foo = self.env.get_read_db().quote('foo')
@@ -301,6 +400,8 @@ ORDER BY COALESCE(t.%s,'')='',t.%s,COALESCE(t.id,0)=0,t.id""" %
         ((foo,) * 5))
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['something'] * 3 + [''] * 7,
+                         [t['foo'] for t in tickets])
 
     def test_constrained_by_id_ranges(self):
         query = Query.from_string(self.env, 'id=42,44,51-55&order=id')
@@ -374,6 +475,9 @@ WHERE (COALESCE(t.owner,'') IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'someone',
+                          'someone_else'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_multiple_owners_not(self):
         query = Query.from_string(self.env, 'owner!=someone|someone_else',
@@ -387,6 +491,8 @@ WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'none', '', '', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_multiple_owners_contain(self):
         query = Query.from_string(self.env, 'owner~=someone|someone_else',
@@ -400,6 +506,65 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'') %(like)s OR COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'someone',
+                          'someone_else'],
+                         [t['owner'] for t in tickets])
+
+    def test_constrained_by_an_empty_value(self):
+        query = Query.from_string(self.env, 'owner=', order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((COALESCE(t.owner,'')=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([''], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['', '', '', ''], [t['owner'] for t in tickets])
+
+    def test_constrained_by_an_empty_value_not(self):
+        query = Query.from_string(self.env, 'owner!=', order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((COALESCE(t.owner,'')!=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([''], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'none', 'someone',
+                          'someone_else', 'none'],
+                         [t['owner'] for t in tickets])
+
+    def test_constrained_by_empty_values(self):
+        query = Query.from_string(self.env, 'owner=|', order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (COALESCE(t.owner,'') IN (%s,%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual(['', ''], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['', '', '', ''], [t['owner'] for t in tickets])
+
+    def test_constrained_by_empty_values_not(self):
+        query = Query.from_string(self.env, 'owner!=|', order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual(['', ''], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['someone', 'someone_else', 'none', 'someone',
+                          'someone_else', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_empty_value_contains(self):
         query = Query.from_string(self.env, 'owner~=|', order='id')
@@ -411,6 +576,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
+                          'someone', 'someone_else', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_empty_value_startswith(self):
         query = Query.from_string(self.env, 'owner^=|', order='id')
@@ -422,6 +590,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
+                          'someone', 'someone_else', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_empty_value_endswith(self):
         query = Query.from_string(self.env, 'owner$=|', order='id')
@@ -433,6 +604,9 @@ FROM ticket AS t
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
+                          'someone', 'someone_else', 'none'],
+                         [t['owner'] for t in tickets])
 
     def test_constrained_by_time_range(self):
         query = Query.from_string(self.env, 'created=2008-08-01..2008-09-01', order='id')
@@ -446,6 +620,10 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': self.env.get_read_db().cast('t.time', 'int64')})
         self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
+                          '2008-08-20T12:34:56.987654+00:00',
+                          '2008-08-30T12:34:56.987654+00:00'],
+                         [t['time'].isoformat() for t in tickets])
 
     def test_constrained_by_time_range_exclusion(self):
         query = Query.from_string(self.env, 'created!=2008-08-01..2008-09-01', order='id')
@@ -459,6 +637,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': self.env.get_read_db().cast('t.time', 'int64')})
         self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
+                          '2008-07-11T12:34:56.987654+00:00',
+                          '2008-07-21T12:34:56.987654+00:00',
+                          '2008-07-31T12:34:56.987654+00:00',
+                          '2008-09-09T12:34:56.987654+00:00',
+                          '2008-09-19T12:34:56.987654+00:00',
+                          '2008-09-29T12:34:56.987654+00:00'],
+                         [t['time'].isoformat() for t in tickets])
 
     def test_constrained_by_time_range_open_right(self):
         query = Query.from_string(self.env, 'created=2008-08-01..', order='id')
@@ -472,6 +658,13 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': self.env.get_read_db().cast('t.time', 'int64')})
         self.assertEqual([1217548800000000L], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
+                          '2008-08-20T12:34:56.987654+00:00',
+                          '2008-08-30T12:34:56.987654+00:00',
+                          '2008-09-09T12:34:56.987654+00:00',
+                          '2008-09-19T12:34:56.987654+00:00',
+                          '2008-09-29T12:34:56.987654+00:00'],
+                         [t['time'].isoformat() for t in tickets])
 
     def test_constrained_by_time_range_open_left(self):
         query = Query.from_string(self.env, 'created=..2008-09-01', order='id')
@@ -485,6 +678,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': self.env.get_read_db().cast('t.time', 'int64')})
         self.assertEqual([1220227200000000L], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
+                          '2008-07-11T12:34:56.987654+00:00',
+                          '2008-07-21T12:34:56.987654+00:00',
+                          '2008-07-31T12:34:56.987654+00:00',
+                          '2008-08-10T12:34:56.987654+00:00',
+                          '2008-08-20T12:34:56.987654+00:00',
+                          '2008-08-30T12:34:56.987654+00:00'],
+                         [t['time'].isoformat() for t in tickets])
 
     def test_constrained_by_time_range_modified(self):
         query = Query.from_string(self.env, 'modified=2008-08-01..2008-09-01', order='id')
@@ -498,6 +699,11 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_changetime': self.env.get_read_db().cast('t.changetime', 'int64')})
         self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['2008-08-01T12:34:56.987654+00:00',
+                          '2008-08-11T12:34:56.987654+00:00',
+                          '2008-08-21T12:34:56.987654+00:00',
+                          '2008-08-31T12:34:56.987654+00:00'],
+                         [t['changetime'].isoformat() for t in tickets])
 
     def test_constrained_by_keywords(self):
         query = Query.from_string(self.env, 'keywords~=foo -bar baz',
@@ -511,6 +717,23 @@ WHERE (((COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
         tickets = query.execute(self.req)
+        self.assertEqual(['foo baz'], [t['keywords'] for t in tickets])
+
+    def test_constrained_by_keywords_not(self):
+        query = Query.from_string(self.env, 'keywords!~=foo -bar baz',
+                                  order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.keywords AS keywords,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((NOT (COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_read_db().like()})
+        self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['', '', 'foo', 'bar', 'baz', 'foo bar', 'bar baz',
+                          'foo bar baz', ''],
+                         [t['keywords'] for t in tickets])
 
     def test_constrained_by_milestone_or_version(self):
         query = Query.from_string(self.env, 'milestone=milestone1&or&version=version1', order='id')
@@ -523,6 +746,11 @@ WHERE ((COALESCE(t.milestone,'')=%s)) OR ((COALESCE(t.version,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1', 'version1'], args)
         tickets = query.execute(self.req)
+        self.assertEqual([('milestone1', '0.0'),
+                          ('milestone2', 'version1'),
+                          ('milestone1', ''),
+                          ('',           'version1')],
+                         [(t['milestone'], t['version']) for t in tickets])
 
     def test_equal_in_value(self):
         query = Query.from_string(self.env, r'status=this=that&version=version1',
