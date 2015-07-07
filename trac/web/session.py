@@ -20,13 +20,14 @@
 
 from __future__ import with_statement
 
+import re
 import sys
 import time
 
 from trac.admin.api import console_date_format, get_console_locale
 from trac.core import TracError, Component, implements
 from trac.util import hex_entropy
-from trac.util.text import print_table, to_utf8
+from trac.util.text import print_table
 from trac.util.translation import _
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, to_datetime, to_timestamp
@@ -224,9 +225,13 @@ class Session(DetachedSession):
         if sys.version_info >= (2, 6):
             self.req.outcookie[COOKIE_KEY]['httponly'] = True
 
+    _valid_sid_re = re.compile(r'[_A-Za-z0-9]+\Z')
+
     def get_session(self, sid, authenticated=False):
         refresh_cookie = False
 
+        if not self._valid_sid_re.match(sid):
+            raise TracError(_("Session ID must be alphanumeric."))
         if self.sid and sid != self.sid:
             refresh_cookie = True
 
@@ -244,7 +249,7 @@ class Session(DetachedSession):
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
-        if not to_utf8(new_sid).isalnum():
+        if not self._valid_sid_re.match(new_sid):
             raise TracError(_("Session ID must be alphanumeric."),
                             _("Error renaming session"))
         with self.env.db_transaction as db:

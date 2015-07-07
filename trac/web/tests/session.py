@@ -584,6 +584,24 @@ class SessionTestCase(unittest.TestCase):
         result = get_session_info(self.env, anon_list[1][0])
         self.assertEqual(result, ('name11', 'val11', 'val11'))
 
+    def test_session_get_session_with_invalid_sid(self):
+        cookie = Cookie()
+        req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
+                   base_path='/')
+        session = Session(self.env, req)
+        session.get_session('0123456789')
+        self.assertEqual('0123456789', session.sid)
+        session.get_session('abcxyz')
+        self.assertEqual('abcxyz', session.sid)
+        session.get_session('abc123xyz')
+        self.assertEqual('abc123xyz', session.sid)
+        self.assertRaises(TracError, session.get_session, 'abc 123 xyz')
+        self.assertRaises(TracError, session.get_session, 'abc-123-xyz')
+        self.assertRaises(TracError, session.get_session, 'abc<i>123</i>xyz')
+        self.assertRaises(TracError, session.get_session, u'abc123xÿz')
+        self.assertRaises(TracError, session.get_session,
+                          u'abc¹₂³xyz')  # Unicode digits
+
     def test_session_change_id_with_invalid_sid(self):
         cookie = Cookie()
         req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
