@@ -114,6 +114,28 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
         tc.notfind('name="accesskeys".*checked="checked"')
 
 
+class RegressionTestTicket11319(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/11319
+        Only alphanumeric characters can be used for session key in advanced
+        panel.
+        """
+        try:
+            self._tester.logout()
+            self._tester.go_to_preferences('Advanced')
+            tc.formvalue('userprefs', 'newsid', 'śeśśion_id')
+            tc.submit('change')
+            tc.notfind(internal_error)
+            tc.find('Session ID must be alphanumeric')
+            self._tester.go_to_preferences('Advanced')
+            tc.formvalue('userprefs', 'loadsid', 'śeśśion_id')
+            tc.submit('restore')
+            tc.notfind(internal_error)
+            tc.find('Session ID must be alphanumeric')
+        finally:
+            self._tester.login('admin')
+
+
 class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/11337
@@ -234,6 +256,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestDefaultHandler())
     suite.addTest(RegressionTestRev5785())
     suite.addTest(RegressionTestTicket5765())
+    suite.addTest(RegressionTestTicket11319())
     suite.addTest(RegressionTestTicket11337())
     suite.addTest(RegressionTestTicket11515())
     suite.addTest(RegressionTestTicket11531())
