@@ -913,7 +913,7 @@ class TicketAttachmentNotifier(Component):
                                   attachment=attachment)
         try:
             NotificationSystem(self.env).notify(event)
-        except Exception, e:
+        except Exception as e:
             self.log.error("Failure sending notification when adding "
                            "attachment %s to ticket #%s: %s",
                            attachment.filename, ticket.id,

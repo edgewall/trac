@@ -1212,7 +1212,7 @@ class Chrome(Component):
                     yield chunk.encode('utf-8') \
                                .translate(_translate_nop,
                                           _invalid_control_chars)
-        except Exception, e:
+        except Exception as e:
             pos = self._stream_location(stream)
             if pos:
                 location = "'%s', line %s, char %s" % pos

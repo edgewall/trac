@@ -1181,7 +1181,7 @@ class Formatter(object):
     def _exec_processor(self, processor, text):
         try:
             return processor.process(text)
-        except Exception, e:
+        except Exception as e:
             self.env.log.error('Processor %s failed:%s', processor.name,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Processor %(name)s failed",

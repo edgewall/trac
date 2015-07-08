@@ -138,7 +138,7 @@ class GitCachedRepository(CachedRepository):
                     try:
                         self.insert_changeset(rev, cset)
                         updated = True
-                    except self.env.db_exc.IntegrityError, e:
+                    except self.env.db_exc.IntegrityError as e:
                         self.log.info('Revision %s already cached: %r', rev, e)
                         continue
                     if feedback:
