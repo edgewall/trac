@@ -353,9 +353,6 @@ class Query(object):
 
         Note: `get_resource_url` of a 'query' resource?
         """
-        if not isinstance(href, Href):
-            href = href.href  # compatibility with the `req` of the 0.10 API
-
         if format is None:
             format = self.format
         if format == 'rss':
@@ -1363,7 +1360,7 @@ class TicketQueryMacro(WikiMacroBase):
             if format == 'rawcount':
                 return tag.span(cnt, title=title, class_='query_count')
             else:
-                return tag.a(cnt, href=query.get_href(formatter.context),
+                return tag.a(cnt, href=query.get_href(formatter.context.href),
                              title=title)
 
         tickets = query.execute(req)
@@ -1401,7 +1398,7 @@ class TicketQueryMacro(WikiMacroBase):
                     constraint.update(args)
                 if not q.constraints:
                     q.constraints.append(args)
-                return q.get_href(formatter.context)
+                return q.get_href(formatter.context.href)
             chrome = Chrome(self.env)
             tickets = apply_ticket_permissions(self.env, req, tickets)
             stats_provider = RoadmapModule(self.env).stats_provider
@@ -1474,7 +1471,7 @@ class TicketQueryMacro(WikiMacroBase):
                 for constraint in q.constraints:
                     constraint[str(query.group)] = v
                 q.order = order
-                href = q.get_href(formatter.context)
+                href = q.get_href(formatter.context.href)
                 groups.append((v, [t for t in g], href, title))
             return groups
 

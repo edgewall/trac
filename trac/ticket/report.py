@@ -371,7 +371,7 @@ class ReportModule(Component):
             try:
                 from trac.ticket.query import Query, QuerySyntaxError
                 query = Query.from_string(self.env, query[6:], report=id)
-                req.redirect(query.get_href(req))
+                req.redirect(query.get_href(req.href))
             except QuerySyntaxError as e:
                 req.redirect(req.href.report(id, action='edit',
                                              error=to_unicode(e)))
