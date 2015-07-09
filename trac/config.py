@@ -23,7 +23,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
 from trac.util import AtomicFile, as_bool
 from trac.util.compat import OrderedDict, wait_for_file_mtime_change
-from trac.util.text import CRLF, cleandoc, printout, to_unicode, to_utf8
+from trac.util.text import cleandoc, printout, to_unicode, to_utf8
 from trac.util.translation import _, N_, tag_
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
@@ -288,9 +288,7 @@ class Configuration(object):
 
         def normalize(section, name, value):
             option = all_options.get(section, {}).get(name)
-            if option:
-                value = option.normalize(to_unicode(value))
-            return value if isinstance(value, str) else to_utf8(value)
+            return option.normalize(value) if option else value
 
         sections = []
         for section in self.sections():
@@ -310,24 +308,21 @@ class Configuration(object):
             if options:
                 sections.append((section, sorted(options)))
 
-        content = ['# -*- coding: utf-8 -*-\n\n']
+        # Contents of parser._sections will be written to file.
+        self.parser._sections.clear()
         for section, options in sections:
-            content.append('[%s]\n' % to_utf8(section))
+            self.parser.add_section(section)
             for key, val in options:
-                key_str = to_utf8(key)
-                val_str = to_utf8(val)
-                val_str = val_str.replace(CRLF, '\n') \
-                                 .replace('\n', '\n ')
-                content.append('%s = %s\n' % (key_str, val_str))
-            content.append('\n')
+                self.parser.set(section, key, val)
 
         try:
-            self._write(content)
-            self._old_sections = deepcopy(self.parser._sections)
+            self._write()
         except Exception:
             # Revert all changes to avoid inconsistencies
             self.parser._sections = deepcopy(self._old_sections)
             raise
+        else:
+            self._old_sections = deepcopy(self.parser._sections)
 
     def parse_if_needed(self, force=False):
         if not self.filename or not os.path.isfile(self.filename):
@@ -395,12 +390,13 @@ class Configuration(object):
             for option in Option.get_registry(compmgr).itervalues():
                 set_option_default(option)
 
-    def _write(self, content):
+    def _write(self):
         if not self.filename:
             return
         wait_for_file_mtime_change(self.filename)
-        with AtomicFile(self.filename, 'w') as fileobj:
-            fileobj.writelines(content)
+        with AtomicFile(self.filename, 'w') as fd:
+            fd.writelines(['# -*- coding: utf-8 -*-\n', '\n'])
+            self.parser.write(fd)
 
 
 class Section(object):

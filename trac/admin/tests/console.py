@@ -13,6 +13,7 @@
 #
 # Author: Tim Moloney <t.moloney@verizon.net>
 
+import copy
 import difflib
 import inspect
 import os
@@ -1518,18 +1519,18 @@ class TracAdminComponentTestCase(unittest.TestCase):
 
     def test_config_component_enable(self):
         self.env.config.save()
-        initial_file = list(self.env.config.file_content)
+        initial_file = copy.deepcopy(self.env.config.parser._sections)
 
         rv, output = self._execute('config set components '
                                    'trac.admin.tests.console.* enabled')
 
         self.assertEqual(0, rv, output)
-        self.assertNotIn('[compa]\n', initial_file)
-        self.assertNotIn('opt1 = 1\n', initial_file)
-        self.assertNotIn('opt2 = 2\n', initial_file)
-        self.assertIn('[compa]\n', self.env.config.file_content)
-        self.assertIn('opt1 = 1\n', self.env.config.file_content)
-        self.assertIn('opt2 = 2\n', self.env.config.file_content)
+        self.assertNotIn('compa', initial_file)
+        self.assertIn('compa', self.env.config.parser._sections)
+        self.assertIn(('opt1', '1'),
+                      self.env.config.parser._sections['compa'].items())
+        self.assertIn(('opt2', '2'),
+                      self.env.config.parser._sections['compa'].items())
 
 
 def suite():

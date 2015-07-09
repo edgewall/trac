@@ -585,6 +585,45 @@ class ConfigurationTestCase(BaseTestCase):
             self.assertEqual(u"Voilà l'été", config2.get('a', 'option1'))
             self.assertEqual(u"Voilà l'été", config2.get('a', 'option2'))
 
+    def test_set_and_save_inherit_remove_matching(self):
+        """Options with values matching the inherited value are removed from
+        the base configuration.
+        """
+        with self.inherited_file():
+            self._write(['[a]', u'ôption = x'], site=True)
+            config = self._read()
+            self.assertEqual('x', config.get('a', u'ôption'))
+            config.save()
+
+            self.assertEqual(
+                '# -*- coding: utf-8 -*-\n'
+                '\n'
+                '[inherit]\n'
+                'file = trac-site.ini\n'
+                '\n', read_file(self.filename))
+
+            config.set('a', u'ôption', 'y')
+            config.save()
+
+            self.assertEqual(
+                '# -*- coding: utf-8 -*-\n'
+                '\n'
+                '[a]\n'
+                'ôption = y\n'
+                '\n'
+                '[inherit]\n'
+                'file = trac-site.ini\n'
+                '\n', read_file(self.filename))
+
+            config.set('a', u'ôption', 'x')
+            config.save()
+            self.assertEqual(
+                '# -*- coding: utf-8 -*-\n'
+                '\n'
+                '[inherit]\n'
+                'file = trac-site.ini\n'
+                '\n', read_file(self.filename))
+
     def test_simple_remove(self):
         self._write(['[a]', 'option = x'])
         config = self._read()
