@@ -3,17 +3,31 @@
 
 == Quick start #QuickStart
 
- * Manage repositories in the "Repository" admin panel, with `trac-admin` or in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini].
+ * Enable the repository connector(s) for the version control system(s) that you will use.
+ * Add repositories through the //Repositories// admin panel, with `trac-admin` or in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini].
  * Set up a call to `trac-admin $ENV changeset added $REPO $REV` in the post-commit hook of each repository. Additionally, add a call to `trac-admin $ENV changeset modified $REPO $REV` in the post-revprop-change hook of repositories allowing revision property changes.
- * Set the `sync_per_request` attribute to `false` to disable per-request syncing.
- * Make sure the user under which your Subversion hooks are run has write access to the Trac environment, or use a tool like `sudo` to temporarily elevate privileges.
+ * Make sure the user under which your hooks are run has write access to the Trac environment, or use a tool like `sudo` to temporarily elevate privileges.
+
+== Enabling the components
+
+Support for version control systems is provided by optional components distributed with Trac, which are disabled by default //(since 1.0)//. Subversion and Git must be explicitly enabled if you wish to use them.
+
+The version control systems can be enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
+
+{{{#!ini
+tracopt.versioncontrol.svn.* = enabled
+}}}
+
+{{{#!ini
+tracopt.versioncontrol.git.* = enabled
+}}}
 
 == Specifying repositories #Repositories
-Trac supports more than one repository per environment. The repositories may be of the same type, or of different types. The repository configurations may be stored in different locations, the two supported by default being the [#ReposDatabase database store] and the [#ReposTracIni trac.ini configuration file].
+Trac supports multiple repositories per environment, and the repositories may be for different version control system types. Each repository must be defined in a repository configuration provider, the two supported by default are the [#ReposDatabase database store] and the [#ReposTracIni trac.ini configuration file]. A repository should not be defined in multiple configuration providers.
 
-It is possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
+It is possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking links to the old name.
 
-A number of attributes can be associated with each repository, which define the repository's location, type, name and how it is displayed in the source browser. The following attributes are supported:
+A number of attributes can be associated with each repository. The attributes define the repository's location, type, name and how it is displayed in the source browser. The following attributes are supported:
 
 ||='''Attribute''' =||='''Description''' =||
 ||`alias` ||\
@@ -28,6 +42,8 @@ A number of attributes can be associated with each repository, which define the 
 ||`url` ||The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
 
 A repository `name` and one of `alias` or `dir` attributes are mandatory. All others are optional.
+
+For some version control systems, it is possible to specify not only the path to the repository in the `dir` attribute, but also a ''scope'' within the repository. Trac will then only show information related to the files and changesets below that scope. The Subversion backend for Trac supports this. For other types, check the corresponding plugin's documentation.
 
 After adding a repository, the cache for that repository must be re-synchronized once with the `trac-admin $ENV repository resync` command.
 
@@ -79,6 +95,11 @@ The following [wiki:TracAdmin trac-admin] commands can be used to perform reposi
 
 Note that the default repository has an empty name, so it will likely need to be quoted when running `trac-admin` from a shell. Alternatively, the name "`(default)`" can be used instead, for example when running `trac-admin` in interactive mode.
 
+== Repository caching
+
+The Subversion and Git repository connectors support caching, which improves the performance browsing the repository, viewing logs and viewing changesets. Cached repositories must be [#Synchronization synchronized]; either explicit or implicit synchronization can be used. When searching changesets, only cached repositories are searched.
+
+Subversion repositories are cached unless the type is `direct-svnfs`. Git repositories are cached when `[git]` [wiki:TracIni#git-section cached_repository] is `true`.
 
 == Repository synchronization #Synchronization
 Prior to 0.12, Trac synchronized its cache with the repository on every HTTP request. This approach is not very efficient and not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. 
@@ -144,11 +165,14 @@ trac-admin /path/to/env changeset added <repos> $REV
 Alternately, if your repository is one that only gets pushed to, add the following to the `hooks/post-receive` file in the repo:
 {{{#!sh
 #!/bin/sh
+tracenv=/path/to/env     # change with your Trac environment's path
+repos=                   # change with your repository's name
 while read oldrev newrev refname; do
-        git rev-list --reverse $newrev ^$oldrev  | \
-        while read rev; do
-                trac-admin /path/to/env changeset added <repos> $rev
-        done
+    if [ "$oldrev" = 0000000000000000000000000000000000000000 ]; then
+        git rev-list --reverse "$newrev" --
+    else
+        git rev-list --reverse "$newrev" "^$oldrev" --
+    fi | xargs trac-admin "$tracenv" changeset added "$repos"
 done
 }}}
 
@@ -188,25 +212,6 @@ This functionality requires installing a post-commit hook as described in [#Expl
 tracopt.ticket.commit_updater.* = enabled
 }}}
 For more information, see the documentation of the `CommitTicketUpdater` component in the //Plugins// admin panel and the [trac:CommitTicketUpdater] page.
-
-== Migration from a single-repository setup (Subversion) #Migration
-The following procedure illustrates a typical migration from a Subversion single-repository setup to multiple repositories.
-
- 1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the main repository as a named repository.
- 1. Re-synchronize the main repository.
- 1. Set up post-commit and post-revprop-change hooks on the "main" repository, and set the repository's `sync_per_request` attribute to `false`.
- 1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat steps 2, 3 and 4 to add other "named" repositories as needed.
-
-== Migration from a single-repository setup (Mercurial) #MigrationMercurial
-The following procedure illustrates a typical migration from a Mercurial single-repository setup to multiple repositories. Please note that at the time of writing, no initial resynchronization or any hooks are necessary for Mercurial repositories - see [trac:ticket:9485 #9485] for more information.
-
- 1. Upgrade to the latest version of the [trac:TracMercurial] plugin.
- 1. Remove the default repository specification from the `[trac] repository_dir` option.
- 1. Add the main repository as a named repository.
- 1. Add an alias to the main repository as the default repository (by leaving out the the `name`, e.g. `.alias = main`). This ensures that all links predating the migration still resolve to the main repository.
- 1. Repeat step 3 to add other "named" repositories as needed.
 
 == Troubleshooting
 

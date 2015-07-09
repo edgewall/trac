@@ -8,7 +8,7 @@ The main and meta navigation entries can be customized in some basic ways. The `
 
 ** [=#Example Example] ** 
 
-In the following example, we rename the link to WikiStart //Home//, and make the //View Tickets// entry link to a specific report.
+In the following example we rename the link to WikiStart //Home//, and make the //View Tickets// entry link to a specific report.
 {{{#!ini
 [mainnav]
 wiki.label = Home
@@ -31,7 +31,7 @@ logout.redirect = wiki/Logout
 
 
 === URL Formats
-Possible URL formats (for `.href` or `.redirect`):
+Possible URL formats for `.href` or `.redirect`:
 || '''config''' || '''redirect to''' ||
 || `wiki/Logout` || `/projects/env/wiki/Logout` ||
 || `http://hostname/` || `http://hostname/` ||
@@ -64,8 +64,7 @@ prefs.order = 3
 
 === Context Navigation #ctxtnav-bar
 
-Note that it is still not possible to customize the '''contextual navigation bar''', i.e. the one usually placed below the main navigation bar.
-
+Note that it is still not possible to customize the '''contextual navigation bar''', ie the one usually placed below the main navigation bar.
 
 ----
 See also: TracInterfaceCustomization, and the [http://trac-hacks.org/wiki/NavAddPlugin TracHacks:NavAddPlugin] or [http://trac-hacks.org/wiki/MenusPlugin TracHacks:MenusPlugin] (still needed for adding entries)

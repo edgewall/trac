@@ -3,7 +3,7 @@
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
-Since version 0.12, Trac can also be localized, and there is probably a translation available in your language. If you want to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version.
+Trac can also be localized, and there is probably a translation available in your language. If you want to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version.
 
 If you're interested in contributing new translations for other languages or enhancing the existing translations, then please have a look at [trac:wiki:TracL10N TracL10N].
 
@@ -374,25 +374,11 @@ $ trac-admin /path/to/myproject permission add admin TRAC_ADMIN
 
 This user will have an //Admin// navigation item that directs to pages for administering your Trac project.
 
-== Finishing the install
+== Configuring Trac
 
-=== Enable version control components
+TracRepositoryAdmin provides information on configuring version control repositories for your project.
 
-Support for version control systems is provided by optional components in Trac and the components are disabled by default //(since 1.0)//. Subversion and Git must be explicitly enabled if you wish to use them. See TracRepositoryAdmin for more details.
-
-The version control systems are enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components in the "Plugins" admin panel.
-
-{{{#!ini
-tracopt.versioncontrol.svn.* = enabled
-}}}
-
-{{{#!ini
-tracopt.versioncontrol.git.* = enabled
-}}}
-
-After enabling the components, repositories can be configured through the //Repositories// admin panel or by editing [TracIni#repositories-section trac.ini]. Automatic changeset references can be inserted as ticket comments by configuring [TracRepositoryAdmin#Automaticchangesetreferencesintickets CommitTicketUpdater].
-
-=== Using Trac
+== Using Trac
 
 Once you have your Trac site up and running, you should be able to create tickets, view the timeline, browse your version control repository if configured, etc.
 
