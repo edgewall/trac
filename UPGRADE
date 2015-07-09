@@ -385,13 +385,7 @@ this case is the original workflow, so that ticket actions will behave
 like they did in 0.10.
 
 Graphically, that looks like this:
-Error: Processor Workflow failed
-
-::
-
-    'Mock' object has no attribute 'chrome'
-
-
+Enable JavaScript to display the workflow graph.
 There are some significant caveats in this, such as accepting a ticket
 sets it to 'assigned' state, and assigning a ticket sets it to 'new'
 state. So you will probably want to migrate to "basic" workflow;
