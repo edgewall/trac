@@ -29,6 +29,16 @@ class TestWiki(FunctionalTwillTestCaseSetup):
         self._tester.create_wiki_page()
 
 
+class TestWikiEdit(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Edit a wiki page."""
+        pagename = self._tester.create_wiki_page()
+        self._tester.edit_wiki_page(pagename)
+        tc.find("Your changes have been saved in version 2")
+        tc.find(r'\(<a href="/wiki/%s\?action=diff&amp;version=2">diff</a>\)'
+                % pagename)
+
+
 class TestWikiDelete(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Delete a wiki page."""
@@ -501,6 +511,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(TestWiki())
+    suite.addTest(TestWikiEdit())
     suite.addTest(TestWikiDelete())
     suite.addTest(TestWikiAddAttachment())
     suite.addTest(TestWikiPageManipulator())

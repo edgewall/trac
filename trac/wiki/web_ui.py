@@ -364,8 +364,12 @@ class WikiModule(Component):
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
                       req.remote_addr)
-            add_notice(req, _("Your changes have been saved in version "
-                              "%(version)s.", version=page.version))
+            href = req.href.wiki(page.name, action='diff',
+                                 version=page.version)
+            add_notice(req, tag_("Your changes have been saved in version "
+                                 "%(version)s (%(diff)s).",
+                                 version=page.version,
+                                 diff=tag.a(_("diff"), href=href)))
             req.redirect(get_resource_url(self.env, page.resource, req.href,
                                           version=None))
         except TracError:
