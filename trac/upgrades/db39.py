@@ -24,7 +24,7 @@ def do_upgrade(env, ver, cursor):
     config.set('svn', 'authz_module_name',
                config.get('trac', 'authz_module_name'))
     config.set('versioncontrol', 'default_repository_type',
-               config.get('trac', 'repository_type'))
+               config.get('trac', 'repository_type', 'svn'))
 
     config.remove('trac', 'authz_file')
     config.remove('trac', 'authz_module_name')
