@@ -13,12 +13,13 @@
 
 import unittest
 
-from trac.versioncontrol.tests import cache, diff, svn_authz, api
+from trac.versioncontrol.tests import admin, cache, diff, svn_authz, api
 from trac.versioncontrol.tests.functional import functionalSuite
 
 def suite():
 
     suite = unittest.TestSuite()
+    suite.addTest(admin.suite())
     suite.addTest(cache.suite())
     suite.addTest(diff.suite())
     suite.addTest(svn_authz.suite())

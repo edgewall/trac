@@ -346,7 +346,7 @@ class RepositoryAdminPanel(Component):
         info['hidden'] = as_bool(info.get('hidden'))
         info['sync_per_request'] = as_bool(info.get('sync_per_request'))
         info['editable'] = editable
-        if not info.get('alias'):
+        if 'alias' not in info:
             if info.get('dir') is not None:
                 info['prettydir'] = breakable_path(info['dir']) or ''
             try:
