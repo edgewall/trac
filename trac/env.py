@@ -870,8 +870,13 @@ class EnvironmentAdmin(Component):
                specified.
                """,
                None, self._do_hotcopy)
-        yield ('upgrade', '',
-               'Upgrade database to current version',
+        yield ('upgrade', '[--no-backup]',
+               """Upgrade database to current version
+
+               The database is backed up to the environment 'db' directory,
+               unless the --no-backup option is specified. The shorthand alias
+               -b can also be used to specify --no-backup.
+               """,
                None, self._do_upgrade)
 
     def _do_deploy(self, dest):
