@@ -1180,7 +1180,7 @@ class Chrome(Component):
             if pos:
                 location = "'%s', line %s, char %s" % pos
             else:
-                location = '%s (unknown template location)' % filename
+                location = '(unknown template location)'
             self.log.error('Genshi %s error while rendering template %s%s',
                            e.__class__.__name__, location,
                            exception_to_unicode(e, traceback=True))
