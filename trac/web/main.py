@@ -65,11 +65,27 @@ class FakeSession(dict):
         pass
 
 
-class FakePerm(dict):
-    def require(self, *args):
-        return False
-    def __call__(self, *args):
+class FakePerm(object):
+
+    username = 'anonymous'
+
+    def __call__(self, realm_or_resource, id=False, version=False):
         return self
+
+    def has_permission(self, action, realm_or_resource=None, id=False,
+                       version=False):
+        return False
+
+    __contains__ = has_permission
+
+    def require(self, action, realm_or_resource=None, id=False, version=False,
+                message=None):
+        if message is None:
+            raise PermissionError(action)
+        else:
+            raise PermissionError(msg=message)
+
+    assert_permission = require
 
 
 class RequestWithSession(Request):
