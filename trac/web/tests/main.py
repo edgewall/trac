@@ -18,8 +18,26 @@ import unittest
 from trac.core import Component, ComponentMeta, TracError, implements
 from trac.test import EnvironmentStub, Mock
 from trac.util import create_file
+from trac.web.api import IRequestHandler, Request, RequestDone
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
+
+
+def _make_environ(scheme='http', server_name='example.org',
+                  server_port=80, method='GET', script_name='/trac',
+                  **kwargs):
+    environ = {'wsgi.url_scheme': scheme, 'wsgi.input': None,
+               'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
+               'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
+    environ.update(kwargs)
+    return environ
+
+
+def _make_req(environ, start_response, **kwargs):
+    req = Request(environ, start_response)
+    for name, value in kwargs.iteritems():
+        setattr(req, name, value)
+    return req
 
 
 class AuthenticateTestCase(unittest.TestCase):
@@ -88,6 +106,32 @@ class AuthenticateTestCase(unittest.TestCase):
         self.assertEqual('anonymous',
                          self.request_dispatcher.authenticate(self.req))
         self.assertEqual(1, len(self.req.chrome['warnings']))
+
+    def test_authenticate_once(self):
+        class Authenticator(Component):
+            implements(IAuthenticator)
+            def authenticate(self, req):
+                authenticated[0] += 1
+                return 'admin'
+        class AuthenticateRequestHandler(Component):
+            implements(IRequestHandler)
+            def match_request(self, req):
+                return bool(req.perm)
+            def process_request(self, req):
+                req.authname
+                req.send('')
+        def start_response(status, headers, exc_info=None):
+            return lambda data: None
+
+        self.env.config.set('trac', 'default_handler',
+                            'AuthenticateRequestHandler')
+        authenticated = [0]
+        req = _make_req(_make_environ(), start_response)
+        self.assertEqual(1, len(self.request_dispatcher.authenticators))
+        self.assertIsInstance(self.request_dispatcher.authenticators[0],
+                              Authenticator)
+        self.assertRaises(RequestDone, self.request_dispatcher.dispatch, req)
+        self.assertEqual(1, authenticated[0])
 
 
 class EnvironmentsTestCase(unittest.TestCase):

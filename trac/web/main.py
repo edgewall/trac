@@ -291,7 +291,7 @@ class RequestDispatcher(Component):
         if isinstance(req.session, FakeSession):
             return FakePerm()
         else:
-            return PermissionCache(self.env, self.authenticate(req))
+            return PermissionCache(self.env, req.authname)
 
     def _get_session(self, req):
         try:
