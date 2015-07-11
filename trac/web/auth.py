@@ -14,6 +14,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import print_function
+
 from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from hashlib import md5, sha1
@@ -314,17 +316,18 @@ class BasicAuthentication(PasswordFileAuthentication):
             try:
                 u, h = line.split(':')
             except ValueError:
-                print>>sys.stderr, 'Warning: invalid password line in %s: ' \
-                    '%s' % (filename, line)
+                print("Warning: invalid password line in %s: %s"
+                      % (filename, line), file=sys.stderr)
                 continue
             if '$' in h or h.startswith('{SHA}') or self.crypt:
                 self.hash[u] = h
             else:
-                print>>sys.stderr, 'Warning: cannot parse password for ' \
-                    'user "%s" without the "crypt" module' % u
+                print('Warning: cannot parse password for user "%s" '
+                      'without the "crypt" module' % u, file=sys.stderr)
 
         if self.hash == {}:
-            print>>sys.stderr, "Warning: found no users in file:", filename
+            print("Warning: found no users in file:", filename,
+                  file=sys.stderr)
 
     def test(self, user, password):
         self.check_reload()
@@ -382,13 +385,14 @@ class DigestAuthentication(PasswordFileAuthentication):
             try:
                 u, r, a1 = line.split(':')
             except ValueError:
-                print>>sys.stderr, 'Warning: invalid digest line in %s: %s' \
-                    % (filename, line)
+                print('Warning: invalid digest line in %s: %s'
+                      % (filename, line), file=sys.stderr)
                 continue
             if r == self.realm:
                 self.hash[u] = a1
         if self.hash == {}:
-            print>>sys.stderr, "Warning: found no users in realm:", self.realm
+            print("Warning: found no users in realm:", self.realm,
+                  file=sys.stderr)
 
     def parse_auth_header(self, authorization):
         values = {}

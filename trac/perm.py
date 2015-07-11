@@ -16,6 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from __future__ import print_function
+
 import csv
 import os
 from itertools import groupby
@@ -674,14 +676,14 @@ class PermissionAdmin(Component):
             rows = permsys.get_all_permissions()
         rows.sort()
         print_table(rows, [_('User'), _('Action')])
-        print
+        print()
         printout(_("Available actions:"))
         actions = permsys.get_actions()
         actions.sort()
         text = ', '.join(actions)
         printout(wrap(text, initial_indent=' ', subsequent_indent=' ',
                       linesep='\n'))
-        print
+        print()
 
     def _do_add(self, user, *actions):
         permsys = PermissionSystem(self.env)

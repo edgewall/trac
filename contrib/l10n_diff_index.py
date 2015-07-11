@@ -50,6 +50,8 @@ only, and apply the corresponding chunks if needed.
 
 """
 
+from __future__ import print_function
+
 from bisect import bisect_left
 import re
 
@@ -92,7 +94,8 @@ def write_index_for(path):
         index = path + '.index'
         with open(index, 'wb') as idx:
             for n, line in changes:
-                print>>idx, (u"%s:%s: %s" % (path, n, line)).encode('utf-8')
+                print((u"%s:%s: %s" % (path, n, line)).encode('utf-8'),
+                      file=idx)
         print("%s: %d changes indexed in %s" % (path, len(changes), index))
     else:
         print("%s: no interesting changes" % path)

@@ -15,6 +15,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import print_function
+
 try:
     import os
     import pkg_resources
@@ -36,14 +38,14 @@ except Exception as e:
     import sys
     import traceback
 
-    print>>sys.stderr, e
+    print(e, file=sys.stderr)
     traceback.print_exc(file=sys.stderr)
 
-    print 'Status: 500 Internal Server Error'
-    print 'Content-Type: text/plain'
-    print
-    print 'Oops...'
-    print
-    print 'Trac detected an internal error:', e
-    print
+    print("Status: 500 Internal Server Error")
+    print("Content-Type: text/plain")
+    print()
+    print("Oops...")
+    print()
+    print("Trac detected an internal error:", e)
+    print()
     traceback.print_exc(file=sys.stdout)

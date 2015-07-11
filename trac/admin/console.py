@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import print_function
+
 import cmd
 import os.path
 import pkg_resources
@@ -111,7 +113,7 @@ class TracAdmin(cmd.Cmd):
         except AdminCommandError as e:
             printerr(_("Error: %(msg)s", msg=to_unicode(e)))
             if e.show_usage:
-                print
+                print()
                 self.do_help(e.cmd or self.arg_tokenize(line)[0])
             rv = 2
         except TracError as e:
@@ -330,7 +332,7 @@ Type:  '?' or 'help' for help on commands.
             printout(_("trac-admin - The Trac Administration Console "
                        "%(version)s", version=TRAC_VERSION))
             if not self.interactive:
-                print
+                print()
                 printout(_("Usage: trac-admin </path/to/projenv> "
                            "[command [subcommand] [option ...]]\n")
                     )
@@ -346,7 +348,7 @@ Type:  '?' or 'help' for help on commands.
     _help_EOF = _help_quit
 
     def do_quit(self, line):
-        print
+        print()
         sys.exit()
 
     do_exit = do_quit # Alias
@@ -396,7 +398,7 @@ in order to initialize and prepare the project database.
         ddb = 'sqlite:db/trac.db'
         prompt = _("Database connection string [%(default)s]> ", default=ddb)
         returnvals.append(raw_input(prompt).strip() or ddb)
-        print
+        print()
         return returnvals
 
     def do_initenv(self, line):

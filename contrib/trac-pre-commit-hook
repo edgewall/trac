@@ -25,6 +25,9 @@
 #  LOG=`/usr/bin/svnlook log -t "$TXN" "$REPOS"`
 #  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_ENV" "$LOG" || exit 1
 #
+
+from __future__ import print_function
+
 import os
 import re
 import sys
@@ -36,7 +39,8 @@ from trac.env import open_environment
 
 def main():
     if len(sys.argv) != 3:
-        print >> sys.stderr, 'Usage: %s <trac_project> <log_message>' % sys.argv[0]
+        print("Usage: %s <trac_project> <log_message>" % sys.argv[0],
+              file=sys.stderr)
         sys.exit(1)
 
     env_path = sys.argv[1]
@@ -49,8 +53,8 @@ def main():
 
     # At least one ticket has to be mentioned in the log message
     if tickets == []:
-        print >> sys.stderr, 'At least one open ticket must be mentioned ' \
-              'in the log message.'
+        print("At least one open ticket must be mentioned in the log "
+              "message.", file=sys.stderr)
         sys.exit(1)
 
     env = open_environment(env_path)
@@ -63,8 +67,8 @@ def main():
     # At least one of the tickets mentioned in the log messages has to
     # be open
     if not row or row[0] < 1:
-        print >> sys.stderr, 'At least one open ticket must be mentioned ' \
-              'in the log message.'
+        print("At least one open ticket must be mentioned in the log "
+              "message.", file=sys.stderr)
         sys.exit(1)
     else:
         sys.exit(0)

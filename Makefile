@@ -302,10 +302,10 @@ MESSAGES_TOTAL = \
     $(MESSAGES_TOTAL)
 
 summary-%:
-	@python -c "print 'l10n/$(*): translations updated (%d%%)' \
+	@python -c "print('l10n/$(*): translations updated (%d%%)' \
 	    % (($(foreach catalog,$(catalogs), \
 	          $(shell $(translated-sh)) + ) 0) * 100.0 \
-	       / $(MESSAGES_TOTAL))"
+	       / $(MESSAGES_TOTAL)))"
 	@rm -f messages.mo
 
 
@@ -560,7 +560,7 @@ python-home := $(python.$(or $(python),$($(db).python)))
 ifeq "$(OS)" "Windows_NT"
     ifndef python-home
         # Detect location of current python
-        python-exe := $(shell python -c 'import sys; print sys.executable')
+        python-exe := $(shell python -c 'import sys; print(sys.executable)')
         python-home := $(subst \python.exe,,$(python-exe))
     endif
     SEP = ;

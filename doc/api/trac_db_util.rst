@@ -16,7 +16,7 @@ For example::
 
   >>> with env.db_query as db:
   ...     for name, value in db.execute("SELECT name, value FROM system"):
-  ...         print "row: [{name}, {value}]".format(name=name, value=value)
+  ...         print("row: [{name}, {value}]".format(name=name, value=value))
   ...
   row: [database_version, 29]
 

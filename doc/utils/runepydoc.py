@@ -14,12 +14,15 @@
 
 # Simple wrapper script needed to run epydoc
 
+from __future__ import print_function
+
 import sys
 
 try:
     from epydoc.cli import cli
 except ImportError:
-    print>>sys.stderr, "No epydoc installed (see http://epydoc.sourceforge.net)"
+    print("No epydoc installed (see http://epydoc.sourceforge.net)",
+          file=sys.stderr)
     sys.exit(2)
 
 
@@ -33,8 +36,8 @@ try:
     if not hasattr(Text, 'data'):
         setattr(Text, 'data', property(lambda self: self.astext()))
 except ImportError:
-    print>>sys.stderr, "docutils is needed for running epydoc " \
-        "(see http://docutils.sourceforge.net)"
+    print("docutils is needed for running epydoc "
+          "(see http://docutils.sourceforge.net)", file=sys.stderr)
     sys.exit(2)
 
 # Epydoc doesn't allow much control over the generated graphs. This is
