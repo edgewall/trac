@@ -256,10 +256,10 @@ class TicketSystem(Component):
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
         """Default resolution for resolving (closing) tickets.""")
 
-    optional_fields = ListOption('ticket', 'optional_fields',
-                                 'milestone, version', doc=
-         """Comma-separated list of `select` fields that can have
-         an empty value. (//since 1.1.2//)""")
+    allowed_empty_fields = ListOption('ticket', 'allowed_empty_fields',
+        'milestone, version', doc=
+        """Comma-separated list of `select` fields that can have
+        an empty value. (//since 1.1.2//)""")
 
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r',
@@ -358,7 +358,7 @@ class TicketSystem(Component):
             if name in ('status', 'resolution'):
                 field['type'] = 'radio'
                 field['optional'] = True
-            elif name in self.optional_fields:
+            elif name in self.allowed_empty_fields:
                 field['optional'] = True
             fields.append(field)
 
@@ -417,7 +417,7 @@ class TicketSystem(Component):
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
                 if '' in field['options'] or \
-                        field['name'] in self.optional_fields:
+                        field['name'] in self.allowed_empty_fields:
                     field['optional'] = True
                     if '' in field['options']:
                         field['options'].remove('')
@@ -449,7 +449,7 @@ class TicketSystem(Component):
             allowed_owners = self.get_allowed_owners(ticket)
             allowed_owners.insert(0, '< default >')
             field['options'] = allowed_owners
-            field['optional'] = 'owner' in self.optional_fields
+            field['optional'] = 'owner' in self.allowed_empty_fields
 
     def get_allowed_owners(self, ticket=None):
         """Returns a list of permitted ticket owners (those possessing the

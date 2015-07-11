@@ -674,14 +674,14 @@ class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
         tc.find('<option selected="selected" value="%s">%s</option>'
                 % (name, name))
         # Test the "Clear default" button
-        self._testenv.set_config('ticket', 'optional_fields', 'component')
+        self._testenv.set_config('ticket', 'allowed_empty_fields', 'component')
         tc.go(component_url)
         tc.submit('clear', formname='component_table')
         tc.notfind('type="radio" name="default" value=".+" checked="checked"')
         self._tester.create_ticket()
         tc.find('<th id="h_component" class="missing">\s*Component:\s*</th>'
                 '\s*<td headers="h_component">\s*</td>')
-        self._testenv.remove_config('ticket', 'optional_fields')
+        self._testenv.remove_config('ticket', 'allowed_empty_fields')
 
 
 class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
@@ -2408,7 +2408,7 @@ class RegressionTestTicket10772(FunctionalTwillTestCaseSetup):
                 tc.find(r'<td headers="h_%(field)s">\s*</td>'
                         % {'field': field})
 
-        self._testenv.set_config('ticket', 'optional_fields',
+        self._testenv.set_config('ticket', 'allowed_empty_fields',
                                  'component, milestone, priority, version')
 
         try:
@@ -2430,7 +2430,7 @@ class RegressionTestTicket10772(FunctionalTwillTestCaseSetup):
             find_prop('priority', 'major')
             find_prop('version')
 
-            self._testenv.set_config('ticket', 'optional_fields', '')
+            self._testenv.set_config('ticket', 'allowed_empty_fields', '')
             self._tester.go_to_admin("Components")
             tc.formvalue('component_table', 'default', 'component2')
             tc.submit('apply')
@@ -2455,7 +2455,7 @@ class RegressionTestTicket10772(FunctionalTwillTestCaseSetup):
             find_prop('version', '2.0')
             find_prop('type', 'task')
         finally:
-            self._testenv.remove_config('ticket', 'optional_fields')
+            self._testenv.remove_config('ticket', 'allowed_empty_fields')
 
 
 class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
