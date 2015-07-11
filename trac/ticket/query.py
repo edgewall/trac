@@ -449,26 +449,36 @@ class Query(object):
         list_fields = [f['name'] for f in self.fields
                                  if f['type'] == 'text' and
                                     f.get('format') == 'list']
+        # 32 is max of joins in SQLite 32-bit, 3 is for order, group and
+        # "priority" columns
+        use_joins = len(set(cols) & set(custom_fields)) <= 32 - 3
 
         sql = []
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
                                          if c not in custom_fields]))
         sql.append(",priority.value AS priority_value")
-        for k in [db.quote(k) for k in cols if k in custom_fields]:
-            sql.append(",t.%s AS %s" % (k, k))
 
-        # Use subquery of ticket_custom table as necessary
-        if any(k in custom_fields for k in cols):
-            sql.append('\nFROM (\n  SELECT ' +
-                       ','.join('t.%s AS %s' % (c, c)
+        if use_joins:
+            # Use LEFT OUTER JOIN for ticket_custom table
+            sql.extend(",%s.value AS %s" % ((db.quote(k),) * 2)
+                       for k in cols if k in custom_fields)
+            sql.append("\nFROM ticket AS t")
+            sql.extend("\n  LEFT OUTER JOIN ticket_custom AS %(qk)s ON "
+                       "(%(qk)s.ticket=t.id AND %(qk)s.name='%(k)s')"
+                        % {'qk': db.quote(k), 'k': k}
+                        for k in cols if k in custom_fields)
+        else:
+            # Use subquery for ticket_custom table
+            sql.extend(",%s AS %s" % ((db.quote(k),) * 2)
+                       for k in cols if k in custom_fields)
+            sql.append('\nFROM (\n  SELECT ')
+            sql.append(','.join('t.%s AS %s' % (c, c)
                                 for c in cols if c not in custom_fields))
             sql.extend(",\n  (SELECT c.value FROM ticket_custom c "
                        "WHERE c.ticket=t.id AND c.name='%s') AS %s"
                        % (k, db.quote(k))
                        for k in cols if k in custom_fields)
             sql.append("\n  FROM ticket AS t) AS t")
-        else:
-            sql.append("\nFROM ticket AS t")
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -494,6 +504,8 @@ class Query(object):
         def get_constraint_sql(name, value, mode, neg):
             if name not in custom_fields:
                 col = 't.' + name
+            elif use_joins:
+                col = db.quote(name) + '.value'
             else:
                 col = 't.' + db.quote(name)
             value = value[len(mode) + neg:]
@@ -596,6 +608,8 @@ class Query(object):
                 elif not mode and len(v) > 1 and k not in self.time_fields:
                     if k not in custom_fields:
                         col = 't.' + k
+                    elif use_joins:
+                        col = db.quote(k) + '.value'
                     else:
                         col = 't.' + db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
@@ -637,10 +651,12 @@ class Query(object):
         for name, desc in order_cols:
             if name in enum_columns:
                 col = name + '.value'
-            elif name in custom_fields:
-                col = 't.' + db.quote(name)
-            else:
+            elif name not in custom_fields:
                 col = 't.' + name
+            elif use_joins:
+                col = db.quote(name) + '.value'
+            else:
+                col = 't.' + db.quote(name)
             desc = ' DESC' if desc else ''
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
