@@ -89,10 +89,12 @@ def _unquote(path):
 class GitCore(object):
     """Low-level wrapper around git executable"""
 
-    def __init__(self, git_dir=None, git_bin='git', log=None):
+    def __init__(self, git_dir=None, git_bin='git', log=None,
+                 fs_encoding=None):
         self.__git_bin = git_bin
         self.__git_dir = git_dir
         self.__log = log
+        self.__fs_encoding = fs_encoding
 
     def __repr__(self):
         return '<GitCore bin="%s" dir="%s">' % (self.__git_bin,
@@ -107,6 +109,20 @@ class GitCore(object):
         cmd.append(gitcmd)
         cmd.extend(args)
 
+        fs_encoding = self.__fs_encoding
+        if fs_encoding is not None:
+            if os.name == 'nt':
+                # For Windows, Popen() accepts only ANSI encoding
+                def to_cmd_encoding(arg):
+                    if not isinstance(arg, unicode):
+                        arg = arg.decode(fs_encoding, 'replace')
+                    return arg.encode('mbcs', 'replace')
+            else:
+                def to_cmd_encoding(arg):
+                    if isinstance(arg, unicode):
+                        arg = arg.encode(fs_encoding, 'replace')
+                    return arg
+            cmd = map(to_cmd_encoding, cmd)
         return cmd
 
     def __pipe(self, git_cmd, *cmd_args, **kw):
@@ -391,7 +407,7 @@ class Storage(object):
             raise GitError("Make sure the Git repository '%s' is readable: %s"
                            % (git_dir, to_unicode(e)))
 
-        self.repo = GitCore(git_dir, git_bin=git_bin, log=log)
+        self.repo = GitCore(git_dir, git_bin, log, git_fs_encoding)
         self.repo_path = git_dir
 
         self.logger.debug("PyGIT.Storage instance for '%s' is constructed",
