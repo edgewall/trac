@@ -39,7 +39,7 @@
       <div class="field">
         <label>Repository:<br py:if="multiline"/>
           <select size="1" id="trac-repository" name="alias" disabled="${not editable or None}">
-            <option py:for="(reponame, info) in sorted_repos" py:if="not info.alias"
+            <option py:for="(reponame, info) in sorted_repos" py:if="'alias' not in info"
                     value="$info.name" selected="${info.name == selected or None}">${info.name or _('(default)')}</option>
             <option py:if="selected is not None and selected not in repositories" selected="selected">$selected</option>
           </select>
@@ -116,7 +116,7 @@ $info.description</textarea>
           </fieldset>
         </form>
 
-        <form py:if="any(not info.alias for info in repositories.itervalues())"
+        <form py:if="any('alias' not in info for info in repositories.itervalues())"
               class="addnew" id="trac-addalias" method="post" action="">
           <fieldset>
             <legend>Add Alias:</legend>
@@ -143,9 +143,9 @@ $info.description</textarea>
                 <td class="name">
                   <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
                 </td>
-                <td>${(info.type or _('(default)')) if not info.alias else None}</td>
+                <td>${(info.type or _('(default)')) if 'alias' not in info else None}</td>
                 <td py:choose="">
-                  <em py:when="info.alias" i18n:msg="repo">Alias of ${info.alias or _('(default)')}</em>
+                  <em py:when="'alias' in info" i18n:msg="repo">Alias of ${info.alias or _('(default)')}</em>
                   <span py:otherwise="" py:strip="not info.error" class="missing" title="$info.error">$info.prettydir</span>
                 </td>
                 <td><a py:if="info.rev" href="${href.changeset(info.rev, reponame) or None}">[$info.display_rev]</a></td>

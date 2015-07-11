@@ -343,7 +343,7 @@ class RepositoryAdminPanel(Component):
         info['name'] = reponame
         info['hidden'] = as_bool(info.get('hidden'))
         info['editable'] = editable
-        if not info.get('alias'):
+        if 'alias' not in info:
             if info.get('dir') is not None:
                 info['prettydir'] = breakable_path(info['dir']) or ''
             try:
