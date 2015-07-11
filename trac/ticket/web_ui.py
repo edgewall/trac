@@ -16,6 +16,7 @@
 
 import csv
 from datetime import datetime
+from functools import partial
 import pkg_resources
 import re
 from StringIO import StringIO
@@ -1821,11 +1822,11 @@ class TicketModule(Component):
             sep = ' '
 
         # per name special rendering of diffs
+        format_author = partial(Chrome(self.env).format_author, req,
+                                resource=resource_new or ticket.resource)
         if field == 'cc':
             old_list, new_list = self._cc_list(old), self._cc_list(new)
-            if not (Chrome(self.env).show_email_addresses or
-                    'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
-                render_elt = obfuscate_email_address
+            render_elt = format_author
         if (old_list, new_list) != (None, None):
             added = [tag.em(render_elt(x)) for x in new_list
                      if x not in old_list]
@@ -1838,10 +1839,8 @@ class TicketModule(Component):
             if added or remvd:
                 rendered = tag(added, added and remvd and _("; "), remvd)
         if field in ('reporter', 'owner'):
-            if not (Chrome(self.env).show_email_addresses or
-                    'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
-                old = obfuscate_email_address(old)
-                new = obfuscate_email_address(new)
+            old = format_author(old)
+            new = format_author(new)
             if old and not new:
                 rendered = tag_("%(value)s deleted", value=tag.em(old))
             elif new and not old:

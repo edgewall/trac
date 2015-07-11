@@ -1009,6 +1009,7 @@ class Chrome(Component):
             'perm': req and req.perm,
             'authname': req.authname if req else '<trac>',
             'locale': req and req.locale,
+            # show_email_address is deprecated: will be removed in 1.3.1
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
             'author_email': partial(self.author_email,
@@ -1231,14 +1232,14 @@ class Chrome(Component):
             author = email_map.get(author)
         return author
 
-    def authorinfo(self, req, author, email_map=None):
+    def authorinfo(self, req, author, email_map=None, resource=None):
         author = self.author_email(author, email_map)
         suffix = ''
         if author == 'anonymous':
             suffix = '-anonymous'
         elif not author:
             suffix = '-none'
-        return tag.span(self.format_author(req, author),
+        return tag.span(self.format_author(req, author, resource),
                         class_='trac-author' + suffix)
 
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
@@ -1259,12 +1260,13 @@ class Chrome(Component):
                 ccs.append(cc)
         return ccs
 
-    def format_author(self, req, author):
+    def format_author(self, req, author, resource=None):
         if author == 'anonymous':
             return _("anonymous")
         if not author:
             return _("(none)")
-        if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
+        if self.show_email_addresses or not req or \
+                'EMAIL_VIEW' in req.perm(resource):
             return author
         return obfuscate_email_address(author)
 

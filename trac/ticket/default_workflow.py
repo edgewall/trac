@@ -234,7 +234,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'])
         author = get_reporter_id(req, 'author')
-        author_info = partial(Chrome(self.env).authorinfo, req)
+        author_info = partial(Chrome(self.env).authorinfo, req,
+                              resource=ticket.resource)
         formatted_current_owner = author_info(current_owner)
         exists = ticket._old.get('status', ticket['status']) is not None
 
