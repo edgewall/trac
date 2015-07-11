@@ -12,10 +12,10 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import copy
 import os.path
 import re
 from ConfigParser import ConfigParser
-from copy import deepcopy
 
 from genshi.builder import tag
 
@@ -131,6 +131,16 @@ class UnicodeConfigParser(ConfigParser):
         section_str = to_utf8(section)
         ConfigParser.remove_section(self, section_str)
 
+    def __copy__(self):
+        parser = self.__class__()
+        parser._sections = copy.copy(self._sections)
+        return parser
+
+    def __deepcopy__(self, memo):
+        parser = self.__class__()
+        parser._sections = copy.deepcopy(self._sections)
+        return parser
+
 
 class Configuration(object):
     """Thin layer over `ConfigParser` from the Python standard library.
@@ -142,7 +152,7 @@ class Configuration(object):
     def __init__(self, filename, params={}):
         self.filename = filename
         self.parser = UnicodeConfigParser()
-        self._old_sections = {}
+        self._pristine_parser = None
         self.parents = []
         self._lastmtime = 0
         self._sections = {}
@@ -308,21 +318,21 @@ class Configuration(object):
             if options:
                 sections.append((section, sorted(options)))
 
-        # Contents of parser._sections will be written to file.
-        self.parser._sections.clear()
+        # Prepare new file contents to write to disk.
+        parser = UnicodeConfigParser()
         for section, options in sections:
-            self.parser.add_section(section)
+            parser.add_section(section)
             for key, val in options:
-                self.parser.set(section, key, val)
+                parser.set(section, key, val)
 
         try:
-            self._write()
+            self._write(parser)
         except Exception:
             # Revert all changes to avoid inconsistencies
-            self.parser._sections = deepcopy(self._old_sections)
+            self.parser = copy.deepcopy(self._pristine_parser)
             raise
         else:
-            self._old_sections = deepcopy(self.parser._sections)
+            self._pristine_parser = copy.deepcopy(self.parser)
 
     def parse_if_needed(self, force=False):
         if not self.filename or not os.path.isfile(self.filename):
@@ -331,12 +341,12 @@ class Configuration(object):
         changed = False
         modtime = os.path.getmtime(self.filename)
         if force or modtime != self._lastmtime:
-            self.parser._sections.clear()
+            self.parser = UnicodeConfigParser()
             if not self.parser.read(self.filename):
                 raise TracError(_("Error reading '%(file)s', make sure it is "
                                   "readable.", file=self.filename))
             self._lastmtime = modtime
-            self._old_sections = deepcopy(self.parser._sections)
+            self._pristine_parser = copy.deepcopy(self.parser)
             changed = True
 
         if changed:
@@ -390,13 +400,13 @@ class Configuration(object):
             for option in Option.get_registry(compmgr).itervalues():
                 set_option_default(option)
 
-    def _write(self):
+    def _write(self, parser):
         if not self.filename:
             return
         wait_for_file_mtime_change(self.filename)
         with AtomicFile(self.filename, 'w') as fd:
             fd.writelines(['# -*- coding: utf-8 -*-\n', '\n'])
-            self.parser.write(fd)
+            parser.write(fd)
 
 
 class Section(object):

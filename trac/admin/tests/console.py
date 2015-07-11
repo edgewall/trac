@@ -1519,18 +1519,16 @@ class TracAdminComponentTestCase(unittest.TestCase):
 
     def test_config_component_enable(self):
         self.env.config.save()
-        initial_file = copy.deepcopy(self.env.config.parser._sections)
+        initial_file = copy.deepcopy(self.env.config.parser)
 
         rv, output = self._execute('config set components '
                                    'trac.admin.tests.console.* enabled')
 
         self.assertEqual(0, rv, output)
-        self.assertNotIn('compa', initial_file)
-        self.assertIn('compa', self.env.config.parser._sections)
-        self.assertIn(('opt1', '1'),
-                      self.env.config.parser._sections['compa'].items())
-        self.assertIn(('opt2', '2'),
-                      self.env.config.parser._sections['compa'].items())
+        self.assertFalse(initial_file.has_section('compa'))
+        self.assertIn('compa', self.env.config)
+        self.assertIn('1', self.env.config.parser.get('compa', 'opt1'))
+        self.assertIn('2', self.env.config.parser.get('compa', 'opt2'))
 
 
 def suite():
