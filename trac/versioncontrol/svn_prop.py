@@ -51,6 +51,9 @@ class SubversionPropertyRenderer(Component):
         elif name == 'svn:mergeinfo' or name.startswith('svnmerge-'):
             return self._render_mergeinfo(name, mode, context, props)
 
+    def _is_abs_url(self, url):
+        return url and '://' in url
+
     def _render_externals(self, prop):
         if not self._externals_map:
             for dummykey, value in self.config.options('svn:externals'):
@@ -77,6 +80,9 @@ class SubversionPropertyRenderer(Component):
                 rev = elements[1]
                 rev = rev.replace('-r', '')
             # retrieve a matching entry in the externals map
+            if not self._is_abs_url(url):
+                externals.append((external, None, None, None, None))
+                continue
             prefix = []
             base_url = url
             while base_url:
