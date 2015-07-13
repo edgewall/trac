@@ -33,6 +33,7 @@ from genshi.core import Stream
 import trac.tests.compat
 from trac.test import EnvironmentStub, Mock, MockPerm, TestSetup
 from trac.core import TracError
+from trac.mimeview.api import RenderingContext
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
@@ -1261,6 +1262,112 @@ class AnotherNonSelfContainedScopedTests(object):
                          changes.next())
 
 
+class ExternalsPropertyTests(object):
+
+    def _xpath_text(self, stream, path):
+        return unicode(stream.select(path))
+
+    def _modify_repository(self, reponame, changes):
+        DbRepositoryProvider(self.env).modify_repository(reponame, changes)
+
+    def _set_tracini_externals(self, *values):
+        config = self.env.config
+        for idx, value in enumerate(values):
+            config.set('svn:externals', str(idx), value)
+
+    def _render(self, *values):
+        props = {'svn:externals': '\n'.join(values)}
+        renderer = svn_prop.SubversionPropertyRenderer(self.env)
+        context = RenderingContext(Resource('repository', REPOS_NAME)
+                                   .child('source', 'build/posix', 42))
+        return renderer.render_property('svn:externals', None, context, props)
+
+    def _parse_result(self, result):
+        result = Stream(result)
+        idx = 1
+        items = []
+        while True:
+            if not unicode(result.select('//li[%d]' % idx)):
+                break
+            items.append(dict((key, unicode(result.select('//li[%d]/a/%s' %
+                                                          (idx, key))))
+                              for key in ('text()', '@href', '@title')))
+            idx += 1
+        return items
+
+    def test_match_property(self):
+        renderer = svn_prop.SubversionPropertyRenderer(self.env)
+        rv = renderer.match_property('svn:externals', None)
+        self.assertTrue(1 <= rv < 10000)
+
+    def test_render_property_without_tracini(self):
+        result = self._parse_result(self._render(
+            'blah svn://server/repos1',
+            'vendor http://example.org/svn/eng-soft'))
+        self.assertEqual({'text()': 'blah', '@href': '',
+                          '@title': 'No svn:externals configured in trac.ini'},
+                         result[0])
+        self.assertEqual({'text()': 'vendor',
+                          '@href': 'http://example.org/svn/eng-soft',
+                          # XXX           v should be "//"
+                          '@title': 'http:/example.org/svn/eng-soft'},
+                         result[1])
+        self.assertEqual(2, len(result))
+
+    def test_render_property_non_absolute_url(self):
+        externals = ['blah1 ../src', 'blah2 ^/src', 'blah3 /svn/trunk',
+                     'blah4 //localhost/svn']
+        result = self._parse_result(self._render(*externals))
+        self.assertEqual([{'text()': externals[0], '@href': '', '@title': ''},
+                          {'text()': externals[1], '@href': '', '@title': ''},
+                          {'text()': externals[2], '@href': '', '@title': ''},
+                          {'text()': externals[3], '@href': '', '@title': ''}],
+                         result)
+
+    def test_render_property_comment(self):
+        result = self._parse_result(self._render(
+            '   # For blah',
+            'blah svn://server/repos1',
+            '',
+            '   # path rev url .....',
+            'vendor http://example.org/svn/eng-soft'))
+        self.assertEqual({'text()': '   # For blah', '@href': '',
+                          '@title': ''}, result[0])
+        self.assertEqual('blah', result[1]['text()'])
+        self.assertEqual({'text()': '   # path rev url .....', '@href': '',
+                          '@title': ''}, result[2])
+        self.assertEqual('vendor', result[3]['text()'])
+        self.assertEqual(4, len(result))
+
+    def test_render_property_with_tracini(self):
+        self._set_tracini_externals(
+            'svn://server/repos1 http://trac/proj1/browser/$path?rev=$rev',
+            'http://example.org/svn/eng-soft '
+                'http://example.org/trac/eng-soft/browser/$path?rev=$rev')
+        result = self._parse_result(self._render(
+            'blah          svn://server/repos1',
+            'blah-doc      svn://server/repos1/doc',
+            'blah-r42 -r42 svn://server/repos1/branches/1.0-stable',
+            'vendor        http://example.org/svn/eng-soft'))
+        self.assertEqual({'text()': 'blah in svn://server/repos1',
+                          '@href': 'http://trac/proj1/browser/?rev=',
+                          '@title': ' in svn://server/repos1'}, result[0])
+        self.assertEqual({'text()': 'blah-doc in svn://server/repos1',
+                          '@href': 'http://trac/proj1/browser/doc?rev=',
+                          '@title': 'doc in svn://server/repos1'}, result[1])
+        self.assertEqual({'text()': 'blah-r42 at revision 42 in '
+                                    'svn://server/repos1',
+                          '@href': 'http://trac/proj1/browser/branches/'
+                                   '1.0-stable?rev=42',
+                          '@title': 'branches/1.0-stable at revision 42 in '
+                                    'svn://server/repos1'}, result[2])
+        self.assertEqual({
+            'text()': 'vendor in http://example.org/svn/eng-soft',
+            '@href': 'http://example.org/trac/eng-soft/browser/?rev=',
+            '@title': ' in http://example.org/svn/eng-soft'}, result[3])
+        self.assertEqual(4, len(result))
+
+
 # -- Test cases for SubversionRepository
 
 class SubversionRepositoryTestCase(unittest.TestCase):
@@ -1316,6 +1423,7 @@ def suite():
                  (RecentPathScopedTests, u'/tête/dir1'),
                  (NonSelfContainedScopedTests, '/tags/v1'),
                  (AnotherNonSelfContainedScopedTests, '/branches'),
+                 (ExternalsPropertyTests, ''),
                  ]
         skipped = {
             'SvnCachedRepositoryNormalTests': [
