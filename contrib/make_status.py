@@ -28,7 +28,7 @@ PACKAGES = [
     ("PySqlite",          'pysqlite2.dbapi2.version'),
     ("MySQLdb",           'MySQLdb.__version__'),
     ("Psycopg2",          'psycopg2.__version__'),
-    ("SVN bindings",      _svn_version),
+    ("SVN bindings",      '__main__._svn_version()'),
     ("Mercurial",         'mercurial.util.version()'),
     ("Pygments",          'pygments.__version__'),
     ("Pytz",              'pytz.__version__'),
@@ -48,18 +48,13 @@ def package_versions(packages, out=None):
     print_table(name_version_pairs, ("Package", "Version"), ' : ', out)
 
 def resolve_accessor(accessor):
-    if isinstance(accessor, basestring):
-        def fn():
-            module, attr = accessor.rsplit('.', 1)
-            version = attr.replace('()', '')
-            version = getattr(__import__(module, {}, {}, [version]), version)
-            if attr.endswith('()'):
-                version = version()
-            return version
-    else:
-        fn = accessor
     try:
-        return fn()
+        module, attr = accessor.rsplit('.', 1)
+        version = attr.replace('()', '')
+        version = getattr(__import__(module, {}, {}, [version]), version)
+        if attr.endswith('()'):
+            version = version()
+        return version
     except Exception:
         return "not installed"
 
