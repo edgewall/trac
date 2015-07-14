@@ -295,7 +295,8 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
                 raise ConfigurationError(tag_(
                     "The user %(user)s requires read _and_ write permissions "
                     "to the database file %(path)s and the directory it is "
-                    "located in.", user=tag.tt(getuser()), path=tag.tt(path)))
+                    "located in.", user=tag.code(getuser()),
+                    path=tag.code(path)))
 
         self._active_cursors = weakref.WeakKeyDictionary()
         timeout = int(params.get('timeout', 10.0))

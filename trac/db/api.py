@@ -590,7 +590,7 @@ def parse_connection_uri(db_str):
             tag_("Database connection string is empty. Set the %(option)s "
                  "configuration option in the %(section)s section of "
                  "trac.ini. Please refer to the %(doc)s for help.",
-                 option=tag.tt("database"), section=section,
+                 option=tag.code("database"), section=section,
                  doc=_doc_db_str()))
 
     try:
@@ -675,7 +675,7 @@ def _invalid_db_str(db_str):
     return ConfigurationError(
         tag_("Invalid format %(db_str)s for the database connection string. "
              "Please refer to the %(doc)s for help.",
-             db_str=tag.tt(db_str), doc=_doc_db_str()))
+             db_str=tag.code(db_str), doc=_doc_db_str()))
 
 
 def _doc_db_str():
