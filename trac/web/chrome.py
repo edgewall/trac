@@ -1233,6 +1233,20 @@ class Chrome(Component):
         return author
 
     def authorinfo(self, req, author, email_map=None, resource=None):
+        """Format a username to HTML.
+
+        Calls `Chrome.format_author` to format the username, and wraps
+        the formatted username in a `span` with class `trac-author`,
+        `trac-author-anonymous` or `trac-author-none`.
+
+        :param req: the `Request` object.
+        :param author: the author string to be formatted.
+        :param email_map: dictionary mapping usernames to email addresses.
+        :param resource: optional `Resource` object for `EMAIL_VIEW`
+                         fine-grained permissions checks.
+
+        :since 1.1.6: accepts the optional `resource` keyword parameter.
+        """
         author = self.author_email(author, email_map)
         suffix = ''
         if author == 'anonymous':
@@ -1261,6 +1275,21 @@ class Chrome(Component):
         return ccs
 
     def format_author(self, req, author, resource=None):
+        """Format a username in plain text.
+
+        If `[trac]` `show_email_addresses` is `False`, email
+        addresses will be obfuscated when the user doesn't have
+        `EMAIL_VIEW` (for the resource). Returns translated `anonymous`
+        or `none`,  when the author string is `anonymous` or evaluates
+        to `False`, respectively.
+
+        :param req: the `Request` object.
+        :param author: the author string to be formatted.
+        :param resource: optional `Resource` object for `EMAIL_VIEW`
+                         fine-grained permissions checks.
+
+        :since 1.1.6: accepts the optional `resource` keyword parameter.
+        """
         if author == 'anonymous':
             return _("anonymous")
         if not author:
