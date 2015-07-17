@@ -7,12 +7,12 @@ Trac is written in the Python programming language and needs a
 database, `SQLite`_, `PostgreSQL`_, or `MySQL`_. For HTML rendering,
 Trac uses the `Genshi`_ templating system.
 
-Since version 0.12, Trac can also be localized, and there is probably
-a translation available in your language. If you want to use the Trac
-interface in other languages, then make sure you have installed the
-optional package `Babel`_. Pay attention to the extra steps for
-localization support in the `Installing Trac`_ section below. Lacking
-Babel, you will only get the default English version.
+Trac can also be localized, and there is probably a translation
+available in your language. If you want to use the Trac interface in
+other languages, then make sure you have installed the optional
+package `Babel`_. Pay attention to the extra steps for localization
+support in the `Installing Trac`_ section below. Lacking Babel, you
+will only get the default English version.
 
 If you're interested in contributing new translations for other
 languages or enhancing the existing translations, then please have a
@@ -51,10 +51,8 @@ Installation Steps
 
 #. Configuring Authentication
 #. Granting admin rights to the admin user
-#. Finishing the install
-
-    #. Enable version control components
-    #. Using Trac
+#. Configuring Trac
+#. Using Trac
 
 
 Dependencies
@@ -422,11 +420,12 @@ file.
 Filesystem Warning: When selecting the location of your environment,
 make sure that the filesystem on which the environment directory
 resides supports sub-second timestamps (i.e. not `ext2` or `ext3` on
-Linux), as the modification time of the `conf/trac.ini` file will be
-monitored to decide whether an environment restart is needed or not. A
-too coarse-grained timestamp resolution may result in inconsistencies
-in Trac < 1.0.2. The best advice is to opt for a platform with sub-
-second timestamp resolution, regardless of the Trac version.
+Linux, or HFS+ on OSX), as the modification time of the
+`conf/trac.ini` file will be monitored to decide whether an
+environment restart is needed or not. A too coarse-grained timestamp
+resolution may result in inconsistencies in Trac < 1.0.2. The best
+advice is to opt for a platform with sub-second timestamp resolution,
+regardless of the Trac version.
 
 Finally, make sure the user account under which the web front-end runs
 will have write permissions to the environment directory and all the
@@ -735,41 +734,15 @@ This user will have an *Admin* navigation item that directs to pages
 for administering your Trac project.
 
 
-Finishing the install
----------------------
+Configuring Trac
+----------------
 
-
-Enable version control components
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Support for version control systems is provided by optional components
-in Trac and the components are disabled by default *(since 1.0)*.
-Subversion and Git must be explicitly enabled if you wish to use them.
-See `TracRepositoryAdmin`_ for more details.
-
-The version control systems are enabled by adding the following to the
-`[components]` section of your `trac.ini`_, or enabling the components
-in the "Plugins" admin panel.
-
-
-::
-
-    tracopt.versioncontrol.svn.* = enabled
-
-
-::
-
-    tracopt.versioncontrol.git.* = enabled
-
-
-After enabling the components, repositories can be configured through
-the *Repositories* admin panel or by editing `trac.ini*`_. Automatic
-changeset references can be inserted as ticket comments by configuring
-`CommitTicketUpdater`_.
+`TracRepositoryAdmin`_ provides information on configuring version
+control repositories for your project.
 
 
 Using Trac
-~~~~~~~~~~
+----------
 
 Once you have your Trac site up and running, you should be able to
 create tickets, view the timeline, browse your version control
@@ -797,7 +770,6 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _Babel*: http://babel.edgewall.org
 .. _Babel: http://trac.edgewall.org/wiki/TracInstall#OtherPythonPackages
 .. _CGI: http://trac.edgewall.org/wiki/TracCgi
-.. _CommitTicketUpdater: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Automaticchangesetreferencesintickets
 .. _conf/trac.ini: http://trac.edgewall.org/wiki/TracIni
 .. _configuration file: http://trac.edgewall.org/wiki/TracIni
 .. _cookie-less: http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain
@@ -850,8 +822,6 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _The Trac Team: http://trac.edgewall.org/intertrac/TracTeam
 .. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
-.. _trac.ini*: http://trac.edgewall.org/wiki/TracIni#repositories-section
-.. _trac.ini: http://trac.edgewall.org/wiki/TracIni#components-section
 .. _TracAdmin: http://trac.edgewall.org/wiki/TracAdmin
 .. _TracAuthenticationIntroduction: http://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
 .. _TracCgi: http://trac.edgewall.org/wiki/TracCgi
