@@ -436,11 +436,12 @@ directly editing the `conf/trac.ini`_ configuration file.
 Filesystem Warning: When selecting the location of your environment,
 make sure that the filesystem on which the environment directory
 resides supports sub-second timestamps (i.e. not ext2 or ext3 on
-Linux), as the modification time of the conf/trac.ini file will be
-monitored to decide whether an environment restart is needed or not. A
-too coarse-grained timestamp resolution may result in inconsistencies
-in Trac < 1.0.2. The best advice is to opt for a platform with sub-
-second timestamp resolution, regardless of the Trac version.
+Linux, or HFS+ on OSX), as the modification time of the conf/trac.ini
+file will be monitored to decide whether an environment restart is
+needed or not. A too coarse-grained timestamp resolution may result in
+inconsistencies in Trac < 1.0.2. The best advice is to opt for a
+platform with sub-second timestamp resolution, regardless of the Trac
+version.
 
 Finally, make sure the user account under which the web front-end runs
 will have write permissions to the environment directory and all the
