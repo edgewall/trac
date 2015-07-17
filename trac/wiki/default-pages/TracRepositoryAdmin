@@ -78,6 +78,11 @@ The following [wiki:TracAdmin trac-admin] commands can be used to perform reposi
 
 Note that the default repository has an empty name, so it will likely need to be quoted when running `trac-admin` from a shell. Alternatively, the name "`(default)`" can be used instead, for example when running `trac-admin` in interactive mode.
 
+== Repository caching
+
+The Subversion and Git repository connectors support caching, which improves the performance browsing the repository, viewing logs and viewing changesets. Cached repositories must be [#Synchronization synchronized]; either explicit or implicit synchronization can be used. When searching changesets, only cached repositories are searched.
+
+Subversion repositories are cached unless the type is `direct-svnfs`. Git repositories are cached when `[git]` [wiki:TracIni#git-section cached_repository] is `true`.
 
 == Repository synchronization #Synchronization
 Prior to 0.12, Trac synchronized its cache with the repository on every HTTP request. This approach is not very efficient and not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. 
@@ -143,11 +148,14 @@ trac-admin /path/to/env changeset added <repos> $REV
 Alternately, if your repository is one that only gets pushed to, add the following to the `hooks/post-receive` file in the repo:
 {{{#!sh
 #!/bin/sh
+tracenv=/path/to/env     # change with your Trac environment's path
+repos=                   # change with your repository's name
 while read oldrev newrev refname; do
-        git rev-list --reverse $newrev ^$oldrev  | \
-        while read rev; do
-                trac-admin /path/to/env changeset added <repos> $rev
-        done
+    if [ "$oldrev" = 0000000000000000000000000000000000000000 ]; then
+        git rev-list --reverse "$newrev" --
+    else
+        git rev-list --reverse "$newrev" "^$oldrev" --
+    fi | xargs trac-admin "$tracenv" changeset added "$repos"
 done
 }}}
 

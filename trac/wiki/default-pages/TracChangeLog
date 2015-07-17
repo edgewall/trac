@@ -7,6 +7,18 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.7
+
+//(July 17, 2015)//
+
+Trac 1.0.7 contains more than a dozen minor fixes and enhancements, including the following highlights:
+ - Custom `svn:keywords` definitions are expanded in Subversion 1.8 and later ([trac:#11364]).
+ - Fixed MySQL performance regression in query with custom fields ([trac:#12113]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.7]].
+
+[trac:source:/tags/trac-1.0.7 View Tag] | [trac:milestone:1.0.7 View Milestone]
+
 === 1.0.6
 
 //(May 20, 2015)//
@@ -155,7 +167,7 @@ See the full list in [trac:wiki:TracDev/ReleaseNotes/1.0 1.0].
 
 === 0.12.7
 
-//(May 20, 2015)//
+//(July 12, 2015)//
 
 Trac 0.12.7 fixes a minor security issue, as well as a half dozen other minor issues:
  - InterWiki filters links through `[wiki] safe_schemes` option if `[wiki] render_unsafe_content` is disabled ([trac:#12053]).

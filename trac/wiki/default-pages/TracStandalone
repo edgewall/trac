@@ -94,7 +94,7 @@ $ net start tracd
 
 Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (`htpasswd` and `htdigest`) to easily create a password file in the proper format for tracd to use in authentication. (It is also possible to create the password file without `htpasswd` or `htdigest`; see below for alternatives)
 
-Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution (like `ext2` or `ext3` on Linux) may go undetected.
+Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution (like `ext2` or `ext3` on Linux, or HFS+ on OSX).
 
 Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
 
