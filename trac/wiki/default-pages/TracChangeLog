@@ -10,6 +10,19 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
 
+=== 1.1.6
+
+//(July 17, 2015)//
+
+Trac 1.1.6 contains more than a half dozen minor fixes and enhancements.
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.1.6]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.7]]
+(as 1.1.6 contains all the fixes done for 1.0.7).
+
+[trac:source:/tags/trac-1.1.6 View Tag] | [trac:milestone:1.1.6 View Milestone]
+
+
 === 1.1.5
 
 //(May 18, 2015)//
@@ -125,6 +138,18 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 [trac:source:/tags/trac-1.1.1 View Tag] | [trac:milestone:1.1.1 View Milestone]
 
 == 1.0.x Releases ==
+
+=== 1.0.7
+
+//(July 17, 2015)//
+
+Trac 1.0.7 contains more than a dozen minor fixes and enhancements, including the following highlights:
+ - Custom `svn:keywords` definitions are expanded in Subversion 1.8 and later ([trac:#11364]).
+ - Fixed MySQL performance regression in query with custom fields ([trac:#12113]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.7]].
+
+[trac:source:/tags/trac-1.0.7 View Tag] | [trac:milestone:1.0.7 View Milestone]
 
 === 1.0.6
 

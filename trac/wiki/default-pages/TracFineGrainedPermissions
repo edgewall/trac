@@ -221,10 +221,10 @@ harry =
 
 ==== Trac Configuration ====
 
-To activate granular permissions you __must__ specify the {{{authz_file}}} option in the {{{[trac]}}} section of trac.ini. If this option is set to null or not specified, the permissions will not be used.
+To activate granular permissions you __must__ specify the {{{authz_file}}} option in the `[svn]` section of trac.ini. If this option is set to null or not specified, the permissions will not be used.
 
 {{{#!ini
-[trac]
+[svn]
 authz_file = /path/to/svnaccessfile
 }}}
 
@@ -237,7 +237,7 @@ authz_module_name = modulename
 where ''modulename'' refers to the same repository indicated by the `<name>.dir` entry in the `[repositories]` section. As an example, if the `somemodule.dir` entry in the `[repositories]` section is `/srv/active/svn/somemodule`, that would yield the following:
 
 {{{ #!ini
-[trac]
+[svn]
 authz_file = /path/to/svnaccessfile
 authz_module_name = somemodule
 ...
