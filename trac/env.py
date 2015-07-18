@@ -562,8 +562,8 @@ class Environment(Component, ComponentManager):
 
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
-        create_file(os.path.join(self.path, 'conf', 'trac.ini.sample'))
-        config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
+        create_file(self.config_file_path + '.sample')
+        config = Configuration(self.config_file_path)
         for section, name, value in options:
             config.set(section, name, value)
         config.save()
@@ -617,13 +617,17 @@ class Environment(Component, ComponentManager):
 
     def setup_config(self):
         """Load the configuration file."""
-        self.config = Configuration(os.path.join(self.path, 'conf',
-                                                 'trac.ini'),
+        self.config = Configuration(self.config_file_path,
                                     {'envname': os.path.basename(self.path)})
         self.setup_log()
         from trac.loader import load_components
         plugins_dir = self.shared_plugins_dir
         load_components(self, plugins_dir and (plugins_dir,))
+
+    @lazy
+    def config_file_path(self):
+        """Path of the trac.ini file."""
+        return os.path.join(self.path, 'conf', 'trac.ini')
 
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
@@ -780,7 +784,7 @@ class EnvironmentSetup(Component):
     # Internal methods
 
     def _update_sample_config(self):
-        filename = os.path.join(self.env.path, 'conf', 'trac.ini.sample')
+        filename = os.path.join(self.env.config_file_path + '.sample')
         if not os.path.isfile(filename):
             return
         config = Configuration(filename)
