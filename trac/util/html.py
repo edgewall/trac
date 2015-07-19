@@ -56,6 +56,8 @@ try:
 except ImportError:
     LazyProxy = None
 
+from six import unichr
+
 from trac.core import TracError
 from trac.util.text import to_unicode
 

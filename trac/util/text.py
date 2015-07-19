@@ -28,6 +28,7 @@ from urllib import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
 import jinja2
+from six import unichr
 
 CRLF = '\r\n'
 

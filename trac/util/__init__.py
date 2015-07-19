@@ -39,6 +39,8 @@ import unicodedata
 import zipfile
 from urllib import quote, unquote, urlencode
 
+from six import unichr
+
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \
                            stripws, to_unicode

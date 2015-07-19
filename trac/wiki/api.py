@@ -18,6 +18,8 @@
 
 import re
 
+from six import unichr
+
 from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
