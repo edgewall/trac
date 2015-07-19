@@ -13,6 +13,8 @@
 
 import unittest
 
+import six
+
 from trac.core import Component, implements
 from trac.notification.mail import EmailDistributor, AlwaysEmailSubscriber
 from trac.notification.model import Subscription
@@ -47,7 +49,7 @@ class NotificationPreferencesTestCase(unittest.TestCase):
                  'format': 'text/plain', 'adverb': 'always',
                  'class': 'TicketOwnerSubscriber'}
         props.update((k.rstrip('_'),
-                      (v or None) if isinstance(v, basestring) else v)
+                      (v or None) if isinstance(v, six.string_types) else v)
                      for k, v in kwargs.iteritems())
         assert props['sid'] is not None
         return Subscription.add(self.env, props)

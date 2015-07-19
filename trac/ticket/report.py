@@ -20,6 +20,8 @@ import csv
 import io
 import re
 
+import six
+
 from trac.config import IntOption
 from trac.core import *
 from trac.db.api import get_column_names
@@ -518,7 +520,7 @@ class ReportModule(Component):
                         if sort_values:
                             return sort_values.get(val)
                         # otherwise, continue with string comparison:
-                        if isinstance(val, basestring):
+                        if isinstance(val, six.string_types):
                             val = val.lower()
                         return val
                     results = sorted(results, key=sortkey, reverse=not asc)

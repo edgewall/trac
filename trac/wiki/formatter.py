@@ -22,6 +22,8 @@ import io
 import re
 import os
 
+import six
+
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
@@ -1271,7 +1273,7 @@ class Formatter(object):
     _normalize_re = re.compile(r'[\v\f]', re.UNICODE)
 
     def reset(self, source, out=None):
-        if isinstance(source, basestring):
+        if isinstance(source, six.string_types):
             source = re.sub(self._normalize_re, ' ', source)
         self.source = source
         class NullOut(object):
@@ -1296,7 +1298,7 @@ class Formatter(object):
 
     def format(self, text, out=None, escape_newlines=False):
         text = self.reset(text, out)
-        if isinstance(text, basestring):
+        if isinstance(text, six.string_types):
             text = text.splitlines()
 
         for line in text:
@@ -1559,7 +1561,7 @@ class HtmlFormatter(object):
     def __init__(self, env, context, wikidom):
         self.env = env
         self.context = context
-        if isinstance(wikidom, basestring):
+        if isinstance(wikidom, six.string_types):
             wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 
@@ -1586,7 +1588,7 @@ class InlineHtmlFormatter(object):
     def __init__(self, env, context, wikidom):
         self.env = env
         self.context = context
-        if isinstance(wikidom, basestring):
+        if isinstance(wikidom, six.string_types):
             wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 

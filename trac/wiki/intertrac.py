@@ -16,6 +16,8 @@
 
 import re
 
+import six
+
 from trac.config import ConfigSection
 from trac.core import *
 from trac.util.html import Element, Fragment, find_element, tag
@@ -110,7 +112,7 @@ class InterTracDispatcher(Component):
 
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
-            if isinstance(intertrac, basestring):
+            if isinstance(intertrac, six.string_types):
                 yield tag.tr(tag.td(tag.strong(prefix)),
                              tag.td(tag_("Alias for %(name)s",
                                          name=tag.strong(intertrac))))

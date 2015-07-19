@@ -39,6 +39,7 @@ import unicodedata
 import zipfile
 from urllib import quote, unquote, urlencode
 
+import six
 from six import unichr
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
@@ -293,7 +294,7 @@ def create_file(path, data='', mode='w'):
     """
     with open(path, mode) as f:
         if data:
-            if isinstance(data, basestring):
+            if isinstance(data, six.string_types):
                 f.write(data)
             else:  # Assume iterable
                 f.writelines(data)
@@ -1107,7 +1108,7 @@ class Ranges(object):
         if not r:
             return
         p = self.pairs
-        if isinstance(r, basestring):
+        if isinstance(r, six.string_types):
             r = re.split(u',\u200b?', r)
         for x in r:
             try:
@@ -1337,7 +1338,7 @@ def as_bool(value, default=False):
 
     :since 1.2: the `default` argument can be specified.
     """
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         try:
             return bool(float(value))
         except ValueError:

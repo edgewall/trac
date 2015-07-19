@@ -22,6 +22,8 @@ from pkg_resources import working_set, DistributionNotFound, \
                           VersionConflict, UnknownExtra
 import sys
 
+import six
+
 from trac.util import get_doc, get_module_path, get_sources, get_pkginfo
 from trac.util.text import exception_to_unicode, to_unicode
 
@@ -168,7 +170,7 @@ def get_plugin_info(env, include_core=False):
                 for k in ('author', 'author_email', 'home_page', 'url',
                           'license', 'summary', 'trac'):
                     v = getattr(module, k, '')
-                    if v and isinstance(v, basestring):
+                    if v and isinstance(v, six.string_types):
                         if k in ('home_page', 'url'):
                             k = 'home_page'
                             v = v.replace('$', '').replace('URL: ', '')

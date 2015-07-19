@@ -55,6 +55,7 @@ try:
 except ImportError:
     LazyProxy = None
 
+import six
 from six import unichr
 from six.moves.html_parser import HTMLParser
 
@@ -377,7 +378,7 @@ class Fragment(object):
     def append(self, arg):
         global genshi
         if arg: # ignore most false values (None, False, [], (), ''), except 0!
-            if isinstance(arg, (Fragment, basestring, int, float, long)):
+            if isinstance(arg, (Fragment, float) + six.integer_types + six.string_types):
                 self.children.append(arg)
             elif genshi and isinstance(arg, Stream):
                 # legacy support for Genshi streams
@@ -652,7 +653,7 @@ class TracHTMLSanitizer(object):
         unsafe.
 
         :param html: the input HTML
-        :type: basestring
+        :type: string
         :return: the sanitized content
         :rtype: Markup
 
@@ -716,7 +717,7 @@ class TracHTMLSanitizer(object):
         inclusion in the output.
 
         :param tag: the tag name of the element
-        :type tag: QName or basestring
+        :type tag: QName or string
         :param attrs: the element attributes
         :type attrs: Attrs or list
         :return: whether the element should be considered safe

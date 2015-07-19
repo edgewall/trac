@@ -20,6 +20,8 @@ import io
 import pkg_resources
 import re
 
+import six
+
 from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
@@ -1488,7 +1490,7 @@ class TicketModule(Component):
     def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""
         from trac.ticket.query import QueryModule
-        if not (isinstance(value, basestring) and  # None or other non-splitable
+        if not (isinstance(value, six.string_types) and  # None or other non-splitable
                 self.env.is_component_enabled(QueryModule)):
             return value
         args = arg_list_to_args(parse_arg_list(self.ticketlink_query))

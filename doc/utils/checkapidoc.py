@@ -26,6 +26,8 @@ import os
 import re
 import sys
 
+import six
+
 excluded_docs = ['index.rst']
 api_doc = 'doc/api'
 
@@ -84,7 +86,7 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
         all = get_default_symbols(module, only_documented, has_submodules)
     no_apidoc = getattr(module, '__no_apidoc__', None)
     if no_apidoc:
-        if isinstance(no_apidoc, basestring):
+        if isinstance(no_apidoc, six.string_types):
             no_apidoc = [s.strip() for s in no_apidoc.split()]
         all = list(set(all) - set(no_apidoc))
     symbols, keywords = get_sphinx_documented_symbols(basename + '.rst')

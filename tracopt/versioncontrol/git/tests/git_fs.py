@@ -18,6 +18,8 @@ import unittest
 from datetime import datetime, timedelta
 from subprocess import PIPE
 
+import six
+
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockRequest, locate, mkdtemp, rmtree
 from trac.util import create_file
@@ -84,7 +86,7 @@ class GitCommandMixin(object):
                                    hours, rem / 60)
 
     def _set_committer_date(self, env, dt):
-        if not isinstance(dt, basestring):
+        if not isinstance(dt, six.string_types):
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=utc)
             dt = self._git_date_format(dt)

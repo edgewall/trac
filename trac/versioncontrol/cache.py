@@ -16,6 +16,8 @@
 
 import os
 
+import six
+
 from trac.cache import cached
 from trac.core import TracError
 from trac.util.datefmt import from_utimestamp, to_utimestamp
@@ -460,7 +462,7 @@ class CachedRepository(Repository):
         return self.repos.normalize_path(path)
 
     def normalize_rev(self, rev):
-        if rev is None or isinstance(rev, basestring) and \
+        if rev is None or isinstance(rev, six.string_types) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
             return self.rev_db(self.youngest_rev or 0)
         else:

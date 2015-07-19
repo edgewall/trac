@@ -21,6 +21,8 @@ from datetime import datetime
 from math import ceil
 import re
 
+import six
+
 from jinja2 import (Markup, Undefined, contextfilter, evalcontextfilter,
                     escape as escape_quotes)
 from jinja2.filters import make_attrgetter
@@ -277,7 +279,7 @@ def groupattr_filter(_eval_ctx, iterable, num, attr, *args, **kwargs):
 
 def istext(text):
     """`True` for text (`unicode` and `str`), but `False` for `Markup`."""
-    return isinstance(text, basestring) and not isinstance(text, Markup)
+    return isinstance(text, six.string_type) and not isinstance(text, Markup)
 
 def prepared_paginate(items, num_items, max_per_page):
     if max_per_page == 0:
