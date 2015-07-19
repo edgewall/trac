@@ -15,7 +15,7 @@
 import copy
 import os.path
 import re
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, ParsingError
 
 from genshi.builder import tag
 
@@ -342,9 +342,12 @@ class Configuration(object):
         modtime = os.path.getmtime(self.filename)
         if force or modtime != self._lastmtime:
             self.parser = UnicodeConfigParser()
-            if not self.parser.read(self.filename):
-                raise TracError(_("Error reading '%(file)s', make sure it is "
-                                  "readable.", file=self.filename))
+            try:
+                if not self.parser.read(self.filename):
+                    raise TracError(_("Error reading '%(file)s', make sure "
+                                      "it is readable.", file=self.filename))
+            except ParsingError as e:
+                raise TracError(e)
             self._lastmtime = modtime
             self._pristine_parser = copy.deepcopy(self.parser)
             changed = True

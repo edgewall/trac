@@ -25,6 +25,7 @@ import traceback
 from trac import __version__ as VERSION
 from trac.admin.api import AdminCommandError, AdminCommandManager, \
                            get_console_locale
+from trac.config import Configuration
 from trac.core import TracError
 from trac.env import Environment
 from trac.ticket.model import *
@@ -369,6 +370,12 @@ Type:  '?' or 'help' for help on commands.
          files are written to the conf/trac.ini file of the newly created
          environment. Relative paths are resolved relative to the "conf"
          directory of the new environment.
+
+         The optional argument --config=PATH can be used to specify a
+         configuration file that is used to populate the environment
+         configuration. The arguments <projectname>, <db> and any other
+         arguments passed in the invocation will override values in the
+         configuration file.
          """)]
 
     def do_initdb(self, line):
@@ -404,7 +411,7 @@ in order to initialize and prepare the project database.
     def do_initenv(self, line):
         def initenv_error(msg):
             printerr(_("Initenv for '%(env)s' failed.", env=self.envname),
-                     "\n" + msg)
+                     "\n%s" % msg)
         if self.env_check():
             initenv_error(_("Does an environment already exist?"))
             return 2
@@ -421,13 +428,28 @@ in order to initialize and prepare the project database.
 
         arg = self.arg_tokenize(line)
         inherit_paths = []
+        config_file_path = None
         i = 0
         while i < len(arg):
             item = arg[i]
             if item.startswith('--inherit='):
                 inherit_paths.append(arg.pop(i)[10:])
+            elif item.startswith('--config='):
+                config_file_path = arg.pop(i)[9:]
             else:
                 i += 1
+        config = None
+        if config_file_path:
+            if not os.path.exists(config_file_path):
+                initenv_error(_("The file specified in the --config argument "
+                                "does not exist: %(path)s.",
+                                path=config_file_path))
+                return 2
+            try:
+                config = Configuration(config_file_path)
+            except TracError as e:
+                initenv_error(e)
+                return 2
         arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
@@ -445,10 +467,16 @@ in order to initialize and prepare the project database.
 
         try:
             printout(_("Creating and Initializing Project"))
-            options = [
+            options = []
+            if config:
+                for section in config.sections(defaults=False):
+                    options.extend((section, option, value)
+                                   for option, value
+                                   in config.options(section))
+            options.extend([
                 ('project', 'name', project_name),
                 ('trac', 'database', db_str),
-            ]
+            ])
             def add_nav_order_options(section, default):
                 for i, name in enumerate(default, 1):
                     options.append((section, name + '.order', float(i)))

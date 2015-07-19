@@ -18,7 +18,9 @@ import difflib
 import inspect
 import os
 import re
+import shutil
 import sys
+import tempfile
 import unittest
 from StringIO import StringIO
 
@@ -49,7 +51,9 @@ from trac.admin.api import AdminCommandManager, IAdminCommandProvider, \
 from trac.admin.console import TracAdmin, TracAdminHelpMacro
 from trac.config import ConfigSection, Option
 from trac.core import Component, ComponentMeta, implements
+from trac.env import Environment
 from trac.test import EnvironmentStub
+from trac.util import create_file
 from trac.util.datefmt import format_date, get_date_format_hint, \
                               get_datetime_format_hint
 from trac.util.translation import get_available_locales, has_babel
@@ -107,17 +111,32 @@ def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
         sys.stdout = _out
 
 
-class TracadminTestCase(unittest.TestCase):
-    """
-    Tests the output of trac-admin and is meant to be used with
-    .../trac/tests.py.
-    """
+class TracAdminTestCaseBase(unittest.TestCase):
 
     expected_results_file = os.path.join(os.path.dirname(__file__),
                                          'console-tests.txt')
 
     expected_results = load_expected_results(expected_results_file,
                                              '===== (test_[^ ]+) =====')
+
+    def _execute(self, cmd, strip_trailing_space=True, input=None):
+        return execute_cmd(self._admin, cmd,
+                           strip_trailing_space=strip_trailing_space,
+                           input=input)
+
+    def assertExpectedResult(self, output, args=None):
+        test_name = inspect.stack()[1][3]
+        expected_result = self.expected_results[test_name]
+        if args is not None:
+            expected_result %= args
+        self.assertEqual(expected_result, output)
+
+
+class TracadminTestCase(TracAdminTestCaseBase):
+    """
+    Tests the output of trac-admin and is meant to be used with
+    .../trac/tests.py.
+    """
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True, enable=('trac.*',),
@@ -131,11 +150,6 @@ class TracadminTestCase(unittest.TestCase):
     def tearDown(self):
         self.env = None
 
-    def _execute(self, cmd, strip_trailing_space=True, input=None):
-        return execute_cmd(self._admin, cmd,
-                           strip_trailing_space=strip_trailing_space,
-                           input=input)
-
     @property
     def _datetime_format_hint(self):
         return get_datetime_format_hint(get_console_locale(self.env))
@@ -147,13 +161,6 @@ class TracadminTestCase(unittest.TestCase):
 
     def _complete_command(self, *args):
         return AdminCommandManager(self.env).complete_command(list(args))
-
-    def assertExpectedResult(self, output, args=None):
-        test_name = inspect.stack()[1][3]
-        expected_result = self.expected_results[test_name]
-        if args is not None:
-            expected_result %= args
-        self.assertEqual(expected_result, output)
 
     def assertEqual(self, expected_results, output, msg=None):
         """:deprecated: since 1.0.2, use `assertExpectedResult` instead."""
@@ -1531,6 +1538,80 @@ class TracAdminComponentTestCase(unittest.TestCase):
         self.assertIn('2', self.env.config.parser.get('compa', 'opt2'))
 
 
+class TracAdminInitenvTestCase(TracAdminTestCaseBase):
+
+    def setUp(self):
+        self.parent_dir = tempfile.mkdtemp()
+        self.env_path = os.path.join(self.parent_dir, 'trac')
+        self._admin = TracAdmin(self.env_path)
+
+    def tearDown(self):
+        shutil.rmtree(self.parent_dir)
+
+    def test_config_argument(self):
+        """Options contained in file specified by the --config argument
+        are written to trac.ini.
+        """
+        config_file = os.path.join(self.parent_dir, 'config.ini')
+        create_file(config_file, """\
+[the-plugin]
+option_a = 1
+option_b = 2
+[components]
+the_plugin.* = enabled
+[project]
+name = project2
+        """)
+        rv, output = self._execute('initenv project1 sqlite:db/sqlite.db '
+                                   '--config=%s' % config_file)
+        env = Environment(self.env_path)
+        cfile = env.config.parser
+
+        self.assertEqual(0, rv, output)
+        self.assertEqual('1', cfile.get('the-plugin', 'option_a'))
+        self.assertEqual('2', cfile.get('the-plugin', 'option_b'))
+        self.assertEqual('enabled', cfile.get('components', 'the_plugin.*'))
+        self.assertEqual('project1', cfile.get('project', 'name'))
+        self.assertEqual('sqlite:db/sqlite.db', cfile.get('trac', 'database'))
+        for (section, name), option in \
+                Option.get_registry(env.compmgr).iteritems():
+            if (section, name) not in \
+                    (('trac', 'database'), ('project', 'name')):
+                self.assertEqual(option.default, cfile.get(section, name))
+
+    def test_config_argument_has_invalid_path(self):
+        """Exception is raised when --config argument is an invalid path."""
+        config_file = os.path.join(self.parent_dir, 'config.ini')
+        rv, output = self._execute('initenv project1 sqlite:db/sqlite.db '
+                                   '--config=%s' % config_file)
+
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'config_file': config_file,
+        })
+
+    def test_config_argument_has_invalid_value(self):
+        """Exception is raised when --config argument specifies a malformed
+        configuration file.
+        """
+        config_file = os.path.join(self.parent_dir, 'config.ini')
+        create_file(config_file, """\
+[the-plugin]
+option_a = 1
+[components
+the_plugin.* = enabled
+        """)
+        rv, output = self._execute('initenv project1 sqlite:db/sqlite.db '
+                                   '--config=%s' % config_file)
+
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'config_file': config_file,
+        })
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracadminTestCase))
@@ -1541,6 +1622,7 @@ def suite():
     else:
         print("SKIP: trac.admin.tests.console.TracAdminComponentTestCase "
               "(__name__ is not trac.admin.tests.console)")
+    suite.addTest(unittest.makeSuite(TracAdminInitenvTestCase))
     return suite
 
 
