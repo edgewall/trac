@@ -41,6 +41,7 @@ from urllib import quote, unquote, urlencode
 
 import six
 from six import unichr
+from six.moves import range
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \
@@ -132,7 +133,7 @@ def native_path(path):
 _control_codes_re = re.compile(
     '[' +
     ''.join(filter(lambda c: unicodedata.category(c) == 'Cc',
-                   map(unichr, xrange(0x10000)))) +
+                   map(unichr, range(0x10000)))) +
     ']')
 
 def normalize_filename(filepath):
@@ -849,7 +850,7 @@ def get_pkginfo(dist):
                     provides = pkginfo.get_all('Provides', ())
                     names = module.__name__.split('.')
                     if any('.'.join(names[:n + 1]) in provides
-                           for n in xrange(len(names))):
+                           for n in range(len(names))):
                         return True
                 except (IOError, email.Errors.MessageError):
                     pass
@@ -936,7 +937,7 @@ def hex_entropy(digits=32):
 def salt(length=2):
     """Returns a string of `length` random letters and numbers."""
     return ''.join(random.choice(string.ascii_letters + string.digits + '/.')
-                   for x in xrange(length))
+                   for x in range(length))
 
 
 # Original license for md5crypt:
@@ -960,7 +961,7 @@ def md5crypt(password, salt, magic='$1$'):
 
     # /* Then just as many characters of the MD5(pw,salt,pw) */
     mixin = hashlib.md5(password + salt + password).digest()
-    for i in xrange(len(password)):
+    for i in range(len(password)):
         m.update(mixin[i % 16])
 
     # /* Then something really weird... */
@@ -976,7 +977,7 @@ def md5crypt(password, salt, magic='$1$'):
     final = m.digest()
 
     # /* and now, just to make sure things don't run too fast */
-    for i in xrange(1000):
+    for i in range(1000):
         m2 = hashlib.md5()
         if i & 1:
             m2.update(password)
@@ -1003,12 +1004,12 @@ def md5crypt(password, salt, magic='$1$'):
     rearranged = ''
     for a, b, c in ((0, 6, 12), (1, 7, 13), (2, 8, 14), (3, 9, 15), (4, 10, 5)):
         v = ord(final[a]) << 16 | ord(final[b]) << 8 | ord(final[c])
-        for i in xrange(4):
+        for i in range(4):
             rearranged += itoa64[v & 0x3f]
             v >>= 6
 
     v = ord(final[11])
-    for i in xrange(2):
+    for i in range(2):
         rearranged += itoa64[v & 0x3f]
         v >>= 6
 
@@ -1031,7 +1032,7 @@ class Ranges(object):
     True
     >>> 16 in x
     False
-    >>> [i for i in xrange(20) if i in x]
+    >>> [i for i in range(20) if i in x]
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
 
     Also supports iteration, which makes that last example a bit simpler:
@@ -1144,10 +1145,10 @@ class Ranges(object):
         This is another way I came up with to do it.  Is it faster?
 
         from itertools import chain
-        return chain(*[xrange(a, b+1) for a, b in self.pairs])
+        return chain(*[range(a, b+1) for a, b in self.pairs])
         """
         for a, b in self.pairs:
-            for i in xrange(a, b+1):
+            for i in range(a, b+1):
                 yield i
 
     def __contains__(self, x):

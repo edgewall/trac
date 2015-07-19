@@ -17,6 +17,7 @@ import pkg_resources
 import re
 
 import six
+from six.moves import range
 
 from trac.util.concurrency import ThreadLocal, threading
 from trac.util.html import tag
@@ -56,7 +57,7 @@ def dngettext_noop(domain, singular, plural, num, **kwargs):
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
     trans_elts = _param_re.split(trans)
-    for i in xrange(1, len(trans_elts), 2):
+    for i in range(1, len(trans_elts), 2):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
 

@@ -19,6 +19,8 @@
 import os.path
 import re
 
+from six.moves import range
+
 from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
@@ -76,7 +78,7 @@ class PatchRenderer(Component):
         """
         def _markup_intraline_change(fromlines, tolines):
             from trac.versioncontrol.diff import get_change_extent
-            for i in xrange(len(fromlines)):
+            for i in range(len(fromlines)):
                 fr, to = fromlines[i], tolines[i]
                 (start, end) = get_change_extent(fr, to)
                 if start != 0 or end != 0:
@@ -276,7 +278,7 @@ class PatchRenderer(Component):
                             b['type'] = 'rem'
                         elif len(f) == len(t):
                             _markup_intraline_change(f, t)
-                    for i in xrange(len(f)):
+                    for i in range(len(f)):
                         line = expandtabs(f[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
                         line = '<del>'.join(space_re.sub(htmlify, seg)
@@ -285,7 +287,7 @@ class PatchRenderer(Component):
                         f[i] = Markup(line)
                         if 'meta' in base and i in base['meta']:
                             f[i] = Markup('<em>%s</em>') % f[i]
-                    for i in xrange(len(t)):
+                    for i in range(len(t)):
                         line = expandtabs(t[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
                         line = '<ins>'.join(space_re.sub(htmlify, seg)

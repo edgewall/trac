@@ -17,6 +17,8 @@
 import difflib
 import re
 
+from six.moves import range
+
 from trac.util.html import Markup, escape
 from trac.util.text import expandtabs
 
@@ -119,7 +121,7 @@ def filter_ignorable_lines(hunks, fromlines, tolines, context,
                 if ignore_space_changes:
                     str = _norm_space_changes(str)
                 return str
-            for i in xrange(len(fromlines)):
+            for i in range(len(fromlines)):
                 if f(fromlines[i]) != f(tolines[i]):
                     return False
             return True
@@ -205,7 +207,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
     def markup_intraline_changes(opcodes):
         for tag, i1, i2, j1, j2 in opcodes:
             if tag == 'replace' and i2 - i1 == j2 - j1:
-                for i in xrange(i2 - i1):
+                for i in range(i2 - i1):
                     fromline, toline = fromlines[i1 + i], tolines[j1 + i]
                     (start, end) = get_change_extent(fromline, toline)
                     if start != 0 or end != 0:

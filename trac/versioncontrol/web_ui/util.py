@@ -176,7 +176,7 @@ def make_log_graph(repos, revs):
             else:
                 base = len(threads)
                 threads.extend([[0, column + 1 + i, line + 1]]
-                               for i in xrange(len(new_parents) - 1))
+                               for i in range(len(new_parents) - 1))
                 active_thread[column + 1:column + 1] = threads[base:]
 
             active = next_revs

@@ -16,6 +16,8 @@ from datetime import datetime
 import itertools
 import os
 
+from six.moves import range
+
 from trac.api import ISystemInfoProvider
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
@@ -101,7 +103,7 @@ class GitCachedRepository(CachedRepository):
             max_holders = 999
             revs = sorted(set(rev for refname, rev in repos.git.get_refs()))
             step = max_holders - 1
-            for idx in xrange(0, len(revs), step):
+            for idx in range(0, len(revs), step):
                 revs_ = revs[idx:idx + step]
                 holders = ','.join(('%s',) * len(revs_))
                 args = [self.id]

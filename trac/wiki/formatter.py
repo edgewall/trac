@@ -23,6 +23,7 @@ import re
 import os
 
 import six
+from six.moves import range
 
 from trac.core import *
 from trac.mimeview import *
@@ -508,13 +509,13 @@ class Formatter(object):
         If `close_tag` is not specified, it's an indirect tag (0.12)
         """
         tmp = ''
-        for i in xrange(len(self._open_tags) - 1, -1, -1):
+        for i in range(len(self._open_tags) - 1, -1, -1):
             tag = self._open_tags[i]
             tmp += self._get_close_tag(tag)
             if (open_tag == tag,
                     (open_tag, close_tag) == tag)[bool(close_tag)]:
                 del self._open_tags[i]
-                for j in xrange(i, len(self._open_tags)):
+                for j in range(i, len(self._open_tags)):
                     tmp += self._get_open_tag(self._open_tags[j])
                 break
         return tmp
@@ -1011,7 +1012,7 @@ class Formatter(object):
                 class_attr = ' class="citation"' if citation else ''
                 self.out.write(u'<blockquote%s>\n' % class_attr)
             if citation:
-                for d in xrange(quote_depth+1, depth+1):
+                for d in range(quote_depth+1, depth+1):
                     open_one_quote(d)
             else:
                 open_one_quote(depth)
@@ -1508,11 +1509,11 @@ class OutlineFormatter(Formatter):
             if depth < min_depth or depth > max_depth:
                 continue
             if depth > curr_depth: # Deeper indent
-                for i in xrange(curr_depth, depth):
+                for i in range(curr_depth, depth):
                     out.write(whitespace_indent * (2*i) + u'<ol>\n' +
                               whitespace_indent * (2*i+1) + u'<li>\n')
             elif depth < curr_depth: # Shallower indent
-                for i in xrange(curr_depth-1, depth-1, -1):
+                for i in range(curr_depth-1, depth-1, -1):
                     out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                               whitespace_indent * (2*i) + u'</ol>\n')
                 out.write(whitespace_indent * (2*depth-1) + u'</li>\n' +
@@ -1524,7 +1525,7 @@ class OutlineFormatter(Formatter):
             out.write(whitespace_indent * (2*depth) +
                       u'<a href="#%s">%s</a>\n' % (anchor, text))
         # Close out all indentation
-        for i in xrange(curr_depth-1, min_depth-2, -1):
+        for i in range(curr_depth-1, min_depth-2, -1):
             out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                       whitespace_indent * (2*i) + u'</ol>\n')
 

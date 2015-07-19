@@ -19,6 +19,8 @@ import re
 import sys
 import unittest
 
+from six.moves import range
+
 import trac
 from trac import util
 from trac.test import mkdtemp, rmtree
@@ -139,7 +141,7 @@ class RandomTestCase(unittest.TestCase):
 
     def test_urandom(self):
         """urandom() returns random bytes"""
-        for i in xrange(129):
+        for i in range(129):
             self.assertEqual(i, len(util.urandom(i)))
         # For a large enough sample, each value should appear at least once
         entropy = util.urandom(65536)
@@ -149,7 +151,7 @@ class RandomTestCase(unittest.TestCase):
     def test_hex_entropy(self):
         """hex_entropy() returns random hex digits"""
         hex_digits = set('0123456789abcdef')
-        for i in xrange(129):
+        for i in range(129):
             entropy = util.hex_entropy(i)
             self.assertEqual(i, len(entropy))
             self.assertEqual(set(), set(entropy) - hex_digits)

@@ -703,19 +703,19 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         """Check the generation of the comment history"""
         ticket = Ticket(self.env, self.id)
         t = [self.t1]
-        for i in xrange(1, 32):
+        for i in range(1, 32):
             t.append(self.created + timedelta(minutes=i))
             ticket.modify_comment(self._find_change(ticket, 1),
                                   'joe (%d)' % i,
                                   'Comment 1 (%d)' % i, t[-1])
         history = ticket.get_comment_history(cnum=1)
         self.assertEqual((0, t[0], 'jack', 'Comment 1'), history[0])
-        for i in xrange(1, len(history)):
+        for i in range(1, len(history)):
             self.assertEqual((i, t[i], 'joe (%d)' % i,
                              'Comment 1 (%d)' % i), history[i])
         history = ticket.get_comment_history(cdate=self.t1)
         self.assertEqual((0, t[0], 'jack', 'Comment 1'), history[0])
-        for i in xrange(1, len(history)):
+        for i in range(1, len(history)):
             self.assertEqual((i, t[i], 'joe (%d)' % i,
                              'Comment 1 (%d)' % i), history[i])
 

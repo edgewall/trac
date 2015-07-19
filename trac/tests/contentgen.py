@@ -61,7 +61,7 @@ def random_sentence(word_count=None):
     """
     if word_count is None:
         word_count = random.randint(1, 20)
-    words = [random_word() for x in xrange(word_count - 1)]
+    words = [random_word() for x in range(word_count - 1)]
     words.insert(0, str(uuid.uuid1()).split('-')[0])
     return '%s.' % ' '.join(words)
 
@@ -70,11 +70,11 @@ def random_paragraph(sentence_count=None):
     if sentence_count is None:
         sentence_count = random.randint(1, 10)
     return '  '.join(random_sentence(random.randint(2, 15))
-                     for x in xrange(sentence_count))
+                     for x in range(sentence_count))
 
 
 def random_page(paragraph_count=None):
     if paragraph_count is None:
         paragraph_count = random.randint(1, 10)
     return '\r\n\r\n'.join(random_paragraph(random.randint(1, 5))
-                           for x in xrange(paragraph_count))
+                           for x in range(paragraph_count))

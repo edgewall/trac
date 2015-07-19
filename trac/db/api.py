@@ -19,6 +19,8 @@ import time
 import urllib
 from abc import ABCMeta, abstractmethod
 
+from six.moves import range
+
 from trac import db_default
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import BoolOption, ConfigurationError, IntOption, Option
@@ -526,7 +528,7 @@ class DatabaseManager(Component):
         :raises TracError: if the package or module doesn't exist.
         """
         dbver = self.get_database_version(name)
-        for i in xrange(dbver + 1, version + 1):
+        for i in range(dbver + 1, version + 1):
             module = 'db%i' % i
             try:
                 upgrades = __import__(pkg, globals(), locals(), [module])

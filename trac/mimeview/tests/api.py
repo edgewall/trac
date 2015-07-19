@@ -15,6 +15,8 @@ import doctest
 import io
 import unittest
 
+from six.moves import range
+
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, MockRequest
 from trac.mimeview import api
@@ -114,12 +116,12 @@ class TestMimeviewConverter(Component):
     def convert_content(self, req, mimetype, content, key):
         if content == 'iterable-bytes':
             def fn_bytes():
-                for idx in xrange(256):
+                for idx in range(256):
                     yield 'b' * 256
             return fn_bytes(), 'text/plain'
         if content == 'iterable-unicode':
             def fn_unicode():
-                for idx in xrange(0x10000):
+                for idx in range(0x10000):
                     yield u'ü'
             return fn_unicode(), 'text/plain'
         if content == 'bytes':

@@ -21,6 +21,7 @@ import pkg_resources
 import re
 
 import six
+from six.moves import range
 
 from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option
@@ -961,7 +962,7 @@ class TicketModule(Component):
 
         # assume a linear sequence of change numbers, starting at 1, with gaps
         def replay_changes(values, old_values, from_version, to_version):
-            for version in xrange(from_version, to_version+1):
+            for version in range(from_version, to_version+1):
                 if version in changes:
                     for k, v in changes[version]['fields'].iteritems():
                         values[k] = v['new']

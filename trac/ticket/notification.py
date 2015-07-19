@@ -18,6 +18,8 @@
 
 import re
 
+from six.moves import range
+
 from trac.api import IEnvironmentSetupParticipant
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
@@ -439,7 +441,7 @@ class TicketFormatter(Component):
 
         cell_l = []
         cell_r = []
-        for i in xrange(len(vals_lr[0])):
+        for i in range(len(vals_lr[0])):
             vals_l = vals_lr[0][i]
             vals_r = vals_lr[1][i]
             vals_diff = len(vals_l) - len(vals_r)
@@ -457,7 +459,7 @@ class TicketFormatter(Component):
             cell_l.extend(vals_l)
             cell_r.extend(vals_r)
 
-        for i in xrange(max(len(cell_l), len(cell_r))):
+        for i in range(max(len(cell_l), len(cell_r))):
             if i >= len(cell_l):
                 cell_l.append(width_l * ' ')
             elif i >= len(cell_r):
