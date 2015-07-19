@@ -38,12 +38,12 @@
       $("tr td.sel", $table).click(function() {
         var $tbody = $(this).closest("tbody");
         var $checkboxes = $("tr td.sel input", $tbody);
-        var numSelected = $checkboxes.filter(":checked").length;
-        var noneSelected = numSelected === 0;
-        var allSelected = numSelected === $checkboxes.length;
+        var num_selected = $checkboxes.filter(":checked").length;
+        var none_selected = num_selected === 0;
+        var all_selected = num_selected === $checkboxes.length;
         $("tr th.sel input", $tbody.prev())
-          .prop({"checked": allSelected,
-                 "indeterminate": !(noneSelected || allSelected)});
+          .prop({"checked": all_selected,
+                 "indeterminate": !(none_selected || all_selected)});
       });
     }
   }

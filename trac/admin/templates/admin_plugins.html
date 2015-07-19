@@ -25,12 +25,12 @@
         function setGroupTogglerState() {
           var table = $(this).closest("table.listing");
           var checkboxes = $("td.sel input:checkbox:enabled", table);
-          var numSelected = checkboxes.filter(":checked").length;
-          var noneSelected = numSelected === 0;
-          var allSelected = numSelected === checkboxes.length;
+          var num_selected = checkboxes.filter(":checked").length;
+          var none_selected = num_selected === 0;
+          var all_selected = num_selected === checkboxes.length;
           $("th.sel input:checkbox", table)
-            .prop({"checked": allSelected,
-                   "indeterminate": !(noneSelected || allSelected)});
+            .prop({"checked": all_selected,
+                   "indeterminate": !(none_selected || all_selected)});
         }
         // Add group event behavior for controlling state of toggler
         $("table.listing td.sel input:checkbox:enabled")
