@@ -21,7 +21,6 @@ time during install.
 
 """
 
-from HTMLParser import HTMLParser
 from itertools import izip
 import io
 import os
@@ -29,6 +28,7 @@ import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
 
 from jinja2.ext import babel_extract as jinja2_extractor
+from six.moves.html_parser import HTMLParser
 
 try:
     import genshi

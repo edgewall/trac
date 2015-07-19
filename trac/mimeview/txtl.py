@@ -18,8 +18,6 @@
 See also: https://github.com/textile/python-textile
 """
 
-from HTMLParser import HTMLParseError
-
 try:
     import textile
 except ImportError:
@@ -30,7 +28,7 @@ from trac.api import ISystemInfoProvider
 from trac.core import Component, implements
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import get_pkginfo, lazy
-from trac.util.html import Markup, TracHTMLSanitizer, escape
+from trac.util.html import HTMLParseError, Markup, TracHTMLSanitizer, escape
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import system_message

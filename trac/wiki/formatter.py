@@ -18,7 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@edgewall.org>
 
-from HTMLParser import HTMLParseError
 import io
 import re
 import os
@@ -27,6 +26,7 @@ from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity, as_int
+from trac.util.html import HTMLParseError
 from trac.util.text import (
     exception_to_unicode, shorten_line, to_unicode, unicode_quote,
     unquote_label

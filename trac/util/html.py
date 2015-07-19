@@ -21,7 +21,6 @@
 import io
 import re
 import sys
-from HTMLParser import HTMLParser
 import htmlentitydefs as entities
 
 from markupsafe import Markup, escape as escape_quotes
@@ -57,9 +56,17 @@ except ImportError:
     LazyProxy = None
 
 from six import unichr
+from six.moves.html_parser import HTMLParser
 
 from trac.core import TracError
 from trac.util.text import to_unicode
+
+try:
+    from HTMLParser import HTMLParseError
+except ImportError:  # Python 3.5+
+    class HTMLParseError(Exception):
+        pass
+
 
 __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
            'find_element', 'html', 'is_safe_origin', 'plaintext', 'tag',
