@@ -21,13 +21,13 @@ import dircache
 import fnmatch
 from functools import partial
 import gc
-import io
 import locale
 import os
 import pkg_resources
 from pprint import pformat, pprint
 import re
 import sys
+import StringIO
 
 from genshi.builder import tag
 from genshi.output import DocType
@@ -255,7 +255,7 @@ class RequestDispatcher(Component):
                     if 'hdfdump' in req.args:
                         req.perm.require('TRAC_ADMIN')
                         # debugging helper - no need to render first
-                        out = io.BytesIO()
+                        out = StringIO.StringIO()
                         pprint(data, out)
                         req.send(out.getvalue(), 'text/plain')
 
