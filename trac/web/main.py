@@ -21,6 +21,7 @@ import dircache
 import fnmatch
 from functools import partial
 import gc
+import io
 import locale
 import os
 import pkg_resources
@@ -254,7 +255,7 @@ class RequestDispatcher(Component):
                     if 'hdfdump' in req.args:
                         req.perm.require('TRAC_ADMIN')
                         # debugging helper - no need to render first
-                        out = StringIO()
+                        out = io.BytesIO()
                         pprint(data, out)
                         req.send(out.getvalue(), 'text/plain')
 
