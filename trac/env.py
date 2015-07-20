@@ -23,10 +23,11 @@ import setuptools
 import shutil
 import sys
 import time
-from ConfigParser import RawConfigParser
 from subprocess import PIPE
 from tempfile import mkdtemp
 from urlparse import urlsplit
+
+from six.moves.configparser import RawConfigParser
 
 from trac import log
 from trac.admin.api import (AdminCommandError, IAdminCommandProvider,

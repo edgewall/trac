@@ -15,7 +15,8 @@
 import copy
 import os.path
 import re
-from ConfigParser import ConfigParser, ParsingError
+
+from six.moves.configparser import ConfigParser, ParsingError
 
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
