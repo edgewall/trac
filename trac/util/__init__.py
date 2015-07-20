@@ -37,11 +37,11 @@ import struct
 import tempfile
 import unicodedata
 import zipfile
-from urllib import quote, unquote, urlencode
 
 import six
 from six import unichr
 from six.moves import range, zip
+from six.moves.urllib.parse import quote, unquote
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \

@@ -24,12 +24,12 @@ import os
 import re
 import sys
 import textwrap
-from urllib import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
 import jinja2
 from six import unichr
 from six.moves import range
+from six.moves.urllib.parse import quote, quote_plus, unquote
 
 CRLF = '\r\n'
 

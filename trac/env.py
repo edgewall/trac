@@ -25,10 +25,10 @@ import sys
 import time
 from subprocess import PIPE
 from tempfile import mkdtemp
-from urlparse import urlsplit
 
 import six
 from six.moves.configparser import RawConfigParser
+from six.moves.urllib.parse import urlsplit
 
 from trac import log
 from trac.admin.api import (AdminCommandError, IAdminCommandProvider,
