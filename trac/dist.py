@@ -21,7 +21,6 @@ time during install.
 
 """
 
-from itertools import izip
 import io
 import os
 import re
@@ -35,6 +34,8 @@ try:
     from genshi.filters.i18n import extract as genshi_extractor
 except ImportError:
     genshi = None
+
+from six.moves import zip
 
 from distutils import log as distlog
 from distutils.cmd import Command
@@ -667,7 +668,7 @@ try:
             if not _GENSHI_MARKUP_SEARCH(msgids[0]):
                 return
 
-            for msgid, msgstr in izip(msgids, msgstrs):
+            for msgid, msgstr in zip(msgids, msgstrs):
                 if msgstr:
                     _validate_genshi_markup(msgid, msgstr)
 

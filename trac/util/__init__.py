@@ -23,7 +23,7 @@ import functools
 import hashlib
 import inspect
 import io
-from itertools import izip, tee
+from itertools import tee
 import locale
 import os
 import posixpath
@@ -41,7 +41,7 @@ from urllib import quote, unquote, urlencode
 
 import six
 from six import unichr
-from six.moves import range
+from six.moves import range, zip
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \
