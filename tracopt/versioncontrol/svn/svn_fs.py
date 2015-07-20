@@ -53,6 +53,7 @@ import weakref
 import posixpath
 
 import six
+from six.moves import reduce
 from six.moves.urllib.parse import quote
 
 from trac.api import ISystemInfoProvider
