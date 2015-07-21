@@ -131,6 +131,29 @@ class TracAdminTestCaseBase(unittest.TestCase):
             expected_result %= args
         self.assertEqual(expected_result, output)
 
+    def assertEqual(self, expected_results, output, msg=None):
+        """:deprecated: since 1.0.2, use `assertExpectedResult` instead."""
+        if not (isinstance(expected_results, basestring) and
+                isinstance(output, basestring)):
+            return unittest.TestCase.assertEqual(self, expected_results,
+                                                 output, msg)
+        def diff():
+            # Create a useful delta between the output and the expected output
+            output_lines = ['%s\n' % x for x in output.split('\n')]
+            expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
+            return ''.join(difflib.unified_diff(expected_lines, output_lines,
+                                                'expected', 'actual'))
+        if '[...]' in expected_results:
+            m = re.match(expected_results.replace('[...]', '.*'), output,
+                         re.MULTILINE)
+            unittest.TestCase.assertTrue(self, m,
+                                         "%r != %r\n%s" % (expected_results,
+                                                           output, diff()))
+        else:
+            unittest.TestCase.assertEqual(self, expected_results, output,
+                                          "%r != %r\n%s" % (expected_results,
+                                                            output, diff()))
+
 
 class TracadminTestCase(TracAdminTestCaseBase):
     """
@@ -162,28 +185,6 @@ class TracadminTestCase(TracAdminTestCaseBase):
     def _complete_command(self, *args):
         return AdminCommandManager(self.env).complete_command(list(args))
 
-    def assertEqual(self, expected_results, output, msg=None):
-        """:deprecated: since 1.0.2, use `assertExpectedResult` instead."""
-        if not (isinstance(expected_results, basestring) and
-                isinstance(output, basestring)):
-            return unittest.TestCase.assertEqual(self, expected_results,
-                                                 output, msg)
-        def diff():
-            # Create a useful delta between the output and the expected output
-            output_lines = ['%s\n' % x for x in output.split('\n')]
-            expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
-            return ''.join(difflib.unified_diff(expected_lines, output_lines,
-                                                'expected', 'actual'))
-        if '[...]' in expected_results:
-            m = re.match(expected_results.replace('[...]', '.*'), output,
-                         re.MULTILINE)
-            unittest.TestCase.assertTrue(self, m,
-                                         "%r != %r\n%s" % (expected_results,
-                                                           output, diff()))
-        else:
-            unittest.TestCase.assertEqual(self, expected_results, output,
-                                          "%r != %r\n%s" % (expected_results,
-                                                            output, diff()))
     # Help test
 
     def test_help_ok(self):
