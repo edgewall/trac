@@ -33,7 +33,13 @@ from functools import partial
 from hashlib import md5, sha1
 from itertools import groupby, tee
 
+
 class py_groupby(object):
+    """Use in templates as an alternative to `itertools.groupby`,
+    which leaks memory for Python < 2.5.3.
+
+    This class will be removed in Trac 1.3.1.
+    """
     def __init__(self, iterable, key=None):
         if key is None:
             key = lambda x: x
