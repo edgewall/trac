@@ -289,6 +289,10 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
             self._testenv.adduser(u'joé')
             self._tester.login(u'joé')
             self._tester.go_to_front()
+            # when failed to retrieve session, FakeSession() and FakePerm()
+            # are used and the req.perm has no permissions.
+            tc.notfind(internal_error)
+            tc.notfind("You don't have the required permissions")
             self._tester.logout()
             # finally restore expected 'admin' login
             self._tester.login('admin')

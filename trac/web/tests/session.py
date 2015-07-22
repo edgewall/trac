@@ -105,7 +105,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual('123456', session.sid)
         self.assertNotIn('trac_session', outcookie)
 
-    def test_authenticated_session(self):
+    def _test_authenticated_session(self, username):
         """
         Verifies that a session cookie does not get used if the user is logged
         in, and that Trac expires the cookie.
@@ -113,15 +113,21 @@ class SessionTestCase(unittest.TestCase):
         incookie = Cookie()
         incookie['trac_session'] = '123456'
         outcookie = Cookie()
-        req = Mock(authname='john', base_path='/', incookie=incookie,
+        req = Mock(authname=username, base_path='/', incookie=incookie,
                    outcookie=outcookie)
         session = Session(self.env, req)
-        self.assertEqual('john', session.sid)
+        self.assertEqual(username, session.sid)
         session['foo'] = 'bar'
         session.save()
         self.assertEqual(0, outcookie['trac_session']['expires'])
 
-    def test_session_promotion(self):
+    def test_authenticated_session(self):
+        self._test_authenticated_session('john')
+        self._test_authenticated_session('j.smith')
+        self._test_authenticated_session(u'Jöhn')  # non-ascii username
+        self._test_authenticated_session('john@EXAMPLE.LOCAL')  # LDAP username
+
+    def _test_session_promotion(self, username):
         """
         Verifies that an existing anonymous session gets promoted to an
         authenticated session when the user logs in.
@@ -131,33 +137,57 @@ class SessionTestCase(unittest.TestCase):
             incookie = Cookie()
             incookie['trac_session'] = '123456'
             outcookie = Cookie()
-            req = Mock(authname='john', base_path='/', incookie=incookie,
+            req = Mock(authname=username, base_path='/', incookie=incookie,
                        outcookie=outcookie)
             session = Session(self.env, req)
-            self.assertEqual('john', session.sid)
+            self.assertEqual(username, session.sid)
             session.save()
 
-        self.assertEqual([('john', 1)], self.env.db_query(
-            "SELECT sid, authenticated FROM session"))
+        self.assertEqual([(username, 1)],
+            self.env.db_query("""SELECT sid, authenticated FROM session
+                                 WHERE sid=%s""", (username,)))
 
-    def test_new_session_promotion(self):
+    def test_session_promotion(self):
+        self._test_session_promotion('john')
+        self._test_session_promotion('j.smith')
+        self._test_session_promotion(u'Jöhn')  # non-ascii username
+        self._test_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
+
+        sessions = self.env.db_query("SELECT sid, authenticated FROM session")
+        self.assertEqual(set([('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+                              ('john@EXAMPLE.LOCAL', 1)]),
+                         set(sessions))
+
+    def _test_new_session_promotion(self, username):
         """
         Verifies that even without a preexisting anonymous session,
         an authenticated session will be created when the user logs in.
         (same test as above without the initial INSERT)
         """
-        with self.env.db_transaction as db:
+        with self.env.db_transaction:
             incookie = Cookie()
             incookie['trac_session'] = '123456'
             outcookie = Cookie()
-            req = Mock(authname='john', base_path='/', incookie=incookie,
+            req = Mock(authname=username, base_path='/', incookie=incookie,
                        outcookie=outcookie)
             session = Session(self.env, req)
-            self.assertEqual('john', session.sid)
+            self.assertEqual(username, session.sid)
             session.save()
 
-        self.assertEqual([('john', 1)], self.env.db_query(
-                "SELECT sid, authenticated FROM session"))
+        self.assertEqual([(username, 1)],
+            self.env.db_query("""SELECT sid, authenticated FROM session
+                                 WHERE sid=%s""", (username,)))
+
+    def test_new_session_promotion(self):
+        self._test_new_session_promotion('john')
+        self._test_new_session_promotion('j.smith')
+        self._test_new_session_promotion(u'Jöhn')  # non-ascii username
+        self._test_new_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
+
+        sessions = self.env.db_query("SELECT sid, authenticated FROM session")
+        self.assertEqual(set([('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+                              ('john@EXAMPLE.LOCAL', 1)]),
+                         set(sessions))
 
     def test_add_anonymous_session_var(self):
         """

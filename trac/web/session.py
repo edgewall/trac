@@ -230,7 +230,7 @@ class Session(DetachedSession):
     def get_session(self, sid, authenticated=False):
         refresh_cookie = False
 
-        if not self._valid_sid_re.match(sid):
+        if not authenticated and not self._valid_sid_re.match(sid):
             raise TracError(_("Session ID must be alphanumeric."))
         if self.sid and sid != self.sid:
             refresh_cookie = True
