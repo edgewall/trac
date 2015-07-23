@@ -353,14 +353,7 @@ class Configuration(object):
             changed = True
 
         if changed:
-            self.parents = []
-            if self.parser.has_option('inherit', 'file'):
-                for filename in self.parser.get('inherit', 'file').split(','):
-                    filename = filename.strip()
-                    if not os.path.isabs(filename):
-                        filename = os.path.join(os.path.dirname(self.filename),
-                                                filename)
-                    self.parents.append(Configuration(filename))
+            self.parents = self._get_parents()
         else:
             for parent in self.parents:
                 changed |= parent.parse_if_needed(force=force)
@@ -402,6 +395,17 @@ class Configuration(object):
         else:
             for option in Option.get_registry(compmgr).itervalues():
                 set_option_default(option)
+
+    def _get_parents(self):
+        _parents = []
+        if self.parser.has_option('inherit', 'file'):
+            for filename in self.parser.get('inherit', 'file').split(','):
+                filename = filename.strip()
+                if not os.path.isabs(filename):
+                    filename = os.path.join(os.path.dirname(self.filename),
+                                            filename)
+                _parents.append(Configuration(filename))
+        return _parents
 
     def _write(self, parser):
         if not self.filename:
