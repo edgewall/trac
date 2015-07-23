@@ -125,7 +125,7 @@
             Configure the format of your ${distributor} notifications.
           </p>
         </div>
-        <div class="field">
+        <div class="field" py:if="data['subscribers']">
           <label>Subscription rules:</label>
           <table class="subscription-rules" summary="Subscription rules">
             <tbody class="rules rules-$distributor">
