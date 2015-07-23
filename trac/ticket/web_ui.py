@@ -1839,15 +1839,15 @@ class TicketModule(Component):
             if added or remvd:
                 rendered = tag(added, added and remvd and _("; "), remvd)
         if field in ('reporter', 'owner'):
-            old = format_author(old)
-            new = format_author(new)
+            old_author = format_author(old)
+            new_author = format_author(new)
             if old and not new:
-                rendered = tag_("%(value)s deleted", value=tag.em(old))
+                rendered = tag_("%(value)s deleted", value=tag.em(old_author))
             elif new and not old:
-                rendered = tag_("set to %(value)s", value=tag.em(new))
+                rendered = tag_("set to %(value)s", value=tag.em(new_author))
             elif old and new:
                 rendered = tag_("changed from %(old)s to %(new)s",
-                                old=tag.em(old), new=tag.em(new))
+                                old=tag.em(old_author), new=tag.em(new_author))
         return rendered
 
     def grouped_changelog_entries(self, ticket, when=None):
