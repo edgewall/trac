@@ -904,7 +904,8 @@ class MilestoneModule(Component):
                           and 'MILESTONE_VIEW' in req.perm(m.resource)]
             data['milestone_groups'] = group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm)
-            data['num_tickets'] = milestone.get_num_tickets()
+            data['num_open_tickets'] = milestone \
+                                       .get_num_tickets(exclude_closed=True)
             data['retarget_to'] = self.default_retarget_to
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')

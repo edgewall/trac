@@ -84,9 +84,9 @@
           <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
         </label>
       </div>
-      <fieldset py:if="num_tickets or num_tickets == 0" id="retargeting" py:choose="">
+      <fieldset py:if="num_open_tickets or num_open_tickets == 0" id="retargeting" py:choose="">
         <legend>Retargeting</legend>
-        <py:when test="num_tickets != 0">
+        <py:when test="num_open_tickets != 0">
           <label>
             <input type="checkbox" id="retarget" name="retarget"
                    checked="${not milestone.completed or None}" />
@@ -108,7 +108,7 @@
                  value="Ticket retargeted after milestone closed" />
         </py:when>
         <p py:otherwise="" class="help">
-          There are no tickets associated with this milestone.
+          There are no open tickets associated with this milestone.
         </p>
       </fieldset>
       <div class="field description">

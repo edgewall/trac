@@ -1155,12 +1155,16 @@ class Milestone(object):
                     ticket.save_changes(author, comment, now)
         return tkt_ids
 
-    def get_num_tickets(self):
+    def get_num_tickets(self, exclude_closed=False):
         """Returns the number of tickets associated with the milestone.
+
+        :param exclude_closed: whether tickets with status 'closed' should
+                               be excluded from the count. Defaults to False.
         """
-        return self.env.db_query("""
-            SELECT COUNT(*) FROM ticket WHERE milestone=%s
-            """, (self.name,))[0][0]
+        sql = "SELECT COUNT(*) FROM ticket WHERE milestone=%s"
+        if exclude_closed:
+            sql += " AND status != 'closed'"
+        return self.env.db_query(sql, (self.name,))[0][0]
 
     @classmethod
     def select(cls, env, include_completed=True):
