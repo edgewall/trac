@@ -1190,7 +1190,7 @@ class TicketModule(Component):
         cols = [unicode(ticket.id)]
         for f in fields:
             name = f['name']
-            value = ticket.values.get(name, '')
+            value = ticket[name] or ''
             if name in ('cc', 'owner', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
             elif name in ticket.time_fields:
@@ -1610,7 +1610,7 @@ class TicketModule(Component):
             # per type settings
             if type_ in ('radio', 'select'):
                 if ticket.exists and field['editable']:
-                    value = ticket.values.get(name)
+                    value = ticket[name]
                     options = field['options']
                     optgroups = []
                     for x in field.get('optgroups', []):
@@ -1622,7 +1622,7 @@ class TicketModule(Component):
                         # even if it's not among the possible values
                         options.append(value)
             elif type_ == 'checkbox':
-                value = ticket.values.get(name)
+                value = ticket[name]
                 if value in ('1', '0'):
                     field['rendered'] = self._query_link(req, name, value,
                                 _("yes") if value == '1' else _("no"))
