@@ -36,6 +36,7 @@ import trac.about
 import trac.admin.web_ui
 import trac.config
 import trac.ticket.api
+import trac.ticket.batch
 import trac.ticket.report
 import trac.ticket.roadmap
 import trac.ticket.web_ui
