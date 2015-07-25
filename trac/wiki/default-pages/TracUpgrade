@@ -78,6 +78,16 @@ Remove above note once #9936 is fixed.
 ===== Python 2.4 no longer supported
 Upgrade Python to at least 2.5, but not 3.0.
 
+===== Obsolete Plugins
+
+Trac has added functionality equivalent to the following plugins:
+
+* [https://trac-hacks.org/wiki/BatchModifyPlugin BatchModifyPlugin]
+* ​[https://trac-hacks.org/wiki/GitPlugin GitPlugin]
+* [https://trac-hacks.org/wiki/OverrideEditPlugin OverrideEditPlugin]
+
+The plugins should be removed when upgrading Trac to 1.0.
+
 ===== Subversion components not enabled by default for new installations
 The Trac components for Subversion support are no longer enabled by default. To enable the svn support, you need to make sure the `tracopt.versioncontrol.svn` components are enabled, for example by setting the following in the TracIni:
 {{{#!ini
@@ -102,6 +112,21 @@ SQLite v2.x is no longer supported. If you still use a Trac database of this for
 
 ===== [trac:PySqlite] 2 required
 [trac:PySqlite] 1.1.x is no longer supported. Please install 2.5.5 or later if possible, see [#Tracdatabaseupgrade Trac database upgrade] below.
+
+===== Obsolete Plugins
+
+Trac has added functionality equivalent to the following plugins:
+
+* [https://trac-hacks.org/wiki/AutoQueryPlugin AutoQueryPlugin]
+* ​[https://trac-hacks.org/wiki/AdminConsoleProviderPatch AdminConsoleProviderPatch]
+* [https://trac-hacks.org/wiki/AnchorMacro AnchorMacro]: see WikiFormatting#SettingAnchors
+* [https://trac-hacks.org/wiki/TicketChangePlugin TicketChangePlugin]: see [TracPermissions#TicketSystem TICKET_EDIT_COMMENT permission]
+* [https://trac-hacks.org/wiki/TicketDeletePlugin TicketDeletePlugin]: see `tracopt.ticket.deleter`
+* [https://trac-hacks.org/wiki/SubversionLocationPlugin SubversionLocationPlugin]: see TracRepositoryAdmin#Repositories
+* [https://trac-hacks.org/wiki/WikiCreoleRendererPlugin WikiCreoleRendererPlugin]: see WikiCreole
+* [https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin RepoRevisionSyntaxPlugin] (added in 0.12.1)
+
+The plugins should be removed when upgrading Trac to 0.12.
 
 ===== Multiple Repository Support
 The latest version includes support for multiple repositories. If you plan to add more repositories to your Trac instance, please refer to TracRepositoryAdmin#Migration.

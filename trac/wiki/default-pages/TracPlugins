@@ -8,7 +8,7 @@ Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based
 
 From the user's point of view, a plugin is either a standalone .py file or an .egg package. Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Components defined in globally-installed plugins must be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the `trac.ini` file. Components defined in the `plugins` directory of the project environment are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.
 
-== Requirements for Trac eggs
+== Requirements for Trac eggs #Requirements
 
 To use egg-based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version >= 0.6) installed.
 
@@ -88,6 +88,16 @@ tracspamfilter.* = enabled
 The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source: look for a top-level directory that contains a file named `__init__.py`.
 
 After installing the plugin, you must restart your web server.
+
+==== Upgrading the environment
+
+Some plugins may require an environment upgrade. This will typically be necessary for plugins that implement `IEnvironmentSetupParticipant`. Common reasons for requiring an environment upgrade are to add tables to the database or add configuration parameters to trac.ini. A notification will be displayed when accessing Trac for the first time after installing a plugin and restarting the web server. To upgrade the environment, run the command:
+
+{{{#!sh
+$ trac-admin /path/to/env upgrade
+}}}
+
+A database backup will be made before upgrading the environment, unless the `--no-backup` option is specified. For more information, refer to the documentation output by `trac-admin /path/to/env help upgrade`.
 
 ==== Uninstalling
 

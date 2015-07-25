@@ -7,6 +7,19 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.8
+
+//(July 24, 2005)//
+
+Trac 1.0.8 fixes a regression introduced in Trac 1.0.7: the session
+for an authenticated username containing non-alphanumeric characters
+could not be retrieved, resulting in the user being denied access to
+every realm and resource ([trac:#12129]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8]].
+
+[trac:source:/tags/trac-1.0.8 View Tag] | [trac:milestone:1.0.8 View Milestone]
+
 === 1.0.7
 
 //(July 17, 2015)//
