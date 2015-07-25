@@ -1,3 +1,5 @@
+﻿.. charset=utf-8
+
 Upgrade Instructions
 ====================
 
@@ -179,6 +181,20 @@ Python 2.4 no longer supported
 Upgrade Python to at least 2.5, but not 3.0.
 
 
+Obsolete Plugins
+++++++++++++++++
+
+Trac has added functionality equivalent to the following plugins:
+
+
++ `BatchModifyPlugin`_
++ ​`GitPlugin`_
++ `OverrideEditPlugin`_
+
+
+The plugins should be removed when upgrading Trac to 1.0.
+
+
 Subversion components not enabled by default for new installations
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -249,6 +265,25 @@ of this format, you'll need to convert it to SQLite v3.x first. See
 
 `PySqlite`_ 1.1.x is no longer supported. Please install 2.5.5 or
 later if possible, see `Trac database upgrade`_ below.
+
+
+Obsolete Plugins
+++++++++++++++++
+
+Trac has added functionality equivalent to the following plugins:
+
+
++ `AutoQueryPlugin`_
++ ​`AdminConsoleProviderPatch`_
++ `AnchorMacro`_: see `WikiFormatting#SettingAnchors`_
++ `TicketChangePlugin`_: see `TICKET_EDIT_COMMENT permission`_
++ `TicketDeletePlugin`_: see tracopt.ticket.deleter
++ `SubversionLocationPlugin`_: see `TracRepositoryAdmin#Repositories`_
++ `WikiCreoleRendererPlugin`_: see `WikiCreole?`_
++ `RepoRevisionSyntaxPlugin`_ (added in 0.12.1)
+
+
+The plugins should be removed when upgrading Trac to 0.12.
 
 
 Multiple Repository Support
@@ -510,18 +545,29 @@ See also: `TracGuide`_, `TracInstall`_
 .. _#7014: http://trac.edgewall.org/intertrac/%237014
 .. _#7265: http://trac.edgewall.org/intertrac/%237265
 .. _#9434: http://trac.edgewall.org/intertrac/%239434
+.. _AdminConsoleProviderPatch: https://trac-hacks.org/wiki/AdminConsoleProviderPatch
 .. _Alagazam: http://alagazam.net/
+.. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
+.. _AutoQueryPlugin: https://trac-hacks.org/wiki/AutoQueryPlugin
+.. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _CGI: http://trac.edgewall.org/wiki/TracCgi
 .. _ClearSilver: http://trac.edgewall.org/intertrac/ClearSilver
 .. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 .. _environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
 .. _here: http://trac.edgewall.org/wiki/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
 .. _hotcopy: http://trac.edgewall.org/wiki/TracBackup
 .. _internal errors: http://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
 .. _No changeset ??? in the repository: http://trac.edgewall.org/intertrac/%236120
+.. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
 .. _PySqlite#UpgradingSQLitefrom2.xto3.x: http://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x
 .. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
+.. _RepoRevisionSyntaxPlugin: https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin
+.. _SubversionLocationPlugin: https://trac-hacks.org/wiki/SubversionLocationPlugin
+.. _TICKET_EDIT_COMMENT permission: http://trac.edgewall.org/wiki/TracPermissions#TicketSystem
+.. _TicketChangePlugin: https://trac-hacks.org/wiki/TicketChangePlugin
+.. _TicketDeletePlugin: https://trac-hacks.org/wiki/TicketDeletePlugin
 .. _Trac database upgrade: http://trac.edgewall.org/wiki/TracUpgrade#Tracdatabaseupgrade
 .. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
@@ -536,9 +582,13 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracMigratePlugin: http://trac-hacks.org/wiki/TracMigratePlugin
 .. _TracRepositoryAdmin#ExplicitSync: http://trac.edgewall.org/wiki/TracRepositoryAdmin#ExplicitSync
 .. _TracRepositoryAdmin#Migration: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration
+.. _TracRepositoryAdmin#Repositories: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Repositories
 .. _TracRepositoryAdmin#Synchronization: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Synchronization
 .. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
 .. _TracWorkflow: http://trac.edgewall.org/wiki/TracWorkflow
 .. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
 .. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _WikiCreole?: http://trac.edgewall.org/wiki/WikiCreole
+.. _WikiCreoleRendererPlugin: https://trac-hacks.org/wiki/WikiCreoleRendererPlugin
+.. _WikiFormatting#SettingAnchors: http://trac.edgewall.org/wiki/WikiFormatting#SettingAnchors
 .. _WikiMacros: http://trac.edgewall.org/wiki/WikiMacros
