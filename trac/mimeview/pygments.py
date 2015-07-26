@@ -26,7 +26,7 @@ from trac.config import ConfigSection, ListOption, Option
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
-from trac.util import get_pkginfo
+from trac.util import get_pkginfo, lazy
 from trac.util.datefmt import http_date, localtz
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, HTTPNotFound
@@ -99,11 +99,6 @@ class PygmentsRenderer(Component):
   </body>
 </html>"""
 
-    def __init__(self):
-        self._types = None
-        self._lexer_options = None
-        self._lexer_alias_name_map = None
-
     # ISystemInfoProvider methods
 
     def get_system_info(self):
@@ -116,14 +111,12 @@ class PygmentsRenderer(Component):
     # IHTMLPreviewRenderer methods
 
     def get_extra_mimetypes(self):
-        for lexname, aliases, _, mimetypes in get_all_lexers():
+        for _, aliases, _, mimetypes in get_all_lexers():
             for mimetype in mimetypes:
                 yield mimetype, aliases
 
     def get_quality_ratio(self, mimetype):
         # Extend default MIME type to mode mappings with configured ones
-        if self._types is None:
-            self._init_types()
         try:
             return self._types[mimetype][1]
         except KeyError:
@@ -131,10 +124,8 @@ class PygmentsRenderer(Component):
 
     def render(self, context, mimetype, content, filename=None, rev=None):
         req = context.req
-        if self._types is None:
-            self._init_types()
-        add_stylesheet(req, '/pygments/%s.css' %
-                       req.session.get('pygments_style', self.default_style))
+        style = req.session.get('pygments_style', self.default_style)
+        add_stylesheet(req, '/pygments/%s.css' % style)
         try:
             if len(content) > 0:
                 mimetype = mimetype.split(';', 1)[0]
@@ -147,7 +138,7 @@ class PygmentsRenderer(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
-        yield ('pygments', _('Syntax Highlighting'))
+        yield 'pygments', _('Syntax Highlighting')
 
     def render_preference_panel(self, req, panel):
         styles = list(get_all_styles())
@@ -156,7 +147,7 @@ class PygmentsRenderer(Component):
             style = req.args.get('style')
             if style and style in styles:
                 req.session['pygments_style'] = style
-                add_notice(req, _('Your preferences have been saved.'))
+                add_notice(req, _("Your preferences have been saved."))
             req.redirect(req.href.prefs(panel or None))
 
         for style in sorted(styles):
@@ -214,18 +205,18 @@ class PygmentsRenderer(Component):
 
     # Internal methods
 
-    def _init_types(self):
-        self._types = {}
-        self._lexer_alias_name_map = {}
-        for lexname, aliases, _, mimetypes in get_all_lexers():
-            name = aliases[0] if aliases else lexname
-            for mimetype in mimetypes:
-                self._types[mimetype] = (name, self.QUALITY_RATIO)
+    @lazy
+    def _lexer_alias_name_map(self):
+        lexer_alias_name_map = {}
+        for lexer_name, aliases, _, _ in get_all_lexers():
+            name = aliases[0] if aliases else lexer_name
             for alias in aliases:
-                self._lexer_alias_name_map[alias] = name
+                lexer_alias_name_map[alias] = name
+        return lexer_alias_name_map
 
-        # Create a dictionary of lexer options specified in the config.
-        self._lexer_options = {}
+    @lazy
+    def _lexer_options(self):
+        lexer_options = {}
         for key, lexer_option_value in self.pygments_lexer_options.options():
             try:
                 lexer_name_or_alias, lexer_option_name = key.split('.')
@@ -234,22 +225,27 @@ class PygmentsRenderer(Component):
             else:
                 lexer_name = self._lexer_alias_to_name(lexer_name_or_alias)
                 lexer_option = {lexer_option_name: lexer_option_value}
-                self._lexer_options.setdefault(lexer_name, {}) \
-                                   .update(lexer_option)
+                lexer_options.setdefault(lexer_name, {}).update(lexer_option)
+        return lexer_options
+
+    @lazy
+    def _types(self):
+        types = {}
+        for lexer_name, aliases, _, mimetypes in get_all_lexers():
+            name = aliases[0] if aliases else lexer_name
+            for mimetype in mimetypes:
+                types[mimetype] = (name, self.QUALITY_RATIO)
 
         # Pygments < 1.4 doesn't know application/javascript
-        if 'application/javascript' not in self._types:
+        if 'application/javascript' not in types:
             js_entry = self._types.get('text/javascript')
             if js_entry:
-                self._types['application/javascript'] = js_entry
+                types['application/javascript'] = js_entry
 
-        self._types.update(
-            Mimeview(self.env).configured_modes_mapping('pygments')
-        )
+        types.update(Mimeview(self.env).configured_modes_mapping('pygments'))
+        return types
 
     def _generate(self, language, content, context=None):
-        if self._types is None:
-            self._init_types()
         lexer_name = self._lexer_alias_to_name(language)
         lexer_options = {'stripnl': False}
         lexer_options.update(self._lexer_options.get(lexer_name, {}))
@@ -292,7 +288,7 @@ class GenshiHtmlFormatter(HtmlFormatter):
             yield last_class, u''.join(text)
 
     def generate(self, tokens):
-        pos = (None, -1, -1)
+        pos = None, -1, -1
         span = QName('span')
         class_ = QName('class')
 
