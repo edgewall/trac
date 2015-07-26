@@ -22,7 +22,7 @@ from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.styles import get_all_styles, get_style_by_name
 
 from trac.core import *
-from trac.config import ListOption, Option
+from trac.config import ConfigSection, ListOption, Option
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
@@ -46,6 +46,23 @@ class PygmentsRenderer(Component):
                ITemplateProvider)
 
     is_valid_default_handler = False
+
+    pygments_lexer_options = ConfigSection('pygments-lexer',
+        """Configure Pygments [%(url)s lexer] options.
+
+        For example, to set the
+        [%(url)s#lexers-for-php-and-related-languages PhpLexer] options
+        `startinline` and `funcnamehighlighting`:
+        {{{#!ini
+        [pygments-lexer]
+        php.startinline = True
+        php.funcnamehighlighting = True
+        }}}
+
+        The lexer name is derived from the class name, with `Lexer` stripped
+        from the end. The lexer //short names// can also be used in place
+        of the lexer name.
+        """ % {'url': 'http://pygments.org/docs/lexers/'})
 
     default_style = Option('mimeviewer', 'pygments_default_style', 'trac',
         """The default style to use for Pygments syntax highlighting.""")
@@ -84,6 +101,8 @@ class PygmentsRenderer(Component):
 
     def __init__(self):
         self._types = None
+        self._lexer_options = None
+        self._lexer_alias_name_map = None
 
     # ISystemInfoProvider methods
 
@@ -120,7 +139,7 @@ class PygmentsRenderer(Component):
             if len(content) > 0:
                 mimetype = mimetype.split(';', 1)[0]
                 language = self._types[mimetype][0]
-                return self._generate(language, content)
+                return self._generate(language, content, context)
         except (KeyError, ValueError):
             raise Exception("No Pygments lexer found for mime-type '%s'."
                             % mimetype)
@@ -197,10 +216,26 @@ class PygmentsRenderer(Component):
 
     def _init_types(self):
         self._types = {}
+        self._lexer_alias_name_map = {}
         for lexname, aliases, _, mimetypes in get_all_lexers():
             name = aliases[0] if aliases else lexname
             for mimetype in mimetypes:
                 self._types[mimetype] = (name, self.QUALITY_RATIO)
+            for alias in aliases:
+                self._lexer_alias_name_map[alias] = name
+
+        # Create a dictionary of lexer options specified in the config.
+        self._lexer_options = {}
+        for key, lexer_option_value in self.pygments_lexer_options.options():
+            try:
+                lexer_name_or_alias, lexer_option_name = key.split('.')
+            except ValueError:
+                pass
+            else:
+                lexer_name = self._lexer_alias_to_name(lexer_name_or_alias)
+                lexer_option = {lexer_option_name: lexer_option_value}
+                self._lexer_options.setdefault(lexer_name, {}) \
+                                   .update(lexer_option)
 
         # Pygments < 1.4 doesn't know application/javascript
         if 'application/javascript' not in self._types:
@@ -212,9 +247,19 @@ class PygmentsRenderer(Component):
             Mimeview(self.env).configured_modes_mapping('pygments')
         )
 
-    def _generate(self, language, content):
-        lexer = get_lexer_by_name(language, stripnl=False)
+    def _generate(self, language, content, context=None):
+        if self._types is None:
+            self._init_types()
+        lexer_name = self._lexer_alias_to_name(language)
+        lexer_options = {'stripnl': False}
+        lexer_options.update(self._lexer_options.get(lexer_name, {}))
+        if context:
+            lexer_options.update(context.get_hint('lexer_options', {}))
+        lexer = get_lexer_by_name(lexer_name, **lexer_options)
         return GenshiHtmlFormatter().generate(lexer.get_tokens(content))
+
+    def _lexer_alias_to_name(self, alias):
+        return self._lexer_alias_name_map.get(alias, alias)
 
 
 class GenshiHtmlFormatter(HtmlFormatter):

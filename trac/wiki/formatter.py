@@ -349,15 +349,18 @@ class WikiProcessor(object):
     def _mimeview_processor(self, text):
         annotations = []
         context = self.formatter.context.child()
-        if self.args and 'lineno' in self.args:
-            lineno = as_int(self.args['lineno'], 1, min=1)
+        args = self.args.copy() if self.args else self.args
+        if args and 'lineno' in args:
+            lineno = as_int(args.pop('lineno'), 1, min=1)
             context.set_hints(lineno=lineno)
-            id = str(self.args.get('id', '')) or \
+            id = str(args.pop('id', '')) or \
                  self.formatter._unique_anchor('a')
             context.set_hints(id=id + '-')
-            if 'marks' in self.args:
-                context.set_hints(marks=self.args.get('marks'))
+            if 'marks' in args:
+                context.set_hints(marks=args.pop('marks'))
             annotations.append('lineno')
+        if args:  # Remaining args are assumed to be lexer options
+            context.set_hints(lexer_options=args)
         return tag.div(class_='wiki-code')(
             Mimeview(self.env).render(context, self.name, text,
                                       annotations=annotations))

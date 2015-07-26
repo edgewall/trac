@@ -146,6 +146,47 @@ print 'this is the end of the python sample'
         self.assertTrue(result)
         self._test('python_with_invalid_arguments_2', result)
 
+    def test_pygments_lexer_options(self):
+        self.env.config.set('pygments-lexer',
+                            'php.startinline', True)
+        self.env.config.set('pygments-lexer',
+                            'php.funcnamehighlighting', False)
+        result = format_to_html(self.env, self.context, """
+{{{#!php
+if (class_exists('MyClass')) {
+    $myclass = new MyClass();
+}
+}}}
+""")
+        self.assertTrue(result)
+        self._test('pygments_lexer_options', result)
+
+    def test_pygments_lexer_arguments(self):
+        result = format_to_html(self.env, self.context, """
+{{{#!php startinline=True funcnamehighlighting=False
+if (class_exists('MyClass')) {
+    $myclass = new MyClass();
+}
+}}}
+""")
+        self.assertTrue(result)
+        self._test('pygments_lexer_arguments', result)
+
+    def test_pygments_lexer_arguments_override_options(self):
+        self.env.config.set('pygments-lexer',
+                            'php.startinline', True)
+        self.env.config.set('pygments-lexer',
+                            'php.funcnamehighlighting', False)
+        result = format_to_html(self.env, self.context, """
+{{{#!php funcnamehighlighting=True
+if (class_exists('MyClass')) {
+    $myclass = new MyClass();
+}
+}}}
+""")
+        self.assertTrue(result)
+        self._test('pygments_lexer_arguments_override_options', result)
+
     def test_newline_content(self):
         """
         The behavior of Pygments changed post-Pygments 0.11.1, and now
