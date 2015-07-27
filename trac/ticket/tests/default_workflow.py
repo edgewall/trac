@@ -19,10 +19,13 @@ import unittest
 
 import trac.tests.compat
 from trac.perm import PermissionCache, PermissionSystem
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Ticket
+from trac.ticket.model import Component, Ticket
+from trac.ticket.web_ui import TicketModule
 from trac.util import create_file
+from trac.util.datefmt import to_utimestamp, utc
+from trac.web.api import RequestDone
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
@@ -30,10 +33,34 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        config = self.env.config
+        config.set('ticket-workflow', 'change_owner', 'new -> new')
+        config.set('ticket-workflow', 'change_owner.operations', 'set_owner')
         self.ctlr = TicketSystem(self.env).action_controllers[0]
+        self.ticket_module = TicketModule(self.env)
 
     def tearDown(self):
         self.env.reset_db()
+
+    def _create_request(self, authname='anonymous', **kwargs):
+        kw = {'path_info': '/', 'perm': MockPerm(), 'args': {},
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': {}, 'authname': authname,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+              'form_token': None, }
+        kw.update(kwargs)
+        def redirect(url, permanent=False):
+            raise RequestDone
+        return Mock(add_redirect_listener=lambda x: [].append(x),
+                    redirect=redirect, **kw)
+
+    def _add_component(self, name='test', owner='owner1'):
+        component = Component(self.env)
+        component.name = name
+        component.owner = owner
+        component.insert()
 
     def test_get_all_actions_custom_attribute(self):
         """Custom attribute in ticket-workflow."""
@@ -49,6 +76,140 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self.assertIsNotNone(resolve_action)
         self.assertIn('set_milestone', resolve_action.keys())
         self.assertEqual('reject', resolve_action['set_milestone'])
+
+    def test_owner_from_component(self):
+        """Verify that the owner of a new ticket is set to the owner
+        of the component.
+        """
+        self._add_component('component3', 'cowner3')
+
+        req = self._create_request(method='POST', args={
+            'field_reporter': 'reporter1',
+            'field_summary': 'the summary',
+            'field_component': 'component3',
+        })
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, 1)
+
+        self.assertEqual('component3', ticket['component'])
+        self.assertEqual('cowner3', ticket['owner'])
+
+    def test_component_change(self):
+        """New ticket owner is updated when the component is changed.
+        """
+        self._add_component('component3', 'cowner3')
+        self._add_component('component4', 'cowner4')
+
+        ticket = Ticket(self.env)
+        ticket.populate({
+            'reporter': 'reporter1',
+            'summary': 'the summary',
+            'component': 'component3',
+            'status': 'new',
+        })
+        tkt_id = ticket.insert()
+
+        req = self._create_request(method='POST', args={
+            'id': tkt_id,
+            'field_component': 'component4',
+            'submit': True,
+            'action': 'leave',
+            'view_time': str(to_utimestamp(ticket['changetime'])),
+        })
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, tkt_id)
+
+        self.assertEqual('component4', ticket['component'])
+        self.assertEqual('cowner4', ticket['owner'])
+
+    def test_component_change_and_owner_change(self):
+        """New ticket owner is not updated if owner is explicitly
+        changed.
+        """
+        self._add_component('component3', 'cowner3')
+        self._add_component('component4', 'cowner4')
+
+        ticket = Ticket(self.env)
+        ticket.populate({
+            'reporter': 'reporter1',
+            'summary': 'the summary',
+            'component': 'component3',
+            'status': 'new',
+        })
+        tkt_id = ticket.insert()
+
+        req = self._create_request(method='POST', args={
+            'id': tkt_id,
+            'field_component': 'component4',
+            'submit': True,
+            'action': 'change_owner',
+            'action_change_owner_reassign_owner': 'owner1',
+            'view_time': str(to_utimestamp(ticket['changetime'])),
+        })
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, tkt_id)
+
+        self.assertEqual('component4', ticket['component'])
+        self.assertEqual('owner1', ticket['owner'])
+
+    def test_old_owner_not_old_component_owner(self):
+        """New ticket owner is not updated if old owner is not the owner
+        of the old component.
+        """
+        self._add_component('component3', 'cowner3')
+        self._add_component('component4', 'cowner4')
+
+        ticket = Ticket(self.env)
+        ticket.populate({
+            'reporter': 'reporter1',
+            'summary': 'the summary',
+            'component': 'component3',
+            'owner': 'owner1',
+            'status': 'new',
+        })
+        tkt_id = ticket.insert()
+
+        req = self._create_request(method='POST', args={
+            'id': tkt_id,
+            'field_component': 'component4',
+            'submit': True,
+            'action': 'leave',
+            'view_time': str(to_utimestamp(ticket['changetime'])),
+        })
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, tkt_id)
+
+        self.assertEqual('component4', ticket['component'])
+        self.assertEqual('owner1', ticket['owner'])
+
+    def test_new_component_has_no_owner(self):
+        """Ticket is not disowned when the component is changed to a
+        component with no owner.
+        """
+        self._add_component('component3', 'cowner3')
+        self._add_component('component4', '')
+
+        ticket = Ticket(self.env)
+        ticket.populate({
+            'reporter': 'reporter1',
+            'summary': 'the summary',
+            'component': 'component3',
+            'status': 'new',
+        })
+        tkt_id = ticket.insert()
+
+        req = self._create_request(method='POST', args={
+            'id': tkt_id,
+            'field_component': 'component4',
+            'submit': True,
+            'action': 'leave',
+            'view_time': str(to_utimestamp(ticket['changetime'])),
+        })
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, tkt_id)
+
+        self.assertEqual('component4', ticket['component'])
+        self.assertEqual('cowner3', ticket['owner'])
 
 
 class ResetActionTestCase(unittest.TestCase):

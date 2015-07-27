@@ -28,8 +28,9 @@ from trac.config import Configuration, ConfigSection
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionCache, PermissionSystem
+from trac.resource import ResourceNotFound
 from trac.ticket.api import ITicketActionController, TicketSystem
-from trac.ticket.model import Resolution
+from trac.ticket.model import Component as TicketComponent, Resolution
 from trac.util import get_reporter_id, sub_val, to_list
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
@@ -419,6 +420,30 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
             # reset_workflow is just a no-op here, so we don't look for it.
             # leave_status is just a no-op here, so we don't look for it.
+
+        # Set owner to component owner for 'new' ticket if:
+        #  - component is changed
+        #  - owner isn't explicitly changed
+        #  - ticket owner is equal to owner of previous component
+        #  - new component has an owner
+        if ticket['status'] == 'new' and \
+                'component' in ticket.values and \
+                'component' in ticket._old and \
+                'owner' not in updated:
+            try:
+                old_comp = TicketComponent(self.env, ticket._old['component'])
+            except ResourceNotFound:
+                # If the old component has been removed from the database
+                # we just leave the owner as is.
+                pass
+            else:
+                old_owner = old_comp.owner or ''
+                current_owner = ticket['owner'] or ''
+                if old_owner == current_owner:
+                    new_comp = TicketComponent(self.env, ticket['component'])
+                    if new_comp.owner:
+                        updated['owner'] = new_comp.owner
+
         return updated
 
     def apply_action_side_effects(self, req, ticket, action):

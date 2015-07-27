@@ -327,25 +327,6 @@ class Ticket(object):
             when = datetime.now(utc)
         when_ts = to_utimestamp(when)
 
-        if 'component' in self.values:
-            # If the component is changed on a 'new' ticket
-            # then owner field is updated accordingly. (#623).
-            if self.values.get('status') == 'new' \
-                    and 'component' in self._old \
-                    and 'owner' not in self._old:
-                try:
-                    old_comp = Component(self.env, self._old['component'])
-                    old_owner = old_comp.owner or ''
-                    current_owner = self.values.get('owner') or ''
-                    if old_owner == current_owner:
-                        new_comp = Component(self.env, self['component'])
-                        if new_comp.owner:
-                            self['owner'] = new_comp.owner
-                except TracError:
-                    # If the old component has been removed from the database
-                    # we just leave the owner as is.
-                    pass
-
         # Perform type conversions
         db_values = self._to_db_types(self.values)
         old_db_values = self._to_db_types(self._old)
