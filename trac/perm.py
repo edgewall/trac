@@ -696,6 +696,8 @@ class PermissionAdmin(Component):
             except self.env.db_exc.IntegrityError:
                 printout(_("The user %(user)s already has permission "
                            "%(action)s.", user=user, action=action))
+            except TracError as e:
+                raise AdminCommandError(e)
 
     def _do_remove(self, user, *actions):
         permsys = PermissionSystem(self.env)

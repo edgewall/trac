@@ -365,6 +365,15 @@ class TracadminTestCase(TracAdminTestCaseBase):
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output + output2)
 
+    def test_permission_add_unknown_action(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test tries granting NOT_A_PERM to a user. NOT_A_PERM does not exist
+        in the system."""
+        rv, output = self._execute('permission add joe NOT_A_PERM')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
     def test_permission_remove_one_action_ok(self):
         """
         Tests the 'permission remove' command in trac-admin.  This particular

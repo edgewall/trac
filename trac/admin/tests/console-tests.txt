@@ -235,6 +235,8 @@ Available actions:
  TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
  WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
 
+===== test_permission_add_unknown_action =====
+Error: NOT_A_PERM is not a valid action.
 ===== test_permission_remove_one_action_ok =====
 
 User           Action
