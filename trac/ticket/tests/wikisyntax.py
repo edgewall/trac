@@ -130,9 +130,10 @@ def ticket_setup(tc):
     config.set('ticket-custom', 'custom1', 'text')
     config.save()
     ticket = Ticket(tc.env)
-    ticket.values.update({'reporter': 'santa',
-                          'summary': 'This is the summary',
-                          'status': 'new'})
+
+    ticket.populate({'reporter': 'santa',
+                     'summary': 'This is the summary',
+                     'status': 'new'})
     ticket.insert()
 
 def ticket_teardown(tc):
@@ -428,14 +429,14 @@ New tickets: <span><a class="new" href="/ticket/2" title="This is another summar
 
 def query2_setup(tc):
     ticket = Ticket(tc.env)
-    ticket.values.update({'reporter': 'santa',
-                          'summary': 'This is the summary',
-                          'status': 'new'})
+    ticket.populate({'reporter': 'santa',
+                     'summary': 'This is the summary',
+                     'status': 'new'})
     ticket.insert()
     ticket = Ticket(tc.env)
-    ticket.values.update({'reporter': 'claus',
-                          'summary': 'This is another summary',
-                          'status': 'new'})
+    ticket.populate({'reporter': 'claus',
+                     'summary': 'This is another summary',
+                     'status': 'new'})
     ticket.insert()
 
 def query2_teardown(tc):
@@ -541,15 +542,15 @@ comment::ticket:
 
 def comment_setup(tc):
     ticket1 = Ticket(tc.env)
-    ticket1.values.update({'reporter': 'santa',
-                            'summary': 'This is the summary for ticket 1',
-                            'status': 'new'})
+    ticket1.populate({'reporter': 'santa',
+                      'summary': 'This is the summary for ticket 1',
+                      'status': 'new'})
     ticket1.insert()
     ticket1.save_changes(comment='This is the comment for ticket 1')
     ticket2 = Ticket(tc.env)
-    ticket2.values.update({'reporter': 'claws',
-                           'summary': 'This is the summary for ticket 2',
-                           'status': 'closed'})
+    ticket2.populate({'reporter': 'claws',
+                      'summary': 'This is the summary for ticket 2',
+                      'status': 'closed'})
     ticket2.insert()
     ticket2.save_changes(comment='This is the comment for ticket 2')
 

@@ -202,6 +202,9 @@ class Ticket(object):
             del self._old[name]
         self.values[name] = value
 
+    def __contains__(self, item):
+        return item in self.values
+
     def get_value_or_default(self, name):
         """Return the value of a field or the default value if it is undefined
         """

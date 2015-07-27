@@ -76,7 +76,7 @@ class TicketEmailParser(object):
             if part.get_content_type() == 'text/plain':
                 tkt['description'] = part.get_payload(decode=1).strip()
 
-        if tkt.values.get('description'):
+        if tkt['description']:
             tkt.insert()
 
 if __name__ == '__main__':

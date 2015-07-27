@@ -1276,21 +1276,21 @@ QUERY_TEST_CASES = u"""
 def ticket_setup(tc):
     tc.env.config.set('ticket-custom', 'project', 'text')
     ticket = Ticket(tc.env)
-    ticket.values.update({'reporter': 'santa',
-                          'summary': 'This is the summary',
-                          'status': 'new',
-                          'project': 'xmas'})
+    ticket.populate({'reporter': 'santa',
+                     'summary': 'This is the summary',
+                     'status': 'new',
+                     'project': 'xmas'})
     ticket.insert()
     ticket = Ticket(tc.env)
-    ticket.values.update({'owner': 'elf',
-                          'summary': 'This is another summary',
-                          'status': 'assigned'})
+    ticket.populate({'owner': 'elf',
+                     'summary': 'This is another summary',
+                     'status': 'assigned'})
     ticket.insert()
     ticket = Ticket(tc.env)
-    ticket.values.update({'owner': 'santa',
-                          'summary': 'This is th third summary',
-                          'status': 'closed',
-                          'project': 'xmas'})
+    ticket.populate({'owner': 'santa',
+                     'summary': 'This is th third summary',
+                     'status': 'closed',
+                     'project': 'xmas'})
     ticket.insert()
 
     tc.env.config.set('milestone-groups', 'closed.status', 'closed')

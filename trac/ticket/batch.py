@@ -170,7 +170,7 @@ class BatchModifyModule(Component):
                 _values = new_values.copy()
                 for field in list_fields:
                     if field in new_values:
-                        old = t.values[field] if field in t.values else ''
+                        old = t[field] if field in t else ''
                         new = new_values[field]
                         mode = req.args.get('batchmod_value_' + field +
                                             '_mode')

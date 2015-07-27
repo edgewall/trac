@@ -45,11 +45,9 @@ class TicketModuleTestCase(unittest.TestCase):
         in `new_props`.
         """
         t = Ticket(self.env)
-        for field, value in old_props.items():
-            t[field] = value
+        t.populate(old_props)
         t.insert()
-        for field, value in new_props.items():
-            t[field] = value
+        t.populate(new_props)
         t.save_changes('actor')
         return t
 

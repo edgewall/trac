@@ -485,7 +485,7 @@ class TicketModule(Component):
 
         reporter_id = req.args.get(field_reporter) or \
                       get_reporter_id(req, 'author')
-        ticket.values['reporter'] = reporter_id
+        ticket['reporter'] = reporter_id
 
         preview = 'preview' in req.args
         if preview or req.method == 'POST':
@@ -1276,7 +1276,7 @@ class TicketModule(Component):
                 add_warning(req, _("No permission to change ticket fields."))
                 valid = False
             if not valid:
-                ticket.values.update(ticket._old)
+                ticket.populate(ticket._old)
 
         comment = req.args.get('comment')
         if comment:
@@ -1306,7 +1306,7 @@ class TicketModule(Component):
             if field['name'] == 'status':
                 continue
             name = field['name']
-            if name in ticket.values and name in ticket._old:
+            if name in ticket and name in ticket._old:
                 value = ticket[name]
                 if value:
                     if value not in field['options']:
@@ -1357,13 +1357,13 @@ class TicketModule(Component):
                     isinstance(value, datetime)):
                 try:
                     format = ticket.fields.by_name(field).get('format')
-                    ticket.values[field] = user_time(req, parse_date, value,
-                                                     hint=format) \
-                                           if value else None
+                    ticket[field] = user_time(req, parse_date, value,
+                                              hint=format) \
+                                    if value else None
                 except TracError as e:
                     # Degrade TracError to warning.
                     add_warning(req, e)
-                    ticket.values[field] = value
+                    ticket[field] = value
                     valid = False
 
         # Custom validation rules
@@ -1718,7 +1718,7 @@ class TicketModule(Component):
                 changes.append(change)
 
         if ticket.resource.version is not None:
-            ticket.values.update(values)
+            ticket.populate(values)
 
         # retrieve close time from changes
         closetime = None
@@ -1745,7 +1745,7 @@ class TicketModule(Component):
             self._render_property_changes(req, ticket, field_changes)
 
         if ticket.resource.version is not None: ### FIXME
-            ticket.values.update(values)
+            ticket.populate(values)
 
         context = web_context(req, ticket.resource)
 
