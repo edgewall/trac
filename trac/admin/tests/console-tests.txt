@@ -364,6 +364,42 @@ Error: Cannot remove permission TICKET_VIEW for user joe. The user has not been 
 Error: Cannot remove permission TICKET_CREATE for user anonymous. The user has not been granted the permission.
 ===== test_permission_remove_action_granted_through_meta_permission =====
 Error: Cannot remove permission WIKI_VIEW for user joe. The permission is granted through a meta-permission or group.
+===== test_permission_remove_unknown_action =====
+Error: NOT_A_PERM is not a valid action.
+===== test_permission_remove_unknown_action_granted =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
 ===== test_permission_export_ok =====
 anonymous,BROWSER_VIEW,CHANGESET_VIEW,FILE_VIEW,LOG_VIEW,MILESTONE_VIEW,REPORT_SQL_VIEW,REPORT_VIEW,ROADMAP_VIEW,SEARCH_VIEW,TICKET_VIEW,TIMELINE_VIEW,WIKI_VIEW
 authenticated,TICKET_CREATE,TICKET_MODIFY,WIKI_CREATE,WIKI_MODIFY

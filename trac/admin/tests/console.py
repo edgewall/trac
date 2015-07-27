@@ -437,6 +437,29 @@ class TracadminTestCase(TracAdminTestCaseBase):
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
+    def test_permission_remove_unknown_action(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing NOT_A_PERM from a user. NOT_A_PERM does not exist
+        in the system."""
+        rv, output = self._execute('permission remove joe NOT_A_PERM')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_unknown_action_granted(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing NOT_A_PERM from a user. NOT_A_PERM does not exist
+        in the system, but the user possesses the permission."""
+        self.env.db_transaction("""
+            INSERT INTO permission VALUES (%s, %s)
+        """, ('joe', 'NOT_A_PERM'))
+        rv, output = self._execute('permission remove joe NOT_A_PERM')
+        self.assertEqual(0, rv, output)
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
     def test_permission_export_ok(self):
         """
         Tests the 'permission export' command in trac-admin.  This particular

@@ -713,10 +713,12 @@ class PermissionAdmin(Component):
                             "%(user)s. The permission is granted through "
                             "a meta-permission or group.", action=action,
                             user=user)
-                else:
+                elif action in permsys.get_actions():
                     msg = _("Cannot remove permission %(action)s for user "
                             "%(user)s. The user has not been granted the "
                             "permission.", action=action, user=user)
+                else:
+                    msg = _("%(name)s is not a valid action.", name=action)
                 raise AdminCommandError(msg)
 
     def _do_export(self, filename=None):
