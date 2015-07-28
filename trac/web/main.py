@@ -52,7 +52,10 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            to_utf8, unicode_quote
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
-from trac.web.api import *
+from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
+                         HTTPInternalError, HTTPNotFound, IAuthenticator, \
+                         IRequestFilter, IRequestHandler, Request, \
+                         RequestDone, is_valid_default_handler
 from trac.web.chrome import Chrome, add_notice, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
