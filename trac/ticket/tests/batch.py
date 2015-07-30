@@ -77,29 +77,29 @@ class BatchModifyTestCase(unittest.TestCase):
         """These cannot be added through the UI, but if somebody tries
         to build their own POST data they will be ignored."""
         batch = BatchModifyModule(self.env)
-        self.req.args = {}
-        self.req.args['batchmod_value_summary'] = 'test ticket'
-        self.req.args['batchmod_value_reporter'] = 'anonymous'
-        self.req.args['batchmod_value_description'] = 'synergize the widgets'
+        self.req.args = {
+            'batchmod_value_summary': 'test ticket',
+            'batchmod_value_reporter': 'anonymous',
+            'batchmod_value_description': 'synergize the widgets'
+        }
         values = batch._get_new_ticket_values(self.req)
         self.assertEqual(len(values), 0)
 
     def test_add_batchmod_value_data_from_request(self):
         batch = BatchModifyModule(self.env)
-        self.req.args = {}
-        self.req.args['batchmod_value_milestone'] = 'milestone1'
+        self.req.args = {'batchmod_value_milestone': 'milestone1'}
         values = batch._get_new_ticket_values(self.req)
         self.assertEqual(values['milestone'], 'milestone1')
 
     def test_selected_tickets(self):
-        self.req.args = { 'selected_tickets' : '1,2,3' }
+        self.req.args = {'selected_tickets': '1,2,3'}
         batch = BatchModifyModule(self.env)
         selected_tickets = batch._get_selected_tickets(self.req)
         self.assertEqual(selected_tickets, ['1', '2', '3'])
 
     def test_no_selected_tickets(self):
         """If nothing is selected, the return value is the empty list."""
-        self.req.args = { 'selected_tickets' : '' }
+        self.req.args = {'selected_tickets': ''}
         batch = BatchModifyModule(self.env)
         selected_tickets = batch._get_selected_tickets(self.req)
         self.assertEqual(selected_tickets, [])
@@ -107,12 +107,12 @@ class BatchModifyTestCase(unittest.TestCase):
     # Assign list items
 
     def test_change_list_replace_empty_with_single(self):
-        """Replace emtpy field with single item."""
+        """Replace empty field with single item."""
         changed = self._assign_list_test_helper('', 'alice')
         self.assertEqual(changed, 'alice')
 
     def test_change_list_replace_empty_with_items(self):
-        """Replace emtpy field with items."""
+        """Replace empty field with items."""
         changed = self._assign_list_test_helper('', 'alice, bob')
         self.assertEqual(changed, 'alice, bob')
 
@@ -182,7 +182,7 @@ class BatchModifyTestCase(unittest.TestCase):
     def test_change_list_add_remove(self):
         """Remove existing item and append additional item."""
         changed = self._add_remove_list_test_helper('alice, bob', 'carol',
-                                                'alice')
+                                                    'alice')
         self.assertEqual(changed, 'bob, carol')
 
     def test_change_list_add_no_duplicates(self):
@@ -216,7 +216,7 @@ class BatchModifyTestCase(unittest.TestCase):
                                               component='foo')
         second_ticket_id = self._insert_ticket('Test 2', reporter='joe')
         selected_tickets = [first_ticket_id, second_ticket_id]
-        new_values = { 'component' : 'bar' }
+        new_values = {'component': 'bar'}
 
         batch = BatchModifyModule(self.env)
         batch._save_ticket_changes(self.req, selected_tickets, new_values, '',
@@ -246,8 +246,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.env.config.set('ticket-workflow', 'buckify', '* -> *')
         self.env.config.set('ticket-workflow', 'buckify.operations',
                                                'set_owner')
-        self.req.args = {}
-        self.req.args['action_buckify_reassign_owner'] = 'buck'
+        self.req.args = {'action_buckify_reassign_owner': 'buck'}
 
         first_ticket_id = self._insert_ticket('Test 1', reporter='joe',
                                               owner='foo')
@@ -309,6 +308,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BatchModifyTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
