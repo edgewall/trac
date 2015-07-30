@@ -34,7 +34,7 @@
           <option></option>
           <option py:for="field_name in field_names" py:with="field = fields[field_name]"
                   py:if="field_name not in ('id', 'resolution', 'status', 'owner', 'time', 'changetime', 'summary',
-                                            'reporter', 'description')
+                                            'description') + (('reporter',) if 'TICKET_ADMIN' not in req.perm else ())
                          and fields[field_name].type != 'textarea'"
                   value="$field_name">${field.label}</option>
         </select>

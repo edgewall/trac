@@ -86,8 +86,10 @@ class BatchModifyModule(Component):
         for field in TicketSystem(self.env).get_ticket_fields():
             name = field['name']
             if name not in ('id', 'resolution', 'status', 'owner', 'time',
-                            'changetime', 'summary', 'reporter',
-                            'description') and field['type'] != 'textarea':
+                            'changetime', 'summary', 'description') + \
+                           (('reporter',) if 'TICKET_ADMIN' not in req.perm
+                                          else ()) \
+                    and field['type'] != 'textarea':
                 value = req.args.get('batchmod_value_' + name)
                 if value is not None:
                     values[name] = self._parse_field_value(req, field, value)

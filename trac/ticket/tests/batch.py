@@ -15,12 +15,13 @@ import unittest
 from datetime import datetime, timedelta
 
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
-                      PermissionCache
+                      PermissionCache, PermissionSystem
 from trac.test import Mock, EnvironmentStub
-from trac.ticket import default_workflow, web_ui
+from trac.ticket import default_workflow, api, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
+from trac.web.api import RequestDone
 from trac.web.chrome import web_context
 
 
@@ -304,9 +305,87 @@ class BatchModifyTestCase(unittest.TestCase):
             tktmod.render_timeline_event(context, 'url', batch_ev))
 
 
+class ProcessRequestTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True, enable=[
+            default_workflow.ConfigurableTicketWorkflow,
+            DefaultPermissionPolicy, DefaultPermissionStore,
+            BatchModifyModule, api.TicketSystem, web_ui.TicketModule
+        ])
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultPermissionPolicy')
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('has_ta_&_bm', 'TICKET_ADMIN')
+        ps.grant_permission('has_bm', 'TICKET_BATCH_MODIFY')
+        ps.grant_permission('has_ta_&_bm', 'TICKET_BATCH_MODIFY')
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def assertFieldChanged(self, ticket_id, field, new_value):
+        ticket = Ticket(self.env, int(ticket_id))
+        self.assertEqual(ticket[field], new_value)
+
+    def _insert_ticket(self, summary, **kw):
+        """Helper for inserting a ticket into the database"""
+        ticket = Ticket(self.env)
+        ticket['summary'] = summary
+        for k, v in kw.items():
+            ticket[k] = v
+        return ticket.insert()
+
+    def _create_request(self, authname, **kw):
+        def redirect(url, permanent=False):
+            raise RequestDone
+        default_args = {
+            'authname': authname,
+            'href': self.env.href,
+            'perm': PermissionCache(self.env, authname),
+            'redirect': redirect,
+            'session': {'query_href': ''},
+            'tz': utc,
+        }
+        default_args.update(kw)
+        return Mock(**default_args)
+
+    def test_modify_reporter_with_ticket_admin(self):
+        """User with TICKET_ADMIN can batch modify the reporter."""
+        self._insert_ticket('Ticket 1', reporter='user1')
+        self._insert_ticket('Ticket 2', reporter='user1')
+        req = self._create_request('has_ta_&_bm', args={
+            'batchmod_value_reporter': 'user2',
+            'batchmod_value_comment': '',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        bmm = BatchModifyModule(self.env)
+        self.assertRaises(RequestDone, bmm.process_request, req)
+        self.assertFieldChanged(1, 'reporter', 'user2')
+        self.assertFieldChanged(2, 'reporter', 'user2')
+
+    def test_modify_reporter_without_ticket_admin(self):
+        """User without TICKET_ADMIN cannot batch modify the reporter."""
+        self._insert_ticket('Ticket 1', reporter='user1')
+        self._insert_ticket('Ticket 2', reporter='user1')
+        req = self._create_request('has_bm', args={
+            'batchmod_value_reporter': 'user2',
+            'batchmod_value_comment': '',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        bmm = BatchModifyModule(self.env)
+        self.assertRaises(RequestDone, bmm.process_request, req)
+        self.assertFieldChanged(1, 'reporter', 'user1')
+        self.assertFieldChanged(2, 'reporter', 'user1')
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BatchModifyTestCase))
+    suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
     return suite
 
 
