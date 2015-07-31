@@ -1580,6 +1580,8 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
         self._admin = TracAdmin(self.env_path)
 
     def tearDown(self):
+        if os.path.isfile(os.path.join(self.env_path, 'VERSION')):
+            self._admin.env.shutdown()
         shutil.rmtree(self.parent_dir)
 
     def test_config_argument(self):
