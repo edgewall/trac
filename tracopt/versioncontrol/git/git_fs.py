@@ -659,7 +659,7 @@ class GitNode(Node):
             if not ls_tree_info:
                 raise NoSuchNode(path, rev)
 
-            self.fs_perm, k, self.fs_sha, self.fs_size, _ = ls_tree_info
+            self.fs_perm, k, self.fs_sha, self.fs_size, fname = ls_tree_info
 
             # fix-up to the last commit-rev that touched this node
             rev = repos.git.last_change(rev, p, historian)
