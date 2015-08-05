@@ -256,7 +256,6 @@
 
     // Add a new empty clause at the end by cloning the current last clause
     function addClause(select) {
-      var tbody = $(select).closest("tbody");
       var clauseNum = parseInt($(select).attr("name").split("_").pop());
       var tbody = $(select).closest("tbody").parents("tbody").eq(0);
       var copy = tbody.clone(true);
@@ -286,7 +285,7 @@
       // That is, if there are no filters added to this clause
       add_clause.attr("disabled", true);
     }
-  }
+  };
 
   window.initializeBatch = function() {
     // Create the appropriate input for the property.
@@ -297,7 +296,7 @@
       switch (property.type) {
         case 'select':
           focusElement = createSelect(inputName, property.options,
-                                      property.optional, property.optgroups)
+                                      property.optional, property.optgroups);
           td.append(focusElement);
           break;
         case 'radio':
