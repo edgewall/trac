@@ -18,7 +18,7 @@ import unittest
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, ComponentMeta, TracError, \
                       implements
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util import create_file
 from trac.web.api import IRequestFilter, IRequestHandler, Request, RequestDone
 from trac.web.auth import IAuthenticator
@@ -344,12 +344,50 @@ class RequestDispatcherTestCase(unittest.TestCase):
                           RequestDispatcher(self.env), 'default_date_format')
 
 
+class HdfdumpTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.request_dispatcher = RequestDispatcher(self.env)
+        self.req = Mock(chrome={'warnings': []}, method='GET', perm=MockPerm(),
+                        args={'hdfdump': '1'}, session={}, callbacks={},
+                        send=self._req_send)
+        self.content = None
+        self.content_type = None
+        self.old_registry = ComponentMeta._registry
+        ComponentMeta._registry = {}
+
+    def tearDown(self):
+        ComponentMeta._registry = self.old_registry
+
+    def _req_send(self, content, content_type='text/html'):
+        self.content = content
+        self.content_type = content_type
+        raise RequestDone()
+
+    def test_hdfdump(self):
+        class HdfdumpRequestHandler(Component):
+            implements(IRequestHandler)
+            def match_request(self, req):
+                return True
+            def process_request(self, req):
+                data = {'name': 'value'}
+                return 'error.html', data, None
+
+        self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
+        self.assertRaises(RequestDone, self.request_dispatcher.dispatch,
+                          self.req)
+        self.assertEqual("{'name': 'value'}\n", self.content)
+        self.assertEqual('text/plain', self.content_type)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(RequestDispatcherTestCase))
+    suite.addTest(unittest.makeSuite(HdfdumpTestCase))
     return suite
 
 
