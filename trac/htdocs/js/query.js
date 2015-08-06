@@ -140,7 +140,7 @@
         return false;
       }
     }).mousedown(function(event) {
-      if (event.ctrlKey) {
+      if (event.metaKey || event.altKey) {
         event.preventDefault(); // Prevent border on Firefox.
       }
     });
