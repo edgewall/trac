@@ -108,8 +108,45 @@
         .enable();
     }
 
+    var $filters = $("#filters");
+
+    // Invert or flip checkboxes in the row
+    $filters.on("click", "th label", function(event) {
+      var name = this.id.slice(6);
+      var $checkboxes = $filters.find("input[name=" + name + "]")
+                                .filter(":checkbox");
+      if (event.metaKey || event.altKey) {
+        $checkboxes.each(function() {
+          $(this).prop("checked", !this.checked)
+        });
+      }
+      else {
+        var numChecked = $checkboxes.filter(":checked").length;
+        var allChecked = numChecked == $checkboxes.length;
+        $checkboxes.each(function() { $(this).prop("checked", !allChecked) });
+      }
+      return false;
+    });
+
+    // Enable only clicked checkbox and clear others
+    $filters.on("click", "td :checkbox, td :checkbox + label", function(event) {
+      if (!event.metaKey && !event.altKey)
+        return;
+      var clicked = this.tagName === "LABEL" ?
+                    document.getElementById(this.htmlFor) : this;
+      $('input[name="' + clicked.name + '"]', $filters).prop("checked", false);
+      $(clicked).prop("checked", true);
+      if (this.tagName === "LABEL") {
+        return false;
+      }
+    }).mousedown(function(event) {
+      if (event.ctrlKey) {
+        event.preventDefault(); // Prevent border on Firefox.
+      }
+    });
+
     // Make the submit buttons for removing filters client-side triggers
-    $("#filters input[type='submit'][name^='rm_filter_']").each(function() {
+    $filters.find("input[type='submit'][name^='rm_filter_']").each(function() {
       var idx = this.name.search(/_\d+$/);
       if (idx < 0)
         idx = this.name.length;
@@ -123,7 +160,7 @@
     });
 
     // Make the drop-down menu for adding a filter a client-side trigger
-    $("#filters select[name^=add_filter_]").change(function() {
+    $filters.find("select[name^=add_filter_]").change(function() {
       if (this.selectedIndex < 1)
         return;
 
