@@ -617,6 +617,10 @@ class MilestoneModule(Component):
         doc="""Default milestone to which tickets are retargeted when
             closing or deleting a milestone. (''since 1.1.2'')""")
 
+    default_group_by = Option('milestone', 'default_group_by', 'component',
+        """Default field to use for grouping tickets in the grouped
+        progress bar. (''since 1.2'')""")
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -922,7 +926,7 @@ class MilestoneModule(Component):
     def _render_view(self, req, milestone):
         milestone_groups = []
         available_groups = []
-        component_group_available = False
+        default_group_by_available = False
         ticket_fields = TicketSystem(self.env).get_ticket_fields()
 
         # collect fields that can be used for grouping
@@ -931,13 +935,13 @@ class MilestoneModule(Component):
                     or field['name'] in ('owner', 'reporter'):
                 available_groups.append({'name': field['name'],
                                          'label': field['label']})
-                if field['name'] == 'component':
-                    component_group_available = True
+                if field['name'] == self.default_group_by:
+                    default_group_by_available = True
 
         # determine the field currently used for grouping
         by = None
-        if component_group_available:
-            by = 'component'
+        if default_group_by_available:
+            by = self.default_group_by
         elif available_groups:
             by = available_groups[0]['name']
         by = req.args.get('by', by)

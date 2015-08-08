@@ -14,7 +14,7 @@
 import unittest
 
 from trac.core import ComponentManager
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.ticket.roadmap import *
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
@@ -143,8 +143,10 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
 class MilestoneModuleTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.req = Mock(href=self.env.href, perm=MockPerm())
+        self.env = EnvironmentStub(default_data=True)
+        self.req = Mock(args={}, chrome={'notices': []}, href=self.env.href,
+                        lc_time=locale_en, method=None, perm=MockPerm(),
+                        session={}, tz=utc)
         self.mmodule = MilestoneModule(self.env)
         self.terms = ['MilestoneAlpha', 'MilestoneBeta', 'MilestoneGamma']
         for term in self.terms + [' '.join(self.terms)]:
@@ -183,6 +185,25 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual(milestone.due, results[0][2])
         self.assertEqual('', results[0][3])
         self.assertEqual(milestone.description, results[0][4])
+
+    def test_default_group_by_default(self):
+        """Default `default_group_by` is `component`."""
+        self.req.args = {'id': 'milestone1'}
+
+        data = self.mmodule.process_request(self.req)[1]
+
+        self.assertIn('grouped_by', data)
+        self.assertEqual('component', data['grouped_by'])
+
+    def test_default_group_by(self):
+        """Option `default_group_by` is set in configuration."""
+        self.env.config.set('milestone', 'default_group_by', 'priority')
+        self.req.args = {'id': 'milestone1'}
+
+        data = self.mmodule.process_request(self.req)[1]
+
+        self.assertIn('grouped_by', data)
+        self.assertEqual('priority', data['grouped_by'])
 
 
 class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
