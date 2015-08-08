@@ -29,7 +29,10 @@ except ImportError:
 
 from mod_python import apache
 try:
-    from mod_python import version
+    try:
+        from mod_python import mp_version as version
+    except ImportError:
+        from mod_python import version
 except ImportError:
     version = "< 3.2"
 
