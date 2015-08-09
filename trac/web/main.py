@@ -211,6 +211,7 @@ class RequestDispatcher(Component):
                         chosen_handler = self._get_valid_default_handler(req)
                     # pre-process any incoming request, whether a handler
                     # was found or not
+                    self.log.debug("Chosen handler is %s", chosen_handler)
                     chosen_handler = \
                         self._pre_process_request(req, chosen_handler)
                 except TracError as e:
@@ -264,12 +265,14 @@ class RequestDispatcher(Component):
                         out = io.BytesIO()
                         pprint(data, out)
                         req.send(out.getvalue(), 'text/plain')
-
+                    self.log.debug("Rendering response from handler")
                     output = chrome.render_template(
                             req, template, data, content_type, method=method,
                             iterable=chrome.use_chunked_encoding)
                     req.send(output, content_type or 'text/html')
                 else:
+                    self.log.debug("Empty or no response from handler. "
+                                   "Entering post_process_request.")
                     self._post_process_request(req)
             except RequestDone:
                 raise

@@ -171,6 +171,10 @@ class Component(object):
 
         locals_.setdefault('_implements', []).extend(interfaces)
 
+    def __repr__(self):
+        """Return a textual representation of the component."""
+        return '<Component %s.%s>' % (self.__class__.__module__,
+                                      self.__class__.__name__)
 
 implements = Component.implements
 
