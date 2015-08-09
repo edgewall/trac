@@ -492,6 +492,8 @@ class Request(object):
             self.end_headers()
             raise RequestDone
 
+    _trident_re = re.compile(r' Trident/([0-9]+)')
+
     def redirect(self, url, permanent=False):
         """Send a redirect to the client, forwarding to the specified URL.
 
@@ -516,9 +518,10 @@ class Request(object):
 
         # Workaround #10382, IE6-IE9 bug when post and redirect with hash
         if status == 303 and '#' in url:
-            match = re.search(' MSIE ([0-9]+)',
-                              self.environ.get('HTTP_USER_AGENT', ''))
-            if match and int(match.group(1)) < 10:
+            user_agent = self.environ.get('HTTP_USER_AGENT', '')
+            match_trident = self._trident_re.search(user_agent)
+            if ' MSIE ' in user_agent and \
+                    (not match_trident or int(match_trident.group(1)) < 6):
                 url = url.replace('#', '#__msie303:')
 
         self.send_header('Location', url)
