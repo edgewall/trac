@@ -192,6 +192,55 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('http://example.com/trac/test',
                          headers_sent['Location'])
 
+    def test_redirect_with_post_and_hash_for_msie(self):
+        url = 'http://example.com/trac/ticket/1#comment:2'
+        msie303 = 'http://example.com/trac/ticket/1#__msie303:comment:2'
+
+        def location(ua):
+            status_sent = []
+            headers_sent = {}
+            def start_response(status, headers):
+                status_sent.append(status)
+                headers_sent.update(dict(headers))
+            environ = self._make_environ(method='POST', HTTP_USER_AGENT=ua)
+            req = Request(environ, start_response,)
+            req.session = Mock(save=lambda: None)
+            self.assertRaises(RequestDone, req.redirect, url)
+            self.assertEqual('303 See Other', status_sent[0])
+            return headers_sent['Location']
+
+        # IE 11 strict mode
+        self.assertEqual(url, location(
+            'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko'))
+        # IE 11 compatibility view mode
+        self.assertEqual(url, location(
+            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/7.0)'))
+        # IE 10 strict mode
+        self.assertEqual(url, location(
+            'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)'
+            ))
+        # IE 10 compatibility view mode
+        self.assertEqual(url, location(
+            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/6.0)'))
+        # IE 9 strict mode
+        self.assertEqual(msie303, location(
+            'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'))
+        # IE 9 compatibility view mode
+        self.assertEqual(msie303, location(
+            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/5.0)'))
+        # IE 8 strict mode
+        self.assertEqual(msie303, location(
+            'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)'))
+        # IE 8 compatibility view mode
+        self.assertEqual(msie303, location(
+            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0)'))
+        # IE 7
+        self.assertEqual(msie303, location(
+            'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'))
+        # IE 6
+        self.assertEqual(msie303, location(
+            'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'))
+
     def test_write_iterable(self):
         buf = StringIO()
         def write(data):
