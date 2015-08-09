@@ -164,7 +164,7 @@ class FunctionalTester(object):
         """Surf to the custom query page."""
         self.go_to_front()
         tc.follow(r"\bView Tickets\b")
-        tc.follow(r"\bCustom Query\b")
+        tc.follow(r"\bNew Custom Query\b")
         tc.url(self.url + '/query')
 
     def go_to_admin(self, panel_label=None):

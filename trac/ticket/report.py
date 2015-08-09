@@ -202,7 +202,7 @@ class ReportModule(Component):
         # Kludge: only show link to custom query if the query module
         # is actually enabled
         if show_query_link:
-            add_ctxtnav(req, _('Custom Query'), href=req.href.query())
+            add_ctxtnav(req, _('New Custom Query'), href=req.href.query())
             data['query_href'] = req.href.query()
             data['saved_query_href'] = req.session.get('query_href')
         else:
