@@ -405,7 +405,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 # but if there wasn't we just get new.
                 if type(newowner) == list:
                     newowner = newowner[0]
-                updated['owner'] = newowner
+                updated['owner'] = self._sub_owner_keyword(newowner, ticket)
             elif operation == 'set_owner_to_self':
                 updated['owner'] = get_reporter_id(req, 'author')
             elif operation == 'del_resolution':
@@ -422,11 +422,14 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             # leave_status is just a no-op here, so we don't look for it.
 
         # Set owner to component owner for 'new' ticket if:
+        #  - ticket doesn't exist and owner is < default >
         #  - component is changed
         #  - owner isn't explicitly changed
         #  - ticket owner is equal to owner of previous component
         #  - new component has an owner
-        if ticket['status'] == 'new' and \
+        if not ticket.exists and 'owner' not in updated:
+            updated['owner'] = self._sub_owner_keyword(ticket['owner'], ticket)
+        elif ticket['status'] == 'new' and \
                 'component' in ticket.values and \
                 'component' in ticket._old and \
                 'owner' not in updated:
@@ -514,6 +517,23 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         return actions
 
     # Internal methods
+
+    def _sub_owner_keyword(self, owner, ticket):
+        """Substitute keywords from the default_owner field.
+
+        < default > -> component owner
+        """
+        if owner in ('< default >', '<default>'):
+            default_owner = ''
+            if ticket['component']:
+                try:
+                    component = TicketComponent(self.env, ticket['component'])
+                except ResourceNotFound:
+                    pass  # No such component exists
+                else:
+                    default_owner = component.owner  # May be empty
+            return default_owner
+        return owner
 
     def _to_users(self, users_perms_and_groups, ticket):
         """Finds all users contained in the list of `users_perms_and_groups`

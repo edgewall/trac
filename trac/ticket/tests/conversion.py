@@ -43,6 +43,7 @@ class TicketConversionTestCase(unittest.TestCase):
     def _create_a_ticket(self):
         # 1. Creating ticket
         ticket = Ticket(self.env)
+        ticket['owner'] = ''
         ticket['reporter'] = 'santa'
         ticket['summary'] = 'Foo'
         ticket['description'] = 'Bar'

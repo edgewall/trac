@@ -105,6 +105,7 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             'reporter': 'reporter1',
             'summary': 'the summary',
             'component': 'component3',
+            'owner': 'cowner3',
             'status': 'new',
         })
         tkt_id = ticket.insert()
@@ -194,6 +195,7 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             'reporter': 'reporter1',
             'summary': 'the summary',
             'component': 'component3',
+            'owner': 'cowner3',
             'status': 'new',
         })
         tkt_id = ticket.insert()
