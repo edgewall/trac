@@ -272,10 +272,12 @@ class SubversionMergePropertyRenderer(Component):
         if not rows:
             return None
         rows.sort()
-        has_deleted = rows[-1][0] if rows else None
-        return tag(has_deleted and tag.a(_('(toggle deleted branches)'),
-                                         class_='trac-toggledeleted',
-                                         href='#'),
+        if rows and rows[-1][0]:
+            toggledeleted = tag.a(_("(toggle deleted branches)"),
+                                  class_='trac-toggledeleted', href='#')
+        else:
+            toggledeleted = None
+        return tag(toggledeleted,
                    tag.table(tag.tbody(
                        [tag.tr(row, class_='trac-deleted' if deleted else None)
                         for deleted, spath, row in rows]), class_='props'))

@@ -860,6 +860,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
         self.assertIn('>eligible</a>', node)
 
         self.assertNotIn('(toggle deleted branches)', unicode(result))
+        self.assertNotIn('False', unicode(result))  # See #12125
 
     def test_merge_prop_renderer_with_deleted_branches(self):
         context = _create_context()
