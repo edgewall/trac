@@ -210,7 +210,7 @@
                   </td>
                 </tr>
                 <tr py:if="can_edit or can_create">
-                  <th><label for="field-description">Description:</label></th>
+                  <th class="trac-textarea"><label for="field-description">Description:</label></th>
                   <td class="fullrow" colspan="3">
                     <fieldset>
                       <label for="field-description" id="field-description-help" i18n:msg="">You may use <!--!
@@ -228,7 +228,9 @@ ${ticket.description}</textarea>
                   <py:for each="idx, field in enumerate(row)"
                           py:with="value = ticket[field.name] if ticket.exists
                                                               else ticket.get_value_or_default(field.name)">
-                    <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
+                    <th class="${classes('col' + str(idx + 1),
+                                         'trac-textarea' if field.type == 'textarea' else None)}"
+                        py:if="idx == 0 or not fullrow">
                       <label for="field-${field.name}" py:if="field"
                              py:strip="field.type == 'radio'" i18n:msg="field">${
                         field.edit_label or field.label or field.name}:</label>

@@ -220,7 +220,7 @@ label[for=comment] { float: right }
 #properties table.trac-properties > colgroup > col.th {
  padding: .4em;
  text-align: right;
- vertical-align: top;
+ vertical-align: middle;
  white-space: normal;
  width: 17%;
 }
@@ -231,6 +231,7 @@ label[for=comment] { float: right }
  vertical-align: middle;
  width: 33%
 }
+#properties table.trac-properties > tbody > tr > th.trac-textarea { vertical-align: top }
 #properties table.trac-properties > tbody > tr > td.fullrow { width: 83% }
 #properties table.trac-properties > tbody > tr > td.col1 > label,
 #properties table.trac-properties > tbody > tr > td.col2 > label { float: left; margin-right: 0.5em; }
