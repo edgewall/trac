@@ -212,7 +212,7 @@ label[for=comment] { float: right }
 #properties table col.th {
  padding: .4em;
  text-align: right;
- vertical-align: top;
+ vertical-align: middle;
  white-space: normal;
  width: 17%;
 }
@@ -223,6 +223,7 @@ label[for=comment] { float: right }
  vertical-align: middle;
  width: 33%
 }
+#properties table th.trac-textarea { vertical-align: top }
 #properties table td.fullrow { width: 83% }
 #properties table td input[type="text"] {
  -moz-box-sizing: border-box;
