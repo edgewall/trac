@@ -1770,7 +1770,7 @@ class TicketModule(Component):
         """
         attachment_realm = ticket.resource.child('attachment')
         for group in self.grouped_changelog_entries(ticket, when=when):
-            t = ticket.resource(version=group.get('cnum', None))
+            t = ticket.resource(version=group.get('cnum'))
             if 'TICKET_VIEW' in req.perm(t):
                 self._render_property_changes(req, ticket, group['fields'], t)
                 if 'attachment' in group['fields']:
