@@ -470,15 +470,14 @@ class Query(object):
 
             # Join with the enum table for proper sorting
             for col in [c for c in enum_columns
-                        if c == self.order or c == self.group
-                           or c == 'priority']:
+                        if c in (self.order, self.group, 'priority')]:
                 sql.append("\n  LEFT OUTER JOIN enum AS %s ON "
                            "(%s.type='%s' AND %s.name=%s)"
                            % (col, col, col, col, col))
 
             # Join with the version/milestone tables for proper sorting
             for col in [c for c in ['milestone', 'version']
-                        if c == self.order or c == self.group]:
+                        if c in (self.order, self.group)]:
                 sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)"
                            % (col, col, col))
 

@@ -767,7 +767,7 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in repos.get_changes(
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
-            if (kind == Node.FILE or kind == Node.DIRECTORY) and \
+            if kind in (Node.FILE, Node.DIRECTORY) and \
                     change != Changeset.DELETE \
                     and new_node.is_viewable(req.perm):
                 yield new_node

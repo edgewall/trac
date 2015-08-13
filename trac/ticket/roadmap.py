@@ -499,7 +499,7 @@ class RoadmapModule(Component):
             status = ticket['status']
             if status == 'new' or status == 'reopened' and not ticket['owner']:
                 return 'NEEDS-ACTION'
-            elif status == 'assigned' or status == 'reopened':
+            elif status in ('assigned', 'reopened'):
                 return 'IN-PROCESS'
             elif status == 'closed':
                 if ticket['resolution'] == 'fixed':
