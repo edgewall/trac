@@ -469,6 +469,24 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
 }
 .collapsed legend.foldable { background: white }
 
+.expander {
+ background: url(../expander_normal.png) 0 50% no-repeat;
+ cursor: pointer;
+ padding-left: 8px;
+ margin-left: 4px;
+}
+.expander:hover {
+ background: url(../expander_normal_hover.png) 0 50% no-repeat;
+}
+.expander.expanded {
+ background: url(../expander_open.png) 0 50% no-repeat;
+ padding-left: 12px;
+ margin-left: 0;
+}
+.expander.expanded:hover {
+ background: url(../expander_open_hover.png) 0 50% no-repeat;
+}
+
 /* Section with count */
 h2 .trac-count, h3 .trac-count {
  margin-left: .2em;
