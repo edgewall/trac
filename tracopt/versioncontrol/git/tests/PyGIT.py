@@ -26,7 +26,8 @@ from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
-                                             StorageFactory, parse_commit
+                                             SizedDict, StorageFactory, \
+                                             parse_commit
 from tracopt.versioncontrol.git.tests.git_fs import GitCommandMixin
 
 
@@ -416,6 +417,13 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         validate(paths[2], 'false')
 
 
+class SizedDictTestCase(unittest.TestCase):
+
+    def test_setdefault_raises(self):
+        """`setdefault` raises NotImplementedError."""
+        self.assertRaises(NotImplementedError, SizedDict().setdefault)
+
+
 #class GitPerformanceTestCase(unittest.TestCase):
 #    """Performance test. Not really a unit test.
 #    Not self-contained: Needs a git repository and prints performance result
@@ -576,6 +584,7 @@ def suite():
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")
+    suite.addTest(unittest.makeSuite(SizedDictTestCase))
     return suite
 
 

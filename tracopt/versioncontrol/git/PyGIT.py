@@ -194,7 +194,7 @@ class SizedDict(dict):
             return rc
 
     def setdefault(self, *_):
-        raise NotImplemented("SizedDict has no setdefault() method")
+        raise NotImplementedError("SizedDict has no setdefault() method")
 
 
 class StorageFactory(object):
