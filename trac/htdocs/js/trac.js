@@ -9,7 +9,7 @@
       $("<a class='anchor'> \u00B6</a>").attr("href", "#" + this.id)
         .attr("title", title).appendTo(this);
     });
-  }
+  };
 
   $.fn.checked = function(checked) {
     if (checked == undefined) { // getter
@@ -20,7 +20,7 @@
         this.checked = checked;
       });
     }
-  }
+  };
 
   // Add a Select All checkbox to each thead in the table.
   $.fn.addSelectAllCheckboxes = function() {
@@ -46,7 +46,7 @@
                  "indeterminate": !(none_selected || all_selected)});
       });
     }
-  }
+  };
 
   // Conditionally disable the submit button. Returns a jQuery object.
   $.fn.disableSubmit = function(determinant) {
@@ -75,7 +75,7 @@
     determinant.change(toggleDisabled);
     toggleDisabled();
     return subject;
-  }
+  };
 
   $.fn.enable = function(enabled) {
     if (enabled == undefined) enabled = true;
@@ -91,7 +91,7 @@
         label.removeClass("disabled");
       }
     });
-  }
+  };
 
   $.fn.getAbsolutePos = function() {
     return this.map(function() {
@@ -105,14 +105,14 @@
       }
       return {left: left, top: top};
     });
-  }
+  };
 
   $.fn.scrollToTop = function() {
     return this.each(function() {
       scrollTo(0, $(this).getAbsolutePos()[0].top);
       return false;
     });
-  }
+  };
 
   // Disable the form's submit action after the submit button is pressed by
   // replacing it with a handler that cancels the action. The handler is
@@ -135,7 +135,7 @@
         })
       }
     });
-  }
+  };
 
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
@@ -230,7 +230,7 @@
     if (typeof value != "string")
       return value;
     return value.replace(/[&<>"]/g, function(c) { return quote[c]; });
-  }
+  };
 
   function format(str, args, escape) {
     var kwargs = args[args.length - 1];
@@ -248,11 +248,11 @@
   // The htmlFormat() version HTML-escapes arguments prior to substitution.
   $.format = function(str) {
     return format(str, arguments);
-  }
+  };
 
   $.htmlFormat = function(str) {
     return format(str, arguments, $.htmlEscape);
-  }
+  };
 
   $.template = $.format;    // For backward compatibility
 
