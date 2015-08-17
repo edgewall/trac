@@ -230,6 +230,13 @@ class DbRepositoryProvider(Component):
         if is_default(target):
             target = ''
         rm = RepositoryManager(self.env)
+        repositories = rm.get_all_repositories()
+        if target not in repositories:
+            raise TracError(_("Repository \"%(repo)s\" doesn't exist",
+                              repo=target or '(default)'))
+        if 'alias' in repositories[target]:
+            raise TracError(_('Cannot create an alias to the alias "%(repo)s"',
+                              repo=target or '(default)'))
         with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
             db.executemany(
@@ -243,6 +250,11 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
+        repositories = rm.get_all_repositories()
+        if any(reponame == repos.get('alias')
+               for repos in repositories.itervalues()):
+            raise TracError(_('Cannot remove the repository "%(repos)s" used '
+                              'in aliases', repos=reponame or '(default)'))
         with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
             db("DELETE FROM repository WHERE id=%s", (id,))
@@ -258,6 +270,13 @@ class DbRepositoryProvider(Component):
         if is_default(new_reponame):
             new_reponame = ''
         rm = RepositoryManager(self.env)
+        if reponame != new_reponame:
+            repositories = rm.get_all_repositories()
+            if any(reponame == repos.get('alias')
+                   for repos in repositories.itervalues()):
+                raise TracError(_('Cannot rename the repository "%(repos)s" '
+                                  'used in aliases',
+                                  repos=reponame or '(default)'))
         with self.env.db_transaction as db:
             id = rm.get_repository_id(reponame)
             if reponame != new_reponame:
