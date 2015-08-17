@@ -442,7 +442,7 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         try:
             env.db_transaction("INSERT INTO permission VALUES (%s,%s)",
-                               ('anonymous', 'NOTDEFINED_PERMISSION'))
+                               ('user', 'NOTDEFINED_PERMISSION'))
         except env.db_exc.IntegrityError:
             pass
         env.config.touch()
@@ -451,6 +451,10 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
         tc.find('<span class="missing" '
                 'title="NOTDEFINED_PERMISSION is no longer defined">'
                 'NOTDEFINED_PERMISSION</span>')
+        tc.notfind('<input type="checkbox" [^>]+ disabled="disabled"')
+        tc.notfind('<input type="checkbox" [^>]+'
+                   'title="You don\'t have permission to revoke this action" '
+                   '[^>]+>')
 
 
 class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
