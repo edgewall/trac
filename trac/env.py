@@ -661,15 +661,17 @@ class Environment(Component, ComponentManager):
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       get_pkginfo(core).get('version', VERSION))
 
-    def get_known_users(self):
-        """Generator that yields information about all known users,
-        i.e. users that have logged in to this Trac environment and
-        possibly set their name and email.
+    def get_known_users(self, as_dict=False):
+        """Yields information about all known users, i.e. users that
+        have logged in to this Trac environment and possibly set their
+        name and email.
 
-        This function generates one tuple for every user, of the form
-        (username, name, email) ordered alpha-numerically by username.
+        By default this function generates one tuple for every user, of the
+        form (username, name, email) ordered alpha-numerically by username.
+        When `as_dict` is `True` the function returns a dictionary mapping
+        username to a (name, email) tuple.
         """
-        return iter(self._known_users)
+        return self._known_users_dict if as_dict else iter(self._known_users)
 
     @cached
     def _known_users(self):
@@ -683,9 +685,14 @@ class Environment(Component, ComponentManager):
                 WHERE s.authenticated=1 ORDER BY s.sid
         """)
 
+    @cached
+    def _known_users_dict(self):
+        return dict([(u[0], (u[1], u[2])) for u in self._known_users])
+
     def invalidate_known_users_cache(self):
         """Clear the known_users cache."""
         del self._known_users
+        del self._known_users_dict
 
     def backup(self, dest=None):
         """Create a backup of the database.
