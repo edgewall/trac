@@ -230,6 +230,7 @@ class EnvironmentStub(Environment):
 
     global_databasemanager = None
     required = False
+    abstract = True
 
     def __init__(self, default_data=False, enable=None, disable=None,
                  path=None, destroying=False):
