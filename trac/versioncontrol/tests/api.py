@@ -218,18 +218,6 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.do_remove('blah', 'Cannot remove the repository "blah" used in '
                                'aliases')
 
-    def test_remove_repository_used_in_aliases(self):
-        self.db_provider.add_repository('', '/path/to/repos')
-        self.db_provider.add_repository('blah', '/path/to/repos')
-        self.db_provider.add_alias('alias-blah', 'blah')
-        self.db_provider.add_alias('alias-default', '')
-        self.do_remove('', 'Cannot remove the repository "(default)" used in '
-                           'aliases')
-        self.do_remove('(default)', 'Cannot remove the repository "(default)" '
-                                    'used in aliases')
-        self.do_remove('blah', 'Cannot remove the repository "blah" used in '
-                               'aliases')
-
     def test_modify_repository_used_in_aliases(self):
         self.db_provider.add_repository('', '/path/to/repos')
         self.db_provider.add_repository('blah', '/path/to/repos')
