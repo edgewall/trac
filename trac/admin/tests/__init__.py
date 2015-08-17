@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.admin.tests import console
+from trac.admin.tests import console, web_ui
 from trac.admin.tests.functional import functionalSuite
 
 
@@ -21,6 +21,7 @@ def suite():
 
     suite = unittest.TestSuite()
     suite.addTest(console.suite())
+    suite.addTest(web_ui.suite())
     return suite
 
 if __name__ == '__main__':
