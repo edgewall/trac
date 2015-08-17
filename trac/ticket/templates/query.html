@@ -93,18 +93,27 @@
                       <td class="filter" colspan="${2 if field.type in ('radio', 'checkbox', 'time') else None}"
                           py:choose="">
 
+                        <py:def function="render_options(field_name, options)"
+                                py:with="format_and_sort = lambda options: sorted(zip(options, map(format_author, options)), key=operator.itemgetter(1))"
+                                py:choose="field_name">
+                          <option py:when="'owner'"
+                                  py:for="option, option_label in format_and_sort(options)"
+                                  selected="${option == constraint_value or None}"
+                                  value="$option" py:content="option_label"></option>
+                          <option py:otherwise=""
+                                  py:for="option in options"
+                                  selected="${option == constraint_value or None}"
+                                  value="$option" py:content="option"></option>
+                        </py:def>
+
                         <py:when test="field.type == 'select'">
                           <select name="${n_field_name}">
                             <option></option>
-                            <option py:for="option in field.options"
-                                    selected="${option == constraint_value or None}"
-                                    value="$option" py:content="option"></option>
+                            ${render_options(field.name, field.options)}
                             <optgroup py:for="optgroup in field.optgroups"
                                       py:if="optgroup.options"
                                       label="${optgroup.label}">
-                              <option py:for="option in optgroup.options"
-                                      selected="${option == constraint_value or None}"
-                                      value="$option" py:content="option"></option>
+                              ${render_options(field.name, optgroup.options)}
                             </optgroup>
                           </select>
                         </py:when>

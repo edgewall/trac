@@ -24,21 +24,28 @@ class TestPreferences(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Set preferences for admin user"""
         self._tester.go_to_preferences()
-        tc.notfind('Your preferences have been saved.')
-        tc.formvalue('userprefs', 'name', ' System Administrator ')
-        tc.formvalue('userprefs', 'email', ' admin@example.com ')
-        tc.submit()
-        tc.find('Your preferences have been saved.')
-        self._tester.go_to_preferences("Localization")
-        tc.formvalue('userprefs', 'tz', 'GMT -10:00')
-        tc.submit()
-        tc.find('Your preferences have been saved.')
-        self._tester.go_to_preferences()
-        tc.notfind('Your preferences have been saved.')
-        tc.find('value="System Administrator"')
-        tc.find(r'value="admin@example\.com"')
-        self._tester.go_to_preferences("Localization")
-        tc.find('GMT -10:00')
+        try:
+            tc.notfind('Your preferences have been saved.')
+            tc.formvalue('userprefs', 'name', ' System Administrator ')
+            tc.formvalue('userprefs', 'email', ' admin@example.com ')
+            tc.submit()
+            tc.find('Your preferences have been saved.')
+            self._tester.go_to_preferences("Localization")
+            tc.formvalue('userprefs', 'tz', 'GMT -10:00')
+            tc.submit()
+            tc.find('Your preferences have been saved.')
+            self._tester.go_to_preferences()
+            tc.notfind('Your preferences have been saved.')
+            tc.find('value="System Administrator"')
+            tc.find(r'value="admin@example\.com"')
+            self._tester.go_to_preferences("Localization")
+            tc.find('GMT -10:00')
+        finally:
+            self._tester.go_to_preferences()
+            tc.formvalue('userprefs', 'name', '')
+            tc.formvalue('userprefs', 'email', '')
+            tc.submit()
+            tc.find('Your preferences have been saved.')
 
 
 class TestDefaultHandler(FunctionalTwillTestCaseSetup):

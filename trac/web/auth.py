@@ -31,7 +31,7 @@ from genshi.builder import tag
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
-from trac.web.chrome import INavigationContributor
+from trac.web.chrome import Chrome, INavigationContributor
 from trac.util import hex_entropy, md5crypt
 from trac.util.compat import crypt
 from trac.util.concurrency import threading
@@ -104,8 +104,8 @@ class LoginModule(Component):
 
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
-            yield ('metanav', 'login', _('logged in as %(user)s',
-                                         user=req.authname))
+            user = Chrome(self.env).format_author(req, req.authname)
+            yield ('metanav', 'login', _('logged in as %(user)s', user=user))
             yield ('metanav', 'logout',
                    tag.form(tag.div(tag.button(_('Logout'),
                                                name='logout', type='submit')),

@@ -24,6 +24,7 @@ web content are also using facilities provided here.
 import datetime
 from functools import partial
 import itertools
+import operator
 import os.path
 import pkg_resources
 import pprint
@@ -549,6 +550,9 @@ class Chrome(Component):
         permission.
         """)
 
+    show_full_names = BoolOption('trac', 'show_full_names', 'true',
+        """Show full names instead of usernames.""")
+
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
         """Never obfuscate `mailto:` links explicitly written in the wiki,
@@ -611,6 +615,7 @@ class Chrome(Component):
         'istext': presentation.istext,
         'javascript_quote': javascript_quote,
         'ngettext': translation.ngettext,
+        'operator': operator,
         'paginate': presentation.paginate,
         'partial': partial,
         'pathjoin': pathjoin,
@@ -1283,10 +1288,10 @@ class Chrome(Component):
         or `none`,  when the author string is `anonymous` or evaluates
         to `False`, respectively.
 
-        :param req: the `Request` object.
+        :param req: a `Request` or `RenderingContext` object.
         :param author: the author string to be formatted.
-        :param resource: optional `Resource` object for `EMAIL_VIEW`
-                         fine-grained permissions checks.
+        :param resource: an optional `Resource` object for performing
+                         fine-grained permission checks for `EMAIL_VIEW`.
 
         :since 1.1.6: accepts the optional `resource` keyword parameter.
         """
@@ -1294,10 +1299,14 @@ class Chrome(Component):
             return _("anonymous")
         if not author:
             return _("(none)")
-        if self.show_email_addresses or not req or \
-                'EMAIL_VIEW' in req.perm(resource):
-            return author
-        return obfuscate_email_address(author)
+        users = self.env.get_known_users(as_dict=True)
+        if self.show_full_names and author in users:
+            name = users[author][0]
+            if name:
+                return name
+        show_email = self.show_email_addresses or \
+                     not req or 'EMAIL_VIEW' in req.perm(resource)
+        return author if show_email else obfuscate_email_address(author)
 
     def format_emails(self, context, value, sep=', '):
         """Normalize a list of e-mails and obfuscate them if needed.
@@ -1307,10 +1316,9 @@ class Chrome(Component):
         :param   value: a string containing a comma-separated list of e-mails
         :param     sep: the separator to use when rendering the list again
         """
-        all_cc = self.cc_list(value)
-        if not (self.show_email_addresses or 'EMAIL_VIEW' in context.perm):
-            all_cc = [obfuscate_email_address(cc) for cc in all_cc]
-        return sep.join(all_cc)
+        formatted = [self.format_author(context, author)
+                     for author in self.cc_list(value)]
+        return sep.join(formatted)
 
     def get_email_map(self):
         """Get the email addresses of all known users."""

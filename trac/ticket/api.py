@@ -446,10 +446,8 @@ class TicketSystem(Component):
         """
         if self.restrict_owner:
             field['type'] = 'select'
-            allowed_owners = self.get_allowed_owners(ticket)
-            allowed_owners.insert(0, '< default >')
-            field['options'] = allowed_owners
-            field['optional'] = 'owner' in self.allowed_empty_fields
+            field['options'] = self.get_allowed_owners(ticket)
+            field['optional'] = True
 
     def get_allowed_owners(self, ticket=None):
         """Returns a list of permitted ticket owners (those possessing the

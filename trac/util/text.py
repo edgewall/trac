@@ -565,6 +565,8 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
     return linesep.join(wrappedLines)
 
 
+_obfuscation_char = u'@\u2026'
+
 def obfuscate_email_address(address):
     """Replace anything looking like an e-mail address (``'@something'``)
     with a trailing ellipsis (``'@…'``)
@@ -572,9 +574,14 @@ def obfuscate_email_address(address):
     if address:
         at = address.find('@')
         if at != -1:
-            return address[:at] + u'@\u2026' + \
+            return address[:at] + _obfuscation_char + \
                    ('>' if address[-1] == '>' else '')
     return address
+
+
+def is_obfuscated(address):
+    """Returns `True` if the word looks like an obfuscated e-mail address."""
+    return _obfuscation_char in address
 
 
 def breakable_path(path):

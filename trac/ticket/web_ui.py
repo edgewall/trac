@@ -46,7 +46,7 @@ from trac.util.datefmt import (
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
-    exception_to_unicode, empty, obfuscate_email_address, shorten_line
+    exception_to_unicode, empty, is_obfuscated, shorten_line
 )
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, ngettext
@@ -1533,12 +1533,12 @@ class TicketModule(Component):
             if i % 2:
                 items.append(word.strip() + ' ')
             elif word:
-                rendered = name != 'cc' and word \
-                           or Chrome(self.env).format_emails(context, word)
-                if rendered == word:
+                rendered = Chrome(self.env).format_author(context, word) \
+                           if name == 'cc' else word
+                if not is_obfuscated(rendered):
                     word_args = args.copy()
                     word_args[name] = '~' + word
-                    items.append(tag.a(word,
+                    items.append(tag.a(rendered,
                                        href=context.href.query(word_args)))
                 else:
                     items.append(rendered)
@@ -1671,9 +1671,9 @@ class TicketModule(Component):
 
         def quote_original(author, original, link):
             if 'comment' not in req.args:  # i.e. comment was not yet edited
+                formatted_author = Chrome(self.env).format_author(req, author)
                 data['comment'] = '\n'.join(
-                    ["Replying to [%s %s]:"
-                     % (link, obfuscate_email_address(author))] +
+                    ["Replying to [%s %s]:" % (link, formatted_author)] +
                     ["> %s" % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
@@ -1752,9 +1752,11 @@ class TicketModule(Component):
         # Display the owner and reporter links when not obfuscated
         chrome = Chrome(self.env)
         for user in 'reporter', 'owner':
-            if chrome.format_author(req, ticket[user]) == ticket[user]:
-                data['%s_link' % user] = self._query_link(req, user,
-                                                          ticket[user])
+            author = ticket[user]
+            formatted_author = chrome.format_author(req, author)
+            if not is_obfuscated(formatted_author):
+                data['%s_link' % user] = \
+                    self._query_link(req, user, author, formatted_author)
         data.update({
             'context': context, 'conflicts': conflicts,
             'fields': fields, 'fields_map': fields_map,

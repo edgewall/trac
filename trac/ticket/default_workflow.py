@@ -237,6 +237,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req,
                               resource=ticket.resource)
+        format_author = partial(Chrome(self.env).format_author, req,
+                                resource=ticket.resource)
         formatted_current_owner = author_info(current_owner)
         exists = ticket._old.get('status', ticket['status']) is not None
 
@@ -308,7 +310,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 selected_owner = req.args.get(id, default_owner)
                 control.append(tag_("to %(owner)s", owner=tag.select(
-                    [tag.option(x if x is not None else _("(none)"),
+                    [tag.option(format_author(x),
                                 value=x if x is not None else '',
                                 selected=(x == selected_owner or None))
                      for x in owners],
