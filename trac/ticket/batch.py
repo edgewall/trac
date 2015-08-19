@@ -44,7 +44,7 @@ class BatchModifyModule(Component):
 
     is_valid_default_handler = False
 
-    list_separator_re =  re.compile(r'[;\s,]+')
+    list_separator_re = re.compile(r'[;\s,]+')
     list_connector_string = ', '
 
     # IRequestHandler methods
@@ -70,7 +70,7 @@ class BatchModifyModule(Component):
             self._save_ticket_changes(req, selected_tickets,
                                       new_values, comment, action)
 
-        #Always redirect back to the query page we came from.
+        # Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
 
     # IPermissionRequestor methods
@@ -120,7 +120,7 @@ class BatchModifyModule(Component):
             {'name': _("set to"), 'value': "="},
         ]
         add_script_data(req, batch_list_modes=batch_list_modes,
-                             batch_list_properties=self._get_list_fields())
+                        batch_list_properties=self._get_list_fields())
 
     def _get_list_fields(self):
         return [f['name']
@@ -196,7 +196,7 @@ class BatchModifyModule(Component):
             NotificationSystem(self.env).notify(event)
         except Exception as e:
             self.log.error("Failure sending notification on ticket batch"
-                    "change: %s", exception_to_unicode(e))
+                           "change: %s", exception_to_unicode(e))
             add_warning(req, tag_("The changes have been saved, but an "
                                   "error occurred while sending "
                                   "notifications: %(message)s",
@@ -215,7 +215,7 @@ class BatchModifyModule(Component):
 
         if mode == '=':
             changed_list = new_list
-        elif mode ==  '+':
+        elif mode == '+':
             for entry in new_list:
                 if entry not in changed_list:
                     changed_list.append(entry)
