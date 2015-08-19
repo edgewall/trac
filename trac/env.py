@@ -662,14 +662,15 @@ class Environment(Component, ComponentManager):
                       get_pkginfo(core).get('version', VERSION))
 
     def get_known_users(self, as_dict=False):
-        """Yields information about all known users, i.e. users that
+        """Returns information about all known users, i.e. users that
         have logged in to this Trac environment and possibly set their
         name and email.
 
-        By default this function generates one tuple for every user, of the
-        form (username, name, email) ordered alpha-numerically by username.
-        When `as_dict` is `True` the function returns a dictionary mapping
-        username to a (name, email) tuple.
+        By default this function returns a iterator that yields one
+        tuple for every user, of the form (username, name, email),
+        ordered alpha-numerically by username. When `as_dict` is `True`
+        the function returns a dictionary mapping username to a
+        (name, email) tuple.
 
         :since 1.2: the `as_dict` parameter is available.
         """
