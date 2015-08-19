@@ -551,7 +551,7 @@ class Chrome(Component):
         """)
 
     show_full_names = BoolOption('trac', 'show_full_names', 'true',
-        """Show full names instead of usernames.""")
+        """Show full names instead of usernames. (//since 1.2//)""")
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto',
         'false',
@@ -1294,6 +1294,8 @@ class Chrome(Component):
                          fine-grained permission checks for `EMAIL_VIEW`.
 
         :since 1.1.6: accepts the optional `resource` keyword parameter.
+        :since 1.2: Full name is returned when `[trac]` `show_full_names`
+                    is `True`.
         """
         if author == 'anonymous':
             return _("anonymous")

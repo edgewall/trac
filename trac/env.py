@@ -670,6 +670,8 @@ class Environment(Component, ComponentManager):
         form (username, name, email) ordered alpha-numerically by username.
         When `as_dict` is `True` the function returns a dictionary mapping
         username to a (name, email) tuple.
+
+        :since 1.2: the `as_dict` parameter is available.
         """
         return self._known_users_dict if as_dict else iter(self._known_users)
 

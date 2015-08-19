@@ -579,9 +579,13 @@ def obfuscate_email_address(address):
     return address
 
 
-def is_obfuscated(address):
-    """Returns `True` if the word looks like an obfuscated e-mail address."""
-    return _obfuscation_char in address
+def is_obfuscated(word):
+    """Returns `True` if the `word` looks like an obfuscated e-mail
+    address.
+
+    :since: 1.2
+    """
+    return _obfuscation_char in word
 
 
 def breakable_path(path):
