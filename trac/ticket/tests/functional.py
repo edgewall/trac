@@ -298,6 +298,17 @@ class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
                 '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
 
 
+class TestTicketHistoryInvalidCommentVersion(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Viewing an invalid comment version does not raise a KeyError.
+        Regression test for http://trac.edgewall.org/ticket/12060.
+        """
+        tkt = self._tester.create_ticket()
+        self._tester.add_comment(tkt, "the comment")
+        tc.go(self._tester.url + '/ticket/%s?cversion=1&cnum_hist=1' % tkt)
+        tc.notfind(internal_error)
+
+
 class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket query links"""
@@ -2327,6 +2338,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestNonTicketSearch())
     suite.addTest(TestTicketHistory())
     suite.addTest(TestTicketHistoryDiff())
+    suite.addTest(TestTicketHistoryInvalidCommentVersion())
     suite.addTest(TestTicketQueryLinks())
     suite.addTest(TestTicketQueryLinksQueryModuleDisabled())
     suite.addTest(TestTicketQueryOrClause())
