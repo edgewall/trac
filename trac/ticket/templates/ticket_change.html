@@ -33,7 +33,7 @@ Arguments:
                show_editor = can_edit_comment and str(cnum) == cnum_edit;
                show_history = str(cnum) == cnum_hist;
                max_version = max(change.comment_history) if change.comment_history else 0;
-               comment_version = int(cversion or 0) if show_history else max_version;
+               comment_version = min(int(cversion or 0), max_version) if show_history else max_version;
                show_buttons = not hide_buttons and not show_editor and comment_version == max_version"
       py:strip="">
   <py:def function="commentref(prefix, cnum, cls=None)">
@@ -135,7 +135,7 @@ ${edited_comment if edited_comment is not None else change.comment}</textarea>
       ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
     </div>
     <div py:when="show_history" class="comment searchable" xml:space="preserve">
-      ${wiki_to_html(context, change.comment_history[int(cversion)].comment, escape_newlines=preserve_newlines)}
+      ${wiki_to_html(context, change.comment_history[comment_version].comment, escape_newlines=preserve_newlines)}
     </div>
     <div py:when="change.comment" class="comment searchable" xml:space="preserve">
       ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
