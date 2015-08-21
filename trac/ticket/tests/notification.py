@@ -29,7 +29,7 @@ import trac.tests.compat
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
 from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer,\
+from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketChangeEvent, TicketNotifyEmail
