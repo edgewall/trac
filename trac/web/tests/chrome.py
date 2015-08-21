@@ -430,6 +430,22 @@ class ChromeTestCase(unittest.TestCase):
                                    target='blank')),
                          str(item['label']))
 
+    def test_cc_list(self):
+        """Split delimited string to a list of email addresses."""
+        chrome = Chrome(self.env)
+        cc_field1 = 'user1@abc.com,user2@abc.com, user3@abc.com'
+        cc_field2 = 'user1@abc.com;user2@abc.com; user3@abc.com'
+        expected = ['user1@abc.com', 'user2@abc.com', 'user3@abc.com']
+        self.assertEqual(expected, chrome.cc_list(cc_field1))
+        self.assertEqual(expected, chrome.cc_list(cc_field2))
+
+    def test_cc_list_is_empty(self):
+        """Empty list is returned when input is `None` or empty."""
+        chrome = Chrome(self.env)
+        self.assertEqual([], chrome.cc_list(None))
+        self.assertEqual([], chrome.cc_list(''))
+        self.assertEqual([], chrome.cc_list([]))
+
 
 class ChromeTestCase2(unittest.TestCase):
 
