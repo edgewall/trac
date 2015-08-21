@@ -15,13 +15,15 @@ import doctest
 import unittest
 
 import trac.ticket
-from trac.ticket.tests import api, model, query, wikisyntax, notification, \
-                              conversion, report, roadmap, batch, web_ui, \
-                              default_workflow
+from trac.ticket.tests import admin, api, model, query, wikisyntax, \
+                              notification, conversion, report, roadmap, \
+                              batch, web_ui, default_workflow
 from trac.ticket.tests.functional import functionalSuite
+
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(admin.suite())
     suite.addTest(api.suite())
     suite.addTest(model.suite())
     suite.addTest(query.suite())
