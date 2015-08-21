@@ -437,9 +437,10 @@ class Query(object):
         list_fields = [f['name'] for f in self.fields
                                  if f['type'] == 'text' and
                                     f.get('format') == 'list']
-        # 32 is max of joins in SQLite 32-bit, 3 is for order, group and
+        # 31 is max of joins in SQLite 32-bit, 3 is for order, group and
         # "priority" columns
-        use_joins = len(set(cols) & set(custom_fields)) <= 32 - 3
+        max_joins = 31
+        use_joins = len(set(cols) & set(custom_fields)) + 3 <= max_joins
 
         sql = []
         sql.append("SELECT " + ",".join('t.%s AS %s' % (c, c) for c in cols
