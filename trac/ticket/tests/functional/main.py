@@ -43,6 +43,9 @@ class AdminEnumDefaultTestCaseSetup(FunctionalTwillTestCaseSetup):
         # Test the "Clear default" button
         tc.go(url)
         tc.submit('clear', formname='enumtable')
+        tc.url(url + '$')
+        tc.notfind(internal_error)
+        tc.find('<input type="radio" name="default" value="[^>]+" />')
         tc.notfind('type="radio" name="default" value=".+" checked="checked"')
 
 

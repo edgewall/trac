@@ -715,7 +715,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 # Clear default
                 elif req.args.get('clear'):
                     self.log.info("Clearing default %s", self._type)
-                    self.config.set('ticket', 'default_%s', self._type, '')
+                    self.config.set('ticket', 'default_%s' % self._type, '')
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
