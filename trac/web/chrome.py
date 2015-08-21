@@ -1273,7 +1273,7 @@ class Chrome(Component):
     def cc_list(self, cc_field):
         """Split a CC: value in a list of addresses."""
         ccs = []
-        for cc in re.split(r'[;,]', cc_field):
+        for cc in re.split(r'[;,]', cc_field or ''):
             cc = cc.strip()
             if cc:
                 ccs.append(cc)

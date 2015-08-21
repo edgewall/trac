@@ -657,6 +657,19 @@ class NotificationTestCase(unittest.TestCase):
         headers, body = parse_smtp_message(message)
         self.assertEqual('joe.user@example.org', headers['Cc'])
 
+    def test_add_to_cc_list(self):
+        """Members added to CC list receive notifications."""
+        config_subscriber(self.env)
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Foo'
+        ticket.insert()
+        ticket['cc'] = 'joe.user1@example.net'
+        now = datetime.now(utc)
+        ticket.save_changes('joe.bar@example.com', 'Added to cc', now)
+        notify_ticket_changed(self.env, ticket)
+        recipients = notifysuite.smtpd.get_recipients()
+        self.assertIn('joe.user1@example.net', recipients)
+
     def test_previous_cc_list(self):
         """Members removed from CC list receive notifications"""
         config_subscriber(self.env)
