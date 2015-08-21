@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014 Edgewall Software
+# Copyright (C) 2014-2015 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.ticket.tests.functional import default_workflow, main
+from trac.ticket.tests.functional import admin, default_workflow, main
 
 
 def functionalSuite(suite=None):
@@ -21,6 +21,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
 
+    admin.functionalSuite(suite)
     default_workflow.functionalSuite(suite)
     main.functionalSuite(suite)
 
