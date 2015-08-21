@@ -102,14 +102,6 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
     if not modtime:
         modtime = tkt['changetime']
 
-    # Harvest email addresses from the cc, reporter, and owner fields
-    if tkt['cc']:
-        cc_recipients.update(to_list(tkt['cc']))
-    if always_notify_reporter:
-        to_recipients.add(tkt['reporter'])
-    if always_notify_owner:
-        to_recipients.add(tkt['owner'])
-
     # Harvest email addresses from the author field of ticket_change(s)
     if always_notify_updater:
         for author, ticket in env.db_query("""
@@ -127,8 +119,18 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
         elif field == 'cc':
             cc_recipients.update(to_list(old))
 
-    # Suppress the updater from the recipients if necessary
+    # Harvest email addresses from the cc, reporter, and owner fields
     updater = author or tkt['reporter']
+    if tkt['cc']:
+        cc_recipients.update(to_list(tkt['cc']))
+    if always_notify_reporter:
+        to_recipients.add(tkt['reporter'])
+    if always_notify_owner:
+        to_recipients.add(tkt['owner'])
+    if always_notify_updater and updater:
+        to_recipients.add(updater)
+
+    # Suppress the updater from the recipients if necessary
     if not always_notify_updater:
         filter_out = True
         if always_notify_reporter and updater == tkt['reporter']:
@@ -137,8 +139,6 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
             filter_out = False
         if filter_out:
             to_recipients.discard(updater)
-    elif updater:
-        to_recipients.add(updater)
 
     return list(to_recipients), list(cc_recipients), \
            tkt['reporter'], tkt['owner']
