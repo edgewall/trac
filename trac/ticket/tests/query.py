@@ -459,9 +459,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=resolution&group=severity&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
+                      ''.join('&col=col_%02d' % idx for idx in xrange(28)))
         sql, args = query.get_sql()
-        self.assertEqual(['enum'] * 3 + ['ticket_custom'] * 29,
+        self.assertEqual(['enum'] * 3 + ['ticket_custom'] * 28,
                          self._get_join_tables(sql))
         tickets = query.execute(self.req)
         self.assertEqual(1, len(tickets))
@@ -469,9 +469,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=milestone&group=version&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
+                      ''.join('&col=col_%02d' % idx for idx in xrange(28)))
         sql, args = query.get_sql()
-        self.assertEqual(['enum', 'milestone'] + ['ticket_custom'] * 29 +
+        self.assertEqual(['enum', 'milestone'] + ['ticket_custom'] * 28 +
                          ['version'],
                          self._get_join_tables(sql))
         tickets = query.execute(self.req)
@@ -480,7 +480,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=resolution&group=severity&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(30)))
+                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
         sql, args = query.get_sql()
         self.assertEqual(['enum'] * 3, self._get_join_tables(sql))
         tickets = query.execute(self.req)
@@ -490,7 +490,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=milestone&group=version&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(30)))
+                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
         sql, args = query.get_sql()
         self.assertEqual(['enum', 'milestone', 'version'],
                          self._get_join_tables(sql))
