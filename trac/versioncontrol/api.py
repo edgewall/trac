@@ -1014,22 +1014,27 @@ class Repository(object):
         pass
 
     def short_rev(self, rev):
-        """Return a compact representation of a revision in the repos.
+        """Return a compact string representation of a revision in the
+        repos.
 
         :raise NoSuchChangeset: If the given `rev` isn't found.
+        :since 1.2: Always returns a string or `None`.
         """
-        return self.normalize_rev(rev)
+        norm_rev = self.normalize_rev(rev)
+        return str(norm_rev) if norm_rev is not None else norm_rev
 
     def display_rev(self, rev):
-        """Return a representation of a revision in the repos for displaying to
-        the user.
+        """Return a string representation of a revision in the repos for
+        displaying to the user.
 
-        This can be a shortened revision string, e.g. for repositories using
-        long hashes.
+        This can be a shortened revision string, e.g. for repositories
+        using long hashes.
 
         :raise NoSuchChangeset: If the given `rev` isn't found.
+        :since 1.2: Always returns a string or `None`.
         """
-        return self.normalize_rev(rev)
+        norm_rev = self.normalize_rev(rev)
+        return str(norm_rev) if norm_rev is not None else norm_rev
 
     @abstractmethod
     def get_changes(self, old_path, old_rev, new_path, new_rev,

@@ -131,6 +131,26 @@ class NormalTests(object):
         self.assertEqual(11, self.repos.normalize_rev('11'))
         self.assertEqual(11, self.repos.normalize_rev(11))
 
+    def test_repos_display_rev(self):
+        self.assertEqual(str(HEAD), self.repos.display_rev('latest'))
+        self.assertEqual(str(HEAD), self.repos.display_rev('head'))
+        self.assertEqual(str(HEAD), self.repos.display_rev(''))
+        self.assertRaises(NoSuchChangeset,
+                          self.repos.display_rev, 'something else')
+        self.assertEqual(str(HEAD), self.repos.display_rev(None))
+        self.assertEqual('11', self.repos.display_rev('11'))
+        self.assertEqual('11', self.repos.display_rev(11))
+
+    def test_repos_short_rev(self):
+        self.assertEqual(str(HEAD), self.repos.short_rev('latest'))
+        self.assertEqual(str(HEAD), self.repos.short_rev('head'))
+        self.assertEqual(str(HEAD), self.repos.short_rev(''))
+        self.assertRaises(NoSuchChangeset,
+                          self.repos.short_rev, 'something else')
+        self.assertEqual(str(HEAD), self.repos.short_rev(None))
+        self.assertEqual('11', self.repos.short_rev('11'))
+        self.assertEqual('11', self.repos.short_rev(11))
+
     def test_rev_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)
         self.assertIsNone(self.repos.previous_rev(0))

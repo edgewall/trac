@@ -315,6 +315,10 @@ class GitNormalTestCase(BaseTestCase):
         self.assertEqual(None, repos.oldest_rev)
         self.assertEqual(None, repos.normalize_rev(''))
         self.assertEqual(None, repos.normalize_rev(None))
+        self.assertEqual(None, repos.display_rev(''))
+        self.assertEqual(None, repos.display_rev(None))
+        self.assertEqual(None, repos.short_rev(''))
+        self.assertEqual(None, repos.short_rev(None))
 
         node = repos.get_node('/', youngest_rev)
         self.assertEqual([], list(node.get_entries()))
