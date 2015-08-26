@@ -12,7 +12,14 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import absolute_import
+
 import unittest
+try:
+    import pygments
+    have_pygments = True
+except ImportError:
+    have_pygments = False
 
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 
@@ -31,7 +38,8 @@ def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
-    suite.addTest(TestSyntaxHighlightingPreferences())
+    if have_pygments:
+        suite.addTest(TestSyntaxHighlightingPreferences())
     return suite
 
 
