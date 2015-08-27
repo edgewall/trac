@@ -1222,6 +1222,47 @@ Security sensitive:  0                           |          Blocking:
             lines.append(line)
         self.assertEqual(expected, '\n'.join(lines))
 
+    def test_format_subject_new_ticket(self):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'The summary'
+        ticket['description'] = 'Some description'
+        ticket.insert()
+
+        notify_ticket_created(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('[TracTest] #1: The summary', headers['Subject'])
+
+    def test_format_subject_ticket_change(self):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'The summary'
+        ticket['description'] = 'Some description'
+        ticket.insert()
+        ticket['description'] = 'Some other description'
+        ticket.save_changes()
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] #1: The summary', headers['Subject'])
+
+    def test_format_subject_ticket_summary_changed(self):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'The summary'
+        ticket['description'] = 'Some description'
+        ticket.insert()
+        ticket['summary'] = 'The other summary'
+        ticket.save_changes()
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] #1: The other summary '
+                         '(was: The summary)', headers['Subject'])
+
     def test_notification_does_not_alter_ticket_instance(self):
         ticket = Ticket(self.env)
         ticket['summary'] = 'My Summary'

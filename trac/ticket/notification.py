@@ -231,6 +231,12 @@ class TicketFormatter(Component):
             ticket = event.target
             notify.ticket = ticket
             summary = ticket['summary']
+            from trac.ticket.web_ui import TicketModule
+            for change in TicketModule(self.env) \
+                          .grouped_changelog_entries(ticket, when=event.time):
+                if 'summary' in change['fields']:
+                    values = change['fields']['summary']
+                    summary = "%s (was: %s)" % (values['new'], values['old'])
             subject = notify.format_subj(summary, event.category == 'created')
             url = self.env.abs_href.ticket(ticket.id)
             if event.category != 'created':
