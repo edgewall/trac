@@ -319,6 +319,7 @@ KNOWN_MIME_TYPES = {
     'text/xml':                'xml',
 
     # see also TEXT_X_TYPES below
+    'text/x-apacheconf':       'apache',
     'text/x-csrc':             'c xs',
     'text/x-chdr':             'h',
     'text/x-c++src':           'cc CC cpp C c++ C++',
