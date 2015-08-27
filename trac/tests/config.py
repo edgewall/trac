@@ -197,7 +197,81 @@ class BaseTestCase(unittest.TestCase):
             os.remove(self.sitename)
 
 
-class ConfigurationTestCase(BaseTestCase):
+class ConfigurationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.config = Configuration(None)
+        self.config.parser.add_section(u'séction1')
+        self.config.parser.set(u'séction1', u'öption1', u'cönfig-valué')
+        self.config.parser.set(u'séction1', u'öption4', u'cönfig-valué')
+        parent_config = Configuration(None)
+        parent_config.parser.add_section(u'séction1')
+        parent_config.parser.add_section(u'séction2')
+        parent_config.parser.set(u'séction1', u'öption1', u'cönfig-valué')
+        parent_config.parser.set(u'séction1', u'öption2', u'înherited-valué')
+        parent_config.parser.set(u'séction2', u'öption2', u'înherited-valué')
+        self.config.parents = [parent_config]
+
+        class OptionClass(object):
+            Option(u'séction1', u'öption1', u'dēfault-valué')
+            Option(u'séction1', u'öption2', u'dēfault-valué')
+            Option(u'séction1', u'öption3', u'dēfault-valué')
+            Option(u'séction3', u'öption1', u'dēfault-valué')
+
+    def test_get_from_config(self):
+        """Value is retrieved from the config."""
+        self.assertEqual(u'cönfig-valué',
+                         self.config.get(u'séction1', u'öption1'))
+
+    def test_get_from_inherited(self):
+        """Value not specified in the config is retrieved from the
+        inherited config.
+        """
+        self.assertEqual(u'înherited-valué',
+                         self.config.get(u'séction1', u'öption2'))
+
+    def test_get_from_default(self):
+        """Value not specified in the config or the inherited config
+        is retrieved from the option default.
+        """
+        self.assertEqual(u'dēfault-valué',
+                         self.config.get(u'séction1', u'öption3'))
+
+    def test_get_is_cached(self):
+        """Value is cached on first retrieval from the parser."""
+        option1 = self.config.get(u'séction1', u'öption1')
+        self.config.parser.set(u'séction1', u'öption1', u'cönfig-valué2')
+        self.assertIs(self.config.get(u'séction1', u'öption1'), option1)
+
+    def test_contains_from_config(self):
+        """Contains returns `True` for section defined in config."""
+        self.assertTrue(u'séction1' in self.config)
+
+    def test_contains_from_inherited(self):
+        """Contains returns `True` for section defined in inherited config."""
+        self.assertTrue(u'séction2' in self.config)
+
+    def test_contains_from_default(self):
+        """Contains returns `True` for section defined in an option."""
+        self.assertTrue(u'séction3' in self.config)
+
+    def test_remove_from_config(self):
+        """Value is removed from configuration."""
+        self.config.remove(u'séction1', u'öption4')
+        parser = self.config.parser
+        self.assertFalse(parser.has_option(u'séction1', u'öption4'))
+        self.assertEqual('', self.config.get(u'séction1', u'öption4'))
+
+    def test_remove_leaves_inherited_unchanged(self):
+        """Value is not removed from inherited configuration."""
+        self.config.remove(u'séction1', u'öption2')
+        parser = self.config.parents[0].parser
+        self.assertTrue(parser.has_option(u'séction1', u'öption1'))
+        self.assertEqual(u'înherited-valué',
+                         self.config.get(u'séction1', u'öption2'))
+
+
+class IntegrationTestCase(BaseTestCase):
 
     def test_repr(self):
         self.assertEquals('<Configuration None>', repr(Configuration(None)))
@@ -1056,6 +1130,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
     suite.addTest(unittest.makeSuite(ConfigurationTestCase))
+    suite.addTest(unittest.makeSuite(IntegrationTestCase))
     if __name__ == 'trac.tests.config':
         suite.addTest(unittest.makeSuite(ConfigurationSetDefaultsTestCase))
     else:
