@@ -51,6 +51,16 @@ class DefaultWikiChecker(Formatter):
                 self.__marks.append((fullmatch.start(0), fullmatch.end(0)))
         return rv
 
+    def handle_code_block(self, line, startmatch=None):
+        prev_processor = getattr(self, 'code_processor', None)
+        try:
+            return self.__super.handle_code_block(line, startmatch)
+        finally:
+            processor = self.code_processor
+            if startmatch and processor and processor != prev_processor and \
+                    processor.error:
+                self.__marks.append((startmatch.start(0), startmatch.end(0)))
+
     def format(self, text, out=None):
         return self.__super.format(SourceWrapper(self, text), out)
 
@@ -160,7 +170,7 @@ def main():
     if options.download:
         download_default_pages(args, options.prefix)
 
-    env = EnvironmentStub()
+    env = EnvironmentStub(disable=['trac.mimeview.pygments.*'])
     load_components(env)
     with env.db_transaction:
         for name in names:
