@@ -300,6 +300,7 @@ KNOWN_MIME_TYPES = {
     'application/x-dos-batch': 'bat batch cmd dos',
     'application/x-sh':        'sh',
     'application/x-csh':       'csh',
+    'application/x-genshi':    'genshi',
     'application/x-troff':     'nroff roff troff',
     'application/x-yaml':      'yml yaml',
 
@@ -338,6 +339,7 @@ KNOWN_MIME_TYPES = {
     'text/x-perl':             'pl pm PL',
     'text/x-php':              'php3 php4',
     'text/x-python':           'py',
+    'text/x-python-doctest':   'pycon',
     'text/x-pyrex':            'pyx',
     'text/x-ruby':             'rb',
     'text/x-scheme':           'scm',
