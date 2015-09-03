@@ -332,6 +332,7 @@ KNOWN_MIME_TYPES = {
     'text/x-fortran':          'f',
     'text/x-haskell':          'hs',
     'text/x-ini':              'ini cfg',
+    'text/x-nginx-conf':       'nginx',
     'text/x-objc':             'm mm',
     'text/x-ocaml':            'ml mli',
     'text/x-makefile':         'make mk Makefile GNUMakefile',
