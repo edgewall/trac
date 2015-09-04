@@ -18,7 +18,7 @@ from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.ticket.admin import ComponentAdminPanel
 from trac.ticket.model import Component
 from trac.util.datefmt import utc
-from trac.web.api import RequestDone
+from trac.web.api import RequestDone, _RequestArgs
 
 
 class ComponentAdminPanelTestCase(unittest.TestCase):
@@ -30,13 +30,15 @@ class ComponentAdminPanelTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': {},
+        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
               'href': self.env.href, 'abs_href': self.env.abs_href,
               'tz': utc, 'locale': None, 'lc_time': locale_en,
               'session': {}, 'authname': authname,
               'chrome': {'notices': [], 'warnings': []},
               'method': None, 'get_header': lambda v: None, 'is_xhr': False,
               'form_token': None, }
+        if 'args' in kwargs:
+            kw['args'].update(kwargs.pop('args'))
         kw.update(kwargs)
         def redirect(url, permanent=False):
             raise RequestDone
@@ -92,5 +94,3 @@ def suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
-
-

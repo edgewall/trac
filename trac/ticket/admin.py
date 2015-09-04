@@ -125,11 +125,9 @@ class ComponentAdminPanel(TicketAdminPanel):
 
                 # Remove components
                 elif req.args.get('remove'):
-                    sel = req.args.get('sel')
+                    sel = req.args.getlist('sel')
                     if not sel:
                         raise TracError(_("No component selected"))
-                    if not isinstance(sel, list):
-                        sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
                             model.Component(self.env, name).delete()
@@ -284,11 +282,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
                 # Remove milestone
                 elif 'remove' in req.args:
                     perm_cache.require('MILESTONE_DELETE')
-                    sel = req.args.get('sel')
+                    sel = req.args.getlist('sel')
                     if not sel:
                         raise TracError(_("No milestone selected"))
-                    if not isinstance(sel, list):
-                        sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
                             milestone = model.Milestone(self.env, name)
@@ -494,11 +490,9 @@ class VersionAdminPanel(TicketAdminPanel):
 
                 # Remove versions
                 elif req.args.get('remove'):
-                    sel = req.args.get('sel')
+                    sel = req.args.getlist('sel')
                     if not sel:
                         raise TracError(_("No version selected"))
-                    if not isinstance(sel, list):
-                        sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
                             model.Version(self.env, name).delete()
@@ -657,11 +651,9 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                 # Remove enums
                 elif req.args.get('remove'):
-                    sel = req.args.get('sel')
+                    sel = req.args.getlist('sel')
                     if not sel:
                         raise TracError(_("No %s selected") % self._type)
-                    if not isinstance(sel, list):
-                        sel = [sel]
                     with self.env.db_transaction:
                         for name in sel:
                             self._enum_cls(self.env, name).delete()
