@@ -1331,7 +1331,7 @@ class TicketQueryMacro(WikiMacroBase):
         clauses = [{}]
         argv = []
         kwargs = {}
-        for arg in TicketQueryMacro._comma_splitter.split(content):
+        for arg in TicketQueryMacro._comma_splitter.split(content or ''):
             arg = arg.replace(r'\,', ',')
             m = re.match(r'\s*[^=]+=', arg)
             if m:

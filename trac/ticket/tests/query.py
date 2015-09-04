@@ -1017,6 +1017,39 @@ class TicketQueryMacroTestCase(unittest.TestCase):
                            'list')
 
 QUERY_TEST_CASES = u"""
+
+============================== TicketQuery
+[[TicketQuery]]
+------------------------------
+<p>
+</p><div>\
+<dl class="wiki compact">\
+<dt><a class="new" href="/ticket/1" title="This is the summary">#1</a></dt>\
+<dd>This is the summary</dd>\
+<dt><a class="assigned" href="/ticket/2" title="This is another summary">#2</a></dt>\
+<dd>This is another summary</dd>\
+<dt><a class="closed" href="/ticket/3" title="This is th third summary">#3</a></dt>\
+<dd>This is th third summary</dd>\
+</dl>\
+</div><p>
+</p>
+------------------------------
+============================== TicketQuery()
+[[TicketQuery()]]
+------------------------------
+<p>
+</p><div>\
+<dl class="wiki compact">\
+<dt><a class="new" href="/ticket/1" title="This is the summary">#1</a></dt>\
+<dd>This is the summary</dd>\
+<dt><a class="assigned" href="/ticket/2" title="This is another summary">#2</a></dt>\
+<dd>This is another summary</dd>\
+<dt><a class="closed" href="/ticket/3" title="This is th third summary">#3</a></dt>\
+<dd>This is th third summary</dd>\
+</dl>\
+</div><p>
+</p>
+------------------------------
 ============================== TicketQuery(format=progress)
 [[TicketQuery(format=progress)]]
 ------------------------------
