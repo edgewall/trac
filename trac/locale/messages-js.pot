@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.1.5\n"
+"Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-03-15 11:28+0000\n"
+"POT-Creation-Date: 2015-09-03 03:17-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,41 +136,49 @@ msgstr ""
 msgid "Now"
 msgstr ""
 
-#: trac/htdocs/js/query.js:132
+#: trac/htdocs/js/query.js:169
 msgid "A filter already exists for that property"
 msgstr ""
 
-#: trac/htdocs/js/query.js:159
+#: trac/htdocs/js/query.js:196
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:319
+#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:355
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:322
+#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:358
 msgid "no"
 msgstr ""
 
-#: trac/htdocs/js/query.js:197
+#: trac/htdocs/js/query.js:234
 msgid "between"
 msgstr ""
 
-#: trac/htdocs/js/query.js:199
+#: trac/htdocs/js/query.js:236
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:351
+#: trac/htdocs/js/query.js:387
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:361
+#: trac/htdocs/js/query.js:397
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:394
+#: trac/htdocs/js/query.js:430
 #, python-format
 msgid "Select ticket #%(id)s for modification"
+msgstr ""
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr ""
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
 msgstr ""
 
 #: trac/htdocs/js/trac.js:7
