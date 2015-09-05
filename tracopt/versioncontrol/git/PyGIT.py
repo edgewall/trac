@@ -462,37 +462,43 @@ class Storage(object):
                           self.repo_path)
         ts0 = time.time()
 
-        youngest = None
-        oldest = None
         new_db = {} # db
         new_sdb = {} # short_rev db
 
         # helper for reusing strings
         revs_seen = {}
-        def __rev_reuse(rev):
+        def _rev_reuse(rev):
             return revs_seen.setdefault(rev, rev)
 
-        refs = dict((refname, __rev_reuse(rev))
+        refs = dict((refname, _rev_reuse(rev))
                     for refname, rev in refs.iteritems())
         head_revs = set(rev for refname, rev in refs.iteritems()
                             if refname.startswith('refs/heads/'))
+        rev_list = [map(_rev_reuse, line.split())
+                    for line in self.repo.rev_list('--parents', '--topo-order',
+                                                   '--all').splitlines()]
+        revs_seen = None
+
+        if rev_list:
+            # first rev seen is assumed to be the youngest one
+            youngest = rev_list[0][0]
+            # last rev seen is assumed to be the oldest one
+            oldest = rev_list[-1][0]
+        else:
+            youngest = oldest = None
+
+        rheads_seen = {}
+        def _rheads_reuse(rheads):
+            rheads = frozenset(rheads)
+            return rheads_seen.setdefault(rheads, rheads)
 
         __rev_key = self.__rev_key
-        rev = ord_rev = None
-        rev_list = self.repo.rev_list('--parents', '--topo-order', '--all')
-        for ord_rev, revs in enumerate(rev_list.splitlines()):
-            revs = map(__rev_reuse, revs.split())
+        for ord_rev, revs in enumerate(rev_list):
             rev = revs[0]
-
-            # first rev seen is assumed to be the youngest one
-            if not ord_rev:
-                youngest = rev
+            parents = revs[1:]
 
             # shortrev "hash" map
             new_sdb.setdefault(__rev_key(rev), []).append(rev)
-
-            # parents
-            parents = revs[1:]
 
             # new_db[rev] = (children(rev), parents(rev),
             #                ordinal_id(rev), rheads(rev))
@@ -509,13 +515,13 @@ class Storage(object):
                 _rheads.add(rev)
 
             # create/update entry
-            # transform lists into tuples since entry will be final
-            new_db[rev] = _children, parents, ord_rev + 1, _rheads
+            # transform into frozenset and tuple since entry will be final
+            new_db[rev] = (frozenset(_children), tuple(parents), ord_rev + 1,
+                           _rheads_reuse(_rheads))
 
             # update parents(rev)s
             for parent in parents:
-                # by default, a dummy ordinal_id is used
-                # for the mean-time
+                # by default, a dummy ordinal_id is used for the mean-time
                 _children, _parents, _ord_rev, _rheads2 = \
                     new_db.setdefault(parent, (set(), [], 0, set()))
 
@@ -525,9 +531,7 @@ class Storage(object):
                 # update parent(rev)'s rheads
                 _rheads2.update(_rheads)
 
-        # last rev seen is assumed to be the oldest one (with highest ord_rev)
-        oldest = rev
-        revs_seen = None
+        rheads_seen = None
 
         # convert sdb either to dict or array depending on size
         tmp = [()] * (max(new_sdb.keys()) + 1) if len(new_sdb) > 5000 else {}
