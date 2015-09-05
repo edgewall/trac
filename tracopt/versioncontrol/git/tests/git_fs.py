@@ -667,22 +667,7 @@ class GitConnectorTestCase(BaseTestCase):
                 git_version = version
         return git_version
 
-    def test_get_system_info_repository_not_initialized(self):
-        # GitConnector is not a required component when there are no Git
-        # repositories configured, and the Git version is not returned in
-        # system info.
-        self.assertFalse(GitConnector(self.env).required)
-        self.assertIsNone(self._git_version_from_system_info())
-
-    def test_get_system_info_repository_initialized(self):
-        # GitConnector is a required component when there are Git
-        # repositories configured, and the Git version is returned in
-        # system info.
-        self._git_init()
-        self._add_repository()
-        self._repomgr.get_repository('gitrepos')
-
-        self.assertTrue(GitConnector(self.env).required)
+    def test_get_system_info(self):
         self.assertIsNotNone(self._git_version_from_system_info())
 
 

@@ -205,8 +205,6 @@ class GitConnector(Component):
 
     implements(IRepositoryConnector, ISystemInfoProvider, IWikiSyntaxProvider)
 
-    required = False
-
     def __init__(self):
         self._version = None
 
@@ -225,8 +223,7 @@ class GitConnector(Component):
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        if self.required:
-            yield 'GIT', self._version['v_str']
+        yield 'GIT', self._version['v_str']
 
     # IWikiSyntaxProvider methods
 
@@ -376,7 +373,6 @@ class GitConnector(Component):
         else:
             self.log.debug("disabled CachedRepository for '%s'", dir)
 
-        self.required = True
         return repos
 
 

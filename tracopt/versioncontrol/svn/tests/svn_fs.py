@@ -1455,20 +1455,7 @@ class SubversionConnectorTestCase(unittest.TestCase):
                 svn_version = version
         return svn_version
 
-    def test_get_system_info_repository_not_initialized(self):
-        # SubversionConnector is not a required component when there are no
-        # Subversion repositories configured, and the Subversion version is
-        # not returned in system info.
-        self.assertFalse(svn_fs.SubversionConnector(self.env).required)
-        self.assertIsNone(self._svn_version_from_system_info())
-
-    def test_get_system_info_repository_initialized(self):
-        # SubversionConnector is a required component when there are
-        # Subversion repositories configured, and the Subversion version is
-        # returned in system info.
-        RepositoryManager(self.env).get_repository(REPOS_NAME)
-
-        self.assertTrue(svn_fs.SubversionConnector(self.env).required)
+    def test_get_system_info(self):
         self.assertIsNotNone(self._svn_version_from_system_info())
 
 

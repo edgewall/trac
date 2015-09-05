@@ -261,8 +261,6 @@ class SubversionConnector(Component):
 
     implements(ISystemInfoProvider, IRepositoryConnector)
 
-    required = False
-
     branches = ListOption('svn', 'branches', 'trunk, branches/*', doc=
         """Comma separated list of paths categorized as branches.
         If a path ends with '*', then all the directory entries found below
@@ -311,8 +309,7 @@ class SubversionConnector(Component):
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        if self.required:
-            yield 'Subversion', self._version
+        yield 'Subversion', self._version
 
     # IRepositoryConnector methods
 
@@ -335,7 +332,6 @@ class SubversionConnector(Component):
         repos = SubversionRepository(dir, params, self.log)
         if type != 'direct-svnfs':
             repos = SvnCachedRepository(self.env, repos, self.log)
-        self.required = True
         return repos
 
 
