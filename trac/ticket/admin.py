@@ -131,6 +131,10 @@ class ComponentAdminPanel(TicketAdminPanel):
                     with self.env.db_transaction:
                         for name in sel:
                             model.Component(self.env, name).delete()
+                            if name == default:
+                                self.config.set('ticket', 
+                                                'default_component', '')
+                                self._save_config(req)
                     add_notice(req, _("The selected components have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -281,6 +285,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
                 # Remove milestone
                 elif 'remove' in req.args:
+                    save = False
                     perm_cache.require('MILESTONE_DELETE')
                     sel = req.args.getlist('sel')
                     if not sel:
@@ -291,6 +296,16 @@ class MilestoneAdminPanel(TicketAdminPanel):
                             milestone.move_tickets(None, req.authname,
                                                    "Milestone deleted")
                             milestone.delete()
+                            if name == ticket_default:
+                                self.config.set('ticket', 
+                                                'default_milestone', '')
+                                save = True
+                            if name == retarget_default:
+                                self.config.set('milestone', 
+                                                'default_retarget_to', '')
+                                save = True
+                    if save:
+                        self._save_config(req)
                     add_notice(req, _("The selected milestones have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -496,6 +511,9 @@ class VersionAdminPanel(TicketAdminPanel):
                     with self.env.db_transaction:
                         for name in sel:
                             model.Version(self.env, name).delete()
+                            if name == default:
+                                self.config.set('ticket', 'default_version', '')
+                                self._save_config(req)
                     add_notice(req, _("The selected versions have been "
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
@@ -657,6 +675,10 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     with self.env.db_transaction:
                         for name in sel:
                             self._enum_cls(self.env, name).delete()
+                            if name == default:
+                                self.config.set('ticket', 
+                                                'default_%s' % self._type, '')
+                                self.config.save()
                     add_notice(req, _("The selected %(field)s values have "
                                       "been removed.", field=label[0]))
                     req.redirect(req.href.admin(cat, page))
