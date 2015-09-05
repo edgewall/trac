@@ -581,7 +581,8 @@ def _send_user_error(req, env, e):
 
 def send_internal_error(env, req, exc_info):
     if env:
-        env.log.error("Internal Server Error: %s",
+        env.log.error("Internal Server Error: %r, referrer %r%s",
+                      req, req.environ.get('HTTP_REFERER'),
                       exception_to_unicode(exc_info[1], traceback=True))
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()

@@ -358,9 +358,11 @@ class Request(object):
         raise AttributeError(name)
 
     def __repr__(self):
-        path_info = self.environ.get('PATH_INFO', '')
-        return '<%s "%s %r">' % (self.__class__.__name__, self.method,
-                                 path_info)
+        uri = self.environ.get('PATH_INFO', '')
+        qs = self.query_string
+        if qs:
+            uri += '?' + qs
+        return '<%s "%s %r">' % (self.__class__.__name__, self.method, uri)
 
     # Public API
 
