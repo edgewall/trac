@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.7\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-08-17 05:31+0000\n"
+"POT-Creation-Date: 2015-09-03 03:23-0700\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -1478,36 +1478,36 @@ msgid "Add a user or group to an existing permission group."
 msgstr "ユーザやグループを既存の権限グループに追加します。"
 
 #: trac/admin/templates/admin_perms.html:74
-#: trac/admin/templates/admin_perms.html:103
+#: trac/admin/templates/admin_perms.html:104
 msgid "Subject"
 msgstr "対象"
 
-#: trac/admin/templates/admin_perms.html:85
+#: trac/admin/templates/admin_perms.html:86
 msgid "You don't have permission to revoke this action"
 msgstr "このアクションを無効にする権限を持っていません"
 
-#: trac/admin/templates/admin_perms.html:91
+#: trac/admin/templates/admin_perms.html:92
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr "%(action)s はすでに定義されていません"
 
-#: trac/admin/templates/admin_perms.html:96
+#: trac/admin/templates/admin_perms.html:97
 msgid "No permissions"
 msgstr "権限なし"
 
-#: trac/admin/templates/admin_perms.html:100
+#: trac/admin/templates/admin_perms.html:101
 msgid "Group Membership"
 msgstr "グループメンバ"
 
-#: trac/admin/templates/admin_perms.html:103
+#: trac/admin/templates/admin_perms.html:104
 msgid "Group"
 msgstr "グループ"
 
-#: trac/admin/templates/admin_perms.html:120
+#: trac/admin/templates/admin_perms.html:121
 msgid "No group memberships"
 msgstr "グループメンバなし"
 
-#: trac/admin/templates/admin_perms.html:124
+#: trac/admin/templates/admin_perms.html:125
 #: trac/ticket/templates/admin_components.html:107
 #: trac/ticket/templates/admin_enums.html:83
 #: trac/ticket/templates/admin_milestones.html:149
@@ -1516,7 +1516,7 @@ msgstr "グループメンバなし"
 msgid "Remove selected items"
 msgstr "選択した項目を削除"
 
-#: trac/admin/templates/admin_perms.html:128
+#: trac/admin/templates/admin_perms.html:129
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1738,26 +1738,26 @@ msgstr "PRAGMA journal_mode は SQLite %(version)s でサポートしていま�
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode `%(value)s` は SQLite %(version)s でサポートしていません"
 
-#: trac/mimeview/api.py:703 trac/mimeview/api.py:720
+#: trac/mimeview/api.py:707 trac/mimeview/api.py:724
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "%(old)s から %(new)s への MIME 変換は、利用可能ではありません"
 
-#: trac/mimeview/api.py:833
+#: trac/mimeview/api.py:837
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "(%(err)s) のため、%(renderer)s を使った HTML プレビューに失敗しました"
 
-#: trac/mimeview/api.py:864
+#: trac/mimeview/api.py:868
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "%(annotator)s が使えません: %(error)s"
 
-#: trac/mimeview/api.py:1155 trac/templates/error.html:167
+#: trac/mimeview/api.py:1159 trac/templates/error.html:167
 msgid "Line"
 msgstr "行"
 
-#: trac/mimeview/api.py:1155
+#: trac/mimeview/api.py:1159
 msgid "Line numbers"
 msgstr "行番号"
 
@@ -2052,16 +2052,16 @@ msgstr "リポジトリパス %(path)s の閲覧"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "検索語は少なくとも%(num)s文字以上が必要です。"
 
-#: trac/search/web_ui.py:231 trac/ticket/query.py:826 trac/ticket/report.py:458
+#: trac/search/web_ui.py:231 trac/ticket/query.py:827 trac/ticket/report.py:458
 #, python-format
 msgid "Page %(num)d"
 msgstr "ページ%(num)d"
 
-#: trac/search/web_ui.py:244 trac/ticket/query.py:813 trac/ticket/report.py:449
+#: trac/search/web_ui.py:244 trac/ticket/query.py:814 trac/ticket/report.py:449
 msgid "Next Page"
 msgstr "次のページ"
 
-#: trac/search/web_ui.py:250 trac/ticket/query.py:818 trac/ticket/report.py:452
+#: trac/search/web_ui.py:250 trac/ticket/query.py:819 trac/ticket/report.py:452
 msgid "Previous Page"
 msgstr "前のページ"
 
@@ -2168,7 +2168,7 @@ msgid "Location"
 msgstr "場所"
 
 #: trac/templates/about.html:89 trac/templates/error.html:211
-#: trac/web/main.py:631
+#: trac/web/main.py:632
 msgid "N/A"
 msgstr "該当なし"
 
@@ -3278,77 +3278,77 @@ msgstr "フィルタには、フィールド名を含んでいる必要があり
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "%(page)s ページはクエリのページ数を超えています。"
 
-#: trac/ticket/query.py:591
+#: trac/ticket/query.py:592
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "チケット番号が不正です: %(value)s"
 
-#: trac/ticket/query.py:694 trac/ticket/query.py:702
+#: trac/ticket/query.py:695 trac/ticket/query.py:703
 msgid "contains"
 msgstr "に次が含まれる"
 
-#: trac/ticket/query.py:695 trac/ticket/query.py:703
+#: trac/ticket/query.py:696 trac/ticket/query.py:704
 msgid "doesn't contain"
 msgstr "は次を含まない"
 
-#: trac/ticket/query.py:696
+#: trac/ticket/query.py:697
 msgid "begins with"
 msgstr "が次で始まる"
 
-#: trac/ticket/query.py:697
+#: trac/ticket/query.py:698
 msgid "ends with"
 msgstr "が次で終わる"
 
-#: trac/ticket/query.py:698 trac/ticket/query.py:706 trac/ticket/query.py:710
+#: trac/ticket/query.py:699 trac/ticket/query.py:707 trac/ticket/query.py:711
 msgid "is"
 msgstr "が次と等しい"
 
-#: trac/ticket/query.py:699 trac/ticket/query.py:707 trac/ticket/query.py:711
+#: trac/ticket/query.py:700 trac/ticket/query.py:708 trac/ticket/query.py:712
 msgid "is not"
 msgstr "は次と等しくない"
 
-#: trac/ticket/query.py:748 trac/ticket/query.py:755
+#: trac/ticket/query.py:749 trac/ticket/query.py:756
 msgid "Ticket"
 msgstr "チケット"
 
-#: trac/ticket/query.py:875 trac/ticket/report.py:324 trac/ticket/report.py:617
+#: trac/ticket/query.py:876 trac/ticket/report.py:324 trac/ticket/report.py:617
 #: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:238
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr "RSS フィード"
 
-#: trac/ticket/query.py:877 trac/ticket/report.py:326 trac/ticket/report.py:619
+#: trac/ticket/query.py:878 trac/ticket/report.py:326 trac/ticket/report.py:619
 #: trac/ticket/web_ui.py:139
 msgid "Comma-delimited Text"
 msgstr "CSV(カンマ区切り)"
 
-#: trac/ticket/query.py:879 trac/ticket/report.py:328 trac/ticket/report.py:621
+#: trac/ticket/query.py:880 trac/ticket/report.py:328 trac/ticket/report.py:621
 #: trac/ticket/web_ui.py:141
 msgid "Tab-delimited Text"
 msgstr "TSV(タブ区切り)"
 
-#: trac/ticket/query.py:902 trac/ticket/report.py:132
+#: trac/ticket/query.py:903 trac/ticket/report.py:132
 msgid "View Tickets"
 msgstr "チケットを見る"
 
-#: trac/ticket/query.py:1123 trac/ticket/query.py:1134
+#: trac/ticket/query.py:1124 trac/ticket/query.py:1135
 #: trac/ticket/report.py:202 trac/ticket/templates/report_list.html:67
 msgid "Custom Query"
 msgstr "カスタムクエリ"
 
-#: trac/ticket/query.py:1133 trac/ticket/report.py:194
+#: trac/ticket/query.py:1134 trac/ticket/report.py:194
 #: trac/ticket/report.py:195 trac/ticket/report.py:197
 #: trac/ticket/templates/report_list.html:20
 #: trac/ticket/templates/report_list.html:38
 msgid "Available Reports"
 msgstr "レポート一覧"
 
-#: trac/ticket/query.py:1259
+#: trac/ticket/query.py:1260
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[エラー: %(error)s]"
 
-#: trac/ticket/query.py:1265
+#: trac/ticket/query.py:1266
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3456,27 +3456,27 @@ msgstr ""
 "パラメータとして使います。また、フィールドのセパレータとして \"&\" を使ってもまだ機能しますが非推奨です (`order` "
 "パラメータを除く)。"
 
-#: trac/ticket/query.py:1379
+#: trac/ticket/query.py:1380
 #, python-format
 msgid "%(num)d ticket for which %(query)s"
 msgid_plural "%(num)d tickets for which %(query)s"
 msgstr[0] "%(num)dチケット: %(query)s"
 
-#: trac/ticket/query.py:1454
+#: trac/ticket/query.py:1455
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "%(group)sごとのチケット完了ステータス"
 
-#: trac/ticket/query.py:1469
+#: trac/ticket/query.py:1470
 msgid "No results"
 msgstr "一致するものがありません"
 
-#: trac/ticket/query.py:1487
+#: trac/ticket/query.py:1488
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(query)s に %(groupvalue)s %(groupname)s のチケットが該当"
 
-#: trac/ticket/query.py:1511
+#: trac/ticket/query.py:1512
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s のチケット:"
@@ -6345,17 +6345,17 @@ msgstr "削除されたパスがあれば、リポジトリの履歴から %(sea
 msgid "Error: %(message)s"
 msgstr "エラー: %(message)s"
 
-#: trac/web/api.py:379
+#: trac/web/api.py:381
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "不正な URL エンコーディング (%(path_info)r)"
 
-#: trac/web/api.py:607
+#: trac/web/api.py:609
 #, python-format
 msgid "File %(path)s not found"
 msgstr "ファイル %(path)s が見つかりません"
 
-#: trac/web/api.py:736
+#: trac/web/api.py:738
 #, python-format
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr "フォームデータのエンコーディングが正しくありません: %(msg)s"
@@ -6450,15 +6450,15 @@ msgstr "こちら"
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "現在ログインしていません。%(do_so)sからログインしてください。"
 
-#: trac/web/main.py:634
+#: trac/web/main.py:635
 msgid "''System information not available''\n"
 msgstr "''システム情報が利用できません''\n"
 
-#: trac/web/main.py:635
+#: trac/web/main.py:636
 msgid "''Plugin information not available''\n"
 msgstr "''プラグイン情報が利用できません''\n"
 
-#: trac/web/main.py:659
+#: trac/web/main.py:660
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
@@ -7045,17 +7045,18 @@ msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
 "This macro shows a quick and dirty way to make a table-of-contents\n"
-"for the Help/Guide. The table of contents will contain the Trac* and\n"
-"WikiFormatting pages, and can't be customized. Search for TocMacro for a\n"
-"a more customizable table of contents."
+"for the !Help/Guide. The table of contents will contain the Trac* and\n"
+"WikiFormatting pages, and can't be customized. See the\n"
+"[https://trac-hacks.org/wiki/TocMacro TocMacro] for a more customizable\n"
+"table of contents."
 msgstr ""
 "Trac ガイドの目次を表示します。\n"
 "\n"
 "このマクロはやっつけな方法で !Help/Guide の目次を作成します。\n"
 "目次は Trac* と WikiFormatting ページを含んでいてカスタマイズできません。\n"
-"目次のカスタマイズには !TocMacro を検索してください。"
+"目次のカスタマイズには [https://trac-hacks.org/wiki/TocMacro TocMacro] を参照してください。"
 
-#: trac/wiki/macros.py:893
+#: trac/wiki/macros.py:894
 msgid "Table of Contents"
 msgstr "目次"
 
