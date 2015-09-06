@@ -223,7 +223,8 @@ class GitConnector(Component):
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        yield 'GIT', self._version['v_str']
+        if self._version:
+            yield 'GIT', self._version['v_str']
 
     # IWikiSyntaxProvider methods
 

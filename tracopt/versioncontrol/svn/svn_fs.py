@@ -309,7 +309,8 @@ class SubversionConnector(Component):
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        yield 'Subversion', self._version
+        if self._version:
+            yield 'Subversion', self._version
 
     # IRepositoryConnector methods
 
