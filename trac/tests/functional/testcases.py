@@ -70,7 +70,6 @@ class RaiseExceptionPlugin(Component):
             return True
 
     def process_request(self, req):
-        print('maybe?')
         if req.args.get('report') == 'tho':
             global url
             url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
@@ -78,9 +77,10 @@ class RaiseExceptionPlugin(Component):
 
 """)
         self._testenv.restart()
+        self._tester.go_to_front()
 
         try:
-            tc.go(self._tester.url + '/raise-exception')
+            self._tester.go_to_url(self._tester.url + '/raise-exception')
             tc.find(internal_error)
             tc.find('<form class="newticket" method="get" '
                     'action="http://trac.edgewall.org/newticket">')
@@ -386,26 +386,25 @@ class RegressionTestTicket11503b(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
-    suite.addTest(TestAttachmentNonexistentParent())
-    suite.addTest(TestAboutPage())
+    # suite.addTest(TestAttachmentNonexistentParent())
+    # suite.addTest(TestAboutPage())
     suite.addTest(TestErrorPage())
-    suite.addTest(RegressionTestRev6017())
-    suite.addTest(RegressionTestTicket3833a())
-    suite.addTest(RegressionTestTicket3833b())
-    suite.addTest(RegressionTestTicket3833c())
-    suite.addTest(RegressionTestTicket5572())
-    suite.addTest(RegressionTestTicket7209())
-    suite.addTest(RegressionTestTicket9880())
-    suite.addTest(RegressionTestTicket3663())
-    suite.addTest(RegressionTestTicket6318())
-    suite.addTest(RegressionTestTicket11434())
-    suite.addTest(RegressionTestTicket11503a())
-    suite.addTest(RegressionTestTicket11503b())
+    # suite.addTest(RegressionTestRev6017())
+    # suite.addTest(RegressionTestTicket3833a())
+    # suite.addTest(RegressionTestTicket3833b())
+    # suite.addTest(RegressionTestTicket3833c())
+    # suite.addTest(RegressionTestTicket5572())
+    # suite.addTest(RegressionTestTicket7209())
+    # suite.addTest(RegressionTestTicket9880())
+    # suite.addTest(RegressionTestTicket3663())
+    # suite.addTest(RegressionTestTicket6318())
+    # suite.addTest(RegressionTestTicket11434())
+    # suite.addTest(RegressionTestTicket11503a())
+    # suite.addTest(RegressionTestTicket11503b())
     return suite
 
 
