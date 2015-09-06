@@ -590,10 +590,16 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
         elif action == 'comment-history':
-            cnum = int(req.args['cnum'])
+            try:
+                cnum = int(req.args.get('cnum'))
+            except (TypeError, ValueError):
+                raise TracError(_("Invalid request arguments."))
             return self._render_comment_history(req, ticket, data, cnum)
         elif action == 'comment-diff':
-            cnum = int(req.args['cnum'])
+            try:
+                cnum = int(req.args.get('cnum'))
+            except (TypeError, ValueError):
+                raise TracError(_("Invalid request arguments."))
             return self._render_comment_diff(req, ticket, data, cnum)
         elif 'preview_comment' in req.args:
             field_changes = {}
@@ -1050,7 +1056,8 @@ class TicketModule(Component):
 
     def _get_comment_history(self, req, ticket, cnum):
         history = []
-        for version, date, author, comment in ticket.get_comment_history(cnum):
+        for version, date, author, comment in \
+                ticket.get_comment_history(cnum) or []:
             history.append({
                 'version': version, 'date': date, 'author': author,
                 'comment': _("''Initial version''") if version == 0 else '',
