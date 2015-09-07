@@ -59,7 +59,7 @@ from trac.util.datefmt import (
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
     get_time_format_jquery_ui, user_time, get_month_names_jquery_ui,
     get_day_names_jquery_ui, get_timezone_list_jquery_ui,
-    get_first_week_day_jquery_ui, localtz)
+    get_first_week_day_jquery_ui, get_timepicker_separator_jquery_ui, localtz)
 from trac.util.translation import _, get_available_locales
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
@@ -1367,7 +1367,7 @@ class Chrome(Component):
             'time_format': get_time_format_jquery_ui(req.lc_time),
             'ampm': not is_24_hours(req.lc_time),
             'first_week_day': get_first_week_day_jquery_ui(req),
-            'timepicker_separator': 'T' if is_iso8601 else ' ',
+            'timepicker_separator': get_timepicker_separator_jquery_ui(req),
             'show_timezone': is_iso8601,
             # default timezone must be included
             'timezone_list': get_timezone_list_jquery_ui()

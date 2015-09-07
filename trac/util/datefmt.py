@@ -401,6 +401,15 @@ def get_first_week_day_jquery_ui(req):
         return (locale.first_week_day + 1) % 7
     return 0 # Sunday
 
+def get_timepicker_separator_jquery_ui(req):
+    locale = req.lc_time
+    if locale == 'iso8601':
+        return 'T'
+    if babel and locale:
+        return get_datetime_format('medium', locale=locale) \
+               .replace('{0}', '').replace('{1}', '')
+    return ' '
+
 def is_24_hours(locale):
     """Returns `True` for 24 hour time formats."""
     if locale == 'iso8601':
