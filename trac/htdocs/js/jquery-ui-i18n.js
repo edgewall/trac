@@ -45,6 +45,8 @@ jQuery(function($){
     timezoneList: jquery_ui.timezone_list,
     timezoneIso8601: jquery_ui.timezone_iso8601,
     ampm: jquery_ui.ampm,
+    amNames: jquery_ui.period_names.am,
+    pmNames: jquery_ui.period_names.pm,
     showSecond: true
   });
 });

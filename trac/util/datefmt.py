@@ -356,15 +356,19 @@ def get_time_format_jquery_ui(locale):
         return 'HH:mm:ssz'  # XXX timepicker doesn't support 'ISO_8601'
     if babel and locale:
         values = {'h': 'h', 'hh': 'hh', 'H': 'H', 'HH': 'HH',
-                  'm': 'm', 'mm': 'mm', 's': 's', 'ss': 'ss',
-                  'a': 'TT'}
-        return get_time_format('medium', locale=locale).format % values
+                  'm': 'm', 'mm': 'mm', 's': 's', 'ss': 'ss'}
+        f = get_time_format('medium', locale=locale).format
+        if '%(a)s' in f:
+            t = datetime(1999, 10, 29, 23, 59, 58, tzinfo=utc)
+            ampm = babel_format_datetime(t, 'a', None, locale)
+            values['a'] = 'TT' if ampm[0].isupper() else 'tt'
+        return f % values
 
     t = datetime(1999, 10, 29, 23, 59, 58, tzinfo=utc)
     tmpl = format_time(t, tzinfo=utc)
     ampm = format_time(t, '%p', tzinfo=utc)
     if ampm:
-        tmpl = tmpl.replace(ampm, 'TT', 1)
+        tmpl = tmpl.replace(ampm, 'TT' if ampm[0].isupper() else 'tt', 1)
     return tmpl.replace('23', 'HH', 1).replace('11', 'hh', 1) \
                .replace('59', 'mm', 1).replace('58', 'ss', 1)
 
@@ -409,6 +413,25 @@ def get_timepicker_separator_jquery_ui(req):
         return get_datetime_format('medium', locale=locale) \
                .replace('{0}', '').replace('{1}', '')
     return ' '
+
+def get_period_names_jquery_ui(req):
+    # allow to use always English am/pm markers
+    english_names = {'am': 'AM', 'pm': 'PM'}
+    locale = req.lc_time
+    if locale == 'iso8601':
+        return {'am': [english_names['am']], 'pm': [english_names['pm']]}
+    if babel and locale:
+        names = get_period_names(locale=locale)
+        return dict((period, [names[period], english_names[period]])
+                    for period in ('am', 'pm'))
+    else:
+        # retrieve names of am/pm from libc
+        names = {}
+        for period, hour in (('am', 11), ('pm', 23)):
+            t = datetime(1999, 10, 29, hour, tzinfo=utc)
+            names[period] = [format_datetime(t, '%p', tzinfo=utc),
+                             english_names[period]]
+        return names
 
 def is_24_hours(locale):
     """Returns `True` for 24 hour time formats."""
