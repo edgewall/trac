@@ -89,7 +89,7 @@
       focus: function() { ENABLE_KEY_NAV = false; },
       blur: function() { ENABLE_KEY_NAV = true; }
     });
-    $("#dirlist tr").live('mouseenter', function() {
+    $(document).on("mouseenter", "#dirlist tr", function() {
       LAST_HOVERED_FILE_ELEM = $(this);
     });
   });
