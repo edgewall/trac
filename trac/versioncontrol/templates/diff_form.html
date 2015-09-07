@@ -18,11 +18,23 @@
   <xi:include href="layout.html" />
   <head>
     <title>Prepare Diff</title>
-    <script type="text/javascript">
+    <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
-        $("#anydiff input[name$='_path']").suggest();
+        $("#anydiff input[name$='_path']").autocomplete({
+          source: window.location.pathname
+        }).each(function() {
+          $(this).data("ui-autocomplete")._renderItem = function(ul, item) {
+            return $("<li>")
+              .data("ui-autocomplete-item", item.value)
+              .addClass(function() {
+                return item.isdir ? "trac-autocomplete-dir" : "trac-autocomplete-file";
+              })
+              .append(item.label)
+              .appendTo(ul);
+          }
+        })
       });
-    </script>
+    /*]]>*/</script>
   </head>
 
   <body>

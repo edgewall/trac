@@ -200,3 +200,6 @@ pre.diff .add { background: #dfd; }
 
 /* Styles for the property diffs */
 .diff table.props td { padding: 2px 0.5em }
+
+/* Styles for the diff page */
+.trac-autocomplete-dir { font-weight: bold }

@@ -35,6 +35,7 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
 from trac.util.datefmt import from_utimestamp, pretty_timedelta
+from trac.util.presentation import to_json
 from trac.util.text import CRLF, exception_to_unicode, shorten_line, \
                            to_unicode, unicode_urlencode
 from trac.util.translation import _, ngettext, tag_
@@ -1173,7 +1174,7 @@ class AnyDiffModule(Component):
         rm = RepositoryManager(self.env)
 
         if req.is_xhr:
-            dirname, prefix = posixpath.split(req.args.get('q'))
+            dirname, prefix = posixpath.split(req.args.get('term'))
             prefix = prefix.lower()
             reponame, repos, path = rm.get_repository_by_path(dirname)
             # an entry is a (isdir, name, path) tuple
@@ -1191,15 +1192,13 @@ class AnyDiffModule(Component):
                                for repos in rm.get_real_repositories()
                                if repos.is_viewable(req.perm))
 
-            elem = tag.ul(
-                [tag.li(tag.strong(path) if isdir else path)
-                 for (isdir, name, path) in sorted(entries, key=kind_order)
-                 if name.lower().startswith(prefix)])
+            paths = [{'label': path + ('/' if isdir else ''), 'value': path,
+                      'isdir': isdir}
+                     for isdir, name, path in sorted(entries, key=kind_order)
+                                           if name.lower().startswith(prefix)]
 
-            xhtml = elem.generate().render('xhtml', encoding='utf-8')
-            req.send_header('Content-Length', len(xhtml))
-            req.write(xhtml)
-            return
+            content = to_json(paths)
+            req.send(content, 'application/json', 200)
 
         # -- retrieve arguments
         new_path = req.args.get('new_path')
@@ -1225,5 +1224,6 @@ class AnyDiffModule(Component):
         else:
             data.update(old_path=req.args.get('old_path'), old_rev=old_rev)
 
-        add_script(req, 'common/js/suggest.js')
+        Chrome(self.env).add_jquery_ui(req)
+        add_stylesheet(req, 'common/css/diff.css')
         return 'diff_form.html', data, None
