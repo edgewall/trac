@@ -7,9 +7,19 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.9
+
+//(September 10, 2015)//
+
+Trac 1.0.9 provides more than a dozen minor fixes and enhancements, including significantly reduced memory usage by the Git repository connector.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.9]].
+
+[trac:source:/tags/trac-1.0.9 View Tag] | [trac:milestone:1.0.9 View Milestone]
+
 === 1.0.8
 
-//(July 24, 2005)//
+//(July 24, 2015)//
 
 Trac 1.0.8 fixes a regression introduced in Trac 1.0.7: the session
 for an authenticated username containing non-alphanumeric characters

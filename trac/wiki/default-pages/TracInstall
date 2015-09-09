@@ -29,7 +29,7 @@ You also need a database system and the corresponding python bindings. The datab
 
 As you must be using Python 2.5, 2.6 or 2.7, you already have the SQLite database bindings bundled with the standard distribution of Python: the `sqlite3` module.
 
-Optionally, you may install a newer version of [pypi:pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
+Optionally, you may install a newer version of [http://pypi.python.org/pypi/pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
@@ -111,9 +111,11 @@ Please refer to the documentation of these packages to find out how they are bes
 
 The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracEnvironment project environments], as well as the [TracStandalone tracd] standalone server are installed along with Trac. There are several methods for installing Trac.
 
+It is assumed throughout this guide that you have elevated permissions as the `root` user, or by prefixing commands with `sudo`. The umask `0022` should be used for a typical installation on a Unix-based platform.
+
 === Using `easy_install`
 
-Trac can be installed from [https://pypi.python.org/pypi/Trac PyPI] or the Subversion repository using [pypi:setuptools setuptools].
+Trac can be installed from [https://pypi.python.org/pypi/Trac PyPI] or the Subversion repository using [http://pypi.python.org/pypi/setuptools setuptools].
 
 A few command-line examples:
 
@@ -128,7 +130,7 @@ $ easy_install Trac==dev
    Note that in this case you won't have the possibility to run a localized version of Trac;
    either use a released version or install from source.
 
-More information can be found on the [trac:setuptools] page.
+More information can be found on the [trac:wiki:setuptools setuptools] page.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in the sections on [#RunningtheStandaloneServer Running The Standalone Server] and [#RunningTraconaWebServer Running Trac on a Web Server]. 
@@ -260,7 +262,7 @@ $ tracd -s --port 8000 /path/to/myproject
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. The environment variable can be set system-wide, or for just the user that runs the `tracd` process. There are several ways to accomplish this in addition to what is discussed here, and depending on the distribution of your OS.
 
-To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`. To be effective for a user session the `export` statement may be added to `~/.profile`.
+To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`.  !Ubuntu/Debian users can add the `export` statement to `/etc/apache2/envvars`. !RedHat/CentOS/Fedora users can add the `export` statement to `/etc/sysconfig/httpd`. To be effective for a user session the `export` statement may be added to `~/.profile`.
 {{{#!sh
 export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
 }}}

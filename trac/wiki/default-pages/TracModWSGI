@@ -79,8 +79,15 @@ WSGIScriptAlias /trac /usr/local/trac/mysite/apache/mysite.wsgi
 
 <Directory /usr/local/trac/mysite/apache>
     WSGIApplicationGroup %{GLOBAL}
-    Order deny,allow
-    Allow from all
+    # For Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Allow from all
+    </IfModule>
+    # For Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
 </Directory>
 }}}
 
@@ -93,8 +100,15 @@ WSGIScriptAlias /trac /usr/share/trac/cgi-bin/trac.wsgi
 
 <Directory /usr/share/trac/cgi-bin>
     WSGIApplicationGroup %{GLOBAL}
-    Order deny,allow
-    Allow from all
+    # For Apache 2.2
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Allow from all
+    </IfModule>
+    # For Apache 2.4
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
 </Directory>
 }}}
 
@@ -276,6 +290,20 @@ Using the above, usernames in Trac will be of the form `DOMAIN\username`, so you
 Some common problems with SSPI authentication: [trac:#1055], [trac:#1168] and [trac:#3338].
 
 See also [trac:TracOnWindows/Advanced].
+
+=== Using CA !SiteMinder Authentication
+Setup CA !SiteMinder to protect your Trac login URL (e.g. /trac/login).  Then modify the trac.wsgi script generated using `trac-admin <env> deploy <dir>` to add the following lines, which extract the HTTP_SM_USER variable and set it to REMOTE_USER:
+
+{{{#!python
+def application(environ, start_request): 
+    # Set authenticated username on CA SiteMinder to REMOTE_USER variable 
+    # strip() is used to remove any spaces on the end of the string
+    if 'HTTP_SM_USER' in environ: 
+        environ['REMOTE_USER'] = environ['HTTP_SM_USER'].strip()
+    ...
+}}}
+
+Note:  you do not need any Apache "Location" directives.
 
 === Using Apache authentication with the Account Manager plugin's Login form ===
 

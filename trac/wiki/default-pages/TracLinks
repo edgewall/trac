@@ -336,10 +336,12 @@ if the path points to a directory or to show the latest content of the file.
 It's also possible to link directly to a specific revision of a file like this:
  - `source:/some/file@123` - link to the file's revision 123
  - `source:/some/file@head` - link explicitly to the latest revision of the file
+ - `source:/some/file@named-branch` - link to latest revision of the specified file in `named-branch` (DVCS such as Git or Mercurial)
 
 If the revision is specified, one can even link to a specific line number:
  - `source:/some/file@123#L10`
  - `source:/tag/0.10@head#L10`
+ - `source:/some/file@named-branch#L10`
 
 Finally, one can also highlight an arbitrary set of lines:
  - `source:/some/file@123:10-20,100,103#L99` - highlight lines 10 to 20, and lines 100 and 103, and target line 99
@@ -353,6 +355,7 @@ To force the download of a file in the repository, as opposed to displaying it i
  * `export:/some/file` - get the HEAD revision of the specified file
  * `export:123:/some/file` - get revision 123 of the specified file
  * `export:/some/file@123` - get revision 123 of the specified file
+ * `export:/some/file@named-branch` - get latest revision of the specified file in `named-branch` (DVCS such as Git or Mercurial).
 
 This can be very useful for displaying XML or HTML documentation with correct stylesheets and images, in case that has been checked in into the repository. Note that for this use case, you'd have to allow the web browser to render the content by setting `[browser] render_unsafe_content = yes` (see TracIni#browser-section), otherwise Trac will force the files to be downloaded as attachments for security concerns. 
 
@@ -366,6 +369,7 @@ The `log:` links are used to display revision ranges. In its simplest form, it c
  - `log:/trunk/tools@10000` - the revisions in `trunk/tools` starting from  revision 10000
  - `log:@20788,20791:20795` - list revision 20788 and the revisions from 20791 to 20795 
  - `log:/trunk/tools@20788,20791:20795` - list revision 20788 and the revisions from 20791 to 20795 which affect the given path
+ - `log:/tools@named-branch` - the revisions in `tools` starting from the latest revision in `named-branch` (DVCS such as Git or Mercurial)
 
 There are short forms for revision ranges as well:
  - `[20788,20791:20795]`

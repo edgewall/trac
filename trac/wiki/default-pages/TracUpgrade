@@ -123,7 +123,7 @@ Trac has added functionality equivalent to the following plugins:
 * [https://trac-hacks.org/wiki/TicketChangePlugin TicketChangePlugin]: see [TracPermissions#TicketSystem TICKET_EDIT_COMMENT permission]
 * [https://trac-hacks.org/wiki/TicketDeletePlugin TicketDeletePlugin]: see `tracopt.ticket.deleter`
 * [https://trac-hacks.org/wiki/SubversionLocationPlugin SubversionLocationPlugin]: see TracRepositoryAdmin#Repositories
-* [https://trac-hacks.org/wiki/WikiCreoleRendererPlugin WikiCreoleRendererPlugin]: see WikiCreole
+* [https://trac-hacks.org/wiki/WikiCreoleRendererPlugin WikiCreoleRendererPlugin]: see [trac:WikiCreole]
 * [https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin RepoRevisionSyntaxPlugin] (added in 0.12.1)
 
 The plugins should be removed when upgrading Trac to 0.12.
