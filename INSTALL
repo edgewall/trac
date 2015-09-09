@@ -221,6 +221,10 @@ The `trac-admin`_ command-line tool, used to create and maintain
 installed along with Trac. There are several methods for installing
 Trac.
 
+It is assumed throughout this guide that you have elevated permissions
+as the root user, or by prefixing commands with sudo . The umask 0022
+should be used for a typical installation on a Unix-based platform.
+
 
 Using easy_install
 ~~~~~~~~~~~~~~~~~~
@@ -502,8 +506,10 @@ There are several ways to accomplish this in addition to what is
 discussed here, and depending on the distribution of your OS.
 
 To be effective system-wide a shell script with the export statement
-may be added to /etc/profile.d . To be effective for a user session
-the export statement may be added to ~/.profile .
+may be added to /etc/profile.d . Ubuntu/Debian users can add the
+export statement to /etc/apache2/envvars . RedHat/CentOS/Fedora users
+can add the export statement to /etc/sysconfig/httpd . To be effective
+for a user session the export statement may be added to ~/.profile .
 
 
 ::
@@ -592,9 +598,9 @@ you need first to extract the relevant resources from Trac using the
 ::
 
     deploy <directory>
-    
+
         Extract static resources from Trac and all plugins
-    
+
 
 
 The target <directory> will then contain an htdocs directory with:
@@ -859,7 +865,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _pytz: http://pytz.sf.net
 .. _Running the Standalone Server: http://trac.edgewall.org/wiki/TracInstall#RunningtheStandaloneServer
 .. _Running Trac on a Web Server: http://trac.edgewall.org/wiki/TracInstall#RunningTraconaWebServer
-.. _setuptools*: http://trac.edgewall.org/intertrac/setuptools
+.. _setuptools*: http://trac.edgewall.org/intertrac/wiki%3Asetuptools
 .. _setuptools: http://pypi.python.org/pypi/setuptools
 .. _SilverCity: http://silvercity.sourceforge.net/
 .. _source code repository: http://trac.edgewall.org/wiki/TracEnvironment#SourceCodeRepository

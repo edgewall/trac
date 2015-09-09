@@ -279,7 +279,7 @@ Trac has added functionality equivalent to the following plugins:
 + `TicketChangePlugin`_: see `TICKET_EDIT_COMMENT permission`_
 + `TicketDeletePlugin`_: see tracopt.ticket.deleter
 + `SubversionLocationPlugin`_: see `TracRepositoryAdmin#Repositories`_
-+ `WikiCreoleRendererPlugin`_: see `WikiCreole?`_
++ `WikiCreoleRendererPlugin`_: see `WikiCreole`_
 + `RepoRevisionSyntaxPlugin`_ (added in 0.12.1)
 
 
@@ -588,7 +588,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracWorkflow: http://trac.edgewall.org/wiki/TracWorkflow
 .. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
 .. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
-.. _WikiCreole?: http://trac.edgewall.org/wiki/WikiCreole
+.. _WikiCreole: http://trac.edgewall.org/intertrac/WikiCreole
 .. _WikiCreoleRendererPlugin: https://trac-hacks.org/wiki/WikiCreoleRendererPlugin
 .. _WikiFormatting#SettingAnchors: http://trac.edgewall.org/wiki/WikiFormatting#SettingAnchors
 .. _WikiMacros: http://trac.edgewall.org/wiki/WikiMacros
