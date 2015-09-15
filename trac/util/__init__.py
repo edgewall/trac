@@ -21,6 +21,7 @@ from cStringIO import StringIO
 import csv
 import errno
 import functools
+import hashlib
 import inspect
 from itertools import izip, tee
 import locale
@@ -36,7 +37,7 @@ import tempfile
 import time
 from urllib import quote, unquote, urlencode
 
-from trac.util.compat import any, md5, sha1, sorted
+from trac.util.compat import any, md5, sha1, sorted  # Remove in 1.3.1
 from trac.util.datefmt import to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
                            getpreferredencoding
@@ -818,7 +819,7 @@ except NotImplementedError:
 
     def urandom(n):
         result = []
-        hasher = sha1(str(os.getpid()) + str(time.time()))
+        hasher = hashlib.sha1(str(os.getpid()) + str(time.time()))
         while len(result) * hasher.digest_size < n:
             hasher.update(str(_entropy.random()))
             result.append(hasher.digest())
@@ -855,10 +856,10 @@ def md5crypt(password, salt, magic='$1$'):
     # /* The password first, since that is what is most unknown */
     # /* Then our magic string */
     # /* Then the raw salt */
-    m = md5(password + magic + salt)
+    m = hashlib.md5(password + magic + salt)
 
     # /* Then just as many characters of the MD5(pw,salt,pw) */
-    mixin = md5(password + salt + password).digest()
+    mixin = hashlib.md5(password + salt + password).digest()
     for i in range(0, len(password)):
         m.update(mixin[i % 16])
 
@@ -876,7 +877,7 @@ def md5crypt(password, salt, magic='$1$'):
 
     # /* and now, just to make sure things don't run too fast */
     for i in range(1000):
-        m2 = md5()
+        m2 = hashlib.md5()
         if i & 1:
             m2.update(password)
         else:

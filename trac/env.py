@@ -16,6 +16,7 @@
 
 """Trac Environment model and related APIs."""
 
+import hashlib
 import os.path
 import setuptools
 import sys
@@ -32,7 +33,6 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.util import arity, copytree, create_file, get_pkginfo, lazy, \
                       makedirs, read_file
-from trac.util.compat import sha1
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -649,7 +649,7 @@ class Environment(Component, ComponentManager):
         if logtype == 'file' and not os.path.isabs(logfile):
             logfile = os.path.join(self.get_log_dir(), logfile)
         format = self.log_format
-        logid = 'Trac.%s' % sha1(self.path).hexdigest()
+        logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         if format:
             format = format.replace('$(', '%(') \
                      .replace('%(path)s', self.path) \

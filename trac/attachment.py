@@ -19,6 +19,7 @@
 from cStringIO import StringIO
 from datetime import datetime
 import errno
+import hashlib
 import os.path
 import posixpath
 import re
@@ -37,7 +38,6 @@ from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import content_disposition, create_zipinfo, get_reporter_id
-from trac.util.compat import sha1
 from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
@@ -715,7 +715,7 @@ class Attachment(object):
         """
         path = os.path.join(env_path, 'files', 'attachments',
                             parent_realm)
-        hash = sha1(parent_id.encode('utf-8')).hexdigest()
+        hash = hashlib.sha1(parent_id.encode('utf-8')).hexdigest()
         path = os.path.join(path, hash[0:3], hash)
         if filename:
             path = os.path.join(path, cls._get_hashed_filename(filename))
@@ -731,7 +731,7 @@ class Attachment(object):
         the old "attachments" directory to the "files" directory. Please check
         all changes so that they don't break the upgrade.
         """
-        hash = sha1(filename.encode('utf-8')).hexdigest()
+        hash = hashlib.sha1(filename.encode('utf-8')).hexdigest()
         match = cls._extension_re.search(filename)
         return hash + match.group(0) if match else hash
 
