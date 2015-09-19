@@ -382,7 +382,11 @@ class NotificationSystem(Component):
         """
         subscriptions = []
         for subscriber in self.subscribers:
-            subscriptions.extend(x for x in subscriber.matches(event) if x)
+            if event.category == 'batchmodify':
+                for ticket_event in event.get_ticket_change_events(self.env):
+                    subscriptions.extend(x for x in subscriber.matches(ticket_event) if x)
+            else:
+                subscriptions.extend(x for x in subscriber.matches(event) if x)
 
         # For each (transport, sid, authenticated) combination check the
         # subscription with the highest priority:

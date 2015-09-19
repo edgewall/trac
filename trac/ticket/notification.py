@@ -256,11 +256,6 @@ class TicketOwnerSubscriber(Component):
     def matches(self, event):
         if event.realm != 'ticket':
             return
-        if event.category == 'batchmodify':
-            for ticket_event in event.get_ticket_change_events(self.env):
-                for m in self.matches(ticket_event):
-                    yield m
-            return
         if event.category not in ('created', 'changed', 'attachment added',
                                   'attachment deleted'):
             return
@@ -309,11 +304,6 @@ class TicketUpdaterSubscriber(Component):
     def matches(self, event):
         if event.realm != 'ticket':
             return
-        if event.category == 'batchmodify':
-            for ticket_event in event.get_ticket_change_events(self.env):
-                for m in self.matches(ticket_event):
-                    yield m
-            return
         if event.category not in ('created', 'changed', 'attachment added',
                                   'attachment deleted'):
             return
@@ -352,11 +342,6 @@ class TicketPreviousUpdatersSubscriber(Component):
 
     def matches(self, event):
         if event.realm != 'ticket':
-            return
-        if event.category == 'batchmodify':
-            for ticket_event in event.get_ticket_change_events(self.env):
-                for m in self.matches(ticket_event):
-                    yield m
             return
         if event.category not in ('created', 'changed', 'attachment added',
                                   'attachment deleted'):
@@ -407,11 +392,6 @@ class TicketReporterSubscriber(Component):
     def matches(self, event):
         if event.realm != 'ticket':
             return
-        if event.category == 'batchmodify':
-            for ticket_event in event.get_ticket_change_events(self.env):
-                for m in self.matches(ticket_event):
-                    yield m
-            return
         if event.category not in ('created', 'changed', 'attachment added',
                                   'attachment deleted'):
             return
@@ -452,11 +432,6 @@ class CarbonCopySubscriber(Component):
 
     def matches(self, event):
         if event.realm != 'ticket':
-            return
-        if event.category == 'batchmodify':
-            for ticket_event in event.get_ticket_change_events(self.env):
-                for m in self.matches(ticket_event):
-                    yield m
             return
         if event.category not in ('created', 'changed', 'attachment added',
                                   'attachment deleted'):
