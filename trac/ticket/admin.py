@@ -24,7 +24,7 @@ from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
 from trac.util.text import exception_to_unicode, print_table, printout
 from trac.util.translation import _, N_, gettext
-from trac.web.chrome import Chrome, add_notice, add_warning
+from trac.web.chrome import Chrome, add_notice, add_script, add_warning
 
 
 class TicketAdminPanel(Component):
@@ -735,6 +735,9 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
                              default=default, view='list'))
+
+        Chrome(self.env).add_jquery_ui(req)
+        add_script(req, 'common/js/admin_enums.js')
         return 'admin_enums.html', data
 
     # IAdminCommandProvider methods
