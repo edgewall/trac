@@ -1297,6 +1297,10 @@ class Chrome(Component):
         :since 1.1.6: accepts the optional `resource` keyword parameter.
         :since 1.2: Full name is returned when `[trac]` `show_full_names`
                     is `True`.
+        :since 1.2: Email addresses are obfuscated when
+                    `show_email_addresses` is False and `req` is Falsy.
+                    Previously email addresses would not be obfuscated
+                    whenever `req` was Falsy (typically `None`).
         """
         if author == 'anonymous':
             return _("anonymous")
@@ -1307,8 +1311,9 @@ class Chrome(Component):
             name = users[author][0]
             if name:
                 return name
-        show_email = self.show_email_addresses or \
-                     not req or 'EMAIL_VIEW' in req.perm(resource)
+        show_email = self.show_email_addresses
+        if not show_email and req:
+            show_email = 'EMAIL_VIEW' in req.perm(resource)
         return author if show_email else obfuscate_email_address(author)
 
     def format_emails(self, context, value, sep=', '):

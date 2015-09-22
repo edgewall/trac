@@ -545,7 +545,7 @@ class TicketNotifyEmail(NotifyEmail):
                     continue
                 author = change['author']
                 change_data.update({
-                    'author': self.obfuscate_email(author),
+                    'author': self.format_author(author),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
                                     '\n', self.ambiwidth)
                 })
@@ -586,8 +586,8 @@ class TicketNotifyEmail(NotifyEmail):
                             changes_body += chgcc
                     else:
                         if field in ['owner', 'reporter']:
-                            old = self.obfuscate_email(old)
-                            new = self.obfuscate_email(new)
+                            old = self.format_author(old)
+                            new = self.format_author(new)
                         elif field in ticket.time_fields:
                             format = ticket.fields.by_name(field).get('format')
                             old = self.format_time_field(old, format)
@@ -673,7 +673,7 @@ class TicketNotifyEmail(NotifyEmail):
             'ticket': ticket_values,
             'changes_body': changes_body,
             'changes_descr': '',
-            'change': {'author': self.obfuscate_email(author)},
+            'change': {'author': self.format_author(author)},
         })
 
     def format_props(self):
@@ -695,7 +695,7 @@ class TicketNotifyEmail(NotifyEmail):
             if fval.find('\n') != -1:
                 continue
             if fname in ['owner', 'reporter']:
-                fval = self.obfuscate_email(fval)
+                fval = self.format_author(fval)
             idx = 2 * (i % 2)
             width[idx] = max(self.get_text_width(f['label']), width[idx])
             width[idx + 1] = max(self.get_text_width(fval), width[idx + 1])
@@ -729,7 +729,7 @@ class TicketNotifyEmail(NotifyEmail):
                 format = tkt.fields.by_name(fname).get('format')
                 fval = self.format_time_field(fval, format)
             if fname in ['owner', 'reporter']:
-                fval = self.obfuscate_email(fval)
+                fval = self.format_author(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):
                 big.append((f['label'], '\n'.join(fval.splitlines())))
             else:
@@ -788,11 +788,14 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [self.obfuscate_email(x)
+        added = [self.format_author(x)
                  for x in newcc if x and x not in oldcc]
-        removed = [self.obfuscate_email(x)
+        removed = [self.format_author(x)
                    for x in oldcc if x and x not in newcc]
         return added, removed
+
+    def format_author(self, author):
+        return Chrome(self.env).format_author(None, author)
 
     def format_hdr(self):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
@@ -858,6 +861,8 @@ class TicketNotifyEmail(NotifyEmail):
         """ Obfuscate text when `show_email_addresses` is disabled in config.
         Obfuscation happens once per email, regardless of recipients, so
         cannot use permission-based obfuscation.
+
+        :since 1.2: Deprecated and will be removed in 1.3.1.
         """
         if self.env.config.getbool('trac', 'show_email_addresses'):
             return text

@@ -580,7 +580,7 @@ user2 =
 
     def test_actor_no_email_view_no_req(self):
         author = Chrome(self.env).format_author(None, 'user@domain.com')
-        self.assertEqual('user@domain.com', author)
+        self.assertEqual(u'user@\u2026', author)
 
     def test_actor_has_email_view_for_resource(self):
         format_author = Chrome(self.env).format_author
@@ -647,7 +647,7 @@ user2 =
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_email_addresses', False)
 
-        self.assertEqual('user3@example.org',
+        self.assertEqual(u'user3@\u2026',
                          format_author(None, 'user3@example.org'))
         self.assertEqual('user3@example.org',
                          format_author(Request(), 'user3@example.org'))
@@ -656,7 +656,7 @@ user2 =
         format_emails = Chrome(self.env).format_emails
         to_format = 'user1@example.org, user2; user3@example.org'
 
-        self.assertEqual('user1@example.org, user2, user3@example.org',
+        self.assertEqual(u'user1@\u2026, user2, user3@\u2026',
                          format_emails(None, to_format))
 
     def test_format_emails_actor_has_email_view(self):
@@ -760,9 +760,9 @@ user2 =
 
     def test_actor_no_email_view_no_req(self):
         authorinfo = Chrome(self.env).authorinfo
-        self.assertEqual('<span class="trac-author">user@domain.com</span>',
+        self.assertEqual(u'<span class="trac-author">user@\u2026</span>',
                          unicode(authorinfo(None, 'user@domain.com')))
-        self.assertEqual('<span class="trac-author">User One &lt;user@domain.com&gt;</span>',
+        self.assertEqual(u'<span class="trac-author">User One &lt;user@\u2026&gt;</span>',
                          unicode(authorinfo(None, 'User One <user@domain.com>')))
 
     def test_actor_has_email_view_for_resource(self):

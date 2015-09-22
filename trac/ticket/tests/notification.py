@@ -288,6 +288,25 @@ class NotificationTestCase(unittest.TestCase):
         notifysuite.tear_down()
         self.env.reset_db()
 
+    def _insert_ticket(self, **props):
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser'
+        ticket['summary'] = 'Summary'
+        for prop, value in props.iteritems():
+            ticket[prop] = value
+        ticket.insert()
+        return ticket
+
+    def _insert_user(self, user):
+        with self.env.db_transaction as db:
+            db.execute("""
+                INSERT INTO session VALUES (%s,%s,0)
+                """, (user[0], user[3]))
+            db.executemany("""
+                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
+                """, [(user[0], user[3], 'name', user[1]),
+                      (user[0], user[3], 'email', user[2])])
+
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
         ticket = Ticket(self.env)
@@ -914,6 +933,33 @@ Resolution:  fixed       |   Keywords:"""
 Resolution:  fixed                   |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
+    def test_props_format_show_full_names(self):
+        self._insert_user(('joefoo', u'Joę Fœœ',
+                           'joe@foobar.foo.bar.example.org', 1))
+        self._insert_user(('joebar', u'Jœe Bær',
+                           'joe.bar@foobar.foo.bar.example.org', 1))
+        self.env.config.set('notification', 'mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'joefoo'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'joebar'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'milestone1'
+        ticket['component'] = 'component1'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
+        ticket.insert()
+        formatted = """\
+  Reporter:  Joę Fœœ     |      Owner:  Jœe Bær
+      Type:  defect      |     Status:  new
+  Priority:  major       |  Milestone:  milestone1
+ Component:  component1  |    Version:  2.0
+Resolution:  fixed       |   Keywords:"""
+        self._validate_props_format(formatted, ticket)
+
     def test_props_format_wrap_leftside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
@@ -1365,6 +1411,101 @@ Security sensitive:  0                           |          Blocking:
         self.assertEqual('http://localhost/trac/ticket/%d#comment:2' %
                          ticket.id, headers.get('X-Trac-Ticket-URL'))
 
+    def test_property_change_author_is_obfuscated(self):
+        ticket = self._insert_ticket(owner='user1@d.com',
+                                     reporter='user2@d.com',
+                                     cc='user3@d.com, user4@d.com')
+        ticket['owner'] = 'user2@d.com'
+        ticket['reporter'] = 'user1@d.com'
+        ticket['cc'] = 'user4@d.com'
+        ticket.save_changes('user0@d.com', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Changes (by user0@…)', body)
+        self.assertIn('* owner:  user1@… => user2@…\n', body)
+        self.assertIn('* reporter:  user2@… => user1@…\n', body)
+        self.assertIn('* cc: user3@… (removed)\n', body)
+
+    def test_comment_change_author_is_obfuscated(self):
+        ticket = self._insert_ticket()
+        ticket.save_changes('user@d.com', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Comment (by user@…)', body)
+
+    def test_property_change_author_is_not_obfuscated(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self.env.config.set('trac', 'show_full_names', False)
+        ticket = self._insert_ticket(owner='user1@d.com',
+                                     reporter='user2@d.com',
+                                     cc='user3@d.com, user4@d.com')
+        ticket['owner'] = 'user2@d.com'
+        ticket['reporter'] = 'user1@d.com'
+        ticket['cc'] = 'user4@d.com'
+        ticket.save_changes('user0@d.com', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Changes (by user0@d.com)', body)
+        self.assertIn('* owner:  user1@d.com => user2@d.com\n', body)
+        self.assertIn('* reporter:  user2@d.com => user1@d.com\n', body)
+        self.assertIn('* cc: user3@d.com (removed)\n', body)
+
+    def test_comment_author_is_not_obfuscated(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self.env.config.set('trac', 'show_full_names', False)
+        ticket = self._insert_ticket()
+        ticket.save_changes('user@d.com', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Comment (by user@d.com)', body)
+
+    def test_property_change_author_full_name(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self._insert_user(('user0', u'Ußęr0', 'user0@d.org', 1))
+        self._insert_user(('user1', u'Ußęr1', 'user1@d.org', 1))
+        self._insert_user(('user2', u'Ußęr2', 'user2@d.org', 1))
+        self._insert_user(('user3', u'Ußęr3', 'user3@d.org', 1))
+        self._insert_user(('user4', u'Ußęr4', 'user4@d.org', 1))
+        ticket = self._insert_ticket(owner='user1', reporter='user2',
+                                     cc='user3, user4')
+        ticket['owner'] = 'user2'
+        ticket['reporter'] = 'user1'
+        ticket['cc'] = 'user4'
+        ticket.save_changes('user0', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Changes (by Ußęr0)', body)
+        self.assertIn('* owner:  Ußęr1 => Ußęr2\n', body)
+        self.assertIn('* reporter:  Ußęr2 => Ußęr1\n', body)
+        self.assertIn('* cc: Ußęr3 (removed)\n', body)
+
+    def test_comment_author_full_name(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self._insert_user(('user', u'Thę Ußęr', 'user@domain.org', 1))
+        ticket = self._insert_ticket()
+        ticket.save_changes('user', "The comment")
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Comment (by Thę Ußęr)', body)
+
 
 class AttachmentNotificationTestCase(unittest.TestCase):
 
@@ -1376,22 +1517,35 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
         config_subscriber(self.env, reporter=True)
 
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Ticket summary'
-        ticket['reporter'] = 'user@domain.org'
-        ticket.insert()
-        self.attachment = Attachment(self.env, 'ticket', ticket.id)
-        self.attachment.description = "The attachment description"
-        self.attachment.author = 'user@example.com'
-
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
         notifysuite.tear_down()
         self.env.reset_db()
         shutil.rmtree(self.env.path)
 
+    def _insert_attachment(self, author):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'Ticket summary'
+        ticket['reporter'] = author
+        ticket.insert()
+        attachment = Attachment(self.env, 'ticket', ticket.id)
+        attachment.description = "The attachment description"
+        attachment.author = author
+        attachment.insert('foo.txt', StringIO(), 1)
+        return attachment
+
+    def _insert_user(self, user):
+        with self.env.db_transaction as db:
+            db.execute("""
+                INSERT INTO session VALUES (%s,%s,0)
+                """, (user[0], user[3]))
+            db.executemany("""
+                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
+                """, [(user[0], user[3], 'name', user[1]),
+                      (user[0], user[3], 'email', user[2])])
+
     def test_ticket_notify_attachment_enabled_attachment_added(self):
-        self.attachment.insert('foo.txt', StringIO(''), 1)
+        self._insert_attachment('user@example.com')
 
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -1401,8 +1555,8 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.assertIn("The attachment description", body)
 
     def test_ticket_notify_attachment_enabled_attachment_removed(self):
-        self.attachment.insert('foo.txt', StringIO(''), 1)
-        self.attachment.delete()
+        attachment = self._insert_attachment('user@example.com')
+        attachment.delete()
 
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -1413,19 +1567,33 @@ class AttachmentNotificationTestCase(unittest.TestCase):
 
     def test_author_is_obfuscated(self):
         self.env.config.set('trac', 'show_email_addresses', False)
-        self.attachment.insert('foo.txt', StringIO(''), 1)
+        self.env.config.set('trac', 'show_full_names', False)
+        self._insert_attachment('user@example.com')
 
         message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
 
-        self.assertIn('Changes (by user@…)', message)
+        self.assertIn('Changes (by user@…)', body)
 
     def test_author_is_not_obfuscated(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        self.attachment.insert('foo.txt', StringIO(''), 1)
+        self.env.config.set('trac', 'show_full_names', False)
+        self._insert_attachment('user@example.com')
 
         message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
 
-        self.assertIn('Changes (by user@example.com)', message)
+        self.assertIn('Changes (by user@example.com)', body)
+
+    def test_author_full_name(self):
+        self.env.config.set('trac', 'show_email_addresses', True)
+        self._insert_user(('user', u'Thę Ußęr', 'user@domain.org', 1))
+        self._insert_attachment('user')
+
+        message = notifysuite.smtpd.get_message()
+        body = parse_smtp_message(message)[1]
+
+        self.assertIn('Changes (by Thę Ußęr)', body)
 
 
 class NotificationTestSuite(unittest.TestSuite):
