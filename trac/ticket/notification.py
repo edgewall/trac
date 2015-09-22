@@ -786,13 +786,14 @@ class TicketNotifyEmail(NotifyEmail):
         return filter(lambda x: '@' in x, txt.replace(',', ' ').split())
 
     def diff_cc(self, old, new):
-        oldcc = NotifyEmail.addrsep_re.split(old)
-        newcc = NotifyEmail.addrsep_re.split(new)
+        chrome = Chrome(self.env)
+        oldcc = chrome.cc_list(old)
+        newcc = chrome.cc_list(new)
         added = [self.format_author(x)
                  for x in newcc if x and x not in oldcc]
-        removed = [self.format_author(x)
-                   for x in oldcc if x and x not in newcc]
-        return added, removed
+        rmved = [self.format_author(x)
+                 for x in oldcc if x and x not in newcc]
+        return added, rmved
 
     def format_author(self, author):
         return Chrome(self.env).format_author(None, author)
