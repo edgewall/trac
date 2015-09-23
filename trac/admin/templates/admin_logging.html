@@ -37,9 +37,9 @@
         <div class="field">
           <label>Type:<br />
             <select id="log_type" name="log_type">
-              <option py:for="type in log.types" value="${type.name}"
+              <option py:for="type in log.types" value="$type.name"
                       selected="${type.selected or None}"
-                      disabled="${type.disabled or None}">${type.label}</option>
+                      disabled="${type.disabled or None}">$type.label</option>
             </select>
           </label>
         </div>
@@ -53,7 +53,7 @@
         </div>
         <div class="field">
           <label>Log file:<br />
-            <input type="text" id="log_file" name="log_file" size="48" value="$log.file"/>
+            <input type="text" id="log_file" name="log_file" size="48" value="$log.file" />
           </label>
           <p class="help" i18n:msg="dir">
             If you specify a relative path, the log file will be stored inside the
@@ -62,7 +62,7 @@
         </div>
       </fieldset>
       <div class="buttons">
-        <input type="submit" value="${_('Apply changes')}"/>
+        <input type="submit" value="${_('Apply changes')}" />
       </div>
     </form>
   </body>
