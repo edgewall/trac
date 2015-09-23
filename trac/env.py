@@ -19,6 +19,7 @@
 import hashlib
 import os.path
 import setuptools
+import shutil
 import sys
 from urlparse import urlsplit
 
@@ -31,6 +32,8 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracBaseError, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
+from trac.loader import load_components
+from trac.log import logger_handler_factory
 from trac.util import arity, copytree, create_file, get_pkginfo, lazy, \
                       makedirs, read_file
 from trac.util.concurrency import threading
@@ -620,7 +623,6 @@ class Environment(Component, ComponentManager):
         self.config = Configuration(self.config_file_path,
                                     {'envname': os.path.basename(self.path)})
         self.setup_log()
-        from trac.loader import load_components
         plugins_dir = self.shared_plugins_dir
         load_components(self, plugins_dir and (plugins_dir,))
 
@@ -643,7 +645,6 @@ class Environment(Component, ComponentManager):
 
     def setup_log(self):
         """Initialize the logging sub-system."""
-        from trac.log import logger_handler_factory
         logtype = self.log_type
         logfile = self.log_file
         if logtype == 'file' and not os.path.isabs(logfile):
@@ -938,7 +939,6 @@ class EnvironmentAdmin(Component):
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
                               dest=path_to_unicode(dest)))
-        import shutil
 
         # Bogus statement to lock the database while copying files
         with self.env.db_transaction as db:
