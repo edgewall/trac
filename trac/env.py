@@ -652,10 +652,11 @@ class Environment(Component, ComponentManager):
         format = self.log_format
         logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         if format:
+            basename = os.path.basename(self.path)
             format = format.replace('$(', '%(') \
-                     .replace('%(path)s', self.path) \
-                     .replace('%(basename)s', os.path.basename(self.path)) \
-                     .replace('%(project)s', self.project_name)
+                           .replace('%(path)s', self.path) \
+                           .replace('%(basename)s', basename) \
+                           .replace('%(project)s', self.project_name)
         self.log, self._log_handler = logger_handler_factory(
             logtype, logfile, self.log_level, logid, format=format)
         from trac import core, __version__ as VERSION
