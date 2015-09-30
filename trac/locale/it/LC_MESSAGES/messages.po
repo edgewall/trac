@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2015-04-27 17:27+0000\n"
-"PO-Revision-Date: 2015-05-01 19:01+0200\n"
+"POT-Creation-Date: 2015-09-03 03:17-0700\n"
+"PO-Revision-Date: 2015-09-30 19:18+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: Italian "
 "(http://www.transifex.com/projects/p/trac/language/it/)\n"
@@ -180,17 +180,17 @@ msgstr "Confermi la cancellazione di questo commento?"
 msgid "Delete comment"
 msgstr "Elimina commento"
 
-#: tracopt/versioncontrol/git/git_fs.py:322
-#: tracopt/versioncontrol/git/git_fs.py:326
+#: tracopt/versioncontrol/git/git_fs.py:319
+#: tracopt/versioncontrol/git/git_fs.py:323
 #, python-format
 msgid "%(option)s must be in the range [4..40]"
 msgstr "%(option)s deve essere compresa nell'intervallo [4..40]"
 
-#: tracopt/versioncontrol/git/git_fs.py:330
+#: tracopt/versioncontrol/git/git_fs.py:327
 msgid "GIT backend not available"
 msgstr "Il backend GIT non è disponibile"
 
-#: tracopt/versioncontrol/git/git_fs.py:332
+#: tracopt/versioncontrol/git/git_fs.py:329
 #, python-format
 msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr ""
@@ -198,19 +198,19 @@ msgstr ""
 "una versione >= %(needsver)s)"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:434 trac/ticket/web_ui.py:1817
-#: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:369
-#: trac/wiki/web_ui.py:776
+#: tracopt/versioncontrol/git/git_fs.py:430 trac/ticket/web_ui.py:1820
+#: trac/ticket/templates/ticket_change.html:164 trac/wiki/macros.py:370
+#: trac/wiki/web_ui.py:785
 msgid "diff"
 msgstr "diff"
 
-#: tracopt/versioncontrol/git/git_fs.py:435
+#: tracopt/versioncontrol/git/git_fs.py:431
 msgid "Diff against this parent (show the changes merged from the other parents)"
 msgstr ""
 "Differenze rispetto a questo genitore (mostra le modifiche integrate "
 "dagli altri genitori)"
 
-#: tracopt/versioncontrol/git/git_fs.py:444
+#: tracopt/versioncontrol/git/git_fs.py:440
 msgid ""
 "Note: this is a <strong>merge</strong> changeset, the changes displayed "
 "below correspond to the merge itself."
@@ -218,7 +218,7 @@ msgstr ""
 "Nota: questo è un changeset di <strong>integrazione</strong>, le "
 "modifiche mostrate qui sotto sono relative all'integrazione stessa."
 
-#: tracopt/versioncontrol/git/git_fs.py:451
+#: tracopt/versioncontrol/git/git_fs.py:447
 msgid ""
 "Use the <code>(diff)</code> links above to see all the changes relative "
 "to each parent."
@@ -226,45 +226,45 @@ msgstr ""
 "Usa i link <code>(diff)</code> sovrastanti per vedere tutte le modifiche "
 "relative a ciascun genitore."
 
-#: tracopt/versioncontrol/git/git_fs.py:467
-#: tracopt/versioncontrol/git/git_fs.py:701
+#: tracopt/versioncontrol/git/git_fs.py:463
+#: tracopt/versioncontrol/git/git_fs.py:697
 msgid "Internal error"
 msgstr "Errore interno"
 
-#: tracopt/versioncontrol/git/git_fs.py:501
+#: tracopt/versioncontrol/git/git_fs.py:497
 #, python-format
 msgid "%(path)s does not appear to be a Git repository."
 msgstr "%(path)s non sembra essere un repository Git."
 
-#: tracopt/versioncontrol/git/git_fs.py:526
+#: tracopt/versioncontrol/git/git_fs.py:522
 msgid "Unsupported \"Show only adds and deletes\""
 msgstr "L'opzione \"Mostra solo aggiunte e cancellazioni\" non è supportata."
 
-#: tracopt/versioncontrol/git/git_fs.py:577
+#: tracopt/versioncontrol/git/git_fs.py:573
 msgid "Not supported in git_fs"
 msgstr "Non supportato da git_fs"
 
-#: tracopt/versioncontrol/git/git_fs.py:684
+#: tracopt/versioncontrol/git/git_fs.py:680
 #, python-format
 msgid "Internal error (got unexpected object kind '%(kind)s')"
 msgstr "Errore interno (trovato un oggetto di tipo \"%(kind)s\" inaspettato)"
 
-#: tracopt/versioncontrol/svn/svn_fs.py:306
+#: tracopt/versioncontrol/svn/svn_fs.py:305
 #, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
 msgstr "Necessario Subversion >= 1.0, trovato %(version)s"
 
-#: tracopt/versioncontrol/svn/svn_fs.py:364
+#: tracopt/versioncontrol/svn/svn_fs.py:361
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr "%(path)s non sembra essere un repository Subversion."
 
-#: tracopt/versioncontrol/svn/svn_fs.py:372
+#: tracopt/versioncontrol/svn/svn_fs.py:369
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr "Impossibile aprire il repository Subversion %(path)s: %(svn_error)s"
 
-#: tracopt/versioncontrol/svn/svn_fs.py:697
+#: tracopt/versioncontrol/svn/svn_fs.py:695
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -274,99 +274,99 @@ msgstr ""
 "revisione %(oldrev)s) mentre Target è un %(newnode)s (%(newpath)s alla "
 "revisione %(newrev)s)."
 
-#: tracopt/versioncontrol/svn/svn_fs.py:865
+#: tracopt/versioncontrol/svn/svn_fs.py:863
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "Errore di svn blame su %(path)s: %(error)s"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:149
+#: tracopt/versioncontrol/svn/svn_prop.py:156
 msgid "No svn:externals configured in trac.ini"
 msgstr "Non è stato configurato svn:externals nel trac.ini"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:156
+#: tracopt/versioncontrol/svn/svn_prop.py:163
 msgid "needs lock"
 msgstr "necessita un lock"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:186
+#: tracopt/versioncontrol/svn/svn_prop.py:193
 msgid "blocked"
 msgstr "bloccati"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:186
+#: tracopt/versioncontrol/svn/svn_prop.py:193
 msgid "merged"
 msgstr "integrati"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:221
+#: tracopt/versioncontrol/svn/svn_prop.py:228
 msgid "non-inheritable"
 msgstr "non ereditabile"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:223
+#: tracopt/versioncontrol/svn/svn_prop.py:230
 msgid "merged on the directory itself but not below"
 msgstr "integrato sulla directory stessa, ma non su quelle inferiori"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:239
-#: tracopt/versioncontrol/svn/svn_prop.py:261
+#: tracopt/versioncontrol/svn/svn_prop.py:246
+#: tracopt/versioncontrol/svn/svn_prop.py:268
 msgid "eligible"
 msgstr "da integrare"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:269
+#: tracopt/versioncontrol/svn/svn_prop.py:276
 msgid "(toggle deleted branches)"
 msgstr "(mostra/nascondi i percorsi eliminati)"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:307
+#: tracopt/versioncontrol/svn/svn_prop.py:316
 msgid "View merge source"
 msgstr "Mostra l'origine dell'integrazione"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:318
+#: tracopt/versioncontrol/svn/svn_prop.py:327
 msgid "No revisions"
 msgstr "Nessuna revisione"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:325
+#: tracopt/versioncontrol/svn/svn_prop.py:334
 #, python-format
 msgid "%(title)s: %(revs)s"
 msgstr "%(title)s: %(revs)s"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:361
+#: tracopt/versioncontrol/svn/svn_prop.py:370
 msgid "merged: "
 msgstr "integrati: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:361
+#: tracopt/versioncontrol/svn/svn_prop.py:370
 msgid "blocked: "
 msgstr "bloccati: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:362
+#: tracopt/versioncontrol/svn/svn_prop.py:371
 msgid "reverse-merged: "
 msgstr "inversamente-integrati: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:362
+#: tracopt/versioncontrol/svn/svn_prop.py:371
 msgid "un-blocked: "
 msgstr "sbloccati: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:363
+#: tracopt/versioncontrol/svn/svn_prop.py:372
 msgid "marked as non-inheritable: "
 msgstr "marcato come non ereditabile: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:364
+#: tracopt/versioncontrol/svn/svn_prop.py:373
 msgid "unmarked as non-inheritable: "
 msgstr "smarcato come non ereditabile: "
 
-#: tracopt/versioncontrol/svn/svn_prop.py:408
+#: tracopt/versioncontrol/svn/svn_prop.py:417
 msgid " (added)"
 msgstr " (aggiunta)"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:432
+#: tracopt/versioncontrol/svn/svn_prop.py:441
 msgid "removed"
 msgstr "rimossa"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:435
+#: tracopt/versioncontrol/svn/svn_prop.py:444
 msgid " (with no actual effect on merging)"
 msgstr " (senza alcun effetto sul merge)"
 
-#: tracopt/versioncontrol/svn/svn_prop.py:436
+#: tracopt/versioncontrol/svn/svn_prop.py:445
 #, python-format
 msgid "Property %(prop)s changed"
 msgstr "Proprietà \"%(prop)s\" modificata"
 
-#: trac/about.py:47 trac/templates/about.html:20 trac/templates/about.html:30
+#: trac/about.py:48 trac/templates/about.html:20 trac/templates/about.html:30
 msgid "About Trac"
 msgstr "Info su Trac"
 
@@ -404,8 +404,8 @@ msgstr "Allegato \"%(id)s\" a %(parent)s"
 msgid "Attachments of %(parent)s"
 msgstr "Allegati di %(parent)s"
 
-#: trac/attachment.py:396 trac/attachment.py:414 trac/admin/web_ui.py:492
-#: trac/admin/web_ui.py:495 trac/admin/web_ui.py:499
+#: trac/attachment.py:396 trac/attachment.py:414 trac/admin/web_ui.py:491
+#: trac/admin/web_ui.py:494 trac/admin/web_ui.py:498
 msgid "No file uploaded"
 msgstr "Non è stato caricato alcun file"
 
@@ -461,19 +461,19 @@ msgstr "Dimensione massima dell'allegato: %(num)s"
 msgid "Download failed"
 msgstr "Scaricamento fallito"
 
-#: trac/attachment.py:579 trac/versioncontrol/web_ui/browser.py:707
-#: trac/wiki/web_ui.py:66
+#: trac/attachment.py:579 trac/versioncontrol/web_ui/browser.py:706
+#: trac/wiki/web_ui.py:71
 msgid "Plain Text"
 msgstr "Testo non formattato"
 
-#: trac/attachment.py:585 trac/versioncontrol/web_ui/browser.py:713
+#: trac/attachment.py:585 trac/versioncontrol/web_ui/browser.py:712
 msgid "Original Format"
 msgstr "Formato originale"
 
 #: trac/attachment.py:627 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:92
 #: trac/versioncontrol/templates/dir_entries.html:29
-#: trac/versioncontrol/web_ui/browser.py:862
+#: trac/versioncontrol/web_ui/browser.py:861
 msgid "Download"
 msgstr "Scarica"
 
@@ -535,14 +535,14 @@ msgstr "Identificatore risorsa non valido \"%(id)s\""
 
 #: trac/attachment.py:1063 trac/templates/environment_info.html:53
 #: trac/templates/environment_info.html:96 trac/templates/error.html:173
-#: trac/ticket/admin.py:209 trac/ticket/admin.py:402 trac/ticket/admin.py:577
+#: trac/ticket/admin.py:211 trac/ticket/admin.py:413 trac/ticket/admin.py:589
 #: trac/ticket/templates/admin_components.html:88
 #: trac/ticket/templates/admin_enums.html:66
 #: trac/ticket/templates/admin_milestones.html:65
 #: trac/ticket/templates/admin_versions.html:91
 #: trac/versioncontrol/admin.py:117
 #: trac/versioncontrol/templates/admin_repositories.html:145
-#: trac/web/session.py:437
+#: trac/web/session.py:442
 msgid "Name"
 msgstr "Nome"
 
@@ -561,7 +561,7 @@ msgstr "Data"
 
 #: trac/attachment.py:1064 trac/notification/prefs.py:217
 #: trac/templates/attachment.html:105 trac/ticket/api.py:338
-#: trac/ticket/api.py:577 trac/ticket/templates/ticket.html:364
+#: trac/ticket/api.py:575 trac/ticket/templates/ticket.html:366
 #: trac/ticket/templates/ticket_box.html:108
 msgid "Description"
 msgstr "Descrizione"
@@ -571,41 +571,41 @@ msgstr "Descrizione"
 msgid "File '%(name)s' exists"
 msgstr "File \"%(name)s\" esiste già"
 
-#: trac/config.py:39
+#: trac/config.py:63
 msgid "Configuration Error"
 msgstr "Errore di configurazione"
 
-#: trac/config.py:43
+#: trac/config.py:67
 msgid "Look in the Trac log for more information."
 msgstr "Consulta il log di Trac per ulteriori informazioni."
 
-#: trac/config.py:304
+#: trac/config.py:347
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr "Errore nel leggere '%(file)s', assicurarsi che sia leggibile."
 
-#: trac/config.py:474
+#: trac/config.py:521
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: necessario un numero intero, trovato %(value)s"
 
-#: trac/config.py:493
+#: trac/config.py:538
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr "[%(section)s] %(entry)s: necessario un numero decimale, trovato %(value)s"
 
-#: trac/config.py:664
+#: trac/config.py:696
 msgid "Setting attribute is not allowed."
 msgstr "La modifica degli attributi non è consentita."
 
-#: trac/config.py:747
+#: trac/config.py:805
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 "[%(section)s] %(entry)s: necessario un valore tra (%(choices)s), trovato "
 "%(value)s"
 
-#: trac/config.py:786
+#: trac/config.py:844
 #, python-format
 msgid ""
 "Cannot find an implementation of the %(interface)s interface named "
@@ -616,7 +616,7 @@ msgstr ""
 "denominata %(implementation)s. Controlla che il Componente sia abilitato "
 "oppure aggiorna l'opzione %(option)s nel trac.ini."
 
-#: trac/config.py:825
+#: trac/config.py:883
 #, python-format
 msgid ""
 "Cannot find implementation(s) of the %(interface)s interface named "
@@ -627,7 +627,7 @@ msgstr ""
 "%(interface)s denominata %(implementation)s. Controlla che il Componente "
 "sia abilitato oppure aggiorna l'opzione %(option)s nel trac.ini."
 
-#: trac/config.py:865 trac/config.py:880
+#: trac/config.py:923 trac/config.py:938
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr "L'opzione \"%(option)s\" non esiste nella sezione \"%(section)s\""
@@ -644,12 +644,12 @@ msgstr ""
 "Visita il progetto open source Trac su<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:429
+#: trac/env.py:402
 #, python-format
 msgid "Unknown Trac environment type '%(type)s'"
 msgstr "Tipo di ambiente Trac sconosciuto \"%(type)s\""
 
-#: trac/env.py:432
+#: trac/env.py:405
 #, python-format
 msgid ""
 "No Trac environment found at %(path)s\n"
@@ -658,7 +658,7 @@ msgstr ""
 "Non è stato trovato un ambiente Trac in \"%(path)s\"\n"
 "%(e)s"
 
-#: trac/env.py:844
+#: trac/env.py:831
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -666,7 +666,7 @@ msgstr ""
 "Manca la variabile d'ambiente \"TRAC_ENV\". Trac necessita di questa "
 "variabile che deve indicare un ambiente Trac valido."
 
-#: trac/env.py:874 trac/admin/console.py:282
+#: trac/env.py:861 trac/admin/console.py:286
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -677,50 +677,50 @@ msgstr ""
 "\n"
 "Esegui \"trac-admin %(path)s upgrade\""
 
-#: trac/env.py:913
+#: trac/env.py:905
 msgid "Copying resources from:"
 msgstr "Copia delle risorse da:"
 
-#: trac/env.py:931
+#: trac/env.py:923
 msgid "Creating scripts."
 msgstr "Creazione degli script."
 
-#: trac/env.py:943
+#: trac/env.py:935
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr "Argomento non valido '%(arg)s'"
 
-#: trac/env.py:948
+#: trac/env.py:940
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "hotcopy non può sovrascrivere '%(dest)s' già presente"
 
-#: trac/env.py:957
+#: trac/env.py:949
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Copia a caldo di %(src)s in %(dst)s ..."
 
-#: trac/env.py:976
+#: trac/env.py:968
 msgid "The following errors happened while copying the environment:"
 msgstr "Sono occorsi i seguenti errori durante la copia dell'ambiente:"
 
-#: trac/env.py:986
+#: trac/env.py:978
 msgid "Backing up database ..."
 msgstr "Backup del database in corso ..."
 
-#: trac/env.py:991
+#: trac/env.py:983
 msgid "Hotcopy done."
 msgstr "Copia \"a caldo\" effettuata."
 
-#: trac/env.py:996 trac/admin/api.py:134
+#: trac/env.py:988 trac/admin/api.py:134
 msgid "Invalid arguments"
 msgstr "Parametri non validi"
 
-#: trac/env.py:999
+#: trac/env.py:991
 msgid "Database is up to date, no upgrade necessary."
 msgstr "Il database risulta aggiornato, non è necessario farne l'upgrade."
 
-#: trac/env.py:1005
+#: trac/env.py:997
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
@@ -729,11 +729,11 @@ msgstr ""
 "Usa l'opzione \"--no-backup\" per effettuare l'aggiornamento senza\n"
 "copiare il database.\n"
 
-#: trac/env.py:1009
+#: trac/env.py:1001
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr "L'aggiornamento è fallito. Correggere il problema e riprovare.\n"
 
-#: trac/env.py:1021
+#: trac/env.py:1013
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -742,7 +742,7 @@ msgstr ""
 "Attenzione: la directory wiki-macros dell'ambiente non è vuota, ma Trac "
 "non carica più i plugin da lì. Rimuovila manualmente per favore."
 
-#: trac/env.py:1032
+#: trac/env.py:1024
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -753,7 +753,7 @@ msgstr ""
 "Trac non carica più i plugin dalla directory wiki-macros. Rimuovila "
 "manualmente per favore."
 
-#: trac/env.py:1037
+#: trac/env.py:1029
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -768,11 +768,11 @@ msgstr ""
 "\n"
 "  trac-admin %(path)s wiki upgrade"
 
-#: trac/perm.py:45
+#: trac/perm.py:47
 msgid "Forbidden"
 msgstr "Operazione non consentita"
 
-#: trac/perm.py:57
+#: trac/perm.py:59
 #, python-format
 msgid ""
 "%(perm)s privileges are required to perform this operation on "
@@ -781,7 +781,7 @@ msgstr ""
 "Per eseguire questa operazione su %(resource)s sono richiesti i permessi "
 "%(perm)s. Mancano i permessi richiesti."
 
-#: trac/perm.py:59
+#: trac/perm.py:61
 #, python-format
 msgid ""
 "%(perm)s privileges are required to perform this operation. You don't "
@@ -790,38 +790,38 @@ msgstr ""
 "Per eseguire questa operazione sono richiesti i permessi %(perm)s. "
 "Mancano i permessi richiesti."
 
-#: trac/perm.py:63
+#: trac/perm.py:65
 msgid "Insufficient privileges to perform this operation."
 msgstr "Permessi insufficienti per eseguire questa operazione."
 
-#: trac/perm.py:343
+#: trac/perm.py:345 trac/perm.py:723
 #, python-format
 msgid "%(name)s is not a valid action."
 msgstr "%(name)s non è una azione valida."
 
-#: trac/perm.py:676
+#: trac/perm.py:678
 msgid "User"
 msgstr "Utente"
 
-#: trac/perm.py:676 trac/admin/templates/admin_perms.html:105
+#: trac/perm.py:678 trac/admin/templates/admin_perms.html:105
 #: trac/ticket/templates/ticket_workflow.html:36
 msgid "Action"
 msgstr "Azione"
 
-#: trac/perm.py:678
+#: trac/perm.py:680
 msgid "Available actions:"
 msgstr "Azioni disponibili:"
 
-#: trac/perm.py:689
+#: trac/perm.py:691
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "I nomi completamente in caratteri maiuscoli sono riservati ai permessi"
 
-#: trac/perm.py:695
+#: trac/perm.py:697
 #, python-format
 msgid "The user %(user)s already has permission %(action)s."
 msgstr "L'utente %(user)s dispone già del permesso\"%(action)s\"."
 
-#: trac/perm.py:710
+#: trac/perm.py:714
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The permission is "
@@ -830,7 +830,7 @@ msgstr ""
 "Impossibile rimuovere il permesso %(action)s dall'utente %(user)s. Il "
 "permesso è assegnato con un meta-permesso oppure a un gruppo."
 
-#: trac/perm.py:715
+#: trac/perm.py:719
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The user has not "
@@ -839,19 +839,19 @@ msgstr ""
 "Impossibile rimuovere il permesso %(action)s dall'utente %(user)s. "
 "L'utente non dispone di quel permesso."
 
-#: trac/perm.py:734
+#: trac/perm.py:740
 #, python-format
 msgid "Cannot export to %(filename)s: %(error)s"
 msgstr "Impossibile esportare su %(filename)s: %(error)s"
 
-#: trac/perm.py:747
+#: trac/perm.py:753
 #, python-format
 msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
 msgstr ""
 "La riga %(line)d non è valida. La sintassi corretta è <utente>, "
 "<permesso>, [permesso], [...]"
 
-#: trac/perm.py:755
+#: trac/perm.py:761
 #, python-format
 msgid ""
 "Invalid user %(user)s on line %(line)d: All upper-cased tokens are "
@@ -860,12 +860,12 @@ msgstr ""
 "Nome utente %(user)s alla linea %(line)d non valido: I nomi completamente"
 " in caratteri maiuscoli sono riservati per i permessi."
 
-#: trac/perm.py:764
+#: trac/perm.py:770
 #, python-format
 msgid "Cannot import from %(filename)s line %(line)d: %(error)s "
 msgstr "Impossibile importare la linea %(line)d di %(filename)s: %(error)s "
 
-#: trac/perm.py:769
+#: trac/perm.py:775
 #, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
 msgstr "Impossibile importare da %(filename)s: %(error)s"
@@ -879,12 +879,12 @@ msgstr "%(name)s alla versione %(version)s"
 msgid "Command not found"
 msgstr "Comando non trovato"
 
-#: trac/admin/console.py:111
+#: trac/admin/console.py:115
 #, python-format
 msgid "Error: %(msg)s"
 msgstr "Errore: %(msg)s"
 
-#: trac/admin/console.py:130
+#: trac/admin/console.py:134
 #, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
@@ -901,17 +901,17 @@ msgstr ""
 "Digita:  '?' o 'help' per un aiuto sui comandi.\n"
 "        "
 
-#: trac/admin/console.py:164
+#: trac/admin/console.py:168
 #, python-format
 msgid "Failed to open environment: %(err)s"
 msgstr "Apertura dell'ambiente fallita: %(err)s"
 
-#: trac/admin/console.py:250
+#: trac/admin/console.py:254
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "Errore nel completamento: %(err)s"
 
-#: trac/admin/console.py:317
+#: trac/admin/console.py:321
 #, python-format
 msgid ""
 "No documentation found for '%(cmd)s'. Use 'help' to see the list of "
@@ -920,35 +920,35 @@ msgstr ""
 "Non è stata trovata alcuna documentazione per \"%(cmd)s\". Usa \"help\" "
 "per vedere la lista di comandi."
 
-#: trac/admin/console.py:325
+#: trac/admin/console.py:329
 msgid "Did you mean this?"
 msgid_plural "Did you mean one of these?"
 msgstr[0] "Intendevi questo?"
 msgstr[1] "Intendevi uno di questi?"
 
-#: trac/admin/console.py:329
+#: trac/admin/console.py:333
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
 msgstr "trac-admin - La console di amministrazione interattiva di Trac %(version)s"
 
-#: trac/admin/console.py:333
+#: trac/admin/console.py:337
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
 "Uso: trac-admin </path/dell/ambiente> [comando [sottocomando] [opzione "
 "...]]\n"
 
-#: trac/admin/console.py:336
+#: trac/admin/console.py:340
 msgid "Invoking trac-admin without command starts interactive mode.\n"
 msgstr ""
 "Eseguendo trac-admin omettendo il comando attiva la modalità interattiva."
 "\n"
 
-#: trac/admin/console.py:376
+#: trac/admin/console.py:386
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
 msgstr "Creazione nuovo ambiente Trac in %(envname)s"
 
-#: trac/admin/console.py:378
+#: trac/admin/console.py:388
 msgid ""
 "\n"
 "Trac will first ask a few questions about your environment\n"
@@ -964,12 +964,12 @@ msgstr ""
 " Inserisci il nome del tuo progetto.\n"
 " Questo nome verrà usato nei titoli delle pagine e nelle descrizioni.\n"
 
-#: trac/admin/console.py:386
+#: trac/admin/console.py:396
 #, python-format
 msgid "Project Name [%(default)s]> "
 msgstr "Nome progetto [%(default)s]> "
 
-#: trac/admin/console.py:388
+#: trac/admin/console.py:398
 msgid ""
 "\n"
 " Please specify the connection string for the database to use.\n"
@@ -985,25 +985,25 @@ msgstr ""
 " preesistente (consulta la documentazione Trac per l'esatta sintassi\n"
 " della stringa di connessione).\n"
 
-#: trac/admin/console.py:396
+#: trac/admin/console.py:406
 #, python-format
 msgid "Database connection string [%(default)s]> "
 msgstr "Stringa di connessione al database [%(default)s]> "
 
-#: trac/admin/console.py:403
+#: trac/admin/console.py:413
 #, python-format
 msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv fallito in '%(env)s'."
 
-#: trac/admin/console.py:406
+#: trac/admin/console.py:416
 msgid "Does an environment already exist?"
 msgstr "Esiste già un ambiente?"
 
-#: trac/admin/console.py:410
+#: trac/admin/console.py:420
 msgid "Directory exists and is not empty."
 msgstr "La cartella esiste già e non è vuota."
 
-#: trac/admin/console.py:416
+#: trac/admin/console.py:426
 #, python-format
 msgid ""
 "Base directory '%(env)s' does not exist. Please create it manually and "
@@ -1013,22 +1013,27 @@ msgstr ""
 "riprovare."
 
 #: trac/admin/console.py:444
+#, python-format
+msgid "The file specified in the --config argument does not exist: %(path)s."
+msgstr "Il file specificato con l'opzione --config non esiste: %(path)s."
+
+#: trac/admin/console.py:469
 msgid "Creating and Initializing Project"
 msgstr "Creazione e inizializzazione del progetto"
 
-#: trac/admin/console.py:461
+#: trac/admin/console.py:497
 msgid "Failed to create environment."
 msgstr "Creazione dell'ambiente fallita."
 
-#: trac/admin/console.py:467
+#: trac/admin/console.py:503
 msgid " Installing default wiki pages"
 msgstr " Installazione delle pagine wiki di default"
 
-#: trac/admin/console.py:476
+#: trac/admin/console.py:512
 msgid " Indexing default repository"
 msgstr " Indicizzazione repository di default"
 
-#: trac/admin/console.py:479
+#: trac/admin/console.py:515
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -1055,7 +1060,7 @@ msgstr ""
 "controllare nuovamente il file trac.ini e le impostazioni di\n"
 "repository_type e repository_path nella sezione [trac].\n"
 
-#: trac/admin/console.py:522
+#: trac/admin/console.py:558
 #, python-format
 msgid ""
 "\n"
@@ -1108,7 +1113,7 @@ msgstr ""
 "\n"
 "Congratulazioni!\n"
 
-#: trac/admin/console.py:531
+#: trac/admin/console.py:567
 msgid ""
 "Display help for trac-admin commands.\n"
 "\n"
@@ -1130,12 +1135,12 @@ msgstr ""
 "[[TracAdminHelp(upgrade)]]      # il comando di aggiornamento\n"
 "}}}"
 
-#: trac/admin/console.py:551
+#: trac/admin/console.py:587
 #, python-format
 msgid "Unknown trac-admin command \"%(command)s\""
 msgstr "Comando \"%(command)s\" sconosciuto a trac-admin"
 
-#: trac/admin/console.py:579
+#: trac/admin/console.py:615
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -1146,26 +1151,22 @@ msgstr ""
 msgid "Admin"
 msgstr "Amministra"
 
-#: trac/admin/web_ui.py:60 trac/admin/templates/admin.html:26
-msgid "Administration"
-msgstr "Amministrazione"
-
-#: trac/admin/web_ui.py:76
+#: trac/admin/web_ui.py:75
 msgid "No administration panels available"
 msgstr "Non c'è alcun pannello di amministrazione"
 
-#: trac/admin/web_ui.py:102 trac/admin/web_ui.py:106
+#: trac/admin/web_ui.py:101 trac/admin/web_ui.py:105
 msgid "Unknown administration panel"
 msgstr "Pannello di amministrazione sconosciuto"
 
-#: trac/admin/web_ui.py:154 trac/ticket/admin.py:65 trac/ticket/admin.py:95
-#: trac/ticket/admin.py:462 trac/ticket/admin.py:629 trac/ticket/admin.py:712
-#: trac/ticket/report.py:256 trac/ticket/roadmap.py:808
+#: trac/admin/web_ui.py:153 trac/ticket/admin.py:65 trac/ticket/admin.py:95
+#: trac/ticket/admin.py:473 trac/ticket/admin.py:641 trac/ticket/admin.py:726
+#: trac/ticket/report.py:256 trac/ticket/roadmap.py:812
 #: trac/versioncontrol/admin.py:219
 msgid "Your changes have been saved."
 msgstr "Le tue modifiche sono state memorizzate."
 
-#: trac/admin/web_ui.py:159 trac/ticket/admin.py:69
+#: trac/admin/web_ui.py:158 trac/ticket/admin.py:69
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -1173,92 +1174,92 @@ msgstr ""
 "Errore durante la scrittura di trac.ini, assicurati che sia scrivibile "
 "dal server web. Le tue modifiche non sono state memorizzate."
 
-#: trac/admin/web_ui.py:174 trac/admin/web_ui.py:252 trac/admin/web_ui.py:341
-#: trac/admin/web_ui.py:470 trac/prefs/web_ui.py:109
+#: trac/admin/web_ui.py:173 trac/admin/web_ui.py:251 trac/admin/web_ui.py:340
+#: trac/admin/web_ui.py:469 trac/prefs/web_ui.py:187
 #: trac/prefs/templates/prefs_general.html:20
 msgid "General"
 msgstr "Generale"
 
-#: trac/admin/web_ui.py:174 trac/admin/templates/admin_basics.html:24
+#: trac/admin/web_ui.py:173 trac/admin/templates/admin_basics.html:24
 msgid "Basic Settings"
 msgstr "Impostazioni base"
 
-#: trac/admin/web_ui.py:252 trac/admin/templates/admin_logging.html:20
+#: trac/admin/web_ui.py:251 trac/admin/templates/admin_logging.html:20
 #: trac/admin/templates/admin_logging.html:32
 msgid "Logging"
 msgstr "Registro attività"
 
-#: trac/admin/web_ui.py:261 trac/ticket/templates/milestone_delete.html:34
+#: trac/admin/web_ui.py:260 trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_edit_form.html:96
 msgid "None"
 msgstr "Nessuno"
 
-#: trac/admin/web_ui.py:263
+#: trac/admin/web_ui.py:262
 msgid "Console"
 msgstr "Console"
 
-#: trac/admin/web_ui.py:265 trac/templates/attachment.html:42
+#: trac/admin/web_ui.py:264 trac/templates/attachment.html:42
 msgid "File"
 msgstr "File"
 
-#: trac/admin/web_ui.py:267
+#: trac/admin/web_ui.py:266
 msgid "Syslog"
 msgstr "Syslog"
 
-#: trac/admin/web_ui.py:270
+#: trac/admin/web_ui.py:269
 msgid "Windows event log"
 msgstr "Registro eventi di Windows"
 
-#: trac/admin/web_ui.py:281
+#: trac/admin/web_ui.py:280
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "Tipo di log sconosciuto \"%(type)s\""
 
-#: trac/admin/web_ui.py:282
+#: trac/admin/web_ui.py:281
 msgid "Invalid log type"
 msgstr "Tipo di log non valido"
 
-#: trac/admin/web_ui.py:296
+#: trac/admin/web_ui.py:295
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "Livello di log sconosciuto \"%(level)s\""
 
-#: trac/admin/web_ui.py:297
+#: trac/admin/web_ui.py:296
 msgid "Invalid log level"
 msgstr "Livello di log non valido"
 
-#: trac/admin/web_ui.py:310
+#: trac/admin/web_ui.py:309
 msgid "You must specify a log file"
 msgstr "Devi specificare un file di log"
 
-#: trac/admin/web_ui.py:311
+#: trac/admin/web_ui.py:310
 msgid "Missing field"
 msgstr "Campo mancante"
 
-#: trac/admin/web_ui.py:341 trac/admin/templates/admin_perms.html:20
+#: trac/admin/web_ui.py:340 trac/admin/templates/admin_perms.html:20
 #: trac/admin/templates/admin_perms.html:102
 msgid "Permissions"
 msgstr "Permessi"
 
-#: trac/admin/web_ui.py:357
+#: trac/admin/web_ui.py:356
 msgid "All upper-cased tokens are reserved for permission names."
 msgstr "I nomi completamente in caratteri maiuscoli sono riservati ai permessi."
 
-#: trac/admin/web_ui.py:364
+#: trac/admin/web_ui.py:363
 msgid "Unknown action"
 msgstr "Azione sconosciuta"
 
-#: trac/admin/web_ui.py:368 trac/admin/web_ui.py:433
+#: trac/admin/web_ui.py:367 trac/admin/web_ui.py:432
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "Il permesso \"%(action)s\" è stato assegnato a \"%(subject)s\"."
 
-#: trac/admin/web_ui.py:373
+#: trac/admin/web_ui.py:372
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "Il permesso \"%(action)s\" era già assegnato a \"%(subject)s\"."
 
-#: trac/admin/web_ui.py:387
+#: trac/admin/web_ui.py:386
 #, python-format
 msgid ""
 "The subject %(subject)s was not added to the group %(group)s because the "
@@ -1269,22 +1270,22 @@ msgstr ""
 "gruppo ha il permesso \"%(perm)s\" e gli utenti non possono concedere "
 "permessi che non possiedono."
 
-#: trac/admin/web_ui.py:395
+#: trac/admin/web_ui.py:394
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "\"%(subject)s\" è stato aggiunto al gruppo \"%(group)s\"."
 
-#: trac/admin/web_ui.py:400
+#: trac/admin/web_ui.py:399
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "\"%(subject)s\" faceva già parte del gruppo \"%(group)s\"."
 
-#: trac/admin/web_ui.py:412
+#: trac/admin/web_ui.py:411
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr "Il soggetto \"%(subject)s\" non ha alcun permesso."
 
-#: trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:425
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
@@ -1293,30 +1294,30 @@ msgstr ""
 "Il permesso \"%(action)s\" non è stato concesso a \"%(subject)s\" perché "
 "gli utenti non possono concedere permessi che non possiedono."
 
-#: trac/admin/web_ui.py:450
+#: trac/admin/web_ui.py:449
 msgid "The selected permissions have been revoked."
 msgstr "I permessi selezionati sono stati revocati."
 
-#: trac/admin/web_ui.py:470 trac/admin/templates/admin_plugins.html:20
+#: trac/admin/web_ui.py:469 trac/admin/templates/admin_plugins.html:20
 msgid "Plugins"
 msgstr "Moduli aggiuntivi"
 
-#: trac/admin/web_ui.py:502
+#: trac/admin/web_ui.py:501
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "Il file caricato non è un sorgente Python né un \"egg\""
 
-#: trac/admin/web_ui.py:507
+#: trac/admin/web_ui.py:506
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "Il modulo aggiuntivo \"%(name)s\" è già installato"
 
-#: trac/admin/web_ui.py:576
+#: trac/admin/web_ui.py:575
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "Il seguente componente è stato disabilitato:"
 msgstr[1] "I seguenti componenti sono stati disabilitati:"
 
-#: trac/admin/web_ui.py:581
+#: trac/admin/web_ui.py:580
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "Il seguente componente è stato abilitato:"
@@ -1325,6 +1326,10 @@ msgstr[1] "I seguenti componenti sono stati abilitati:"
 #: trac/admin/templates/admin.html:20
 msgid "Administration:"
 msgstr "Amministrazione:"
+
+#: trac/admin/templates/admin.html:26
+msgid "Administration"
+msgstr "Amministrazione"
 
 #: trac/admin/templates/admin_basics.html:20
 msgid "Basics"
@@ -1370,7 +1375,7 @@ msgstr "Handler di default:"
 msgid "%(handler)s is not a valid IRequestHandler or is not enabled."
 msgstr "%(handler)s non è un IRequestHandler valido oppure non è abilitato."
 
-#: trac/admin/templates/admin_basics.html:62 trac/prefs/web_ui.py:110
+#: trac/admin/templates/admin_basics.html:62 trac/prefs/web_ui.py:221
 #: trac/prefs/templates/prefs_localization.html:20
 msgid "Localization"
 msgstr "Localizzazione"
@@ -1543,36 +1548,36 @@ msgid "Add a user or group to an existing permission group."
 msgstr "Aggiungi un utente o un gruppo ad un gruppo esistente."
 
 #: trac/admin/templates/admin_perms.html:105
-#: trac/admin/templates/admin_perms.html:135
+#: trac/admin/templates/admin_perms.html:136
 msgid "Subject"
 msgstr "Soggetto"
 
-#: trac/admin/templates/admin_perms.html:116
+#: trac/admin/templates/admin_perms.html:117
 msgid "You don't have permission to revoke this action"
 msgstr "Non hai i permessi per revocare questa azione"
 
-#: trac/admin/templates/admin_perms.html:123
+#: trac/admin/templates/admin_perms.html:124
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr "%(action)s non più definita"
 
-#: trac/admin/templates/admin_perms.html:128
+#: trac/admin/templates/admin_perms.html:129
 msgid "No permissions"
 msgstr "Nessun permesso"
 
-#: trac/admin/templates/admin_perms.html:132
+#: trac/admin/templates/admin_perms.html:133
 msgid "Group Membership"
 msgstr "Appartenenza a Gruppi"
 
-#: trac/admin/templates/admin_perms.html:135
+#: trac/admin/templates/admin_perms.html:136
 msgid "Group"
 msgstr "Gruppo"
 
-#: trac/admin/templates/admin_perms.html:152
+#: trac/admin/templates/admin_perms.html:153
 msgid "No group memberships"
 msgstr "Nessuna appartenenza a gruppi"
 
-#: trac/admin/templates/admin_perms.html:156
+#: trac/admin/templates/admin_perms.html:157
 #: trac/ticket/templates/admin_components.html:110
 #: trac/ticket/templates/admin_enums.html:91
 #: trac/ticket/templates/admin_milestones.html:101
@@ -1581,7 +1586,7 @@ msgstr "Nessuna appartenenza a gruppi"
 msgid "Remove selected items"
 msgstr "Elimina gli elementi selezionati"
 
-#: trac/admin/templates/admin_perms.html:160
+#: trac/admin/templates/admin_perms.html:161
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1619,7 +1624,7 @@ msgid "Upload a plugin packaged as Python egg."
 msgstr "Carica un plugin nel formato \"egg\" Python."
 
 #: trac/admin/templates/admin_plugins.html:110 trac/templates/diff_view.html:60
-#: trac/versioncontrol/templates/changeset.html:152
+#: trac/versioncontrol/templates/changeset.html:153
 msgid "Author:"
 msgstr "Autore:"
 
@@ -1648,31 +1653,31 @@ msgstr "Nascondi tutte le descrizioni"
 msgid "Enabled"
 msgstr "Attivo"
 
-#: trac/db/api.py:463
+#: trac/db/api.py:471
 #, python-format
 msgid "Need to downgrade %(name)s."
 msgstr "È necessario fare il downgrade di \"%(name)s\"."
 
-#: trac/db/api.py:486
+#: trac/db/api.py:494
 #, python-format
 msgid "No upgrade package %(pkg)s"
 msgstr "Il package di aggiornamento %(pkg)s non è presente"
 
-#: trac/db/api.py:490
+#: trac/db/api.py:498
 #, python-format
 msgid "No upgrade module %(module)s.py"
 msgstr "Il modulo di aggiornamento \"%(module)s.py\" non è presente"
 
-#: trac/db/api.py:535
+#: trac/db/api.py:543
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr "Tipo di database \"%(scheme)s\" non supportato"
 
-#: trac/db/api.py:577
+#: trac/db/api.py:585
 msgid "TracIni documentation"
 msgstr "documentazione TracIni"
 
-#: trac/db/api.py:586
+#: trac/db/api.py:594
 #, python-format
 msgid ""
 "Database connection string is empty. Set the %(option)s configuration "
@@ -1683,7 +1688,7 @@ msgstr ""
 "configurazione \"%(option)s\" nella sezione \"%(section)s\" del file "
 "trac.ini. Consulta la %(doc)s per un aiuto."
 
-#: trac/db/api.py:670
+#: trac/db/api.py:678
 #, python-format
 msgid ""
 "Invalid format %(db_str)s for the database connection string. Please "
@@ -1692,11 +1697,11 @@ msgstr ""
 "La stringa di connessione al database contiene un formato non valido: "
 "\"%(db_str)s\". Consulta la %(doc)s per un aiuto."
 
-#: trac/db/api.py:674 trac/versioncontrol/admin.py:282
+#: trac/db/api.py:682 trac/versioncontrol/admin.py:282
 msgid "documentation"
 msgstr "documentazione"
 
-#: trac/db/api.py:675
+#: trac/db/api.py:683
 msgid "Database Connection Strings documentation"
 msgstr "Documentazione stringa di connessione al database"
 
@@ -1814,7 +1819,7 @@ msgstr "Il database %(path)s esiste già"
 msgid "Database \"%(path)s\" not found."
 msgstr "Database \"%(path)s\" non trovato."
 
-#: trac/db/sqlite_backend.py:298
+#: trac/db/sqlite_backend.py:299
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1823,41 +1828,41 @@ msgstr ""
 "L'utente %(user)s necessita dei permessi di lettura _e_ di scrittura sul "
 "database %(path)s e sulla directory che lo contiene."
 
-#: trac/db/sqlite_backend.py:407
+#: trac/db/sqlite_backend.py:408
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
 msgstr "PRAGMA journal_mode `%(value)s` non può essere utilizzato con SQLite"
 
-#: trac/db/sqlite_backend.py:412
+#: trac/db/sqlite_backend.py:413
 #, python-format
 msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode non è supportato da SQLite %(version)s"
 
-#: trac/db/sqlite_backend.py:415
+#: trac/db/sqlite_backend.py:416
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode `%(value)s` non è supportato da SQLite %(version)s"
 
-#: trac/mimeview/api.py:710 trac/mimeview/api.py:728
+#: trac/mimeview/api.py:714 trac/mimeview/api.py:732
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "Non ci sono conversioni MIME da %(old)s a %(new)s"
 
-#: trac/mimeview/api.py:843
+#: trac/mimeview/api.py:847
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "Anteprima HTML usando %(renderer)s non riuscita (%(err)s)"
 
-#: trac/mimeview/api.py:874
+#: trac/mimeview/api.py:878
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "Impossibile utilizzare l'annotatore %(annotator)s: %(error)s"
 
-#: trac/mimeview/api.py:1151 trac/templates/error.html:161
+#: trac/mimeview/api.py:1155 trac/templates/error.html:161
 msgid "Line"
 msgstr "Riga"
 
-#: trac/mimeview/api.py:1151
+#: trac/mimeview/api.py:1155
 msgid "Line numbers"
 msgstr "Righe numerate"
 
@@ -1875,12 +1880,12 @@ msgstr "eliminato il file %(deleted)s"
 msgid "this hunk was shorter than expected"
 msgstr "questo hunk è più corto del previsto"
 
-#: trac/mimeview/pygments.py:131 trac/mimeview/templates/prefs_pygments.html:19
+#: trac/mimeview/pygments.py:141 trac/mimeview/templates/prefs_pygments.html:19
 msgid "Syntax Highlighting"
 msgstr "Evidenziazione della sintassi"
 
-#: trac/mimeview/pygments.py:140 trac/notification/prefs.py:63
-#: trac/prefs/web_ui.py:196
+#: trac/mimeview/pygments.py:150 trac/notification/prefs.py:63
+#: trac/prefs/web_ui.py:304
 msgid "Your preferences have been saved."
 msgstr "Le tue preferenze sono state memorizzate."
 
@@ -1961,7 +1966,6 @@ msgid "Never notify"
 msgstr "Nessuna notifica"
 
 #: trac/notification/prefs.py:192
-#, fuzzy
 msgid ""
 "Display a list of all installed notification subscribers, including\n"
 "documentation if available.\n"
@@ -1973,20 +1977,20 @@ msgid ""
 "Note that this macro will not be able to display the documentation of\n"
 "subscribers if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
-"Mostra la lista di tutte le macro Wiki installate, compresa la relativa\n"
-"documentazione, se disponibile.\n"
+"Mostra la lista di tutti i notification subscriber installati, compresa\n"
+"la relativa documentazione, se disponibile.\n"
 "\n"
-"Come argomento opzionale si può specificare il nome di una macro\n"
-"specifica. In questo caso, verrà mostrata solo la documentazione della\n"
-"macro specificata.\n"
+"Come argomento opzionale si può specificare il nome di un particolare\n"
+"subscriber. In questo caso, verrà mostrata solo la documentazione di\n"
+"quello specifico subscriber.\n"
 "\n"
 "Nota che questa macro non sarà in grado di mostrare la documentazione\n"
-"delle macro se in mod_python è stata specificata l'opzione\n"
+"dei subscriber se in mod_python è stata specificata l'opzione\n"
 "`PythonOptimize`!"
 
 #: trac/notification/prefs.py:216
 msgid "Subscriber"
-msgstr ""
+msgstr "Subscriber"
 
 #: trac/notification/templates/prefs_notification.html:105
 msgid "Subscriptions"
@@ -2082,30 +2086,34 @@ msgstr ""
 msgid "Save changes"
 msgstr "Conferma le modifiche"
 
-#: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:26
+#: trac/prefs/web_ui.py:48 trac/prefs/templates/prefs.html:26
 msgid "Preferences"
 msgstr "Preferenze"
 
-#: trac/prefs/web_ui.py:94
+#: trac/prefs/web_ui.py:65
+msgid "No preference panels available"
+msgstr "Non è disponibile alcun pannello preferenze"
+
+#: trac/prefs/web_ui.py:88
 #, python-format
 msgid "Unknown preference panel '%(panel)s'"
 msgstr "Pannello preferenze \"%(panel)s\" sconosciuto"
 
-#: trac/prefs/web_ui.py:111 trac/prefs/templates/prefs_keybindings.html:20
-msgid "Keyboard Shortcuts"
-msgstr "Scorciatoie da tastiera"
-
-#: trac/prefs/web_ui.py:112 trac/prefs/templates/prefs_userinterface.html:20
-msgid "User Interface"
-msgstr "Interfaccia utente"
-
-#: trac/prefs/web_ui.py:114 trac/prefs/templates/prefs_advanced.html:20
+#: trac/prefs/web_ui.py:160 trac/prefs/templates/prefs_advanced.html:20
 msgid "Advanced"
 msgstr "Avanzate"
 
-#: trac/prefs/web_ui.py:203
+#: trac/prefs/web_ui.py:175
 msgid "The session has been loaded."
 msgstr "La sessione è stata caricata."
+
+#: trac/prefs/web_ui.py:204 trac/prefs/templates/prefs_keybindings.html:20
+msgid "Keyboard Shortcuts"
+msgstr "Scorciatoie da tastiera"
+
+#: trac/prefs/web_ui.py:265 trac/prefs/templates/prefs_userinterface.html:20
+msgid "User Interface"
+msgstr "Interfaccia utente"
 
 #: trac/prefs/templates/prefs.html:20
 msgid "Preferences:"
@@ -2367,16 +2375,16 @@ msgstr ""
 "Elemento da ricercare troppo corto. Deve essere almeno di %(num)s "
 "caratteri."
 
-#: trac/search/web_ui.py:235 trac/ticket/query.py:799 trac/ticket/report.py:456
+#: trac/search/web_ui.py:235 trac/ticket/query.py:808 trac/ticket/report.py:456
 #, python-format
 msgid "Page %(num)d"
 msgstr "Pagina %(num)d"
 
-#: trac/search/web_ui.py:248 trac/ticket/query.py:786 trac/ticket/report.py:447
+#: trac/search/web_ui.py:248 trac/ticket/query.py:795 trac/ticket/report.py:447
 msgid "Next Page"
 msgstr "Pagina successiva"
 
-#: trac/search/web_ui.py:254 trac/ticket/query.py:791 trac/ticket/report.py:450
+#: trac/search/web_ui.py:254 trac/ticket/query.py:800 trac/ticket/report.py:450
 msgid "Previous Page"
 msgstr "Pagina precedente"
 
@@ -2496,13 +2504,13 @@ msgid "Attachment Info"
 msgstr "Info allegato"
 
 #: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:200
-#: trac/ticket/templates/ticket.html:333
+#: trac/ticket/templates/ticket.html:335
 #: trac/wiki/templates/wiki_edit_form.html:53
 msgid "Your email or username:"
 msgstr "Il tuo indirizzo email oppure il nome utente:"
 
 #: trac/templates/attachment.html:54 trac/ticket/templates/ticket.html:207
-#: trac/ticket/templates/ticket.html:341
+#: trac/ticket/templates/ticket.html:343
 #: trac/wiki/templates/wiki_edit_form.html:57
 msgid "E-mail address and name can be saved in the [1:Preferences]."
 msgstr ""
@@ -2530,7 +2538,7 @@ msgid "Delete attachment"
 msgstr "Elimina allegato"
 
 #: trac/templates/attachment.html:109
-#: trac/templates/list_of_attachments.html:31 trac/util/text.py:634
+#: trac/templates/list_of_attachments.html:31 trac/util/text.py:645
 #: trac/util/tests/html.py:243 trac/util/tests/html.py:256
 #: trac/versioncontrol/templates/browser.html:200
 #: trac/versioncontrol/templates/dir_entries.html:28
@@ -2608,7 +2616,7 @@ msgstr "Modifiche spaziatura"
 
 #: trac/templates/diff_options.html:61
 #: trac/ticket/templates/milestone_view.html:67
-#: trac/ticket/templates/query.html:232
+#: trac/ticket/templates/query.html:241
 #: trac/ticket/templates/report_view.html:59
 #: trac/ticket/templates/roadmap.html:38
 #: trac/timeline/templates/timeline.html:41
@@ -2643,7 +2651,7 @@ msgid ""
 msgstr "Modifiche dalla [1:versione %(new)s] di [2:%(name)s]"
 
 #: trac/templates/diff_view.html:52
-#: trac/versioncontrol/templates/changeset.html:146
+#: trac/versioncontrol/templates/changeset.html:147
 msgid "Timestamp:"
 msgstr "Ora:"
 
@@ -2670,30 +2678,30 @@ msgid "Comment:"
 msgstr "Commento:"
 
 #: trac/templates/diff_view.html:74
-#: trac/versioncontrol/templates/changeset.html:208
+#: trac/versioncontrol/templates/changeset.html:209
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Legend:"
 msgstr "Legenda:"
 
 #: trac/templates/diff_view.html:76
-#: trac/versioncontrol/templates/changeset.html:210
+#: trac/versioncontrol/templates/changeset.html:211
 msgid "Unmodified"
 msgstr "Non modificato"
 
 #: trac/templates/diff_view.html:77
-#: trac/versioncontrol/templates/changeset.html:211
+#: trac/versioncontrol/templates/changeset.html:212
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Added"
 msgstr "Aggiunto"
 
 #: trac/templates/diff_view.html:78
-#: trac/versioncontrol/templates/changeset.html:212
+#: trac/versioncontrol/templates/changeset.html:213
 #: trac/versioncontrol/templates/revisionlog.html:100
 msgid "Removed"
 msgstr "Rimosso"
 
 #: trac/templates/diff_view.html:79 trac/ticket/api.py:375
-#: trac/versioncontrol/templates/changeset.html:214
+#: trac/versioncontrol/templates/changeset.html:215
 #: trac/versioncontrol/templates/revisionlog.html:102 trac/wiki/admin.py:192
 msgid "Modified"
 msgstr "Modificato"
@@ -2708,7 +2716,7 @@ msgstr "Pacchetto"
 
 #: trac/templates/environment_info.html:40
 #: trac/templates/environment_info.html:53 trac/templates/history_view.html:45
-#: trac/ticket/admin.py:438 trac/ticket/api.py:346
+#: trac/ticket/admin.py:449 trac/ticket/api.py:346
 msgid "Version"
 msgstr "Versione"
 
@@ -2720,7 +2728,7 @@ msgstr "Moduli aggiuntivi installati"
 msgid "Location"
 msgstr "Posizione"
 
-#: trac/templates/environment_info.html:61 trac/web/main.py:649
+#: trac/templates/environment_info.html:61 trac/web/main.py:673
 msgid "N/A"
 msgstr "N/D"
 
@@ -2952,7 +2960,7 @@ msgstr "[1:%(file)s][2:​] ([3:%(size)s]) - aggiunto da %(author)s %(date)s."
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:52
-#: trac/ticket/templates/ticket.html:363
+#: trac/ticket/templates/ticket.html:365
 msgid "Attachments"
 msgstr "Allegati"
 
@@ -3002,7 +3010,7 @@ msgstr "Numero totale di %(unit)s: %(count)s"
 msgid "%(title)s: %(count)s"
 msgstr "%(title)s: %(count)s"
 
-#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1240
+#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1303
 msgid "(none)"
 msgstr "(nessuno)"
 
@@ -3061,7 +3069,7 @@ msgstr "Il componente \"%(name)s\" esiste già."
 msgid "The component \"%(name)s\" has been added."
 msgstr "Il componente \"%(name)s\" è stato aggiunto."
 
-#: trac/ticket/admin.py:122 trac/ticket/model.py:908 trac/ticket/model.py:924
+#: trac/ticket/admin.py:122 trac/ticket/model.py:878 trac/ticket/model.py:894
 msgid "Invalid component name."
 msgstr "Nome del componente non valido."
 
@@ -3069,101 +3077,101 @@ msgstr "Nome del componente non valido."
 msgid "No component selected"
 msgstr "Nessun componente selezionato"
 
-#: trac/ticket/admin.py:136
+#: trac/ticket/admin.py:138
 msgid "The selected components have been removed."
 msgstr "I componenti selezionati sono stati rimossi."
 
-#: trac/ticket/admin.py:209 trac/ticket/api.py:334
+#: trac/ticket/admin.py:211 trac/ticket/api.py:334
 #: trac/ticket/templates/admin_components.html:88
 msgid "Owner"
 msgstr "In carico a"
 
-#: trac/ticket/admin.py:234 trac/ticket/api.py:344
+#: trac/ticket/admin.py:236 trac/ticket/api.py:344
 msgid "Milestone"
 msgstr "Obiettivo"
 
-#: trac/ticket/admin.py:234 trac/ticket/roadmap.py:1081
+#: trac/ticket/admin.py:236 trac/ticket/roadmap.py:1086
 #: trac/ticket/templates/admin_milestones.html:24
 msgid "Milestones"
 msgstr "Obiettivi"
 
-#: trac/ticket/admin.py:280 trac/ticket/roadmap.py:771
+#: trac/ticket/admin.py:282 trac/ticket/roadmap.py:775
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
 msgstr "L'obiettivo \"%(name)s\" esiste già, per favore scegli un altro nome."
 
-#: trac/ticket/admin.py:289
+#: trac/ticket/admin.py:292
 msgid "No milestone selected"
 msgstr "Nessun obiettivo selezionato"
 
-#: trac/ticket/admin.py:298
+#: trac/ticket/admin.py:309
 msgid "The selected milestones have been removed."
 msgstr "Gli obiettivi selezionati sono stati eliminati."
 
-#: trac/ticket/admin.py:402 trac/ticket/templates/admin_milestones.html:65
+#: trac/ticket/admin.py:413 trac/ticket/templates/admin_milestones.html:65
 msgid "Due"
 msgstr "Data prevista"
 
-#: trac/ticket/admin.py:402 trac/ticket/templates/admin_milestones.html:65
+#: trac/ticket/admin.py:413 trac/ticket/templates/admin_milestones.html:65
 msgid "Completed"
 msgstr "Completato"
 
-#: trac/ticket/admin.py:438 trac/ticket/templates/admin_versions.html:20
+#: trac/ticket/admin.py:449 trac/ticket/templates/admin_versions.html:20
 msgid "Versions"
 msgstr "Versioni"
 
-#: trac/ticket/admin.py:459 trac/ticket/admin.py:492
+#: trac/ticket/admin.py:470 trac/ticket/admin.py:503
 #, python-format
 msgid "Version \"%(name)s\" already exists."
 msgstr "La versione \"%(name)s\" esiste già."
 
-#: trac/ticket/admin.py:486
+#: trac/ticket/admin.py:497
 #, python-format
 msgid "The version \"%(name)s\" has been added."
 msgstr "La versione \"%(name)s\" è stata aggiunta."
 
-#: trac/ticket/admin.py:491 trac/ticket/model.py:1227 trac/ticket/model.py:1242
+#: trac/ticket/admin.py:502 trac/ticket/model.py:1201 trac/ticket/model.py:1216
 msgid "Invalid version name."
 msgstr "Nome di versione non valido."
 
-#: trac/ticket/admin.py:499
+#: trac/ticket/admin.py:510
 msgid "No version selected"
 msgstr "Nessuna versione selezionata"
 
-#: trac/ticket/admin.py:505
+#: trac/ticket/admin.py:517
 msgid "The selected versions have been removed."
 msgstr "Le versioni selezionate sono state eliminate."
 
-#: trac/ticket/admin.py:577
+#: trac/ticket/admin.py:589
 msgid "Time"
 msgstr "Ora"
 
-#: trac/ticket/admin.py:627 trac/ticket/admin.py:655
+#: trac/ticket/admin.py:639 trac/ticket/admin.py:667
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
 msgstr "Il valore \"%(name)s\" per %(type)s esiste già"
 
-#: trac/ticket/admin.py:647
+#: trac/ticket/admin.py:659
 #, python-format
 msgid "The %(field)s value \"%(name)s\" has been added."
 msgstr "Il valore \"%(name)s\" per %(field)s è stato aggiunto."
 
-#: trac/ticket/admin.py:653
+#: trac/ticket/admin.py:665
 #, python-format
 msgid "Invalid %(type)s value."
 msgstr "Valore %(type)s non valido."
 
-#: trac/ticket/admin.py:662
+#: trac/ticket/admin.py:674
 #, python-format
 msgid "No %s selected"
 msgstr "Nessuna %s selezionata"
 
-#: trac/ticket/admin.py:668
+#: trac/ticket/admin.py:682
 #, python-format
 msgid "The selected %(field)s values have been removed."
 msgstr "I valori selezionati per %(field)s sono stati eliminati."
 
-#: trac/ticket/admin.py:690
+#: trac/ticket/admin.py:704
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
@@ -3171,56 +3179,56 @@ msgstr ""
 "Errore durante la scrittura di trac.ini, assicurati che sia scrivibile "
 "dal server web. Il valore di default non è stato memorizzato."
 
-#: trac/ticket/admin.py:702
+#: trac/ticket/admin.py:716
 msgid "Order numbers must be unique"
 msgstr "I numeri d'ordine devono essere univoci"
 
-#: trac/ticket/admin.py:770
+#: trac/ticket/admin.py:784
 msgid "Possible Values"
 msgstr "Valori possibili"
 
-#: trac/ticket/admin.py:787
+#: trac/ticket/admin.py:801
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr "Valore su/giù non valido: %(value)s"
 
-#: trac/ticket/admin.py:806 trac/ticket/api.py:343
+#: trac/ticket/admin.py:820 trac/ticket/api.py:343
 msgid "Priority"
 msgstr "Priorità"
 
-#: trac/ticket/admin.py:806
+#: trac/ticket/admin.py:820
 msgid "Priorities"
 msgstr "Priorità"
 
-#: trac/ticket/admin.py:812 trac/ticket/api.py:348
+#: trac/ticket/admin.py:826 trac/ticket/api.py:348
 msgid "Resolution"
 msgstr "Risoluzione"
 
-#: trac/ticket/admin.py:812
+#: trac/ticket/admin.py:826
 msgid "Resolutions"
 msgstr "Risoluzioni"
 
-#: trac/ticket/admin.py:818 trac/ticket/api.py:347
+#: trac/ticket/admin.py:832 trac/ticket/api.py:347
 msgid "Severity"
 msgstr "Severità"
 
-#: trac/ticket/admin.py:818
+#: trac/ticket/admin.py:832
 msgid "Severities"
 msgstr "Severità"
 
-#: trac/ticket/admin.py:824
+#: trac/ticket/admin.py:838
 msgid "Ticket Type"
 msgstr "Tipo di segnalazione"
 
-#: trac/ticket/admin.py:824
+#: trac/ticket/admin.py:838
 msgid "Ticket Types"
 msgstr "Tipi di segnalazione"
 
-#: trac/ticket/admin.py:851
+#: trac/ticket/admin.py:865
 msgid "<number> must be a number"
 msgstr "<numero> deve essere un numero"
 
-#: trac/ticket/admin.py:854
+#: trac/ticket/admin.py:868
 #, python-format
 msgid "Ticket #%(num)s and all associated data removed."
 msgstr ""
@@ -3252,7 +3260,7 @@ msgstr "Stato"
 msgid "Keywords"
 msgstr "Parole chiave"
 
-#: trac/ticket/api.py:369 trac/ticket/web_ui.py:1593
+#: trac/ticket/api.py:369 trac/ticket/web_ui.py:1594
 msgid "Cc"
 msgstr "Cc"
 
@@ -3260,39 +3268,39 @@ msgstr "Cc"
 msgid "Created"
 msgstr "Creata"
 
-#: trac/ticket/api.py:536
+#: trac/ticket/api.py:534
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "Segnalazioni %(ranges)s"
 
-#: trac/ticket/api.py:563
+#: trac/ticket/api.py:561
 msgid "ticket comment does not exist"
 msgstr "commento alla segnalazione inesistente"
 
-#: trac/ticket/api.py:570
+#: trac/ticket/api.py:568
 #, python-format
 msgid "Description for Ticket #%(id)s"
 msgstr "Descrizione per la segnalazione #%(id)s"
 
-#: trac/ticket/api.py:573
+#: trac/ticket/api.py:571
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Commento %(cnum)s per la segnalazione #%(id)s"
 
-#: trac/ticket/api.py:578
+#: trac/ticket/api.py:576
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr "Commento %(cnum)s"
 
-#: trac/ticket/api.py:582
+#: trac/ticket/api.py:580
 msgid "no permission to view ticket"
 msgstr "non hai i permessi per visualizzare la segnalazione"
 
-#: trac/ticket/api.py:585
+#: trac/ticket/api.py:583
 msgid "ticket does not exist"
 msgstr "la segnalazione non esiste"
 
-#: trac/ticket/api.py:605
+#: trac/ticket/api.py:603
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Segnalazione #%(shortname)s"
@@ -3302,24 +3310,24 @@ msgstr "Segnalazione #%(shortname)s"
 msgid "The changes could not be saved: %(message)s"
 msgstr "Non è stato possibile memorizzare le modifiche: %(message)s"
 
-#: trac/ticket/batch.py:115
+#: trac/ticket/batch.py:117
 msgid "add"
 msgstr "aggiungi"
 
-#: trac/ticket/batch.py:116
+#: trac/ticket/batch.py:118
 msgid "remove"
 msgstr "rimuovi"
 
-#: trac/ticket/batch.py:117
+#: trac/ticket/batch.py:119
 msgid "add / remove"
 msgstr "aggiungi / rimuovi"
 
-#: trac/ticket/batch.py:118
+#: trac/ticket/batch.py:120
 msgid "set to"
 msgstr "imposta a"
 
-#: trac/ticket/batch.py:201 trac/ticket/roadmap.py:807
-#: trac/ticket/roadmap.py:859
+#: trac/ticket/batch.py:203 trac/ticket/roadmap.py:811
+#: trac/ticket/roadmap.py:863
 #, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
@@ -3328,53 +3336,53 @@ msgstr ""
 "Le modifiche sono state memorizzate, ma è occorso un errore durante la "
 "spedizione delle notifiche: %(message)s"
 
-#: trac/ticket/default_workflow.py:244
+#: trac/ticket/default_workflow.py:248
 msgid "from invalid state"
 msgstr "da stato non valido"
 
-#: trac/ticket/default_workflow.py:245
+#: trac/ticket/default_workflow.py:249
 msgid "Current state no longer exists"
 msgstr "Lo stato corrente non esiste più"
 
-#: trac/ticket/default_workflow.py:247
+#: trac/ticket/default_workflow.py:251
 msgid "The ticket will be disowned"
 msgstr "La segnalazione rimarrà senza incaricato"
 
-#: trac/ticket/default_workflow.py:283 trac/ticket/default_workflow.py:297
-#: trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:287 trac/ticket/default_workflow.py:301
+#: trac/ticket/default_workflow.py:315
 #, python-format
 msgid "to %(owner)s"
 msgstr "a %(owner)s"
 
-#: trac/ticket/default_workflow.py:286
+#: trac/ticket/default_workflow.py:290
 msgid "The owner will be the specified user"
 msgstr "L'incaricato verrà impostato all'utente specificato"
 
-#: trac/ticket/default_workflow.py:288
+#: trac/ticket/default_workflow.py:292
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
 msgstr "L'incaricato cambierà da %(current_owner)s all'utente specificato"
 
-#: trac/ticket/default_workflow.py:299 trac/ticket/default_workflow.py:324
+#: trac/ticket/default_workflow.py:303 trac/ticket/default_workflow.py:328
 #, python-format
 msgid "The owner will be %(new_owner)s"
 msgstr "L'incaricato sarà %(new_owner)s"
 
-#: trac/ticket/default_workflow.py:302 trac/ticket/default_workflow.py:327
+#: trac/ticket/default_workflow.py:306 trac/ticket/default_workflow.py:331
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(new_owner)s"
 msgstr "L'incaricato cambierà da %(current_owner)s a %(new_owner)s"
 
-#: trac/ticket/default_workflow.py:315
+#: trac/ticket/default_workflow.py:319
 msgid "The owner will be the selected user"
 msgstr "L'incaricato sarà l'utente selezionato"
 
-#: trac/ticket/default_workflow.py:317
+#: trac/ticket/default_workflow.py:321
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr "L'incaricato cambierà da %(current_owner)s all'utente selezionato"
 
-#: trac/ticket/default_workflow.py:337
+#: trac/ticket/default_workflow.py:341
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -3383,49 +3391,49 @@ msgstr ""
 "ne sono di definite (problema di configurazione, contattare "
 "l'amministratore dell'ambiente Trac)."
 
-#: trac/ticket/default_workflow.py:345 trac/ticket/default_workflow.py:355
+#: trac/ticket/default_workflow.py:349 trac/ticket/default_workflow.py:359
 #, python-format
 msgid "as %(resolution)s"
 msgstr "come %(resolution)s"
 
-#: trac/ticket/default_workflow.py:347
+#: trac/ticket/default_workflow.py:351
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "La risoluzione verrà impostata a \"%(name)s\""
 
-#: trac/ticket/default_workflow.py:358
+#: trac/ticket/default_workflow.py:362
 msgid "The resolution will be set"
 msgstr "La risoluzione verrà impostata"
 
-#: trac/ticket/default_workflow.py:360
+#: trac/ticket/default_workflow.py:364
 msgid "The resolution will be deleted"
 msgstr "La risoluzione verrà cancellata"
 
-#: trac/ticket/default_workflow.py:363
+#: trac/ticket/default_workflow.py:367
 #, python-format
 msgid "as %(status)s"
 msgstr "come %(status)s"
 
-#: trac/ticket/default_workflow.py:366
+#: trac/ticket/default_workflow.py:370
 #, python-format
 msgid "The owner will remain %(current_owner)s"
 msgstr "L'incaricato rimarrà %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:369
+#: trac/ticket/default_workflow.py:373
 msgid "The ticket will remain with no owner"
 msgstr "La segnalazione rimarrà senza incaricato"
 
-#: trac/ticket/default_workflow.py:372
+#: trac/ticket/default_workflow.py:376
 #, python-format
 msgid "The status will be '%(name)s'"
 msgstr "Lo stato sarà \"%(name)s\""
 
-#: trac/ticket/default_workflow.py:375
+#: trac/ticket/default_workflow.py:379
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Lo stato successivo sarà \"%(name)s\""
 
-#: trac/ticket/default_workflow.py:522
+#: trac/ticket/default_workflow.py:570
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3522,11 +3530,11 @@ msgstr ""
 "    }}}\n"
 "}}}"
 
-#: trac/ticket/default_workflow.py:583
+#: trac/ticket/default_workflow.py:631
 msgid "Error parsing workflow."
 msgstr "Errore eseguendo il parse del workflow."
 
-#: trac/ticket/default_workflow.py:617
+#: trac/ticket/default_workflow.py:665
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "Abilita il JavaScript per visualizzare il grafo del flusso di lavoro."
 
@@ -3543,53 +3551,53 @@ msgstr "Numero della segnalazione non valido"
 msgid "Multi-values fields not supported yet"
 msgstr "I campi multi-valore non sono ancora supportati"
 
-#: trac/ticket/model.py:749
+#: trac/ticket/model.py:719
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:786 trac/ticket/model.py:808
+#: trac/ticket/model.py:756 trac/ticket/model.py:778
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Nome di %(type)s non valido."
 
-#: trac/ticket/model.py:885
+#: trac/ticket/model.py:855
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Il componente \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:1025 trac/ticket/model.py:1140
+#: trac/ticket/model.py:995 trac/ticket/model.py:1110
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "L'obiettivo \"%(name)s\" non esiste."
 
-#: trac/ticket/model.py:1026 trac/ticket/model.py:1075
-#: trac/ticket/model.py:1094 trac/ticket/model.py:1141
+#: trac/ticket/model.py:996 trac/ticket/model.py:1045 trac/ticket/model.py:1064
+#: trac/ticket/model.py:1111
 msgid "Invalid milestone name."
 msgstr "Nome dell'obiettivo non valido."
 
-#: trac/ticket/model.py:1204
+#: trac/ticket/model.py:1178
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "La versione \"%(name)s\" non esiste."
 
-#: trac/ticket/notification.py:288
+#: trac/ticket/notification.py:294
 msgid "Ticket that I own is created or modified"
 msgstr "Segnalazione in carico a me viene creata o modificata"
 
-#: trac/ticket/notification.py:332
+#: trac/ticket/notification.py:338
 msgid "I update a ticket"
 msgstr "Segnalazione modificata da me"
 
-#: trac/ticket/notification.py:386
+#: trac/ticket/notification.py:392
 msgid "Ticket that I previously updated is modified"
 msgstr "Segnalazione che ho aggiornato in precedenza viene modificata"
 
-#: trac/ticket/notification.py:432
+#: trac/ticket/notification.py:438
 msgid "Ticket that I reported is modified"
 msgstr "Segnalazione che ho creato viene modificata"
 
-#: trac/ticket/notification.py:487
+#: trac/ticket/notification.py:493
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr "Segnalazione dove sono elencato nel campo CC viene modificata"
 
@@ -3597,100 +3605,104 @@ msgstr "Segnalazione dove sono elencato nel campo CC viene modificata"
 msgid "Invalid query constraint value"
 msgstr "Valore del filtro non valido"
 
-#: trac/ticket/query.py:93
+#: trac/ticket/query.py:94
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "La pagina \"%(page)s\" non è valida."
 
-#: trac/ticket/query.py:108
+#: trac/ticket/query.py:109
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "Il valore massimo %(max)s non è valido."
 
-#: trac/ticket/query.py:167
+#: trac/ticket/query.py:168
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "Il filtro richiede un campo e un valore separati da un \"=\""
 
-#: trac/ticket/query.py:180
+#: trac/ticket/query.py:181
 msgid "Query filter requires field name"
 msgstr "Il filtro richiede il nome di un campo"
 
-#: trac/ticket/query.py:307
+#: trac/ticket/query.py:308
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "\"%(page)s\" è superiore al numero di pagine del risultato della ricerca"
 
-#: trac/ticket/query.py:572
+#: trac/ticket/query.py:581
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr "La lista di numeri di segnalazioni non è valida: %(value)s"
 
-#: trac/ticket/query.py:675 trac/ticket/query.py:683
+#: trac/ticket/query.py:687 trac/ticket/query.py:694
 msgid "contains"
 msgstr "contiene"
 
-#: trac/ticket/query.py:676 trac/ticket/query.py:684
+#: trac/ticket/query.py:688 trac/ticket/query.py:695
 msgid "doesn't contain"
 msgstr "non contiene"
 
-#: trac/ticket/query.py:677
+#: trac/ticket/query.py:689
 msgid "begins with"
 msgstr "inizia con"
 
-#: trac/ticket/query.py:678
+#: trac/ticket/query.py:690
 msgid "ends with"
 msgstr "termina con"
 
-#: trac/ticket/query.py:679 trac/ticket/query.py:687 trac/ticket/query.py:691
+#: trac/ticket/query.py:691 trac/ticket/query.py:697 trac/ticket/query.py:700
 msgid "is"
 msgstr "è"
 
-#: trac/ticket/query.py:680 trac/ticket/query.py:688 trac/ticket/query.py:692
+#: trac/ticket/query.py:692 trac/ticket/query.py:698 trac/ticket/query.py:701
 msgid "is not"
 msgstr "non è"
 
-#: trac/ticket/query.py:722 trac/ticket/query.py:728
+#: trac/ticket/query.py:731 trac/ticket/query.py:737
 msgid "Ticket"
 msgstr "Segnalazione"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:324 trac/ticket/report.py:614
-#: trac/ticket/web_ui.py:136 trac/timeline/web_ui.py:237
+#: trac/ticket/query.py:861 trac/ticket/report.py:324 trac/ticket/report.py:614
+#: trac/ticket/web_ui.py:137 trac/timeline/web_ui.py:237
 #: trac/versioncontrol/web_ui/log.py:325
 msgid "RSS Feed"
 msgstr "Flusso RSS"
 
-#: trac/ticket/query.py:853 trac/ticket/report.py:326 trac/ticket/report.py:616
-#: trac/ticket/web_ui.py:132
+#: trac/ticket/query.py:863 trac/ticket/report.py:326 trac/ticket/report.py:616
+#: trac/ticket/web_ui.py:133
 msgid "Comma-delimited Text"
 msgstr "Testo delimitato da virgole"
 
-#: trac/ticket/query.py:855 trac/ticket/report.py:328 trac/ticket/report.py:618
-#: trac/ticket/web_ui.py:134
+#: trac/ticket/query.py:865 trac/ticket/report.py:328 trac/ticket/report.py:618
+#: trac/ticket/web_ui.py:135
 msgid "Tab-delimited Text"
 msgstr "Testo delimitato da tabulazioni"
 
-#: trac/ticket/query.py:879 trac/ticket/report.py:136
+#: trac/ticket/query.py:889 trac/ticket/report.py:136
 msgid "View Tickets"
 msgstr "Segnalazioni"
 
-#: trac/ticket/query.py:1100 trac/ticket/query.py:1112
-#: trac/ticket/report.py:205 trac/ticket/templates/report_list.html:67
+#: trac/ticket/query.py:1109
 msgid "Custom Query"
 msgstr "Ricerca personalizzata"
 
-#: trac/ticket/query.py:1111 trac/ticket/report.py:197
+#: trac/ticket/query.py:1120 trac/ticket/report.py:197
 #: trac/ticket/report.py:198 trac/ticket/report.py:200
 #: trac/ticket/templates/report_list.html:20
 #: trac/ticket/templates/report_list.html:38
 msgid "Available Reports"
 msgstr "Report disponibili"
 
-#: trac/ticket/query.py:1239
+#: trac/ticket/query.py:1121 trac/ticket/report.py:205
+#: trac/ticket/templates/report_list.html:67
+msgid "New Custom Query"
+msgstr "Nuova ricerca personalizzata"
+
+#: trac/ticket/query.py:1248
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[Errore: %(error)s]"
 
-#: trac/ticket/query.py:1245
+#: trac/ticket/query.py:1254
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3820,28 +3832,28 @@ msgstr ""
 "Inoltre, è ancora consentito l'utilizzo di \"&\" come separatore dei "
 "campi (tranne che nel caso di `order`), ma è deprecato."
 
-#: trac/ticket/query.py:1365
+#: trac/ticket/query.py:1374
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] "%(num)s segnalazione corrispondente a %(criteria)s"
 msgstr[1] "%(num)s segnalazioni corrispondenti a %(criteria)s"
 
-#: trac/ticket/query.py:1442
+#: trac/ticket/query.py:1451
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "Stato avanzamento della segnalazione per ciascun %(group)s"
 
-#: trac/ticket/query.py:1457
+#: trac/ticket/query.py:1466
 msgid "No results"
 msgstr "Nessun risultato"
 
-#: trac/ticket/query.py:1475
+#: trac/ticket/query.py:1484
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "Segnalazioni per %(groupvalue)s %(groupname)s corrispondenti a %(query)s"
 
-#: trac/ticket/query.py:1499
+#: trac/ticket/query.py:1508
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "Segnalazioni per %(groupvalue)s %(groupname)s:"
@@ -3963,7 +3975,7 @@ msgid "Closed"
 msgstr "Chiusa"
 
 #: trac/ticket/roadmap.py:420 trac/ticket/roadmap.py:544
-#: trac/ticket/roadmap.py:683 trac/ticket/templates/roadmap.html:20
+#: trac/ticket/roadmap.py:687 trac/ticket/templates/roadmap.html:20
 #: trac/ticket/templates/roadmap.html:42
 msgid "Roadmap"
 msgstr "Obiettivi"
@@ -3972,7 +3984,7 @@ msgstr "Obiettivi"
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:556 trac/ticket/roadmap.py:1055
+#: trac/ticket/roadmap.py:556 trac/ticket/roadmap.py:1060
 #: trac/ticket/templates/milestone_view.html:20
 #: trac/ticket/templates/milestone_view.html:33
 #, python-format
@@ -3984,24 +3996,24 @@ msgstr "Obiettivo %(name)s"
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr "Segnalazione #%(num)s: %(summary)s"
 
-#: trac/ticket/roadmap.py:639
+#: trac/ticket/roadmap.py:643
 msgid "Milestones completed"
 msgstr "Obiettivi completati"
 
-#: trac/ticket/roadmap.py:665
+#: trac/ticket/roadmap.py:669
 #, python-format
 msgid "Milestone %(name)s completed"
 msgstr "Obiettivo %(name)s completato"
 
-#: trac/ticket/roadmap.py:752
+#: trac/ticket/roadmap.py:756
 msgid "Completion date may not be in the future"
 msgstr "La data di completamento non può essere nel futuro"
 
-#: trac/ticket/roadmap.py:774
+#: trac/ticket/roadmap.py:778
 msgid "You must provide a name for the milestone."
 msgstr "Devi fornire un nome per l'obiettivo."
 
-#: trac/ticket/roadmap.py:788
+#: trac/ticket/roadmap.py:792
 #, python-format
 msgid ""
 "The open tickets associated with milestone \"%(name)s\" have been "
@@ -4010,21 +4022,21 @@ msgstr ""
 "Le segnalazioni aperte associate all'obiettivo \"%(name)s\" sono state "
 "spostate sull'obiettivo \"%(retarget)s\"."
 
-#: trac/ticket/roadmap.py:794
+#: trac/ticket/roadmap.py:798
 msgid "Open tickets retargeted after milestone closed"
 msgstr "Segnalazioni spostate in seguito alla chiusura dell'obiettivo"
 
-#: trac/ticket/roadmap.py:811
+#: trac/ticket/roadmap.py:815
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "L'obiettivo \"%(name)s\" è stato aggiunto."
 
-#: trac/ticket/roadmap.py:839
+#: trac/ticket/roadmap.py:843
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
 msgstr "L'obiettivo \"%(name)s\" è stato eliminato."
 
-#: trac/ticket/roadmap.py:842
+#: trac/ticket/roadmap.py:846
 #, python-format
 msgid ""
 "The tickets associated with milestone \"%(name)s\" have been retargeted "
@@ -4033,127 +4045,127 @@ msgstr ""
 "Le segnalazioni associate all'obiettivo \"%(name)s\" sono state spostate "
 "sull'obiettivo \"%(retarget)s\"."
 
-#: trac/ticket/roadmap.py:847
+#: trac/ticket/roadmap.py:851
 msgid "Tickets retargeted after milestone deleted"
 msgstr "Segnalazioni spostate in seguito alla cancellazione dell'obiettivo"
 
-#: trac/ticket/roadmap.py:912
+#: trac/ticket/roadmap.py:917
 #, python-format
 msgid "Milestone %(name)s does not exist. You can create it here."
 msgstr "L'obiettivo \"%(name)s\" non esiste. Puoi crearlo qui."
 
-#: trac/ticket/roadmap.py:973
+#: trac/ticket/roadmap.py:978
 #, python-format
 msgid "Milestone \"%(name)s\""
 msgstr "Obiettivo \"%(name)s\""
 
-#: trac/ticket/roadmap.py:987
+#: trac/ticket/roadmap.py:992
 msgid "Previous Milestone"
 msgstr "Obiettivo precedente"
 
-#: trac/ticket/roadmap.py:987
+#: trac/ticket/roadmap.py:992
 msgid "Next Milestone"
 msgstr "Obiettivo successivo"
 
-#: trac/ticket/roadmap.py:988
+#: trac/ticket/roadmap.py:993
 msgid "Back to Roadmap"
 msgstr "Torna agli obiettivi"
 
-#: trac/ticket/roadmap.py:1024 trac/ticket/templates/milestone_view.html:37
+#: trac/ticket/roadmap.py:1029 trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:53
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
 msgstr "Completato %(duration)s fa (%(date)s)"
 
-#: trac/ticket/roadmap.py:1029
+#: trac/ticket/roadmap.py:1034
 #, python-format
 msgid "%(duration)s late (%(date)s)"
 msgstr "%(duration)s in ritardo (%(date)s)"
 
-#: trac/ticket/roadmap.py:1034 trac/ticket/templates/milestone_view.html:47
+#: trac/ticket/roadmap.py:1039 trac/ticket/templates/milestone_view.html:47
 #: trac/ticket/templates/roadmap.html:63
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
 msgstr "Previsto in %(duration)s (%(date)s)"
 
-#: trac/ticket/roadmap.py:1037 trac/ticket/templates/milestone_view.html:51
+#: trac/ticket/roadmap.py:1042 trac/ticket/templates/milestone_view.html:51
 #: trac/ticket/templates/roadmap.html:67
 msgid "No date set"
 msgstr "Nessuna data impostata"
 
-#: trac/ticket/web_ui.py:65
+#: trac/ticket/web_ui.py:66
 msgid "Invalid Ticket"
 msgstr "Segnalazione non valida"
 
-#: trac/ticket/web_ui.py:158 trac/ticket/templates/ticket.html:24
+#: trac/ticket/web_ui.py:159 trac/ticket/templates/ticket.html:24
 msgid "New Ticket"
 msgstr "Nuova segnalazione"
 
-#: trac/ticket/web_ui.py:174
+#: trac/ticket/web_ui.py:175
 msgid "id can't be set for a new ticket request."
 msgstr "L'id non può essere impostato alla richiesta di nuova segnalazione."
 
-#: trac/ticket/web_ui.py:190 trac/ticket/templates/admin_milestones.html:68
+#: trac/ticket/web_ui.py:191 trac/ticket/templates/admin_milestones.html:68
 msgid "Tickets"
 msgstr "Segnalazioni"
 
-#: trac/ticket/web_ui.py:224 trac/ticket/web_ui.py:276
-#: trac/versioncontrol/web_ui/changeset.py:1025
+#: trac/ticket/web_ui.py:225 trac/ticket/web_ui.py:277
+#: trac/versioncontrol/web_ui/changeset.py:1024
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
-#: trac/ticket/web_ui.py:238
+#: trac/ticket/web_ui.py:239
 msgid "Tickets opened and closed"
 msgstr "Segnalazioni aperte e chiuse"
 
-#: trac/ticket/web_ui.py:240
+#: trac/ticket/web_ui.py:241
 msgid "Ticket updates"
 msgstr "Aggiornamenti alle segnalazioni"
 
-#: trac/ticket/web_ui.py:270 trac/ticket/web_ui.py:1235
+#: trac/ticket/web_ui.py:271 trac/ticket/web_ui.py:1234
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s modificata"
 msgstr[1] "%(labels)s modificate"
 
-#: trac/ticket/web_ui.py:389
+#: trac/ticket/web_ui.py:390
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) created"
 msgstr "Segnalazione %(ticketref)s (%(summary)s) creata"
 
-#: trac/ticket/web_ui.py:390
+#: trac/ticket/web_ui.py:391
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) reopened"
 msgstr "Segnalazione %(ticketref)s (%(summary)s) riaperta"
 
-#: trac/ticket/web_ui.py:391
+#: trac/ticket/web_ui.py:392
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) closed"
 msgstr "Segnalazione %(ticketref)s (%(summary)s) chiusa"
 
-#: trac/ticket/web_ui.py:392
+#: trac/ticket/web_ui.py:393
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) updated"
 msgstr "Segnalazione %(ticketref)s (%(summary)s) aggiornata"
 
-#: trac/ticket/web_ui.py:426
+#: trac/ticket/web_ui.py:427
 #, python-format
 msgid "Tickets %(ticketids)s"
 msgstr "Segnalazioni %(ticketids)s"
 
-#: trac/ticket/web_ui.py:428
+#: trac/ticket/web_ui.py:429
 #, python-format
 msgid "Tickets %(ticketlist)s batch updated"
 msgstr "Segnalazioni %(ticketlist)s aggiornate massivamente"
 
-#: trac/ticket/web_ui.py:499 trac/ticket/web_ui.py:623
+#: trac/ticket/web_ui.py:500 trac/ticket/web_ui.py:623
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "L'azione \"%(name)s\" non è disponibile."
 
-#: trac/ticket/web_ui.py:514 trac/ticket/web_ui.py:649
+#: trac/ticket/web_ui.py:515 trac/ticket/web_ui.py:649
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
@@ -4196,8 +4208,8 @@ msgstr "Nessuna differenza da mostrare"
 #: trac/ticket/web_ui.py:962 trac/ticket/web_ui.py:1019
 #: trac/ticket/web_ui.py:1027 trac/ticket/web_ui.py:1098
 #: trac/ticket/web_ui.py:1143 trac/ticket/web_ui.py:1150
-#: trac/wiki/web_ui.py:468 trac/wiki/web_ui.py:474 trac/wiki/web_ui.py:682
-#: trac/wiki/web_ui.py:696
+#: trac/wiki/web_ui.py:477 trac/wiki/web_ui.py:483 trac/wiki/web_ui.py:691
+#: trac/wiki/web_ui.py:705
 #, python-format
 msgid "Version %(num)s"
 msgstr "Versione %(num)s"
@@ -4216,12 +4228,12 @@ msgid "Property %(label)s %(rendered)s"
 msgstr "Proprietà \"%(label)s\" %(rendered)s"
 
 #: trac/ticket/web_ui.py:1029 trac/ticket/web_ui.py:1152
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:487
+#: trac/versioncontrol/web_ui/changeset.py:368 trac/wiki/web_ui.py:496
 msgid "Previous Change"
 msgstr "Modifica precedente"
 
 #: trac/ticket/web_ui.py:1029 trac/ticket/web_ui.py:1152
-#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:487
+#: trac/versioncontrol/web_ui/changeset.py:368 trac/wiki/web_ui.py:496
 msgid "Next Change"
 msgstr "Modifica successiva"
 
@@ -4255,41 +4267,41 @@ msgstr ""
 msgid "Ticket Comment Diff"
 msgstr "Diff commento"
 
-#: trac/ticket/web_ui.py:1239
+#: trac/ticket/web_ui.py:1238
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
 msgstr[0] "%(labels)s impostata"
 msgstr[1] "%(labels)s impostate"
 
-#: trac/ticket/web_ui.py:1243
+#: trac/ticket/web_ui.py:1242
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
 msgstr[0] "%(labels)s eliminata"
 msgstr[1] "%(labels)s eliminate"
 
-#: trac/ticket/web_ui.py:1244 trac/ticket/web_ui.py:1840
+#: trac/ticket/web_ui.py:1243 trac/ticket/web_ui.py:1843
 msgid "; "
 msgstr "; "
 
-#: trac/ticket/web_ui.py:1266
+#: trac/ticket/web_ui.py:1265
 msgid "No permission to edit the ticket description."
 msgstr "Non hai i permessi per modificare la descrizione della segnalazione."
 
-#: trac/ticket/web_ui.py:1272
+#: trac/ticket/web_ui.py:1271
 msgid "No permission to change the ticket reporter."
 msgstr "Non hai i permessi per modificare chi ha inserito la segnalazione."
 
-#: trac/ticket/web_ui.py:1277
+#: trac/ticket/web_ui.py:1276
 msgid "No permission to change ticket fields."
 msgstr "Non hai i permessi per modificare i campi della segnalazione."
 
-#: trac/ticket/web_ui.py:1286
+#: trac/ticket/web_ui.py:1285
 msgid "No permissions to add a comment."
 msgstr "Non hai i permessi per aggiungere un commento."
 
-#: trac/ticket/web_ui.py:1293
+#: trac/ticket/web_ui.py:1292
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -4297,46 +4309,46 @@ msgstr ""
 "Spiacente, non è possibile salvare le modifiche. Questa segnalazione è "
 "stata modificata da qualcun altro dopo l'inizio delle tue modifiche."
 
-#: trac/ticket/web_ui.py:1300
+#: trac/ticket/web_ui.py:1299
 msgid "Tickets must contain a summary."
 msgstr "La segnalazione deve contenere un sommario."
 
-#: trac/ticket/web_ui.py:1314
+#: trac/ticket/web_ui.py:1313
 #, python-format
 msgid "\"%(value)s\" is not a valid value for the %(name)s field."
 msgstr "\"%(value)s\" non è un valore valido per il campo \"%(name)s.\""
 
-#: trac/ticket/web_ui.py:1319
+#: trac/ticket/web_ui.py:1318
 #, python-format
 msgid "field %(name)s must be set"
 msgstr "Il campo \"%(name)s\" deve essere impostato"
 
-#: trac/ticket/web_ui.py:1325
+#: trac/ticket/web_ui.py:1324
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr ""
 "La descrizione della segnalazione è troppo lunga (dev'essere inferiore ai"
 " %(num)s caratteri)"
 
-#: trac/ticket/web_ui.py:1332
+#: trac/ticket/web_ui.py:1331
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr ""
 "La descrizione della segnalazione è troppo lunga (dev'essere inferiore ai"
 " %(num)s caratteri)"
 
-#: trac/ticket/web_ui.py:1339
+#: trac/ticket/web_ui.py:1338
 #, python-format
 msgid "Ticket summary is too long (must be less than %(num)s characters)"
 msgstr ""
 "La descrizione della segnalazione è troppo lunga (dev'essere inferiore ai"
 " %(num)s caratteri)"
 
-#: trac/ticket/web_ui.py:1352
+#: trac/ticket/web_ui.py:1351
 msgid "Invalid comment threading identifier"
 msgstr "Identificatore del gruppo del commento non valido"
 
-#: trac/ticket/web_ui.py:1377
+#: trac/ticket/web_ui.py:1376
 #, python-format
 msgid "The ticket field %(field)s is invalid: %(message)s"
 msgstr "Il campo \"%(field)s\" della segnalazione non è valido: %(message)s"
@@ -4369,11 +4381,11 @@ msgstr ""
 "vederla."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1445
+#: trac/ticket/web_ui.py:1446
 msgid "change"
 msgstr "modifica"
 
-#: trac/ticket/web_ui.py:1451
+#: trac/ticket/web_ui.py:1452
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
@@ -4382,7 +4394,7 @@ msgstr ""
 "La %(change)s è stata memorizzata, ma è occorso un errore durante la "
 "spedizione delle notifiche: %(message)s"
 
-#: trac/ticket/web_ui.py:1493
+#: trac/ticket/web_ui.py:1494
 #, python-format
 msgid ""
 "%(controller1)s changed \"%(key)s\" to \"%(val1)s\", but %(controller2)s "
@@ -4391,65 +4403,65 @@ msgstr ""
 "%(controller1)s ha modificato \"%(key)s\" a \"%(val1)s\", ma "
 "%(controller2)s ha impostato il valore a \"%(val2)s\"."
 
-#: trac/ticket/web_ui.py:1591
+#: trac/ticket/web_ui.py:1592
 msgid "Add to Cc"
 msgstr "Aggiungi a Cc"
 
-#: trac/ticket/web_ui.py:1592
+#: trac/ticket/web_ui.py:1593
 msgid "Remove from Cc"
 msgstr "Rimuovi da Cc"
 
-#: trac/ticket/web_ui.py:1628 trac/ticket/templates/query.html:124
+#: trac/ticket/web_ui.py:1629 trac/ticket/templates/query.html:133
 msgid "yes"
 msgstr "sì"
 
-#: trac/ticket/web_ui.py:1628 trac/ticket/templates/query.html:127
+#: trac/ticket/web_ui.py:1629 trac/ticket/templates/query.html:136
 msgid "no"
 msgstr "no"
 
-#: trac/ticket/web_ui.py:1809
+#: trac/ticket/web_ui.py:1812
 msgid "set"
 msgstr "attivata"
 
-#: trac/ticket/web_ui.py:1809
+#: trac/ticket/web_ui.py:1812
 msgid "unset"
 msgstr "disattivata"
 
-#: trac/ticket/web_ui.py:1812 trac/versioncontrol/templates/changeset.html:199
+#: trac/ticket/web_ui.py:1815 trac/versioncontrol/templates/changeset.html:200
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "modificato"
 
-#: trac/ticket/web_ui.py:1818
+#: trac/ticket/web_ui.py:1821
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "modificata (%(diff)s)"
 
-#: trac/ticket/web_ui.py:1836
+#: trac/ticket/web_ui.py:1839
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s aggiunto"
 msgstr[1] "%(items)s aggiunti"
 
-#: trac/ticket/web_ui.py:1838
+#: trac/ticket/web_ui.py:1841
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] "%(items)s eliminato"
 msgstr[1] "%(items)s eliminati"
 
-#: trac/ticket/web_ui.py:1847
+#: trac/ticket/web_ui.py:1848
 #, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s eliminato"
 
-#: trac/ticket/web_ui.py:1849
+#: trac/ticket/web_ui.py:1850
 #, python-format
 msgid "set to %(value)s"
 msgstr "impostata a \"%(value)s\""
 
-#: trac/ticket/web_ui.py:1852
+#: trac/ticket/web_ui.py:1853
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "modificata da \"%(old)s\" a \"%(new)s\""
@@ -4478,7 +4490,7 @@ msgstr "Descrizione: (qui puoi usare la [1:WikiFormatting])"
 #: trac/ticket/templates/admin_enums.html:43
 #: trac/ticket/templates/admin_versions.html:58
 #: trac/ticket/templates/milestone_edit_form.html:124
-#: trac/ticket/templates/ticket.html:373
+#: trac/ticket/templates/ticket.html:375
 #: trac/ticket/templates/ticket_change.html:125
 #: trac/versioncontrol/templates/admin_repositories.html:105
 #: trac/wiki/templates/wiki_edit_comment.html:32
@@ -4681,7 +4693,6 @@ msgid "Retarget associated tickets to milestone"
 msgstr "Riassegna le segnalazioni associate all'obiettivo"
 
 #: trac/ticket/templates/milestone_delete.html:43
-#: trac/ticket/templates/milestone_edit_form.html:110
 msgid "There are no tickets associated with this milestone."
 msgstr "Non ci sono segnalazioni associate a questo obiettivo."
 
@@ -4741,6 +4752,10 @@ msgstr "Riassegna"
 msgid "Retarget associated open tickets to milestone:"
 msgstr "Riassegna le segnalazioni aperte associate all'obiettivo:"
 
+#: trac/ticket/templates/milestone_edit_form.html:110
+msgid "There are no open tickets associated with this milestone."
+msgstr "Non ci sono segnalazioni aperte associate a questo obiettivo."
+
 #: trac/ticket/templates/milestone_edit_form.html:126
 msgid "Add milestone"
 msgstr "Aggiungi obiettivo"
@@ -4781,7 +4796,7 @@ msgstr "Filtri"
 msgid "Query filters"
 msgstr "Filtri della query"
 
-#: trac/ticket/templates/query.html:61 trac/ticket/templates/query.html:167
+#: trac/ticket/templates/query.html:61 trac/ticket/templates/query.html:176
 msgid "Or"
 msgstr "oppure"
 
@@ -4789,7 +4804,7 @@ msgstr "oppure"
 msgid "or"
 msgstr "o di un"
 
-#: trac/ticket/templates/query.html:139
+#: trac/ticket/templates/query.html:148
 msgid ""
 "[1:between]\n"
 "                            [2:]\n"
@@ -4797,63 +4812,63 @@ msgid ""
 "                            [4:]"
 msgstr "[1:tra] [2:] [3:e] [4:]"
 
-#: trac/ticket/templates/query.html:153
+#: trac/ticket/templates/query.html:162
 msgid "And"
 msgstr "e"
 
-#: trac/ticket/templates/query.html:186
+#: trac/ticket/templates/query.html:195
 msgid "Columns"
 msgstr "Colonne"
 
-#: trac/ticket/templates/query.html:199
+#: trac/ticket/templates/query.html:208
 msgid "Group results by"
 msgstr "Raggruppa i risultati per"
 
-#: trac/ticket/templates/query.html:210
+#: trac/ticket/templates/query.html:219
 msgid "descending"
 msgstr "discendente"
 
-#: trac/ticket/templates/query.html:214
+#: trac/ticket/templates/query.html:223
 msgid "Show under each result:"
 msgstr "Mostra sotto a ciascun risultato:"
 
-#: trac/ticket/templates/query.html:224
+#: trac/ticket/templates/query.html:233
 #: trac/ticket/templates/report_view.html:37
 msgid "Max items per page"
 msgstr "Numero massimo di elementi per pagina"
 
-#: trac/ticket/templates/query.html:247
+#: trac/ticket/templates/query.html:256
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "Modifica il report {%(id)s} corrispondente a questa ricerca"
 
-#: trac/ticket/templates/query.html:247
+#: trac/ticket/templates/query.html:256
 msgid "Edit query"
 msgstr "Modifica ricerca"
 
-#: trac/ticket/templates/query.html:256
+#: trac/ticket/templates/query.html:265
 msgid "Save query"
 msgstr "Conferma modifiche alla ricerca"
 
-#: trac/ticket/templates/query.html:256
+#: trac/ticket/templates/query.html:265
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "Conferma le modifiche alla ricerca nel report {%(id)s}"
 
-#: trac/ticket/templates/query.html:256
+#: trac/ticket/templates/query.html:265
 msgid "Create new report from current query"
 msgstr "Crea nuovo report dalla ricerca corrente"
 
-#: trac/ticket/templates/query.html:264
+#: trac/ticket/templates/query.html:273
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "Elimina il report {%(id)s} corrispondente a questa ricerca"
 
-#: trac/ticket/templates/query.html:264
+#: trac/ticket/templates/query.html:273
 msgid "Delete query"
 msgstr "Elimina query"
 
-#: trac/ticket/templates/query.html:271
+#: trac/ticket/templates/query.html:280
 msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
@@ -5115,37 +5130,37 @@ msgstr "Sommario:"
 msgid "Reporter:"
 msgstr "Segnalatore:"
 
-#: trac/ticket/templates/ticket.html:216 trac/ticket/templates/ticket.html:345
+#: trac/ticket/templates/ticket.html:216 trac/ticket/templates/ticket.html:347
 msgid "You may use [1:WikiFormatting] here."
 msgstr "Qui puoi usare la [1:WikiFormatting]."
 
-#: trac/ticket/templates/ticket.html:232
+#: trac/ticket/templates/ticket.html:234
 #: trac/ticket/templates/ticket_box.html:84
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:277
+#: trac/ticket/templates/ticket.html:279
 msgid "Set your email in [1:Preferences]"
 msgstr "Imposta il tuo indirizzo email nelle [1:Preferences]"
 
-#: trac/ticket/templates/ticket.html:281
+#: trac/ticket/templates/ticket.html:283
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 "Questa spunta consente di aggiungere o togliere il tuo nominativo dalla "
 "lista CC."
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:293
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Sono accettati sia indirizzi email che nomi di utenti, separati da spazi "
 "o da una virgola."
 
-#: trac/ticket/templates/ticket.html:317
+#: trac/ticket/templates/ticket.html:319
 msgid "Add Comment"
 msgstr "Aggiungi un Commento"
 
-#: trac/ticket/templates/ticket.html:319
+#: trac/ticket/templates/ticket.html:321
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -5161,19 +5176,19 @@ msgstr ""
 "In ogni caso, puoi procedere e sovrascrivere con le tue modifiche, se lo "
 "desideri."
 
-#: trac/ticket/templates/ticket.html:357
+#: trac/ticket/templates/ticket.html:359
 msgid "I have files to attach to this ticket"
 msgstr "Ho dei file da allegare a questa segnalazione"
 
-#: trac/ticket/templates/ticket.html:363
+#: trac/ticket/templates/ticket.html:365
 msgid "Go to the list of attachments"
 msgstr "Vai alla lista degli allegati"
 
-#: trac/ticket/templates/ticket.html:364
+#: trac/ticket/templates/ticket.html:366
 msgid "View the ticket description"
 msgstr "Mostra la descrizione della segnalazione"
 
-#: trac/ticket/templates/ticket.html:372
+#: trac/ticket/templates/ticket.html:374
 #: trac/ticket/templates/ticket_change.html:123
 #: trac/wiki/templates/wiki_edit.html:102
 #: trac/wiki/templates/wiki_edit.html:164
@@ -5181,11 +5196,11 @@ msgstr "Mostra la descrizione della segnalazione"
 msgid "Preview"
 msgstr "Anteprima"
 
-#: trac/ticket/templates/ticket.html:373
+#: trac/ticket/templates/ticket.html:375
 msgid "Create ticket"
 msgstr "Crea segnalazione"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:390
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -5335,7 +5350,7 @@ msgstr ""
 "da parte di %(author)s"
 
 #: trac/ticket/templates/ticket_change.html:156
-#: trac/versioncontrol/templates/changeset.html:139
+#: trac/versioncontrol/templates/changeset.html:140
 msgid "previous"
 msgstr "precedente"
 
@@ -5377,18 +5392,18 @@ msgid "Next Period"
 msgstr "Periodo successivo"
 
 #: trac/timeline/web_ui.py:296 trac/timeline/web_ui.py:319
-#: trac/web/chrome.py:944
+#: trac/web/chrome.py:975
 #, python-format
 msgid "in %(relative)s"
 msgstr "fra %(relative)s"
 
 #: trac/timeline/web_ui.py:300 trac/timeline/web_ui.py:317
-#: trac/web/chrome.py:958
+#: trac/web/chrome.py:989
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "il %(date)s alle %(time)s"
 
-#: trac/timeline/web_ui.py:303 trac/web/chrome.py:946
+#: trac/timeline/web_ui.py:303 trac/web/chrome.py:977
 #, python-format
 msgid "%(relative)s ago"
 msgstr "%(relative)s fa"
@@ -5398,7 +5413,7 @@ msgstr "%(relative)s fa"
 msgid "See timeline at %(absolutetime)s"
 msgstr "Vedi la cronologia del %(absolutetime)s"
 
-#: trac/timeline/web_ui.py:311 trac/web/chrome.py:954
+#: trac/timeline/web_ui.py:311 trac/web/chrome.py:985
 #, python-format
 msgid "at %(iso8601)s"
 msgstr "alle %(iso8601)s"
@@ -5649,9 +5664,9 @@ msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr "Impossibile sincronizzare una singola revisione su repository multipli"
 
 #: trac/versioncontrol/admin.py:131 trac/versioncontrol/admin.py:198
-#: trac/versioncontrol/web_ui/browser.py:354
-#: trac/versioncontrol/web_ui/changeset.py:249
-#: trac/versioncontrol/web_ui/changeset.py:1087
+#: trac/versioncontrol/web_ui/browser.py:353
+#: trac/versioncontrol/web_ui/changeset.py:247
+#: trac/versioncontrol/web_ui/changeset.py:1086
 #: trac/versioncontrol/web_ui/log.py:100 trac/versioncontrol/web_ui/log.py:419
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -5714,7 +5729,7 @@ msgstr ""
 msgid "Missing arguments to add a repository."
 msgstr "Mancano dei parametri per aggiungere un repository."
 
-#: trac/versioncontrol/admin.py:268 trac/versioncontrol/api.py:270
+#: trac/versioncontrol/admin.py:268 trac/versioncontrol/api.py:289
 #, python-format
 msgid "The repository \"%(name)s\" already exists."
 msgstr "Il repository \"%(name)s\" esiste già."
@@ -5775,9 +5790,9 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:48
 #: trac/versioncontrol/templates/admin_repositories.html:155
 #: trac/versioncontrol/templates/admin_repositories.html:157
-#: trac/versioncontrol/web_ui/browser.py:951
-#: trac/versioncontrol/web_ui/changeset.py:854
-#: trac/versioncontrol/web_ui/changeset.py:996
+#: trac/versioncontrol/web_ui/browser.py:950
+#: trac/versioncontrol/web_ui/changeset.py:853
+#: trac/versioncontrol/web_ui/changeset.py:995
 msgid "(default)"
 msgstr "(default)"
 
@@ -5796,7 +5811,7 @@ msgstr "Ora dovresti lanciare \"repository resync %(name)s\"."
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr "Potresti dover lanciare \"repository resync %(name)s\"."
 
-#: trac/versioncontrol/api.py:215 trac/versioncontrol/api.py:279
+#: trac/versioncontrol/api.py:215 trac/versioncontrol/api.py:298
 msgid "The repository directory must be absolute"
 msgstr "La directory del repository deve essere assoluta"
 
@@ -5805,7 +5820,31 @@ msgstr "La directory del repository deve essere assoluta"
 msgid "The repository type '%(type)s' is not supported"
 msgstr "Il tipo di repository \"%(type)s\" non è supportato"
 
-#: trac/versioncontrol/api.py:352
+#: trac/versioncontrol/api.py:239
+#, python-format
+msgid "Repository \"%(repo)s\" doesn't exist"
+msgstr "Il repository \"%(repo)s\" non esiste."
+
+#: trac/versioncontrol/api.py:242
+#, python-format
+msgid "Cannot create an alias to the alias \"%(repo)s\""
+msgstr "Impossibile creare un alias per l'alias \"%(repo)s\""
+
+#: trac/versioncontrol/api.py:260
+#, python-format
+msgid "Cannot remove the repository \"%(repos)s\" used in aliases"
+msgstr ""
+"Impossibile rimuovere il repository \"%(repos)s\" utilizzato da qualche "
+"alias"
+
+#: trac/versioncontrol/api.py:281
+#, python-format
+msgid "Cannot rename the repository \"%(repos)s\" used in aliases"
+msgstr ""
+"Impossibile rinominare il repository \"%(repos)s\" utilizzato da qualche "
+"alias"
+
+#: trac/versioncontrol/api.py:371
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
@@ -5815,7 +5854,7 @@ msgstr ""
 "(%(error)s). Consulta il log dell'ambiente Trac per ulteriori "
 "informazioni."
 
-#: trac/versioncontrol/api.py:359
+#: trac/versioncontrol/api.py:378
 #, python-format
 msgid ""
 "Failed to sync with repository \"%(name)s\": %(error)s; repository "
@@ -5827,59 +5866,59 @@ msgstr ""
 "di Trac per ulteriori informazioni, comprese possibili strategie per "
 "risolvere il problema."
 
-#: trac/versioncontrol/api.py:387
+#: trac/versioncontrol/api.py:406
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr "Changeset %(rev)s in %(repo)s"
 
-#: trac/versioncontrol/api.py:389
+#: trac/versioncontrol/api.py:408
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "Changeset %(rev)s"
 
-#: trac/versioncontrol/api.py:399
+#: trac/versioncontrol/api.py:418
 msgid "directory"
 msgstr "cartella"
 
-#: trac/versioncontrol/api.py:401
+#: trac/versioncontrol/api.py:420
 msgid "file"
 msgstr "file"
 
-#: trac/versioncontrol/api.py:403
+#: trac/versioncontrol/api.py:422
 #, python-format
 msgid " at version %(rev)s"
 msgstr " alla versione %(rev)s"
 
-#: trac/versioncontrol/api.py:405
+#: trac/versioncontrol/api.py:424
 msgid "path"
 msgstr "percorso"
 
-#: trac/versioncontrol/api.py:408
+#: trac/versioncontrol/api.py:427
 #, python-format
 msgid " in %(repo)s"
 msgstr " in %(repo)s"
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:410
+#: trac/versioncontrol/api.py:429
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
-#: trac/versioncontrol/api.py:414
+#: trac/versioncontrol/api.py:433
 msgid "Default repository"
 msgstr "Repository di default"
 
-#: trac/versioncontrol/api.py:415
+#: trac/versioncontrol/api.py:434
 #, python-format
 msgid "Repository %(repo)s"
 msgstr "Repository %(repo)s"
 
-#: trac/versioncontrol/api.py:742
+#: trac/versioncontrol/api.py:761
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Sistema di controllo versioni \"%(name)s\" non supportato: %(error)s"
 
-#: trac/versioncontrol/api.py:745
+#: trac/versioncontrol/api.py:764
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -5889,26 +5928,26 @@ msgstr ""
 "appropriato non è stato trovato, forse il plugin corrispondente non è "
 "abilitato? "
 
-#: trac/versioncontrol/api.py:753
+#: trac/versioncontrol/api.py:772
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nel repository non esiste il changeset %(rev)s"
 
-#: trac/versioncontrol/api.py:755
+#: trac/versioncontrol/api.py:774
 msgid "No such changeset"
 msgstr "Questo changeset non esiste"
 
-#: trac/versioncontrol/api.py:761
+#: trac/versioncontrol/api.py:780
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Non esiste il nodo \"%(path)s\" revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:763
+#: trac/versioncontrol/api.py:782
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: non esiste il nodo \"%(path)s\" alla revisione %(rev)s"
 
-#: trac/versioncontrol/api.py:765
+#: trac/versioncontrol/api.py:784
 msgid "No such node"
 msgstr "Questo nodo non esiste"
 
@@ -6054,7 +6093,7 @@ msgstr "Etichetta"
 #: trac/versioncontrol/templates/browser.html:114
 #: trac/versioncontrol/templates/revisionlog.html:193
 msgid "Bookmark"
-msgstr ""
+msgstr "Segnalibro"
 
 #: trac/versioncontrol/templates/browser.html:125
 msgid "Parent Directory"
@@ -6153,7 +6192,7 @@ msgstr "Mostra il changeset completo"
 #: trac/versioncontrol/templates/changeset.html:72
 #: trac/versioncontrol/templates/changeset.html:77
 #: trac/versioncontrol/templates/changeset.html:79
-#: trac/versioncontrol/templates/changeset.html:115
+#: trac/versioncontrol/templates/changeset.html:116
 msgid "Show entry in browser"
 msgstr "Mostra l'elemento nel browser"
 
@@ -6238,21 +6277,21 @@ msgstr ""
 msgid "Changeset [1:%(new_rev)s]"
 msgstr "Changeset [1:%(new_rev)s]"
 
-#: trac/versioncontrol/templates/changeset.html:111
+#: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr "Mostra cosa è stato rimosso (contenuto alla revisione %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset.html:116
+#: trac/versioncontrol/templates/changeset.html:117
 msgid "(root)"
 msgstr "(root)"
 
-#: trac/versioncontrol/templates/changeset.html:122
+#: trac/versioncontrol/templates/changeset.html:123
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
 msgstr "Mostra il file originale (revisione %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset.html:121
+#: trac/versioncontrol/templates/changeset.html:122
 #, python-format
 msgid ""
 "(%(kind)s from [1:\n"
@@ -6261,116 +6300,116 @@ msgstr ""
 "(%(kind)s da [1:\n"
 "%(old_path)s])"
 
-#: trac/versioncontrol/templates/changeset.html:129
-#: trac/versioncontrol/templates/changeset.html:132
+#: trac/versioncontrol/templates/changeset.html:130
+#: trac/versioncontrol/templates/changeset.html:133
 msgid "Show differences"
 msgstr "Mostra le differenze"
 
-#: trac/versioncontrol/templates/changeset.html:129
+#: trac/versioncontrol/templates/changeset.html:130
 msgid "view diffs"
 msgstr "visualizza le differenze"
 
-#: trac/versioncontrol/templates/changeset.html:132
+#: trac/versioncontrol/templates/changeset.html:133
 #, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d differenza"
 msgstr[1] "%(num)d differenze"
 
-#: trac/versioncontrol/templates/changeset.html:135
+#: trac/versioncontrol/templates/changeset.html:136
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d proprietà"
 msgstr[1] "%(num)d proprietà"
 
-#: trac/versioncontrol/templates/changeset.html:139
+#: trac/versioncontrol/templates/changeset.html:140
 msgid "Show previous version in browser"
 msgstr "Mostra le versioni precedenti nel browser"
 
-#: trac/versioncontrol/templates/changeset.html:149
+#: trac/versioncontrol/templates/changeset.html:150
 msgid "(less than one hour ago)"
 msgstr "(meno di un'ora fa)"
 
-#: trac/versioncontrol/templates/changeset.html:150
+#: trac/versioncontrol/templates/changeset.html:151
 #, python-format
 msgid "(%(age)s ago)"
 msgstr "(%(age)s fa)"
 
-#: trac/versioncontrol/templates/changeset.html:164
+#: trac/versioncontrol/templates/changeset.html:165
 msgid "Message:"
 msgstr "Messaggio:"
 
-#: trac/versioncontrol/templates/changeset.html:176
+#: trac/versioncontrol/templates/changeset.html:177
 msgid "Location:"
 msgstr "Posizione:"
 
-#: trac/versioncontrol/templates/changeset.html:180
+#: trac/versioncontrol/templates/changeset.html:181
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "File:"
 msgstr[1] "File:"
 
-#: trac/versioncontrol/templates/changeset.html:180
+#: trac/versioncontrol/templates/changeset.html:181
 msgid "(No files)"
 msgstr "(Nessun file)"
 
-#: trac/versioncontrol/templates/changeset.html:185
+#: trac/versioncontrol/templates/changeset.html:186
 #, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d aggiunto"
 msgstr[1] "%(num)d aggiunti"
 
-#: trac/versioncontrol/templates/changeset.html:186
+#: trac/versioncontrol/templates/changeset.html:187
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d eliminato"
 msgstr[1] "%(num)d eliminati"
 
-#: trac/versioncontrol/templates/changeset.html:187
+#: trac/versioncontrol/templates/changeset.html:188
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d modificato"
 msgstr[1] "%(num)d modificati"
 
-#: trac/versioncontrol/templates/changeset.html:188
+#: trac/versioncontrol/templates/changeset.html:189
 #, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d copiato"
 msgstr[1] "%(num)d copiati"
 
-#: trac/versioncontrol/templates/changeset.html:189
+#: trac/versioncontrol/templates/changeset.html:190
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d spostato"
 msgstr[1] "%(num)d spostati"
 
-#: trac/versioncontrol/templates/changeset.html:195
+#: trac/versioncontrol/templates/changeset.html:196
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "added"
 msgstr "aggiunto"
 
-#: trac/versioncontrol/templates/changeset.html:196
+#: trac/versioncontrol/templates/changeset.html:197
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "deleted"
 msgstr "eliminato"
 
-#: trac/versioncontrol/templates/changeset.html:197
+#: trac/versioncontrol/templates/changeset.html:198
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "copied"
 msgstr "copiato"
 
-#: trac/versioncontrol/templates/changeset.html:198
+#: trac/versioncontrol/templates/changeset.html:199
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "moved"
 msgstr "spostato"
 
-#: trac/versioncontrol/templates/changeset.html:221
+#: trac/versioncontrol/templates/changeset.html:222
 msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
@@ -6433,7 +6472,7 @@ msgstr "Mostra il file"
 
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/templates/repository_index.html:33
-#: trac/versioncontrol/web_ui/browser.py:863
+#: trac/versioncontrol/web_ui/browser.py:862
 msgid "Download as Zip archive"
 msgstr "Scarica come archivio zip"
 
@@ -6449,12 +6488,12 @@ msgstr "Mostra il changeset"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:20
 #: trac/versioncontrol/templates/revisionlog.html:120
-#: trac/versioncontrol/web_ui/browser.py:871
+#: trac/versioncontrol/web_ui/browser.py:870
 msgid "Rev"
 msgstr "Rev"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:23
-#: trac/versioncontrol/web_ui/browser.py:473
+#: trac/versioncontrol/web_ui/browser.py:472
 msgid "Last Change"
 msgstr "Ultima modifica"
 
@@ -6614,55 +6653,55 @@ msgstr "Generato da Trac %(version)s"
 msgid "Browse Source"
 msgstr "Sorgenti"
 
-#: trac/versioncontrol/web_ui/browser.py:377
+#: trac/versioncontrol/web_ui/browser.py:376
 msgid "Invalid changeset number"
 msgstr "Numero di changeset non valido"
 
-#: trac/versioncontrol/web_ui/browser.py:414
+#: trac/versioncontrol/web_ui/browser.py:413
 msgid "No viewable repositories"
 msgstr "Nessun repository visibile"
 
-#: trac/versioncontrol/web_ui/browser.py:416
+#: trac/versioncontrol/web_ui/browser.py:415
 #, python-format
 msgid "No node %(path)s"
 msgstr "Nodo \"%(path)s\" inesistente"
 
-#: trac/versioncontrol/web_ui/browser.py:456
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:455
+#: trac/versioncontrol/web_ui/browser.py:465
 #, python-format
 msgid "Revision %(num)s"
 msgstr "Revisione %(num)s"
 
-#: trac/versioncontrol/web_ui/browser.py:467
+#: trac/versioncontrol/web_ui/browser.py:466
 msgid "Previous Revision"
 msgstr "Revisione precedente"
 
-#: trac/versioncontrol/web_ui/browser.py:467
+#: trac/versioncontrol/web_ui/browser.py:466
 msgid "Next Revision"
 msgstr "Revisione successiva"
 
-#: trac/versioncontrol/web_ui/browser.py:468
+#: trac/versioncontrol/web_ui/browser.py:467
 msgid "Latest Revision"
 msgstr "Revisione più recente"
 
-#: trac/versioncontrol/web_ui/browser.py:472
+#: trac/versioncontrol/web_ui/browser.py:471
 #: trac/versioncontrol/web_ui/log.py:321
 msgid "Parent directory"
 msgstr "Cartella superiore"
 
-#: trac/versioncontrol/web_ui/browser.py:479
+#: trac/versioncontrol/web_ui/browser.py:478
 msgid "Normal"
 msgstr "Normale"
 
-#: trac/versioncontrol/web_ui/browser.py:480
+#: trac/versioncontrol/web_ui/browser.py:479
 msgid "View file without annotations"
 msgstr "Mostra il file senza attribuzioni"
 
-#: trac/versioncontrol/web_ui/browser.py:485
+#: trac/versioncontrol/web_ui/browser.py:484
 msgid "Blame"
 msgstr "Responsabilità"
 
-#: trac/versioncontrol/web_ui/browser.py:486
+#: trac/versioncontrol/web_ui/browser.py:485
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
@@ -6671,28 +6710,28 @@ msgstr ""
 "recente che l'ha modificata (si tratta di una operazione che può "
 "richiedere parecchio tempo...)"
 
-#: trac/versioncontrol/web_ui/browser.py:493
+#: trac/versioncontrol/web_ui/browser.py:492
 msgid "Revision Log"
 msgstr "Registro revisioni"
 
-#: trac/versioncontrol/web_ui/browser.py:499
+#: trac/versioncontrol/web_ui/browser.py:498
 msgid "Repository URL"
 msgstr "URL del repository"
 
-#: trac/versioncontrol/web_ui/browser.py:629
-#: trac/versioncontrol/web_ui/changeset.py:363
+#: trac/versioncontrol/web_ui/browser.py:628
+#: trac/versioncontrol/web_ui/changeset.py:361
 msgid "Zip Archive"
 msgstr "Archivio zip"
 
-#: trac/versioncontrol/web_ui/browser.py:652
+#: trac/versioncontrol/web_ui/browser.py:651
 msgid "Path not available for download"
 msgstr "Percorso non disponibile al download"
 
-#: trac/versioncontrol/web_ui/browser.py:871
+#: trac/versioncontrol/web_ui/browser.py:870
 msgid "Revision in which the line changed"
 msgstr "La revisione in cui la riga è stata modificata"
 
-#: trac/versioncontrol/web_ui/browser.py:886
+#: trac/versioncontrol/web_ui/browser.py:885
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -6738,7 +6777,7 @@ msgstr ""
 "\n"
 "(''dalla 0.12'')"
 
-#: trac/versioncontrol/web_ui/browser.py:953
+#: trac/versioncontrol/web_ui/browser.py:952
 #, python-format
 msgid "View repository %(repo)s"
 msgstr "Mostra il repository %(repo)s"
@@ -6748,112 +6787,112 @@ msgstr "Mostra il repository %(repo)s"
 msgid "Property %(name)s"
 msgstr "Proprietà \"%(name)s\""
 
-#: trac/versioncontrol/web_ui/changeset.py:242
+#: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
 msgstr "Il confronto tra repository diversi non è possibile: %(old)s e %(new)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:251
+#: trac/versioncontrol/web_ui/changeset.py:249
 #: trac/versioncontrol/web_ui/log.py:96
 msgid "No repository specified and no default repository configured."
 msgstr ""
 "Non è stato specificato alcun repository e il repository di default non è"
 " stato definito."
 
-#: trac/versioncontrol/web_ui/changeset.py:259
+#: trac/versioncontrol/web_ui/changeset.py:257
 msgid "Invalid Changeset Number"
 msgstr "Numero di changeset non valido"
 
-#: trac/versioncontrol/web_ui/changeset.py:361
+#: trac/versioncontrol/web_ui/changeset.py:359
 msgid "Unified Diff"
 msgstr "Unified diff"
 
-#: trac/versioncontrol/web_ui/changeset.py:372
+#: trac/versioncontrol/web_ui/changeset.py:370
 msgid "Previous Changeset"
 msgstr "Changeset precedente"
 
-#: trac/versioncontrol/web_ui/changeset.py:372
+#: trac/versioncontrol/web_ui/changeset.py:370
 msgid "Next Changeset"
 msgstr "Changeset successivo"
 
-#: trac/versioncontrol/web_ui/changeset.py:376
+#: trac/versioncontrol/web_ui/changeset.py:374
 msgid "Reverse Diff"
 msgstr "Diff inverso"
 
-#: trac/versioncontrol/web_ui/changeset.py:414
+#: trac/versioncontrol/web_ui/changeset.py:412
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
 msgstr "Changeset %(id)s per %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:417
-#: trac/versioncontrol/web_ui/changeset.py:443
-#: trac/versioncontrol/web_ui/changeset.py:465
+#: trac/versioncontrol/web_ui/changeset.py:415
+#: trac/versioncontrol/web_ui/changeset.py:441
+#: trac/versioncontrol/web_ui/changeset.py:463
 #, python-format
 msgid "Changeset %(id)s"
 msgstr "Changeset %(id)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:492
+#: trac/versioncontrol/web_ui/changeset.py:490
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
 msgstr "Mostra nel browser la revisione %(rev)s di questo file"
 
-#: trac/versioncontrol/web_ui/changeset.py:639
+#: trac/versioncontrol/web_ui/changeset.py:637
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr "Mostra il changeset %(id)s ristretto a %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:651
+#: trac/versioncontrol/web_ui/changeset.py:649
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "Mostra le differenze %(range)s relative a %(path)s\""
 
 #. TRANSLATOR: 'latest' (revision)
-#: trac/versioncontrol/web_ui/changeset.py:778
+#: trac/versioncontrol/web_ui/changeset.py:777
 msgid "latest"
 msgstr "più recente"
 
-#: trac/versioncontrol/web_ui/changeset.py:781
+#: trac/versioncontrol/web_ui/changeset.py:780
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
 msgstr "Differenze [%(old_rev)s:%(new_rev)s] relative a %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:787
+#: trac/versioncontrol/web_ui/changeset.py:786
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr "Differenze tra %(old_path)s@%(old_rev)s e %(new_path)s@%(new_rev)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:860
+#: trac/versioncontrol/web_ui/changeset.py:859
 msgid "Changesets in all repositories"
 msgstr "Changeset in tutti i repository"
 
-#: trac/versioncontrol/web_ui/changeset.py:862
+#: trac/versioncontrol/web_ui/changeset.py:861
 msgid "Repository changesets"
 msgstr "Changeset del repository"
 
-#: trac/versioncontrol/web_ui/changeset.py:1000
+#: trac/versioncontrol/web_ui/changeset.py:999
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "Changeset in %(repo)s"
 msgstr[1] "Changeset in %(repo)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1002
+#: trac/versioncontrol/web_ui/changeset.py:1001
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Changeset "
 msgstr[1] "Changeset "
 
-#: trac/versioncontrol/web_ui/changeset.py:1085
+#: trac/versioncontrol/web_ui/changeset.py:1084
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "Non hai il permesso di vedere il changeset %(rev)s in %(repos)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/changeset.py:1088
 #: trac/versioncontrol/web_ui/log.py:421
 msgid "No default repository defined"
 msgstr "Il repository di default non è definito"
 
-#: trac/versioncontrol/web_ui/changeset.py:1130
+#: trac/versioncontrol/web_ui/changeset.py:1129
 msgid "Changesets"
 msgstr "Changeset"
 
@@ -6910,39 +6949,44 @@ msgstr ""
 msgid "Error: %(message)s"
 msgstr "Errore: %(message)s"
 
-#: trac/web/api.py:413
+#: trac/web/api.py:423
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "Codifica URL non valida (era %(path_info)r)"
 
-#: trac/web/api.py:639
+#: trac/web/api.py:652
 #, python-format
 msgid "File %(path)s not found"
 msgstr "File \"%(path)s\" non trovato"
 
-#: trac/web/auth.py:105
+#: trac/web/api.py:781
+#, python-format
+msgid "Invalid encoding in form data: %(msg)s"
+msgstr "Codifica errata nei dati della form: %(msg)s"
+
+#: trac/web/auth.py:108
 #, python-format
 msgid "logged in as %(user)s"
 msgstr "connesso come %(user)s"
 
-#: trac/web/auth.py:108
+#: trac/web/auth.py:110
 msgid "Logout"
 msgstr "Esci"
 
-#: trac/web/auth.py:114
+#: trac/web/auth.py:116
 msgid "Login"
 msgstr "Accedi"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
-#: trac/web/auth.py:147
+#: trac/web/auth.py:149
 msgid "installation documentation"
 msgstr "documentazione sull'installazione"
 
-#: trac/web/auth.py:148
+#: trac/web/auth.py:150
 msgid "Configuring Authentication"
 msgstr "Configurazione autenticazione"
 
-#: trac/web/auth.py:151
+#: trac/web/auth.py:153
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
@@ -6951,52 +6995,52 @@ msgstr ""
 "Informazioni di autenticazione non disponibili. Per favore consulta le "
 "%(inst_doc)s."
 
-#: trac/web/auth.py:159
+#: trac/web/auth.py:161
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr "Risulti già connesso come %(user)s."
 
-#: trac/web/chrome.py:678
+#: trac/web/chrome.py:716
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr "Percorso chrome non valido \"%(path)s\"."
 
-#: trac/web/chrome.py:809
+#: trac/web/chrome.py:847
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Errore nella generazione della navigazione per \"%(name)s\""
 
-#: trac/web/chrome.py:1136
+#: trac/web/chrome.py:1168
 msgid "(unknown template location)"
 msgstr "(posizione modello sconosciuta)"
 
-#: trac/web/chrome.py:1137
+#: trac/web/chrome.py:1169
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Errore Genshi \"%(error)s\" durante il rendering del template %(location)s"
 
-#: trac/web/chrome.py:1238
+#: trac/web/chrome.py:1301
 msgid "anonymous"
 msgstr "anonimo"
 
-#: trac/web/main.py:149
+#: trac/web/main.py:169
 msgid "Authentication error. Please contact your administrator."
 msgstr "Errore di autenticazione. Contatta l'amministratore, per favore."
 
-#: trac/web/main.py:222
+#: trac/web/main.py:243
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr "I cookie sicuri sono abilitati, devi usare https per inviare i dati."
 
-#: trac/web/main.py:225
+#: trac/web/main.py:246
 msgid "Do you have cookies enabled?"
 msgstr "Hai abilitato i cookie?"
 
-#: trac/web/main.py:226
+#: trac/web/main.py:247
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr "Token mancante o non valido. %(msg)s"
 
-#: trac/web/main.py:236
+#: trac/web/main.py:257
 msgid ""
 "Clearsilver templates are no longer supported, please contact your Trac "
 "administrator."
@@ -7004,7 +7048,7 @@ msgstr ""
 "I template Clearsilver non sono più supportati, contatta per favore "
 "l'amministratore del tuo Trac."
 
-#: trac/web/main.py:300
+#: trac/web/main.py:323
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -7015,30 +7059,30 @@ msgstr ""
 "file \"trac.ini\"."
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:590
+#: trac/web/main.py:613
 msgid "do so"
 msgstr "farlo"
 
-#: trac/web/main.py:591
+#: trac/web/main.py:614
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Non ti sei ancora autenticato, magari vuoi %(do_so)s adesso."
 
-#: trac/web/main.py:656
+#: trac/web/main.py:680
 msgid "''System information not available''\n"
 msgstr "''Informazioni di sistema non disponibili''\n"
 
-#: trac/web/main.py:657
+#: trac/web/main.py:681
 msgid "''Plugin information not available''\n"
 msgstr "''Informazioni sui prodotti aggiuntivi non disponibili''\n"
 
-#: trac/web/main.py:658
+#: trac/web/main.py:682
 msgid "''Interface customization information not available''\n"
 msgstr ""
 "''Informazioni sulla personalizzazione dell'interfaccia non disponibili''"
 "\n"
 
-#: trac/web/main.py:687
+#: trac/web/main.py:711
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
@@ -7089,57 +7133,57 @@ msgstr ""
 "{{{\n"
 "%(traceback)s}}}"
 
-#: trac/web/session.py:245
+#: trac/web/session.py:231 trac/web/session.py:250
 msgid "Session ID must be alphanumeric."
 msgstr "L'ID della sessione deve essere alfanumerico."
 
-#: trac/web/session.py:246 trac/web/session.py:252
+#: trac/web/session.py:251 trac/web/session.py:257
 msgid "Error renaming session"
 msgstr "Errore nel rinominare la sessione"
 
-#: trac/web/session.py:249
+#: trac/web/session.py:254
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 "La sessione \"%(id)s\" esiste già. Scegliere un ID differente per la "
 "sessione."
 
-#: trac/web/session.py:437
+#: trac/web/session.py:442
 msgid "SID"
 msgstr "SID"
 
-#: trac/web/session.py:437
+#: trac/web/session.py:442
 msgid "Auth"
 msgstr "Autorizzazione"
 
-#: trac/web/session.py:437
+#: trac/web/session.py:442
 msgid "Last Visit"
 msgstr "Ultima visita"
 
-#: trac/web/session.py:438
+#: trac/web/session.py:443
 msgid "Email"
 msgstr "Email"
 
-#: trac/web/session.py:438
+#: trac/web/session.py:443
 msgid "Default Handler"
 msgstr "Handler di default"
 
-#: trac/web/session.py:448
+#: trac/web/session.py:453
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr "La sessione \"%(sid)s\" esiste già"
 
-#: trac/web/session.py:460
+#: trac/web/session.py:465
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr "Attributo \"%(attr)s\" non valido"
 
-#: trac/web/session.py:464
+#: trac/web/session.py:469
 #, python-format
 msgid "Invalid default_handler '%(val)s'"
 msgstr "default_handler \"%(val)s\" non valido"
 
-#: trac/web/session.py:471
+#: trac/web/session.py:476
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr "La sessione \"%(sid)s\" non è stata trovata"
@@ -7150,7 +7194,7 @@ msgid "Page '%(page)s' not found"
 msgstr "La pagina \"%(page)s\" non è stata trovata"
 
 #: trac/wiki/admin.py:113 trac/wiki/model.py:159 trac/wiki/model.py:211
-#: trac/wiki/web_ui.py:113
+#: trac/wiki/web_ui.py:118
 #, python-format
 msgid "Invalid Wiki page name '%(name)s'"
 msgstr "\"%(name)s\" non è un nome valido per la pagina Wiki"
@@ -7179,7 +7223,7 @@ msgstr " \"%(page)s\" importata da %(filename)s"
 msgid "Edits"
 msgstr "Modifiche"
 
-#: trac/wiki/admin.py:198 trac/wiki/web_ui.py:316
+#: trac/wiki/admin.py:198 trac/wiki/web_ui.py:321
 msgid "A new name is mandatory for a rename."
 msgstr "Il nuovo nome è indispensabile per sostituire quello precedente."
 
@@ -7187,7 +7231,7 @@ msgstr "Il nuovo nome è indispensabile per sostituire quello precedente."
 msgid "The new name is invalid."
 msgstr "Il nuovo nome non è valido."
 
-#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:323
+#: trac/wiki/admin.py:203 trac/wiki/web_ui.py:328
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr "La pagina \"%(name)s\" esiste già."
@@ -7238,22 +7282,22 @@ msgstr ""
 "!#%(name)s deve contenere almeno una cella della tabella (e solamente "
 "celle)"
 
-#: trac/wiki/formatter.py:369
+#: trac/wiki/formatter.py:372
 #, python-format
 msgid "Error: Failed to load processor %(name)s"
 msgstr "Errore: caricamento del processore \"%(name)s\" fallito"
 
-#: trac/wiki/formatter.py:705 trac/wiki/interwiki.py:104
+#: trac/wiki/formatter.py:708 trac/wiki/interwiki.py:107
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(target)s in %(name)s"
 
-#: trac/wiki/formatter.py:798
+#: trac/wiki/formatter.py:802
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr "Errore: macro %(name)s(%(args)s) fallita"
 
-#: trac/wiki/formatter.py:1186
+#: trac/wiki/formatter.py:1190
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr "Errore: processore \"%(name)s\" fallito"
@@ -7280,7 +7324,7 @@ msgstr "Il Progetto Trac"
 msgid "Alias for %(name)s"
 msgstr "Alias di %(name)s"
 
-#: trac/wiki/intertrac.py:128 trac/wiki/interwiki.py:175
+#: trac/wiki/intertrac.py:128 trac/wiki/interwiki.py:178
 msgid "Prefix"
 msgstr "Prefisso"
 
@@ -7288,15 +7332,15 @@ msgstr "Prefisso"
 msgid "Trac Site"
 msgstr "Sito Trac"
 
-#: trac/wiki/interwiki.py:163
+#: trac/wiki/interwiki.py:166
 msgid "Provide a description list for the known InterWiki prefixes."
 msgstr "Fornisce una lista descrittiva dei prefissi InterWiki noti."
 
-#: trac/wiki/interwiki.py:176
+#: trac/wiki/interwiki.py:179
 msgid "Site"
 msgstr "Sito"
 
-#: trac/wiki/macros.py:84
+#: trac/wiki/macros.py:85
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -7374,7 +7418,7 @@ msgstr ""
 "Le liste degli argomenti `include` e `exclude` accettano pattern in\n"
 "stile shell."
 
-#: trac/wiki/macros.py:306
+#: trac/wiki/macros.py:307
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -7422,7 +7466,7 @@ msgstr ""
 "visualizzare e non vuoi specificare un prefisso, basta lasciare vuoto\n"
 "il primo parametro. Es.: `[[RecentChanges(,10,group=none)]]`."
 
-#: trac/wiki/macros.py:385
+#: trac/wiki/macros.py:386
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -7476,7 +7520,7 @@ msgstr ""
 "   numerato. I valori ammessi sono `numbered` o `unnumbered` (il primo\n"
 "   è il default). Questo parametro ha effetto solo nel formato `inline`."
 
-#: trac/wiki/macros.py:451
+#: trac/wiki/macros.py:452
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -7643,16 +7687,16 @@ msgstr ""
 "''Adattata dalla macro Image.py creata da Shun-ichi Goto "
 "<gotoh@taiyo.co.jp>''"
 
-#: trac/wiki/macros.py:671
+#: trac/wiki/macros.py:673
 msgid "No filespec given"
 msgstr "Non è stata specificata alcuna \"filespec\""
 
-#: trac/wiki/macros.py:682
+#: trac/wiki/macros.py:685
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr "Nessuna immagine \"%(id)s\" allegata a %(parent)s"
 
-#: trac/wiki/macros.py:698
+#: trac/wiki/macros.py:701
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7675,20 +7719,20 @@ msgstr ""
 "delle macro se in mod_python è stata specificata l'opzione\n"
 "`PythonOptimize`!"
 
-#: trac/wiki/macros.py:727
+#: trac/wiki/macros.py:730
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "Errore: Non c'è la descrizione per la macro %(name)s"
 
-#: trac/wiki/macros.py:750
+#: trac/wiki/macros.py:753
 msgid "Aliases:"
 msgstr "Sinonimi:"
 
-#: trac/wiki/macros.py:753
+#: trac/wiki/macros.py:756
 msgid "Sorry, no documentation found"
 msgstr "Spiacente, non è stata trovata alcuna documentazione"
 
-#: trac/wiki/macros.py:760
+#: trac/wiki/macros.py:763
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7705,11 +7749,11 @@ msgstr ""
 "le opzioni la cui sezione e i cui nomi iniziano con i filtri\n"
 "specificati."
 
-#: trac/wiki/macros.py:802
+#: trac/wiki/macros.py:805
 msgid "(no default)"
 msgstr "(nessun default)"
 
-#: trac/wiki/macros.py:822
+#: trac/wiki/macros.py:825
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7721,27 +7765,29 @@ msgstr ""
 "\n"
 "Come argomento opzionale si può specificare un filtro sui mime-type."
 
-#: trac/wiki/macros.py:845
+#: trac/wiki/macros.py:848
 msgid "MIME Types"
 msgstr "Tipi MIME"
 
-#: trac/wiki/macros.py:859
+#: trac/wiki/macros.py:862
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
 "This macro shows a quick and dirty way to make a table-of-contents\n"
-"for the Help/Guide. The table of contents will contain the Trac* and\n"
-"WikiFormatting pages, and can't be customized. Search for TocMacro for a\n"
-"a more customizable table of contents."
+"for the !Help/Guide. The table of contents will contain the Trac* and\n"
+"WikiFormatting pages, and can't be customized. See the\n"
+"[https://trac-hacks.org/wiki/TocMacro TocMacro] for a more customizable\n"
+"table of contents."
 msgstr ""
-"Mostra il sommario della Guida di Trac.\n"
+"Mostra una tabella dei contenuti della guida di Trac.\n"
 "\n"
-"Questa macro dimostra un modo semplice e veloce di creare un sommario\n"
-"per l'Aiuto/Guida. Il sommario conterrà le pagine Trac* e WikiFormatting\n"
-"e non può essere personalizzato. Cerca TocMacro se vuoi un sommario\n"
-"maggiormente personalizzabile."
+"Questa macro mostra come creare una rudimentale tabella dei contenuti\n"
+"della !Aiuto/Guida. La tabella conterrà le pagine Trac* e WikiFormatting\n"
+"e non può essere personalizzata. La [https://trac-hacks.org/wiki/TocMacro"
+" TocMacro]\n"
+"è più versatile."
 
-#: trac/wiki/macros.py:905
+#: trac/wiki/macros.py:909
 msgid "Table of Contents"
 msgstr "Indice dei contenuti"
 
@@ -7766,64 +7812,64 @@ msgstr "Impossibile rinominare la pagina, \"%(name)s\" esiste già."
 msgid "Cannot edit comment of non-existent page"
 msgstr "Impossibile modificare il commento di una pagina non esistente"
 
-#: trac/wiki/web_ui.py:80 trac/wiki/web_ui.py:783
+#: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:792
 msgid "Wiki"
 msgstr "Wiki"
 
-#: trac/wiki/web_ui.py:83
+#: trac/wiki/web_ui.py:88
 msgid "Help/Guide"
 msgstr "Aiuto/Guida"
 
-#: trac/wiki/web_ui.py:121 trac/wiki/web_ui.py:131
+#: trac/wiki/web_ui.py:126 trac/wiki/web_ui.py:136
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "Non c'è la versione %(num)s per la pagina wiki \"%(name)s\""
 
-#: trac/wiki/web_ui.py:201
+#: trac/wiki/web_ui.py:206
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr "La pagina wiki è troppo lunga (dev'essere inferiore ai %(num)s caratteri)"
 
-#: trac/wiki/web_ui.py:213
+#: trac/wiki/web_ui.py:218
 #, python-format
 msgid "The Wiki page field %(field)s is invalid: %(message)s"
 msgstr "Il campo \"%(field)s\" della pagina wiki non è valido: %(message)s"
 
-#: trac/wiki/web_ui.py:216
+#: trac/wiki/web_ui.py:221
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "Pagina wiki non valida: %(message)s"
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:243
+#: trac/wiki/web_ui.py:248
 msgid "currently edited"
 msgstr "attualmente in fase di modifica"
 
-#: trac/wiki/web_ui.py:264
+#: trac/wiki/web_ui.py:269
 #, python-format
 msgid "The comment of version %(version)s of the page %(name)s has been updated."
 msgstr ""
 "Il commento alla versione %(version)s della pagina \"%(name)s\" è stato "
 "aggiornato."
 
-#: trac/wiki/web_ui.py:288
+#: trac/wiki/web_ui.py:293
 #, python-format
 msgid "The page %(name)s has been deleted."
 msgstr "La pagina \"%(name)s\" è stata eliminata."
 
-#: trac/wiki/web_ui.py:293
+#: trac/wiki/web_ui.py:298
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
 "Le versioni dalla %(from_)d alla %(to)d della pagina \"%(name)s\" sono "
 "state eliminate."
 
-#: trac/wiki/web_ui.py:297
+#: trac/wiki/web_ui.py:302
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr "La versione %(version)d della pagina \"%(name)s\" è stata eliminata."
 
-#: trac/wiki/web_ui.py:318
+#: trac/wiki/web_ui.py:323
 msgid ""
 "The new name is invalid (a name which is separated with slashes cannot be"
 " '.' or '..')."
@@ -7831,115 +7877,117 @@ msgstr ""
 "Il nuovo nome non è valido (un nome separato da barre non può essere '.' "
 "o '..')."
 
-#: trac/wiki/web_ui.py:321
+#: trac/wiki/web_ui.py:326
 msgid "The new name must be different from the old name."
 msgstr "Il nuovo nome deve essere diverso da quello precedente."
 
-#: trac/wiki/web_ui.py:332
+#: trac/wiki/web_ui.py:337
 #, python-format
 msgid "See [wiki:\"%(name)s\"]."
 msgstr "Vedi [wiki:\"%(name)s\"]."
 
-#: trac/wiki/web_ui.py:338
+#: trac/wiki/web_ui.py:343
 #, python-format
 msgid "The page %(old_name)s has been renamed to %(new_name)s."
 msgstr "La pagina %(old_name)s è stata rinominata a %(new_name)s."
 
-#: trac/wiki/web_ui.py:342
+#: trac/wiki/web_ui.py:347
 #, python-format
 msgid "The page %(old_name)s has been recreated with a redirect to %(new_name)s."
 msgstr ""
 "La pagina %(old_name)s è stata ricreata con una redirezione alla "
 "%(new_name)s."
 
-#: trac/wiki/web_ui.py:362
+#: trac/wiki/web_ui.py:372
 #, python-format
-msgid "Your changes have been saved in version %(version)s."
-msgstr "Le tue modifiche sono state memorizzate nella versione %(version)s."
+msgid "Your changes have been saved in version %(version)s (%(diff)s)."
+msgstr ""
+"Le tue modifiche sono state memorizzate nella versione %(version)s "
+"(%(diff)s)."
 
-#: trac/wiki/web_ui.py:367
+#: trac/wiki/web_ui.py:376
 msgid "Page not modified, showing latest version."
 msgstr "Pagina non modificata, visualizzo l'ultima versione."
 
-#: trac/wiki/web_ui.py:418
+#: trac/wiki/web_ui.py:427
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La versione %(num)s della pagina \"%(name)s\" non esiste"
 
-#: trac/wiki/web_ui.py:470
+#: trac/wiki/web_ui.py:479
 msgid "Page history"
 msgstr "Cronologia delle modifiche alla pagina"
 
-#: trac/wiki/web_ui.py:488
+#: trac/wiki/web_ui.py:497
 msgid "Wiki History"
 msgstr "Cronologia delle modifiche al wiki"
 
-#: trac/wiki/web_ui.py:517
+#: trac/wiki/web_ui.py:526
 #, python-format
 msgid "Reverted to version %(version)s."
 msgstr "Ripristinata la versione %(version)s."
 
-#: trac/wiki/web_ui.py:591
+#: trac/wiki/web_ui.py:600
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La pagina \"%(name)s\" non esiste"
 
-#: trac/wiki/web_ui.py:609
+#: trac/wiki/web_ui.py:618
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr "Torna a %(wikipage)s"
 
-#: trac/wiki/web_ui.py:634
+#: trac/wiki/web_ui.py:643
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La pagina \"%(name)s\" non è stata trovata"
 
-#: trac/wiki/web_ui.py:687
+#: trac/wiki/web_ui.py:696
 msgid "View latest version"
 msgstr "Mostra la versione più recente"
 
-#: trac/wiki/web_ui.py:691
+#: trac/wiki/web_ui.py:700
 msgid "View parent page"
 msgstr "Mostra la pagina superiore"
 
-#: trac/wiki/web_ui.py:700
+#: trac/wiki/web_ui.py:709
 msgid "Previous Version"
 msgstr "Versione precedente"
 
-#: trac/wiki/web_ui.py:700
+#: trac/wiki/web_ui.py:709
 msgid "Next Version"
 msgstr "Versione successiva"
 
-#: trac/wiki/web_ui.py:701
+#: trac/wiki/web_ui.py:710
 msgid "View Latest Version"
 msgstr "Mostra la versione più recente"
 
-#: trac/wiki/web_ui.py:704
+#: trac/wiki/web_ui.py:713
 msgid "Up"
 msgstr "Su"
 
-#: trac/wiki/web_ui.py:729
+#: trac/wiki/web_ui.py:738
 msgid "Start Page"
 msgstr "Pagina iniziale"
 
-#: trac/wiki/web_ui.py:730
+#: trac/wiki/web_ui.py:739
 msgid "Index"
 msgstr "Indice"
 
-#: trac/wiki/web_ui.py:732
+#: trac/wiki/web_ui.py:741
 msgid "History"
 msgstr "Cronologia"
 
-#: trac/wiki/web_ui.py:739
+#: trac/wiki/web_ui.py:748
 msgid "Wiki changes"
 msgstr "Modifiche wiki"
 
-#: trac/wiki/web_ui.py:766
+#: trac/wiki/web_ui.py:775
 #, python-format
 msgid "%(page)s edited"
 msgstr "%(page)s modificata"
 
-#: trac/wiki/web_ui.py:768
+#: trac/wiki/web_ui.py:777
 #, python-format
 msgid "%(page)s created"
 msgstr "%(page)s creata"
