@@ -138,7 +138,7 @@ fieldset {
  box-shadow: .1em .1em 1em 0 #E7E7E7 inset;
  padding: 1em;
 }
-p.hint, span.hint {
+p.hint, span.hint, span.trac-datetimehint {
  color: #666;
  font-size: 85%;
  font-style: italic;
@@ -446,6 +446,9 @@ div.trac-content {
 }
 #help :link, #help :visited { cursor: help }
 #help hr { display: none }
+
+/* Datepicker hints */
+.trac-nodatetimehint .trac-datetimehint { display: none }
 
 /* Section folding */
 .foldable :link, .foldable :visited {
