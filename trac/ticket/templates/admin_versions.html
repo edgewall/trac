@@ -40,7 +40,7 @@
           <div class="field">
             <label>Released:<br />
               <input type="text" id="releaseddate" class="trac-datetimepicker"
-                     name="time" size="${len(datetime_hint)}"
+                     name="time" size="${len(datetime_hint) + 1}"
                      value="${format_datetime(version.time)}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <span class="trac-datetimehint" i18n:msg="datehint">Format: $datetime_hint</span>
@@ -71,7 +71,7 @@
               <label>
                 Released:
                 <input type="text" id="releaseddate" class="trac-datetimepicker"
-                       name="time" size="${len(datetime_hint)}"
+                       name="time" size="${len(datetime_hint) + 1}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
                        value="${format_datetime()}"/>
                 <span class="trac-datetimehint" i18n:msg="datehint">Format: $datetime_hint</span>
