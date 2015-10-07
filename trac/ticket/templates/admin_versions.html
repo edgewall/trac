@@ -71,7 +71,7 @@
               <label>
                 Released:
                 <input type="text" id="releaseddate" class="trac-datetimepicker"
-                       name="time" size="${len(datetime_hint)}"
+                       name="time" size="${len(datetime_hint) + 1}"
                        title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
                        value="${format_datetime()}"/>
                 <span class="hint" i18n:msg="datehint">Format: $datetime_hint</span>
