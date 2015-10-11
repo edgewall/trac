@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-  var unsaved_changes = false;
   var $enumtable = $('#enumtable');
   var $enumlist = $('#enumlist', $enumtable);
   var $apply_button = $('input[name="apply"]', $enumtable);
@@ -15,15 +14,6 @@ jQuery(document).ready(function ($) {
   $enumtable.find('input:radio').click(function () {
     $apply_button.prop('disabled', false);
     $revert_button.prop('disabled', false);
-  });
-
-  // Prompt with a dialog if leaving the page with unsaved changes to the list
-  $(window).bind('beforeunload', function () {
-    if (unsaved_changes) {
-      return _("You have unsaved changes to the order of the list. Your " +
-               "changes will be lost if you Leave this Page before " +
-               "selecting Apply changes.")
-    }
   });
 
   // Don't prompt with a dialog if the 'Apply/Revert changes' button is pressed
@@ -84,6 +74,7 @@ jQuery(document).ready(function ($) {
 
   // Set select values based their row and highlight those changed.
   function updateValues($tr) {
+    var unsaved_changes = false;
     var position = 1;
     var $tr_select = $('select', $tr);
     $enumlist.find('select').each(function () {
@@ -100,6 +91,7 @@ jQuery(document).ready(function ($) {
     });
 
     if (unsaved_changes) {
+      $.setWarningUnsavedChanges(true);
       $revert_button.prop('disabled', false);
       $apply_button.prop('disabled', false);
     }
