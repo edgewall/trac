@@ -393,7 +393,7 @@ class AttachmentModule(Component):
 
         upload = req.args['attachment']
         if not hasattr(upload, 'filename') or not upload.filename:
-            raise TracError(_('No file uploaded'))
+            raise TracError(_("No file uploaded"))
         if hasattr(upload.file, 'fileno'):
             size = os.fstat(upload.file.fileno())[6]
         else:
@@ -405,13 +405,13 @@ class AttachmentModule(Component):
 
         # Maximum attachment size (in bytes)
         max_size = self.max_size
-        if max_size >= 0 and size > max_size:
-            raise TracError(_('Maximum attachment size: %(num)s',
-                              num=pretty_size(max_size)), _('Upload failed'))
+        if 0 <= max_size < size:
+            raise TracError(_("Maximum attachment size: %(num)s",
+                              num=pretty_size(max_size)), _("Upload failed"))
 
         filename = _normalized_filename(upload.filename)
         if not filename:
-            raise TracError(_('No file uploaded'))
+            raise TracError(_("No file uploaded"))
         # Now the filename is known, update the attachment resource
         attachment.filename = filename
         attachment.description = req.args.get('description', '')

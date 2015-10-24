@@ -19,6 +19,7 @@ from email.utils import formatdate
 
 from genshi.builder import tag
 
+from trac import __version__
 from trac.core import *
 from trac.notification.api import NotificationSystem
 from trac.notification.mail import (create_charset, create_header,
@@ -183,9 +184,8 @@ class NotifyEmail(Notify):
         body = self._format_body()
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {
-            'X-Mailer': 'Trac %s, by Edgewall Software'
-                        % self.env.trac_version,
-            'X-Trac-Version': self.env.trac_version,
+            'X-Mailer': 'Trac %s, by Edgewall Software' % __version__,
+            'X-Trac-Version': __version__,
             'X-Trac-Project': self.env.project_name,
             'X-URL': self.env.project_url,
             'Precedence': 'bulk',

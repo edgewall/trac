@@ -41,6 +41,7 @@ from genshi.filters import Translator
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
+from trac import __version__ as VERSION
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
@@ -918,7 +919,7 @@ class Chrome(Component):
     def populate_data(self, req, data):
         d = self._default_context_data.copy()
         d['trac'] = {
-            'version': self.env.trac_version,
+            'version': VERSION,
             'homepage': 'http://trac.edgewall.org/',  # FIXME: use setup data
         }
 

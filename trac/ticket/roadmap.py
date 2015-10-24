@@ -21,6 +21,7 @@ import re
 
 from genshi.builder import tag
 
+from trac import __version__
 from trac.attachment import Attachment, AttachmentModule
 from trac.config import ConfigSection, ExtensionOption, Option
 from trac.core import *
@@ -537,7 +538,7 @@ class RoadmapModule(Component):
         write_prop('BEGIN', 'VCALENDAR')
         write_prop('VERSION', '2.0')
         write_prop('PRODID', '-//Edgewall Software//NONSGML Trac %s//EN'
-                   % self.env.trac_version)
+                   % __version__)
         write_prop('METHOD', 'PUBLISH')
         write_prop('X-WR-CALNAME',
                    self.env.project_name + ' - ' + _('Roadmap'))

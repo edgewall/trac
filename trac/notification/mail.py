@@ -30,6 +30,7 @@ from subprocess import Popen, PIPE
 
 from genshi.builder import tag
 
+from trac import __version__
 from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
                          OrderedExtensionsOption)
 from trac.core import Component, ExtensionPoint, TracError, implements
@@ -368,9 +369,8 @@ class EmailDistributor(Component):
         smtp_reply_to = config.get('smtp_replyto')
 
         headers = dict()
-        headers['X-Mailer'] = 'Trac %s, by Edgewall Software'\
-                              % self.env.trac_version
-        headers['X-Trac-Version'] = self.env.trac_version
+        headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
+        headers['X-Trac-Version'] = __version__
         headers['X-Trac-Project'] = self.env.project_name
         headers['X-URL'] = self.env.project_url
         headers['X-Trac-Realm'] = event.realm

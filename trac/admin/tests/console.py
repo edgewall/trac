@@ -194,10 +194,12 @@ class TracadminTestCase(TracAdminTestCaseBase):
         has no command arguments, it is hard to call it incorrectly.  As
         a result, there is only this one test.
         """
+        from trac import __version__
+
         rv, output = self._execute('help')
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output, {
-            'version': self.env.trac_version,
+            'version': __version__,
             'date_format_hint': get_date_format_hint()
         })
         self.assertTrue(all(len(line) < 80 for line in output.split('\n')),

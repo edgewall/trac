@@ -327,7 +327,8 @@ class Environment(Component, ComponentManager):
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        yield 'Trac', self.trac_version
+        from trac import core, __version__ as VERSION
+        yield 'Trac', get_pkginfo(core).get('version', VERSION)
         yield 'Python', sys.version
         yield 'setuptools', setuptools.__version__
         from trac.util.datefmt import pytz
@@ -599,14 +600,6 @@ class Environment(Component, ComponentManager):
         return DatabaseManager(self) \
                .get_database_version('initial_database_version')
 
-    @lazy
-    def trac_version(self):
-        """Returns the version of Trac.
-        :since: 1.2
-        """
-        from trac import core, __version__
-        return get_pkginfo(core).get('version', __version__)
-
     def get_version(self, initial=False):
         """Return the current version of the database.  If the
         optional argument `initial` is set to `True`, the version of
@@ -666,8 +659,9 @@ class Environment(Component, ComponentManager):
                            .replace('%(project)s', self.project_name)
         self.log, self._log_handler = logger_handler_factory(
             logtype, logfile, self.log_level, logid, format=format)
+        from trac import core, __version__ as VERSION
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
-                      self.trac_version)
+                      get_pkginfo(core).get('version', VERSION))
 
     def get_known_users(self, as_dict=False):
         """Returns information about all known users, i.e. users that
