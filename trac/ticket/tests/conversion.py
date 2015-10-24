@@ -14,7 +14,6 @@
 import os
 import unittest
 
-from trac import __version__ as TRAC_VERSION
 from trac.mimeview.api import Mimeview
 from trac.perm import PermissionCache
 from trac.test import EnvironmentStub, Mock, MockPerm
@@ -157,7 +156,7 @@ Bar
     <language>en-us</language>
     <generator>Trac %s</generator>
  </channel>
-</rss>""" % (TRAC_VERSION),
+</rss>""" % self.env.trac_version,
                           'application/rss+xml', 'xml'),
                          (content.replace('\r', ''), mimetype, ext))
 
