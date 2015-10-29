@@ -360,7 +360,7 @@ class TracadminTestCase(TracAdminTestCaseBase):
                                    'WIKI_VIEW WIKI_MODIFY')
         self.assertEqual(0, rv, output)
         rv, output2 = self._execute('permission list')
-        self.assertEqual(0, rv, output)
+        self.assertEqual(0, rv, output2)
         self.assertExpectedResult(output + output2)
 
     def test_permission_add_unknown_action(self):
