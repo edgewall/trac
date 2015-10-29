@@ -133,7 +133,8 @@ class MockPerm(object):
     def __call__(self, realm_or_resource, id=False, version=False):
         return self
 
-    def require(self, action, realm_or_resource=None, id=False, version=False):
+    def require(self, action, realm_or_resource=None, id=False, version=False,
+                message=None):
         pass
     assert_permission = require
 
