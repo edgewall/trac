@@ -349,7 +349,7 @@ class TracadminTestCase(unittest.TestCase):
                                    'WIKI_VIEW WIKI_MODIFY')
         self.assertEqual(0, rv, output)
         rv, output2 = self._execute('permission list')
-        self.assertEqual(0, rv, output)
+        self.assertEqual(0, rv, output2)
         self.assertExpectedResult(output + output2)
 
     def test_permission_remove_one_action_ok(self):
