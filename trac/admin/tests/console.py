@@ -363,6 +363,16 @@ class TracadminTestCase(TracAdminTestCaseBase):
         self.assertEqual(0, rv, output2)
         self.assertExpectedResult(output + output2)
 
+    def test_permission_add_differs_from_action_by_casing(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a permission that differs from an action by casing and
+        checks for the message.
+        """
+        rv, output = self._execute('permission add anonymous Trac_Admin')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
     def test_permission_add_unknown_action(self):
         """
         Tests the 'permission add' command in trac-admin.  This particular

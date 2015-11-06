@@ -343,6 +343,10 @@ class PermissionSystem(Component):
         specified action."""
         if action.isupper() and action not in self.get_actions():
             raise TracError(_('%(name)s is not a valid action.', name=action))
+        elif not action.isupper() and action.upper() in self.get_actions():
+            raise TracError(_("Permission %(name)s differs from a defined "
+                              "action by casing only, which is not allowed.",
+                              name=action))
 
         self.store.grant_permission(username, action)
 
