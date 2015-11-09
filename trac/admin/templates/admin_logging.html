@@ -21,8 +21,9 @@
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         $("#log_type").change(function() {
-          $("#log_level").enable(this.selectedIndex > 0);
-          $("#log_file").enable(this.options[this.selectedIndex].value == "file");
+          var type = $(this).val();
+          $("#log_level").enable(type !== 'none');
+          $("#log_file").enable(type === 'file');
         }).change();
       });
     /*]]>*/</script>
