@@ -353,7 +353,7 @@ def get_date_format_jquery_ui(locale):
 def get_time_format_jquery_ui(locale):
     """Get the time format for the jQuery UI timepicker addon."""
     if locale == 'iso8601':
-        return 'HH:mm:ssz'  # XXX timepicker doesn't support 'ISO_8601'
+        return 'HH:mm:ssZ'
     if babel and locale:
         values = {'h': 'h', 'hh': 'hh', 'H': 'H', 'HH': 'HH',
                   'm': 'm', 'mm': 'mm', 's': 's', 'ss': 'ss'}
@@ -374,12 +374,16 @@ def get_time_format_jquery_ui(locale):
 
 def get_timezone_list_jquery_ui(t=None):
     """Get timezone list for jQuery timepicker addon"""
+    def utcoffset(tz, t):  # in minutes
+        offset = t.astimezone(get_timezone(tz)).utcoffset()
+        return offset.days * 24 * 60 + offset.seconds // 60
+    def label(offset):
+        sign = '-' if offset < 0 else '+'
+        return '%s%02d:%02d' % (sign, abs(offset // 60), offset % 60)
     t = datetime.now(utc) if t is None else utc.localize(t)
-    zones = set(t.astimezone(get_timezone(tz)).strftime('%z')
-                for tz in all_timezones)
-    return [{'value': 'Z', 'label': '+00:00'} \
-            if zone == '+0000' else zone[:-2] + ':' + zone[-2:]
-            for zone in sorted(zones, key=lambda tz: int(tz))]
+    offsets = set(utcoffset(tz, t) for tz in all_timezones)
+    return [{'value': offset, 'label': label(offset)}
+            for offset in sorted(offsets)]
 
 def get_first_week_day_jquery_ui(req):
     """Get first week day for jQuery date picker"""

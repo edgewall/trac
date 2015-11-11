@@ -310,18 +310,20 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
                          nav['metanav'][0])
 
-    def test_add_jquery_ui_timezone_list_has_z(self):
-        chrome = Chrome(self.env)
+    def _get_jquery_ui_script_data(self, lc_time):
+        req = Request(href=Href('/trac.cgi'), lc_time=lc_time)
+        Chrome(self.env).add_jquery_ui(req)
+        return req.chrome['script_data']['jquery_ui']
 
-        req = Request(href=Href('/trac.cgi'), lc_time='iso8601')
-        chrome.add_jquery_ui(req)
-        self.assertIn({'value': 'Z', 'label': '+00:00'},
-                      req.chrome['script_data']['jquery_ui']['timezone_list'])
+    def test_add_jquery_ui_is_iso8601(self):
+        data = self._get_jquery_ui_script_data('iso8601')
+        self.assertIn({'value': -60, 'label': '-01:00'}, data['timezone_list'])
+        self.assertIn({'value': 0, 'label': '+00:00'}, data['timezone_list'])
+        self.assertIn({'value': 60, 'label': '+01:00'}, data['timezone_list'])
 
-        req = Request(href=Href('/trac.cgi'), lc_time=locale_en)
-        chrome.add_jquery_ui(req)
-        self.assertIn({'value': 'Z', 'label': '+00:00'},
-                      req.chrome['script_data']['jquery_ui']['timezone_list'])
+    def test_add_jquery_ui_default_format(self):
+        data = self._get_jquery_ui_script_data(locale_en)
+        self.assertIsNone(data['timezone_list'])
 
     def test_invalid_default_dateinfo_format_raises_exception(self):
         self.env.config.set('trac', 'default_dateinfo_format', u'ābšolute')

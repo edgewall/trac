@@ -1375,10 +1375,8 @@ class Chrome(Component):
             'first_week_day': get_first_week_day_jquery_ui(req),
             'timepicker_separator': get_timepicker_separator_jquery_ui(req),
             'show_timezone': is_iso8601,
-            # default timezone must be included
             'timezone_list': get_timezone_list_jquery_ui()
-                             if is_iso8601
-                             else [{'value': 'Z', 'label': '+00:00'}],
+                             if is_iso8601 else None,
             'timezone_iso8601': is_iso8601,
         })
         add_script(req, 'common/js/jquery-ui-i18n.js')
