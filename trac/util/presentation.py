@@ -19,6 +19,8 @@ tasks such as grouping or pagination.
 from math import ceil
 import re
 
+from trac.core import TracError
+
 __all__ = ['captioned_button', 'classes', 'first_last', 'group', 'istext',
            'prepared_paginate', 'paginate', 'Paginator']
 __no_apidoc__ = 'prepared_paginate'
@@ -163,6 +165,9 @@ def paginate(items, page=0, max_per_page=10):
     ([0, 1, 2, 3, 4, 5], 12, 2)
     >>> paginate(items, page=1, max_per_page=6)
     ([6, 7, 8, 9, 10, 11], 12, 2)
+
+    :raises TracError: if `page` is out of the range of the paginated
+                       results.
     """
     if not page:
         page = 0
@@ -172,8 +177,9 @@ def paginate(items, page=0, max_per_page=10):
     count = None
     if hasattr(items, '__len__'):
         count = len(items)
-        if count:
-            assert start < count, 'Page %d out of range' % page
+        if count and start >= count:
+            from trac.util.translation import _
+            raise TracError(_("Page %(page)s is out of range.", page=page))
 
     try: # Try slicing first for better performance
         retval = items[start:stop]
