@@ -399,6 +399,7 @@ def suite():
     import trac.db.tests
     import trac.mimeview.tests
     import trac.notification.tests
+    import trac.search.tests
     import trac.ticket.tests
     import trac.timeline.tests
     import trac.upgrades.tests
@@ -418,6 +419,7 @@ def suite():
     suite.addTest(trac.db.tests.suite())
     suite.addTest(trac.mimeview.tests.suite())
     suite.addTest(trac.notification.tests.suite())
+    suite.addTest(trac.search.tests.suite())
     suite.addTest(trac.ticket.tests.suite())
     suite.addTest(trac.timeline.tests.suite())
     suite.addTest(trac.upgrades.tests.suite())

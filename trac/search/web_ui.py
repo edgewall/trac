@@ -23,6 +23,7 @@ from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
+from trac.util import as_int
 from trac.util.datefmt import format_datetime, user_time
 from trac.util.html import find_element
 from trac.util.presentation import Paginator
@@ -218,8 +219,15 @@ class SearchModule(Component):
         return sorted(results, key=lambda x: x[2], reverse=True)
 
     def _prepare_results(self, req, filters, results):
-        page = int(req.args.get('page', '1'))
-        results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
+        page = req.args.get('page', 1)
+        page = as_int(page, default=1, min=1)
+        try:
+            results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
+        except TracError:
+            add_warning(req, _("Page %(page)s is out of range.", page=page))
+            page = 1
+            results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
+
         for idx, result in enumerate(results):
             results[idx] = {'href': result[0], 'title': result[1],
                             'date': user_time(req, format_datetime, result[2]),

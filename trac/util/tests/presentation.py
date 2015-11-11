@@ -15,6 +15,7 @@
 import doctest
 import unittest
 
+from trac.core import TracError
 from trac.util import presentation
 
 
@@ -47,10 +48,31 @@ class ToJsonTestCase(unittest.TestCase):
                                                u"\u2028\x0a": u"\u2029\x0d"}))
 
 
+class PaginatorTestCase(unittest.TestCase):
+
+    def test_paginate(self):
+        """List of objects is paginated."""
+        items = range(0, 20)
+        paginator = presentation.Paginator(items, 1)
+
+        self.assertEqual(1, paginator.page)
+        self.assertEqual(10, paginator.max_per_page)
+        self.assertEqual(20, paginator.num_items)
+        self.assertEqual(2, paginator.num_pages)
+        self.assertEqual((10, 20), paginator.span)
+
+    def test_page_out_of_range_raises_exception(self):
+        """Out of range value for page raises a `TracError`."""
+        items = range(0, 20)
+
+        self.assertRaises(TracError, presentation.Paginator, items, 2)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(presentation))
     suite.addTest(unittest.makeSuite(ToJsonTestCase))
+    suite.addTest(unittest.makeSuite(PaginatorTestCase))
     return suite
 
 
