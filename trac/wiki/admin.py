@@ -263,5 +263,4 @@ class WikiAdmin(Component):
     def _do_upgrade(self):
         self.load_pages(pkg_resources.resource_filename('trac.wiki',
                                                         'default-pages'),
-                        ignore=['WikiStart', 'checkwiki.py'],
-                        create_only=['InterMapTxt'])
+                        ignore=['WikiStart'], create_only=['InterMapTxt'])
