@@ -105,6 +105,7 @@ class Ticket(object):
             if f['type'] == 'time':
                 self.time_fields.append(f['name'])
         self.values = {}
+        self._old = {}
         if tkt_id is not None:
             tkt_id = int(tkt_id)
             self._fetch_ticket(tkt_id)
@@ -112,7 +113,6 @@ class Ticket(object):
             self._init_defaults()
             self.id = None
         self.version = version
-        self._old = {}
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.id)
@@ -129,26 +129,30 @@ class Ticket(object):
                 default = self.env.config.get('ticket',
                                               'default_' + field['name'])
             else:
-                default = field.get('value')
-                options = field.get('options')
-                if default and options and default not in options:
-                    try:
-                        default = options[int(default)]
-                    except (ValueError, IndexError):
-                        self.env.log.warning('Invalid default value "%s" '
-                                             'for custom field "%s"',
-                                             default, field['name'])
-                if default and field.get('type') == 'time':
-                    try:
-                        default = parse_date(default,
-                                             hint=field.get('format'))
-                    except TracError as e:
-                        self.env.log.warning('Invalid default value "%s" '
-                                             'for custom field "%s": %s',
-                                             default, field['name'], e)
-                        default = None
+                default = self._custom_field_default(field)
             if default:
                 self.values.setdefault(field['name'], default)
+
+    def _custom_field_default(self, field):
+        default = field.get('value')
+        options = field.get('options')
+        if default and options and default not in options:
+            try:
+                default = options[int(default)]
+            except (ValueError, IndexError):
+                self.env.log.warning('Invalid default value "%s" '
+                                     'for custom field "%s"',
+                                     default, field['name'])
+        if default and field.get('type') == 'time':
+            try:
+                default = parse_date(default,
+                                     hint=field.get('format'))
+            except TracError as e:
+                self.env.log.warning('Invalid default value "%s" '
+                                     'for custom field "%s": %s',
+                                     default, field['name'], e)
+                default = None
+        return default
 
     def _fetch_ticket(self, tkt_id):
         row = None
@@ -182,6 +186,14 @@ class Ticket(object):
                     self.values[name] = empty
                 else:
                     self.values[name] = value
+
+        # Set defaults for custom fields that haven't been fetched.
+        for field in self.fields:
+            name = field['name']
+            if field.get('custom') and name not in self.values:
+                default = self._custom_field_default(field)
+                if default:
+                    self[name] = default
 
     def __getitem__(self, name):
         return self.values.get(name)

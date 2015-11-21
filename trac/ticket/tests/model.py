@@ -328,6 +328,23 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('two', ticket['bar'])
         self.assertEqual('three', ticket['baz'])
 
+    def test_ticket_custom_field_default_values(self):
+        """Ticket created before a custom field is added will have the
+        default value for the custom field.
+        """
+        tid = self._insert_ticket("The summary")
+        self.env.config.set('ticket-custom', 'baz', 'text')
+        self.env.config.set('ticket-custom', 'baz.value', 'Something')
+        self.env.config.set('ticket-custom', 'bar', 'select')
+        self.env.config.set('ticket-custom', 'bar.options', 'one|two|three')
+        self.env.config.set('ticket-custom', 'bar.value', 'two')
+        TicketSystem(self.env).reset_ticket_fields()
+        del TicketSystem(self.env).custom_fields
+        ticket = Ticket(self.env, tid)
+
+        self.assertEqual('Something', ticket['baz'])
+        self.assertEqual('two', ticket['bar'])
+
     def test_set_field_stripped(self):
         """
         Verify that whitespace around ticket fields is stripped, except for
