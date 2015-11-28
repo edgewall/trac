@@ -65,6 +65,13 @@ class LoginModule(Component):
     ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
         """Whether login names should be converted to lower case.""")
 
+    auth_cookie_domain = Option('trac', 'auth_cookie_domain', '',
+        """Auth cookie domain attribute.
+
+        The auth cookie can be shared among multiple subdomains
+        by setting the value to the domain. (//since 1.2//)
+        """)
+
     auth_cookie_lifetime = IntOption('trac', 'auth_cookie_lifetime', 0,
         """Lifetime of the authentication cookie, in seconds.
 
@@ -180,6 +187,8 @@ class LoginModule(Component):
                          int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
+        if self.auth_cookie_domain:
+            req.outcookie['trac_auth']['domain'] = self.auth_cookie_domain
         req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
                                              or req.base_path or '/'
         if self.env.secure_cookies:
@@ -218,6 +227,8 @@ class LoginModule(Component):
         the "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
+        if self.auth_cookie_domain:
+            req.outcookie['trac_auth']['domain'] = self.auth_cookie_domain
         req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
                                              or req.base_path or '/'
         req.outcookie['trac_auth']['expires'] = -10000
