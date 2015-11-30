@@ -55,8 +55,9 @@ class TicketModuleTestCase(unittest.TestCase):
         t = Ticket(self.env)
         t.populate(old_props)
         t.insert()
+        comment = new_props.pop('comment', None)
         t.populate(new_props)
-        t.save_changes('actor')
+        t.save_changes('actor <actor@example.net>', comment=comment)
         return t
 
     def _insert_ticket(self, **kw):
@@ -80,6 +81,19 @@ class TicketModuleTestCase(unittest.TestCase):
                 name = item['name']
                 break
         self.assertEqual('newticket', name)
+
+    def test_quoted_reply_author_is_obfuscated(self):
+        """Reply-to author is obfuscated in a quoted reply."""
+        tkt = self._create_ticket_with_change({}, {'comment': 'the comment'})
+        req = self._create_request(method='GET',
+                                   args={'id': tkt.id, 'replyto': '1'})
+
+        data = self.ticket_module.process_request(req)[1]
+
+        comment = u"Replying to [comment:1 actor <actor@\u2026>]:\n> " \
+                  u"the comment\n"
+        self.assertEqual(comment, data['comment'])
+        self.assertEqual(comment, data['change_preview']['comment'])
 
     def test_ticket_property_diff_owner_change(self):
         """Property diff message when ticket owner is changed."""

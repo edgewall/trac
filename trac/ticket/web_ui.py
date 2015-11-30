@@ -46,7 +46,8 @@ from trac.util.datefmt import (
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
-    exception_to_unicode, empty, is_obfuscated, shorten_line
+    exception_to_unicode, empty, is_obfuscated, obfuscate_email_address,
+    shorten_line
 )
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, ngettext
@@ -1678,9 +1679,9 @@ class TicketModule(Component):
 
         def quote_original(author, original, link):
             if 'comment' not in req.args:  # i.e. comment was not yet edited
-                formatted_author = Chrome(self.env).format_author(req, author)
+                obfuscated_author = obfuscate_email_address(author)
                 data['comment'] = '\n'.join(
-                    ["Replying to [%s %s]:" % (link, formatted_author)] +
+                    ["Replying to [%s %s]:" % (link, obfuscated_author)] +
                     ["> %s" % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
