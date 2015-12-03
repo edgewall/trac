@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
 
   var showPropertyChanges = $("#trac-show-property-changes-toggle");
   var applyShowPropertyChanges = function() {
-    if (showPropertyChanges.attr('checked')) {
+    if (showPropertyChanges.prop('checked')) {
       $("div.change ul.changes").show();
       $("div.change").show();
     } else {
