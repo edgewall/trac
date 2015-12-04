@@ -123,7 +123,8 @@ ${edited_comment if edited_comment is not None else change.comment}</textarea>
       <input type="submit" name="preview_comment" value="${_('Preview')}"
              title="${_('Preview changes to comment %(cnum)s', cnum=cnum)}"/>
       <input type="submit" name="edit_comment" value="${_('Submit changes')}"
-             title="${_('Submit changes to comment %(cnum)s', cnum=cnum)}"/>
+             title="${_('Submit changes to comment %(cnum)s', cnum=cnum)}"
+             class="trac-disable-on-submit" />
       <input type="submit" name="cancel_comment" value="${_('Cancel')}"
              title="Cancel comment edit"/>
     </div>
