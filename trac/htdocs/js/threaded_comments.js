@@ -31,9 +31,9 @@ jQuery(document).ready(function($){
   };
 
   var applyOrder = function() {
-    var showPropertyChangesChecked = showPropertyChanges.attr('checked');
+    var showPropertyChangesChecked = showPropertyChanges.prop('checked');
     if (showPropertyChangesChecked) {
-      showPropertyChanges.attr("checked", false);
+      showPropertyChanges.prop("checked", false);
       applyShowPropertyChanges();
     }
     order = $("input[name='trac-comments-order']:checked").val();
@@ -53,7 +53,7 @@ jQuery(document).ready(function($){
       });
     }
     if (showPropertyChangesChecked) {
-      showPropertyChanges.attr("checked", true);
+      showPropertyChanges.prop("checked", true);
       applyShowPropertyChanges();
     }
   };
@@ -75,7 +75,7 @@ jQuery(document).ready(function($){
 
   $("input[name='trac-comments-order']")
     .filter("[value=" + comments_prefs.comments_order + "]")
-    .attr('checked', 'checked');
+    .prop('checked', true);
   applyOrder();
   $("input[name='trac-comments-order']").change(function() {
     unapplyOrder();
@@ -87,13 +87,13 @@ jQuery(document).ready(function($){
     }, dataType: 'text' });
   });
 
-  showPropertyChanges.attr('checked', comments_prefs.comments_only == 'false');
+  showPropertyChanges.prop('checked', comments_prefs.comments_only == 'false');
   applyShowPropertyChanges();
   showPropertyChanges.click(function() {
     applyShowPropertyChanges();
     $.ajax({ url: form.attr('action'), type: 'POST', data: {
       save_prefs: true,
-      ticket_comments_only: !showPropertyChanges.attr('checked'),
+      ticket_comments_only: !showPropertyChanges.prop('checked'),
       __FORM_TOKEN: form_token
     }, dataType: 'text' });
   });
