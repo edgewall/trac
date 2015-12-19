@@ -103,12 +103,12 @@ facilities.
         'Genshi>=0.6',
     ],
     extras_require = {
-        'Babel': ['Babel>=0.9.5'],
-        'MySQL': ['MySQL-python >= 1.2.2'],
-        'PostgreSQL': ['psycopg2 >= 2.0'],
-        'Pygments': ['Pygments>=0.6'],
-        'reST': ['docutils>=0.3.9'],
-        'Textile': ['textile>=2.0'],
+        'babel': ['Babel>=0.9.5'],
+        'mysql': ['MySQL-python >= 1.2.2'],
+        'postgresql': ['psycopg2 >= 2.0'],
+        'pygments': ['Pygments>=0.6'],
+        'rest': ['docutils>=0.3.9'],
+        'textile': ['textile>=2.0'],
     },
 
     entry_points = """
@@ -121,13 +121,13 @@ facilities.
         trac.admin.console = trac.admin.console
         trac.admin.web_ui = trac.admin.web_ui
         trac.attachment = trac.attachment
-        trac.db.mysql = trac.db.mysql_backend[MySQL]
-        trac.db.postgres = trac.db.postgres_backend[PostgreSQL]
+        trac.db.mysql = trac.db.mysql_backend[mysql]
+        trac.db.postgres = trac.db.postgres_backend[postgresql]
         trac.db.sqlite = trac.db.sqlite_backend
         trac.mimeview.patch = trac.mimeview.patch
-        trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
-        trac.mimeview.rst = trac.mimeview.rst[reST]
-        trac.mimeview.txtl = trac.mimeview.txtl[Textile]
+        trac.mimeview.pygments = trac.mimeview.pygments[pygments]
+        trac.mimeview.rst = trac.mimeview.rst[rest]
+        trac.mimeview.txtl = trac.mimeview.txtl[textile]
         trac.notification.api = trac.notification.api
         trac.notification.compat = trac.notification.compat
         trac.notification.mail = trac.notification.mail
