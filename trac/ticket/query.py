@@ -46,6 +46,7 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              add_script_data, add_stylesheet, add_warning,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import system_message
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
 
@@ -1382,7 +1383,11 @@ class TicketQueryMacro(WikiMacroBase):
                              cnt, query=query_string)
             return tag.span(cnt, title=title, class_='query_count')
 
-        tickets = query.execute(req)
+        try:
+            tickets = query.execute(req)
+        except QueryValueError, e:
+            self.log.warn(e)
+            return system_message(_("Error executing TicketQuery macro"), e)
 
         if format == 'table':
             data = query.template_data(formatter.context, tickets,

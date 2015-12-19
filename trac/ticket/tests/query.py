@@ -1050,6 +1050,13 @@ QUERY_TEST_CASES = u"""
 </div><p>
 </p>
 ------------------------------
+============================== TicketQuery(created=...)
+[[TicketQuery(created=...)]]
+------------------------------
+<p>
+</p><div class="system-message"><strong>Error executing TicketQuery macro</strong><pre>Invalid query constraint value</pre></div><p>
+</p>
+------------------------------
 ============================== TicketQuery(format=progress)
 [[TicketQuery(format=progress)]]
 ------------------------------
