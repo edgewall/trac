@@ -56,7 +56,7 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, is_valid_default_handler
-from trac.web.chrome import Chrome, add_notice, add_warning
+from trac.web.chrome import Chrome, ITemplateProvider, add_notice, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
 
@@ -112,6 +112,8 @@ class RequestDispatcher(Component):
     request pre- and post-processing.
     """
     required = True
+
+    implements(ITemplateProvider)
 
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)
@@ -294,6 +296,14 @@ class RequestDispatcher(Component):
             raise HTTPNotFound(e)
         except TracError as e:
             raise HTTPInternalError(e)
+
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.web', 'templates')]
 
     # Internal methods
 
