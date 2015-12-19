@@ -46,6 +46,7 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              add_script_data, add_stylesheet, add_warning,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import system_message
 from trac.wiki.macros import WikiMacroBase
 
 
@@ -1378,7 +1379,11 @@ class TicketQueryMacro(WikiMacroBase):
                 return tag.a(cnt, href=query.get_href(formatter.context.href),
                              title=title)
 
-        tickets = query.execute(req)
+        try:
+            tickets = query.execute(req)
+        except QueryValueError, e:
+            self.log.warn(e)
+            return system_message(_("Error executing TicketQuery macro"), e)
 
         if format == 'table':
             data = query.template_data(formatter.context, tickets,
