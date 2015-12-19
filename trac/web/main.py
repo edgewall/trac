@@ -68,6 +68,9 @@ default_tracker = 'http://trac.edgewall.org'
 
 class FakeSession(dict):
     sid = None
+    authenticated = False
+    last_visit = 0
+    
     def save(self):
         pass
 
