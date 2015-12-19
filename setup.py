@@ -103,12 +103,12 @@ facilities.
         'Genshi>=0.6',
     ],
     extras_require = {
-        'Babel': ['Babel>=0.9.5'],
-        'ConfigObj': ['ConfigObj'],
-        'Pygments': ['Pygments>=0.6'],
-        'reST': ['docutils>=0.3.9'],
-        'SilverCity': ['SilverCity>=0.9.4'],
-        'Textile': ['textile>=2.0'],
+        'babel': ['Babel>=0.9.5'],
+        'configobj': ['ConfigObj'],
+        'pygments': ['Pygments>=0.6'],
+        'rest': ['docutils>=0.3.9'],
+        'silvercity': ['SilverCity>=0.9.4'],
+        'textile': ['textile>=2.0'],
     },
 
     entry_points = """
@@ -125,9 +125,9 @@ facilities.
         trac.db.postgres = trac.db.postgres_backend
         trac.db.sqlite = trac.db.sqlite_backend
         trac.mimeview.patch = trac.mimeview.patch
-        trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
-        trac.mimeview.rst = trac.mimeview.rst[reST]
-        trac.mimeview.txtl = trac.mimeview.txtl[Textile]
+        trac.mimeview.pygments = trac.mimeview.pygments[pygments]
+        trac.mimeview.rst = trac.mimeview.rst[rest]
+        trac.mimeview.txtl = trac.mimeview.txtl[textile]
         trac.prefs = trac.prefs.web_ui
         trac.search = trac.search.web_ui
         trac.ticket.admin = trac.ticket.admin
@@ -150,8 +150,8 @@ facilities.
         trac.wiki.web_api = trac.wiki.web_api
         tracopt.mimeview.enscript = tracopt.mimeview.enscript
         tracopt.mimeview.php = tracopt.mimeview.php
-        tracopt.mimeview.silvercity = tracopt.mimeview.silvercity[SilverCity]
-        tracopt.perm.authz_policy = tracopt.perm.authz_policy[ConfigObj]
+        tracopt.mimeview.silvercity = tracopt.mimeview.silvercity[silvercity]
+        tracopt.perm.authz_policy = tracopt.perm.authz_policy[configobj]
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.clone = tracopt.ticket.clone
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater
