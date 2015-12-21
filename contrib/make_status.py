@@ -31,6 +31,7 @@ PACKAGES = [
     ("SVN bindings",      '__main__._svn_version()'),
     ("Mercurial",         'mercurial.util.version()'),
     ("Pygments",          'pygments.__version__'),
+    ("Textile",           'textile.__version__'),
     ("Pytz",              'pytz.__version__'),
     ("Docutils",          'docutils.__version__'),
     ("Twill",             'twill.__version__'),
