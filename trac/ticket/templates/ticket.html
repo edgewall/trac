@@ -69,11 +69,13 @@
           // Update ticket box
           $("#ticket").replaceWith(items.filter('#ticket'));
           // Unthread, unrevert and update changelog
-          if (!$('#trac-comments-oldest').checked())
+          if (!$('#trac-comments-oldest').prop('checked'))
             $('#trac-comments-oldest').click().change();
           $("#changelog").replaceWith(items.filter("#changelog"));
-          if (!$('#trac-show-property-changes-toggle').attr('checked'))
-            $('#trac-show-property-changes-toggle').click().attr('checked', false);
+          if (!$('#trac-show-property-changes-toggle').prop('checked'))
+            $('#trac-show-property-changes-toggle').click().prop('checked', false);
+          if (!$('#trac-show-comments-toggle').prop('checked'))
+            $('#trac-show-comments-toggle').click().prop('checked', false);
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
@@ -93,6 +95,7 @@
           var comment = $("#trac-comment-editor").next("div.comment").html(reply);
           comment.toggle(comment.children().length != 0);
         }, "#changelog .trac-loading");
+
         /*]]>*/
       </py:when>
       <py:otherwise>
@@ -149,6 +152,8 @@
                 </span>
               </div>
               <div>
+                <input id="trac-show-comments-toggle" type="checkbox" checked="checked" />
+                <label for="trac-show-comments-toggle">Show comments</label>
                 <input id="trac-show-property-changes-toggle" type="checkbox" />
                 <label for="trac-show-property-changes-toggle">Show property changes</label>
               </div>
@@ -347,7 +352,7 @@ ${value}</textarea>
               <label for="comment" i18n:msg="">You may use <!--!
                 --><a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
               </label>
-              <textarea id="comment" name="comment" class="wikitext trac-fullwidth trac-resizable" rows="10" cols="78">
+              <textarea id="comment" name="comment" class="${classes('wikitext', 'trac-fullwidth', 'trac-resizable', 'trac-autofocus' if replyto else None)}" rows="10" cols="78">
 ${comment}</textarea>
             </fieldset>
           </div>

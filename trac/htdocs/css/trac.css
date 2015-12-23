@@ -100,14 +100,14 @@ input[type=button], input[type=submit], input[type=reset], .trac-button {
  border-radius: .3em;
  box-shadow: .1em .1em .4em 0 #888;
  padding: .1em .5em .2em;
- text-shadow: .1em .1em #ddd;
+ text-shadow: .04em .04em #ddd;
  cursor: pointer;
 }
 input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover,
 .trac-button:hover {
  background: #f6f6f6;
  box-shadow: .1em .1em .6em 0 #999;
- text-shadow: .1em .1em #fcfcfc;
+ text-shadow: .04em .04em #fcfcfc;
 }
 input[type=button]:active, input[type=submit]:active, input[type=reset]:active,
 .trac-button:active, .inlinebuttons a:active {
@@ -188,7 +188,7 @@ label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
 .inlinebuttons a:hover {
  background: #f6f6f6;
  color: #333;
- text-shadow: .1em .1em #fcfcfc;
+ text-shadow: .04em .04em #fcfcfc;
  box-shadow: .1em .1em .6em 0 #999;
 }
 input[type=button].trac-delete,
@@ -435,6 +435,14 @@ div.trac-content {
  box-shadow: .2em .3em 1.5em #eee;
 }
 
+/* Author info */
+.trac-author-anonymous, .trac-author-none {
+ font-style: italic;
+}
+.trac-author-user {
+ font-weight: bold;
+}
+
 /* Help links */
 .uinohelp #help { display: none }
 #help {
@@ -457,7 +465,7 @@ div.trac-content {
  border-radius: .3em;
  box-shadow: .1em .1em .3em 0 #bbb;
  color: #222;
- text-shadow: .1em .1em #fcfcfc;
+ text-shadow: .04em .04em #fcfcfc;
  padding: .3em .5em .3em 20px;
 }
 .foldable :link:hover, .foldable :visited:hover { background-color: transparent }
@@ -468,7 +476,7 @@ div.trac-content {
 fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  color: #666;
  font-size: 110%;
- text-shadow: .1em .1em #ddd;
+ text-shadow: .04em .04em #ddd;
 }
 .collapsed legend.foldable { background: white }
 
@@ -602,7 +610,7 @@ code, tt {
 }
 
 blockquote.citation {
- margin: -0.6em 0;
+ margin: -0.6em 0 0 0;
  border-style: solid;
  border-width: 0 0 0 2px;
  padding-left: .5em;
@@ -839,7 +847,7 @@ div.system-message .trac-close-msg:hover {
  /* taken from .inlinebuttons */
  background: #f6f6f6;
  color: #333;
- text-shadow: .1em .1em #fcfcfc;
+ text-shadow: .04em .04em #fcfcfc;
  box-shadow: .1em .1em .6em 0 #999;
 }
 .uisymbols div.system-message .trac-close-msg > span {

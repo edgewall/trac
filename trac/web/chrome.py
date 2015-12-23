@@ -1253,13 +1253,18 @@ class Chrome(Component):
         :since 1.1.6: accepts the optional `resource` keyword parameter.
         """
         author = self.author_email(author, email_map)
+        return tag.span(self.format_author(req, author, resource),
+                        class_=self.author_class(req, author))
+
+    def author_class(self, req, author):
         suffix = ''
         if author == 'anonymous':
             suffix = '-anonymous'
         elif not author:
             suffix = '-none'
-        return tag.span(self.format_author(req, author, resource),
-                        class_='trac-author' + suffix)
+        elif req and author == req.authname:
+            suffix = '-user'
+        return 'trac-author' + suffix
 
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
 

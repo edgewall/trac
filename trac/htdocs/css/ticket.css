@@ -30,6 +30,7 @@
  background: #f8f8f8 url(../draft.png);
 }
 #ticketchange.ticketdraft {
+ overflow: auto;
  padding: 0 1em;
  margin: 1em 0;
 }
@@ -121,7 +122,7 @@
 
 /* Change History */
 #changelog {
- padding: 1em;
+ padding: 1.5em 0;
 }
 .trac-shade { background-color: #eee }
 #trac-threaded-form { float: right }
@@ -134,18 +135,28 @@ ul.children {
 ul.children, ul.children ul.children { list-style-image: url(../inreply.png) }
 ul.children ul, ul.children ol { list-style-image: none }
 ul.children > li.child {
- padding-left: .5em;
+ padding: .1em 0 0 .5em;
  margin-bottom: 1.5em;
- border-left: 1px solid #bbb;
- border-radius: 1em;
+ border: 1px solid;
+ border-color: #f8f8f8 #eee #e4e4e4 #ddd;
+ border-top: 0;
+ border-right: 0;
+ border-radius: .8em;
 }
+#changelog ul.children h3 { margin-right: .4em }
+
+.in-reply-to:before { content: "↑" }
+.follow-up:before { content: "↓" }
+.trac-most-recent-first .in-reply-to:before { content: "↓" }
+.trac-most-recent-first .follow-up:before { content: "↑" }
+
 
 /* Comment contents */
 #changelog h3, #ticketchange h3 {
  border-bottom: 1px solid #d7d7d7;
- box-shadow: .1em .4em .7em 0 #f2f2f2;
+ box-shadow: .1em .2em .4em 0 #f2f2f2;
  padding: 0 .2em;
- margin-bottom: .5em;
+ margin-bottom: .2em;
  color: #999;
  font-size: 100%;
  font-weight: normal;
@@ -155,8 +166,9 @@ ul.children > li.child {
 }
 
 /* Comment editor */
-#trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
+#trac-comment-editor { margin-left: .5em; margin-bottom: 1em }
 #trac-comment-editor textarea { background: #ffffe0; }
+#trac-comment-editor .wikitoolbar { clear: right }
 .trac-new { border-left: 0.31em solid #c0f0c0; padding-left: 0.31em; }
 
 .trac-loading {
@@ -168,6 +180,7 @@ ul.children > li.child {
 .threading, #changelog .inlinebuttons {
  float: right;
 }
+
 .threading { font-size: 85%; }
 .threading :link, .threading :visited { border-bottom: 0 }
 #changelog .trac-lastedit {
@@ -178,9 +191,59 @@ ul.children > li.child {
 }
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
-#changelog .changes, #ticketchange .changes { list-style: square; margin-left: 2em; padding: 0 }
+/* Change panel: */
+.trac-change-panel {
+ margin: 0 0 1.5em 2em;
+ padding-bottom: 1em;
+ max-width: 66%;
+ float: right;
+}
+
+/*  - Change controls */
+.trac-ticket-buttons {
+ clear: right;
+ visibility: hidden;
+ float: right;
+}
+.trac-ticket-buttons form {
+ display: inline-block;
+}
+
+/* - Property changes */
+#changelog .changes { background: #ffd }
+#ticketchange .changes { background: #f8f8f8 url(../draft.png) }
+#changelog .changes, #ticketchange .changes {
+ clear: right;
+ width: auto;
+ margin: 0;
+ padding: 0 .8em;
+ color: #663;
+ border: 1px solid;
+ border-color: #eea #dd9 #dd9 #eea;
+ border-radius: .4em;
+ float: right;
+ box-shadow: .1em .2em 1em #eee;
+}
+div.change, ul.children { clear: both; }
+
+.changes th {
+ text-align: right;
+ vertical-align: baseline;
+ padding: .4em .7em .4em 0;
+ font-size: 85%;
+ border-top: 1px dotted #eed;
+}
+.changes td {
+ font-size: 85%;
+ padding: .4em 0 .4em 0;
+ border-top: 1px dotted #eed;
+}
+.changes tr:first-child th, .changes tr:first-child td { border-top: none }
+.changes .trac-field-new { font-weight: bold }
+.changes .trac-field-deleted { text-decoration: line-through }
+
 .trac-conflict { border-left: .3em solid #e44; padding-left: .3em; }
-#changelog .comment, #ticketchange .comment { margin-left: 2em }
+#changelog .comment, #ticketchange .comment { margin-left: .5em }
 button.trac-revert, button.trac-revert:hover {
  margin: 0;
  padding: 0;
@@ -203,7 +266,10 @@ form .field fieldset { margin-left: 1px; margin-right: 1px }
 #trac-add-comment table td { width: 78%; }
 label[for=comment] { float: right }
 
-#propertyform { margin-bottom: 2em; }
+#propertyform {
+ clear: both;
+ margin-bottom: 2em; 
+}
 #propertyform table.trac-properties {
  border-spacing: 0;
  table-layout: fixed;

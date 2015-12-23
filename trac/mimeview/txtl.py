@@ -15,23 +15,16 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 """Trac support for Textile
-See also: https://github.com/textile/python-textile
+See also: http://dealmeida.net/projects/textile/
 """
 
-import textile
-
 from trac.core import *
-from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer
-from trac.util import get_pkginfo
 
 
 class TextileRenderer(Component):
     """Renders plain text in Textile format as HTML."""
-
-    implements(IHTMLPreviewRenderer, ISystemInfoProvider)
-
-    # IHTMLPreviewRenderer methods
+    implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
         if mimetype == 'text/x-textile':
@@ -39,10 +32,5 @@ class TextileRenderer(Component):
         return 0
 
     def render(self, context, mimetype, content, filename=None, rev=None):
+        import textile
         return textile.textile(content.encode('utf-8'), encoding='utf-8')
-
-    # ISystemInfoProvider methods
-
-    def get_system_info(self):
-        version = get_pkginfo(textile).get('version')
-        yield 'Textile', version

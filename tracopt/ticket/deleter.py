@@ -101,7 +101,7 @@ class TicketDeleter(Component):
             .select('//div[starts-with(@class, "change")]/@id') \
             .copy(buffer).end() \
             .select('//div[starts-with(@class, "change") and @id]'
-                    '/div[@class="trac-ticket-buttons"]') \
+                    '//div[@class="trac-ticket-buttons"]') \
             .prepend(delete_comment)
 
     # IRequestFilter methods

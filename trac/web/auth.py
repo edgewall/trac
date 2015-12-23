@@ -111,8 +111,9 @@ class LoginModule(Component):
 
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
-            user = Chrome(self.env).format_author(req, req.authname)
-            yield ('metanav', 'login', _('logged in as %(user)s', user=user))
+            yield ('metanav', 'login',
+                   tag_('logged in as %(user)s',
+                        user=Chrome(self.env).authorinfo(req, req.authname)))
             yield ('metanav', 'logout',
                    tag.form(tag.div(tag.button(_('Logout'),
                                                name='logout', type='submit')),

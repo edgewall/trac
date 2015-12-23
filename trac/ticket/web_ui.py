@@ -774,8 +774,10 @@ class TicketModule(Component):
     def _get_prefs(self, req):
         return {'comments_order': req.session.get('ticket_comments_order',
                                                   'oldest'),
-                'comments_only': req.session.get('ticket_comments_only',
-                                                 'false')}
+                'show_prop_changes': req.session.get('ticket_show_prop_changes',
+                                                     'true'),
+                'show_comments': req.session.get('ticket_show_comments',
+                                                 'true')}
 
     def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket, 'to_utimestamp': to_utimestamp,
@@ -1517,7 +1519,7 @@ class TicketModule(Component):
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
-    def _query_link(self, req, name, value, text=None):
+    def _query_link(self, req, name, value, text=None, class_=None):
         """Return a link to /query with the appropriate name and value"""
         from trac.ticket.query import QueryModule
         if not self.env.is_component_enabled(QueryModule):
@@ -1527,7 +1529,8 @@ class TicketModule(Component):
         if name == 'resolution':
             args['status'] = 'closed'
         if text or value:
-            return tag.a(text or value, href=req.href.query(args))
+            return tag.a(text or value, href=req.href.query(args),
+                         class_=class_)
 
     def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""
@@ -1759,12 +1762,12 @@ class TicketModule(Component):
 
         # Display the owner and reporter links when not obfuscated
         chrome = Chrome(self.env)
-        for user in 'reporter', 'owner':
-            author = ticket[user]
-            formatted_author = chrome.format_author(req, author)
-            if not is_obfuscated(formatted_author):
-                data['%s_link' % user] = \
-                    self._query_link(req, user, author, formatted_author)
+        for role in 'reporter', 'owner':
+            user = ticket[role]
+            formatted_user = chrome.format_author(req, user)
+            if not is_obfuscated(formatted_user):
+                data['%s_link' % role] = self._query_link(
+                    req, role, user, class_=chrome.author_class(req, user))
         data.update({
             'context': context, 'conflicts': conflicts,
             'fields': fields, 'fields_map': fields_map,
