@@ -562,20 +562,20 @@ user2 =
         self.assertEqual('(none)', format_author(None, None))
 
     def test_actor_has_email_view(self):
-        req = Mock(Request, username='user1',
+        req = Mock(Request, authname='user1',
                    perm=PermissionCache(self.env, 'user1'))
         author = Chrome(self.env).format_author(req, 'user@domain.com')
         self.assertEqual('user@domain.com', author)
 
     def test_actor_no_email_view(self):
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         author = Chrome(self.env).format_author(req, 'user@domain.com')
         self.assertEqual(u'user@\u2026', author)
 
     def test_actor_no_email_view_show_email_addresses(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         author = Chrome(self.env).format_author(req, 'user@domain.com')
         self.assertEqual('user@domain.com', author)
@@ -586,7 +586,7 @@ user2 =
 
     def test_actor_has_email_view_for_resource(self):
         format_author = Chrome(self.env).format_author
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         resource = Resource('wiki', 'WikiStart')
         author = format_author(req, 'user@domain.com', resource)
@@ -594,7 +594,7 @@ user2 =
 
     def test_actor_has_email_view_for_resource_negative(self):
         format_author = Chrome(self.env).format_author
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         resource = Resource('wiki', 'TracGuide')
         author = format_author(req, 'user@domain.com', resource)
@@ -617,7 +617,7 @@ user2 =
         self.assertEqual('user2', format_author(None, 'user2'))
 
     def test_show_full_names_true_actor_has_email_view(self):
-        req = Mock(Request, username='user1',
+        req = Mock(Request, authname='user1',
                    perm=PermissionCache(self.env, 'user1'))
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
@@ -628,7 +628,7 @@ user2 =
         self.assertEqual('user2', format_author(None, 'user2'))
 
     def test_show_full_names_false_actor_has_email_view(self):
-        req = Mock(Request, username='user1',
+        req = Mock(Request, authname='user1',
                    perm=PermissionCache(self.env, 'user1'))
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', False)
@@ -662,7 +662,7 @@ user2 =
                          format_emails(None, to_format))
 
     def test_format_emails_actor_has_email_view(self):
-        req = Mock(Request, username='user1', href=Href('/'),
+        req = Mock(Request, authname='user1', href=Href('/'),
                    perm=PermissionCache(self.env, 'user1'))
         context = web_context(req)
         format_emails = Chrome(self.env).format_emails
@@ -672,7 +672,7 @@ user2 =
                          format_emails(context, to_format))
 
     def test_format_emails_actor_no_email_view(self):
-        req = Mock(Request, username='user2', href=Href('/'),
+        req = Mock(Request, authname='user2', href=Href('/'),
                    perm=PermissionCache(self.env, 'user2'))
         context = web_context(req)
         format_emails = Chrome(self.env).format_emails
@@ -714,7 +714,7 @@ user2 =
 
     def test_subject_is_none(self):
         chrome = Chrome(self.env)
-        req = Request()
+        req = Request(authname=None)
         self.assertEqual('<span class="trac-author">(none)</span>',
                          str(chrome.authorinfo(req, '(none)')))
         self.assertEqual('<span class="trac-author-none">(none)</span>',
@@ -730,7 +730,7 @@ user2 =
 
     def test_actor_has_email_view(self):
         chrome = Chrome(self.env)
-        req = Mock(Request, username='user1',
+        req = Mock(Request, authname='user1',
                    perm=PermissionCache(self.env, 'user1'))
         self.assertEqual('<span class="trac-author">user@domain.com</span>',
                          unicode(chrome.authorinfo(req, 'user@domain.com')))
@@ -742,7 +742,7 @@ user2 =
                          str(chrome.authorinfo_short('user@example.org')))
 
     def test_actor_no_email_view(self):
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         authorinfo = Chrome(self.env).authorinfo
         self.assertEqual(u'<span class="trac-author">user@\u2026</span>',
@@ -752,7 +752,7 @@ user2 =
 
     def test_actor_no_email_view_show_email_addresses(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         authorinfo = Chrome(self.env).authorinfo
         self.assertEqual('<span class="trac-author">user@domain.com</span>',
@@ -770,7 +770,7 @@ user2 =
     def test_actor_has_email_view_for_resource(self):
         authorinfo = Chrome(self.env).authorinfo
         authorinfo_short = Chrome(self.env).authorinfo_short
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         resource = Resource('wiki', 'WikiStart')
         authorinfo = authorinfo(req, 'user@domain.com', resource=resource)
@@ -783,7 +783,7 @@ user2 =
     def test_actor_has_email_view_for_resource_negative(self):
         authorinfo = Chrome(self.env).authorinfo
         authorinfo_short = Chrome(self.env).authorinfo_short
-        req = Mock(Request, username='user2',
+        req = Mock(Request, authname='user2',
                    perm=PermissionCache(self.env, 'user2'))
         resource = Resource('wiki', 'TracGuide')
         author = authorinfo(req,  'user@domain.com', resource=resource)

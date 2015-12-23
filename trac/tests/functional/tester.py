@@ -57,7 +57,8 @@ class FunctionalTester(object):
         tc.follow(r"\bLogin\b")
         # We've provided authentication info earlier, so this should
         # redirect back to the base url.
-        tc.find("logged in as %s" % username)
+        tc.find('logged in as[ \t\n]+<span class="trac-author-user">%s</span>'
+                % username)
         tc.find("Logout")
         tc.url(self.url)
         tc.notfind(internal_error)

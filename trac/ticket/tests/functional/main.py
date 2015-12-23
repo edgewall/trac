@@ -29,6 +29,27 @@ from trac.util.datefmt import format_datetime, localtz, utc
 from trac.util.text import to_utf8
 
 
+def find_field_deleted(name, find=True):
+    markup = ('<td>[ \t\n]+'
+              '<span class="trac-field-deleted">%s</span>'
+              '[ \t\n]+</td>' % name)
+    if find:
+        tc.find(markup)
+    else:
+        tc.notfind(markup)
+
+
+def find_field_change(old_name, new_name, find=True):
+    markup = ('<span class="trac-field-old">%s</span>'
+              '[ \t\n]+→[ \t\n]+'
+              '<span class="trac-field-new">%s</span>'
+              % (old_name, new_name))
+    if find:
+        tc.find(markup)
+    else:
+        tc.notfind(markup)
+
+
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a ticket and comment on it."""
@@ -286,7 +307,8 @@ class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket()
         tc.formvalue('propertyform', 'description', random_sentence(6))
         tc.submit('submit')
-        tc.find('Description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
+        tc.find('Description:</th>[ \t\n]+<td>[ \t\n]+'
+                'modified \\(<[^>]*>diff', 's')
         tc.follow('diff')
         tc.find('Changes\\s*between\\s*<[^>]*>Initial Version<[^>]*>\\s*and'
                 '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
@@ -370,7 +392,7 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
         try:
             for field, value in props.iteritems():
                 if field != 'milestone':
-                    links = r', '.join(r'<a href="/query.*>%s</a>'
+                    links = r', '.join(r'<a[^>]+href="/query.*>%s</a>'
                                        % v.strip() for v in value.split(','))
                     tc.find(r'<td headers="h_%s"( class="searchable")?>'
                             r'\s*%s\s*</td>' % (field, links))
@@ -795,8 +817,7 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         self._tester.go_to_ticket(tid2)
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': retarget_to})
-        tc.find('changed from <em>%s</em> to <em>%s</em>'
-                % (name, retarget_to))
+        find_field_change(name, retarget_to)
         tc.find("Ticket retargeted after milestone closed")
 
 
@@ -818,20 +839,17 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
                 tc.find(retarget_notice)
                 self._tester.go_to_ticket(tid)
                 tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>'
-                        '[ \t\n]+by <span class="trac-author">admin</span>')
+                        '[ \t\n]+by <span class="trac-author-user">'
+                        'admin</span>')
                 if retarget_to is not None:
                     tc.find('<a class="milestone" href="/milestone/%(name)s" '
                             'title="No date set">%(name)s</a>'
                             % {'name': retarget_to})
-                    tc.find('<strong class="trac-field-milestone">Milestone'
-                            '</strong>[ \t\n]+changed from <em>%s</em> to '
-                            '<em>%s</em>' % (name, retarget_to))
+                    find_field_change(name, retarget_to)
                 else:
                     tc.find('<th id="h_milestone" class="missing">'
                             '[ \t\n]*Milestone:[ \t\n]*</th>')
-                    tc.find('<strong class="trac-field-milestone">Milestone'
-                            '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted'
-                            % name)
+                    find_field_deleted(name)
                 tc.find("Ticket retargeted after milestone deleted")
             else:
                 tc.notfind(retarget_notice)
@@ -873,8 +891,7 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         self._tester.go_to_ticket(tid)
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': name})
-        tc.notfind('<strong class="trac-field-milestone">Milestone</strong>'
-                   '[ \t\n]*<em>%s</em>[ \t\n]*deleted' % name)
+        find_field_deleted(name, False)
         tc.notfind("Ticket retargeted after milestone deleted<br />")
 
         # No attachments associated with milestone
@@ -918,12 +935,10 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
         tc.find('Changed[ \t\n]+<a .*>\d+ seconds? ago</a>[ \t\n]+'
-                'by <span class="trac-author">admin</span>')
+                'by <span class="trac-author-user">admin</span>')
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': new_name})
-        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
-                '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
-                % (name, new_name))
+        find_field_change(name, new_name)
         tc.find("Milestone renamed")
 
 
@@ -1427,10 +1442,9 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.formvalue('milestone_table', 'sel', name)
         tc.submit('remove')
         tc.go(ticket_url)
-        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
-                '[ \n\t]*<em>%s</em> deleted' % name)
+        find_field_deleted(name)
         tc.find('Changed <a.* ago</a> by '
-                '<span class="trac-author">admin</span>')
+                '<span class="trac-author-user">admin</span>')
         tc.notfind('</a> ago by anonymous')
 
 

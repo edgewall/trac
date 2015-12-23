@@ -321,8 +321,10 @@ class TestAdminMilestoneDetailRename(FunctionalTwillTestCaseSetup):
         self._tester.go_to_ticket(tid)
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': name2})
-        tc.find('<strong class="trac-field-milestone">Milestone</strong>'
-                '[ \t\n]+changed from <em>%s</em> to <em>%s</em>'
+        tc.find('<th class="trac-field-milestone">Milestone:</th>[ \t\n]+'
+                '<td>[ \t\n]+<span class="trac-field-old">%s</span>'
+                '[ \t\n]+→[ \t\n]+'
+                '<span class="trac-field-new">%s</span>[ \t\n]+</td>'
                 % (name1, name2))
         tc.find("Milestone renamed")
 
@@ -380,9 +382,10 @@ class TestAdminMilestoneRemove(FunctionalTwillTestCaseSetup):
         self._tester.go_to_ticket(tid)
         tc.find('<th id="h_milestone" class="missing">'
                 '[ \t\n]*Milestone:[ \t\n]*</th>')
-        tc.find('<strong class="trac-field-milestone">Milestone'
-                '</strong>[ \t\n]*<em>%s</em>[ \t\n]*deleted'
-                % name)
+        tc.find('<th class="trac-field-milestone">Milestone:</th>[ \t\n]+'
+                '<td>[ \t\n]+'
+                '<span class="trac-field-deleted">%s</span>'
+                '[ \t\n]+</td>' % name)
         tc.find("Milestone deleted")
 
 
