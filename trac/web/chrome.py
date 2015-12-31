@@ -61,6 +61,7 @@ from trac.util.datefmt import (
     get_day_names_jquery_ui, get_timezone_list_jquery_ui,
     get_first_week_day_jquery_ui, get_timepicker_separator_jquery_ui,
     get_period_names_jquery_ui)
+from trac.util.html import to_fragment
 from trac.util.translation import _, get_available_locales
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
@@ -197,7 +198,7 @@ def add_warning(req, msg, *args):
     """
     if args:
         msg %= args
-    msg = escape(msg, False)
+    msg = Markup(to_fragment(msg))
     if msg not in req.chrome['warnings']:
         req.chrome['warnings'].append(msg)
 
@@ -211,7 +212,7 @@ def add_notice(req, msg, *args):
     """
     if args:
         msg %= args
-    msg = escape(msg, False)
+    msg = Markup(to_fragment(msg))
     if msg not in req.chrome['notices']:
         req.chrome['notices'].append(msg)
 

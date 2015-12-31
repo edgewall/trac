@@ -17,11 +17,14 @@ from datetime import datetime, timedelta
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
-    format_date, format_datetime, format_time, pretty_timedelta, utc,
+    format_date, format_datetime, format_time, get_date_format_hint,
+    get_datetime_format_hint, pretty_timedelta, utc,
 )
 from trac.util.html import plaintext
+from trac.web.api import RequestDone, _RequestArgs
 from trac.web.chrome import Chrome
 from trac.web.href import Href
+from trac.web.session import DetachedSession
 
 
 class PrettyDateinfoTestCase(unittest.TestCase):
@@ -89,9 +92,51 @@ class PrettyDateinfoTestCase(unittest.TestCase):
         self.assertEqual(label, self._format_timeline(t, 'absolute', True))
 
 
+class TimelineModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _create_request(self, authname='anonymous', **kwargs):
+        kw = {'path_info': '/timeline', 'perm': MockPerm(),
+              'args': _RequestArgs(),
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': DetachedSession(self.env, authname),
+              'authname': authname,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+              'form_token': None}
+        if 'args' in kwargs:
+            kw['args'].update(kwargs.pop('args'))
+        kw.update(kwargs)
+        def redirect(url, permanent=False):
+            raise RequestDone
+        return Mock(add_redirect_listener=lambda x: [].append(x),
+                    redirect=redirect, **kw)
+
+    def test_invalid_date_format_add_warning(self):
+        """Warning is added when date format is invalid."""
+        req = self._create_request(args={
+            'from': '2011-02-02T11:38:50 01:00',
+        })
+
+        TimelineModule(self.env).process_request(req)
+
+        self.assertIn(u'"2011-02-02T11:38:50 01:00" is an invalid date, '
+                      u'or the date format is not known. Try "%s" or "%s" '
+                      u'instead.' % (get_date_format_hint(locale_en),
+                                     get_datetime_format_hint('iso8601')),
+                      req.chrome['warnings'])
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PrettyDateinfoTestCase))
+    suite.addTest(unittest.makeSuite(TimelineModuleTestCase))
     return suite
 
 if __name__ == '__main__':
