@@ -182,6 +182,28 @@ class ChromeTestCase(unittest.TestCase):
         add_notice(req, message)
         self.assertEqual(1, len(req.chrome['notices']))
 
+    def _test_add_message_escapes_markup(self, msgtype, add_fn):
+        req = Request(chrome={msgtype: []})
+        add_fn(req, 'Message with an "&"')
+        add_fn(req, Exception("Exception message with an &"))
+        add_fn(req, tag("Message with text ", tag.b("& markup")))
+        messages = req.chrome[msgtype]
+        self.assertIn('Message with an "&amp;"', messages)
+        self.assertIn("Exception message with an &amp;", messages)
+        self.assertIn("Message with text <b>&amp; markup</b>", messages)
+
+    def test_add_warning_escapes_markup(self):
+        """Message text is escaped. Regression test for
+        http://trac.edgewall.org/ticket/12285
+        """
+        self._test_add_message_escapes_markup('warnings', add_warning)
+
+    def test_add_notice_escapes_markup(self):
+        """Message text is escaped. Regression test for
+        http://trac.edgewall.org/ticket/12285
+        """
+        self._test_add_message_escapes_markup('notices', add_notice)
+
     def test_htdocs_location(self):
         req = Request(abs_href=Href('http://example.org/trac.cgi'),
                       href=Href('/trac.cgi'), base_path='/trac.cgi',
