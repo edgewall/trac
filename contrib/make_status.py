@@ -24,8 +24,10 @@ PACKAGES = [
     ("Setuptools",        'setuptools.__version__'),
     ("Genshi",            'genshi.__version__'),
     ("Babel",             'babel.__version__'),
-    ("sqlite3",           'sqlite3.version'),
-    ("PySqlite",          'pysqlite2.dbapi2.version'),
+    ("sqlite3",           ('sqlite3.version',
+                           'sqlite3.sqlite_version')),
+    ("PySqlite",          ('pysqlite2.dbapi2.version',
+                           'pysqlite2.dbapi2.sqlite_version')),
     ("MySQLdb",           'MySQLdb.__version__'),
     ("Psycopg2",          'psycopg2.__version__'),
     ("SVN bindings",      '__main__._svn_version()'),
@@ -43,10 +45,20 @@ PACKAGES = [
 
 def package_versions(packages, out=None):
     name_version_pairs = []
-    for name, accessor in packages:
-        version = resolve_accessor(accessor)
+    for name, accessors in packages:
+        version = get_version(accessors)
         name_version_pairs.append((name, version))
     print_table(name_version_pairs, ("Package", "Version"), ' : ', out)
+
+def get_version(accessors):
+    if isinstance(accessors, tuple):
+        version = resolve_accessor(accessors[0])
+        details = resolve_accessor(accessors[1])
+        if version:
+            return "%s (%s)" % (version, details or '?')
+    else:
+        version = resolve_accessor(accessors)
+    return version or 'not installed'
 
 def resolve_accessor(accessor):
     try:
@@ -57,7 +69,7 @@ def resolve_accessor(accessor):
             version = version()
         return version
     except Exception:
-        return "not installed"
+        return None
 
 def shift(prefix, block):
     return '\n'.join(prefix + line for line in block.split('\n') if line)
