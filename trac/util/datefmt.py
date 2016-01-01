@@ -531,15 +531,18 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
             'relative': get_datetime_format_hint,
             'iso8601': lambda l: get_datetime_format_hint('iso8601'),
         }.get(hint, lambda(l): hint)(locale)
-        if hint != 'iso8601':
-            msg = _('"%(date)s" is an invalid date, or the date format '
-                    'is not known. Try "%(hint)s" or "%(isohint)s" instead.',
-                    date=text, hint=formatted_hint,
-                    isohint=get_datetime_format_hint('iso8601'))
-        else:
+        if locale == 'iso8601' and hint in ('date', 'datetime') or \
+                hint == 'iso8601':
             msg = _('"%(date)s" is an invalid date, or the date format '
                     'is not known. Try "%(hint)s" instead.',
                     date=text, hint=formatted_hint)
+        else:
+            isohint = get_date_format_hint('iso8601') \
+                      if hint == 'date' \
+                      else get_datetime_format_hint('iso8601')
+            msg = _('"%(date)s" is an invalid date, or the date format is '
+                    'not known. Try "%(hint)s" or "%(isohint)s" instead.',
+                    date=text, hint=formatted_hint, isohint=isohint)
         raise TracError(msg, _('Invalid Date'))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()

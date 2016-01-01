@@ -22,6 +22,7 @@ import unittest
 
 import trac.tests.compat
 from trac.core import TracError
+from trac.test import locale_en
 from trac.util import datefmt
 
 try:
@@ -80,8 +81,7 @@ else:
             self.assertEqual(expected, t.strftime(format))
             # i18n datetime
             if Locale:
-                en_US = Locale.parse('en_US')
-                t = datefmt.parse_date('Mar 31, 2002 02:30', tz, en_US)
+                t = datefmt.parse_date('Mar 31, 2002 02:30', tz, locale_en)
                 self.assertEqual(expected, t.strftime(format))
 
         def test_to_datetime_pytz_normalize(self):
@@ -223,18 +223,22 @@ class ParseISO8601TestCase(unittest.TestCase):
             self.assertEqual(2, dt.hour)
             self.assertEqual(datetime.timedelta(hours=1), dt.utcoffset())
 
-    def test_hint_iso8601(self):
-        def validate(locale=None):
-            try:
-                datefmt.parse_date('2001-0a-01', locale=locale, hint='iso8601')
-                raise self.failureException('TracError not raised')
-            except TracError as e:
-                self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', unicode(e))
+    def _test_hint_iso8601(self, locale=None):
+        try:
+            datefmt.parse_date('2001-0a-01', locale=locale, hint='iso8601')
+            raise self.failureException('TracError not raised')
+        except TracError as e:
+            self.assertIn(u'Try "YYYY-MM-DDThh:mm:ss±hh:mm" instead.',
+                          unicode(e))
 
-        validate(locale=None)
-        validate(locale='iso8601')
-        if Locale:
-            validate(locale=Locale.parse('en_US'))
+    def test_hint_iso8601_locale_none(self):
+        self._test_hint_iso8601()
+
+    def test_hint_iso8601_locale_iso8601(self):
+        self._test_hint_iso8601('iso8601')
+
+    def test_hint_iso8601_locale_en(self):
+        self._test_hint_iso8601(locale_en)
 
 
 class ParseDateWithoutBabelTestCase(unittest.TestCase):
@@ -939,22 +943,28 @@ class ISO8601TestCase(unittest.TestCase):
         self.assertEqual('1899-08-28T11:45:56.123456+02:00',
                          datefmt.format_datetime(t, 'full', tz, 'iso8601'))
 
-    def test_hint(self):
+    def test_hint_date(self):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='date')
             raise self.failureException('TracError not raised')
         except TracError as e:
-            self.assertIn('"YYYY-MM-DD"', unicode(e))
+            self.assertIn('Try "YYYY-MM-DD" instead.', unicode(e))
+
+    def test_hint_datetime(self):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='datetime')
             raise self.failureException('TracError not raised')
         except TracError as e:
-            self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', unicode(e))
+            self.assertIn(u'Try "YYYY-MM-DDThh:mm:ss±hh:mm" instead.',
+                          unicode(e))
+
+    def test_hint_foobar(self):
         try:
             datefmt.parse_date('***', locale='iso8601', hint='foobar')
             raise self.failureException('TracError not raised')
         except TracError as e:
-            self.assertIn('"foobar"', unicode(e))
+            self.assertIn(u'Try "foobar" or "YYYY-MM-DDThh:mm:ss±hh:mm" '
+                          u'instead.', unicode(e))
 
 
 if Locale is None:
@@ -965,8 +975,8 @@ else:
         def test_i18n_format_datetime(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
-            en_US = Locale.parse('en_US')
-            self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=en_US),
+            self.assertIn(datefmt.format_datetime(t, tzinfo=tz,
+                                                  locale=locale_en),
                           ('Aug 28, 2010 1:45:56 PM',
                            'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
             en_GB = Locale.parse('en_GB')
@@ -990,9 +1000,9 @@ else:
         def test_i18n_format_date(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 7, 11, 45, 56, 123456, datefmt.utc)
-            en_US = Locale.parse('en_US')
             self.assertEqual('Aug 7, 2010',
-                             datefmt.format_date(t, tzinfo=tz, locale=en_US))
+                             datefmt.format_date(t, tzinfo=tz,
+                                                 locale=locale_en))
             en_GB = Locale.parse('en_GB')
             self.assertEqual('7 Aug 2010',
                              datefmt.format_date(t, tzinfo=tz, locale=en_GB))
@@ -1012,7 +1022,6 @@ else:
         def test_i18n_format_time(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
-            en_US = Locale.parse('en_US')
             en_GB = Locale.parse('en_GB')
             fr = Locale.parse('fr')
             ja = Locale.parse('ja')
@@ -1020,7 +1029,8 @@ else:
             zh_CN = Locale.parse('zh_CN')
 
             self.assertEqual('1:45:56 PM',
-                             datefmt.format_time(t, tzinfo=tz, locale=en_US))
+                             datefmt.format_time(t, tzinfo=tz,
+                                                 locale=locale_en))
             self.assertEqual('13:45:56',
                              datefmt.format_time(t, tzinfo=tz, locale=en_GB))
             self.assertEqual('13:45:56',
@@ -1033,14 +1043,13 @@ else:
                           (u'下午01:45:56', u'下午1:45:56'))
 
         def test_i18n_datetime_hint(self):
-            en_US = Locale.parse('en_US')
             en_GB = Locale.parse('en_GB')
             fr = Locale.parse('fr')
             ja = Locale.parse('ja')
             vi = Locale.parse('vi')
             zh_CN = Locale.parse('zh_CN')
 
-            self.assertIn(datefmt.get_datetime_format_hint(en_US),
+            self.assertIn(datefmt.get_datetime_format_hint(locale_en),
                           ('MMM d, yyyy h:mm:ss a', 'MMM d, y h:mm:ss a',
                            'MMM d, y, h:mm:ss a'))
             self.assertIn(datefmt.get_datetime_format_hint(en_GB),
@@ -1055,14 +1064,13 @@ else:
                           ('yyyy-M-d ahh:mm:ss', u'y年M月d日 ah:mm:ss'))
 
         def test_i18n_date_hint(self):
-            en_US = Locale.parse('en_US')
             en_GB = Locale.parse('en_GB')
             fr = Locale.parse('fr')
             ja = Locale.parse('ja')
             vi = Locale.parse('vi')
             zh_CN = Locale.parse('zh_CN')
 
-            self.assertIn(datefmt.get_date_format_hint(en_US),
+            self.assertIn(datefmt.get_date_format_hint(locale_en),
                           ('MMM d, yyyy', 'MMM d, y'))
             self.assertIn(datefmt.get_date_format_hint(en_GB),
                           ('d MMM yyyy', 'd MMM y'))
@@ -1079,31 +1087,29 @@ else:
             tz = datefmt.timezone('GMT +2:00')
             dt = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
             d = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
-            en_US = Locale.parse('en_US')
             vi = Locale.parse('vi')
 
             def iso8601(expected, text, tz, locale):
                 self.assertEqual(expected,
                                  datefmt.parse_date(text, tz, locale))
 
-            iso8601(dt, '2010-08-28T15:45:56+0400', tz, en_US)
+            iso8601(dt, '2010-08-28T15:45:56+0400', tz, locale_en)
             iso8601(dt, '2010-08-28T11:45:56+0000', tz, vi)
             iso8601(dt, '2010-08-28T11:45:56Z', tz, vi)
-            iso8601(dt, '20100828T144556+0300', tz, en_US)
+            iso8601(dt, '20100828T144556+0300', tz, locale_en)
             iso8601(dt, '20100828T114556Z', tz, vi)
 
-            iso8601(d, '2010-08-28+0200', tz, en_US)
+            iso8601(d, '2010-08-28+0200', tz, locale_en)
             # iso8601(d, '2010-08-28+0000', tz, vi)
             # iso8601(d, '2010-08-28Z', tz, en_US)
             iso8601(d, '2010-08-28', tz, vi)
-            iso8601(d, '20100828+0200', tz, en_US)
+            iso8601(d, '20100828+0200', tz, locale_en)
             # iso8601(d, '20100828Z', tz, vi)
 
         def test_i18n_parse_date_datetime(self):
             tz = datefmt.timezone('GMT +2:00')
             expected = datetime.datetime(2010, 8, 28, 13, 45, 56, 0, tz)
             expected_minute = datetime.datetime(2010, 8, 28, 13, 45, 0, 0, tz)
-            en_US = Locale.parse('en_US')
             en_GB = Locale.parse('en_GB')
             fr = Locale.parse('fr')
             ja = Locale.parse('ja')
@@ -1112,22 +1118,22 @@ else:
 
             self.assertEqual(expected,
                              datefmt.parse_date('Aug 28, 2010 1:45:56 PM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected,
                              datefmt.parse_date('8 28, 2010 1:45:56 PM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010 1:45:56 PM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010 PM 1:45:56', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010 13:45:56', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected_minute,
                              datefmt.parse_date('28 Aug 2010 PM 1:45', tz,
-                                                en_US))
+                                                locale_en))
 
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010 13:45:56', tz,
@@ -1179,15 +1185,14 @@ else:
             tz = datefmt.timezone('GMT +2:00')
             expected_am = datetime.datetime(2011, 2, 22, 0, 45, 56, 0, tz)
             expected_pm = datetime.datetime(2011, 2, 22, 12, 45, 56, 0, tz)
-            en_US = Locale.parse('en_US')
             zh_CN = Locale.parse('zh_CN')
 
             self.assertEqual(expected_am,
                              datefmt.parse_date('Feb 22, 2011 0:45:56 AM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected_am,
                              datefmt.parse_date('Feb 22, 2011 12:45:56 AM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected_am,
                              datefmt.parse_date(u'2011-2-22 上午0:45:56', tz,
                                                 zh_CN))
@@ -1197,10 +1202,10 @@ else:
 
             self.assertEqual(expected_pm,
                              datefmt.parse_date('Feb 22, 2011 0:45:56 PM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected_pm,
                              datefmt.parse_date('Feb 22, 2011 12:45:56 PM', tz,
-                                                en_US))
+                                                locale_en))
             self.assertEqual(expected_pm,
                              datefmt.parse_date(u'2011-2-22 下午0:45:56', tz,
                                                 zh_CN))
@@ -1211,7 +1216,6 @@ else:
         def test_i18n_parse_date_date(self):
             tz = datefmt.timezone('GMT +2:00')
             expected = datetime.datetime(2010, 8, 28, 0, 0, 0, 0, tz)
-            en_US = Locale.parse('en_US')
             en_GB = Locale.parse('en_GB')
             fr = Locale.parse('fr')
             ja = Locale.parse('ja')
@@ -1219,7 +1223,8 @@ else:
             zh_CN = Locale.parse('zh_CN')
 
             self.assertEqual(expected,
-                             datefmt.parse_date('Aug 28, 2010', tz, en_US))
+                             datefmt.parse_date('Aug 28, 2010', tz,
+                                                locale_en))
             self.assertEqual(expected,
                              datefmt.parse_date('28 Aug 2010', tz, en_GB))
             self.assertEqual(expected,
@@ -1260,52 +1265,77 @@ else:
         def test_format_compatibility(self):
             tz = datefmt.timezone('GMT +2:00')
             t = datetime.datetime(2010, 8, 28, 11, 45, 56, 123456, datefmt.utc)
-            en_US = Locale.parse('en_US')
 
             # Converting default format to babel's format
-            self.assertIn(datefmt.format_datetime(t, '%x %X', tz, en_US),
+            self.assertIn(datefmt.format_datetime(t, '%x %X', tz, locale_en),
                           ('Aug 28, 2010 1:45:56 PM',
                            'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
             self.assertEqual('Aug 28, 2010',
-                             datefmt.format_datetime(t, '%x', tz, en_US))
+                             datefmt.format_datetime(t, '%x', tz, locale_en))
             self.assertEqual('1:45:56 PM',
-                             datefmt.format_datetime(t, '%X', tz, en_US))
+                             datefmt.format_datetime(t, '%X', tz, locale_en))
             self.assertEqual('Aug 28, 2010',
-                             datefmt.format_date(t, '%x', tz, en_US))
+                             datefmt.format_date(t, '%x', tz, locale_en))
             self.assertEqual('1:45:56 PM',
-                             datefmt.format_time(t, '%X', tz, en_US))
+                             datefmt.format_time(t, '%X', tz, locale_en))
 
         def test_parse_invalid_date(self):
             tz = datefmt.timezone('GMT +2:00')
-            en_US = Locale.parse('en_US')
 
             self.assertRaises(TracError, datefmt.parse_date,
                               '',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               '2011 Apr Mar',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 Feb',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               'Feb 2011',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 Feb 2010',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 Xxx 2012',
-                              tzinfo=tz, locale=en_US, hint='date')
+                              tzinfo=tz, locale=locale_en, hint='date')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 Xxx 2012 4:00:00 AM',
-                              tzinfo=tz, locale=en_US, hint='datetime')
+                              tzinfo=tz, locale=locale_en, hint='datetime')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 2012 4:01:02 AM Feb',
-                              tzinfo=tz, locale=en_US, hint='datetime')
+                              tzinfo=tz, locale=locale_en, hint='datetime')
             self.assertRaises(TracError, datefmt.parse_date,
                               '29 2012 4:00 Feb',
-                              tzinfo=tz, locale=en_US, hint='datetime')
+                              tzinfo=tz, locale=locale_en, hint='datetime')
+
+        def test_hint_date(self):
+            try:
+                datefmt.parse_date('***', locale=locale_en, hint='date')
+                raise self.failureException('TracError not raised')
+            except TracError as e:
+                self.assertIn('Try "%s" or "YYYY-MM-DD" instead.'
+                              % datefmt.get_date_format_hint(locale_en),
+                              unicode(e))
+
+        def test_hint_datetime(self):
+            try:
+                datefmt.parse_date('***', locale=locale_en, hint='datetime')
+                raise self.failureException('TracError not raised')
+            except TracError as e:
+                self.assertIn(u'Try "%s" or "YYYY-MM-DDThh:mm:ss\xb1hh:mm" '
+                              u'instead.'
+                              % datefmt.get_datetime_format_hint(locale_en),
+                              unicode(e))
+
+        def test_hint_foobar(self):
+            try:
+                datefmt.parse_date('***', locale=locale_en, hint='foobar')
+                raise self.failureException('TracError not raised')
+            except TracError as e:
+                self.assertIn(u'Try "foobar" or "YYYY-MM-DDThh:mm:ss±hh:mm" '
+                              u'instead.', unicode(e))
 
 
 class HttpDateTestCase(unittest.TestCase):

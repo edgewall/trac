@@ -19,7 +19,7 @@ from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
     format_date, format_datetime, format_time, get_date_format_hint,
-    get_datetime_format_hint, pretty_timedelta, utc,
+    pretty_timedelta, utc,
 )
 from trac.util.html import plaintext
 from trac.web.api import RequestDone, _RequestArgs
@@ -159,7 +159,7 @@ class TimelineModuleTestCase(unittest.TestCase):
         self.assertIn(u'"2011-02-02T11:38:50 01:00" is an invalid date, '
                       u'or the date format is not known. Try "%s" or "%s" '
                       u'instead.' % (get_date_format_hint(locale_en),
-                                     get_datetime_format_hint('iso8601')),
+                                     get_date_format_hint('iso8601')),
                       req.chrome['warnings'])
 
 
