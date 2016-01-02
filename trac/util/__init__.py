@@ -773,7 +773,7 @@ def get_pkginfo(dist):
     import email.errors
     from trac.util.translation import _
     attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
-             'description', 'version')
+             'name', 'description', 'version')
     info = {}
     def normalize(attr):
         return attr.lower().replace('-', '_')
