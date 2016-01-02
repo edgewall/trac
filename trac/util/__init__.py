@@ -350,7 +350,7 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
     return zipinfo
 
 
-class NaivePopen:
+class NaivePopen(object):
     """This is a deadlock-safe version of popen that returns an object with
     errorlevel, out (a string) and err (a string).
 
