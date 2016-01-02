@@ -20,8 +20,8 @@ import unittest
 
 import trac.tests.compat
 from trac import db_default
-from trac.core import ComponentManager
-from trac.env import Environment
+from trac.core import Component, ComponentManager, implements
+from trac.env import Environment, ISystemInfoProvider
 from trac.test import EnvironmentStub
 
 
@@ -134,10 +134,36 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual('', parser.get('logging', 'log_format'))
 
 
+class SystemInfoProviderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        class SystemInfoProvider1(Component):
+            implements(ISystemInfoProvider)
+
+            def get_system_info(self):
+                yield 'pkg1', 1.0
+
+        class SystemInfoProvider2(Component):
+            implements(ISystemInfoProvider)
+
+            def get_system_info(self):
+                yield 'pkg1', 1.0
+
+        self.env = EnvironmentStub(enable=(SystemInfoProvider1,
+                                           SystemInfoProvider2))
+
+    def test_duplicate_entries_are_removed(self):
+        """Duplicate entries are removed."""
+        system_info = list(self.env.get_systeminfo())
+        self.assertIn(('pkg1', 1.0), system_info)
+        self.assertEqual(len(system_info), len(set(system_info)))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
     return suite
 
 if __name__ == '__main__':
