@@ -21,7 +21,7 @@ from trac import db_default
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, implements
 from trac.env import Environment, IEnvironmentSetupParticipant, \
-                     open_environment
+                     ISystemInfoProvider, open_environment
 from trac.test import EnvironmentStub
 
 
@@ -256,11 +256,37 @@ class KnownUsersTestCase(unittest.TestCase):
             self.assertEqual(4, len(users_dict))
 
 
+class SystemInfoProviderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        class SystemInfoProvider1(Component):
+            implements(ISystemInfoProvider)
+
+            def get_system_info(self):
+                yield 'pkg1', 1.0
+
+        class SystemInfoProvider2(Component):
+            implements(ISystemInfoProvider)
+
+            def get_system_info(self):
+                yield 'pkg1', 1.0
+
+        self.env = EnvironmentStub(enable=(SystemInfoProvider1,
+                                           SystemInfoProvider2))
+
+    def test_duplicate_entries_are_removed(self):
+        """Duplicate entries are removed."""
+        system_info = list(self.env.get_systeminfo())
+        self.assertIn(('pkg1', 1.0), system_info)
+        self.assertEqual(len(system_info), len(set(system_info)))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
+    suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
     return suite
 
 if __name__ == '__main__':
