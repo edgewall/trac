@@ -345,7 +345,15 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
     def drop_table(self, table):
         cursor = self.cursor()
-        cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
+        if sqlite_version < (3, 7, 6):
+            # SQLite versions at least between 3.6.21 and 3.7.5 have a
+            # buggy behavior with DROP TABLE IF EXISTS (#12298)
+            try:
+                cursor.execute("DROP TABLE " + self.quote(table))
+            except sqlite.OperationalError: # "no such table"
+                pass
+        else:
+            cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
     def get_column_names(self, table):
         cursor = self.cnx.cursor()
