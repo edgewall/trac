@@ -126,6 +126,9 @@ class GitCore(object):
         return cmd
 
     def __pipe(self, git_cmd, *cmd_args, **kw):
+        kw.setdefault('stdin', PIPE)
+        kw.setdefault('stdout', PIPE)
+        kw.setdefault('stderr', PIPE)
         return Popen(self.__build_git_cmd(git_cmd, *cmd_args),
                      close_fds=close_fds, **kw)
 
@@ -134,8 +137,7 @@ class GitCore(object):
 
         #print >>sys.stderr, "DEBUG:", git_cmd, cmd_args
 
-        p = self.__pipe(git_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                        *cmd_args)
+        p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
         stdout_data, stderr_data = p.communicate()
         if self.__log and (p.returncode != 0 or stderr_data):
             self.__log.debug('%s exits with %d, dir: %r, args: %s %r, '
