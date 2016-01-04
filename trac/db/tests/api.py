@@ -498,8 +498,10 @@ class ConnectionTestCase(unittest.TestCase):
         with self.env.db_query as db:
             db_tables = db.get_table_names()
             self.assertEqual(len(schema), len(db_tables))
+            # Some DB (e.g. MariaDB) normalize the table names to lower case
+            db_tables = [t.lower() for t in db_tables]
             for table in schema:
-                self.assertIn(table.name, db_tables)
+                self.assertIn(table.name.lower(), db_tables)
 
     def test_get_column_names(self):
         schema = default_schema + self.schema
