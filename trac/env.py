@@ -290,6 +290,7 @@ class Environment(Component, ComponentManager):
         self.path = path
         self.log = None
         self.config = None
+        self._log_handler = None
         # System info should be provided through ISystemInfoProvider rather
         # than appending to systeminfo, which may be a private in a future
         # release.
@@ -522,7 +523,7 @@ class Environment(Component, ComponentManager):
         """Close the environment."""
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
-        if tid is None:
+        if tid is None and self._log_handler is not None:
             self.log.removeHandler(self._log_handler)
             self._log_handler.flush()
             self._log_handler.close()
