@@ -52,6 +52,7 @@ class GitCommandMixin(object):
 
     def _spawn_git(self, *args, **kwargs):
         args = map(to_utf8, (self.git_bin,) + args)
+        kwargs.setdefault('stdin', PIPE)
         kwargs.setdefault('stdout', PIPE)
         kwargs.setdefault('stderr', PIPE)
         kwargs.setdefault('cwd', self.repos_path)

@@ -134,7 +134,8 @@ class GitCore(object):
 
         #print >>sys.stderr, "DEBUG:", git_cmd, cmd_args
 
-        p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
+        p = self.__pipe(git_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                        *cmd_args)
         stdout_data, stderr_data = p.communicate()
         if self.__log and (p.returncode != 0 or stderr_data):
             self.__log.debug('%s exits with %d, dir: %r, args: %s %r, '
