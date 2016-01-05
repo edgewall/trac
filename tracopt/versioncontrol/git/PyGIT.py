@@ -125,6 +125,9 @@ class GitCore(object):
         return cmd
 
     def __pipe(self, git_cmd, *cmd_args, **kw):
+        kw.setdefault('stdin', PIPE)
+        kw.setdefault('stdout', PIPE)
+        kw.setdefault('stderr', PIPE)
         return Popen(self.__build_git_cmd(git_cmd, *cmd_args),
                      close_fds=close_fds, **kw)
 
