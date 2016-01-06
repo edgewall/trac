@@ -638,6 +638,26 @@ user2 =
         self.assertEqual('user1', format_author(None, 'user1'))
         self.assertEqual('user2', format_author(None, 'user2'))
 
+    def test_show_email_true(self):
+        format_author = Chrome(self.env).format_author
+        req = Mock(Request, authname='user2',
+                   perm=PermissionCache(self.env, 'user2'))
+
+        author = format_author(None, 'user@domain.com', show_email=True)
+        self.assertEqual('user@domain.com', author)
+        author = format_author(req, 'user@domain.com', show_email=True)
+        self.assertEqual('user@domain.com', author)
+
+    def test_show_email_false(self):
+        format_author = Chrome(self.env).format_author
+        req = Mock(Request, authname='user1',
+                   perm=PermissionCache(self.env, 'user1'))
+
+        author = format_author(None, 'user@domain.com', show_email=False)
+        self.assertEqual(u'user@\u2026', author)
+        author = format_author(req, 'user@domain.com', show_email=False)
+        self.assertEqual(u'user@\u2026', author)
+
     def test_show_full_names_true_actor_has_email_view(self):
         req = Mock(Request, authname='user1',
                    perm=PermissionCache(self.env, 'user1'))

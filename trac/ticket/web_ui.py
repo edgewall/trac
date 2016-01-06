@@ -1682,10 +1682,10 @@ class TicketModule(Component):
 
         def quote_original(author, original, link):
             if 'comment' not in req.args:  # i.e. comment was not yet edited
-                formatted_author = chrome.format_author(req, author)
-                obfuscated_author = obfuscate_email_address(formatted_author)
+                formatted_author = \
+                    chrome.format_author(req, author, show_email=False)
                 data['comment'] = '\n'.join(
-                    ["Replying to [%s %s]:" % (link, obfuscated_author)] +
+                    ["Replying to [%s %s]:" % (link, formatted_author)] +
                     ["> %s" % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':

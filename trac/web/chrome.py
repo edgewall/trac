@@ -1285,19 +1285,22 @@ class Chrome(Component):
                 ccs.append(cc)
         return ccs
 
-    def format_author(self, req, author, resource=None):
+    def format_author(self, req, author, resource=None, show_email=None):
         """Format a username in plain text.
 
-        If `[trac]` `show_email_addresses` is `False`, email
-        addresses will be obfuscated when the user doesn't have
-        `EMAIL_VIEW` (for the resource). Returns translated `anonymous`
-        or `none`,  when the author string is `anonymous` or evaluates
-        to `False`, respectively.
+        If `[trac]` `show_email_addresses` is `False`, email addresses
+        will be obfuscated when the user doesn't have `EMAIL_VIEW`
+        (for the resource) and the optional parameter `show_email` is
+        `None`. Returns translated `anonymous` or `none`,  when the
+        author string is `anonymous` or evaluates to `False`,
+        respectively.
 
         :param req: a `Request` or `RenderingContext` object.
         :param author: the author string to be formatted.
         :param resource: an optional `Resource` object for performing
                          fine-grained permission checks for `EMAIL_VIEW`.
+        :param show_email: an optional parameter that allows explicit
+                           control of e-mail obfuscation.
 
         :since 1.1.6: accepts the optional `resource` keyword parameter.
         :since 1.2: Full name is returned when `[trac]` `show_full_names`
@@ -1316,9 +1319,10 @@ class Chrome(Component):
             name = users[author][0]
             if name:
                 return name
-        show_email = self.show_email_addresses
-        if not show_email and req:
-            show_email = 'EMAIL_VIEW' in req.perm(resource)
+        if show_email is None:
+            show_email = self.show_email_addresses
+            if not show_email and req:
+                show_email = 'EMAIL_VIEW' in req.perm(resource)
         return author if show_email else obfuscate_email_address(author)
 
     def format_emails(self, context, value, sep=', '):
