@@ -1670,8 +1670,8 @@ class TicketModule(Component):
         data['replyto'] = replyto
         data['version'] = ticket.resource.version
         data['description_change'] = None
-
         data['author_id'] = author_id
+        chrome = Chrome(self.env)
 
         # -- Ticket fields
 
@@ -1682,7 +1682,8 @@ class TicketModule(Component):
 
         def quote_original(author, original, link):
             if 'comment' not in req.args:  # i.e. comment was not yet edited
-                obfuscated_author = obfuscate_email_address(author)
+                formatted_author = chrome.format_author(req, author)
+                obfuscated_author = obfuscate_email_address(formatted_author)
                 data['comment'] = '\n'.join(
                     ["Replying to [%s %s]:" % (link, obfuscated_author)] +
                     ["> %s" % line for line in original.splitlines()] + [''])
@@ -1761,7 +1762,6 @@ class TicketModule(Component):
         context = web_context(req, ticket.resource)
 
         # Display the owner and reporter links when not obfuscated
-        chrome = Chrome(self.env)
         for role in 'reporter', 'owner':
             user = ticket[role]
             formatted_user = chrome.format_author(req, user)

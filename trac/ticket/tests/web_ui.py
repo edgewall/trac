@@ -21,6 +21,7 @@ from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import utc
 from trac.web.api import RequestDone, _RequestArgs
 from trac.web.chrome import Chrome
+from trac.web.session import DetachedSession
 
 
 class TicketModuleTestCase(unittest.TestCase):
@@ -36,8 +37,8 @@ class TicketModuleTestCase(unittest.TestCase):
         kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
               'href': self.env.href, 'abs_href': self.env.abs_href,
               'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': {}, 'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
+              'session': DetachedSession(self.env, authname),
+              'authname': authname, 'chrome': {'notices': [], 'warnings': []},
               'method': None, 'get_header': lambda v: None, 'is_xhr': False,
               'form_token': None}
         if 'args' in kwargs:
@@ -48,7 +49,8 @@ class TicketModuleTestCase(unittest.TestCase):
         return Mock(add_redirect_listener=lambda x: [].append(x),
                     redirect=redirect, **kw)
 
-    def _create_ticket_with_change(self, old_props, new_props):
+    def _create_ticket_with_change(self, old_props, new_props,
+                                   author='anonymous'):
         """Create a ticket with `old_props` and apply properties
         in `new_props`.
         """
@@ -57,7 +59,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t.insert()
         comment = new_props.pop('comment', None)
         t.populate(new_props)
-        t.save_changes('actor <actor@example.net>', comment=comment)
+        t.save_changes(author, comment=comment)
         return t
 
     def _insert_ticket(self, **kw):
@@ -84,13 +86,31 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_quoted_reply_author_is_obfuscated(self):
         """Reply-to author is obfuscated in a quoted reply."""
-        tkt = self._create_ticket_with_change({}, {'comment': 'the comment'})
+        author = 'author <author@example.net>'
+        tkt = self._create_ticket_with_change({}, {'comment': 'the comment'},
+                                              author)
         req = self._create_request(method='GET',
                                    args={'id': tkt.id, 'replyto': '1'})
 
         data = self.ticket_module.process_request(req)[1]
 
-        comment = u"Replying to [comment:1 actor <actor@\u2026>]:\n> " \
+        comment = u"Replying to [comment:1 author <author@\u2026>]:\n> " \
+                  u"the comment\n"
+        self.assertEqual(comment, data['comment'])
+        self.assertEqual(comment, data['change_preview']['comment'])
+
+    def test_quoted_reply_author_full_name_is_displayed(self):
+        """Full name of reply-to author is used in quoted reply."""
+        self.env.insert_known_users([('author', 'The Author',
+                                     'author@example.net')])
+        tkt = self._create_ticket_with_change({}, {'comment': 'the comment'},
+                                              'author')
+        req = self._create_request(method='GET',
+                                   args={'id': tkt.id, 'replyto': '1'})
+
+        data = self.ticket_module.process_request(req)[1]
+
+        comment = u"Replying to [comment:1 The Author]:\n> " \
                   u"the comment\n"
         self.assertEqual(comment, data['comment'])
         self.assertEqual(comment, data['change_preview']['comment'])
