@@ -70,8 +70,9 @@ class AttachmentTestCase(unittest.TestCase):
             db("INSERT INTO ticket (id) VALUES (42)")
 
     def tearDown(self):
-        shutil.rmtree(self.env.path)
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)

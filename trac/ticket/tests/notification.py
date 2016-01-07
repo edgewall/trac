@@ -1274,6 +1274,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         """Signal the notification test suite that a test is over"""
         notifysuite.tear_down()
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
     def test_ticket_notify_attachment_enabled_attachment_added(self):

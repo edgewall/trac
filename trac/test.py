@@ -323,6 +323,7 @@ class EnvironmentStub(Environment):
 
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.
+
         :param default_data: after clean-up, initialize with default data
         :return: True upon success
         """

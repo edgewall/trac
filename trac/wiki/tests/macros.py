@@ -49,7 +49,7 @@ def image_setup(tc):
 
 def image_teardown(tc):
     shutil.rmtree(os.path.join(tc.env.path, 'files'))
-    os.rmdir(tc.env.path)
+    os.rmdir(tc.env.path) # there was only 'files' below tc.env.path
     tc.env.reset_db()
 
 # Note: using `« test »` string in the following tests for checking

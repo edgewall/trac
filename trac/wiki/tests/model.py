@@ -68,8 +68,9 @@ class WikiPageTestCase(unittest.TestCase):
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
 
     def tearDown(self):
-        shutil.rmtree(self.env.path)
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
 
     def test_new_page(self):
         page = WikiPage(self.env)

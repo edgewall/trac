@@ -39,6 +39,7 @@ class TranslationsProxyTestCase(unittest.TestCase):
     def tearDown(self):
         translation.deactivate()
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
     def _get_locale_dir(self):
