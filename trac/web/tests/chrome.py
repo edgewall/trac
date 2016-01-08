@@ -25,6 +25,7 @@ from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.resource import Resource
 from trac.util import create_file
+from trac.util.datefmt import pytz, timezone, utc
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice, add_script,
     add_script_data, add_stylesheet, add_warning, web_context)
@@ -333,7 +334,7 @@ class ChromeTestCase(unittest.TestCase):
                          nav['metanav'][0])
 
     def _get_jquery_ui_script_data(self, lc_time):
-        req = Request(href=Href('/trac.cgi'), lc_time=lc_time)
+        req = Request(href=Href('/trac.cgi'), tz=utc, lc_time=lc_time)
         Chrome(self.env).add_jquery_ui(req)
         return req.chrome['script_data']['jquery_ui']
 
@@ -354,6 +355,41 @@ class ChromeTestCase(unittest.TestCase):
                          self.env.config.get('trac', 'default_dateinfo_format'))
         self.assertRaises(ConfigurationError, getattr, Chrome(self.env),
                           'default_dateinfo_format')
+
+    def test_add_jquery_ui_timezone_list_has_default_timezone(self):
+        chrome = Chrome(self.env)
+        href = Href('/trac.cgi')
+        gmt07b = timezone('GMT -7:00')
+        gmt04a = timezone('GMT +4:00')
+
+        def verify_tzprops(lc_time, tz, tz_default, tz_label):
+            req = Request(href=href, locale=locale_en, lc_time=lc_time, tz=tz)
+            chrome.add_jquery_ui(req)
+            data = req.chrome['script_data']['jquery_ui']
+            self.assertEqual(tz_default, data['default_timezone'])
+            if tz_default is None:
+                self.assertIsNone(data['timezone_list'])
+            else:
+                self.assertIn({'value': tz_default, 'label': tz_label},
+                              data['timezone_list'])
+
+        verify_tzprops('iso8601', utc, 0, '+00:00')
+        verify_tzprops(locale_en, utc, None, None)
+        verify_tzprops('iso8601', gmt07b, -420, '-07:00')
+        verify_tzprops(locale_en, gmt07b, None, None)
+        verify_tzprops('iso8601', gmt04a, 240, '+04:00')
+        verify_tzprops(locale_en, gmt04a, None, None)
+        if pytz:
+            # must use timezones which does not use DST
+            guam = timezone('Pacific/Guam')
+            monrovia = timezone('Africa/Monrovia')
+            panama = timezone('America/Panama')
+            verify_tzprops('iso8601', guam, 600, '+10:00')
+            verify_tzprops(locale_en, guam, None, None)
+            verify_tzprops('iso8601', monrovia, 0, '+00:00')
+            verify_tzprops(locale_en, monrovia, None, None)
+            verify_tzprops('iso8601', panama, -300, '-05:00')
+            verify_tzprops(locale_en, panama, None, None)
 
     def test_navigation_item_customization(self):
         class TestNavigationContributor1(Component):

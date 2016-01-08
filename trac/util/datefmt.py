@@ -380,7 +380,7 @@ def get_timezone_list_jquery_ui(t=None):
     def label(offset):
         sign = '-' if offset < 0 else '+'
         return '%s%02d:%02d' % (sign, abs(offset // 60), offset % 60)
-    t = datetime.now(utc) if t is None else utc.localize(t)
+    t = to_datetime(t, utc)
     offsets = set(utcoffset(tz, t) for tz in all_timezones)
     return [{'value': offset, 'label': label(offset)}
             for offset in sorted(offsets)]
