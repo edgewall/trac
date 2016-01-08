@@ -40,7 +40,7 @@ jQuery(function($){
     closeText: _("Done"),
     timeFormat: jquery_ui.time_format,
     separator: jquery_ui.timepicker_separator,
-    timezone: 'Z',
+    timezone: jquery_ui.default_timezone,
     showTimezone: jquery_ui.show_timezone,
     timezoneList: jquery_ui.timezone_list,
     timezoneIso8601: jquery_ui.timezone_iso8601,

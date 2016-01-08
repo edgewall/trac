@@ -1271,6 +1271,16 @@ class Chrome(Component):
         add_script(req, 'common/js/jquery-ui-addons.js')
         add_stylesheet(req, 'common/css/jquery-ui-addons.css')
         is_iso8601 = req.lc_time == 'iso8601'
+        now = datetime.datetime.now(req.tz)
+        tzoffset = now.strftime('%z')
+        default_timezone = 'Z' if tzoffset == '+0000' else \
+                           tzoffset[:-2] + ':' + tzoffset[-2:]
+        if is_iso8601:
+            timezone_list = get_timezone_list_jquery_ui(now)
+        else:
+            # default timezone must be included
+            timezone_list = [default_timezone if default_timezone != 'Z' else
+                             {'value': 'Z', 'label': '+00:00'}]
         add_script_data(req, jquery_ui={
             'month_names': get_month_names_jquery_ui(req),
             'day_names': get_day_names_jquery_ui(req),
@@ -1281,10 +1291,8 @@ class Chrome(Component):
             'first_week_day': get_first_week_day_jquery_ui(req),
             'timepicker_separator': get_timepicker_separator_jquery_ui(req),
             'show_timezone': is_iso8601,
-            # default timezone must be included
-            'timezone_list': get_timezone_list_jquery_ui() \
-                             if is_iso8601 \
-                             else [{'value': 'Z', 'label': '+00:00'}],
+            'default_timezone': default_timezone,
+            'timezone_list': timezone_list,
             'timezone_iso8601': is_iso8601,
         })
         add_script(req, 'common/js/jquery-ui-i18n.js')

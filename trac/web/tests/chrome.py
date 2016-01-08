@@ -22,6 +22,7 @@ from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, locale_en
 from trac.tests.contentgen import random_sentence
 from trac.util import create_file
+from trac.util.datefmt import pytz, timezone, utc
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice, add_script,
     add_script_data, add_stylesheet, add_warning)
@@ -366,18 +367,38 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('test1', items[0]['name'])
         self.assertEqual('test2', items[1]['name'])
 
-    def test_add_jquery_ui_timezone_list_has_z(self):
+    def test_add_jquery_ui_timezone_list_has_default_timezone(self):
         chrome = Chrome(self.env)
+        href = Href('/trac.cgi')
+        gmt07b = timezone('GMT -7:00')
+        gmt04a = timezone('GMT +4:00')
 
-        req = Request(href=Href('/trac.cgi'), lc_time='iso8601')
-        chrome.add_jquery_ui(req)
-        self.assertIn({'value': 'Z', 'label': '+00:00'},
-                      req.chrome['script_data']['jquery_ui']['timezone_list'])
+        def timezone_list(lc_time, tz):
+            req = Request(href=href, locale=locale_en, lc_time=lc_time, tz=tz)
+            chrome.add_jquery_ui(req)
+            return req.chrome['script_data']['jquery_ui']['timezone_list']
 
-        req = Request(href=Href('/trac.cgi'), lc_time=locale_en)
-        chrome.add_jquery_ui(req)
         self.assertIn({'value': 'Z', 'label': '+00:00'},
-                      req.chrome['script_data']['jquery_ui']['timezone_list'])
+                      timezone_list(lc_time='iso8601', tz=utc))
+        self.assertIn({'value': 'Z', 'label': '+00:00'},
+                      timezone_list(lc_time=locale_en, tz=utc))
+        self.assertIn('-07:00', timezone_list('iso8601', gmt07b))
+        self.assertIn('-07:00', timezone_list(locale_en, gmt07b))
+        self.assertIn('+04:00', timezone_list('iso8601', gmt04a))
+        self.assertIn('+04:00', timezone_list(locale_en, gmt04a))
+        if pytz:
+            # must use timezones which does not use DST
+            guam = timezone('Pacific/Guam')
+            monrovia = timezone('Africa/Monrovia')
+            panama = timezone('America/Panama')
+            self.assertIn('+10:00', timezone_list('iso8601', guam))
+            self.assertIn('+10:00', timezone_list(locale_en, guam))
+            self.assertIn({'value': 'Z', 'label': '+00:00'},
+                          timezone_list('iso8601', monrovia))
+            self.assertIn({'value': 'Z', 'label': '+00:00'},
+                          timezone_list('iso8601', monrovia))
+            self.assertIn('-05:00', timezone_list('iso8601', panama))
+            self.assertIn('-05:00', timezone_list(locale_en, panama))
 
     def test_navigation_item_customization(self):
         class TestNavigationContributor1(Component):

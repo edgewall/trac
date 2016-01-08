@@ -374,7 +374,7 @@ def get_time_format_jquery_ui(locale):
 
 def get_timezone_list_jquery_ui(t=None):
     """Get timezone list for jQuery timepicker addon"""
-    t = datetime.now(utc) if t is None else utc.localize(t)
+    t = to_datetime(t, utc)
     zones = set(t.astimezone(get_timezone(tz)).strftime('%z')
                 for tz in all_timezones)
     return [{'value': 'Z', 'label': '+00:00'} \
