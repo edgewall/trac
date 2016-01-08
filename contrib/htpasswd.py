@@ -43,7 +43,7 @@ def salt():
     return random.choice(letters) + random.choice(letters)
 
 
-class HtpasswdFile:
+class HtpasswdFile(object):
     """A class for manipulating htpasswd files."""
 
     def __init__(self, filename, create=False):
