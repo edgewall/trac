@@ -146,45 +146,48 @@ class WikiTestCase(unittest.TestCase):
         self._setup = setup
         self._teardown = teardown
 
-        req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
-                   chrome={}, session={},
-                   authname='anonymous', perm=MockPerm(), tz=utc, args={},
-                   locale=locale_en, lc_time=locale_en)
+        self.req = Mock(href=Href('/'),
+                        abs_href=Href('http://www.example.com/'),
+                        chrome={}, session={}, authname='anonymous',
+                        perm=MockPerm(), tz=utc, args={}, locale=locale_en,
+                        lc_time=locale_en)
         if context:
             if isinstance(context, tuple):
-                context = web_context(req, *context)
+                context = web_context(self.req, *context)
         else:
-            context = web_context(req, 'wiki', 'WikiStart')
+            context = web_context(self.req, 'wiki', 'WikiStart')
         self.context = context
 
+    def _create_env(self):
         all_test_components = [
                 HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro,
                 DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro,
                 NoneMacro, WikiProcessorSampleMacro, SampleResolver]
-        self.env = EnvironmentStub(enable=['trac.*'] + all_test_components)
+        env = EnvironmentStub(enable=['trac.*'] + all_test_components)
         # -- macros support
-        self.env.path = ''
+        env.path = ''
         # -- intertrac support
-        self.env.config.set('intertrac', 'trac.title', "Trac's Trac")
-        self.env.config.set('intertrac', 'trac.url',
-                            "http://trac.edgewall.org")
-        self.env.config.set('intertrac', 't', 'trac')
-        self.env.config.set('intertrac', 'th.title', "Trac Hacks")
-        self.env.config.set('intertrac', 'th.url',
-                            "http://trac-hacks.org")
-        self.env.config.set('intertrac', 'th.compat', 'false')
+        env.config.set('intertrac', 'trac.title', "Trac's Trac")
+        env.config.set('intertrac', 'trac.url',
+                       "http://trac.edgewall.org")
+        env.config.set('intertrac', 't', 'trac')
+        env.config.set('intertrac', 'th.title', "Trac Hacks")
+        env.config.set('intertrac', 'th.url',
+                       "http://trac-hacks.org")
+        env.config.set('intertrac', 'th.compat', 'false')
         # -- safe schemes
-        self.env.config.set('wiki', 'safe_schemes',
-                            'file,ftp,http,https,svn,svn+ssh,'
-                            'rfc-2396.compatible,rfc-2396+under_score')
+        env.config.set('wiki', 'safe_schemes',
+                       'file,ftp,http,https,svn,svn+ssh,'
+                       'rfc-2396.compatible,rfc-2396+under_score')
+        return env
 
+    def setUp(self):
+        self.env = self._create_env()
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
         #       instead of env.href
-        self.env.href = req.href
-        self.env.abs_href = req.abs_href
-
-    def setUp(self):
+        self.env.href = self.req.href
+        self.env.abs_href = self.req.abs_href
         wiki = WikiPage(self.env)
         wiki.name = 'WikiStart'
         wiki.text = '--'
