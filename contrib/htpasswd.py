@@ -27,7 +27,7 @@ if crypt is None:
     sys.exit(1)
 
 
-class HtpasswdFile:
+class HtpasswdFile(object):
     """A class for manipulating htpasswd files."""
 
     def __init__(self, filename, create=False):
