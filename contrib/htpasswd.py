@@ -100,6 +100,10 @@ def main():
     parser.add_option('-D', action='store_true', dest='delete_user',
         default=False, help='Remove the given user from the password file.')
 
+    if len(sys.argv) <= 1:
+        parser.print_help()
+        sys.exit(1)
+
     options, args = parser.parse_args()
 
     def syntax_error(msg):
@@ -107,7 +111,7 @@ def main():
         help.
         """
         sys.stderr.write("Syntax error: " + msg)
-        sys.stderr.write(parser.get_usage())
+        parser.print_help()
         sys.exit(1)
 
     if not (options.batch or options.delete_user):
