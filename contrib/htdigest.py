@@ -51,6 +51,10 @@ parser.add_option('-c', action='store_true', dest='create', default=False,
 parser.add_option('-b', action='store_true', dest='batch', default=False,
                   help="Batch mode, password on the commandline.")
 
+if len(sys.argv) <= 1:
+    parser.print_help()
+    sys.exit(1)
+
 opts, args = parser.parse_args()
 
 try:
