@@ -495,7 +495,7 @@ class ConnectionTestCase(unittest.TestCase):
 
     def test_get_column_names(self):
         schema = default_schema + self.schema
-        with self.env.db_transaction as db:
+        with self.env.db_query as db:
             for table in schema:
                 db_columns = db.get_column_names(table.name)
                 self.assertEqual(len(table.columns), len(db_columns))
