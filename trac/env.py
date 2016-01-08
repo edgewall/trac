@@ -538,6 +538,8 @@ class Environment(Component, ComponentManager):
         for backward compatibility.
 
         :param reponame: the name of the repository
+
+        :since 1.2: deprecated and will be removed in 1.3.1
         """
         return RepositoryManager(self).get_repository(reponame)
 
