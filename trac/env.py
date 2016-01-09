@@ -39,7 +39,6 @@ from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
 from trac.util.translation import _, N_
-from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
 
 __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
@@ -539,6 +538,7 @@ class Environment(Component, ComponentManager):
 
     def shutdown(self, tid=None):
         """Close the environment."""
+        from trac.versioncontrol.api import RepositoryManager
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
         if tid is None:
@@ -560,6 +560,7 @@ class Environment(Component, ComponentManager):
                          anymore, left here for compatibility with
                          0.11)
         """
+        from trac.versioncontrol.api import RepositoryManager
         return RepositoryManager(self).get_repository(reponame)
 
     def create(self, options=[]):
