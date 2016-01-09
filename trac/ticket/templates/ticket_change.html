@@ -33,7 +33,7 @@ Arguments:
                show_editor = can_edit_comment and str(cnum) == cnum_edit;
                show_history = str(cnum) == cnum_hist;
                max_version = max(change.comment_history) if change.comment_history else 0;
-               comment_version = min(int(cversion or 0), max_version) if show_history else max_version;
+               comment_version = as_int(cversion, max_version, 0, max_version) if show_history else max_version;
                show_buttons = not hide_buttons and not show_editor and comment_version == max_version"
       py:strip="">
   <py:def function="commentref(prefix, cnum, cls=None)">
@@ -68,7 +68,8 @@ Arguments:
     <span py:if="preview or show_editor" class="trac-loading"/>
   </h3>
   <div py:if="show_buttons" class="trac-ticket-buttons">
-    <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${cnum}">
+    <form py:if="'cnum' in change and can_edit_comment" id="edit-comment-${cnum}"
+          method="get" action="#comment:${cnum}">
       <div class="inlinebuttons">
         <input type="hidden" name="cnum_edit" value="${cnum}"/>
         <input type="submit" value="${captioned_button('✎', _('Edit'))}" title="${_('Edit comment %(cnum)s', cnum=cnum)}" />

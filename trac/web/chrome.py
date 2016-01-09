@@ -48,8 +48,8 @@ from trac.core import *
 from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview.api import RenderingContext, get_mimetype
 from trac.resource import *
-from trac.util import compat, get_reporter_id, html, presentation, \
-                      get_pkginfo, pathjoin, translation
+from trac.util import as_bool, as_int, compat, get_reporter_id, html,\
+                      presentation, get_pkginfo, pathjoin, translation
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
@@ -575,6 +575,8 @@ class Chrome(Component):
         '_': translation.gettext,
         'all': all,
         'any': any,
+        'as_bool': as_bool,
+        'as_int': as_int,
         'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,
