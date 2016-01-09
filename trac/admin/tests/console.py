@@ -265,7 +265,7 @@ class TracadminTestCase(unittest.TestCase):
     def test_attachment_add_nonexistent_resource(self):
         """Tests the 'attachment add' command in trac-admin, on a non-existent
         resource."""
-        rv, output = self._execute('attachment add wiki:NonExistentPage %s'
+        rv, output = self._execute('attachment add wiki:NonExistentPage "%s"'
                                    % __file__)
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
