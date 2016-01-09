@@ -18,7 +18,8 @@ from trac.test import EnvironmentStub, Mock
 from trac.tests.contentgen import random_sentence
 from trac.ticket.model import Ticket
 from trac.util.datefmt import utc
-from trac.versioncontrol.api import Repository
+from trac.versioncontrol.api import Repository, RepositoryManager
+from trac.wiki.tests import formatter
 from tracopt.ticket.commit_updater import CommitTicketUpdater
 
 
@@ -105,9 +106,40 @@ This is the first comment after an edit. Refs #1, #2.
                 self.assertEqual(comment, change['fields']['comment']['new'])
 
 
+def macro_setup(tc):
+    tc.env = EnvironmentStub(enable=('trac.*',
+                                     'tracopt.ticket.commit_updater.*',))
+    ticket = Ticket(tc.env)
+    ticket['summary'] = 'the summary'
+    ticket['status'] = 'new'
+    ticket.insert()
+    def _get_repository(reponame):
+        return Mock(get_changeset=_get_changeset, resource=None)
+    def _get_changeset(rev=None):
+        return Mock(message="the message. refs #1.  ", rev=rev)
+    setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
+
+
+COMMIT_TICKET_REFERENCE_MACRO_TEST_CASES = u"""\
+============================== No arguments
+[[CommitTicketReference]]
+------------------------------
+<p>
+</p><div class="message"><p>
+the message. refs <a class="new ticket" href="/ticket/1" title="the summary (new)">#1</a>.  <br />
+</p>
+</div><p>
+</p>
+------------------------------
+"""
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase))
+    suite.addTest(formatter.suite(COMMIT_TICKET_REFERENCE_MACRO_TEST_CASES,
+                                  macro_setup, __file__,
+                                  context=('ticket', 1)))
     return suite
 
 
