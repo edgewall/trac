@@ -112,16 +112,16 @@ class LoginModule(Component):
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
             yield ('metanav', 'login',
-                   tag_('logged in as %(user)s',
+                   tag_("logged in as %(user)s",
                         user=Chrome(self.env).authorinfo(req, req.authname)))
             yield ('metanav', 'logout',
-                   tag.form(tag.div(tag.button(_('Logout'),
+                   tag.form(tag.div(tag.button(_("Logout"),
                                                name='logout', type='submit')),
                             action=req.href.logout(), method='post',
                             id='logout', class_='trac-logout'))
         else:
             yield ('metanav', 'login',
-                   tag.a(_('Login'), href=req.href.login()))
+                   tag.a(_("Login"), href=req.href.login()))
 
     # IRequestHandler methods
 
@@ -154,10 +154,10 @@ class LoginModule(Component):
         """
         if not req.remote_user:
             # TRANSLATOR: ... refer to the 'installation documentation'. (link)
-            inst_doc = tag.a(_('installation documentation'),
+            inst_doc = tag.a(_("installation documentation"),
                              title=_("Configuring Authentication"),
-                             href=req.href.wiki('TracInstall')
-                                  + "#ConfiguringAuthentication")
+                             href=req.href.wiki('TracInstall') +
+                                                "#ConfiguringAuthentication")
             raise TracError(tag_("Authentication information not available. "
                                  "Please refer to the %(inst_doc)s.",
                                  inst_doc=inst_doc))
@@ -166,7 +166,7 @@ class LoginModule(Component):
             remote_user = remote_user.lower()
 
         if req.authname not in ('anonymous', remote_user):
-            raise TracError(_('Already logged in as %(user)s.',
+            raise TracError(_("Already logged in as %(user)s.",
                               user=req.authname))
 
         with self.env.db_transaction as db:
@@ -315,6 +315,7 @@ class BasicAuthentication(PasswordFileAuthentication):
         # FIXME pass a logger
         self.realm = realm
         self.crypt = crypt
+        self.hash = {}
         PasswordFileAuthentication.__init__(self, htpasswd)
 
     def load(self, filename):
@@ -350,7 +351,7 @@ class BasicAuthentication(PasswordFileAuthentication):
         if the_hash.startswith('{SHA}'):
             return b64encode(sha1(password).digest()) == the_hash[5:]
 
-        if not '$' in the_hash:
+        if '$' not in the_hash:
             return self.crypt(password, the_hash[:2]) == the_hash
 
         magic, salt = the_hash[1:].split('$')[:2]
@@ -381,6 +382,7 @@ class DigestAuthentication(PasswordFileAuthentication):
         # FIXME pass a logger
         self.active_nonces = []
         self.realm = realm
+        self.hash = {}
         PasswordFileAuthentication.__init__(self, htdigest)
 
     def load(self, filename):
@@ -397,7 +399,7 @@ class DigestAuthentication(PasswordFileAuthentication):
             try:
                 u, r, a1 = line.split(':')
             except ValueError:
-                print('Warning: invalid digest line in %s: %s'
+                print("Warning: invalid digest line in %s: %s"
                       % (filename, line), file=sys.stderr)
                 continue
             if r == self.realm:
