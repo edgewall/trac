@@ -14,7 +14,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 """Various classes and functions to provide some backwards-compatibility with
-previous versions of Python from 2.5 onward.
+previous versions of Python from 2.6 onward.
 """
 
 import math
