@@ -297,7 +297,8 @@ class CommitTicketReferenceMacro(WikiMacroBase):
      - `revision`: the revision of the desired changeset
     """)
 
-    def expand_macro(self, formatter, name, content, args={}):
+    def expand_macro(self, formatter, name, content, args=None):
+        args = args or {}
         reponame = args.get('repository') or ''
         rev = args.get('revision')
         repos = RepositoryManager(self.env).get_repository(reponame)
