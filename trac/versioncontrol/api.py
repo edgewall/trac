@@ -29,6 +29,7 @@ from trac.util.datefmt import utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
+from trac.web.chrome import ITemplateProvider
 
 
 def is_default(reponame):
@@ -311,7 +312,8 @@ class DbRepositoryProvider(Component):
 class RepositoryManager(Component):
     """Version control system manager."""
 
-    implements(IRequestFilter, IResourceManager, IRepositoryProvider)
+    implements(IRequestFilter, IResourceManager, IRepositoryProvider,
+               ITemplateProvider)
 
     changeset_realm = 'changeset'
     source_realm = 'source'
@@ -497,6 +499,15 @@ class RepositoryManager(Component):
 
         for reponame, info in reponames.iteritems():
             yield (reponame, info)
+
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        from pkg_resources import resource_filename
+        return [resource_filename('trac.versioncontrol', 'templates')]
 
     # Public API methods
 
