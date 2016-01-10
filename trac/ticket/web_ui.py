@@ -1767,7 +1767,8 @@ class TicketModule(Component):
             formatted_user = chrome.format_author(req, user)
             if not is_obfuscated(formatted_user):
                 data['%s_link' % role] = self._query_link(
-                    req, role, user, class_=chrome.author_class(req, user))
+                    req, role, user, formatted_user,
+                    class_=chrome.author_class(req, user))
         data.update({
             'context': context, 'conflicts': conflicts,
             'fields': fields, 'fields_map': fields_map,

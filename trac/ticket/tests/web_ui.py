@@ -84,6 +84,23 @@ class TicketModuleTestCase(unittest.TestCase):
                 break
         self.assertEqual('newticket', name)
 
+    def test_reporter_and_owner_full_name_is_displayed(self):
+        """Full name of reporter and owner are used in ticket properties."""
+        self.env.insert_known_users([('user1', 'User One', None),
+                                     ('user2', 'User Two', None)])
+        tkt_id = self._insert_ticket(reporter='user1', owner='user2')
+        req = self._create_request(authname='user2', method='GET',
+                                   args={'id': tkt_id, 'replyto': '1'})
+
+        data = self.ticket_module.process_request(req)[1]
+
+        self.assertEqual(u'<a class="trac-author" href="/trac.cgi/query?'
+                         u'status=!closed&amp;reporter=user1">User One</a>',
+                         unicode(data['reporter_link']))
+        self.assertEqual(u'<a class="trac-author-user" href="/trac.cgi/query?'
+                         u'status=!closed&amp;owner=user2">User Two</a>',
+                         unicode(data['owner_link']))
+
     def test_quoted_reply_author_is_obfuscated(self):
         """Reply-to author is obfuscated in a quoted reply."""
         author = 'author <author@example.net>'
