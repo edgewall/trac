@@ -169,6 +169,7 @@ class NormalTests(object):
         self.assertEqual(HEAD, node.created_rev)
         self.assertEqual(datetime(2015, 6, 15, 14, 9, 13, 664490, utc),
                          node.last_modified)
+        self.assertRaises(TracError, self.repos.get_node, u'/', -1)
         node = self.repos.get_node(u'/tête')
         self.assertEqual(u'tête', node.name)
         self.assertEqual(u'/tête', node.path)

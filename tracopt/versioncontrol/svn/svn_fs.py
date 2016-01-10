@@ -765,7 +765,10 @@ class SubversionNode(Node):
         if parent_root:
             self.root = parent_root
         else:
-            self.root = fs.revision_root(self.fs_ptr, rev, pool)
+            try:
+                self.root = fs.revision_root(self.fs_ptr, rev, pool)
+            except core.SubversionException, e:
+                raise TracError(e)
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
