@@ -398,7 +398,7 @@ in order to initialize and prepare the project database.
         printout(_("""
  Please specify the connection string for the database to use.
  By default, a local SQLite database is created in the environment
- directory. It is also possible to use an already existing
+ directory. It is also possible to use an existing MySQL or
  PostgreSQL database (check the Trac documentation for the exact
  connection string syntax).
 """))
