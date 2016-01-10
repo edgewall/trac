@@ -1240,6 +1240,10 @@ class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
         """
         self._tester.create_report('Saved Query', 'query:version=1.0', '')
         tc.notfind(internal_error)
+        tc.formvalue('trac-report-edit', 'action', 'new')
+        tc.submit()
+        tc.find("Modify Query:")
+        tc.find("Save query")
         # TODO: Add a testcase for the following:
         # Can you also throw in addition of a 1.0 ticket and a 2.0 ticket
         # as part of the demo env, then see that only the correct one shows
