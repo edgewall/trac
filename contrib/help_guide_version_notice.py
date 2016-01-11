@@ -48,7 +48,7 @@ class HelpGuideVersionNotice(Component):
         doc="Version of the dev release of Trac.")
 
     ignored_pages = ListOption('teo', 'ignored_pages',
-                               'WikiStart, TitleIndex',
+                               'TitleIndex, SandBox, WikiStart',
         doc="List of pages to ignore.")
 
     def __init__(self):
