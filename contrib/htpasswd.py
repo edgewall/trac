@@ -22,8 +22,8 @@ from trac.util.compat import crypt, wait_for_file_mtime_change
 from trac.util.text import printerr, printout
 
 if crypt is None:
-    printerr("The crypt module is not found. You may want to install "
-             "fcrypt from PyPI.", newline=True)
+    printerr("The crypt module is not found. Install the passlib package "
+             "from PyPI.", newline=True)
     sys.exit(1)
 
 

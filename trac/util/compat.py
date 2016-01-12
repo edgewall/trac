@@ -28,7 +28,9 @@ try:
     from crypt import crypt
 except ImportError:
     try:
-        from fcrypt import crypt
+        from passlib.hash import des_crypt
+        def crypt(secret, salt):
+            return des_crypt.encrypt(secret, salt=salt)
     except ImportError:
         crypt = None
 

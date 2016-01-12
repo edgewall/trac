@@ -336,7 +336,8 @@ class BasicAuthentication(PasswordFileAuthentication):
                 self.hash[u] = h
             else:
                 print('Warning: cannot parse password for user "%s" '
-                      'without the "crypt" module' % u, file=sys.stderr)
+                      'without the "crypt" module. Install the passlib '
+                      'package from PyPI' % u, file=sys.stderr)
 
         if self.hash == {}:
             print("Warning: found no users in file:", filename,
