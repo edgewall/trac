@@ -144,6 +144,7 @@ ul.children > li.child {
  border-radius: .8em;
 }
 #changelog ul.children h3 { margin-right: .4em }
+#changelog pre.wiki, #changelog div.code { clear: right }
 
 .in-reply-to:before { content: "↑" }
 .follow-up:before { content: "↓" }
