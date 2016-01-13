@@ -83,11 +83,11 @@ $pipPackages = @{
 # "Aliases"
 
 $pyHome = $env:PYTHONHOME
-$usingMysql = $env:TRAC_TEST_DB_URI -match 'mysql'
+$usingMysql      = $env:TRAC_TEST_DB_URI -match 'mysql'
 $usingPostgresql = $env:TRAC_TEST_DB_URI -match 'postgres'
 $skipInstall = [bool]$env:SKIP_ENV
-$skipBuild = $env:SKIP_BUILD -or $env:SKIP_ENV
-$skipTest = $env:SKIP_TEST -or $env:SKIP_ENV
+$skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
+$skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
 
 $pyVersion = if ([string](& python.exe -V 2>&1) -match ' (\d\.\d)') { 
     $Matches[1] 
@@ -134,33 +134,35 @@ function Trac-Install {
     Write-Step -Name INSTALL -Skip $skipInstall
 
     if ($skipInstall) {
-	return
+        return
     }
 
     if (-not (Test-Path $deps)) {
-	& mkdir $deps
+        & mkdir $deps
     }
 
     # Download fcrypt if needed (only for 1.0-stable after #12239)
 
     if ($branch -eq '1.0-stable') {
-	if (-not (Test-Path $fcrypt)) {
-	    & curl.exe -sS $fcryptUrl -o $fcrypt
-	}
+        if (-not (Test-Path $fcrypt)) {
+            & curl.exe -sS $fcryptUrl -o $fcrypt
+        }
     } 
 
     # Install packages via pip
 
     # pip in Python 2.6 triggers the following warning:
     # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
+    # use -W to avoid it (for some reason, works locally but doesn't
+    # work on AppVeyor...
     if ($pyVersion -eq '2.6') {
-         $ignoreWarnings = @(
-	     '-W', 'ignore:A true SSLContext object is not available'
-	 )
+        $ignoreWarnings = @(
+            '-W', 'ignore:A true SSLContext object is not available'
+        )
     }
 
     function pip() {
-	& python.exe $ignoreWarnings -m pip.__main__ @args
+        & python.exe $ignoreWarnings -m pip.__main__ @args
         # Note: -m pip works only in 2.7, -m pip.__main__ works in both
     }
 
@@ -168,28 +170,28 @@ function Trac-Install {
     & pip install $pipCommonPackages $pipPackages.$branch
 
     if ($usingMysql) {
-	#
-	# $TRAC_TEST_DB_URI=
-	# "postgres://tracuser:password@localhost/trac?schema=tractest"
-	#
+        #
+        # $TRAC_TEST_DB_URI=
+        # "postgres://tracuser:password@localhost/trac?schema=tractest"
+        #
 
-	# It's easier to get MySQL-python support on Windows using Conda
-	& conda.exe install -qy mysql-python
+        # It's easier to get MySQL-python support on Windows using Conda
+        & conda.exe install -qy mysql-python
 
-	Add-AppveyorMessage -Message "1.1. mysql-python package installed" `
-	  -Category Information
+        Add-AppveyorMessage -Message "1.1. mysql-python package installed" `
+          -Category Information
 
     }
     elseif ($usingPostgresql) {
-	#
-	# $TRAC_TEST_DB_URI=
-	# "postgres://tracuser:password@localhost/trac?schema=tractest"
-	#
+        #
+        # $TRAC_TEST_DB_URI=
+        # "postgres://tracuser:password@localhost/trac?schema=tractest"
+        #
 
-	& pip install psycopg2
+        & pip install psycopg2
 
-	Add-AppveyorMessage -Message "1.1. psycopg2 package installed" `
-	  -Category Information
+        Add-AppveyorMessage -Message "1.1. psycopg2 package installed" `
+          -Category Information
     }
 
     & pip list
@@ -211,47 +213,51 @@ function Trac-Build {
 
     Write-Step -Name BUILD -Skip $skipBuild
 
+    if ($skipBuild) {
+        return
+    }
+
     # Preparing database if needed
 
     if ($usingMysql) {
-	#
-	# $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
-	#
-	$env:MYSQL_PWD = $mysqlPwd
-	$env:Path      = "$mysqlHome\bin;$($env:Path)"
-	
-	Write-Host "Creating 'trac' MySQL database with user 'tracuser'"
+        #
+        # $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
+        #
+        $env:MYSQL_PWD = $mysqlPwd
+        $env:Path      = "$mysqlHome\bin;$($env:Path)"
+        
+        Write-Host "Creating 'trac' MySQL database with user 'tracuser'"
 
-	& mysql.exe -u root -e `
-	  ('CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4' + 
-	   ' COLLATE utf8mb4_bin')
-	& mysql.exe -u root -e `
-	  'CREATE USER tracuser@localhost IDENTIFIED BY ''password'';'
-	& mysql.exe -u root -e `
-	  'GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;'
+        & mysql.exe -u root -e `
+          ('CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4' + 
+           ' COLLATE utf8mb4_bin')
+        & mysql.exe -u root -e `
+          'CREATE USER tracuser@localhost IDENTIFIED BY ''password'';'
+        & mysql.exe -u root -e `
+          'GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;'
 
-	Add-AppveyorMessage -Message "2.1. MySQL database created" `
-	  -Category Information
+        Add-AppveyorMessage -Message "2.1. MySQL database created" `
+          -Category Information
     }
     elseif ($usingPostgresql) {
-	#
-	# $TRAC_TEST_DB_URI=
-	# "postgres://tracuser:password@localhost/trac?schema=tractest"
-	#
-	$env:PGUSER     = $pgUser
-	$env:PGPASSWORD = $pgPassword
-	$env:Path       = "$pgHome\bin;$($env:Path)"
+        #
+        # $TRAC_TEST_DB_URI=
+        # "postgres://tracuser:password@localhost/trac?schema=tractest"
+        #
+        $env:PGUSER     = $pgUser
+        $env:PGPASSWORD = $pgPassword
+        $env:Path       = "$pgHome\bin;$($env:Path)"
 
-	Write-Host "Creating 'trac' PostgreSQL database with user 'tracuser'"
+        Write-Host "Creating 'trac' PostgreSQL database with user 'tracuser'"
 
-	& psql.exe -U postgres -c `
-	  ('CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE' +
-	   ' PASSWORD ''password'';')
-	& psql.exe -U postgres -c `
-	  'CREATE DATABASE trac OWNER tracuser;'
+        & psql.exe -U postgres -c `
+          ('CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE' +
+           ' PASSWORD ''password'';')
+        & psql.exe -U postgres -c `
+          'CREATE DATABASE trac OWNER tracuser;'
 
-	Add-AppveyorMessage -Message "2.1. PostgreSQL database created" `
-	  -Category Information
+        Add-AppveyorMessage -Message "2.1. PostgreSQL database created" `
+          -Category Information
     }
 
     Write-Host "make compile"
@@ -265,17 +271,98 @@ function Trac-Build {
     $stdout = $make | ?{ $_ -isnot [System.Management.Automation.ErrorRecord] }
 
     if ($LastExitCode) {
-	Add-AppveyorMessage -Message "2.2. make compile produced errors" `
+        Add-AppveyorMessage -Message "2.2. make compile produced errors" `
           -Category Error `
           -Details ($stderr -join "`n")
     }
     elseif ($stderr) {
-	Add-AppveyorMessage -Message "2.2. make compile produced warnings" `
+        Add-AppveyorMessage -Message "2.2. make compile produced warnings" `
           -Category Warning `
           -Details ($stderr -join "`n")
     }
     else {
-	Add-AppveyorMessage -Message "2.2. make compile was successful" `
+        Add-AppveyorMessage -Message "2.2. make compile was successful" `
           -Category Information 
+    }
+}
+
+
+
+function Trac-Tests {
+
+    Write-Step -Name TEST -Skip $skipTests
+
+    $config = "$pyHome - $env:TRAC_TEST_DB_URI"
+
+    if ("$env:TRAC_TEST_DB_URI" -eq '') {
+        $config += 'sqlite :memory:'
+    }
+
+    function Make-Test([string]$goal, [string]$name, [ref]$code) {
+        if ($skipTests) {
+            Add-AppveyorTest -Name $name -Outcome Skipped
+            return
+        }
+
+        Write-Host "make $goal"
+
+        Add-AppveyorTest -Name $name -Outcome Running
+        & make.exe $goal 2>&1 | Tee-Object -variable make
+
+        # Determine outcome Passed or Failed
+
+        if ($LastExitCode) {
+            $outcome = 'Failed'
+            $code.value += 1
+        }
+        else {
+            $outcome = 'Passed'
+        }
+
+        $stderr = $make |
+          ?{ $_ -is [System.Management.Automation.ErrorRecord] }
+        $stdout = $make |
+          ?{ $_ -isnot [System.Management.Automation.ErrorRecord] }
+
+        # Retrieve duration of the tests
+
+        if ([string]$stderr -match "Ran \d+ tests in (\d+\.\d+)s") {
+            $secs = $matches[1]
+        }
+        if ($secs -eq $null) {
+            $msecs = 0
+        }
+        else {
+            $msecs = [math]::Round([float]$secs * 1000)
+        }
+
+        Update-AppveyorTest -Name $name -Outcome $outcome `
+          -StdOut ($stdout -join "`n") -StdErr ($stderr -join '') `
+          -Duration $msecs
+    }
+
+    $exit = 0
+
+    #
+    # Running unit-tests
+    #
+
+    Make-Test -Goal unit-test -Name "Unit tests for $config" `
+      -Code ([ref]$exit)
+
+    #
+    # Running functional tests
+    #
+
+    Make-Test -Goal functional-test -Name "Functional tests for $config" `
+      -Code ([ref]$exit)
+
+    if (-not $exit -eq 0) {
+        Write-Host "Exiting with code $exit"
+        Exit $exit
+    }
+
+    if (-not $skipTests) {
+        Write-Host "All tests passed."
     }
 }
