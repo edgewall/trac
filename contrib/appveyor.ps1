@@ -32,6 +32,14 @@
 $msysHome = 'C:\msys64\usr\bin'
 $deps     = 'C:\projects\dependencies'
 
+$mysqlHome = 'C:\Program Files\MySql\MySQL Server 5.6'
+$mysqlPwd  = 'Password12!'
+
+$pgHome     = 'C:\Program Files\PostgreSQL\9.3'
+$pgUser     = 'postgres'
+$pgPassword = 'Password12!'
+
+
 # External dependencies
 
 $pipCommonPackages = @(
@@ -49,8 +57,8 @@ $fcrypt    = "$deps\fcrypt-1.3.1.tar.gz"
 $fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
 
 $pipPackages = @{ 
-    '1.0-stable' = @($fcrypt); 
-    trunk = @('passlib');
+    '1.0-stable' = @($fcrypt)
+    trunk = @('passlib')
 }
 
 
@@ -95,12 +103,13 @@ $branch = $env:APPVEYOR_REPO_BRANCH
 # Documentation for AppVeyor API (Add-AppveyorMessage, etc.) can be found at:
 # http://www.appveyor.com/docs/build-worker-api
 
-function Step([string]$name, [bool]$skip) {
+function Write-Step([string]$name, [bool]$skip) {
     if ($skip) {
         $message = "Skipping step $name"
         Write-Host $message
         Add-AppveyorMessage -Message $message
-    } else {
+    }
+    else {
         Write-Host @"
 
 ------------------------------------------------------------------
@@ -119,9 +128,10 @@ $name
 
 $env:Path = "$pyHome;$pyHome\Scripts;$msysHome;$($env:Path)"
 
+
 function Trac-Install {
 
-    Step INSTALL $skipInstall
+    Write-Step -Name INSTALL -Skip $skipInstall
 
     if ($skipInstall) {
 	return
@@ -150,7 +160,7 @@ function Trac-Install {
     }
 
     function pip() {
-	python.exe $ignoreWarnings -m pip.__main__ @args
+	& python.exe $ignoreWarnings -m pip.__main__ @args
         # Note: -m pip works only in 2.7, -m pip.__main__ works in both
     }
 
@@ -170,7 +180,7 @@ function Trac-Install {
 	  -Category Information
 
     }
-    elseif ($usingPostgres) {
+    elseif ($usingPostgresql) {
 	#
 	# $TRAC_TEST_DB_URI=
 	# "postgres://tracuser:password@localhost/trac?schema=tractest"
@@ -193,4 +203,79 @@ function Trac-Install {
 
     # Note 2: we can't do more at this stage, as the services
     #         (MySQL/PostgreSQL) are not started yet.
+}
+
+
+
+function Trac-Build {
+
+    Write-Step -Name BUILD -Skip $skipBuild
+
+    # Preparing database if needed
+
+    if ($usingMysql) {
+	#
+	# $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
+	#
+	$env:MYSQL_PWD = $mysqlPwd
+	$env:Path      = "$mysqlHome\bin;$($env:Path)"
+	
+	Write-Host "Creating 'trac' MySQL database with user 'tracuser'"
+
+	& mysql.exe -u root -e `
+	  ('CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4' + 
+	   ' COLLATE utf8mb4_bin')
+	& mysql.exe -u root -e `
+	  'CREATE USER tracuser@localhost IDENTIFIED BY ''password'';'
+	& mysql.exe -u root -e `
+	  'GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;'
+
+	Add-AppveyorMessage -Message "2.1. MySQL database created" `
+	  -Category Information
+    }
+    elseif ($usingPostgresql) {
+	#
+	# $TRAC_TEST_DB_URI=
+	# "postgres://tracuser:password@localhost/trac?schema=tractest"
+	#
+	$env:PGUSER     = $pgUser
+	$env:PGPASSWORD = $pgPassword
+	$env:Path       = "$pgHome\bin;$($env:Path)"
+
+	Write-Host "Creating 'trac' PostgreSQL database with user 'tracuser'"
+
+	& psql.exe -U postgres -c `
+	  ('CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE' +
+	   ' PASSWORD ''password'';')
+	& psql.exe -U postgres -c `
+	  'CREATE DATABASE trac OWNER tracuser;'
+
+	Add-AppveyorMessage -Message "2.1. PostgreSQL database created" `
+	  -Category Information
+    }
+
+    Write-Host "make compile"
+
+    # compile: if there are fuzzy catalogs, an error message will be
+    # generated to stderr... 
+
+    & make.exe Trac.egg-info compile 2>&1 | Tee-Object -Variable make
+
+    $stderr = $make | ?{ $_ -is [System.Management.Automation.ErrorRecord] }
+    $stdout = $make | ?{ $_ -isnot [System.Management.Automation.ErrorRecord] }
+
+    if ($LastExitCode) {
+	Add-AppveyorMessage -Message "2.2. make compile produced errors" `
+          -Category Error `
+          -Details ($stderr -join "`n")
+    }
+    elseif ($stderr) {
+	Add-AppveyorMessage -Message "2.2. make compile produced warnings" `
+          -Category Warning `
+          -Details ($stderr -join "`n")
+    }
+    else {
+	Add-AppveyorMessage -Message "2.2. make compile was successful" `
+          -Category Information 
+    }
 }
