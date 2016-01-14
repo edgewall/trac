@@ -256,6 +256,9 @@ class SvnCachedRepository(CachedRepository):
     def rev_db(self, rev):
         return int(rev or 0)
 
+    def normalize_rev(self, rev):
+        return self.repos.normalize_rev(rev)
+
 
 class SubversionConnector(Component):
 
@@ -427,7 +430,7 @@ class SubversionRepository(Repository):
         else:
             try:
                 rev = int(rev)
-                if rev <= self.youngest_rev:
+                if 0 <= rev <= self.youngest_rev:
                     return rev
             except (ValueError, TypeError):
                 pass
@@ -766,7 +769,7 @@ class SubversionNode(Node):
             try:
                 self.root = fs.revision_root(self.fs_ptr, rev, pool)
             except core.SubversionException as e:
-                raise TracError(e)
+                raise NoSuchChangeset(e)
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
