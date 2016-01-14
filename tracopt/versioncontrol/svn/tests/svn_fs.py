@@ -130,6 +130,8 @@ class NormalTests(object):
         self.assertEqual(HEAD, self.repos.normalize_rev(None))
         self.assertEqual(11, self.repos.normalize_rev('11'))
         self.assertEqual(11, self.repos.normalize_rev(11))
+        self.assertRaises(NoSuchChangeset, self.repos.normalize_rev, -1)
+        self.assertRaises(NoSuchChangeset, self.repos.normalize_rev, -42)
 
     def test_rev_navigation(self):
         self.assertEqual(1, self.repos.oldest_rev)
@@ -169,7 +171,7 @@ class NormalTests(object):
         self.assertEqual(HEAD, node.created_rev)
         self.assertEqual(datetime(2015, 6, 15, 14, 9, 13, 664490, utc),
                          node.last_modified)
-        self.assertRaises(TracError, self.repos.get_node, u'/', -1)
+        self.assertRaises(NoSuchChangeset, self.repos.get_node, u'/', -1)
         node = self.repos.get_node(u'/tête')
         self.assertEqual(u'tête', node.name)
         self.assertEqual(u'/tête', node.path)
