@@ -115,6 +115,25 @@ $name
     }
 }
 
+# Make it easier to run the tests locally, for debugging.
+#
+# Note that for this you may need to enable sourcing local scripts,
+# from your PowerShell console:
+#   Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+#   . .\contrib\appveyor.ps1
+#
+# See http://trac.edgewall.org/wiki/AppVeyor for additional info.
+
+if (-not $env:APPVEYOR) {
+    function Debug-Caller {
+	$caller = (Get-Variable MyInvocation -Scope 1).Value.MyCommand.Name
+	Write-Debug "$caller $args"
+    }
+    function Add-AppveyorMessage() { Debug-Caller @args }
+    function Add-AppveyorTest() { Debug-Caller @args }
+    function Update-AppveyorTest() { Debug-Caller @args }
+}
+
 
 # ------------------------------------------------------------------
 # Prologue
