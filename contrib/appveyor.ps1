@@ -89,10 +89,6 @@ $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
 
-$pyVersion = if ([string](& python.exe -V 2>&1) -match ' (\d\.\d)') { 
-    $Matches[1] 
-}
-
 $branch = $env:APPVEYOR_REPO_BRANCH
 
 
@@ -121,13 +117,21 @@ $name
 
 
 # ------------------------------------------------------------------
-# Steps
+# Prologue
 # ------------------------------------------------------------------
 
 # Setting up the PATH (common to all steps)
 
 $env:Path = "$pyHome;$pyHome\Scripts;$msysHome;$($env:Path)"
 
+$pyVersion = if ([string](& python.exe -V 2>&1) -match ' (\d\.\d)') { 
+    $Matches[1] 
+}
+
+
+# ------------------------------------------------------------------
+# Steps
+# ------------------------------------------------------------------
 
 function Trac-Install {
 
