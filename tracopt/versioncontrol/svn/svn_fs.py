@@ -769,7 +769,7 @@ class SubversionNode(Node):
             try:
                 self.root = fs.revision_root(self.fs_ptr, rev, pool)
             except core.SubversionException as e:
-                raise NoSuchChangeset(e)
+                raise NoSuchNode(path, rev, exception_to_unicode(e))
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
