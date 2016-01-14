@@ -76,8 +76,9 @@ class AttachmentTestCase(unittest.TestCase):
                 'A comment', 'joe', '::1'))
 
     def tearDown(self):
-        shutil.rmtree(self.env.path)
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
 
     def test_new_attachment(self):
         attachment = Attachment(self.env, 'ticket', 42)

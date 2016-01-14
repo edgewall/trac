@@ -488,6 +488,7 @@ class ChromeTestCase2(unittest.TestCase):
         self.chrome = Chrome(self.env)
 
     def tearDown(self):
+        self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
     def test_permission_requestor(self):

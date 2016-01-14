@@ -51,6 +51,7 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.path)
 
     def create_request(self, authname='anonymous', **kwargs):

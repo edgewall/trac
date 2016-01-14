@@ -141,8 +141,9 @@ def attachment_setup(tc):
     attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
 def attachment_teardown(tc):
-    shutil.rmtree(tc.env.path)
     tc.env.reset_db()
+    tc.env.shutdown()
+    shutil.rmtree(tc.env.path)
 
 
 EMAIL_TEST_CASE_DEFAULT = u"""

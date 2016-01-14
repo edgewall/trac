@@ -947,8 +947,9 @@ class MilestoneTestCase(unittest.TestCase):
         self.updated_at = self.created_at + timedelta(seconds=1)
 
     def tearDown(self):
-        shutil.rmtree(self.env.path)
         self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
 
     def _create_milestone(self, **values):
         milestone = Milestone(self.env)
