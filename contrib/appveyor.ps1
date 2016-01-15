@@ -22,7 +22,7 @@
 # Settings
 # ------------------------------------------------------------------
 
-# Update the following in case the build environment on AppVeyor changes.
+# Update the following variable to match the build environment on AppVeyor.
 # See in particular:
 #  - http://www.appveyor.com/docs/installed-software#python
 #  - http://www.appveyor.com/docs/installed-software#mingw-msys-cygwin
@@ -75,7 +75,7 @@ $pipPackages = @{
 #  - TRAC_TEST_DB_URI: the database backend we are testing
 #  - SKIP_ENV: don't perform any step with this environment (optional)
 #  - SKIP_BUILD: don't execute the Build step for this environment (optional)
-#  - SKIP_TEST: don't execute the Test step for this environment (optional)
+#  - SKIP_TESTS: don't execute the Tests step for this environment (optional)
 #
 # Note that any combination should work, except for MySQL where we expect to
 # use a Conda version of Python.
@@ -83,8 +83,8 @@ $pipPackages = @{
 # "Aliases"
 
 $pyHome = $env:PYTHONHOME
-$usingMysql      = $env:TRAC_TEST_DB_URI -match 'mysql'
-$usingPostgresql = $env:TRAC_TEST_DB_URI -match 'postgres'
+$usingMysql      = $env:TRAC_TEST_DB_URI -match '^mysql:'
+$usingPostgresql = $env:TRAC_TEST_DB_URI -match '^postgres:'
 $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
@@ -119,6 +119,7 @@ $name
 #
 # Note that for this you may need to enable sourcing local scripts,
 # from your PowerShell console:
+#
 #   Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 #   . .\contrib\appveyor.ps1
 #
@@ -176,8 +177,7 @@ function Trac-Install {
 
     # pip in Python 2.6 triggers the following warning:
     # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-    # use -W to avoid it (for some reason, works locally but doesn't
-    # work on AppVeyor...
+    # use -W to avoid it
     if ($pyVersion -eq '2.6') {
         $ignoreWarnings = @(
             '-W', 'ignore:A true SSLContext object is not available'
@@ -194,11 +194,10 @@ function Trac-Install {
 
     if ($usingMysql) {
         #
-        # $TRAC_TEST_DB_URI=
-        # "postgres://tracuser:password@localhost/trac?schema=tractest"
+        # $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
         #
 
-        # It's easier to get MySQL-python support on Windows using Conda
+        # Conda provides MySQL-python support for Windows (x86 and x64)
         & conda.exe install -qy mysql-python
 
         Add-AppveyorMessage -Message "1.1. mysql-python package installed" `
@@ -221,7 +220,7 @@ function Trac-Install {
 
     # Prepare local Makefile.cfg
 
-    ".uri = $env:TRAC_TEST_DB_URI" | out-file -encoding ASCII 'Makefile.cfg'
+    ".uri = $env:TRAC_TEST_DB_URI" | Out-File -Encoding ASCII 'Makefile.cfg'
 
     # Note 1: echo would create an UCS-2 file with a BOM, make.exe
     #         doesn't appreciate...
@@ -313,7 +312,7 @@ function Trac-Build {
 
 function Trac-Tests {
 
-    Write-Step -Name TEST -Skip $skipTests
+    Write-Step -Name TESTS -Skip $skipTests
 
     $config = "$pyHome - $env:TRAC_TEST_DB_URI"
 
@@ -330,7 +329,7 @@ function Trac-Tests {
         Write-Host "make $goal"
 
         Add-AppveyorTest -Name $name -Outcome Running
-        & make.exe $goal 2>&1 | Tee-Object -variable make
+        & make.exe $goal 2>&1 | Tee-Object -Variable make
 
         # Determine outcome Passed or Failed
 
@@ -351,12 +350,10 @@ function Trac-Tests {
 
         if ([string]$stderr -match "Ran \d+ tests in (\d+\.\d+)s") {
             $secs = $matches[1]
-        }
-        if ($secs -eq $null) {
-            $msecs = 0
+            $msecs = [math]::Round([float]$secs * 1000)
         }
         else {
-            $msecs = [math]::Round([float]$secs * 1000)
+            $msecs = 0
         }
 
         Update-AppveyorTest -Name $name -Outcome $outcome `
