@@ -24,7 +24,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
 from trac.ticket.notification import BatchTicketNotifyEmail
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler
@@ -150,7 +150,7 @@ class BatchModifyModule(Component):
     def _save_ticket_changes(self, req, selected_tickets,
                              new_values, comment, action):
         """Save all of the changes to tickets."""
-        when = datetime.now(utc)
+        when = datetime_now(utc)
         list_fields = self._get_list_fields()
         with self.env.db_transaction as db:
             for id in selected_tickets:

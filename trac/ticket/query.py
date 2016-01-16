@@ -34,8 +34,9 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
 from trac.util import Ranges, as_bool
-from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
-                              to_timestamp, to_utimestamp, utc, user_time
+from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
+                              parse_date, to_timestamp, to_utimestamp, utc, \
+                              user_time
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
 from trac.util.translation import _, tag_, cleandoc_, ngettext
@@ -1090,7 +1091,7 @@ class QueryModule(Component):
     def display_html(self, req, query):
         # The most recent query is stored in the user session;
         orig_list = None
-        orig_time = datetime.now(utc)
+        orig_time = datetime_now(utc)
         query_time = int(req.session.get('query_time', 0))
         query_time = datetime.fromtimestamp(query_time, utc)
         query_constraints = unicode(query.constraints)

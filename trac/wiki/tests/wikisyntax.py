@@ -11,10 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from datetime import datetime
 import unittest
 
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
@@ -686,7 +685,7 @@ js:&#34;alert(1)&#34; javasc:&#34;ript:alert(1)&#34;
 
 def wiki_setup(tc):
     tc.env.config.set('wiki', 'render_unsafe_content', True) # for #9712
-    now = datetime.now(utc)
+    now = datetime_now(utc)
     wiki0 = WikiPage(tc.env)
     wiki0.name = 'Main/Sub'
     wiki0.text = '--'

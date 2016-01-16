@@ -20,7 +20,6 @@
 from __future__ import with_statement
 
 import re
-from datetime import datetime
 
 from trac.attachment import Attachment
 from trac import core
@@ -30,7 +29,8 @@ from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import embedded_numbers, partition
 from trac.util.text import empty
-from trac.util.datefmt import from_utimestamp, to_utimestamp, utc, utcmax
+from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, \
+                              utc, utcmax
 from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
@@ -203,7 +203,7 @@ class Ticket(object):
 
         # Add a timestamp
         if when is None:
-            when = datetime.now(utc)
+            when = datetime_now(utc)
         self.values['time'] = self.values['changetime'] = when
 
         # The owner field defaults to the component owner
@@ -280,7 +280,7 @@ class Ticket(object):
             return False # Not modified
 
         if when is None:
-            when = datetime.now(utc)
+            when = datetime_now(utc)
         when_ts = to_utimestamp(when)
 
         if 'component' in self.values:
@@ -476,7 +476,7 @@ class Ticket(object):
             cdate = from_utimestamp(row[0])
         ts = to_utimestamp(cdate)
         if when is None:
-            when = datetime.now(utc)
+            when = datetime_now(utc)
         when_ts = to_utimestamp(when)
 
         with self.env.db_transaction as db:
@@ -532,7 +532,7 @@ class Ticket(object):
         """
         ts = to_utimestamp(cdate)
         if when is None:
-            when = datetime.now(utc)
+            when = datetime_now(utc)
         when_ts = to_utimestamp(when)
 
         with self.env.db_transaction as db:
@@ -1014,7 +1014,7 @@ class Milestone(object):
     exists = property(lambda self: self._old['name'] is not None)
     is_completed = property(lambda self: self.completed is not None)
     is_late = property(lambda self: self.due and
-                                    self.due < datetime.now(utc))
+                                    self.due < datetime_now(utc))
 
     def checkin(self, invalidate=True):
         self._old = {'name': self.name, 'due': self.due,
@@ -1127,7 +1127,7 @@ class Milestone(object):
                 raise ResourceNotFound(
                     _("Milestone %(name)s does not exist.",
                       name=new_milestone), _("Invalid milestone name"))
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         with self.env.db_transaction as db:
             sql = "SELECT id FROM ticket WHERE milestone=%s"
             if exclude_closed:

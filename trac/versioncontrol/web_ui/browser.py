@@ -27,7 +27,7 @@ from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
 from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
-from trac.util.datefmt import http_date, to_datetime, utc
+from trac.util.datefmt import datetime_now, http_date, to_datetime, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _, cleandoc_
@@ -586,7 +586,7 @@ class BrowserModule(Component):
         if rev:
             newest = repos.get_changeset(rev).date
         else:
-            newest = datetime.now(req.tz)
+            newest = datetime_now(req.tz)
 
         # Color scale for the age column
         timerange = custom_colorizer = None

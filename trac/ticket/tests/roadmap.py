@@ -17,6 +17,7 @@ from trac.core import ComponentManager
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.contentgen import random_sentence
 from trac.ticket.roadmap import *
+from trac.util.datefmt import datetime_now
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -150,7 +151,7 @@ class MilestoneModuleTestCase(unittest.TestCase):
         for term in self.terms + [' '.join(self.terms)]:
             m = Milestone(self.env)
             m.name = term
-            m.due = datetime.now(utc)
+            m.due = datetime_now(utc)
             m.description = random_sentence()
             m.insert()
 

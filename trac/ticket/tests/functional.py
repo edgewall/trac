@@ -17,7 +17,7 @@ import re
 import time
 import unittest
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
@@ -26,7 +26,8 @@ from trac.tests.contentgen import random_sentence, random_word, \
 from trac.tests.functional import FunctionalTwillTestCaseSetup, b, \
                                   internal_error, regex_owned_by, tc, twill
 from trac.util import create_file
-from trac.util.datefmt import utc, localtz, format_date, format_datetime
+from trac.util.datefmt import utc, localtz, format_date, format_datetime, \
+                              datetime_now
 from trac.util.text import to_utf8
 
 try:
@@ -810,7 +811,7 @@ class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin milestone duedate"""
         name = "DueMilestone"
-        duedate = datetime.now(tz=utc)
+        duedate = datetime_now(tz=utc)
         duedate_string = format_datetime(duedate, tzinfo=utc,
                                          locale=locale_en)
         self._tester.create_milestone(name, due=duedate_string)
@@ -830,7 +831,7 @@ class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
-        duedate = datetime.now(tz=utc)
+        duedate = datetime_now(tz=utc)
         duedate_string = format_datetime(duedate, tzinfo=utc,
                                          locale=locale_en)
         tc.formvalue('modifymilestone', 'due', duedate_string)
@@ -891,7 +892,7 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
         tc.formvalue('modifymilestone', 'completed', True)
-        cdate = datetime.now(tz=utc) + timedelta(days=2)
+        cdate = datetime_now(tz=utc) + timedelta(days=2)
         cdate_string = format_date(cdate, tzinfo=localtz, locale=locale_en)
         tc.formvalue('modifymilestone', 'completeddate', cdate_string)
         tc.submit('save')
@@ -1422,7 +1423,7 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
         tc.submit(formname='add')
         tc.url(self._tester.url + '/milestone\?action=new')
         name = random_unique_camel()
-        due = format_datetime(datetime.now(tz=utc) + timedelta(hours=1),
+        due = format_datetime(datetime_now(tz=utc) + timedelta(hours=1),
                               tzinfo=localtz, locale=locale_en)
         tc.formvalue('edit', 'name', name)
         tc.formvalue('edit', 'due', True)
@@ -1470,7 +1471,7 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
 
         self._tester.go_to_milestone(name)
-        completed = format_datetime(datetime.now(tz=utc) - timedelta(hours=1),
+        completed = format_datetime(datetime_now(tz=utc) - timedelta(hours=1),
                                     tzinfo=localtz, locale=locale_en)
         tc.submit(formname='editmilestone')
         tc.formvalue('edit', 'completed', True)

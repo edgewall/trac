@@ -18,11 +18,11 @@ from __future__ import with_statement
 
 import os
 import sys
-import time
 
 from trac.core import TracError
 from trac.db.util import ConnectionWrapper
 from trac.util.concurrency import threading
+from trac.util.datefmt import time_now
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _
 
@@ -71,7 +71,7 @@ class ConnectionPoolBackend(object):
         cnx = None
         log = kwargs.get('log')
         key = unicode(kwargs)
-        start = time.time()
+        start = time_now()
         tid = threading._get_ident()
         # Get a Connection, either directly or a deferred one
         with self._available:
@@ -129,7 +129,7 @@ class ConnectionPoolBackend(object):
         # if we didn't get a cnx after wait(), something's fishy...
         if isinstance(exc_info[1], TracError):
             raise exc_info[0], exc_info[1], exc_info[2]
-        timeout = time.time() - start
+        timeout = time_now() - start
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
         if exc_info[1]:
@@ -181,7 +181,7 @@ class ConnectionPoolBackend(object):
                 if cnx and cnx.poolable:
                     self._pool.append(cnx)
                     self._pool_key.append(key)
-                    self._pool_time.append(time.time())
+                    self._pool_time.append(time_now())
                 self._available.notify()
 
     def shutdown(self, tid=None):
@@ -189,7 +189,7 @@ class ConnectionPoolBackend(object):
         delay = 120
         if tid is None:
             delay = 0
-        when = time.time() - delay
+        when = time_now() - delay
         with self._available:
             if tid is None: # global shutdown, also close active connections
                 for db, num in self._active.values():

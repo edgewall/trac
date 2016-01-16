@@ -28,9 +28,9 @@ from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int
-from trac.util.datefmt import format_date, format_datetime, format_time, \
-                              parse_date, to_utimestamp, to_datetime, utc, \
-                              pretty_timedelta, user_time
+from trac.util.datefmt import (datetime_now, format_date, format_datetime,
+                               format_time, parse_date, to_utimestamp,
+                               to_datetime, utc, pretty_timedelta, user_time)
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -103,7 +103,7 @@ class TimelineModule(Component):
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
-        fromdate = today = datetime.now(req.tz)
+        fromdate = today = datetime_now(req.tz)
         yesterday = to_datetime(today.replace(tzinfo=None) - timedelta(days=1),
                                 req.tz)
         precisedate = precision = None

@@ -25,7 +25,6 @@ from hashlib import md5, sha1
 import os
 import re
 import sys
-import time
 import urllib2
 import urlparse
 
@@ -37,6 +36,7 @@ from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
 from trac.util.concurrency import threading
+from trac.util.datefmt import time_now
 from trac.util.translation import _, tag_
 
 
@@ -165,7 +165,7 @@ class LoginModule(Component):
         with self.env.db_transaction as db:
             # Delete cookies older than 10 days
             db("DELETE FROM auth_cookie WHERE time < %s",
-               (int(time.time()) - 86400 * 10,))
+               (int(time_now()) - 86400 * 10,))
             # Insert a new cookie if we haven't already got one
             cookie = None
             trac_auth = req.incookie.get('trac_auth')
@@ -178,7 +178,7 @@ class LoginModule(Component):
                     INSERT INTO auth_cookie (cookie, name, ipnr, time)
                          VALUES (%s, %s, %s, %s)
                    """, (cookie, remote_user, req.remote_addr,
-                         int(time.time())))
+                         int(time_now())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = self.auth_cookie_path \

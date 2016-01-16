@@ -18,11 +18,9 @@
 
 from __future__ import with_statement
 
-from datetime import datetime
-
 from trac.core import *
 from trac.resource import Resource
-from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
+from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, utc
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem, validate_page_name
 
@@ -136,7 +134,7 @@ class WikiPage(object):
         new_text = self.text != self.old_text
         if not new_text and self.readonly == self.old_readonly:
             raise TracError(_("Page not modified"))
-        t = t or datetime.now(utc)
+        t = t or datetime_now(utc)
 
         with self.env.db_transaction as db:
             if new_text:

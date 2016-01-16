@@ -17,8 +17,8 @@ from datetime import datetime, timedelta
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
-    format_date, format_datetime, format_time, get_date_format_hint,
-    pretty_timedelta, utc,
+    datetime_now, format_date, format_datetime, format_time,
+    get_date_format_hint, pretty_timedelta, utc,
 )
 from trac.util.html import plaintext
 from trac.web.api import RequestDone, _RequestArgs
@@ -52,19 +52,19 @@ class PrettyDateinfoTestCase(unittest.TestCase):
                                                  dateonly=dateonly))
 
     def test_relative(self):
-        t = datetime.now(utc) - timedelta(days=1)
+        t = datetime_now(utc) - timedelta(days=1)
         label = '%s ago' % pretty_timedelta(t)
         self.assertEqual(label, self._format_chrome(t, 'relative', False))
         self.assertEqual(label, self._format_timeline(t, 'relative', False))
 
     def test_relative_dateonly(self):
-        t = datetime.now(utc) - timedelta(days=1)
+        t = datetime_now(utc) - timedelta(days=1)
         label = pretty_timedelta(t)
         self.assertEqual(label, self._format_chrome(t, 'relative', True))
         self.assertEqual(label, self._format_timeline(t, 'relative', True))
 
     def test_absolute(self):
-        t = datetime.now(utc) - timedelta(days=1)
+        t = datetime_now(utc) - timedelta(days=1)
         label = 'on %s at %s' % \
                 (format_date(t, locale=locale_en, tzinfo=utc),
                  format_time(t, locale=locale_en, tzinfo=utc))
@@ -72,7 +72,7 @@ class PrettyDateinfoTestCase(unittest.TestCase):
         self.assertEqual(label, self._format_timeline(t, 'absolute', False))
 
     def test_absolute_dateonly(self):
-        t = datetime.now(utc) - timedelta(days=1)
+        t = datetime_now(utc) - timedelta(days=1)
         label = format_datetime(t, locale=locale_en, tzinfo=utc)
         self.assertEqual(label, self._format_chrome(t, 'absolute', True))
         self.assertEqual(label, self._format_timeline(t, 'absolute', True))

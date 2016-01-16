@@ -31,9 +31,10 @@ from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_regexps, shorten_result
 from trac.util import as_bool
-from trac.util.datefmt import parse_date, utc, pretty_timedelta, to_datetime, \
-                              get_datetime_format_hint, format_date, \
-                              format_datetime, from_utimestamp, user_time
+from trac.util.datefmt import (datetime_now, format_date, format_datetime,
+                               from_utimestamp, get_datetime_format_hint,
+                               parse_date, pretty_timedelta, to_datetime,
+                               user_time, utc)
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
@@ -782,7 +783,7 @@ class MilestoneModule(Component):
         if 'completed' in req.args:
             completed = user_time(req, parse_date, completed,
                                   hint='datetime') if completed else None
-            if completed and completed > datetime.now(utc):
+            if completed and completed > datetime_now(utc):
                 warn(_('Completion date may not be in the future'))
         else:
             completed = None
@@ -839,7 +840,7 @@ class MilestoneModule(Component):
 
     def _render_editor(self, req, milestone):
         # Suggest a default due time of 18:00 in the user's timezone
-        now = datetime.now(req.tz)
+        now = datetime_now(req.tz)
         default_due = datetime(now.year, now.month, now.day, 18)
         if now.hour > 18:
             default_due += timedelta(days=1)
@@ -1042,7 +1043,7 @@ class MilestoneModule(Component):
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
                     dt = (completed if completed else
-                          due if due else datetime.now(utc))
+                          due if due else datetime_now(utc))
                     yield (get_resource_url(self.env, milestone, req.href),
                            get_resource_name(self.env, milestone), dt,
                            '', shorten_result(description, terms))

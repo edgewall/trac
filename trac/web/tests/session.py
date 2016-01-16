@@ -23,6 +23,7 @@ from trac.test import EnvironmentStub, Mock
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
 from trac.core import TracError
+from trac.util.datefmt import time_now
 
 
 def _prep_session_table(env, spread_visits=False):
@@ -260,7 +261,7 @@ class SessionTestCase(unittest.TestCase):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 0, %s)", (0,))
             db("INSERT INTO session VALUES ('987654', 0, %s)",
-               (int(time.time() - PURGE_AGE - 3600),))
+               (int(time_now() - PURGE_AGE - 3600),))
             db("""
                 INSERT INTO session_attribute
                 VALUES ('987654', 0, 'foo', 'bar')
@@ -284,7 +285,7 @@ class SessionTestCase(unittest.TestCase):
         Verify that a session gets deleted when it doesn't have any data except
         for the 'last_visit' timestamp.
         """
-        now = time.time()
+        now = time_now()
 
         # Make sure the session has data so that it doesn't get dropped
         with self.env.db_transaction as db:
@@ -437,7 +438,7 @@ class SessionTestCase(unittest.TestCase):
         Verify that accessing a session after one day updates the sessions
         'last_visit' variable so that the session doesn't get purged.
         """
-        now = time.time()
+        now = time_now()
 
         # Make sure the session has data so that it doesn't get dropped
         with self.env.db_transaction as db:

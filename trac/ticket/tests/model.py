@@ -32,7 +32,7 @@ from trac.ticket.roadmap import MilestoneModule
 from trac.ticket.api import (
     IMilestoneChangeListener, ITicketChangeListener, TicketSystem
 )
-from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
+from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, utc
 
 
 class TestTicketChangeListener(core.Component):
@@ -711,7 +711,7 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         listener = TestTicketChangeListener_2(self.env)
         ticket = Ticket(self.env, self.id)
         ticket.modify_comment(cdate=self.t2, author='jack',
-                              comment='New Comment 2', when=datetime.now(utc))
+                              comment='New Comment 2', when=datetime_now(utc))
 
         self.assertEqual('comment_modified', listener.action)
         self.assertEqual(ticket, listener.ticket)
@@ -749,7 +749,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
         self.assertEqual('change4', ticket['foo'])
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
@@ -768,7 +768,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         del TicketSystem(self.env).custom_fields
         ticket = Ticket(self.env, self.id)
         #
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(cnum=4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         # 'foo' is no longer defined for the ticket
@@ -785,7 +785,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
         self.assertEqual('change4', ticket['foo'])
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(cdate=self.t4, when=t)
         self.assertEqual('a, b', ticket['keywords'])
         self.assertEqual('change3', ticket['foo'])
@@ -799,7 +799,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b', new='a'),
             foo=dict(author='joe', old='change3', new='change4'))
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(cnum=3, when=t)
         self.assertIsNone(ticket.get_change(cnum=3))
         self.assertEqual('a', ticket['keywords'])
@@ -815,7 +815,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
             comment=dict(author='joe', old='4', new='Comment 4'),
             keywords=dict(author='joe', old='a, b', new='a'),
             foo=dict(author='joe', old='change3', new='change4'))
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(cdate=self.t3, when=t)
         self.assertIsNone(ticket.get_change(cdate=self.t3))
         self.assertEqual('a', ticket['keywords'])
@@ -851,7 +851,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         ticket.delete_change(4)
         ticket.delete_change(3)
         ticket.delete_change(2)
-        t = datetime.now(utc)
+        t = datetime_now(utc)
         ticket.delete_change(1, when=t)
         self.assertEqual(t, ticket.time_changed)
 
@@ -859,7 +859,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         listener = TestTicketChangeListener_2(self.env)
         ticket = Ticket(self.env, self.id)
 
-        ticket.delete_change(cdate=self.t3, when=datetime.now(utc))
+        ticket.delete_change(cdate=self.t3, when=datetime_now(utc))
         self.assertEqual('change_deleted', listener.action)
         self.assertEqual(ticket, listener.ticket)
         self.assertEqual(self.t3, listener.cdate)
@@ -867,7 +867,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
                               foo=('change2', 'change3')),
                          listener.changes)
 
-        ticket.delete_change(cnum=2, when=datetime.now(utc))
+        ticket.delete_change(cnum=2, when=datetime_now(utc))
         self.assertEqual('change_deleted', listener.action)
         self.assertEqual(ticket, listener.ticket)
         self.assertEqual(self.t2, listener.cdate)

@@ -25,6 +25,7 @@ from trac.core import Component, Interface, implements
 from trac.test import Configuration, EnvironmentStub
 from trac.util import create_file
 from trac.util.compat import wait_for_file_mtime_change
+from trac.util.datefmt import time_now
 
 
 class ConfigurationTestCase(unittest.TestCase):
@@ -613,7 +614,7 @@ class ConfigurationTestCase(unittest.TestCase):
         rconfig = self._read()
         self.assertEqual(1, rconfig.getint('section', 'option'))
         sconfig.set('section', 'option', 2)
-        time.sleep(1.0 - time.time() % 1.0)
+        time.sleep(1.0 - time_now() % 1.0)
         sconfig.save()
         rconfig.parse_if_needed()
         self.assertEqual(2, rconfig.getint('section', 'option'))
@@ -621,7 +622,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_touch_changes_mtime(self):
         """Test that each touch command changes the file modification time."""
         config = self._read()
-        time.sleep(1.0 - time.time() % 1.0)
+        time.sleep(1.0 - time_now() % 1.0)
         config.touch()
         mtime = os.stat(self.filename).st_mtime
         config.touch()

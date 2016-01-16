@@ -25,11 +25,9 @@ try:
 except ImportError:
     pass
 
-from datetime import datetime
-
 from trac.core import Component, TracError, implements
 from trac.test import Mock, MockPerm, EnvironmentStub, locale_en
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.util.html import html
 from trac.util.text import strip_line_ws, to_unicode
 from trac.web.chrome import web_context
@@ -191,7 +189,7 @@ class WikiTestCase(unittest.TestCase):
         wiki = WikiPage(self.env)
         wiki.name = 'WikiStart'
         wiki.text = '--'
-        wiki.save('joe', 'Entry page', '::1', datetime.now(utc))
+        wiki.save('joe', 'Entry page', '::1', datetime_now(utc))
         if self._setup:
             self._setup(self)
 

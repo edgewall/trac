@@ -12,14 +12,15 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.test import locale_en
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.ticket.roadmap import RoadmapModule
 from trac.ticket.model import Milestone, Ticket
-from trac.util.datefmt import format_datetime, pretty_timedelta, utc
+from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
+                               utc)
 from trac.wiki.tests import formatter
 
 
@@ -214,8 +215,8 @@ def report_setup(tc):
     create_report(tc, 2)
 
 
-dt_past = datetime.now(utc) - timedelta(days=1)
-dt_future = datetime.now(utc) + timedelta(days=1)
+dt_past = datetime_now(utc) - timedelta(days=1)
+dt_future = datetime_now(utc) + timedelta(days=1)
 
 
 MILESTONE_TEST_CASES = u"""

@@ -17,7 +17,6 @@
 from __future__ import with_statement
 
 import csv
-from datetime import datetime
 import pkg_resources
 import re
 from StringIO import StringIO
@@ -40,7 +39,7 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
-    format_datetime, from_utimestamp, to_utimestamp, utc
+    datetime_now, format_datetime, from_utimestamp, to_utimestamp, utc
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
@@ -1351,7 +1350,7 @@ class TicketModule(Component):
         # -- Save changes
 
         fragment = ''
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         cnum = ticket.save_changes(get_reporter_id(req, 'author'),
                                    req.args.get('comment'), when=now,
                                    replyto=req.args.get('replyto'))

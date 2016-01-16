@@ -23,11 +23,11 @@ from functools import partial
 import re
 from subprocess import Popen, PIPE
 from threading import Lock
-import time
 import weakref
 
 from trac.util import terminate
 from trac.util.compat import close_fds
+from trac.util.datefmt import time_now
 from trac.util.text import to_unicode
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
@@ -463,7 +463,7 @@ class Storage(object):
     def _build_rev_cache(self, refs):
         self.logger.debug("triggered rebuild of commit tree db for '%s'",
                           self.repo_path)
-        ts0 = time.time()
+        ts0 = time_now()
 
         new_db = {} # db
         new_sdb = {} # short_rev db
@@ -550,7 +550,7 @@ class Storage(object):
         rev_cache = self.RevCache(youngest, oldest, new_db, refs, new_sdb)
         self.logger.debug("rebuilt commit tree db for '%s' with %d entries "
                           "(took %.1f ms)", self.repo_path, len(new_db),
-                          1000 * (time.time() - ts0))
+                          1000 * (time_now() - ts0))
         return rev_cache
 
     def _get_refs(self):

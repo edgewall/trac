@@ -19,7 +19,6 @@
 from __future__ import with_statement
 
 from contextlib import contextmanager
-from datetime import datetime
 from hashlib import md5
 
 from genshi.template.text import NewTextTemplate
@@ -30,7 +29,7 @@ from trac.config import *
 from trac.notification import NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.util.datefmt import to_utimestamp, utc
+from trac.util.datefmt import datetime_now, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import deactivate, reactivate
@@ -276,7 +275,7 @@ class TicketNotifyEmail(NotifyEmail):
     def notify_attachment(self, ticket, attachment, added=True):
         """Send ticket attachment notification (untranslated)"""
         self.ticket = ticket
-        self.modtime = attachment.date or datetime.now(utc)
+        self.modtime = attachment.date or datetime_now(utc)
         self.newticket = False
         self.reporter = ''
         self.owner = ''

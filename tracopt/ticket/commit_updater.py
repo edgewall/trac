@@ -37,7 +37,6 @@
 
 from __future__ import with_statement
 
-from datetime import datetime
 import re
 
 from genshi.builder import tag
@@ -48,7 +47,7 @@ from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _, cleandoc_
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
@@ -156,7 +155,7 @@ class CommitTicketUpdater(Component):
         tickets = self._parse_message(changeset.message)
         comment = self.make_ticket_comment(repos, changeset)
         self._update_tickets(tickets, changeset, comment,
-                             datetime.now(utc))
+                             datetime_now(utc))
 
     def changeset_modified(self, repos, changeset, old_changeset):
         if self._is_duplicate(changeset):
@@ -169,7 +168,7 @@ class CommitTicketUpdater(Component):
                        if each[0] not in old_tickets)
         comment = self.make_ticket_comment(repos, changeset)
         self._update_tickets(tickets, changeset, comment,
-                             datetime.now(utc))
+                             datetime_now(utc))
 
     def _is_duplicate(self, changeset):
         # Avoid duplicate changes with multiple scoped repositories

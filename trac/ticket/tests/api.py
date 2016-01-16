@@ -18,7 +18,7 @@ from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 
 import unittest
 
@@ -164,7 +164,7 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = self.ticket_system.get_ticket_fields()
         version_field = self._get_ticket_field('version')
         v1 = Version(self.env, '1.0')
-        v1.time = datetime.now(utc)
+        v1.time = datetime_now(utc)
         v2 = Version(self.env, '2.0')
         v2.time = v1.time - timedelta(seconds=1)
 
@@ -203,7 +203,7 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = self.ticket_system.get_ticket_fields()
         milestone_field = self._get_ticket_field('milestone')
         m2 = Milestone(self.env, 'milestone2')
-        m2.completed = datetime.now(utc)
+        m2.completed = datetime_now(utc)
 
         m2.update()
         updated_fields = self.ticket_system.get_ticket_fields()
@@ -224,7 +224,7 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = self.ticket_system.get_ticket_fields()
         milestone_field = self._get_ticket_field('milestone')
         m2 = Milestone(self.env, 'milestone2')
-        m2.due = datetime.now(utc)
+        m2.due = datetime_now(utc)
 
         m2.update()
         updated_fields = self.ticket_system.get_ticket_fields()

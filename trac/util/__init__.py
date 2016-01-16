@@ -34,11 +34,10 @@ import shutil
 import sys
 import struct
 import tempfile
-import time
 from urllib import quote, unquote, urlencode
 
 from .compat import any, md5, sha1, sorted
-from .datefmt import to_datetime, to_timestamp, utc
+from .datefmt import time_now, to_datetime, to_timestamp, utc
 from .text import exception_to_unicode, to_unicode, getpreferredencoding
 
 
@@ -808,7 +807,7 @@ except NotImplementedError:
 
     def urandom(n):
         result = []
-        hasher = sha1(str(os.getpid()) + str(time.time()))
+        hasher = sha1(str(os.getpid()) + str(time_now()))
         while len(result) * hasher.digest_size < n:
             hasher.update(str(_entropy.random()))
             result.append(hasher.digest())

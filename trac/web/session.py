@@ -22,7 +22,6 @@ from __future__ import with_statement
 
 import re
 import sys
-import time
 
 from trac.admin.api import console_date_format, get_console_locale
 from trac.core import TracError, Component, implements
@@ -30,7 +29,7 @@ from trac.util import hex_entropy
 from trac.util.text import print_table
 from trac.util.translation import _
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
-                              parse_date, to_datetime, to_timestamp
+                              parse_date, time_now, to_datetime, to_timestamp
 from trac.admin.api import IAdminCommandProvider, AdminCommandError
 
 UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
@@ -105,7 +104,7 @@ class DetachedSession(dict):
             return
 
         authenticated = int(self.authenticated)
-        now = int(time.time())
+        now = int(time_now())
 
         # We can't do the session management in one big transaction,
         # as the intertwined changes to both the session and
@@ -236,7 +235,7 @@ class Session(DetachedSession):
             refresh_cookie = True
 
         super(Session, self).get_session(sid, authenticated)
-        if self.last_visit and time.time() - self.last_visit > UPDATE_INTERVAL:
+        if self.last_visit and time_now() - self.last_visit > UPDATE_INTERVAL:
             refresh_cookie = True
 
         # Refresh the session cookie if this is the first visit after a day
@@ -308,7 +307,7 @@ class Session(DetachedSession):
                 try:
                     db("""INSERT INTO session (sid, last_visit, authenticated)
                           VALUES (%s, %s, 1)
-                          """, (self.req.authname, int(time.time())))
+                          """, (self.req.authname, int(time_now())))
                 except self.env.db_exc.IntegrityError:
                     self.env.log.warning('Authenticated session for %s '
                                          'already exists', self.req.authname)
@@ -439,7 +438,7 @@ class SessionAdmin(Component):
         with self.env.db_transaction as db:
             try:
                 db("INSERT INTO session VALUES (%s, %s, %s)",
-                   (sid, authenticated, int(time.time())))
+                   (sid, authenticated, int(time_now())))
             except Exception:
                 raise AdminCommandError(_("Session '%(sid)s' already exists",
                                           sid=sid))

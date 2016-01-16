@@ -40,7 +40,7 @@ from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import content_disposition, create_zipinfo, get_reporter_id
 from trac.util.compat import sha1
-from trac.util.datefmt import format_datetime, from_utimestamp, \
+from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
                            pretty_size, print_table, unicode_unquote
@@ -303,7 +303,7 @@ class Attachment(object):
         self.size = int(size) if size else 0
         self.filename = None
         if t is None:
-            t = datetime.now(utc)
+            t = datetime_now(utc)
         elif not isinstance(t, datetime): # Compatibility with 0.11
             t = to_datetime(t, utc)
         self.date = t

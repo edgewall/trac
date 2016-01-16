@@ -17,13 +17,13 @@
 from __future__ import with_statement
 
 import os.path
-import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ConfigSection, ListOption, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.concurrency import threading
+from trac.util.datefmt import time_now
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -370,7 +370,7 @@ class RepositoryManager(Component):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             for reponame in self.repository_sync_per_request:
-                start = time.time()
+                start = time_now()
                 if is_default(reponame):
                     reponame = ''
                 try:
@@ -404,7 +404,7 @@ class RepositoryManager(Component):
                         reponame or '(default)',
                         exception_to_unicode(e, traceback=True))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
-                              reponame or '(default)', time.time() - start)
+                              reponame or '(default)', time_now() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):

@@ -17,7 +17,6 @@ import os
 import re
 import smtplib
 from subprocess import Popen, PIPE
-import time
 
 from genshi.builder import tag
 
@@ -26,6 +25,7 @@ from trac.config import BoolOption, ConfigurationError, ExtensionOption, \
                         IntOption, Option
 from trac.core import *
 from trac.util.compat import close_fds
+from trac.util.datefmt import time_now
 from trac.util.html import to_fragment
 from trac.util.text import CRLF, fix_eol, to_unicode
 from trac.util.translation import _, deactivate, reactivate, tag_
@@ -174,9 +174,9 @@ class SmtpEmailSender(Component):
         if self.smtp_user:
             server.login(self.smtp_user.encode('utf-8'),
                          self.smtp_password.encode('utf-8'))
-        start = time.time()
+        start = time_now()
         server.sendmail(from_addr, recipients, message)
-        t = time.time() - start
+        t = time_now() - start
         if t > 5:
             self.log.warning('Slow mail submission (%.2f s), '
                              'check your mail setup', t)

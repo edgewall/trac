@@ -23,8 +23,9 @@ from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
 from trac.util import getuser
-from trac.util.datefmt import utc, parse_date, format_date, format_datetime, \
-                              get_datetime_format_hint, user_time
+from trac.util.datefmt import (datetime_now, format_date, format_datetime,
+                               get_datetime_format_hint, parse_date, user_time,
+                               utc)
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -252,7 +253,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         completed = req.args.get('completeddate', '')
                         mil.completed = user_time(req, parse_date, completed,
                                                   hint='datetime')
-                        if mil.completed > datetime.now(utc):
+                        if mil.completed > datetime_now(utc):
                             raise TracError(_('Completion date may not be in '
                                               'the future'),
                                             _('Invalid Completion Date'))

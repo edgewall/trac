@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from StringIO import StringIO
-from datetime import datetime
 import os
 import shutil
 import tempfile
@@ -20,13 +19,13 @@ import unittest
 
 from trac.config import Option, ListOption, IntOption, BoolOption
 from trac.test import locale_en
-from trac.util.datefmt import format_date, utc
+from trac.util.datefmt import datetime_now, format_date, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
 
 def add_pages(tc, names):
-    now = datetime.now(utc)
+    now = datetime_now(utc)
     for name in names:
         w = WikiPage(tc.env)
         w.name = name
@@ -429,7 +428,7 @@ RECENTCHANGES_MACRO_TEST_CASES = u""""
 def recentchanges_setup(tc):
     def add_pages(tc, names):
         for name in names:
-            now = datetime.now(utc)
+            now = datetime_now(utc)
             w = WikiPage(tc.env)
             w.name = name
             w.text = '--'
