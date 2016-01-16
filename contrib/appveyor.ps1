@@ -71,6 +71,7 @@ $pipPackages = @{
 # will be tested.
 
 # These variables are:
+#  - SVN_BRANCH: the line of development (1.0-stable, ... trunk)
 #  - PYTHONHOME: the version of python we are testing
 #  - TRAC_TEST_DB_URI: the database backend we are testing
 #  - SKIP_ENV: don't perform any step with this environment (optional)
@@ -89,7 +90,7 @@ $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
 
-$branch = $env:APPVEYOR_REPO_BRANCH
+$svnBranch = $env:SVN_BRANCH
 
 
 # ------------------------------------------------------------------
@@ -167,7 +168,7 @@ function Trac-Install {
 
     # Download fcrypt if needed (only for 1.0-stable after #12239)
 
-    if ($branch -eq '1.0-stable') {
+    if ($svnBranch -eq '1.0-stable') {
         if (-not (Test-Path $fcrypt)) {
             & curl.exe -sS $fcryptUrl -o $fcrypt
         }
@@ -190,7 +191,7 @@ function Trac-Install {
     }
 
     & pip --version
-    & pip install $pipCommonPackages $pipPackages.$branch
+    & pip install $pipCommonPackages $pipPackages.$svnBranch
 
     if ($usingMysql) {
         #
