@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015 Edgewall Software
-# Copyright (C) 2015 Christian Boos <cboos@edgewall.org>
+# Copyright (C) 2016 Edgewall Software
+# Copyright (C) 2016 Christian Boos <cboos@edgewall.org>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -14,15 +14,25 @@
 
 # ------------------------------------------------------------------
 #  This is a PowerShell script implementing the build steps used by
-#  the AppVeyor Continuous Delivery service for Windows, Trac project
-#  (https://ci.appveyor.com/project/cboos/trac)
+#  the AppVeyor Continuous Delivery service for Windows, Trac project.
+#
+#  The builds results are published at:
+#
+#    https://ci.appveyor.com/project/edgewall/trac
+#
+#  or, for Git topic branches pushed on GitHub forks, at:
+#
+#    https://ci.appveyor.com/project/<developer-user-id>/trac
+#
 # ------------------------------------------------------------------
- 
+
 # ------------------------------------------------------------------
 # Settings
 # ------------------------------------------------------------------
 
-# Update the following variable to match the build environment on AppVeyor.
+# Update the following variables to match the current build
+# environment on AppVeyor.
+#
 # See in particular:
 #  - http://www.appveyor.com/docs/installed-software#python
 #  - http://www.appveyor.com/docs/installed-software#mingw-msys-cygwin
@@ -40,7 +50,7 @@ $pgUser     = 'postgres'
 $pgPassword = 'Password12!'
 
 
-# External dependencies
+# External Python dependencies
 
 $pipCommonPackages = @(
     'genshi', 
@@ -67,8 +77,8 @@ $pipPackages = @{
 # ------------------------------------------------------------------
 
 # In the build matrix, we can set arbitrary environment variables
-# which together define a particular software configuration that
-# will be tested.
+# which together define the software configuration that will be
+# tested.
 
 # These variables are:
 #  - SVN_BRANCH: the line of development (1.0-stable, ... trunk)
@@ -78,8 +88,8 @@ $pipPackages = @{
 #  - SKIP_BUILD: don't execute the Build step for this environment (optional)
 #  - SKIP_TESTS: don't execute the Tests step for this environment (optional)
 #
-# Note that any combination should work, except for MySQL where we expect to
-# use a Conda version of Python.
+# Note that any combination should work, except for MySQL which can
+# only be installed conveniently from a Conda version of Python.
  
 # "Aliases"
 
@@ -97,8 +107,8 @@ $svnBranch = $env:SVN_BRANCH
 # Utilities
 # ------------------------------------------------------------------
 
-# Documentation for AppVeyor API (Add-AppveyorMessage, etc.) can be found at:
-# http://www.appveyor.com/docs/build-worker-api
+# Documentation for AppVeyor API (Add-AppveyorMessage, etc.) can be
+# found at: http://www.appveyor.com/docs/build-worker-api
 
 function Write-Step([string]$name, [bool]$skip) {
     if ($skip) {
@@ -122,6 +132,7 @@ $name
 # from your PowerShell console:
 #
 #   Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+#
 #   . .\contrib\appveyor.ps1
 #
 # See http://trac.edgewall.org/wiki/AppVeyor for additional info.
@@ -141,7 +152,7 @@ if (-not $env:APPVEYOR) {
 # Prologue
 # ------------------------------------------------------------------
 
-# Setting up the PATH (common to all steps)
+# Actions common to all steps (set up the PATH, determine Python version...)
 
 $env:Path = "$pyHome;$pyHome\Scripts;$msysHome;$($env:Path)"
 
@@ -199,11 +210,11 @@ function Trac-Install {
         #
 
         # Conda provides MySQL-python support for Windows (x86 and x64)
+
         & conda.exe install -qy mysql-python
 
         Add-AppveyorMessage -Message "1.1. mysql-python package installed" `
           -Category Information
-
     }
     elseif ($usingPostgresql) {
         #
@@ -286,7 +297,7 @@ function Trac-Build {
     Write-Host "make compile"
 
     # compile: if there are fuzzy catalogs, an error message will be
-    # generated to stderr... 
+    # generated on stderr.
 
     & make.exe Trac.egg-info compile 2>&1 | Tee-Object -Variable make
 
@@ -295,13 +306,11 @@ function Trac-Build {
 
     if ($LastExitCode) {
         Add-AppveyorMessage -Message "2.2. make compile produced errors" `
-          -Category Error `
-          -Details ($stderr -join "`n")
+          -Category Error -Details ($stderr -join "`n")
     }
     elseif ($stderr) {
         Add-AppveyorMessage -Message "2.2. make compile produced warnings" `
-          -Category Warning `
-          -Details ($stderr -join "`n")
+          -Category Warning -Details ($stderr -join "`n")
     }
     else {
         Add-AppveyorMessage -Message "2.2. make compile was successful" `
@@ -333,13 +342,11 @@ function Trac-Tests {
         & make.exe $goal 2>&1 | Tee-Object -Variable make
 
         # Determine outcome Passed or Failed
-
+	
+        $outcome = 'Passed'
         if ($LastExitCode) {
             $outcome = 'Failed'
             $code.value += 1
-        }
-        else {
-            $outcome = 'Passed'
         }
 
         $stderr = $make |
@@ -349,12 +356,10 @@ function Trac-Tests {
 
         # Retrieve duration of the tests
 
+        $msecs = 0
         if ([string]$stderr -match "Ran \d+ tests in (\d+\.\d+)s") {
             $secs = $matches[1]
             $msecs = [math]::Round([float]$secs * 1000)
-        }
-        else {
-            $msecs = 0
         }
 
         Update-AppveyorTest -Name $name -Outcome $outcome `
