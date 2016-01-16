@@ -12,8 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from datetime import datetime
-from trac.util.datefmt import utc, to_utimestamp
+from trac.util.datefmt import datetime_now, utc, to_utimestamp
 
 __all__ = ['Subscription', 'Watch']
 
@@ -57,7 +56,7 @@ class Subscription(object):
             priority = len(cls.find_by_sid_and_distributor(
                 env, subscription['sid'], subscription['authenticated'],
                 subscription['distributor'])) + 1
-            now = to_utimestamp(datetime.now(utc))
+            now = to_utimestamp(datetime_now(utc))
             db("""
                 INSERT INTO notify_subscription (time, changetime, sid,
                                                  authenticated, distributor,
@@ -127,7 +126,7 @@ class Subscription(object):
             for ids in ids_map.itervalues():
                 ids.sort(reverse=True)
 
-            now = to_utimestamp(datetime.now(utc))
+            now = to_utimestamp(datetime_now(utc))
             for idx, sub in enumerate(subscriptions):
                 key = (sub['distributor'], sub['class'])
                 if ids_map.get(key):
@@ -228,7 +227,7 @@ class Subscription(object):
     def _update_priority(self):
         with self.env.db_transaction as db:
             cursor = db.cursor()
-            now = to_utimestamp(datetime.now(utc))
+            now = to_utimestamp(datetime_now(utc))
             cursor.execute("""
                 UPDATE notify_subscription
                    SET changetime=%s, priority=%s

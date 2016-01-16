@@ -15,7 +15,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import csv
-from datetime import datetime
 from functools import partial
 import pkg_resources
 import re
@@ -41,8 +40,9 @@ from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
-    format_date_or_datetime, from_utimestamp, get_date_format_hint,
-    get_datetime_format_hint, parse_date, to_utimestamp, user_time, utc
+    datetime_now, format_date_or_datetime, from_utimestamp,
+    get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
+    user_time, utc
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
@@ -1438,7 +1438,7 @@ class TicketModule(Component):
         # -- Save changes
 
         fragment = ''
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         author = get_reporter_id(req, 'author')
         comment = req.args.get('comment')
         cnum = ticket.save_changes(author, comment, when=now,

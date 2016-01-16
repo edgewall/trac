@@ -18,7 +18,6 @@
 
 import re
 from contextlib import contextmanager
-from datetime import datetime
 
 from genshi.template.text import NewTextTemplate
 
@@ -35,7 +34,8 @@ from trac.notification.mail import (RecipientMatcher, create_message_id,
 from trac.notification.model import Subscription
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.util.datefmt import format_date_or_datetime, get_timezone, utc
+from trac.util.datefmt import (datetime_now, format_date_or_datetime,
+                               get_timezone, utc)
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import _, deactivate, reactivate
@@ -638,7 +638,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def _prepare_body_attachment(self, ticket, attachment, added):
         self.ticket = ticket
-        self.modtime = attachment.date or datetime.now(utc)
+        self.modtime = attachment.date or datetime_now(utc)
         self.newticket = False
         self.reporter = ''
         self.owner = ''

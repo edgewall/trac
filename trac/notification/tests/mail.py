@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from datetime import datetime
 from email import message_from_string
 
 from genshi.builder import tag
@@ -25,7 +24,7 @@ from trac.notification.api import (
 )
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.web.session import DetachedSession
 
 
@@ -122,7 +121,7 @@ class EmailDistributorTestCase(unittest.TestCase):
     def _notify_event(self, text, category='created', time=None, author=None):
         self.sender.history[:] = ()
         event = TestNotificationEvent('test', category, TestModel(text),
-                                      time or datetime.now(utc), author=author)
+                                      time or datetime_now(utc), author=author)
         self.notsys.notify(event)
 
     def _add_session(self, sid, **attrs):

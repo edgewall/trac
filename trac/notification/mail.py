@@ -19,7 +19,6 @@
 import os
 import re
 import smtplib
-import time
 from email.charset import BASE64, QP, SHORTEST, Charset
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
@@ -38,7 +37,7 @@ from trac.notification.api import (
     INotificationDistributor, INotificationFormatter, INotificationSubscriber,
     NotificationSystem)
 from trac.util.compat import close_fds
-from trac.util.datefmt import to_utimestamp
+from trac.util.datefmt import time_now, to_utimestamp
 from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
 from trac.util.translation import _, tag_
 
@@ -460,9 +459,9 @@ class SmtpEmailSender(Component):
         if self.smtp_user:
             server.login(self.smtp_user.encode('utf-8'),
                          self.smtp_password.encode('utf-8'))
-        start = time.time()
+        start = time_now()
         server.sendmail(from_addr, recipients, message)
-        t = time.time() - start
+        t = time_now() - start
         if t > 5:
             self.log.warning("Slow mail submission (%.2f s), "
                              "check your mail setup", t)

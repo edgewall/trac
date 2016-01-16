@@ -12,7 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
                       PermissionCache, PermissionSystem
@@ -20,7 +20,7 @@ from trac.test import Mock, EnvironmentStub
 from trac.ticket import default_workflow, api, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 from trac.web.api import RequestDone
 from trac.web.chrome import web_context
 
@@ -264,7 +264,7 @@ class BatchModifyTestCase(unittest.TestCase):
     def test_timeline_events(self):
         """Regression test for #11288"""
         tktmod = web_ui.TicketModule(self.env)
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         start = now - timedelta(hours=1)
         stop = now + timedelta(hours=1)
         events = tktmod.get_timeline_events(self.req, start, stop,

@@ -54,7 +54,7 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
                            javascript_quote, exception_to_unicode, to_js_string
 from trac.util.datefmt import (
-    pretty_timedelta, format_datetime, format_date, format_time,
+    pretty_timedelta, datetime_now, format_datetime, format_date, format_time,
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
     get_time_format_jquery_ui, user_time, get_month_names_jquery_ui,
     get_day_names_jquery_ui, get_timezone_list_jquery_ui,
@@ -970,7 +970,7 @@ class Chrome(Component):
                 absolute = user_time(req, format_date, date)
             else:
                 absolute = user_time(req, format_datetime, date)
-            now = datetime.datetime.now(localtz)
+            now = datetime_now(localtz)
             relative = pretty_timedelta(date, now)
             if not format:
                 format = req.session.get('dateinfo',
@@ -1377,7 +1377,7 @@ class Chrome(Component):
         add_script(req, 'common/js/jquery-ui-addons.js')
         add_stylesheet(req, 'common/css/jquery-ui-addons.css')
         is_iso8601 = req.lc_time == 'iso8601'
-        now = datetime.datetime.now(req.tz)
+        now = datetime_now(req.tz)
         tzoffset = now.strftime('%z')
         if is_iso8601:
             default_timezone = (-1 if tzoffset.startswith('-') else 1) * \

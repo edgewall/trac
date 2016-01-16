@@ -17,7 +17,7 @@ import re
 import time
 import unittest
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.test import locale_en
 from trac.tests.contentgen import random_sentence, random_unique_camel, \
@@ -25,7 +25,7 @@ from trac.tests.contentgen import random_sentence, random_unique_camel, \
 from trac.tests.functional import FunctionalTwillTestCaseSetup, b, \
                                   internal_error, regex_owned_by, tc, twill
 from trac.util import create_file
-from trac.util.datefmt import format_datetime, localtz, utc
+from trac.util.datefmt import datetime_now, format_datetime, localtz, utc
 from trac.util.text import to_utf8
 
 
@@ -753,7 +753,7 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
         tc.submit(formname='add')
         tc.url(self._tester.url + '/milestone\?action=new')
         name = random_unique_camel()
-        due = format_datetime(datetime.now(tz=utc) + timedelta(hours=1),
+        due = format_datetime(datetime_now(tz=utc) + timedelta(hours=1),
                               tzinfo=localtz, locale=locale_en)
         tc.formvalue('edit', 'name', name)
         tc.formvalue('edit', 'due', True)
@@ -809,7 +809,7 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         # Check that open tickets retargeted, closed not retargeted
         tid2 = self._tester.create_ticket(info={'milestone': name})
         self._tester.go_to_milestone(name)
-        completed = format_datetime(datetime.now(tz=utc) - timedelta(hours=1),
+        completed = format_datetime(datetime_now(tz=utc) - timedelta(hours=1),
                                     tzinfo=localtz, locale=locale_en)
         tc.submit(formname='editmilestone')
         tc.formvalue('edit', 'completed', True)

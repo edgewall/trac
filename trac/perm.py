@@ -21,7 +21,6 @@ from __future__ import print_function
 import csv
 import os
 from itertools import groupby
-from time import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.cache import cached
@@ -29,6 +28,7 @@ from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
 from trac.util import file_or_std
+from trac.util.datefmt import time_now
 from trac.util.text import path_to_unicode, print_table, printout, \
                            stream_encoding, to_unicode, wrap
 from trac.util.translation import _, N_
@@ -282,16 +282,16 @@ class DefaultPermissionPolicy(Component):
 
     def __init__(self):
         self.permission_cache = {}
-        self.last_reap = time()
+        self.last_reap = time_now()
 
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        now = time()
+        now = time_now()
 
         if now - self.last_reap > self.CACHE_REAP_TIME:
             self.permission_cache = {}
-            self.last_reap = time()
+            self.last_reap = time_now()
 
         timestamp, permissions = self.permission_cache.get(username, (0, None))
 
@@ -334,7 +334,7 @@ class PermissionSystem(Component):
 
     def __init__(self):
         self.permission_cache = {}
-        self.last_reap = time()
+        self.last_reap = time_now()
 
     # Public API
 
@@ -445,7 +445,7 @@ class PermissionSystem(Component):
 
         Users are returned as a list of user names.
         """
-        now = time()
+        now = time_now()
         if now - self.last_reap > self.CACHE_REAP_TIME:
             self.permission_cache = {}
             self.last_reap = now

@@ -22,7 +22,6 @@ import doctest
 import inspect
 import os
 import sys
-import time
 import types
 import unittest
 
@@ -42,6 +41,7 @@ from trac.db.api import DatabaseManager, parse_connection_uri
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
+from trac.util.datefmt import time_now
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -362,7 +362,7 @@ class EnvironmentStub(Environment):
         with self.env.db_transaction as db:
             for username, name, email in users:
                 db("INSERT INTO session VALUES (%s, %s, %s)",
-                   (username, 1, int(time.time())))
+                   (username, 1, int(time_now())))
                 db("INSERT INTO session_attribute VALUES (%s,%s,'name',%s)",
                    (username, 1, name))
                 db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",

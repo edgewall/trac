@@ -34,7 +34,7 @@ from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketChangeEvent, TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
-from trac.util.datefmt import utc
+from trac.util.datefmt import datetime_now, utc
 
 MAXBODYWIDTH = 76
 notifysuite = None
@@ -173,7 +173,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket['reporter'] = 'joe.user@example.org'
             ticket['summary'] = u'This is a súmmäry'
             ticket.insert()
-            now = datetime.now(utc)
+            now = datetime_now(utc)
             ticket.save_changes('joe.bar2@example.com', 'This is a change',
                                 when=now)
             notify_ticket_changed(self.env, ticket)
@@ -198,7 +198,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket['reporter'] = u'joe@example.org'
             ticket['owner'] = u'jim@example.org'
             ticket.insert()
-            now = datetime.now(utc)
+            now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
             notify_ticket_created(self.env, ticket)
@@ -220,7 +220,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket['summary'] = 'Foo'
             ticket['reporter'] = u'joe@example.org'
             ticket.insert()
-            now = datetime.now(utc)
+            now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
             notify_ticket_created(self.env, ticket)
@@ -683,7 +683,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         ticket['cc'] = 'joe.user1@example.net'
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Added to cc', now)
         notify_ticket_changed(self.env, ticket)
         recipients = notifysuite.smtpd.get_recipients()
@@ -697,7 +697,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['cc'] = 'joe.user1@example.net'
         ticket.insert()
         ticket['cc'] = 'joe.user2@example.net'
-        now = datetime.now(utc)
+        now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
         notify_ticket_changed(self.env, ticket)
         recipients = notifysuite.smtpd.get_recipients()
@@ -714,7 +714,7 @@ class NotificationTestCase(unittest.TestCase):
             ticket['owner'] = prev_owner = 'joe.user1@example.net'
             ticket.insert()
             ticket['owner'] = new_owner = 'joe.user2@example.net'
-            now = datetime.now(utc)
+            now = datetime_now(utc)
             ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
             notify_ticket_changed(self.env, ticket)
             recipients = notifysuite.smtpd.get_recipients()

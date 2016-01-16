@@ -34,11 +34,10 @@ import sys
 import string
 import struct
 import tempfile
-import time
 from urllib import quote, unquote, urlencode
 
 from trac.util.compat import any, md5, sha1, sorted  # Remove in 1.3.1
-from trac.util.datefmt import to_datetime, to_timestamp, utc
+from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
                            getpreferredencoding
 
@@ -819,7 +818,7 @@ except NotImplementedError:
 
     def urandom(n):
         result = []
-        hasher = hashlib.sha1(str(os.getpid()) + str(time.time()))
+        hasher = hashlib.sha1(str(os.getpid()) + str(time_now()))
         while len(result) * hasher.digest_size < n:
             hasher.update(str(_entropy.random()))
             result.append(hasher.digest())

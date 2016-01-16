@@ -15,14 +15,15 @@
 import re
 import unittest
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.test import locale_en
 from trac.tests.contentgen import random_unique_camel
 from trac.tests.functional import FunctionalTwillTestCaseSetup, b, \
                                   internal_error, tc
-from trac.util.datefmt import utc, localtz, format_date, format_datetime
+from trac.util.datefmt import datetime_now, format_date, format_datetime, \
+                              localtz, utc
 
 
 class AdminEnumDefaultTestCaseSetup(FunctionalTwillTestCaseSetup):
@@ -271,7 +272,7 @@ class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin milestone duedate"""
         name = "DueMilestone"
-        duedate = datetime.now(tz=utc)
+        duedate = datetime_now(tz=utc)
         duedate_string = format_datetime(duedate, tzinfo=utc,
                                          locale=locale_en)
         self._tester.create_milestone(name, due=duedate_string)
@@ -291,7 +292,7 @@ class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
-        duedate = datetime.now(tz=utc)
+        duedate = datetime_now(tz=utc)
         duedate_string = format_datetime(duedate, tzinfo=utc,
                                          locale=locale_en)
         tc.formvalue('edit', 'due', True)
@@ -355,7 +356,7 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.follow(name)
         tc.url(milestone_url + '/' + name)
         tc.formvalue('edit', 'completed', True)
-        cdate = datetime.now(tz=utc) + timedelta(days=2)
+        cdate = datetime_now(tz=utc) + timedelta(days=2)
         cdate_string = format_date(cdate, tzinfo=localtz, locale=locale_en)
         tc.formvalue('edit', 'completeddate', cdate_string)
         tc.submit('save')

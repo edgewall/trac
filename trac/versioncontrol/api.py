@@ -15,7 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os.path
-import time
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 
@@ -25,7 +24,7 @@ from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util import as_bool
 from trac.util.concurrency import threading
-from trac.util.datefmt import utc
+from trac.util.datefmt import time_now, utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -360,7 +359,7 @@ class RepositoryManager(Component):
             for repo_info in self.get_all_repositories().values():
                 if not as_bool(repo_info.get('sync_per_request')):
                     continue
-                start = time.time()
+                start = time_now()
                 repo_name = repo_info['name'] or '(default)'
                 try:
                     repo = self.get_repository(repo_info['name'])
@@ -386,7 +385,7 @@ class RepositoryManager(Component):
                         "#ExplicitSync for more detail: %s", repo_name,
                         exception_to_unicode(e, traceback=True))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
-                              repo_name, time.time() - start)
+                              repo_name, time_now() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):

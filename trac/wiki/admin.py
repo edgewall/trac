@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from datetime import datetime
 import os.path
 import pkg_resources
 import sys
@@ -21,7 +20,7 @@ from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem, validate_page_name
 from trac.util import read_file
-from trac.util.datefmt import format_datetime, from_utimestamp, \
+from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
                               to_utimestamp, utc
 from trac.util.text import path_to_unicode, print_table, printout, \
                            to_unicode, unicode_quote, unicode_unquote
@@ -143,7 +142,7 @@ class WikiAdmin(Component):
                 db("""INSERT INTO wiki(version, name, time, author, ipnr, text)
                       SELECT 1 + COALESCE(max(version), 0), %s, %s, 'trac',
                              '127.0.0.1', %s FROM wiki WHERE name=%s
-                      """, (title, to_utimestamp(datetime.now(utc)), data,
+                      """, (title, to_utimestamp(datetime_now(utc)), data,
                             title))
             if not old:
                 del WikiSystem(self.env).pages

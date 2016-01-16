@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import math
+import os
 import re
 import sys
 import time
@@ -46,6 +47,79 @@ from trac.util.translation import _, ngettext
 
 # Date/time utilities
 
+if os.name == 'nt':
+    def _precise_now_windows():
+        """Provide high-resolution system time if Windows 8+ and Windows
+        Server 2012+.
+        """
+        import ctypes
+        from ctypes.wintypes import DWORD, WORD
+
+        kernel32 = ctypes.windll.kernel32
+        GetLastError = kernel32.GetLastError
+        SystemTimeToFileTime = kernel32.SystemTimeToFileTime
+        try:
+            # GetSystemTimePreciseAsFileTime is available under Windows 8+
+            # and Windows Server 2012+
+            GetSystemTimePreciseAsFileTime = \
+                kernel32.GetSystemTimePreciseAsFileTime
+            get_systime = GetSystemTimePreciseAsFileTime
+            func_systime = 'GetSystemTimePreciseAsFileTime'
+        except AttributeError:
+            GetSystemTimePreciseAsFileTime = None
+            get_systime = kernel32.GetSystemTimeAsFileTime
+            func_systime = 'GetSystemTimeAsFileTime'
+
+        class FILETIME(ctypes.Structure):
+            _fields_ = [('dwLowDateTime', DWORD),
+                        ('dwHighDateTime', DWORD)]
+
+        class SYSTEMTIME(ctypes.Structure):
+            _fields_ = [('wYear', WORD),
+                        ('wMonth', WORD),
+                        ('wDayOfWeek', WORD),
+                        ('wDay', WORD),
+                        ('wHour', WORD),
+                        ('wMinute', WORD),
+                        ('wSecond', WORD),
+                        ('wMilliseconds', WORD)]
+
+        def get_filetime_epoch():
+            st = SYSTEMTIME()
+            st.wYear = 1970
+            st.wMonth = 1
+            st.wDay = 1
+            st.wDayOfWeek = 0
+            st.wHour = st.wMinute = st.wSecond = st.wMilliseconds = 0
+            ft = FILETIME()
+            if SystemTimeToFileTime(ctypes.pointer(st), ctypes.pointer(ft)):
+                return ft.dwHighDateTime * 0x100000000L + ft.dwLowDateTime
+            else:
+                raise RuntimeError('[LastError SystemTimeToFileTime %d]' %
+                                   GetLastError())
+
+        ft_epoch = get_filetime_epoch()
+
+        def time_now():
+            """Return the precise current time in seconds since the Epoch."""
+            ft = FILETIME()
+            if not get_systime(ctypes.pointer(ft)):
+                raise RuntimeError('[LastError %s %d]' %
+                                   (func_systime, GetLastError()))
+            ft = ft.dwHighDateTime * 0x100000000L + ft.dwLowDateTime
+            usec = (ft - ft_epoch) / 10L
+            return usec / 1000000.0
+
+        def datetime_now(tz=None):
+            """Return new datetime with precise current time."""
+            return datetime.fromtimestamp(time_now(), tz)
+
+        return time_now, datetime_now
+
+    time_now, datetime_now = _precise_now_windows()
+else:
+    time_now, datetime_now = time.time, datetime.now
+
 # -- conversion
 
 def to_datetime(t, tzinfo=None):
@@ -70,7 +144,7 @@ def to_datetime(t, tzinfo=None):
     """
     tz = tzinfo or localtz
     if t is None:
-        dt = datetime.now(tz)
+        dt = datetime_now(tz)
     elif isinstance(t, datetime):
         if t.tzinfo:
             dt = t.astimezone(tz)
@@ -747,7 +821,7 @@ _time_starts = dict(
 
 def _parse_relative_time(text, tzinfo, now=None):
     if now is None:     # now argument for unit tests
-        now = datetime.now(tzinfo)
+        now = datetime_now(tzinfo)
     if text == 'now':
         return now
 
@@ -886,7 +960,7 @@ class LocalTimezone(tzinfo):
         self._offset = offset
 
     def __str__(self):
-        return self._tzname_offset(self.utcoffset(datetime.now()))
+        return self._tzname_offset(self.utcoffset(datetime_now()))
 
     def __repr__(self):
         if self._offset is None:
