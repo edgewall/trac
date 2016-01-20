@@ -28,7 +28,7 @@ from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import as_int, content_disposition
+from trac.util import as_bool, as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
 from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
@@ -293,7 +293,7 @@ class ReportModule(Component):
     def _render_list(self, req):
         """Render the list of available reports."""
         sort = req.args.get('sort', 'report')
-        asc = bool(int(req.args.get('asc', 1)))
+        asc = as_bool(req.args.get('asc', 1))
         format = req.args.get('format')
 
         rows = self.env.db_query("""

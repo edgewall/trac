@@ -23,9 +23,9 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util.datefmt import utc
-from trac.web.api import Request, RequestDone
+from trac.web.api import _RequestArgs, Request, RequestDone
 from trac.web.chrome import Chrome
 from trac.web.href import Href
 import trac
@@ -141,13 +141,26 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.req = Mock(base_path='', chrome={}, args={}, session={},
-                        abs_href=Href('/'), href=Href('/'), locale='',
-                        perm=MockPerm(), authname=None, tz=None)
         self.report_module = ReportModule(self.env)
 
     def tearDown(self):
         self.env.reset_db()
+
+    def _create_request(self, authname='anonymous', **kwargs):
+        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': {}, 'authname': authname,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+              'form_token': None}
+        if 'args' in kwargs:
+            kw['args'].update(kwargs.pop('args'))
+        kw.update(kwargs)
+        def redirect(url, permanent=False):
+            raise RequestDone
+        return Mock(add_redirect_listener=lambda x: [].append(x),
+                    redirect=redirect, **kw)
 
     def _insert_ticket(self, when=None, **kwargs):
         ticket = Ticket(self.env)
@@ -167,8 +180,9 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def _execute_report(self, id, args=None):
         mod = self.report_module
+        req = self._create_request()
         title, description, sql = mod.get_report(id)
-        return mod.execute_paginated_report(self.req, id, sql, args or {})
+        return mod.execute_paginated_report(req, id, sql, args or {})
 
     def _generate_tickets(self, columns, data, attrs):
         with self.env.db_transaction as db:
@@ -524,12 +538,21 @@ class ExecuteReportTestCase(unittest.TestCase):
         self._generate_tickets(('status', 'priority'), self.REPORT_1_DATA,
                                attrs)
         mod = self.report_module
+        req = self._create_request()
         sql = mod.get_report(id)[2]
 
-        rv1 = mod.execute_paginated_report(self.req, id, sql, {})
+        rv1 = mod.execute_paginated_report(req, id, sql, {})
         with self.env.db_query as db:
-            rv2 = mod.execute_paginated_report(self.req, db, id, sql, {})
+            rv2 = mod.execute_paginated_report(req, db, id, sql, {})
         self.assertEqual(rv2, rv1)
+
+    def test_asc_argument_is_invalid(self):
+        """Invalid value for `asc` argument is coerced to default."""
+        req = self._create_request(args={'asc': ')(,.",\'",[--'})
+
+        data = ReportModule(self.env).process_request(req)[1]
+
+        self.assertFalse(data['asc'])
 
 
 class NavigationContributorTestCase(unittest.TestCase):
