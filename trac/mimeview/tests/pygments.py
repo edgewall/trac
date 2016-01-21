@@ -15,6 +15,7 @@ from __future__ import absolute_import
 
 import os
 import unittest
+from pkg_resources import parse_version
 
 from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser
@@ -30,9 +31,14 @@ from trac.mimeview.api import LineNumberAnnotator, Mimeview
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
+from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
 from trac.web.href import Href
 from trac.wiki.formatter import format_to_html
+
+
+if have_pygments:
+    pygments_version = parse_version(get_pkginfo(pygments).get('version'))
 
 
 class PygmentsRendererTestCase(unittest.TestCase):
@@ -73,7 +79,10 @@ def hello():
         return "Hello World!"
 """)
         self.assertTrue(result)
-        self._test('python_hello', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_hello', result)
+        else:
+            self._test('python_hello_pygments_2.1plus', result)
 
     def test_python_hello_mimeview(self):
         """
@@ -84,7 +93,10 @@ def hello():
         return "Hello World!"
 """)
         self.assertTrue(result)
-        self._test('python_hello_mimeview', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_hello_mimeview', result)
+        else:
+            self._test('python_hello_mimeview_pygments_2.1plus', result)
 
     def test_python_with_lineno(self):
         result = format_to_html(self.env, self.context, """\
@@ -96,7 +108,10 @@ print 'this is the end of the python sample'
 }}}
 """)
         self.assertTrue(result)
-        self._test('python_with_lineno_1', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_with_lineno_1', result)
+        else:
+            self._test('python_with_lineno_1_pygments_2.1plus', result)
 
         result = format_to_html(self.env, self.context, """\
 {{{#!text/x-python lineno=3
@@ -107,7 +122,10 @@ print 'this is the end of the python sample'
 }}}
 """)
         self.assertTrue(result)
-        self._test('python_with_lineno_2', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_with_lineno_2', result)
+        else:
+            self._test('python_with_lineno_2_pygments_2.1plus', result)
 
     def test_python_with_lineno_and_markups(self):
         """Python highlighting with Pygments and lineno annotator
@@ -121,7 +139,10 @@ print 'this is the end of the python sample'
 }}}
 """)
         self.assertTrue(result)
-        self._test('python_with_lineno_and_markups', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_with_lineno_and_markups', result)
+        else:
+            self._test('python_with_lineno_and_markups_pygments_2.1plus', result)
 
     def test_python_with_invalid_arguments(self):
         result = format_to_html(self.env, self.context, """\
@@ -133,7 +154,10 @@ print 'this is the end of the python sample'
 }}}
 """)
         self.assertTrue(result)
-        self._test('python_with_invalid_arguments_1', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_with_invalid_arguments_1', result)
+        else:
+            self._test('python_with_invalid_arguments_1_pygments_2.1plus', result)
 
         result = format_to_html(self.env, self.context, """\
 {{{#!text/x-python lineno=a id=d marks=a-b
@@ -144,7 +168,10 @@ print 'this is the end of the python sample'
 }}}
 """)
         self.assertTrue(result)
-        self._test('python_with_invalid_arguments_2', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_with_invalid_arguments_2', result)
+        else:
+            self._test('python_with_invalid_arguments_2_pygments_2.1plus', result)
 
     def test_pygments_lexer_options(self):
         self.env.config.set('pygments-lexer',
@@ -222,10 +249,12 @@ if (class_exists('MyClass')) {
         Pygments supports it.
         """
         mimeview = Mimeview(self.env)
-        self.assertEqual('text/x-ini; charset=utf-8',
-                         mimeview.get_mimetype('file.ini'))
-        self.assertEqual('text/x-ini; charset=utf-8',
-                         mimeview.get_mimetype('file.cfg'))
+        self.assertIn(mimeview.get_mimetype('file.ini'),
+                      ('text/x-ini; charset=utf-8',
+                       'text/inf; charset=utf-8'))  # Pygment 2.1+
+        self.assertIn(mimeview.get_mimetype('file.cfg'),
+                      ('text/x-ini; charset=utf-8',
+                       'text/inf; charset=utf-8'))  # Pygment 2.1+
         self.assertEqual('text/x-ini; charset=utf-8',
                          mimeview.get_mimetype('file.text/x-ini'))
 
