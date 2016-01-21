@@ -15,6 +15,7 @@ from __future__ import absolute_import
 
 import os
 import unittest
+from pkg_resources import parse_version
 
 from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser
@@ -30,8 +31,13 @@ from trac.mimeview.api import Mimeview
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
+from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
 from trac.web.href import Href
+
+
+if have_pygments:
+    pygments_version = parse_version(get_pkginfo(pygments).get('version'))
 
 
 class PygmentsRendererTestCase(unittest.TestCase):
@@ -71,7 +77,10 @@ def hello():
         return "Hello World!"
 """)
         self.assertTrue(result)
-        self._test('python_hello', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_hello', result)
+        else:
+            self._test('python_hello_pygments_2.1plus', result)
 
     def test_python_hello_mimeview(self):
         """
@@ -82,7 +91,10 @@ def hello():
         return "Hello World!"
 """)
         self.assertTrue(result)
-        self._test('python_hello_mimeview', result)
+        if pygments_version < parse_version('2.1'):
+            self._test('python_hello_mimeview', result)
+        else:
+            self._test('python_hello_mimeview_pygments_2.1plus', result)
 
     def test_newline_content(self):
         """
@@ -119,10 +131,12 @@ def hello():
         Pygments supports it.
         """
         mimeview = Mimeview(self.env)
-        self.assertEqual('text/x-ini; charset=utf-8',
-                         mimeview.get_mimetype('file.ini'))
-        self.assertEqual('text/x-ini; charset=utf-8',
-                         mimeview.get_mimetype('file.cfg'))
+        self.assertIn(mimeview.get_mimetype('file.ini'),
+                      ('text/x-ini; charset=utf-8',
+                       'text/inf; charset=utf-8'))  # Pygment 2.1+
+        self.assertIn(mimeview.get_mimetype('file.cfg'),
+                      ('text/x-ini; charset=utf-8',
+                       'text/inf; charset=utf-8'))  # Pygment 2.1+
         self.assertEqual('text/x-ini; charset=utf-8',
                          mimeview.get_mimetype('file.text/x-ini'))
 
