@@ -121,7 +121,7 @@ def set_header(message, key, value, charset):
         header = str(header).replace('\\', r'\\') \
                             .replace('"', r'\"')
         header = '"%s" <%s>' % (header, email)
-    if message.has_key(key):
+    if key in message:
         message.replace_header(key, header)
     else:
         message[key] = header
