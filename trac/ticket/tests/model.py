@@ -16,7 +16,6 @@ from __future__ import with_statement
 from datetime import datetime, timedelta
 from StringIO import StringIO
 import tempfile
-import shutil
 import unittest
 
 import trac.tests.compat
@@ -952,9 +951,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.updated_at = self.created_at + timedelta(seconds=1)
 
     def tearDown(self):
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def _create_milestone(self, **values):
         milestone = Milestone(self.env)

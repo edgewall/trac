@@ -13,7 +13,6 @@
 
 from __future__ import with_statement
 
-import shutil
 import tempfile
 import unittest
 
@@ -143,9 +142,7 @@ def attachment_setup(tc):
     attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
 
 def attachment_teardown(tc):
-    tc.env.reset_db()
-    tc.env.shutdown()
-    shutil.rmtree(tc.env.path)
+    tc.env.reset_db_and_disk()
 
 
 EMAIL_TEST_CASE_DEFAULT = u"""

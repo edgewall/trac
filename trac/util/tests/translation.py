@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import shutil
 import tempfile
 import unittest
 from pkg_resources import resource_exists, resource_filename
@@ -38,9 +37,7 @@ class TranslationsProxyTestCase(unittest.TestCase):
 
     def tearDown(self):
         translation.deactivate()
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def _get_locale_dir(self):
         return resource_filename('trac', 'locale')

@@ -50,9 +50,7 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
         self.req_handler = module_class(self.env)
 
     def tearDown(self):
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.path)
+        self.env.reset_db_and_disk()
 
     def create_request(self, authname='anonymous', **kwargs):
         kw = {'perm': perm.PermissionCache(self.env, authname), 'args': {},

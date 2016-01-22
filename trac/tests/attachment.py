@@ -14,7 +14,6 @@
 from __future__ import with_statement
 
 import os
-import shutil
 from StringIO import StringIO
 import tempfile
 import unittest
@@ -70,9 +69,7 @@ class AttachmentTestCase(unittest.TestCase):
             db("INSERT INTO ticket (id) VALUES (42)")
 
     def tearDown(self):
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)

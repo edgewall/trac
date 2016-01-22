@@ -18,7 +18,6 @@
 
 import base64
 import quopri
-import shutil
 import tempfile
 import re
 import unittest
@@ -1272,9 +1271,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
         notifysuite.tear_down()
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_ticket_notify_attachment_enabled_attachment_added(self):
         self.attachment.insert('foo.txt', StringIO(''), 1)

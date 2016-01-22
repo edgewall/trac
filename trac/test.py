@@ -21,6 +21,7 @@ from __future__ import with_statement
 
 import doctest
 import os
+import shutil
 import sys
 import unittest
 
@@ -392,6 +393,18 @@ class EnvironmentStub(Environment):
             # psycopg2.ProgrammingError: schema "tractest" does not exist
             pass
         return False
+
+    # tearDown helper
+
+    def reset_db_and_disk(self):
+        """Performs a complete environment reset in a robust way.
+
+        The database is reset, then the connections are shut down, and
+        finally all environment files are removed from the disk.
+        """
+        self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
 
     # overridden
 

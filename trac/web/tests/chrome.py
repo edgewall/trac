@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-import shutil
 import tempfile
 import unittest
 
@@ -497,8 +496,7 @@ class ChromeTestCase2(unittest.TestCase):
         self.chrome = Chrome(self.env)
 
     def tearDown(self):
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_malicious_filename_raises(self):
         req = Request(path_info='/chrome/site/../conf/trac.ini')
