@@ -94,15 +94,13 @@
       .replace("{3}", newOffset).replace("{4}", newLength)
       .replace("{5}", title);
 
-    /* remove trailing &nbsp; and join lines (with CR for IExplorer) */
-    var sep = $.browser.msie ? "\r" : "\n";
-    for ( var i = 0; i < lines.length; i++ )
-        if ( lines[i] )
-        {
-            var line = lines[i].replace(/\xa0$/, '') + sep;
-            if ( lines[i][0] == '+' )
+    /* remove trailing &nbsp; and join lines */
+    for (var i = 0; i < lines.length; i++)
+        if (lines[i]) {
+            var line = lines[i].replace(/\xa0$/, '') + "\n";
+            if (lines[i][0] == '+')
               pre.append($('<span class="add">').text(line));
-            else if ( lines[i][0] == '-' )
+            else if (lines[i][0] == '-')
               pre.append($('<span class="rem">').text(line));
             else
               pre.append($('<span>').text(line));

@@ -63,12 +63,8 @@
             .click(function() {
               $(this).remove();
               th.show();
-              if ($.browser.msie)
-                for ( var i = 0; i < n; i++ )
-                  row_headers.eq(i*k+j).show();
-              else // much faster, but not supported by IExplorer
-                for ( var i = 0; i < n; i++ )
-                  row_headers.eq(i*k+j).css('display', 'table-cell');
+              for (var i = 0; i < n; i++)
+                row_headers.eq(i*k+j).css('display', 'table-cell');
             })
           );
         };
