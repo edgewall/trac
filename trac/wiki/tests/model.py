@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from datetime import datetime
-import shutil
 from StringIO import StringIO
 import tempfile
 import unittest
@@ -70,9 +69,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
 
     def tearDown(self):
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_new_page(self):
         page = WikiPage(self.env)

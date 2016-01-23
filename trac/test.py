@@ -21,6 +21,7 @@ import abc
 import doctest
 import inspect
 import os
+import shutil
 import sys
 import types
 import unittest
@@ -357,6 +358,20 @@ class EnvironmentStub(Environment):
         except (TracError, self.db_exc.DatabaseError):
             pass
         return False
+
+    # tearDown helper
+
+    def reset_db_and_disk(self):
+        """Performs a complete environment reset in a robust way.
+
+        The database is reset, then the connections are shut down, and
+        finally all environment files are removed from the disk.
+        """
+        self.env.reset_db()
+        self.env.shutdown() # really closes the db connections
+        shutil.rmtree(self.env.path)
+
+    # other utilities
 
     def insert_known_users(self, users):
         with self.env.db_transaction as db:

@@ -181,6 +181,8 @@ class BaseTestCase(unittest.TestCase):
         ConfigSection.registry = self._orig['ConfigSection.registry']
         Option.registry = self._orig['Option.registry']
         os.remove(self.filename)
+        if os.path.exists(self.sitename):
+            os.remove(self.sitename)
 
     def _read(self):
         return Configuration(self.filename)

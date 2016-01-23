@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import os
-import shutil
 import tempfile
 import unittest
 
@@ -29,7 +28,7 @@ class UpgradeTestCase(unittest.TestCase):
         self.env.config.filename = os.path.join(self.env.path, 'trac.ini')
 
     def tearDown(self):
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_saves_backup(self):
         config = self.env.config

@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-import shutil
 import tempfile
 import unittest
 from datetime import datetime
@@ -76,9 +75,7 @@ class AttachmentTestCase(unittest.TestCase):
                 'A comment', 'joe', '::1'))
 
     def tearDown(self):
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_new_attachment(self):
         attachment = Attachment(self.env, 'ticket', 42)
