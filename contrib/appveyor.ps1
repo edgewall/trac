@@ -62,7 +62,6 @@ $pipCommonPackages = @(
     'pytz'
 )
 
-
 $fcrypt    = "$deps\fcrypt-1.3.1.tar.gz"
 $fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
 
@@ -71,6 +70,9 @@ $pipPackages = @{
     trunk = @('passlib')
 }
 
+$condaCommonPackages = @(
+    'lxml'
+)
 
 # ------------------------------------------------------------------
 # "Environment" environment variables
@@ -156,9 +158,9 @@ if (-not $env:APPVEYOR) {
 
 $env:Path = "$pyHome;$pyHome\Scripts;$msysHome;$($env:Path)"
 
-$pyVersion = if ([string](& python.exe -V 2>&1) -match ' (\d\.\d)') { 
-    $Matches[1] 
-}
+$pyV = [string](& python.exe -V 2>&1)
+$pyVersion = if ($pyV -match ' (\d\.\d)') { $Matches[1] }
+$pyIsConda = $pyV -match 'Continuum Analytics'
 
 
 # ------------------------------------------------------------------
@@ -203,6 +205,10 @@ function Trac-Install {
 
     & pip --version
     & pip install $pipCommonPackages $pipPackages.$svnBranch
+
+    if ($pyIsConda) {
+	& conda install $condaCommonPackages $condaCommonPackages.$svnBranch
+    }
 
     if ($usingMysql) {
         #
