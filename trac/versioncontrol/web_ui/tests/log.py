@@ -15,6 +15,8 @@ from datetime import datetime, timedelta
 import unittest
 
 from trac.core import Component, TracError, implements
+from trac.perm import IPermissionPolicy, PermissionCache
+from trac.resource import Resource
 from trac.test import MockPerm
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
@@ -22,7 +24,9 @@ from trac.versioncontrol.api import (
     NoSuchChangeset, Repository)
 from trac.versioncontrol.web_ui.log import LogModule
 from trac.web.api import parse_arg_list
+from trac.web.chrome import web_context
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
+from trac.wiki.formatter import format_to_oneliner
 
 
 mock_repotype = 'mock:' + __name__
@@ -37,6 +41,15 @@ class MockRepositoryConnector(Component):
 
     def get_repository(self, repos_type, repos_dir, params):
         return MockRepository('mock:' + repos_dir, params, self.log)
+
+
+class TestLogModulePermissionPolicy(Component):
+
+    implements(IPermissionPolicy)
+
+    def check_permission(self, action, username, resource, perm):
+        if action == 'LOG_VIEW' and resource.realm == 'repository':
+            return username != 'anonymous'
 
 
 class MockRepository(Repository):
@@ -484,6 +497,27 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(['delete', 'move', 'add'],
                          [item['change'] for item in items])
         self.assertNotIn('next', req.chrome['links'])
+
+    def test_log_link_checking_repository_resource(self):
+        self.env.config.set('trac', 'permission_policies',
+            'TestLogModulePermissionPolicy, DefaultPermissionPolicy')
+        resource = Resource('wiki', 'WikiStart')
+
+        def create_req(username, **kwargs):
+            perm = PermissionCache(self.env, username)
+            return self.create_request(authname=username, perm=perm, **kwargs)
+
+        req = create_req('anonymous')
+        rendered = unicode(format_to_oneliner(self.env,
+                                              web_context(req, resource),
+                                              'log:mock@42-43'))
+        self.assertIn(' title="No permission to view change log"', rendered)
+
+        req = create_req('blah')
+        rendered = unicode(format_to_oneliner(self.env,
+                                              web_context(req, resource),
+                                              'log:mock@42-43'))
+        self.assertIn(' href="/trac.cgi/log/mock/?revs=42-43"', rendered)
 
 
 def suite():
