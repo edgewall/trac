@@ -1,5 +1,5 @@
 version: '{branch}.{build}'
-clone_depth: 1
+clone_depth: 20
 init:
 - ps: >-
     # Note 1: in 'Environment variables' groups above, use:
