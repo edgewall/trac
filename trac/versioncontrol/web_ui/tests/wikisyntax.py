@@ -71,6 +71,7 @@ class GitRepositoryStub(object):
 
     def __init__(self, reponame):
         self.reponame = reponame
+        self.resource = Resource('repository', self.reponame)
         self.youngest_rev = 'ffffffffffffffffffffffffffffffffffffffff'
         self.oldest_rev = '1111111111111111111111111111111111111111'
 
@@ -106,7 +107,8 @@ def _get_repository(reponame):
     return Mock(reponame=reponame, youngest_rev=YOUNGEST_REV,
                 get_changeset=_get_changeset, get_node=_get_node,
                 normalize_rev=_normalize_rev,
-                has_linear_changesets=True)
+                has_linear_changesets=True,
+                resource=Resource('repository', reponame))
 
 
 def _get_all_repositories():

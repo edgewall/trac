@@ -397,7 +397,7 @@ class LogModule(Component):
                     repos = rm.get_repository(reponame)
 
             if repos:
-                if 'LOG_VIEW' in formatter.perm:
+                if 'LOG_VIEW' in formatter.perm(repos.resource):
                     reponame = repos.reponame or None
                     path = path or '/'
                     revranges = RevRanges(repos, revs)
