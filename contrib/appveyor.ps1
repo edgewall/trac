@@ -207,7 +207,7 @@ function Trac-Install {
     & pip install $pipCommonPackages $pipPackages.$svnBranch
 
     if ($pyIsConda) {
-	& conda install $condaCommonPackages $condaCommonPackages.$svnBranch
+	& conda.exe install -qy $condaCommonPackages
     }
 
     if ($usingMysql) {
