@@ -38,6 +38,11 @@ def _read(filename):
     return read_file(filename).decode('utf-8')
 
 
+def readlines(filename):
+    with open(filename, 'r') as f:
+        return f.readlines()
+
+
 class UnicodeParserTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -611,7 +616,6 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual('', config.get(u'aä', 'öption2'))
         config.save()
 
-        configfile = open(self.filename, 'r')
         self.assertEqual(['# -*- coding: utf-8 -*-\n',
                           '\n',
                           '[aä]\n',
@@ -625,9 +629,7 @@ class IntegrationTestCase(BaseTestCase):
                           '[b]\n',
                           'option1 = \n',
                           'öption0 = y\n',
-                          '\n'],
-                         configfile.readlines())
-        configfile.close()
+                          '\n'], readlines(self.filename))
         config2 = Configuration(self.filename)
         self.assertEqual('x', config2.get(u'aä', u'öption0'))
         self.assertEqual(u"Voilà l'été", config2.get(u'aä', 'option1'))
@@ -645,7 +647,6 @@ class IntegrationTestCase(BaseTestCase):
             self.assertEqual(u"Voilà l'été", config.get('a', 'option2'))
             config.save()
 
-            configfile = open(self.filename, 'r')
             self.assertEqual(['# -*- coding: utf-8 -*-\n',
                               '\n',
                               '[a]\n',
@@ -654,9 +655,7 @@ class IntegrationTestCase(BaseTestCase):
                               '\n',
                               '[inherit]\n',
                               "file = trac-site.ini\n",
-                              '\n'],
-                             configfile.readlines())
-            configfile.close()
+                              '\n'], readlines(self.filename))
             config2 = Configuration(self.filename)
             self.assertEqual('x', config2.get('a', 'option'))
             self.assertEqual(u"Voilà l'été", config2.get('a', 'option1'))
@@ -951,18 +950,15 @@ class IntegrationTestCase(BaseTestCase):
             'int-0 = 0\n',
             '\n',
         ]
-        def readlines():
-            with open(self.filename, 'r') as f:
-                return f.readlines()
 
         config = self._read()
         config.set_defaults()
         config.save()
-        self.assertEqual(expected, readlines())
+        self.assertEqual(expected, readlines(self.filename))
 
         config.set('a', 'bool-1', 'True')
         config.save()
-        self.assertEqual(expected, readlines())
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_save_changes_mtime(self):
         """Test that each save operation changes the file modification time."""
