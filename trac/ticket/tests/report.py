@@ -548,7 +548,7 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def test_asc_argument_is_invalid(self):
         """Invalid value for `asc` argument is coerced to default."""
-        req = self._create_request(args={'asc': ')(,.",\'",[--'})
+        req = self._create_request(args={'asc': '--'})
 
         data = ReportModule(self.env).process_request(req)[1]
 
