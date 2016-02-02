@@ -179,6 +179,9 @@ class AttachmentModule(Component):
 
         if not parent_realm or not path:
             raise HTTPBadRequest(_('Bad request'))
+        if parent_realm == 'attachment':
+            raise TracError(tag_("%(realm)s is not a valid parent realm",
+                                 realm=tag.code(parent_realm)))
 
         parent_realm = Resource(parent_realm)
         action = req.args.get('action', 'view')

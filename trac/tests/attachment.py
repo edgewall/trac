@@ -21,7 +21,7 @@ from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import Resource, resource_exists
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, Mock
 from trac.util.datefmt import utc, to_utimestamp
 
 
@@ -263,19 +263,38 @@ class AttachmentTestCase(unittest.TestCase):
         attachment = Attachment(self.env, 'ticket', 42)
         self.assertTrue('ATTACHMENT_VIEW' in self.perm(attachment.resource))
 
-    def test_resource_doesnt_exist(self):
-        r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
-        self.assertFalse(AttachmentModule(self.env).resource_exists(r))
-
     def test_resource_exists(self):
         att = Attachment(self.env, 'wiki', 'WikiStart')
         att.insert('file.txt', StringIO(''), 1)
         self.assertTrue(resource_exists(self.env, att.resource))
 
 
+class AttachmentModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_attachment_parent_realm_raises_exception(self):
+        """TracError is raised when 'attachment' is the resource parent
+        realm.
+        """
+        req = Mock(path_info='/attachment/attachment/parent_id/attachment_id',
+                   args={})
+        module = AttachmentModule(self.env)
+
+        self.assertTrue(module.match_request(req))
+        self.assertRaises(TracError, module.process_request, req)
+
+    def test_resource_doesnt_exist(self):
+        """Non-existent resource returns False from resource_exists."""
+        r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
+        self.assertFalse(AttachmentModule(self.env).resource_exists(r))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AttachmentTestCase))
+    suite.addTest(unittest.makeSuite(AttachmentModuleTestCase))
     return suite
 
 if __name__ == '__main__':
