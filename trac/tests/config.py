@@ -1125,6 +1125,89 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
             self.assertRaises(StopIteration, f.next)
 
 
+class OptionDocTestCase(BaseTestCase):
+
+    def test_config_section(self):
+        class Dummy(object):
+            section_a = (ConfigSection)('a', 'Doc for a')
+            section_b = (ConfigSection)(
+                'b', 'Doc for [%(page)s@%(version)d b]',
+                doc_args={'page': 'WikiStart', 'version': 42})
+            section_c = (ConfigSection)('c', '')
+
+        self.assertEqual('Doc for a', Dummy.section_a.__doc__)
+        self.assertEqual(None, Dummy.section_a.doc_args)
+        self.assertEqual('Doc for a', Dummy.section_a.doc)
+        self.assertEqual('Doc for [%(page)s@%(version)d b]',
+                         Dummy.section_b.__doc__)
+        self.assertEqual({'page': 'WikiStart', 'version': 42},
+                         Dummy.section_b.doc_args)
+        self.assertEqual('Doc for [WikiStart@42 b]', Dummy.section_b.doc)
+        self.assertEqual('', Dummy.section_c.__doc__)
+        self.assertEqual(None, Dummy.section_c.doc_args)
+        self.assertEqual('', Dummy.section_c.doc)
+
+    def test_options(self):
+        class IDummy(Interface):
+            pass
+        class Dummy(Component):
+            implements(IDummy)
+            opt_nodoc = (Option)('a', 'option_nodoc', 'default')
+            opt = (Option)(
+                'a', 'option', 'default',
+                doc='Doc for %(name)s', doc_args={'name': 'opt'})
+            bool_opt = (BoolOption)(
+                'a', 'bool_opt', 'false',
+                doc='Doc for %(name)s', doc_args={'name': 'bool_opt'})
+            int_opt = (IntOption)(
+                'a', 'int_opt', '42',
+                doc='Doc for %(name)s', doc_args={'name': 'int_opt'})
+            float_opt = (IntOption)(
+                'a', 'float_opt', '4.2',
+                doc='Doc for %(name)s', doc_args={'name': 'float_opt'})
+            list_opt = (ListOption)(
+                'a', 'list_opt', 'foo,bar,baz',
+                doc='Doc for %(name)s', doc_args={'name': 'list_opt'})
+            path_opt = (PathOption)(
+                'a', 'path_opt', 'trac.ini',
+                doc='Doc for %(name)s', doc_args={'name': 'path_opt'})
+            ext_opt = (ExtensionOption)(
+                'a', 'ext_opt', IDummy, 'Dummy',
+                doc='Doc for %(name)s', doc_args={'name': 'ext_opt'})
+            ordered_ext_opt = (OrderedExtensionsOption)(
+                'a', 'ordered_ext_opt', IDummy, 'Dummy,Dummy',
+                doc='Doc for %(name)s', doc_args={'name': 'ordered_ext_opt'})
+
+        self.assertEqual('', Dummy.opt_nodoc.__doc__)
+        self.assertEqual(None, Dummy.opt_nodoc.doc_args)
+        self.assertEqual('', Dummy.opt_nodoc.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.opt.__doc__)
+        self.assertEqual({'name': 'opt'}, Dummy.opt.doc_args)
+        self.assertEqual('Doc for opt', Dummy.opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.bool_opt.__doc__)
+        self.assertEqual({'name': 'bool_opt'}, Dummy.bool_opt.doc_args)
+        self.assertEqual('Doc for bool_opt', Dummy.bool_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.int_opt.__doc__)
+        self.assertEqual({'name': 'int_opt'}, Dummy.int_opt.doc_args)
+        self.assertEqual('Doc for int_opt', Dummy.int_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.float_opt.__doc__)
+        self.assertEqual({'name': 'float_opt'}, Dummy.float_opt.doc_args)
+        self.assertEqual('Doc for float_opt', Dummy.float_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.list_opt.__doc__)
+        self.assertEqual({'name': 'list_opt'}, Dummy.list_opt.doc_args)
+        self.assertEqual('Doc for list_opt', Dummy.list_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.path_opt.__doc__)
+        self.assertEqual({'name': 'path_opt'}, Dummy.path_opt.doc_args)
+        self.assertEqual('Doc for path_opt', Dummy.path_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.ext_opt.__doc__)
+        self.assertEqual({'name': 'ext_opt'}, Dummy.ext_opt.doc_args)
+        self.assertEqual('Doc for ext_opt', Dummy.ext_opt.doc)
+        self.assertEqual('Doc for %(name)s', Dummy.ordered_ext_opt.__doc__)
+        self.assertEqual({'name': 'ordered_ext_opt'},
+                         Dummy.ordered_ext_opt.doc_args)
+        self.assertEqual('Doc for ordered_ext_opt', Dummy.ordered_ext_opt.doc)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
@@ -1135,6 +1218,7 @@ def suite():
     else:
         print("SKIP: trac.tests.config.ConfigurationSetDefaultsTestCase "
               "(__name__ is not trac.tests.config)")
+    suite.addTest(unittest.makeSuite(OptionDocTestCase))
     return suite
 
 

@@ -520,6 +520,7 @@ TRACINI_MACRO_TEST_CASES = u"""\
 <table class="wiki"><tbody>\
 <tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
 <tr class="odd"><td><code>option2</code></td><td>blah</td><td class="default"><code>value</code></td></tr>\
+<tr class="even"><td><code>option3</code></td><td>Doc for option3</td><td class="default"><code>value</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -559,6 +560,9 @@ def tracini_setup(tc):
     class Foo(object):
         option_a1 = (Option)('section-42', 'option1', 'value', doc='')
         option_a2 = (Option)('section-42', 'option2', 'value', doc='blah')
+        option_a3 = (Option)('section-42', 'option3', 'value',
+                             doc='Doc for %(name)s',
+                             doc_args={'name': 'option3'})
         option_l1 = (ListOption)('section-list', 'option1',
                                  [4.2, '42', 42, None, 0, True], sep='|',
                                  keep_empty=True)

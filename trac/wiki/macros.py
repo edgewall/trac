@@ -778,14 +778,8 @@ class TracIniMacro(WikiMacroBase):
         if args:
             key_filter = args.pop(0).strip()
 
-        def getdoc(option_or_section):
-            doc = to_unicode(option_or_section.__doc__)
-            if doc:
-                doc = dgettext(option_or_section.doc_domain, doc)
-            return doc
-
         registry = ConfigSection.get_registry(self.compmgr)
-        sections = dict((name, getdoc(section))
+        sections = dict((name, section.doc)
                         for name, section in registry.iteritems()
                         if name.startswith(section_filter))
 
@@ -809,8 +803,8 @@ class TracIniMacro(WikiMacroBase):
              format_to_html(self.env, formatter.context, section_doc),
              tag.table(class_='wiki')(tag.tbody(
                  tag.tr(tag.td(tag.code(option.name)),
-                        tag.td(format_to_oneliner(
-                            self.env, formatter.context, getdoc(option))),
+                        tag.td(format_to_oneliner(self.env, formatter.context,
+                                                  option.doc)),
                         default_cell(option),
                         class_='odd' if idx % 2 else 'even')
                  for idx, option in

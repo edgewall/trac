@@ -62,7 +62,7 @@ class PygmentsRenderer(Component):
         The lexer name is derived from the class name, with `Lexer` stripped
         from the end. The lexer //short names// can also be used in place
         of the lexer name.
-        """ % {'url': 'http://pygments.org/docs/lexers/'})
+        """, doc_args={'url': 'http://pygments.org/docs/lexers/'})
 
     default_style = Option('mimeviewer', 'pygments_default_style', 'trac',
         """The default style to use for Pygments syntax highlighting.""")

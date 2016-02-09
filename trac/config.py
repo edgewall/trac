@@ -24,7 +24,7 @@ from trac.core import Component, ExtensionPoint, TracError, implements
 from trac.util import AtomicFile, as_bool
 from trac.util.compat import OrderedDict, wait_for_file_mtime_change
 from trac.util.text import cleandoc, printout, to_unicode, to_utf8
-from trac.util.translation import _, N_, tag_
+from trac.util.translation import N_, _, dgettext, tag_
 
 __all__ = ['Configuration', 'ConfigSection', 'Option', 'BoolOption',
            'IntOption', 'FloatOption', 'ListOption', 'ChoiceOption',
@@ -56,6 +56,14 @@ def _getlist(value, sep, keep_empty):
     if not keep_empty:
         items = [item for item in items if item not in (None, '')]
     return items
+
+
+def _getdoc(option_or_section):
+    doc = to_unicode(option_or_section.__doc__)
+    if doc:
+        doc = dgettext(option_or_section.doc_domain, doc,
+                       **(option_or_section.doc_args or {}))
+    return doc
 
 
 class ConfigurationError(TracError):
@@ -630,12 +638,13 @@ class ConfigSection(object):
         """
         return _get_registry(ConfigSection, compmgr)
 
-    def __init__(self, name, doc, doc_domain='tracini'):
+    def __init__(self, name, doc, doc_domain='tracini', doc_args=None):
         """Create the configuration section."""
         self.name = name
         self.registry[self.name] = self
         self.__doc__ = cleandoc(doc)
         self.doc_domain = doc_domain
+        self.doc_args = doc_args
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -646,6 +655,11 @@ class ConfigSection(object):
 
     def __repr__(self):
         return '<%s [%s]>' % (self.__class__.__name__, self.name)
+
+    @property
+    def doc(self):
+        """Return localized document of the section"""
+        return _getdoc(self)
 
 
 class Option(object):
@@ -667,7 +681,7 @@ class Option(object):
         return _get_registry(Option, compmgr)
 
     def __init__(self, section, name, default=None, doc='',
-                 doc_domain='tracini'):
+                 doc_domain='tracini', doc_args=None):
         """Create the configuration option.
 
         @param section: the name of the configuration section this option
@@ -682,6 +696,7 @@ class Option(object):
         self.registry[(self.section, self.name)] = self
         self.__doc__ = cleandoc(doc)
         self.doc_domain = doc_domain
+        self.doc_args = doc_args
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -698,6 +713,11 @@ class Option(object):
     def __repr__(self):
         return '<%s [%s] %r>' % (self.__class__.__name__, self.section,
                                  self.name)
+
+    @property
+    def doc(self):
+        """Return localized document of the option"""
+        return _getdoc(self)
 
     def dumps(self, value):
         """Return the value as a string to write to a trac.ini file"""
@@ -762,10 +782,11 @@ class ListOption(Option):
     """
 
     def __init__(self, section, name, default=None, sep=',', keep_empty=False,
-                 doc='', doc_domain='tracini'):
+                 doc='', doc_domain='tracini', doc_args=None):
         self.sep = sep
         self.keep_empty = keep_empty
-        Option.__init__(self, section, name, default, doc, doc_domain)
+        Option.__init__(self, section, name, default, doc, doc_domain,
+                        doc_args)
 
     def accessor(self, section, name, default):
         return section.getlist(name, default, self.sep, self.keep_empty)
@@ -789,9 +810,10 @@ class ChoiceOption(Option):
     The default value is the first choice in the list.
     """
 
-    def __init__(self, section, name, choices, doc='', doc_domain='tracini'):
+    def __init__(self, section, name, choices, doc='', doc_domain='tracini',
+                 doc_args=None):
         Option.__init__(self, section, name, to_unicode(choices[0]), doc,
-                        doc_domain)
+                        doc_domain, doc_args)
         self.choices = set(to_unicode(c).strip() for c in choices)
 
     def accessor(self, section, name, default):
@@ -823,8 +845,9 @@ class ExtensionOption(Option):
     active components implementing the interface."""
 
     def __init__(self, section, name, interface, default=None, doc='',
-                 doc_domain='tracini'):
-        Option.__init__(self, section, name, default, doc, doc_domain)
+                 doc_domain='tracini', doc_args=None):
+        Option.__init__(self, section, name, default, doc, doc_domain,
+                        doc_args)
         self.xtnpt = ExtensionPoint(interface)
 
     def __get__(self, instance, owner):
@@ -853,9 +876,10 @@ class OrderedExtensionsOption(ListOption):
     """
 
     def __init__(self, section, name, interface, default=None,
-                 include_missing=True, doc='', doc_domain='tracini'):
+                 include_missing=True, doc='', doc_domain='tracini',
+                 doc_args=None):
         ListOption.__init__(self, section, name, default, doc=doc,
-                            doc_domain=doc_domain)
+                            doc_domain=doc_domain, doc_args=doc_args)
         self.xtnpt = ExtensionPoint(interface)
         self.include_missing = include_missing
 
