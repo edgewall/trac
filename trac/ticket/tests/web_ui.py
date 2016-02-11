@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from datetime import datetime
 import unittest
 
 from trac.core import TracError
@@ -18,7 +19,8 @@ from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
-from trac.util.datefmt import utc
+from trac.util.datefmt import (datetime_now, format_date, format_datetime,
+                               timezone, to_utimestamp, user_time, utc)
 from trac.web.api import RequestDone, _RequestArgs
 from trac.web.chrome import Chrome
 from trac.web.session import DetachedSession
@@ -242,6 +244,118 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertRaises(ResourceNotFound,
                           self.ticket_module.process_request, req)
+
+    def _test_template_data_for_time_field(self, req, value, expected, format):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        if format:
+            self.env.config.set('ticket-custom', 'timefield.format', format)
+        self._insert_ticket(summary='Time fields', timefield=value)
+        self.assertEqual(value, Ticket(self.env, 1)['timefield'])
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+
+        for f in data['fields']:
+            if f['name'] == 'timefield':
+                self.assertEqual(expected, f['edit'])
+                self.assertEqual(expected, f['rendered'])
+                break
+        else:
+            self.fail('Missing timefield field')
+
+    def test_template_data_for_time_field_with_formats(self):
+        gmt12 = timezone('GMT +12:00')
+        req = self._create_request(method='GET', path_info='/ticket/1',
+                                   tz=gmt12)
+        value = datetime(2016, 1, 2, 23, 34, 45, tzinfo=utc)
+        expected = user_time(req, format_datetime, value)
+        self.assertIn('11', expected)  # check 11 in hour part
+
+        self._test_template_data_for_time_field(req, value, expected, None)
+        self._test_template_data_for_time_field(req, value, expected,
+                                                'datetime')
+        self._test_template_data_for_time_field(req, value, expected,
+                                                'relative')
+
+    def test_template_data_for_time_field_with_date_format(self):
+        value = datetime(2016, 2, 22, 22, 22, 22, tzinfo=utc)
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        self.env.config.set('ticket-custom', 'timefield.format', 'date')
+        self._insert_ticket(summary='Time fields', timefield=value)
+        self.assertEqual(value, Ticket(self.env, 1)['timefield'])
+
+        gmt12 = timezone('GMT +12:00')
+        req = self._create_request(method='GET', path_info='/ticket/1',
+                                   tz=gmt12)
+        expected = user_time(req, format_date, value)
+        self.assertIn('23', expected)  # check 23 in day part
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+
+        for f in data['fields']:
+            if f['name'] == 'timefield':
+                self.assertEqual(expected, f['edit'])
+                self.assertEqual(expected, f['rendered'])
+                break
+        else:
+            self.fail('Missing timefield field')
+
+    def test_template_data_for_invalid_time_field(self):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        self._insert_ticket(summary='Time fields',
+                            timefield=datetime_now(utc))
+        self.env.db_transaction("UPDATE ticket_custom SET value='invalid' "
+                                "WHERE ticket=1 AND name='timefield'")
+        self.assertEqual(None, Ticket(self.env, 1)['timefield'])
+
+        req = self._create_request(method='GET', path_info='/ticket/1')
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        self.assertEqual(None, data['ticket']['timefield'])
+
+        for f in data['fields']:
+            if f['name'] == 'timefield':
+                self.assertNotIn('edit', f)
+                self.assertNotIn('rendered', f)
+                break
+        else:
+            self.fail('Missing timefield field')
+
+    def test_submit_with_time_field(self):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        self._insert_ticket(summary='Time fields', timefield='')
+        ticket = Ticket(self.env, 1)
+        args_base = {'submit': '*', 'action': 'leave', 'id': '1',
+                     'field_summary': ticket['summary'],
+                     'field_reporter': ticket['reporter'],
+                     'field_description': ticket['description'],
+                     'view_time': str(to_utimestamp(ticket['changetime']))}
+        for f in ticket.fields:
+            args_base['field_%s' % f['name']] = ticket[f['name']] or ''
+
+        args = args_base.copy()
+        args['field_timefield'] = 'invalid datetime'
+        req = self._create_request(method='POST', path_info='/ticket/1',
+                                   args=args)
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.ticket_module.process_request(req)
+        warnings = req.chrome['warnings']
+        self.assertNotEqual([], warnings)
+        self.assertEqual(1, len(warnings))
+        self.assertIn('is an invalid date, or the date format is not known.',
+                      unicode(warnings[0]))
+        ticket = Ticket(self.env, 1)
+        self.assertEqual(None, ticket['timefield'])
+
+        args = args_base.copy()
+        args['field_timefield'] = '2016-01-02T12:34:56Z'
+        req = self._create_request(method='POST', path_info='/ticket/1',
+                                   args=args)
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.assertRaises(RequestDone, self.ticket_module.process_request, req)
+        ticket = Ticket(self.env, 1)
+        self.assertEqual(datetime(2016, 1, 2, 12, 34, 56, tzinfo=utc),
+                         ticket['timefield'])
 
 
 def suite():

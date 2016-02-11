@@ -15,6 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import csv
+from datetime import datetime
 from functools import partial
 import pkg_resources
 import re
@@ -1649,11 +1650,12 @@ class TicketModule(Component):
                 value = ticket[name]
                 field['timevalue'] = value
                 format = field.get('format', 'datetime')
-                field['rendered'] =  user_time(req, format_date_or_datetime,
-                                               format, value) if value else ''
-                field['dateinfo'] = value
-                field['edit'] = user_time(req, format_date_or_datetime,
-                                          format, value) if value else ''
+                if value and isinstance(value, datetime):
+                    field['rendered'] = user_time(req, format_date_or_datetime,
+                                                  format, value)
+                    field['dateinfo'] = value
+                    field['edit'] = user_time(req, format_date_or_datetime,
+                                              format, value)
                 locale = getattr(req, 'lc_time', None)
                 if format == 'date':
                     field['format_hint'] = get_date_format_hint(locale)
@@ -1806,9 +1808,11 @@ class TicketModule(Component):
             elif ticket.fields.by_name(field, {}).get('type') == 'time':
                 format = ticket.fields.by_name(field).get('format')
                 changes['old'] = user_time(req, format_date_or_datetime,
-                                           format, old) if old else ''
+                                           format, old) \
+                                 if old and isinstance(old, datetime) else ''
                 changes['new'] = user_time(req, format_date_or_datetime,
-                                           format, new) if new else ''
+                                           format, new) \
+                                 if new and isinstance(new, datetime) else ''
 
     def _render_property_diff(self, req, ticket, field, old, new,
                               resource_new=None):
