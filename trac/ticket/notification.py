@@ -34,8 +34,9 @@ from trac.notification.mail import (RecipientMatcher, create_message_id,
 from trac.notification.model import Subscription
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
+from trac.util.compat import md5
 from trac.util.datefmt import (datetime_now, format_date_or_datetime,
-                               get_timezone, utc)
+                               get_timezone, to_utimestamp, utc)
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import _, deactivate, reactivate
@@ -216,7 +217,7 @@ class TicketFormatter(Component):
     def _format_plaintext_batchmodify(self, event):
         notify = BatchTicketNotifyEmail(self.env)
         return notify.format(event.target, event.new_values, event.comment,
-                             event.action, event.author)
+                             event.action, event.author, event.time)
 
     def decorate_message(self, event, message, charset):
         if event.realm != 'ticket':
@@ -918,34 +919,41 @@ class BatchTicketNotifyEmail(NotifyEmail):
     def __init__(self, env):
         super(BatchTicketNotifyEmail, self).__init__(env)
 
-    def notify(self, tickets, new_values, comment, action, author):
+    def notify(self, tickets, new_values, comment, action, author,
+               modtime=None):
         """Send batch ticket change notification e-mail (untranslated)"""
+        tickets = self._sort_tickets_by_priority(tickets)
         with _translation_deactivated():
-            self._notify(tickets, new_values, comment, action, author)
+            self._notify(tickets, new_values, comment, action, author, modtime)
 
-    def _notify(self, tickets, new_values, comment, action, author):
-        self._prepare_body(tickets, new_values, comment, action, author)
+    def _notify(self, tickets, new_values, comment, action, author, modtime):
+        self._prepare_body(tickets, new_values, comment, action, author,
+                           modtime)
         subject = self.data['subject']
         super(BatchTicketNotifyEmail, self).notify(tickets, subject, author)
 
-    def format(self, tickets, new_values, comment, action, author):
+    def format(self, tickets, new_values, comment, action, author,
+               modtime=None):
         """Format batch ticket change notification e-mail (untranslated)"""
         t = deactivate()
         try:
-            self._prepare_body(tickets, new_values, comment, action, author)
+            self._prepare_body(tickets, new_values, comment, action, author,
+                               modtime)
             return self._format_body()
         finally:
             reactivate(t)
 
-    def _prepare_body(self, tickets, new_values, comment, action, author):
+    def _prepare_body(self, tickets, new_values, comment, action, author,
+                      modtime):
         self.tickets = tickets
         self.reporter = ''
         self.owner = ''
-        changes_descr = '\n'.join(['%s to %s' % (prop, val)
-                                   for (prop, val) in new_values.iteritems()])
-        tickets_descr = ', '.join(['#%s' % t for t in tickets])
+        self.modtime = modtime
+        changes_descr = '\n'.join('%s to %s' % (prop, val)
+                                  for prop, val in new_values.iteritems())
+        tickets_descr = ', '.join('#%s' % t for t in tickets)
         subject = self.format_subj(tickets_descr)
-        link = self.env.abs_href.query(id=','.join([str(t) for t in tickets]))
+        link = self.env.abs_href.query(id=','.join(str(t) for t in tickets))
         self.data.update({
             'tickets_descr': tickets_descr,
             'changes_descr': changes_descr,
@@ -955,6 +963,20 @@ class BatchTicketNotifyEmail(NotifyEmail):
             'subject': subject,
             'ticket_query_link': link,
         })
+
+    def _sort_tickets_by_priority(self, tickets):
+        with self.env.db_query as db:
+            tickets = [int(id_) for id_ in tickets]
+            holders = ','.join(['%s'] * len(tickets))
+            rows = db("""
+                SELECT id FROM ticket AS t
+                LEFT OUTER JOIN enum p
+                    ON p.type='priority' AND p.name=t.priority
+                WHERE t.id IN (%s)
+                ORDER BY COALESCE(p.value,'')='', %s, t.id
+                """ % (holders, db.cast('p.value', 'int')),
+                tickets)
+            return [row[0] for row in rows]
 
     def format_subj(self, tickets_descr):
         template = self.config.get('notification', 'batch_subject_template')
@@ -977,10 +999,24 @@ class BatchTicketNotifyEmail(NotifyEmail):
         all_cc_recipients = set()
         for t in tktids:
             to_recipients, cc_recipients, reporter, owner = \
-                get_ticket_notification_recipients(self.env, self.config, t)
+                get_ticket_notification_recipients(self.env, self.config, t,
+                                                   modtime=self.modtime)
             all_to_recipients.update(to_recipients)
             all_cc_recipients.update(cc_recipients)
         return list(all_to_recipients), list(all_cc_recipients)
+
+    def get_message_id(self, modtime=None):
+        s = '%s.%s.%d' % (self.env.project_url.encode('utf-8'),
+                          ','.join(map(str, self.tickets)),
+                          to_utimestamp(modtime))
+        dig = md5(s).hexdigest()
+        host = self.from_email[self.from_email.find('@') + 1:]
+        msgid = '<%03d.%s@%s>' % (len(s), dig, host)
+        return msgid
+
+    def send(self, torcpts, ccrcpts):
+        hdrs = {'Message-ID': self.get_message_id(self.modtime)}
+        super(BatchTicketNotifyEmail, self).send(torcpts, ccrcpts, hdrs)
 
 
 @contextmanager

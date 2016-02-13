@@ -294,10 +294,12 @@ class TicketModule(Component):
                     SELECT t.id, tc.time, tc.author, t.type, t.summary,
                            t.component, tc.field, tc.oldvalue, tc.newvalue
                     FROM ticket_change tc
-                        INNER JOIN ticket t ON t.id = tc.ticket
-                            AND tc.time>=%s AND tc.time<=%s
-                    ORDER BY tc.time, tc.ticket
-                    """ % (ts_start, ts_stop)):
+                    INNER JOIN ticket t ON
+                        t.id = tc.ticket AND tc.time>=%%s AND tc.time<=%%s
+                    LEFT OUTER JOIN enum p ON
+                        p.type='priority' AND p.name=t.priority
+                    ORDER BY tc.time, COALESCE(p.value,'')='', %s, tc.ticket
+                    """ % db.cast('p.value', 'int'), (ts_start, ts_stop)):
                 if not (oldvalue or newvalue):
                     # ignore empty change corresponding to custom field
                     # created (None -> '') or deleted ('' -> None)
@@ -421,7 +423,6 @@ class TicketModule(Component):
     def _render_batched_timeline_event(self, context, field, event):
         tickets, verb, info, summary, status, resolution, type, \
                 description, component, comment, cid = event[3]
-        tickets = sorted(tickets)
         if field == 'url':
             return context.href.query(id=','.join(str(t) for t in tickets))
         elif field == 'title':

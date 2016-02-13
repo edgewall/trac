@@ -31,7 +31,8 @@ from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
-from trac.ticket.notification import TicketChangeEvent, TicketNotifyEmail
+from trac.ticket.notification import BatchTicketNotifyEmail, \
+                                     TicketChangeEvent, TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import datetime_now, utc
 
@@ -1594,6 +1595,82 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.assertIn('Changes (by Thę Ußęr)', body)
 
 
+class BatchTicketNotificationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env = EnvironmentStub(default_data=True, path=self.env_path)
+        self.env.config.set('project', 'name', 'TracTest')
+        self.env.config.set('notification', 'smtp_enabled', 'true')
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        self.env.config.set('notification', 'always_notify_owner', 'false')
+        self.env.config.set('notification', 'always_notify_reporter', 'true')
+        self.env.config.set('notification', 'always_notify_updater', 'true')
+
+        self.tktids = []
+        with self.env.db_transaction as db:
+            for n in xrange(2):
+                for priority in ('', 'blah', 'blocker', 'critical', 'major',
+                                 'minor', 'trivial'):
+                    idx = len(self.tktids)
+                    owner = 'owner@example.org' if idx == 0 else 'anonymous'
+                    reporter = 'reporter@example.org' \
+                               if idx == 1 else 'anonymous'
+                    cc = 'cc1@example.org, cc2@example.org' if idx == 2 else ''
+                    ticket = Ticket(self.env)
+                    ticket['summary'] = 'Summary %s:%d' % (priority, idx)
+                    ticket['priority'] = priority
+                    ticket['owner'] = owner
+                    ticket['reporter'] = reporter
+                    ticket['cc'] = cc
+                    when = datetime(2001, 7, 12, 12, 34, idx, 0, utc)
+                    self.tktids.append(ticket.insert(when=when))
+        self.tktids.reverse()
+
+    def tearDown(self):
+        notifysuite.tear_down()
+        self.env.reset_db_and_disk()
+
+    def test_batchmod_notify(self):
+        self.assertEqual(1, min(self.tktids))
+        self.assertEqual(14, max(self.tktids))
+        new_values = {'milestone': 'milestone1'}
+        author = 'author@example.org'
+        comment = 'batch-modify'
+        when = datetime.now(utc)
+
+        with self.env.db_transaction:
+            for tktid in self.tktids:
+                t = Ticket(self.env, tktid)
+                for name, value in new_values.iteritems():
+                    t[name] = value
+                t.save_changes(author, comment, when=when)
+        btn = BatchTicketNotifyEmail(self.env)
+        btn.notify(self.tktids, new_values, 'comment', 'leave', author, when)
+        recipients = sorted(notifysuite.smtpd.get_recipients())
+        sender = notifysuite.smtpd.get_sender()
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+        body = body.splitlines()
+
+        self.assertEqual(['author@example.org', 'cc1@example.org',
+                          'cc2@example.org', 'reporter@example.org'],
+                         recipients)
+        self.assertEqual('trac@localhost', sender)
+        self.assertIn('Date', headers)
+        self.assertEqual('[TracTest] Batch modify: #3, #10, #4, #11, #5, #12, '
+                         '#6, #13, #7, #14,...', headers['Subject'])
+        self.assertEqual('"TracTest" <trac@localhost>', headers['From'])
+        self.assertIn('Message-ID', headers)
+        self.assertIn('@localhost', headers['Message-ID'])
+        self.assertIn('Batch modification to #3, #10, #4, #11, #5, #12, #6, '
+                      '#13, #7, #14, #1, #2, #8, #9 by author@example.org:',
+                      body)
+        self.assertIn('Tickets URL: <http://example.org/trac.cgi/query?id=3'
+                      '%2C10%2C4%2C11%2C5%2C12%2C6%2C13%2C7%2C14%2C1%2C2%2C8'
+                      '%2C9>', body)
+
+
 class NotificationTestSuite(unittest.TestSuite):
     """Thin test suite wrapper to start and stop the SMTP test server"""
 
@@ -1605,6 +1682,7 @@ class NotificationTestSuite(unittest.TestSuite):
         self.addTest(unittest.makeSuite(RecipientTestCase))
         self.addTest(unittest.makeSuite(NotificationTestCase))
         self.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
+        self.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
         self.remaining = self.countTestCases()
 
     def tear_down(self):
