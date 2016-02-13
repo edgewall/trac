@@ -315,11 +315,55 @@ class TicketModuleTestCase(unittest.TestCase):
 
         for f in data['fields']:
             if f['name'] == 'timefield':
-                self.assertNotIn('edit', f)
+                self.assertEqual('', f['edit'])
                 self.assertNotIn('rendered', f)
                 break
         else:
             self.fail('Missing timefield field')
+
+    def test_template_data_for_invalid_time_field_on_newticket(self):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        req = self._create_request(method='GET', path_info='/newticket')
+        req.args['timefield'] = 'invalid'
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        self.assertEqual('invalid', data['ticket']['timefield'])
+
+        for f in data['fields']:
+            if f['name'] == 'timefield':
+                self.assertEqual('invalid', f['edit'])
+                self.assertNotIn('rendered', f)
+                break
+        else:
+            self.fail('Missing timefield field')
+
+    def test_template_data_changes_for_time_field(self):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        dt1 = datetime(2015, 7, 8, tzinfo=utc)
+        dt2 = datetime(2015, 12, 11, tzinfo=utc)
+        with self.env.db_transaction:
+            self._insert_ticket(summary='Time fields',
+                                timefield=datetime_now(utc))
+            self.env.db_transaction("UPDATE ticket_custom SET value='invalid' "
+                                    "WHERE ticket=1 AND name='timefield'")
+            t = Ticket(self.env, 1)
+            t['timefield'] = dt1
+            t.save_changes('anonymous')
+            t = Ticket(self.env, 1)
+            t['timefield'] = dt2
+            t.save_changes('anonymous')
+
+        req = self._create_request(method='GET', path_info='/ticket/1')
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        changes = data['changes']
+        dt1_text = user_time(req, format_datetime, dt1)
+        dt2_text = user_time(req, format_datetime, dt2)
+        self.assertEqual(2, len(changes))
+        self.assertEqual('', changes[0]['fields']['timefield']['old'])
+        self.assertEqual(dt1_text, changes[0]['fields']['timefield']['new'])
+        self.assertEqual(dt1_text, changes[1]['fields']['timefield']['old'])
+        self.assertEqual(dt2_text, changes[1]['fields']['timefield']['new'])
 
     def test_submit_with_time_field(self):
         self.env.config.set('ticket-custom', 'timefield', 'time')

@@ -1650,12 +1650,14 @@ class TicketModule(Component):
                 value = ticket[name]
                 field['timevalue'] = value
                 format = field.get('format', 'datetime')
-                if value and isinstance(value, datetime):
+                if isinstance(value, datetime):
                     field['rendered'] = user_time(req, format_date_or_datetime,
                                                   format, value)
                     field['dateinfo'] = value
                     field['edit'] = user_time(req, format_date_or_datetime,
                                               format, value)
+                else:
+                    field['edit'] = value or ''
                 locale = getattr(req, 'lc_time', None)
                 if format == 'date':
                     field['format_hint'] = get_date_format_hint(locale)
@@ -1809,10 +1811,10 @@ class TicketModule(Component):
                 format = ticket.fields.by_name(field).get('format')
                 changes['old'] = user_time(req, format_date_or_datetime,
                                            format, old) \
-                                 if old and isinstance(old, datetime) else ''
+                                 if isinstance(old, datetime) else old or ''
                 changes['new'] = user_time(req, format_date_or_datetime,
                                            format, new) \
-                                 if new and isinstance(new, datetime) else ''
+                                 if isinstance(new, datetime) else new or ''
 
     def _render_property_diff(self, req, ticket, field, old, new,
                               resource_new=None):
