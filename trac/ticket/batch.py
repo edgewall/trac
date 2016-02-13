@@ -178,7 +178,7 @@ class BatchModifyModule(Component):
         tn = BatchTicketNotifyEmail(self.env)
         try:
             tn.notify(selected_tickets, new_values, comment, action,
-                      req.authname)
+                      req.authname, when)
         except Exception, e:
             self.log.error("Failure sending notification on ticket batch"
                     "change: %s", exception_to_unicode(e))
