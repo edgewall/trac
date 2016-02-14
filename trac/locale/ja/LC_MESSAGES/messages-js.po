@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2010-2015 Edgewall Software
+# Copyright (C) 2010-2016 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2010-2015.
+# Jun Omae <jun66j5@gmail.com>, 2010-2016.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.6\n"
+"Project-Id-Version: Trac 1.0.10\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2015-04-01 15:33+0000\n"
+"POT-Creation-Date: 2016-02-14 12:48+0000\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
