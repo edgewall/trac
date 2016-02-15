@@ -379,7 +379,8 @@ class Storage(object):
             codecs.lookup(git_fs_encoding)
 
             # setup conversion functions
-            self._fs_to_unicode = lambda s: s.decode(git_fs_encoding)
+            self._fs_to_unicode = lambda s: s.decode(git_fs_encoding,
+                                                     'replace')
             self._fs_from_unicode = lambda s: s.encode(git_fs_encoding)
         else:
             # pass bytestrings as-is w/o any conversion
