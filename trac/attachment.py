@@ -220,6 +220,8 @@ class AttachmentModule(Component):
                 data = self._do_save(req, attachment)
             elif action == 'delete':
                 self._do_delete(req, attachment)
+            else:
+                raise HTTPBadRequest(_("Invalid request arguments."))
         elif action == 'delete':
             data = self._render_confirm_delete(req, attachment)
         elif action == 'new':

@@ -14,10 +14,15 @@
 import unittest
 
 from trac.core import ComponentManager
+from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.tests.contentgen import random_sentence
-from trac.ticket.roadmap import *
-from trac.util.datefmt import datetime_now
+from trac.ticket.model import Ticket
+from trac.ticket.roadmap import (
+    DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
+    TicketGroupStats)
+from trac.util.datefmt import datetime_now, utc
+from trac.web.api import _RequestArgs, HTTPBadRequest, RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -145,9 +150,6 @@ class MilestoneModuleTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.req = Mock(args={}, chrome={'notices': []}, href=self.env.href,
-                        lc_time=locale_en, method=None, perm=MockPerm(),
-                        session={}, tz=utc)
         self.mmodule = MilestoneModule(self.env)
         self.terms = ['MilestoneAlpha', 'MilestoneBeta', 'MilestoneGamma']
         for term in self.terms + [' '.join(self.terms)]:
@@ -157,11 +159,34 @@ class MilestoneModuleTestCase(unittest.TestCase):
             m.description = random_sentence()
             m.insert()
 
+    def _create_request(self, authname='anonymous', **kwargs):
+        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': {}, 'authname': authname,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+              'form_token': None}
+        if 'args' in kwargs:
+            kw['args'].update(kwargs.pop('args'))
+        kw.update(kwargs)
+        def redirect(url, permanent=False):
+            raise RequestDone
+        return Mock(add_redirect_listener=lambda x: [].append(x),
+                    redirect=redirect, **kw)
+
     def tearDown(self):
         self.env.reset_db()
 
+    def test_invalid_post_request_raises_exception(self):
+        req = self._create_request(method='POST', action=None)
+
+        self.assertRaises(HTTPBadRequest,
+                          MilestoneModule(self.env).process_request, req)
+
     def test_get_search_filters(self):
-        filters = self.mmodule.get_search_filters(self.req)
+        req = self._create_request()
+        filters = self.mmodule.get_search_filters(req)
         filters = list(filters)
         self.assertEqual(1, len(filters))
         self.assertEqual(2, len(filters[0]))
@@ -169,12 +194,14 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual('Milestones', filters[0][1])
 
     def test_get_search_results_milestone_not_in_filters(self):
-        results = self.mmodule.get_search_results(self.req, self.terms, [])
+        req = self._create_request()
+        results = self.mmodule.get_search_results(req, self.terms, [])
         self.assertEqual([], list(results))
 
     def test_get_search_results_matches_all_terms(self):
+        req = self._create_request()
         milestone = Milestone(self.env, ' '.join(self.terms))
-        results = self.mmodule.get_search_results(self.req, self.terms,
+        results = self.mmodule.get_search_results(req, self.terms,
                                                   ['milestone'])
         results = list(results)
         self.assertEqual(1, len(results))
@@ -189,9 +216,9 @@ class MilestoneModuleTestCase(unittest.TestCase):
 
     def test_default_group_by_default(self):
         """Default `default_group_by` is `component`."""
-        self.req.args = {'id': 'milestone1'}
+        req = self._create_request(args={'id': 'milestone1'})
 
-        data = self.mmodule.process_request(self.req)[1]
+        data = self.mmodule.process_request(req)[1]
 
         self.assertIn('grouped_by', data)
         self.assertEqual('component', data['grouped_by'])
@@ -199,9 +226,9 @@ class MilestoneModuleTestCase(unittest.TestCase):
     def test_default_group_by(self):
         """Option `default_group_by` is set in configuration."""
         self.env.config.set('milestone', 'default_group_by', 'priority')
-        self.req.args = {'id': 'milestone1'}
+        req = self._create_request(args={'id': 'milestone1'})
 
-        data = self.mmodule.process_request(self.req)[1]
+        data = self.mmodule.process_request(req)[1]
 
         self.assertIn('grouped_by', data)
         self.assertEqual('priority', data['grouped_by'])

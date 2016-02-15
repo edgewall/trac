@@ -17,8 +17,8 @@ import unittest
 import trac.wiki.api
 import trac.wiki.formatter
 import trac.wiki.parser
-from trac.wiki.tests import formatter, macros, model, web_api, web_ui, \
-                            wikisyntax
+from trac.wiki.tests import (
+    formatter, macros, model, web_api, web_ui, wikisyntax)
 from trac.wiki.tests.functional import functionalSuite
 
 def suite():

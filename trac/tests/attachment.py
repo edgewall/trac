@@ -20,9 +20,10 @@ from StringIO import StringIO
 from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
-from trac.resource import Resource, resource_exists
-from trac.test import EnvironmentStub, Mock
+from trac.resource import IResourceManager, Resource, resource_exists
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util.datefmt import utc, to_utimestamp
+from trac.web.api import _RequestArgs, HTTPBadRequest, RequestDone
 
 
 hashes = {
@@ -272,14 +273,62 @@ class AttachmentTestCase(unittest.TestCase):
 class AttachmentModuleTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        class GenericResourceManager(Component):
+
+            implements(IResourceManager)
+
+            def get_resource_realms(self):
+                yield 'parent_realm'
+
+            def get_resource_url(self, resource, href, **kwargs):
+                pass
+
+            def get_resource_description(self, resource, format='default',
+                                         context=None, **kwargs):
+                pass
+
+            def resource_exists(self, resource):
+                return resource.id == 'parent_id'
+
+        self.env = EnvironmentStub(enable=(GenericResourceManager,))
+        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _create_request(self, authname='anonymous', **kwargs):
+        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
+              'href': self.env.href, 'abs_href': self.env.abs_href,
+              'tz': utc, 'locale': None, 'lc_time': locale_en,
+              'session': {}, 'authname': authname,
+              'chrome': {'notices': [], 'warnings': []},
+              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+              'form_token': None}
+        if 'args' in kwargs:
+            kw['args'].update(kwargs.pop('args'))
+        kw.update(kwargs)
+        def redirect(url, permanent=False):
+            raise RequestDone
+        return Mock(add_redirect_listener=lambda x: [].append(x),
+                    redirect=redirect, **kw)
+
+    def test_invalid_post_request_raises_exception(self):
+        path_info = '/attachment/parent_realm/parent_id/attachment_id'
+        attachment = Attachment(self.env, 'parent_realm', 'parent_id')
+        attachment.insert('attachment_id', StringIO(''), 0, 1)
+        req = self._create_request(method='POST', action=None,
+                                   path_info=path_info)
+        module = AttachmentModule(self.env)
+
+        self.assertTrue(module.match_request(req))
+        self.assertRaises(HTTPBadRequest, module.process_request, req)
 
     def test_attachment_parent_realm_raises_exception(self):
         """TracError is raised when 'attachment' is the resource parent
         realm.
         """
-        req = Mock(path_info='/attachment/attachment/parent_id/attachment_id',
-                   args={})
+        path_info = '/attachment/attachment/parent_id/attachment_id'
+        req = self._create_request(path_info=path_info)
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))

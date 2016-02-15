@@ -25,7 +25,7 @@ from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util.datefmt import utc
-from trac.web.api import _RequestArgs, Request, RequestDone
+from trac.web.api import _RequestArgs, HTTPBadRequest, Request, RequestDone
 from trac.web.chrome import Chrome
 from trac.web.href import Href
 import trac
@@ -553,6 +553,12 @@ class ExecuteReportTestCase(unittest.TestCase):
         data = ReportModule(self.env).process_request(req)[1]
 
         self.assertFalse(data['asc'])
+
+    def test_invalid_post_request_raises_exception(self):
+        req = self._create_request(method='POST', action=None)
+
+        self.assertRaises(HTTPBadRequest,
+                          ReportModule(self.env).process_request, req)
 
 
 class NavigationContributorTestCase(unittest.TestCase):

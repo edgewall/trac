@@ -34,7 +34,7 @@ from trac.util.presentation import Paginator
 from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
                             sub_vars_re, to_unicode)
 from trac.util.translation import _, tag_
-from trac.web.api import IRequestHandler, RequestDone
+from trac.web.api import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, Chrome,
                              add_ctxtnav, add_link, add_notice, add_script,
                              add_stylesheet, add_warning, auth_link,
@@ -167,6 +167,8 @@ class ReportModule(Component):
                 self._do_delete(req, id)
             elif action == 'edit':
                 self._do_save(req, id)
+            else:
+                raise HTTPBadRequest(_("Invalid request arguments."))
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
             data = self._render_editor(req, id, action == 'copy')
