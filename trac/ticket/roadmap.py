@@ -42,7 +42,7 @@ from trac.ticket.batch import BatchTicketNotifyEmail
 from trac.ticket.model import Milestone, MilestoneCache, Ticket, \
                               group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.web import IRequestHandler, RequestDone
+from trac.web.api import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor,
                              add_link, add_notice, add_script, add_stylesheet,
                              add_warning, auth_link, prevnext_nav, web_context)
@@ -689,6 +689,8 @@ class MilestoneModule(Component):
                 return self._do_save(req, milestone)
             elif action == 'delete':
                 self._do_delete(req, milestone)
+            else:
+                raise HTTPBadRequest(_("Invalid request arguments."))
         elif action in ('new', 'edit'):
             return self._render_editor(req, milestone)
         elif action == 'delete':
