@@ -297,16 +297,6 @@ class NotificationTestCase(unittest.TestCase):
         ticket.insert()
         return ticket
 
-    def _insert_user(self, user):
-        with self.env.db_transaction as db:
-            db.execute("""
-                INSERT INTO session VALUES (%s,%s,0)
-                """, (user[0], user[3]))
-            db.executemany("""
-                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
-                """, [(user[0], user[3], 'name', user[1]),
-                      (user[0], user[3], 'email', user[2])])
-
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
         ticket = Ticket(self.env)
@@ -934,10 +924,10 @@ Resolution:  fixed                   |   Keywords:"""
         self._validate_props_format(formatted, ticket)
 
     def test_props_format_show_full_names(self):
-        self._insert_user(('joefoo', u'Joę Fœœ',
-                           'joe@foobar.foo.bar.example.org', 1))
-        self._insert_user(('joebar', u'Jœe Bær',
-                           'joe.bar@foobar.foo.bar.example.org', 1))
+        self.env.insert_known_users([
+            ('joefoo', u'Joę Fœœ', 'joe@foobar.foo.bar.example.org'),
+            ('joebar', u'Jœe Bær', 'joe.bar@foobar.foo.bar.example.org')
+        ])
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['summary'] = 'This is a summary'
@@ -1473,11 +1463,13 @@ Security sensitive:  0                           |          Blocking:
 
     def test_property_change_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        self._insert_user(('user0', u'Ußęr0', 'user0@d.org', 1))
-        self._insert_user(('user1', u'Ußęr1', 'user1@d.org', 1))
-        self._insert_user(('user2', u'Ußęr2', 'user2@d.org', 1))
-        self._insert_user(('user3', u'Ußęr3', 'user3@d.org', 1))
-        self._insert_user(('user4', u'Ußęr4', 'user4@d.org', 1))
+        self.env.insert_known_users([
+            ('user0', u'Ußęr0', 'user0@d.org'),
+            ('user1', u'Ußęr1', 'user1@d.org'),
+            ('user2', u'Ußęr2', 'user2@d.org'),
+            ('user3', u'Ußęr3', 'user3@d.org'),
+            ('user4', u'Ußęr4', 'user4@d.org'),
+        ])
         ticket = self._insert_ticket(owner='user1', reporter='user2',
                                      cc='user3, user4')
         ticket['owner'] = 'user2'
@@ -1496,7 +1488,9 @@ Security sensitive:  0                           |          Blocking:
 
     def test_comment_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        self._insert_user(('user', u'Thę Ußęr', 'user@domain.org', 1))
+        self.env.insert_known_users([
+            ('user', u'Thę Ußęr', 'user@domain.org')
+        ])
         ticket = self._insert_ticket()
         ticket.save_changes('user', "The comment")
 
@@ -1532,16 +1526,6 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         attachment.author = author
         attachment.insert('foo.txt', StringIO(), 1)
         return attachment
-
-    def _insert_user(self, user):
-        with self.env.db_transaction as db:
-            db.execute("""
-                INSERT INTO session VALUES (%s,%s,0)
-                """, (user[0], user[3]))
-            db.executemany("""
-                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
-                """, [(user[0], user[3], 'name', user[1]),
-                      (user[0], user[3], 'email', user[2])])
 
     def test_ticket_notify_attachment_enabled_attachment_added(self):
         self._insert_attachment('user@example.com')
@@ -1586,7 +1570,9 @@ class AttachmentNotificationTestCase(unittest.TestCase):
 
     def test_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
-        self._insert_user(('user', u'Thę Ußęr', 'user@domain.org', 1))
+        self.env.insert_known_users([
+            ('user', u'Thę Ußęr', 'user@domain.org')
+        ])
         self._insert_attachment('user')
 
         message = notifysuite.smtpd.get_message()

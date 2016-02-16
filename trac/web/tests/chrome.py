@@ -600,16 +600,6 @@ user2 =
     def tearDown(self):
         os.remove(self.authz_file)
 
-    def _insert_user(self, user):
-        with self.env.db_transaction as db:
-            db.execute("""
-                INSERT INTO session VALUES (%s,%s,0)
-                """, (user[0], user[3]))
-            db.executemany("""
-                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
-                """, [(user[0], user[3], 'name', user[1]),
-                      (user[0], user[3], 'email', user[2])])
-
     def test_subject_is_anonymous(self):
         format_author = Chrome(self.env).format_author
         self.assertEqual('anonymous', format_author(None, 'anonymous'))
@@ -660,8 +650,10 @@ user2 =
     def test_show_full_names_true(self):
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
-        self._insert_user(('user1', 'User One', 'user1@example.org', 1))
-        self._insert_user(('user2', None, None, 1))
+        self.env.insert_known_users([
+            ('user1', 'User One', 'user1@example.org'),
+            ('user2', None, None)
+        ])
 
         self.assertEqual('User One', format_author(None, 'user1'))
         self.assertEqual('user2', format_author(None, 'user2'))
@@ -698,8 +690,10 @@ user2 =
                    perm=PermissionCache(self.env, 'user1'))
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
-        self._insert_user(('user1', 'User One', 'user1@example.org', 1))
-        self._insert_user(('user2', None, None, 1))
+        self.env.insert_known_users([
+            ('user1', 'User One', 'user1@example.org'),
+            ('user2', None, None)
+        ])
 
         self.assertEqual('User One', format_author(None, 'user1'))
         self.assertEqual('user2', format_author(None, 'user2'))

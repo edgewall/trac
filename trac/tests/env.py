@@ -223,7 +223,7 @@ class KnownUsersTestCase(unittest.TestCase):
     def test_get_known_users_is_cached(self):
         self.env.get_known_users()
         self.env.get_known_users(as_dict=True)
-        self._insert_user(('user4', None, None, 1))
+        self.env.insert_known_users([('user4', None, None)])
 
         users_list = list(self.env.get_known_users())
         users_dict = self.env.get_known_users(as_dict=True)
@@ -239,8 +239,8 @@ class KnownUsersTestCase(unittest.TestCase):
     def test_invalidate_known_users_cache(self):
         self.env.get_known_users()
         self.env.get_known_users(as_dict=True)
-        user = ('user4', 'User Four', 'user4@example.net', 1)
-        self._insert_user(user)
+        user = ('user4', 'User Four', 'user4@example.net')
+        self.env.insert_known_users([user])
         self.expected.append(user[:3])
 
         self.env.invalidate_known_users_cache()
