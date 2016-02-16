@@ -705,21 +705,28 @@ def get_module_path(module):
             break
     return base_path
 
+
 def get_sources(path):
     """Return a dictionary mapping Python module source paths to the
     distributions that contain them.
     """
     sources = {}
     for dist in find_distributions(path, only=True):
-        try:
-            toplevels = dist.get_metadata('top_level.txt').splitlines()
-            toplevels = [each + '/' for each in toplevels]
-            files = dist.get_metadata('SOURCES.txt').splitlines()
-            sources.update((src, dist) for src in files
-                           if any(src.startswith(toplevel)
-                                  for toplevel in toplevels))
-        except (KeyError, IOError):
-            pass    # Metadata not found
+        if not dist.has_metadata('top_level.txt'):
+            continue
+        toplevels = dist.get_metadata_lines('top_level.txt')
+        toplevels = [top + '/' for top in toplevels]
+        if dist.has_metadata('SOURCES.txt'):  # *.egg-info/SOURCES.txt
+            sources.update((src, dist)
+                           for src in dist.get_metadata_lines('SOURCES.txt')
+                           if any(src.startswith(top) for top in toplevels))
+            continue
+        if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
+            reader = csv.reader(StringIO(dist.get_metadata('RECORD')))
+            sources.update((row[0], dist)
+                           for row in reader if any(row[0].startswith(top)
+                                                    for top in toplevels))
+            continue
     return sources
 
 
