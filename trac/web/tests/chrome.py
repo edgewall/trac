@@ -686,8 +686,6 @@ user2 =
         self.assertEqual(u'user@\u2026', author)
 
     def test_show_full_names_true_actor_has_email_view(self):
-        req = Mock(Request, authname='user1',
-                   perm=PermissionCache(self.env, 'user1'))
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
         self.env.insert_known_users([
