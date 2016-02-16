@@ -265,7 +265,7 @@ class TicketModule(Component):
             info = ''
             if status == 'edit':
                 if 'ticket_details' in filters:
-                    if len(fields) > 0:
+                    if fields:
                         labels = [tag.i(field_labels.get(k, k.capitalize()))
                                   for k in fields.keys()]
                         info = tagn_("%(labels)s changed",
