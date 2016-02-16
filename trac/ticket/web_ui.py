@@ -1652,9 +1652,6 @@ class TicketModule(Component):
                 field['timevalue'] = value
                 format = field.get('format', 'datetime')
                 if isinstance(value, datetime):
-                    field['rendered'] = user_time(req, format_date_or_datetime,
-                                                  format, value)
-                    field['dateinfo'] = value
                     field['edit'] = user_time(req, format_date_or_datetime,
                                               format, value)
                 else:

@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import unittest
 
 from trac.core import TracError
@@ -21,6 +21,7 @@ from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
+from trac.util.html import plaintext
 from trac.web.api import RequestDone, _RequestArgs
 from trac.web.chrome import Chrome
 from trac.web.session import DetachedSession
@@ -258,7 +259,6 @@ class TicketModuleTestCase(unittest.TestCase):
         for f in data['fields']:
             if f['name'] == 'timefield':
                 self.assertEqual(expected, f['edit'])
-                self.assertEqual(expected, f['rendered'])
                 break
         else:
             self.fail('Missing timefield field')
@@ -295,7 +295,6 @@ class TicketModuleTestCase(unittest.TestCase):
         for f in data['fields']:
             if f['name'] == 'timefield':
                 self.assertEqual(expected, f['edit'])
-                self.assertEqual(expected, f['rendered'])
                 break
         else:
             self.fail('Missing timefield field')
@@ -316,7 +315,6 @@ class TicketModuleTestCase(unittest.TestCase):
         for f in data['fields']:
             if f['name'] == 'timefield':
                 self.assertEqual('', f['edit'])
-                self.assertNotIn('rendered', f)
                 break
         else:
             self.fail('Missing timefield field')
@@ -332,7 +330,6 @@ class TicketModuleTestCase(unittest.TestCase):
         for f in data['fields']:
             if f['name'] == 'timefield':
                 self.assertEqual('invalid', f['edit'])
-                self.assertNotIn('rendered', f)
                 break
         else:
             self.fail('Missing timefield field')
@@ -400,6 +397,43 @@ class TicketModuleTestCase(unittest.TestCase):
         ticket = Ticket(self.env, 1)
         self.assertEqual(datetime(2016, 1, 2, 12, 34, 56, tzinfo=utc),
                          ticket['timefield'])
+
+    def _test_render_time_field(self, format, req, value, expected):
+        self.env.config.set('ticket-custom', 'timefield', 'time')
+        self.env.config.set('ticket-custom', 'timefield.format', format)
+
+        def timefield_text():
+            self.assertTrue(self.ticket_module.match_request(req))
+            rv = self.ticket_module.process_request(req)
+            stream = Chrome(self.env).render_template(req, rv[0], rv[1], rv[2],
+                                                      fragment=True)
+            stream = stream.select('//td[@headers="h_timefield"]')
+            return stream.render('text', encoding=None).strip()
+
+        self._insert_ticket(summary='Time fields')
+        self.assertEqual('', timefield_text())
+
+        ticket = Ticket(self.env, 1)
+        ticket['timefield'] = value
+        ticket.save_changes('anonymous')
+        self.assertEqual(expected, timefield_text())
+
+    def test_render_time_field_date(self):
+        req = self._create_request(method='GET', path_info='/ticket/1')
+        value = datetime(2015, 7, 8, tzinfo=utc)
+        expected = user_time(req, format_date, value)
+        self._test_render_time_field('date', req, value, expected)
+
+    def test_render_time_field_datetime(self):
+        req = self._create_request(method='GET', path_info='/ticket/1')
+        value = datetime(2015, 7, 8, 12, 34, 56, tzinfo=utc)
+        expected = user_time(req, format_datetime, value)
+        self._test_render_time_field('datetime', req, value, expected)
+
+    def test_render_time_field_relative(self):
+        req = self._create_request(method='GET', path_info='/ticket/1')
+        value = datetime_now(utc) - timedelta(days=1)
+        self._test_render_time_field('relative', req, value, '24 hours ago')
 
 
 def suite():

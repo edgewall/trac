@@ -89,8 +89,10 @@ Arguments:
             colspan="${3 if fullrow else None}">
           <py:if test="field">
             <py:choose py:with="value = ticket[field.name]">
-              <py:when test="'dateinfo' in field">${pretty_dateinfo(field.dateinfo, field.format)}</py:when>
               <py:when test="'rendered' in field">${field.rendered}</py:when>
+              <py:when test="field.type == 'time'">
+                ${pretty_dateinfo(value, field.format, dateonly=field.format != 'relative') if value else None}
+              </py:when>
               <py:when test="field.type == 'text' and field.format == 'wiki'">
                 ${wiki_to_oneliner(context, value) if value else None}
               </py:when>
