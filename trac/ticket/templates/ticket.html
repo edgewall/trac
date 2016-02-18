@@ -272,8 +272,10 @@ ${value}</textarea>
                                  checked="${value == option or None}" />
                           ${option}
                         </label>
-                        <input py:when="'time'" type="text" id="field-${field.name}" title="${field.format_hint}"
-                               name="field_${field.name}" value="${field.edit}" class="trac-${field.format}picker" />
+                        <input py:when="'time'"
+                               type="text" id="field-${field.name}" title="${field.format_hint}"
+                               name="field_${field.name}" value="${field.edit}"
+                               class="trac-${'date' if field.format == 'date' else 'datetime'}picker" />
                         <py:otherwise><!--! Text input fields -->
                           <py:choose>
                             <!--! Special case for Cc: field -->
