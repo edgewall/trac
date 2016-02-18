@@ -4,10 +4,10 @@ September 7, 2012
 
 Highlights
 ----------
- * Refreshed user interface
- * Git support
- * Branching structure displayed in the revision log
- * Ticket batch modification support
+* Refreshed user interface
+* Git support
+* Branching structure displayed in the revision log
+* Ticket batch modification support
 
 Detailed User Visible Changes
 -----------------------------
