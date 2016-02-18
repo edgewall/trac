@@ -26,4 +26,3 @@ Otherwise, the primary source of information is the main Trac web site:
 We hope you enjoy it,
 
 /The Trac Team
-

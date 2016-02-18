@@ -649,7 +649,7 @@ class Mimeview(Component):
         """)
 
     mime_map_patterns = ListOption('mimeviewer', 'mime_map_patterns',
-        'text/plain:README|INSTALL(?!\.rst)|COPYING.*',
+        'text/plain:README(?!\.rst)|INSTALL(?!\.rst)|COPYING.*',
         doc="""List of additional MIME types associated to filename patterns.
         Mappings are comma-separated, and each mapping consists of a MIME type
         and a Python regexp used for matching filenames, separated by a colon
