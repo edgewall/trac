@@ -373,15 +373,29 @@ class EnvironmentStub(Environment):
 
     # other utilities
 
-    def insert_known_users(self, users):
+    def insert_users(self, users):
+        """Insert a tuple representing a user session to the
+        `session` and `session_attributes` tables.
+
+        The tuple can be length 3 with entries username, name and
+        email, in which case an authenticated user is assumed. The
+        tuple can also be length 4, with the last entry specifying
+        `1` for an authenticated user or `0` for an unauthenticated
+        user.
+        """
         with self.env.db_transaction as db:
-            for username, name, email in users:
+            for row in users:
+                if len(row) == 3:
+                    username, name, email = row
+                    authenticated = 1
+                else:  # len(row) == 4
+                    username, name, email, authenticated = row
                 db("INSERT INTO session VALUES (%s, %s, %s)",
-                   (username, 1, int(time_now())))
+                   (username, authenticated, int(time_now())))
                 db("INSERT INTO session_attribute VALUES (%s,%s,'name',%s)",
-                   (username, 1, name))
+                   (username, authenticated, name))
                 db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
-                   (username, 1, email))
+                   (username, authenticated, email))
 
     # overridden
 

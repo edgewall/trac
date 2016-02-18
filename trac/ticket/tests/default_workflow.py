@@ -351,7 +351,7 @@ class RestrictOwnerTestCase(unittest.TestCase):
         self.env.config.set('ticket', 'restrict_owner', True)
 
         self.perm_sys = PermissionSystem(self.env)
-        self.env.insert_known_users([
+        self.env.insert_users([
             ('user1', '', ''), ('user2', '', ''),
             ('user3', '', ''), ('user4', '', '')
         ])

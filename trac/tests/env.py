@@ -185,24 +185,11 @@ class KnownUsersTestCase(unittest.TestCase):
             ('joe', None, 'joe@example.com', 1),
             ('tom', 'Tom', 'tom@example.com', 1)
         ]
-        self.expected = []
-        for user in users:
-            self._insert_user(user)
-            if user[3] == 1:
-                self.expected.append(user[:3])
+        self.env.insert_users(users)
+        self.expected = [user[:3] for user in users if user[3] == 1]
 
     def tearDown(self):
         self.env.reset_db()
-
-    def _insert_user(self, user):
-        with self.env.db_transaction as db:
-            db.execute("""
-                INSERT INTO session VALUES (%s,%s,0)
-                """, (user[0], user[3]))
-            db.executemany("""
-                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
-                """, [(user[0], user[3], 'name', user[1]),
-                      (user[0], user[3], 'email', user[2])])
 
     def test_get_known_users_as_list_of_tuples(self):
         users = list(self.env.get_known_users())
@@ -223,7 +210,7 @@ class KnownUsersTestCase(unittest.TestCase):
     def test_get_known_users_is_cached(self):
         self.env.get_known_users()
         self.env.get_known_users(as_dict=True)
-        self.env.insert_known_users([('user4', None, None)])
+        self.env.insert_users([('user4', None, None)])
 
         users_list = list(self.env.get_known_users())
         users_dict = self.env.get_known_users(as_dict=True)
@@ -240,7 +227,7 @@ class KnownUsersTestCase(unittest.TestCase):
         self.env.get_known_users()
         self.env.get_known_users(as_dict=True)
         user = ('user4', 'User Four', 'user4@example.net')
-        self.env.insert_known_users([user])
+        self.env.insert_users([user])
         self.expected.append(user[:3])
 
         self.env.invalidate_known_users_cache()

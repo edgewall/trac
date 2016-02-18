@@ -89,8 +89,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_reporter_and_owner_full_name_is_displayed(self):
         """Full name of reporter and owner are used in ticket properties."""
-        self.env.insert_known_users([('user1', 'User One', None),
-                                     ('user2', 'User Two', None)])
+        self.env.insert_users([('user1', 'User One', None),
+                               ('user2', 'User Two', None)])
         tkt_id = self._insert_ticket(reporter='user1', owner='user2')
         req = self._create_request(authname='user2', method='GET',
                                    args={'id': tkt_id, 'replyto': '1'})
@@ -121,7 +121,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_quoted_reply_author_full_name_is_displayed(self):
         """Full name of reply-to author is used in quoted reply."""
-        self.env.insert_known_users([('author', 'The Author',
+        self.env.insert_users([('author', 'The Author',
                                      'author@example.net')])
         tkt = self._create_ticket_with_change({}, {'comment': 'the comment'},
                                               'author')

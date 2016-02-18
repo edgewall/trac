@@ -650,7 +650,7 @@ user2 =
     def test_show_full_names_true(self):
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
-        self.env.insert_known_users([
+        self.env.insert_users([
             ('user1', 'User One', 'user1@example.org'),
             ('user2', None, None)
         ])
@@ -688,7 +688,7 @@ user2 =
     def test_show_full_names_true_actor_has_email_view(self):
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_full_names', True)
-        self.env.insert_known_users([
+        self.env.insert_users([
             ('user1', 'User One', 'user1@example.org'),
             ('user2', None, None)
         ])

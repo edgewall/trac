@@ -166,8 +166,8 @@ class TicketSystemTestCase(unittest.TestCase):
 
     def test_get_allowed_owners_restrict_owner_true(self):
         self.env.config.set('ticket', 'restrict_owner', True)
-        self.env.insert_known_users([('user3', None, None),
-                                     ('user1', None, None)])
+        self.env.insert_users([('user3', None, None),
+                               ('user1', None, None)])
         self.perm.grant_permission('user4', 'TICKET_MODIFY')
         self.perm.grant_permission('user3', 'TICKET_MODIFY')
         self.perm.grant_permission('user2', 'TICKET_VIEW')
