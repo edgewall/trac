@@ -127,11 +127,11 @@ def parse_args():
 
 
 def download_default_pages(names, prefix):
-    from httplib import HTTPConnection
+    from httplib import HTTPSConnection
     host = 'trac.edgewall.org'
     if prefix and not prefix.endswith('/'):
         prefix += '/'
-    conn = HTTPConnection(host)
+    conn = HTTPSConnection(host)
     for name in names:
         if name in ('WikiStart', 'SandBox'):
             continue
