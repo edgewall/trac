@@ -1,29 +1,29 @@
-= Syntax Coloring of Source Code =
+[[PageOutline(2-5,Contents,pullout)]]
+
+= Syntax Coloring of Source Code
+
+
 Trac supports language-specific syntax highlighting of source code within wiki formatted text in [WikiProcessors#CodeHighlightingSupport wiki processors] blocks and in the [TracBrowser repository browser].
 
 To do this, Trac uses external libraries with support for a great number of programming languages.
 
 Currently Trac supports syntax coloring using one or more of the following packages:
 
- * [http://pygments.org/ Pygments], by far the preferred system, as it covers a wide range of programming languages and other structured texts and is actively supported
- * [http://www.codento.com/people/mtr/genscript/ GNU Enscript], commonly available on Unix but somewhat unsupported on Windows //(use is deprecated)//
- * [http://silvercity.sourceforge.net/ SilverCity], legacy system, some versions can be problematic //(use is deprecated)//
+ * '''[http://pygments.org/ Pygments]''', the preferred system, as it covers a wide range of programming languages and other structured texts and is actively supported.
+ * [http://www.codento.com/people/mtr/genscript/ GNU Enscript], commonly available on Unix, and has an [http://gnuwin32.sourceforge.net/packages/enscript.htm unsupported version] on Windows; use is deprecated.
+ * [http://silvercity.sourceforge.net/ SilverCity], legacy system, some versions can be problematic; use is deprecated.
 
+To activate syntax coloring, simply install either one (or more) of these packages. If none of these packages is available, Trac will display the data as plain text. 
 
-To activate syntax coloring, simply install either one (or more) of these packages (see [#ExtraSoftware] section below).
-If none of these packages is available, Trac will display the data as plain text. 
+== About Pygments
 
+Pygments is a highlighting library implemented in pure Python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
 
-=== About Pygments ===
+The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of your TracIni file. The default style can be overridden by setting a Style preference on the [/prefs/pygments preferences page]. 
 
-[http://pygments.org/ Pygments] is a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
+The list below contains only the most commonly used processors and the [http://pygments.org/docs/lexers/ list of supported Pygments lexers] is growing weekly.
 
-The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be overridden by setting a Style preference on the [/prefs/pygments preferences page]. 
-
-It's very likely that the list below is outdated because the list of supported pygments lexers is growing weekly. Just have a look at the page of [http://pygments.org/docs/lexers/ supported lexers] on the pygments webpage.
-
-
-== Syntax Coloring Support ==
+== Syntax Coloring Support
 
 === Known MIME Types
 
@@ -31,11 +31,11 @@ It's very likely that the list below is outdated because the list of supported p
 
 Note that the rich content may be directly //rendered// instead of syntax highlighted. This usually depends on which auxiliary packages are installed and on which components are activated in your setup. For example a `text/x-rst` document will be rendered via `docutils` if it is installed and the `trac.mimeview.rst.ReStructuredTextRenderer` is not disabled, and will be syntax highlighted otherwise.
 
-In a similar way, a document with the mimetype `text/x-trac-wiki` is rendered using the Trac wiki formatter, unless the `trac.mimeview.api.WikiTextRenderer` component is disabled.
+Similarly, a document with the mimetype `text/x-trac-wiki` is rendered using the Trac wiki formatter, unless the `trac.mimeview.api.WikiTextRenderer` component is disabled.
 
-HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in the TracIni (those settings are present in multiple sections, as there are different security concerns depending where the document comes from). If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
+HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in your TracIni file. Those settings are present in multiple sections, as there are different security concerns depending where the document comes from. If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
 
-If a mimetype property such as 'svn:mime-type' is set to 'text/plain', there is no coloring even if file is known type like 'java'.
+If a mimetype property such as `svn:mime-type` is set to `text/plain`, there is no coloring even if the file is of a known type, like `java`.
 
 === List of Languages Supported, by Highlighter #language-supported
 
@@ -94,21 +94,14 @@ This list is only indicative.
 || XML             ||  ✓              ||                 ||  ✓  ||
 
 
-
 ''[=#a1 (1)] Not included in the Enscript distribution.  Additional highlighting rules can be obtained for
 [http://neugierig.org/software/ruby/ Ruby],
 [http://wiki.hasno.info/index.php/Csharp.st C#],
-[http://wiki.hasno.info/index.php/F90.st Fortran 90x/2003]
+[http://wiki.hasno.info/index.php/F90.st Fortran 90x/2003].
 
-''[=#a2 (2)] since Silvercity 0.9.7 released on 2006-11-23
+''[=#a2 (2)] since Silvercity 0.9.7 released on 2006-11-23.
 
 ''[=#a3 (3)] By default `.m` files are considered Objective-C files. In order to treat `.m` files as MATLAB files, add "text/matlab:m" to the "mime_map" setting in the [wiki:TracIni#mimeviewer-section "[mimeviewer] section of trac.ini"].
-
-== Extra Software ==
- * GNU Enscript — http://www.gnu.org/software/enscript/
- * GNU Enscript for Windows — http://gnuwin32.sourceforge.net/packages/enscript.htm
- * !SilverCity — http://silvercity.sf.net/
- * **Pygments — http://pygments.org/**
 
 ----
 See also: WikiProcessors, WikiFormatting, TracWiki, TracBrowser

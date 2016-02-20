@@ -24,9 +24,9 @@ Plugins can also consist of a single `.py` file dropped directly into either the
 
 == Installing a Trac plugin
 
-=== For a single project
+The instructions below are applicable to a plugin packaged as an egg. Plugins implemented as a single `py` file should be downloaded and copied to the [TracEnvironment project environment] `plugins` directory or the [TracIni#GlobalConfiguration global shared] plugins directory.
 
-Plugins are typically packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are .zip archives with the file extension `.egg`.
+=== For a single project
 
 If you have downloaded a source distribution of a plugin, and want to build the `.egg` file:
 

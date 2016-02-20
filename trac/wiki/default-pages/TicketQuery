@@ -105,13 +105,21 @@ A more compact representation without the ticket summaries is:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-Finally, if you wish to receive only the number of defects that match the query, use the `count` parameter:
+If you wish to receive only the number of defects that match the query, use the `count` parameter:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
 }}}
 
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
+A graphical use of the macro is with the `format=progress` attribute:
+{{{
+[[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
+}}}
+
+For example for one of the upcoming milestones, bars are shown by ticket type:
+[[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
 
 ----
 See also: TracQuery, TracTickets, TracReports, TracGuide

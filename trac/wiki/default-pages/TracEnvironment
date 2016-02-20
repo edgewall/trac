@@ -1,9 +1,9 @@
 = The Trac Environment
 
 [[TracGuideToc]]
-[[PageOutline]]
+[[PageOutline(2-5,Contents,pullout)]]
 
-Trac uses a directory structure and a database for storing project data. The directory is referred to as the environment.
+Trac uses a directory structure and a database for storing project data. The directory is referred to as the '''environment'''.
 
 == Creating an Environment
 
@@ -27,6 +27,13 @@ $ trac-admin /path/to/myproject initenv
  - Also, it seems that project names with spaces can be problematic for authentication, see [trac:#7163].
 
  - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment] before being able to use it.
+
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Caveat:** don't confuse the //Trac environment directory// with the //source code repository directory//.
+
+This is a common beginners' mistake.
+It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory structure, but those are two disjoint entities and they are not and ''must not'' be located at the same place.
+}}}
 
 == Database Connection Strings
 
@@ -75,7 +82,7 @@ $ createdb -U postgres -O tracuser -E UTF8 trac
 
 When running `createuser` you will be prompted for the password for the user 'tracuser'. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a Trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command. Also note that the database should be created as UTF8. LATIN1 encoding causes errors, because of Trac's use of unicode. SQL_ASCII also seems to work.
 
-Under some default configurations (Debian) one will have run the `createuser` and `createdb` scripts as the `postgres` user:
+Under some default configurations (Debian), run the `createuser` and `createdb` scripts as the `postgres` user:
 {{{#!sh
 $ sudo su - postgres -c 'createuser -U postgres -S -D -R -E -P tracuser'
 $ sudo su - postgres -c 'createdb -U postgres -O tracuser -E UTF8 trac'
@@ -137,11 +144,6 @@ An environment directory will usually consist of the following files and directo
  * `plugins` - Environment-specific [wiki:TracPlugins plugins].
  * `templates` - Custom Genshi environment-specific templates.
   * `site.html` - Method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance.
-
-=== Caveat: don't confuse a ''Trac environment directory'' with the ''source code repository directory'' #Caveat
-
-This is a common beginners' mistake.
-It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory structure, but those are two disjoint entities and they are not and ''must not'' be located at the same place.
 
 ----
 See also: TracAdmin, TracBackup, TracIni, TracGuide

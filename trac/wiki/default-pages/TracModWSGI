@@ -292,14 +292,23 @@ Some common problems with SSPI authentication: [trac:#1055], [trac:#1168] and [t
 See also [trac:TracOnWindows/Advanced].
 
 === Using CA !SiteMinder Authentication
-Setup CA !SiteMinder to protect your Trac login URL (e.g. /trac/login).  Then modify the trac.wsgi script generated using `trac-admin <env> deploy <dir>` to add the following lines, which extract the HTTP_SM_USER variable and set it to REMOTE_USER:
+Setup CA !SiteMinder to protect your Trac login URL (e.g. `/trac/login`).  Also, make sure the policy is set to include the HTTP_REMOTE_USER variable.  If your site allows it, you can set this in LocalConfig.conf:
+{{{#!apache
+RemoteUserVar="WHATEVER_IT_SHOULD_BE"
+SetRemoteUser="YES"
+}}}
+The specific variable is site-dependent.  Ask your site administrator.  If your site does not allow the use of LocalConfig.conf for security reasons, have your site administrator set the policy on the server to set REMOTE_USER.
+
+Also add a !LogOffUri parameter to the agent configuration (e.g. `/trac/logout`).
+
+Then modify the trac.wsgi script generated using `trac-admin <env> deploy <dir>` to add the following lines, which extract the `HTTP_REMOTE_USER` variable and set it to `REMOTE_USER`:
 
 {{{#!python
 def application(environ, start_request): 
     # Set authenticated username on CA SiteMinder to REMOTE_USER variable 
     # strip() is used to remove any spaces on the end of the string
     if 'HTTP_SM_USER' in environ: 
-        environ['REMOTE_USER'] = environ['HTTP_SM_USER'].strip()
+        environ['REMOTE_USER'] = environ['HTTP_REMOTE_USER'].strip()
     ...
 }}}
 
@@ -325,7 +334,7 @@ password_store = HttpAuthStore
 This will generally be matched with an Apache config like:
 {{{#!apache
 <Location /authFile>
-   …HTTP authentication configuration…
+   # HTTP authentication configuration
    Require valid-user
 </Location>
 }}}
@@ -424,6 +433,20 @@ trac.db.mysql_backend.MySQLConnection.poolable = False
 Now Trac drops the connection after serving a page and the connection count on the database will be kept low.
 
 //This is not a recommended approach though. See also the notes at the bottom of the [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac mod_wsgi's IntegrationWithTrac] wiki page.//
+
+=== Missing Headers and Footers
+
+If python optimizations are enabled, then headers and footers will not be rendered.
+
+In your WSGI configuration file, the `WSGIPythonOptimize` setting must be set to `0` as follows (`1` or `2` will not work):
+
+{{{#!apache
+    WSGIPythonOptimize 0
+}}}
+
+On Ubuntu, the WSGI mod configuration is at `/etc/apache2/mods-enabled/wsgi.conf`.
+
+NOTE: This is the WSGI equivalent of the same issue that happens with `PythonOptimize On` in [TracModPython#Pagelayoutissues ModPython] (see [trac:#8956]).
 
 === Other resources
 

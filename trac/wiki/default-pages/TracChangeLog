@@ -7,6 +7,18 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.10
+
+//(February 20, 2016)//
+
+Trac 1.0.10 provides more than 30 bug fixes and minor enhancements. Two areas of focus
+have been fixing test failures on Windows and eliminating tracebacks in the logs due to
+invalid requests.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.10]].
+
+[trac:source:/tags/trac-1.0.10 View Tag] | [trac:milestone:1.0.10 View Milestone]
+
 === 1.0.9
 
 //(September 10, 2015)//
