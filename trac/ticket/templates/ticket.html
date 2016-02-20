@@ -71,11 +71,14 @@
           // Unthread, unrevert and update changelog
           if (!$('#trac-comments-oldest').prop('checked'))
             $('#trac-comments-oldest').click().change();
-          $("#changelog").replaceWith(items.filter("#changelog"));
+          // Replaces content of #changelog, without recreating it
+          $("#changelog").children().remove();
+          $("#changelog").append(items.filter("#changelog").children());
+          // Replay hide/show filters if needed
           if (!$('#trac-show-property-changes-toggle').prop('checked'))
-            $('#trac-show-property-changes-toggle').click().prop('checked', false);
+            $('#trac-show-property-changes-toggle').prop('checked', true).click();
           if (!$('#trac-show-comments-toggle').prop('checked'))
-            $('#trac-show-comments-toggle').click().prop('checked', false);
+            $('#trac-show-comments-toggle').prop('checked', true).click();
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);

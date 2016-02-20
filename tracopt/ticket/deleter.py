@@ -102,7 +102,7 @@ class TicketDeleter(Component):
             .copy(buffer).end() \
             .select('//div[starts-with(@class, "change") and @id]'
                     '//div[@class="trac-ticket-buttons"]') \
-            .prepend(delete_comment)
+            .append(delete_comment)
 
     # IRequestFilter methods
 

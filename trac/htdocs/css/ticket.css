@@ -145,6 +145,7 @@ ul.children > li.child {
 }
 #changelog ul.children h3 { margin-right: .4em }
 #changelog pre.wiki, #changelog div.code { clear: right }
+#ticketchange pre.wiki, #ticketchange div.code { clear: right }
 
 .in-reply-to:before { content: "↑" }
 .follow-up:before { content: "↓" }
@@ -192,14 +193,6 @@ ul.children > li.child {
 }
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
-/* Change panel: */
-.trac-change-panel {
- margin: 0 0 1.5em 2em;
- padding-bottom: 1em;
- max-width: 66%;
- float: right;
-}
-
 /*  - Change controls */
 .trac-ticket-buttons {
  clear: right;
@@ -216,8 +209,8 @@ ul.children > li.child {
 #changelog .changes, #ticketchange .changes {
  clear: right;
  width: auto;
- margin: 0;
- padding: 0 .8em;
+ margin: 0 0 1.5em 2em;
+ padding: 0 .8em .2em;
  color: #663;
  border: 1px solid;
  border-color: #eea #dd9 #dd9 #eea;
