@@ -53,6 +53,7 @@ from trac.util.datefmt import format_date, get_date_format_hint, \
                               get_datetime_format_hint
 from trac.util.translation import get_available_locales, has_babel
 from trac.web.tests.session import _prep_session_table
+from trac.wiki.formatter import MacroError
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 
@@ -1398,6 +1399,16 @@ class TracAdminHelpMacroTestCase(unittest.TestCase):
         macro = TracAdminHelpMacro(self.env)
         help = unicode(macro.expand_macro(None, None, 'unicode-help'))
         self.assertTrue(unicode_help in help)
+
+    def test_invalid_command(self):
+        macro = TracAdminHelpMacro(self.env)
+
+        try:
+            macro.expand_macro(None, None, 'copystatic')
+            self.fail("MacroError not raised")
+        except MacroError, e:
+            self.assertEqual('Unknown trac-admin command "copystatic"',
+                             unicode(e))
 
 
 def suite():

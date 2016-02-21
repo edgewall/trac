@@ -36,6 +36,7 @@ from trac.util.text import console_print, exception_to_unicode, printout, \
 from trac.util.translation import _, ngettext, has_babel, cleandoc_
 from trac.versioncontrol.api import RepositoryManager
 from trac.wiki.admin import WikiAdmin
+from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
 
@@ -550,8 +551,8 @@ class TracAdminHelpMacro(WikiMacroBase):
                 cmd_mgr = AdminCommandManager(self.env)
                 doc = cmd_mgr.get_command_help(arg)
             if not doc:
-                raise TracError(_('Unknown trac-admin command "%(command)s"',
-                                  command=content))
+                raise MacroError(_('Unknown trac-admin command '
+                                   '"%(command)s"', command=content))
         else:
             doc = TracAdmin.all_docs(self.env)
         buf = StringIO.StringIO()
