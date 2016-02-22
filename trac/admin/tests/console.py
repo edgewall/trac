@@ -72,16 +72,15 @@ def load_expected_results(file, pattern):
     """
     expected = {}
     compiled_pattern = re.compile(pattern)
-    f = open(file, 'r')
-    for line in f:
-        line = line.rstrip().decode('utf-8')
-        match = compiled_pattern.search(line)
-        if match:
-            test = match.groups()[0]
-            expected[test] = ''
-        else:
-            expected[test] += line + '\n'
-    f.close()
+    with open(file, 'r') as f:
+        for line in f:
+            line = line.rstrip().decode('utf-8')
+            match = compiled_pattern.search(line)
+            if match:
+                test = match.groups()[0]
+                expected[test] = ''
+            else:
+                expected[test] += line + '\n'
     return expected
 
 
