@@ -110,6 +110,10 @@ def _markup_to_unicode(markup):
     return to_unicode(markup)
 
 
+class MacroError(TracError):
+    pass
+
+
 class ProcessorError(TracError):
     pass
 
@@ -796,6 +800,8 @@ class Formatter(object):
             args = fullmatch.group('macroargs')
         try:
             return macro.ensure_inline(macro.process(args))
+        except MacroError as e:
+            return system_message(e)
         except Exception as e:
             self.env.log.error('Macro %s(%s) failed:%s', name, args,
                                exception_to_unicode(e, traceback=True))
