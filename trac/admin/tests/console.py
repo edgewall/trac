@@ -13,6 +13,8 @@
 #
 # Author: Tim Moloney <t.moloney@verizon.net>
 
+from __future__ import with_statement
+
 import difflib
 import inspect
 import os
