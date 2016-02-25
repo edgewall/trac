@@ -162,7 +162,7 @@ class PygmentsRenderer(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/pygments/(\w+)\.css', req.path_info)
+        match = re.match(r'/pygments/([-\w]+)\.css', req.path_info)
         if match:
             req.args['style'] = match.group(1)
             return True
