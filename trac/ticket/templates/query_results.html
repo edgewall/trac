@@ -75,7 +75,7 @@ Arguments:
           <py:with vars="ticket_context = context.child('ticket', result.id)">
             <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">
 
-              <tr class="${'odd' if idx % 2 else 'even'} prio${result.priority_value}${
+              <tr class="${'odd' if idx % 2 else 'even'} prio${result._priority_value}${
                 ' added' if 'added' in result else ''}${
                 ' changed' if 'changed' in result else ''}${
                 ' removed' if 'removed' in result else ''}">

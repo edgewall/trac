@@ -446,7 +446,7 @@ class Query(object):
         sql = []
         sql.append("SELECT " + ",".join('t.%s AS %s' % (c, c) for c in cols
                                         if c not in custom_fields))
-        sql.append(",priority.value AS priority_value")
+        sql.append(",priority.value AS _priority_value")
         with self.env.db_query as db:
             if use_joins:
                 # Use LEFT OUTER JOIN for ticket_custom table
