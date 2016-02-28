@@ -57,16 +57,18 @@ class Subscription(object):
                 env, subscription['sid'], subscription['authenticated'],
                 subscription['distributor'])) + 1
             now = to_utimestamp(datetime_now(utc))
-            db("""
-                INSERT INTO notify_subscription (time, changetime, sid,
-                                                 authenticated, distributor,
-                                                 format, priority, adverb,
-                                                 class)
+            cursor = db.cursor()
+            cursor.execute("""
+                INSERT INTO
+                notify_subscription (time, changetime, sid, authenticated,
+                                     distributor, format, priority, adverb,
+                                     class)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (now, now, subscription['sid'], int(subscription['authenticated']),
              subscription['distributor'], subscription['format'],
              int(priority), subscription['adverb'],
              subscription['class']))
+            return db.get_last_id(cursor, 'notify_subscription')
 
     @classmethod
     def delete(cls, env, rule_id):
@@ -116,6 +118,7 @@ class Subscription(object):
 
     @classmethod
     def replace_all(cls, env, sid, authenticated, subscriptions):
+        authenticated = int(authenticated)
         with env.db_transaction as db:
             ids_map = {}
             for id_, distributor, class_ in db("""\
@@ -126,9 +129,14 @@ class Subscription(object):
             for ids in ids_map.itervalues():
                 ids.sort(reverse=True)
 
+            priorities = {}
             now = to_utimestamp(datetime_now(utc))
-            for idx, sub in enumerate(subscriptions):
-                key = (sub['distributor'], sub['class'])
+            for sub in subscriptions:
+                distributor = sub['distributor']
+                priorities.setdefault(distributor, 0)
+                priorities[distributor] += 1
+                prio = priorities[distributor]
+                key = (distributor, sub['class'])
                 if ids_map.get(key):
                     id_ = ids_map[key].pop()
                     db("""\
@@ -136,7 +144,7 @@ class Subscription(object):
                         SET changetime=%s,distributor=%s,format=%s,priority=%s,
                             adverb=%s,class=%s
                         WHERE id=%s""",
-                        (now, sub['distributor'], sub['format'], idx + 1,
+                        (now, sub['distributor'], sub['format'], prio,
                          sub['adverb'], sub['class'], id_))
                 else:
                     db("""\
@@ -145,7 +153,7 @@ class Subscription(object):
                             format,priority,adverb,class)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                         (now, now, sid, authenticated, sub['distributor'],
-                         sub['format'], idx + 1, sub['adverb'], sub['class']))
+                         sub['format'], prio, sub['adverb'], sub['class']))
 
             delete_ids = []
             for ids in ids_map.itervalues():
@@ -175,6 +183,8 @@ class Subscription(object):
             for name, value in sorted(kwargs.iteritems()):
                 if name.endswith('_'):
                     name = name[:-1]
+                if name == 'authenticated':
+                    value = int(value)
                 conditions.append(db.quote(name) + '=%s')
                 args.append(value)
             query = 'SELECT id, sid, authenticated, distributor, format, ' \
@@ -195,22 +205,22 @@ class Subscription(object):
 
     @classmethod
     def find_by_sid_and_distributor(cls, env, sid, authenticated, distributor):
-        return list(cls._find(env, sid=sid, authenticated=int(authenticated),
+        return list(cls._find(env, sid=sid, authenticated=authenticated,
                               distributor=distributor, order='priority'))
 
     @classmethod
-    def find_by_sids_and_class(cls, env, uids, klass):
+    def find_by_sids_and_class(cls, env, uids, class_):
         """uids should be a collection to tuples (sid, auth)"""
         subs = []
         for sid, authenticated in uids:
-            subs.extend(cls._find(env, class_=klass, sid=sid,
-                                  authenticated=int(authenticated),
+            subs.extend(cls._find(env, class_=class_, sid=sid,
+                                  authenticated=authenticated,
                                   order='priority'))
         return subs
 
     @classmethod
-    def find_by_class(cls, env, klass):
-        return list(cls._find(env, class_=klass))
+    def find_by_class(cls, env, class_):
+        return list(cls._find(env, class_=class_))
 
     def subscription_tuple(self):
         return (
@@ -264,14 +274,14 @@ class Watch(object):
         self['target'] = target
 
     @classmethod
-    def add(cls, env, sid, authenticated, klass, realm, targets):
+    def add(cls, env, sid, authenticated, class_, realm, targets):
         with env.db_transaction as db:
             for target in targets:
                 db("""
                     INSERT INTO notify_watch (sid, authenticated, class,
                                               realm, target)
                     VALUES (%s, %s, %s, %s, %s)
-                """, (sid, int(authenticated), klass, realm, target))
+                """, (sid, int(authenticated), class_, realm, target))
 
     @classmethod
     def delete(cls, env, watch_id):
@@ -279,20 +289,20 @@ class Watch(object):
             db("DELETE FROM notify_watch WHERE id = %s", (watch_id,))
 
     @classmethod
-    def delete_by_sid_and_class(cls, env, sid, authenticated, klass):
+    def delete_by_sid_and_class(cls, env, sid, authenticated, class_):
         with env.db_transaction as db:
             db("""
                 DELETE FROM notify_watch
                 WHERE sid = %s AND authenticated = %s AND class = %s
-            """, (sid, int(authenticated), klass))
+            """, (sid, int(authenticated), class_))
 
     @classmethod
-    def delete_by_class_realm_and_target(cls, env, klass, realm, target):
+    def delete_by_class_realm_and_target(cls, env, class_, realm, target):
         with env.db_transaction as db:
             db("""
                 DELETE FROM notify_watch
                 WHERE class = %s AND realm = %s AND target = %s
-            """, (realm, klass, target))
+            """, (realm, class_, target))
 
     @classmethod
     def _find(cls, env, order=None, **kwargs):
@@ -302,7 +312,11 @@ class Watch(object):
             for name, value in sorted(kwargs.iteritems()):
                 if name.endswith('_'):
                     name = name[:-1]
+                if name == 'authenticated':
+                    value = int(value)
                 conditions.append(db.quote(name) + '=%s')
+                if name == 'authenticated':
+                    value = int(value)
                 args.append(value)
             query = 'SELECT id, sid, authenticated, class, realm, target ' \
                     'FROM notify_watch'
@@ -321,20 +335,20 @@ class Watch(object):
                 yield watch
 
     @classmethod
-    def find_by_sid_and_class(cls, env, sid, authenticated, klass):
-        return list(cls._find(env, sid=sid, authenticated=int(authenticated),
-                              class_=klass, order='target'))
+    def find_by_sid_and_class(cls, env, sid, authenticated, class_):
+        return list(cls._find(env, sid=sid, authenticated=authenticated,
+                              class_=class_, order='target'))
 
     @classmethod
     def find_by_sid_class_realm_and_target(cls, env, sid, authenticated,
-                                           klass, realm, target):
-        return list(cls._find(env, sid=sid, authenticated=int(authenticated),
-                              class_=klass, realm=realm, order='target'))
+                                           class_, realm, target):
+        return list(cls._find(env, sid=sid, authenticated=authenticated,
+                              class_=class_, realm=realm, order='target'))
 
     @classmethod
-    def find_by_class_realm_and_target(cls, env, klass, realm, target):
-        return list(cls._find(env, class_=klass, realm=realm, target=target))
+    def find_by_class_realm_and_target(cls, env, class_, realm, target):
+        return list(cls._find(env, class_=class_, realm=realm, target=target))
 
     @classmethod
-    def find_by_class_and_realm(cls, env, klass, realm):
-        return list(cls._find(env, class_=klass, realm=realm))
+    def find_by_class_and_realm(cls, env, class_, realm):
+        return list(cls._find(env, class_=class_, realm=realm))
