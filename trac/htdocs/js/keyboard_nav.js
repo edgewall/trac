@@ -49,7 +49,8 @@
         var expander = selection.find('.expander');
         if (expander.length > 0) {
           if (event.keyCode == 82) { // 'r'eload
-            selection.removeClass("expanded").removeClass("collapsed")
+            expander.removeClass("expanded");
+            selection.removeClass("collapsed")
               .siblings("tr."+selection.get(0).id).not(selection).remove();
           }
           expander.click();

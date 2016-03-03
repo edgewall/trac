@@ -60,8 +60,8 @@
     var tr = expander.parents("tr:first");
     var folderid = tr.get(0).id;
 
-    if ( tr.hasClass("expanded") ) { // then *fold*
-      tr.removeClass("expanded");
+    if (expander.hasClass("expanded")) { // then *fold*
+      expander.removeClass("expanded");
       if (tr.next().hasClass("error")) {
         tr.next().remove();
       } else {
@@ -91,8 +91,9 @@
       $(this).attr("href", href+window.location.hash);
      });
 
-    if ( tr.hasClass("collapsed") ) { // then *expand*
-      tr.removeClass("collapsed").addClass("expanded");
+    if (tr.hasClass("collapsed")) { // then *expand*
+      tr.removeClass("collapsed");
+      expander.addClass("expanded");
       tr.siblings("tr."+folderid).show();
       // Note that the above will show all the already fetched subtrees,
       // so we have to fold again the folders which were already collapsed.
@@ -106,7 +107,7 @@
         parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) +
         SUBFOLDER_INDENT;
 
-      tr.addClass("expanded");
+      expander.addClass("expanded");
       // insert "Loading ..." row
       var loading_row = $($.htmlFormat(
         '<tr>' +
