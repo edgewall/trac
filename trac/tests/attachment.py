@@ -312,7 +312,25 @@ class AttachmentModuleTestCase(unittest.TestCase):
         return Mock(add_redirect_listener=lambda x: [].append(x),
                     redirect=redirect, **kw)
 
+    class GenericResourceManager(Component):
+
+        implements(IResourceManager)
+
+        def get_resource_realms(self):
+            yield 'parent_realm'
+
+        def get_resource_url(self, resource, href, **kwargs):
+            pass
+
+        def get_resource_description(self, resource, format='default',
+                                     context=None, **kwargs):
+            pass
+
+        def resource_exists(self, resource):
+            return resource.id == 'parent_id'
+
     def test_invalid_post_request_raises_exception(self):
+
         path_info = '/attachment/parent_realm/parent_id/attachment_id'
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
         attachment.insert('attachment_id', StringIO(''), 0, 1)
@@ -322,6 +340,18 @@ class AttachmentModuleTestCase(unittest.TestCase):
 
         self.assertTrue(module.match_request(req))
         self.assertRaises(HTTPBadRequest, module.process_request, req)
+
+    def test_post_request_without_attachment_raises_exception(self):
+        """TracError is raised when a POST request is submitted
+        without an attachment.
+        """
+        path_info = '/attachment/parent_realm/parent_id'
+        req = self._create_request(path_info=path_info, method='POST',
+                                   args={'action': 'new'})
+        module = AttachmentModule(self.env)
+
+        self.assertTrue(module.match_request(req))
+        self.assertRaises(TracError, module.process_request, req)
 
     def test_attachment_parent_realm_raises_exception(self):
         """TracError is raised when 'attachment' is the resource parent

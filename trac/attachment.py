@@ -396,7 +396,7 @@ class AttachmentModule(Component):
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, parent_resource, req.href))
 
-        upload = req.args['attachment']
+        upload = req.args.getfirst('attachment')
         if not hasattr(upload, 'filename') or not upload.filename:
             raise TracError(_("No file uploaded"))
         if hasattr(upload.file, 'fileno'):
