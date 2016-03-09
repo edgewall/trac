@@ -708,6 +708,85 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
         except TracError as e:
             self.assertIn('is outside valid range', unicode(e))
 
+    def test_large_integer_in_date_part(self):
+        def try_parse(text):
+            try:
+                # using libc's format
+                rv = datefmt.parse_date(text, datefmt.utc)
+                self.fail('TracError not raised: %r' % rv)
+            except TracError, e:
+                self.assertIn('is an invalid date', unicode(e))
+
+            if locale_en:
+                try:
+                    # using Babel's format
+                    rv = datefmt.parse_date(text, datefmt.utc, locale_en)
+                    self.fail('TracError not raised: %r' % rv)
+                except TracError, e:
+                    self.assertIn('is an invalid date', unicode(e))
+
+        try_parse('Jan 2147483647, 2016')
+        try_parse('Jan 2147483648, 2016')
+        try_parse('Jan 9223372036854775808, 2016')
+        try_parse('Jan 18446744073709551616, 2016')
+        try_parse('2147483647 02, 2016')
+        try_parse('2147483648 02, 2016')
+        try_parse('9223372036854775808 02, 2016')
+        try_parse('18446744073709551616 02, 2016')
+        try_parse('Jan 02, 2147483647')
+        try_parse('Jan 02, 2147483648')
+        try_parse('Jan 02, 9223372036854775808')
+        try_parse('Jan 02, 18446744073709551616')
+
+    def test_large_integer_in_time_part(self):
+        def try_parse(expected, text):
+            # using libc's format
+            self.assertEqual(expected, datefmt.parse_date(text, datefmt.utc))
+            if locale_en:
+                # using Babel's format
+                self.assertEqual(expected,
+                                 datefmt.parse_date(text, datefmt.utc,
+                                                    locale_en))
+
+        expected = datetime.datetime(2016, 1, 2, 0, 0, 0, 0, datefmt.utc)
+        try_parse(expected, 'Jan 02, 2016 24:34:56')
+        try_parse(expected, 'Jan 02, 2016 2147483647:34:56')
+        try_parse(expected, 'Jan 02, 2016 2147483648:34:56')
+        try_parse(expected, 'Jan 02, 2016 9223372036854775808:34:56')
+        try_parse(expected, 'Jan 02, 2016 18446744073709551616:34:56')
+        try_parse(expected, 'Jan 02, 2016 12:60:56')
+        try_parse(expected, 'Jan 02, 2016 12:2147483647:56')
+        try_parse(expected, 'Jan 02, 2016 12:2147483648:56')
+        try_parse(expected, 'Jan 02, 2016 12:9223372036854775808:56')
+        try_parse(expected, 'Jan 02, 2016 12:18446744073709551616:56')
+        try_parse(expected, 'Jan 02, 2016 12:34:60')
+        try_parse(expected, 'Jan 02, 2016 12:34:2147483647')
+        try_parse(expected, 'Jan 02, 2016 12:34:2147483648')
+        try_parse(expected, 'Jan 02, 2016 12:34:9223372036854775808')
+        try_parse(expected, 'Jan 02, 2016 12:34:18446744073709551616')
+
+    def test_iso8601_out_of_range(self):
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '0000-01-02T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '10000-01-02T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '10001-01-02T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-00-02T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-13-02T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-01-00T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-01-32T12:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-01-02T24:34:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-01-02T12:60:56.987654Z')
+        self.assertRaises(TracError, datefmt.parse_date,
+                          '2016-01-02T12:34:60.987654Z')
+
 
 class DateFormatTestCase(unittest.TestCase):
 

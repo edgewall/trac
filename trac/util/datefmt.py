@@ -566,7 +566,7 @@ def _parse_date_iso8601(text, tzinfo):
                                    hours, minutes, seconds, useconds)]
             t = tzinfo.localize(datetime(*tm))
             return tzinfo.normalize(t)
-        except ValueError:
+        except (ValueError, OverflowError):
             pass
 
     return None
@@ -578,11 +578,11 @@ def _libc_parse_date(text, tzinfo):
             tm = time.strptime(text, format)
             dt = tzinfo.localize(datetime(*tm[0:6]))
             return tzinfo.normalize(dt)
-        except ValueError:
+        except (ValueError, OverflowError):
             continue
     try:
         return _i18n_parse_date(text, tzinfo, None)
-    except ValueError:
+    except (ValueError, OverflowError):
         pass
     return
 
@@ -622,7 +622,7 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
     # may raise ValueError if larger than platform C localtime() or gmtime()
     try:
         datetime.utcfromtimestamp(to_timestamp(dt))
-    except ValueError:
+    except (ValueError, OverflowError):
         raise TracError(_('The date "%(date)s" is outside valid range. '
                           'Try a date closer to present time.', date=text),
                           _('Invalid Date'))
@@ -726,7 +726,7 @@ def _i18n_parse_date(text, tzinfo, locale):
         try:
             return _i18n_parse_date_0(text, order, regexp, period_names,
                                       month_names, tzinfo)
-        except ValueError:
+        except (ValueError, OverflowError):
             continue
 
     return None
@@ -1071,7 +1071,7 @@ class LocalTimezone(tzinfo):
         dt = dt.replace(tzinfo=utc)
         try:
             tt = time.localtime(to_timestamp(dt))
-        except ValueError:
+        except (ValueError, OverflowError):
             return dt.replace(tzinfo=self._std_tz) + self._std_offset
         # if UTC offset from localtime() doesn't match timezone offset,
         # create a LocalTimezone instance with the UTC offset (#11563)
