@@ -115,6 +115,40 @@ else:
 
 class ParseISO8601TestCase(unittest.TestCase):
 
+    def test_iso8601_microsecond(self):
+        parse = datefmt.parse_date
+        t = datetime.datetime(2012, 10, 11, 2, 40, 57, 987543, datefmt.utc)
+        self.assertEqual(t, parse('2012-10-11T02:40:57.987543Z'))
+        self.assertEqual(t, parse('2012-10-10T14:40:57.987543-12:00'))
+        self.assertEqual(t, parse('2012-10-11T02:40:57.987543+00:00'))
+        self.assertEqual(t, parse('2012-10-11T02:40:57.987543-00:00'))
+        self.assertEqual(t, parse('2012-10-11T08:25:57.987543+05:45'))
+        self.assertEqual(t, parse('2012-10-11T16:40:57.987543+14:00'))
+        self.assertEqual(t, parse('20121011T024057.987543Z'))
+        self.assertEqual(t, parse('20121010T144057.987543-1200'))
+        self.assertEqual(t, parse('20121011T024057.987543+0000'))
+        self.assertEqual(t, parse('20121011T024057.987543-0000'))
+        self.assertEqual(t, parse('20121011T082557.987543+0545'))
+        self.assertEqual(t, parse('20121011T164057.987543+1400'))
+
+        self.assertEqual(datetime.datetime(2012, 10, 11, 2, 40, 57, 100000,
+                                           datefmt.utc),
+                         parse('2012-10-11T02:40:57.1Z'))
+        self.assertEqual(datetime.datetime(2012, 10, 11, 2, 40, 57, 120000,
+                                           datefmt.utc),
+                         parse('2012-10-11T02:40:57.12Z'))
+        self.assertEqual(datetime.datetime(2012, 10, 11, 2, 40, 57, 123000,
+                                           datefmt.utc),
+                         parse('2012-10-11T02:40:57.123Z'))
+        self.assertEqual(datetime.datetime(2012, 10, 11, 2, 40, 57, 123400,
+                                           datefmt.utc),
+                         parse('2012-10-11T02:40:57.1234Z'))
+        self.assertEqual(datetime.datetime(2012, 10, 11, 2, 40, 57, 123450,
+                                           datefmt.utc),
+                         parse('2012-10-11T02:40:57.12345Z'))
+
+        self.assertRaises(TracError, parse, '2012-10-11T02:40:57.1234567Z')
+
     def test_iso8601_second(self):
         t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.utc)
         self.assertEqual(t, datefmt.parse_date('2012-10-11T02:40:57Z'))
@@ -185,6 +219,56 @@ class ParseISO8601TestCase(unittest.TestCase):
         self.assertEqual(
             datetime.timedelta(hours=5, minutes=45),
             datefmt.parse_date('2012-10-11T08:25:57+05:45').utcoffset())
+
+    def test_iso8601_invalid_tz(self):
+        def try_parse(text):
+            self.assertRaises(TracError, datefmt.parse_date, text)
+
+        try_parse('2012-10-11T02:40:5703:45')    # no sign of timezone offset
+        try_parse('2012-10-11T02:40:570345')
+        try_parse('2012-10-11T02:40:57Z+01:15')  # Z and timezone offset
+        try_parse('2012-10-11T02:40:57Z-02:30')
+        try_parse('2012-10-11T02:40:57Z03:45')
+        try_parse('2012-10-11T02:40:57Z+0115')
+        try_parse('2012-10-11T02:40:57Z-0230')
+        try_parse('2012-10-11T02:40:57Z0345')
+        try_parse('2012-10-11T02:40:57Z+01')
+        try_parse('2012-10-11T02:40:57Z-02')
+        try_parse('2012-10-11T02:40:57Z03')
+
+    def test_iso8601_tz_invalid_range(self):
+        def try_parse(text):
+            self.assertRaises(TracError, datefmt.parse_date, text)
+
+        try_parse('2012-10-11T02:40:57+00:60')
+        try_parse('2012-10-11T02:40:57+00:99')
+        try_parse('2012-10-11T02:40:57+23:60')
+        try_parse('2012-10-11T02:40:57-23:60')
+        try_parse('2012-10-11T02:40:57+24:00')
+        try_parse('2012-10-11T02:40:57-24:00')
+        try_parse('2012-10-11T02:40:57+99:00')
+        try_parse('2012-10-11T02:40:57-99:00')
+
+    def test_iso8601_tz_zone(self):
+        def test_tzinfo_zone(expected, text):
+            dt = datefmt.parse_date(text)
+            self.assertEqual(datefmt.FixedOffset, type(dt.tzinfo))
+            self.assertEqual(expected, dt.tzinfo.zone)
+
+        test_tzinfo_zone('+23:59', '2012-10-11T02:40:57+23:59')
+        test_tzinfo_zone('+12:00', '2012-10-11T02:40:57+12:00')
+        test_tzinfo_zone('+12:00', '2012-10-11T02:40:57+12')
+        test_tzinfo_zone('+11:30', '2012-10-11T02:40:57+11:30')
+        test_tzinfo_zone('+00:30', '2012-10-11T02:40:57+00:30')
+        test_tzinfo_zone('UTC',    '2012-10-11T02:40:57+00:00')
+        test_tzinfo_zone('UTC',    '2012-10-11T02:40:57+00')
+        test_tzinfo_zone('UTC',    '2012-10-11T02:40:57-00')
+        test_tzinfo_zone('UTC',    '2012-10-11T02:40:57-00:00')
+        test_tzinfo_zone('-00:30', '2012-10-11T02:40:57-00:30')
+        test_tzinfo_zone('-13:30', '2012-10-11T02:40:57-13:30')
+        test_tzinfo_zone('-14:00', '2012-10-11T02:40:57-14:00')
+        test_tzinfo_zone('-14:00', '2012-10-11T02:40:57-14')
+        test_tzinfo_zone('-23:59', '2012-10-11T02:40:57-23:59')
 
     def test_iso8601_naive_tz_is_localtz(self):
         t = datetime.datetime(2012, 10, 11, 2, 40, 57, 0, datefmt.localtz)

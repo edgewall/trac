@@ -539,8 +539,11 @@ _ISO_8601_RE = re.compile(r'''
         (\d\d)(?::?(\d\d)(?::?(\d\d)        # time
         (?:[,.](\d{1,6}))?)?)?              # microseconds
     )?
-    (Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$       # timezone
-    ''', re.VERBOSE)
+    (                                       # timezone
+        Z                                   #   Z
+      | ([-+])(\d\d):?(\d\d)?               #   ±hh:mm, ±hhmm, ±hh
+    )?
+    $''', re.VERBOSE)
 
 def _parse_date_iso8601(text, tzinfo):
     match = _ISO_8601_RE.match(text)
@@ -552,16 +555,20 @@ def _parse_date_iso8601(text, tzinfo):
             days = g[2] or '01'
             hours, minutes, seconds, useconds = [x or '00' for x in g[3:7]]
             useconds = (useconds + '000000')[:6]
-            z, tzsign, tzhours, tzminutes = g[7:11]
+            z = g[7]
             if z:
-                tz = timedelta(hours=int(tzhours or '0'),
-                               minutes=int(tzminutes or '0')).seconds / 60
+                tzsign = g[8]
+                tzhours = int(g[9] or 0)
+                tzminutes = int(g[10] or 0)
+                if not (0 <= tzhours < 24 and 0 <= tzminutes < 60):
+                    return None
+                tz = tzhours * 60 + tzminutes
                 if tz == 0:
                     tzinfo = utc
                 else:
                     tzinfo = FixedOffset(-tz if tzsign == '-' else tz,
-                                         '%s%s:%s' %
-                                         (tzsign, tzhours, tzminutes))
+                                         '%s%02d:%02d' % (tzsign, tzhours,
+                                                          tzminutes))
             tm = [int(x) for x in (years, months, days,
                                    hours, minutes, seconds, useconds)]
             t = tzinfo.localize(datetime(*tm))
