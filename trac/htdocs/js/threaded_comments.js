@@ -30,13 +30,20 @@ jQuery(document).ready(function($){
     }
   };
 
+  window.applyCommentsOrder = function(new_order) {
+      $("input[name='trac-comments-order']").val([new_order]);
+      applyNewOrder(new_order);
+  }
   var applyOrder = function() {
+    applyNewOrder($("input[name='trac-comments-order']:checked").val());
+  };
+  var applyNewOrder = function(new_order) {
     var commentsOnlyChecked = commentsOnly.attr('checked');
     if (commentsOnlyChecked) {
       commentsOnly.attr("checked", false);
       applyCommentsOnly();
     }
-    order = $("input[name='trac-comments-order']:checked").val();
+    order = new_order;
     if (order == 'newest') {
       $("#changelog").append($("div.change").get().reverse());
     } else if (order == 'threaded') {
@@ -73,10 +80,7 @@ jQuery(document).ready(function($){
   else if (comments_prefs.comments_order == 'threaded')
     comments_prefs.comments_order = 'oldest'
 
-  $("input[name='trac-comments-order']")
-    .filter("[value=" + comments_prefs.comments_order + "]")
-    .attr('checked', 'checked');
-  applyOrder();
+  applyCommentsOrder(comments_prefs.comments_order);
   $("input[name='trac-comments-order']").change(function() {
     unapplyOrder();
     applyOrder();

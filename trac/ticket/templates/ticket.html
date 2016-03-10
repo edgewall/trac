@@ -80,12 +80,11 @@
           var items = $(reply);
           // Update ticket box
           $("#ticket").replaceWith(items.filter('#ticket'));
-          // Unthread, unrevert and update changelog
-          if (!$('#trac-comments-oldest').checked())
-            $('#trac-comments-oldest').click().change();
+          // Update changelog with original order
           $("#changelog").replaceWith(items.filter("#changelog"));
-          if ($('#trac-comments-only-toggle').attr('checked'))
-            $('#trac-comments-only-toggle').click().attr('checked', true);
+          // Reorder comments
+          applyCommentsOrder(
+            $('#prefs input[name="trac-comments-order"]:checked').val());
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
@@ -151,7 +150,7 @@
         </py:if>
 
         <div style="${'display: none' if not changes else None}">
-          <div style="position: relative">
+          <div class="trac-noscript" style="position: relative">
             <form id="prefs" method="get" action="${href.prefs()}" style="position: absolute; right: 0">
               <div id="trac-comments-order">
                 <input type="radio" id="trac-comments-oldest" name="trac-comments-order" value="oldest" checked="checked" />
