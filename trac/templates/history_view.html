@@ -29,7 +29,7 @@
   </head>
 
   <body>
-    <div id="content" class="ticket">
+    <div id="content" class="${resource.realm}">
       <h1 i18n:msg="name">Change History for <a href="${url or url_of(resource)}">${name or name_of(resource)}</a></h1>
 
       <form py:if="history" id="history" class="printableform" method="get" action="">
