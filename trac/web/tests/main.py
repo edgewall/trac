@@ -17,11 +17,33 @@ import unittest
 
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.perm import PermissionError
+from trac.resource import ResourceNotFound
+from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
 from trac.util import create_file
-from trac.web.api import IRequestFilter, IRequestHandler, Request, RequestDone
+from trac.util.datefmt import utc
+from trac.web.api import (_RequestArgs, HTTPForbidden,
+    HTTPInternalError, HTTPNotFound, IRequestFilter, IRequestHandler,
+    Request, RequestDone)
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
+
+
+def _create_request(env, authname='anonymous', **kwargs):
+    kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
+          'href': env.href, 'abs_href': env.abs_href,
+          'tz': utc, 'locale': None, 'lc_time': locale_en,
+          'session': {}, 'authname': authname, 'callbacks': {},
+          'chrome': {'notices': [], 'warnings': []}, 'query_string': '',
+          'method': None, 'get_header': lambda v: None, 'is_xhr': False,
+          'form_token': None}
+    if 'args' in kwargs:
+        kw['args'].update(kwargs.pop('args'))
+    kw.update(kwargs)
+    def redirect(url, permanent=False):
+        raise RequestDone
+    return Mock(add_redirect_listener=lambda x: [].append(x),
+                redirect=redirect, **kw)
 
 
 def _make_environ(scheme='http', server_name='example.org',
@@ -184,6 +206,107 @@ class EnvironmentsTestCase(unittest.TestCase):
         create_file(self.tracignore, 'my*i?1\n\n#mydir2')
         self.assertEqual(self.env_paths(['mydir2', '.hidden_dir']),
                          get_environments(self.environ))
+
+
+class PreProcessRequestTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
+        self.env.clear_component_registry()
+        class DefaultHandler(Component):
+            implements(IRequestHandler)
+            def match_request(self, req):
+                return True
+            def process_request(self, req):
+                pass
+
+    def tearDown(self):
+        self.env.restore_component_registry()
+
+    def test_trac_error_raises_http_internal_error(self):
+        """TracError in pre_process_request is trapped and an
+        HTTPInternalError is raised.
+        """
+        class RequestFilter(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, req, handler):
+                raise TracError("Raised in pre_process_request")
+            def post_process_request(self, req, template, data, content_type):
+                return template, data, content_type
+        req = _create_request(self.env)
+
+        try:
+            RequestDispatcher(self.env).dispatch(req)
+        except HTTPInternalError as e:
+            self.assertEqual("500 Trac Error (Raised in pre_process_request)",
+                             unicode(e))
+        else:
+            self.fail("HTTPInternalError not raised")
+
+
+class ProcessRequestTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
+        self.env.clear_component_registry()
+        class DefaultHandler(Component):
+            implements(IRequestHandler)
+            def match_request(self, req):
+                return True
+            def process_request(self, req):
+                raise req.exc_class("Raised in process_request")
+
+    def tearDown(self):
+        self.env.restore_component_registry()
+
+    def test_permission_error_raises_http_forbidden(self):
+        """TracError in process_request is trapped and an HTTPForbidden
+        error is raised.
+        """
+        req = _create_request(self.env)
+        req.exc_class = PermissionError
+
+        try:
+            RequestDispatcher(self.env).dispatch(req)
+        except HTTPForbidden as e:
+            self.assertEqual(
+                "403 Forbidden (Raised in process_request "
+                "privileges are required to perform this operation. You "
+                "don't have the required permissions.)", unicode(e))
+        else:
+            self.fail("HTTPForbidden not raised")
+
+    def test_resource_not_found_raises_http_not_found(self):
+        """ResourceNotFound error in process_request is trapped and an
+        HTTPNotFound error is raised.
+        """
+        req = _create_request(self.env)
+        req.exc_class = ResourceNotFound
+
+        try:
+            RequestDispatcher(self.env).dispatch(req)
+        except HTTPNotFound as e:
+            self.assertEqual("404 Trac Error (Raised in process_request)",
+                             unicode(e))
+        else:
+            self.fail("HTTPNotFound not raised")
+
+    def test_trac_error_raises_http_internal_error(self):
+        """TracError in process_request is trapped and an
+        HTTPInternalError is raised.
+        """
+        req = _create_request(self.env)
+        req.exc_class = TracError
+
+        try:
+            RequestDispatcher(self.env).dispatch(req)
+        except HTTPInternalError as e:
+            self.assertEqual("500 Trac Error (Raised in process_request)",
+                             unicode(e))
+        else:
+            self.fail("HTTPInternalError not raised")
 
 
 class PostProcessRequestTestCase(unittest.TestCase):
@@ -375,6 +498,8 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
+    suite.addTest(unittest.makeSuite(PreProcessRequestTestCase))
+    suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(RequestDispatcherTestCase))
     suite.addTest(unittest.makeSuite(HdfdumpTestCase))

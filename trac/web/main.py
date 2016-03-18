@@ -203,102 +203,97 @@ class RequestDispatcher(Component):
         })
 
         try:
+            # Select the component that should handle the request
+            chosen_handler = None
+            for handler in self._request_handlers.values():
+                if handler.match_request(req):
+                    chosen_handler = handler
+                    break
+            if not chosen_handler and req.path_info in ('', '/'):
+                chosen_handler = self._get_valid_default_handler(req)
+            # pre-process any incoming request, whether a handler
+            # was found or not
+            self.log.debug("Chosen handler is %s", chosen_handler)
+            chosen_handler = self._pre_process_request(req, chosen_handler)
+            if not chosen_handler:
+                if req.path_info.endswith('/'):
+                    # Strip trailing / and redirect
+                    target = unicode_quote(req.path_info.rstrip('/'))
+                    if req.query_string:
+                        target += '?' + req.query_string
+                    req.redirect(req.href + target, permanent=True)
+                raise HTTPNotFound('No handler matched request to %s',
+                                   req.path_info)
+
+            req.callbacks['chrome'] = partial(chrome.prepare_request,
+                                              handler=chosen_handler)
+
+            # Protect against CSRF attacks: we validate the form token
+            # for all POST requests with a content-type corresponding
+            # to form submissions
+            if req.method == 'POST':
+                ctype = req.get_header('Content-Type')
+                if ctype:
+                    ctype, options = cgi.parse_header(ctype)
+                if ctype in ('application/x-www-form-urlencoded',
+                             'multipart/form-data') and \
+                        req.args.get('__FORM_TOKEN') != req.form_token:
+                    if self.env.secure_cookies and req.scheme == 'http':
+                        msg = _('Secure cookies are enabled, you must '
+                                'use https to submit forms.')
+                    else:
+                        msg = _('Do you have cookies enabled?')
+                    raise HTTPBadRequest(_('Missing or invalid form token.'
+                                           ' %(msg)s', msg=msg))
+
+            # Process the request and render the template
+            resp = chosen_handler.process_request(req)
+            if resp:
+                if len(resp) == 2: # old Clearsilver template and HDF data
+                    self.log.error("Clearsilver template are no longer "
+                                   "supported (%s)", resp[0])
+                    raise TracError(
+                        _("Clearsilver templates are no longer supported, "
+                          "please contact your Trac administrator."))
+                # Genshi
+                template, data, content_type, method = \
+                    self._post_process_request(req, *resp)
+                if 'hdfdump' in req.args:
+                    req.perm.require('TRAC_ADMIN')
+                    # debugging helper - no need to render first
+                    out = io.BytesIO()
+                    pprint(data, out)
+                    req.send(out.getvalue(), 'text/plain')
+                self.log.debug("Rendering response from handler")
+                output = chrome.render_template(
+                        req, template, data, content_type, method=method,
+                        iterable=chrome.use_chunked_encoding)
+                req.send(output, content_type or 'text/html')
+            else:
+                self.log.debug("Empty or no response from handler. "
+                               "Entering post_process_request.")
+                self._post_process_request(req)
+        except RequestDone:
+            raise
+        except Exception as e:
+            # post-process the request in case of errors
+            err = sys.exc_info()
             try:
-                # Select the component that should handle the request
-                chosen_handler = None
-                try:
-                    for handler in self._request_handlers.values():
-                        if handler.match_request(req):
-                            chosen_handler = handler
-                            break
-                    if not chosen_handler and \
-                            (not req.path_info or req.path_info == '/'):
-                        chosen_handler = self._get_valid_default_handler(req)
-                    # pre-process any incoming request, whether a handler
-                    # was found or not
-                    self.log.debug("Chosen handler is %s", chosen_handler)
-                    chosen_handler = \
-                        self._pre_process_request(req, chosen_handler)
-                except TracError as e:
-                    raise HTTPInternalError(e)
-                if not chosen_handler:
-                    if req.path_info.endswith('/'):
-                        # Strip trailing / and redirect
-                        target = unicode_quote(req.path_info.rstrip('/'))
-                        if req.query_string:
-                            target += '?' + req.query_string
-                        req.redirect(req.href + target, permanent=True)
-                    raise HTTPNotFound('No handler matched request to %s',
-                                       req.path_info)
-
-                req.callbacks['chrome'] = partial(chrome.prepare_request,
-                                                  handler=chosen_handler)
-
-                # Protect against CSRF attacks: we validate the form token
-                # for all POST requests with a content-type corresponding
-                # to form submissions
-                if req.method == 'POST':
-                    ctype = req.get_header('Content-Type')
-                    if ctype:
-                        ctype, options = cgi.parse_header(ctype)
-                    if ctype in ('application/x-www-form-urlencoded',
-                                 'multipart/form-data') and \
-                            req.args.get('__FORM_TOKEN') != req.form_token:
-                        if self.env.secure_cookies and req.scheme == 'http':
-                            msg = _('Secure cookies are enabled, you must '
-                                    'use https to submit forms.')
-                        else:
-                            msg = _('Do you have cookies enabled?')
-                        raise HTTPBadRequest(_('Missing or invalid form token.'
-                                               ' %(msg)s', msg=msg))
-
-                # Process the request and render the template
-                resp = chosen_handler.process_request(req)
-                if resp:
-                    if len(resp) == 2: # old Clearsilver template and HDF data
-                        self.log.error("Clearsilver template are no longer "
-                                       "supported (%s)", resp[0])
-                        raise TracError(
-                            _("Clearsilver templates are no longer supported, "
-                              "please contact your Trac administrator."))
-                    # Genshi
-                    template, data, content_type, method = \
-                        self._post_process_request(req, *resp)
-                    if 'hdfdump' in req.args:
-                        req.perm.require('TRAC_ADMIN')
-                        # debugging helper - no need to render first
-                        out = io.BytesIO()
-                        pprint(data, out)
-                        req.send(out.getvalue(), 'text/plain')
-                    self.log.debug("Rendering response from handler")
-                    output = chrome.render_template(
-                            req, template, data, content_type, method=method,
-                            iterable=chrome.use_chunked_encoding)
-                    req.send(output, content_type or 'text/html')
-                else:
-                    self.log.debug("Empty or no response from handler. "
-                                   "Entering post_process_request.")
-                    self._post_process_request(req)
+                self._post_process_request(req)
             except RequestDone:
-                raise
-            except:
-                # post-process the request in case of errors
-                err = sys.exc_info()
-                try:
-                    self._post_process_request(req)
-                except RequestDone:
-                    raise
-                except Exception as e:
-                    self.log.error("Exception caught while post-processing"
-                                   " request: %s",
-                                   exception_to_unicode(e, traceback=True))
+                pass
+            except Exception as e2:
+                self.log.error("Exception caught while post-processing"
+                               " request: %s",
+                               exception_to_unicode(e2, traceback=True))
+            if isinstance(e, PermissionError):
+                raise HTTPForbidden(e)
+            elif isinstance(e, ResourceNotFound):
+                raise HTTPNotFound(e)
+            elif isinstance(e, TracError):
+                raise HTTPInternalError(e)
+            else:
                 raise err[0], err[1], err[2]
-        except PermissionError as e:
-            raise HTTPForbidden(e)
-        except ResourceNotFound as e:
-            raise HTTPNotFound(e)
-        except TracError as e:
-            raise HTTPInternalError(e)
 
     # ITemplateProvider methods
 
