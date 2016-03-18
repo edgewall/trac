@@ -35,7 +35,7 @@ import trac.db.mysql_backend
 import trac.db.postgres_backend
 import trac.db.sqlite_backend
 from trac.config import Configuration
-from trac.core import ComponentManager
+from trac.core import ComponentManager, ComponentMeta, TracError
 from trac.db.api import DatabaseManager, _parse_db_str
 from trac.env import Environment
 from trac.ticket.default_workflow import load_workflow_config_snippet
@@ -269,6 +269,7 @@ class EnvironmentStub(Environment):
         ComponentManager.__init__(self)
 
         self.systeminfo = []
+        self._old_registry = None
 
         import trac
         self.path = path
@@ -394,6 +395,30 @@ class EnvironmentStub(Environment):
             pass
         return False
 
+    def clear_component_registry(self):
+        """Clear the component registry.
+
+        The registry entries are saved entries so they can be restored
+        later using the `restore_component_registry` method.
+
+        :since: 1.0.11
+        """
+        self._old_registry = ComponentMeta._registry
+        ComponentMeta._registry = {}
+
+    def restore_component_registry(self):
+        """Restore the component registry.
+
+        The component registry must have been cleared and saved using
+        the `clear_component_registry` method.
+
+        :since: 1.0.11
+        """
+        if self._old_registry is None:
+            raise TracError("The clear_component_registry method must be "
+                            "called first.")
+        ComponentMeta._registry = self._old_registry
+
     # tearDown helper
 
     def reset_db_and_disk(self):
@@ -405,6 +430,8 @@ class EnvironmentStub(Environment):
         self.env.reset_db()
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
+        if self._old_registry is not None:
+            self.restore_component_registry()
 
     # overridden
 

@@ -41,13 +41,10 @@ class ChromeTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        from trac.core import ComponentMeta
-        self._old_registry = ComponentMeta._registry
-        ComponentMeta._registry = {}
+        self.env.clear_component_registry()
 
     def tearDown(self):
-        from trac.core import ComponentMeta
-        ComponentMeta._registry = self._old_registry
+        self.env.restore_component_registry()
 
     def _get_navigation_item(self, items, name):
         for item in items:

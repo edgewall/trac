@@ -15,7 +15,7 @@ import os.path
 import tempfile
 import unittest
 
-from trac.core import Component, ComponentMeta, TracError, implements
+from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util import create_file
 from trac.web.api import IRequestHandler, Request, RequestDone
@@ -46,14 +46,10 @@ class AuthenticateTestCase(unittest.TestCase):
         self.env = EnvironmentStub(disable=['trac.web.auth.LoginModule'])
         self.request_dispatcher = RequestDispatcher(self.env)
         self.req = Mock(chrome={'warnings': []})
-        # Make sure we have no external components hanging around in the
-        # component registry
-        self.old_registry = ComponentMeta._registry
-        ComponentMeta._registry = {}
+        self.env.clear_component_registry()
 
     def tearDown(self):
-        # Restore the original component registry
-        ComponentMeta._registry = self.old_registry
+        self.env.restore_component_registry()
 
     def test_authenticate_returns_first_successful(self):
         class SuccessfulAuthenticator1(Component):
@@ -199,11 +195,10 @@ class HdfdumpTestCase(unittest.TestCase):
                         send=self._req_send)
         self.content = None
         self.content_type = None
-        self.old_registry = ComponentMeta._registry
-        ComponentMeta._registry = {}
+        self.env.clear_component_registry()
 
     def tearDown(self):
-        ComponentMeta._registry = self.old_registry
+        self.env.restore_component_registry()
 
     def _req_send(self, content, content_type='text/html'):
         self.content = content
