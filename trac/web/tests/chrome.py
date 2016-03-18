@@ -41,25 +41,14 @@ class Request(object):
             setattr(self, k, v)
 
 
-def clear_component_registry(tc):
-    from trac.core import ComponentMeta
-    tc._old_registry = ComponentMeta._registry
-    ComponentMeta._registry = {}
-
-
-def restore_component_registry(tc):
-    from trac.core import ComponentMeta
-    ComponentMeta._registry = tc._old_registry
-
-
 class ChromeTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        clear_component_registry(self)
+        self.env.clear_component_registry()
 
     def tearDown(self):
-        restore_component_registry(self)
+        self.env.restore_component_registry()
 
     def _get_navigation_item(self, items, name):
         for item in items:
@@ -522,7 +511,7 @@ class NavigationOrderTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        clear_component_registry(self)
+        self.env.clear_component_registry()
         self.req = Request(abs_href=Href('http://example.org/trac.cgi'),
                            href=Href('/trac.cgi'), base_path='/trac.cgi',
                            path_info='/',
@@ -544,7 +533,7 @@ class NavigationOrderTestCase(unittest.TestCase):
                 yield 'metanav', 'test2', 'Test 2'
 
     def tearDown(self):
-        restore_component_registry(self)
+        self.env.restore_component_registry()
 
     def test_explicit_ordering(self):
         """Ordering is explicitly specified."""
