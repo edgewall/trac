@@ -658,7 +658,7 @@ class Mimeview(Component):
 
     treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
         'application/octet-stream, application/pdf, application/postscript, '
-        'application/msword,application/rtf,',
+        'application/msword, application/rtf',
         doc="""Comma-separated list of MIME types that should be treated as
         binary data.
         """)
