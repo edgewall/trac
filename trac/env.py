@@ -642,17 +642,25 @@ class Environment(Component, ComponentManager):
         """Path of the trac.ini file."""
         return os.path.join(self.path, 'conf', 'trac.ini')
 
+    def _get_path_to_dir(self, dir):
+        path = os.path.join(self.path, dir)
+        return os.path.normcase(os.path.realpath(path))
+
     def get_templates_dir(self):
         """Return absolute path to the templates directory."""
-        return os.path.join(self.path, 'templates')
+        return self._get_path_to_dir('templates')
 
     def get_htdocs_dir(self):
         """Return absolute path to the htdocs directory."""
-        return os.path.join(self.path, 'htdocs')
+        return self._get_path_to_dir('htdocs')
 
     def get_log_dir(self):
         """Return absolute path to the log directory."""
-        return os.path.join(self.path, 'log')
+        return self._get_path_to_dir('log')
+
+    def get_plugins_dir(self):
+        """Return absolute path to the plugins directory."""
+        return self._get_path_to_dir('plugins')
 
     def setup_log(self):
         """Initialize the logging sub-system."""
