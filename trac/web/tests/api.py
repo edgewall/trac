@@ -315,6 +315,82 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('test', req.read(size=4))
 
+    def _test_qs_invalid_null_bytes(self, environ):
+        req = Request(environ, None)
+        try:
+            req.args['action']
+        except HTTPBadRequest, e:
+            self.assertEqual("400 Bad Request (Invalid request arguments.)",
+                             unicode(e))
+        else:
+            self.fail("HTTPBadRequest not raised.")
+
+    def test_qs_invalid_null_bytes_for_name(self):
+        environ = self._make_environ(method='GET',
+                                     **{'QUERY_STRING': 'acti\x00n=fOO'})
+        self._test_qs_invalid_null_bytes(environ)
+
+    def test_qs_invalid_null_bytes_for_value(self):
+        environ = self._make_environ(method='GET',
+                                     **{'QUERY_STRING': 'action=f\x00O'})
+        self._test_qs_invalid_null_bytes(environ)
+
+    def _test_invalid_null_bytes_in_form(self, form_data):
+        boundary = '_BOUNDARY_'
+        content_type = 'multipart/form-data; boundary="%s"' % boundary
+        form_data %= {'boundary': boundary}
+
+        environ = self._make_environ(method='POST', **{
+            'wsgi.input': StringIO(form_data),
+            'CONTENT_LENGTH': str(len(form_data)),
+            'CONTENT_TYPE': content_type
+        })
+        req = Request(environ, None)
+
+        try:
+            req.args['action']
+        except HTTPBadRequest, e:
+            self.assertEqual("400 Bad Request (Invalid request arguments.)",
+                             unicode(e))
+        else:
+            self.fail("HTTPBadRequest not raised.")
+
+    def test_invalid_null_bytes_for_filename_in_form(self):
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="attachment"; filename="thefi\x00le.txt"\r\n\
+Content-Type: text/plain\r\n\
+\r\n\
+The file content.\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="action"\r\n\
+\r\n\
+new\r\n\
+--%(boundary)s--\r\n\
+"""
+        self._test_invalid_null_bytes_in_form(form_data)
+
+    def test_invalid_null_bytes_for_name_in_form(self):
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="acti\x00n"\r\n\
+\r\n\
+new\r\n\
+--%(boundary)s--\r\n\
+"""
+
+        self._test_invalid_null_bytes_in_form(form_data)
+
+    def test_invalid_null_bytes_for_value_in_form(self):
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="action"\r\n\
+\r\n\
+ne\x00w\r\n\
+--%(boundary)s--\r\n\
+"""
+        self._test_invalid_null_bytes_in_form(form_data)
+
     def test_qs_on_post(self):
         """Make sure req.args parsing is consistent even after the backwards
         incompatible change introduced in Python 2.6.

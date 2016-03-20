@@ -769,12 +769,22 @@ class Request(object):
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
 
+        def raise_if_null_bytes(value):
+            if '\x00' in value:
+                raise HTTPBadRequest(_("Invalid request arguments."))
+
         args = []
         for value in fs.list or ():
+            name = value.name
+            raise_if_null_bytes(name)
             try:
-                name = unicode(value.name, 'utf-8')
-                if not value.filename:
-                    value = unicode(value.value, 'utf-8')
+                name = unicode(name, 'utf-8')
+                if value.filename:
+                    raise_if_null_bytes(value.filename)
+                else:
+                    value = value.value
+                    raise_if_null_bytes(value)
+                    value = unicode(value, 'utf-8')
             except UnicodeDecodeError as e:
                 raise HTTPBadRequest(
                     _("Invalid encoding in form data: %(msg)s",
