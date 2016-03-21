@@ -775,7 +775,7 @@ class Request(object):
             self.environ['QUERY_STRING'] = qs_on_post
 
         def raise_if_null_bytes(value):
-            if '\x00' in value:
+            if value and '\x00' in value:
                 raise HTTPBadRequest(_("Invalid request arguments."))
 
         args = []
@@ -783,7 +783,8 @@ class Request(object):
             name = value.name
             raise_if_null_bytes(name)
             try:
-                name = unicode(name, 'utf-8')
+                if name is not None:
+                    name = unicode(name, 'utf-8')
                 if value.filename:
                     raise_if_null_bytes(value.filename)
                 else:

@@ -315,7 +315,7 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('test', req.read(size=4))
 
-    def _test_qs_invalid_null_bytes(self, environ):
+    def _test_qs_with_null_bytes(self, environ):
         req = Request(environ, None)
         try:
             req.args['action']
@@ -325,17 +325,47 @@ class RequestTestCase(unittest.TestCase):
         else:
             self.fail("HTTPBadRequest not raised.")
 
-    def test_qs_invalid_null_bytes_for_name(self):
+    def test_qs_with_null_bytes_for_name(self):
         environ = self._make_environ(method='GET',
                                      **{'QUERY_STRING': 'acti\x00n=fOO'})
-        self._test_qs_invalid_null_bytes(environ)
+        self._test_qs_with_null_bytes(environ)
 
-    def test_qs_invalid_null_bytes_for_value(self):
+    def test_qs_with_null_bytes_for_value(self):
         environ = self._make_environ(method='GET',
                                      **{'QUERY_STRING': 'action=f\x00O'})
-        self._test_qs_invalid_null_bytes(environ)
+        self._test_qs_with_null_bytes(environ)
 
-    def _test_invalid_null_bytes_in_form(self, form_data):
+    def test_post_with_unnamed_value(self):
+        boundary = '_BOUNDARY_'
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="foo"\r\n\
+\r\n\
+named value\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name=""\r\n\
+\r\n\
+name is empty\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data\r\n\
+\r\n\
+unnamed value\r\n\
+--%(boundary)s--\r\n\
+"""
+        form_data %= {'boundary': boundary}
+        content_type = 'multipart/form-data; boundary="%s"' % boundary
+        environ = self._make_environ(method='POST', **{
+            'wsgi.input': StringIO(form_data),
+            'CONTENT_LENGTH': str(len(form_data)),
+            'CONTENT_TYPE': content_type
+        })
+        req = Request(environ, None)
+
+        self.assertEqual('named value', req.args['foo'])
+        self.assertEqual([('foo', 'named value'), ('', 'name is empty'),
+                          (None, 'unnamed value')], req.arg_list)
+
+    def _test_post_with_null_bytes(self, form_data):
         boundary = '_BOUNDARY_'
         content_type = 'multipart/form-data; boundary="%s"' % boundary
         form_data %= {'boundary': boundary}
@@ -355,7 +385,7 @@ class RequestTestCase(unittest.TestCase):
         else:
             self.fail("HTTPBadRequest not raised.")
 
-    def test_invalid_null_bytes_for_filename_in_form(self):
+    def test_post_with_null_bytes_for_filename(self):
         form_data = """\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="attachment"; filename="thefi\x00le.txt"\r\n\
@@ -368,9 +398,9 @@ Content-Disposition: form-data; name="action"\r\n\
 new\r\n\
 --%(boundary)s--\r\n\
 """
-        self._test_invalid_null_bytes_in_form(form_data)
+        self._test_post_with_null_bytes(form_data)
 
-    def test_invalid_null_bytes_for_name_in_form(self):
+    def test_post_with_null_bytes_for_name(self):
         form_data = """\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="acti\x00n"\r\n\
@@ -379,9 +409,9 @@ new\r\n\
 --%(boundary)s--\r\n\
 """
 
-        self._test_invalid_null_bytes_in_form(form_data)
+        self._test_post_with_null_bytes(form_data)
 
-    def test_invalid_null_bytes_for_value_in_form(self):
+    def test_post_with_null_bytes_for_value(self):
         form_data = """\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="action"\r\n\
@@ -389,7 +419,7 @@ Content-Disposition: form-data; name="action"\r\n\
 ne\x00w\r\n\
 --%(boundary)s--\r\n\
 """
-        self._test_invalid_null_bytes_in_form(form_data)
+        self._test_post_with_null_bytes(form_data)
 
     def test_qs_on_post(self):
         """Make sure req.args parsing is consistent even after the backwards
