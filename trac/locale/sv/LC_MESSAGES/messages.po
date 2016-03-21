@@ -7056,7 +7056,7 @@ msgstr "Visa skillnader"
 
 #: trac/wiki/templates/wiki_edit.html:94
 msgid "Review"
-msgstr "Förhandsgranska"
+msgstr "Granska"
 
 #: trac/wiki/templates/wiki_edit.html:95
 msgid "See the preview"
@@ -7118,7 +7118,7 @@ msgstr "Inga ändringar"
 
 #: trac/wiki/templates/wiki_edit.html:165
 msgid "Go to Save, Preview, Review or Cancel buttons"
-msgstr "Gå till knapparna Spara, Förhandsgranska eller Ångra"
+msgstr "Gå till knapparna Spara, Förhandsgranska, Granska eller Ångra"
 
 #: trac/wiki/templates/wiki_edit.html:166
 msgid "Actions"
