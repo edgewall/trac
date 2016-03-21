@@ -308,6 +308,21 @@ class ProcessRequestTestCase(unittest.TestCase):
         else:
             self.fail("HTTPInternalError not raised")
 
+    def test_not_implemented_error_raises_http_internal_server_error(self):
+        """NotImplementedError in process_request is trapped and an
+        HTTPInternalError is raised.
+        """
+        req = _create_request(self.env)
+        req.exc_class = NotImplementedError
+
+        try:
+            RequestDispatcher(self.env).dispatch(req)
+        except HTTPInternalError as e:
+            self.assertEqual("500 Not Implemented Error (Raised in "
+                             "process_request)", unicode(e))
+        else:
+            self.fail("HTTPInternalError not raised")
+
 
 class PostProcessRequestTestCase(unittest.TestCase):
     """Test cases for handling of the optional `method` argument in

@@ -30,6 +30,7 @@ import pkg_resources
 from pprint import pformat, pprint
 import re
 import sys
+import traceback
 
 from genshi.builder import tag
 from genshi.output import DocType
@@ -55,7 +56,8 @@ from trac.util.translation import _, get_negotiated_locale, has_babel, \
 from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
-                         RequestDone, is_valid_default_handler
+                         RequestDone, TracNotImplementedError, \
+                         is_valid_default_handler
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
@@ -288,12 +290,17 @@ class RequestDispatcher(Component):
                                exception_to_unicode(e2, traceback=True))
             if isinstance(e, PermissionError):
                 raise HTTPForbidden(e)
-            elif isinstance(e, ResourceNotFound):
+            if isinstance(e, ResourceNotFound):
                 raise HTTPNotFound(e)
-            elif isinstance(e, TracError):
+            if isinstance(e, NotImplementedError):
+                tb = traceback.extract_tb(err[2])[-1]
+                self.log.warning("%s caught from %s:%d in %s: %s",
+                                 e.__class__.__name__, tb[0], tb[1], tb[2],
+                                 to_unicode(e) or "(no message)")
+                raise HTTPInternalError(TracNotImplementedError(e))
+            if isinstance(e, TracError):
                 raise HTTPInternalError(e)
-            else:
-                raise err[0], err[1], err[2]
+            raise err[0], err[1], err[2]
 
     # ITemplateProvider methods
 
