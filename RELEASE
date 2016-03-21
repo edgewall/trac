@@ -31,9 +31,9 @@ more effective. Starting with the 0.12 release, special thanks go to
 our many translators.  Without your invaluable help, Trac would not
 evolve. Thank you all.
 
-Finally, we offer hope that Trac will prove itself useful to
-like-minded programmers around the world, and that this release will
-prove an improvement over the last version.
+Finally, we hope that Trac will prove itself useful to like-minded
+programmers around the world, and that this release will prove an
+improvement over the last version.
 
 Please let us know. :-)
 
