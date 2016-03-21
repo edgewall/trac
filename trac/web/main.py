@@ -27,6 +27,7 @@ import pkg_resources
 from pprint import pformat, pprint
 import re
 import sys
+import traceback
 import StringIO
 
 from genshi.builder import tag
@@ -52,7 +53,7 @@ from trac.util.translation import _, get_negotiated_locale, has_babel, \
 from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
-                         RequestDone
+                         RequestDone, TracNotImplementedError
 from trac.web.chrome import Chrome, add_notice, add_warning
 from trac.web.href import Href
 from trac.web.session import Session
@@ -286,6 +287,12 @@ class RequestDispatcher(Component):
             raise HTTPForbidden(e)
         except ResourceNotFound, e:
             raise HTTPNotFound(e)
+        except NotImplementedError, e:
+            tb = traceback.extract_tb(err[2])[-1]
+            self.log.warning("%s caught from %s:%d in %s: %s",
+                             e.__class__.__name__, tb[0], tb[1], tb[2],
+                             to_unicode(e) or "(no message)")
+            raise HTTPInternalError(TracNotImplementedError(e))
         except TracError, e:
             raise HTTPInternalError(e)
 

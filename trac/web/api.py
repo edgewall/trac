@@ -35,7 +35,7 @@ from trac.perm import PermissionError
 from trac.util import get_last_traceback, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty, exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, N_
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
 
@@ -124,6 +124,11 @@ class ITemplateStreamFilter(Interface):
 
         .. _Genshi: http://genshi.edgewall.org/wiki/Documentation/filters.html
         """
+
+
+class TracNotImplementedError(TracError, NotImplementedError):
+
+    title = N_("Not Implemented Error")
 
 
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
