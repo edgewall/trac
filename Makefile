@@ -21,6 +21,7 @@ define HELP
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
+  [pythonopts=...]    variable containing extra options for the interpreter
 
  ---------------- Testing tasks
 
@@ -125,11 +126,11 @@ export HELP_CFG
 .PHONY: all help status clean clean-bytecode clean-mo
 
 %.py : status
-	python setup.py -q test -s $(subst /,.,$(@:.py=)).suite $(testopts)
+	$(PYTHON) setup.py -q test -s $(subst /,.,$(@:.py=)).suite $(testopts)
 
 ifdef test
 all: status
-	python setup.py -q test -s $(subst /,.,$(test:.py=)).suite $(testopts)
+	$(PYTHON) setup.py -q test -s $(subst /,.,$(test:.py=)).suite $(testopts)
 else
 all: help
 endif
@@ -143,10 +144,9 @@ Makefile.cfg:
 
 status:
 	@echo
-	@echo -n "Python: "
-	@which python
+	@echo "Python: $$(which $(PYTHON)) $(pythonopts)"
 	@echo
-	@python contrib/make_status.py
+	@$(PYTHON) contrib/make_status.py
 	@echo
 	@echo "Variables:"
 	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
@@ -160,7 +160,7 @@ status:
 	@echo
 
 Trac.egg-info: status
-	python setup.py egg_info
+	$(PYTHON) setup.py egg_info
 
 clean: clean-bytecode clean-figleaf clean-coverage clean-doc
 
@@ -211,29 +211,29 @@ init-%:
 	@$(foreach catalog,$(catalogs), \
 	    [ -e $(catalog.po) ] \
 	    && echo "$(catalog.po) already exists" \
-	    || python setup.py init_catalog$(_catalog) -l $(*);)
+	    || $(PYTHON) setup.py init_catalog$(_catalog) -l $(*);)
 
 
 extract extraction:
-	python setup.py $(foreach catalog,$(catalogs),\
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs),\
 	    extract_messages$(_catalog))
 
 
 update-%:
-	python setup.py $(foreach catalog,$(catalogs), \
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs), \
 	    update_catalog$(_catalog) -l $(*)) $(updateopts)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
 else
 update:
-	python setup.py $(foreach catalog,$(catalogs), \
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs), \
 	    update_catalog$(_catalog)) $(updateopts)
 endif
 
 
 compile-%:
-	python setup.py $(foreach catalog,$(catalogs), \
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs), \
 	    compile_catalog$(_catalog) -l $(*)) \
 	    generate_messages_js -l $(*)
 
@@ -241,7 +241,7 @@ ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
-	python setup.py $(foreach catalog,$(catalogs), \
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs), \
 	    compile_catalog$(_catalog)) generate_messages_js
 endif
 
@@ -254,7 +254,7 @@ pre-check:
 
 check-%:
 	@echo -n "$(@): "
-	python setup.py $(foreach catalog,$(catalogs), \
+	$(PYTHON) setup.py $(foreach catalog,$(catalogs), \
 	    check_catalog$(_catalog) -l $(*))
 	@$(foreach catalog,$(catalogs), \
 	    msgfmt --check $(catalog.po) &&) echo msgfmt OK
@@ -302,7 +302,7 @@ MESSAGES_TOTAL = \
     $(MESSAGES_TOTAL)
 
 summary-%:
-	@python -c "print('l10n/$(*): translations updated (%d%%)' \
+	@$(PYTHON) -c "print('l10n/$(*): translations updated (%d%%)' \
 	    % (($(foreach catalog,$(catalogs), \
 	          $(shell $(translated-sh)) + ) 0) * 100.0 \
 	       / $(MESSAGES_TOTAL)))"
@@ -318,7 +318,7 @@ diff-%:
 	$(vc) diff trac/locale/$(*) > $$diff; \
 	[ -s $$diff ] && { \
 	    echo -n "# $(*) changed -> "; \
-	    python contrib/l10n_diff_index.py $$diff; \
+	    $(PYTHON) contrib/l10n_diff_index.py $$diff; \
 	} || rm $$diff
 
 # The above create l10n-xy.diff files but also a  l10n-xy.diff.index
@@ -344,13 +344,13 @@ clean-mo:
 test: unit-test functional-test
 
 unit-test: Trac.egg-info
-	python ./trac/test.py --skip-functional-tests $(testopts)
+	$(PYTHON) ./trac/test.py --skip-functional-tests $(testopts)
 
 functional-test: Trac.egg-info
-	python trac/tests/functional/__init__.py $(testopts)
+	$(PYTHON) trac/tests/functional/__init__.py $(testopts)
 
 test-wiki:
-	python trac/tests/allwiki.py $(testopts)
+	$(PYTHON) trac/tests/allwiki.py $(testopts)
 
 # ----------------------------------------------------------------------------
 #
@@ -401,7 +401,7 @@ unit-test-coverage:
 
 functional-test-coverage:
 	FIGLEAF='coverage run -a $(coverageopts) $(COVERAGEOPTS)' \
-	python trac/tests/functional/__init__.py -v $(testopts)
+	$(PYTHON) trac/tests/functional/__init__.py -v $(testopts)
 
 show-coverage: htmlcov/index.html
 	$(if $(START),$(START) $(<))
@@ -449,7 +449,7 @@ functional-test-figleaf: functional-test.figleaf
 
 functional-test.figleaf: Trac.egg-info
 	rm -f .figleaf
-	FIGLEAF=figleaf python trac/tests/functional/testcases.py -v
+	FIGLEAF=figleaf $(PYTHON) trac/tests/functional/testcases.py -v
 	@mv .figleaf $(@)
 
 unit-test.figleaf: Trac.egg-info
@@ -480,7 +480,7 @@ server tracd start-tracd: start-server
 
 start-server: Trac.egg-info
 ifdef env
-	python trac/web/standalone.py $(server-options)
+	$(PYTHON) trac/web/standalone.py $(server-options)
 else
 	@echo "\`env' variable was not specified. See \`make help'."
 endif
@@ -492,7 +492,7 @@ trac-admin: start-admin
 
 start-admin:
 ifneq "$(wildcard $(env)/VERSION)" ""
-	@python trac/admin/console.py $(env) $(adminopts)
+	@$(PYTHON) trac/admin/console.py $(env) $(adminopts)
 else
 	@echo "\`env' variable was not specified or doesn't point to one env."
 endif
@@ -501,7 +501,7 @@ endif
 .PHONY: start-python
 
 start-python:
-	@python
+	@$(PYTHON)
 # (this doesn't seem to be much, but we're taking benefit of the
 # environment setup we're doing below)
 
@@ -526,7 +526,7 @@ sphinx: apidoc
 apidoc: $(addprefix apidoc-,$(sphinxformat))
 
 apidoc-check:
-	@python doc/utils/checkapidoc.py
+	@$(PYTHON) doc/utils/checkapidoc.py
 
 apidoc-%:
 	@$(SPHINXBUILD) -b $(*) \
@@ -537,7 +537,7 @@ apidoc-%:
 
 epydoc: apiref
 apiref: doc-images
-	@python doc/utils/runepydoc.py --config=doc/utils/epydoc.conf \
+	@$(PYTHON) doc/utils/runepydoc.py --config=doc/utils/epydoc.conf \
 	    $(epydocopts) $(if $(dotpath),--dotpath=$(dotpath))
 
 doc-images: $(addprefix build/,$(wildcard doc/images/*.png))
@@ -554,6 +554,9 @@ clean-doc:
 # ============================================================================
 #
 # Setup environment variables
+
+PYTHON ?= python
+PYTHON := $(PYTHON) $(pythonopts)
 
 python-home := $(python.$(or $(python),$($(db).python)))
 
