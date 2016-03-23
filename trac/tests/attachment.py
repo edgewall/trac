@@ -294,7 +294,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
 
     def tearDown(self):
-        self.env.reset_db()
+        self.env.reset_db_and_disk()
 
     def _create_request(self, authname='anonymous', **kwargs):
         kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
