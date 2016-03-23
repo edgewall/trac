@@ -1450,6 +1450,7 @@ class SubversionConnectorTestCase(unittest.TestCase):
         self.env.reset_db()
         # clear cached repositories to avoid TypeError on termination (#11505)
         RepositoryManager(self.env).reload_repositories()
+        repos.svn_repos_delete(self.repos_path)
 
     def _svn_version_from_system_info(self):
         svn_version = None
