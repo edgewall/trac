@@ -1496,7 +1496,7 @@ class TicketModule(Component):
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
                         owner_field = field
-            elif name == 'milestone':
+            elif name == 'milestone' and not field.get('custom'):
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
                 milestones = [m for m in milestones
