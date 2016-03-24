@@ -17,6 +17,7 @@ import unittest
 from trac.core import TracError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
@@ -434,6 +435,55 @@ class TicketModuleTestCase(unittest.TestCase):
         req = self._create_request(method='GET', path_info='/ticket/1')
         value = datetime_now(utc) - timedelta(days=1)
         self._test_render_time_field('relative', req, value, '24 hours ago')
+
+    def _test_newticket_with_enum_as_custom_field(self, field_name):
+        self.env.config.set('ticket-custom', field_name, 'text')
+        self.env.config.set('ticket-custom', '%s.label' % field_name,
+                            '(%s)' % field_name)
+        with self.env.db_transaction as db:
+            if field_name in ('milestone', 'component', 'version'):
+                db("DELETE FROM %s" % field_name)
+            elif field_name == 'type':
+                db("DELETE FROM enum WHERE type='ticket_type'")
+            else:
+                db("DELETE FROM enum WHERE type=%s", (field_name,))
+        tktsys = TicketSystem(self.env)
+        tktsys.reset_ticket_fields()
+        del tktsys.custom_fields
+
+        req = self._create_request(path_info='/newticket')
+        self.assertEqual(True, self.ticket_module.match_request(req))
+        resp = self.ticket_module.process_request(req)
+        for field in resp[1]['fields']:
+            if field['name'] == field_name:
+                self.assertEqual('(%s)' % field_name, field['label'])
+                self.assertTrue(field['custom'])
+                self.assertFalse(field['options'])
+                self.assertFalse(field.get('optgroups'))
+                break
+        else:
+            self.fail('Missing %s in fields' % field_name)
+
+    def test_newticket_with_component_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('component')
+
+    def test_newticket_with_milestone_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('milestone')
+
+    def test_newticket_with_priority_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('priority')
+
+    def test_newticket_with_resolution_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('resolution')
+
+    def test_newticket_with_severity_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('severity')
+
+    def test_newticket_with_type_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('type')
+
+    def test_newticket_with_version_as_custom_field(self):
+        self._test_newticket_with_enum_as_custom_field('version')
 
 
 def suite():
