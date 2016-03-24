@@ -194,12 +194,12 @@ class RequestDispatcher(Component):
         req.callbacks.update({
             'authname': self.authenticate,
             'chrome': chrome.prepare_request,
+            'form_token': self._get_form_token,
+            'lc_time': self._get_lc_time,
+            'locale': self._get_locale,
             'perm': self._get_perm,
             'session': self._get_session,
-            'locale': self._get_locale,
-            'lc_time': self._get_lc_time,
             'tz': self._get_timezone,
-            'form_token': self._get_form_token,
             'use_xsendfile': self._get_use_xsendfile,
             'xsendfile_header': self._get_xsendfile_header,
         })
