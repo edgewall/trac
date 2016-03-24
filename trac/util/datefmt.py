@@ -476,7 +476,7 @@ def get_first_week_day_jquery_ui(req):
                         if l.territory:
                             locale = l
                             break
-                    except UnknownLocaleError:
+                    except (UnknownLocaleError, ValueError):
                         pass
         if not locale.territory and locale.language in LOCALE_ALIASES:
             locale = Locale.parse(LOCALE_ALIASES[locale.language])

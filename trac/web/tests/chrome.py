@@ -344,6 +344,40 @@ class ChromeTestCase(unittest.TestCase):
         self.assertRaises(ConfigurationError, getattr, Chrome(self.env),
                           'default_dateinfo_format')
 
+    def test_add_jquery_ui_first_week_day(self):
+        def first_week_day(locale, lc_time, languages):
+            chrome = Chrome(self.env)
+            req = Request(href=Href('/trac.cgi'), locale=locale,
+                          lc_time=lc_time, tz=utc, languages=languages)
+            chrome.add_jquery_ui(req)
+            return req.chrome['script_data']['jquery_ui']['first_week_day']
+
+        # Babel is unavailable
+        self.assertEqual(0, first_week_day(None, None, None))
+        self.assertEqual(1, first_week_day(None, 'iso8601', None))
+        if locale_en:
+            # We expect the following aliases
+            from babel.core import LOCALE_ALIASES, Locale
+            self.assertEqual('ja_JP', LOCALE_ALIASES['ja'])
+            self.assertEqual('de_DE', LOCALE_ALIASES['de'])
+            self.assertEqual('fr_FR', LOCALE_ALIASES['fr'])
+
+            self.assertEqual(0, first_week_day(locale_en, locale_en, []))
+            self.assertEqual(1, first_week_day(locale_en, 'iso8601', []))
+            ja = Locale.parse('ja')
+            self.assertEqual(0, first_week_day(ja, ja, []))
+            self.assertEqual(0, first_week_day(ja, ja, ['ja', 'ja-jp']))
+            de = Locale.parse('de')
+            self.assertEqual(1, first_week_day(de, de, []))
+            self.assertEqual(1, first_week_day(de, de, ['de', 'de-de']))
+            fr = Locale.parse('fr')
+            self.assertEqual(1, first_week_day(fr, fr, []))
+            self.assertEqual(1, first_week_day(fr, fr, ['fr', 'fr-fr']))
+            self.assertEqual(0, first_week_day(fr, fr, ['fr', 'fr-ca']))
+            # invalid locale identifier (#12408)
+            self.assertEqual(1, first_week_day(fr, fr, ['fr', 'fr-']))
+            self.assertEqual(0, first_week_day(fr, fr, ['fr', 'fr-', 'fr-ca']))
+
     def test_add_jquery_ui_timezone_list_has_default_timezone(self):
         chrome = Chrome(self.env)
         href = Href('/trac.cgi')
