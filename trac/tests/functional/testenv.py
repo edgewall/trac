@@ -344,7 +344,7 @@ class FunctionalTestEnvironment(object):
         permission_policies = env.config.get('trac', 'permission_policies')
         env.config.set('trac', 'permission_policies',
                        'AuthzPolicy, ' + permission_policies)
-        authz_file = self.tracdir + '/conf/' + filename
+        authz_file = os.path.join(env.conf_dir, filename)
         if isinstance(authz_content, basestring):
             authz_content = [line.strip() for line in
                              authz_content.strip().splitlines()]

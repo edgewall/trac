@@ -128,7 +128,7 @@ class TestTicketManipulator(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('components', plugin_name + '.*', 'enabled')
         env.config.save()
-        create_file(os.path.join(env.path, 'plugins', plugin_name + '.py'),
+        create_file(os.path.join(env.plugins_dir, plugin_name + '.py'),
 """\
 from genshi.builder import tag
 from trac.core import Component, implements
@@ -1893,11 +1893,11 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6048"""
         # Setup the DeleteTicket plugin
+        env = self._testenv.get_trac_environment()
         plugin = open(os.path.join(self._testenv.trac_src, 'sample-plugins',
                                    'workflow', 'DeleteTicket.py')).read()
-        open(os.path.join(self._testenv.tracdir, 'plugins',
-                          'DeleteTicket.py'), 'w').write(plugin)
-        env = self._testenv.get_trac_environment()
+        plugin_path = os.path.join(env.plugins_dir, 'DeleteTicket.py')
+        open(plugin_path, 'w').write(plugin)
         prevconfig = env.config.get('ticket', 'workflow')
         env.config.set('ticket', 'workflow',
                        prevconfig + ',DeleteTicketActionController')
@@ -1923,8 +1923,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         env.config.save()
         env = self._testenv.get_trac_environment() # reload environment
         for ext in ('py', 'pyc', 'pyo'):
-            filename = os.path.join(self._testenv.tracdir, 'plugins',
-                                    'DeleteTicket.%s' % ext)
+            filename = os.path.join(env.plugins_dir, 'DeleteTicket.%s' % ext)
             if os.path.exists(filename):
                 os.unlink(filename)
 
