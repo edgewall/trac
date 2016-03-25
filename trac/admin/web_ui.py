@@ -501,7 +501,7 @@ class PluginAdminPanel(Component):
             raise TracError(_("Uploaded file is not a Python source file or "
                               "egg"))
 
-        target_path = os.path.join(self.env.path, 'plugins', plugin_filename)
+        target_path = os.path.join(self.env.plugins_dir, plugin_filename)
         if os.path.isfile(target_path):
             raise TracError(_("Plugin %(name)s already installed",
                               name=plugin_filename))
@@ -527,7 +527,7 @@ class PluginAdminPanel(Component):
         plugin_filename = req.args.get('plugin_filename')
         if not plugin_filename:
             return
-        plugin_path = os.path.join(self.env.path, 'plugins', plugin_filename)
+        plugin_path = os.path.join(self.env.plugins_dir, plugin_filename)
         if not os.path.isfile(plugin_path):
             return
         self.log.info("Uninstalling plugin %s", plugin_filename)
@@ -598,7 +598,7 @@ class PluginAdminPanel(Component):
 
         data = {
             'plugins': plugins, 'show': req.args.get('show'),
-            'readonly': not os.access(self.env.get_plugins_dir(),
+            'readonly': not os.access(self.env.plugins_dir,
                                       os.F_OK + os.W_OK),
             'safe_wiki_to_html': safe_wiki_to_html,
         }

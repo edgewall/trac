@@ -101,15 +101,15 @@ def load_py_files():
 def get_plugins_dir(env):
     """Return the path to the `plugins` directory of the environment.
 
-    :since 1.0.11: Deprecated and will be removed in 1.3.1. Use
-                   Environment.get_plugins_dir() instead."""
-    return env.get_plugins_dir()
+    :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
+                   Environment.plugins_dir property instead."""
+    return env.plugins_dir
 
 
 def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
                                                    load_py_files())):
     """Load all plugin components found on the given search path."""
-    plugins_dir = env.get_plugins_dir()
+    plugins_dir = env.plugins_dir
     search_path = [plugins_dir]
     if extra_path:
         search_path += list(extra_path)
@@ -138,7 +138,7 @@ def get_plugin_info(env, include_core=False):
                                               location=module.__file__)
         return dist
 
-    plugins_dir = env.get_plugins_dir()
+    plugins_dir = env.plugins_dir
     plugins = {}
     from trac.core import ComponentMeta
     for component in ComponentMeta._components:

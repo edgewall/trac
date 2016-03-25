@@ -87,8 +87,7 @@ class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('components', plugin_name + '.*', 'enabled')
         env.config.save()
-        create_file(os.path.join(env.path, 'plugins',
-                                 plugin_name + '.py'), """\
+        create_file(os.path.join(env.plugins_dir, plugin_name + '.py'), """\
 from genshi.builder import tag
 from trac.core import Component, implements
 from trac.util.translation import tag_

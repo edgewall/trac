@@ -336,7 +336,8 @@ class FunctionalTestEnvironment(object):
         if filename is None:
             filename = 'authz-' + \
                        hashlib.md5(str(authz_content)).hexdigest()[:9]
-        authz_file = os.path.join(self.tracdir, 'conf', filename)
+        env = self.get_trac_environment()
+        authz_file = os.path.join(env.conf_dir, filename)
         if os.path.exists(authz_file):
             wait_for_file_mtime_change(authz_file)
         if isinstance(authz_content, basestring):
@@ -352,7 +353,6 @@ class FunctionalTestEnvironment(object):
                     parser.set(section, key, value)
             with open(authz_file, 'w') as f:
                 parser.write(f)
-        env = self.get_trac_environment()
         permission_policies = env.config.get('trac', 'permission_policies')
         env.config.set('trac', 'permission_policies',
                        'AuthzPolicy, ' + permission_policies)

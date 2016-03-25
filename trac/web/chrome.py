@@ -736,11 +736,11 @@ class Chrome(Component):
     def get_htdocs_dirs(self):
         return [('common', pkg_resources.resource_filename('trac', 'htdocs')),
                 ('shared', self.shared_htdocs_dir),
-                ('site', self.env.get_htdocs_dir())]
+                ('site', self.env.htdocs_dir)]
 
     def get_templates_dirs(self):
         return filter(None, [
-            self.env.get_templates_dir(),
+            self.env.templates_dir,
             self.shared_templates_dir,
             pkg_resources.resource_filename('trac', 'templates'),
         ])
@@ -1187,12 +1187,12 @@ class Chrome(Component):
 
         files = {}
         # Collect templates list
-        site_templates = list_dir(self.env.get_templates_dir(), '.html')
+        site_templates = list_dir(self.env.templates_dir, '.html')
         shared_templates = list_dir(Chrome(self.env).shared_templates_dir,
                                     '.html')
 
         # Collect static resources list
-        site_htdocs = list_dir(self.env.get_htdocs_dir())
+        site_htdocs = list_dir(self.env.htdocs_dir)
         shared_htdocs = list_dir(Chrome(self.env).shared_htdocs_dir)
 
         if any((site_templates, shared_templates, site_htdocs, shared_htdocs)):

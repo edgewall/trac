@@ -556,9 +556,9 @@ class Environment(Component, ComponentManager):
         # Create the directory structure
         if not os.path.exists(self.path):
             os.mkdir(self.path)
-        os.mkdir(self.get_log_dir())
-        os.mkdir(self.get_htdocs_dir())
-        os.mkdir(os.path.join(self.path, 'plugins'))
+        os.mkdir(self.log_dir)
+        os.mkdir(self.htdocs_dir)
+        os.mkdir(self.plugins_dir)
 
         # Create a few files
         create_file(os.path.join(self.path, 'VERSION'), _VERSION + '\n')
@@ -567,7 +567,7 @@ class Environment(Component, ComponentManager):
                     'Visit http://trac.edgewall.org/ for more information.\n')
 
         # Setup the default configuration
-        os.mkdir(os.path.join(self.path, 'conf'))
+        os.mkdir(self.conf_dir)
         create_file(self.config_file_path + '.sample')
         config = Configuration(self.config_file_path)
         for section, name, value in options:
@@ -640,34 +640,82 @@ class Environment(Component, ComponentManager):
     @lazy
     def config_file_path(self):
         """Path of the trac.ini file."""
-        return os.path.join(self.path, 'conf', 'trac.ini')
+        return os.path.join(self.conf_dir, 'trac.ini')
 
     def _get_path_to_dir(self, dir):
         path = os.path.join(self.path, dir)
         return os.path.normcase(os.path.realpath(path))
 
-    def get_templates_dir(self):
-        """Return absolute path to the templates directory."""
-        return self._get_path_to_dir('templates')
+    @lazy
+    def conf_dir(self):
+        """Absolute path to the conf directory.
 
-    def get_htdocs_dir(self):
-        """Return absolute path to the htdocs directory."""
+        :since: 1.0.11
+        """
+        return self._get_path_to_dir('conf')
+
+    @lazy
+    def htdocs_dir(self):
+        """Absolute path to the htdocs directory.
+
+        :since: 1.0.11
+        """
         return self._get_path_to_dir('htdocs')
 
-    def get_log_dir(self):
-        """Return absolute path to the log directory."""
+    def get_htdocs_dir(self):
+        """Return absolute path to the htdocs directory.
+
+        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
+                       `htdocs_dir` property instead.
+        """
+        return self._get_path_to_dir('htdocs')
+
+    @lazy
+    def log_dir(self):
+        """Absolute path to the log directory.
+
+        :since: 1.0.11
+        """
         return self._get_path_to_dir('log')
 
-    def get_plugins_dir(self):
-        """Return absolute path to the plugins directory."""
+    def get_log_dir(self):
+        """Return absolute path to the log directory.
+
+        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
+                       `log_dir` property instead.
+        """
+        return self._get_path_to_dir('log')
+
+    @lazy
+    def plugins_dir(self):
+        """Absolute path to the plugins directory.
+
+        :since: 1.0.11
+        """
         return self._get_path_to_dir('plugins')
+
+    @lazy
+    def templates_dir(self):
+        """Absolute path to the templates directory.
+
+        :since: 1.0.11
+        """
+        return self._get_path_to_dir('templates')
+
+    def get_templates_dir(self):
+        """Return absolute path to the templates directory.
+
+        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
+                       `templates_dir` property instead.
+        """
+        return self._get_path_to_dir('templates')
 
     def setup_log(self):
         """Initialize the logging sub-system."""
         logtype = self.log_type
         logfile = self.log_file
         if logtype == 'file' and not os.path.isabs(logfile):
-            logfile = os.path.join(self.get_log_dir(), logfile)
+            logfile = os.path.join(self.log_dir, logfile)
         format = self.log_format
         logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         if format:

@@ -54,8 +54,7 @@ class TestErrorPage(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
         env.config.save()
-        create_file(os.path.join(env.path, 'plugins',
-                                 'RaiseExceptionPlugin.py'),
+        create_file(os.path.join(env.plugins_dir, 'RaiseExceptionPlugin.py'),
 """\
 from trac.core import Component, implements
 from trac.web.api import IRequestHandler
@@ -98,12 +97,12 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
         # Setup the DeleteTicket plugin
+        env = self._testenv.get_trac_environment()
         plugin = open(os.path.join(self._testenv.trac_src,
                                    'sample-plugins', 'workflow',
                                    'DeleteTicket.py')).read()
-        open(os.path.join(self._testenv.tracdir, 'plugins',
-                          'DeleteTicket.py'), 'w').write(plugin)
-        env = self._testenv.get_trac_environment()
+        plugin_path = os.path.join(env.plugins_dir, 'DeleteTicket.py')
+        open(plugin_path, 'w').write(plugin)
         prevconfig = env.config.get('ticket', 'workflow')
         env.config.set('ticket', 'workflow',
                        prevconfig + ',DeleteTicketActionController')
@@ -122,7 +121,7 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
             env.config.set('ticket', 'workflow', prevconfig)
             env.config.save()
             for ext in ('py', 'pyc', 'pyo'):
-                filename = os.path.join(self._testenv.tracdir, 'plugins',
+                filename = os.path.join(env.plugins_dir,
                                         'DeleteTicket.%s' % ext)
                 if os.path.exists(filename):
                     os.unlink(filename)
@@ -131,14 +130,13 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket3833a(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 a"""
+        env = self._testenv.get_trac_environment()
         # Assume the logging is already set to debug.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
-                                        'trac.log'))
+        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
-        # Verify that logging is on initially
-        env = self._testenv.get_trac_environment()
 
+        # Verify that logging is on initially
         env.log.debug("RegressionTestTicket3833 debug1")
         debug1 = traclogfile.read()
         self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
@@ -151,11 +149,10 @@ class RegressionTestTicket3833b(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
         # Turn logging off, try to log something, and verify that it does
         # not show up.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
-                                        'trac.log'))
+        env = self._testenv.get_trac_environment()
+        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
-        env = self._testenv.get_trac_environment()
 
         env.config.set('logging', 'log_level', 'INFO')
         env.config.save()
@@ -175,11 +172,10 @@ class RegressionTestTicket3833c(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/3833 c"""
         # Turn logging back on, try to log something, and verify that it
         # does show up.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
-                                        'trac.log'))
+        env = self._testenv.get_trac_environment()
+        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
-        env = self._testenv.get_trac_environment()
 
         env.config.set('logging', 'log_level', 'DEBUG')
         time.sleep(2)
@@ -317,7 +313,7 @@ class RegressionTestTicket11434(FunctionalTwillTestCaseSetup):
         env = self._testenv.get_trac_environment()
         env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
         env.config.save()
-        create_file(os.path.join(env.path, 'plugins', 'RaiseExceptionPlugin.py'),
+        create_file(os.path.join(env.plugins_dir, 'RaiseExceptionPlugin.py'),
 """\
 from trac.core import Component, implements
 from trac.web.api import IRequestHandler
