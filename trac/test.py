@@ -270,6 +270,7 @@ class EnvironmentStub(Environment):
 
         self.systeminfo = []
         self._old_registry = None
+        self._old_components = None
 
         import trac
         self.path = path
@@ -404,6 +405,7 @@ class EnvironmentStub(Environment):
         :since: 1.0.11
         """
         self._old_registry = ComponentMeta._registry
+        self._old_components = ComponentMeta._components
         ComponentMeta._registry = {}
 
     def restore_component_registry(self):
@@ -418,6 +420,7 @@ class EnvironmentStub(Environment):
             raise TracError("The clear_component_registry method must be "
                             "called first.")
         ComponentMeta._registry = self._old_registry
+        ComponentMeta._components = self._old_components
 
     # tearDown helper
 
