@@ -22,9 +22,8 @@ from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
-from trac.util.datefmt import utc
-from trac.web.api import _RequestArgs, HTTPBadRequest, RequestDone
+from trac.test import EnvironmentStub, MockRequest
+from trac.web.api import HTTPBadRequest
 
 
 hashes = {
@@ -243,22 +242,6 @@ class AttachmentModuleTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db_and_disk()
 
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': {}, 'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
-
     class GenericResourceManager(Component):
 
         implements(IResourceManager)
@@ -281,8 +264,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
         path_info = '/attachment/parent_realm/parent_id/attachment_id'
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
         attachment.insert('attachment_id', StringIO(''), 0, 1)
-        req = self._create_request(method='POST', action=None,
-                                   path_info=path_info)
+        req = MockRequest(self.env, method='POST', action=None,
+                          path_info=path_info)
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
@@ -293,8 +276,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
         without an attachment.
         """
         path_info = '/attachment/parent_realm/parent_id'
-        req = self._create_request(path_info=path_info, method='POST',
-                                   args={'action': 'new'})
+        req = MockRequest(self.env, path_info=path_info, method='POST',
+                          args={'action': 'new'})
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
@@ -305,7 +288,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
         realm.
         """
         path_info = '/attachment/attachment/parent_id/attachment_id'
-        req = self._create_request(path_info=path_info)
+        req = MockRequest(self.env, path_info=path_info)
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))

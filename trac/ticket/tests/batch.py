@@ -18,7 +18,7 @@ from datetime import timedelta
 
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
                       PermissionCache
-from trac.test import Mock, EnvironmentStub
+from trac.test import EnvironmentStub, MockRequest
 from trac.ticket import default_workflow, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
@@ -35,7 +35,7 @@ class BatchModifyTestCase(unittest.TestCase):
                     web_ui.TicketModule])
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
-        self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
+        self.req = MockRequest(self.env)
         self.req.session = {}
         self.req.perm = PermissionCache(self.env)
 
