@@ -560,17 +560,22 @@ class TracAdminHelpMacro(WikiMacroBase):
         return html.PRE(buf.getvalue().decode('utf-8'), class_='wiki')
 
 
-def run(args=None):
-    """Main entry point."""
+def _quote_args(args):
+    def quote(arg):
+        if arg.isalnum():
+            return arg
+        return '"\'"'.join("'%s'" % v for v in arg.split("'"))
+    return [quote(arg) for arg in args]
+
+
+def _run(args):
     if args is None:
         args = sys.argv[1:]
-    if has_babel:
-        translation.activate(get_console_locale())
     warn_setuptools_issue()
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
-            return admin.onecmd(' '.join(['help'] + args[1:]))
+            return admin.onecmd(' '.join(_quote_args(['help'] + args[1:])))
         elif args[0] in ('-v','--version'):
             printout(os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
@@ -580,12 +585,10 @@ def run(args=None):
             except UnicodeDecodeError:
                 printerr(_("Non-ascii environment path '%(path)s' not "
                            "supported.", path=to_unicode(env_path)))
-                sys.exit(2)
+                return 2
             admin.env_set(env_path)
             if len(args) > 1:
-                s_args = ' '.join(["'%s'" % c for c in args[2:]])
-                command = args[1] + ' ' + s_args
-                return admin.onecmd(command)
+                return admin.onecmd(' '.join(_quote_args(args[1:])))
             else:
                 while True:
                     try:
@@ -594,6 +597,15 @@ def run(args=None):
                         admin.do_quit('')
     else:
         return admin.onecmd("help")
+
+
+def run(args=None):
+    """Main entry point."""
+    translation.activate(get_console_locale())
+    try:
+        _run(args)
+    finally:
+        translation.deactivate()
 
 
 if __name__ == '__main__':
