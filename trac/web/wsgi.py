@@ -23,6 +23,17 @@ from SocketServer import ForkingMixIn, ThreadingMixIn
 import urllib
 
 
+# winsock errors
+_WSAECONNABORTED = 10053
+_WSAECONNRESET = 10054
+
+
+def is_client_disconnect_exception(e):
+    return isinstance(e, (IOError, socket.error)) and \
+           e.args[0] in (errno.EPIPE, errno.ECONNRESET, _WSAECONNABORTED,
+                         _WSAECONNRESET)
+
+
 class _ErrorsWrapper(object):
 
     def __init__(self, logfunc):
@@ -186,8 +197,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             environ = self.setup_environ()
         except (IOError, socket.error) as e:
             environ = None
-            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
-                # client disconnect
+            if is_client_disconnect_exception(e):
                 self.close_connection = 1
             else:
                 raise
@@ -202,7 +212,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             BaseHTTPRequestHandler.finish(self)
         except (IOError, socket.error) as e:
             # ignore an exception if client disconnects
-            if e.args[0] not in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+            if not is_client_disconnect_exception(e):
                 raise
         finally:
             self.wfile = None
@@ -245,8 +255,7 @@ class WSGIServerGateway(WSGIGateway):
             else:
                 self.handler.wfile.write(data)
         except (IOError, socket.error) as e:
-            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
-                # client disconnect
+            if is_client_disconnect_exception(e):
                 self.handler.close_connection = 1
             else:
                 raise

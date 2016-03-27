@@ -19,7 +19,6 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
-import errno
 from hashlib import md5
 import new
 import mimetypes
@@ -37,7 +36,7 @@ from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _, N_
 from trac.web.href import Href
-from trac.web.wsgi import _FileWrapper
+from trac.web.wsgi import _FileWrapper, is_client_disconnect_exception
 
 
 class IAuthenticator(Interface):
@@ -748,13 +747,7 @@ class Request(object):
             if bufsize > 0:
                 self._write(''.join(buf))
         except (IOError, socket.error) as e:
-            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
-                raise RequestDone
-            # Note that mod_wsgi raises an IOError with only a message
-            # if the client disconnects
-            if 'mod_wsgi.version' in self.environ and \
-               e.args[0] in ('failed to write data',
-                             'client connection closed'):
+            if self._is_client_disconnected(e):
                 raise RequestDone
             raise
 
@@ -780,7 +773,15 @@ class Request(object):
         # requests. We'll keep the pre 2.6 behaviour for now...
         if self.method == 'POST':
             qs_on_post = self.environ.pop('QUERY_STRING', '')
-        fs = _FieldStorage(fp, environ=self.environ, keep_blank_values=True)
+        try:
+            fs = _FieldStorage(fp, environ=self.environ,
+                               keep_blank_values=True)
+        except (IOError, socket.error), e:
+            if self._is_client_disconnected(e):
+                raise HTTPBadRequest(
+                    _("Exception caught while reading request: %(msg)s",
+                      msg=exception_to_unicode(e)))
+            raise
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
 
@@ -870,5 +871,16 @@ class Request(object):
         cookies = to_unicode(self.outcookie.output(header='')).encode('utf-8')
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
+
+    def _is_client_disconnected(self, e):
+        if is_client_disconnect_exception(e):
+            return True
+        # Note that mod_wsgi raises an IOError with only a message
+        # if the client disconnects
+        if 'mod_wsgi.version' in self.environ:
+           return e.args[0] in ('failed to write data',
+                                'client connection closed',
+                                'request data read error')
+        return False
 
 __no_apidoc__ = _HTTPException_subclass_names
