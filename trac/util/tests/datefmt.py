@@ -798,7 +798,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
                 # using libc's format
                 rv = datefmt.parse_date(text, datefmt.utc)
                 self.fail('TracError not raised: %r' % rv)
-            except TracError, e:
+            except TracError as e:
                 self.assertIn('is an invalid date', unicode(e))
 
             if locale_en:
@@ -806,7 +806,7 @@ class ParseDateValidRangeTestCase(unittest.TestCase):
                     # using Babel's format
                     rv = datefmt.parse_date(text, datefmt.utc, locale_en)
                     self.fail('TracError not raised: %r' % rv)
-                except TracError, e:
+                except TracError as e:
                     self.assertIn('is an invalid date', unicode(e))
 
         try_parse('Jan 2147483647, 2016')

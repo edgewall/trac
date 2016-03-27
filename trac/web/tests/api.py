@@ -308,7 +308,7 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         try:
             req.args['action']
-        except HTTPBadRequest, e:
+        except HTTPBadRequest as e:
             self.assertEqual("400 Bad Request (Invalid request arguments.)",
                              unicode(e))
         else:
@@ -368,7 +368,7 @@ unnamed value\r\n\
 
         try:
             req.args['action']
-        except HTTPBadRequest, e:
+        except HTTPBadRequest as e:
             self.assertEqual("400 Bad Request (Invalid request arguments.)",
                              unicode(e))
         else:
