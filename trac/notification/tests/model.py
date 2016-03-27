@@ -12,13 +12,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from Cookie import SimpleCookie as Cookie
 from datetime import datetime
 
 from trac.notification.model import Subscription
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import to_utimestamp, utc
-from trac.web.session import Session
 
 
 class SubscriptionTestCase(unittest.TestCase):
@@ -28,14 +26,6 @@ class SubscriptionTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db()
-
-    def _create_req(self, authname):
-        req = Mock(authname=authname, base_path='/', incookie=Cookie(),
-                   outcookie=Cookie())
-        session = Session(self.env, req)
-        self.assertEqual(authname != 'anonymous', session.authenticated)
-        req.session = session
-        return req
 
     def _add_subscriber(self, req, class_, distributor='email',
                         format='text/plain', adverb='always'):
@@ -81,7 +71,7 @@ class SubscriptionTestCase(unittest.TestCase):
         return [item[name] for item in items]
 
     def test_add(self):
-        req = self._create_req('joe')
+        req = MockRequest(self.env, authname='joe')
         with self.env.db_transaction:
             self._add_subscriber(req, 'TicketSubscriber1', format='text/html')
             self._add_subscriber(req, 'TicketSubscriber2')
@@ -105,7 +95,7 @@ class SubscriptionTestCase(unittest.TestCase):
                 ORDER BY distributor, priority""", ('joe', 1)))
 
     def test_delete(self):
-        req = self._create_req('joe')
+        req = MockRequest(self.env, authname='joe')
         with self.env.db_transaction:
             ids = [self._add_subscriber(req, 'TicketSubscriber1'),
                    self._add_subscriber(req, 'TicketSubscriber2'),
@@ -165,7 +155,7 @@ class SubscriptionTestCase(unittest.TestCase):
                 FROM notify_subscription WHERE sid=%s AND authenticated=%s
                 ORDER BY distributor, priority""", ('joe', 1))
 
-        req = self._create_req('joe')
+        req = MockRequest(self.env, authname='joe')
         with self.env.db_transaction:
             rule_ids = {}
             for class_, distributor in [('EmailSubscriber1', 'email'),
@@ -219,7 +209,7 @@ class SubscriptionTestCase(unittest.TestCase):
                 WHERE sid=%s AND authenticated=%s
                 ORDER BY distributor, priority""", (sid, authenticated))
 
-        req = self._create_req('joe')
+        req = MockRequest(self.env, authname='joe')
         sess = req.session
         items = [
             ('email', 'text/plain', 'always', 'TicketSubscriber1'),

@@ -21,7 +21,7 @@ from subprocess import Popen, PIPE
 
 import trac.tests.compat
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm, locate
+from trac.test import EnvironmentStub, MockRequest, locate
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
@@ -33,7 +33,6 @@ from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
-from trac.web.href import Href
 from tracopt.versioncontrol.git.PyGIT import StorageFactory
 from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
                                               GitConnector, GitRepository
@@ -252,13 +251,6 @@ class HistoryTimeRangeTestCase(BaseTestCase):
 
 class GitNormalTestCase(BaseTestCase):
 
-    def _create_req(self, **kwargs):
-        data = dict(args={}, perm=MockPerm(), href=Href('/'), chrome={},
-                    authname='trac', tz=utc, get_header=lambda name: None,
-                    is_xhr=False)
-        data.update(kwargs)
-        return Mock(**data)
-
     def test_get_node(self):
         self.env.config.set('git', 'persistent_cache', 'false')
         self.env.config.set('git', 'cached_repository', 'false')
@@ -326,14 +318,14 @@ class GitNormalTestCase(BaseTestCase):
         self.assertEqual([], list(node.get_history()))
         self.assertRaises(NoSuchNode, repos.get_node, '/path', youngest_rev)
 
-        req = self._create_req(path_info='/browser/gitrepos')
+        req = MockRequest(self.env, path_info='/browser/gitrepos')
         browser_mod = BrowserModule(self.env)
         self.assertTrue(browser_mod.match_request(req))
         rv = browser_mod.process_request(req)
         self.assertEqual('browser.html', rv[0])
         self.assertEqual(None, rv[1]['rev'])
 
-        req = self._create_req(path_info='/log/gitrepos')
+        req = MockRequest(self.env, path_info='/log/gitrepos')
         log_mod = LogModule(self.env)
         self.assertTrue(log_mod.match_request(req))
         rv = log_mod.process_request(req)

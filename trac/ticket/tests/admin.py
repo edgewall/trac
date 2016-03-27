@@ -14,15 +14,14 @@
 import unittest
 
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.admin import ComponentAdminPanel, MilestoneAdminPanel, \
                               PriorityAdminPanel, ResolutionAdminPanel, \
                               SeverityAdminPanel, TicketTypeAdminPanel, \
                               VersionAdminPanel
 from trac.ticket.model import Component, Milestone, Priority, Resolution,\
                               Severity, Type, Version
-from trac.util.datefmt import utc
-from trac.web.api import RequestDone, _RequestArgs
+from trac.web.api import RequestDone
 
 
 class BaseTestCase(unittest.TestCase):
@@ -33,31 +32,14 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': {}, 'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
-
 
 class ComponentAdminPanelTestCase(BaseTestCase):
 
     def test_add_component(self):
         cap = ComponentAdminPanel(self.env)
         name, owner = 'component3', 'user3'
-        req = self._create_request(method='POST',
-                                   args={'name': name, 'owner': owner,
-                                         'add': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'owner': owner, 'add': True})
 
         self.assertRaises(ResourceNotFound, Component, self.env, name)
         self.assertRaises(RequestDone, cap.render_admin_panel, req,
@@ -69,8 +51,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
     def test_remove_component(self):
         cap = ComponentAdminPanel(self.env)
         name = 'component2'
-        req = self._create_request(method='POST',
-                                   args={'sel': name, 'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': name, 'remove': True})
 
         component = Component(self.env, name)
         self.assertEqual(name, component.name)
@@ -82,8 +64,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
     def test_remove_multiple_components(self):
         cap = ComponentAdminPanel(self.env)
         names = ['component1', 'component2']
-        req = self._create_request(method='POST',
-                                   args={'sel': names, 'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': names, 'remove': True})
 
         for name in names:
             component = Component(self.env, name)
@@ -99,8 +81,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         config_key = 'default_component'
         cap = ComponentAdminPanel(self.env)
 
-        req = self._create_request(method='POST',
-                                   args={'default': name, 'apply': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'default': name, 'apply': True})
         self.assertRaises(RequestDone, cap.render_admin_panel, req,
                           'ticket', 'component', None)
         self.assertEqual(name, self.env.config.get('ticket', config_key))
@@ -111,8 +93,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         config_key = 'default_component'
         self.env.config.set('ticket', config_key, name)
 
-        req = self._create_request(method='POST',
-                                   args={'sel': name, 'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': name, 'remove': True})
         self.assertRaises(RequestDone, cap.render_admin_panel, req,
                           'ticket', 'component', None)
         self.assertEqual('', self.env.config.get('ticket', config_key))
@@ -123,8 +105,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
     def test_add_milestone(self):
         name = 'milestone5'
         map = MilestoneAdminPanel(self.env)
-        req = self._create_request(method='POST',
-                                   args={'name': name, 'add': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'add': True})
 
         self.assertRaises(ResourceNotFound, Milestone, self.env, name)
         self.assertRaises(RequestDone, map.render_admin_panel, req,
@@ -136,9 +118,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         name = 'milestone2'
         config_key = 'default_milestone'
         map = MilestoneAdminPanel(self.env)
-        req = self._create_request(method='POST',
-                                   args={'ticket_default': name,
-                                         'apply': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'ticket_default': name, 'apply': True})
 
         self.assertRaises(RequestDone, map.render_admin_panel, req,
                           'ticket', 'milestone', None)
@@ -148,9 +129,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         name = 'milestone2'
         config_key = 'default_retarget_to'
         map = MilestoneAdminPanel(self.env)
-        req = self._create_request(method='POST',
-                                   args={'retarget_default': name,
-                                         'apply': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'retarget_default': name, 'apply': True})
 
         self.assertRaises(RequestDone, map.render_admin_panel, req,
                           'ticket', 'milestone', None)
@@ -162,9 +142,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         self.env.config.set('ticket', 'default_milestone', 'milestone2')
         self.env.config.set('milestone', 'default_retarget_to', 'milestone2')
 
-        req = self._create_request(method='POST',
-                                   args={'sel': name,
-                                         'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': name, 'remove': True})
         self.assertRaises(RequestDone, map.render_admin_panel, req,
                           'ticket', 'milestone', None)
 
@@ -180,8 +159,8 @@ class AbstractEnumTestCase(BaseTestCase):
     cls = None
 
     def _test_add(self, panel, name):
-        req = self._create_request(method='POST',
-                                   args={'name': name, 'add': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'add': True})
 
         self.assertRaises(ResourceNotFound, self.cls, self.env, name)
         self.assertRaises(RequestDone, panel.render_admin_panel, req,
@@ -191,8 +170,8 @@ class AbstractEnumTestCase(BaseTestCase):
 
     def _test_set_default(self, panel, name):
         config_key = 'default_' + self.type
-        req = self._create_request(method='POST',
-                                   args={'default': name, 'apply': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'default': name, 'apply': True})
         for item in self.cls.select(self.env):
             req.args.update({'value_' + str(item.value): str(item.value)})
 
@@ -204,8 +183,8 @@ class AbstractEnumTestCase(BaseTestCase):
         config_key = 'default_' + self.type
         self.env.config.set('ticket', config_key, name)
 
-        req = self._create_request(method='POST',
-                                   args={'sel': name, 'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': name, 'remove': True})
 
         self.assertRaises(RequestDone, panel.render_admin_panel, req,
                           'ticket', self.type, None)
@@ -295,8 +274,8 @@ class VersionAdminPanelTestCase(BaseTestCase):
     def test_add_version(self):
         name = '3.0'
         ap = VersionAdminPanel(self.env)
-        req = self._create_request(method='POST',
-                                   args={'name': name, 'add': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'add': True})
 
         self.assertRaises(ResourceNotFound, Version, self.env, name)
         self.assertRaises(RequestDone, ap.render_admin_panel, req,
@@ -308,8 +287,8 @@ class VersionAdminPanelTestCase(BaseTestCase):
         name = '1.0'
         ap = VersionAdminPanel(self.env)
         config_key = 'default_version'
-        req = self._create_request(method='POST',
-                                   args={'default': name, 'apply': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'default': name, 'apply': True})
 
         self.assertRaises(RequestDone, ap.render_admin_panel, req,
                           'ticket', 'version', None)
@@ -321,8 +300,8 @@ class VersionAdminPanelTestCase(BaseTestCase):
         config_key = 'default_version'
         self.env.config.set('ticket', config_key, name)
 
-        req = self._create_request(method='POST',
-                                   args={'sel': name, 'remove': True})
+        req = MockRequest(self.env, method='POST',
+                          args={'sel': name, 'remove': True})
         self.assertRaises(RequestDone, ap.render_admin_panel, req,
                           'ticket', 'version', None)
         self.assertEqual(self.env.config.get('ticket', config_key), '')

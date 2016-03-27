@@ -15,28 +15,23 @@ import unittest
 from datetime import datetime, timedelta
 
 from trac.perm import PermissionError
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, MockRequest, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
     datetime_now, format_date, format_datetime, format_time,
     get_date_format_hint, pretty_timedelta, utc,
 )
 from trac.util.html import plaintext
-from trac.web.api import RequestDone, _RequestArgs
 from trac.web.chrome import Chrome
-from trac.web.href import Href
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
-from trac.web.session import DetachedSession
 
 
 class PrettyDateinfoTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.req = Mock(href=Href('/'), abs_href=Href('http://example.org/'),
-                        authname='anonymous', tz=utc, locale=locale_en,
-                        lc_time=locale_en, chrome={}, perm=MockPerm(),
-                        session={})
+        self.env.config.set('trac', 'base_url', 'http://example.org/')
+        self.req = MockRequest(self.env)
 
     def tearDown(self):
         self.env.reset_db()
@@ -106,19 +101,19 @@ user2 =
         super(TimelinePermissionsTestCase, self).setUp(TimelineModule)
 
     def test_get_navigation_items_with_timeline_view(self):
-        req = self.create_request('user1', path_info='/timeline')
+        req = MockRequest(self.env, authname='user1', path_info='/timeline')
         self.assertEqual('timeline', self.get_navigation_items(req).next()[1])
 
     def test_get_navigation_items_without_timeline_view(self):
-        req = self.create_request('user2', path_info='/timeline')
+        req = MockRequest(self.env, authname='user2', path_info='/timeline')
         self.assertEqual([], list(self.get_navigation_items(req)))
 
     def test_process_request_with_timeline_view(self):
-        req = self.create_request('user1', path_info='/timeline')
+        req = MockRequest(self.env, authname='user1', path_info='/timeline')
         self.assertEqual('timeline.html', self.process_request(req)[0])
 
     def test_process_request_without_timeline_view(self):
-        req = self.create_request('user2', path_info='/timeline')
+        req = MockRequest(self.env, authname='user2', path_info='/timeline')
         self.assertRaises(PermissionError, self.process_request, req)
 
 
@@ -130,27 +125,9 @@ class TimelineModuleTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/timeline', 'perm': MockPerm(),
-              'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': DetachedSession(self.env, authname),
-              'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
-
     def test_invalid_date_format_add_warning(self):
         """Warning is added when date format is invalid."""
-        req = self._create_request(args={
+        req = MockRequest(self.env, args={
             'from': '2011-02-02T11:38:50 01:00',
         })
 

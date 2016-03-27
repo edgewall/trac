@@ -19,48 +19,12 @@ from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
 from trac.util import create_file
-from trac.util.datefmt import utc
-from trac.web.api import (_RequestArgs, HTTPForbidden,
-    HTTPInternalError, HTTPNotFound, IRequestFilter, IRequestHandler,
-    Request, RequestDone)
+from trac.web.api import (HTTPForbidden, HTTPInternalError, HTTPNotFound,
+    IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
-
-
-def _create_request(env, authname='anonymous', **kwargs):
-    kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-          'href': env.href, 'abs_href': env.abs_href,
-          'tz': utc, 'locale': None, 'lc_time': locale_en,
-          'session': {}, 'authname': authname, 'callbacks': {},
-          'chrome': {'notices': [], 'warnings': []}, 'query_string': '',
-          'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-          'form_token': None}
-    if 'args' in kwargs:
-        kw['args'].update(kwargs.pop('args'))
-    kw.update(kwargs)
-    def redirect(url, permanent=False):
-        raise RequestDone
-    return Mock(add_redirect_listener=lambda x: [].append(x),
-                redirect=redirect, **kw)
-
-
-def _make_environ(scheme='http', server_name='example.org',
-                  server_port=80, method='GET', script_name='/trac',
-                  **kwargs):
-    environ = {'wsgi.url_scheme': scheme, 'wsgi.input': None,
-               'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
-               'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
-    environ.update(kwargs)
-    return environ
-
-
-def _make_req(environ, start_response, **kwargs):
-    req = Request(environ, start_response)
-    for name, value in kwargs.iteritems():
-        setattr(req, name, value)
-    return req
 
 
 class AuthenticateTestCase(unittest.TestCase):
@@ -139,13 +103,12 @@ class AuthenticateTestCase(unittest.TestCase):
             def process_request(self, req):
                 req.authname
                 req.send('')
-        def start_response(status, headers, exc_info=None):
-            return lambda data: None
 
         self.env.config.set('trac', 'default_handler',
                             'AuthenticateRequestHandler')
         authenticated = [0]
-        req = _make_req(_make_environ(), start_response)
+        req = MockRequest(self.env)
+
         self.assertEqual(1, len(self.request_dispatcher.authenticators))
         self.assertIsInstance(self.request_dispatcher.authenticators[0],
                               Authenticator)
@@ -234,7 +197,7 @@ class PreProcessRequestTestCase(unittest.TestCase):
                 raise TracError("Raised in pre_process_request")
             def post_process_request(self, req, template, data, content_type):
                 return template, data, content_type
-        req = _create_request(self.env)
+        req = MockRequest(self.env)
 
         try:
             RequestDispatcher(self.env).dispatch(req)
@@ -265,7 +228,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         """TracError in process_request is trapped and an HTTPForbidden
         error is raised.
         """
-        req = _create_request(self.env)
+        req = MockRequest(self.env)
         req.exc_class = PermissionError
 
         try:
@@ -282,7 +245,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         """ResourceNotFound error in process_request is trapped and an
         HTTPNotFound error is raised.
         """
-        req = _create_request(self.env)
+        req = MockRequest(self.env)
         req.exc_class = ResourceNotFound
 
         try:
@@ -297,7 +260,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         """TracError in process_request is trapped and an
         HTTPInternalError is raised.
         """
-        req = _create_request(self.env)
+        req = MockRequest(self.env)
         req.exc_class = TracError
 
         try:
@@ -312,7 +275,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         """NotImplementedError in process_request is trapped and an
         HTTPInternalError is raised.
         """
-        req = _create_request(self.env)
+        req = MockRequest(self.env)
         req.exc_class = NotImplementedError
 
         try:

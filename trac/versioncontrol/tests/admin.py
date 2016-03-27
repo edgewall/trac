@@ -13,11 +13,9 @@
 
 import unittest
 
-from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.util.datefmt import utc
+from trac.test import EnvironmentStub, MockRequest
 from trac.versioncontrol.api import DbRepositoryProvider
 from trac.versioncontrol.admin import RepositoryAdminPanel
-from trac.web.href import Href
 
 
 class VersionControlAdminTestCase(unittest.TestCase):
@@ -37,9 +35,7 @@ class VersionControlAdminTestCase(unittest.TestCase):
                  (2, 'name', 'blah'), (2, 'dir', None), (2, 'alias', '')])
 
         panel = RepositoryAdminPanel(self.env)
-        req = Mock(method='GET', chrome={}, args={}, session={},
-                   abs_href=Href('/'), href=Href('/'), locale=None,
-                   perm=MockPerm(), authname='anonymous', tz=utc)
+        req = MockRequest(self.env)
         template, data = panel.render_admin_panel(req, 'versioncontrol',
                                                   'repository', '')
         repositories = data['repositories']

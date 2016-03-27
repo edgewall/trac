@@ -23,9 +23,9 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
 from trac.util.datefmt import utc
-from trac.web.api import _RequestArgs, HTTPBadRequest, Request, RequestDone
+from trac.web.api import HTTPBadRequest, Request, RequestDone
 from trac.web.chrome import Chrome
 from trac.web.href import Href
 import trac
@@ -146,22 +146,6 @@ class ExecuteReportTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': {}, 'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
-
     def _insert_ticket(self, when=None, **kwargs):
         ticket = Ticket(self.env)
         for name, value in kwargs.iteritems():
@@ -180,7 +164,7 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def _execute_report(self, id, args=None):
         mod = self.report_module
-        req = self._create_request()
+        req = MockRequest(self.env)
         title, description, sql = mod.get_report(id)
         return mod.execute_paginated_report(req, id, sql, args or {})
 
@@ -538,7 +522,7 @@ class ExecuteReportTestCase(unittest.TestCase):
         self._generate_tickets(('status', 'priority'), self.REPORT_1_DATA,
                                attrs)
         mod = self.report_module
-        req = self._create_request()
+        req = MockRequest(self.env)
         sql = mod.get_report(id)[2]
 
         rv1 = mod.execute_paginated_report(req, id, sql, {})
@@ -548,14 +532,14 @@ class ExecuteReportTestCase(unittest.TestCase):
 
     def test_asc_argument_is_invalid(self):
         """Invalid value for `asc` argument is coerced to default."""
-        req = self._create_request(args={'asc': '--'})
+        req = MockRequest(self.env, args={'asc': '--'})
 
         data = ReportModule(self.env).process_request(req)[1]
 
         self.assertFalse(data['asc'])
 
     def test_invalid_post_request_raises_exception(self):
-        req = self._create_request(method='POST', action=None)
+        req = MockRequest(self.env, method='POST', action=None)
 
         self.assertRaises(HTTPBadRequest,
                           ReportModule(self.env).process_request, req)

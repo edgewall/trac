@@ -22,7 +22,7 @@ import trac.tests.compat
 from genshi.builder import tag
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
@@ -51,17 +51,6 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db_and_disk()
-
-    def create_request(self, authname='anonymous', **kwargs):
-        kw = {'perm': perm.PermissionCache(self.env, authname), 'args': {},
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': Mock(get=lambda k, d=None: d,
-                              set=lambda k, v, d=None: None),
-              'authname': authname, 'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False}
-        kw.update(kwargs)
-        return Mock(**kw)
 
     def get_navigation_items(self, req):
         return self.req_handler.get_navigation_items(req)

@@ -19,7 +19,7 @@ import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import Mock, MockRequest
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node, NoSuchNode,
@@ -97,7 +97,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_get_navigation_items_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')
         provider = DbRepositoryProvider(self.env)
-        req = self.create_request(path_info='/')
+        req = MockRequest(self.env, path_info='/')
         self.assertEqual('browser', self.get_navigation_items(req).next()[1])
 
         provider.remove_repository('allow')
@@ -111,7 +111,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
     def test_get_navigation_items_without_browser_view(self):
         provider = DbRepositoryProvider(self.env)
-        req = self.create_request(path_info='/')
+        req = MockRequest(self.env, path_info='/')
         self.assertEqual('browser', self.get_navigation_items(req).next()[1])
 
         provider.remove_repository('(default)')
@@ -126,15 +126,18 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_repository_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')
 
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         rv = self.process_request(req)
         self.assertEqual('', rv[1]['repos'].name)
 
-        req = self.create_request(path_info='/browser/allow')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/allow')
         rv = self.process_request(req)
         self.assertEqual('allow', rv[1]['repos'].name)
 
-        req = self.create_request(path_info='/browser/deny')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/deny')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -146,11 +149,11 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual('deny', e.resource.parent.id)
 
         DbRepositoryProvider(self.env).remove_repository('(default)')
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, path_info='/browser/')
         rv = self.process_request(req)
         self.assertEqual(None, rv[1]['repos'])
 
-        req = self.create_request(path_info='/browser/blah-blah-file')
+        req = MockRequest(self.env, path_info='/browser/blah-blah-file')
         try:
             self.process_request(req)
             self.fail('ResourceNotFound not raised')
@@ -158,16 +161,18 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual('No node blah-blah-file', unicode(e))
 
     def test_repository_without_browser_view(self):
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         rv = self.process_request(req)
         # cannot view default repository but don't raise PermissionError
         self.assertEqual(None, rv[1]['repos'])
 
-        req = self.create_request(path_info='/browser/allow')
+        req = MockRequest(self.env, path_info='/browser/allow')
         rv = self.process_request(req)
         self.assertEqual('allow', rv[1]['repos'].name)
 
-        req = self.create_request(path_info='/browser/deny')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/deny')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -179,11 +184,12 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual('deny', e.resource.parent.id)
 
         DbRepositoryProvider(self.env).remove_repository('(default)')
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, path_info='/browser/')
         rv = self.process_request(req)
         self.assertEqual(None, rv[1]['repos'])
 
-        req = self.create_request(path_info='/browser/blah-blah-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/blah-blah-file')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -194,17 +200,20 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_node_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
 
-        req = self.create_request(path_info='/browser/file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/file')
         rv = self.process_request(req)
         self.assertEqual('', rv[1]['repos'].name)
         self.assertEqual('file', rv[1]['path'])
 
-        req = self.create_request(path_info='/browser/allow-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/allow-file')
         rv = self.process_request(req)
         self.assertEqual('', rv[1]['repos'].name)
         self.assertEqual('allow-file', rv[1]['path'])
 
-        req = self.create_request(path_info='/browser/deny-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/deny-file')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -218,17 +227,20 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_node_in_allowed_repos_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
 
-        req = self.create_request(path_info='/browser/allow/file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/allow/file')
         rv = self.process_request(req)
         self.assertEqual('allow', rv[1]['repos'].name)
         self.assertEqual('file', rv[1]['path'])
 
-        req = self.create_request(path_info='/browser/allow/allow-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/allow/allow-file')
         rv = self.process_request(req)
         self.assertEqual('allow', rv[1]['repos'].name)
         self.assertEqual('allow-file', rv[1]['path'])
 
-        req = self.create_request(path_info='/browser/allow/deny-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/allow/deny-file')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -242,13 +254,15 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_node_in_denied_repos_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
 
-        req = self.create_request(path_info='/browser/deny/allow-file')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/deny/allow-file')
         rv = self.process_request(req)
         self.assertEqual('deny', rv[1]['repos'].name)
         self.assertEqual('allow-file', rv[1]['path'])
 
         for path in ('file', 'deny-file'):
-            req = self.create_request(path_info='/browser/deny/' + path)
+            req = MockRequest(self.env, authname='anonymous',
+                              path_info='/browser/deny/' + path)
             try:
                 self.process_request(req)
                 self.fail('PermissionError not raised (path: %r)' % path)
@@ -261,26 +275,27 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
     def test_missing_node_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')
-        req = self.create_request(path_info='/browser/allow/missing')
+        req = MockRequest(self.env, path_info='/browser/allow/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
-        req = self.create_request(path_info='/browser/deny/missing')
+        req = MockRequest(self.env, path_info='/browser/deny/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
-        req = self.create_request(path_info='/browser/missing')
+        req = MockRequest(self.env, path_info='/browser/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
 
     def test_missing_node_without_browser_view(self):
-        req = self.create_request(path_info='/browser/allow/missing')
+        req = MockRequest(self.env, path_info='/browser/allow/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
-        req = self.create_request(path_info='/browser/deny/missing')
+        req = MockRequest(self.env, path_info='/browser/deny/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
-        req = self.create_request(path_info='/browser/missing')
+        req = MockRequest(self.env, path_info='/browser/missing')
         self.assertRaises(ResourceNotFound, self.process_request, req)
 
     def test_repository_index_with_hidden_default_repos(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
         provider = DbRepositoryProvider(self.env)
         provider.modify_repository('(default)', {'hidden': 'enabled'})
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         template, data, content_type = self.process_request(req)
         self.assertEqual(None, data['repos'])
         repo_data = data['repo']  # for repository index
@@ -292,7 +307,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
         provider = DbRepositoryProvider(self.env)
         provider.modify_repository('(default)', {'hidden': 'enabled'})
-        req = self.create_request(path_info='/browser/blah-blah-file')
+        req = MockRequest(self.env, path_info='/browser/blah-blah-file')
         template, data, content_type = self.process_request(req)
         self.assertEqual('', data['reponame'])
         self.assertEqual('blah-blah-file', data['path'])
@@ -305,19 +320,21 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         provider.remove_repository('(default)')
         provider.remove_repository('raise')
 
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         try:
             self.process_request(req)
             self.fail('ResourceNotFound not raised')
         except ResourceNotFound as e:
             self.assertEqual('No viewable repositories', unicode(e))
-        req = self.create_request(path_info='/browser/allow/')
+        req = MockRequest(self.env, path_info='/browser/allow/')
         try:
             self.process_request(req)
             self.fail('ResourceNotFound not raised')
         except ResourceNotFound as e:
             self.assertEqual('No node allow', unicode(e))
-        req = self.create_request(path_info='/browser/deny/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/deny/')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -329,13 +346,13 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual('deny', e.resource.parent.id)
 
         provider.remove_repository('deny')
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, path_info='/browser/')
         try:
             self.process_request(req)
             self.fail('ResourceNotFound not raised')
         except ResourceNotFound as e:
             self.assertEqual('No viewable repositories', unicode(e))
-        req = self.create_request(path_info='/browser/deny/')
+        req = MockRequest(self.env, path_info='/browser/deny/')
         try:
             self.process_request(req)
             self.fail('ResourceNotFound not raised')
@@ -345,7 +362,8 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_no_viewable_repositories_without_browser_view(self):
         provider = DbRepositoryProvider(self.env)
         provider.remove_repository('allow')
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')
@@ -354,7 +372,8 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual(None, e.resource)
         provider.remove_repository('deny')
         provider.remove_repository('(default)')
-        req = self.create_request(path_info='/browser/')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/browser/')
         try:
             self.process_request(req)
             self.fail('PermissionError not raised')

@@ -17,14 +17,13 @@ import re
 import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.test import Mock, EnvironmentStub, MockPerm, locale_en
+from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.api import arg_list_to_args, parse_arg_list
 from trac.web.chrome import web_context
-from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 from trac.wiki.tests import formatter
 
@@ -54,8 +53,7 @@ class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.req = Mock(href=self.env.href, authname='anonymous', tz=utc,
-                        locale=locale_en, lc_time=locale_en)
+        self.req = MockRequest(self.env)
         self.tktids = self._insert_tickets(
             owner=[None, '', 'someone', 'someone_else', 'none'],
             status=[None, '', 'new', 'assigned', 'reopened', 'closed'],
@@ -942,8 +940,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
             content.decode('utf-8'))
 
     def test_template_data(self):
-        req = Mock(href=self.env.href, perm=MockPerm(), authname='anonymous',
-                   tz=None, locale=None)
+        req = MockRequest(self.env)
         context = web_context(req, 'query')
 
         query = Query.from_string(self.env, 'owner=$USER&order=id')
@@ -962,9 +959,7 @@ class QueryLinksTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.query_module = QueryModule(self.env)
-        self.req = Mock(perm=MockPerm(), args={}, arg_list=(), href=Href('/'),
-                        authname='anonymous', chrome={}, session={}, tz=utc,
-                        locale=None, lc_time=None, path_info='/query')
+        self.req = MockRequest(self.env, path_info='/query')
         self.context = web_context(self.req)
         self.formatter = LinkFormatter(self.env, self.context)
 

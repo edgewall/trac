@@ -17,7 +17,7 @@ import unittest
 from trac.core import Component, TracError, implements
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import Resource
-from trac.test import MockPerm
+from trac.test import MockRequest
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node,
@@ -170,19 +170,14 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         provider = DbRepositoryProvider(self.env)
         provider.add_repository('mock', '/', mock_repotype)
 
-    def create_request(self, **kwargs):
-        kwargs.setdefault('path_info', '/log/mock')
-        kwargs.setdefault('perm', MockPerm())
-        return self._super.create_request(**kwargs)
-
     def test_default_repository_not_configured(self):
         """Test for regression of http://trac.edgewall.org/ticket/11599."""
-        req = self.create_request(path_info='/log/', args={'new_path': '/'})
+        req = MockRequest(self.env, path_info='/log/', args={'new_path': '/'})
         self.assertRaises(TracError, self.process_request, req)
 
     def test_without_rev(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'limit': '4'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'limit': '4'})
         template, data, ctype = self.process_request(req)
         self.assertEqual('revisionlog.html', template)
         items = data['items']
@@ -197,8 +192,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(1, len(links))
 
     def test_with_rev(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'rev': '49'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'rev': '49'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -211,8 +206,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_with_rev_and_limit(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'rev': '49', 'limit': '4'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'rev': '49', 'limit': '4'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -231,8 +226,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(1, len(links))
 
     def test_with_rev_on_start(self):
-        req = self.create_request(path_info='/log/mock/file-old',
-                                  args={'rev': '10'})
+        req = MockRequest(self.env, path_info='/log/mock/file-old',
+                          args={'rev': '10'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(4, len(items))
@@ -247,8 +242,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_with_rev_and_limit_on_start(self):
-        req = self.create_request(path_info='/log/mock/file-old',
-                                  args={'rev': '10', 'limit': '4'})
+        req = MockRequest(self.env, path_info='/log/mock/file-old',
+                          args={'rev': '10', 'limit': '4'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(4, len(items))
@@ -264,7 +259,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def test_with_invalid_rev(self):
         def fn(message, **kwargs):
-            req = self.create_request(path_info='/log/mock/file', **kwargs)
+            req = MockRequest(self.env, path_info='/log/mock/file', **kwargs)
             try:
                 self.process_request(req)
             except NoSuchChangeset as e:
@@ -275,8 +270,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         fn('No changeset 43-46 in the repository', args={'rev': '43-46'})
 
     def test_revranges_1(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '70,79-82,94-100'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '70,79-82,94-100'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(9, len(items))
@@ -293,8 +288,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_revranges_2(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '22-49'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '22-49'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -310,8 +305,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_revranges_3(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '22-46,55-61'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '22-46,55-61'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
@@ -328,8 +323,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_revranges_4(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '40-46,55-61'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '40-46,55-61'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
@@ -346,9 +341,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_revranges_1_with_limit(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '70,79-82,94-100',
-                                        'limit': '4'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '70,79-82,94-100', 'limit': '4'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(6, len(items))
@@ -369,9 +363,9 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def test_revranges_1_next_link_with_limits(self):
         def next_link_args(limit):
-            req = self.create_request(path_info='/log/mock/file',
-                                      args={'revs': '70,79-82,94-100',
-                                            'limit': str(limit)})
+            req = MockRequest(self.env, path_info='/log/mock/file',
+                              args={'revs': '70,79-82,94-100',
+                                    'limit': str(limit)})
             template, data, ctype = self.process_request(req)
             links = req.chrome['links']
             if 'next' in links:
@@ -394,8 +388,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(None, next_link_args(6))
 
     def test_revranges_2_with_limit(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '22-49', 'limit': '4'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '22-49', 'limit': '4'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -415,8 +409,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(1, len(links))
 
     def test_revranges_3_with_limit(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '22-46,55-61', 'limit': '7'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '22-46,55-61', 'limit': '7'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
@@ -433,8 +427,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertNotIn('next', req.chrome['links'])
 
     def test_revranges_4_with_limit(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'revs': '40-46,55-61', 'limit': '7'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'revs': '40-46,55-61', 'limit': '7'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
@@ -452,7 +446,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def test_invalid_revranges(self):
         def fn(message, **kwargs):
-            req = self.create_request(path_info='/log/mock/file', **kwargs)
+            req = MockRequest(self.env, path_info='/log/mock/file', **kwargs)
             try:
                 self.process_request(req)
             except NoSuchChangeset as e:
@@ -468,9 +462,9 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
            args={'revs': '43-46,50,52-55'})
 
     def test_follow_copy(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'rev': '43', 'limit': '4',
-                                        'mode': 'follow_copy'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'rev': '43', 'limit': '4',
+                                'mode': 'follow_copy'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -489,8 +483,8 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertEqual(1, len(links))
 
     def test_path_history(self):
-        req = self.create_request(path_info='/log/mock/file',
-                                  args={'mode': 'path_history'})
+        req = MockRequest(self.env, path_info='/log/mock/file',
+                          args={'mode': 'path_history'})
         template, data, ctype = self.process_request(req)
         items = data['items']
         self.assertEqual(3, len(items))
@@ -503,17 +497,13 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
             'TestLogModulePermissionPolicy, DefaultPermissionPolicy')
         resource = Resource('wiki', 'WikiStart')
 
-        def create_req(username, **kwargs):
-            perm = PermissionCache(self.env, username)
-            return self.create_request(authname=username, perm=perm, **kwargs)
-
-        req = create_req('anonymous')
+        req = MockRequest(self.env, authname='anonymous')
         rendered = unicode(format_to_oneliner(self.env,
                                               web_context(req, resource),
                                               'log:mock@42-43'))
         self.assertIn(' title="No permission to view change log"', rendered)
 
-        req = create_req('blah')
+        req = MockRequest(self.env, authname='blah')
         rendered = unicode(format_to_oneliner(self.env,
                                               web_context(req, resource),
                                               'log:mock@42-43'))

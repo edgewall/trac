@@ -21,20 +21,11 @@ from genshi.input import HTMLParser
 
 import trac.tests.compat
 from trac.core import Component, implements
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, MockRequest
 from trac.mimeview import api
 from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
                               _group_lines
-from trac.web.api import Request, RequestDone
-
-
-def make_environ(scheme='http', server_name='example.org', server_port=80,
-                 method='GET', script_name='/trac', **kwargs):
-    environ = {'wsgi.url_scheme': scheme, 'wsgi.input': StringIO(''),
-               'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
-               'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
-    environ.update(kwargs)
-    return environ
+from trac.web.api import RequestDone
 
 
 class GetMimeTypeTestCase(unittest.TestCase):
@@ -252,27 +243,14 @@ class MimeviewConverterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=['trac.*', TestMimeviewConverter])
-        self.status = None
-        self.headers = None
-        self.buf = None
 
     def tearDown(self):
         pass
 
-    def _make_req(self):
-        self.status = None
-        self.headers = None
-        self.buf = StringIO()
-        def start_response(status, headers):
-            self.status = status
-            self.headers = dict((header.lower(), value)
-                                for header, value in headers)
-            return self.buf.write
-        return Request(make_environ(), start_response)
-
     def _test_convert_content(self, expected, content, iterable):
         mimeview = Mimeview(self.env)
-        output = mimeview.convert_content(self._make_req(), self.in_mimetype,
+        output = mimeview.convert_content(MockRequest(self.env),
+                                          self.in_mimetype,
                                           content, 'text', iterable=iterable)
         if iterable:
             self.assertNotIn(type(output[0]), (str, unicode))
@@ -311,17 +289,17 @@ class MimeviewConverterTestCase(unittest.TestCase):
         self.env.config.set('trac', 'use_chunked_encoding',
                             'true' if use_chunked_encoding else 'false')
         mimeview = Mimeview(self.env)
-        req = self._make_req()
+        req = MockRequest(self.env)
         self.assertRaises(RequestDone, mimeview.send_converted, req,
                           self.in_mimetype, content, 'text')
-        result = self.buf.getvalue()
+        result = req.response_sent.getvalue()
         if use_chunked_encoding:
-            self.assertNotIn('content-length', self.headers)
+            self.assertNotIn('Content-Length', req.headers_sent)
         else:
-            self.assertIn('content-length', self.headers)
+            self.assertIn('Content-Length', req.headers_sent)
             self.assertEqual(str(len(expected)),
-                             self.headers['content-length'])
-        self.assertEqual('text/plain', self.headers['content-type'])
+                             req.headers_sent['Content-Length'])
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
         self.assertEqual(set(expected), set(result))
         self.assertEqual(expected, result)
 

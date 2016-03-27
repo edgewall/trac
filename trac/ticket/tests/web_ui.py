@@ -15,17 +15,16 @@ from datetime import datetime, timedelta
 import unittest
 
 from trac.core import TracError
+from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
-from trac.util.html import plaintext
-from trac.web.api import RequestDone, _RequestArgs
+from trac.web.api import RequestDone
 from trac.web.chrome import Chrome
-from trac.web.session import DetachedSession
 
 
 class TicketModuleTestCase(unittest.TestCase):
@@ -36,22 +35,6 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db()
-
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': DetachedSession(self.env, authname),
-              'authname': authname, 'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
 
     def _create_ticket_with_change(self, old_props, new_props,
                                    author='anonymous'):
@@ -78,7 +61,7 @@ class TicketModuleTestCase(unittest.TestCase):
         `default_handler` and navigating to the base url. Test for regression
         of http://trac.edgewall.org/ticket/8791.
         """
-        req = self._create_request()
+        req = MockRequest(self.env)
         chrome = Chrome(self.env).prepare_request(req, self.ticket_module)
 
         name = None
@@ -90,11 +73,12 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_reporter_and_owner_full_name_is_displayed(self):
         """Full name of reporter and owner are used in ticket properties."""
-        self.env.insert_users([('user1', 'User One', None),
-                               ('user2', 'User Two', None)])
+        self.env.insert_users([('user1', 'User One', ''),
+                               ('user2', 'User Two', '')])
         tkt_id = self._insert_ticket(reporter='user1', owner='user2')
-        req = self._create_request(authname='user2', method='GET',
-                                   args={'id': tkt_id, 'replyto': '1'})
+        PermissionSystem(self.env).grant_permission('user2', 'TICKET_VIEW')
+        req = MockRequest(self.env, authname='user2', method='GET',
+                          args={'id': tkt_id, 'replyto': '1'})
 
         data = self.ticket_module.process_request(req)[1]
 
@@ -110,8 +94,8 @@ class TicketModuleTestCase(unittest.TestCase):
         author = 'author <author@example.net>'
         tkt = self._create_ticket_with_change({}, {'comment': 'the comment'},
                                               author)
-        req = self._create_request(method='GET',
-                                   args={'id': tkt.id, 'replyto': '1'})
+        req = MockRequest(self.env, method='GET',
+                          args={'id': tkt.id, 'replyto': '1'})
 
         data = self.ticket_module.process_request(req)[1]
 
@@ -126,8 +110,8 @@ class TicketModuleTestCase(unittest.TestCase):
                                      'author@example.net')])
         tkt = self._create_ticket_with_change({}, {'comment': 'the comment'},
                                               'author')
-        req = self._create_request(method='GET',
-                                   args={'id': tkt.id, 'replyto': '1'})
+        req = MockRequest(self.env, method='GET',
+                          args={'id': tkt.id, 'replyto': '1'})
 
         data = self.ticket_module.process_request(req)[1]
 
@@ -141,7 +125,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'owner': 'owner1'},
                                             {'owner': 'owner2'})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
@@ -153,7 +137,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'owner': ''},
                                             {'owner': 'owner2'})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
@@ -164,7 +148,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'owner': 'owner1'},
                                             {'owner': ''})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
@@ -175,7 +159,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'reporter': 'reporter1'},
                                             {'reporter': 'reporter2'})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
@@ -187,7 +171,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'reporter': ''},
                                             {'reporter': 'reporter2'})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
@@ -198,7 +182,7 @@ class TicketModuleTestCase(unittest.TestCase):
         t = self._create_ticket_with_change({'reporter': 'reporter1'},
                                             {'reporter': ''})
 
-        req = self._create_request(args={'id': t.id})
+        req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
@@ -206,7 +190,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def _test_invalid_cnum_raises(self, action, cnum=None):
         self._insert_ticket()
-        req = self._create_request(args={'action': action, 'id': '1'})
+        req = MockRequest(self.env, args={'action': action, 'id': '1'})
         if cnum is not None:
             req.args.update({'cnum': cnum})
 
@@ -224,8 +208,8 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_comment_history_cnum_out_of_range(self):
         """Out of range cnum returns an empty history."""
         self._insert_ticket()
-        req = self._create_request(args={'action': 'comment-history',
-                                         'id': '1', 'cnum': '1'})
+        req = MockRequest(self.env, args={'action': 'comment-history',
+                                          'id': '1', 'cnum': '1'})
 
         resp = self.ticket_module.process_request(req)
         self.assertEqual([], resp[1]['history'])
@@ -241,8 +225,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_comment_diff_cnum_out_of_range_raises(self):
         self._insert_ticket()
-        req = self._create_request(args={'action': 'comment-diff',
-                                         'id': '1', 'cnum': '1'})
+        req = MockRequest(self.env, args={'action': 'comment-diff',
+                                          'id': '1', 'cnum': '1'})
 
         self.assertRaises(ResourceNotFound,
                           self.ticket_module.process_request, req)
@@ -266,8 +250,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_template_data_for_time_field_with_formats(self):
         gmt12 = timezone('GMT +12:00')
-        req = self._create_request(method='GET', path_info='/ticket/1',
-                                   tz=gmt12)
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1',
+                          tz=gmt12)
         value = datetime(2016, 1, 2, 23, 34, 45, tzinfo=utc)
         expected = user_time(req, format_datetime, value)
         self.assertIn('11', expected)  # check 11 in hour part
@@ -286,8 +270,8 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual(value, Ticket(self.env, 1)['timefield'])
 
         gmt12 = timezone('GMT +12:00')
-        req = self._create_request(method='GET', path_info='/ticket/1',
-                                   tz=gmt12)
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1',
+                          tz=gmt12)
         expected = user_time(req, format_date, value)
         self.assertIn('23', expected)  # check 23 in day part
         self.assertTrue(self.ticket_module.match_request(req))
@@ -308,7 +292,7 @@ class TicketModuleTestCase(unittest.TestCase):
                                 "WHERE ticket=1 AND name='timefield'")
         self.assertEqual(None, Ticket(self.env, 1)['timefield'])
 
-        req = self._create_request(method='GET', path_info='/ticket/1')
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
         self.assertEqual(None, data['ticket']['timefield'])
@@ -322,7 +306,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_template_data_for_invalid_time_field_on_newticket(self):
         self.env.config.set('ticket-custom', 'timefield', 'time')
-        req = self._create_request(method='GET', path_info='/newticket')
+        req = MockRequest(self.env, method='GET', path_info='/newticket')
         req.args['timefield'] = 'invalid'
         self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
@@ -351,7 +335,7 @@ class TicketModuleTestCase(unittest.TestCase):
             t['timefield'] = dt2
             t.save_changes('anonymous')
 
-        req = self._create_request(method='GET', path_info='/ticket/1')
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
         changes = data['changes']
@@ -377,8 +361,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
         args = args_base.copy()
         args['field_timefield'] = 'invalid datetime'
-        req = self._create_request(method='POST', path_info='/ticket/1',
-                                   args=args)
+        req = MockRequest(self.env, method='POST', path_info='/ticket/1',
+                          args=args)
         self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
         warnings = req.chrome['warnings']
@@ -391,8 +375,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
         args = args_base.copy()
         args['field_timefield'] = '2016-01-02T12:34:56Z'
-        req = self._create_request(method='POST', path_info='/ticket/1',
-                                   args=args)
+        req = MockRequest(self.env, method='POST', path_info='/ticket/1',
+                          args=args)
         self.assertTrue(self.ticket_module.match_request(req))
         self.assertRaises(RequestDone, self.ticket_module.process_request, req)
         ticket = Ticket(self.env, 1)
@@ -420,19 +404,19 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual(expected, timefield_text())
 
     def test_render_time_field_date(self):
-        req = self._create_request(method='GET', path_info='/ticket/1')
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         value = datetime(2015, 7, 8, tzinfo=utc)
         expected = user_time(req, format_date, value)
         self._test_render_time_field('date', req, value, expected)
 
     def test_render_time_field_datetime(self):
-        req = self._create_request(method='GET', path_info='/ticket/1')
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         value = datetime(2015, 7, 8, 12, 34, 56, tzinfo=utc)
         expected = user_time(req, format_datetime, value)
         self._test_render_time_field('datetime', req, value, expected)
 
     def test_render_time_field_relative(self):
-        req = self._create_request(method='GET', path_info='/ticket/1')
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         value = datetime_now(utc) - timedelta(days=1)
         self._test_render_time_field('relative', req, value, '24 hours ago')
 
@@ -451,7 +435,7 @@ class TicketModuleTestCase(unittest.TestCase):
         tktsys.reset_ticket_fields()
         del tktsys.custom_fields
 
-        req = self._create_request(path_info='/newticket')
+        req = MockRequest(self.env, path_info='/newticket')
         self.assertEqual(True, self.ticket_module.match_request(req))
         resp = self.ticket_module.process_request(req)
         for field in resp[1]['fields']:

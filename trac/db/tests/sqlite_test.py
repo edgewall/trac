@@ -18,11 +18,9 @@ from cStringIO import StringIO
 
 from trac.config import ConfigurationError
 from trac.env import Environment
+from trac.test import MockRequest
 from trac.tests.compat import rmtree
 from trac.util import translation
-from trac.web.api import Request
-from trac.web.chrome import Chrome
-from trac.web.main import RequestDispatcher
 
 
 class DatabaseFileTestCase(unittest.TestCase):
@@ -52,11 +50,6 @@ class DatabaseFileTestCase(unittest.TestCase):
         environ.update(kwargs)
         return environ
 
-    def _create_req(self, **kwargs):
-        def start_response(status, headers):
-            return lambda data: None
-        return Request(self._make_environ(**kwargs), start_response)
-
     def test_missing_tracdb(self):
         self._create_env()
         os.remove(self.db_path)
@@ -85,13 +78,7 @@ class DatabaseFileTestCase(unittest.TestCase):
         self._create_env()
         os.remove(self.db_path)
         env = Environment(self.env_path)
-        chrome = Chrome(env)
-        dispatcher = RequestDispatcher(env)
-        req = self._create_req(cookie='trac_auth=1234567890')
-        req.callbacks.update({'authname': dispatcher.authenticate,
-                              'chrome': chrome.prepare_request,
-                              'session': dispatcher._get_session,
-                              'locale': dispatcher._get_locale})
+        req = MockRequest(env, authname='trac_auth=1234567890')
         translation.make_activable(lambda: req.locale, env.path)
         try:
             self._db_query(env)

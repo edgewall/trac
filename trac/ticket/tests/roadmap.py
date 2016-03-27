@@ -15,14 +15,14 @@ import unittest
 
 from trac.core import ComponentManager
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
+from trac.test import EnvironmentStub, MockRequest
 from trac.tests.contentgen import random_sentence
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
     TicketGroupStats)
 from trac.util.datefmt import datetime_now, utc
-from trac.web.api import _RequestArgs, HTTPBadRequest, RequestDone
+from trac.web.api import HTTPBadRequest
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -159,33 +159,17 @@ class MilestoneModuleTestCase(unittest.TestCase):
             m.description = random_sentence()
             m.insert()
 
-    def _create_request(self, authname='anonymous', **kwargs):
-        kw = {'path_info': '/', 'perm': MockPerm(), 'args': _RequestArgs(),
-              'href': self.env.href, 'abs_href': self.env.abs_href,
-              'tz': utc, 'locale': None, 'lc_time': locale_en,
-              'session': {}, 'authname': authname,
-              'chrome': {'notices': [], 'warnings': []},
-              'method': None, 'get_header': lambda v: None, 'is_xhr': False,
-              'form_token': None}
-        if 'args' in kwargs:
-            kw['args'].update(kwargs.pop('args'))
-        kw.update(kwargs)
-        def redirect(url, permanent=False):
-            raise RequestDone
-        return Mock(add_redirect_listener=lambda x: [].append(x),
-                    redirect=redirect, **kw)
-
     def tearDown(self):
         self.env.reset_db()
 
     def test_invalid_post_request_raises_exception(self):
-        req = self._create_request(method='POST', action=None)
+        req = MockRequest(self.env, method='POST', action=None)
 
         self.assertRaises(HTTPBadRequest,
                           MilestoneModule(self.env).process_request, req)
 
     def test_get_search_filters(self):
-        req = self._create_request()
+        req = MockRequest(self.env)
         filters = self.mmodule.get_search_filters(req)
         filters = list(filters)
         self.assertEqual(1, len(filters))
@@ -194,12 +178,12 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual('Milestones', filters[0][1])
 
     def test_get_search_results_milestone_not_in_filters(self):
-        req = self._create_request()
+        req = MockRequest(self.env)
         results = self.mmodule.get_search_results(req, self.terms, [])
         self.assertEqual([], list(results))
 
     def test_get_search_results_matches_all_terms(self):
-        req = self._create_request()
+        req = MockRequest(self.env)
         milestone = Milestone(self.env, ' '.join(self.terms))
         results = self.mmodule.get_search_results(req, self.terms,
                                                   ['milestone'])
@@ -216,7 +200,7 @@ class MilestoneModuleTestCase(unittest.TestCase):
 
     def test_default_group_by_default(self):
         """Default `default_group_by` is `component`."""
-        req = self._create_request(args={'id': 'milestone1'})
+        req = MockRequest(self.env, args={'id': 'milestone1'})
 
         data = self.mmodule.process_request(req)[1]
 
@@ -226,7 +210,7 @@ class MilestoneModuleTestCase(unittest.TestCase):
     def test_default_group_by(self):
         """Option `default_group_by` is set in configuration."""
         self.env.config.set('milestone', 'default_group_by', 'priority')
-        req = self._create_request(args={'id': 'milestone1'})
+        req = MockRequest(self.env, args={'id': 'milestone1'})
 
         data = self.mmodule.process_request(req)[1]
 
@@ -243,7 +227,7 @@ class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
         self.grant_perm('anonymous', 'MILESTONE_VIEW')
         self.grant_perm('anonymous', 'MILESTONE_CREATE')
 
-        req = self.create_request(path_info='/milestone/milestone5')
+        req = MockRequest(self.env, path_info='/milestone/milestone5')
         res = self.process_request(req)
 
         self.assertEqual('milestone_edit.html', res[0])
@@ -254,7 +238,8 @@ class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_milestone_notfound_without_milestone_create(self):
         self.grant_perm('anonymous', 'MILESTONE_VIEW')
 
-        req = self.create_request(path_info='/milestone/milestone5')
+        req = MockRequest(self.env, authname='anonymous',
+                          path_info='/milestone/milestone5')
 
         self.assertRaises(ResourceNotFound, self.process_request, req)
 
