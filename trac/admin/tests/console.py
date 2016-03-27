@@ -49,7 +49,7 @@ import trac.wiki.web_ui
 
 from trac.admin.api import AdminCommandManager, IAdminCommandProvider, \
                            console_date_format, get_console_locale
-from trac.admin.console import TracAdmin, TracAdminHelpMacro
+from trac.admin.console import TracAdmin, TracAdminHelpMacro, _run
 from trac.config import ConfigSection, Option
 from trac.core import Component, ComponentMeta, implements
 from trac.env import Environment
@@ -84,7 +84,7 @@ def load_expected_results(file, pattern):
     return expected
 
 
-def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
+def _execute(func, strip_trailing_space=True, input=None):
     _in = sys.stdin
     _err = sys.stderr
     _out = sys.stdout
@@ -94,11 +94,7 @@ def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
             sys.stdin.encoding = 'utf-8' # fake input encoding
         sys.stderr = sys.stdout = out = StringIO()
         out.encoding = 'utf-8' # fake output encoding
-        retval = None
-        try:
-            retval = tracadmin.onecmd(cmd)
-        except SystemExit:
-            pass
+        retval = func()
         value = out.getvalue()
         if isinstance(value, str): # reverse what print_listing did
             value = value.decode('utf-8')
@@ -110,6 +106,24 @@ def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
         sys.stdin = _in
         sys.stderr = _err
         sys.stdout = _out
+
+
+def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
+    def func():
+        try:
+            return tracadmin.onecmd(cmd)
+        except SystemExit:
+            return None
+    return _execute(func, strip_trailing_space, input)
+
+
+def execute_run(args):
+    def func():
+        try:
+            return _run(args)
+        except SystemExit:
+            return None
+    return _execute(func)
 
 
 class TracAdminTestCaseBase(unittest.TestCase):
@@ -1501,6 +1515,20 @@ class TracadminNoEnvTestCase(unittest.TestCase):
         self.assertEqual(["No documentation found for 'nocmd'. Use 'help' to "
                           "see the list of commands."],
                           output)
+
+    def test_run_help_with_arguments(self):
+        rv, output = execute_run(['help'])
+        self.assertIn('Usage: trac-admin </path/to/projenv>', output)
+        rv, output = execute_run(['help', "foo'bar"])
+        self.assertNotIn('No closing quotation', output)
+        self.assertIn("No documentation found for 'foo'bar'", output)
+
+    def test_run_cmd_with_env_path(self):
+        rv, output = execute_run(['notfound-tracenv', 'help'])
+        self.assertIn('Usage: trac-admin </path/to/projenv>', output)
+        rv, output = execute_run(['notfound-tracenv', 'help', "foo'bar"])
+        self.assertNotIn('No closing quotation', output)
+        self.assertIn("No documentation found for 'foo'bar'", output)
 
 
 class TracAdminHelpMacroTestCase(unittest.TestCase):
