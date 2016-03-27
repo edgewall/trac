@@ -254,7 +254,7 @@ class LoggingAdminPanel(Component):
         log_type = self.env.log_type
         log_level = self.env.log_level
         log_file = self.env.log_file
-        log_dir = self.env.get_log_dir()
+        log_dir = self.env.log_dir
 
         log_types = [
             dict(name='none', label=_("None"),
