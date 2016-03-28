@@ -40,14 +40,21 @@ MAXBODYWIDTH = 76
 notifysuite = None
 
 
+def config_smtp(env):
+    env.config.set('project', 'name', 'TracTest')
+    env.config.set('notification', 'smtp_enabled', 'true')
+    env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+    env.config.set('notification', 'smtp_server', notifysuite.smtpd.host)
+    # Note: when specifying 'localhost', the connection may be attempted
+    #       for '::1' first, then only '127.0.0.1' after a 1s timeout
+
+
 class RecipientTestCase(unittest.TestCase):
     """Notification test cases for email recipients."""
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.config.set('project', 'name', 'TracTest')
-        self.env.config.set('notification', 'smtp_enabled', 'true')
-        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        config_smtp(self.env)
 
     def tearDown(self):
         notifysuite.tear_down()
@@ -219,15 +226,13 @@ class NotificationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.config.set('project', 'name', 'TracTest')
+        config_smtp(self.env)
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
-        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
-        self.env.config.set('notification', 'smtp_server', 'localhost')
         self.req = Mock(href=self.env.href, abs_href=self.env.abs_href, tz=utc,
                         perm=MockPerm())
 
@@ -1259,9 +1264,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True,
                                    path=tempfile.mkdtemp(prefix='trac-tempenv-'))
-        self.env.config.set('project', 'name', 'TracTest')
-        self.env.config.set('notification', 'smtp_enabled', 'true')
-        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        config_smtp(self.env)
 
         ticket = Ticket(self.env)
         ticket['summary'] = 'Ticket summary'
@@ -1319,9 +1322,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
     def setUp(self):
         self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.env = EnvironmentStub(default_data=True, path=self.env_path)
-        self.env.config.set('project', 'name', 'TracTest')
-        self.env.config.set('notification', 'smtp_enabled', 'true')
-        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        config_smtp(self.env)
         self.env.config.set('notification', 'always_notify_owner', 'false')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
         self.env.config.set('notification', 'always_notify_updater', 'true')

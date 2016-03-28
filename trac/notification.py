@@ -39,6 +39,8 @@ EMAIL_LOOKALIKE_PATTERN = (
         '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
         )
 
+local_hostname = None
+
 
 class IEmailSender(Interface):
     """Extension point interface for components that allow sending e-mail."""
@@ -148,13 +150,16 @@ class SmtpEmailSender(Component):
         """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
 
     def send(self, from_addr, recipients, message):
+        global local_hostname
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
 
         self.log.info("Sending notification through SMTP at %s:%d to %s",
                       self.smtp_server, self.smtp_port, recipients)
         try:
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port,
+                                  local_hostname)
+            local_hostname = server.local_hostname
         except smtplib.socket.error, e:
             raise ConfigurationError(
                 tag_("SMTP server connection error (%(error)s). Please "

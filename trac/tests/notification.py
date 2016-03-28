@@ -227,10 +227,10 @@ class SMTPServer:
     SMTPServerInterface.
     """
 
-    def __init__(self, port):
+    def __init__(self, host, port):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._socket.bind(("127.0.0.1", port))
+        self._socket.bind((host, port))
         self._socket_service = None
 
     def serve(self, impl):
@@ -305,8 +305,9 @@ class SMTPThreadedServer(threading.Thread):
     """
 
     def __init__(self, port):
+        self.host = '127.0.0.1'
         self.port = port
-        self.server = SMTPServer(port)
+        self.server = SMTPServer(self.host, port)
         self.store = SMTPServerStore()
         threading.Thread.__init__(self)
 
