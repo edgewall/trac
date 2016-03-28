@@ -61,6 +61,7 @@ EMAIL_LOOKALIKE_PATTERN = (
 
 _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
 
+local_hostname = None
 
 
 def create_charset(mime_encoding):
@@ -433,13 +434,16 @@ class SmtpEmailSender(Component):
         """Use SSL/TLS to send notifications over SMTP.""")
 
     def send(self, from_addr, recipients, message):
+        global local_hostname
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
 
         self.log.info("Sending notification through SMTP at %s:%d to %s",
                       self.smtp_server, self.smtp_port, recipients)
         try:
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+            server = smtplib.SMTP(self.smtp_server, self.smtp_port,
+                                  local_hostname)
+            local_hostname = server.local_hostname
         except smtplib.socket.error as e:
             raise ConfigurationError(
                 tag_("SMTP server connection error (%(error)s). Please "
