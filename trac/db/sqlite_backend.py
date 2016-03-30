@@ -204,17 +204,21 @@ class SQLiteConnector(Component):
             if isinstance(path, unicode): # needed with 2.4.0
                 path = path.encode('utf-8')
             # this direct connect will create the database if needed
-            cnx = sqlite.connect(path,
+            cnx = sqlite.connect(path, isolation_level=None,
                                  timeout=int(params.get('timeout', 10000)))
+            cursor = cnx.cursor()
+            _set_journal_mode(cursor, params.get('journal_mode'))
+            _set_synchronous(cursor, params.get('synchronous'))
+            cnx.isolation_level = 'DEFERRED'
         else:
             cnx = self.get_connection(path, log, params)
-        cursor = cnx.cursor()
-        _set_journal_mode(cursor, params.get('journal_mode'))
+            cursor = cnx.cursor()
         if schema is None:
             from trac.db_default import schema
         for table in schema:
             for stmt in self.to_sql(table):
                 cursor.execute(stmt)
+        cursor.close()
         cnx.commit()
 
     def to_sql(self, table):
@@ -283,6 +287,7 @@ class SQLiteConnection(ConnectionWrapper):
         if isinstance(path, unicode): # needed with 2.4.0
             path = path.encode('utf-8')
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
+                             isolation_level=None,
                              check_same_thread=sqlite_version < (3, 3, 1),
                              timeout=timeout)
         # load extensions
@@ -296,6 +301,8 @@ class SQLiteConnection(ConnectionWrapper):
         cursor = cnx.cursor()
         _set_journal_mode(cursor, params.get('journal_mode'))
         _set_synchronous(cursor, params.get('synchronous'))
+        cursor.close()
+        cnx.isolation_level = 'DEFERRED'
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):
