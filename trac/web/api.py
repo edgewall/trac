@@ -374,18 +374,8 @@ class Request(object):
         self.callbacks = {
             'arg_list': Request._parse_arg_list,
             'args': lambda req: arg_list_to_args(req.arg_list),
-            'authname': None,
-            'chrome': None,
-            'form_token': None,
             'languages': Request._parse_languages,
-            'lc_time': None,
-            'locale': None,
             'incookie': Request._parse_cookies,
-            'perm': None,
-            'session': None,
-            'tz': None,
-            'use_xsendfile': None,
-            'xsendfile_header': None,
             '_inheaders': Request._parse_headers
         }
         self.redirect_listeners = []
