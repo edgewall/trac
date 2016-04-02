@@ -77,19 +77,16 @@ class ReportTestCase(unittest.TestCase):
         self.assertEqual(['PARAM', 'MISSING'], missing_args)
 
     def test_csv_escape(self):
-        buf = StringIO()
-        def start_response(status, headers):
-            return buf.write
-        environ = self._make_environ()
-        req = Request(environ, start_response)
+        req = MockRequest(self.env)
         cols = ['TEST_COL', 'TEST_ZERO']
         rows = [('value, needs escaped', 0)]
         try:
             self.report_module._send_csv(req, cols, rows)
         except RequestDone:
             pass
-        self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"value, needs escaped",0\r\n',
-                         buf.getvalue())
+        self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"'
+                         'value, needs escaped",0\r\n',
+                         req.response_sent.getvalue())
 
     def test_saved_custom_query_redirect(self):
         query = u'query:?type=résumé'
