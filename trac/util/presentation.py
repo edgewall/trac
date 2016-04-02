@@ -247,7 +247,7 @@ class Paginator(object):
         return self.page > 0
 
     def get_shown_pages(self, page_index_count = 11):
-        if self.has_more_pages == False:
+        if not self.has_more_pages:
             return range(1, 2)
 
         min_page = 1

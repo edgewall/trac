@@ -79,7 +79,7 @@
         <td><select id="tz" name="tz">
           <option value="">Default time zone</option>
           <option py:for="tzname in timezones" value="$tzname"
-                  selected="${session_tzname != None and
+                  selected="${session_tzname is not None and
                               session_tzname.startswith('Etc/') and
                               selected_tz == timezone(tzname) or
                               session_tzname == tzname or None}">$tzname</option>

@@ -58,7 +58,8 @@ def _prep_session_table(env, spread_visits=False):
             db("INSERT INTO session_attribute VALUES (%s, %s, 'email', %s)",
                (sid, authenticated, val))
     all_list = auth_list + anon_list
-    return (auth_list, anon_list, all_list)
+    return auth_list, anon_list, all_list
+
 
 def get_session_info(env, sid):
     """

@@ -66,7 +66,7 @@ class py_groupby(object):
             self.currvalue = self.it.next() # Exit on StopIteration
             self.currkey = self.keyfunc(self.currvalue)
         self.tgtkey = self.currkey
-        return (self.currkey, self._grouper(self.tgtkey))
+        return self.currkey, self._grouper(self.tgtkey)
     def _grouper(self, tgtkey):
         while self.currkey == tgtkey:
             yield self.currvalue

@@ -77,8 +77,7 @@ class TracEnvironMiddleware(object):
 
     def __init__(self, application, env_parent_dir, env_paths, single_env):
         self.application = application
-        self.environ = {}
-        self.environ['trac.env_path'] = None
+        self.environ = {'trac.env_path': None}
         if env_parent_dir:
             self.environ['trac.env_parent_dir'] = env_parent_dir
         elif single_env:
