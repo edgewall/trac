@@ -12,13 +12,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
-from datetime import datetime, timedelta
-
 import unittest
+from datetime import datetime, timedelta
 from StringIO import StringIO
 
 import trac.tests.compat
-from trac.db.mysql_backend import MySQLConnection
 from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
@@ -28,12 +26,6 @@ from trac.util.datefmt import utc
 from trac.web.api import HTTPBadRequest, Request, RequestDone
 from trac.web.chrome import Chrome
 from trac.web.href import Href
-import trac
-
-
-class MockMySQLConnection(MySQLConnection):
-    def __init__(self):
-        pass
 
 
 class ReportTestCase(unittest.TestCase):
@@ -116,7 +108,7 @@ class ReportTestCase(unittest.TestCase):
         req.session = Mock(save=lambda: None)
         self.assertRaises(RequestDone,
                           self.report_module._render_view, req, id)
-        self.assertEqual('http://example.org/trac/query?' + \
+        self.assertEqual('http://example.org/trac/query?' +
                          'type=r%C3%A9sum%C3%A9&report=' + str(id),
                          headers_sent['Location'])
 
@@ -485,8 +477,8 @@ class ExecuteReportTestCase(unittest.TestCase):
     def test_report_8_active_tickets_mine_first(self):
         attrs = dict(component='component1', milestone='milestone1',
                      version='1.0', type='defect')
-        tickets = self._generate_tickets(('status', 'owner', 'priority'),
-                                         self.REPORT_8_DATA, attrs)
+        self._generate_tickets(('status', 'owner', 'priority'),
+                                self.REPORT_8_DATA, attrs)
 
         rv = self._execute_report(8, {'USER': 'john'})
         cols, results, num_items, missing_args, limit_offset = rv
