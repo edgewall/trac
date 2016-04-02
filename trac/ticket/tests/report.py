@@ -23,7 +23,7 @@ from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
 from trac.util.datefmt import utc
-from trac.web.api import HTTPBadRequest, Request, RequestDone
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 from trac.web.href import Href
 
@@ -36,15 +36,6 @@ class ReportTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db()
-
-    def _make_environ(self, scheme='http', server_name='example.org',
-                      server_port=80, method='GET', script_name='/trac',
-                      **kwargs):
-        environ = {'wsgi.url_scheme': scheme, 'wsgi.input': StringIO(''),
-                   'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
-                   'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
-        environ.update(kwargs)
-        return environ
 
     def test_sub_var_no_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
@@ -80,10 +71,9 @@ class ReportTestCase(unittest.TestCase):
         req = MockRequest(self.env)
         cols = ['TEST_COL', 'TEST_ZERO']
         rows = [('value, needs escaped', 0)]
-        try:
-            self.report_module._send_csv(req, cols, rows)
-        except RequestDone:
-            pass
+
+        self.assertRaises(RequestDone,
+                          self.report_module._send_csv, req, cols, rows)
         self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"'
                          'value, needs escaped",0\r\n',
                          req.response_sent.getvalue())
@@ -95,19 +85,13 @@ class ReportTestCase(unittest.TestCase):
             cursor.execute("INSERT INTO report (title,query,description) "
                            "VALUES (%s,%s,%s)", ('redirect', query, ''))
             id = db.get_last_id(cursor, 'report')
+        req = MockRequest(self.env)
 
-        headers_sent = {}
-        def start_response(status, headers):
-            headers_sent.update(dict(headers))
-        environ = self._make_environ()
-        req = Request(environ, start_response)
-        req.authname = 'anonymous'
-        req.session = Mock(save=lambda: None)
         self.assertRaises(RequestDone,
                           self.report_module._render_view, req, id)
-        self.assertEqual('http://example.org/trac/query?' +
+        self.assertEqual('http://example.org/trac.cgi/query?' +
                          'type=r%C3%A9sum%C3%A9&report=' + str(id),
-                         headers_sent['Location'])
+                         req.headers_sent['Location'])
 
     def test_quoted_id_with_var(self):
         req = Mock(base_path='', chrome={}, args={}, session={},
