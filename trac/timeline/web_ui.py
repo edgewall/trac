@@ -91,7 +91,7 @@ class TimelineModule(Component):
         req.perm.assert_permission('TIMELINE_VIEW')
 
         format = req.args.get('format')
-        maxrows = int(req.args.get('max', 50 if format == 'rss' else 0))
+        maxrows = as_int(req.args.get('max'), 50 if format == 'rss' else 0)
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user

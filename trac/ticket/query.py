@@ -337,10 +337,7 @@ class Query(object):
                     elif name in self.time_fields:
                         val = from_utimestamp(val)
                     elif field and field['type'] == 'checkbox':
-                        try:
-                            val = bool(int(val))
-                        except (TypeError, ValueError):
-                            val = False
+                        val = as_bool(val)
                     elif val is None:
                         val = ''
                     result[name] = val

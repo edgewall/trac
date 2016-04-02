@@ -157,7 +157,7 @@ class SearchModule(Component):
 
     def _check_quickjump(self, req, kwd):
         """Look for search shortcuts"""
-        noquickjump = int(req.args.get('noquickjump', '0'))
+        noquickjump = as_int(req.args.get('noquickjump'), 0)
         # Source quickjump   FIXME: delegate to ISearchSource.search_quickjump
         quickjump_href = None
         if kwd[0] == '/':

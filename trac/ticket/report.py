@@ -388,7 +388,7 @@ class ReportModule(Component):
         req.perm(report_resource).require('REPORT_VIEW')
         context = web_context(req, report_resource)
 
-        page = int(req.args.get('page', '1'))
+        page = as_int(req.args.get('page'), 1)
         default_max = {'rss': self.items_per_page_rss,
                        'csv': 0, 'tab': 0}.get(format, self.items_per_page)
         max = req.args.get('max')
@@ -396,8 +396,7 @@ class ReportModule(Component):
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')
-        asc = req.args.get('asc', 1)
-        asc = bool(int(asc)) # string '0' or '1' to int/boolean
+        asc = as_bool(req.args.get('asc', 1))
 
         def report_href(**kwargs):
             """Generate links to this report preserving user variables,
