@@ -15,6 +15,7 @@ import doctest
 import unittest
 from datetime import datetime, timedelta
 
+import trac
 import trac.tests.compat
 from trac.perm import PermissionCache, PermissionSystem
 from trac.ticket.model import Ticket
