@@ -25,7 +25,7 @@ from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import ResourceNotFound
-from trac.util import Ranges
+from trac.util import Ranges, as_int
 from trac.util.text import to_unicode, wrap
 from trac.util.translation import _
 from trac.versioncontrol.api import (Changeset, NoSuchChangeset,
@@ -86,7 +86,7 @@ class LogModule(Component):
         revs = req.args.get('revs')
         format = req.args.get('format')
         verbose = req.args.get('verbose')
-        limit = int(req.args.get('limit') or self.default_log_limit)
+        limit = as_int(req.args.get('limit'), self.default_log_limit)
 
         rm = RepositoryManager(self.env)
         reponame, repos, path = rm.get_repository_by_path(path)

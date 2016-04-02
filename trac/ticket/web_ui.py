@@ -592,15 +592,13 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
         elif action == 'comment-history':
-            try:
-                cnum = int(req.args.get('cnum'))
-            except (TypeError, ValueError):
+            cnum = as_int(req.args.get('cnum'), None)
+            if cnum is None:
                 raise TracError(_("Invalid request arguments."))
             return self._render_comment_history(req, ticket, data, cnum)
         elif action == 'comment-diff':
-            try:
-                cnum = int(req.args.get('cnum'))
-            except (TypeError, ValueError):
+            cnum = as_int(req.args.get('cnum'), None)
+            if cnum is None:
                 raise TracError(_("Invalid request arguments."))
             return self._render_comment_diff(req, ticket, data, cnum)
         elif 'preview_comment' in req.args:
@@ -894,8 +892,8 @@ class TicketModule(Component):
         `text_fields` is optionally a list of fields of interest, that are
         considered for jumping to the next change.
         """
-        new_version = int(req.args.get('version', 1))
-        old_version = int(req.args.get('old_version', new_version))
+        new_version = as_int(req.args.get('version'), 1)
+        old_version = as_int(req.args.get('old_version'), new_version)
         if old_version > new_version:
             old_version, new_version = new_version, old_version
 
@@ -1091,8 +1089,8 @@ class TicketModule(Component):
     def _render_comment_diff(self, req, ticket, data, cnum):
         """Show differences between two versions of a ticket comment."""
         req.perm(ticket.resource).require('TICKET_VIEW')
-        new_version = int(req.args.get('version', 1))
-        old_version = int(req.args.get('old_version', new_version))
+        new_version = as_int(req.args.get('version'), 1)
+        old_version = as_int(req.args.get('old_version'), new_version)
         if old_version > new_version:
             old_version, new_version = new_version, old_version
         elif old_version == new_version:
