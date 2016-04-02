@@ -16,7 +16,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-import re
 from contextlib import contextmanager
 
 from genshi.template.text import NewTextTemplate

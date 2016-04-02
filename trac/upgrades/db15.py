@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.db import Table, Column, Index, DatabaseManager
+from trac.db import Table, Column, DatabaseManager
 
 def do_upgrade(env, ver, cursor):
     cursor.execute("""

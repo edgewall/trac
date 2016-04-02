@@ -19,7 +19,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
-from trac.config import ConfigSection, ListOption, Option
+from trac.config import ConfigSection, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util import as_bool

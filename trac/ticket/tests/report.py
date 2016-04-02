@@ -14,7 +14,6 @@
 import doctest
 import unittest
 from datetime import datetime, timedelta
-from StringIO import StringIO
 
 import trac.tests.compat
 from trac.perm import PermissionCache, PermissionSystem

@@ -15,16 +15,13 @@ import os
 import tempfile
 import unittest
 from datetime import datetime
-from subprocess import Popen, PIPE
 
 import trac.tests.compat
 from trac.test import EnvironmentStub
 from trac.tests.compat import rmtree
 from trac.util import create_file
-from trac.util.compat import close_fds
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager
-from tracopt.versioncontrol.git.git_fs import GitConnector
 from tracopt.versioncontrol.git.PyGIT import GitCore, GitError, Storage, \
                                              SizedDict, StorageFactory, \
                                              parse_commit

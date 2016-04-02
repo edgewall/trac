@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import time
-
 sql = [
 #-- Remove the unused lock table
 """DROP TABLE lock;""",

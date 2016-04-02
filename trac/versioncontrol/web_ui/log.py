@@ -33,9 +33,9 @@ from trac.versioncontrol.api import (Changeset, NoSuchChangeset,
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web.api import IRequestHandler
-from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
-                             add_link, add_script, add_script_data,
-                             add_stylesheet, auth_link, web_context)
+from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
+                             add_script, add_script_data, add_stylesheet,
+                             auth_link, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 

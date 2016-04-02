@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource

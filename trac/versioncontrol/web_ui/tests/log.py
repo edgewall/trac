@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import unittest
 
 from trac.core import Component, TracError, implements
-from trac.perm import IPermissionPolicy, PermissionCache
+from trac.perm import IPermissionPolicy
 from trac.resource import Resource
 from trac.test import MockRequest
 from trac.util.datefmt import utc

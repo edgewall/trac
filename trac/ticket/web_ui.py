@@ -47,8 +47,7 @@ from trac.util.datefmt import (
 )
 from trac.util.html import to_fragment
 from trac.util.text import (
-    exception_to_unicode, empty, is_obfuscated, obfuscate_email_address,
-    shorten_line
+    exception_to_unicode, empty, is_obfuscated, shorten_line
 )
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, ngettext

@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-#from trac.web.cgi_frontend import CGIRequest
-
 import unittest
 
 

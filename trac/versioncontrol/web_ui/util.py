@@ -24,10 +24,10 @@ from genshi.builder import tag
 
 from trac.resource import ResourceNotFound
 from trac.util import content_disposition, create_zipinfo
-from trac.util.datefmt import datetime, http_date, utc
+from trac.util.datefmt import http_date
 from trac.util.translation import tag_, _
-from trac.versioncontrol.api import Changeset,EmptyChangeset, \
-                                    NoSuchChangeset, NoSuchNode
+from trac.versioncontrol.api import EmptyChangeset, NoSuchChangeset, \
+                                    NoSuchNode
 from trac.web.api import RequestDone
 
 __all__ = ['get_changes', 'get_path_links', 'get_existing_node',

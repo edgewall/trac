@@ -35,7 +35,7 @@ from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
 from tracopt.versioncontrol.git.PyGIT import StorageFactory
 from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
-                                              GitConnector, GitRepository
+                                              GitRepository
 
 
 class GitCommandMixin(object):

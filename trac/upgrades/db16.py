@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.db import Table, Column, Index
 
 def do_upgrade(env, ver, cursor):
     # Add a few new indices to speed things up
