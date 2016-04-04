@@ -26,12 +26,11 @@ except ImportError:
     pass
 
 from trac.core import Component, TracError, implements
-from trac.test import Mock, MockPerm, EnvironmentStub, locale_en
+from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import html
 from trac.util.text import strip_line_ws, to_unicode
 from trac.web.chrome import web_context
-from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import (HtmlFormatter, InlineHtmlFormatter,
                                  OutlineFormatter)
@@ -143,18 +142,8 @@ class WikiTestCase(unittest.TestCase):
         self.line = line
         self._setup = setup
         self._teardown = teardown
-
-        self.req = Mock(href=Href('/'),
-                        abs_href=Href('http://www.example.com/'),
-                        chrome={}, session={}, authname='anonymous',
-                        perm=MockPerm(), tz=utc, args={}, locale=locale_en,
-                        lc_time=locale_en)
-        if context:
-            if isinstance(context, tuple):
-                context = web_context(self.req, *context)
-        else:
-            context = web_context(self.req, 'wiki', 'WikiStart')
-        self.context = context
+        self._context = context
+        self.context = None
 
     def _create_env(self):
         all_test_components = [
@@ -178,9 +167,17 @@ class WikiTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = self._create_env()
-        # TODO: remove the following lines in order to discover
-        #       all the places were we should use the req.href
-        #       instead of env.href
+        self.req = MockRequest(self.env, script_name='/')
+        context = self._context
+        if context:
+            if isinstance(self._context, tuple):
+                context = web_context(self.req, *self._context)
+        else:
+            context = web_context(self.req, 'wiki', 'WikiStart')
+        self.context = context
+        # # TODO: remove the following lines in order to discover
+        # #       all the places were we should use the req.href
+        # #       instead of env.href
         self.env.href = self.req.href
         self.env.abs_href = self.req.abs_href
         wiki = WikiPage(self.env)
