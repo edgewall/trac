@@ -27,7 +27,7 @@ from StringIO import StringIO
 import trac.tests.compat
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, MockRequest
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
@@ -284,8 +284,7 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe.user@example.net, joe.bar@example.net')
         self.env.config.set('notification', 'use_public_cc', 'true')
-        self.req = Mock(href=self.env.href, abs_href=self.env.abs_href, tz=utc,
-                        perm=MockPerm())
+        self.req = MockRequest(self.env)
 
     def tearDown(self):
         """Signal the notification test suite that a test is over"""

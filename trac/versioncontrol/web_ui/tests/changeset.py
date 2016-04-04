@@ -14,7 +14,7 @@
 import unittest
 
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, MockRequest
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 
 
@@ -26,8 +26,7 @@ class ChangesetModuleTestCase(unittest.TestCase):
 
     def test_default_repository_not_configured(self):
         """Test for regression of http://trac.edgewall.org/ticket/11599."""
-        req = Mock(perm=MockPerm(), args={'new_path': '/'},
-                   get_header=lambda self: None)
+        req = MockRequest(self.env, args={'new_path': '/'})
         self.assertRaises(TracError, self.cm.process_request, req)
 
 

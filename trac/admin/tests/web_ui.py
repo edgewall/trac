@@ -16,17 +16,14 @@ import unittest
 import trac.tests.compat
 from trac.admin.web_ui import PluginAdminPanel
 from trac.core import Component
-from trac.test import EnvironmentStub, Mock, MockPerm, locale_en
-from trac.util.datefmt import utc
+from trac.test import EnvironmentStub, MockRequest
 
 
 class PluginAdminPanelTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.req = Mock(args={}, chrome={'notices': []}, href=self.env.href,
-                        lc_time=locale_en, method=None, perm=MockPerm(),
-                        session={}, tz=utc)
+        self.req = MockRequest(self.env)
 
     def tearDown(self):
         self.env.reset_db()

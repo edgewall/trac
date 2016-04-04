@@ -15,7 +15,7 @@ from datetime import timedelta
 
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
 from trac.util.datefmt import datetime_now, utc
@@ -29,7 +29,7 @@ class TicketSystemTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.perm = PermissionSystem(self.env)
         self.ticket_system = TicketSystem(self.env)
-        self.req = Mock()
+        self.req = MockRequest(self.env)
 
     def tearDown(self):
         self.env.reset_db()

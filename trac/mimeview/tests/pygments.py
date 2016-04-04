@@ -30,10 +30,9 @@ import trac.tests.compat
 from trac.mimeview.api import LineNumberAnnotator, Mimeview
 if have_pygments:
     from trac.mimeview.pygments import PygmentsRenderer
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, MockRequest
 from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
-from trac.web.href import Href
 from trac.wiki.formatter import format_to_html
 
 
@@ -47,9 +46,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.env = EnvironmentStub(enable=[Chrome, LineNumberAnnotator,
                                            PygmentsRenderer])
         self.pygments = Mimeview(self.env).renderers[0]
-        self.req = Mock(base_path='', chrome={}, args={},
-                        abs_href=Href('/'), href=Href('/'),
-                        session={}, perm=None, authname=None, tz=None)
+        self.req = MockRequest(self.env)
         self.context = web_context(self.req)
         pygments_html = open(os.path.join(os.path.split(__file__)[0],
                                        'pygments.html'))

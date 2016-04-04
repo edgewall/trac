@@ -18,8 +18,8 @@ import tempfile
 import unittest
 
 import trac.tests.compat
-from trac.perm import PermissionCache, PermissionSystem
-from trac.test import EnvironmentStub, Mock, MockRequest
+from trac.perm import PermissionSystem
+from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Component, Ticket
 from trac.ticket.web_ui import TicketModule
@@ -206,10 +206,8 @@ class ResetActionTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.perm_sys = PermissionSystem(self.env)
         self.ctlr = TicketSystem(self.env).action_controllers[0]
-        self.req1 = Mock(authname='user1', args={},
-                         perm=PermissionCache(self.env, 'user1'))
-        self.req2 = Mock(authname='user2', args={},
-                         perm=PermissionCache(self.env, 'user2'))
+        self.req1 = MockRequest(self.env, authname='user1')
+        self.req2 = MockRequest(self.env, authname='user2')
         self.ticket = Ticket(self.env)
         self.ticket['status'] = 'invalid'
         self.ticket.insert()
@@ -282,8 +280,7 @@ class SetOwnerAttributeTestCase(unittest.TestCase):
         ]
         for perm in permissions:
             self.perm_sys.grant_permission(*perm)
-        self.req = Mock(authname='user1', args={},
-                        perm=PermissionCache(self.env, 'user0'))
+        self.req = MockRequest(self.env, authname='user1')
         self.expected = """\
 to <select name="action_reassign_reassign_owner" \
 id="action_reassign_reassign_owner"><option selected="True" \
@@ -349,8 +346,7 @@ class RestrictOwnerTestCase(unittest.TestCase):
         create_file(self.authz_file)
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
         self.ctlr = TicketSystem(self.env).action_controllers[0]
-        self.req1 = Mock(authname='user1', args={},
-                         perm=PermissionCache(self.env, 'user1'))
+        self.req1 = MockRequest(self.env, authname='user1')
         self.ticket = Ticket(self.env)
         self.ticket['status'] = 'new'
         self.ticket.insert()

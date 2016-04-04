@@ -11,14 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from Cookie import SimpleCookie as Cookie
 import time
 from datetime import datetime
 import unittest
 
 import trac.tests.compat
 from trac.admin.api import console_date_format
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import format_date, to_datetime
 from trac.web.session import DetachedSession, Session, PURGE_AGE, \
                              UPDATE_INTERVAL, SessionAdmin
@@ -95,11 +94,9 @@ class SessionTestCase(unittest.TestCase):
         Verify that a session cookie gets sent back to the client for a new
         session.
         """
-        cookie = Cookie()
-        req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
-                   base_path='/')
+        req = MockRequest(self.env, authname='anonymous')
         session = Session(self.env, req)
-        self.assertEqual(session.sid, cookie['trac_session'].value)
+        self.assertEqual(session.sid, req.outcookie['trac_session'].value)
         self.assertEqual(0, self.env.db_query(
                 "SELECT COUNT(*) FROM session")[0][0])
 
@@ -107,30 +104,24 @@ class SessionTestCase(unittest.TestCase):
         """
         Verify that session variables are stored in the database.
         """
-        incookie = Cookie()
-        incookie['trac_session'] = '123456'
-        outcookie = Cookie()
-        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                   outcookie=outcookie)
+        req = MockRequest(self.env, authname='anonymous')
+        req.incookie['trac_session'] = '123456'
         session = Session(self.env, req)
         self.assertEqual('123456', session.sid)
-        self.assertNotIn('trac_session', outcookie)
+        self.assertNotIn('trac_session', req.outcookie)
 
     def _test_authenticated_session(self, username):
         """
         Verifies that a session cookie does not get used if the user is logged
         in, and that Trac expires the cookie.
         """
-        incookie = Cookie()
-        incookie['trac_session'] = '123456'
-        outcookie = Cookie()
-        req = Mock(authname=username, base_path='/', incookie=incookie,
-                   outcookie=outcookie)
+        req = MockRequest(self.env, authname=username)
+        req.incookie['trac_session'] = '123456'
         session = Session(self.env, req)
         self.assertEqual(username, session.sid)
         session['foo'] = 'bar'
         session.save()
-        self.assertEqual(0, outcookie['trac_session']['expires'])
+        self.assertEqual(0, req.outcookie['trac_session']['expires'])
 
     def test_authenticated_session(self):
         self._test_authenticated_session('john')
@@ -145,11 +136,8 @@ class SessionTestCase(unittest.TestCase):
         """
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 0, 0)")
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            outcookie = Cookie()
-            req = Mock(authname=username, base_path='/', incookie=incookie,
-                       outcookie=outcookie)
+            req = MockRequest(self.env, authname=username)
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             self.assertEqual(username, session.sid)
             session.save()
@@ -176,11 +164,8 @@ class SessionTestCase(unittest.TestCase):
         (same test as above without the initial INSERT)
         """
         with self.env.db_transaction:
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            outcookie = Cookie()
-            req = Mock(authname=username, base_path='/', incookie=incookie,
-                       outcookie=outcookie)
+            req = MockRequest(self.env, authname=username)
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             self.assertEqual(username, session.sid)
             session.save()
@@ -205,10 +190,8 @@ class SessionTestCase(unittest.TestCase):
         Verify that new variables are inserted into the 'session' table in the
         database for an anonymous session.
         """
-        incookie = Cookie()
-        incookie['trac_session'] = '123456'
-        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                   outcookie=Cookie())
+        req = MockRequest(self.env, authname='anonymous')
+        req.incookie['trac_session'] = '123456'
         session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
@@ -227,10 +210,8 @@ class SessionTestCase(unittest.TestCase):
                 INSERT INTO session_attribute VALUES
                 ('123456', 0, 'foo', 'bar')
                 """)
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                       outcookie=Cookie())
+            req = MockRequest(self.env, authname='anonymous')
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             self.assertEqual('bar', session['foo'])
             session['foo'] = 'baz'
@@ -250,10 +231,8 @@ class SessionTestCase(unittest.TestCase):
                 INSERT INTO session_attribute VALUES
                 ('123456', 0, 'foo', 'bar')
                 """)
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                       outcookie=Cookie())
+            req = MockRequest(self.env, authname='anonymous')
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             self.assertEqual('bar', session['foo'])
             del session['foo']
@@ -278,10 +257,8 @@ class SessionTestCase(unittest.TestCase):
                 """)
 
             # We need to modify a different session to trigger the purging
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                       outcookie=Cookie())
+            req = MockRequest(self.env, authname='anonymous')
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             session['foo'] = 'bar'
             session.save()
@@ -306,10 +283,8 @@ class SessionTestCase(unittest.TestCase):
                 VALUES ('123456', 0, 'foo', 'bar')
                 """)
 
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                       outcookie=Cookie())
+            req = MockRequest(self.env, authname='anonymous')
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             del session['foo']
             session.save()
@@ -332,10 +307,8 @@ class SessionTestCase(unittest.TestCase):
                 VALUES ('123456', 0, 'foo', 'bar')
                 """)
 
-        incookie = Cookie()
-        incookie['trac_session'] = '123456'
-        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                   outcookie=Cookie())
+        req = MockRequest(self.env, authname='anonymous')
+        req.incookie['trac_session'] = '123456'
         session = Session(self.env, req)
         self.assertEqual({'foo': 'bar'}, session)
 
@@ -359,7 +332,7 @@ class SessionTestCase(unittest.TestCase):
         Verify that new variables are inserted into the 'session' table in the
         database for an authenticated session.
         """
-        req = Mock(authname='john', base_path='/', incookie=Cookie())
+        req = MockRequest(self.env, authname='john')
         session = Session(self.env, req)
         session['foo'] = 'bar'
         session.save()
@@ -377,7 +350,7 @@ class SessionTestCase(unittest.TestCase):
             db("INSERT INTO session VALUES ('john', 1, 0)")
             db("INSERT INTO session_attribute VALUES ('john',1,'foo','bar')")
 
-            req = Mock(authname='john', base_path='/', incookie=Cookie())
+            req = MockRequest(self.env, authname='john')
             session = Session(self.env, req)
             self.assertEqual('bar', session['foo'])
             session['foo'] = 'baz'
@@ -401,10 +374,8 @@ class SessionTestCase(unittest.TestCase):
             WHERE sid='john' AND authenticated=1 AND name='foo'
             """)[0][0])
 
-        incookie = Cookie()
-        incookie['trac_session'] = 'john'
-        req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                   outcookie=Cookie())
+        req = MockRequest(self.env, authname='anonymous')
+        req.incookie['trac_session'] = 'john'
         session = Session(self.env, req)
         self.assertTrue('foo' not in session)
         session['foo'] = 'baz'
@@ -432,7 +403,7 @@ class SessionTestCase(unittest.TestCase):
             db("INSERT INTO session VALUES ('john', 1, 0)")
             db("INSERT INTO session_attribute VALUES ('john', 1, 'foo', 'bar')")
 
-            req = Mock(authname='john', base_path='/', incookie=Cookie())
+            req = MockRequest(self.env, authname='john')
             session = Session(self.env, req)
             self.assertEqual('bar', session['foo'])
             del session['foo']
@@ -458,16 +429,13 @@ class SessionTestCase(unittest.TestCase):
                 VALUES ('123456', 0, 'foo', 'bar')
                 """)
 
-            incookie = Cookie()
-            incookie['trac_session'] = '123456'
-            outcookie = Cookie()
-            req = Mock(authname='anonymous', base_path='/', incookie=incookie,
-                       outcookie=outcookie)
+            req = MockRequest(self.env, authname='anonymous')
+            req.incookie['trac_session'] = '123456'
             session = Session(self.env, req)
             session['modified'] = True
             session.save() # updating does require modifications
 
-            self.assertEqual(PURGE_AGE, outcookie['trac_session']['expires'])
+            self.assertEqual(PURGE_AGE, req.outcookie['trac_session']['expires'])
 
         self.assertAlmostEqual(now, int(self.env.db_query("""
             SELECT last_visit FROM session
@@ -685,9 +653,7 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual(result, ('name11', 'val11', 'val11', None))
 
     def test_session_get_session_with_invalid_sid(self):
-        cookie = Cookie()
-        req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
-                   base_path='/')
+        req = MockRequest(self.env, authname='anonymous')
         session = Session(self.env, req)
         session.get_session('0123456789')
         self.assertEqual('0123456789', session.sid)
@@ -703,9 +669,7 @@ class SessionTestCase(unittest.TestCase):
                           u'abc¹₂³xyz')  # Unicode digits
 
     def test_session_change_id_with_invalid_sid(self):
-        cookie = Cookie()
-        req = Mock(incookie=Cookie(), outcookie=cookie, authname='anonymous',
-                   base_path='/')
+        req = MockRequest(self.env, authname='anonymous', base_path='/')
         session = Session(self.env, req)
         session.change_sid('0123456789')
         self.assertEqual('0123456789', session.sid)

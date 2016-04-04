@@ -17,9 +17,8 @@ import unittest
 from genshi.builder import tag
 from trac import resource
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, MockRequest
 from trac.web.chrome import web_context
-from trac.web.href import Href
 
 
 class ResourceTestCase(unittest.TestCase):
@@ -62,7 +61,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.env.enable_component(self.FakeResourceManager)
-        self.req = Mock(perm=MockPerm(), href=Href('/trac.cgi'))
+        self.req = MockRequest(self.env)
         self.context = web_context(self.req)
 
     def tearDown(self):

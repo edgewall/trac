@@ -15,11 +15,9 @@ import os
 import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.perm import PermissionCache
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
-from trac.web.href import Href
 
 
 class TicketConversionTestCase(unittest.TestCase):
@@ -31,12 +29,7 @@ class TicketConversionTestCase(unittest.TestCase):
                                          'templates'))
         self.ticket_module = TicketModule(self.env)
         self.mimeview = Mimeview(self.env)
-        self.req = Mock(base_path='/trac.cgi', path_info='',
-                        href=Href('/trac.cgi'), chrome={'logo': {}},
-                        abs_href=Href('http://example.org/trac.cgi'),
-                        environ={}, perm=PermissionCache(self.env, '-'),
-                        authname='-', args={}, tz=None,
-                        locale='', session=None, form_token=None)
+        self.req = MockRequest(self.env, authname='anonymous')
 
     def tearDown(self):
         self.env.reset_db()
@@ -154,6 +147,11 @@ Bar
 &lt;/p&gt;
 </description>
     <language>en-us</language>
+    <image>
+      <title>My Project</title>
+      <url>http://example.org/trac.cgi/chrome/site/your_project_logo.png</url>
+      <link>http://example.org/trac.cgi/ticket/1</link>
+    </image>
     <generator>Trac %s</generator>
  </channel>
 </rss>""" % self.env.trac_version,

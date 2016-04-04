@@ -159,8 +159,8 @@ def MockRequest(env, **kwargs):
     :keyword method: the HTTP request method
     :keyword path_info: the request path inside the application
 
-    Additionally `format`, `locale`, `lc_time` and `tz` can be
-    specified as keyword arguments.
+    Additionally `format`, `locale`, `lc_time`, `remote_addr`,
+    `remote_user` and `tz` can be specified as keyword arguments.
 
     :since: 1.0.11
     """
@@ -181,8 +181,8 @@ def MockRequest(env, **kwargs):
         'HTTP_ACCEPT_LANGUAGE': 'en-US',
         'PATH_INFO': kwargs.get('path_info', '/'),
         'REQUEST_METHOD': kwargs.get('method', 'GET'),
-        'REMOTE_ADDR': '127.0.0.1',
-        'REMOTE_USER': authname,
+        'REMOTE_ADDR': kwargs.get('remote_addr', '127.0.0.1'),
+        'REMOTE_USER': kwargs.get('remote_user', authname),
         'SCRIPT_NAME': '/trac.cgi',
         'SERVER_NAME': 'localhost',
         'SERVER_PORT': '80',

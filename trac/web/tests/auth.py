@@ -15,9 +15,8 @@ import os
 
 import trac.tests.compat
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, MockRequest
 from trac.web.auth import BasicAuthentication, LoginModule
-from trac.web.href import Href
 
 from Cookie import SimpleCookie as Cookie
 import unittest
@@ -33,30 +32,21 @@ class LoginModuleTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_anonymous_access(self):
-        req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
-                   remote_addr='127.0.0.1', remote_user=None,
-                   base_path='/trac.cgi')
+        req = MockRequest(self.env, remote_user=None)
         self.assertIsNone(self.module.authenticate(req))
 
     def test_unknown_cookie_access(self):
         incookie = Cookie()
         incookie['trac_auth'] = '123'
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=Cookie(),
-                   remote_addr='127.0.0.1', remote_user=None,
-                   base_path='/trac.cgi')
+        req = MockRequest(self.env, remote_user=None)
         self.assertIsNone(self.module.authenticate(req))
 
     def test_known_cookie_access(self):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        outcookie = Cookie()
-        req = Mock(incookie=incookie, outcookie=outcookie,
-                   href=Href('/trac.cgi'), base_path='/trac.cgi',
-                   remote_addr='127.0.0.1', remote_user=None)
+        req = MockRequest(self.env, remote_user=None)
+        req.incookie['trac_auth'] = '123'
         self.assertEqual('john', self.module.authenticate(req))
         self.assertNotIn('auth_cookie', req.outcookie)
 
@@ -65,13 +55,9 @@ class LoginModuleTestCase(unittest.TestCase):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        outcookie = Cookie()
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=outcookie,
-                   remote_addr='192.168.0.100', remote_user=None,
-                   base_path='/trac.cgi')
+        req = MockRequest(self.env, remote_addr='192.168.0.100',
+                          remote_user=None)
+        req.incookie['trac_auth'] = '123'
         self.assertIsNone(self.module.authenticate(req))
         self.assertIn('trac_auth', req.outcookie)
 
@@ -80,27 +66,20 @@ class LoginModuleTestCase(unittest.TestCase):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        outcookie = Cookie()
-        req = Mock(incookie=incookie, outcookie=outcookie,
-                   href=Href('/trac.cgi'), base_path='/trac.cgi',
-                   remote_addr='192.168.0.100', remote_user=None)
+        req = MockRequest(self.env, remote_addr='192.168.0.100',
+                          remote_user=None)
+        req.incookie['trac_auth'] = '123'
         self.assertEqual('john', self.module.authenticate(req))
         self.assertNotIn('auth_cookie', req.outcookie)
 
     def test_login(self):
-        outcookie = Cookie()
         # remote_user must be upper case to test that by default, case is
         # preserved.
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie,
-                   remote_addr='127.0.0.1', remote_user='john',
-                   authname='john', base_path='/trac.cgi')
+        req = MockRequest(self.env, authname='john')
         self.module._do_login(req)
 
-        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
-        auth_cookie = outcookie['trac_auth'].value
+        self.assertIn('trac_auth', req.outcookie, '"trac_auth" Cookie not set')
+        auth_cookie = req.outcookie['trac_auth'].value
 
         self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
@@ -113,83 +92,55 @@ class LoginModuleTestCase(unittest.TestCase):
         """
         self.env.config.set('trac', 'ignore_auth_case', 'yes')
 
-        outcookie = Cookie()
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=outcookie,
-                   remote_addr='127.0.0.1', remote_user='John',
-                   authname='anonymous', base_path='/trac.cgi')
+        req = MockRequest(self.env, remote_user='John')
+
         self.module._do_login(req)
 
-        self.assertIn('trac_auth', outcookie, '"trac_auth" Cookie not set')
-        auth_cookie = outcookie['trac_auth'].value
+        self.assertIn('trac_auth', req.outcookie, '"trac_auth" Cookie not set')
+        auth_cookie = req.outcookie['trac_auth'].value
         self.assertEqual([('john', '127.0.0.1')], self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE cookie=%s",
             (auth_cookie,)))
 
     def test_login_no_username(self):
-        req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
-                   remote_addr='127.0.0.1', remote_user=None,
-                   base_path='/trac.cgi')
+        req = MockRequest(self.env, remote_user=None)
         self.assertRaises(TracError, self.module._do_login, req)
 
     def test_already_logged_in_same_user(self):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, outcookie=Cookie(),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi',
-                   remote_addr='127.0.0.1', remote_user='john', authname='john')
-        self.module._do_login(req) # this shouldn't raise an error
+        req = MockRequest(self.env, authname='john')
+        self.module._do_login(req)  # this shouldn't raise an error
 
     def test_already_logged_in_different_user(self):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        req = Mock(incookie=incookie, authname='john',
-                   href=Href('/trac.cgi'), base_path='/trac.cgi',
-                   remote_addr='127.0.0.1', remote_user='tom')
+        req = MockRequest(self.env, authname='john', remote_user='tom')
         self.assertRaises(TracError, self.module._do_login, req)
 
     def test_logout(self):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        outcookie = Cookie()
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=outcookie,
-                   remote_addr='127.0.0.1', remote_user=None,
-                   authname='john', method='POST', base_path='/trac.cgi')
+        req = MockRequest(self.env, authname='john', method='POST')
         self.module._do_logout(req)
-        self.assertIn('trac_auth', outcookie)
+        self.assertIn('trac_auth', req.outcookie)
         self.assertFalse(self.env.db_query(
             "SELECT name, ipnr FROM auth_cookie WHERE name='john'"))
 
     def test_logout_not_logged_in(self):
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=Cookie(), outcookie=Cookie(),
-                   remote_addr='127.0.0.1', remote_user=None,
-                   authname='anonymous', method='POST', base_path='/trac.cgi')
-        self.module._do_logout(req) # this shouldn't raise an error
+        req = MockRequest(self.env, method='POST')
+        self.module._do_logout(req)  # this shouldn't raise an error
 
     def test_logout_protect(self):
         self.env.db_transaction("""
             INSERT INTO auth_cookie (cookie, name, ipnr)
             VALUES ('123', 'john', '127.0.0.1')""")
-        incookie = Cookie()
-        incookie['trac_auth'] = '123'
-        outcookie = Cookie()
-        req = Mock(cgi_location='/trac', href=Href('/trac.cgi'),
-                   incookie=incookie, outcookie=outcookie,
-                   remote_addr='127.0.0.1', remote_user=None,
-                   authname='john', method='GET', base_path='/trac.cgi')
+        req = MockRequest(self.env, authname='john')
         self.module._do_logout(req)
-        self.assertNotIn('trac_auth', outcookie)
+        self.assertNotIn('trac_auth', req.outcookie)
         self.assertEqual(
             [('john', '127.0.0.1')],
             self.env.db_query("SELECT name, ipnr FROM auth_cookie "

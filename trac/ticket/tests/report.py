@@ -17,15 +17,14 @@ from datetime import datetime, timedelta
 
 import trac
 import trac.tests.compat
-from trac.perm import PermissionCache, PermissionSystem
+from trac.perm import PermissionSystem
 from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
+from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
-from trac.web.href import Href
 
 
 class ReportTestCase(unittest.TestCase):
@@ -94,9 +93,7 @@ class ReportTestCase(unittest.TestCase):
                          req.headers_sent['Location'])
 
     def test_quoted_id_with_var(self):
-        req = Mock(base_path='', chrome={}, args={}, session={},
-                   abs_href=Href('/'), href=Href('/'), locale='',
-                   perm=MockPerm(), authname=None, tz=None)
+        req = MockRequest(self.env)
         name = """%s"`'%%%?"""
         with self.env.db_query as db:
             sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
@@ -566,8 +563,7 @@ class NavContribReportModuleEnabledTestCase(NavigationContributorTestCase):
         """No navigation item when user has neither REPORT_VIEW or
         TICKET_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'anonymous'))
+        req = MockRequest(self.env, authname='anonymous')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
         self.assertEqual(0, len(navigation_items))
@@ -580,11 +576,10 @@ class NavContribReportModuleEnabledTestCase(NavigationContributorTestCase):
         enabled
         and the user has REPORT_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'has_report_view'))
+        req = MockRequest(self.env, authname='has_report_view')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
-        self.assertNavItem('/report', navigation_items)
+        self.assertNavItem('/trac.cgi/report', navigation_items)
 
         navigation_items = self.get_navigation_items(req, self.query_module)
         self.assertEqual(0, len(navigation_items))
@@ -593,24 +588,22 @@ class NavContribReportModuleEnabledTestCase(NavigationContributorTestCase):
         """Navigation item directs to QueryModule when ReportModule is
         enabled and the user has TICKET_VIEW but not REPORT_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'has_ticket_view'))
+        req = MockRequest(self.env, authname='has_ticket_view')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
         self.assertEqual(0, len(navigation_items))
 
         navigation_items = self.get_navigation_items(req, self.query_module)
-        self.assertNavItem('/query', navigation_items)
+        self.assertNavItem('/trac.cgi/query', navigation_items)
 
     def test_user_has_report_view_and_ticket_view(self):
         """Navigation item directs to ReportModule when ReportModule is
          enabled and the user has REPORT_VIEW and TICKET_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'has_both'))
+        req = MockRequest(self.env, authname='has_both')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
-        self.assertNavItem('/report', navigation_items)
+        self.assertNavItem('/trac.cgi/report', navigation_items)
 
         navigation_items = self.get_navigation_items(req, self.query_module)
         self.assertEqual(0, len(navigation_items))
@@ -626,21 +619,19 @@ class NavContribReportModuleDisabledTestCase(NavigationContributorTestCase):
         """Navigation item directs to QueryModule when ReportModule is
         disabled and the user has TICKET_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'has_ticket_view'))
+        req = MockRequest(self.env, authname='has_ticket_view')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
         self.assertEqual(0, len(navigation_items))
 
         navigation_items = self.get_navigation_items(req, self.query_module)
-        self.assertNavItem('/query', navigation_items)
+        self.assertNavItem('/trac.cgi/query', navigation_items)
 
     def test_user_no_ticket_view(self):
         """No Navigation item when ReportModule is disabled and the user
         has only REPORT_VIEW.
         """
-        req = Mock(href=Href('/'),
-                   perm=PermissionCache(self.env, 'has_report_view'))
+        req = MockRequest(self.env, authname='has_report_view')
 
         navigation_items = self.get_navigation_items(req, self.report_module)
         self.assertEqual(0, len(navigation_items))

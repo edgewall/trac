@@ -19,18 +19,15 @@ from genshi.input import HTMLParser, XML
 
 from trac.mimeview.api import Mimeview
 from trac.mimeview.patch import PatchRenderer
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, MockRequest
 from trac.web.chrome import Chrome, web_context
-from trac.web.href import Href
 
 
 class PatchRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
-        req = Mock(base_path='', chrome={}, args={}, session={},
-                   abs_href=Href('/'), href=Href('/'), locale='',
-                   perm=MockPerm(), authname=None, tz=None)
+        req = MockRequest(env)
         self.context = web_context(req)
         self.patch = Mimeview(env).renderers[0]
         patch_html = open(os.path.join(os.path.split(__file__)[0],

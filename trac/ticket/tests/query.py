@@ -17,7 +17,7 @@ import re
 import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
+from trac.test import Mock, EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
@@ -906,32 +906,27 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                      execute=lambda r: [{'id': 1,
                                          'col1': 'value, needs escaped'}],
                      time_fields=['time', 'changetime'])
-        req = Mock(href=self.env.href, perm=MockPerm())
+        req = MockRequest(self.env)
         content, mimetype, ext = Mimeview(self.env).convert_content(
             req, 'trac.ticket.Query', query, 'csv')
         self.assertEqual('\xef\xbb\xbfid,col1\r\n1,"value, needs escaped"\r\n',
                          content)
 
     def test_csv_obfuscation(self):
-        class NoEmailView(MockPerm):
-            def has_permission(self, action, realm_or_resource=None, id=False,
-                               version=False):
-                return action != 'EMAIL_VIEW'
-            __contains__ = has_permission
-
         query = Mock(get_columns=lambda: ['id', 'owner', 'reporter', 'cc'],
                      execute=lambda r: [{'id': 1,
                                          'owner': 'joe@example.org',
                                          'reporter': 'foo@example.org',
                                          'cc': 'cc1@example.org, cc2'}],
                      time_fields=['time', 'changetime'])
-        req = Mock(href=self.env.href, perm=NoEmailView())
+        req = MockRequest(self.env, authname='anonymous')
         content, mimetype, ext = Mimeview(self.env).convert_content(
             req, 'trac.ticket.Query', query, 'csv')
         self.assertEqual(u'\uFEFFid,owner,reporter,cc\r\n'
                          u'1,joe@…,foo@…,"cc1@…, cc2"\r\n',
                          content.decode('utf-8'))
-        req = Mock(href=self.env.href, perm=MockPerm())
+
+        req = MockRequest(self.env)
         content, mimetype, ext = Mimeview(self.env).convert_content(
             req, 'trac.ticket.Query', query, 'csv')
         self.assertEqual(

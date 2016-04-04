@@ -19,7 +19,7 @@ from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
+from trac.test import EnvironmentStub, MockRequest
 from trac.util import create_file
 from trac.web.api import (HTTPForbidden, HTTPInternalError, HTTPNotFound,
     IRequestFilter, IRequestHandler, RequestDone)
@@ -32,7 +32,7 @@ class AuthenticateTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(disable=['trac.web.auth.LoginModule'])
         self.request_dispatcher = RequestDispatcher(self.env)
-        self.req = Mock(chrome={'warnings': []})
+        self.req = MockRequest(self.env)
         self.env.clear_component_registry()
 
     def tearDown(self):
@@ -293,7 +293,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.req = Mock()
+        self.req = MockRequest(self.env)
         self.request_dispatcher = RequestDispatcher(self.env)
         self.compmgr = ComponentManager()
         self.env.clear_component_registry()
@@ -440,21 +440,14 @@ class HdfdumpTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.request_dispatcher = RequestDispatcher(self.env)
-        self.req = Mock(chrome={'warnings': []}, method='GET', perm=MockPerm(),
-                        args={'hdfdump': '1'}, session={}, callbacks={},
-                        send=self._req_send)
-        self.content = None
-        self.content_type = None
+        self.req = MockRequest(self.env, args={'hdfdump': '1'})
         self.env.clear_component_registry()
+        self.request_dispatcher = RequestDispatcher(self.env)
+        perm = self.req.perm
+        self.request_dispatcher._get_perm = lambda req: perm
 
     def tearDown(self):
         self.env.restore_component_registry()
-
-    def _req_send(self, content, content_type='text/html'):
-        self.content = content
-        self.content_type = content_type
-        raise RequestDone()
 
     def test_hdfdump(self):
         class HdfdumpRequestHandler(Component):
@@ -468,8 +461,10 @@ class HdfdumpTestCase(unittest.TestCase):
         self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch,
                           self.req)
-        self.assertEqual("{'name': 'value'}\n", self.content)
-        self.assertEqual('text/plain', self.content_type)
+        self.assertIn("{'name': 'value'}\n",
+                      self.req.response_sent.getvalue())
+        self.assertEqual('text/plain;charset=utf-8',
+                         self.req.headers_sent['Content-Type'])
 
 
 def suite():
