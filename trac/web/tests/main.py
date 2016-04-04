@@ -15,8 +15,7 @@ import os.path
 import tempfile
 import unittest
 
-from trac.config import ConfigurationError
-from trac.core import Component, ComponentManager, TracError, implements
+from trac.core import Component, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, Mock, MockPerm, MockRequest
