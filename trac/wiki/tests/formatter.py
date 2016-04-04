@@ -21,9 +21,10 @@ import unittest
 
 try:
     from unittest.util import safe_repr
-    unittest.case.safe_repr = lambda obj, short=False: safe_repr(obj, False)
 except ImportError:
     pass
+else:
+    unittest.case.safe_repr = lambda obj, short=False: safe_repr(obj, False)
 
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, MockRequest
@@ -47,11 +48,13 @@ class HelloWorldMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         return 'Hello World, args = ' + content
 
+
 class DivHelloWorldMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         return '<div>Hello World, args = %s</div>' % content
+
 
 class TableHelloWorldMacro(WikiMacroBase):
     """A dummy macro returning a table block, used by the unit test."""
@@ -61,17 +64,20 @@ class TableHelloWorldMacro(WikiMacroBase):
         <table><tr><th>Hello World</th><td>%s</td></tr></table>
         """ % content
 
+
 class DivCodeMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         return '<div class="code">Hello World, args = %s</div>' % content
 
+
 class DivCodeElementMacro(WikiMacroBase):
     """A dummy macro returning a Genshi Element, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         return html.DIV('Hello World, args = ', content, class_="code")
+
 
 class DivCodeStreamMacro(WikiMacroBase):
     """A dummy macro returning a Genshi Stream, used by the unit test."""
@@ -83,11 +89,13 @@ class DivCodeStreamMacro(WikiMacroBase):
         """)
         return tmpl.generate(args=content)
 
+
 class NoneMacro(WikiMacroBase):
     """A dummy macro returning `None`, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         return None
+
 
 class WikiProcessorSampleMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content, args):
@@ -98,13 +106,16 @@ class WikiProcessorSampleMacro(WikiMacroBase):
                 ''.join('<dt>%s</dt><dd>%s</dd>' % kv for kv in args.items()) \
                 + content
 
+
 class ValueErrorWithUtf8Macro(WikiMacroBase):
     def expand_macro(self, formatter, name, content, args):
         raise ValueError(content.encode('utf-8'))
 
+
 class TracErrorWithUnicodeMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content, args):
         raise TracError(unicode(content))
+
 
 class SampleResolver(Component):
     """A dummy macro returning a div block, used by the unit test."""
@@ -147,9 +158,9 @@ class WikiTestCase(unittest.TestCase):
 
     def _create_env(self):
         all_test_components = [
-                HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro,
-                DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro,
-                NoneMacro, WikiProcessorSampleMacro, SampleResolver]
+            HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro,
+            DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro,
+            NoneMacro, WikiProcessorSampleMacro, SampleResolver]
         env = EnvironmentStub(enable=['trac.*'] + all_test_components)
         # -- macros support
         env.path = ''
@@ -175,9 +186,9 @@ class WikiTestCase(unittest.TestCase):
         else:
             context = web_context(self.req, 'wiki', 'WikiStart')
         self.context = context
-        # # TODO: remove the following lines in order to discover
-        # #       all the places were we should use the req.href
-        # #       instead of env.href
+        # Remove the following lines in order to discover
+        # all the places were we should use the req.href
+        # instead of env.href
         self.env.href = self.req.href
         self.env.abs_href = self.req.abs_href
         wiki = WikiPage(self.env)
@@ -196,7 +207,7 @@ class WikiTestCase(unittest.TestCase):
         """Testing WikiFormatter"""
         formatter = self.formatter()
         v = unicode(formatter.generate(**self.generate_opts))
-        v = v.replace('\r', '').replace(u'\u200b', '') # FIXME: keep ZWSP
+        v = v.replace('\r', '').replace(u'\u200b', '')  # FIXME: keep ZWSP
         v = strip_line_ws(v, leading=False)
         try:
             self.assertEqual(self.correct, v)
@@ -236,10 +247,13 @@ class OneLinerTestCase(WikiTestCase):
     def formatter(self):
         return InlineHtmlFormatter(self.env, self.context, self.input)
 
+
 class EscapeNewLinesTestCase(WikiTestCase):
     generate_opts = {'escape_newlines': True}
+
     def formatter(self):
         return HtmlFormatter(self.env, self.context, self.input)
+
 
 class OutlineTestCase(WikiTestCase):
     def formatter(self):
@@ -258,6 +272,7 @@ class OutlineTestCase(WikiTestCase):
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
     suite = unittest.TestSuite()
+
     def add_test_cases(data, filename):
         tests = re.compile('^(%s.*)$' % ('=' * 30), re.MULTILINE).split(data)
         next_line = 1
@@ -273,7 +288,7 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
                 continue
             blocks = test.split('-' * 30 + '\n')
             if len(blocks) < 5:
-                blocks.extend([None,] * (5 - len(blocks)))
+                blocks.extend([None] * (5 - len(blocks)))
             input, page, oneliner, page_escape_nl, outline = blocks[:5]
             if page:
                 page = WikiTestCase(
@@ -306,5 +321,5 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
                 print('no ' + testfile)
     return suite
 
-if __name__ == '__main__': # pragma: no cover
+if __name__ == '__main__':  # pragma: no cover
     unittest.main(defaultTest='suite')
