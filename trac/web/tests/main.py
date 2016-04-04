@@ -328,6 +328,7 @@ def suite():
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     suite.addTest(unittest.makeSuite(PreProcessRequestTestCase))
+    suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(HdfdumpTestCase))
     return suite
 
