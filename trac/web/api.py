@@ -155,6 +155,13 @@ class ITemplateStreamFilter(Interface):
 
 
 class TracNotImplementedError(TracError, NotImplementedError):
+    """Raised when a `NotImplementedError` is trapped.
+
+    This exception is for internal use and should not be raised by
+    plugins. Plugins should raise `NotImplementedError`.
+
+    :since: 1.0.11
+    """
 
     title = N_("Not Implemented Error")
 
