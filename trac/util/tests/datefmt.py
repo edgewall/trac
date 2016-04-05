@@ -1817,9 +1817,11 @@ class LocalTimezoneTestCase(unittest.TestCase):
             self._compare_pytz(tz, '1982-04-01T00:00')  # No DST
             self._compare_pytz(tz, '1983-04-01T00:00')  # +2:00 (TZ change)
             self._compare_pytz(tz, '1983-04-01T02:00')  #       (TZ change)
-            self._compare_pytz(tz, '1983-10-01T00:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '1983-10-01T00:00',  # -1:00 (DST end)
+                               localize=False)
             self._compare_pytz(tz, '2006-03-25T02:00')  # +1:00 (DST start)
-            self._compare_pytz(tz, '2006-09-30T02:00')  # -1:00 (DST end)
+            self._compare_pytz(tz, '2006-09-30T02:00',  # -1:00 (DST end)
+                               localize=False)
             self._compare_pytz(tz, '2007-07-01T00:00')  # No DST in 2007
             self._compare_pytz(tz, '2008-03-30T23:00',  #       (TZ change)
                                localize=False)
