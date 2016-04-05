@@ -289,30 +289,30 @@ class Query(object):
         """
         if req is not None:
             href = req.href
+
+        self.num_items = 0
+        sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
+        self.num_items = self._count(sql, args)
+
+        if self.num_items <= self.max:
+            self.has_more_pages = False
+
+        if self.has_more_pages:
+            max = self.max
+            if self.group:
+                max += 1
+            sql += " LIMIT %d OFFSET %d" % (max, self.offset)
+            if (self.page > int(ceil(float(self.num_items) / self.max)) and
+                self.num_items != 0):
+                raise TracError(_("Page %(page)s is beyond the number of "
+                                  "pages in the query", page=self.page))
+
+        results = []
         with self.env.db_query as db:
             cursor = db.cursor()
-
-            self.num_items = 0
-            sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
-            self.num_items = self._count(sql, args)
-
-            if self.num_items <= self.max:
-                self.has_more_pages = False
-
-            if self.has_more_pages:
-                max = self.max
-                if self.group:
-                    max += 1
-                sql += " LIMIT %d OFFSET %d" % (max, self.offset)
-                if (self.page > int(ceil(float(self.num_items) / self.max)) and
-                        self.num_items != 0):
-                    raise TracError(_("Page %(page)s is beyond the number of "
-                                      "pages in the query", page=self.page))
-
             cursor.execute(sql, args)
             columns = get_column_names(cursor)
             fields = [self.fields.by_name(column, None) for column in columns]
-            results = []
 
             column_indices = range(len(columns))
             for row in cursor:
@@ -333,7 +333,6 @@ class Query(object):
                         val = ''
                     result[name] = val
                 results.append(result)
-            cursor.close()
             return results
 
     def get_href(self, href, id=None, order=None, desc=None, format=None,
