@@ -18,6 +18,7 @@ jQuery(document).ready(function($){
   var comments = null;
   var order = null;
   var form = $("#prefs");
+  var $trac_comments_order = form.find("input[name='trac-comments-order']");
 
   var commentsOnly = $("#trac-comments-only-toggle");
   var applyCommentsOnly = function() {
@@ -31,18 +32,11 @@ jQuery(document).ready(function($){
   };
 
   window.applyCommentsOrder = function(new_order) {
-      $("input[name='trac-comments-order']").val([new_order]);
-      applyNewOrder(new_order);
-  }
-  var applyOrder = function() {
-    applyNewOrder($("input[name='trac-comments-order']:checked").val());
+    $trac_comments_order.val([new_order]);
+    applyOrder(new_order);
   };
-  var applyNewOrder = function(new_order) {
-    var commentsOnlyChecked = commentsOnly.attr('checked');
-    if (commentsOnlyChecked) {
-      commentsOnly.attr("checked", false);
-      applyCommentsOnly();
-    }
+  var applyOrder = function(new_order) {
+    applyCommentsOnly();
     order = new_order;
     if (order == 'newest') {
       $("#changelog").append($("div.change").get().reverse());
@@ -58,10 +52,6 @@ jQuery(document).ready(function($){
           children.appendTo(ul).wrap('<li class="child">');
         }
       });
-    }
-    if (commentsOnlyChecked) {
-      commentsOnly.attr("checked", true);
-      applyCommentsOnly();
     }
   };
   var unapplyOrder = function() {
@@ -80,25 +70,25 @@ jQuery(document).ready(function($){
   else if (comments_prefs.comments_order == 'threaded')
     comments_prefs.comments_order = 'oldest'
 
-  applyCommentsOrder(comments_prefs.comments_order);
-  $("input[name='trac-comments-order']").change(function() {
-    unapplyOrder();
-    applyOrder();
-    $.ajax({ url: form.attr('action'), type: 'POST', data: {
+  var savePrefs = function(key, value) {
+    var data = {
       save_prefs: true,
-      ticket_comments_order: order,
       __FORM_TOKEN: form_token
-    }, dataType: 'text' });
-  });
+    };
+    data[key] = value;
+    $.ajax({ url: form.attr('action'), type: 'POST', data: data, dataType: 'text' });
+  };
 
   commentsOnly.attr('checked', comments_prefs.comments_only != 'false');
-  applyCommentsOnly();
   commentsOnly.click(function() {
     applyCommentsOnly();
-    $.ajax({ url: form.attr('action'), type: 'POST', data: {
-      save_prefs: true,
-      ticket_comments_only: !!commentsOnly.attr('checked'),
-      __FORM_TOKEN: form_token
-    }, dataType: 'text' });
+    savePrefs('ticket_comments_only', !!commentsOnly.attr('checked'));
+  });
+
+  applyCommentsOrder(comments_prefs.comments_order);
+  $trac_comments_order.change(function() {
+    unapplyOrder();
+    applyOrder($trac_comments_order.filter(":checked").val());
+    savePrefs('ticket_comments_order', order);
   });
 });
