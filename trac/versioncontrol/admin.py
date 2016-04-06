@@ -179,7 +179,9 @@ class RepositoryAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'VERSIONCONTROL_ADMIN' in req.perm('admin', 'versioncontrol/repository'):
+        types = RepositoryManager(self.env).get_supported_types()
+        if types and 'VERSIONCONTROL_ADMIN' \
+                      in req.perm('admin', 'versioncontrol/repository'):
             yield ('versioncontrol', _('Version Control'), 'repository',
                    _('Repositories'))
 
