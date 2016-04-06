@@ -19,11 +19,12 @@ jQuery(document).ready(function($){
   var order = null;
   var form = $("#prefs");
   var comment_controls_always_visible = false;
+  var $trac_comments_order = form.find("input[name='trac-comments-order']");
 
   // "Show property changes" control
   var $show_prop_changes = $("#trac-show-property-changes-toggle");
   var applyShowPropertyChanges = function() {
-    if ($show_prop_changes.prop('checked')) {
+    if ($show_prop_changes.is(':checked')) {
       // Simply show all
       $("div.change .changes").show();
       $("div.change").show();
@@ -75,13 +76,14 @@ jQuery(document).ready(function($){
   });
 
   // "Oldest first", "Newest first", and "Threaded", the comments order controls
-  var applyOrder = function() {
-    var show_prop_changes_is_checked = $show_prop_changes.prop('checked');
-    if (show_prop_changes_is_checked) {
-      $show_prop_changes.prop("checked", false);
-      applyShowPropertyChanges();
-    }
-    order = $("input[name='trac-comments-order']:checked").val();
+  window.applyCommentsOrder = function(new_order) {
+    $trac_comments_order.val([new_order]);
+    applyOrder(new_order);
+  }
+  var applyOrder = function(new_order) {
+    applyShowPropertyChanges();
+    applyShowComments();
+    order = new_order;
     if (order == 'newest') {
       var $changelog = $("#changelog");
       $changelog.addClass("trac-most-recent-first");
@@ -102,10 +104,6 @@ jQuery(document).ready(function($){
     }
     if (order !== 'newest')
       $("#changelog").removeClass("trac-most-recent-first");
-    if (show_prop_changes_is_checked) {
-      $show_prop_changes.prop("checked", true);
-      applyShowPropertyChanges();
-    }
   };
   var unapplyOrder = function() {
     if (order == 'newest') {
@@ -136,31 +134,25 @@ jQuery(document).ready(function($){
     $.ajax({ url: form.attr('action'), type: 'POST', data: data, dataType: 'text' });
   };
 
-  // Apply comments order preference
-  var $trac_comments_order = $("input[name='trac-comments-order']");
-  $trac_comments_order
-    .filter("[value=" + comments_prefs.comments_order + "]")
-    .prop('checked', true);
-  applyOrder();
-  $trac_comments_order.change(function() {
-    unapplyOrder();
-    applyOrder();
-    savePrefs('ticket_comments_order', order);
-  });
-
-  // Apply "Show property changes" preference
+  // Set "Show property changes" preference to the radio button
   $show_prop_changes.prop('checked', comments_prefs.show_prop_changes == 'true');
-  applyShowPropertyChanges();
   $show_prop_changes.click(function() {
     applyShowPropertyChanges();
     savePrefs('ticket_show_prop_changes', $show_prop_changes.is(':checked'));
   });
 
-  // Apply "Show comments" preference
+  // Set "Show comments" preference to the radio button
   $show_comments.prop('checked', comments_prefs.show_comments == 'true');
-  applyShowComments();
   $show_comments.click(function () {
     applyShowComments();
     savePrefs('ticket_show_comments', $show_comments.is(':checked'));
+  });
+
+  // Apply comments order and "Show" preferences
+  applyCommentsOrder(comments_prefs.comments_order);
+  $trac_comments_order.change(function() {
+    unapplyOrder();
+    applyOrder($trac_comments_order.filter(":checked").val());
+    savePrefs('ticket_comments_order', order);
   });
 });

@@ -68,17 +68,11 @@
           var items = $(reply);
           // Update ticket box
           $("#ticket").replaceWith(items.filter('#ticket'));
-          // Unthread, unrevert and update changelog
-          if (!$('#trac-comments-oldest').prop('checked'))
-            $('#trac-comments-oldest').click().change();
           // Replaces content of #changelog, without recreating it
-          $("#changelog").children().remove();
-          $("#changelog").append(items.filter("#changelog").children());
-          // Replay hide/show filters if needed
-          if (!$('#trac-show-property-changes-toggle').prop('checked'))
-            $('#trac-show-property-changes-toggle').prop('checked', true).click();
-          if (!$('#trac-show-comments-toggle').prop('checked'))
-            $('#trac-show-comments-toggle').prop('checked', true).click();
+          $("#changelog").empty().append(items.filter("#changelog").contents());
+          // Apply comments order and "Show" preferences
+          applyCommentsOrder(
+            $('#prefs input[name="trac-comments-order"]:checked').val());
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
@@ -142,7 +136,7 @@
         </py:if>
 
         <div style="${'display: none' if not changes else None}">
-          <div style="position: relative">
+          <div class="trac-noscript" style="position: relative">
             <form id="prefs" method="get" action="${href.prefs()}" style="position: absolute; right: 0">
               <div id="trac-comments-order">
                 <input type="radio" id="trac-comments-oldest" name="trac-comments-order" value="oldest" checked="checked" />
