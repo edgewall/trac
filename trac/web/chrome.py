@@ -50,9 +50,10 @@ from trac.resource import *
 from trac.util import as_bool, as_int, compat, get_reporter_id, html,\
                       presentation, get_pkginfo, pathjoin, translation
 from trac.util.html import escape, plaintext
-from trac.util.text import pretty_size, obfuscate_email_address, \
-                           shorten_line, unicode_quote_plus, to_unicode, \
-                           javascript_quote, exception_to_unicode, to_js_string
+from trac.util.text import (
+    exception_to_unicode, is_obfuscated, javascript_quote,
+    obfuscate_email_address, pretty_size, shorten_line, to_js_string,
+    to_unicode, unicode_quote_plus)
 from trac.util.datefmt import (
     pretty_timedelta, datetime_now, format_datetime, format_date, format_time,
     from_utimestamp, http_date, utc, get_date_format_jquery_ui, is_24_hours,
@@ -615,6 +616,7 @@ class Chrome(Component):
         'group': presentation.group,
         'groupby': compat.py_groupby,  # http://bugs.python.org/issue2246
         'http_date': http_date,
+        'is_obfuscated': is_obfuscated,
         'istext': presentation.istext,
         'javascript_quote': javascript_quote,
         'ngettext': translation.ngettext,

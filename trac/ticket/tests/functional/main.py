@@ -960,6 +960,39 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find("Milestone renamed")
 
 
+class TestMilestoneGroupedProgress(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Verify that grouped progress bar is displayed with proper
+        owner/reporter and link obfuscation.
+        """
+        name = self._tester.create_milestone()
+        self._tester.create_ticket(info={'milestone': name,
+                                         'owner': 'user1@example.com'})
+        self._tester.go_to_milestone(name)
+
+        # Owner should not be obfuscated.
+        tc.formvalue('stats', 'by', 'owner')
+        tc.submit()
+        tc.find('<th scope="row">[ \t\n]+'
+                '<a href="[^"]+">'
+                '<span class="trac-author">user1@example.com</span>')
+        tc.find('<form id="stats" class="trac-groupprogress" [^>]+>.*'
+                '<td class="open" style="width: 100%">[ \t\n]+'
+                '<a href="[^"]+" title="1/1 active">', 's')
+
+        # Owner should be obfuscated.
+        self._tester.logout()
+        self._tester.go_to_milestone(name)
+        tc.formvalue('stats', 'by', 'owner')
+        tc.submit()
+        tc.find('<th scope="row">[ \t\n]+'
+                '<span class="trac-author">user1@…</span>')
+        tc.find('<form id="stats" class="trac-groupprogress" [^>]+>.*'
+                '<td class="open" style="width: 100%">[ \t\n]+'
+                '<a title="1/1 active">', 's')
+        self._tester.login('admin')
+
+
 class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the column label fix in r5994"""
@@ -1741,6 +1774,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestMilestoneClose())
     suite.addTest(TestMilestoneDelete())
     suite.addTest(TestMilestoneRename())
+    suite.addTest(TestMilestoneGroupedProgress())
     suite.addTest(RegressionTestRev5994())
 
     suite.addTest(RegressionTestTicket4447())
