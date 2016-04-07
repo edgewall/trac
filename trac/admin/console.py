@@ -610,7 +610,7 @@ def _run(args):
         printerr(_("Python with optimizations is not supported."))
         return 2
     admin = TracAdmin()
-    if len(args) > 0:
+    if args > 0:
         if args[0] in ('-h', '--help', 'help'):
             return admin.onecmd(' '.join(_quote_args(['help'] + args[1:])))
         elif args[0] in ('-v','--version'):
