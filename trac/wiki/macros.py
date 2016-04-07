@@ -289,7 +289,7 @@ class TitleIndexMacro(WikiMacroBase):
             'group': lambda p: render_group(tree_group(split_pages_group(p))),
             'hierarchy': lambda p: render_hierarchy(
                                     tree_hierarchy(split_pages_hierarchy(p))),
-            }.get(format, None)
+            }.get(format)
 
         if transform:
             titleindex = transform(pages)

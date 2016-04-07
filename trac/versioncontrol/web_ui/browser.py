@@ -1018,7 +1018,7 @@ class BlameAnnotator(object):
             return
         rev = self.annotations[lineno-1]
         chgset = self.changesets[lineno-1]
-        path = self.paths.get(rev, None)
+        path = self.paths.get(rev)
         # Note: path will be None if copy/rename is not supported
         # by get_history
 

@@ -59,8 +59,8 @@ def get_reporter_id(req, arg_name=None):
         r = req.args.get(arg_name)
         if r:
             return r
-    name = req.session.get('name', None)
-    email = req.session.get('email', None)
+    name = req.session.get('name')
+    email = req.session.get('email')
     if name and email:
         return '%s <%s>' % (name, email)
     return name or email or req.authname # == 'anonymous'

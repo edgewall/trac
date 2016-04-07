@@ -100,7 +100,7 @@ class AdminModule(Component):
             except IndexError:
                 raise HTTPNotFound(_("Unknown administration panel"))
 
-        provider = providers.get((cat_id, panel_id), None)
+        provider = providers.get((cat_id, panel_id))
         if not provider:
             raise HTTPNotFound(_("Unknown administration panel"))
 

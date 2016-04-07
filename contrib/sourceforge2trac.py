@@ -661,7 +661,7 @@ def importData(f, env, opt):
                 elif h.field_name in ("summary", "priority"):
                     f = h.field_name
                     oldvalue = h.old_value
-                    newvalue = revision.get(h.field_name, None)
+                    newvalue = revision.get(h.field_name)
                 elif h.field_name == 'assigned_to':
                     f = "owner"
                     newvalue = revision['assignee']
