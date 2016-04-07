@@ -22,6 +22,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from subprocess import PIPE, Popen
 from StringIO import StringIO
 
 # IAdminCommandProvider implementations
@@ -55,6 +56,7 @@ from trac.core import Component, ComponentMeta, implements
 from trac.env import Environment
 from trac.test import EnvironmentStub
 from trac.util import create_file
+from trac.util.compat import close_fds
 from trac.util.datefmt import format_date, get_date_format_hint, \
                               get_datetime_format_hint
 from trac.util.translation import get_available_locales, has_babel
@@ -199,6 +201,20 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
     def _complete_command(self, *args):
         return AdminCommandManager(self.env).complete_command(list(args))
+
+    def test_python_with_optimizations_returns_error(self):
+        """Error is returned when a command is executed in interpreter
+        with optimizations enabled.
+        """
+        proc = Popen((sys.executable, '-O', '-m', 'trac.admin.console',
+                      'help'), stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                     close_fds=close_fds)
+        stdout, stderr = proc.communicate(input='')
+        for f in (proc.stdin, proc.stdout, proc.stderr):
+            f.close()
+        self.assertEqual(2, proc.returncode)
+        self.assertEqual("Python with optimizations is not supported.\n",
+                         stderr)
 
     # Help test
 

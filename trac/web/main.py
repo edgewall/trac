@@ -462,6 +462,9 @@ def dispatch_request(environ, start_response):
         _warn_setuptools = True
         warn_setuptools_issue(out=environ.get('wsgi.errors'))
 
+    if sys.flags.optimize != 0:
+        raise EnvironmentError("Python with optimizations is not supported.")
+
     # SCRIPT_URL is an Apache var containing the URL before URL rewriting
     # has been applied, so we can use it to reconstruct logical SCRIPT_NAME
     script_url = environ.get('SCRIPT_URL')

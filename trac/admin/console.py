@@ -606,6 +606,9 @@ def _run(args):
     if args is None:
         args = sys.argv[1:]
     warn_setuptools_issue()
+    if sys.flags.optimize != 0:
+        printerr(_("Python with optimizations is not supported."))
+        return 2
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):

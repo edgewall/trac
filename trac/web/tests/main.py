@@ -12,8 +12,10 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
+import sys
 import tempfile
 import unittest
+from subprocess import PIPE, Popen
 
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
@@ -21,6 +23,7 @@ from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.util import create_file
+from trac.util.compat import close_fds
 from trac.web.api import (HTTPForbidden, HTTPInternalError, HTTPNotFound,
     IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
@@ -114,6 +117,25 @@ class AuthenticateTestCase(unittest.TestCase):
                               Authenticator)
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch, req)
         self.assertEqual(1, authenticated[0])
+
+
+class DispatchRequestTestCase(unittest.TestCase):
+
+    def test_python_with_optimizations_raises_environment_error(self):
+        """EnvironmentError exception is raised when dispatching request
+        with optimizations enabled.
+        """
+        proc = Popen((sys.executable, '-O', '-c',
+                      'from trac.web.main import dispatch_request; '
+                      'dispatch_request({}, None)'), stdin=PIPE,
+                     stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+
+        stdout, stderr = proc.communicate(input='')
+        for f in (proc.stdin, proc.stdout, proc.stderr):
+            f.close()
+        self.assertEqual(1, proc.returncode)
+        self.assertIn("EnvironmentError: Python with optimizations is not "
+                      "supported.\n", stderr)
 
 
 class EnvironmentsTestCase(unittest.TestCase):
@@ -470,6 +492,7 @@ class HdfdumpTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
+    suite.addTest(unittest.makeSuite(DispatchRequestTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     suite.addTest(unittest.makeSuite(PreProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
