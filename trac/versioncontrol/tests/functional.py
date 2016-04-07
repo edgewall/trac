@@ -373,9 +373,9 @@ def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
-    suite.addTest(TestAdminRepositoryAuthorization())
-    suite.addTest(RegressionTestTicket11355())
     if has_svn:
+        suite.addTest(TestAdminRepositoryAuthorization())
+        suite.addTest(RegressionTestTicket11355())
         suite.addTest(TestAdminInvalidRepository())
         suite.addTest(TestEmptySvnRepo())
         suite.addTest(TestRepoCreation())
