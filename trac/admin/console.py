@@ -603,7 +603,7 @@ def run(args=None):
     """Main entry point."""
     translation.activate(get_console_locale())
     try:
-        _run(args)
+        return _run(args)
     finally:
         translation.deactivate()
 
