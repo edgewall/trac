@@ -31,10 +31,11 @@ import urlparse
 
 from genshi.builder import Fragment
 from trac.core import Interface, TracBaseError, TracError
-from trac.util import get_last_traceback, lazy, unquote
+from trac.util import as_bool, as_int, get_last_traceback, lazy, unquote
 from trac.util.datefmt import http_date, localtz
+from trac.util.html import tag
 from trac.util.text import empty, exception_to_unicode, to_unicode
-from trac.util.translation import _, N_
+from trac.util.translation import _, N_, tag_
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper, is_client_disconnect_exception
 
@@ -258,6 +259,84 @@ class _RequestArgs(dict):
     """Dictionary subclass that provides convenient access to request
     parameters that may contain multiple values."""
 
+    def as_int(self, name, default=None, min=None, max=None):
+        """Return the value as an integer. Return `default` if
+        if an exception is raised while converting the value to an
+        integer.
+
+        :param name: the name of the request parameter
+        :keyword default: the value to return if the parameter is not
+                          specified or an exception occurs converting
+                          the value to an integer.
+        :keyword min: lower bound to which the value is limited
+        :keyword max: upper bound to which the value is limited
+
+        :since: 1.2
+        """
+        if name not in self:
+            return default
+        return as_int(self.getfirst(name), default, min, max)
+
+    def as_bool(self, name, default=None):
+        """Return the value as a boolean. Return `default` if
+        if an exception is raised while converting the value to a
+        boolean.
+
+        :param name: the name of the request parameter
+        :keyword default: the value to return if the parameter is not
+                          specified or an exception occurs converting
+                          the value to a boolean.
+
+        :since: 1.2
+        """
+        if name not in self:
+            return default
+        return as_bool(self.getfirst(name), default)
+
+    def getbool(self, name, default=None):
+        """Return the value as a boolean. Raise an `HTTPBadRequest`
+        exception if an exception occurs while converting the value to
+        a boolean.
+
+        :param name: the name of the request parameter
+        :keyword default: the value to return if the parameter is not
+                          specified.
+
+        :since: 1.2
+        """
+        if name not in self:
+            return default
+        value = self[name]
+        if isinstance(value, list):
+            raise HTTPBadRequest(tag_("Invalid value for request argument "
+                                      "%(name)s.", name=tag.em(name)))
+        value = as_bool(value, None)
+        if value is None:
+            raise HTTPBadRequest(tag_("Invalid value for request argument "
+                                      "%(name)s.", name=tag.em(name)))
+        return value
+
+    def getint(self, name, default=None, min=None, max=None):
+        """Return the value as an integer. Raise an `HTTPBadRequest`
+        exception if an exception occurs while converting the value
+        to an integer.
+
+        :param name: the name of the request parameter
+        :keyword default: the value to return if the parameter is not
+                          specified
+        :keyword min: lower bound to which the value is limited
+        :keyword max: upper bound to which the value is limited
+
+        :since: 1.2
+        """
+        if name not in self:
+            return default
+        value = as_int(self[name], None, min, max)
+        if value is None:
+            raise HTTPBadRequest(tag_("Invalid value for request argument "
+                                      "%(name)s.", name=tag.em(name)))
+        return value
+
     def getfirst(self, name, default=None):
         """Return the first value for the specified parameter, or `default` if
         the parameter was not provided.
@@ -279,6 +358,19 @@ class _RequestArgs(dict):
         if not isinstance(val, list):
             val = [val]
         return val
+
+    def require(self, name):
+        """Raise an `HTTPBadRequest` exception if the parameter is
+        not in the request.
+
+        :param name: the name of the request parameter
+
+        :since: 1.2
+        """
+        if name not in self:
+            raise HTTPBadRequest(
+                tag_("Missing request argument. The %(name)s argument "
+                     "must be included in the request.", name=tag.em(name)))
 
 
 def parse_arg_list(query_string):

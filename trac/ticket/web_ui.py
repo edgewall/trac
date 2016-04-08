@@ -39,7 +39,7 @@ from trac.ticket.model import Milestone, Ticket
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, as_int, get_reporter_id, lazy
+from trac.util import as_bool, get_reporter_id, lazy
 from trac.util.datefmt import (
     datetime_now, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
@@ -562,7 +562,7 @@ class TicketModule(Component):
 
     def _process_ticket_request(self, req):
         id = int(req.args.get('id'))
-        version = as_int(req.args.get('version'), None)
+        version = req.args.getint('version', None)
 
         if req.is_xhr and 'preview_comment' in req.args:
             context = web_context(req, self.realm, id, version)
@@ -592,14 +592,12 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
         elif action == 'comment-history':
-            cnum = as_int(req.args.get('cnum'), None)
-            if cnum is None:
-                raise TracError(_("Invalid request arguments."))
+            req.args.require('cnum')
+            cnum = req.args.getint('cnum')
             return self._render_comment_history(req, ticket, data, cnum)
         elif action == 'comment-diff':
-            cnum = as_int(req.args.get('cnum'), None)
-            if cnum is None:
-                raise TracError(_("Invalid request arguments."))
+            req.args.require('cnum')
+            cnum = req.args.getint('cnum')
             return self._render_comment_diff(req, ticket, data, cnum)
         elif 'preview_comment' in req.args:
             field_changes = {}
@@ -892,8 +890,8 @@ class TicketModule(Component):
         `text_fields` is optionally a list of fields of interest, that are
         considered for jumping to the next change.
         """
-        new_version = as_int(req.args.get('version'), 1)
-        old_version = as_int(req.args.get('old_version'), new_version)
+        new_version = req.args.getint('version', 1)
+        old_version = req.args.getint('old_version', new_version)
         if old_version > new_version:
             old_version, new_version = new_version, old_version
 
@@ -1089,8 +1087,8 @@ class TicketModule(Component):
     def _render_comment_diff(self, req, ticket, data, cnum):
         """Show differences between two versions of a ticket comment."""
         req.perm(ticket.resource).require('TICKET_VIEW')
-        new_version = as_int(req.args.get('version'), 1)
-        old_version = as_int(req.args.get('old_version'), new_version)
+        new_version = req.args.getint('version', 1)
+        old_version = req.args.getint('old_version', new_version)
         if old_version > new_version:
             old_version, new_version = new_version, old_version
         elif old_version == new_version:

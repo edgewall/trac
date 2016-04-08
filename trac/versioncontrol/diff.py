@@ -19,7 +19,6 @@ import re
 
 from genshi import Markup, escape
 
-from trac.util import as_int
 from trac.util.text import expandtabs
 
 __all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options',
@@ -328,12 +327,12 @@ def get_diff_options(req):
     data['style'] = style
 
     pref = int(req.session.get('diff_contextlines', 2))
-    context = as_int(req.args.get('contextlines', pref), -1)
+    context = req.args.as_int('contextlines', pref)
     if 'update' in req.args and context != pref:
         req.session.set('diff_contextlines', context, 2)
     options_data['contextlines'] = context
 
-    arg = as_int(req.args.get('contextall'), 0)
+    arg = req.args.as_int('contextall', 0)
     options_data['contextall'] = arg
     options = ['-U%d' % (-1 if arg else context)]
 

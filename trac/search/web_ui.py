@@ -23,7 +23,6 @@ from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
-from trac.util import as_int
 from trac.util.datefmt import format_datetime, user_time
 from trac.util.html import find_element
 from trac.util.presentation import Paginator
@@ -161,7 +160,7 @@ class SearchModule(Component):
 
     def _check_quickjump(self, req, kwd):
         """Look for search shortcuts"""
-        noquickjump = as_int(req.args.get('noquickjump'), 0)
+        noquickjump = req.args.getbool('noquickjump', False)
         # Source quickjump  FIXME: delegate to ISearchSource.search_quickjump
         quickjump_href = None
         if kwd[0] == '/':
@@ -219,8 +218,7 @@ class SearchModule(Component):
         return sorted(results, key=lambda x: x[2], reverse=True)
 
     def _prepare_results(self, req, filters, results):
-        page = req.args.get('page', 1)
-        page = as_int(page, default=1, min=1)
+        page = req.args.getint('page', 1, min=1)
         try:
             results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
         except TracError:

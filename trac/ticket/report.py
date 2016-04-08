@@ -28,7 +28,7 @@ from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import as_bool, as_int, content_disposition
+from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
 from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
@@ -295,7 +295,7 @@ class ReportModule(Component):
     def _render_list(self, req):
         """Render the list of available reports."""
         sort = req.args.get('sort', 'report')
-        asc = as_bool(req.args.get('asc', 1))
+        asc = req.args.getbool('asc', True)
         format = req.args.get('format')
 
         rows = self.env.db_query("""
@@ -319,7 +319,7 @@ class ReportModule(Component):
 
         def report_href(**kwargs):
             return req.href.report(sort=req.args.get('sort'),
-                                   asc='1' if asc else '0', **kwargs)
+                                   asc=1 if asc else 0, **kwargs)
 
         add_link(req, 'alternate',
                  auth_link(req, report_href(format='rss')),
@@ -333,7 +333,7 @@ class ReportModule(Component):
                     'REPORT_MODIFY' in req.perm('report', id),
                     'REPORT_DELETE' in req.perm('report', id))
                    for id, title, description in rows]
-        data = {'reports': reports, 'sort': sort, 'asc': asc}
+        data = {'reports': reports, 'sort': sort, 'asc': 1 if asc else 0}
 
         return 'report_list.html', data, None
 
@@ -388,7 +388,7 @@ class ReportModule(Component):
         req.perm(report_resource).require('REPORT_VIEW')
         context = web_context(req, report_resource)
 
-        page = as_int(req.args.get('page'), 1)
+        page = req.args.getint('page', 1)
         default_max = {'rss': self.items_per_page_rss,
                        'csv': 0, 'tab': 0}.get(format, self.items_per_page)
         max = req.args.get('max')
@@ -396,7 +396,7 @@ class ReportModule(Component):
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')
-        asc = as_bool(req.args.get('asc', 1))
+        asc = req.args.getbool('asc', True)
 
         def report_href(**kwargs):
             """Generate links to this report preserving user variables,
@@ -409,7 +409,7 @@ class ReportModule(Component):
             if max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = '1' if params.get('asc', asc) else '0'
+            params['asc'] = 1 if asc else 0
             return req.href.report(id, params)
 
         data = {'action': 'view',
@@ -711,8 +711,8 @@ class ReportModule(Component):
 
             # The ORDER BY columns are inserted
             sort_col = req.args.get('sort', '')
-            asc = req.args.get('asc', '1')
-            self.log.debug("%r %s (%s)", cols, sort_col, asc and '^' or 'v')
+            asc = req.args.getbool('asc', True)
+            self.log.debug("%r %s (%s)", cols, sort_col, '^' if asc else 'v')
             order_cols = []
             if sort_col and sort_col not in cols:
                 raise TracError(_('Query parameter "sort=%(sort_col)s" '
@@ -722,7 +722,7 @@ class ReportModule(Component):
                 order_cols.append('__group__')
             if sort_col:
                 sort_col = '%s %s' % (db.quote(sort_col),
-                                      asc == '1' and 'ASC' or 'DESC')
+                                      'ASC' if asc else 'DESC')
 
             if SORT_COLUMN in sql:
                 # Method 1: insert sort_col at specified position

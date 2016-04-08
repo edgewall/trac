@@ -504,9 +504,8 @@ class ExecuteReportTestCase(unittest.TestCase):
         """Invalid value for `asc` argument is coerced to default."""
         req = MockRequest(self.env, args={'asc': '--'})
 
-        data = ReportModule(self.env).process_request(req)[1]
-
-        self.assertFalse(data['asc'])
+        self.assertRaises(HTTPBadRequest,
+                          ReportModule(self.env).process_request, req)
 
     def test_invalid_post_request_raises_exception(self):
         req = MockRequest(self.env, method='POST', action=None)

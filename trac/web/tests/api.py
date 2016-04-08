@@ -98,6 +98,82 @@ class RequestTestCase(unittest.TestCase):
     def _make_environ(self, *args, **kwargs):
         return _make_environ(*args, **kwargs)
 
+    def test_as_bool(self):
+        qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
+        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertIsNone(req.args.as_bool('arg0'))
+        self.assertTrue(req.args.as_bool('arg0', True))
+        self.assertFalse(req.args.as_bool('arg1'))
+        self.assertFalse(req.args.as_bool('arg1', True))
+        self.assertTrue(req.args.as_bool('arg2'))
+        self.assertTrue(req.args.as_bool('arg3'))
+        self.assertFalse(req.args.as_bool('arg4'))
+        self.assertTrue(req.args.as_bool('arg4', True))
+        self.assertTrue(req.args.as_bool('arg5'))
+
+    def test_as_int(self):
+        qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
+        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertIsNone(req.args.as_int('arg0'))
+        self.assertEqual(2, req.args.as_int('arg0', 2))
+        self.assertEqual(1, req.args.as_int('arg1'))
+        self.assertEqual(1, req.args.as_int('arg1', 2))
+        self.assertEqual(2, req.args.as_int('arg1', min=2))
+        self.assertEqual(2, req.args.as_int('arg1', None, 2))
+        self.assertEqual(0, req.args.as_int('arg1', max=0))
+        self.assertEqual(0, req.args.as_int('arg1', None, max=0))
+        self.assertEqual(0, req.args.as_int('arg1', None, -1, 0))
+        self.assertIsNone(req.args.as_int('arg2'))
+        self.assertEqual(2, req.args.as_int('arg2', 2))
+        self.assertEqual(3, req.args.as_int('arg3'))
+
+    def test_getbool(self):
+        qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
+        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertIsNone(req.args.getbool('arg0'))
+        self.assertTrue(req.args.getbool('arg0', True))
+        self.assertFalse(req.args.getbool('arg1'))
+        self.assertFalse(req.args.getbool('arg1', True))
+        self.assertTrue(req.args.getbool('arg2'))
+        self.assertTrue(req.args.getbool('arg3'))
+        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg4')
+        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg4', True)
+        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg5')
+        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg5', True)
+
+    def test_getint(self):
+        qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
+        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertIsNone(req.args.getint('arg0'))
+        self.assertEqual(2, req.args.getint('arg0', 2))
+        self.assertEqual(1, req.args.getint('arg1'))
+        self.assertEqual(1, req.args.getint('arg1', 2))
+        self.assertEqual(2, req.args.getint('arg1', min=2))
+        self.assertEqual(2, req.args.getint('arg1', None, 2))
+        self.assertEqual(0, req.args.getint('arg1', max=0))
+        self.assertEqual(0, req.args.getint('arg1', None, max=0))
+        self.assertEqual(0, req.args.getint('arg1', None, -1, 0))
+        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg2')
+        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg2', 2)
+        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3')
+        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3', 2)
+
+    def test_require(self):
+        qs = 'arg1=1'
+        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertRaises(HTTPBadRequest, req.args.require, 'arg0')
+        self.assertIsNone(req.args.require('arg1'))
+
     def test_is_xhr_true(self):
         environ = self._make_environ(HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         req = Request(environ, None)

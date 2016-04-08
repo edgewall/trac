@@ -384,7 +384,7 @@ class WikiModule(Component):
         version = None
         if 'delete_version' in req.args:
             version = int(req.args.get('version', 0))
-        old_version = as_int(req.args.get('old_version'), version)
+        old_version = req.args.getint('old_version', version)
 
         what = 'multiple' if version and old_version \
                              and version - old_version > 1 \

@@ -93,7 +93,7 @@ class TimelineModule(Component):
         req.perm('timeline').require('TIMELINE_VIEW')
 
         format = req.args.get('format')
-        maxrows = as_int(req.args.get('max'), 50 if format == 'rss' else 0)
+        maxrows = req.args.getint('max', 50 if format == 'rss' else 0)
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user
@@ -132,8 +132,8 @@ class TimelineModule(Component):
                                         fromdate.day, 23, 59, 59, 999999),
                                req.tz)
 
-        daysback = as_int(req.args.get('daysback'),
-                          90 if format == 'rss' else None)
+        daysback = req.args.as_int('daysback',
+                                   90 if format == 'rss' else None)
         if daysback is None:
             daysback = as_int(req.session.get('timeline.daysback'), None)
         if daysback is None:

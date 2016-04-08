@@ -1234,22 +1234,31 @@ def as_int(s, default, min=None, max=None):
     return value
 
 
-def as_bool(value):
+def as_bool(value, default=False):
     """Convert the given value to a `bool`.
 
-    If `value` is a string, return `True` for any of "yes", "true", "enabled",
-    "on" or non-zero numbers, ignoring case. For non-string arguments, return
-    the argument converted to a `bool`, or `False` if the conversion fails.
+    If `value` is a string, return `True` for any of "yes", "true",
+    "enabled", "on" or non-zero numbers, ignoring case. For non-string
+    arguments, return the argument converted to a `bool`, or `default`
+    if the conversion fails.
+
+    :since 1.2: the `default` argument can be specified.
     """
     if isinstance(value, basestring):
         try:
             return bool(float(value))
         except ValueError:
-            return value.strip().lower() in ('yes', 'true', 'enabled', 'on')
+            value = value.strip().lower()
+            if value in ('yes', 'true', 'enabled', 'on'):
+                return True
+            elif value in ('no', 'false', 'disabled', 'off'):
+                return False
+            else:
+                return default
     try:
         return bool(value)
     except (TypeError, ValueError):
-        return False
+        return default
 
 
 def pathjoin(*args):

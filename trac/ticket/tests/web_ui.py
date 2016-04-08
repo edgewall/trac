@@ -14,7 +14,6 @@
 from datetime import datetime, timedelta
 import unittest
 
-from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
@@ -23,7 +22,7 @@ from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
-from trac.web.api import RequestDone
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 
 
@@ -194,7 +193,8 @@ class TicketModuleTestCase(unittest.TestCase):
         if cnum is not None:
             req.args.update({'cnum': cnum})
 
-        self.assertRaises(TracError, self.ticket_module.process_request, req)
+        self.assertRaises(HTTPBadRequest,
+                          self.ticket_module.process_request, req)
 
     def test_comment_history_cnum_missing_raises(self):
         self._test_invalid_cnum_raises('comment-history')

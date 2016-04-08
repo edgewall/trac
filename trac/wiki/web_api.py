@@ -13,7 +13,6 @@
 
 from trac.core import *
 from trac.resource import Resource
-from trac.util import as_bool, as_int
 from trac.web.api import IRequestHandler
 from trac.web.chrome import chrome_info_script, web_context
 from trac.wiki.api import WikiSystem
@@ -40,15 +39,15 @@ class WikiRenderer(Component):
             req.perm.require('TRAC_ADMIN')
         realm = req.args.get('realm', WikiSystem.realm)
         id = req.args.get('id')
-        version = as_int(req.args.get('version'), None)
+        version = req.args.getint('version')
         text = req.args.get('text', '')
         flavor = req.args.get('flavor')
         options = {}
         if 'escape_newlines' in req.args:
             options['escape_newlines'] = \
-                as_bool(req.args.get('escape_newlines', 0))
+                req.args.getbool('escape_newlines', False)
         if 'shorten' in req.args:
-            options['shorten'] = as_bool(req.args.get('shorten', 0))
+            options['shorten'] = req.args.getbool('shorten', False)
 
         resource = Resource(realm, id=id, version=version)
         context = web_context(req, resource)
