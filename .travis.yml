@@ -15,7 +15,7 @@ before_install:
   - mysql -u root -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
   - mysql -u root -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
 install:
-  - pip install -q Genshi==0.7 'Babel<2.3.0' Pygments docutils lxml pytz twill==0.9.1 psycopg2 MySQL-python
+  - pip install -q Genshi==0.7 'Babel!=2.3.0,!=2.3.1' Pygments docutils lxml pytz twill==0.9.1 psycopg2 MySQL-python
   - echo ".uri = $TRAC_TEST_DB_URI" >Makefile.cfg
 addons:
   apt:

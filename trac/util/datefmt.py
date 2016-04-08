@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+import inspect
 import math
 import os
 import re
@@ -38,8 +39,14 @@ else:
         format_time as babel_format_time,
         get_datetime_format, get_date_format,
         get_time_format, get_month_names,
-        get_period_names, get_day_names
+        get_period_names as babel_get_period_names,
+        get_day_names
     )
+    if 'context' in inspect.getargspec(babel_get_period_names)[0]:
+        def get_period_names(locale=None):
+            return babel_get_period_names(context='format', locale=locale)
+    else:
+        get_period_names = babel_get_period_names
 
 from trac.core import TracError
 from trac.util.text import to_unicode, getpreferredencoding
