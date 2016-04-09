@@ -135,7 +135,7 @@ class DispatchRequestTestCase(unittest.TestCase):
             f.close()
         self.assertEqual(1, proc.returncode)
         self.assertIn("EnvironmentError: Python with optimizations is not "
-                      "supported.\n", stderr)
+                      "supported.", stderr)
 
 
 class EnvironmentsTestCase(unittest.TestCase):

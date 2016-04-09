@@ -213,8 +213,8 @@ class TracadminTestCase(TracAdminTestCaseBase):
         for f in (proc.stdin, proc.stdout, proc.stderr):
             f.close()
         self.assertEqual(2, proc.returncode)
-        self.assertEqual("Python with optimizations is not supported.\n",
-                         stderr)
+        self.assertEqual("Python with optimizations is not supported.",
+                         stderr.strip())
 
     # Help test
 
