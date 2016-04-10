@@ -166,15 +166,15 @@ class TimelineModuleTestCase(unittest.TestCase):
         self.assertEqual(90, data['daysback'])
 
     def test_daysback_invalid_default_is_used(self):
-        """Daysback value that is invalid, default value is used."""
+        """Daysback request value is invalid: default value is used."""
         req = MockRequest(self.env, args={'daysback': '--'})
 
         data = TimelineModule(self.env).process_request(req)[1]
 
         self.assertEqual(30, data['daysback'])
 
-    def test_daysback_invalid_session_value_is_used(self):
-        """Daysback value that is invalid, default value is used."""
+    def test_daysback_invalid_session_value_default_is_used(self):
+        """Daysback session value is invalid: default value is used."""
         PermissionSystem(self.env).grant_permission('user1', 'TIMELINE_VIEW')
         req = MockRequest(self.env, authname='user1', args={'daysback': '--'})
         req.session.set('timeline.daysback', '45')
