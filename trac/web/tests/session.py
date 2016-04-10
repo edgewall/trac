@@ -185,6 +185,43 @@ class SessionTestCase(unittest.TestCase):
                               ('john@EXAMPLE.LOCAL', 1)]),
                          set(sessions))
 
+    def test_as_int(self):
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES ('123456', 1, 0)")
+            db("""
+                INSERT INTO session_attribute VALUES
+                ('123456', 1, 'foo', 'bar'),
+                ('123456', 1, 'baz', 3)
+                """)
+
+        req = MockRequest(self.env, authname='123456')
+        session = Session(self.env, req)
+
+        self.assertEqual('bar', session.get('foo'))
+        self.assertEqual(2, session.as_int('foo', 2))
+        self.assertEqual(3, session.as_int('baz', 1))
+        self.assertEqual(2, session.as_int('baz', 1, max=2))
+        self.assertEqual(4, session.as_int('baz', 1, min=4))
+        self.assertIsNone(session.as_int('bat'))
+
+    def test_as_bool(self):
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES ('123456', 1, 0)")
+            db("""
+                INSERT INTO session_attribute VALUES
+                ('123456', 1, 'foo', 'bar'),
+                ('123456', 1, 'baz', 1)
+                """)
+
+        req = MockRequest(self.env, authname='123456')
+        session = Session(self.env, req)
+
+        self.assertEqual('bar', session.get('foo'))
+        self.assertIsNone(session.as_bool('foo', None))
+        self.assertTrue(session.as_int('baz'))
+        self.assertTrue(session.as_int('baz', False))
+        self.assertIsNone(session.as_bool('bat'))
+
     def test_add_anonymous_session_var(self):
         """
         Verify that new variables are inserted into the 'session' table in the

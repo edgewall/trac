@@ -1079,7 +1079,7 @@ class QueryModule(Component):
         # The most recent query is stored in the user session;
         orig_list = None
         orig_time = datetime_now(utc)
-        query_time = int(req.session.get('query_time', 0))
+        query_time = req.session.as_int('query_time', 0)
         query_time = datetime.fromtimestamp(query_time, utc)
         query_constraints = unicode(query.constraints)
         try:

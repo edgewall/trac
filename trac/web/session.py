@@ -23,7 +23,7 @@ import re
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            console_date_format, get_console_locale
 from trac.core import Component, ExtensionPoint, TracError, implements
-from trac.util import hex_entropy, lazy
+from trac.util import as_bool, as_int, hex_entropy, lazy
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, time_now, to_datetime, to_timestamp
 from trac.util.text import print_table
@@ -56,6 +56,40 @@ class DetachedSession(dict):
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, unicode(value))
+
+    def as_bool(self, key, default=None):
+        """Return the value as a boolean. Return `default` if
+        if an exception is raised while converting the value to a
+        boolean.
+
+        :param key: the name of the session attribute
+        :keyword default: the value to return if the parameter is not
+                          specified or an exception occurs converting
+                          the value to a boolean.
+
+        :since: 1.2
+        """
+        if key not in self:
+            return default
+        return as_bool(self[key], default)
+
+    def as_int(self, key, default=None, min=None, max=None):
+        """Return the value as an integer. Return `default` if
+        if an exception is raised while converting the value to an
+        integer.
+
+        :param key: the name of the session attribute
+        :keyword default: the value to return if the parameter is not
+                          specified or an exception occurs converting
+                          the value to an integer.
+        :keyword min: lower bound to which the value is limited
+        :keyword max: upper bound to which the value is limited
+
+        :since: 1.2
+        """
+        if key not in self:
+            return default
+        return as_int(self[key], default, min, max)
 
     def set(self, key, value, default=None):
         """Set a variable in the session, or remove it if it's equal to the

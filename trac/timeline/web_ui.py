@@ -27,7 +27,6 @@ from trac.config import IntOption, BoolOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_int
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                format_time, localtz, parse_date,
                                pretty_timedelta, utc, to_datetime,
@@ -94,14 +93,14 @@ class TimelineModule(Component):
 
         format = req.args.getfirst('format')
         maxrows = req.args.getint('max', 50 if format == 'rss' else 0)
-        lastvisit = int(req.session.get('timeline.lastvisit', '0'))
+        lastvisit = req.session.as_int('timeline.lastvisit', 0)
 
         # indication of new events is unchanged when form is updated by user
         revisit = any(a in req.args
                       for a in ['update', 'from', 'daysback', 'author'])
         if revisit:
-            lastvisit = int(req.session.get('timeline.nextlastvisit',
-                                            lastvisit))
+            lastvisit = req.session.as_int('timeline.nextlastvisit',
+                                           lastvisit)
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
@@ -132,8 +131,7 @@ class TimelineModule(Component):
                                         fromdate.day, 23, 59, 59, 999999),
                                req.tz)
 
-        pref = as_int(req.session.get('timeline.daysback'),
-                      self.default_daysback)
+        pref = req.session.as_int('timeline.daysback', self.default_daysback)
         default = 90 if format == 'rss' else pref
         daysback = req.args.as_int('daysback', default,
                                    min=1, max=self.max_daysback)
