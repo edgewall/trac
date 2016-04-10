@@ -14,7 +14,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from trac.perm import PermissionError
+from trac.perm import PermissionError, PermissionSystem
 from trac.test import EnvironmentStub, MockRequest, locale_en
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
@@ -138,6 +138,60 @@ class TimelineModuleTestCase(unittest.TestCase):
                       u'instead.' % (get_date_format_hint(locale_en),
                                      get_date_format_hint('iso8601')),
                       req.chrome['warnings'])
+
+    def test_daysback_from_session(self):
+        """Daysback value is retrieved from session attributes."""
+        PermissionSystem(self.env).grant_permission('user1', 'TIMELINE_VIEW')
+        req = MockRequest(self.env, authname='user1')
+        req.session.set('timeline.daysback', '45')
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(45, data['daysback'])
+
+    def test_daysback_less_than_min(self):
+        """Daysback minimum value is 1."""
+        req = MockRequest(self.env, args={'daysback': '-1'})
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(1, data['daysback'])
+
+    def test_daysback_greater_than_max(self):
+        """Daysback is limited to [timeline] max_daysback."""
+        req = MockRequest(self.env, args={'daysback': '100'})
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(90, data['daysback'])
+
+    def test_daysback_invalid_default_is_used(self):
+        """Daysback value that is invalid, default value is used."""
+        req = MockRequest(self.env, args={'daysback': '--'})
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(30, data['daysback'])
+
+    def test_daysback_invalid_session_value_is_used(self):
+        """Daysback value that is invalid, default value is used."""
+        PermissionSystem(self.env).grant_permission('user1', 'TIMELINE_VIEW')
+        req = MockRequest(self.env, authname='user1', args={'daysback': '--'})
+        req.session.set('timeline.daysback', '45')
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(45, data['daysback'])
+
+    def test_daysback_default_is_90_for_rss_format(self):
+        """Daysback default is 90 for RSS format request."""
+        PermissionSystem(self.env).grant_permission('user1', 'TIMELINE_VIEW')
+        req = MockRequest(self.env, authname='user1', args={'format': 'rss'})
+        req.session.set('timeline.daysback', '45')
+
+        data = TimelineModule(self.env).process_request(req)[1]
+
+        self.assertEqual(90, data['daysback'])
 
 
 def suite():

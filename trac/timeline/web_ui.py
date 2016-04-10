@@ -132,15 +132,11 @@ class TimelineModule(Component):
                                         fromdate.day, 23, 59, 59, 999999),
                                req.tz)
 
-        daysback = req.args.as_int('daysback',
-                                   90 if format == 'rss' else None)
-        if daysback is None:
-            daysback = as_int(req.session.get('timeline.daysback'), None)
-        if daysback is None:
-            daysback = self.default_daysback
-        daysback = max(0, daysback)
-        if self.max_daysback >= 0:
-            daysback = min(self.max_daysback, daysback)
+        pref = as_int(req.session.get('timeline.daysback'),
+                      self.default_daysback)
+        default = 90 if format == 'rss' else pref
+        daysback = req.args.as_int('daysback', default,
+                                   min=1, max=self.max_daysback)
 
         authors = req.args.getfirst('authors')
         if authors is None and format != 'rss':
