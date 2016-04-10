@@ -34,6 +34,17 @@ from hashlib import md5, sha1
 from itertools import groupby, tee
 
 
+try:
+    import crypt
+    crypt = crypt.crypt
+except ImportError:
+    try:
+        import fcrypt
+        crypt = fcrypt.crypt
+    except ImportError:
+        crypt = None
+
+
 class py_groupby(object):
     """Use in templates as an alternative to `itertools.groupby`,
     which leaks memory for Python < 2.5.3.
