@@ -29,10 +29,11 @@ try:
 except ImportError:
     try:
         from passlib.hash import des_crypt
-        def crypt(secret, salt):
-            return des_crypt.encrypt(secret, salt=salt)
     except ImportError:
         crypt = None
+    else:
+        def crypt(secret, salt):
+            return des_crypt.encrypt(secret, salt=salt)
 
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working
