@@ -188,11 +188,9 @@ class SessionTestCase(unittest.TestCase):
     def test_as_int(self):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 1, 0)")
-            db("""
-                INSERT INTO session_attribute VALUES
-                ('123456', 1, 'foo', 'bar'),
-                ('123456', 1, 'baz', 3)
-                """)
+            db.executemany("""
+                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
+                """, (('123456', 1, 'foo', 'bar'), ('123456', 1, 'baz', 3)))
 
         req = MockRequest(self.env, authname='123456')
         session = Session(self.env, req)
@@ -207,11 +205,9 @@ class SessionTestCase(unittest.TestCase):
     def test_as_bool(self):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 1, 0)")
-            db("""
-                INSERT INTO session_attribute VALUES
-                ('123456', 1, 'foo', 'bar'),
-                ('123456', 1, 'baz', 1)
-                """)
+            db.executemany("""
+                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
+                """, (('123456', 1, 'foo', 'bar'), ('123456', 1, 'baz', 1)))
 
         req = MockRequest(self.env, authname='123456')
         session = Session(self.env, req)
