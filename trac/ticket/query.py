@@ -415,7 +415,6 @@ class Query(object):
             locale = req.locale
         self.get_columns()
 
-        enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
         cols = []
         def add_cols(*args):
@@ -430,19 +429,27 @@ class Query(object):
         add_cols('status', 'priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraint_cols if c not in cols])
 
-        custom_fields = [f['name'] for f in self.fields if f.get('custom')]
-        list_fields = [f['name'] for f in self.fields
-                                 if f['type'] == 'text' and
-                                    f.get('format') == 'list']
-        # 31 is max of joins in SQLite 32-bit, 3 is for order, group and
-        # "priority" columns
-        max_joins = 31
-        use_joins = len(set(cols) & set(custom_fields)) + 3 <= max_joins
+        custom_fields = set(f['name'] for f in self.fields if f.get('custom'))
+        list_fields = set(f['name'] for f in self.fields
+                                    if f['type'] == 'text' and
+                                       f.get('format') == 'list')
+        enum_columns = [col for col in ('resolution', 'priority', 'severity')
+                            if col not in custom_fields and
+                               (col == 'priority' or col == self.order or
+                                col == self.group)]
+        joined_columns = [col for col in ('milestone', 'version')
+                              if col not in custom_fields and
+                                 (col == self.order or col == self.group)]
+        # 31 is max of joins in SQLite 32-bit
+        use_joins = (len(set(cols) & custom_fields) +
+                     len(enum_columns) + len(joined_columns)) <= 31
 
         sql = []
         sql.append("SELECT " + ",".join('t.%s AS %s' % (c, c) for c in cols
                                         if c not in custom_fields))
-        sql.append(",priority.value AS _priority_value")
+        if 'priority' in enum_columns:
+            sql.append(",priority.value AS _priority_value")
+
         with self.env.db_query as db:
             if use_joins:
                 # Use LEFT OUTER JOIN for ticket_custom table
@@ -467,17 +474,13 @@ class Query(object):
                 sql.append("\n  FROM ticket AS t) AS t")
 
             # Join with the enum table for proper sorting
-            for col in [c for c in enum_columns
-                        if c in (self.order, self.group, 'priority')]:
-                sql.append("\n  LEFT OUTER JOIN enum AS %s ON "
-                           "(%s.type='%s' AND %s.name=%s)"
-                           % (col, col, col, col, col))
+            sql.extend("\n  LEFT OUTER JOIN enum AS %(col)s ON "
+                       "(%(col)s.type='%(col)s' AND %(col)s.name=%(col)s)"
+                       % {'col': col} for col in enum_columns)
 
             # Join with the version/milestone tables for proper sorting
-            for col in [c for c in ['milestone', 'version']
-                        if c in (self.order, self.group)]:
-                sql.append("\n  LEFT OUTER JOIN %s ON (%s.name=%s)"
-                           % (col, col, col))
+            sql.extend("\n  LEFT OUTER JOIN %(col)s ON (%(col)s.name=%(col)s)"
+                       % {'col': col} for col in joined_columns)
 
             def get_timestamp(date):
                 if date:
@@ -657,13 +660,13 @@ class Query(object):
                 if name in enum_columns:
                     # These values must be compared as ints, not as strings
                     sql.append(db.cast(col, 'int') + desc)
-                elif name == 'milestone':
+                elif name == 'milestone' and name not in custom_fields:
                     sql.append("COALESCE(milestone.completed,0)=0%s,"
                                "milestone.completed%s,"
                                "COALESCE(milestone.due,0)=0%s,"
                                "milestone.due%s,%s%s"
                                % (desc, desc, desc, desc, col, desc))
-                elif name == 'version':
+                elif name == 'version' and name not in custom_fields:
                     sql.append("COALESCE(version.time,0)=0%s,"
                                "version.time%s,%s%s"
                                % (desc, desc, col, desc))
