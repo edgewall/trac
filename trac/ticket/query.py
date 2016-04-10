@@ -433,7 +433,8 @@ class Query(object):
         list_fields = set(f['name'] for f in self.fields
                                     if f['type'] == 'text' and
                                        f.get('format') == 'list')
-        enum_columns = [col for col in ('resolution', 'priority', 'severity')
+        enum_columns = [col for col in ('resolution', 'priority', 'severity',
+                                        'type')
                             if col not in custom_fields and
                                (col == 'priority' or col == self.order or
                                 col == self.group)]
@@ -475,8 +476,10 @@ class Query(object):
 
             # Join with the enum table for proper sorting
             sql.extend("\n  LEFT OUTER JOIN enum AS %(col)s ON "
-                       "(%(col)s.type='%(col)s' AND %(col)s.name=%(col)s)"
-                       % {'col': col} for col in enum_columns)
+                       "(%(col)s.type='%(type)s' AND %(col)s.name=t.%(col)s)" %
+                       {'col': col,
+                        'type': 'ticket_type' if col == 'type' else col}
+                       for col in enum_columns)
 
             # Join with the version/milestone tables for proper sorting
             sql.extend("\n  LEFT OUTER JOIN %(col)s ON (%(col)s.name=%(col)s)"

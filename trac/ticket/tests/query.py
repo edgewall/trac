@@ -57,6 +57,7 @@ class QueryTestCase(unittest.TestCase):
         self.req = MockRequest(self.env)
         self.tktids = self._insert_tickets(
             owner=[None, '', 'someone', 'someone_else', 'none'],
+            type=[None, '', 'enhancement', 'defect', 'task'],
             status=[None, '', 'new', 'assigned', 'reopened', 'closed'],
             priority=[None, '', 'blocker', 'critical', 'major', 'minor',
                       'trivial'],
@@ -85,8 +86,8 @@ class QueryTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _insert_tickets(self, owner, status, priority, milestone, version,
-                        keywords):
+    def _insert_tickets(self, owner, type, status, priority, milestone,
+                        version, keywords):
         when = datetime(2008, 7, 1, 12, 34, 56, 987654, utc)
         with self.env.db_transaction:
             ids = []
@@ -94,6 +95,7 @@ class QueryTestCase(unittest.TestCase):
                 t = Ticket(self.env)
                 t['summary'] = 'Summary %d' % idx
                 t['owner'] = owner[idx % len(owner)]
+                t['type'] = type[idx % len(type)]
                 t['status'] = status[idx % len(status)]
                 t['priority'] = priority[idx % len(priority)]
                 t['milestone'] = milestone[idx % len(milestone)]
@@ -117,7 +119,7 @@ class QueryTestCase(unittest.TestCase):
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -130,7 +132,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0 DESC,t.id DESC""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -143,7 +145,7 @@ ORDER BY COALESCE(t.id,0)=0 DESC,t.id DESC""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.reporter AS reporter,t.description AS description,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -155,7 +157,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -169,7 +171,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
@@ -186,7 +188,7 @@ ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(priority.value,'')='' DESC,%(cast_priority)s DESC,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
@@ -201,7 +203,7 @@ ORDER BY COALESCE(priority.value,'')='' DESC,%(cast_priority)s DESC,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.version AS version,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
   LEFT OUTER JOIN version ON (version.name=version)
 ORDER BY COALESCE(t.version,'')='',COALESCE(version.time,0)=0,version.time,t.version,t.id""")
         self.assertEqual([], args)
@@ -216,7 +218,7 @@ ORDER BY COALESCE(t.version,'')='',COALESCE(version.time,0)=0,version.time,t.ver
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.version AS version,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
   LEFT OUTER JOIN version ON (version.name=version)
 ORDER BY COALESCE(t.version,'')='' DESC,COALESCE(version.time,0)=0 DESC,version.time DESC,t.version DESC,t.id""")
         self.assertEqual([], args)
@@ -225,13 +227,40 @@ ORDER BY COALESCE(t.version,'')='' DESC,COALESCE(version.time,0)=0 DESC,version.
                           '2.0', '1.0'],
                          [t['version'] for t in tickets])
 
+    def test_ordered_by_type(self):
+        casts = {}
+        with self.env.db_transaction as db:
+            db("UPDATE enum SET value=2 "
+               "WHERE type='ticket_type' AND name='defect'")
+            db("UPDATE enum SET value=3 "
+               "WHERE type='ticket_type' AND name='enhancement'")
+            db("UPDATE enum SET value=1 "
+               "WHERE type='ticket_type' AND name='task'")
+            casts['cast_type_value'] = db.cast('type.value', 'int')
+
+        query = Query(self.env, order='type')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql, """\
+SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,\
+t.status AS status,t.priority AS priority,t.milestone AS milestone,\
+t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
+  LEFT OUTER JOIN enum AS type ON (type.type='ticket_type' AND type.name=t.type)
+ORDER BY COALESCE(type.value,'')='',%(cast_type_value)s,t.id""" % casts)
+        self.assertEqual([], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['task', 'task', 'defect', 'defect', 'enhancement',
+                          'enhancement', '', '', '', ''],
+                         [t['type'] for t in tickets])
+
     def test_constrained_by_milestone(self):
         query = Query.from_string(self.env, 'milestone=milestone1', order='id')
         sql, args = query.get_sql()
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.component AS component,t.time AS time,t.changetime AS changetime,t.milestone AS milestone,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.milestone,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
@@ -245,7 +274,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.component AS component,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
 ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.completed,0)=0,milestone.completed,COALESCE(milestone.due,0)=0,milestone.due,t.milestone,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
@@ -260,7 +289,7 @@ ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.completed,0)=0,milestone
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.component AS component,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
 ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC,milestone.completed DESC,COALESCE(milestone.due,0)=0 DESC,milestone.due DESC,t.milestone DESC,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
@@ -277,7 +306,7 @@ ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.milestone AS milestone,t.component AS component,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
@@ -292,7 +321,7 @@ ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.milestone AS milestone,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.milestone,'')!=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
@@ -307,7 +336,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.status AS status,t.owner AS owner,t.type AS type,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['new', 'assigned', 'reopened'], args)
@@ -323,7 +352,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone%'], args)
@@ -340,7 +369,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') NOT %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone%'], args)
@@ -356,7 +385,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['someone%'], args)
@@ -373,7 +402,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone'], args)
@@ -391,7 +420,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value,%(foo)s.value AS %(foo)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(foo)s ON (%(foo)s.ticket=t.id AND %(foo)s.name='foo')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(%(foo)s.value,'')=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id"""
         % {'foo': foo})
@@ -410,7 +439,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id"""
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value,%(foo)s.value AS %(foo)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(foo)s ON (%(foo)s.ticket=t.id AND %(foo)s.name='foo')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(%(foo)s.value,'')='',%(foo)s.value,COALESCE(t.id,0)=0,t.id"""
         % {'foo': foo})
         self.assertEqual([], args)
@@ -424,7 +453,7 @@ ORDER BY COALESCE(%(foo)s.value,'')='',%(foo)s.value,COALESCE(t.id,0)=0,t.id"""
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((t.id BETWEEN %s AND %s OR t.id IN (42,44)))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([51, 55], args)
@@ -544,7 +573,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.owner,'') IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
@@ -560,7 +589,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
@@ -578,7 +607,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') %(like)s OR COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         tickets = query.execute(self.req)
@@ -592,7 +621,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([''], args)
@@ -605,7 +634,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'')!=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([''], args)
@@ -620,7 +649,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.owner,'') IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['', ''], args)
@@ -633,7 +662,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['', ''], args)
@@ -648,7 +677,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -662,7 +691,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -676,7 +705,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
@@ -692,7 +721,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (((%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
@@ -711,7 +740,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
@@ -734,7 +763,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((%(cast_time)s>=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
@@ -756,7 +785,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((%(cast_time)s<%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
@@ -779,7 +808,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (((%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_changetime': cast_changetime})
@@ -800,7 +829,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.keywords AS keywords,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (((COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
@@ -816,7 +845,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.keywords AS keywords,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((NOT (COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
@@ -831,7 +860,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.component AS component,t.time AS time,t.changetime AS changetime,t.version AS version,t.milestone AS milestone,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.milestone,'')=%s)) OR ((COALESCE(t.version,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1', 'version1'], args)
@@ -849,7 +878,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.priority AS priority,t.milestone AS milestone,t.component AS component,t.status AS status,t.time AS time,t.changetime AS changetime,t.version AS version,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.status,'')=%s) AND (COALESCE(t.version,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['this=that', 'version1'], args)
@@ -862,7 +891,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.status AS status,t.owner AS owner,t.type AS type,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['here&now', 'maybe|later', 'back\\slash'], args)
@@ -896,7 +925,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['anonymous'], args)
@@ -958,7 +987,7 @@ t.changetime AS changetime,priority.value AS _priority_value,\
 %(resolution)s.value AS %(resolution)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(resolution)s ON (%(resolution)s.ticket=t.id AND %(resolution)s.name='resolution')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.status,'')!=%%s) AND COALESCE(%(resolution)s.value,'') IN (%%s,%%s))
 ORDER BY COALESCE(%(resolution)s.value,'')='',%(resolution)s.value,t.id""" % quoted)
         self.assertEqual(['closed', 'foo', 'blah'], args)
@@ -978,7 +1007,7 @@ t.time AS time,t.changetime AS changetime,\
 priority.value AS _priority_value,%(type)s.value AS %(type)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(type)s ON (%(type)s.ticket=t.id AND %(type)s.name='type')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.status,'')!=%%s) AND COALESCE(%(type)s.value,'') IN (%%s,%%s))
 ORDER BY COALESCE(%(type)s.value,'')='',%(type)s.value,t.id""" % quoted)
         self.assertEqual(['closed', 'foo', 'blah'], args)
@@ -998,7 +1027,7 @@ t.time AS time,t.changetime AS changetime,\
 priority.value AS _priority_value,%(milestone)s.value AS %(milestone)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(milestone)s ON (%(milestone)s.ticket=t.id AND %(milestone)s.name='milestone')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.status,'')!=%%s) AND COALESCE(%(milestone)s.value,'') IN (%%s,%%s))
 ORDER BY COALESCE(%(milestone)s.value,'')='',%(milestone)s.value,t.id""" % quoted)
         self.assertEqual(['closed', 'foo', 'blah'], args)
@@ -1018,7 +1047,7 @@ t.time AS time,t.changetime AS changetime,priority.value AS _priority_value,\
 %(version)s.value AS %(version)s
 FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(version)s ON (%(version)s.ticket=t.id AND %(version)s.name='version')
-  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.status,'')!=%%s) AND COALESCE(%(version)s.value,'') IN (%%s,%%s))
 ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         self.assertEqual(['closed', 'foo', 'blah'], args)
