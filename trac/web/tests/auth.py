@@ -15,6 +15,7 @@ import os
 
 import trac.tests.compat
 from trac.core import TracError
+from trac.util.compat import crypt
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.auth import BasicAuthentication, LoginModule
 
@@ -171,7 +172,8 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LoginModuleTestCase))
-    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
+    if crypt:
+        suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
     return suite
 
 
