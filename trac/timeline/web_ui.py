@@ -90,8 +90,9 @@ class TimelineModule(Component):
     def process_request(self, req):
         req.perm.assert_permission('TIMELINE_VIEW')
 
-        format = req.args.get('format')
-        maxrows = as_int(req.args.get('max'), 50 if format == 'rss' else 0)
+        format = req.args.getfirst('format')
+        default_maxrows = 50 if format == 'rss' else 0
+        maxrows = as_int(req.args.getfirst('max'), default_maxrows)
         lastvisit = int(req.session.get('timeline.lastvisit', '0'))
 
         # indication of new events is unchanged when form is updated by user
@@ -109,7 +110,7 @@ class TimelineModule(Component):
         precisedate = precision = None
         if 'from' in req.args:
             # Acquire from date only from non-blank input
-            reqfromdate = req.args['from'].strip()
+            reqfromdate = req.args.getfirst('from').strip()
             if reqfromdate:
                 try:
                     precisedate = user_time(req, parse_date, reqfromdate)
@@ -117,7 +118,7 @@ class TimelineModule(Component):
                     add_warning(req, e)
                 else:
                     fromdate = precisedate.astimezone(req.tz)
-            precision = req.args.get('precision', '')
+            precision = req.args.getfirst('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
             elif precision.startswith('minute'):
@@ -130,7 +131,7 @@ class TimelineModule(Component):
                                         fromdate.day, 23, 59, 59, 999999),
                                req.tz)
 
-        daysback = as_int(req.args.get('daysback'),
+        daysback = as_int(req.args.getfirst('daysback'),
                           90 if format == 'rss' else None)
         if daysback is None:
             daysback = as_int(req.session.get('timeline.daysback'), None)
@@ -140,7 +141,7 @@ class TimelineModule(Component):
         if self.max_daysback >= 0:
             daysback = min(self.max_daysback, daysback)
 
-        authors = req.args.get('authors')
+        authors = req.args.getfirst('authors')
         if authors is None and format != 'rss':
             authors = req.session.get('timeline.authors')
         authors = (authors or '').strip()
