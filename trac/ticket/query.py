@@ -436,11 +436,10 @@ class Query(object):
         enum_columns = [col for col in ('resolution', 'priority', 'severity',
                                         'type')
                             if col not in custom_fields and
-                               (col == 'priority' or col == self.order or
-                                col == self.group)]
+                               col in ('priority', self.order, self.group)]
         joined_columns = [col for col in ('milestone', 'version')
                               if col not in custom_fields and
-                                 (col == self.order or col == self.group)]
+                                 col in (self.order, self.group)]
         # 31 is max of joins in SQLite 32-bit
         use_joins = (len(set(cols) & custom_fields) +
                      len(enum_columns) + len(joined_columns)) <= 31
