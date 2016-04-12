@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-02-28 04:32+0000\n"
+"POT-Creation-Date: 2016-04-12 00:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.3.2\n"
 
 #: tracopt/perm/authz_policy.py:124
 msgid ""
@@ -448,8 +448,9 @@ msgstr ""
 
 #: trac/db/sqlite_backend.py:155
 msgid ""
-"Paths to sqlite extensions, relative to Trac environment's\n"
-"directory or absolute. (''since 0.12'')"
+"Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
+"The paths may be absolute or relative to the Trac environment.\n"
+"(''since 0.12'')"
 msgstr ""
 
 #: trac/mimeview/api.py:634
@@ -647,27 +648,27 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:420
+#: trac/notification/mail.py:421
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:423
+#: trac/notification/mail.py:424
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:426
+#: trac/notification/mail.py:427
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:429
+#: trac/notification/mail.py:430
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:432
+#: trac/notification/mail.py:433
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:485
+#: trac/notification/mail.py:489
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -675,11 +676,11 @@ msgid ""
 " (''since 0.12'')"
 msgstr ""
 
-#: trac/search/web_ui.py:49
+#: trac/search/web_ui.py:48
 msgid "Minimum length of query string allowed when performing a search."
 msgstr ""
 
-#: trac/search/web_ui.py:53
+#: trac/search/web_ui.py:52
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -777,7 +778,7 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:67
+#: trac/ticket/notification.py:66
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -786,13 +787,13 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/notification.py:76
+#: trac/ticket/notification.py:75
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:81
+#: trac/ticket/notification.py:80
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -803,7 +804,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:838
+#: trac/ticket/query.py:839
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -811,7 +812,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:846
+#: trac/ticket/query.py:847
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -819,7 +820,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:854
+#: trac/ticket/query.py:855
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -923,38 +924,38 @@ msgid ""
 "progress bar. (''since 1.2'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:80
+#: trac/ticket/web_ui.py:79
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations."
 msgstr ""
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:83
 msgid ""
 "Enable the display of component of tickets in the timeline.\n"
 "(''since 1.1.1'')"
 msgstr ""
 
-#: trac/ticket/web_ui.py:89
+#: trac/ticket/web_ui.py:88
 msgid "Maximum allowed description size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:92
+#: trac/ticket/web_ui.py:91
 msgid "Maximum allowed comment size in characters."
 msgstr ""
 
-#: trac/ticket/web_ui.py:95
+#: trac/ticket/web_ui.py:94
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 
-#: trac/ticket/web_ui.py:98
+#: trac/ticket/web_ui.py:97
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
 "If 'oneliner', the [timeline] abbreviated_messages option applies."
 msgstr ""
 
-#: trac/ticket/web_ui.py:105
+#: trac/ticket/web_ui.py:104
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -962,7 +963,7 @@ msgid ""
 "but keeps the old behavior for upgraded environments (i.e. 'no')."
 msgstr ""
 
-#: trac/ticket/web_ui.py:112
+#: trac/ticket/web_ui.py:111
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -971,17 +972,17 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/timeline/web_ui.py:53
+#: trac/timeline/web_ui.py:52
 msgid "Default number of days displayed in the Timeline, in days."
 msgstr ""
 
-#: trac/timeline/web_ui.py:57
+#: trac/timeline/web_ui.py:56
 msgid ""
 "Maximum number of days (-1 for unlimited) displayable in the\n"
 "Timeline."
 msgstr ""
 
-#: trac/timeline/web_ui.py:62
+#: trac/timeline/web_ui.py:61
 msgid ""
 "Whether wiki-formatted event messages should be truncated or not.\n"
 "\n"
@@ -1212,7 +1213,7 @@ msgid ""
 "the cookie.  (''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:406
+#: trac/web/chrome.py:407
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1220,7 +1221,7 @@ msgid ""
 "environments `templates` directory, but the latter take precedence."
 msgstr ""
 
-#: trac/web/chrome.py:413
+#: trac/web/chrome.py:414
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1233,11 +1234,11 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:424
+#: trac/web/chrome.py:425
 msgid "Automatically reload template files after modification."
 msgstr ""
 
-#: trac/web/chrome.py:427
+#: trac/web/chrome.py:428
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. You may want to choose a higher value if your site uses a\n"
@@ -1245,7 +1246,7 @@ msgid ""
 "you can reduce it if you are short on memory."
 msgstr ""
 
-#: trac/web/chrome.py:433
+#: trac/web/chrome.py:434
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1262,7 +1263,7 @@ msgid ""
 "rules will be needed in the web server."
 msgstr ""
 
-#: trac/web/chrome.py:448
+#: trac/web/chrome.py:449
 #, python-format
 msgid ""
 "Location of the jQuery !JavaScript library (version %(version)s).\n"
@@ -1277,7 +1278,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:460
+#: trac/web/chrome.py:461
 #, python-format
 msgid ""
 "Location of the jQuery UI !JavaScript library (version %(version)s).\n"
@@ -1293,7 +1294,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:472
+#: trac/web/chrome.py:473
 #, python-format
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
@@ -1313,7 +1314,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:487
+#: trac/web/chrome.py:488
 msgid ""
 "Configures the main navigation bar,\n"
 "which by default contains //Wiki//, //Timeline//, //Roadmap//,\n"
@@ -1337,7 +1338,7 @@ msgid ""
 "See TracNavigation for more details."
 msgstr ""
 
-#: trac/web/chrome.py:509
+#: trac/web/chrome.py:510
 msgid ""
 "Configures the meta navigation\n"
 "entries, which by default are //Login//, //Logout//, //Preferences//,\n"
@@ -1354,11 +1355,11 @@ msgid ""
 "See TracNavigation for more details."
 msgstr ""
 
-#: trac/web/chrome.py:524
+#: trac/web/chrome.py:525
 msgid "URL to link to, from the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:527
+#: trac/web/chrome.py:528
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1371,55 +1372,55 @@ msgid ""
 "Only specifying `your-logo.png` is equivalent to the latter."
 msgstr ""
 
-#: trac/web/chrome.py:538
+#: trac/web/chrome.py:539
 msgid "Alternative text for the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:542
+#: trac/web/chrome.py:543
 msgid "Width of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:545
+#: trac/web/chrome.py:546
 msgid "Height of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:548
+#: trac/web/chrome.py:549
 msgid ""
 "Show email addresses instead of usernames. If false, email\n"
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
 "permission."
 msgstr ""
 
-#: trac/web/chrome.py:554
+#: trac/web/chrome.py:555
 msgid "Show full names instead of usernames. (//since 1.2//)"
 msgstr ""
 
-#: trac/web/chrome.py:557
+#: trac/web/chrome.py:558
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user doesn't have\n"
 "EMAIL_VIEW permission."
 msgstr ""
 
-#: trac/web/chrome.py:564
+#: trac/web/chrome.py:565
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
 "option is deprecated and will be removed in 1.3.1."
 msgstr ""
 
-#: trac/web/chrome.py:569
+#: trac/web/chrome.py:570
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:573
+#: trac/web/chrome.py:574
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr ""
 
-#: trac/web/chrome.py:577
+#: trac/web/chrome.py:578
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1427,25 +1428,25 @@ msgid ""
 "this to 0 to disable automatic preview. (''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:584
+#: trac/web/chrome.py:585
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:589
+#: trac/web/chrome.py:590
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"
 "the contents are rendered. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/web/main.py:124
+#: trac/web/main.py:126
 msgid "Ordered list of filters to apply to all requests."
 msgstr ""
 
-#: trac/web/main.py:128
+#: trac/web/main.py:130
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1455,17 +1456,17 @@ msgid ""
 "and `WikiModule`."
 msgstr ""
 
-#: trac/web/main.py:137
+#: trac/web/main.py:139
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:140
+#: trac/web/main.py:142
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:146
+#: trac/web/main.py:148
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1473,7 +1474,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:153
+#: trac/web/main.py:155
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1481,7 +1482,7 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:160
+#: trac/web/main.py:162
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
