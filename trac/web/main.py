@@ -611,8 +611,8 @@ def send_internal_error(env, req, exc_info):
                 home_page = info.get('home_page', '')
                 if 'trac' in info:
                     tracker = info['trac']
-                elif urlparse.urlparse(home_page).netloc == \
-                        urlparse.urlparse(th).netloc:
+                elif urlparse.urlparse(home_page)[1] == \
+                        urlparse.urlparse(th)[1]:
                     tracker = th
                     plugin_name = info.get('home_page', '').rstrip('/') \
                                                            .split('/')[-1]
