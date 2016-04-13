@@ -29,6 +29,7 @@ import re
 import sys
 import traceback
 import StringIO
+from urlparse import urlparse
 
 from genshi.builder import tag
 from genshi.output import DocType
@@ -619,9 +620,10 @@ def send_internal_error(env, req, exc_info):
             faulty_plugins.sort(key=lambda p: p['frame_idx'])
             if faulty_plugins:
                 info = faulty_plugins[0]['info']
+                home_page = info.get('home_page', '')
                 if 'trac' in info:
                     tracker = info['trac']
-                elif info.get('home_page', '').startswith(th):
+                elif urlparse(home_page)[1] == urlparse(th)[1]:
                     tracker = th
                     plugin_name = info.get('home_page', '').rstrip('/') \
                                                            .split('/')[-1]
