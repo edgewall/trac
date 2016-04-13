@@ -26,6 +26,7 @@ import pkg_resources
 from pprint import pformat, pprint
 import re
 import sys
+import urlparse
 
 from genshi.core import Markup
 from genshi.builder import Fragment, tag
@@ -607,9 +608,11 @@ def send_internal_error(env, req, exc_info):
             faulty_plugins.sort(key=lambda p: p['frame_idx'])
             if faulty_plugins:
                 info = faulty_plugins[0]['info']
+                home_page = info.get('home_page', '')
                 if 'trac' in info:
                     tracker = info['trac']
-                elif info.get('home_page', '').startswith(th):
+                elif urlparse.urlparse(home_page).netloc == \
+                        urlparse.urlparse(th).netloc:
                     tracker = th
                     plugin_name = info.get('home_page', '').rstrip('/') \
                                                            .split('/')[-1]
