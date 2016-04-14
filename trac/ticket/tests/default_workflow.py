@@ -21,6 +21,7 @@ import trac.tests.compat
 from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
+from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Component, Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import create_file

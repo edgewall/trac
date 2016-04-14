@@ -176,7 +176,7 @@ class SafeReprTestCase(unittest.TestCase):
         self.assertRaises(Exception, repr, eh_ix())
         sr = util.safe_repr(eh_ix())
         sr = re.sub('[A-F0-9]{4,}', 'ADDRESS', sr)
-        sr = re.sub(r'__main__|trac\.util\.tests', 'MODULE', sr)
+        sr = re.sub(r'__main__|trac\.util\.tests(\.__init__)?', 'MODULE', sr)
         self.assertEqual("<MODULE.eh_ix object at 0xADDRESS "
                          "(repr() error: TypeError: unsupported operand "
                          "type(s) for +: 'int' and 'str')>", sr)
