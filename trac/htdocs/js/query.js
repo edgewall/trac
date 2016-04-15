@@ -288,7 +288,8 @@
       switch (property.type) {
         case 'select':
           focusElement = createSelect(inputName, property.options, true,
-                                      property.optgroups)
+                                      property.optgroups);
+          focusElement.attr("id", inputName);
           td.append(focusElement);
           break;
         case 'radio':
@@ -316,12 +317,13 @@
           if ($.inArray(propertyName, batch_list_properties) >= 0) {
             focusElement = appendBatchListControls(td, inputName);
           } else {
-            focusElement = createText(inputName, 42);
+            focusElement = createText(inputName, 42).attr("id", inputName);
             td.append(focusElement);
           }
           break;
         case 'time':
-          focusElement = createText(inputName, 42).addClass("time");
+          focusElement = createText(inputName, 42).addClass("time")
+                                                  .attr("id", inputName);
           td.append(focusElement);
           break;
       }
@@ -329,11 +331,14 @@
     }
 
     function appendBatchListControls(td, inputName) {
-      var modeSelect = createSelect(inputName + "_mode", batch_list_modes);
-      var text1 = createText(inputName, 42);
-      var text2 = createText(inputName + "_secondary", 42);
+      var modeSelect = createSelect(inputName + "_mode", batch_list_modes)
+                       .attr("id", inputName);
+      var text1 = createText(inputName + "_primary", 42)
+                             .attr("id", inputName + "_primary");
+      var text2 = createText(inputName + "_secondary", 42)
+                             .attr("id", inputName + "_secondary");
       var label1 = createLabel(" " + batch_list_modes[0]['name'] + ":",
-                               inputName);
+                               inputName + "_primary");
       var label2 = createLabel(_(" remove:"), inputName + "_secondary");
       td.append(modeSelect);
       td.append(label1);
@@ -488,7 +493,8 @@
 
       // Add the header row.
       tr.append($('<th scope="row">')
-        .append(createLabel(property.label, getBatchInputName(propertyName)))
+        .append(createLabel(property.label + ":",  // FIXME: french l10n
+                            getBatchInputName(propertyName)))
       );
 
       // Add the input element.
