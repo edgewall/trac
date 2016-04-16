@@ -108,6 +108,72 @@ def split_sql(sql, clause_re, skel=None):
         return sql, ''  # no single clause separator
 
 
+class Report(object):
+
+    @property
+    def exists(self):
+        return self.id is not None
+
+    def __init__(self, env, id=None):
+        self.env = env
+        self.id = self.title = self.query = self.description = None
+        if id is not None:
+            id_as_int = as_int(id, None)
+            if id_as_int is not None:
+                for title, description, query in self.env.db_query("""
+                        SELECT title, description, query FROM report
+                        WHERE id=%s
+                        """, (id_as_int,)):
+                    self.id = id_as_int
+                    self.title = title or ''
+                    self.description = description or ''
+                    self.query = query or ''
+                    return
+            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
+                                     num=id), _("Invalid Report Number"))
+
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.id)
+
+    def delete(self):
+        """Delete the report."""
+        assert self.exists, "Cannot delete non-existent report"
+        self.env.db_transaction("DELETE FROM report WHERE id=%s", (self.id,))
+        self.id = None
+
+    def insert(self):
+        """Insert a new report."""
+        assert not self.exists, "Cannot insert existing report"
+
+        self.env.log.debug("Creating new report '%s'", self.id)
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
+                """, (self.title, self.query, self.description))
+            self.id = db.get_last_id(cursor, 'report')
+
+    def update(self):
+        self.env.db_transaction("""
+            UPDATE report SET title=%s, query=%s, description=%s
+            WHERE id=%s
+            """, (self.title, self.query, self.description, self.id))
+
+    @classmethod
+    def select(cls, env, sort='id', asc=True):
+        for id, title, description, query in env.db_query("""
+                SELECT id, title, description, query
+                FROM report ORDER BY %s %s
+                """ % ('title' if sort == 'title' else 'id',
+                       '' if asc else 'DESC')):
+            report = cls(env)
+            report.id = id
+            report.title = title
+            report.description = description
+            report.query = query
+            yield report
+
+
 class ReportModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
@@ -155,7 +221,7 @@ class ReportModule(Component):
 
     def process_request(self, req):
         # did the user ask for any special report?
-        id = int(req.args.get('id', self.REPORT_LIST_ID))
+        id = req.args.getint('id', self.REPORT_LIST_ID)
         req.perm('report', id).require('REPORT_VIEW')
 
         data = {}
@@ -222,17 +288,13 @@ class ReportModule(Component):
         if 'cancel' in req.args:
             req.redirect(req.href.report())
 
-        title = req.args.get('title', '')
-        query = req.args.get('query', '')
-        description = req.args.get('description', '')
-        with self.env.db_transaction as db:
-            cursor = db.cursor()
-            cursor.execute("""
-                INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
-                """, (title, query, description))
-            report_id = db.get_last_id(cursor, 'report')
+        report = Report(self.env)
+        report.title = req.args.get('title', '')
+        report.query = req.args.get('query', '')
+        report.description = req.args.get('description', '')
+        report.insert()
         add_notice(req, _("The report has been created."))
-        req.redirect(req.href.report(report_id))
+        req.redirect(req.href.report(report.id))
 
     def _do_delete(self, req, id):
         req.perm('report', id).require('REPORT_DELETE')
@@ -240,7 +302,7 @@ class ReportModule(Component):
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
 
-        self.env.db_transaction("DELETE FROM report WHERE id=%s", (id,))
+        Report(self.env, id).delete()
         add_notice(req, _("The report {%(id)d} has been deleted.", id=id))
         req.redirect(req.href.report())
 
@@ -249,20 +311,18 @@ class ReportModule(Component):
         req.perm('report', id).require('REPORT_MODIFY')
 
         if 'cancel' not in req.args:
-            title = req.args.get('title', '')
-            query = req.args.get('query', '')
-            description = req.args.get('description', '')
-            self.env.db_transaction("""
-                UPDATE report SET title=%s, query=%s, description=%s
-                WHERE id=%s
-                """, (title, query, description, id))
+            report = Report(self.env, id)
+            report.title = req.args.get('title', '')
+            report.query = req.args.get('query', '')
+            report.description = req.args.get('description', '')
+            report.update()
             add_notice(req, _("Your changes have been saved."))
         req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, id):
         req.perm('report', id).require('REPORT_DELETE')
 
-        title = self.get_report(id)[0]
+        title = Report(self.env, id).title
         return {'title': _("Delete Report {%(num)s} %(title)s", num=id,
                            title=title),
                 'action': 'delete',
@@ -271,7 +331,8 @@ class ReportModule(Component):
     def _render_editor(self, req, id, copy):
         if id != self.REPORT_LIST_ID:
             req.perm('report', id).require('REPORT_MODIFY')
-            title, description, query = self.get_report(id)
+            r = Report(self.env, id)
+            title, description, query = r.title, r.description, r.query
         else:
             req.perm('report').require('REPORT_CREATE')
             title = description = query = ''
@@ -299,12 +360,9 @@ class ReportModule(Component):
         asc = req.args.getbool('asc', True)
         format = req.args.get('format')
 
-        rows = self.env.db_query("""
-                SELECT id, title, description FROM report ORDER BY %s %s
-                """ % ('title' if sort == 'title' else 'id',
-                       '' if asc else 'DESC'))
-        rows = [(id, title, description) for id, title, description in rows
-                if 'REPORT_VIEW' in req.perm('report', id)]
+        rows = [(report.id, report.title, report.description)
+                for report in Report.select(self.env, sort, asc)
+                if 'REPORT_VIEW' in req.perm('report', report.id)]
 
         if format == 'rss':
             data = {'rows': rows}
@@ -343,7 +401,8 @@ class ReportModule(Component):
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
-        title, description, sql = self.get_report(id)
+        r = Report(self.env, id)
+        title, description, sql = r.title, r.description, r.query
         try:
             args = self.get_var_args(req)
         except ValueError as e:
@@ -777,18 +836,13 @@ class ReportModule(Component):
         return cols, rows, num_items, missing_args, limit_offset
 
     def get_report(self, id):
-        try:
-            number = int(id)
-        except (ValueError, TypeError):
-            pass
-        else:
-            for title, description, sql in self.env.db_query("""
-                    SELECT title, description, query from report WHERE id=%s
-                    """, (number,)):
-                return title, description, sql
+        """Returns the `title`, `description` and `sql` for a report.
 
-        raise ResourceNotFound(_("Report {%(num)s} does not exist.", num=id),
-                               _("Invalid Report Number"))
+        :since 1.2: Deprecated and will be removed in 1.3.1. Use the
+                    `Report` model class instead.
+        """
+        report = Report(self.env, id)
+        return report.title, report.description, report.query
 
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
@@ -947,7 +1001,7 @@ class ReportModule(Component):
             return intertrac
         id, args, fragment = formatter.split_link(target)
         try:
-            self.get_report(id)
+            Report(self.env, id)
         except ResourceNotFound:
             return tag.a(label, class_='missing report',
                          title=_("report does not exist"))

@@ -18,9 +18,10 @@ from datetime import datetime, timedelta
 import trac
 import trac.tests.compat
 from trac.perm import PermissionSystem
+from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
-from trac.ticket.report import ReportModule
+from trac.ticket.report import Report, ReportModule
 from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import utc
 from trac.web.api import HTTPBadRequest, RequestDone
@@ -30,11 +31,253 @@ from trac.web.chrome import Chrome
 class ReportTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(default_data=True)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_repr(self):
+        Report(self.env).insert()
+        self.assertEqual("<Report 1>", repr(Report(self.env, 1)))
+        self.assertEqual("<Report None>", repr(Report(self.env)))
+
+    def test_create(self):
+        report = Report(self.env, 4)
+        self.assertTrue(report.exists)
+        self.assertEqual(4, report.id)
+        self.assertEqual("Accepted, Active Tickets by Owner", report.title)
+        self.assertEqual("List accepted tickets, group by ticket owner, "
+                         "sorted by priority.\n", report.description)
+        self.assertIn("SELECT p.value AS __color__,", report.query)
+
+    def test_create_exists_false(self):
+        self.assertRaises(ResourceNotFound, Report, self.env, 9)
+
+    def test_insert(self):
+        report = Report(self.env)
+        report.title = "The report"
+        report.description = "The description"
+        report.query = "SELECT 1"
+        report.insert()
+        self.assertEqual(9, report.id)
+
+    def test_insert_existing_report(self):
+        report = Report(self.env, 1)
+        self.assertRaises(AssertionError, report.insert)
+
+    def test_delete(self):
+        report = Report(self.env, 1)
+        report.delete()
+        self.assertFalse(report.exists)
+        self.assertRaises(ResourceNotFound, Report, self.env, 1)
+
+    def test_delete_not_exists(self):
+        report = Report(self.env)
+        self.assertRaises(AssertionError, report.delete)
+
+    def test_update(self):
+        report = Report(self.env, 1)
+        title, description, query = \
+            report.title, report.description, report.query
+        report.title = "The report"
+        report.description = "The description"
+        report.query = "SELECT 1"
+        report.update()
+
+        report = Report(self.env, 1)
+        self.assertNotEqual(title, report.title)
+        self.assertNotEqual(description, report.description)
+        self.assertNotEqual(query, report.query)
+        self.assertEqual("The report", report.title)
+        self.assertEqual("The description", report.description)
+        self.assertEqual("SELECT 1", report.query)
+
+    def test_select(self):
+        reports = list(Report.select(self.env))
+        self.assertEqual(1, reports[0].id)
+        self.assertEqual('Active Tickets', reports[0].title)
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         reports[0].description)
+        self.assertIn("SELECT p.value AS __color__", reports[0].query)
+        self.assertEqual(8, len(reports))
+        self.assertEqual(1, reports[0].id)
+        self.assertEqual(8, reports[-1].id)
+
+    def test_select_sort_desc(self):
+        reports = list(Report.select(self.env, asc=False))
+        self.assertEqual(8, len(reports))
+        self.assertEqual(8, reports[0].id)
+        self.assertEqual(1, reports[-1].id)
+
+    def test_select_order_by_title(self):
+        reports = list(Report.select(self.env, sort='title'))
+        self.assertEqual(8, len(reports))
+        self.assertEqual(4, reports[0].id)
+        self.assertEqual(7, reports[-1].id)
+
+
+class ReportModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
         self.report_module = ReportModule(self.env)
 
     def tearDown(self):
         self.env.reset_db()
+
+    def test_create_report(self):
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'new',
+            'title': "New Report",
+            'query': "SELECT 1",
+            'description': "The description"})
+
+        self.assertRaises(RequestDone,
+                          self.report_module.process_request, req)
+        self.assertTrue(Report(self.env, 9).exists)
+        self.assertIn("The report has been created.",
+                      req.chrome['notices'])
+        self.assertEqual('http://example.org/trac.cgi/report/9',
+                         req.headers_sent['Location'])
+
+    def test_create_report_cancel(self):
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'new',
+            'cancel': True,
+            'title': "New Report",
+            'query': "SELECT 1",
+            'description': "The description"})
+
+        self.assertRaises(RequestDone, self.report_module.process_request,
+                          req)
+        self.assertRaises(ResourceNotFound, Report, self.env, 9)
+        self.assertNotIn("The report has been created.",
+                         req.chrome['notices'])
+        self.assertEqual('http://example.org/trac.cgi/report',
+                         req.headers_sent['Location'])
+
+    def test_delete_report(self):
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'delete',
+            'id': '1'})
+
+        self.assertRaises(RequestDone, self.report_module.process_request,
+                          req)
+        self.assertRaises(ResourceNotFound, Report, self.env, 1)
+        self.assertIn("The report {1} has been deleted.",
+                      req.chrome['notices'])
+        self.assertEqual('http://example.org/trac.cgi/report',
+                         req.headers_sent['Location'])
+
+    def test_delete_report_cancel(self):
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'delete',
+            'cancel': True,
+            'id': '1'})
+
+        self.assertRaises(RequestDone, self.report_module.process_request,
+                          req)
+        self.assertTrue(Report(self.env, 1).exists)
+        self.assertNotIn("The report {1} has been deleted.",
+                         req.chrome['notices'])
+        self.assertEqual('http://example.org/trac.cgi/report/1',
+                         req.headers_sent['Location'])
+
+    def test_update_report(self):
+        Report(self.env).insert()
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'edit',
+            'id': '1',
+            'title': "New Report edited",
+            'query': "SELECT 2",
+            'description': "The description edited"})
+
+        self.assertRaises(RequestDone, self.report_module.process_request,
+                          req)
+        report = Report(self.env, 1)
+        self.assertEqual("New Report edited", report.title)
+        self.assertEqual("SELECT 2", report.query)
+        self.assertEqual("The description edited", report.description)
+        self.assertIn("Your changes have been saved.", req.chrome['notices'])
+
+    def test_update_report_cancel(self):
+        Report(self.env).insert()
+        req = MockRequest(self.env, method='POST', args={
+            'action': 'edit',
+            'cancel': True,
+            'id': '1',
+            'title': "New Report edited",
+            'query': "SELECT 2",
+            'description': "The description edited"})
+
+        self.assertRaises(RequestDone, self.report_module.process_request,
+                          req)
+        report = Report(self.env, 1)
+        self.assertEqual("Active Tickets", report.title)
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         report.description)
+        self.assertIn("SELECT p.value AS __color__", report.query)
+        self.assertNotIn("Your changes have been saved.",
+                         req.chrome['notices'])
+
+    def test_render_confirm_delete(self):
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'delete',
+            'id': '1'})
+
+        data = self.report_module.process_request(req)[1]
+
+        self.assertEqual("Delete Report {1} Active Tickets", data['title'])
+        self.assertEqual('delete', data['action'])
+        self.assertEqual(1, data['report']['id'])
+        self.assertEqual('Active Tickets', data['report']['title'])
+
+    def test_render_editor(self):
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'edit',
+            'id': '1'})
+
+        data = self.report_module.process_request(req)[1]
+
+        self.assertEqual(1, data['report']['id'])
+        self.assertEqual("Active Tickets", data['report']['title'])
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         data['report']['description'])
+        self.assertIn("SELECT p.value AS __color__", data['report']['sql'])
+
+    def test_render_list(self):
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'view',
+            'id': '-1'})
+
+        data = self.report_module.process_request(req)[1]
+
+        self.assertEqual('report', data['sort'])
+        self.assertEqual(1, data['asc'])
+        self.assertEqual(8, len(data['reports']))
+        self.assertEqual(1, data['reports'][0][0])
+        self.assertEqual('Active Tickets', data['reports'][0][1])
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         data['reports'][0][2])
+        self.assertTrue('Active Reports', data['reports'][0][3])
+        self.assertTrue('Active Reports', data['reports'][0][4])
+
+    def test_render_view(self):
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'view',
+            'id': '1'})
+
+        data = self.report_module.process_request(req)[1]
+
+        self.assertEqual(1, data['report']['id'])
+        self.assertEqual("{1} Active Tickets", data['title'])
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         data['description'])
 
     def test_sub_var_no_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
@@ -643,6 +886,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     suite.addTest(unittest.makeSuite(ReportTestCase))
+    suite.addTest(unittest.makeSuite(ReportModuleTestCase))
     suite.addTest(unittest.makeSuite(ExecuteReportTestCase))
     suite.addTest(unittest.makeSuite(NavContribReportModuleEnabledTestCase))
     suite.addTest(unittest.makeSuite(NavContribReportModuleDisabledTestCase))
