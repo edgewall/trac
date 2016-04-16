@@ -123,7 +123,7 @@ class AuthzSourcePolicy(Component):
 
     authz_file = PathOption('svn', 'authz_file', '',
         """The path to the Subversion
-        [http://svnbook.red-bean.com/en/1.6/svn.serverconfig.pathbasedauthz.html authorization (authz) file].
+        [http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html authorization (authz) file].
         To enable authz permission checking, the `AuthzSourcePolicy` permission
         policy must be added to `[trac] permission_policies`. Non-absolute
         paths are relative to the Environment `conf` directory.

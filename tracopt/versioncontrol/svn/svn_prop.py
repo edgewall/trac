@@ -59,7 +59,7 @@ class SubversionPropertyRenderer(Component):
         be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`
         (and `rev` will be set to the appropriate revision number if the
         external additionally specifies a revision, see the
-        [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals]
+        [http://svnbook.red-bean.com/en/1.7/svn.advanced.externals.html SVN Book on externals]
         for more details).
 
         Note that the number used as a key in the above section is purely used
