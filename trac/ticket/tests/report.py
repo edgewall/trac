@@ -378,8 +378,8 @@ class ExecuteReportTestCase(unittest.TestCase):
     def _execute_report(self, id, args=None):
         mod = self.report_module
         req = MockRequest(self.env)
-        title, description, sql = mod.get_report(id)
-        return mod.execute_paginated_report(req, id, sql, args or {})
+        report = Report(self.env, id)
+        return mod.execute_paginated_report(req, id, report.query, args or {})
 
     def _generate_tickets(self, columns, data, attrs):
         with self.env.db_transaction as db:
@@ -736,7 +736,7 @@ class ExecuteReportTestCase(unittest.TestCase):
                                attrs)
         mod = self.report_module
         req = MockRequest(self.env)
-        sql = mod.get_report(id)[2]
+        sql = Report(self.env, id).query
 
         rv1 = mod.execute_paginated_report(req, id, sql, {})
         with self.env.db_query as db:
