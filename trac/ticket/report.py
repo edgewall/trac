@@ -103,9 +103,9 @@ def split_sql(sql, clause_re, skel=None):
         skel = sql_skeleton(sql)
     blocks = clause_re.split(skel.upper())
     if len(blocks) == 2:
-        return sql[:len(blocks[0])], sql[-len(blocks[1]):] # (before, after)
+        return sql[:len(blocks[0])], sql[-len(blocks[1]):]  # (before, after)
     else:
-        return sql, '' # no single clause separator
+        return sql, ''  # no single clause separator
 
 
 class ReportModule(Component):
@@ -160,6 +160,7 @@ class ReportModule(Component):
 
         data = {}
         action = req.args.get('action', 'view')
+        template = None
         if req.method == 'POST':
             if action == 'new':
                 self._do_create(req)
@@ -178,7 +179,7 @@ class ReportModule(Component):
             data = self._render_confirm_delete(req, id)
         elif id == self.REPORT_LIST_ID:
             template, data, content_type = self._render_list(req)
-            if content_type: # i.e. alternate format
+            if content_type:  # i.e. alternate format
                 return template, data, content_type
             if action == 'clear':
                 if 'query_href' in req.session:
@@ -187,14 +188,14 @@ class ReportModule(Component):
                     del req.session['query_tickets']
         else:
             template, data, content_type = self._render_view(req, id)
-            if content_type: # i.e. alternate format
+            if content_type:  # i.e. alternate format
                 return template, data, content_type
 
         from trac.ticket.query import QueryModule
         show_query_link = 'TICKET_VIEW' in req.perm(self.realm) and \
                           self.env.is_component_enabled(QueryModule)
 
-        if  (id != self.REPORT_LIST_ID or action == 'new') and \
+        if (id != self.REPORT_LIST_ID or action == 'new') and \
                 'REPORT_VIEW' in req.perm('report', self.REPORT_LIST_ID):
             add_ctxtnav(req, _('Available Reports'), href=req.href.report())
             add_link(req, 'up', req.href.report(), _('Available Reports'))
@@ -360,7 +361,7 @@ class ReportModule(Component):
             query = query if query[0] == '?' else query[6:]
             report_id = 'report=%s' % id
             if 'report=' in query:
-                if not report_id in query:
+                if report_id not in query:
                     err = _('When specified, the report number should be '
                             '"%(num)s".', num=id)
                     req.redirect(req.href.report(id, action='edit', error=err))
@@ -370,13 +371,14 @@ class ReportModule(Component):
                 query += report_id
             req.redirect(req.href.query() + quote_query_string(query))
         elif query.startswith('query:'):
+            from trac.ticket.query import Query, QuerySyntaxError
             try:
-                from trac.ticket.query import Query, QuerySyntaxError
                 query = Query.from_string(self.env, query[6:], report=id)
-                req.redirect(query.get_href(req.href))
             except QuerySyntaxError as e:
                 req.redirect(req.href.report(id, action='edit',
                                              error=to_unicode(e)))
+            else:
+                req.redirect(query.get_href(req.href))
 
         format = req.args.get('format')
         if format == 'sql':
@@ -392,7 +394,7 @@ class ReportModule(Component):
         default_max = {'rss': self.items_per_page_rss,
                        'csv': 0, 'tab': 0}.get(format, self.items_per_page)
         max = req.args.get('max')
-        limit = as_int(max, default_max, min=0) # explict max takes precedence
+        limit = as_int(max, default_max, min=0)  # explict max takes precedence
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')
@@ -511,15 +513,15 @@ class ReportModule(Component):
 
             header_group = header_groups[-1]
 
-            if col.startswith('__') and col.endswith('__'): # __col__
+            if col.startswith('__') and col.endswith('__'):  # __col__
                 header['hidden'] = True
-            elif col[0] == '_' and col[-1] == '_':          # _col_
+            elif col[0] == '_' and col[-1] == '_':           # _col_
                 header_group = []
                 header_groups.append(header_group)
                 header_groups.append([])
-            elif col[0] == '_':                             # _col
+            elif col[0] == '_':                              # _col
                 header['hidden'] = True
-            elif col[-1] == '_':                            # col_
+            elif col[-1] == '_':                             # col_
                 header_groups.append([])
             header_group.append(header)
 
@@ -575,7 +577,7 @@ class ReportModule(Component):
             else:
                 resource = Resource(realm, row.get('id'))
             # FIXME: for now, we still need to hardcode the realm in the action
-            if resource.realm.upper()+'_VIEW' not in req.perm(resource):
+            if resource.realm.upper() + '_VIEW' not in req.perm(resource):
                 continue
             authorized_results.append(result)
             if email_cells:
@@ -736,7 +738,7 @@ class ReportModule(Component):
                 # is there already an ORDER BY in the original sql?
                 skel = sql_skeleton(sql)
                 before, after = split_sql(sql, _order_by_re, skel)
-                if after: # there were some other criterions, keep them
+                if after:  # there were some other criterions, keep them
                     order_by.append(after)
                 sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
 
@@ -808,6 +810,7 @@ class ReportModule(Component):
         names = set()
         values = []
         missing_args = []
+
         def add_value(aname):
             names.add(aname)
             try:
