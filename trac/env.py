@@ -306,6 +306,14 @@ class Environment(Component, ComponentManager):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.path)
 
+    @lazy
+    def name(self):
+        """The environment name.
+
+        :since: 1.2
+        """
+        return os.path.basename(self.path)
+
     @property
     def env(self):
         """Property returning the `Environment` object, which is often
@@ -632,7 +640,7 @@ class Environment(Component, ComponentManager):
     def setup_config(self):
         """Load the configuration file."""
         self.config = Configuration(self.config_file_path,
-                                    {'envname': os.path.basename(self.path)})
+                                    {'envname': self.name})
         self.setup_log()
         plugins_dir = self.shared_plugins_dir
         load_components(self, plugins_dir and (plugins_dir,))
@@ -719,10 +727,9 @@ class Environment(Component, ComponentManager):
         format = self.log_format
         logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         if format:
-            basename = os.path.basename(self.path)
             format = format.replace('$(', '%(') \
                            .replace('%(path)s', self.path) \
-                           .replace('%(basename)s', basename) \
+                           .replace('%(basename)s', self.name) \
                            .replace('%(project)s', self.project_name)
         self.log, self._log_handler = logger_handler_factory(
             logtype, logfile, self.log_level, logid, format=format)
