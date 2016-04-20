@@ -1022,11 +1022,11 @@ class LocalTimezone(tzinfo):
             if not std_correct:
                 raise ValueError('Non existent time "%s"' % dt)
         tt = None
-        if std_correct is dst_correct is True:
+        if std_correct and dst_correct:
             tt = local_tt[bool(is_dst)]
-        elif std_correct is True:
+        elif std_correct:
             tt = local_tt[0]
-        elif dst_correct is True:
+        elif dst_correct:
             tt = local_tt[1]
         if tt:
             utc_ts = to_timestamp(datetime(tzinfo=utc, *tt[:6]))
