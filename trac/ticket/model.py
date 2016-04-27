@@ -25,7 +25,7 @@ from trac.cache import cached
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import embedded_numbers
+from trac.util import as_int, embedded_numbers
 from trac.util.datefmt import (datetime_now, from_utimestamp, parse_date,
                                to_utimestamp, utc, utcmax)
 from trac.util.text import empty
@@ -1157,6 +1157,74 @@ class Milestone(object):
                     m.due or utcmax,
                     embedded_numbers(m.name))
         return sorted(milestones, key=milestone_order)
+
+
+class Report(object):
+
+    realm = 'report'
+
+    @property
+    def exists(self):
+        return self.id is not None
+
+    def __init__(self, env, id=None):
+        self.env = env
+        self.id = self.title = self.query = self.description = None
+        if id is not None:
+            id_as_int = as_int(id, None)
+            if id_as_int is not None:
+                for title, description, query in self.env.db_query("""
+                        SELECT title, description, query FROM report
+                        WHERE id=%s
+                        """, (id_as_int,)):
+                    self.id = id_as_int
+                    self.title = title or ''
+                    self.description = description or ''
+                    self.query = query or ''
+                    return
+            raise ResourceNotFound(_("Report {%(num)s} does not exist.",
+                                     num=id), _("Invalid Report Number"))
+
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.id)
+
+    def delete(self):
+        """Delete the report."""
+        assert self.exists, "Cannot delete non-existent report"
+        self.env.db_transaction("DELETE FROM report WHERE id=%s", (self.id,))
+        self.id = None
+
+    def insert(self):
+        """Insert a new report."""
+        assert not self.exists, "Cannot insert existing report"
+
+        self.env.log.debug("Creating new report '%s'", self.id)
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
+                """, (self.title, self.query, self.description))
+            self.id = db.get_last_id(cursor, 'report')
+
+    def update(self):
+        self.env.db_transaction("""
+            UPDATE report SET title=%s, query=%s, description=%s
+            WHERE id=%s
+            """, (self.title, self.query, self.description, self.id))
+
+    @classmethod
+    def select(cls, env, sort='id', asc=True):
+        for id, title, description, query in env.db_query("""
+                SELECT id, title, description, query
+                FROM report ORDER BY %s %s
+                """ % ('title' if sort == 'title' else 'id',
+                       '' if asc else 'DESC')):
+            report = cls(env)
+            report.id = id
+            report.title = title
+            report.description = description
+            report.query = query
+            yield report
 
 
 def group_milestones(milestones, include_completed):

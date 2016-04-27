@@ -885,7 +885,7 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         if 'TICKET_VIEW' in req.perm(self.realm) and \
                 (not self.env.is_component_enabled(ReportModule) or
-                 'REPORT_VIEW' not in req.perm('report',
+                 'REPORT_VIEW' not in req.perm(ReportModule.realm,
                                                ReportModule.REPORT_LIST_ID)):
             yield ('mainnav', 'tickets',
                    tag.a(_("View Tickets"), href=req.href.query()))
@@ -1115,7 +1115,7 @@ class QueryModule(Component):
         # Note that with saved custom queries, there will be some convergence
         # between the report module and the query module.
         from trac.ticket.report import ReportModule
-        report_resource = Resource('report', query.id)
+        report_resource = Resource(ReportModule.realm, query.id)
         if 'REPORT_VIEW' in req.perm(report_resource) and \
                 self.env.is_component_enabled(ReportModule):
             data['report_href'] = req.href.report()
