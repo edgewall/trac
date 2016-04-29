@@ -645,8 +645,12 @@ class Environment(Component, ComponentManager):
 
     def setup_config(self):
         """Load the configuration file."""
-        self.config = Configuration(os.path.join(self.conf_dir, 'trac.ini'),
+        config_file_path = os.path.join(self.conf_dir, 'trac.ini')
+        self.config = Configuration(config_file_path,
                                     {'envname': os.path.basename(self.path)})
+        if not self.config.exists:
+            raise TracError(_("The configuration file is not found at "
+                              "%(path)s", path=config_file_path))
         self.setup_log()
         from trac.loader import load_components
         plugins_dir = self.shared_plugins_dir
