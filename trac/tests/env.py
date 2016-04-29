@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from ConfigParser import RawConfigParser
+import os
 import shutil
 import tempfile
 import unittest
@@ -19,7 +20,7 @@ import unittest
 import trac.tests.compat
 from trac import db_default
 from trac.config import ConfigurationError
-from trac.core import Component, ComponentManager, implements
+from trac.core import Component, ComponentManager, TracError, implements
 from trac.env import Environment, IEnvironmentSetupParticipant, \
                      ISystemInfoProvider, open_environment
 from trac.test import EnvironmentStub
@@ -67,6 +68,11 @@ class EnvironmentTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
+
+    def test_missing_config_file_raises_trac_error(self):
+        """TracError is raised when config file is missing."""
+        os.remove(self.env.config_file_path)
+        self.assertRaises(TracError, Environment, self.env.path)
 
     def test_db_exc(self):
         db_exc = self.env.db_exc

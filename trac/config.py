@@ -181,6 +181,14 @@ class Configuration(object):
             self._sections[name] = Section(self, name)
         return self._sections[name]
 
+    @property
+    def exists(self):
+        """Return boolean indicating configuration file existence.
+
+        :since: 1.0.11
+        """
+        return os.path.isfile(self.filename)
+
     def get(self, section, key, default=''):
         """Return the value of the specified option.
 
@@ -343,7 +351,7 @@ class Configuration(object):
             self._pristine_parser = copy.deepcopy(self.parser)
 
     def parse_if_needed(self, force=False):
-        if not self.filename or not os.path.isfile(self.filename):
+        if not self.filename or not self.exists:
             return False
 
         changed = False
@@ -371,7 +379,7 @@ class Configuration(object):
         return changed
 
     def touch(self):
-        if self.filename and os.path.isfile(self.filename) \
+        if self.filename and self.exists \
                 and os.access(self.filename, os.W_OK):
             wait_for_file_mtime_change(self.filename)
 

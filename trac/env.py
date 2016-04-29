@@ -641,6 +641,9 @@ class Environment(Component, ComponentManager):
         """Load the configuration file."""
         self.config = Configuration(self.config_file_path,
                                     {'envname': self.name})
+        if not self.config.exists:
+            raise TracError(_("The configuration file is not found at "
+                              "%(path)s", path=self.config_file_path))
         self.setup_log()
         plugins_dir = self.shared_plugins_dir
         load_components(self, plugins_dir and (plugins_dir,))
