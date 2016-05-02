@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.10\n"
+"Project-Id-Version: Trac 1.0.11\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-02-14 12:48+0000\n"
+"POT-Creation-Date: 2016-05-02 23:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -443,7 +443,7 @@ msgid ""
 "''(since 0.10.5)''"
 msgstr ""
 
-#: trac/notification.py:52
+#: trac/notification.py:54
 msgid ""
 "Name of the component implementing `IEmailSender`.\n"
 "\n"
@@ -453,59 +453,59 @@ msgid ""
 "executable. (''since 0.12'')"
 msgstr ""
 
-#: trac/notification.py:61
+#: trac/notification.py:63
 msgid "Enable email notification."
 msgstr ""
 
-#: trac/notification.py:64
+#: trac/notification.py:66
 msgid "Sender address to use in notification emails."
 msgstr ""
 
-#: trac/notification.py:67
+#: trac/notification.py:69
 msgid "Sender name to use in notification emails."
 msgstr ""
 
-#: trac/notification.py:70
+#: trac/notification.py:72
 msgid ""
 "Use the action author as the sender of notification emails.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/notification.py:74
+#: trac/notification.py:76
 msgid "Reply-To address to use in notification emails."
 msgstr ""
 
-#: trac/notification.py:77
+#: trac/notification.py:79
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses can be seen by all recipients (Cc:)."
 msgstr ""
 
-#: trac/notification.py:81
+#: trac/notification.py:83
 msgid ""
 "Email address(es) to always send notifications to,\n"
 "addresses do not appear publicly (Bcc:). (''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:85
+#: trac/notification.py:87
 msgid ""
 "Default host/domain to append to address that do not specify\n"
 "one."
 msgstr ""
 
-#: trac/notification.py:89
+#: trac/notification.py:91
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr ""
 
-#: trac/notification.py:93
+#: trac/notification.py:95
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr ""
 
-#: trac/notification.py:97
+#: trac/notification.py:99
 msgid ""
 "Specifies the MIME encoding scheme for emails.\n"
 "\n"
@@ -515,7 +515,7 @@ msgid ""
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:105
+#: trac/notification.py:107
 msgid ""
 "Recipients can see email addresses of other CC'ed recipients.\n"
 "\n"
@@ -523,7 +523,7 @@ msgid ""
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:111
+#: trac/notification.py:113
 msgid ""
 "Permit email address without a host/domain (i.e. username only).\n"
 "\n"
@@ -531,7 +531,7 @@ msgid ""
 "a FQDN or use local delivery. (''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:117
+#: trac/notification.py:119
 msgid ""
 "Text to prepend to subject line of notification emails.\n"
 "\n"
@@ -540,27 +540,27 @@ msgid ""
 "will disable it. (''since 0.10.1'')"
 msgstr ""
 
-#: trac/notification.py:135
+#: trac/notification.py:137
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification.py:138
+#: trac/notification.py:140
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification.py:141
+#: trac/notification.py:143
 msgid "Username for SMTP server. (''since 0.9'')"
 msgstr ""
 
-#: trac/notification.py:144
+#: trac/notification.py:146
 msgid "Password for SMTP server. (''since 0.9'')"
 msgstr ""
 
-#: trac/notification.py:147
+#: trac/notification.py:149
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:200
+#: trac/notification.py:205
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -819,7 +819,7 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:855
+#: trac/ticket/query.py:856
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -828,7 +828,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:863
+#: trac/ticket/query.py:864
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -837,7 +837,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:871
+#: trac/ticket/query.py:872
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
@@ -1224,19 +1224,19 @@ msgid ""
 "graph display. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/auth.py:61
+#: trac/web/auth.py:62
 msgid ""
 "Whether the IP address of the user should be checked for\n"
 "authentication (''since 0.9'')."
 msgstr ""
 
-#: trac/web/auth.py:65
+#: trac/web/auth.py:66
 msgid ""
 "Whether login names should be converted to lower case\n"
 "(''since 0.9'')."
 msgstr ""
 
-#: trac/web/auth.py:69
+#: trac/web/auth.py:70
 msgid ""
 "Lifetime of the authentication cookie, in seconds.\n"
 "\n"
@@ -1247,7 +1247,7 @@ msgid ""
 "session. (''since 0.12'')"
 msgstr ""
 
-#: trac/web/auth.py:78
+#: trac/web/auth.py:79
 msgid ""
 "Path for the authentication cookie. Set this to the common\n"
 "base path of several Trac instances if you want them to share\n"
@@ -1450,13 +1450,13 @@ msgid ""
 "the contents are rendered. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/web/main.py:116
+#: trac/web/main.py:118
 msgid ""
 "Ordered list of filters to apply to all requests\n"
 "(''since 0.10'')."
 msgstr ""
 
-#: trac/web/main.py:121
+#: trac/web/main.py:123
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1466,17 +1466,17 @@ msgid ""
 "and `WikiModule`. The default is `WikiModule`. (''since 0.9'')"
 msgstr ""
 
-#: trac/web/main.py:130
+#: trac/web/main.py:132
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:133
+#: trac/web/main.py:135
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:138
+#: trac/web/main.py:140
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1484,7 +1484,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:145
+#: trac/web/main.py:147
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1492,7 +1492,7 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:152
+#: trac/web/main.py:154
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"

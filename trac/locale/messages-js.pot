@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.10\n"
+"Project-Id-Version: Trac 1.0.11\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-02-14 12:48+0000\n"
+"POT-Creation-Date: 2016-05-02 23:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,11 +140,11 @@ msgstr ""
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:311
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:314
 msgid "no"
 msgstr ""
 
@@ -156,20 +156,20 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:342
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:352
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr ""
 
-#: trac/htdocs/js/query.js:388
+#: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
 
