@@ -292,12 +292,12 @@ Some common problems with SSPI authentication: [trac:#1055], [trac:#1168] and [t
 See also [trac:TracOnWindows/Advanced].
 
 === Using CA !SiteMinder Authentication
-Setup CA !SiteMinder to protect your Trac login URL (e.g. `/trac/login`).  Also, make sure the policy is set to include the HTTP_REMOTE_USER variable.  If your site allows it, you can set this in LocalConfig.conf:
+Setup CA !SiteMinder to protect your Trac login URL (e.g. `/trac/login`).  Also, make sure the policy is set to include the HTTP_REMOTE_USER variable.  If your site allows it, you can set this in `LocalConfig.conf`:
 {{{#!apache
 RemoteUserVar="WHATEVER_IT_SHOULD_BE"
 SetRemoteUser="YES"
 }}}
-The specific variable is site-dependent.  Ask your site administrator.  If your site does not allow the use of LocalConfig.conf for security reasons, have your site administrator set the policy on the server to set REMOTE_USER.
+The specific variable is site-dependent.  Ask your site administrator.  If your site does not allow the use of `LocalConfig.conf` for security reasons, have your site administrator set the policy on the server to set REMOTE_USER.
 
 Also add a !LogOffUri parameter to the agent configuration (e.g. `/trac/logout`).
 

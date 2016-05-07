@@ -93,14 +93,14 @@ Example snippet of adding introduction text to the new ticket form (but not show
 
 {{{#!xml
 <form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')">
-  <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)">
+  <py:if test="req.path_info == '/newticket' and (not 'preview' in req.args)">
     <p>Please make sure to search for existing tickets before reporting a new one!</p>
   </py:if>
   ${select('*')} 
 </form>
 }}}
 
-This example illustrates a technique of using `req.environ['PATH_INFO']` to limit scope of changes to one view only. For instance, to make changes in `site.html` only for timeline and avoid modifying other sections - use `req.environ['PATH_INFO'] == '/timeline'` condition in `<py:if>` test.
+This example illustrates a technique of using `req.path_info` to limit scope of changes to one view only. For instance, to make changes in `site.html` only for timeline and avoid modifying other sections - use `req.path_info == '/timeline'` condition in `<py:if>` test.
 
 More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteHtml CookBook/SiteHtml].
 
@@ -110,7 +110,7 @@ If the environment is upgraded from 0.10 and a `site_newticket.cs` file already 
 {{{#!xml
 <form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
         xmlns:xi="http://www.w3.org/2001/XInclude">
-  <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)"> 
+  <py:if test="req.path_info == '/newticket' and (not 'preview' in req.args)"> 
     <xi:include href="site_newticket.cs"><xi:fallback /></xi:include>
   </py:if>
   ${select('*')} 

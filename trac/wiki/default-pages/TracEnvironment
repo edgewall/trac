@@ -20,13 +20,11 @@ $ trac-admin /path/to/myproject initenv
 
  - The user under which the web server runs will require file system write permission to the environment directory and all the files inside. Please remember to set the appropriate permissions. The same applies to the source code repository, although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
  
- - `initenv`, when using an svn repository, does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new Trac environment; otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
+ - `initenv` does not create a version control repository for the specified path. If you wish to specify a default repository using optional the arguments to `initenv` you must create the repository first, otherwise you will see a message when initializing the environment: //Warning: couldn't index the default repository//.
 
  - Non-ascii environment paths are not supported.
- 
- - Also, it seems that project names with spaces can be problematic for authentication, see [trac:#7163].
 
- - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment] before being able to use it.
+ - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment].
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Caveat:** don't confuse the //Trac environment directory// with the //source code repository directory//.

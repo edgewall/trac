@@ -1,7 +1,7 @@
 = Trac Ticket Batch Modification =
 [[TracGuideToc]]
 
-Trac supports modifying a batch of tickets in one request from [TracQuery custom query] results .
+Trac supports modifying a batch of tickets in one request from [TracQuery custom query] results.
 
 To perform a batch modification, select the tickets you wish to modify and set the new field values using the section underneath the query results. 
 

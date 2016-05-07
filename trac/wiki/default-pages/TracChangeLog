@@ -7,6 +7,27 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.11
+
+//(May 7, 2016)//
+
+Trac 1.0.11 provides more than 30 bug fixes and minor
+enhancements. As in 1.0.10, an area of focus has been to
+eliminate tracebacks in the logs due to invalid requests.
+The following are some additional highlights:
+
+ - Fix resetting //Oldest first// after auto-preview of
+   ticket change log ([trac:#12381]).
+ - Trac is now distributed as wheel package ([trac:#12391]).
+ - Fixed database exceptions in query system when 
+   ''milestones/versions/enums'' are not defined and a custom
+   field of the same name is added ([trac:#12399]).
+ - Custom field //milestone// would not be shown when
+   standard //milestone// field was hidden ([trac:#12400]).
+ - Query system now sorts by `enum.value` rather than
+   `ticket.type` for `order=type` ([trac:#12402]). 
+ - Added support for Babel 2.3.2 (2.3.0 and 2.3.1 should not be used) ([trac:#12445]).
+
 === 1.0.10
 
 //(February 20, 2016)//

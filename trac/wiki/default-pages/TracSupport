@@ -2,7 +2,9 @@
 
 Like in most [http://www.opensource.org/ open source projects], Trac support is available primarily through the [trac:MailingList mailing list] and the [trac: project wiki]. Both are maintained by the trac community. The [trac: project wiki] is the authoritative source for the TracGuide, consisting of the administrator and user guides for Trac.
 
-There is also an [trac:IrcChannel IRC channel] where online users can help out. Much of the 'live' development discussions also happen there.
+There is an [trac:IrcChannel IRC channel] where online users can help out. Much of the 'live' development discussions also happen there.
+
+You can search questions tagged with `trac` on [SO:tagged/trac Stack Overflow].
 
 Before you start a new support query, make sure you have done the appropriate searching:
  * in the project's [trac:TracFaq FAQ]
