@@ -1023,7 +1023,8 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
         self._tester.add_comment(ticketid)
         tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
                    '</strong>[ \t\n]+<em></em>[ \t\n]+deleted')
-        tc.notfind('set to')
+        tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
+                   '</strong>[ \t\n]*set to <em>')
 
 
 class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
