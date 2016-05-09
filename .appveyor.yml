@@ -32,7 +32,7 @@ environment:
     PYTHONHOME: C:\Miniconda-x64
     TRAC_TEST_DB_URI: postgres://tracuser:password@localhost/trac?schema=tractest
 services:
-- mysql56
+- mysql
 - postgresql93
 install:
 - ps: >-
