@@ -42,7 +42,7 @@
 $msysHome = 'C:\msys64\usr\bin'
 $deps     = 'C:\projects\dependencies'
 
-$mysqlHome = 'C:\Program Files\MySql\MySQL Server 5.6'
+$mysqlHome = 'C:\Program Files\MySql\MySQL Server 5.7'
 $mysqlPwd  = 'Password12!'
 
 $pgHome     = 'C:\Program Files\PostgreSQL\9.3'
@@ -168,6 +168,12 @@ $pyVersion = if ($pyV -match '^(\d\.\d)') { $Matches[1] }
 $py64 = ($pyV -match '64 bit')
 $pyIsConda = $pyV -match 'Continuum Analytics'
 
+# Subversion support
+if (-not $py64) {
+    $env:Path = "$deps\$svnBase\bin;$($env:Path)"
+    $env:PYTHONPATH = "$deps\$pyVersion\$svnBase\python;$($env:PYTHONPATH)"
+}
+
 
 # ------------------------------------------------------------------
 # Steps
@@ -202,7 +208,6 @@ function Trac-Install {
                 "$svnUrlBase/$svnBaseAp.zip/download"
             & unzip.exe $svnBinariesZip -d $deps
         }
-        $env:Path = "$deps\$svnBase\bin;$($env:Path)"
 
         $svnPython = "$($svnBaseAp)_py$($pyVersion -replace '\.', '')"
         $svnPythonZip = "$deps\$svnPython.zip"
@@ -212,7 +217,6 @@ function Trac-Install {
             & mkdir "$deps\$pyVersion"
             & unzip $svnPythonZip -d "$deps\$pyVersion"
         }
-        $env:PYTHONPATH = "$deps\$pyVersion\$svnBase\python;$($env:PYTHONPATH)"
     }
 
     # Install packages via pip

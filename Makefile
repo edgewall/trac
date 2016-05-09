@@ -149,14 +149,16 @@ status:
 	@$(PYTHON) contrib/make_status.py
 	@echo
 	@echo "Variables:"
-	@echo "  PATH=$(PATH-extension)$(SEP)\$$PATH"
-	@echo "  PYTHONPATH=$(PYTHONPATH-extension)$(SEP)\$$PYTHONPATH"
+	@echo "  PATH=$$PATH"
+	@echo "  PYTHONPATH=$$PYTHONPATH"
 	@echo "  TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "  server-options=$(server-options)"
 	@echo
 	@echo "External dependencies:"
 	@echo -n "  Git version: "
 	@git --version 2>/dev/null || echo "not installed"
+	@echo -n "  Subversion version: "
+	@svn --version -q 2>/dev/null || echo "not installed"
 	@echo
 
 Trac.egg-info: status
@@ -560,25 +562,35 @@ PYTHON := $(PYTHON) $(pythonopts)
 
 python-home := $(python.$(or $(python),$($(db).python)))
 
-ifeq "$(OS)" "Windows_NT"
-    ifndef python-home
-        # Detect location of current python
-        python-exe := $(shell python -c 'import sys; print(sys.executable)')
-        python-home := $(subst \python.exe,,$(python-exe))
-    endif
+ifeq "$(findstring ;,$(PATH))" ";"
     SEP = ;
-    python-bin = $(python-home)$(SEP)$(python-home)/Scripts
     START ?= start
 else
     SEP = :
     START ?= xdg-open
 endif
 
-PATH-extension = $(python-bin)$(SEP)$(path.$(python))
-PYTHONPATH-extension = .$(SEP)$(pythonpath.$(python))
+ifeq "$(OS)" "Windows_NT"
+    ifndef python-home
+        # Detect location of current python
+        python-exe := $(shell python -c 'import sys; print(sys.executable)')
+        python-home := $(subst \python.exe,,$(python-exe))
+        ifeq "$(SEP)" ":"
+            python-home := /$(subst :,,$(subst \,/,$(python-home)))
+        endif
+    endif
+    python-bin = $(python-home)$(SEP)$(python-home)/Scripts
+endif
 
-export PATH := $(PATH-extension)$(SEP)$(PATH)
-export PYTHONPATH := $(PYTHONPATH-extension)$(SEP)$(PYTHONPATH)
+define prepend-path
+$(if $2,$(if $1,$1$(SEP)$2,$2),$1)
+endef
+
+PATH-extension = $(call prepend-path,$(python-bin),$(path.$(python)))
+PYTHONPATH-extension = $(call prepend-path,.,$(pythonpath.$(python)))
+
+export PATH := $(call prepend-path,$(PATH-extension),$(PATH))
+export PYTHONPATH := $(call prepend-path,$(PYTHONPATH-extension),$(PYTHONPATH))
 export TRAC_TEST_DB_URI = $($(db).uri)
 
 # Misc.
