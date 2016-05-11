@@ -1,7 +1,8 @@
-= Welcome to Trac 1.2 =
+= Welcome to Trac 1.2
 
 Trac is a '''minimalistic''' approach to '''web-based''' management of
-'''software projects'''. Its goal is to simplify effective tracking and handling of software issues, enhancements and overall progress.
+'''software projects'''. Its goal is to simplify effective tracking and
+handling of software issues, enhancements and overall progress.
 
 All aspects of Trac have been designed with the single goal to 
 '''help developers write great software''' while '''staying out of the way'''
@@ -29,7 +30,7 @@ TracGuide is a good place to start.
 Enjoy! [[BR]]
 ''The Trac Team''
 
-== Starting Points ==
+== Starting Points
 
  * TracGuide --  Built-in Documentation
  * [http://trac.edgewall.org/ The Trac project] -- Trac Open Source Project
