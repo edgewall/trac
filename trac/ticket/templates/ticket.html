@@ -55,7 +55,11 @@
               input = $("#propertyform input[name=cc_update]").val([]);
             }
             input.change();
-            $(this).closest("li").remove();
+            // Remove the revert button
+            if ($(this).closest("tbody").children("tr").length === 1)
+              $(this).closest(".trac-change-panel").remove();
+            else
+              $(this).closest("tr").remove();
             return false;
           });
         }
