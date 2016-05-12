@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-02-28 04:32+0000\n"
+"POT-Creation-Date: 2016-05-12 03:03+0000\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
+"Language: ja\n"
 "Language-Team: ja <LL@li.org>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.3.4\n"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
@@ -45,20 +46,20 @@ msgstr "この場でサブディレクトリを開く"
 msgid "Re-expand directory"
 msgstr "再度ディレクトリを開く"
 
-#: trac/htdocs/js/expand_dir.js:121
+#: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "%(entry)s をロードしています…"
 
-#: trac/htdocs/js/expand_dir.js:149
+#: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
 msgstr "(なし)"
 
-#: trac/htdocs/js/expand_dir.js:157
+#: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
 msgstr "(エラー)"
 
-#: trac/htdocs/js/expand_dir.js:164
+#: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
 msgstr "ディレクトリを閉じる"
 
@@ -144,11 +145,11 @@ msgstr "このプロパティは既にフィルタで使っています"
 msgid "or"
 msgstr "or"
 
-#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:355
+#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:356
 msgid "yes"
 msgstr "はい"
 
-#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:358
+#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:359
 msgid "no"
 msgstr "いいえ"
 
@@ -160,15 +161,15 @@ msgstr " "
 msgid "and"
 msgstr "から"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:392
 msgid " remove:"
 msgstr " 削除:"
 
-#: trac/htdocs/js/query.js:397
+#: trac/htdocs/js/query.js:402
 msgid " add:"
 msgstr " 追加:"
 
-#: trac/htdocs/js/query.js:430
+#: trac/htdocs/js/query.js:435
 #, python-format
 msgid "Select ticket #%(id)s for modification"
 msgstr "更新対象としてチケット #%(id)s を選択する"
