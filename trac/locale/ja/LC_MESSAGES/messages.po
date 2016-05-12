@@ -3527,7 +3527,7 @@ msgstr "新しいレポートの作成"
 #: trac/ticket/report.py:286
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr "レポート \"{%(num)d} %(title)s\" の編集"
+msgstr "レポート {%(num)d} %(title)s の編集"
 
 #: trac/ticket/report.py:349
 #, python-format
@@ -3556,7 +3556,7 @@ msgstr "以下の引数が見つかりません: %(args)s"
 #: trac/ticket/report.py:667
 #, python-format
 msgid "Report {%(num)s} has no SQL query."
-msgstr "レポート %(num)s には SQL クエリが定義されていません。"
+msgstr "レポート {%(num)s} には SQL クエリが定義されていません。"
 
 #: trac/ticket/report.py:710
 #, python-format
@@ -3577,7 +3577,7 @@ msgstr ""
 #: trac/ticket/report.py:780
 #, python-format
 msgid "Report {%(num)s} does not exist."
-msgstr "レポート %(num)s は存在しません。"
+msgstr "レポート {%(num)s} は存在しません。"
 
 #: trac/ticket/report.py:781
 msgid "Invalid Report Number"
