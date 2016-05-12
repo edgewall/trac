@@ -59,8 +59,7 @@ class SubversionPropertyRenderer(Component):
         be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`
         (and `rev` will be set to the appropriate revision number if the
         external additionally specifies a revision, see the
-        [http://svnbook.red-bean.com/en/1.7/svn.advanced.externals.html SVN Book on externals]
-        for more details).
+        [%(svnbook)s SVN Book on externals] for more details).
 
         Note that the number used as a key in the above section is purely used
         as a place holder, as the URLs themselves can't be used as a key due to
@@ -69,7 +68,8 @@ class SubversionPropertyRenderer(Component):
         Finally, the relative URLs introduced in
         [http://subversion.apache.org/docs/release-notes/1.5.html#externals Subversion 1.5]
         are not yet supported.
-        """)
+        """,
+        doc_args={'svnbook': 'http://svnbook.red-bean.com/en/1.7/svn.advanced.externals.html'})
 
     def __init__(self):
         self._externals_map = {}
