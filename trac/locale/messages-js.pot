@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-04-12 00:06-0700\n"
+"POT-Creation-Date: 2016-05-12 03:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.2\n"
+"Generated-By: Babel 2.3.4\n"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
@@ -144,11 +144,11 @@ msgstr ""
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:355
+#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:356
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:358
+#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:359
 msgid "no"
 msgstr ""
 
@@ -160,15 +160,15 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:392
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:397
+#: trac/htdocs/js/query.js:402
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:430
+#: trac/htdocs/js/query.js:435
 #, python-format
 msgid "Select ticket #%(id)s for modification"
 msgstr ""
