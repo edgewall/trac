@@ -185,6 +185,48 @@ IMAGE_MACRO_TEST_CASES = u"""
 <p>
 <img src="http://assets.example.org/common/attachment.png" alt="No image &#34;notfound.png&#34; attached to WikiStart" title="No image &#34;notfound.png&#34; attached to WikiStart" />
 </p>
+==============================
+[[Image(img.png, margin-bottom=-1)]]
+------------------------------
+<p>
+<a style="padding:0; border:none" href="/attachment/wiki/WikiStart/img.png"><img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" /></a>
+</p>
+==============================
+[[Image(img.png, margin-bottom=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>margin-bottom=--</code></strong></div>
+</p>
+==============================
+[[Image(img.png, margin-top=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>margin-top=--</code></strong></div>
+</p>
+==============================
+[[Image(img.png, margin=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>margin=--</code></strong></div>
+</p>
+==============================
+[[Image(img.png, margin-left=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>margin-left=--</code></strong></div>
+</p>
+==============================
+[[Image(img.png, margin-right=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>margin-right=--</code></strong></div>
+</p>
+==============================
+[[Image(img.png, border=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>border=--</code></strong></div>
+</p>
 """
 
 # Note: in the <img> src attribute above, the Unicode characters
@@ -218,6 +260,19 @@ TITLEINDEX1_MACRO_TEST_CASES = u"""
 </p>
 ------------------------------
 [[TitleIndex(...)]]
+==============================
+[[TitleIndex(min=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>min=--</code></strong></div>
+</p>
+==============================
+[[TitleIndex(depth=--)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>depth=--</code></strong></div>
+</p>
+------------------------------
 """
 
 TITLEINDEX2_MACRO_TEST_CASES = u"""
@@ -488,6 +543,12 @@ RECENTCHANGES_MACRO_TEST_CASES = u""""
 </p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li></ul></div><p>
 </p>
+==============================
+[[RecentChanges(Trac, --)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>--</code></strong></div>
+</p>
 ------------------------------
 """
 
@@ -508,6 +569,103 @@ def recentchanges_setup(tc):
 
 def recentchanges_teardown(tc):
     tc.env.reset_db()
+
+
+PAGEOUTLINE_MACRO_TEST_CASES = u""""\
+==============================
+[[PageOutline(a)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>a</code></strong></div>
+</p>
+==============================
+[[PageOutline(a-b)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Invalid macro argument <code>a</code></strong></div>
+</p>
+==============================
+[[PageOutline(0)]]
+= Heading Level 1
+== Heading Level 2
+------------------------------
+<p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#HeadingLevel1">Heading Level 1</a>
+  </li>
+</ol>
+</div><p>
+</p>
+<h1 id="HeadingLevel1">Heading Level 1</h1>
+<h2 id="HeadingLevel2">Heading Level 2</h2>
+==============================
+[[PageOutline(7)]]
+===== Heading Level 5
+====== Heading Level 6
+------------------------------
+<p>
+</p><div class="wiki-toc">
+                    <ol>
+                      <li>
+                        <a href="#HeadingLevel6">Heading Level 6</a>
+                      </li>
+                    </ol>
+</div><p>
+</p>
+<h5 id="HeadingLevel5">Heading Level 5</h5>
+<h6 id="HeadingLevel6">Heading Level 6</h6>
+==============================
+[[PageOutline(0-7)]]
+= Heading Level 1
+== Heading Level 2
+=== Heading Level 3
+==== Heading Level 4
+===== Heading Level 5
+====== Heading Level 6
+------------------------------
+<p>
+</p><div class="wiki-toc">
+<ol>
+  <li>
+    <a href="#HeadingLevel1">Heading Level 1</a>
+    <ol>
+      <li>
+        <a href="#HeadingLevel2">Heading Level 2</a>
+        <ol>
+          <li>
+            <a href="#HeadingLevel3">Heading Level 3</a>
+            <ol>
+              <li>
+                <a href="#HeadingLevel4">Heading Level 4</a>
+                <ol>
+                  <li>
+                    <a href="#HeadingLevel5">Heading Level 5</a>
+                    <ol>
+                      <li>
+                        <a href="#HeadingLevel6">Heading Level 6</a>
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+</div><p>
+</p>
+<h1 id="HeadingLevel1">Heading Level 1</h1>
+<h2 id="HeadingLevel2">Heading Level 2</h2>
+<h3 id="HeadingLevel3">Heading Level 3</h3>
+<h4 id="HeadingLevel4">Heading Level 4</h4>
+<h5 id="HeadingLevel5">Heading Level 5</h5>
+<h6 id="HeadingLevel6">Heading Level 6</h6>
+"""
 
 
 TRACINI_MACRO_TEST_CASES = u"""\
@@ -598,6 +756,7 @@ def suite():
     suite.addTest(formatter.suite(RECENTCHANGES_MACRO_TEST_CASES, file=__file__,
                                   setup=recentchanges_setup,
                                   teardown=recentchanges_teardown))
+    suite.addTest(formatter.suite(PAGEOUTLINE_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TRACINI_MACRO_TEST_CASES, file=__file__,
                                   setup=tracini_setup,
                                   teardown=tracini_teardown))

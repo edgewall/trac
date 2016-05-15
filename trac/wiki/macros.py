@@ -29,15 +29,17 @@ from trac.resource import (
     Resource, ResourceNotFound, get_resource_name, get_resource_summary,
     get_resource_url
 )
+from trac.util import as_int
 from trac.util.datefmt import format_date, from_utimestamp, user_time
 from trac.util.html import escape, find_element
 from trac.util.presentation import separated
 from trac.util.text import unicode_quote, to_unicode, stripws
-from trac.util.translation import _, dgettext, cleandoc_
+from trac.util.translation import _, dgettext, cleandoc_, tag_
 from trac.web.chrome import chrome_resource_path
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import (
-    format_to_html, format_to_oneliner, extract_link, OutlineFormatter
+    MacroError, OutlineFormatter, extract_link, format_to_html,
+    format_to_oneliner
 )
 from trac.wiki.interwiki import InterWikiMap
 
@@ -124,9 +126,9 @@ class TitleIndexMacro(WikiMacroBase):
         args, kw = parse_args(content)
         prefix = args[0].strip() if args else None
         hideprefix = args and len(args) > 1 and args[1].strip() == 'hideprefix'
-        minsize = max(int(kw.get('min', 1)), 1)
+        minsize = _arg_as_int(kw.get('min', 1), 'min', min=1)
         minsize_group = max(minsize, 2)
-        depth = int(kw.get('depth', -1))
+        depth = _arg_as_int(kw.get('depth', -1), 'depth', min=-1)
         format = kw.get('format', '')
 
         def parse_list(name):
@@ -331,7 +333,7 @@ class RecentChangesMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
         prefix = args[0].strip() if args else None
-        limit = int(args[1].strip()) if len(args) > 1 else None
+        limit = _arg_as_int(args[1].strip(), min=1) if len(args) > 1 else None
         group = kw.get('group', 'date')
 
         sql = """SELECT name, max(version) AS max_version,
@@ -417,10 +419,12 @@ class PageOutlineMacro(WikiMacroBase):
             if len(argv) > 0:
                 depth = argv[0]
                 if '-' in depth:
-                    min_depth, max_depth = [int(d)
-                                            for d in depth.split('-', 1)]
+                    min_depth, max_depth = \
+                        [_arg_as_int(d, min=min_depth, max=max_depth)
+                         for d in depth.split('-', 1)]
                 else:
-                    min_depth = max_depth = int(depth)
+                    min_depth = max_depth = \
+                        _arg_as_int(depth, min=min_depth, max=max_depth)
                 if len(argv) > 1:
                     title = argv[1].strip()
                     for arg in argv[2:]:
@@ -590,12 +594,12 @@ class ImageMacro(WikiMacroBase):
                             val in ('top', 'middle', 'bottom')):
                         args.append(val)
                     elif key in ('margin-top', 'margin-bottom'):
-                        style[key] = ' %dpx' % int(val)
+                        style[key] = ' %dpx' % _arg_as_int(val, key, min=1)
                     elif key in ('margin', 'margin-left', 'margin-right') \
                              and 'display' not in style:
-                        style[key] = ' %dpx' % int(val)
+                        style[key] = ' %dpx' % _arg_as_int(val, key, min=1)
                     elif key == 'border':
-                        style['border'] = ' %dpx solid' % int(val)
+                        style['border'] = ' %dpx solid' % _arg_as_int(val, key)
                     else:
                         m = self._quoted_re.search(val)  # unquote "..." and '...'
                         if m:
@@ -907,3 +911,12 @@ class TracGuideTocMacro(WikiMacroBase):
                            class_=(prefix+ref == curpage and 'active'))
                     for ref, title in self.TOC]),
             class_='wiki-toc')
+
+
+def _arg_as_int(val, key=None, min=None, max=None):
+    int_val = as_int(val, None, min=min, max=max)
+    if not int_val:
+        raise MacroError(tag_("Invalid macro argument %(expr)s",
+                              expr=tag.code("%s=%s" % (key, val))
+                                   if key else tag.code(val)))
+    return int_val
