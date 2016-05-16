@@ -98,7 +98,7 @@ class TitleIndexMacro(WikiMacroBase):
     will be relative to the current page, and parent pages can be
     specified using `../`.
 
-    Alternate `format` and `depth` named parameters can be specified:
+    Several named parameters can be specified:
      - `format=compact`: The pages are displayed as comma-separated links.
      - `format=group`: The list of pages will be structured in groups
        according to common prefix. This format also supports a `min=n`
