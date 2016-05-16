@@ -227,6 +227,10 @@ IMAGE_MACRO_TEST_CASES = u"""
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>border=--</code></strong></div>
 </p>
+==============================  # Regression test for #12333
+= [[Image]]
+------------------------------
+<h1 id="Image">[[Image]]</h1>
 """
 
 # Note: in the <img> src attribute above, the Unicode characters

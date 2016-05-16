@@ -524,7 +524,7 @@ class ImageMacro(WikiMacroBase):
 
     def is_inline(self, content):
         args = [stripws(arg) for arg
-                             in self._split_args_re.split(content)[1::2]]
+                             in self._split_args_re.split(content or '')[1::2]]
         return 'inline' in args
 
     _split_re = r'''((?:[^%s"']|"[^"]*"|'[^']*')+)'''
