@@ -620,7 +620,7 @@ class Formatter(object):
     def _make_lhref_link(self, match, fullmatch, rel, ns, target, label):
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
-                if target.startswith('//'):     # for `[http://target]`
+                if ns and target.startswith('//'):     # for `[http://target]`
                     label = ns + ':' + target   #  use `http://target`
                 else:                           # for `wiki:target`
                     label = target.lstrip('/')  #  use only `target`
