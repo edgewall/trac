@@ -625,7 +625,8 @@ class RepositoryManager(Component):
         """
         while context:
             if context.resource.realm in (self.source_realm,
-                                          self.changeset_realm):
+                                          self.changeset_realm) and \
+                    context.resource.parent:
                 return context.resource.parent.id
             context = context.parent
 
