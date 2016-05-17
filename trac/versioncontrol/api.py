@@ -646,7 +646,8 @@ class RepositoryManager(Component):
         hierarchy and return the name of its associated repository.
         """
         while context:
-            if context.resource.realm in ('source', 'changeset'):
+            if context.resource.realm in ('source', 'changeset') and \
+                    context.resource.parent:
                 return context.resource.parent.id
             context = context.parent
 
