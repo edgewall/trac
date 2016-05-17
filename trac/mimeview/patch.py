@@ -17,6 +17,7 @@
 #         Ludvig Strigeus
 
 import os.path
+import re
 
 from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
@@ -87,7 +88,6 @@ class PatchRenderer(Component):
                     tolines[i] = to[:start] + '\0' + to[start:last] + \
                                  '\1' + to[last:]
 
-        import re
         space_re = re.compile(' ( +)|^ ')
         def htmlify(match):
             div, mod = divmod(len(match.group(0)), 2)
