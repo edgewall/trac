@@ -405,7 +405,7 @@ class ReportModule(Component):
             if max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = 1 if asc else 0
+            params['asc'] = as_int(params.get('asc'), asc, min=0, max=1)
             return req.href.report(id, params)
 
         data = {'action': 'view',

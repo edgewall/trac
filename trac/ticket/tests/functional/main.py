@@ -746,6 +746,31 @@ class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
                 (ticket_id, summary))
 
 
+class TestReportSorting(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test sorting of report.
+        """
+        tid = (self._tester.create_ticket(),
+               self._tester.create_ticket())
+        sort_href = 'href="/report/1\?sort=ticket&amp;asc=%d&amp;page=1'
+        sort_text = r'(?<!New )\bTicket\b'
+
+        def find_table_entries(tid):
+            tc.find('<a [^>]+ href="/ticket/%d">'
+                    '(?:(?!</tbody>).)+'
+                    '<a [^>]+ href="/ticket/%d">' % tid, 's')
+
+        self._tester.go_to_report(1)
+        tc.find(sort_href % 1)
+        find_table_entries(tid)
+        tc.follow(sort_text)  # Sort ascending
+        tc.find(sort_href % 0)
+        find_table_entries(tid)
+        tc.follow(sort_text)  # Sort descending
+        tc.find(sort_href % 1)
+        find_table_entries(tuple(reversed(tid)))
+
+
 class TestMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a milestone."""
@@ -1770,6 +1795,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestNewReport())
     suite.addTest(TestReportRealmDecoration())
     suite.addTest(TestReportDynamicVariables())
+    suite.addTest(TestReportSorting())
     suite.addTest(TestMilestone())
     suite.addTest(TestMilestoneAddAttachment())
     suite.addTest(TestMilestoneClose())
