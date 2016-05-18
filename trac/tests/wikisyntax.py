@@ -186,17 +186,17 @@ def email_never_obfuscate_setup(tc):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
-                                  context=('wiki', 'WikiStart'),
-                                  setup=attachment_setup,
-                                  teardown=attachment_teardown))
-    suite.addTest(formatter.suite(EMAIL_TEST_CASE_DEFAULT, file=__file__,
-                                  context=email_default_context()))
-    suite.addTest(formatter.suite(EMAIL_TEST_CASE_NEVER_OBFUSCATE,
-                                  file=__file__,
-                                  context=email_default_context(),
-                                  setup=email_never_obfuscate_setup))
+    suite.addTest(formatter.test_suite(SEARCH_TEST_CASES, file=__file__))
+    suite.addTest(formatter.test_suite(ATTACHMENT_TEST_CASES, file=__file__,
+                                       context=('wiki', 'WikiStart'),
+                                       setup=attachment_setup,
+                                       teardown=attachment_teardown))
+    suite.addTest(formatter.test_suite(EMAIL_TEST_CASE_DEFAULT, file=__file__,
+                                       context=email_default_context()))
+    suite.addTest(formatter.test_suite(EMAIL_TEST_CASE_NEVER_OBFUSCATE,
+                                       file=__file__,
+                                       context=email_default_context(),
+                                       setup=email_never_obfuscate_setup))
     return suite
 
 if __name__ == '__main__':

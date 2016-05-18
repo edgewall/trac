@@ -120,7 +120,7 @@ def macro_setup(tc):
     setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
 
 
-COMMIT_TICKET_REFERENCE_MACRO_TEST_CASES = u"""\
+COMMIT_TICKET_REF_MACRO_TEST_CASES = u"""\
 ============================== No arguments
 [[CommitTicketReference]]
 ------------------------------
@@ -137,9 +137,9 @@ the message. refs <a class="new ticket" href="/ticket/1" title="the summary (new
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase))
-    suite.addTest(formatter.suite(COMMIT_TICKET_REFERENCE_MACRO_TEST_CASES,
-                                  macro_setup, __file__,
-                                  context=('ticket', 1)))
+    suite.addTest(formatter.test_suite(COMMIT_TICKET_REF_MACRO_TEST_CASES,
+                                       macro_setup, __file__,
+                                       context=('ticket', 1)))
     return suite
 
 

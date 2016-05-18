@@ -541,13 +541,13 @@ export:/foo/bar.html#header
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(CHANGESET_TEST_CASES, repository_setup,
-                                  __file__))
-    suite.addTest(formatter.suite(LOG_TEST_CASES, repository_setup,
-                                  file=__file__))
-    suite.addTest(formatter.suite(DIFF_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(SOURCE_TEST_CASES, repository_setup,
-                                  file=__file__))
+    suite.addTest(formatter.test_suite(CHANGESET_TEST_CASES, repository_setup,
+                                       __file__))
+    suite.addTest(formatter.test_suite(LOG_TEST_CASES, repository_setup,
+                                       __file__))
+    suite.addTest(formatter.test_suite(DIFF_TEST_CASES, file=__file__))
+    suite.addTest(formatter.test_suite(SOURCE_TEST_CASES, repository_setup,
+                                       __file__))
     return suite
 
 

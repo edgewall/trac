@@ -771,21 +771,23 @@ def wiki_setup_safe_interwiki(tc):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__,
-                                  wiki_teardown))
-    suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
-                                  wiki_teardown,
-                                  context=('wiki', 'Main/Sub')))
-    suite.addTest(formatter.suite(SPLIT_PAGE_NAMES_TESTS, wiki_setup_split,
-                                  __file__, wiki_teardown,
-                                  context=('wiki', 'Main/Sub')))
-    suite.addTest(formatter.suite(SCOPED_LINKS_TESTS, wiki_setup, __file__,
-                                  wiki_teardown,
-                                  context=('wiki',
-                                      'FirstLevel/SecondLevel/ThirdLevel')))
-    suite.addTest(formatter.suite(SAFE_INTERWIKI_TESTS,
-                                  wiki_setup_safe_interwiki, __file__,
-                                  wiki_teardown))
+    suite.addTest(formatter.test_suite(TEST_CASES, wiki_setup, __file__,
+                                       wiki_teardown))
+    suite.addTest(formatter.test_suite(RELATIVE_LINKS_TESTS, wiki_setup,
+                                       __file__,
+                                       wiki_teardown,
+                                       context=('wiki', 'Main/Sub')))
+    suite.addTest(formatter.test_suite(SPLIT_PAGE_NAMES_TESTS,
+                                       wiki_setup_split,
+                                       __file__, wiki_teardown,
+                                       context=('wiki', 'Main/Sub')))
+    suite.addTest(formatter.test_suite(SCOPED_LINKS_TESTS, wiki_setup,
+                                       __file__, wiki_teardown,
+                                       context=('wiki', 'FirstLevel/Second'
+                                                        'Level/ThirdLevel')))
+    suite.addTest(formatter.test_suite(SAFE_INTERWIKI_TESTS,
+                                       wiki_setup_safe_interwiki, __file__,
+                                       wiki_teardown))
     return suite
 
 if __name__ == '__main__':

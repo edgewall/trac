@@ -1564,8 +1564,8 @@ def test_suite():
     suite.addTest(unittest.makeSuite(QueryTestCase))
     suite.addTest(unittest.makeSuite(QueryLinksTestCase))
     suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase))
-    suite.addTest(formatter.suite(QUERY_TEST_CASES, ticket_setup, __file__,
-                                  ticket_teardown))
+    suite.addTest(formatter.test_suite(QUERY_TEST_CASES, ticket_setup,
+                                       __file__, ticket_teardown))
     return suite
 
 if __name__ == '__main__':

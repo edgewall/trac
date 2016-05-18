@@ -41,9 +41,8 @@ timeline:@datestr_libc@
 def test_suite():
     suite = unittest.TestSuite()
     datestr_libc = time.strftime('%x', (2013, 10, 24, 0, 0, 0, 0, 0, -1))
-    suite.addTest(formatter.suite(TIMELINE_TEST_CASES.replace('@datestr_libc@',
-                                                              datestr_libc),
-                                  file=__file__))
+    test_cases = TIMELINE_TEST_CASES.replace('@datestr_libc@', datestr_libc)
+    suite.addTest(formatter.test_suite(test_cases, file=__file__))
     return suite
 
 if __name__ == '__main__':

@@ -561,17 +561,19 @@ def comment_teardown(tc):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__,
-                                  ticket_teardown))
-    suite.addTest(formatter.suite(REPORT_TEST_CASES, report_setup, __file__))
-    suite.addTest(formatter.suite(MILESTONE_TEST_CASES, milestone_setup,
-                                  __file__, milestone_teardown))
-    suite.addTest(formatter.suite(QUERY_TEST_CASES, ticket_setup, __file__,
-                                  ticket_teardown))
-    suite.addTest(formatter.suite(QUERY2_TEST_CASES, query2_setup, __file__,
-                                  query2_teardown))
-    suite.addTest(formatter.suite(COMMENT_TEST_CASES, comment_setup, __file__,
-                                  comment_teardown, ('ticket', 2)))
+    suite.addTest(formatter.test_suite(TICKET_TEST_CASES, ticket_setup,
+                                       __file__, ticket_teardown))
+    suite.addTest(formatter.test_suite(REPORT_TEST_CASES, report_setup,
+                                       __file__))
+    suite.addTest(formatter.test_suite(MILESTONE_TEST_CASES, milestone_setup,
+                                       __file__, milestone_teardown))
+    suite.addTest(formatter.test_suite(QUERY_TEST_CASES, ticket_setup,
+                                       __file__, ticket_teardown))
+    suite.addTest(formatter.test_suite(QUERY2_TEST_CASES, query2_setup,
+                                       __file__, query2_teardown))
+    suite.addTest(formatter.test_suite(COMMENT_TEST_CASES, comment_setup,
+                                       __file__, comment_teardown,
+                                       ('ticket', 2)))
     return suite
 
 if __name__ == '__main__':
