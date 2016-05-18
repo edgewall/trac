@@ -271,11 +271,11 @@ class SubscriptionTestCase(unittest.TestCase):
         self.assertEqual(expected, rows)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SubscriptionTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -270,8 +270,8 @@ def functionalSuite(suite=None):
     return suite
 
 
-suite = functionalSuite
+test_suite = functionalSuite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

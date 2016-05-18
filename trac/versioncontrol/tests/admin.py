@@ -87,7 +87,7 @@ class VersionControlAdminTestCase(unittest.TestCase):
         self.assertEqual('', repositories['blah']['alias'])
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RepositoryAdminPanelTestCase))
     suite.addTest(unittest.makeSuite(VersionControlAdminTestCase))
@@ -95,4 +95,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

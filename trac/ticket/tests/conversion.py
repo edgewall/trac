@@ -159,9 +159,9 @@ Bar
                          (content.replace('\r', ''), mimetype, ext))
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(TicketConversionTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

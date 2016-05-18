@@ -1464,7 +1464,7 @@ class SubversionConnectorTestCase(unittest.TestCase):
         self.assertIsNotNone(self._svn_version_from_system_info())
 
 
-def suite():
+def test_suite():
     global REPOS_PATH
     suite = unittest.TestSuite()
     if has_svn:
@@ -1506,4 +1506,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

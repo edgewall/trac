@@ -93,9 +93,9 @@ class UpgradeTestCase(unittest.TestCase):
                                            'default_repository_type'))
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(UpgradeTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

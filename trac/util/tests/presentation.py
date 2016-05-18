@@ -68,7 +68,7 @@ class PaginatorTestCase(unittest.TestCase):
         self.assertRaises(TracError, presentation.Paginator, items, 2)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(presentation))
     suite.addTest(unittest.makeSuite(ToJsonTestCase))
@@ -77,4 +77,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

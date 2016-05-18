@@ -17,14 +17,14 @@ from trac.db.tests import api, mysql_test, postgres_test, sqlite_test, util
 from trac.db.tests.functional import functionalSuite
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(api.suite())
-    suite.addTest(mysql_test.suite())
-    suite.addTest(postgres_test.suite())
-    suite.addTest(sqlite_test.suite())
-    suite.addTest(util.suite())
+    suite.addTest(api.test_suite())
+    suite.addTest(mysql_test.test_suite())
+    suite.addTest(postgres_test.test_suite())
+    suite.addTest(sqlite_test.test_suite())
+    suite.addTest(util.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

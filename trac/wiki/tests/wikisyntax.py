@@ -769,7 +769,7 @@ def wiki_setup_safe_interwiki(tc):
                       'file,ftp,git,irc,http,https,ssh,svn,tsvn')
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__,
                                   wiki_teardown))
@@ -789,4 +789,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -1680,11 +1680,11 @@ class NotificationTestSuite(unittest.TestSuite):
         self.smtpd.stop()
 
 
-def suite():
+def test_suite():
     global notifysuite
     if not notifysuite:
         notifysuite = NotificationTestSuite()
     return notifysuite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

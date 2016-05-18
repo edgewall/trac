@@ -63,10 +63,10 @@ class SQLEscapeTestCase(unittest.TestCase):
                          sql_escape_percent('''"%?""`%s'%i'%%`%S"'''))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SQLEscapeTestCase))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

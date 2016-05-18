@@ -1208,7 +1208,7 @@ class OptionDocTestCase(BaseTestCase):
         self.assertEqual('Doc for ordered_ext_opt', Dummy.ordered_ext_opt.doc)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
     suite.addTest(unittest.makeSuite(ConfigurationTestCase))
@@ -1223,4 +1223,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

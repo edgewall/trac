@@ -348,8 +348,8 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(1, page.version)
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(WikiPageTestCase)
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

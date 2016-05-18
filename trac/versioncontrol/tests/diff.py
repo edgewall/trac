@@ -255,8 +255,8 @@ finally:
         self.assertEqual(str(block['changed']['lines'][0]),
                          'aa<ins>x</ins>b')
 
-def suite():
+def test_suite():
     return unittest.makeSuite(DiffTestCase)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')

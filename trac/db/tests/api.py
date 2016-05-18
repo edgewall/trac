@@ -548,7 +548,7 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.assertEqual(db_ver, self.dbm.get_database_version(name))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase))
     suite.addTest(unittest.makeSuite(StringsTestCase))
@@ -559,4 +559,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

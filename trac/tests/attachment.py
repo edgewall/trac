@@ -337,11 +337,11 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.assertFalse(AttachmentModule(self.env).resource_exists(r))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AttachmentTestCase))
     suite.addTest(unittest.makeSuite(AttachmentModuleTestCase))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

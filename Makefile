@@ -126,11 +126,11 @@ export HELP_CFG
 .PHONY: all help status clean clean-bytecode clean-mo
 
 %.py : status
-	$(PYTHON) setup.py -q test -s $(subst /,.,$(@:.py=)).suite $(testopts)
+	$(PYTHON) setup.py -q test -s $(subst /,.,$(@:.py=)).test_suite $(testopts)
 
 ifdef test
 all: status
-	$(PYTHON) setup.py -q test -s $(subst /,.,$(test:.py=)).suite $(testopts)
+	$(PYTHON) setup.py -q test -s $(subst /,.,$(test:.py=)).test_suite $(testopts)
 else
 all: help
 endif

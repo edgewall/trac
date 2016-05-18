@@ -255,7 +255,7 @@ if (class_exists('MyClass')) {
         self.assertEqual('text/x-ini; charset=utf-8',
                          mimeview.get_mimetype('file.text/x-ini'))
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     if have_pygments:
         suite.addTest(unittest.makeSuite(PygmentsRendererTestCase))
@@ -264,4 +264,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

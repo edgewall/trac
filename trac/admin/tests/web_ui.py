@@ -46,11 +46,11 @@ class PluginAdminPanelTestCase(unittest.TestCase):
         self.assertIn('NotAbstractComponent', components)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PluginAdminPanelTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

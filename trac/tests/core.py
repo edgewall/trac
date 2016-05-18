@@ -363,7 +363,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertRaises(AssertionError, Component)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracErrorTestCase))
     suite.addTest(unittest.makeSuite(ComponentTestCase))
@@ -371,4 +371,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

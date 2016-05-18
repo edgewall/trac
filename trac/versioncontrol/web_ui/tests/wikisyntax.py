@@ -539,7 +539,7 @@ export:/foo/bar.html#header
 """ # " (be Emacs friendly...)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(CHANGESET_TEST_CASES, repository_setup,
                                   __file__))
@@ -552,4 +552,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

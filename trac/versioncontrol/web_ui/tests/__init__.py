@@ -17,15 +17,15 @@ from trac.versioncontrol.web_ui.tests import browser, changeset, log, util, \
                                              wikisyntax
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(browser.suite())
-    suite.addTest(changeset.suite())
-    suite.addTest(log.suite())
-    suite.addTest(util.suite())
-    suite.addTest(wikisyntax.suite())
+    suite.addTest(browser.test_suite())
+    suite.addTest(changeset.test_suite())
+    suite.addTest(log.test_suite())
+    suite.addTest(util.test_suite())
+    suite.addTest(wikisyntax.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

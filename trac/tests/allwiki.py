@@ -20,16 +20,16 @@ import trac.web.tests.wikisyntax
 import trac.wiki.tests.wikisyntax
 import trac.wiki.tests.formatter
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(trac.tests.wikisyntax.suite())
-    suite.addTest(trac.ticket.tests.wikisyntax.suite())
-    suite.addTest(trac.versioncontrol.web_ui.tests.wikisyntax.suite())
-    suite.addTest(trac.web.tests.wikisyntax.suite())
-    suite.addTest(trac.wiki.tests.macros.suite())
-    suite.addTest(trac.wiki.tests.wikisyntax.suite())
-    suite.addTest(trac.wiki.tests.formatter.suite())
+    suite.addTest(trac.tests.wikisyntax.test_suite())
+    suite.addTest(trac.ticket.tests.wikisyntax.test_suite())
+    suite.addTest(trac.versioncontrol.web_ui.tests.wikisyntax.test_suite())
+    suite.addTest(trac.web.tests.wikisyntax.test_suite())
+    suite.addTest(trac.wiki.tests.macros.test_suite())
+    suite.addTest(trac.wiki.tests.wikisyntax.test_suite())
+    suite.addTest(trac.wiki.tests.formatter.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -92,7 +92,7 @@ facilities.
         'trac.ticket': ['workflows/*.ini'],
     },
 
-    test_suite = 'trac.test.suite',
+    test_suite = 'trac.test.test_suite',
     zip_safe = True,
 
     setup_requires = [

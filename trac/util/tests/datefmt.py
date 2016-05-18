@@ -2043,7 +2043,7 @@ class LocalTimezoneStrTestCase(unittest.TestCase):
         self.assertEqual("UTC-02:03", str(FixedLocalTz(-02, -03)))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
         suite.addTest(unittest.makeSuite(PytzTestCase))
@@ -2067,4 +2067,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

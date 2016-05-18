@@ -763,7 +763,7 @@ class HTTPExceptionTestCase(unittest.TestCase):
                          unicode(e2))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RequestTestCase))
     suite.addTest(unittest.makeSuite(RequestSendFileTestCase))
@@ -774,4 +774,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

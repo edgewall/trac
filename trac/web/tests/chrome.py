@@ -871,7 +871,7 @@ user2 =
                          unicode(author_short))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
@@ -882,4 +882,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

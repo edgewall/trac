@@ -80,9 +80,9 @@ class UpgradeTestCase(unittest.TestCase):
         self.assertIsNone(config.get('trac', 'metanav', None))
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(UpgradeTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

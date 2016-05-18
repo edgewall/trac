@@ -243,7 +243,7 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.db_provider.modify_repository('', {'dir': '/path/to/new-path'})
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ApiTestCase))
     suite.addTest(unittest.makeSuite(ResourceManagerTestCase))
@@ -252,4 +252,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

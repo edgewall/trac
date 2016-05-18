@@ -248,7 +248,7 @@ def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
     suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
@@ -258,4 +258,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

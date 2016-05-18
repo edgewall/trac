@@ -271,6 +271,15 @@ class OutlineTestCase(WikiTestCase):
 
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
+    """Retained for backward-compatibility.
+
+    :since 1.2: Deprecated and will be removed in 1.3.1
+    """
+    return test_suite(data, setup, file, teardown, context)
+
+
+def test_suite(data=None, setup=None, file=__file__, teardown=None,
+               context=None):
     suite = unittest.TestSuite()
 
     def add_test_cases(data, filename):
@@ -322,4 +331,4 @@ def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
     return suite
 
 if __name__ == '__main__':  # pragma: no cover
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

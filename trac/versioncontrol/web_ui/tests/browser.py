@@ -382,11 +382,11 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual(None, e.resource)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BrowserModulePermissionsTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

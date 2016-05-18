@@ -59,11 +59,11 @@ class SearchModuleTestCase(unittest.TestCase):
         self.assertEqual(0, data['results'].page)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SearchModuleTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

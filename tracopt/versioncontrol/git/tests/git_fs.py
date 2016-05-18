@@ -664,7 +664,7 @@ class GitConnectorTestCase(BaseTestCase):
         self.assertIsNotNone(self._git_version_from_system_info())
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     if GitCommandMixin.git_bin:
         suite.addTest(unittest.makeSuite(SanityCheckingTestCase))
@@ -681,4 +681,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

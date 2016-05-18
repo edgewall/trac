@@ -307,7 +307,7 @@ class FileTestCase(unittest.TestCase):
         self.assertEqual(0, os.path.getsize(self.filename))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase))
     suite.addTest(unittest.makeSuite(PathTestCase))
@@ -317,14 +317,14 @@ def suite():
     suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
     suite.addTest(unittest.makeSuite(LazyTestCase))
     suite.addTest(unittest.makeSuite(FileTestCase))
-    suite.addTest(concurrency.suite())
-    suite.addTest(datefmt.suite())
-    suite.addTest(presentation.suite())
+    suite.addTest(concurrency.test_suite())
+    suite.addTest(datefmt.test_suite())
+    suite.addTest(presentation.test_suite())
     suite.addTest(doctest.DocTestSuite(util))
-    suite.addTest(text.suite())
-    suite.addTest(translation.suite())
-    suite.addTest(html.suite())
+    suite.addTest(text.test_suite())
+    suite.addTest(translation.test_suite())
+    suite.addTest(html.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

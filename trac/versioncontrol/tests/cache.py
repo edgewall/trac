@@ -345,9 +345,9 @@ class CacheTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, changes.next)
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(CacheTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

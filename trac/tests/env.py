@@ -274,7 +274,7 @@ class SystemInfoProviderTestCase(unittest.TestCase):
         self.assertEqual(len(system_info), len(set(system_info)))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
@@ -283,4 +283,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

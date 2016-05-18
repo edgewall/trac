@@ -307,7 +307,7 @@ class VersionAdminPanelTestCase(BaseTestCase):
         self.assertEqual(self.env.config.get('ticket', config_key), '')
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ComponentAdminPanelTestCase))
     suite.addTest(unittest.makeSuite(MilestoneAdminPanelTestCase))
@@ -321,4 +321,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

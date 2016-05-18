@@ -17,13 +17,13 @@ from trac.mimeview.tests.functional import functionalSuite
 from trac.mimeview.tests import api, patch, pygments
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(api.suite())
-    suite.addTest(patch.suite())
-    suite.addTest(pygments.suite())
+    suite.addTest(api.test_suite())
+    suite.addTest(patch.test_suite())
+    suite.addTest(pygments.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

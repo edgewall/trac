@@ -1559,7 +1559,7 @@ def ticket_setup(tc):
 def ticket_teardown(tc):
     tc.env.reset_db()
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(QueryTestCase))
     suite.addTest(unittest.makeSuite(QueryLinksTestCase))
@@ -1569,4 +1569,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

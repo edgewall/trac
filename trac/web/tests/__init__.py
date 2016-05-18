@@ -16,17 +16,17 @@ import unittest
 from trac.web.tests import api, auth, cgi_frontend, chrome, href, session, \
                            wikisyntax, main
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(api.suite())
-    suite.addTest(auth.suite())
-    suite.addTest(cgi_frontend.suite())
-    suite.addTest(chrome.suite())
-    suite.addTest(href.suite())
-    suite.addTest(session.suite())
-    suite.addTest(wikisyntax.suite())
-    suite.addTest(main.suite())
+    suite.addTest(api.test_suite())
+    suite.addTest(auth.test_suite())
+    suite.addTest(cgi_frontend.test_suite())
+    suite.addTest(chrome.test_suite())
+    suite.addTest(href.test_suite())
+    suite.addTest(session.test_suite())
+    suite.addTest(wikisyntax.test_suite())
+    suite.addTest(main.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -16,15 +16,15 @@ import unittest
 from trac.versioncontrol.tests import admin, cache, diff, svn_authz, api
 from trac.versioncontrol.tests.functional import functionalSuite
 
-def suite():
+def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(admin.suite())
-    suite.addTest(cache.suite())
-    suite.addTest(diff.suite())
-    suite.addTest(svn_authz.suite())
-    suite.addTest(api.suite())
+    suite.addTest(admin.test_suite())
+    suite.addTest(cache.test_suite())
+    suite.addTest(diff.test_suite())
+    suite.addTest(svn_authz.test_suite())
+    suite.addTest(api.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -16,7 +16,7 @@ import unittest
 from trac.tests import attachment, config, core, env, perm, notification, \
                        resource, wikisyntax, functional
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(basicSuite())
     suite.addTest(functionalSuite())
@@ -24,18 +24,18 @@ def suite():
 
 def basicSuite():
     suite = unittest.TestSuite()
-    suite.addTest(attachment.suite())
-    suite.addTest(config.suite())
-    suite.addTest(core.suite())
-    suite.addTest(env.suite())
-    suite.addTest(notification.suite())
-    suite.addTest(perm.suite())
-    suite.addTest(resource.suite())
-    suite.addTest(wikisyntax.suite())
+    suite.addTest(attachment.test_suite())
+    suite.addTest(config.test_suite())
+    suite.addTest(core.test_suite())
+    suite.addTest(env.test_suite())
+    suite.addTest(notification.test_suite())
+    suite.addTest(perm.test_suite())
+    suite.addTest(resource.test_suite())
+    suite.addTest(wikisyntax.test_suite())
     return suite
 
 def functionalSuite():
-    return functional.suite()
+    return functional.test_suite()
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -537,7 +537,7 @@ def locate(fn):
 INCLUDE_FUNCTIONAL_TESTS = True
 
 
-def suite():
+def test_suite():
     import trac.tests
     import trac.admin.tests
     import trac.db.tests
@@ -559,23 +559,23 @@ def suite():
 
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.basicSuite())
-    suite.addTest(trac.admin.tests.suite())
-    suite.addTest(trac.db.tests.suite())
-    suite.addTest(trac.mimeview.tests.suite())
-    suite.addTest(trac.notification.tests.suite())
-    suite.addTest(trac.search.tests.suite())
-    suite.addTest(trac.ticket.tests.suite())
-    suite.addTest(trac.timeline.tests.suite())
-    suite.addTest(trac.upgrades.tests.suite())
-    suite.addTest(trac.util.tests.suite())
-    suite.addTest(trac.versioncontrol.tests.suite())
-    suite.addTest(trac.versioncontrol.web_ui.tests.suite())
-    suite.addTest(trac.web.tests.suite())
-    suite.addTest(trac.wiki.tests.suite())
-    suite.addTest(tracopt.perm.tests.suite())
-    suite.addTest(tracopt.ticket.tests.suite())
-    suite.addTest(tracopt.versioncontrol.git.tests.suite())
-    suite.addTest(tracopt.versioncontrol.svn.tests.suite())
+    suite.addTest(trac.admin.tests.test_suite())
+    suite.addTest(trac.db.tests.test_suite())
+    suite.addTest(trac.mimeview.tests.test_suite())
+    suite.addTest(trac.notification.tests.test_suite())
+    suite.addTest(trac.search.tests.test_suite())
+    suite.addTest(trac.ticket.tests.test_suite())
+    suite.addTest(trac.timeline.tests.test_suite())
+    suite.addTest(trac.upgrades.tests.test_suite())
+    suite.addTest(trac.util.tests.test_suite())
+    suite.addTest(trac.versioncontrol.tests.test_suite())
+    suite.addTest(trac.versioncontrol.web_ui.tests.test_suite())
+    suite.addTest(trac.web.tests.test_suite())
+    suite.addTest(trac.wiki.tests.test_suite())
+    suite.addTest(tracopt.perm.tests.test_suite())
+    suite.addTest(tracopt.ticket.tests.test_suite())
+    suite.addTest(tracopt.versioncontrol.git.tests.test_suite())
+    suite.addTest(tracopt.versioncontrol.svn.tests.test_suite())
     suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))
     if INCLUDE_FUNCTIONAL_TESTS:
         suite.addTest(trac.tests.functionalSuite())
@@ -587,4 +587,4 @@ if __name__ == '__main__':
     if '--skip-functional-tests' in sys.argv:
         sys.argv.remove('--skip-functional-tests')
         INCLUDE_FUNCTIONAL_TESTS = False
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

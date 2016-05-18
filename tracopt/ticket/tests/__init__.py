@@ -16,11 +16,11 @@ import unittest
 from tracopt.ticket.tests import commit_updater
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(commit_updater.suite())
+    suite.addTest(commit_updater.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

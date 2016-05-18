@@ -16,11 +16,11 @@ import unittest
 from trac.upgrades.tests import db41
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(db41.suite())
+    suite.addTest(db41.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

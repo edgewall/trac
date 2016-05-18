@@ -328,7 +328,7 @@ class MimeviewConverterTestCase(unittest.TestCase):
         self._test_send_converted('Ü' * 0x10000, 'unicode', True)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(api))
     suite.addTest(unittest.makeSuite(GetMimeTypeTestCase))
@@ -338,4 +338,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

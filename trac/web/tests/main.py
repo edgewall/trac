@@ -489,7 +489,7 @@ class HdfdumpTestCase(unittest.TestCase):
                          self.req.headers_sent['Content-Type'])
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
     suite.addTest(unittest.makeSuite(DispatchRequestTestCase))
@@ -503,4 +503,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

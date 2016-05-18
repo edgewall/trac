@@ -1321,7 +1321,7 @@ class VersionTestCase(unittest.TestCase):
             "SELECT name, time, description FROM version WHERE name='Test'"))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketTestCase))
     suite.addTest(unittest.makeSuite(TicketCommentEditTestCase))
@@ -1333,4 +1333,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

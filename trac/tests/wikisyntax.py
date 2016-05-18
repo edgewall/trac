@@ -184,7 +184,7 @@ def email_never_obfuscate_setup(tc):
     tc.env.config.set('trac', 'never_obfuscate_mailto', True)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
@@ -200,4 +200,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

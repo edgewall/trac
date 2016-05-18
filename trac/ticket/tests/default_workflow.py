@@ -390,7 +390,7 @@ user4 = !TICKET_MODIFY
         self.assertNotIn('value="user4">user4</option>', str(ctrl[1]))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
@@ -400,4 +400,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

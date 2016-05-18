@@ -291,9 +291,9 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertFalse(self.ticket_system.resource_exists(r4))
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(TicketSystemTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

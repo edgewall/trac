@@ -427,7 +427,7 @@ class ShortenLineTestCase(unittest.TestCase):
         self.assertEqual('abcde ...', shorten_line(text, 9))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase))
     suite.addTest(unittest.makeSuite(ExpandtabsTestCase))
@@ -449,4 +449,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

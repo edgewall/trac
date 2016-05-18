@@ -18,11 +18,11 @@ from trac.timeline.tests import wikisyntax
 from trac.timeline.tests.functional import functionalSuite
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(web_ui.suite())
-    suite.addTest(wikisyntax.suite())
+    suite.addTest(web_ui.test_suite())
+    suite.addTest(wikisyntax.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -30,8 +30,8 @@ htdocs:release-1.0.tar.gz
 ------------------------------
 """
 
-def suite():
+def test_suite():
     return formatter.suite(TEST_CASES, file=__file__)
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

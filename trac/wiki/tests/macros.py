@@ -738,34 +738,43 @@ def tracini_teardown(tc):
     Option.registry = tc._orig_registry
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__,
-                                  setup=image_setup,
-                                  teardown=image_teardown))
-    suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
-                                  setup=titleindex2_setup,
-                                  teardown=titleindex_teardown))
-    suite.addTest(formatter.suite(TITLEINDEX3_MACRO_TEST_CASES, file=__file__,
-                                  setup=titleindex3_setup,
-                                  teardown=titleindex_teardown,
-                                  context=('wiki', 'WikiStart/Second')))
-    suite.addTest(formatter.suite(TITLEINDEX4_MACRO_TEST_CASES, file=__file__,
-                                  setup=titleindex4_setup,
-                                  teardown=titleindex_teardown))
-    suite.addTest(formatter.suite(TITLEINDEX5_MACRO_TEST_CASES, file=__file__,
-                                  setup=titleindex5_setup,
-                                  teardown=titleindex_teardown))
-    suite.addTest(formatter.suite(RECENTCHANGES_MACRO_TEST_CASES, file=__file__,
-                                  setup=recentchanges_setup,
-                                  teardown=recentchanges_teardown))
-    suite.addTest(formatter.suite(PAGEOUTLINE_MACRO_TEST_CASES, file=__file__))
-    suite.addTest(formatter.suite(TRACINI_MACRO_TEST_CASES, file=__file__,
-                                  setup=tracini_setup,
-                                  teardown=tracini_teardown))
+    suite.addTest(formatter.test_suite(IMAGE_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=image_setup,
+                                       teardown=image_teardown))
+    suite.addTest(formatter.test_suite(TITLEINDEX1_MACRO_TEST_CASES,
+                                       file=__file__))
+    suite.addTest(formatter.test_suite(TITLEINDEX2_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=titleindex2_setup,
+                                       teardown=titleindex_teardown))
+    suite.addTest(formatter.test_suite(TITLEINDEX3_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=titleindex3_setup,
+                                       teardown=titleindex_teardown,
+                                       context=('wiki', 'WikiStart/Second')))
+    suite.addTest(formatter.test_suite(TITLEINDEX4_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=titleindex4_setup,
+                                       teardown=titleindex_teardown))
+    suite.addTest(formatter.test_suite(TITLEINDEX5_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=titleindex5_setup,
+                                       teardown=titleindex_teardown))
+    suite.addTest(formatter.test_suite(RECENTCHANGES_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=recentchanges_setup,
+                                       teardown=recentchanges_teardown))
+    suite.addTest(formatter.test_suite(PAGEOUTLINE_MACRO_TEST_CASES,
+                                       file=__file__))
+    suite.addTest(formatter.test_suite(TRACINI_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=tracini_setup,
+                                       teardown=tracini_teardown))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

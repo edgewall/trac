@@ -123,11 +123,11 @@ class HrefTestCase(unittest.TestCase):
                          href + u'päth/to/file?type=deféct&or&type=abc def')
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.web.href))
     suite.addTest(unittest.makeSuite(HrefTestCase))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

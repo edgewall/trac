@@ -51,9 +51,9 @@ class WikiRendererTestCase(unittest.TestCase):
                           '/trac.cgi/chrome/common/css/diff.css"', output)
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(WikiRendererTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -21,19 +21,19 @@ from trac.wiki.tests import (
     formatter, macros, model, web_api, web_ui, wikisyntax)
 from trac.wiki.tests.functional import functionalSuite
 
-def suite():
+def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite())
-    suite.addTest(macros.suite())
-    suite.addTest(model.suite())
-    suite.addTest(web_api.suite())
-    suite.addTest(web_ui.suite())
-    suite.addTest(wikisyntax.suite())
+    suite.addTest(formatter.test_suite())
+    suite.addTest(macros.test_suite())
+    suite.addTest(model.test_suite())
+    suite.addTest(web_api.test_suite())
+    suite.addTest(web_ui.test_suite())
+    suite.addTest(wikisyntax.test_suite())
     suite.addTest(doctest.DocTestSuite(trac.wiki.api))
     suite.addTest(doctest.DocTestSuite(trac.wiki.formatter))
     suite.addTest(doctest.DocTestSuite(trac.wiki.parser))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

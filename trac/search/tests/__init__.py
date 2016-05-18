@@ -16,11 +16,11 @@ import unittest
 from trac.search.tests import web_ui
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(web_ui.suite())
+    suite.addTest(web_ui.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

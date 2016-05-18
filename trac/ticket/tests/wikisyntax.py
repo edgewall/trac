@@ -559,7 +559,7 @@ def comment_teardown(tc):
     tc.env.reset_db()
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__,
                                   ticket_teardown))
@@ -575,4 +575,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -16,12 +16,12 @@ import unittest
 from tracopt.versioncontrol.git.tests import PyGIT, git_fs
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(PyGIT.suite())
-    suite.addTest(git_fs.suite())
+    suite.addTest(PyGIT.test_suite())
+    suite.addTest(git_fs.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

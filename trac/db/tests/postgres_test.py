@@ -172,7 +172,7 @@ class PostgresTableAlterationSQLTest(unittest.TestCase):
         self.assertEqual([], list(sql))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
     suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
@@ -180,4 +180,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -21,24 +21,24 @@ from trac.ticket.tests import admin, api, model, query, wikisyntax, \
 from trac.ticket.tests.functional import functionalSuite
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(admin.suite())
-    suite.addTest(api.suite())
-    suite.addTest(model.suite())
-    suite.addTest(query.suite())
-    suite.addTest(wikisyntax.suite())
-    suite.addTest(notification.suite())
-    suite.addTest(conversion.suite())
-    suite.addTest(report.suite())
-    suite.addTest(roadmap.suite())
-    suite.addTest(batch.suite())
-    suite.addTest(web_ui.suite())
-    suite.addTest(default_workflow.suite())
+    suite.addTest(admin.test_suite())
+    suite.addTest(api.test_suite())
+    suite.addTest(model.test_suite())
+    suite.addTest(query.test_suite())
+    suite.addTest(wikisyntax.test_suite())
+    suite.addTest(notification.test_suite())
+    suite.addTest(conversion.test_suite())
+    suite.addTest(report.test_suite())
+    suite.addTest(roadmap.test_suite())
+    suite.addTest(batch.test_suite())
+    suite.addTest(web_ui.test_suite())
+    suite.addTest(default_workflow.test_suite())
     suite.addTest(doctest.DocTestSuite(trac.ticket.api))
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     suite.addTest(doctest.DocTestSuite(trac.ticket.roadmap))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

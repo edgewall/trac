@@ -468,7 +468,7 @@ class SmtpEmailSenderTestCase(unittest.TestCase):
                           'admin@domain.com', ['foo@domain.com'], "")
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SendmailEmailSenderTestCase))
     suite.addTest(unittest.makeSuite(SmtpEmailSenderTestCase))
@@ -476,4 +476,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -718,9 +718,9 @@ class SessionTestCase(unittest.TestCase):
                           u'abc¹₂³xyz')  # Unicode digits
 
 
-def suite():
+def test_suite():
     return unittest.makeSuite(SessionTestCase)
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

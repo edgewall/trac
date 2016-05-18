@@ -388,7 +388,7 @@ unknown = r
         self.assertRevPerm(True, 'user', 'scoped', 789)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthzParserTestCase))
     suite.addTest(unittest.makeSuite(AuthzSourcePolicyTestCase))
@@ -396,4 +396,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

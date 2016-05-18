@@ -17,12 +17,12 @@ from trac.admin.tests import console, web_ui
 from trac.admin.tests.functional import functionalSuite
 
 
-def suite():
+def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(console.suite())
-    suite.addTest(web_ui.suite())
+    suite.addTest(console.test_suite())
+    suite.addTest(web_ui.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

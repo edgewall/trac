@@ -120,10 +120,10 @@ class PatchRendererTestCase(unittest.TestCase):
         self.assertEqual('<ins>&nbsp;</ins>*a',
                          str(changes[0]['diffs'][0][0]['changed']['lines'][0]))
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PatchRendererTestCase))
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

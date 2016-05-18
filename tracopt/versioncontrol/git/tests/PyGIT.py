@@ -569,7 +569,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        print_data_usage()
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     if GitCommandMixin.git_bin:
         suite.addTest(unittest.makeSuite(GitTestCase))
@@ -586,4 +586,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

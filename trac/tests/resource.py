@@ -112,7 +112,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
                      href='/trac.cgi/unmanaged/exists?version=1')
         self.assertEqual(unicode(html), unicode(link))
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(resource))
     suite.addTest(unittest.makeSuite(ResourceTestCase))
@@ -120,4 +120,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -16,13 +16,13 @@ import unittest
 from . import api, mail, model
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(api.suite())
-    suite.addTest(mail.suite())
-    suite.addTest(model.suite())
+    suite.addTest(api.test_suite())
+    suite.addTest(mail.test_suite())
+    suite.addTest(model.test_suite())
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -15,10 +15,10 @@ import unittest
 
 from tracopt.versioncontrol.svn.tests import svn_fs
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(svn_fs.suite())
+    suite.addTest(svn_fs.test_suite())
     return suite
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

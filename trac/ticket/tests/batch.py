@@ -380,7 +380,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         self.assertFieldChanged(2, 'reporter', 'user1')
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BatchModifyTestCase))
     suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
@@ -388,4 +388,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

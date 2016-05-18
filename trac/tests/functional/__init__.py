@@ -183,7 +183,7 @@ def functionalSuite():
     return suite
 
 
-def suite():
+def test_suite():
     try:
         suite = functionalSuite()
         import trac.tests.functional.testcases
@@ -213,4 +213,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

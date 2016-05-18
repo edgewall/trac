@@ -72,7 +72,7 @@ class WikiModuleTestCase(unittest.TestCase):
                           WikiModule(self.env).process_request, req)
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ReadonlyWikiPolicyTestCase))
     suite.addTest(unittest.makeSuite(WikiModuleTestCase))
@@ -80,4 +80,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

@@ -134,7 +134,7 @@ the message. refs <a class="new ticket" href="/ticket/1" title="the summary (new
 """
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase))
     suite.addTest(formatter.suite(COMMIT_TICKET_REFERENCE_MACRO_TEST_CASES,
@@ -144,4 +144,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

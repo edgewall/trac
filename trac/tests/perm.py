@@ -363,7 +363,7 @@ class PermissionPolicyTestCase(unittest.TestCase):
                           ('testuser', 'TEST_ADMIN'): None})
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase))
     suite.addTest(unittest.makeSuite(PermissionErrorTestCase))
@@ -374,4 +374,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

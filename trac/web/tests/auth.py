@@ -169,7 +169,7 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.assertFalse(self.auth.test('sha', 'other'))
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LoginModuleTestCase))
     if crypt:
@@ -178,4 +178,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')

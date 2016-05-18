@@ -470,11 +470,11 @@ class TicketModuleTestCase(unittest.TestCase):
         self._test_newticket_with_enum_as_custom_field('version')
 
 
-def suite():
+def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketModuleTestCase))
     return suite
 
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='suite')
+    unittest.main(defaultTest='test_suite')
