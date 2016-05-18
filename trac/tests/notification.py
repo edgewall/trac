@@ -39,7 +39,7 @@ email_re = re.compile(r'([\w\d_\.\-])+\@(([\w\d\-])+\.)+([\w\d]{2,4})+')
 header_re = re.compile(r'^=\?(?P<charset>[\w\d\-]+)\?(?P<code>[qb])\?(?P<value>.*)\?=$')
 
 
-class SMTPServerInterface:
+class SMTPServerInterface(object):
     """
     A base class for the implementation of an application specific SMTP
     Server. Applications should subclass this and override these
@@ -101,7 +101,7 @@ def split_to(address):
 #
 # This drives the state for a single RFC821 message.
 #
-class SMTPServerEngine:
+class SMTPServerEngine(object):
     """
     Server engine that calls methods on the SMTPServerInterface object
     passed at construction time. It is constructed with a bound socket
@@ -131,17 +131,17 @@ class SMTPServerEngine:
         self.socket.send("220 Welcome to Trac notification test server\r\n")
         while 1:
             data = ''
-            completeLine = 0
+            complete_line = 0
             # Make sure an entire line is received before handing off
             # to the state engine. Thanks to John Hall for pointing
             # this out.
-            while not completeLine:
+            while not complete_line:
                 try:
                     lump = self.socket.recv(1024)
-                    if len(lump):
+                    if lump:
                         data += lump
                         if len(data) >= 2 and data[-2:] == '\r\n':
-                            completeLine = 1
+                            complete_line = 1
                             if self.state != SMTPServerEngine.ST_DATA:
                                 rsp, keep = self.do_command(data)
                             else:
@@ -219,7 +219,7 @@ class SMTPServerEngine:
             return None
 
 
-class SMTPServer:
+class SMTPServer(object):
     """
     A single threaded SMTP Server connection manager. Listens for
     incoming SMTP connections on a given port. For each connection,
