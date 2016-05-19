@@ -537,6 +537,39 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
             repos.sync(feedback=feedback_2)  # restart sync
         self.assertEqual(revs, revs2)
 
+    def test_sync_file_with_invalid_byte_sequence(self):
+        self._git_init(data=False)
+        self._git_fast_import("""\
+blob
+mark :1
+data 0
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Ryan Ollos <rjollos@edgewall.com> 1463639119 +0200
+committer Ryan Ollos <rjollos@edgewall.com> 1463639119 +0200
+data 9
+(#12322)
+M 100644 :1 "\312\326\267\347\307\331.txt"
+
+reset refs/heads/master
+from :2
+
+""")
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+
+        revs = []
+        def feedback(rev):
+            revs.append(rev)
+        repos.sync(feedback=feedback)
+
+        changes = list(repos.repos.get_changeset(revs[0]).get_changes())
+        self.assertEqual(1, len(changes))
+        self.assertIn(changes[0][0], (u'\ufffd\u05b7\ufffd\ufffd\ufffd.txt',
+                                      u'\ufffd\ufffd\ufffd.txt'))
+
     def test_sync_merge(self):
         self._git_init()
         self._create_merge_commit()
