@@ -123,6 +123,18 @@ class PatchRendererTestCase(unittest.TestCase):
         self.assertEqual('<ins>&nbsp;</ins>*a',
                          str(changes[0]['diffs'][0][0]['changed']['lines'][0]))
 
+    def test_range_information_with_no_lines(self):
+        result = self.patch.render(self.context, None, """
+Index: filename.txt
+===================================================================
+--- filename.txt
++++ filename.txt
+@@ -14,7 +14,7 @@
+""")
+        self.assertTrue(result)
+        self._test('range_information_with_no_lines', result)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PatchRendererTestCase))
