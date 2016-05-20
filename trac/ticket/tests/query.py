@@ -20,7 +20,7 @@ import trac.tests.compat
 from trac.mimeview.api import Mimeview
 from trac.test import Mock, EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Milestone, Priority, Severity, Ticket, Version
+from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.api import arg_list_to_args, parse_arg_list
@@ -40,7 +40,7 @@ class QueryTestCase(unittest.TestCase):
         in creating a useful diff between two SQL statements."""
         pretty = []
         for line in sql.split('\n'):
-            pretty.extend([ "%s,\n" % x for x in line.split(',')])
+            pretty.extend(['%s,\n' % x for x in line.split(',')])
         return pretty
 
     def assertEqualSQL(self, sql, correct_sql):
@@ -164,7 +164,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(self.n_tickets, len(tickets))
 
     def test_all_ordered_by_priority(self):
-        query = Query(self.env) # priority is default order
+        query = Query(self.env)  # priority is default order
         sql, args = query.get_sql()
         with self.env.db_query as db:
             cast_priority = db.cast('priority.value', 'int')
@@ -422,8 +422,7 @@ FROM ticket AS t
   LEFT OUTER JOIN ticket_custom AS %(foo)s ON (%(foo)s.ticket=t.id AND %(foo)s.name='foo')
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(%(foo)s.value,'')=%%s))
-ORDER BY COALESCE(t.id,0)=0,t.id"""
-        % {'foo': foo})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'foo': foo})
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
         self.assertEqual(['something'] * 3, [t['foo'] for t in tickets])
@@ -492,7 +491,6 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         for f in fields:
             self.env.config.set('ticket-custom', f, 'text')
         with self.env.db_transaction as db:
-            quoted_cols = dict((f, db.quote(f)) for f in fields)
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joe'
             ticket['summary'] = 'Foo'
@@ -1053,7 +1051,6 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         self.assertEqual(['closed', 'foo', 'blah'], args)
 
     def test_without_enums_with_many_custom_fields(self):
-        quoted = {}
         ncols = 32 - 5
         columns = ('priority', 'resolution', 'type', 'milestone', 'version')
         for name in columns:
@@ -1530,6 +1527,7 @@ QUERY_TEST_CASES = u"""
 ------------------------------
 """
 
+
 def ticket_setup(tc):
     tc.env.config.set('ticket-custom', 'project', 'text')
     ticket = Ticket(tc.env)
@@ -1551,13 +1549,16 @@ def ticket_setup(tc):
     ticket.insert()
 
     tc.env.config.set('milestone-groups', 'closed.status', 'closed')
-    tc.env.config.set('milestone-groups', 'closed.query_args', 'group=resolution,order=time')
+    tc.env.config.set('milestone-groups', 'closed.query_args',
+                      'group=resolution,order=time')
     tc.env.config.set('milestone-groups', 'closed.overall_completion', 'true')
     tc.env.config.set('milestone-groups', 'active.status', '*')
     tc.env.config.set('milestone-groups', 'active.css_class', 'open')
 
+
 def ticket_teardown(tc):
     tc.env.reset_db()
+
 
 def test_suite():
     suite = unittest.TestSuite()
