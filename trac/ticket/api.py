@@ -487,6 +487,7 @@ class TicketSystem(Component):
 
     def get_link_resolvers(self):
         return [('bug', self._format_link),
+                ('issue', self._format_link),
                 ('ticket', self._format_link),
                 ('comment', self._format_comment_link)]
 
@@ -547,6 +548,8 @@ class TicketSystem(Component):
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
                     realm, id, cnum = elts # support old comment: style
                 id = as_int(id, None)
+                if realm in ('bug', 'issue'):
+                    realm = 'ticket'
                 resource = formatter.resource(realm, id)
         else:
             resource = formatter.resource

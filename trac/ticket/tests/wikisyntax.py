@@ -23,33 +23,44 @@ from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
                                utc)
 from trac.wiki.tests import formatter
 
-
 TICKET_TEST_CASES = u"""
 ============================== ticket: link resolver
+bug:1
+issue:1
 ticket:1
 ticket:12
 ticket:abc
 ------------------------------
 <p>
+<a class="new ticket" href="/ticket/1" title="This is the summary (new)">bug:1</a>
+<a class="new ticket" href="/ticket/1" title="This is the summary (new)">issue:1</a>
 <a class="new ticket" href="/ticket/1" title="This is the summary (new)">ticket:1</a>
 <a class="missing ticket">ticket:12</a>
 <a class="missing ticket">ticket:abc</a>
 </p>
 ------------------------------
 ============================== ticket: link resolver + arguments
-ticket:1?format=csv
+bug:1#comment:3
+issue:1#comment:3
 ticket:1#comment:3
+ticket:1?format=csv
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1?format=csv" title="This is the summary (new)">ticket:1?format=csv</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">bug:1#comment:3</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">issue:1#comment:3</a>
 <a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">ticket:1#comment:3</a>
+<a class="new ticket" href="/ticket/1?format=csv" title="This is the summary (new)">ticket:1?format=csv</a>
 </p>
 ------------------------------
 ============================== ticket: link resolver with ranges
+bug:12-14,33
+issue:12-14,33
 ticket:12-14,33
 ticket:12,33?order=created
 ------------------------------
 <p>
+<a href="/query?id=12-14%2C33" title="Tickets 12-14, 33">bug:12-14,33</a>
+<a href="/query?id=12-14%2C33" title="Tickets 12-14, 33">issue:12-14,33</a>
 <a href="/query?id=12-14%2C33" title="Tickets 12-14, 33">ticket:12-14,33</a>
 <a href="/query?id=12%2C33&amp;order=created" title="Tickets 12, 33">ticket:12,33?order=created</a>
 </p>
@@ -125,6 +136,7 @@ trac:#2041
 </p>
 ------------------------------
 """ # "
+
 
 def ticket_setup(tc):
     config = tc.env.config
@@ -498,6 +510,8 @@ comment:1a
 </p>
 ------------------------------
 ============================== comment: link resolver with ticket number
+comment:1:bug:1
+comment:1:issue:1
 comment:1:ticket:1
 [comment:1:ticket:1 see above]
 comment:description:ticket:1
@@ -514,6 +528,8 @@ comment:2:ticket:
 comment::ticket:
 ------------------------------
 <p>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:bug:1</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:issue:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">comment:description:ticket:1</a>
