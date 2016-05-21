@@ -16,8 +16,6 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-from contextlib import contextmanager
-
 from genshi.template.text import NewTextTemplate
 
 from trac.attachment import IAttachmentChangeListener
@@ -31,14 +29,14 @@ from trac.notification.compat import NotifyEmail
 from trac.notification.mail import (RecipientMatcher, create_message_id,
                                     set_header)
 from trac.notification.model import Subscription
-from trac.ticket.api import TicketSystem
+from trac.ticket.api import translation_deactivated
 from trac.ticket.model import Ticket
 from trac.util.compat import md5
 from trac.util.datefmt import (datetime_now, format_date_or_datetime,
                                get_timezone, to_utimestamp, utc)
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
-from trac.util.translation import _, deactivate, reactivate
+from trac.util.translation import _
 from trac.web.chrome import Chrome
 
 
@@ -499,14 +497,14 @@ class TicketNotifyEmail(NotifyEmail):
 
     def notify(self, ticket, newticket=True, modtime=None):
         """Send ticket change notification e-mail (untranslated)"""
-        with _translation_deactivated(ticket):
+        with translation_deactivated(ticket):
             author = self._prepare_body(ticket, newticket, modtime)
             subject = self.data['subject']
             super(TicketNotifyEmail, self).notify(ticket.id, subject, author)
 
     def notify_attachment(self, ticket, attachment, added=True):
         """Send ticket attachment notification (untranslated)"""
-        with _translation_deactivated(ticket):
+        with translation_deactivated(ticket):
             self._prepare_body_attachment(ticket, attachment, added)
             author = attachment.author
             subject = self.data['subject']
@@ -514,13 +512,13 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format(self, ticket, newticket=True, modtime=None):
         """Format ticket change notification e-mail (untranslated)"""
-        with _translation_deactivated(ticket):
+        with translation_deactivated(ticket):
             self._prepare_body(ticket, newticket, modtime)
             return self._format_body()
 
     def format_attachment(self, ticket, attachment, added=True):
         """Format ticket attachment notification e-mail (untranslated)"""
-        with _translation_deactivated(ticket):
+        with translation_deactivated(ticket):
             self._prepare_body_attachment(ticket, attachment, added)
             return self._format_body()
 
@@ -922,7 +920,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
                modtime=None):
         """Send batch ticket change notification e-mail (untranslated)"""
         tickets = self._sort_tickets_by_priority(tickets)
-        with _translation_deactivated():
+        with translation_deactivated():
             self._notify(tickets, new_values, comment, action, author, modtime)
 
     def _notify(self, tickets, new_values, comment, action, author, modtime):
@@ -934,13 +932,10 @@ class BatchTicketNotifyEmail(NotifyEmail):
     def format(self, tickets, new_values, comment, action, author,
                modtime=None):
         """Format batch ticket change notification e-mail (untranslated)"""
-        t = deactivate()
-        try:
+        with translation_deactivated():
             self._prepare_body(tickets, new_values, comment, action, author,
                                modtime)
             return self._format_body()
-        finally:
-            reactivate(t)
 
     def _prepare_body(self, tickets, new_values, comment, action, author,
                       modtime):
@@ -1016,18 +1011,3 @@ class BatchTicketNotifyEmail(NotifyEmail):
     def send(self, torcpts, ccrcpts):
         hdrs = {'Message-ID': self.get_message_id(self.modtime)}
         super(BatchTicketNotifyEmail, self).send(torcpts, ccrcpts, hdrs)
-
-
-@contextmanager
-def _translation_deactivated(ticket=None):
-    t = deactivate()
-    if ticket is not None:
-        ts = TicketSystem(ticket.env)
-        translated_fields = ticket.fields
-        ticket.fields = ts.get_ticket_fields()
-    try:
-        yield
-    finally:
-        if ticket is not None:
-            ticket.fields = translated_fields
-        reactivate(t)

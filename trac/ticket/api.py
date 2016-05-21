@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import contextlib
 import copy
 import re
 
@@ -28,7 +29,7 @@ from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
 from trac.util import Ranges, as_int
 from trac.util.text import shorten_line
-from trac.util.translation import _, N_, gettext
+from trac.util.translation import _, N_, deactivate, gettext, reactivate
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -642,3 +643,18 @@ class TicketSystem(Component):
             return revcount[0][0] >= resource.version
         else:
             return False
+
+
+@contextlib.contextmanager
+def translation_deactivated(ticket=None):
+    t = deactivate()
+    if ticket is not None:
+        ts = TicketSystem(ticket.env)
+        translated_fields = ticket.fields
+        ticket.fields = ts.get_ticket_fields()
+    try:
+        yield
+    finally:
+        if ticket is not None:
+            ticket.fields = translated_fields
+        reactivate(t)

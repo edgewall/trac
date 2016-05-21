@@ -29,7 +29,7 @@ from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
-from trac.ticket.api import TicketSystem
+from trac.ticket.api import TicketSystem, translation_deactivated
 from trac.ticket.model import Milestone
 from trac.ticket.roadmap import group_milestones
 from trac.util import Ranges, as_bool
@@ -1180,8 +1180,10 @@ class QueryModule(Component):
 
             yield '\xef\xbb\xbf'  # BOM
 
-            cols = query.get_columns()
-            yield writerow(cols)
+            with translation_deactivated():
+                labels = TicketSystem(self.env).get_ticket_field_labels()
+                cols = query.get_columns()
+                yield writerow(labels.get(col, col) for col in cols)
 
             chrome = Chrome(self.env)
             context = web_context(req)

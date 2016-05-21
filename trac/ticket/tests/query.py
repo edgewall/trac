@@ -18,7 +18,7 @@ import unittest
 
 import trac.tests.compat
 from trac.mimeview.api import Mimeview
-from trac.test import Mock, EnvironmentStub, MockRequest
+from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
@@ -1114,6 +1114,23 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
             self.assertNotIn(' LEFT OUTER JOIN ticket_custom AS %s ON ' %
                              quoted[col], sql)
 
+    def test_csv_cols_are_labels(self):
+        self.env.config.set('ticket-custom', 'custom1', 'text')
+        self.env.config.set('ticket-custom', 'custom1.label', 'CustomOne')
+        query = Mock(get_columns=lambda: ['id', 'owner', 'milestone',
+                                          'custom1'],
+                     execute=lambda r: [{'id': 1,
+                                         'owner': 'joe@example.org',
+                                         'milestone': 'milestone1',
+                                         'custom1': 'val1'}],
+                     time_fields=['time', 'changetime'])
+        req = Mock(href=self.env.href, perm=MockPerm())
+        content, mimetype, ext = Mimeview(self.env).convert_content(
+            req, 'trac.ticket.Query', query, 'csv')
+        self.assertEqual(u'\uFEFFid,Owner,Milestone,CustomOne\r\n'
+                         u'1,joe@example.org,milestone1,val1\r\n',
+                         content.decode('utf-8'))
+
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['id', 'col1'],
                      execute=lambda r: [{'id': 1,
@@ -1135,7 +1152,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         req = MockRequest(self.env, authname='anonymous')
         content, mimetype, ext = Mimeview(self.env).convert_content(
             req, 'trac.ticket.Query', query, 'csv')
-        self.assertEqual(u'\uFEFFid,owner,reporter,cc\r\n'
+        self.assertEqual(u'\uFEFFid,Owner,Reporter,Cc\r\n'
                          u'1,joe@…,foo@…,"cc1@…, cc2"\r\n',
                          content.decode('utf-8'))
 
@@ -1143,7 +1160,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         content, mimetype, ext = Mimeview(self.env).convert_content(
             req, 'trac.ticket.Query', query, 'csv')
         self.assertEqual(
-            u'\uFEFFid,owner,reporter,cc\r\n'
+            u'\uFEFFid,Owner,Reporter,Cc\r\n'
             u'1,joe@example.org,foo@example.org,"cc1@example.org, cc2"\r\n',
             content.decode('utf-8'))
 
