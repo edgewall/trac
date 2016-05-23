@@ -15,6 +15,7 @@ import difflib
 import os
 import re
 import unittest
+import StringIO
 
 # Python 2.7 `assertMultiLineEqual` calls `safe_repr(..., short=True)`
 # which breaks our custom failure display in WikiTestCase.
@@ -26,6 +27,7 @@ except ImportError:
 else:
     unittest.case.safe_repr = lambda obj, short=False: safe_repr(obj, False)
 
+from genshi.template import MarkupTemplate
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import datetime_now, utc
@@ -83,7 +85,6 @@ class DivCodeStreamMacro(WikiMacroBase):
     """A dummy macro returning a Genshi Stream, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
-        from genshi.template import MarkupTemplate
         tmpl = MarkupTemplate("""
         <div>Hello World, args = $args</div>
         """)
@@ -257,14 +258,13 @@ class EscapeNewLinesTestCase(WikiTestCase):
 
 class OutlineTestCase(WikiTestCase):
     def formatter(self):
-        from StringIO import StringIO
         class Outliner(object):
             flavor = 'outliner'
             def __init__(self, env, context, input):
                 self.outliner = OutlineFormatter(env, context)
                 self.input = input
             def generate(self):
-                out = StringIO()
+                out = StringIO.StringIO()
                 self.outliner.format(self.input, out)
                 return out.getvalue()
         return Outliner(self.env, self.context, self.input)
