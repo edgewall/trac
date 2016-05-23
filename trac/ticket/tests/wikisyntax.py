@@ -23,6 +23,7 @@ from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
                                utc)
 from trac.wiki.tests import formatter
 
+
 TICKET_TEST_CASES = u"""
 ============================== ticket: link resolver
 bug:1
@@ -32,9 +33,9 @@ ticket:12
 ticket:abc
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">bug:1</a>
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">issue:1</a>
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">ticket:1</a>
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">bug:1</a>
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">issue:1</a>
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">ticket:1</a>
 <a class="missing ticket">ticket:12</a>
 <a class="missing ticket">ticket:abc</a>
 </p>
@@ -46,10 +47,10 @@ ticket:1#comment:3
 ticket:1?format=csv
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">bug:1#comment:3</a>
-<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">issue:1#comment:3</a>
-<a class="new ticket" href="/ticket/1#comment:3" title="This is the summary (new)">ticket:1#comment:3</a>
-<a class="new ticket" href="/ticket/1?format=csv" title="This is the summary (new)">ticket:1?format=csv</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="#1: This is the summary (new)">bug:1#comment:3</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="#1: This is the summary (new)">issue:1#comment:3</a>
+<a class="new ticket" href="/ticket/1#comment:3" title="#1: This is the summary (new)">ticket:1#comment:3</a>
+<a class="new ticket" href="/ticket/1?format=csv" title="#1: This is the summary (new)">ticket:1?format=csv</a>
 </p>
 ------------------------------
 ============================== ticket: link resolver with ranges
@@ -70,7 +71,7 @@ ticket:12,33?order=created
 #12, #abc
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>, <a class="missing ticket">#2</a>
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">#1</a>, <a class="missing ticket">#2</a>
 <a class="missing ticket">#12</a>, #abc
 </p>
 ------------------------------
@@ -129,8 +130,8 @@ trac:#2041
 ------------------------------
 <p>
 #⁴²
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>-⁵,42
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>,³,5,7
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">#1</a>-⁵,42
+<a class="new ticket" href="/ticket/1" title="#1: This is the summary (new)">#1</a>,³,5,7
 #T²⁰⁴¹
 #trac²⁰⁴¹
 </p>
@@ -474,10 +475,10 @@ comment:ticket::2 (deprecated)
 comment:ticket:: (deprecated)
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:ticket:1:1</a> (deprecated)
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a> (deprecated)
-<a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">comment:ticket:1:description</a> (deprecated)
-<a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">see descr</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:ticket:1:1</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">see above</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">comment:ticket:1:description</a> (deprecated)
+<a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">see descr</a> (deprecated)
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">comment:ticket:2:1</a> (deprecated)
 <a class="missing ticket" title="ticket comment does not exist">comment:ticket:2:3</a> (deprecated)
 <a class="missing ticket" title="ticket does not exist">comment:ticket:3:1</a> (deprecated)
@@ -528,12 +529,12 @@ comment:2:ticket:
 comment::ticket:
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:bug:1</a>
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:issue:1</a>
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:ticket:1</a>
-<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
-<a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">comment:description:ticket:1</a>
-<a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">see descr</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:bug:1</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:issue:1</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:ticket:1</a>
+<a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">see above</a>
+<a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">comment:description:ticket:1</a>
+<a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">see descr</a>
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">comment:1:ticket:2</a>
 <a class="missing ticket" title="ticket comment does not exist">comment:3:ticket:2</a>
 <a class="missing ticket" title="ticket does not exist">comment:1:ticket:3</a>

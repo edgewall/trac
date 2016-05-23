@@ -126,7 +126,7 @@ COMMIT_TICKET_REF_MACRO_TEST_CASES = u"""\
 ------------------------------
 <p>
 </p><div class="message"><p>
-the message. refs <a class="new ticket" href="/ticket/1" title="the summary (new)">#1</a>.  <br />
+the message. refs <a class="new ticket" href="/ticket/1" title="#1: the summary (new)">#1</a>.  <br />
 </p>
 </div><p>
 </p>

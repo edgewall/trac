@@ -1572,8 +1572,7 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
         self._tester.add_comment(tid2, comment)
         self._tester.go_to_ticket(tid2)
         tc.find('<a class="closed ticket"[ \t\n]+'
-                'href="/ticket/%(num)s#comment:1"[ \t\n]+'
-                'title="Comment 1 for Ticket #%(num)s"' % {'num': tid1})
+                'href="/ticket/%(num)s#comment:1"' % {'num': tid1})
 
 
 class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):

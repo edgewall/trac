@@ -521,8 +521,9 @@ class TicketSystem(Component):
                             SELECT type, summary, status, resolution
                             FROM ticket WHERE id=%s
                             """, (str(num),)):
-                        title = self.format_summary(summary, status,
-                                                    resolution, type)
+                        description = self.format_summary(summary, status,
+                                                          resolution, type)
+                        title = '#%s: %s' % (num, description)
                         href = formatter.href.ticket(num) + params + fragment
                         return tag.a(label, title=title, href=href,
                                      class_='%s ticket' % status)
@@ -568,12 +569,17 @@ class TicketSystem(Component):
                     href = formatter.href.ticket(resource.id) + \
                            "#comment:%s" % cnum
                     if resource.id != formatter.resource.id:
+                        summary = self.format_summary(ticket['summary'],
+                                                      ticket['status'],
+                                                      ticket['resolution'],
+                                                      ticket['type'])
                         if cnum == 'description':
-                            title = _("Description for Ticket #%(id)s",
-                                      id=resource.id)
+                            title = _("Description for #%(id)s: %(summary)s",
+                                      id=resource.id, summary=summary)
                         else:
-                            title = _("Comment %(cnum)s for Ticket #%(id)s",
-                                      cnum=cnum, id=resource.id)
+                            title = _("Comment %(cnum)s for #%(id)s: "
+                                      "%(summary)s", cnum=cnum,
+                                      id=resource.id, summary=summary)
                         class_ = ticket['status'] + ' ticket'
                     else:
                         title = _("Description") if cnum == 'description' \
