@@ -50,6 +50,7 @@ import shutil
 import stat
 import unittest
 import exceptions
+from pkg_resources import parse_version
 
 import trac
 from trac.tests.functional.compat import close_fds, rmtree
@@ -103,6 +104,12 @@ if twill:
             env_class = SvnFunctionalTestEnvironment
         else:
             env_class = FunctionalTestEnvironment
+
+        def __init__(self):
+            if parse_version(twill.__version__) != parse_version('0.9'):
+                raise ImportError("Twill 0.9 is required. Found version %s."
+                                  % twill.__version__)
+            super(FunctionalTestSuite, self).__init__()
 
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
