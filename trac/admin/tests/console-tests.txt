@@ -278,7 +278,7 @@ component2     somebody
 new_component  new_user
 
 ===== test_component_add_error_already_exists =====
-IntegrityError: column name is not unique
+IntegrityError: [...]
 ===== test_component_rename_ok =====
 
 Name          Owner   
@@ -289,7 +289,7 @@ component2    somebody
 ===== test_component_rename_error_bad_component =====
 ResourceNotFound: Component bad_component does not exist.
 ===== test_component_rename_error_bad_new_name =====
-IntegrityError: column name is not unique
+IntegrityError: [...]
 ===== test_component_chown_ok =====
 
 Name        Owner        
@@ -325,7 +325,7 @@ task
 new_type
 
 ===== test_ticket_type_add_error_already_exists =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_ticket_type_change_ok =====
 
 Possible Values
@@ -337,7 +337,7 @@ task
 ===== test_ticket_type_change_error_bad_type =====
 ResourceNotFound: ticket_type bad_type does not exist.
 ===== test_ticket_type_change_error_bad_new_name =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_ticket_type_remove_ok =====
 
 Possible Values
@@ -408,7 +408,7 @@ p9
 p10           
 
 ===== test_priority_add_error_already_exists =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_priority_change_ok =====
 
 Possible Values
@@ -422,7 +422,7 @@ trivial
 ===== test_priority_change_error_bad_priority =====
 ResourceNotFound: priority bad_priority does not exist.
 ===== test_priority_change_error_bad_new_name =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_priority_remove_ok =====
 
 Possible Values
@@ -468,7 +468,7 @@ Possible Values
 new_severity   
 
 ===== test_severity_add_error_already_exists =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_severity_change_ok =====
 
 Possible Values 
@@ -478,7 +478,7 @@ end-of-the-world
 ===== test_severity_change_error_bad_severity =====
 ResourceNotFound: severity bad_severity does not exist.
 ===== test_severity_change_error_bad_new_name =====
-IntegrityError: columns type, name are not unique
+IntegrityError: [...]
 ===== test_severity_remove_ok =====
 
 Possible Values
@@ -518,7 +518,7 @@ Name  Time
 9.9   2004-01-11
 
 ===== test_version_add_error_already_exists =====
-IntegrityError: column name is not unique
+IntegrityError: [...]
 ===== test_version_rename_ok =====
 
 Name  Time
@@ -582,7 +582,7 @@ milestone3
 milestone4
 
 ===== test_milestone_add_error_already_exists =====
-IntegrityError: column name is not unique
+IntegrityError: [...]
 ===== test_milestone_rename_ok =====
 
 Name               Due  Completed

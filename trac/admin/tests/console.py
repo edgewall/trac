@@ -174,13 +174,18 @@ class TracadminTestCase(unittest.TestCase):
         # Create a useful delta between the output and the expected output
         output_lines = ['%s\n' % x for x in output.split('\n')]
         expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
-        output_diff = ''.join(list(
-            difflib.unified_diff(expected_lines, output_lines,
-                                 'expected', 'actual')
-        ))
-        unittest.TestCase.assertEqual(self, expected_results, output, 
-                                      "%r != %r\n%s" %
-                                      (expected_results, output, output_diff))
+        diff = ''.join(difflib.unified_diff(expected_lines, output_lines,
+                                            'expected', 'actual'))
+        if '[...]' in expected_results:
+            m = re.match('%s$' % expected_results.replace('[...]', '.*'),
+                         output)
+            unittest.TestCase.assertTrue(self, m,
+                                         "%r != %r\n%s" % (expected_results,
+                                                           output, diff))
+        else:
+            unittest.TestCase.assertEqual(self, expected_results, output,
+                                          "%r != %r\n%s" % (expected_results,
+                                                            output, diff))
     # Help test
 
     def test_help_ok(self):
