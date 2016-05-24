@@ -949,27 +949,18 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/4447"""
         ticketid = self._tester.create_ticket(summary="Hello World")
-        
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
         env.config.set('ticket-custom', 'newfield.label',
                        'Another Custom Field')
         env.config.save()
-        try:
-            self._testenv.restart()
-            self._tester.go_to_ticket(ticketid)
-            self._tester.add_comment(ticketid)
-            tc.notfind('deleted')
-            tc.notfind('set to')
-        finally:
-            pass
 
-        ticketid = self._tester.create_ticket(summary="Hello World")
         self._tester.add_comment(ticketid)
         tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
                    '</strong>[ \t\n]+<em></em>[ \t\n]+deleted')
         tc.notfind('<strong class="trac-field-newfield">Another Custom Field'
                    '</strong>[ \t\n]*set to <em>')
+
 
 class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
     def runTest(self):
