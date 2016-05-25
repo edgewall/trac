@@ -356,7 +356,7 @@ class RequestDispatcher(Component):
     def _get_locale(self, req):
         if has_babel:
             preferred = req.session.get('language')
-            default = self.env.config.get('trac', 'default_language', '')
+            default = self.default_language
             negotiated = get_negotiated_locale([preferred, default] +
                                                req.languages)
             self.log.debug("Negotiated locale: %s -> %s", preferred,
