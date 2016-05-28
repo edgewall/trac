@@ -241,7 +241,7 @@ class TimelineModule(Component):
         previous_start = fromdate.replace(tzinfo=None) - \
                          timedelta(days=daysback + 1)
         previous_start = format_date(to_datetime(previous_start, req.tz),
-                                     format='%Y-%m-%d', tzinfo=req.tz)
+                                     format='iso8601', tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
@@ -250,7 +250,7 @@ class TimelineModule(Component):
             next_start = fromdate.replace(tzinfo=None) + \
                          timedelta(days=daysback + 1)
             next_start = format_date(to_datetime(next_start, req.tz),
-                                     format='%Y-%m-%d', tzinfo=req.tz)
+                                     format='iso8601', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     authors=authors,
                                                     daysback=daysback),
