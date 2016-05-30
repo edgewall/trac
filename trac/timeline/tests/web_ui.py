@@ -144,6 +144,7 @@ class TimelineModuleTestCase(unittest.TestCase):
         PermissionSystem(self.env).grant_permission('user1', 'TIMELINE_VIEW')
         req = MockRequest(self.env, authname='user1')
         req.session.set('timeline.daysback', '45')
+
         data = TimelineModule(self.env).process_request(req)[1]
 
         self.assertEqual(45, data['daysback'])
