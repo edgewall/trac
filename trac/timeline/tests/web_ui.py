@@ -109,6 +109,22 @@ class TimelineModuleTestCase(unittest.TestCase):
                                      get_date_format_hint('iso8601')),
                       req.chrome['warnings'])
 
+    def test_prev_next_nav_accepts_from_year_before_1900(self):
+        """Previous and next navigation items accept a from year earlier
+        than 1900 (#12489).
+        """
+        req = MockRequest(self.env, args={
+            'from': '1899-12-23',
+            'daysback': 7,
+        })
+
+        TimelineModule(self.env).process_request(req)
+
+        next = req.chrome['links']['next'][0]
+        prev = req.chrome['links']['prev'][0]
+        self.assertIn('from=1899-12-31', next['href'])
+        self.assertIn('from=1899-12-15', prev['href'])
+
 
 def suite():
     suite = unittest.TestSuite()
