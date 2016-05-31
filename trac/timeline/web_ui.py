@@ -247,8 +247,8 @@ class TimelineModule(Component):
         # Navigation to the previous/next period of 'daysback' days
         previous_start = fromdate.replace(tzinfo=None) - \
                          timedelta(days=daysback + 1)
-        previous_start = format_date(to_datetime(previous_start, req.tz),
-                                     format='iso8601', tzinfo=req.tz)
+        previous_start = format_date(previous_start, format='iso8601',
+                                     tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
