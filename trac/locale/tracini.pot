@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-05-12 03:03+0000\n"
+"POT-Creation-Date: 2016-06-01 15:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,6 +180,7 @@ msgid ""
 msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_prop.py:38
+#, python-format
 msgid ""
 "The TracBrowser for Subversion can interpret the `svn:externals`\n"
 "property of folders. By default, it only turns the URLs into links as\n"
@@ -208,9 +209,7 @@ msgid ""
 "be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=`\n"
 "(and `rev` will be set to the appropriate revision number if the\n"
 "external additionally specifies a revision, see the\n"
-"[http://svnbook.red-bean.com/en/1.7/svn.advanced.externals.html SVN Book "
-"on externals]\n"
-"for more details).\n"
+"[%(svnbook)s SVN Book on externals] for more details).\n"
 "\n"
 "Note that the number used as a key in the above section is purely used\n"
 "as a place holder, as the URLs themselves can't be used as a key due to\n"
@@ -694,17 +693,17 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/ticket/api.py:202
+#: trac/ticket/api.py:203
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:206
+#: trac/ticket/api.py:207
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:212
+#: trac/ticket/api.py:213
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -716,55 +715,55 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:224
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:226
+#: trac/ticket/api.py:227
 msgid "Default type for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:229
+#: trac/ticket/api.py:230
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:232
+#: trac/ticket/api.py:233
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:235
+#: trac/ticket/api.py:236
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:238
+#: trac/ticket/api.py:239
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:241
+#: trac/ticket/api.py:242
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:244
+#: trac/ticket/api.py:245
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:247
+#: trac/ticket/api.py:248
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:250
+#: trac/ticket/api.py:251
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:253
+#: trac/ticket/api.py:254
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:256
+#: trac/ticket/api.py:257
 msgid "Default resolution for resolving (closing) tickets."
 msgstr ""
 
-#: trac/ticket/api.py:259
+#: trac/ticket/api.py:260
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
@@ -778,7 +777,7 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:66
+#: trac/ticket/notification.py:64
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -787,13 +786,13 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/notification.py:75
+#: trac/ticket/notification.py:73
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:80
+#: trac/ticket/notification.py:78
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -1024,16 +1023,16 @@ msgid ""
 msgstr ""
 
 #: trac/versioncontrol/svn_authz.py:124
+#, python-format
 msgid ""
 "The path to the Subversion\n"
-"[http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html "
-"authorization (authz) file].\n"
+"[%(svnbook)s authorization (authz) file].\n"
 "To enable authz permission checking, the `AuthzSourcePolicy` permission\n"
 "policy must be added to `[trac] permission_policies`. Non-absolute\n"
 "paths are relative to the Environment `conf` directory."
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:132
+#: trac/versioncontrol/svn_authz.py:133
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
