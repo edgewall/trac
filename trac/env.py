@@ -34,8 +34,8 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager, with_transaction)
 from trac.loader import load_components
 from trac.log import logger_handler_factory
-from trac.util import arity, copytree, create_file, get_pkginfo, lazy, \
-                      makedirs, read_file
+from trac.util import arity, as_bool, copytree, create_file, get_pkginfo, \
+                      lazy, makedirs, read_file
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -365,9 +365,8 @@ class Environment(Component, ComponentManager):
     def _component_rules(self):
         _rules = {}
         for name, value in self.components_section.options():
-            if name.endswith('.*'):
-                name = name[:-2]
-            _rules[name.lower()] = value.lower() in ('enabled', 'on')
+            name = name.rstrip('.*').lower()
+            _rules[name] = as_bool(value)
         return _rules
 
     def is_component_enabled(self, cls):
