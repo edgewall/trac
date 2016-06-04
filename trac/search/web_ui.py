@@ -17,21 +17,19 @@
 import pkg_resources
 import re
 
-from genshi.builder import tag
-
 from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime, user_time
-from trac.util.html import find_element
+from trac.util.html import Markup, escape, find_element, tag
 from trac.util.presentation import Paginator
 from trac.util.text import quote_query_string
 from trac.util.translation import _
 from trac.web.api import IRequestHandler
 from trac.web.chrome import (INavigationContributor, ITemplateProvider,
-                             add_link, add_stylesheet, add_warning,
-                             web_context)
+                             add_link, add_notice, add_stylesheet,
+                             add_warning, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import extract_link
 
@@ -182,6 +180,15 @@ class SearchModule(Component):
                 return {'href': quickjump_href, 'name': tag.em(name),
                         'description': description}
             else:
+                help_url = req.href.wiki('TracSearch') + '#Quicksearches'
+                search_url = req.href.search(q=kwd, noquickjump=1)
+                add_notice(req, tag(Markup(_(
+                    'You arrived here through the <a href="%(help_url)s">'
+                    'quick-jump</a> search feature. To instead search for the '
+                    'term <strong>%(term)s</strong>, click <a '
+                    'href="%(search_url)s">here</a>.',
+                    help_url=escape(help_url), term=escape(kwd),
+                    search_url=escape(search_url)))))
                 req.redirect(quickjump_href)
 
     def _get_search_terms(self, query):
