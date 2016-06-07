@@ -420,11 +420,12 @@ class ConnectionTestCase(unittest.TestCase):
                 Column('author')
             ]
         ]
-        self.env.global_databasemanager.drop_tables(self.schema)
-        self.env.global_databasemanager.create_tables(self.schema)
+        dbm = DatabaseManager(self.env)
+        dbm.drop_tables(self.schema)
+        dbm.create_tables(self.schema)
 
     def tearDown(self):
-        self.env.global_databasemanager.drop_tables(self.schema)
+        DatabaseManager(self.env).drop_tables(self.schema)
         self.env.reset_db()
 
     def test_get_last_id(self):

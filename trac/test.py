@@ -315,7 +315,7 @@ def reset_mysql_db(env, db_prop):
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment class for testing."""
 
-    global_databasemanager = None
+    global_databasemanager = None  # Deprecated, will be removed in 1.3.1
     required = False
     abstract = True
 
@@ -379,19 +379,13 @@ class EnvironmentStub(Environment):
         self.log, self._log_handler = logger_handler_factory('test')
 
         # -- database
-        self.config.set('components', 'trac.db.*', 'enabled')
         self.dburi = get_dburi()
+        self.config.set('components', 'trac.db.*', 'enabled')
+        self.config.set('trac', 'database', self.dburi)
+        self.config.set('trac', 'debug_sql', True)
+        self.global_databasemanager = DatabaseManager(self)  # Remove in 1.3.1
 
-        init_global = False
-        if self.global_databasemanager:
-            self.components[DatabaseManager] = self.global_databasemanager
-        else:
-            self.config.set('trac', 'database', self.dburi)
-            self.global_databasemanager = DatabaseManager(self)
-            self.config.set('trac', 'debug_sql', True)
-            init_global = not destroying
-
-        if default_data or init_global:
+        if not destroying:
             self.reset_db(default_data)
 
         self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
@@ -406,7 +400,7 @@ class EnvironmentStub(Environment):
         """
         from trac import db_default
         tables = []
-        dbm = self.global_databasemanager
+        dbm = DatabaseManager(self)
         try:
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
@@ -441,10 +435,9 @@ class EnvironmentStub(Environment):
                       will be removed in 1.3.1.
         """
         try:
-            self.global_databasemanager.destroy_db()
+            DatabaseManager(self).destroy_db()
         except (TracError, self.db_exc.DatabaseError):
             pass
-        return False
 
     def clear_component_registry(self):
         """Clear the component registry.
