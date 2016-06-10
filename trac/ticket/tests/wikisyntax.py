@@ -458,6 +458,7 @@ comment:ticket:: (deprecated)
 ------------------------------
 ============================== comment: link resolver
 comment:1
+comment:₁
 [comment:1 see above]
 comment:description
 [comment:description see descr]
@@ -467,6 +468,7 @@ comment:1a
 ------------------------------
 <p>
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">comment:1</a>
+<a class="missing ticket" title="ticket comment does not exist">comment:₁</a>
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">see above</a>
 <a class="ticket" href="/ticket/2#comment:description" title="Description">comment:description</a>
 <a class="ticket" href="/ticket/2#comment:description" title="Description">see descr</a>
@@ -477,6 +479,7 @@ comment:1a
 ------------------------------
 ============================== comment: link resolver with ticket number
 comment:1:ticket:1
+comment:₁:ticket:1
 [comment:1:ticket:1 see above]
 comment:description:ticket:1
 [comment:description:ticket:1 see descr]
@@ -493,6 +496,7 @@ comment::ticket:
 ------------------------------
 <p>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">comment:1:ticket:1</a>
+<a class="missing ticket" title="ticket comment does not exist">comment:₁:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for Ticket #1">see above</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">comment:description:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Description for Ticket #1">see descr</a>
