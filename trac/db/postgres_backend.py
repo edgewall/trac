@@ -290,6 +290,10 @@ class PostgreSQLConnection(ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def ping(self):
+        cursor = self.cnx.cursor()
+        cursor.execute('SELECT 1')
+
     def prefix_match(self):
         """Return a case sensitive prefix-matching operator."""
         return "LIKE %s ESCAPE '/'"
