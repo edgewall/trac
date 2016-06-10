@@ -660,7 +660,7 @@ class Ticket(object):
 
     def _find_change(self, cnum):
         """Find a comment by its number."""
-        scnum = str(cnum)
+        scnum = unicode(cnum)
         with self.env.db_query as db:
             for row in db("""
                     SELECT time, author, newvalue FROM ticket_change

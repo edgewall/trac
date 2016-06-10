@@ -557,7 +557,7 @@ class TicketSystem(Component):
             cnum = target
 
         if resource and resource.id and resource.realm == self.realm and \
-                cnum and (all(c.isdigit() for c in cnum) or cnum == 'description'):
+                cnum and (cnum.isdigit() or cnum == 'description'):
             href = title = class_ = None
             if self.resource_exists(resource):
                 from trac.ticket.model import Ticket

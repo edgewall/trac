@@ -493,6 +493,7 @@ comment:ticket:: (deprecated)
 ------------------------------
 ============================== comment: link resolver
 comment:1
+comment:₁
 [comment:1 see above]
 comment:description
 [comment:description see descr]
@@ -502,6 +503,7 @@ comment:1a
 ------------------------------
 <p>
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">comment:1</a>
+<a class="missing ticket" title="ticket comment does not exist">comment:₁</a>
 <a class="ticket" href="/ticket/2#comment:1" title="Comment 1">see above</a>
 <a class="ticket" href="/ticket/2#comment:description" title="Description">comment:description</a>
 <a class="ticket" href="/ticket/2#comment:description" title="Description">see descr</a>
@@ -514,6 +516,7 @@ comment:1a
 comment:1:bug:1
 comment:1:issue:1
 comment:1:ticket:1
+comment:₁:ticket:1
 [comment:1:ticket:1 see above]
 comment:description:ticket:1
 [comment:description:ticket:1 see descr]
@@ -532,6 +535,7 @@ comment::ticket:
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:bug:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:issue:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">comment:1:ticket:1</a>
+<a class="missing ticket" title="ticket comment does not exist">comment:₁:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:1" title="Comment 1 for #1: This is the summary for ticket 1 (new)">see above</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">comment:description:ticket:1</a>
 <a class="new ticket" href="/ticket/1#comment:description" title="Description for #1: This is the summary for ticket 1 (new)">see descr</a>
