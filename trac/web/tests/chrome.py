@@ -16,6 +16,7 @@ import tempfile
 import unittest
 
 from genshi.builder import tag
+from genshi.core import Markup
 import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.test import EnvironmentStub, locale_en
@@ -172,10 +173,12 @@ class ChromeTestCase(unittest.TestCase):
         add_fn(req, 'Message with an "&"')
         add_fn(req, Exception("Exception message with an &"))
         add_fn(req, tag("Message with text ", tag.b("& markup")))
+        add_fn(req, Markup("Markup <strong>message</strong>."))
         messages = req.chrome[msgtype]
         self.assertIn('Message with an "&amp;"', messages)
         self.assertIn("Exception message with an &amp;", messages)
         self.assertIn("Message with text <b>&amp; markup</b>", messages)
+        self.assertIn("Markup <strong>message</strong>.", messages)
 
     def test_add_warning_escapes_markup(self):
         """Message text is escaped. Regression test for
