@@ -78,6 +78,9 @@ class SearchModuleTestCase(unittest.TestCase):
         self.assertEqual('http://example.org/trac.cgi/wiki/WikiStart',
                          req.headers_sent['Location'])
         self.assertIn("You arrived here through", req.chrome['notices'][0])
+        self.assertIn('<a href="/trac.cgi/search?'
+                      'q=WikiStart&amp;noquickjump=1">here</a>',
+                      req.chrome['notices'][0])
 
     def test_non_camelcase_no_quickjump(self):
         """Non-CamelCase word does not quick-jump."""

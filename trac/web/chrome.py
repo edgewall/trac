@@ -195,11 +195,7 @@ def add_warning(req, msg, *args):
     the message is escaped (and therefore converted to `Markup`) before it is
     stored in the request object.
     """
-    if args:
-        msg %= args
-    msg = Markup(to_fragment(msg))
-    if msg not in req.chrome['warnings']:
-        req.chrome['warnings'].append(msg)
+    _add_message(req, 'warnings', msg, args)
 
 
 def add_notice(req, msg, *args):
@@ -209,11 +205,16 @@ def add_notice(req, msg, *args):
     the message is escaped (and therefore converted to `Markup`) before it is
     stored in the request object.
     """
+    _add_message(req, 'notices', msg, args)
+
+
+def _add_message(req, name, msg, args):
     if args:
         msg %= args
-    msg = Markup(to_fragment(msg))
-    if msg not in req.chrome['notices']:
-        req.chrome['notices'].append(msg)
+    if not isinstance(msg, Markup):
+        msg = Markup(to_fragment(msg))
+    if msg not in req.chrome[name]:
+        req.chrome[name].append(msg)
 
 
 def add_ctxtnav(req, elm_or_label, href=None, title=None):

@@ -182,13 +182,13 @@ class SearchModule(Component):
             else:
                 help_url = req.href.wiki('TracSearch') + '#Quicksearches'
                 search_url = req.href.search(q=kwd, noquickjump=1)
-                add_notice(req, tag(Markup(_(
+                add_notice(req, Markup(_(
                     'You arrived here through the <a href="%(help_url)s">'
                     'quick-jump</a> search feature. To instead search for the '
                     'term <strong>%(term)s</strong>, click <a '
                     'href="%(search_url)s">here</a>.',
                     help_url=escape(help_url), term=escape(kwd),
-                    search_url=escape(search_url)))))
+                    search_url=escape(search_url))))
                 req.redirect(quickjump_href)
 
     def _get_search_terms(self, query):
