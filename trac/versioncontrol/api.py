@@ -695,7 +695,8 @@ class RepositoryManager(Component):
         if not repositories:
             self.log.warn("Found no repositories matching '%s' base.",
                           base or reponame)
-            return
+            return [_("Repository '%(repo)s' not found",
+                      repo=reponame or _("(default)"))]
 
         errors = []
         for repos in sorted(repositories, key=lambda r: r.reponame):

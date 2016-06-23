@@ -88,19 +88,19 @@ class VersionControlAdmin(Component):
         if len(args) == 1:
             return self.get_reponames()
 
-    def _do_changeset_added(self, reponame, *revs):
+    def _do_changeset_added(self, reponame, first_rev, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        errors = rm.notify('changeset_added', reponame, revs)
+        errors = rm.notify('changeset_added', reponame, (first_rev,) + revs)
         for error in errors:
             printout(error)
 
-    def _do_changeset_modified(self, reponame, *revs):
+    def _do_changeset_modified(self, reponame, first_rev, *revs):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        errors = rm.notify('changeset_modified', reponame, revs)
+        errors = rm.notify('changeset_modified', reponame, (first_rev,) + revs)
         for error in errors:
             printout(error)
 

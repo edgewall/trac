@@ -125,7 +125,8 @@ class TracAdmin(cmd.Cmd):
             printerr(exception_to_unicode(e))
             rv = 2
             if self.env_check():
-                self.env.log.error("Exception in trac-admin command: %s",
+                self.env.log.error("Exception in trac-admin command: %r%s",
+                                   line,
                                    exception_to_unicode(e, traceback=True))
         if not self.interactive:
             return rv
