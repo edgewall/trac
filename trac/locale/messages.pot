@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-06-01 15:05-0700\n"
+"POT-Creation-Date: 2016-06-23 17:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -605,30 +605,30 @@ msgid ""
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:412
+#: trac/env.py:411
 #, python-format
 msgid "Unknown Trac environment type '%(type)s'"
 msgstr ""
 
-#: trac/env.py:415
+#: trac/env.py:414
 #, python-format
 msgid ""
 "No Trac environment found at %(path)s\n"
 "%(e)s"
 msgstr ""
 
-#: trac/env.py:645
+#: trac/env.py:644
 #, python-format
 msgid "The configuration file is not found at %(path)s"
 msgstr ""
 
-#: trac/env.py:909
+#: trac/env.py:908
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/admin/console.py:287 trac/env.py:939
+#: trac/admin/console.py:287 trac/env.py:938
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -636,67 +636,67 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 
-#: trac/env.py:983
+#: trac/env.py:982
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:1001
+#: trac/env.py:1000
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:1013
+#: trac/env.py:1012
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:1018
+#: trac/env.py:1017
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:1026
+#: trac/env.py:1025
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1045
+#: trac/env.py:1044
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1055
+#: trac/env.py:1054
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1060
+#: trac/env.py:1059
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/admin/api.py:134 trac/env.py:1065
+#: trac/admin/api.py:134 trac/env.py:1064
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1068
+#: trac/env.py:1067
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1074
+#: trac/env.py:1073
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1078
+#: trac/env.py:1077
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1090
+#: trac/env.py:1089
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1101
+#: trac/env.py:1100
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -704,7 +704,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1106
+#: trac/env.py:1105
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -2116,36 +2116,44 @@ msgid "Default (%(handler)s)"
 msgstr ""
 
 #: trac/search/templates/search.html:22 trac/search/templates/search.html:33
-#: trac/search/templates/search.html:38 trac/search/web_ui.py:73
+#: trac/search/templates/search.html:38 trac/search/web_ui.py:71
 #: trac/templates/theme.html:39
 msgid "Search"
 msgstr ""
 
-#: trac/search/web_ui.py:169
+#: trac/search/web_ui.py:167
 #, python-format
 msgid "Browse repository path %(path)s"
 msgstr ""
 
-#: trac/search/web_ui.py:209
+#: trac/search/web_ui.py:191
+#, python-format
+msgid ""
+"You arrived here through the <a href=\"%(help_url)s\">quick-jump</a> "
+"search feature. To instead search for the term <strong>%(term)s</strong>,"
+" click <a href=\"%(search_url)s\">here</a>."
+msgstr ""
+
+#: trac/search/web_ui.py:216
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:225 trac/util/presentation.py:183
+#: trac/search/web_ui.py:232 trac/util/presentation.py:183
 #, python-format
 msgid "Page %(page)s is out of range."
 msgstr ""
 
-#: trac/search/web_ui.py:241 trac/ticket/query.py:810 trac/ticket/report.py:453
+#: trac/search/web_ui.py:248 trac/ticket/query.py:810 trac/ticket/report.py:453
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/search/web_ui.py:254 trac/ticket/query.py:797 trac/ticket/report.py:444
+#: trac/search/web_ui.py:261 trac/ticket/query.py:797 trac/ticket/report.py:444
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:260 trac/ticket/query.py:802 trac/ticket/report.py:447
+#: trac/search/web_ui.py:267 trac/ticket/query.py:802 trac/ticket/report.py:447
 msgid "Previous Page"
 msgstr ""
 
@@ -2741,7 +2749,7 @@ msgstr ""
 msgid "%(title)s: %(count)s"
 msgstr ""
 
-#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1320
+#: trac/templates/progress_bar_grouped.html:26 trac/web/chrome.py:1321
 msgid "(none)"
 msgstr ""
 
@@ -4942,18 +4950,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:291 trac/timeline/web_ui.py:314
-#: trac/web/chrome.py:980
+#: trac/web/chrome.py:981
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:295 trac/timeline/web_ui.py:312
-#: trac/web/chrome.py:994
+#: trac/web/chrome.py:995
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:982
+#: trac/timeline/web_ui.py:298 trac/web/chrome.py:983
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -4963,7 +4971,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:306 trac/web/chrome.py:990
+#: trac/timeline/web_ui.py:306 trac/web/chrome.py:991
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -6422,26 +6430,26 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr ""
 
-#: trac/web/chrome.py:721
+#: trac/web/chrome.py:722
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:852
+#: trac/web/chrome.py:853
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1173
+#: trac/web/chrome.py:1174
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1174
+#: trac/web/chrome.py:1175
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1318
+#: trac/web/chrome.py:1319
 msgid "anonymous"
 msgstr ""
 
