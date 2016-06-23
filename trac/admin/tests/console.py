@@ -179,9 +179,12 @@ class TracadminTestCase(unittest.TestCase):
             expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
             return ''.join(difflib.unified_diff(expected_lines, output_lines,
                                                 'expected', 'actual'))
+
         if '[...]' in expected_results:
-            m = re.match(expected_results.replace('[...]', '.*'), output,
-                         re.MULTILINE)
+            m = re.match('.*'.join(map(re.escape,
+                                       expected_results.split('[...]'))) +
+                         '\Z',
+                         output, re.MULTILINE)
             unittest.TestCase.assertTrue(self, m,
                                          "%r != %r\n%s" % (expected_results,
                                                            output, diff()))
@@ -1360,6 +1363,36 @@ class TracadminTestCase(unittest.TestCase):
     def test_help_session_purge(self):
         doc = self._get_command_help('session', 'purge')
         self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+
+    def test_changeset_add_no_repository_revision(self):
+        rv, output = self._execute('changeset added')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_changeset_add_no_revision(self):
+        rv, output = self._execute('changeset added repos')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_changeset_modify_no_repository_revision(self):
+        rv, output = self._execute('changeset modified')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_changeset_modify_no_revision(self):
+        rv, output = self._execute('changeset modified repos')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_changeset_add_invalid_repository(self):
+        rv, output = self._execute('changeset added repos 123')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_changeset_modify_invalid_repository(self):
+        rv, output = self._execute('changeset modified repos 123')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
 
 
 class TracadminNoEnvTestCase(unittest.TestCase):
