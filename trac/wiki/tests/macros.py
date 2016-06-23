@@ -412,6 +412,13 @@ TITLEINDEX3_MACRO_TEST_CASES = u"""
 </p><div class="titleindex"><ul><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></div><p>
 </p>
 ------------------------------
+============================== TitleIndex, top-level pages only
+[[TitleIndex(depth=0)]]
+------------------------------
+<p>
+</p><div class="titleindex"><ul><li><a href="/wiki/WikiStart">WikiStart</a></li></ul></div><p>
+</p>
+------------------------------
 """
 
 def titleindex3_setup(tc):

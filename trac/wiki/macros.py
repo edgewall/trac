@@ -915,7 +915,7 @@ class TracGuideTocMacro(WikiMacroBase):
 
 def _arg_as_int(val, key=None, min=None, max=None):
     int_val = as_int(val, None, min=min, max=max)
-    if not int_val:
+    if int_val is None:
         raise MacroError(tag_("Invalid macro argument %(expr)s",
                               expr=tag.code("%s=%s" % (key, val))
                                    if key else tag.code(val)))
