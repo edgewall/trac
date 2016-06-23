@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.11\n"
+"Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-05-02 23:56+0000\n"
+"POT-Creation-Date: 2016-06-23 17:49-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 2.3.4\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -63,8 +63,8 @@ msgstr ""
 msgid "(The changeset message doesn't reference this ticket)"
 msgstr ""
 
-#: tracopt/ticket/deleter.py:73 tracopt/ticket/deleter.py:90
-#: trac/ticket/templates/report_list.html:92
+#: trac/ticket/templates/report_list.html:92 tracopt/ticket/deleter.py:73
+#: tracopt/ticket/deleter.py:90
 msgid "Delete"
 msgstr ""
 
@@ -119,14 +119,12 @@ msgid ""
 "                 attachments: %(attachments)s)"
 msgstr ""
 
+#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:105
 #: tracopt/ticket/templates/ticket_delete.html:46
 #: tracopt/ticket/templates/ticket_delete.html:71
-#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:105
 msgid "This is an irreversible operation."
 msgstr ""
 
-#: tracopt/ticket/templates/ticket_delete.html:52
-#: tracopt/ticket/templates/ticket_delete.html:76
 #: trac/templates/attachment.html:73 trac/templates/attachment.html:87
 #: trac/ticket/templates/admin_components.html:64
 #: trac/ticket/templates/admin_enums.html:38
@@ -141,6 +139,8 @@ msgstr ""
 #: trac/wiki/templates/wiki_delete.html:112
 #: trac/wiki/templates/wiki_edit_form.html:84
 #: trac/wiki/templates/wiki_rename.html:43
+#: tracopt/ticket/templates/ticket_delete.html:52
+#: tracopt/ticket/templates/ticket_delete.html:76
 msgid "Cancel"
 msgstr ""
 
@@ -168,9 +168,9 @@ msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:430 trac/ticket/web_ui.py:1760
-#: trac/ticket/templates/ticket_change.html:166 trac/wiki/macros.py:361
-#: trac/wiki/web_ui.py:767
+#: trac/ticket/templates/ticket_change.html:166 trac/ticket/web_ui.py:1760
+#: trac/wiki/macros.py:363 trac/wiki/web_ui.py:767
+#: tracopt/versioncontrol/git/git_fs.py:430
 msgid "diff"
 msgstr ""
 
@@ -417,8 +417,8 @@ msgstr ""
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:713 trac/attachment.py:740 trac/admin/web_ui.py:479
-#: trac/admin/web_ui.py:482 trac/admin/web_ui.py:486
+#: trac/admin/web_ui.py:479 trac/admin/web_ui.py:482 trac/admin/web_ui.py:486
+#: trac/attachment.py:713 trac/attachment.py:740
 msgid "No file uploaded"
 msgstr ""
 
@@ -626,7 +626,7 @@ msgid ""
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:957 trac/admin/console.py:285
+#: trac/admin/console.py:285 trac/env.py:957
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -669,7 +669,7 @@ msgstr ""
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:1079 trac/admin/api.py:134
+#: trac/admin/api.py:134 trac/env.py:1079
 msgid "Invalid arguments"
 msgstr ""
 
@@ -783,7 +783,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: trac/perm.py:666 trac/admin/templates/admin_perms.html:74
+#: trac/admin/templates/admin_perms.html:74 trac/perm.py:666
 #: trac/ticket/templates/batch_modify.html:47
 #: trac/ticket/templates/ticket.html:341
 msgid "Action"
@@ -793,7 +793,7 @@ msgstr ""
 msgid "Available actions:"
 msgstr ""
 
-#: trac/perm.py:679 trac/admin/web_ui.py:378
+#: trac/admin/web_ui.py:378 trac/perm.py:679
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr ""
 
@@ -1072,17 +1072,17 @@ msgid ""
 msgstr ""
 
 #: trac/admin/web_ui.py:204 trac/admin/web_ui.py:273 trac/admin/web_ui.py:364
-#: trac/admin/web_ui.py:457 trac/prefs/web_ui.py:89
-#: trac/prefs/templates/prefs_general.html:19
+#: trac/admin/web_ui.py:457 trac/prefs/templates/prefs_general.html:19
+#: trac/prefs/web_ui.py:89
 msgid "General"
 msgstr ""
 
-#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:23
+#: trac/admin/templates/admin_basics.html:23 trac/admin/web_ui.py:204
 msgid "Basic Settings"
 msgstr ""
 
-#: trac/admin/web_ui.py:273 trac/admin/templates/admin_logging.html:20
-#: trac/admin/templates/admin_logging.html:32
+#: trac/admin/templates/admin_logging.html:20
+#: trac/admin/templates/admin_logging.html:32 trac/admin/web_ui.py:273
 msgid "Logging"
 msgstr ""
 
@@ -1133,8 +1133,8 @@ msgstr ""
 msgid "Missing field"
 msgstr ""
 
-#: trac/admin/web_ui.py:364 trac/admin/templates/admin_perms.html:20
-#: trac/admin/templates/admin_perms.html:71
+#: trac/admin/templates/admin_perms.html:20
+#: trac/admin/templates/admin_perms.html:71 trac/admin/web_ui.py:364
 msgid "Permissions"
 msgstr ""
 
@@ -1174,7 +1174,7 @@ msgstr ""
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/web_ui.py:457 trac/admin/templates/admin_plugins.html:20
+#: trac/admin/templates/admin_plugins.html:20 trac/admin/web_ui.py:457
 msgid "Plugins"
 msgstr ""
 
@@ -1681,7 +1681,7 @@ msgstr ""
 msgid "%(link)s is not a valid TracLink"
 msgstr ""
 
-#: trac/prefs/web_ui.py:51 trac/prefs/templates/prefs.html:26
+#: trac/prefs/templates/prefs.html:26 trac/prefs/web_ui.py:51
 msgid "Preferences"
 msgstr ""
 
@@ -1689,23 +1689,23 @@ msgstr ""
 msgid "Unknown preference panel"
 msgstr ""
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_datetime.html:20
+#: trac/prefs/templates/prefs_datetime.html:20 trac/prefs/web_ui.py:90
 msgid "Date & Time"
 msgstr ""
 
-#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/templates/prefs_keybindings.html:20 trac/prefs/web_ui.py:91
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_userinterface.html:20
+#: trac/prefs/templates/prefs_userinterface.html:20 trac/prefs/web_ui.py:92
 msgid "User Interface"
 msgstr ""
 
-#: trac/prefs/web_ui.py:94 trac/prefs/templates/prefs_language.html:20
+#: trac/prefs/templates/prefs_language.html:20 trac/prefs/web_ui.py:94
 msgid "Language"
 msgstr ""
 
-#: trac/prefs/web_ui.py:96 trac/prefs/templates/prefs_advanced.html:20
+#: trac/prefs/templates/prefs_advanced.html:20 trac/prefs/web_ui.py:96
 msgid "Advanced"
 msgstr ""
 
@@ -1922,8 +1922,8 @@ msgid ""
 "      This reduces the verbosity of the pages."
 msgstr ""
 
-#: trac/search/web_ui.py:72 trac/search/templates/search.html:22
-#: trac/search/templates/search.html:33 trac/search/templates/search.html:38
+#: trac/search/templates/search.html:22 trac/search/templates/search.html:33
+#: trac/search/templates/search.html:38 trac/search/web_ui.py:72
 #: trac/templates/theme.html:39
 msgid "Search"
 msgstr ""
@@ -2143,8 +2143,8 @@ msgstr ""
 
 #: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
-#: trac/util/text.py:633 trac/util/tests/html.py:243
-#: trac/util/tests/html.py:256 trac/versioncontrol/templates/browser.html:199
+#: trac/util/tests/html.py:243 trac/util/tests/html.py:256
+#: trac/util/text.py:633 trac/versioncontrol/templates/browser.html:199
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
 msgid "%(size)s bytes"
@@ -2630,8 +2630,8 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:203 trac/ticket/api.py:304 trac/ticket/web_ui.py:1493
-#: trac/ticket/templates/admin_components.html:88
+#: trac/ticket/admin.py:203 trac/ticket/api.py:304
+#: trac/ticket/templates/admin_components.html:88 trac/ticket/web_ui.py:1493
 msgid "Owner"
 msgstr ""
 
@@ -3485,7 +3485,7 @@ msgstr ""
 msgid "Invalid Ticket"
 msgstr ""
 
-#: trac/ticket/web_ui.py:164 trac/ticket/templates/ticket.html:24
+#: trac/ticket/templates/ticket.html:24 trac/ticket/web_ui.py:164
 msgid "New Ticket"
 msgstr ""
 
@@ -3493,7 +3493,7 @@ msgstr ""
 msgid "id can't be set for a new ticket request."
 msgstr ""
 
-#: trac/ticket/web_ui.py:196 trac/ticket/templates/admin_milestones.html:124
+#: trac/ticket/templates/admin_milestones.html:124 trac/ticket/web_ui.py:196
 msgid "Tickets"
 msgstr ""
 
@@ -3770,11 +3770,11 @@ msgstr ""
 msgid "Remove from Cc"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1558 trac/ticket/templates/query.html:124
+#: trac/ticket/templates/query.html:124 trac/ticket/web_ui.py:1558
 msgid "yes"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1558 trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:127 trac/ticket/web_ui.py:1558
 msgid "no"
 msgstr ""
 
@@ -4686,8 +4686,8 @@ msgstr ""
 msgid "Ticket URL: <%(link)s>"
 msgstr ""
 
-#: trac/timeline/web_ui.py:78 trac/timeline/templates/timeline.html:20
-#: trac/timeline/templates/timeline.html:31
+#: trac/timeline/templates/timeline.html:20
+#: trac/timeline/templates/timeline.html:31 trac/timeline/web_ui.py:78
 msgid "Timeline"
 msgstr ""
 
@@ -4699,12 +4699,12 @@ msgstr ""
 msgid "Next Period"
 msgstr ""
 
-#: trac/timeline/web_ui.py:294 trac/web/chrome.py:950
+#: trac/timeline/web_ui.py:294 trac/web/chrome.py:951
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:954
+#: trac/timeline/web_ui.py:298 trac/web/chrome.py:955
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
@@ -4714,7 +4714,7 @@ msgstr ""
 msgid "See timeline %(relativetime)s ago"
 msgstr ""
 
-#: trac/timeline/web_ui.py:302 trac/web/chrome.py:955 trac/web/chrome.py:957
+#: trac/timeline/web_ui.py:302 trac/web/chrome.py:956 trac/web/chrome.py:958
 #, python-format
 msgid "%(relativetime)s ago"
 msgstr ""
@@ -5135,38 +5135,38 @@ msgstr ""
 msgid "Repository %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:796
+#: trac/versioncontrol/api.py:797
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:799
+#: trac/versioncontrol/api.py:800
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 
-#: trac/versioncontrol/api.py:807
+#: trac/versioncontrol/api.py:808
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:809
+#: trac/versioncontrol/api.py:810
 msgid "No such changeset"
 msgstr ""
 
-#: trac/versioncontrol/api.py:815
+#: trac/versioncontrol/api.py:816
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:817
+#: trac/versioncontrol/api.py:818
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:819
+#: trac/versioncontrol/api.py:820
 msgid "No such node"
 msgstr ""
 
@@ -6135,26 +6135,26 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr ""
 
-#: trac/web/chrome.py:692
+#: trac/web/chrome.py:693
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:817
+#: trac/web/chrome.py:818
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1129
+#: trac/web/chrome.py:1130
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1130
+#: trac/web/chrome.py:1131
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:1234 trac/web/chrome.py:1242
+#: trac/web/chrome.py:1235 trac/web/chrome.py:1243
 msgid "anonymous"
 msgstr ""
 
@@ -6410,7 +6410,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: trac/wiki/macros.py:85
+#: trac/wiki/macros.py:87
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -6443,7 +6443,7 @@ msgid ""
 "The `include` and `exclude` lists accept shell-style patterns."
 msgstr ""
 
-#: trac/wiki/macros.py:298
+#: trac/wiki/macros.py:300
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -6469,7 +6469,7 @@ msgid ""
 "e.g. `[[RecentChanges(,10,group=none)]]`."
 msgstr ""
 
-#: trac/wiki/macros.py:377
+#: trac/wiki/macros.py:379
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -6502,7 +6502,7 @@ msgid ""
 "   default). This parameter only has an effect in `inline` style."
 msgstr ""
 
-#: trac/wiki/macros.py:443
+#: trac/wiki/macros.py:447
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -6580,16 +6580,16 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:658
+#: trac/wiki/macros.py:662
 msgid "No filespec given"
 msgstr ""
 
-#: trac/wiki/macros.py:670
+#: trac/wiki/macros.py:674
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:686
+#: trac/wiki/macros.py:690
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -6602,20 +6602,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:715
+#: trac/wiki/macros.py:719
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:738
+#: trac/wiki/macros.py:742
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:741
+#: trac/wiki/macros.py:745
 msgid "Sorry, no documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:748
+#: trac/wiki/macros.py:752
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -6625,11 +6625,11 @@ msgid ""
 "options whose section and name start with the filters are output."
 msgstr ""
 
-#: trac/wiki/macros.py:790
+#: trac/wiki/macros.py:794
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:810
+#: trac/wiki/macros.py:814
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -6637,11 +6637,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:833
+#: trac/wiki/macros.py:837
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:847
+#: trac/wiki/macros.py:851
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -6652,8 +6652,13 @@ msgid ""
 "table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:894
+#: trac/wiki/macros.py:898
 msgid "Table of Contents"
+msgstr ""
+
+#: trac/wiki/macros.py:912
+#, python-format
+msgid "Invalid macro argument %(expr)s"
 msgstr ""
 
 #: trac/wiki/model.py:89
