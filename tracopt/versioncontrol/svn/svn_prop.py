@@ -356,7 +356,10 @@ class SubversionMergePropertyDiffRenderer(Component):
         repos = rm.get_repository(old_context.resource.parent.id)
         def parse_sources(props):
             sources = {}
-            for line in props[name].splitlines():
+            value = props[name]
+            lines = value.splitlines() if name == 'svn:mergeinfo' \
+                                       else value.split()
+            for line in lines:
                 path, revs = line.split(':', 1)
                 spath = _path_within_scope(repos.scope, path)
                 if spath is not None:
