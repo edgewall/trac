@@ -165,7 +165,7 @@ class TracAdminTestCaseBase(unittest.TestCase):
             m = re.match('.*'.join(map(re.escape,
                                        expected_results.split('[...]'))) +
                          '\Z',
-                         output, re.MULTILINE)
+                         output, re.DOTALL)
             unittest.TestCase.assertTrue(self, m,
                                          "%r != %r\n%s" % (expected_results,
                                                            output, diff()))
