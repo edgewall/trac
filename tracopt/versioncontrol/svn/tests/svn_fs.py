@@ -974,6 +974,34 @@ En r\xe9sum\xe9 ... \xe7a marche.
         self.assertIn(' title="13-15"', node)
         self.assertIn(' href="/trac.cgi/log/repo/missing?revs=13-15"', node)
 
+    def test_merge_prop_diff_renderer_added_svnmerge_integrated(self):
+        """Property diff of svnmerge-integrated property (from
+        svnmerge.py, used prior to svn 1.5) is rendered correctly.
+        """
+        context = _create_context(self.env)
+        old_context = context(self.repos.get_node(u'tête', 20).resource)
+        old_props = {'svnmerge-integrated': u"""\
+        /branches/v2:1,8-9,12-15 /branches/v1x:12 /branches/deleted:1,3-5,22
+        """}
+        new_context = context(self.repos.get_node(u'tête', 21).resource)
+        new_props = {'svnmerge-integrated': u"""\
+        /branches/v2:1,8-9,12-16 /branches/v1x:12 /branches/deleted:1,3-5,22
+        """}
+
+        renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
+        result = Stream(renderer.render_property_diff(
+            'svnmerge-integrated', old_context, old_props, new_context,
+            new_props, {}))
+
+        node = unicode(result.select('//tr[1]//td[1]'))
+        self.assertIn(' href="/trac.cgi/browser/repo/branches/v2?rev=21"',
+                      node)
+        self.assertIn('>/branches/v2</a>', node)
+        node = unicode(result.select('//tr[1]//td[2]'))
+        self.assertIn(' title="16"', node)
+        self.assertIn(' href="/trac.cgi/changeset/16/repo/branches/v2"',
+                      node)
+
     def test_render_needslock(self):
         htdocs_location = 'http://assets.example.org/common'
         self.env.config.set('trac', 'htdocs_location', htdocs_location)
