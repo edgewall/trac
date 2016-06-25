@@ -897,18 +897,26 @@ class GitwebProjectsRepositoryProvider(Component):
         if not self.projects_list:
             return
 
-        for line in open(self.projects_list):
-            line = line.strip()
-            name = line
-            if name.endswith('.git'):
-                name = name[:-4]
-            repo = {
-                'dir': os.path.join(self.projects_base, line),
-                'type': 'git',
-            }
-            description_path = os.path.join(repo['dir'], 'description')
-            if os.path.exists(description_path):
-                repo['description'] = open(description_path).read().strip()
-            if self.projects_url:
-                repo['url'] = self.projects_url % name
-            yield name, repo
+        if not os.path.exists(self.projects_list):
+            self.log.warn("The [git] projects_list file was not found at "
+                          "'%s'", self.projects_list)
+            return
+
+        with open(self.projects_list, 'r') as fp:
+            for line in fp:
+                entries = line.strip().split()
+                if entries:
+                    reponame = entries[0]
+                    repo = {
+                        'dir': os.path.join(self.projects_base, reponame),
+                        'type': 'git',
+                    }
+                    description_path = \
+                        os.path.join(repo['dir'], 'description')
+                    if os.path.exists(description_path):
+                        with open(description_path, 'r') as fd:
+                            repo['description'] = fd.read().strip()
+                    name = reponame.rstrip('.git')
+                    if self.projects_url:
+                        repo['url'] = self.projects_url % name
+                    yield name, repo
