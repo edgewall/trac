@@ -11,8 +11,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import os
 import sys
+import shutil
 import tempfile
 import unittest
 from cStringIO import StringIO
@@ -34,7 +37,8 @@ from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.versioncontrol.web_ui.log import LogModule
 from tracopt.versioncontrol.git.PyGIT import StorageFactory
 from tracopt.versioncontrol.git.git_fs import GitCachedRepository, \
-                                              GitConnector, GitRepository
+                                              GitConnector, GitRepository, \
+                                              GitwebProjectsRepositoryProvider
 
 
 class GitCommandMixin(object):
@@ -675,6 +679,63 @@ M 100644 :1 dev%(dev)08d.txt
         return data.getvalue()
 
 
+class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.projects_base = os.path.realpath(tempfile.mkdtemp())
+        self.projects_list = os.path.join(self.projects_base, 'projects_list')
+        with open(self.projects_list, 'w') as f:
+            f.write("""
+            repos1 user1
+            repos2.git user+2+<user@example.com>
+
+            repos3
+            """)
+        self.env.config.set('git', 'projects_list', self.projects_list)
+        self.env.config.set('git', 'projects_base', self.projects_base)
+        self.env.config.set('git', 'projects_url', 'https://example.com/%s')
+
+    def tearDown(self):
+        self.env.shutdown()
+        shutil.rmtree(self.projects_base)
+
+    def test_project_list_path_not_found(self):
+        """Warning is logged when projects_list file is not found, but
+        exception is not raised.
+        """
+        os.remove(self.projects_list)
+        provider = GitwebProjectsRepositoryProvider(self.env)
+        repositories = list(provider.get_repositories())
+
+        self.assertEqual([], repositories)
+
+    def test_get_repositories(self):
+        provider = GitwebProjectsRepositoryProvider(self.env)
+        repositories = list(provider.get_repositories())
+
+        self.assertEqual(3, len(repositories))
+        self.assertEqual('repos1', repositories[0][0])
+        self.assertEqual('git', repositories[0][1]['type'])
+        self.assertEqual(os.path.join(self.projects_base, 'repos1'),
+                         repositories[0][1]['dir'])
+        self.assertEqual('https://example.com/repos1',
+                         repositories[0][1]['url'])
+        self.assertEqual('repos2', repositories[1][0])
+        self.assertEqual('git', repositories[1][1]['type'])
+        self.assertEqual(os.path.join(self.projects_base, 'repos2.git'),
+                         repositories[1][1]['dir'])
+        self.assertEqual('https://example.com/repos2',
+                         repositories[1][1]['url'])
+        self.assertEqual('repos3', repositories[2][0])
+        self.assertEqual('git', repositories[2][1]['type'])
+        self.assertEqual(os.path.join(self.projects_base, 'repos3'),
+                         repositories[2][1]['dir'])
+        self.assertEqual('https://example.com/repos3',
+                         repositories[2][1]['url'])
+
+
+
 class StopSync(Exception):
     pass
 
@@ -688,6 +749,7 @@ def suite():
         suite.addTest(unittest.makeSuite(GitNormalTestCase))
         suite.addTest(unittest.makeSuite(GitRepositoryTestCase))
         suite.addTest(unittest.makeSuite(GitCachedRepositoryTestCase))
+        suite.addTest(unittest.makeSuite(GitwebProjectsRepositoryProviderTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/git_fs.py (git cli "
               "binary, 'git', not found)")
