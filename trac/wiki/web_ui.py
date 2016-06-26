@@ -366,17 +366,16 @@ class WikiModule(Component):
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
                       req.remote_addr)
-            href = req.href.wiki(page.name, action='diff',
-                                 version=page.version)
-            add_notice(req, tag_("Your changes have been saved in version "
-                                 "%(version)s (%(diff)s).",
-                                 version=page.version,
-                                 diff=tag.a(_("diff"), href=href)))
-            req.redirect(get_resource_url(self.env, page.resource, req.href,
-                                          version=None))
         except TracError:
             add_warning(req, _("Page not modified, showing latest version."))
             return self._render_view(req, page)
+
+        href = req.href.wiki(page.name, action='diff', version=page.version)
+        add_notice(req, tag_("Your changes have been saved in version "
+                             "%(version)s (%(diff)s).", version=page.version,
+                             diff=tag.a(_("diff"), href=href)))
+        req.redirect(get_resource_url(self.env, page.resource, req.href,
+                                      version=None))
 
     def _render_confirm_delete(self, req, page):
         req.perm(page.resource).require('WIKI_DELETE')
@@ -667,8 +666,8 @@ class WikiModule(Component):
 
         prev_version = next_version = None
         if version:
-            try:
-                version = int(version)
+            version = as_int(version, None)
+            if version is not None:
                 for hist in latest_page.get_history():
                     v = hist[0]
                     if v != version:
@@ -678,8 +677,6 @@ class WikiModule(Component):
                                 break
                         else:
                             next_version = v
-            except ValueError:
-                version = None
 
         prefix = self.PAGE_TEMPLATES_PREFIX
         templates = [template[len(prefix):]
