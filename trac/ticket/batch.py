@@ -23,6 +23,7 @@ from genshi.builder import tag
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.ticket import TicketSystem, Ticket
+from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.notification import BatchTicketNotifyEmail
 from trac.util.datefmt import datetime_now, utc
 from trac.util.text import exception_to_unicode, to_unicode
@@ -119,10 +120,19 @@ class BatchModifyModule(Component):
         tickets_by_action = {}
         for t in tickets:
             ticket = Ticket(self.env, t['id'])
-            actions = ts.get_available_actions(req, ticket)
-            for action in actions:
+            available_actions = ts.get_available_actions(req, ticket)
+            for action in available_actions:
                 tickets_by_action.setdefault(action, []).append(ticket)
-        sorted_actions = sorted(set(tickets_by_action.keys()))
+
+        # Sort the allowed actions by the 'default' key.
+        allowed_actions = set(tickets_by_action.keys())
+        workflow = ConfigurableTicketWorkflow(self.env)
+        all_actions = sorted(((action['default'], name)
+                              for name, action
+                              in workflow.get_all_actions().iteritems()),
+                             reverse=True)
+        sorted_actions = [action[1] for action in all_actions
+                                    if action[1] in allowed_actions]
         for action in sorted_actions:
             first_label = None
             hints = []
