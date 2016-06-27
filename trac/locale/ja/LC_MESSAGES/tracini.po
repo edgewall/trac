@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.10\n"
+"Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-05-02 23:56+0000\n"
+"POT-Creation-Date: 2016-06-23 17:49-0400\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -1667,7 +1667,7 @@ msgstr ""
 "認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。(''0.12 "
 "以降'')"
 
-#: trac/web/chrome.py:405
+#: trac/web/chrome.py:406
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1683,7 +1683,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/web/chrome.py:413
+#: trac/web/chrome.py:414
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1704,11 +1704,11 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:424
+#: trac/web/chrome.py:425
 msgid "Automatically reload template files after modification."
 msgstr "テンプレートの変更後に自動でリロードするかどうかを指定します。"
 
-#: trac/web/chrome.py:427
+#: trac/web/chrome.py:428
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. The default value is 128. You may want to choose a higher\n"
@@ -1717,7 +1717,7 @@ msgid ""
 "memory."
 msgstr "テンプレートローダがメモリにキャッシュするテンプレートの最大数を指定します。デフォルト値は128です。もっと多くのテンプレートを使っていてメモリに余裕がある場合は、大きな値にすることもできます。メモリが少ない場合には、小さくすることもできます。"
 
-#: trac/web/chrome.py:434
+#: trac/web/chrome.py:435
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1742,7 +1742,7 @@ msgstr ""
 "ディレクトリにしか適用されず、デプロイしているリソース (例えばプラグインのリソース) に対してはこの方法は有効ではありません。Web "
 "サーバに対し、追加でリライトルールが必要になります。"
 
-#: trac/web/chrome.py:449
+#: trac/web/chrome.py:450
 msgid ""
 "Location of the jQuery !JavaScript library (version 1.7.2).\n"
 "\n"
@@ -1766,7 +1766,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:461
+#: trac/web/chrome.py:462
 msgid ""
 "Location of the jQuery UI !JavaScript library (version 1.8.21).\n"
 "\n"
@@ -1790,7 +1790,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:473
+#: trac/web/chrome.py:474
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
 "library (version 1.8.21).\n"
@@ -1820,23 +1820,23 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:488
+#: trac/web/chrome.py:489
 msgid ""
 "Order of the items to display in the `metanav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr "`metanav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:493
+#: trac/web/chrome.py:494
 msgid ""
 "Order of the items to display in the `mainnav` navigation bar,\n"
 "listed by IDs. See also TracNavigation."
 msgstr "`mainnav` ナビゲーションバーに表示する項目の順番を ID で指定します。TracNavigation も参照してください。"
 
-#: trac/web/chrome.py:499
+#: trac/web/chrome.py:500
 msgid "URL to link to, from the header logo."
 msgstr "ヘッダロゴからリンクする URL を指定します。"
 
-#: trac/web/chrome.py:502
+#: trac/web/chrome.py:503
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1855,19 +1855,19 @@ msgstr ""
 "にすると、[#trac-section htdocs_location] URL に対応したフォルダにある `your-logo.png` "
 "を指します。単に `your-logo.png` を指定した場合は、後者と同じになります。"
 
-#: trac/web/chrome.py:513
+#: trac/web/chrome.py:514
 msgid "Alternative text for the header logo."
 msgstr "ヘッダロゴ画像の代替テキストを指定します。"
 
-#: trac/web/chrome.py:517
+#: trac/web/chrome.py:518
 msgid "Width of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の幅をピクセル単位で指定します。"
 
-#: trac/web/chrome.py:520
+#: trac/web/chrome.py:521
 msgid "Height of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の高さをピクセル単位で指定します。"
 
-#: trac/web/chrome.py:523
+#: trac/web/chrome.py:524
 msgid ""
 "Show email addresses instead of usernames. If false, email\n"
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
@@ -1876,7 +1876,7 @@ msgstr ""
 "ユーザ名の代わりにメールアドレスを表示するかどうかを指定します。false の場合、EMAIL_VIEW "
 "権限を持たないユーザにはメールアドレスを表示しないようになります。(''0.11 以降'')"
 
-#: trac/web/chrome.py:529
+#: trac/web/chrome.py:530
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user doesn't have\n"
@@ -1885,7 +1885,7 @@ msgstr ""
 "`show_email_addresses` が false、または、EMAIL_VIEW 権限がない場合でも、Wiki 中に明示的に記述してある"
 " `mailto:` リンクを隠さないようにするかどうかを指定します。(''0.11.6 以降'')"
 
-#: trac/web/chrome.py:536
+#: trac/web/chrome.py:537
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
 "option is deprecated and will be removed in 1.3.1. (''since 0.11.3'')"
@@ -1893,7 +1893,7 @@ msgstr ""
 "リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。\n"
 "1.0.5 でこのオプションは非推奨となり 1.3.1 で削除予定です。(''0.11.3 以降'')"
 
-#: trac/web/chrome.py:541
+#: trac/web/chrome.py:542
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
@@ -1901,13 +1901,13 @@ msgstr ""
 "`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
 "(''0.12 以降'')"
 
-#: trac/web/chrome.py:545
+#: trac/web/chrome.py:546
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
-#: trac/web/chrome.py:549
+#: trac/web/chrome.py:550
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1919,7 +1919,7 @@ msgstr ""
 "プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。デフォルトは2.0秒です。(''0.12"
 " 以降'')"
 
-#: trac/web/chrome.py:556
+#: trac/web/chrome.py:557
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
@@ -1928,7 +1928,7 @@ msgstr ""
 "日付情報の書式を指定します。有効な設定は相対書式で表示する 'relative' と絶対書式で表示する 'absolute' です。(''1.0 "
 "以降'')"
 
-#: trac/web/chrome.py:563
+#: trac/web/chrome.py:564
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"

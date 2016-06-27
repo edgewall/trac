@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.10\n"
+"Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-05-02 23:56+0000\n"
+"POT-Creation-Date: 2016-06-23 17:49-0400\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
@@ -82,8 +82,8 @@ msgstr ""
 msgid "(The changeset message doesn't reference this ticket)"
 msgstr "(チェンジセットのメッセージはこのチケットを参照していません)"
 
-#: tracopt/ticket/deleter.py:73 tracopt/ticket/deleter.py:90
-#: trac/ticket/templates/report_list.html:92
+#: trac/ticket/templates/report_list.html:92 tracopt/ticket/deleter.py:73
+#: tracopt/ticket/deleter.py:90
 msgid "Delete"
 msgstr "削除"
 
@@ -138,14 +138,12 @@ msgid ""
 "                 attachments: %(attachments)s)"
 msgstr "(コメント: %(comments)s, 添付ファイル: %(attachments)s)"
 
+#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:105
 #: tracopt/ticket/templates/ticket_delete.html:46
 #: tracopt/ticket/templates/ticket_delete.html:71
-#: trac/templates/attachment.html:80 trac/wiki/templates/wiki_delete.html:105
 msgid "This is an irreversible operation."
 msgstr "これは取り消しの効かない操作です。"
 
-#: tracopt/ticket/templates/ticket_delete.html:52
-#: tracopt/ticket/templates/ticket_delete.html:76
 #: trac/templates/attachment.html:73 trac/templates/attachment.html:87
 #: trac/ticket/templates/admin_components.html:64
 #: trac/ticket/templates/admin_enums.html:38
@@ -160,6 +158,8 @@ msgstr "これは取り消しの効かない操作です。"
 #: trac/wiki/templates/wiki_delete.html:112
 #: trac/wiki/templates/wiki_edit_form.html:84
 #: trac/wiki/templates/wiki_rename.html:43
+#: tracopt/ticket/templates/ticket_delete.html:52
+#: tracopt/ticket/templates/ticket_delete.html:76
 msgid "Cancel"
 msgstr "取り消し"
 
@@ -187,9 +187,9 @@ msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr "インストールされている GIT バージョン %(hasver)s は互換性がありません (%(needsver)s 以上が必要)"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: tracopt/versioncontrol/git/git_fs.py:430 trac/ticket/web_ui.py:1760
-#: trac/ticket/templates/ticket_change.html:166 trac/wiki/macros.py:361
-#: trac/wiki/web_ui.py:767
+#: trac/ticket/templates/ticket_change.html:166 trac/ticket/web_ui.py:1760
+#: trac/wiki/macros.py:363 trac/wiki/web_ui.py:767
+#: tracopt/versioncontrol/git/git_fs.py:430
 msgid "diff"
 msgstr "差分"
 
@@ -438,8 +438,8 @@ msgstr "%(parent)s の添付ファイル: '%(id)s'"
 msgid "Attachments of %(parent)s"
 msgstr "%(parent)s の添付ファイル"
 
-#: trac/attachment.py:713 trac/attachment.py:740 trac/admin/web_ui.py:479
-#: trac/admin/web_ui.py:482 trac/admin/web_ui.py:486
+#: trac/admin/web_ui.py:479 trac/admin/web_ui.py:482 trac/admin/web_ui.py:486
+#: trac/attachment.py:713 trac/attachment.py:740
 msgid "No file uploaded"
 msgstr "アップロードしたファイルはありません"
 
@@ -660,7 +660,7 @@ msgid ""
 " point to a valid Trac environment."
 msgstr "環境変数 \"TRAC_ENV\" が見つかりません。Trac ではこの変数を設定する必要があります。"
 
-#: trac/env.py:957 trac/admin/console.py:285
+#: trac/admin/console.py:285 trac/env.py:957
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -706,7 +706,7 @@ msgstr "データベースをバックアップしています... "
 msgid "Hotcopy done."
 msgstr "ホットコピーが終了しました。"
 
-#: trac/env.py:1079 trac/admin/api.py:134
+#: trac/admin/api.py:134 trac/env.py:1079
 msgid "Invalid arguments"
 msgstr "不正な引数です"
 
@@ -832,7 +832,7 @@ msgstr "%(name)s は有効なアクションではありません。"
 msgid "User"
 msgstr "ユーザ"
 
-#: trac/perm.py:666 trac/admin/templates/admin_perms.html:74
+#: trac/admin/templates/admin_perms.html:74 trac/perm.py:666
 #: trac/ticket/templates/batch_modify.html:47
 #: trac/ticket/templates/ticket.html:341
 msgid "Action"
@@ -842,7 +842,7 @@ msgstr "アクション"
 msgid "Available actions:"
 msgstr "利用できるアクション:"
 
-#: trac/perm.py:679 trac/admin/web_ui.py:378
+#: trac/admin/web_ui.py:378 trac/perm.py:679
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "すべて大文字の名称は権限名に予約されているため使えません"
 
@@ -1182,17 +1182,17 @@ msgid ""
 msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。変更は保存できていません。"
 
 #: trac/admin/web_ui.py:204 trac/admin/web_ui.py:273 trac/admin/web_ui.py:364
-#: trac/admin/web_ui.py:457 trac/prefs/web_ui.py:89
-#: trac/prefs/templates/prefs_general.html:19
+#: trac/admin/web_ui.py:457 trac/prefs/templates/prefs_general.html:19
+#: trac/prefs/web_ui.py:89
 msgid "General"
 msgstr "一般設定"
 
-#: trac/admin/web_ui.py:204 trac/admin/templates/admin_basics.html:23
+#: trac/admin/templates/admin_basics.html:23 trac/admin/web_ui.py:204
 msgid "Basic Settings"
 msgstr "基本設定"
 
-#: trac/admin/web_ui.py:273 trac/admin/templates/admin_logging.html:20
-#: trac/admin/templates/admin_logging.html:32
+#: trac/admin/templates/admin_logging.html:20
+#: trac/admin/templates/admin_logging.html:32 trac/admin/web_ui.py:273
 msgid "Logging"
 msgstr "ログ"
 
@@ -1243,8 +1243,8 @@ msgstr "ログファイルの指定が必要です"
 msgid "Missing field"
 msgstr "フィールドがありません"
 
-#: trac/admin/web_ui.py:364 trac/admin/templates/admin_perms.html:20
-#: trac/admin/templates/admin_perms.html:71
+#: trac/admin/templates/admin_perms.html:20
+#: trac/admin/templates/admin_perms.html:71 trac/admin/web_ui.py:364
 msgid "Permissions"
 msgstr "権限"
 
@@ -1286,7 +1286,7 @@ msgstr "ユーザ \"%(subject)s\" はすでにグループ \"%(group)s\" に追�
 msgid "The selected permissions have been revoked."
 msgstr "選択した権限を無効にしました。"
 
-#: trac/admin/web_ui.py:457 trac/admin/templates/admin_plugins.html:20
+#: trac/admin/templates/admin_plugins.html:20 trac/admin/web_ui.py:457
 msgid "Plugins"
 msgstr "プラグイン"
 
@@ -1804,7 +1804,7 @@ msgstr "個人設定を保存しました。"
 msgid "%(link)s is not a valid TracLink"
 msgstr "%(link)s は有効な TracLink ではありません。"
 
-#: trac/prefs/web_ui.py:51 trac/prefs/templates/prefs.html:26
+#: trac/prefs/templates/prefs.html:26 trac/prefs/web_ui.py:51
 msgid "Preferences"
 msgstr "個人設定"
 
@@ -1812,23 +1812,23 @@ msgstr "個人設定"
 msgid "Unknown preference panel"
 msgstr "未知の設定画面"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_datetime.html:20
+#: trac/prefs/templates/prefs_datetime.html:20 trac/prefs/web_ui.py:90
 msgid "Date & Time"
 msgstr "日付と時間"
 
-#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/templates/prefs_keybindings.html:20 trac/prefs/web_ui.py:91
 msgid "Keyboard Shortcuts"
 msgstr "キーボードショートカット"
 
-#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_userinterface.html:20
+#: trac/prefs/templates/prefs_userinterface.html:20 trac/prefs/web_ui.py:92
 msgid "User Interface"
 msgstr "ユーザインターフェイス"
 
-#: trac/prefs/web_ui.py:94 trac/prefs/templates/prefs_language.html:20
+#: trac/prefs/templates/prefs_language.html:20 trac/prefs/web_ui.py:94
 msgid "Language"
 msgstr "言語"
 
-#: trac/prefs/web_ui.py:96 trac/prefs/templates/prefs_advanced.html:20
+#: trac/prefs/templates/prefs_advanced.html:20 trac/prefs/web_ui.py:96
 msgid "Advanced"
 msgstr "詳細"
 
@@ -2052,8 +2052,8 @@ msgid ""
 "      This reduces the verbosity of the pages."
 msgstr "ヘルプを非表示とし、ページが冗長ではなくなります。"
 
-#: trac/search/web_ui.py:72 trac/search/templates/search.html:22
-#: trac/search/templates/search.html:33 trac/search/templates/search.html:38
+#: trac/search/templates/search.html:22 trac/search/templates/search.html:33
+#: trac/search/templates/search.html:38 trac/search/web_ui.py:72
 #: trac/templates/theme.html:39
 msgid "Search"
 msgstr "検索"
@@ -2283,8 +2283,8 @@ msgstr "添付ファイルの削除"
 
 #: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
-#: trac/util/text.py:633 trac/util/tests/html.py:243
-#: trac/util/tests/html.py:256 trac/versioncontrol/templates/browser.html:199
+#: trac/util/tests/html.py:243 trac/util/tests/html.py:256
+#: trac/util/text.py:633 trac/versioncontrol/templates/browser.html:199
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
 msgid "%(size)s bytes"
@@ -2788,8 +2788,8 @@ msgstr "コンポーネントを選択していません"
 msgid "The selected components have been removed."
 msgstr "選択したコンポーネントを削除しました。"
 
-#: trac/ticket/admin.py:203 trac/ticket/api.py:304 trac/ticket/web_ui.py:1493
-#: trac/ticket/templates/admin_components.html:88
+#: trac/ticket/admin.py:203 trac/ticket/api.py:304
+#: trac/ticket/templates/admin_components.html:88 trac/ticket/web_ui.py:1493
 msgid "Owner"
 msgstr "担当者"
 
@@ -3732,7 +3732,7 @@ msgstr "期日なし"
 msgid "Invalid Ticket"
 msgstr "チケットエラー"
 
-#: trac/ticket/web_ui.py:164 trac/ticket/templates/ticket.html:24
+#: trac/ticket/templates/ticket.html:24 trac/ticket/web_ui.py:164
 msgid "New Ticket"
 msgstr "チケット登録"
 
@@ -3740,7 +3740,7 @@ msgstr "チケット登録"
 msgid "id can't be set for a new ticket request."
 msgstr "チケット登録時はidを指定することはできません。"
 
-#: trac/ticket/web_ui.py:196 trac/ticket/templates/admin_milestones.html:124
+#: trac/ticket/templates/admin_milestones.html:124 trac/ticket/web_ui.py:196
 msgid "Tickets"
 msgstr "チケット"
 
@@ -4014,11 +4014,11 @@ msgstr "Cc に追加"
 msgid "Remove from Cc"
 msgstr "Cc から削除"
 
-#: trac/ticket/web_ui.py:1558 trac/ticket/templates/query.html:124
+#: trac/ticket/templates/query.html:124 trac/ticket/web_ui.py:1558
 msgid "yes"
 msgstr "はい"
 
-#: trac/ticket/web_ui.py:1558 trac/ticket/templates/query.html:127
+#: trac/ticket/templates/query.html:127 trac/ticket/web_ui.py:1558
 msgid "no"
 msgstr "いいえ"
 
@@ -4936,8 +4936,8 @@ msgstr "コメント (%(author)s):"
 msgid "Ticket URL: <%(link)s>"
 msgstr "Ticket URL: <%(link)s>"
 
-#: trac/timeline/web_ui.py:78 trac/timeline/templates/timeline.html:20
-#: trac/timeline/templates/timeline.html:31
+#: trac/timeline/templates/timeline.html:20
+#: trac/timeline/templates/timeline.html:31 trac/timeline/web_ui.py:78
 msgid "Timeline"
 msgstr "タイムライン"
 
@@ -4949,12 +4949,12 @@ msgstr "前の期間"
 msgid "Next Period"
 msgstr "次の期間"
 
-#: trac/timeline/web_ui.py:294 trac/web/chrome.py:950
+#: trac/timeline/web_ui.py:294 trac/web/chrome.py:951
 #, python-format
 msgid "at %(iso8601)s"
 msgstr "%(iso8601)s"
 
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:954
+#: trac/timeline/web_ui.py:298 trac/web/chrome.py:955
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "%(date)s %(time)s"
@@ -4964,7 +4964,7 @@ msgstr "%(date)s %(time)s"
 msgid "See timeline %(relativetime)s ago"
 msgstr "タイムラインで%(relativetime)s前を見る"
 
-#: trac/timeline/web_ui.py:302 trac/web/chrome.py:955 trac/web/chrome.py:957
+#: trac/timeline/web_ui.py:302 trac/web/chrome.py:956 trac/web/chrome.py:958
 #, python-format
 msgid "%(relativetime)s ago"
 msgstr "%(relativetime)s前"
@@ -5407,12 +5407,12 @@ msgstr "デフォルトリポジトリ"
 msgid "Repository %(repo)s"
 msgstr "リポジトリ %(repo)s"
 
-#: trac/versioncontrol/api.py:796
+#: trac/versioncontrol/api.py:797
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "サポートしていないバージョン管理システム \"%(name)s\": \"%(error)s\""
 
-#: trac/versioncontrol/api.py:799
+#: trac/versioncontrol/api.py:800
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -5421,26 +5421,26 @@ msgstr ""
 "サポートしていないバージョン管理システム \"%(name)s\": "
 "適切なコンポーネントを見つけることができません。対応するプラグインは、有効になっていますか? "
 
-#: trac/versioncontrol/api.py:807
+#: trac/versioncontrol/api.py:808
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "チェンジセット %(rev)s がリポジトリに存在しません"
 
-#: trac/versioncontrol/api.py:809
+#: trac/versioncontrol/api.py:810
 msgid "No such changeset"
 msgstr "チェンジセットが存在しません"
 
-#: trac/versioncontrol/api.py:815
+#: trac/versioncontrol/api.py:816
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "リビジョン %(rev)s に %(path)s はありません"
 
-#: trac/versioncontrol/api.py:817
+#: trac/versioncontrol/api.py:818
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: リビジョン %(rev)s に %(path)s はありません"
 
-#: trac/versioncontrol/api.py:819
+#: trac/versioncontrol/api.py:820
 msgid "No such node"
 msgstr "ノードが存在しません"
 
@@ -6428,26 +6428,26 @@ msgstr "認証情報が利用できません。%(inst_doc)sを参照してくだ
 msgid "Already logged in as %(user)s."
 msgstr "すでに %(user)s としてログイン中です。"
 
-#: trac/web/chrome.py:692
+#: trac/web/chrome.py:693
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr "Invalid chrome path %(path)s は正しくない chrome パスです。"
 
-#: trac/web/chrome.py:817
+#: trac/web/chrome.py:818
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Navigation contributor \"%(name)s\" でエラー"
 
-#: trac/web/chrome.py:1129
+#: trac/web/chrome.py:1130
 msgid "(unknown template location)"
 msgstr "(ファイル名不明)"
 
-#: trac/web/chrome.py:1130
+#: trac/web/chrome.py:1131
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
 
-#: trac/web/chrome.py:1234 trac/web/chrome.py:1242
+#: trac/web/chrome.py:1235 trac/web/chrome.py:1243
 msgid "anonymous"
 msgstr "匿名"
 
@@ -6723,7 +6723,7 @@ msgstr "設定済みの InterWiki プレフィックスの一覧です。"
 msgid "Site"
 msgstr "サイト"
 
-#: trac/wiki/macros.py:85
+#: trac/wiki/macros.py:87
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -6782,7 +6782,7 @@ msgstr ""
 "\n"
 "`include` と `exclude` はシェル形式のパターンを受け付けます。"
 
-#: trac/wiki/macros.py:298
+#: trac/wiki/macros.py:300
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -6823,7 +6823,7 @@ msgstr ""
 "ヒント: プレフィックス文字列でフィルタを行わずに項目の最大数のみを指定したい場合には、1つ目のパラメータを空にします。例えば "
 "`[[RecentChanges(,10,group=none)]]` とします。"
 
-#: trac/wiki/macros.py:377
+#: trac/wiki/macros.py:379
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -6870,7 +6870,7 @@ msgstr ""
 " * 4つ目のパラメータはアウトラインを番号付きにするかどうかを指定します。`numbered` または `unnumbered` "
 "のどちらかにすることができます (前者がデフォルトです)。このパラメータは `inline` スタイルでのみ効果があります。"
 
-#: trac/wiki/macros.py:443
+#: trac/wiki/macros.py:447
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -7001,16 +7001,16 @@ msgstr ""
 "\n"
 "''Shun-ichi Goto <gotoh@taiyo.co.jp> が作成した Image.py マクロが元になっています。''"
 
-#: trac/wiki/macros.py:658
+#: trac/wiki/macros.py:662
 msgid "No filespec given"
 msgstr "ファイルが指定されていません"
 
-#: trac/wiki/macros.py:670
+#: trac/wiki/macros.py:674
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr "画像 \"%(id)s\" は %(parent)s に添付してありません"
 
-#: trac/wiki/macros.py:686
+#: trac/wiki/macros.py:690
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7028,20 +7028,20 @@ msgstr ""
 "\n"
 "※ このマクロは mod_python の `PythonOptimize` オプションを有効にしているとマクロのドキュメントを表示できません。"
 
-#: trac/wiki/macros.py:715
+#: trac/wiki/macros.py:719
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "エラー: マクロ %(name)s の詳細説明が取得できません"
 
-#: trac/wiki/macros.py:738
+#: trac/wiki/macros.py:742
 msgid "Aliases:"
 msgstr "エイリアス:"
 
-#: trac/wiki/macros.py:741
+#: trac/wiki/macros.py:745
 msgid "Sorry, no documentation found"
 msgstr "ドキュメントが見つかりません"
 
-#: trac/wiki/macros.py:748
+#: trac/wiki/macros.py:752
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7055,11 +7055,11 @@ msgstr ""
 "これは通常 TracIni "
 "ページで使います。引数を指定するとセクションとオプションの名前のフィルタになり、そのフィルタの内容で始まるセクションとオプションのみを出力します。"
 
-#: trac/wiki/macros.py:790
+#: trac/wiki/macros.py:794
 msgid "(no default)"
 msgstr "(デフォルトなし)"
 
-#: trac/wiki/macros.py:810
+#: trac/wiki/macros.py:814
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7070,11 +7070,11 @@ msgstr ""
 "\n"
 "引数を指定すると mime-type をフィルタリングすることができます。"
 
-#: trac/wiki/macros.py:833
+#: trac/wiki/macros.py:837
 msgid "MIME Types"
 msgstr "MIME タイプ"
 
-#: trac/wiki/macros.py:847
+#: trac/wiki/macros.py:851
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -7090,9 +7090,14 @@ msgstr ""
 "目次は Trac* と WikiFormatting ページを含んでいてカスタマイズできません。\n"
 "目次のカスタマイズには [https://trac-hacks.org/wiki/TocMacro TocMacro] を参照してください。"
 
-#: trac/wiki/macros.py:894
+#: trac/wiki/macros.py:898
 msgid "Table of Contents"
 msgstr "目次"
+
+#: trac/wiki/macros.py:912
+#, python-format
+msgid "Invalid macro argument %(expr)s"
+msgstr "%(expr)s は不正なマクロの引数です"
 
 #: trac/wiki/model.py:89
 msgid "Cannot delete non-existent page"
