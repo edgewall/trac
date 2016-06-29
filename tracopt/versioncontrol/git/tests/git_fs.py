@@ -694,9 +694,12 @@ class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
 
             repos3
             """)
-        self.env.config.set('git', 'projects_list', self.projects_list)
-        self.env.config.set('git', 'projects_base', self.projects_base)
-        self.env.config.set('git', 'projects_url', 'https://example.com/%s')
+        self.env.config.set('gitweb-repositories', 'projects_list',
+                            self.projects_list)
+        self.env.config.set('gitweb-repositories', 'projects_base',
+                            self.projects_base)
+        self.env.config.set('gitweb-repositories', 'projects_url',
+                            'https://example.com/%s')
 
     def tearDown(self):
         self.env.shutdown()

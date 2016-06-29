@@ -20,7 +20,7 @@ from genshi.builder import tag
 from genshi.core import Markup
 
 from trac.cache import cached
-from trac.config import BoolOption, IntOption, PathOption, Option
+from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
 from trac.core import *
 from trac.env import ISystemInfoProvider
 from trac.util import TracError, shorten_line
@@ -883,17 +883,22 @@ class GitwebProjectsRepositoryProvider(Component):
 
     implements(IRepositoryProvider)
 
-    projects_list = PathOption('git', 'projects_list', doc=
+    projects_list = PathOption('gitweb-repositories', 'projects_list', doc=
         """Path to a gitweb-formatted projects.list""")
 
-    projects_base = PathOption('git', 'projects_base', doc=
+    projects_base = PathOption('gitweb-repositories', 'projects_base', doc=
         """Path to the base of your git projects""")
 
-    projects_url = Option('git', 'projects_url', doc=
-        """Template for project URLs. %s will be replaced with the repo
+    projects_url = Option('gitweb-repositories', 'projects_url', doc=
+        """Template for project URLs. `%s` will be replaced with the repo
         name""")
 
+    sync_per_request = ListOption('gitweb-repositories',
+        'sync_per_request', '', doc="""Repositories to sync on every request
+        (not recommended).""")
+
     def get_repositories(self):
+        """Retrieve repositories specified in a `projects_list` file."""
         if not self.projects_list:
             return
 
@@ -906,17 +911,18 @@ class GitwebProjectsRepositoryProvider(Component):
             for line in fp:
                 entries = line.strip().split()
                 if entries:
-                    reponame = entries[0]
-                    repo = {
-                        'dir': os.path.join(self.projects_base, reponame),
+                    name = entries[0]
+                    reponame = name.rstrip('.git')
+                    info = {
+                        'dir': os.path.join(self.projects_base, name),
+                        'sync_per_request': reponame in self.sync_per_request,
                         'type': 'git',
                     }
                     description_path = \
-                        os.path.join(repo['dir'], 'description')
+                        os.path.join(info['dir'], 'description')
                     if os.path.exists(description_path):
                         with open(description_path, 'r') as fd:
-                            repo['description'] = fd.read().strip()
-                    name = reponame.rstrip('.git')
+                            info['description'] = fd.read().strip()
                     if self.projects_url:
-                        repo['url'] = self.projects_url % name
-                    yield name, repo
+                        info['url'] = self.projects_url % reponame
+                    yield reponame, info
