@@ -38,8 +38,7 @@ class UpgradeTestCase(unittest.TestCase):
         RepositoryManager(self.env)
 
     def tearDown(self):
-        self.env.shutdown()
-        shutil.rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def test_saves_backup(self):
         """Backup file is saved during upgrade."""
