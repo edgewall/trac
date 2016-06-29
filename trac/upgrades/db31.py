@@ -18,9 +18,9 @@ def do_upgrade(env, version, cursor):
     """Move definition of default repository from [trac] repository_dir to
     [repositories] section.
     """
+    backup_config_file(env, '.db31.bak')
     repository_dir = env.config.get('trac', 'repository_dir')
     if repository_dir:
-        backup_config_file(env, '.db31.bak')
         if not env.config.get('repositories', '.dir') and \
                 not env.config.get('repositories', '.alias'):
             env.config.set('repositories', '.dir', repository_dir)
@@ -30,5 +30,5 @@ def do_upgrade(env, version, cursor):
             env.log.info("[trac] repository_dir = %s discarded from "
                          "configuration because [repositories] "
                          "'.dir' or '.alias' already exists.", repository_dir)
-        env.config.remove('trac', 'repository_dir')
-        env.config.save()
+    env.config.remove('trac', 'repository_dir')
+    env.config.save()
