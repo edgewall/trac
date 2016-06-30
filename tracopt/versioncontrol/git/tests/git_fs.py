@@ -493,6 +493,98 @@ class GitRepositoryTestCase(BaseTestCase):
                                                       rev))),
                          sorted(cset.get_changes()))
 
+    _data_annotations = """\
+blob
+mark :1
+data 14
+one
+two
+three
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Joe <joe@example.com> 1467172510 +0000
+committer Joe <joe@example.com> 1467172510 +0000
+data 6
+blame
+M 100644 :1 test.txt
+
+blob
+mark :3
+data 49
+one
+two
+three
+four
+five
+six
+seven
+eight
+nine
+ten
+
+commit refs/heads/master
+mark :4
+author Joe <joe@example.com> 1467172511 +0000
+committer Joe <joe@example.com> 1467172511 +0000
+data 10
+add lines
+from :2
+M 100644 :3 test.txt
+
+blob
+mark :5
+data 40
+one
+two
+3
+four
+five
+6
+seven
+eight
+9
+ten
+
+commit refs/heads/master
+mark :6
+author Joe <joe@example.com> 1467172512 +0000
+committer Joe <joe@example.com> 1467172512 +0000
+data 13
+modify lines
+from :4
+M 100644 :5 test.txt
+
+reset refs/heads/master
+from :6
+
+"""
+
+    def test_get_annotations(self):
+        self._git_init(data=False)
+        self._git_fast_import(self._data_annotations)
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+
+        rev1 = 'a7efe353630d02139f255220d71b76fa68eb7132'  # root commit
+        rev2 = 'f928d1b36b8bedf64bcf08667428fdcccf36b21b'
+        rev3 = '279a097f111c7cb1ef0b9da39735188051fd4f69'  # HEAD
+
+        self.assertEqual([rev1] * 3,
+                         repos.get_node('test.txt', rev1).get_annotations())
+        self.assertEqual([rev1] * 3 + [rev2] * 7,
+                         repos.get_node('test.txt', rev2).get_annotations())
+
+        expected = [rev1, rev1, rev3, rev2, rev2, rev3, rev2, rev2, rev3, rev2]
+        self.assertEqual(expected,
+                         repos.get_node('test.txt', rev3).get_annotations())
+        self.assertEqual(expected,
+                         repos.get_node('test.txt', 'HEAD').get_annotations())
+        self.assertEqual(expected,
+                         repos.get_node('test.txt').get_annotations())
+
     def _get_quickjump_names(self, repos):
         return list(name for type, name, path, rev
                          in repos.get_quickjump_entries('HEAD'))
