@@ -1,7 +1,6 @@
 language: python
 sudo: false
 python:
-  - "2.6"
   - "2.7_with_system_site_packages"
 env:
   - "TRAC_TEST_DB_URI="
