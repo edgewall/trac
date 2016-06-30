@@ -836,8 +836,8 @@ class Mimeview(Component):
                     return tag.div(class_='code')(tag.pre(result)).generate()
 
             except Exception as e:
-                self.log.warning('HTML preview using %s failed: %s',
-                                 renderer.__class__.__name__,
+                self.log.warning('HTML preview using %s with %r failed: %s',
+                                 renderer.__class__.__name__, context,
                                  exception_to_unicode(e, traceback=True))
                 if context.req and not context.get_hint('disable_warnings'):
                     from trac.web.chrome import add_warning
