@@ -285,37 +285,9 @@ def get_dburi():
     return 'sqlite::memory:'
 
 
-def reset_sqlite_db(env, db_prop):
-    """Deletes all data from the tables.
-
-    :since 1.1.3: deprecated and will be removed in 1.3.1. Use `reset_tables`
-                  from the database connection class instead.
-    """
-    return DatabaseManager(env).reset_tables()
-
-
-def reset_postgres_db(env, db_prop):
-    """Deletes all data from the tables and resets autoincrement indexes.
-
-    :since 1.1.3: deprecated and will be removed in 1.3.1. Use `reset_tables`
-                  from the database connection class instead.
-    """
-    return DatabaseManager(env).reset_tables()
-
-
-def reset_mysql_db(env, db_prop):
-    """Deletes all data from the tables and resets autoincrement indexes.
-
-    :since 1.1.3: deprecated and will be removed in 1.3.1. Use `reset_tables`
-                  from the database connection class instead.
-    """
-    return DatabaseManager(env).reset_tables()
-
-
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment class for testing."""
 
-    global_databasemanager = None  # Deprecated, will be removed in 1.3.1
     required = False
     abstract = True
 
@@ -383,7 +355,6 @@ class EnvironmentStub(Environment):
         self.config.set('components', 'trac.db.*', 'enabled')
         self.config.set('trac', 'database', self.dburi)
         self.config.set('trac', 'debug_sql', True)
-        self.global_databasemanager = DatabaseManager(self)  # Remove in 1.3.1
 
         if not destroying:
             self.reset_db(default_data)
