@@ -22,7 +22,7 @@ from genshi.builder import tag
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
 from trac.util import AtomicFile, as_bool
-from trac.util.compat import OrderedDict, wait_for_file_mtime_change
+from trac.util.compat import wait_for_file_mtime_change
 from trac.util.text import cleandoc, printout, to_unicode, to_utf8
 from trac.util.translation import N_, _, dgettext, tag_
 
@@ -90,8 +90,7 @@ class UnicodeConfigParser(ConfigParser):
     # so we can't use `super`.
 
     def __init__(self, **kwargs):
-        dict_type = kwargs.pop('dict_type', None) or OrderedDict
-        ConfigParser.__init__(self, dict_type=dict_type, **kwargs)
+        ConfigParser.__init__(self, **kwargs)
 
     def sections(self):
         return map(to_unicode, ConfigParser.sections(self))
