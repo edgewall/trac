@@ -51,9 +51,9 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
         self.env.shutdown() # really closes the db connections
         shutil.rmtree(self.env.path)
 
-    def test_get_version(self):
-        """Testing env.get_version"""
-        self.assertFalse(self.env.get_version())
+    def test_database_version(self):
+        """Testing env.database_version"""
+        self.assertFalse(self.env.database_version)
 
 
 class EnvironmentTestCase(unittest.TestCase):
@@ -89,10 +89,12 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual('/some/path', href())
         self.assertIs(href, self.env.href)
 
-    def test_get_version(self):
-        """Testing env.get_version"""
-        self.assertEqual(db_default.db_version, self.env.get_version())
+    def test_database_version(self):
+        """Testing env.database_version"""
         self.assertEqual(db_default.db_version, self.env.database_version)
+
+    def test_database_initial_version(self):
+        """Testing env.database_initial_version"""
         self.assertEqual(db_default.db_version, self.env.database_initial_version)
 
     def test_is_component_enabled(self):

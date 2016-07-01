@@ -618,24 +618,6 @@ class Environment(Component, ComponentManager):
         from trac import core, __version__
         return get_pkginfo(core).get('version', __version__)
 
-    def get_version(self, initial=False):
-        """Return the current version of the database.  If the
-        optional argument `initial` is set to `True`, the version of
-        the database used at the time of creation will be returned.
-
-        In practice, for database created before 0.11, this will
-        return `False` which is "older" than any db version number.
-
-        :since: 0.11
-
-        :since 1.0.2: The lazily-evaluated attributes `database_version` and
-                      `database_initial_version` should be used instead. This
-                      method will be removed in release 1.3.1.
-        """
-        dbm = DatabaseManager(self)
-        return dbm.get_database_version(
-            '{0}database_version'.format('initial_' if initial else ''))
-
     def setup_config(self):
         """Load the configuration file."""
         self.config = Configuration(self.config_file_path,
