@@ -31,7 +31,7 @@ from trac.config import BoolOption, ChoiceOption, ConfigSection, \
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracBaseError, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
-                         TransactionContextManager, with_transaction)
+                         TransactionContextManager)
 from trac.loader import load_components
 from trac.log import logger_handler_factory
 from trac.util import arity, as_bool, copytree, create_file, get_pkginfo, \
@@ -430,24 +430,6 @@ class Environment(Component, ComponentManager):
                 ...
         """
         return DatabaseManager(self).get_exceptions()
-
-    def with_transaction(self, db=None):
-        """Decorator for transaction functions.
-
-        :deprecated: Use the query and transaction context managers instead.
-                     Will be removed in Trac 1.3.1.
-        """
-        return with_transaction(self, db)
-
-    def get_read_db(self):
-        """Return a database connection for read purposes.
-
-        See `trac.db.api.get_read_db` for detailed documentation.
-
-        :deprecated: Use :meth:`db_query` instead.
-                     Will be removed in Trac 1.3.1.
-        """
-        return DatabaseManager(self).get_connection(readonly=True)
 
     @property
     def db_query(self):
