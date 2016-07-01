@@ -119,3 +119,5 @@ div.tracini td.nodefault {
  font-style: italic;
  white-space: nowrap;
 }
+div.tracini td > p:first-child { margin-top: 0 }
+div.tracini td > p:last-child { margin-bottom: 0 }
