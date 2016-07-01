@@ -269,35 +269,29 @@ class CachedRepository(Repository):
     def insert_changeset(self, rev, cset):
         """Create revision and node_change records for the given changeset
         instance."""
-        with self.env.db_transaction as db:
-            self._insert_changeset(db, rev, cset)
-
-    def _insert_changeset(self, db, rev, cset):
-        """:deprecated: since 1.1.2, use `insert_changeset` instead. Will
-                        be removed in 1.3.1.
-        """
         srev = self.db_rev(rev)
-        # 1. Attempt to resync the 'revision' table.  In case of
-        # concurrent syncs, only such insert into the `revision` table
-        # will succeed, the others will fail and raise an exception.
-        db("""
-            INSERT INTO revision (repos,rev,time,author,message)
-            VALUES (%s,%s,%s,%s,%s)
-            """, (self.id, srev, to_utimestamp(cset.date),
-                  cset.author, cset.message))
-        # 2. now *only* one process was able to get there (i.e. there
-        # *shouldn't* be any race condition here)
-        for path, kind, action, bpath, brev in cset.get_changes():
-            self.log.debug("Caching node change in [%s]: %r", rev,
-                           (path, kind, action, bpath, brev))
-            kind = _inverted_kindmap[kind]
-            action = _inverted_actionmap[action]
+        with self.env.db_transaction as db:
+            # 1. Attempt to resync the 'revision' table.  In case of
+            # concurrent syncs, only such insert into the `revision` table
+            # will succeed, the others will fail and raise an exception.
             db("""
-                INSERT INTO node_change
-                    (repos,rev,path,node_type,change_type,base_path,
-                     base_rev)
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
-                """, (self.id, srev, path, kind, action, bpath, brev))
+                INSERT INTO revision (repos,rev,time,author,message)
+                VALUES (%s,%s,%s,%s,%s)
+                """, (self.id, srev, to_utimestamp(cset.date),
+                      cset.author, cset.message))
+            # 2. now *only* one process was able to get there (i.e. there
+            # *shouldn't* be any race condition here)
+            for path, kind, action, bpath, brev in cset.get_changes():
+                self.log.debug("Caching node change in [%s]: %r", rev,
+                               (path, kind, action, bpath, brev))
+                kind = _inverted_kindmap[kind]
+                action = _inverted_actionmap[action]
+                db("""
+                    INSERT INTO node_change
+                        (repos,rev,path,node_type,change_type,base_path,
+                         base_rev)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s)
+                    """, (self.id, srev, path, kind, action, bpath, brev))
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, self.normalize_rev(rev))
