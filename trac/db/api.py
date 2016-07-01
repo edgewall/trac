@@ -592,10 +592,6 @@ def parse_connection_uri(db_str):
     return scheme, dict([(key, value) for key, value in args if value])
 
 
-# Compatibility for Trac < 1.1.3. Will be removed in 1.3.1.
-_parse_db_str = parse_connection_uri
-
-
 def _invalid_db_str(db_str):
     return ConfigurationError(
         tag_("Invalid format %(db_str)s for the database connection string. "
