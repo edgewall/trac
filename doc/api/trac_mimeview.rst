@@ -35,9 +35,6 @@ Helper classes
 .. autoclass :: trac.mimeview.api.RenderingContext
    :members:
 
-.. autoclass :: trac.mimeview.api.Context
-   :members:
-
 .. autoclass :: trac.mimeview.api.Content
    :members:
 

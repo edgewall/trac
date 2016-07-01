@@ -419,7 +419,7 @@ class WikiProcessor(object):
 class Formatter(object):
     """Base Wiki formatter.
 
-    Parses and formats wiki text, in a given `Context`.
+    Parses and formats wiki text, in a given `RenderingContext`.
     """
 
     flavor = 'default'

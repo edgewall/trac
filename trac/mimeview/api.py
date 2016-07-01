@@ -77,7 +77,7 @@ from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 
 
-__all__ = ['Context', 'Mimeview', 'RenderingContext', 'get_mimetype',
+__all__ = ['Mimeview', 'RenderingContext', 'get_mimetype',
            'is_binary', 'detect_unicode', 'content_to_unicode', 'ct_mimetype']
 
 
@@ -131,14 +131,6 @@ class RenderingContext(object):
         self.href = href
         self.perm = perm(resource) if perm and resource else perm
         self._hints = None
-
-    @staticmethod
-    def from_request(*args, **kwargs):
-        """:deprecated: since 1.0, use `web_context` instead. Will be removed
-                        in release 1.3.1.
-        """
-        from trac.web.chrome import web_context
-        return web_context(*args, **kwargs)
 
     def __repr__(self):
         path = []
@@ -281,14 +273,6 @@ class RenderingContext(object):
         while p and p._hints is None:
             p = p.parent
         return p and p._hints
-
-
-class Context(RenderingContext):
-    """
-    :deprecated: since 1.0, use `RenderingContext` instead. `Context` is
-                 kept for compatibility and will be removed release 1.3.1.
-    """
-
 
 # Some common MIME types and their associated keywords and/or file extensions
 
@@ -757,8 +741,6 @@ class Mimeview(Component):
         """
         if not content:
             return ''
-        if not isinstance(context, RenderingContext):
-            raise TypeError("RenderingContext expected (since 0.11)")
 
         # Ensure we have a MIME type for this content
         full_mimetype = mimetype
