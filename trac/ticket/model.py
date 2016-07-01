@@ -32,7 +32,7 @@ from trac.util.text import empty
 from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
-           'Component', 'Milestone', 'Version', 'group_milestones']
+           'Component', 'Milestone', 'Version']
 
 
 def _fixup_cc_list(cc_value):
@@ -1225,17 +1225,6 @@ class Report(object):
             report.description = description
             report.query = query
             yield report
-
-
-def group_milestones(milestones, include_completed):
-    """Group milestones into "open with due date", "open with no due date",
-    and possibly "completed". Return a list of (label, milestones) tuples.
-
-    :since 1.1.3: the function has been moved to `trac.ticket.roadmap`. It
-                  will be removed from `trac.ticket.model` in 1.3.1.
-    """
-    from trac.ticket.roadmap import group_milestones
-    return group_milestones(milestones, include_completed)
 
 
 class Version(object):
