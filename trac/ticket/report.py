@@ -643,29 +643,15 @@ class ReportModule(Component):
                     args=", ".join(missing_args)))
             return 'report_view.html', data, None
 
-    def execute_paginated_report(self, req, *largs, **kwargs):
+    def execute_paginated_report(self, req, id, sql, args, limit=0, offset=0):
         """
         :param req: `Request` object.
-        :param db: Database connection object (optional and deprecated).
         :param id: Integer id of the report.
         :param sql: SQL query that generates the report.
         :param args: SQL query arguments.
         :param limit: Maximum number of results to return (optional).
         :param offset: Offset to start of results (optional).
-
-        :deprecated: since 1.1.2, the `db` positional argument is deprecated
-                     and will be removed in 1.3.1.
         """
-        from trac.db.util import ConnectionWrapper
-        if isinstance(largs[0], ConnectionWrapper):
-            return self._execute_paginated_report(req, *largs, **kwargs)
-        with self.env.db_query as db:
-            return self._execute_paginated_report(req, db, *largs, **kwargs)
-
-    def _execute_paginated_report(self, req, db, id, sql, args,
-                                  limit=0, offset=0):
-        """Deprecated and will be removed in Trac 1.3.1. Call
-        `execute_paginated_report` instead."""
         sql, args, missing_args = self.sql_sub_vars(sql, args)
         if not sql:
             raise TracError(_("Report {%(num)s} has no SQL query.", num=id))
@@ -677,97 +663,104 @@ class ReportModule(Component):
         limit_offset = None
         base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
 
-        cursor = db.cursor()
-        if id == self.REPORT_LIST_ID or limit == 0:
-            sql = base_sql
-        else:
-            # The number of tickets is obtained
-            count_sql = 'SELECT COUNT(*) FROM (\n%s\n) AS tab' % base_sql
-            self.log.debug("Report {%d} SQL (count): %s", id, count_sql)
-            try:
-                cursor.execute(count_sql, args)
-            except Exception as e:
-                self.log.warn('Exception caught while executing Report {%d}: '
-                              '%r, args %r%s', id, count_sql, args,
-                              exception_to_unicode(e, traceback=True))
-                return e, count_sql
-            num_items = cursor.fetchone()[0]
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            if id == self.REPORT_LIST_ID or limit == 0:
+                sql = base_sql
+            else:
+                # The number of tickets is obtained
+                count_sql = 'SELECT COUNT(*) FROM (\n%s\n) AS tab' % base_sql
+                self.log.debug("Report {%d} SQL (count): %s", id, count_sql)
+                try:
+                    cursor.execute(count_sql, args)
+                except Exception as e:
+                    self.log.warn('Exception caught while executing Report '
+                                  '{%d}: %r, args %r%s', id, count_sql, args,
+                                  exception_to_unicode(e, traceback=True))
+                    return e, count_sql
+                num_items = cursor.fetchone()[0]
 
-            # The column names are obtained
-            colnames_sql = 'SELECT * FROM (\n%s\n) AS tab LIMIT 1' % base_sql
-            self.log.debug("Report {%d} SQL (col names): %s", id, colnames_sql)
+                # The column names are obtained
+                colnames_sql = 'SELECT * FROM (\n%s\n) AS tab LIMIT 1' \
+                               % base_sql
+                self.log.debug("Report {%d} SQL (col names): %s",
+                               id, colnames_sql)
+                try:
+                    cursor.execute(colnames_sql, args)
+                except Exception as e:
+                    self.log.warn('Exception caught while executing Report '
+                                  '{%d}: args %r%s', id, colnames_sql, args,
+                                  exception_to_unicode(e, traceback=True))
+                    return e, colnames_sql
+                cols = get_column_names(cursor)
+
+                # The ORDER BY columns are inserted
+                sort_col = req.args.get('sort', '')
+                asc = req.args.getbool('asc', True)
+                self.log.debug("%r %s (%s)", cols, sort_col,
+                               '^' if asc else 'v')
+                order_cols = []
+                if sort_col and sort_col not in cols:
+                    raise TracError(_('Query parameter "sort=%(sort_col)s" '
+                                      ' is invalid', sort_col=sort_col))
+                skel = None
+                if '__group__' in cols:
+                    order_cols.append('__group__')
+                if sort_col:
+                    sort_col = '%s %s' % (db.quote(sort_col),
+                                          'ASC' if asc else 'DESC')
+
+                if SORT_COLUMN in sql:
+                    # Method 1: insert sort_col at specified position
+                    sql = sql.replace(SORT_COLUMN, sort_col or '1')
+                elif sort_col:
+                    # Method 2: automagically insert sort_col (and __group__
+                    # before it, if __group__ was specified) as first criteria
+                    if '__group__' in cols:
+                        order_by.append('__group__ ASC')
+                    order_by.append(sort_col)
+                    # is there already an ORDER BY in the original sql?
+                    skel = sql_skeleton(sql)
+                    before, after = split_sql(sql, _order_by_re, skel)
+                    if after: # there were some other criterions, keep them
+                        order_by.append(after)
+                    sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
+
+                # Add LIMIT/OFFSET if pagination needed
+                limit_offset = ''
+                if num_items > limit:
+                    limit_offset = ' '.join(['LIMIT', str(limit),
+                                             'OFFSET', str(offset)])
+                if LIMIT_OFFSET in sql:
+                    # Method 1: insert LIMIT/OFFSET at specified position
+                    sql = sql.replace(LIMIT_OFFSET, limit_offset)
+                else:
+                    # Method 2: limit/offset is added unless already present
+                    skel = skel or sql_skeleton(sql)
+                    if 'LIMIT' not in skel.upper():
+                        sql = ' '.join([sql, limit_offset])
+                self.log.debug("Report {%d} SQL (order + limit): %s", id, sql)
             try:
-                cursor.execute(colnames_sql, args)
+                cursor.execute(sql, args)
             except Exception as e:
                 self.log.warn('Exception caught while executing Report {%d}: '
-                              '%r, args %r%s', id, colnames_sql, args,
+                              '%r, args %r%s', id, sql, args,
                               exception_to_unicode(e, traceback=True))
-                return e, colnames_sql
+                if order_by or limit_offset:
+                    add_notice(req, _("Hint: if the report failed due to"
+                                      " automatic modification of the ORDER"
+                                      " BY clause or the addition of"
+                                      " LIMIT/OFFSET, please look up"
+                                      " %(sort_column)s and %(limit_offset)s"
+                                      " in TracReports to see how to gain"
+                                      " complete control over report"
+                                      " rewriting.",
+                                      sort_column=SORT_COLUMN,
+                                      limit_offset=LIMIT_OFFSET))
+                return e, sql
+            rows = cursor.fetchall() or []
             cols = get_column_names(cursor)
 
-            # The ORDER BY columns are inserted
-            sort_col = req.args.get('sort', '')
-            asc = req.args.getbool('asc', True)
-            self.log.debug("%r %s (%s)", cols, sort_col, '^' if asc else 'v')
-            order_cols = []
-            if sort_col and sort_col not in cols:
-                raise TracError(_('Query parameter "sort=%(sort_col)s" '
-                                  ' is invalid', sort_col=sort_col))
-            skel = None
-            if '__group__' in cols:
-                order_cols.append('__group__')
-            if sort_col:
-                sort_col = '%s %s' % (db.quote(sort_col),
-                                      'ASC' if asc else 'DESC')
-
-            if SORT_COLUMN in sql:
-                # Method 1: insert sort_col at specified position
-                sql = sql.replace(SORT_COLUMN, sort_col or '1')
-            elif sort_col:
-                # Method 2: automagically insert sort_col (and __group__
-                # before it, if __group__ was specified) as first criteria
-                if '__group__' in cols:
-                    order_by.append('__group__ ASC')
-                order_by.append(sort_col)
-                # is there already an ORDER BY in the original sql?
-                skel = sql_skeleton(sql)
-                before, after = split_sql(sql, _order_by_re, skel)
-                if after:  # there were some other criterions, keep them
-                    order_by.append(after)
-                sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
-
-            # Add LIMIT/OFFSET if pagination needed
-            limit_offset = ''
-            if num_items > limit:
-                limit_offset = ' '.join(['LIMIT', str(limit),
-                                         'OFFSET', str(offset)])
-            if LIMIT_OFFSET in sql:
-                # Method 1: insert LIMIT/OFFSET at specified position
-                sql = sql.replace(LIMIT_OFFSET, limit_offset)
-            else:
-                # Method 2: limit/offset is added unless already present
-                skel = skel or sql_skeleton(sql)
-                if 'LIMIT' not in skel.upper():
-                    sql = ' '.join([sql, limit_offset])
-            self.log.debug("Report {%d} SQL (order + limit): %s", id, sql)
-        try:
-            cursor.execute(sql, args)
-        except Exception as e:
-            self.log.warn('Exception caught while executing Report {%d}: '
-                          '%r, args %r%s', id, sql, args,
-                          exception_to_unicode(e, traceback=True))
-            if order_by or limit_offset:
-                add_notice(req, _("Hint: if the report failed due to automatic"
-                                  " modification of the ORDER BY clause or the"
-                                  " addition of LIMIT/OFFSET, please look up"
-                                  " %(sort_column)s and %(limit_offset)s in"
-                                  " TracReports to see how to gain complete"
-                                  " control over report rewriting.",
-                                  sort_column=SORT_COLUMN,
-                                  limit_offset=LIMIT_OFFSET))
-            return e, sql
-        rows = cursor.fetchall() or []
-        cols = get_column_names(cursor)
         return cols, rows, num_items, missing_args, limit_offset
 
     def get_report(self, id):

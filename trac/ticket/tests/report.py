@@ -726,23 +726,6 @@ class ExecuteReportTestCase(unittest.TestCase):
         self.assertEqual(['Active Tickets'],
                          sorted(set(r[idx_group] for r in results)))
 
-    def test_execute_paginated_report_legacy_signature(self):
-        """`execute_paginated_report` returns the same results with and
-        without the deprecated `db` argument."""
-        id = 1
-        attrs = dict(reporter='joe', component='component1', version='1.0',
-                     milestone='milestone1', type='defect', owner='joe')
-        self._generate_tickets(('status', 'priority'), self.REPORT_1_DATA,
-                               attrs)
-        mod = self.report_module
-        req = MockRequest(self.env)
-        sql = Report(self.env, id).query
-
-        rv1 = mod.execute_paginated_report(req, id, sql, {})
-        with self.env.db_query as db:
-            rv2 = mod.execute_paginated_report(req, db, id, sql, {})
-        self.assertEqual(rv2, rv1)
-
     def test_asc_argument_is_invalid(self):
         """Invalid value for `asc` argument is coerced to default."""
         req = MockRequest(self.env, args={'asc': '--'})
