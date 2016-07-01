@@ -841,7 +841,7 @@ class MilestoneModule(Component):
         retargeted_tickets = \
             milestone.move_tickets(retarget_to, req.authname,
                 "Ticket retargeted after milestone deleted")
-        milestone.delete(author=req.authname)
+        milestone.delete()
         add_notice(req, _('The milestone "%(name)s" has been deleted.',
                           name=milestone.name))
         if retargeted_tickets:

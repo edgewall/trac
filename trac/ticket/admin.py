@@ -440,7 +440,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
         milestone.update()
 
     def _do_remove(self, name):
-        model.Milestone(self.env, name).delete(author=getuser())
+        model.Milestone(self.env, name).delete()
 
 
 class VersionAdminPanel(TicketAdminPanel):

@@ -1086,6 +1086,7 @@ class MilestoneTestCase(unittest.TestCase):
                                    milestone='Test')
         self._update_ticket(tkt2, status='closed', resolution='fixed')
         milestone = Milestone(self.env, 'Test')
+        milestone.move_tickets(None, 'user')
         milestone.delete()
         self.assertFalse(milestone.exists)
         self.assertEqual([],
@@ -1122,7 +1123,8 @@ class MilestoneTestCase(unittest.TestCase):
                                    milestone='Test')
         self._update_ticket(tkt2, status='closed', resolution='fixed')
         milestone = Milestone(self.env, 'Test')
-        milestone.delete(retarget_to='Other')
+        milestone.move_tickets('Other', 'user')
+        milestone.delete()
         self.assertFalse(milestone.exists)
 
         tkt1 = Ticket(self.env, tkt1.id)

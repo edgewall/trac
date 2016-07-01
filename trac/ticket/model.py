@@ -1023,20 +1023,12 @@ class Milestone(object):
         if invalidate:
             del self.cache.milestones
 
-    def delete(self, retarget_to=None, author=None):
-        """Delete the milestone.
-
-        :since 1.0.2: the `retarget_to` and `author` parameters are
-                      deprecated and will be removed in Trac 1.3.1. Tickets
-                      should be moved to another milestone by calling
-                      `move_tickets` before `delete`.
-        """
+    def delete(self):
+        """Delete the milestone."""
         with self.env.db_transaction as db:
             self.env.log.info("Deleting milestone %s", self.name)
             db("DELETE FROM milestone WHERE name=%s", (self.name,))
             Attachment.delete_all(self.env, self.realm, self.name)
-            # Don't translate ticket comment (comment:40:ticket:5658)
-            self.move_tickets(retarget_to, author, "Milestone deleted")
             self._old['name'] = None
             del self.cache.milestones
             TicketSystem(self.env).reset_ticket_fields()
