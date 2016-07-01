@@ -798,8 +798,8 @@ class TracIniMacro(WikiMacroBase):
              format_to_html(self.env, formatter.context, section_doc),
              tag.table(class_='wiki')(tag.tbody(
                  tag.tr(tag.td(tag.tt(option.name)),
-                        tag.td(format_to_oneliner(
-                            self.env, formatter.context, getdoc(option))),
+                        tag.td(format_to_html(self.env, formatter.context,
+                                              getdoc(option))),
                         default_cell(option),
                         class_='odd' if idx % 2 else 'even')
                  for idx, option in

@@ -206,7 +206,8 @@ class SendmailEmailSender(Component):
         """Path to the sendmail executable.
 
         The sendmail program must accept the `-i` and `-f` options.
-         (''since 0.12'')""")
+        (''since 0.12'')
+        """)
 
     def send(self, from_addr, recipients, message):
         # Use native line endings in message
