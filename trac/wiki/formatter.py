@@ -428,7 +428,7 @@ class Formatter(object):
         self.env = env
         self.context = context.child()
         self.context.set_hints(disable_warnings=True)
-        self.req = context.req  # Deprecated and will be removed in 1.3.1
+        self.req = context.req
         self.href = context.href
         self.resource = context.resource
         self.perm = context.perm
