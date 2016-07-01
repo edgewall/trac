@@ -684,14 +684,16 @@ TRACINI_MACRO_TEST_CASES = u"""\
 [[TracIni(section-42)]]
 ------------------------------
 <p>
-</p><div class="tracini">\
-<h3 id="section-42-section"><code>[section-42]</code></h3>\
+</p><div class="tracini"><h3 id="section-42-section"><code>[section-42]</code></h3>\
 <table class="wiki"><tbody>\
 <tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
-<tr class="odd"><td><code>option2</code></td><td>blah</td><td class="default"><code>value</code></td></tr>\
-<tr class="even"><td><code>option3</code></td><td>Doc for option3</td><td class="default"><code>value</code></td></tr>\
-</tbody></table>\
-</div><p>
+<tr class="odd"><td><code>option2</code></td><td><p>
+blah
+</p>
+</td><td class="default"><code>value</code></td></tr><tr class="even"><td><code>option3</code></td><td><p>
+Doc for option3
+</p>
+</td><td class="default"><code>value</code></td></tr></tbody></table></div><p>
 </p>
 ------------------------------
 ============================== TracIni, list option with sep=| (#11074)
