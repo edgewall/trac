@@ -74,19 +74,15 @@ class IEnvironmentSetupParticipant(Interface):
     def environment_created():
         """Called when a new Trac environment is created."""
 
-    def environment_needs_upgrade(db=None):
+    def environment_needs_upgrade():
         """Called when Trac checks whether the environment needs to be
         upgraded.
 
         Should return `True` if this participant needs an upgrade to
         be performed, `False` otherwise.
-
-        :since 1.1.2: the `db` parameter is deprecated and will be removed
-                      in Trac 1.3.1. A database connection should instead be
-                      obtained using a context manager.
         """
 
-    def upgrade_environment(db=None):
+    def upgrade_environment():
         """Actually perform an environment upgrade.
 
         Implementations of this method don't need to commit any
@@ -97,10 +93,6 @@ class IEnvironmentSetupParticipant(Interface):
         However, if the `upgrade_environment` consists of small,
         restartable, steps of upgrade, it can decide to commit on its
         own after each successful step.
-
-        :since 1.1.2: the `db` parameter is deprecated and will be removed
-                      in Trac 1.3.1. A database connection should instead be
-                      obtained using a context manager.
         """
 
 
@@ -749,14 +741,10 @@ class Environment(Component, ComponentManager):
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
         for participant in self.setup_participants:
-            args = ()
-            with self.db_query as db:
-                if arity(participant.environment_needs_upgrade) == 1:
-                    args = (db,)
-                if participant.environment_needs_upgrade(*args):
-                    self.log.warn("Component %s requires environment upgrade",
-                                  participant)
-                    return True
+            if participant.environment_needs_upgrade():
+                self.log.warn("Component %s requires environment upgrade",
+                              participant)
+                return True
         return False
 
     def upgrade(self, backup=False, backup_dest=None):
@@ -766,15 +754,7 @@ class Environment(Component, ComponentManager):
         :param backup_dest: name of the backup file
         :return: whether the upgrade was performed
         """
-        upgraders = []
-        for participant in self.setup_participants:
-            args = ()
-            with self.db_query as db:
-                if arity(participant.environment_needs_upgrade) == 1:
-                    args = (db,)
-                if participant.environment_needs_upgrade(*args):
-                    upgraders.append(participant)
-        if not upgraders:
+        if len(self.setup_participants) == 0:
             return
 
         if backup:
@@ -783,14 +763,10 @@ class Environment(Component, ComponentManager):
             except Exception as e:
                 raise BackupError(e)
 
-        for participant in upgraders:
+        for participant in self.setup_participants:
             self.log.info("%s.%s upgrading...", participant.__module__,
                           participant.__class__.__name__)
-            args = ()
-            with self.db_transaction as db:
-                if arity(participant.upgrade_environment) == 1:
-                    args = (db,)
-                participant.upgrade_environment(*args)
+            participant.upgrade_environment()
             # Database schema may have changed, so close all connections
             DatabaseManager(self).shutdown()
         del self.database_version
