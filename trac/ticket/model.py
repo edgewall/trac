@@ -85,10 +85,6 @@ class Ticket(object):
     def resource(self):
         return Resource(self.realm, self.id, self.version)
 
-    # 0.11 compatibility. Will be removed in 1.3.1.
-    time_created = property(lambda self: self.values.get('time'))
-    time_changed = property(lambda self: self.values.get('changetime'))
-
     def __init__(self, env, tkt_id=None, version=None):
         self.env = env
         self.fields = TicketSystem(self.env).get_ticket_fields()
