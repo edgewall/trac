@@ -47,8 +47,6 @@ Functions
 
 .. autofunction :: get_column_names
 
-.. autofunction :: with_transaction
-
 .. autofunction :: parse_connection_uri
 
 
