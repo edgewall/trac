@@ -1159,13 +1159,6 @@ class QueryModule(Component):
 
         return 'query.html', data, None
 
-    def export_csv(self, req, query, sep=',', mimetype='text/plain'):
-        """:deprecated: since 1.0.6, use `_export_csv` instead. Will be
-                        removed in 1.3.1.
-        """
-        content, content_type = self._export_csv(req, query, sep, mimetype)
-        return ''.join(content), content_type
-
     def _export_csv(self, req, query, sep=',', mimetype='text/plain'):
         def iterate():
             out = StringIO()
@@ -1205,13 +1198,6 @@ class QueryModule(Component):
                     yield writerow(values)
 
         return iterate(), '%s;charset=utf-8' % mimetype
-
-    def export_rss(self, req, query):
-        """:deprecated: since 1.0.6, use `_export_rss` instead. Will be
-                        removed in 1.3.1.
-        """
-        content, content_type = self._export_rss(req, query)
-        return ''.join(content), content_type
 
     def _export_rss(self, req, query):
         context = web_context(req, 'query', absurls=True)
