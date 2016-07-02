@@ -55,7 +55,7 @@ from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
                                   safefmt, tag_
 from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
-                         HTTPInternalError, HTTPNotFound, IAuthenticator, \
+                         HTTPInternalServerError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, TracNotImplementedError, \
                          is_valid_default_handler
@@ -298,9 +298,9 @@ class RequestDispatcher(Component):
                 self.log.warning("%s caught from %s:%d in %s: %s",
                                  e.__class__.__name__, tb[0], tb[1], tb[2],
                                  to_unicode(e) or "(no message)")
-                raise HTTPInternalError(TracNotImplementedError(e))
+                raise HTTPInternalServerError(TracNotImplementedError(e))
             if isinstance(e, TracError):
-                raise HTTPInternalError(e)
+                raise HTTPInternalServerError(e)
             raise err[0], err[1], err[2]
 
     # ITemplateProvider methods
@@ -607,7 +607,7 @@ def _dispatch_request(req, env, env_error):
 
     try:
         if not env and env_error:
-            raise HTTPInternalError(env_error)
+            raise HTTPInternalServerError(env_error)
         try:
             dispatcher = RequestDispatcher(env)
             dispatcher.dispatch(req)

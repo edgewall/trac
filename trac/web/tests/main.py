@@ -24,8 +24,8 @@ from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.util import create_file
 from trac.util.compat import close_fds
-from trac.web.api import (HTTPForbidden, HTTPInternalError, HTTPNotFound,
-    IRequestFilter, IRequestHandler, RequestDone)
+from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
+    HTTPNotFound, IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
 from trac.web.main import RequestDispatcher, get_environments
 
@@ -209,9 +209,9 @@ class PreProcessRequestTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.restore_component_registry()
 
-    def test_trac_error_raises_http_internal_error(self):
+    def test_trac_error_raises_http_internal_server_error(self):
         """TracError in pre_process_request is trapped and an
-        HTTPInternalError is raised.
+        HTTPInternalServerError is raised.
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
@@ -223,11 +223,11 @@ class PreProcessRequestTestCase(unittest.TestCase):
 
         try:
             RequestDispatcher(self.env).dispatch(req)
-        except HTTPInternalError as e:
+        except HTTPInternalServerError as e:
             self.assertEqual("500 Trac Error (Raised in pre_process_request)",
                              unicode(e))
         else:
-            self.fail("HTTPInternalError not raised")
+            self.fail("HTTPInternalServerError not raised")
 
 
 class ProcessRequestTestCase(unittest.TestCase):
@@ -278,35 +278,35 @@ class ProcessRequestTestCase(unittest.TestCase):
         else:
             self.fail("HTTPNotFound not raised")
 
-    def test_trac_error_raises_http_internal_error(self):
+    def test_trac_error_raises_http_internal_server_error(self):
         """TracError in process_request is trapped and an
-        HTTPInternalError is raised.
+        HTTPInternalServerError is raised.
         """
         req = MockRequest(self.env)
         req.exc_class = TracError
 
         try:
             RequestDispatcher(self.env).dispatch(req)
-        except HTTPInternalError as e:
+        except HTTPInternalServerError as e:
             self.assertEqual("500 Trac Error (Raised in process_request)",
                              unicode(e))
         else:
-            self.fail("HTTPInternalError not raised")
+            self.fail("HTTPInternalServerError not raised")
 
     def test_not_implemented_error_raises_http_internal_server_error(self):
         """NotImplementedError in process_request is trapped and an
-        HTTPInternalError is raised.
+        HTTPInternalServerError is raised.
         """
         req = MockRequest(self.env)
         req.exc_class = NotImplementedError
 
         try:
             RequestDispatcher(self.env).dispatch(req)
-        except HTTPInternalError as e:
+        except HTTPInternalServerError as e:
             self.assertEqual("500 Not Implemented Error (Raised in "
                              "process_request)", unicode(e))
         else:
-            self.fail("HTTPInternalError not raised")
+            self.fail("HTTPInternalServerError not raised")
 
 
 class PostProcessRequestTestCase(unittest.TestCase):

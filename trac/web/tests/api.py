@@ -26,7 +26,7 @@ from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util import as_int, create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
-from trac.web.api import HTTPBadRequest, HTTPInternalError, Request, \
+from trac.web.api import HTTPBadRequest, HTTPInternalServerError, Request, \
                          RequestDone, parse_arg_list
 from tracopt.perm.authz_policy import AuthzPolicy
 
@@ -742,23 +742,23 @@ class HTTPExceptionTestCase(unittest.TestCase):
 
     def test_tracerror_with_string_as_argument(self):
         e1 = TracError('the message')
-        e2 = HTTPInternalError(e1)
+        e2 = HTTPInternalServerError(e1)
         self.assertEqual('500 Trac Error (the message)', unicode(e2))
 
     def test_tracerror_with_fragment_as_argument(self):
         e1 = TracError(tag(tag.b('the message')))
-        e2 = HTTPInternalError(e1)
+        e2 = HTTPInternalServerError(e1)
         self.assertEqual('500 Trac Error (<b>the message</b>)', unicode(e2))
 
     def test_exception_with_string_as_argument(self):
         e1 = Exception('the message')
-        e2 = HTTPInternalError(e1)
+        e2 = HTTPInternalServerError(e1)
         self.assertEqual('500 Internal Server Error (the message)',
                          unicode(e2))
 
     def test_exception_with_fragment_as_argument(self):
         e1 = Exception(tag(tag.b('the message')))
-        e2 = HTTPInternalError(e1)
+        e2 = HTTPInternalServerError(e1)
         self.assertEqual('500 Internal Server Error (<b>the message</b>)',
                          unicode(e2))
 
