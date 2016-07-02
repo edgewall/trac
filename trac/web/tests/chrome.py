@@ -15,7 +15,6 @@ import os
 import tempfile
 import unittest
 
-import trac.tests.compat
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionSystem

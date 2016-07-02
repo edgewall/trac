@@ -13,7 +13,6 @@
 
 import unittest
 
-import trac.tests.compat
 from trac.test import Mock
 from trac.versioncontrol.api import EmptyChangeset, NoSuchChangeset
 from trac.versioncontrol.web_ui import util

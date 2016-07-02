@@ -13,7 +13,6 @@
 
 import unittest
 
-import trac.tests.compat
 from trac.mimeview.patch import PatchRenderer
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import RequestDone

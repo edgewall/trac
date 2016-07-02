@@ -19,7 +19,6 @@ import tempfile
 import time
 import unittest
 
-import trac.tests.compat
 from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements

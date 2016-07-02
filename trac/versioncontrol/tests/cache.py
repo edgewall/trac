@@ -16,7 +16,6 @@
 
 from datetime import datetime
 
-import trac.tests.compat
 from trac.test import EnvironmentStub, Mock
 from trac.util.datefmt import to_utimestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset

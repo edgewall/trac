@@ -13,7 +13,6 @@
 
 import unittest
 
-import trac.tests.compat
 from trac.perm import DefaultPermissionStore, PermissionCache
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import HTTPBadRequest

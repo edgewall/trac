@@ -16,7 +16,6 @@ import unittest
 from datetime import datetime, timedelta
 
 import trac
-import trac.tests.compat
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket

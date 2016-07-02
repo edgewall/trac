@@ -16,7 +16,6 @@ import tempfile
 import unittest
 from datetime import datetime
 
-import trac.tests.compat
 from trac.test import EnvironmentStub
 from trac.tests.compat import rmtree
 from trac.util import create_file

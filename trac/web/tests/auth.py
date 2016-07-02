@@ -13,7 +13,6 @@
 
 import os
 
-import trac.tests.compat
 from trac.core import TracError
 from trac.util.compat import crypt
 from trac.test import EnvironmentStub, MockRequest

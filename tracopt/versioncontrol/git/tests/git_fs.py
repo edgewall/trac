@@ -20,7 +20,6 @@ from cStringIO import StringIO
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
-import trac.tests.compat
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockRequest, locate
 from trac.tests.compat import rmtree

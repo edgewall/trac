@@ -14,7 +14,6 @@
 import os
 import unittest
 
-import trac.tests.compat
 from trac.config import ConfigurationError
 from trac.db.api import DatabaseManager, get_column_names, \
                         parse_connection_uri

@@ -24,7 +24,6 @@ import unittest
 from datetime import datetime, timedelta
 from StringIO import StringIO
 
-import trac.tests.compat
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
 from trac.test import EnvironmentStub, MockRequest

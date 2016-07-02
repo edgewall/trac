@@ -18,8 +18,8 @@ import tempfile
 import unittest
 from StringIO import StringIO
 
-import trac.tests.compat
 from genshi.builder import tag
+
 from trac import perm
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock, MockPerm

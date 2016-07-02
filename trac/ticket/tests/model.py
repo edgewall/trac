@@ -16,7 +16,6 @@ from StringIO import StringIO
 import tempfile
 import unittest
 
-import trac.tests.compat
 from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements

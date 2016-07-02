@@ -30,7 +30,6 @@ except ImportError:
 
 from genshi.core import Stream
 
-import trac.tests.compat
 from trac.test import EnvironmentStub, MockRequest, TestSetup
 from trac.core import TracError
 from trac.mimeview.api import RenderingContext

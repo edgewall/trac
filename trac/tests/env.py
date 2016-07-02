@@ -17,7 +17,6 @@ import shutil
 import tempfile
 import unittest
 
-import trac.tests.compat
 from trac import db_default
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements

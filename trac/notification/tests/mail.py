@@ -16,7 +16,6 @@ from email import message_from_string
 
 from genshi.builder import tag
 
-import trac.tests.compat
 from trac.core import Component, implements
 from trac.notification.api import (
     IEmailSender, INotificationFormatter, INotificationSubscriber,

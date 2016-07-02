@@ -13,7 +13,6 @@
 
 import unittest
 
-import trac.tests.compat
 from trac.admin.web_ui import PluginAdminPanel
 from trac.core import Component
 from trac.test import EnvironmentStub, MockRequest

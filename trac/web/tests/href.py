@@ -15,7 +15,6 @@
 import doctest
 import unittest
 
-import trac.tests.compat
 import trac.web.href
 
 

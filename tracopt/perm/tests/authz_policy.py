@@ -15,7 +15,6 @@ import os
 import tempfile
 import unittest
 
-import trac.tests.compat
 from trac.config import ConfigurationError
 from trac.perm import PermissionCache
 from trac.resource import Resource

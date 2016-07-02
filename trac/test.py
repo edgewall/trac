@@ -375,7 +375,7 @@ class EnvironmentStub(Environment):
         try:
             with self.db_transaction as db:
                 db.rollback()  # make sure there's no transaction in progress
-                # check the database version
+                # check database version
                 db_version = dbm.get_database_version()
         except (TracError, self.env.db_exc.DatabaseError):
             pass

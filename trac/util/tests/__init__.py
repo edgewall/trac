@@ -22,7 +22,6 @@ import tempfile
 import unittest
 
 import trac
-import trac.tests.compat
 from trac import util
 from trac.util.tests import concurrency, datefmt, presentation, text, \
                             translation, html

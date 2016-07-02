@@ -15,7 +15,6 @@ import time
 from datetime import datetime
 import unittest
 
-import trac.tests.compat
 from trac.admin.api import console_date_format
 from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import format_date, to_datetime

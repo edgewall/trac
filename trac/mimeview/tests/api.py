@@ -19,7 +19,6 @@ from genshi import Stream, Namespace
 from genshi.core import Attrs, TEXT, START, END
 from genshi.input import HTMLParser
 
-import trac.tests.compat
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, MockRequest
 from trac.mimeview import api

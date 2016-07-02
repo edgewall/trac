@@ -14,7 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import trac.tests.compat
 from trac.core import *
 from trac.core import ComponentManager
 

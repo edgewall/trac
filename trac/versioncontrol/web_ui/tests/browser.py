@@ -15,7 +15,6 @@ import unittest
 from datetime import datetime
 from cStringIO import StringIO
 
-import trac.tests.compat
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound

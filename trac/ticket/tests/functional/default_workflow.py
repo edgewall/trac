@@ -14,7 +14,6 @@
 
 import unittest
 
-import trac.tests.compat
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 
 

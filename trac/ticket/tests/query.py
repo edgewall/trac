@@ -16,7 +16,6 @@ import difflib
 import re
 import unittest
 
-import trac.tests.compat
 from trac.mimeview.api import Mimeview
 from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.api import TicketSystem
