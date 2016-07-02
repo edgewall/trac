@@ -563,11 +563,6 @@ class Chrome(Component):
         EMAIL_VIEW permission.
         """)
 
-    show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
-        """Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this
-        option is deprecated and will be removed in 1.3.1.
-        """)
-
     resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
         """Make `<textarea>` fields resizable. Requires !JavaScript.
         (''since 0.12'')""")
@@ -1018,7 +1013,6 @@ class Chrome(Component):
             'locale': req and req.locale,
             # show_email_address is deprecated: will be removed in 1.3.1
             'show_email_addresses': show_email_addresses,
-            'show_ip_addresses': self.show_ip_addresses,
             'author_email': partial(self.author_email,
                                     email_map=self.get_email_map()),
             'authorinfo': partial(self.authorinfo, req),
