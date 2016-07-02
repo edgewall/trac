@@ -432,9 +432,8 @@ class BrowserModule(Component):
             'order': order, 'desc': 1 if desc else None,
             'repo': repo_data, 'dir': dir_data, 'file': file_data,
             'quickjump_entries': quickjump_data,
-            'wiki_format_messages': \
+            'wiki_format_messages':
                 self.config['changeset'].getbool('wiki_format_messages'),
-            'xhr': req.is_xhr,  # Remove in 1.3.1
         }
         if req.is_xhr: # render and return the content only
             return 'dir_entries.html', data, None
