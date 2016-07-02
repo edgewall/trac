@@ -371,9 +371,6 @@ def chrome_resource_path(req, filename):
         return href(filename)
 
 
-_chrome_resource_path = chrome_resource_path  # will be removed in 1.3.1
-
-
 def _save_messages(req, url, permanent):
     """Save warnings and notices in case of redirect, so that they can
     be displayed after the redirect."""

@@ -36,7 +36,6 @@ import struct
 import tempfile
 from urllib import quote, unquote, urlencode
 
-from trac.util.compat import any, md5, sha1, sorted  # Remove in 1.3.1
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
                            getpreferredencoding
