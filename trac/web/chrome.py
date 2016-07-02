@@ -947,16 +947,6 @@ class Chrome(Component):
                 'logo': self.get_logo_data(self.env.abs_href),
             })
 
-        try:
-            show_email_addresses = self.show_email_addresses or \
-                                   not req or 'EMAIL_VIEW' in req.perm
-        except Exception as e:
-            # simply log the exception here, as we might already be rendering
-            # the error page
-            self.log.error("Error during check of EMAIL_VIEW: %s",
-                           exception_to_unicode(e))
-            show_email_addresses = False
-
         def pretty_dateinfo(date, format=None, dateonly=False):
             if not date:
                 return ''
@@ -1011,8 +1001,6 @@ class Chrome(Component):
             'perm': req and req.perm,
             'authname': req.authname if req else '<trac>',
             'locale': req and req.locale,
-            # show_email_address is deprecated: will be removed in 1.3.1
-            'show_email_addresses': show_email_addresses,
             'author_email': partial(self.author_email,
                                     email_map=self.get_email_map()),
             'authorinfo': partial(self.authorinfo, req),
