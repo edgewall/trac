@@ -319,8 +319,6 @@ class TicketFormatter(Component):
     def _format_subj(self, event):
         is_newticket = event.category == 'created'
         ticket = event.target
-        template = self.config.get('notification', 'ticket_subject_template')
-        template = NewTextTemplate(template.encode('utf8'))
 
         summary = ticket['summary']
         if event.changes and 'summary' in event.changes['fields']:
@@ -338,6 +336,8 @@ class TicketFormatter(Component):
             'env': self.env,
         }
 
+        template = self.config.get('notification', 'ticket_subject_template')
+        template = NewTextTemplate(template.encode('utf8'))
         subj = template.generate(**data).render('text', encoding=None).strip()
         if not is_newticket:
             subj = "Re: " + subj
