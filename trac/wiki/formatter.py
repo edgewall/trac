@@ -39,10 +39,9 @@ from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
-__all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
-           'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
-           'extract_link', 'split_url_into_path_query_fragment',
-           'concat_path_query_fragment']
+__all__ = ['wiki_to_outline', 'Formatter', 'format_to', 'format_to_html',
+           'format_to_oneliner', 'extract_link',
+           'split_url_into_path_query_fragment', 'concat_path_query_fragment']
 
 
 def system_message(msg, text=None):
@@ -1603,30 +1602,6 @@ def extract_link(env, context, wikidom):
 
 
 # pre-0.11 wiki text to Markup compatibility methods
-
-def wiki_to_html(wikitext, env, req, db=None,
-                 absurls=False, escape_newlines=False):
-    """deprecated in favor of format_to_html (will be removed in 1.0)"""
-    if not wikitext:
-        return Markup()
-    abs_ref, href = (req or env).abs_href, (req or env).href
-    from trac.web.chrome import web_context
-    context = web_context(req, absurls=absurls)
-    out = StringIO()
-    Formatter(env, context).format(wikitext, out, escape_newlines)
-    return Markup(out.getvalue())
-
-def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
-                     req=None):
-    """:deprecated: in favor of format_to_oneliner (will be removed in 1.0)"""
-    if not wikitext:
-        return Markup()
-    abs_ref, href = (req or env).abs_href, (req or env).href
-    from trac.web.chrome import web_context
-    context = web_context(req, absurls=absurls)
-    out = StringIO()
-    OneLinerFormatter(env, context).format(wikitext, out, shorten)
-    return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None, req=None):
