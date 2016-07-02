@@ -315,7 +315,6 @@ class EnvironmentStub(Environment):
 
         ComponentManager.__init__(self)
 
-        self.systeminfo = []
         self._old_registry = None
         self._old_components = None
 

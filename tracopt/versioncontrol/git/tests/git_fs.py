@@ -840,7 +840,7 @@ class GitConnectorTestCase(BaseTestCase):
 
     def _git_version_from_system_info(self):
         git_version = None
-        for name, version in self.env.get_systeminfo():
+        for name, version in self.env.system_info:
             if name == 'GIT':
                 git_version = version
         return git_version

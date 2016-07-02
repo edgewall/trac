@@ -188,7 +188,7 @@ ${description_en if url else description}</textarea>
                   <p style="display: none"><input type="button" id="tbtoggle" value="${_('Switch to plain text view')}" /></p>
                 </div>
               </py:if>
-              <xi:include href="environment_info.html" py:with="systeminfo = get_systeminfo()"/>
+              <xi:include href="environment_info.html" py:with="systeminfo = system_info" />
             </py:otherwise>
           </py:choose>
         </py:when>

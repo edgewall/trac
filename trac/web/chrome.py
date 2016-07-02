@@ -1004,7 +1004,8 @@ class Chrome(Component):
             'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
-            'get_systeminfo': self.env.get_systeminfo,
+            'get_systeminfo': self.env.get_systeminfo,  # Remove in 1.5.1
+            'system_info': self.env.system_info,
             'captioned_button': partial(presentation.captioned_button, req),
 
             # Date/time formatting

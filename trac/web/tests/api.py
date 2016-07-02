@@ -692,8 +692,7 @@ class SendErrorTestCase(unittest.TestCase):
                 'shorten_line': shorten_line,
                 'plugins': [], 'faulty_plugins': [],
                 'tracker': 'http://example.org/tracker', 'tracker_args': {},
-                'description': '', 'description_en': '',
-                'get_systeminfo': lambda: ()}
+                'description': '', 'description_en': ''}
         if perm is not None:
             data['perm'] = perm
 

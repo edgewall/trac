@@ -685,7 +685,7 @@ def send_internal_error(env, req, exc_info):
         if env and has_admin:
             sys_info = "".join("|| '''`%s`''' || `%s` ||\n"
                                % (k, v.replace('\n', '` [[br]] `'))
-                               for k, v in env.get_systeminfo())
+                               for k, v in env.system_info)
             sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n" \
                         "|| '''`jQuery UI`''' || `#JQUERYUI#` ||\n" \
                         "|| '''`jQuery Timepicker`''' || `#JQUERYTP#` ||\n"

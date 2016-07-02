@@ -282,10 +282,6 @@ class Environment(Component, ComponentManager):
         self.log = None
         self.config = None
         self._log_handler = None
-        # System info should be provided through ISystemInfoProvider rather
-        # than appending to systeminfo, which may be a private in a future
-        # release.
-        self.systeminfo = []
 
         if create:
             self.create(options)
@@ -314,15 +310,25 @@ class Environment(Component, ComponentManager):
         # The cached decorator requires the object have an `env` attribute.
         return self
 
-    def get_systeminfo(self):
-        """Return a list of `(name, version)` tuples describing the name
-        and version information of external packages used by Trac and plugins.
+    @lazy
+    def system_info(self):
+        """List of `(name, version)` tuples describing the name and
+        version information of external packages used by Trac and plugins.
         """
-        info = self.systeminfo[:]
+        info = []
         for provider in self.system_info_providers:
             info.extend(provider.get_system_info() or [])
         return sorted(set(info),
                       key=lambda (name, ver): (name != 'Trac', name.lower()))
+
+    def get_systeminfo(self):
+        """Return a list of `(name, version)` tuples describing the name
+        and version information of external packages used by Trac and plugins.
+
+        :since 1.3.1: deprecated and will be removed in 1.5.1. Use
+                      system_info property instead.
+        """
+        return self.system_info
 
     # ISystemInfoProvider methods
 

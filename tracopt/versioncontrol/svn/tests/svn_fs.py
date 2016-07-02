@@ -1482,7 +1482,7 @@ class SubversionConnectorTestCase(unittest.TestCase):
 
     def _svn_version_from_system_info(self):
         svn_version = None
-        for name, version in self.env.get_systeminfo():
+        for name, version in self.env.system_info:
             if name == 'Subversion':
                 svn_version = version
         return svn_version

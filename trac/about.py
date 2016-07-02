@@ -63,7 +63,7 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
-            data['systeminfo'] = self.env.get_systeminfo()
+            data['systeminfo'] = self.env.system_info
             Chrome(self.env).add_jquery_ui(req)
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
