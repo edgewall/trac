@@ -146,33 +146,23 @@ class TracAdminTestCaseBase(unittest.TestCase):
         expected_result = self.expected_results[test_name]
         if args is not None:
             expected_result %= args
-        self.assertEqual(expected_result, output)
 
-    def assertEqual(self, expected_results, output, msg=None):
-        """:deprecated: since 1.0.2, use `assertExpectedResult` instead."""
-        if not (isinstance(expected_results, basestring) and
-                isinstance(output, basestring)):
-            return unittest.TestCase.assertEqual(self, expected_results,
-                                                 output, msg)
         def diff():
             # Create a useful delta between the output and the expected output
             output_lines = ['%s\n' % x for x in output.split('\n')]
-            expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
+            expected_lines = ['%s\n' % x for x in expected_result.split('\n')]
             return ''.join(difflib.unified_diff(expected_lines, output_lines,
                                                 'expected', 'actual'))
 
-        if '[...]' in expected_results:
+        msg = "%r != %r\n%s" % (expected_result, output, diff())
+        if '[...]' in expected_result:
             m = re.match('.*'.join(map(re.escape,
-                                       expected_results.split('[...]'))) +
+                                       expected_result.split('[...]'))) +
                          '\Z',
                          output, re.DOTALL)
-            unittest.TestCase.assertTrue(self, m,
-                                         "%r != %r\n%s" % (expected_results,
-                                                           output, diff()))
+            self.assertTrue(m, msg)
         else:
-            unittest.TestCase.assertEqual(self, expected_results, output,
-                                          "%r != %r\n%s" % (expected_results,
-                                                            output, diff()))
+            self.assertEqual(expected_result, output, msg)
 
 
 class TracadminTestCase(TracAdminTestCaseBase):
