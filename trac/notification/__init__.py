@@ -13,6 +13,5 @@
 
 # Imports for backward compatibility
 from trac.notification.api import IEmailSender, NotificationSystem
-from trac.notification.compat import Notify, NotifyEmail
 from trac.notification.mail import (EMAIL_LOOKALIKE_PATTERN, MAXHEADERLEN,
                                     SmtpEmailSender, SendmailEmailSender)

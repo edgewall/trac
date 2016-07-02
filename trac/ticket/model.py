@@ -69,6 +69,20 @@ def _datetime_to_db_str(dt, is_custom_field):
         return ts
 
 
+def sort_tickets_by_priority(env, ids):
+    with env.db_query as db:
+        tickets = [int(id_) for id_ in ids]
+        holders = ','.join(['%s'] * len(tickets))
+        rows = db("""
+                  SELECT id FROM ticket AS t
+                  LEFT OUTER JOIN enum p
+                    ON p.type='priority' AND p.name=t.priority
+                  WHERE t.id IN (%s)
+                  ORDER BY COALESCE(p.value,'')='', %s, t.id
+                  """ % (holders, db.cast('p.value', 'int')), tickets)
+    return [row[0] for row in rows]
+
+
 class Ticket(object):
 
     realm = 'ticket'

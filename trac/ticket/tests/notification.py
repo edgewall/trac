@@ -30,9 +30,7 @@ from trac.test import EnvironmentStub, MockRequest
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
-from trac.ticket.notification import BatchTicketNotifyEmail, \
-                                     TicketChangeEvent, TicketNotifyEmail
-from trac.ticket.web_ui import TicketModule
+from trac.ticket.notification import BatchTicketChangeEvent, TicketChangeEvent
 from trac.util.datefmt import datetime_now, utc
 
 MAXBODYWIDTH = 76
@@ -95,10 +93,6 @@ class RecipientTestCase(unittest.TestCase):
         ticket.insert()
         return ticket
 
-    def _notify(self, ticket):
-        notify_ticket_created(self.env, ticket)
-        return notifysuite.smtpd.get_recipients()
-
     def test_no_recipients(self):
         """No recipient case"""
         ticket = Ticket(self.env)
@@ -120,7 +114,8 @@ class RecipientTestCase(unittest.TestCase):
                                       'owner': 'joe.user@example.net',
                                       'summary': 'New ticket recipients'})
 
-        recipients = self._notify(ticket)
+        notify_ticket_created(self.env, ticket)
+        recipients = notifysuite.smtpd.get_recipients()
 
         self.assertEqual(2, len(recipients))
         for r in cc_list:
@@ -1314,16 +1309,6 @@ Security sensitive:  0                           |          Blocking:
         current_fieldnames = set(ticket.values.keys())
         self.assertEqual(set(), current_fieldnames - valid_fieldnames)
 
-    def test_notification_get_message_id_unicode(self):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'My Summary'
-        ticket['description'] = 'Some description'
-        ticket.insert()
-        self.env.config.set('project', 'url', u"пиво Müller ")
-        tn = TicketNotifyEmail(self.env)
-        tn.ticket = ticket
-        tn.get_message_id('foo')
-
     def test_mime_meta_characters_in_from_header(self):
         """MIME encoding with meta characters in From header"""
 
@@ -1587,9 +1572,6 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.env = EnvironmentStub(default_data=True, path=self.env_path)
         config_smtp(self.env)
-        self.env.config.set('notification', 'always_notify_owner', 'false')
-        self.env.config.set('notification', 'always_notify_reporter', 'true')
-        self.env.config.set('notification', 'always_notify_updater', 'true')
 
         self.tktids = []
         with self.env.db_transaction as db:
@@ -1610,6 +1592,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
                     when = datetime(2001, 7, 12, 12, 34, idx, 0, utc)
                     self.tktids.append(ticket.insert(when=when))
         self.tktids.reverse()
+        config_subscriber(self.env, updater=True, reporter=True)
 
     def tearDown(self):
         notifysuite.tear_down()
@@ -1629,8 +1612,10 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
                 for name, value in new_values.iteritems():
                     t[name] = value
                 t.save_changes(author, comment, when=when)
-        btn = BatchTicketNotifyEmail(self.env)
-        btn.notify(self.tktids, new_values, 'comment', 'leave', author, when)
+        event = BatchTicketChangeEvent(self.tktids, when, author, comment,
+                                       new_values, 'leave')
+        notifysuite.smtpd.cleanup()
+        NotificationSystem(self.env).notify(event)
         recipients = sorted(notifysuite.smtpd.get_recipients())
         sender = notifysuite.smtpd.get_sender()
         message = notifysuite.smtpd.get_message()
