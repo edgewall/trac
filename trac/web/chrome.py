@@ -601,8 +601,6 @@ class Chrome(Component):
     # A dictionary of default context data for templates
     _default_context_data = {
         '_': translation.gettext,
-        'all': all,
-        'any': any,
         'as_bool': as_bool,
         'as_int': as_int,
         'classes': presentation.classes,
@@ -630,10 +628,8 @@ class Chrome(Component):
         'pretty_size': pretty_size,
         'pretty_timedelta': pretty_timedelta,
         'quote_plus': unicode_quote_plus,
-        'reversed': reversed,
         'separated': presentation.separated,
         'shorten_line': shorten_line,
-        'sorted': sorted,
         'time': datetime.time,
         'timedelta': datetime.timedelta,
         'to_json': presentation.to_json,
