@@ -30,7 +30,8 @@ from trac.test import EnvironmentStub, MockRequest
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
-from trac.ticket.notification import BatchTicketChangeEvent, TicketChangeEvent
+from trac.ticket.notification import (
+    BatchTicketChangeEvent, TicketChangeEvent, TicketNotificationSystem)
 from trac.util.datefmt import datetime_now, utc
 
 MAXBODYWIDTH = 76
@@ -1255,47 +1256,6 @@ Security sensitive:  0                           |          Blocking:
             lines.append(line)
         self.assertEqual(expected, '\n'.join(lines))
 
-    def test_format_subject_new_ticket(self):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'The summary'
-        ticket['description'] = 'Some description'
-        ticket.insert()
-
-        notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
-        headers, body = parse_smtp_message(message)
-
-        self.assertEqual('[TracTest] #1: The summary', headers['Subject'])
-
-    def test_format_subject_ticket_change(self):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'The summary'
-        ticket['description'] = 'Some description'
-        ticket.insert()
-        ticket['description'] = 'Some other description'
-        ticket.save_changes()
-
-        notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
-        headers, body = parse_smtp_message(message)
-
-        self.assertEqual('Re: [TracTest] #1: The summary', headers['Subject'])
-
-    def test_format_subject_ticket_summary_changed(self):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'The summary'
-        ticket['description'] = 'Some description'
-        ticket.insert()
-        ticket['summary'] = 'The other summary'
-        ticket.save_changes()
-
-        notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
-        headers, body = parse_smtp_message(message)
-
-        self.assertEqual('Re: [TracTest] #1: The other summary '
-                         '(was: The summary)', headers['Subject'])
-
     def test_notification_does_not_alter_ticket_instance(self):
         ticket = Ticket(self.env)
         ticket['summary'] = 'My Summary'
@@ -1488,6 +1448,61 @@ Security sensitive:  0                           |          Blocking:
         self.assertIn('Comment (by Thę Ußęr)', body)
 
 
+class FormatSubjectTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        TicketNotificationSystem(self.env).environment_created()
+        self.env.config.set('project', 'name', 'TracTest')
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        self.env.config.set('notification', 'smtp_server', 'localhost')
+        self.env.config.set('notification', 'smtp_enabled', 'true')
+
+    def tearDown(self):
+        notifysuite.tear_down()
+        self.env.reset_db()
+
+    def _create_ticket(self):
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'user@domain.com'
+        ticket['summary'] = 'The summary'
+        ticket['description'] = 'The description'
+        ticket.insert()
+        return ticket
+
+    def test_format_subject_new_ticket(self):
+        ticket = self._create_ticket()
+
+        notify_ticket_created(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('[TracTest] #1: The summary', headers['Subject'])
+
+    def test_format_subject_ticket_change(self):
+        ticket = self._create_ticket()
+        ticket['description'] = 'The changed description'
+        ticket.save_changes(author='user@domain.com')
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] #1: The summary', headers['Subject'])
+
+    def test_format_subject_ticket_summary_changed(self):
+        ticket = self._create_ticket()
+        ticket['summary'] = 'The changed summary'
+        ticket.save_changes(author='user@domain.com')
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] #1: The changed summary '
+                         '(was: The summary)', headers['Subject'])
+
+
 class AttachmentNotificationTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -1650,6 +1665,7 @@ class NotificationTestSuite(unittest.TestSuite):
         self.smtpd.start()
         self.addTest(unittest.makeSuite(RecipientTestCase))
         self.addTest(unittest.makeSuite(NotificationTestCase))
+        self.addTest(unittest.makeSuite(FormatSubjectTestCase))
         self.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
         self.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
         self.remaining = self.countTestCases()
