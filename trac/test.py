@@ -399,12 +399,8 @@ class EnvironmentStub(Environment):
         else:
             dbm.set_database_version(db_default.db_version)
 
-    def destroy_db(self, scheme=None, db_prop=None):
-        """Destroy the database.
-
-        :since 1.1.5: the `scheme` and `db_prop` parameters are deprecated and
-                      will be removed in 1.3.1.
-        """
+    def destroy_db(self):
+        """Destroy the database."""
         try:
             DatabaseManager(self).destroy_db()
         except (TracError, self.db_exc.DatabaseError):
