@@ -299,15 +299,11 @@ class Ticket(object):
             except ValueError:
                 break
 
-    def save_changes(self, author=None, comment=None, when=None, cnum='',
-                     replyto=None):
+    def save_changes(self, author=None, comment=None, when=None, replyto=None):
         """
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True
         otherwise.
-
-        :since 1.0: the `cnum` parameter is deprecated, and threading should
-        be controlled with the `replyto` argument
         """
         assert self.exists, "Cannot update a new ticket"
 
@@ -331,26 +327,24 @@ class Ticket(object):
             db("UPDATE ticket SET changetime=%s WHERE id=%s",
                (when_ts, self.id))
 
-            # find cnum if it isn't provided
-            if not cnum:
-                num = 0
-                for ts, old in db("""
-                        SELECT DISTINCT tc1.time, COALESCE(tc2.oldvalue,'')
-                        FROM ticket_change AS tc1
-                        LEFT OUTER JOIN ticket_change AS tc2
-                        ON tc2.ticket=%s AND tc2.time=tc1.time
-                           AND tc2.field='comment'
-                        WHERE tc1.ticket=%s ORDER BY tc1.time DESC
-                        """, (self.id, self.id)):
-                    # Use oldvalue if available, else count edits
-                    try:
-                        num += int(old.rsplit('.', 1)[-1])
-                        break
-                    except ValueError:
-                        num += 1
-                cnum = str(num + 1)
-                if replyto:
-                    cnum = '%s.%s' % (replyto, cnum)
+            num = 0
+            for ts, old in db("""
+                    SELECT DISTINCT tc1.time, COALESCE(tc2.oldvalue,'')
+                    FROM ticket_change AS tc1
+                    LEFT OUTER JOIN ticket_change AS tc2
+                    ON tc2.ticket=%s AND tc2.time=tc1.time
+                       AND tc2.field='comment'
+                    WHERE tc1.ticket=%s ORDER BY tc1.time DESC
+                    """, (self.id, self.id)):
+                # Use oldvalue if available, else count edits
+                try:
+                    num += int(old.rsplit('.', 1)[-1])
+                    break
+                except ValueError:
+                    num += 1
+            cnum = str(num + 1)
+            if replyto:
+                cnum = '%s.%s' % (replyto, cnum)
 
             # store fields
             for name in self._old.keys():

@@ -508,11 +508,11 @@ class TicketCommentTestCase(unittest.TestCase):
             ticket[k] = v
         self.id = ticket.insert(when)
 
-    def _modify_ticket(self, author, comment, when, cnum, **kwargs):
+    def _modify_ticket(self, author, comment, when, replyto=None, **kwargs):
         ticket = Ticket(self.env, self.id)
         for k, v in kwargs.iteritems():
             ticket[k] = v
-        ticket.save_changes(author, comment, when, cnum=cnum)
+        ticket.save_changes(author, comment, when, replyto)
 
     def _find_change(self, ticket, cnum):
         (ts, author, comment) = ticket._find_change(cnum)
@@ -531,12 +531,12 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         self._insert_ticket('Test ticket', self.created,
                             owner='john', keywords='a, b, c')
         self.t1 = self.created + timedelta(seconds=1)
-        self._modify_ticket('jack', 'Comment 1', self.t1, '1')
+        self._modify_ticket('jack', 'Comment 1', self.t1)
         self.t2 = self.created + timedelta(seconds=2)
-        self._modify_ticket('john', 'Comment 2', self.t2, '1.2',
+        self._modify_ticket('john', 'Comment 2', self.t2, '1',
                             owner='jack')
         self.t3 = self.created + timedelta(seconds=3)
-        self._modify_ticket('jim', 'Comment 3', self.t3, '3',
+        self._modify_ticket('jim', 'Comment 3', self.t3,
                             keywords='a, b')
 
     def tearDown(self):
@@ -718,16 +718,16 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self._insert_ticket('Test ticket', self.created,
                             owner='john', keywords='a, b, c', foo='initial')
         self.t1 = self.created + timedelta(seconds=1)
-        self._modify_ticket('jack', 'Comment 1', self.t1, '1',
+        self._modify_ticket('jack', 'Comment 1', self.t1,
                             foo='change 1')
         self.t2 = self.created + timedelta(seconds=2)
-        self._modify_ticket('john', 'Comment 2', self.t2, '1.2',
+        self._modify_ticket('john', 'Comment 2', self.t2, '1',
                             owner='jack', foo='change2')
         self.t3 = self.created + timedelta(seconds=3)
-        self._modify_ticket('jim', 'Comment 3', self.t3, '3',
+        self._modify_ticket('jim', 'Comment 3', self.t3,
                             keywords='a, b', foo='change3')
         self.t4 = self.created + timedelta(seconds=4)
-        self._modify_ticket('joe', 'Comment 4', self.t4, '4',
+        self._modify_ticket('joe', 'Comment 4', self.t4,
                             keywords='a', foo='change4')
 
     def tearDown(self):
