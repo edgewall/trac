@@ -323,13 +323,9 @@ class TicketFormatter(Component):
         template = NewTextTemplate(template.encode('utf8'))
 
         summary = ticket['summary']
-        if not is_newticket:
-            from trac.ticket.web_ui import TicketModule
-            for change in TicketModule(self.env) \
-                          .grouped_changelog_entries(ticket, when=event.time):
-                if 'summary' in change['fields']:
-                    values = change['fields']['summary']
-                    summary = "%s (was: %s)" % (values['new'], values['old'])
+        if event.changes and 'summary' in event.changes['fields']:
+            change = event.changes['fields']['summary']
+            summary = "%s (was: %s)" % (change['new'], change['old'])
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__':
