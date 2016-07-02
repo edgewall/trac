@@ -45,7 +45,7 @@ pysqlite_version_string = get_pkginfo(sqlite).get('version',
                                                   '%d.%d.%s'
                                                   % pysqlite_version)
 min_sqlite_version = (3, 0, 0)
-min_pysqlite_version = (2, 4, 1)  # version provided by Python 2.6
+min_pysqlite_version = (2, 6, 0)  # version provided by Python 2.7
 
 
 class PyFormatCursor(sqlite.Cursor):
@@ -181,9 +181,6 @@ class SQLiteConnector(Component):
         elif pysqlite_version < min_pysqlite_version:
             self.error = _("Need at least PySqlite %(version)s or higher",
                            version='%d.%d.%d' % min_pysqlite_version)
-        elif (2, 5, 2) <= pysqlite_version < (2, 5, 5):
-            self.error = _("PySqlite 2.5.2 - 2.5.4 break Trac, please use "
-                           "2.5.5 or higher")
         yield 'sqlite', -1 if self.error else 1
 
     def get_connection(self, path, log=None, params={}):
@@ -286,7 +283,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
     __slots__ = ['_active_cursors', '_eager']
 
-    poolable = sqlite_version >= (3, 3, 8) and pysqlite_version >= (2, 5, 0)
+    poolable = sqlite_version >= (3, 3, 8)
 
     def __init__(self, path, log=None, params={}):
         self.cnx = None
