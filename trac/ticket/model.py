@@ -331,7 +331,7 @@ class Ticket(object):
 
         if when is None:
             when = datetime_now(utc)
-        when_ts = to_utimestamp(when)
+        self.values['changetime'] = when
 
         # Perform type conversions
         db_values = self._to_db_types(self.values)
@@ -339,7 +339,7 @@ class Ticket(object):
 
         with self.env.db_transaction as db:
             db("UPDATE ticket SET changetime=%s WHERE id=%s",
-               (when_ts, self.id))
+               (db_values['changetime'], self.id))
 
             num = 0
             for ts, old in db("""
@@ -380,7 +380,7 @@ class Ticket(object):
                 db("""INSERT INTO ticket_change
                         (ticket,time,author,field,oldvalue,newvalue)
                       VALUES (%s, %s, %s, %s, %s, %s)
-                      """, (self.id, when_ts, author, name,
+                      """, (self.id, db_values['changetime'], author, name,
                             old_db_values.get(name), db_values.get(name)))
 
             # always save comment, even if empty
@@ -388,11 +388,11 @@ class Ticket(object):
             db("""INSERT INTO ticket_change
                     (ticket,time,author,field,oldvalue,newvalue)
                   VALUES (%s,%s,%s,'comment',%s,%s)
-                  """, (self.id, when_ts, author, cnum, comment))
+                  """, (self.id, db_values['changetime'], author, cnum,
+                        comment))
 
         old_values = self._old
         self._old = {}
-        self.values['changetime'] = when
 
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_changed(self, comment, author, old_values)
