@@ -88,11 +88,7 @@ class PreferencesModule(Component):
             raise HTTPNotFound(_("Unknown preference panel '%(panel)s'",
                                  panel=panel_id))
 
-        session_data = {
-            'session': req.session,
-            'settings': {'session': req.session,  # Compat: remove in 1.3.1
-                         'session_id': req.session.sid},
-        }
+        session_data = {'session': req.session}
 
         # Render child preference panels.
         chrome = Chrome(self.env)
