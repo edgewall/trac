@@ -38,11 +38,7 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore', 'IPermissionPolicy',
 
 
 class PermissionError(StandardError, TracBaseError):
-    """Insufficient permissions to perform the operation.
-
-    :since 1.0.5: the `msg` attribute is deprecated and will be removed in
-                  1.3.1. Use the `message` property instead.
-    """
+    """Insufficient permissions to perform the operation."""
 
     title = N_("Forbidden")
 
@@ -63,7 +59,6 @@ class PermissionError(StandardError, TracBaseError):
                         "permissions.", perm=self.action)
         elif msg is None:
             msg = _("Insufficient privileges to perform this operation.")
-        self.msg = msg
         super(PermissionError, self).__init__(msg)
 
     @property
