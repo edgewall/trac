@@ -47,8 +47,8 @@ from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview.api import RenderingContext, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.resource import *
-from trac.util import as_bool, as_int, compat, get_reporter_id, html,\
-                      presentation, get_pkginfo, pathjoin, translation
+from trac.util import as_bool, as_int, get_pkginfo, get_reporter_id, html, \
+                      pathjoin, presentation, translation
 from trac.util.html import escape, plaintext
 from trac.util.text import (
     exception_to_unicode, is_obfuscated, javascript_quote,
@@ -613,7 +613,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.py_groupby,  # http://bugs.python.org/issue2246
+        'groupby': itertools.groupby,
         'http_date': http_date,
         'is_obfuscated': is_obfuscated,
         'istext': presentation.istext,
