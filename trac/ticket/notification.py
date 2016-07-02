@@ -333,6 +333,7 @@ class TicketFormatter(Component):
             'prefix': prefix,
             'summary': summary,
             'ticket': ticket,
+            'changes': event.changes,
             'env': self.env,
         }
 

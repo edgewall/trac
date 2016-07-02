@@ -1450,6 +1450,17 @@ Security sensitive:  0                           |          Blocking:
 
 class FormatSubjectTestCase(unittest.TestCase):
 
+    custom_template = \
+        "$prefix " \
+        "(${'new' if not changes" \
+        "   else ticket.resolution if ticket.status == 'closed' " \
+        "   else ticket.status if 'status' in changes.fields " \
+        "   else 'commented' if 'comment' in changes.fields " \
+        "                       and changes.fields['comment']['new'] " \
+        "   else 'updated'}) " \
+        "#$ticket.id: $summary" \
+
+
     def setUp(self):
         self.env = EnvironmentStub()
         TicketNotificationSystem(self.env).environment_created()
@@ -1501,6 +1512,86 @@ class FormatSubjectTestCase(unittest.TestCase):
 
         self.assertEqual('Re: [TracTest] #1: The changed summary '
                          '(was: The summary)', headers['Subject'])
+
+    def test_format_subject_custom_template_new_ticket(self):
+        """Format subject with a custom template for a new ticket."""
+        ticket = self._create_ticket()
+        self.env.config.set('notification', 'ticket_subject_template',
+                            self.custom_template)
+
+        notify_ticket_created(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('[TracTest] (new) #1: The summary',
+                         headers['Subject'])
+
+    def test_format_subject_custom_template_changed_ticket(self):
+        """Format subject with a custom template for a ticket with
+        a changed property.
+        """
+        ticket = self._create_ticket()
+        ticket['description'] = 'The changed description'
+        ticket.save_changes(author='user@domain.com')
+        self.env.config.set('notification', 'ticket_subject_template',
+                            self.custom_template)
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] (updated) #1: The summary',
+                         headers['Subject'])
+
+    def test_format_subject_custom_template_commented_ticket(self):
+        """Format subject with a custom template for a ticket with
+        a changed property and a comment.
+        """
+        ticket = self._create_ticket()
+        ticket['description'] = 'The changed description'
+        ticket.save_changes(author='user@domain.com', comment='the comment')
+        self.env.config.set('notification', 'ticket_subject_template',
+                            self.custom_template)
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] (commented) #1: The summary',
+                         headers['Subject'])
+
+    def test_format_subject_custom_template_status_changed_ticket(self):
+        """Format subject with a custom template for a ticket with
+        changed status.
+        """
+        ticket = self._create_ticket()
+        ticket['status'] = 'accepted'
+        ticket.save_changes(author='user@domain.com')
+        self.env.config.set('notification', 'ticket_subject_template',
+                            self.custom_template)
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] (accepted) #1: The summary',
+                         headers['Subject'])
+
+    def test_format_subject_custom_template_closed_ticket(self):
+        """Format subject with a custom template for a closed ticket."""
+        ticket = self._create_ticket()
+        ticket['status'] = 'closed'
+        ticket['resolution'] = 'worksforme'
+        ticket.save_changes(author='user@domain.com')
+        self.env.config.set('notification', 'ticket_subject_template',
+                            self.custom_template)
+
+        notify_ticket_changed(self.env, ticket)
+        message = notifysuite.smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('Re: [TracTest] (worksforme) #1: The summary',
+                         headers['Subject'])
 
 
 class AttachmentNotificationTestCase(unittest.TestCase):
