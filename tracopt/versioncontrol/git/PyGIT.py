@@ -85,6 +85,13 @@ def _unquote(path):
     return path
 
 
+def _close_proc_pipes(proc):
+    if proc:
+        for f in (proc.stdin, proc.stdout, proc.stderr):
+            if f:
+                f.close()
+
+
 class GitCore(object):
     """Low-level wrapper around git executable"""
 
@@ -138,6 +145,7 @@ class GitCore(object):
 
         p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
         stdout_data, stderr_data = p.communicate()
+        _close_proc_pipes(p)
         if self.__log and (p.returncode != 0 or stderr_data):
             self.__log.debug('%s exits with %d, dir: %r, args: %s %r, '
                              'stderr: %r', self.__git_bin, p.returncode,
@@ -416,12 +424,15 @@ class Storage(object):
         self.logger.debug("PyGIT.Storage instance for '%s' is constructed",
                           git_dir)
 
+    def _cleanup_proc(self, proc):
+        if proc:
+            _close_proc_pipes(proc)
+            terminate(proc)
+            proc.wait()
+
     def __del__(self):
         with self.__cat_file_pipe_lock:
-            if self.__cat_file_pipe is not None:
-                self.__cat_file_pipe.stdin.close()
-                terminate(self.__cat_file_pipe)
-                self.__cat_file_pipe.wait()
+            self._cleanup_proc(self.__cat_file_pipe)
 
     #
     # cache handling
@@ -682,9 +693,7 @@ class Storage(object):
                 # consistent state (Otherwise it happens that next time we
                 # call cat_file we get payload from previous call)
                 self.logger.debug("closing cat_file pipe")
-                self.__cat_file_pipe.stdin.close()
-                terminate(self.__cat_file_pipe)
-                self.__cat_file_pipe.wait()
+                self._cleanup_proc(self.__cat_file_pipe)
                 self.__cat_file_pipe = None
 
     def verifyrev(self, rev):
@@ -922,9 +931,8 @@ class Storage(object):
                             path, _ = path.rsplit('/', 1)
                         except ValueError:
                             break
-            f.close()
-            terminate(p[0])
-            p[0].wait()
+            if p:
+                self._cleanup_proc(p[0])
             p[:] = []
             while True:
                 yield None
@@ -942,9 +950,7 @@ class Storage(object):
             yield historian
         finally:
             if p:
-                p[0].stdout.close()
-                terminate(p[0])
-                p[0].wait()
+                self._cleanup_proc(p[0])
 
     def last_change(self, sha, path, historian=None):
         if historian is not None:

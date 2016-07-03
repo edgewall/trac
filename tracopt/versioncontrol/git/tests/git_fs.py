@@ -63,6 +63,7 @@ class GitCommandMixin(object):
     def _git(self, *args, **kwargs):
         proc = self._spawn_git(*args, **kwargs)
         stdout, stderr = proc.communicate()
+        self._close_proc_pipes(proc)
         self.assertEqual(0, proc.returncode,
                          'git exits with %r, args %r, kwargs %r, stdout %r, '
                          'stderr %r' %
@@ -74,6 +75,7 @@ class GitCommandMixin(object):
             data = data.encode('utf-8')
         proc = self._spawn_git('fast-import', stdin=PIPE)
         stdout, stderr = proc.communicate(input=data)
+        self._close_proc_pipes(proc)
         self.assertEqual(0, proc.returncode,
                          'git exits with %r, stdout %r, stderr %r' %
                          (proc.returncode, stdout, stderr))
@@ -94,6 +96,11 @@ class GitCommandMixin(object):
             dt = self._git_date_format(dt)
         env['GIT_COMMITTER_DATE'] = dt
         env['GIT_AUTHOR_DATE'] = dt
+
+    def _close_proc_pipes(self, proc):
+        for f in (proc.stdin, proc.stdout, proc.stderr):
+            if f:
+                f.close()
 
 
 class BaseTestCase(unittest.TestCase, GitCommandMixin):
