@@ -619,27 +619,11 @@ class Environment(Component, ComponentManager):
         """
         return self._get_path_to_dir('htdocs')
 
-    def get_htdocs_dir(self):
-        """Return absolute path to the htdocs directory.
-
-        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
-                       `htdocs_dir` property instead.
-        """
-        return self._get_path_to_dir('htdocs')
-
     @lazy
     def log_dir(self):
         """Absolute path to the log directory.
 
         :since: 1.0.11
-        """
-        return self._get_path_to_dir('log')
-
-    def get_log_dir(self):
-        """Return absolute path to the log directory.
-
-        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
-                       `log_dir` property instead.
         """
         return self._get_path_to_dir('log')
 
@@ -656,14 +640,6 @@ class Environment(Component, ComponentManager):
         """Absolute path to the templates directory.
 
         :since: 1.0.11
-        """
-        return self._get_path_to_dir('templates')
-
-    def get_templates_dir(self):
-        """Return absolute path to the templates directory.
-
-        :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
-                       `templates_dir` property instead.
         """
         return self._get_path_to_dir('templates')
 

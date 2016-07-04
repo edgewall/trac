@@ -98,14 +98,6 @@ def load_py_files():
     return _load_py_files
 
 
-def get_plugins_dir(env):
-    """Return the path to the `plugins` directory of the environment.
-
-    :since 1.0.11: Deprecated and will be removed in 1.3.1. Use the
-                   Environment.plugins_dir property instead."""
-    return env.plugins_dir
-
-
 def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
                                                    load_py_files())):
     """Load all plugin components found on the given search path."""
