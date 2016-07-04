@@ -510,17 +510,16 @@ class AttachmentModule(Component):
         from zipfile import ZipFile, ZIP_DEFLATED
 
         buf = StringIO()
-        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-        for attachment in attachments:
-            zipinfo = create_zipinfo(attachment.filename,
-                                     mtime=attachment.date,
-                                     comment=attachment.description)
-            try:
-                with attachment.open() as fd:
-                    zipfile.writestr(zipinfo, fd.read())
-            except ResourceNotFound:
-                pass # skip missing files
-        zipfile.close()
+        with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
+            for attachment in attachments:
+                zipinfo = create_zipinfo(attachment.filename,
+                                         mtime=attachment.date,
+                                         comment=attachment.description)
+                try:
+                    with attachment.open() as fd:
+                        zipfile.writestr(zipinfo, fd.read())
+                except ResourceNotFound:
+                    pass  # skip missing files
 
         zip_str = buf.getvalue()
         req.send_header("Content-Length", len(zip_str))

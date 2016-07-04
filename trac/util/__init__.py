@@ -563,12 +563,9 @@ def get_lines_from_file(filename, lineno, context=0, globals=None):
         import zipfile
         for path in sys.path:
             try:
-                zip = zipfile.ZipFile(path, 'r')
-                try:
+                with zipfile.ZipFile(path, 'r') as zip:
                     lines = zip.read(match.group(1)).splitlines()
                     break
-                finally:
-                    zip.close()
             except Exception:
                 pass
 

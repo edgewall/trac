@@ -200,30 +200,29 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
     root_len = len(root_path)
 
     buf = StringIO()
-    zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-    for node in iter_nodes(root_node):
-        if node is root_node:
-            continue
-        path = node.path.strip('/')
-        assert path.startswith(root_path)
-        path = root_name + path[root_len:]
-        kwargs = {'mtime': node.last_modified}
-        data = None
-        if node.isfile:
-            data = node.get_processed_content(eol_hint='CRLF').read()
-            properties = node.get_properties()
-            # Subversion specific
-            if 'svn:special' in properties and data.startswith('link '):
-                data = data[5:]
-                kwargs['symlink'] = True
-            if 'svn:executable' in properties:
-                kwargs['executable'] = True
-        elif node.isdir and path:
-            kwargs['dir'] = True
-            data = ''
-        if data is not None:
-            zipfile.writestr(create_zipinfo(path, **kwargs), data)
-    zipfile.close()
+    with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
+        for node in iter_nodes(root_node):
+            if node is root_node:
+                continue
+            path = node.path.strip('/')
+            assert path.startswith(root_path)
+            path = root_name + path[root_len:]
+            kwargs = {'mtime': node.last_modified}
+            data = None
+            if node.isfile:
+                data = node.get_processed_content(eol_hint='CRLF').read()
+                properties = node.get_properties()
+                # Subversion specific
+                if 'svn:special' in properties and data.startswith('link '):
+                    data = data[5:]
+                    kwargs['symlink'] = True
+                if 'svn:executable' in properties:
+                    kwargs['executable'] = True
+            elif node.isdir and path:
+                kwargs['dir'] = True
+                data = ''
+            if data is not None:
+                zipfile.writestr(create_zipinfo(path, **kwargs), data)
 
     zip_str = buf.getvalue()
     req.send_header("Content-Length", len(zip_str))
