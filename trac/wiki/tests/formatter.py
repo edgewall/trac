@@ -124,14 +124,6 @@ class SampleResolver(Component):
                       href=formatter.href(module, target))
 
 
-def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
-    """Retained for backward-compatibility.
-
-    :since 1.2: Deprecated and will be removed in 1.3.1
-    """
-    return test_suite(data, setup, file, teardown, context)
-
-
 def test_suite(data=None, setup=None, file=__file__, teardown=None,
                context=None):
     suite = unittest.TestSuite()
