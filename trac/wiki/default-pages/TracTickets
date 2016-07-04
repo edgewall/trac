@@ -5,7 +5,7 @@ The Trac ticket system provides a simple but effective way to track issues and s
 
 As the central project management element of Trac, tickets can be used for '''project tasks''', '''feature requests''', '''bug reports''', '''software support issues''' among others. 
 
-As with the TracWiki, this subsystem has been designed with the goal of making user contribution and participation as simple as possible.
+As with the TracWiki, this subsystem has been designed to make user contribution and participation as simple as possible.
 
 An issue is assigned to a person who must resolve it or reassign the ticket to someone else. All tickets can be edited, annotated, assigned, prioritized and discussed at any time.
 
@@ -18,10 +18,10 @@ A ticket contains the following information:
  
  * '''Reporter''' — The author of the ticket.
  * '''Type''' — The category of the ticket. The default types are `defect`, `enhancement` and `task`. 
- * '''Component''' — The project module or subsystem this ticket concerns.
+ * '''Component''' — The project module or subsystem that this ticket concerns.
  * '''Version''' — Version of the project that this ticket pertains to.
- * '''Keywords''' — Keywords that a ticket is marked with. Useful for searching and report generation.
- * '''Priority''' — The importance of this issue, ranging from ''trivial'' to ''blocker''. A dropdown list if different priorities are defined.
+ * '''Keywords''' — Keywords that a ticket is tagged with. Useful for searching and report generation.
+ * '''Priority''' — The importance of this issue, ranging from ''trivial'' to ''blocker''. A dropdown list when multiple priorities are defined.
  * '''Milestone''' — Due date of when this issue should be resolved. A dropdown list containing the milestones.
  * '''Assigned to/Owner''' — Principal person responsible for handling the issue.
  * '''Cc''' — A comma-separated list of other users or email addresses to notify. Note that this does not imply responsibility or any other policy.
@@ -97,7 +97,7 @@ trac-admin /path/to/projenv session delete SID
 Alternatively, you can just revoke `TICKET_MODIFY` from users that you don't want to be included in the list. However, that will not be possible if you've granted `TICKET_MODIFY` to all //anonymous// or //authenticated// users.
 
 '''Notes:'''
- - If you need serious flexibility and aren't afraid of a little plugin coding of your own, see [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo].
+ - If you need more flexibility and aren't afraid of a little plugin coding of your own, see the [https://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo plugin].
  
  - Activating this option may cause some performance degradation. Read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
 

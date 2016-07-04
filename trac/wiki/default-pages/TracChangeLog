@@ -7,6 +7,27 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.12
+
+//(July 4, 2016)//
+
+Trac 1.0.12 provides around 20 bug fixes and minor enhancements. The following are some highlights:
+
+ - Reconnect to PostgreSQL server after restarting it
+   ([trac:#4984]).
+ - Workflow actions on the batch modify form are sorted
+   by the default attribute ([trac:#12447]).
+ - Fixed Pygments stylesheet not found when style name
+   contained a dash ([trac:#12505]).
+ - Fixed incorrect parsing of projects list file by
+   `GitwebProjectsRepositoryProvider` ([trac:#12518]).
+ - `TracIni` macro displays option documentation as 
+   multi-line rather than one-liner ([trac:#12522]).
+ - Fixed regression with `GitConnector` leading to
+   `IOError: Too many open files` ([trac:#12524]).
+
+[trac:source:/tags/trac-1.0.12 View Tag] | [trac:milestone:1.0.12 View Milestone]
+
 === 1.0.11
 
 //(May 7, 2016)//
@@ -16,17 +37,20 @@ enhancements. As in 1.0.10, an area of focus has been to
 eliminate tracebacks in the logs due to invalid requests.
 The following are some additional highlights:
 
- - Fix resetting //Oldest first// after auto-preview of
+ - Fixed resetting //Oldest first// after auto-preview of
    ticket change log ([trac:#12381]).
  - Trac is now distributed as wheel package ([trac:#12391]).
  - Fixed database exceptions in query system when 
    ''milestones/versions/enums'' are not defined and a custom
    field of the same name is added ([trac:#12399]).
- - Custom field //milestone// would not be shown when
+ - Custom field //milestone// was not shown when
    standard //milestone// field was hidden ([trac:#12400]).
  - Query system now sorts by `enum.value` rather than
    `ticket.type` for `order=type` ([trac:#12402]). 
- - Added support for Babel 2.3.2 (2.3.0 and 2.3.1 should not be used) ([trac:#12445]).
+ - Added support for Babel 2.3.2 (2.3.0 and 2.3.1 should
+   not be used)  ([trac:#12445]).
+
+[trac:source:/tags/trac-1.0.11 View Tag] | [trac:milestone:1.0.11 View Milestone]
 
 === 1.0.10
 

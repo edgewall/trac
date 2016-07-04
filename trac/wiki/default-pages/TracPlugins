@@ -72,7 +72,7 @@ Trac also searches for plugins installed in the shared plugins directory, see Tr
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{#!sh
-$ easy_install http://svn.edgewall.com/repos/trac/plugins/0.12/spam-filter-captcha
+$ easy_install https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter
 }}}
 
 ==== Enabling the plugin

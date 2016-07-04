@@ -7,6 +7,7 @@ Apart from the [search: Search module], you will also find a small search field 
 The search results show the most recent modifications ranked first rather than the most relevant result.
 
 == Quick searches
+
 For quick access to project resources, the quick-search field at the top of every page can be used to enter a [TracLinks wiki link], which will take you directly to the resource identified by that link:
 
  * ![42] -- Opens change set 42
@@ -15,12 +16,10 @@ For quick access to project resources, the quick-search field at the top of ever
  * /trunk -- Opens the browser for the `trunk` directory in the default repository
  * /repos1/trunk -- Opens the browser for the `trunk` directory in the `repos1` repository
 
-== Advanced
-
-=== Disabling Quickjump
 To disable the Quickjump feature for a keyword start the query with an exclamation mark (`!`): use `!TracGuide` to search for occurrences of the literal word !TracGuide.
 
-=== Search Links
+== Search TracLinks
+
 From the Wiki, it is possible to link to a specific search, using `search:` links:
  * `search:?q=crash` will search for the string "crash" 
  * `search:?q=trac+link&wiki=on` will search for "trac" and "link" in wiki pages only

@@ -41,10 +41,10 @@ After restarting, Trac should show the instances which need a manual upgrade via
 trac-admin /path/to/projenv upgrade
 }}}
 
-This command will do nothing if the environment is already up-to-date.
+This command will not have any effect if the environment is already up-to-date.
 
 Note that a backup of your database will be performed automatically prior to the upgrade. 
-This feature is relatively new for PostgreSQL or MySQL databases, so if it fails, you will have to backup the database manually. Then, to perform the actual upgrade, run:
+This feature is relatively new for PostgreSQL or MySQL databases, so if it fails, you will have to backup the database manually. Then, to perform the actual upgrade:
 {{{#!sh
 trac-admin /path/to/projenv upgrade --no-backup
 }}}
@@ -64,6 +64,7 @@ If you have set up a web server to give out static resources directly (accessed 
 {{{#!sh
 trac-admin /path/to/env deploy /deploy/path
 }}}
+
 this will extract static resources and CGI scripts (`trac.wsgi`, etc) from new Trac version and its plugins into `/deploy/path`.
 
 Some web browsers (IE, Opera) cache CSS and Javascript files aggressively, so you may need to instruct your users to manually erase the contents of their browser's cache, a forced refreshed (`<F5>`) should be enough.
@@ -76,6 +77,7 @@ Remove above note once #9936 is fixed.
 ==== Upgrading from Trac 0.12 to Trac 1.0 #to1.0
 
 ===== Python 2.4 no longer supported
+
 Upgrade Python to at least 2.5, but not 3.0.
 
 ===== Obsolete Plugins
@@ -105,12 +107,15 @@ Prior to 1.0, the owner field of new tickets always defaulted to `[ticket] defau
 ==== Upgrading from Trac 0.11 to Trac 0.12
 
 ===== Python 2.3 no longer supported
+
 The minimum supported version of Python is now 2.4.
 
 ===== SQLite v3.x required
+
 SQLite v2.x is no longer supported. If you still use a Trac database of this format, you'll need to convert it to SQLite v3.x first. See [trac:PySqlite#UpgradingSQLitefrom2.xto3.x] for details.
 
 ===== [trac:PySqlite] 2 required
+
 [trac:PySqlite] 1.1.x is no longer supported. Please install 2.5.5 or later if possible, see [#Tracdatabaseupgrade Trac database upgrade] below.
 
 ===== Obsolete Plugins
@@ -129,6 +134,7 @@ Trac has added functionality equivalent to the following plugins:
 The plugins should be removed when upgrading Trac to 0.12.
 
 ===== Multiple Repository Support
+
 The latest version includes support for multiple repositories. If you plan to add more repositories to your Trac instance, please refer to TracRepositoryAdmin#Migration.
 
 This may be of interest to users with only one repository, since there is now a way to avoid the potentially costly resync check at every request.
@@ -142,6 +148,7 @@ trac-admin /path/to/projenv repository resync '*'
 }}}
 
 ===== Improved repository synchronization
+
 In addition to supporting multiple repositories, there is now a more efficient method for synchronizing Trac and your repositories.
 
 While you can keep the same synchronization as in 0.11 adding the post-commit hook as outlined in TracRepositoryAdmin#Synchronization and TracRepositoryAdmin#ExplicitSync will allow more efficient synchronization and is more or less required for multiple repositories.
@@ -149,21 +156,27 @@ While you can keep the same synchronization as in 0.11 adding the post-commit ho
 Note that if you were using the `trac-post-commit-hook`, ''you're strongly advised to upgrade it'' to the new hook documented in the above references and [TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow here], as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
 
 ===== Authz permission checking
+
 The authz permission checking has been migrated to a fine-grained permission policy. If you use authz permissions (aka `[trac] authz_file` and `authz_module_name`), you must add `AuthzSourcePolicy` in front of your permission policies in `[trac] permission_policies`. You must also remove `BROWSER_VIEW`, `CHANGESET_VIEW`, `FILE_VIEW` and `LOG_VIEW` from your global permissions with `trac-admin $ENV permission remove` or the "Permissions" admin panel.
 
 ===== Microsecond timestamps
+
 All timestamps in database tables, except the `session` table, have been changed from "seconds since epoch" to "microseconds since epoch" values. This change should be transparent to most users, except for custom reports. If any of your reports use date/time columns in calculations (e.g. to pass them to `datetime()`), you must divide the values retrieved from the database by 1'000'000. Similarly, if a report provides a calculated value to be displayed as a date/time (i.e. with a column named "time", "datetime", "changetime", "date", "created" or "modified"), you must provide a microsecond timestamp, that is, multiply your previous calculation with 1'000'000.
 
 ==== Upgrading from Trac 0.10 to Trac 0.11
+
 ===== Site Templates and Styles
+
 The templating engine has changed in 0.11 to Genshi, please look at TracInterfaceCustomization for more information.
 
 If you are using custom CSS or modified templates in the `templates` directory of the TracEnvironment, you will need to convert them to the Genshi way of doing things. To continue to use your style sheet, follow the instructions at TracInterfaceCustomization#SiteAppearance.
 
 ===== Trac Macros, Plugins
+
 The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore due to the drop of [trac:ClearSilver] and the HDF. They need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
 
 ===== For FCGI/WSGI/CGI users
+
 For those who run Trac under the CGI environment, run this command in order to obtain the trac.*gi file:
 {{{#!sh
 trac-admin /path/to/env deploy /deploy/directory/path
@@ -176,9 +189,7 @@ If you had the [trac:WebAdmin] plugin installed, you can uninstall it as it is p
 
 ===== New Default Configurable Workflow
 
-When you run `trac-admin <env> upgrade`, your `trac.ini` will be modified to include a `[ticket-workflow]` section. The workflow configured in this case is the original workflow, so that ticket actions will behave like they did in 0.10.
-
-Graphically, that looks like this:
+When you run `trac-admin <env> upgrade`, your `trac.ini` will be modified to include a `[ticket-workflow]` section. The workflow configured in this case is the original workflow, so that ticket actions will behave like they did in 0.10:
 
 {{{#!Workflow width=500 height=240
 leave = * -> *
@@ -242,7 +253,7 @@ If you've been using !CollabNet's Subversion package, you may need to uninstall 
 
 === Changing Database Backend
 
-The [http://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin] on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating between SQLite, MySQL and PostgreSQL databases.
+The [https://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin] on [https://trac-hacks.org trac-hacks.org] has been written to assist in migrating between SQLite, MySQL and PostgreSQL databases.
 
 === Upgrading from older versions of Trac #OlderVersions
 

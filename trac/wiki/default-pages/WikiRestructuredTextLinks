@@ -3,8 +3,7 @@
 This document illustrates how to use the `:trac:` role in [http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html reStructuredText]. The page is written like:
 
 {{{
-{{{
-#!rst 
+{{{#!rst
 Examples:
 
  * Tickets: :trac:`#1` or :trac:`ticket:1`
@@ -28,8 +27,7 @@ An explicit label can be specified, separated from the link by a space:
 
 Provided you have [http://docutils.sourceforge.net/ docutils] installed, the above block will render as:
 ----
-{{{
-#!rst 
+{{{#!rst
 Examples:
 
  * Tickets: :trac:`#1` or :trac:`ticket:1`
@@ -53,8 +51,7 @@ An explicit label can be specified, separated from the link by a space:
 
 Note that the above could have been written using substitution references and the `trac::` directive:
 {{{
-{{{
-#!rst
+{{{#!rst
 See |ticket123|.
 
  .. |ticket123| trac:: ticket:123 this ticket
@@ -64,8 +61,7 @@ See |ticket123|.
 This renders as:
 ----
 
-{{{
-#!rst
+{{{#!rst
 See |ticket123|.
 
  .. |ticket123| trac:: ticket:123 this ticket
