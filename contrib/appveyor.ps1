@@ -72,6 +72,7 @@ $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
 
 $pipPackages = @{
     '1.0-stable' = @($fcrypt)
+    '1.2-stable' = @('passlib')
     trunk = @('passlib')
 }
 
