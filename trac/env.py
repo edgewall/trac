@@ -516,21 +516,6 @@ class Environment(Component, ComponentManager):
             self._log_handler.close()
             del self._log_handler
 
-    def get_repository(self, reponame=None):
-        """Return the version control repository with the given name,
-        or the default repository if `None`.
-
-        The standard way of retrieving repositories is to use the
-        methods of `RepositoryManager`. This method is retained here
-        for backward compatibility.
-
-        :param reponame: the name of the repository
-
-        :since 1.2: deprecated and will be removed in 1.3.1
-        """
-        from trac.versioncontrol.api import RepositoryManager
-        return RepositoryManager(self).get_repository(reponame)
-
     def create(self, options=[]):
         """Create the basic directory structure of the environment,
         initialize the database and populate the configuration file

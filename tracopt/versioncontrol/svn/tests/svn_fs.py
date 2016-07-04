@@ -494,7 +494,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
         repos_path = drive.lower() + tail
         DbRepositoryProvider(self.env).add_repository('lowercase', repos_path,
                                                       'direct-svnfs')
-        repos = self.env.get_repository('lowercase')
+        repos = RepositoryManager(self.env).get_repository('lowercase')
         node = repos.get_node(u'/tête/R\xe9sum\xe9.txt', 25)
         self.assertEqual([23, 23, 23, 25, 24, 23, 23, 23, 23, 23, 24, 23, 20],
                          node.get_annotations())
@@ -837,7 +837,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
         # in repository path if os.name == 'posix' (#10390)
         DbRepositoryProvider(self.env).add_repository(
             'canonical-path', '//' + REPOS_PATH.lstrip('/'), 'direct-svnfs')
-        repos = self.env.get_repository('canonical-path')
+        repos = RepositoryManager(self.env).get_repository('canonical-path')
         self.assertEqual(REPOS_PATH, repos.path)
 
     if os.name != 'posix':
@@ -1430,7 +1430,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         dbprovider = DbRepositoryProvider(self.env)
         dbprovider.add_repository(REPOS_NAME, self.path, 'direct-svnfs')
         dbprovider.modify_repository(REPOS_NAME, {'url': URL})
-        self.repos = self.env.get_repository(REPOS_NAME)
+        self.repos = RepositoryManager(self.env).get_repository(REPOS_NAME)
 
 
     def tearDown(self):
@@ -1453,7 +1453,7 @@ class SvnCachedRepositoryTestCase(unittest.TestCase):
         dbprovider = DbRepositoryProvider(self.env)
         dbprovider.add_repository(REPOS_NAME, self.path, 'svn')
         dbprovider.modify_repository(REPOS_NAME, {'url': URL})
-        self.repos = self.env.get_repository(REPOS_NAME)
+        self.repos = RepositoryManager(self.env).get_repository(REPOS_NAME)
         self.repos.sync()
 
     def tearDown(self):

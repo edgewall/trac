@@ -116,7 +116,6 @@ def _get_all_repositories():
 
 
 def repository_setup(tc):
-    setattr(tc.env, 'get_repository', _get_repository)
     setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
     setattr(RepositoryManager(tc.env), 'get_all_repositories',
             _get_all_repositories)

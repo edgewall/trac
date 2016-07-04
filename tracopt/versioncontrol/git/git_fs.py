@@ -30,7 +30,7 @@ from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, InvalidRepository,\
                                     NoSuchChangeset, NoSuchNode, \
-                                    IRepositoryProvider
+                                    RepositoryManager, IRepositoryProvider
 from trac.versioncontrol.cache import CACHE_YOUNGEST_REV, CachedRepository, \
                                       CachedChangeset
 from trac.versioncontrol.web_ui import IPropertyRenderer
@@ -241,7 +241,7 @@ class GitConnector(Component):
             context = context.parent
 
         try:
-            repos = self.env.get_repository(reponame)
+            repos = RepositoryManager(self.env).get_repository(reponame)
 
             if not repos:
                 raise Exception("Repository '%s' not found" % reponame)
@@ -397,7 +397,7 @@ class CsetPropertyRenderer(Component):
             # sha is assumed to be a non-abbreviated 40-chars sha id
             try:
                 reponame = context.resource.parent.id
-                repos = self.env.get_repository(reponame)
+                repos = RepositoryManager(self.env).get_repository(reponame)
                 cset = repos.get_changeset(sha)
                 if label is None:
                     label = repos.display_rev(sha)

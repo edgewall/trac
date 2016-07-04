@@ -213,7 +213,7 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         # regression test for #11215
         path = os.path.join(self.repos_path, '.git')
         DbRepositoryProvider(self.env).add_repository('gitrepos', path, 'git')
-        repos = self.env.get_repository('gitrepos')
+        repos = RepositoryManager(self.env).get_repository('gitrepos')
         parent_rev = repos.youngest_rev
 
         create_file(os.path.join(self.repos_path, 'ticket11215.txt'))
@@ -236,7 +236,7 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         # regression test for #11328
         path = os.path.join(self.repos_path, '.git')
         DbRepositoryProvider(self.env).add_repository('gitrepos', path, 'git')
-        repos = self.env.get_repository('gitrepos')
+        repos = RepositoryManager(self.env).get_repository('gitrepos')
         parent_rev = repos.youngest_rev
 
         self._git_commit('-m', 'ticket:11328', '--allow-empty',

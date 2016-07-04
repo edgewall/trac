@@ -450,7 +450,7 @@ class RepositoryManager(Component):
             reponame = resource.id
         else:
             reponame = resource.parent.id
-        repos = self.env.get_repository(reponame)
+        repos = RepositoryManager(self.env).get_repository(reponame)
         if not repos:
             return False
         if resource.realm == self.changeset_realm:
