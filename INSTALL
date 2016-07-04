@@ -235,18 +235,18 @@ Trac can be installed from `PyPI`_ or the Subversion repository using
 A few command-line examples:
 
 
-+ Install Trac 1.0:
++ Install the latest stable version of Trac:
 
 ::
 
-    $ easy_install Trac==1.0
+    $ easy_install Trac
 
 
 + Install latest development version:
 
 ::
 
-    $ easy_install Trac==dev
+    $ easy_install http://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 
   Note that in this case you won't have the possibility to run a
   localized version of Trac; either use a released version or install

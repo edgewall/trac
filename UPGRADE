@@ -115,12 +115,13 @@ scripts are run via `trac-admin`_:
     trac-admin /path/to/projenv upgrade
 
 
-This command will do nothing if the environment is already up-to-date.
+This command will not have any effect if the environment is already
+up-to-date.
 
 Note that a backup of your database will be performed automatically
 prior to the upgrade. This feature is relatively new for PostgreSQL or
 MySQL databases, so if it fails, you will have to backup the database
-manually. Then, to perform the actual upgrade, run:
+manually. Then, to perform the actual upgrade:
 
 
 ::
@@ -417,9 +418,7 @@ New Default Configurable Workflow
 When you run trac-admin <env> upgrade , your trac.ini will be modified
 to include a [ticket-workflow] section. The workflow configured in
 this case is the original workflow, so that ticket actions will behave
-like they did in 0.10.
-
-Graphically, that looks like this:
+like they did in 0.10:
 Enable JavaScript to display the workflow graph.
 There are some significant caveats in this, such as accepting a ticket
 sets it to 'assigned' state, and assigning a ticket sets it to 'new'
@@ -571,7 +570,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _Trac database upgrade: http://trac.edgewall.org/wiki/TracUpgrade#Tracdatabaseupgrade
 .. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
-.. _trac-hacks.org: http://trac-hacks.org
+.. _trac-hacks.org: https://trac-hacks.org
 .. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
 .. _TracEnvironment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _TracGuide: http://trac.edgewall.org/wiki/TracGuide
@@ -579,7 +578,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracInstall: http://trac.edgewall.org/wiki/TracInstall
 .. _TracInterfaceCustomization#SiteAppearance: http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
 .. _TracInterfaceCustomization: http://trac.edgewall.org/wiki/TracInterfaceCustomization
-.. _TracMigratePlugin: http://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracMigratePlugin: https://trac-hacks.org/wiki/TracMigratePlugin
 .. _TracRepositoryAdmin#ExplicitSync: http://trac.edgewall.org/wiki/TracRepositoryAdmin#ExplicitSync
 .. _TracRepositoryAdmin#Migration: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration
 .. _TracRepositoryAdmin#Repositories: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Repositories
