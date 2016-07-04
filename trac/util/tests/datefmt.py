@@ -1165,17 +1165,19 @@ else:
                            'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
             en_GB = Locale.parse('en_GB')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=en_GB),
-                          ('28 Aug 2010 13:45:56', '28 Aug 2010, 13:45:56'))
+                          ('28 Aug 2010 13:45:56',    # Babel < 2.2.0
+                           '28 Aug 2010, 13:45:56'))  # Babel 2.2.0
             fr = Locale.parse('fr')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=fr),
-                          (u'28 août 2010 13:45:56',
-                           u'28 ao\xfbt 2010 \xe0 13:45:56'))
+                          (u'28 août 2010 13:45:56',           # Babel < 2.2.0
+                           u'28 ao\xfbt 2010 \xe0 13:45:56'))  # Babel 2.2.0
             ja = Locale.parse('ja')
             self.assertEqual(u'2010/08/28 13:45:56',
                              datefmt.format_datetime(t, tzinfo=tz, locale=ja))
             vi = Locale.parse('vi')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=vi),
-                          ('13:45:56 28-08-2010', '13:45:56, 28 thg 8, 2010'))
+                          ('13:45:56 28-08-2010',        # Babel < 2.2.0
+                           '13:45:56, 28 thg 8, 2010'))  # Babel 2.2.0
             zh_CN = Locale.parse('zh_CN')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=zh_CN),
                           (u'2010-8-28 下午01:45:56',
@@ -1198,7 +1200,8 @@ else:
                              datefmt.format_date(t, tzinfo=tz, locale=ja))
             vi = Locale.parse('vi')
             self.assertIn(datefmt.format_date(t, tzinfo=tz, locale=vi),
-                          ('07-08-2010', '7 thg 8, 2010'))
+                          ('07-08-2010',      # Babel < 2.2.0
+                           '7 thg 8, 2010'))  # Babel 2.2.0
             zh_CN = Locale.parse('zh_CN')
             self.assertIn(datefmt.format_date(t, tzinfo=tz, locale=zh_CN),
                           (u'2010-8-7', u'2010年8月7日'))
@@ -1237,16 +1240,19 @@ else:
                           ('MMM d, yyyy h:mm:ss a', 'MMM d, y h:mm:ss a',
                            'MMM d, y, h:mm:ss a'))
             self.assertIn(datefmt.get_datetime_format_hint(en_GB),
-                          ('d MMM yyyy HH:mm:ss', 'd MMM y HH:mm:ss',
-                           'd MMM y, HH:mm:ss'))
+                          ('d MMM yyyy HH:mm:ss',
+                           'd MMM y HH:mm:ss',
+                           'd MMM y, HH:mm:ss'))   # Babel 2.2.0
             self.assertIn(datefmt.get_datetime_format_hint(fr),
-                          ('d MMM yyyy HH:mm:ss', 'd MMM y HH:mm:ss',
-                           u"d MMM y '\xe0' HH:mm:ss"))
+                          ('d MMM yyyy HH:mm:ss',
+                           'd MMM y HH:mm:ss',
+                           u"d MMM y '\xe0' HH:mm:ss"))  # Babel 2.2.0
             self.assertIn(datefmt.get_datetime_format_hint(ja),
                           ('yyyy/MM/dd H:mm:ss', 'y/MM/dd H:mm:ss'))
             self.assertIn(datefmt.get_datetime_format_hint(vi),
-                          ('HH:mm:ss dd-MM-yyyy', 'HH:mm:ss dd-MM-y',
-                           'HH:mm:ss, d MMM, y'))
+                          ('HH:mm:ss dd-MM-yyyy',
+                           'HH:mm:ss dd-MM-y',
+                           'HH:mm:ss, d MMM, y'))  # Babel 2.2.0
             self.assertIn(datefmt.get_datetime_format_hint(zh_CN),
                           ('yyyy-M-d ahh:mm:ss', u'y年M月d日 ah:mm:ss'))
 
@@ -1266,7 +1272,9 @@ else:
             self.assertIn(datefmt.get_date_format_hint(ja),
                           ('yyyy/MM/dd', 'y/MM/dd'))
             self.assertIn(datefmt.get_date_format_hint(vi),
-                          ('dd-MM-yyyy', 'dd-MM-y', 'd MMM, y'))
+                          ('dd-MM-yyyy',
+                           'dd-MM-y',
+                           'd MMM, y'))   # Babel 2.2.0
             self.assertIn(datefmt.get_date_format_hint(zh_CN),
                           ('yyyy-M-d', u'y年M月d日'))
 
