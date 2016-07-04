@@ -18,6 +18,7 @@
 
 from cStringIO import StringIO
 from datetime import datetime
+from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
 import os.path
@@ -506,8 +507,6 @@ class AttachmentModule(Component):
                    (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
-
-        from zipfile import ZipFile, ZIP_DEFLATED
 
         buf = StringIO()
         with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:

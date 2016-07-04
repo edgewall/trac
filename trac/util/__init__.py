@@ -35,6 +35,7 @@ import string
 import struct
 import tempfile
 from urllib import quote, unquote, urlencode
+from zipfile import ZipInfo, ZIP_DEFLATED, ZIP_STORED
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
@@ -297,7 +298,6 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
     :param symlink: if `True`, the entry is a symbolic link
     :param comment: comment of the entry
     """
-    from zipfile import ZipInfo, ZIP_DEFLATED, ZIP_STORED
     zipinfo = ZipInfo()
 
     # The general purpose bit flag 11 is used to denote
