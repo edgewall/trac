@@ -984,6 +984,7 @@ class Chrome(Component):
             return get_resource_url(self.env, resource, abs_href, **kwargs)
 
         d.update({
+            'env': self.env,
             'context': web_context(req) if req else None,
             'Resource': Resource,
             'url_of': get_rel_url,
@@ -1005,7 +1006,6 @@ class Chrome(Component):
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
             'get_systeminfo': self.env.get_systeminfo,  # Remove in 1.5.1
-            'system_info': self.env.system_info,
             'captioned_button': partial(presentation.captioned_button, req),
 
             # Date/time formatting
