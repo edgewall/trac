@@ -11,7 +11,7 @@
 Display system information.
 
 Arguments:
- - systeminfo: the output of `Environment.system_info`.
+ - system_info: the output of `Environment.system_info`.
  - plugins: the output of `get_plugin_info`.
  - config: the output of `get_configinfo`.
 -->
@@ -22,10 +22,10 @@ Arguments:
       xmlns:xi="http://www.w3.org/2001/XInclude"
       py:strip="">
 
-  <div py:if="systeminfo or plugins or config" id="environmentinfo">
+  <div py:if="system_info or plugins or config" id="environmentinfo">
     <hr />
 
-    <div py:if="systeminfo" id="systeminfo">
+    <div py:if="system_info" id="systeminfo">
       <script type="text/javascript">//<![CDATA[
         jQuery(document).ready(function ($) {
           $("#systeminfo table").before("<p>User Agent: <code>" + navigator.userAgent + "</code></p>")
@@ -39,7 +39,7 @@ Arguments:
       <table class="listing">
         <thead><tr><th>Package</th><th>Version</th></tr></thead>
         <tbody>
-          <tr py:for="name, value in systeminfo">
+          <tr py:for="name, value in system_info">
             <th>$name</th>
             <td>$value</td>
           </tr>
