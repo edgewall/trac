@@ -763,15 +763,6 @@ class ReportModule(Component):
 
         return cols, rows, num_items, missing_args, limit_offset
 
-    def get_report(self, id):
-        """Returns the `title`, `description` and `sql` for a report.
-
-        :since 1.2: Deprecated and will be removed in 1.3.1. Use the
-                    `Report` model class instead.
-        """
-        report = Report(self.env, id)
-        return report.title, report.description, report.query
-
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
         report_args = {}
