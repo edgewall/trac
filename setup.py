@@ -106,7 +106,7 @@ facilities.
         'babel': ['Babel>=0.9.5'],
         'mysql': ['MySQL-python >= 1.2.2'],
         'postgresql': ['psycopg2 >= 2.0'],
-        'pygments': ['Pygments>=0.6'],
+        'pygments': ['Pygments>=1.0'],
         'rest': ['docutils>=0.3.9'],
         'textile': ['textile>=2.0'],
     },

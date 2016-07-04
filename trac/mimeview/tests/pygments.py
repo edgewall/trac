@@ -211,25 +211,16 @@ if (class_exists('MyClass')) {
         self._test('pygments_lexer_arguments_override_options', result)
 
     def test_newline_content(self):
-        """
-        The behavior of Pygments changed post-Pygments 0.11.1, and now
-        contains all four newlines.  In Pygments 0.11.1 and prior, it only
-        has three since stripnl defaults to True.
+        """Regression test for newline-stripping behavior in Pygments.
 
-        See http://trac.edgewall.org/ticket/7705.
+        http://trac.edgewall.org/ticket/7705
         """
-        from pkg_resources import parse_version, get_distribution
-
-        result = self.pygments.render(self.context, 'text/x-python', '\n\n\n\n')
+        result = self.pygments.render(self.context, 'text/x-python',
+                                      '\n\n\n\n')
         self.assertTrue(result)
-        t = "".join([r[1] for r in result if r[0] is TEXT])
+        t = "".join(r[1] for r in result if r[0] is TEXT)
 
-        if parse_version(pygments.__version__) > parse_version('0.11.1') \
-           or pygments.__version__ == '0.11.1' and 'dev' in \
-           get_distribution('Pygments').version:
-            self.assertEqual("\n\n\n\n", t)
-        else:
-            self.assertEqual("\n\n\n", t)
+        self.assertEqual("\n\n\n\n", t)
 
     def test_empty_content(self):
         """
