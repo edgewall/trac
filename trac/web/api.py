@@ -167,8 +167,9 @@ class TracNotImplementedError(TracError, NotImplementedError):
     title = N_("Not Implemented Error")
 
 
-HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
-                    in BaseHTTPRequestHandler.responses.items()])
+HTTP_STATUS = {code: reason.title()
+               for code, (reason, description)
+               in BaseHTTPRequestHandler.responses.items()}
 
 
 class HTTPException(TracBaseError):
