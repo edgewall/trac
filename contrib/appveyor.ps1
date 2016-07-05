@@ -71,7 +71,7 @@ $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
 
 
 $pipPackages = @{
-    '1.0-stable' = @($fcrypt)
+    '1.2-stable' = @('passlib')
     trunk = @('passlib')
 }
 
@@ -88,7 +88,7 @@ $condaCommonPackages = @(
 # tested.
 
 # These variables are:
-#  - SVN_BRANCH: the line of development (1.0-stable, ... trunk)
+#  - SVN_BRANCH: the line of development (1.2-stable, ... trunk)
 #  - PYTHONHOME: the version of python we are testing
 #  - TRAC_TEST_DB_URI: the database backend we are testing
 #  - SKIP_ENV: don't perform any step with this environment (optional)
@@ -191,15 +191,7 @@ function Trac-Install {
         & mkdir $deps
     }
 
-    # Download fcrypt if needed (only for 1.0-stable after #12239)
-
-    if ($svnBranch -eq '1.0-stable') {
-        if (-not (Test-Path $fcrypt)) {
-            & curl.exe -sS $fcryptUrl -o $fcrypt
-        }
-    }
-
-    # Subversion support via win32svn project, for Python 2.6 and 2.7 32-bits
+    # Subversion support via win32svn project, for Python 2.7 32-bits
 
     if (-not $py64) {
         $svnBinariesZip = "$deps\$svnBaseAp.zip"
@@ -221,22 +213,8 @@ function Trac-Install {
 
     # Install packages via pip
 
-    # pip in Python 2.6 triggers the following warning:
-    # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-    # use -W to avoid it
-    if ($pyVersion -eq '2.6') {
-        $ignoreWarnings = @(
-            '-W', 'ignore:A true SSLContext object is not available'
-        )
-    }
-
-    function pip() {
-        & python.exe $ignoreWarnings -m pip.__main__ @args
-        # Note: -m pip works only in 2.7, -m pip.__main__ works in both
-    }
-
-    & pip --version
-    & pip install $pipCommonPackages $pipPackages.$svnBranch
+    & pip.exe --version
+    & pip.exe install $pipCommonPackages $pipPackages.$svnBranch
 
     if ($pyIsConda) {
 	& conda.exe install -qy $condaCommonPackages
@@ -260,13 +238,13 @@ function Trac-Install {
         # "postgres://tracuser:password@localhost/trac?schema=tractest"
         #
 
-        & pip install psycopg2
+        & pip.exe install psycopg2
 
         Add-AppveyorMessage -Message "1.1. psycopg2 package installed" `
           -Category Information
     }
 
-    & pip list
+    & pip.exe list
 
     # Prepare local Makefile.cfg
 
