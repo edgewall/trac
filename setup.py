@@ -66,8 +66,8 @@ facilities.
     author = 'Edgewall Software',
     author_email = 'trac-dev@googlegroups.com',
     license = 'BSD',
-    url = 'http://trac.edgewall.org/',
-    download_url = 'http://trac.edgewall.org/wiki/TracDownload',
+    url = 'https://trac.edgewall.org/',
+    download_url = 'https://trac.edgewall.org/wiki/TracDownload',
     classifiers = [
         'Environment :: Web Environment',
         'Framework :: Trac',
