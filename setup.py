@@ -104,7 +104,7 @@ facilities.
     ],
     extras_require = {
         'babel': ['Babel>=0.9.5'],
-        'configobj': ['ConfigObj'],
+        'configobj': ['configobj'],
         'pygments': ['Pygments>=0.6'],
         'rest': ['docutils>=0.3.9'],
         'silvercity': ['SilverCity>=0.9.4'],
