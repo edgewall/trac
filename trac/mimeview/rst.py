@@ -35,12 +35,10 @@ try:
 except ImportError:
     has_docutils = False
 
-from genshi.core import escape
-
 from trac.core import *
 from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
-from trac.util.html import Element, Fragment, Markup, find_element
+from trac.util.html import Element, Fragment, Markup, escape, find_element
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link

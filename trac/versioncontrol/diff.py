@@ -17,8 +17,7 @@
 import difflib
 import re
 
-from genshi import Markup, escape
-
+from trac.util.html import Markup, escape
 from trac.util.text import expandtabs
 
 __all__ = ['diff_blocks', 'get_change_extent', 'get_diff_options',
