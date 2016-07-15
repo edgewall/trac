@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-05-12 03:03+0000\n"
+"POT-Creation-Date: 2016-06-01 15:06-0700\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -155,7 +155,7 @@ msgstr "いいえ"
 
 #: trac/htdocs/js/query.js:234
 msgid "between"
-msgstr " "
+msgstr "​"
 
 #: trac/htdocs/js/query.js:236
 msgid "and"
