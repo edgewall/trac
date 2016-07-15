@@ -1102,7 +1102,8 @@ _timezones = [
     FixedOffset(360, 'GMT +6:00'),   FixedOffset(420, 'GMT +7:00'),
     FixedOffset(480, 'GMT +8:00'),   FixedOffset(540, 'GMT +9:00'),
     FixedOffset(600, 'GMT +10:00'),  FixedOffset(660, 'GMT +11:00'),
-    FixedOffset(720, 'GMT +12:00'),  FixedOffset(780, 'GMT +13:00')]
+    FixedOffset(720, 'GMT +12:00'),  FixedOffset(780, 'GMT +13:00'),
+    FixedOffset(840, 'GMT +14:00')]
 _tzmap = dict([(z.zone, z) for z in _timezones])
 
 all_timezones = [z.zone for z in _timezones]
