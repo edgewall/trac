@@ -130,6 +130,7 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 ============================== Links - Internal, External and Interwiki
 [[link]]
 [[MyBigPage|Go to my page]]
+[[ticket:12536|""]]
 [[http://www.wikicreole.org/]]
 http://www.rawlink.org/, http://www.another.rawlink.org
 [[http://www.wikicreole.org/|Visit the WikiCreole website]]
@@ -139,6 +140,7 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 <p>
 <a class="missing wiki" href="/wiki/link" rel="nofollow">link?</a>
 <a class="missing wiki" href="/wiki/MyBigPage" rel="nofollow">Go to my page?</a>
+<a class="missing ticket"></a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>http://www.wikicreole.org/</a>
 <a class="ext-link" href="http://www.rawlink.org/"><span class="icon"></span>http://www.rawlink.org/</a>, <a class="ext-link" href="http://www.another.rawlink.org"><span class="icon"></span>http://www.another.rawlink.org</a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>Visit the WikiCreole website</a>

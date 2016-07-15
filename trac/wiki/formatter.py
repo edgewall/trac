@@ -24,7 +24,7 @@ import os
 from StringIO import StringIO
 
 from genshi.builder import tag, Element
-from genshi.core import Stream, Markup, escape
+from genshi.core import Stream
 from genshi.input import HTMLParser, ParseError
 from genshi.util import plaintext
 
@@ -32,9 +32,9 @@ from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity
+from trac.util.html import Markup, TracHTMLSanitizer, escape
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus, unquote_label
-from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
