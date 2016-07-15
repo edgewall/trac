@@ -44,6 +44,19 @@ else:
             self.assertEqual(datetime.timedelta(hours=4),
                              tz.utcoffset(None))
             self.assertEqual('GMT +4:00', tz.zone)
+            self.assertTrue(isinstance(tz, datefmt.FixedOffset))
+
+            tz = datefmt.get_timezone('Etc/GMT+12')
+            self.assertEqual(datetime.timedelta(hours=-12),
+                             tz.utcoffset(None))
+            self.assertEqual('GMT -12:00', tz.zone)
+            self.assertTrue(isinstance(tz, datefmt.FixedOffset))
+
+            tz = datefmt.get_timezone('Etc/GMT-14')
+            self.assertEqual(datetime.timedelta(hours=14),
+                             tz.utcoffset(None))
+            self.assertEqual('GMT +14:00', tz.zone)
+            self.assertTrue(isinstance(tz, datefmt.FixedOffset))
 
         def test_unicode_input(self):
             tz = datefmt.get_timezone(u'Etc/GMT-4')
