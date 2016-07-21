@@ -223,6 +223,17 @@ class ComponentManager(object):
         self.enabled[component] = False
         self.components[component] = None
 
+    def enable_component(self, component):
+        """Force a component to be enabled.
+
+        :param component: can be a class or an instance.
+
+        :since: 1.0.13
+        """
+        if not isinstance(component, type):
+            component = component.__class__
+        self.enabled[component] = True
+
     def component_activated(self, component):
         """Can be overridden by sub-classes so that special
         initialization for components can be provided.

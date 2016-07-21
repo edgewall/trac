@@ -385,6 +385,7 @@ class Environment(Component, ComponentManager):
     def enable_component(self, cls):
         """Enable a component or module."""
         self._component_rules[self._component_name(cls)] = True
+        super(Environment, self).enable_component(cls)
 
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
