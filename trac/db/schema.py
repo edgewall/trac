@@ -22,9 +22,7 @@ class Table(object):
         self.name = name
         self.columns = []
         self.indices = []
-        self.key = key
-        if isinstance(key, basestring):
-            self.key = [key]
+        self.key = [key] if isinstance(key, basestring) else key
 
     def __getitem__(self, objs):
         self.columns = [o for o in objs if isinstance(o, Column)]
