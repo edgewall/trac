@@ -376,7 +376,7 @@ class EnvironmentStub(Environment):
                 db.rollback()  # make sure there's no transaction in progress
                 # check database version
                 db_version = dbm.get_database_version()
-        except (TracError, self.env.db_exc.DatabaseError):
+        except (TracError, self.db_exc.DatabaseError):
             pass
         else:
             if db_version == db_default.db_version:
@@ -439,9 +439,9 @@ class EnvironmentStub(Environment):
         The database is reset, then the connections are shut down, and
         finally all environment files are removed from the disk.
         """
-        self.env.reset_db()
-        self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        self.reset_db()
+        self.shutdown() # really closes the db connections
+        shutil.rmtree(self.path)
         if self._old_registry is not None:
             self.restore_component_registry()
 
@@ -457,7 +457,7 @@ class EnvironmentStub(Environment):
         `1` for an authenticated user or `0` for an unauthenticated
         user.
         """
-        with self.env.db_transaction as db:
+        with self.db_transaction as db:
             for row in users:
                 if len(row) == 3:
                     username, name, email = row
