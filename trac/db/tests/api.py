@@ -315,6 +315,17 @@ class DatabaseManagerTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def test_get_column_names(self):
+        """Get column names for the default database."""
+        wiki_table_column_names = []
+        for table in default_schema:
+            if table.name == 'wiki':
+                wiki_table_column_names = [col.name for col in table.columns]
+                break
+
+        self.assertEqual(wiki_table_column_names,
+                         self.dbm.get_column_names('wiki'))
+
     def test_get_default_database_version(self):
         """Get database version for the default entry named
         `database_version`.
