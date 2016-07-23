@@ -486,8 +486,6 @@ class DatabaseManager(Component):
             args['log'] = self.log
         return connector, args
 
-    _get_connector = get_connector  # For 0.11 compatibility
-
 
 def get_column_names(cursor):
     """Retrieve column names from a cursor, if possible."""
