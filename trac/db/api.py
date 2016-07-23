@@ -431,6 +431,14 @@ class DatabaseManager(Component):
         with self.env.db_query as db:
             return db.get_table_names()
 
+    def get_column_names(self, table):
+        """Returns a list of the column names for `table`.
+
+        :since: 1.2
+        """
+        with self.env.db_query as db:
+            return db.get_column_names(table)
+
     def set_database_version(self, version, name='database_version'):
         """Sets the database version in the SYSTEM table.
 
