@@ -39,17 +39,6 @@ class DatabaseFileTestCase(unittest.TestCase):
     def _db_query(self, env):
         env.db_query("SELECT name FROM system")
 
-    def _make_environ(self, scheme='http', server_name='example.org',
-                      server_port=80, method='GET', script_name='/trac',
-                      cookie=None, **kwargs):
-        environ = {'wsgi.url_scheme': scheme, 'wsgi.input': StringIO(''),
-                   'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
-                   'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
-        if cookie:
-            environ['HTTP_COOKIE'] = cookie
-        environ.update(kwargs)
-        return environ
-
     def test_missing_tracdb(self):
         self._create_env()
         os.remove(self.db_path)
