@@ -9,10 +9,8 @@ env:
   - "TRAC_TEST_DB_URI=postgres://tracuser:password@localhost/trac?schema=tractest"
   - "TRAC_TEST_DB_URI=mysql://tracuser:password@localhost/trac"
 before_install:
-  - psql --version
   - psql -U postgres -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
   - psql -U postgres -c "CREATE DATABASE trac OWNER tracuser;"
-  - mysql --version
   - mysql -u root -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
   - mysql -u root -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
   - mysql -u root -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
