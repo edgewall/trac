@@ -498,10 +498,9 @@ class ConnectionTestCase(unittest.TestCase):
         schema = default_schema + self.schema
         with self.env.db_query as db:
             for table in schema:
-                db_columns = db.get_column_names(table.name)
-                self.assertEqual(len(table.columns), len(db_columns))
-                for column in table.columns:
-                    self.assertIn(column.name, db_columns)
+                column_names = [col.name for col in table.columns]
+                self.assertEqual(column_names,
+                                 db.get_column_names(table.name))
 
 
 class DatabaseManagerTestCase(unittest.TestCase):
@@ -515,14 +514,10 @@ class DatabaseManagerTestCase(unittest.TestCase):
 
     def test_get_column_names(self):
         """Get column names for the default database."""
-        wiki_table_column_names = []
         for table in default_schema:
-            if table.name == 'wiki':
-                wiki_table_column_names = [col.name for col in table.columns]
-                break
-
-        self.assertEqual(wiki_table_column_names,
-                         self.dbm.get_column_names('wiki'))
+            column_names = [col.name for col in table.columns]
+            self.assertEqual(column_names,
+                             self.dbm.get_column_names(table.name))
 
     def test_get_default_database_version(self):
         """Get database version for the default entry named
