@@ -135,6 +135,8 @@ class DbRepositoryProvider(Component):
             if 'name' in info and ('dir' in info or 'alias' in info):
                 info['id'] = id
                 reponames[info['name']] = info
+            if 'sync_per_request' in info:
+                info['sync_per_request'] = as_bool(info['sync_per_request'])
         return reponames.iteritems()
 
     # IAdminCommandProvider methods
