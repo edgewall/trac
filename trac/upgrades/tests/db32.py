@@ -19,7 +19,6 @@ from trac.test import EnvironmentStub
 from trac.upgrades import db32
 from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitwebProjectsRepositoryProvider
-from tracopt.versioncontrol.svn.svn_fs import SubversionConnector
 
 VERSION = 32
 
@@ -66,9 +65,17 @@ class UpgradeTestCase(unittest.TestCase):
         true when repository_sync_per_request is not set in trac.ini.
         """
         self.env.config.remove('trac', 'repository_sync_per_request')
-        db_provider = DbRepositoryProvider(self.env)
-        db_provider.add_repository('', '/var/svn', 'svn')
-        db_provider.add_repository('git', '/var/git', 'git')
+        # directly insert repository records instead of DbRepositoryProvider
+        # to avoid a TracError "The repository type 'svn' is not supported"
+        with self.env.db_transaction as db:
+            db.executemany("""INSERT INTO repository (id,name,value)
+                              VALUES (%s,%s,%s)""",
+                           [(1, 'name', ''),
+                            (1, 'dir', '/var/svn'),
+                            (1, 'type', 'svn'),
+                            (2, 'name', 'git'),
+                            (2, 'dir', '/var/git'),
+                            (2, 'type', 'git')])
 
         db32.do_upgrade(self.env, VERSION, None)
 
