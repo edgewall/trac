@@ -87,7 +87,7 @@ class UpgradeTestCase(unittest.TestCase):
             WHERE id=1 AND name='sync_per_request'""")[0][0])
         self.assertIn('git', repos)
         self.assertFalse(repos['git']['sync_per_request'])
-        self.assertEqual('0', self.env.db_query("""
+        self.assertIsNone(self.env.db_query("""
             SELECT value FROM repository
             WHERE id=2 AND name='sync_per_request'""")[0][0])
 
