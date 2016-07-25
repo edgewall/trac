@@ -135,8 +135,7 @@ class DbRepositoryProvider(Component):
             if 'name' in info and ('dir' in info or 'alias' in info):
                 info['id'] = id
                 reponames[info['name']] = info
-            if 'sync_per_request' in info:
-                info['sync_per_request'] = as_bool(info['sync_per_request'])
+            info['sync_per_request'] = as_bool(info.get('sync_per_request'))
         return reponames.iteritems()
 
     # IAdminCommandProvider methods
@@ -197,8 +196,6 @@ class DbRepositoryProvider(Component):
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
         if key == 'dir':
             value = os.path.abspath(value)
-        if key in ('hidden', 'sync_per_request'):
-            value = '1' if as_bool(value) else None
         self.modify_repository(reponame, {key: value})
         if not reponame:
             reponame = '(default)'
@@ -296,6 +293,8 @@ class DbRepositoryProvider(Component):
                     continue
                 if k in ('alias', 'name') and is_default(v):
                     v = ''
+                if k in ('hidden', 'sync_per_request'):
+                    v = '1' if as_bool(v) else None
                 if k == 'dir' and not os.path.isabs(v):
                     raise TracError(_("The repository directory must be "
                                       "absolute"))
