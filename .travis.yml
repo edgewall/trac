@@ -21,6 +21,8 @@ addons:
     packages:
       - python-subversion
 script:
+  - echo "$(psql -U postgres -t -c 'SELECT version()')"
+  - echo "$(mysql -u root -sN -e 'SELECT version()')"
   - make Trac.egg-info compile unit-test functional-test
 notifications:
   email:
