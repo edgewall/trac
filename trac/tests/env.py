@@ -137,6 +137,49 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertRaises(ConfigurationError, open_environment,
                           self.env.path, True)
 
+    def test_upgrade_environment(self):
+        """EnvironmentSetupParticipants are called only if
+        environment_needs_upgrade returns True for the participant.
+        """
+
+        class SetupParticipantA(Component):
+            implements(IEnvironmentSetupParticipant)
+
+            called = False
+
+            def environment_created(self):
+                pass
+
+            def environment_needs_upgrade(self):
+                return True
+
+            def upgrade_environment(self):
+                self.called = True
+
+        class SetupParticipantB(Component):
+            implements(IEnvironmentSetupParticipant)
+
+            called = False
+
+            def environment_created(self):
+                pass
+
+            def environment_needs_upgrade(self):
+                return False
+
+            def upgrade_environment(self):
+                self.called = True
+
+        self.env.enable_component(SetupParticipantA)
+        self.env.enable_component(SetupParticipantB)
+        participant_a = SetupParticipantA(self.env)
+        participant_b = SetupParticipantB(self.env)
+
+        self.assertTrue(self.env.needs_upgrade())
+        self.env.upgrade()
+        self.assertTrue(participant_a.called)
+        self.assertFalse(participant_b.called)
+
 
 class KnownUsersTestCase(unittest.TestCase):
 

@@ -34,8 +34,8 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager)
 from trac.loader import load_components
 from trac.log import logger_handler_factory
-from trac.util import arity, as_bool, copytree, create_file, get_pkginfo, \
-                      lazy, makedirs, read_file
+from trac.util import as_bool, copytree, create_file, get_pkginfo, lazy, \
+                      makedirs, read_file
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -722,7 +722,11 @@ class Environment(Component, ComponentManager):
         :param backup_dest: name of the backup file
         :return: whether the upgrade was performed
         """
-        if len(self.setup_participants) == 0:
+        upgraders = []
+        for participant in self.setup_participants:
+            if participant.environment_needs_upgrade():
+                upgraders.append(participant)
+        if not upgraders:
             return
 
         if backup:
@@ -731,7 +735,7 @@ class Environment(Component, ComponentManager):
             except Exception as e:
                 raise BackupError(e)
 
-        for participant in self.setup_participants:
+        for participant in upgraders:
             self.log.info("%s.%s upgrading...", participant.__module__,
                           participant.__class__.__name__)
             participant.upgrade_environment()
