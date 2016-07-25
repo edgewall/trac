@@ -865,7 +865,7 @@ class Request(object):
         try:
             fs = _FieldStorage(fp, environ=self.environ,
                                keep_blank_values=True)
-        except (IOError, socket.error), e:
+        except (IOError, socket.error) as e:
             if self._is_client_disconnected(e):
                 raise HTTPBadRequest(
                     _("Exception caught while reading request: %(msg)s",
