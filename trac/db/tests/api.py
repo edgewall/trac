@@ -414,7 +414,8 @@ class ConnectionTestCase(unittest.TestCase):
         self.schema = [
             Table('HOURS', key='ID')[
                 Column('ID', auto_increment=True),
-                Column('AUTHOR')],
+                Column('AUTHOR')
+            ],
             Table('blog', key='bid')[
                 Column('bid', auto_increment=True),
                 Column('author')

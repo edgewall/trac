@@ -412,7 +412,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             self._is_closed = True
 
     def cast(self, column, type):
-        if type == 'int' or type == 'int64':
+        if type in ('int', 'int64'):
             type = 'signed'
         elif type == 'text':
             type = 'char'
@@ -440,7 +440,8 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def get_table_names(self):
         rows = self.execute("""
             SELECT table_name FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
+            WHERE table_schema=%s
+            """, (self.schema,))
         return [row[0] for row in rows]
 
     def like(self):
