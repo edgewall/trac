@@ -17,9 +17,9 @@
 import csv
 from datetime import datetime
 from functools import partial
+import io
 import pkg_resources
 import re
-from StringIO import StringIO
 
 from genshi.core import Markup
 from genshi.builder import tag
@@ -1188,8 +1188,8 @@ class TicketModule(Component):
         #        as one row of output doesn't seem to be terribly useful...
         fields = [f for f in ticket.fields
                   if f['name'] not in ('time', 'changetime')]
-        content = StringIO()
-        content.write('\xef\xbb\xbf')   # BOM
+        content = io.BytesIO()
+        content.write(b'\xef\xbb\xbf')   # BOM
         writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['id'] + [unicode(f['name']) for f in fields])
 

@@ -11,9 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import io
 import unittest
 from datetime import datetime
-from cStringIO import StringIO
 
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionError
@@ -47,7 +47,7 @@ class MockRepositoryConnector(Component):
                         created_path=path, created_rev=rev,
                         get_entries=lambda: iter([]),
                         get_properties=lambda: {},
-                        get_content=lambda: StringIO('content'),
+                        get_content=lambda: io.BytesIO('content'),
                         get_content_length=lambda: 7,
                         get_content_type=lambda: 'application/octet-stream')
             return node

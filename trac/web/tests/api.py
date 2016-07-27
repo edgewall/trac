@@ -11,12 +11,12 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os.path
 import shutil
 import sys
 import tempfile
 import unittest
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -68,7 +68,7 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
 def _make_environ(scheme='http', server_name='example.org',
                   server_port=80, method='GET', script_name='/trac',
                   **kwargs):
-    environ = {'wsgi.url_scheme': scheme, 'wsgi.input': StringIO(''),
+    environ = {'wsgi.url_scheme': scheme, 'wsgi.input': io.BytesIO(),
                'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
                'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
     environ.update(kwargs)
@@ -311,21 +311,21 @@ class RequestTestCase(unittest.TestCase):
             'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'))
 
     def test_write_iterable(self):
-        buf = StringIO()
+        buf = io.BytesIO()
         def write(data):
             buf.write(data)
         def start_response(status, headers):
             return write
         environ = self._make_environ(method='GET')
 
-        buf = StringIO()
+        buf = io.BytesIO()
         req = Request(environ, start_response)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.write(('Foo', 'bar', 'baz'))
         self.assertEqual('Foobarbaz', buf.getvalue())
 
     def test_write_unicode(self):
-        buf = StringIO()
+        buf = io.BytesIO()
         def write(data):
             buf.write(data)
         def start_response(status, headers):
@@ -340,7 +340,7 @@ class RequestTestCase(unittest.TestCase):
         self.assertRaises(ValueError, req.write, ('F', u'öo'))
 
     def test_send_iterable(self):
-        baton = {'content': StringIO(), 'status': None, 'headers': None}
+        baton = {'content': io.BytesIO(), 'status': None, 'headers': None}
         def write(data):
             baton['content'].write(data)
         def start_response(status, headers):
@@ -376,12 +376,16 @@ class RequestTestCase(unittest.TestCase):
                          str(req.incookie).rstrip(';'))
 
     def test_read(self):
-        environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
+        environ = self._make_environ(**{
+            'wsgi.input': io.BytesIO(b'test input')
+        })
         req = Request(environ, None)
         self.assertEqual('test input', req.read())
 
     def test_read_size(self):
-        environ = self._make_environ(**{'wsgi.input': StringIO('test input')})
+        environ = self._make_environ(**{
+            'wsgi.input': io.BytesIO(b'test input')
+        })
         req = Request(environ, None)
         self.assertEqual('test', req.read(size=4))
 
@@ -407,7 +411,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_post_with_unnamed_value(self):
         boundary = '_BOUNDARY_'
-        form_data = """\
+        form_data = b"""\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="foo"\r\n\
 \r\n\
@@ -425,7 +429,7 @@ unnamed value\r\n\
         form_data %= {'boundary': boundary}
         content_type = 'multipart/form-data; boundary="%s"' % boundary
         environ = self._make_environ(method='POST', **{
-            'wsgi.input': StringIO(form_data),
+            'wsgi.input': io.BytesIO(form_data),
             'CONTENT_LENGTH': str(len(form_data)),
             'CONTENT_TYPE': content_type
         })
@@ -437,11 +441,11 @@ unnamed value\r\n\
 
     def _test_post_with_null_bytes(self, form_data):
         boundary = '_BOUNDARY_'
-        content_type = 'multipart/form-data; boundary="%s"' % boundary
+        content_type = b'multipart/form-data; boundary="%s"' % boundary
         form_data %= {'boundary': boundary}
 
         environ = self._make_environ(method='POST', **{
-            'wsgi.input': StringIO(form_data),
+            'wsgi.input': io.BytesIO(form_data),
             'CONTENT_LENGTH': str(len(form_data)),
             'CONTENT_TYPE': content_type
         })
@@ -499,11 +503,12 @@ ne\x00w\r\n\
                                      **{'QUERY_STRING': 'action=foo'})
         req = Request(environ, None)
         self.assertEqual('foo', req.args['action'])
-        environ = self._make_environ(method='POST',
-                                     **{'wsgi.input': StringIO('action=bar'),
-                                        'CONTENT_LENGTH': '10',
-                                        'CONTENT_TYPE': 'application/x-www-form-urlencoded',
-                                        'QUERY_STRING': 'action=foo'})
+        environ = self._make_environ(method='POST', **{
+            'wsgi.input': io.BytesIO(b'action=bar'),
+            'CONTENT_LENGTH': '10',
+            'CONTENT_TYPE': 'application/x-www-form-urlencoded',
+            'QUERY_STRING': 'action=foo'
+        })
         req = Request(environ, None)
         self.assertEqual('bar', req.args['action'])
 
@@ -523,7 +528,7 @@ class RequestSendFileTestCase(unittest.TestCase):
     def setUp(self):
         self.status = None
         self.headers = None
-        self.response = StringIO()
+        self.response = io.BytesIO()
         self.dir = tempfile.mkdtemp(prefix='trac-')
         self.filename = os.path.join(self.dir, 'test.txt')
         self.data = 'contents\n'
@@ -672,7 +677,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.env.config.set('project', 'admin_trac_url', admin_trac_url)
         self.assertEquals(admin_trac_url, self.env.project_admin_trac_url)
 
-        content = StringIO()
+        content = io.BytesIO()
         result = {'status': None, 'headers': []}
         def write(data):
             content.write(data)

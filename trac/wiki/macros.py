@@ -17,9 +17,9 @@
 from fnmatch import fnmatchcase
 from itertools import groupby
 import inspect
+import io
 import os
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 from genshi.core import Markup
@@ -436,7 +436,7 @@ class PageOutlineMacro(WikiMacroBase):
 
         # TODO: - integrate the rest of the OutlineFormatter directly here
         #       - use formatter.wikidom instead of formatter.source
-        out = StringIO()
+        out = io.StringIO()
         oformatter = OutlineFormatter(self.env, formatter.context)
         oformatter.format(formatter.source, out, max_depth, min_depth,
                           shorten=not inline)

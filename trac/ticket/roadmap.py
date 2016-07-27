@@ -15,8 +15,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from StringIO import StringIO
 from datetime import datetime, timedelta
+import io
 import re
 
 from genshi.builder import tag
@@ -483,7 +483,7 @@ class RoadmapModule(Component):
     def _render_ics(self, req, milestones):
         req.send_response(200)
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
-        buf = StringIO()
+        buf = io.BytesIO()
 
         from trac.ticket import Priority
         priorities = {}

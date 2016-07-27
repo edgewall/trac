@@ -11,10 +11,10 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
 import tempfile
 import unittest
-from cStringIO import StringIO
 
 from trac.config import ConfigurationError
 from trac.env import Environment

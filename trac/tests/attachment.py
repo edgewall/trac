@@ -11,11 +11,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
 import tempfile
 import unittest
 from datetime import datetime
-from StringIO import StringIO
 
 from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
@@ -175,9 +175,9 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_insert(self):
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('foo.txt', StringIO(''), 0, 1)
+        attachment.insert('foo.txt', io.BytesIO(), 0, 1)
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('bar.jpg', StringIO(''), 0, 2)
+        attachment.insert('bar.jpg', io.BytesIO(), 0, 2)
 
         attachments = Attachment.select(self.env, 'ticket', 42)
         self.assertEqual('foo.txt', attachments.next().filename)
@@ -186,10 +186,10 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_insert_unique(self):
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('foo.txt', StringIO(''), 0)
+        attachment.insert('foo.txt', io.BytesIO(), 0)
         self.assertEqual('foo.txt', attachment.filename)
         attachment = Attachment(self.env, 'ticket', 42)
-        attachment.insert('foo.txt', StringIO(''), 0)
+        attachment.insert('foo.txt', io.BytesIO(), 0)
         self.assertEqual('foo.2.txt', attachment.filename)
         self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
@@ -200,13 +200,13 @@ class AttachmentTestCase(unittest.TestCase):
     def test_insert_outside_attachments_dir(self):
         attachment = Attachment(self.env, '../../../../../sth/private', 42)
         self.assertRaises(TracError, attachment.insert, 'foo.txt',
-                          StringIO(''), 0)
+                          io.BytesIO(), 0)
 
     def test_delete(self):
         attachment1 = Attachment(self.env, 'wiki', 'SomePage')
-        attachment1.insert('foo.txt', StringIO(''), 0)
+        attachment1.insert('foo.txt', io.BytesIO(), 0)
         attachment2 = Attachment(self.env, 'wiki', 'SomePage')
-        attachment2.insert('bar.jpg', StringIO(''), 0)
+        attachment2.insert('bar.jpg', io.BytesIO(), 0)
 
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(2, len(list(attachments)))
@@ -226,17 +226,17 @@ class AttachmentTestCase(unittest.TestCase):
         doesn't exist for some reason.
         """
         attachment = Attachment(self.env, 'wiki', 'SomePage')
-        attachment.insert('foo.txt', StringIO(''), 0)
+        attachment.insert('foo.txt', io.BytesIO(), 0)
         os.unlink(attachment.path)
 
         attachment.delete()
 
     def test_reparent(self):
         attachment1 = Attachment(self.env, 'wiki', 'SomePage')
-        attachment1.insert('foo.txt', StringIO(''), 0)
+        attachment1.insert('foo.txt', io.BytesIO(), 0)
         path1 = attachment1.path
         attachment2 = Attachment(self.env, 'wiki', 'SomePage')
-        attachment2.insert('bar.jpg', StringIO(''), 0)
+        attachment2.insert('bar.jpg', io.BytesIO(), 0)
 
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(2, len(list(attachments)))
@@ -266,7 +266,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_resource_exists(self):
         att = Attachment(self.env, 'wiki', 'WikiStart')
-        att.insert('file.txt', StringIO(''), 1)
+        att.insert('file.txt', io.BytesIO(), 1)
         self.assertTrue(resource_exists(self.env, att.resource))
 
 
@@ -300,7 +300,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
 
         path_info = '/attachment/parent_realm/parent_id/attachment_id'
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
-        attachment.insert('attachment_id', StringIO(''), 0, 1)
+        attachment.insert('attachment_id', io.BytesIO(), 0, 1)
         req = MockRequest(self.env, method='POST', action=None,
                           path_info=path_info)
         module = AttachmentModule(self.env)

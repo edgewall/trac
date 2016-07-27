@@ -16,8 +16,8 @@
 #
 # Author: Eli Carter
 
+import io
 from ConfigParser import ParsingError, RawConfigParser
-from StringIO import StringIO
 from collections import defaultdict
 from functools import partial
 from pkg_resources import resource_filename
@@ -626,7 +626,7 @@ class WorkflowMacro(WikiMacroBase):
                 text = '[ticket-workflow]\n' + text
             parser = RawConfigParser()
             try:
-                parser.readfp(StringIO(text))
+                parser.readfp(io.StringIO(text))
             except ParsingError as e:
                 return system_message(_("Error parsing workflow."),
                                       unicode(e))

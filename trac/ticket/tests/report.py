@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
+import io
 import unittest
 from datetime import datetime, timedelta
 
@@ -280,21 +281,21 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_sub_var_no_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            "$VAR", {'VAR': 'value'})
+            u"$VAR", {'VAR': 'value'})
         self.assertEqual("%s", sql)
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 
     def test_sub_var_digits_underscore(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            "$_VAR, $VAR2, $2VAR", {'_VAR': 'value1', 'VAR2': 'value2'})
+            u"$_VAR, $VAR2, $2VAR", {'_VAR': 'value1', 'VAR2': 'value2'})
         self.assertEqual("%s, %s, $2VAR", sql)
         self.assertEqual(['value1', 'value2'], values)
         self.assertEqual([], missing_args)
 
     def test_sub_var_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            "'$VAR'", {'VAR': 'value'})
+            u"'$VAR'", {'VAR': 'value'})
         with self.env.db_query as db:
             concatenated = db.concat("''", '%s', "''")
         self.assertEqual(concatenated, sql)
@@ -303,7 +304,7 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_sub_var_missing_args(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            "$VAR, $PARAM, $MISSING", {'VAR': 'value'})
+            u"$VAR, $PARAM, $MISSING", {'VAR': 'value'})
         self.assertEqual("%s, %s, %s", sql)
         self.assertEqual(['value', '', ''], values)
         self.assertEqual(['PARAM', 'MISSING'], missing_args)
@@ -338,7 +339,7 @@ class ReportModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env)
         name = """%s"`'%%%?"""
         with self.env.db_query as db:
-            sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
+            sql = u'SELECT 1 AS %s, $USER AS user' % db.quote(name)
             rv = self.report_module.execute_paginated_report(req, 1, sql,
                                                              {'USER': 'joe'})
         self.assertEqual(5, len(rv), repr(rv))

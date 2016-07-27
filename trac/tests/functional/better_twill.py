@@ -16,16 +16,13 @@ monkey-patch some better versions of some of twill's methods.
 It also handles twill's absense.
 """
 
+import io
 import os
 import sys
 import urllib
 import urlparse
 from os.path import abspath, dirname, join
 from pkg_resources import parse_version as pv
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 from trac.util.text import to_unicode
 
@@ -122,7 +119,7 @@ if twill:
                 url = b.get_url()
                 if isinstance(url, str):
                     url = unicode(url, 'latin1')
-                etree.parse(StringIO(page), base_url=url)
+                etree.parse(io.BytesIO(page), base_url=url)
             except etree.XMLSyntaxError as e:
                 raise twill.errors.TwillAssertionError(
                     _format_error_log(page, e.error_log))
@@ -196,7 +193,7 @@ if twill:
 
     # Twill's formfile function leaves a filehandle open which prevents the
     # file from being deleted on Windows.  Since we would just assume use a
-    # StringIO object in the first place, allow the file-like object to be
+    # BytesIO object in the first place, allow the file-like object to be
     # provided directly.
     def better_formfile(formname, fieldname, filename, content_type=None,
                         fp=None):
@@ -205,7 +202,7 @@ if twill:
             temp_fp = open(filename, 'rb')
             data = temp_fp.read()
             temp_fp.close()
-            fp = StringIO(data)
+            fp = io.BytesIO(data)
 
         form = b.get_form(formname)
         control = b.get_form_field(form, fieldname)

@@ -39,11 +39,11 @@ variable FCGI_FORCE_CGI to "Y" or "y".
 __author__ = 'Allan Saddi <allan@saddi.com>'
 __version__ = '$Revision: 2025 $'
 
+import io
 import sys
 import os
 import signal
 import struct
-import cStringIO as StringIO
 import select
 import socket
 import errno
@@ -607,7 +607,7 @@ class CGIRequest(Request):
         self.stdin = sys.stdin
         self.stdout = StdoutWrapper(sys.stdout) # Oh, the humanity!
         self.stderr = sys.stderr
-        self.data = StringIO.StringIO()
+        self.data = io.BytesIO()
 
     def _end(self, appStatus=0L, protocolStatus=FCGI_REQUEST_COMPLETE):
         sys.exit(appStatus)

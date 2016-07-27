@@ -24,15 +24,12 @@ web content are also using facilities provided here.
 import datetime
 from functools import partial
 import itertools
+import io
 import operator
 import os.path
 import pkg_resources
 import pprint
 import re
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 from genshi import Markup
 from genshi.builder import tag, Element
@@ -1102,7 +1099,7 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            buffer = StringIO()
+            buffer = io.BytesIO()
             stream.render('text', out=buffer, encoding='utf-8')
             return buffer.getvalue()
 
@@ -1130,7 +1127,7 @@ class Chrome(Component):
             return self.iterable_content(stream, method, doctype=doctype)
 
         try:
-            buffer = StringIO()
+            buffer = io.BytesIO()
             stream.render(method, doctype=doctype, out=buffer,
                           encoding='utf-8')
             return buffer.getvalue().translate(_translate_nop,

@@ -16,7 +16,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
-from StringIO import StringIO
+import io
 from itertools import izip
 from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -199,7 +199,7 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
         root_name = ''
     root_len = len(root_path)
 
-    buf = StringIO()
+    buf = io.BytesIO()
     with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
         for node in iter_nodes(root_node):
             if node is root_node:

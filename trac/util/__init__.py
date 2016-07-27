@@ -17,12 +17,12 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
-from cStringIO import StringIO
 import csv
 import errno
 import functools
 import hashlib
 import inspect
+import io
 from itertools import izip, tee
 import locale
 import os.path
@@ -542,7 +542,7 @@ def arity(f):
 def get_last_traceback():
     """Retrieve the last traceback as an `unicode` string."""
     import traceback
-    tb = StringIO()
+    tb = io.BytesIO()
     traceback.print_exc(file=tb)
     return to_unicode(tb.getvalue())
 
@@ -718,7 +718,7 @@ def get_sources(path):
                            if any(src.startswith(top) for top in toplevels))
             continue
         if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
-            reader = csv.reader(StringIO(dist.get_metadata('RECORD')))
+            reader = csv.reader(io.BytesIO(dist.get_metadata('RECORD')))
             sources.update((row[0], dist)
                            for row in reader if any(row[0].startswith(top)
                                                     for top in toplevels))
@@ -751,7 +751,7 @@ def get_pkginfo(dist):
                 return any(resource_name == os.path.normpath(name)
                            for name in dist.get_metadata_lines('SOURCES.txt'))
             if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
-                reader = csv.reader(StringIO(dist.get_metadata('RECORD')))
+                reader = csv.reader(io.BytesIO(dist.get_metadata('RECORD')))
                 return any(resource_name == row[0] for row in reader)
             toplevel = resource_name.split('/')[0]
             if dist.has_metadata('top_level.txt'):

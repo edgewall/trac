@@ -20,12 +20,12 @@
 import abc
 import doctest
 import inspect
+import io
 import os
 import shutil
 import sys
 import types
 import unittest
-import StringIO
 
 try:
     from babel import Locale
@@ -191,7 +191,7 @@ def MockRequest(env, **kwargs):
 
     status_sent = []
     headers_sent = {}
-    response_sent = StringIO.StringIO()
+    response_sent = io.BytesIO()
 
     def start_response(status, headers, exc_info=None):
         status_sent.append(status)

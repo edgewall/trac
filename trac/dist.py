@@ -19,8 +19,8 @@ we also modify the standard `distutils.command.build` and
 for compiling catalogs are issued upon install.
 """
 
-from StringIO import StringIO
 from itertools import izip
+import io
 import os
 import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
@@ -220,7 +220,7 @@ try:
         from genshi.core import Stream
         from genshi.input import XMLParser
 
-        out = StringIO()
+        out = io.BytesIO()
         stream = Stream(XMLParser(fileobj))
         stream = stream.select('//script[@type="text/javascript"]')
         stream.render(out=out, encoding='utf-8')

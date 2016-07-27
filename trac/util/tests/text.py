@@ -11,10 +11,10 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
 import socket
 import unittest
-from StringIO import StringIO
 
 from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
                            levenshtein_distance, normalize_whitespace, \
@@ -296,7 +296,7 @@ bar@….com    | bar@example.com
                                    ambiwidth=2)
 
     def _validate_print_table(self, expected, data, **kwargs):
-        out = StringIO()
+        out = io.BytesIO()
         kwargs['out'] = out
         print_table(data, **kwargs)
         self.assertEqual(expected.encode('utf-8'),

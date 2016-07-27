@@ -12,10 +12,10 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import difflib
+import io
 import os
 import re
 import unittest
-import StringIO
 
 # Python 2.7 `assertMultiLineEqual` calls `safe_repr(..., short=True)`
 # which breaks our custom failure display in WikiTestCase.
@@ -159,7 +159,7 @@ class OutlineTestCase(WikiTestCase):
                 self.outliner = OutlineFormatter(env, context)
                 self.input = input
             def generate(self):
-                out = StringIO.StringIO()
+                out = io.StringIO()
                 self.outliner.format(self.input, out)
                 return out.getvalue()
         return Outliner(self.env, self.context, self.input)

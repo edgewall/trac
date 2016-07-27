@@ -15,12 +15,11 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime
+import io
 import new
 import os.path
 import tempfile
 import unittest
-
-from StringIO import StringIO
 
 try:
     from svn import core, repos
@@ -71,7 +70,7 @@ class SubversionRepositoryTestSetup(TestSetup):
         try:
             r = repos.svn_repos_create(REPOS_PATH, '', '', None, None, pool)
             if hasattr(repos, 'svn_repos_load_fs2'):
-                repos.svn_repos_load_fs2(r, dumpfile, StringIO(),
+                repos.svn_repos_load_fs2(r, dumpfile, io.BytesIO(),
                                         repos.svn_repos_load_uuid_default, '',
                                         0, 0, None, pool)
             else:

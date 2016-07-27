@@ -12,7 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from datetime import datetime, timedelta
-from StringIO import StringIO
+import io
 import tempfile
 import unittest
 
@@ -1104,7 +1104,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone.insert()
 
         attachment = Attachment(self.env, 'milestone', milestone.name)
-        attachment.insert('foo.txt', StringIO(), 0, 1)
+        attachment.insert('foo.txt', io.BytesIO(), 0, 1)
 
         milestone.delete()
         self.assertEqual(False, milestone.exists)
@@ -1161,7 +1161,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone.insert()
 
         attachment = Attachment(self.env, 'milestone', 'OldName')
-        attachment.insert('foo.txt', StringIO(), 0, 1)
+        attachment.insert('foo.txt', io.BytesIO(), 0, 1)
 
         milestone = Milestone(self.env, 'OldName')
         milestone.name = 'NewName'

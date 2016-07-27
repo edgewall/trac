@@ -12,8 +12,8 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
+import io
 import unittest
-from StringIO import StringIO
 
 from genshi import Stream, Namespace
 from genshi.core import Attrs, TEXT, START, END
@@ -125,7 +125,7 @@ class GroupLinesTestCase(unittest.TestCase):
         self.assertEqual(lines[0].events, [(TEXT, "test", (None, -1, -1))])
 
     def test_simplespan(self):
-        input = HTMLParser(StringIO(u"<span>test</span>"), encoding=None)
+        input = HTMLParser(io.StringIO(u"<span>test</span>"), encoding=None)
         lines = list(_group_lines(input))
         self.assertEqual(len(lines), 1)
         self.assertIsInstance(lines[0], Stream)
@@ -167,7 +167,7 @@ class GroupLinesTestCase(unittest.TestCase):
         If the text element does not end with a newline, it's not properly
         closed.
         """
-        input = HTMLParser(StringIO(u'<span class="c">a\nb</span>'),
+        input = HTMLParser(io.StringIO(u'<span class="c">a\nb</span>'),
             encoding=None)
         expected = ['<span class="c">a</span>',
                     '<span class="c">b</span>',
@@ -182,7 +182,7 @@ class GroupLinesTestCase(unittest.TestCase):
         Same as test_newline above, but make sure it behaves properly wrt
         the trailing \\n, especially given it's inside an element.
         """
-        input = HTMLParser(StringIO(u'<span class="c">a\nb\n</span>'),
+        input = HTMLParser(io.StringIO(u'<span class="c">a\nb\n</span>'),
             encoding=None)
         expected = ['<span class="c">a</span>',
                     '<span class="c">b</span>',
@@ -196,7 +196,7 @@ class GroupLinesTestCase(unittest.TestCase):
         """
         ditto.
         """
-        input = HTMLParser(StringIO(u'<span class="c">\n\n\na</span>'),
+        input = HTMLParser(io.StringIO(u'<span class="c">\n\n\na</span>'),
             encoding=None)
         expected = ['<span class="c"></span>',
                     '<span class="c"></span>',

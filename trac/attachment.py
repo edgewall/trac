@@ -16,11 +16,11 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from cStringIO import StringIO
 from datetime import datetime
 from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
+import io
 import os.path
 import posixpath
 import re
@@ -508,7 +508,7 @@ class AttachmentModule(Component):
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
 
-        buf = StringIO()
+        buf = io.BytesIO()
         with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
             for attachment in attachments:
                 zipinfo = create_zipinfo(attachment.filename,

@@ -20,12 +20,12 @@ from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
 from hashlib import md5
+import io
 import new
 import mimetypes
 import os
 import re
 import socket
-from StringIO import StringIO
 import sys
 import urlparse
 
@@ -853,7 +853,7 @@ class Request(object):
             ctype, options = cgi.parse_header(ctype)
         if ctype not in ('application/x-www-form-urlencoded',
                          'multipart/form-data'):
-            fp = StringIO('')
+            fp = io.BytesIO()
 
         # Python 2.6 introduced a backwards incompatible change for
         # FieldStorage where QUERY_STRING is no longer ignored for POST

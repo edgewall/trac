@@ -15,6 +15,7 @@
 working with a Trac environment to make test cases more succinct.
 """
 
+import io
 import re
 
 from genshi.builder import tag
@@ -23,11 +24,6 @@ from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
                                   random_unique_camel
 from trac.util.text import to_utf8, unicode_quote
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 
 class FunctionalTester(object):
@@ -467,7 +463,7 @@ class FunctionalTester(object):
 
         tc.submit('attachfilebutton', 'attachfile')
         tc.url(self.url + r'/attachment/%s/%s/\?action=new$' % (realm, name))
-        fp = StringIO(data)
+        fp = io.BytesIO(data)
         tc.formfile('attachment', 'attachment', filename,
                     content_type=content_type, fp=fp)
         tc.formvalue('attachment', 'description', description)

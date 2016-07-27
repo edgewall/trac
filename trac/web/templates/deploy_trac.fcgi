@@ -43,7 +43,7 @@ except Exception as e:
     print(e)
     print()
     import traceback
-    import StringIO
-    tb = StringIO.StringIO()
+    import io
+    tb = io.BytesIO()
     traceback.print_exc(file=tb)
     print(tb.getvalue())

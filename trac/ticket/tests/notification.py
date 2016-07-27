@@ -17,12 +17,12 @@
 #
 
 import base64
+import io
 import quopri
 import tempfile
 import re
 import unittest
 from datetime import datetime, timedelta
-from StringIO import StringIO
 
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
@@ -1615,7 +1615,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         attachment = Attachment(self.env, 'ticket', ticket.id)
         attachment.description = "The attachment description"
         attachment.author = author
-        attachment.insert('foo.txt', StringIO(), 1)
+        attachment.insert('foo.txt', io.BytesIO(), 1)
         return attachment
 
     def test_ticket_notify_attachment_enabled_attachment_added(self):

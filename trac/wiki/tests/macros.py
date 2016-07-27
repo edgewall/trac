@@ -11,7 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from StringIO import StringIO
+from datetime import datetime
+import io
 import os
 import shutil
 import tempfile
@@ -41,7 +42,7 @@ def image_setup(tc):
     tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
     attachment = Attachment(tc.env, 'wiki', 'page:fr')
     attachment.description = "image in page:fr"
-    attachment.insert('img.png', StringIO(''), 0, 2)
+    attachment.insert('img.png', io.BytesIO(), 0, 2)
     tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
     tc.env.config.set('interwiki', 'travis',
                       'https://travis-ci.org/$1?branch=$2')

@@ -12,11 +12,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
 import codecs
 from collections import deque
 from contextlib import contextmanager
-import cStringIO
 from functools import partial
 import re
 from subprocess import Popen, PIPE
@@ -844,7 +844,7 @@ class Storage(object):
             return result[0], dict(result[1])
 
     def get_file(self, sha):
-        return cStringIO.StringIO(self.cat_file('blob', str(sha)))
+        return io.BytesIO(self.cat_file('blob', str(sha)))
 
     def get_obj_size(self, sha):
         sha = str(sha)

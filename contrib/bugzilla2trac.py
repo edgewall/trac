@@ -212,10 +212,10 @@ BUG_NO_REPL = r"#\2"
 ### Script begins here
 ###
 
+import io
 import os
 import sys
 import string
-import StringIO
 
 import MySQLdb
 import MySQLdb.cursors
@@ -231,7 +231,7 @@ sys.setdefaultencoding('latin1')
 #class Attachment:
 #    def __init__(self, name, data):
 #        self.filename = name
-#        self.file = StringIO.StringIO(data.tostring())
+#        self.file = io.BytesIO(data.tostring())
 
 # simple field translation mapping.  if string not in
 # mapping, just return string, otherwise return value
@@ -427,7 +427,7 @@ class TracDatabase(object):
             description = a['description']
             id = a['bug_id']
             filename = a['filename']
-            filedata = StringIO.StringIO(a['thedata'])
+            filedata = io.BytesIO(a['thedata'])
             filesize = len(filedata.getvalue())
             time = a['creation_ts']
             print("    ->inserting attachment '%s' for ticket %s -- %s"

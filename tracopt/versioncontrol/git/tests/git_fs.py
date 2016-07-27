@@ -11,12 +11,12 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
 import sys
 import shutil
 import tempfile
 import unittest
-from cStringIO import StringIO
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
@@ -724,7 +724,7 @@ from :2
         self.assertEqual(202, rows[0][0])
 
     def _generate_data_many_merges(self, n, timestamp=1400000000):
-        init = """\
+        init = b"""\
 blob
 mark :1
 data 0
@@ -748,7 +748,7 @@ from :2
 M 100644 :1 master.txt
 
 """
-        merge = """\
+        merge = b"""\
 commit refs/heads/dev
 mark :%(dev)d
 author Joe <joe@example.com> %(timestamp)d +0000
@@ -769,7 +769,7 @@ merge :%(dev)d
 M 100644 :1 dev%(dev)08d.txt
 
 """
-        data = StringIO()
+        data = io.BytesIO()
         data.write(init % {'timestamp': timestamp})
         for idx in xrange(n):
             data.write(merge % {'timestamp': timestamp,

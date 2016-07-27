@@ -15,10 +15,10 @@
 from __future__ import print_function
 
 import cmd
+import io
 import os.path
 import pkg_resources
 from shlex import shlex
-import StringIO
 import sys
 import traceback
 
@@ -590,7 +590,7 @@ class TracAdminHelpMacro(WikiMacroBase):
                                    '"%(command)s"', command=content))
         else:
             doc = TracAdmin.all_docs(self.env)
-        buf = StringIO.StringIO()
+        buf = io.BytesIO()
         TracAdmin.print_doc(doc, buf, long=True)
         return html.PRE(buf.getvalue().decode('utf-8'), class_='wiki')
 

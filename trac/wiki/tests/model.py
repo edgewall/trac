@@ -12,7 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from datetime import datetime
-from StringIO import StringIO
+import io
 import tempfile
 import unittest
 
@@ -244,7 +244,7 @@ class WikiPageTestCase(unittest.TestCase):
             "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
             ('TestPage',) + data)
         attachment = Attachment(self.env, 'wiki', 'TestPage')
-        attachment.insert('foo.txt', StringIO(), 0, 1)
+        attachment.insert('foo.txt', io.BytesIO(), 0, 1)
 
         page = WikiPage(self.env, 'TestPage')
         page.rename('PageRenamed')

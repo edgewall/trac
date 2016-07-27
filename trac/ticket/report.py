@@ -17,8 +17,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import csv
+import io
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -810,7 +810,7 @@ class ReportModule(Component):
                 add_value(param)
             return db.concat(*parts)
 
-        sql_io = StringIO()
+        sql_io = io.StringIO()
 
         # break SQL into literals and non-literals to handle replacing
         # variables within them with query parameters
@@ -844,14 +844,14 @@ class ReportModule(Component):
         }
 
         def iterate():
-            from cStringIO import StringIO
-            out = StringIO()
+            out = io.BytesIO()
             writer = csv.writer(out, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
 
             def writerow(values):
                 writer.writerow([value.encode('utf-8') for value in values])
                 rv = out.getvalue()
                 out.truncate(0)
+                out.seek(0)
                 return rv
 
             converters = [col_conversions.get(c.strip('_'), cell_value)
@@ -884,11 +884,11 @@ class ReportModule(Component):
     def _send_sql(self, req, id, title, description, sql):
         req.perm(self.realm, id).require('REPORT_SQL_VIEW')
 
-        out = StringIO()
-        out.write('-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))
+        out = io.BytesIO()
+        out.write(b'-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))
         if description:
             lines = description.encode('utf-8').splitlines()
-            out.write('-- %s\n\n' % '\n-- '.join(lines))
+            out.write(b'-- %s\n\n' % '\n-- '.join(lines))
         out.write(sql.encode('utf-8'))
         data = out.getvalue()
 
