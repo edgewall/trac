@@ -157,9 +157,8 @@ if twill:
                             "handle it.")
 
         filename = os.path.join(tracdir, 'log', "%s.html" % testname)
-        html_file = open(filename, 'w')
-        html_file.write(b.get_html())
-        html_file.close()
+        with open(filename, 'w') as html_file:
+            html_file.write(b.get_html())
 
         return urlparse.urljoin('file:', urllib.pathname2url(filename))
 
@@ -191,7 +190,7 @@ if twill:
         b.submit(fieldname, formname)
     tc.submit = better_submit
 
-    # Twill's formfile function leaves a filehandle open which prevents the
+    # Twill's formfile function leaves a file handle open which prevents the
     # file from being deleted on Windows.  Since we would just assume use a
     # BytesIO object in the first place, allow the file-like object to be
     # provided directly.
@@ -199,10 +198,8 @@ if twill:
                         fp=None):
         if not fp:
             filename = filename.replace('/', os.path.sep)
-            temp_fp = open(filename, 'rb')
-            data = temp_fp.read()
-            temp_fp.close()
-            fp = io.BytesIO(data)
+            with open(filename, 'rb') as ftemp:
+                fp = io.BytesIO(ftemp.read())
 
         form = b.get_form(formname)
         control = b.get_form_field(form, fieldname)

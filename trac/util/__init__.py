@@ -34,8 +34,8 @@ import sys
 import string
 import struct
 import tempfile
+import zipfile
 from urllib import quote, unquote, urlencode
-from zipfile import ZipInfo, ZIP_DEFLATED, ZIP_STORED
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
@@ -298,7 +298,7 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
     :param symlink: if `True`, the entry is a symbolic link
     :param comment: comment of the entry
     """
-    zipinfo = ZipInfo()
+    zipinfo = zipfile.ZipInfo()
 
     # The general purpose bit flag 11 is used to denote
     # UTF-8 encoding for path and comment. Only set it for
@@ -330,16 +330,16 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
     if dir:
         if not zipinfo.filename.endswith('/'):
             zipinfo.filename += '/'
-        zipinfo.compress_type = ZIP_STORED
+        zipinfo.compress_type = zipfile.ZIP_STORED
         zipinfo.external_attr = 040755 << 16L        # permissions drwxr-xr-x
         zipinfo.external_attr |= 0x10                # MS-DOS directory flag
     else:
-        zipinfo.compress_type = ZIP_DEFLATED
+        zipinfo.compress_type = zipfile.ZIP_DEFLATED
         zipinfo.external_attr = 0644 << 16L          # permissions -r-wr--r--
         if executable:
             zipinfo.external_attr |= 0755 << 16L     # -rwxr-xr-x
         if symlink:
-            zipinfo.compress_type = ZIP_STORED
+            zipinfo.compress_type = zipfile.ZIP_STORED
             zipinfo.external_attr |= 0120000 << 16L  # symlink file type
 
     if comment:
@@ -560,7 +560,6 @@ def get_lines_from_file(filename, lineno, context=0, globals=None):
     lines = []
     match = _egg_path_re.match(filename)
     if match:
-        import zipfile
         for path in sys.path:
             try:
                 with zipfile.ZipFile(path, 'r') as zip:

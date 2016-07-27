@@ -71,8 +71,8 @@ class SubversionRepositoryTestSetup(TestSetup):
             r = repos.svn_repos_create(REPOS_PATH, '', '', None, None, pool)
             if hasattr(repos, 'svn_repos_load_fs2'):
                 repos.svn_repos_load_fs2(r, dumpfile, io.BytesIO(),
-                                        repos.svn_repos_load_uuid_default, '',
-                                        0, 0, None, pool)
+                                         repos.svn_repos_load_uuid_default,
+                                         '', 0, 0, None, pool)
             else:
                 dumpstream = core.svn_stream_from_aprfile(dumpfile, pool)
                 repos.svn_repos_load_fs(r, dumpstream, None,
@@ -97,13 +97,13 @@ class NormalTests(object):
                           '/the/invalid/path', [], self.env.log)
 
     def test_resource_exists(self):
-        repos = Resource('repository', REPOS_NAME)
-        self.assertTrue(resource_exists(self.env, repos))
-        self.assertFalse(resource_exists(self.env, repos(id='xxx')))
-        node = repos.child('source', u'tête')
+        resource = Resource('repository', REPOS_NAME)
+        self.assertTrue(resource_exists(self.env, resource))
+        self.assertFalse(resource_exists(self.env, resource(id='xxx')))
+        node = resource.child('source', u'tête')
         self.assertTrue(resource_exists(self.env, node))
         self.assertFalse(resource_exists(self.env, node(id='xxx')))
-        cset = repos.child('changeset', HEAD)
+        cset = resource.child('changeset', HEAD)
         self.assertTrue(resource_exists(self.env, cset))
         self.assertFalse(resource_exists(self.env, cset(id=123456)))
 
@@ -371,22 +371,21 @@ En r\xe9sum\xe9 ... \xe7a marche.
     def test_get_file_content_with_keyword_substitution_30(self):
         self.maxDiff = None
         f = self.repos.get_node(u'/branches/v4/Résumé.txt', 30)
-        props = f.get_properties()
         expected = [
             '# Simple test for svn:keywords property substitution (#717)',
             '# $Rev: 30 $:     Revision of last commit',
             '# $Author: jomae $:  Author of last commit',
-            '# $Date: 2015-06-15 14:09:13 +0000 (Mon, 15 Jun 2015) $:    ' \
+            '# $Date: 2015-06-15 14:09:13 +0000 (Mon, 15 Jun 2015) $:    '
                 'Date of last commit (now really substituted)',
-            '# $Id: Résumé.txt 30 2015-06-15 14:09:13Z jomae $:      ' \
+            '# $Id: Résumé.txt 30 2015-06-15 14:09:13Z jomae $:      '
                 'Combination',
             '',
             'Now with fixed width fields:',
-            '# $URL:: svn://test/branches/v4/R%C3%A9sum%C3%A9.txt  $ ' \
+            '# $URL:: svn://test/branches/v4/R%C3%A9sum%C3%A9.txt  $ '
                 'the configured URL',
             '# $HeadURL:: svn://test/branches/v4/R%C3%A9sum%C3%A9.#$ same',
             '# $URL:: svn://test/bra#$ same, but truncated',
-            '# $Header:: svn://test/branches/v4/R%C3%A9sum%C3%A9.t#$ ' \
+            '# $Header:: svn://test/branches/v4/R%C3%A9sum%C3%A9.t#$ '
                 'combination with URL',
             '',
             'Overlapped keywords:',
@@ -403,63 +402,63 @@ En r\xe9sum\xe9 ... \xe7a marche.
             '# $_Rev: 30 $:',
             '# $_RootURL: svn://test $:',
             '# $_URL: svn://test/branches/v4/R%C3%A9sum%C3%A9.txt $:',
-            '# $_Header: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+            '# $_Header: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 '
                 '2015-06-15 14:09:13Z jomae $:',
-            '# $_Id: R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+            '# $_Id: R\xc3\xa9sum\xc3\xa9.txt 30 '
                 '2015-06-15 14:09:13Z jomae $:',
-            '# $_Header2: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+            '# $_Header2: branches/v4/R\xc3\xa9sum\xc3\xa9.txt 30 '
                 '2015-06-15 14:09:13Z jomae $:',
-            '# $_Id2: R\xc3\xa9sum\xc3\xa9.txt 30 ' \
+            '# $_Id2: R\xc3\xa9sum\xc3\xa9.txt 30 '
                 '2015-06-15 14:09:13Z jomae $:',
             '# $_t\xc3\xa9t\xc3\xa9: jomae $:',
             '# $42: jomae $:',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '123456789012345678901234567890123456789: j $:',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '1234567890123456789012345678901234567890:  $:',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '12345678901234567890123456789012345678901$:',
-            '# $_TooLong: branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
-                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt' \
+            '# $_TooLong: branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
+                'branches/v4/R\xc3\xa9sum\xc3\xa9.txt'
                 'br $:',
             '',
             'Custom keyword definitions with fixed width',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '1234567890123456789012345678901234:: jomae $',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '1234567890123456789012345678901234::        $',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '12345678901234567890123456789012345678:: j#$',
-            '# $123456789012345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
-                '12345678901234567890123456789012345678901234567890' \
+            '# $123456789012345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
+                '12345678901234567890123456789012345678901234567890'
                 '12345678901234567890123456789012345678::    $',
         ]
         self.assertEqual(expected,
@@ -554,14 +553,14 @@ En r\xe9sum\xe9 ... \xe7a marche.
         ancestry = node.get_copy_ancestry()
         self.assertEqual([(u'tête/README.txt', 6)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
         node = self.repos.get_node(u'/tête/README3.txt')
         ancestry = node.get_copy_ancestry()
         self.assertEqual([(u'tête/README2.txt', 13),
                           (u'tête/README.txt', 3)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
         node = self.repos.get_node('/branches/v1x')
         ancestry = node.get_copy_ancestry()
@@ -570,14 +569,14 @@ En r\xe9sum\xe9 ... \xe7a marche.
                           (u'tags/v1', 7),
                           (u'tête', 6)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
     def test_get_copy_ancestry_for_move(self):
         node = self.repos.get_node(u'/tête/dir1/dir2', 5)
         ancestry = node.get_copy_ancestry()
         self.assertEqual([(u'tête/dir2', 4)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
     def test_get_branch_origin(self):
         node = self.repos.get_node('/tags/v1/README.txt')
@@ -635,7 +634,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
     def test_diff_file_different_files(self):
         diffs = self.repos.get_changes('branches/v1x/README.txt', 12,
-                                      'branches/v1x/README2.txt', 12)
+                                       'branches/v1x/README2.txt', 12)
         self._cmp_diff((('branches/v1x/README.txt', 12),
                         ('branches/v1x/README2.txt', 12),
                         (Node.FILE, Changeset.EDIT)), diffs.next())
@@ -643,7 +642,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
     def test_diff_file_no_change(self):
         diffs = self.repos.get_changes(u'tête/README.txt', 7,
-                                      'tags/v1/README.txt', 7)
+                                       'tags/v1/README.txt', 7)
         self.assertRaises(StopIteration, diffs.next)
 
     def test_diff_dir_different_revs(self):
@@ -675,8 +674,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
         self.assertRaises(StopIteration, diffs.next)
 
     def test_diff_dir_no_change(self):
-        diffs = self.repos.get_changes(u'tête', 7,
-                                      'tags/v1', 7)
+        diffs = self.repos.get_changes(u'tête', 7, 'tags/v1', 7)
         self.assertRaises(StopIteration, diffs.next)
 
     # Changesets
@@ -1151,14 +1149,14 @@ class ScopedTests(object):
         self.assertEqual([(u'README2.txt', 13),
                           (u'README.txt', 3)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
     def test_get_copy_ancestry_for_move(self):
         node = self.repos.get_node(u'/dir1/dir2', 5)
         ancestry = node.get_copy_ancestry()
         self.assertEqual([(u'dir2', 4)], ancestry)
         for path, rev in ancestry:
-            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+            self.repos.get_node(path, rev)  # shouldn't raise NoSuchNode
 
     def test_get_branch_origin(self):
         node = self.repos.get_node(u'/README3.txt')
@@ -1287,7 +1285,7 @@ class RecentPathScopedTests(object):
         self.assertTrue(self.repos.has_node('/', 4))
         # We can't make this work anymore because of #5213.
         # self.assertEqual(4, self.repos.oldest_rev)
-        self.assertEqual(1, self.repos.oldest_rev) # should really be 4...
+        self.assertEqual(1, self.repos.oldest_rev)  # should really be 4...
         self.assertIsNone(self.repos.previous_rev(4))
 
 
@@ -1419,18 +1417,15 @@ class ExternalsPropertyTests(object):
         self.assertEqual(4, len(result))
 
 
-# -- Test cases for SubversionRepository
-
 class SubversionRepositoryTestCase(unittest.TestCase):
+    """Test cases for SubversionRepository."""
 
     def setUp(self):
         self.env = EnvironmentStub()
-        repositories = self.env.config['repositories']
         dbprovider = DbRepositoryProvider(self.env)
         dbprovider.add_repository(REPOS_NAME, self.path, 'direct-svnfs')
         dbprovider.modify_repository(REPOS_NAME, {'url': URL})
         self.repos = RepositoryManager(self.env).get_repository(REPOS_NAME)
-
 
     def tearDown(self):
         self.repos.close()
@@ -1443,9 +1438,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.env.shutdown(get_thread_id())
 
 
-# -- Test cases for SvnCachedRepository
-
 class SvnCachedRepositoryTestCase(unittest.TestCase):
+    """Test cases for SvnCachedRepository."""
 
     def setUp(self):
         self.env = EnvironmentStub()
@@ -1522,7 +1516,7 @@ def test_suite():
                               (SvnCachedRepositoryTestCase, test),
                               {'path': REPOS_PATH + scope})
             for skip in skipped.get(tc.__name__, []):
-                setattr(tc, skip, lambda self: None) # no skip, so we cheat...
+                setattr(tc, skip, lambda self: None)  # no skip, so we cheat...
             suite.addTest(unittest.makeSuite(
                 tc, suiteClass=SubversionRepositoryTestSetup))
         suite.addTest(unittest.makeSuite(SubversionConnectorTestCase))
