@@ -840,7 +840,7 @@ def convert(_db, _host, _user, _password, _env, _force):
                     break
                 # cc and attachments.isobsolete sometime appear
                 # in different activities with same time
-                if ((field_name == "cc" or field_name == "attachments.isobsolete") \
+                if ((field_name == "cc" or field_name == "attachments.isobsolete")
                     and oldChange['time'] == ticketChange['time']):
                     oldChange['newvalue'] += ", " + ticketChange['newvalue']
                     break
@@ -869,8 +869,8 @@ def convert(_db, _host, _user, _password, _env, _force):
                 keywords.append(kw)
 
         component = bug['component']
-        if (COMPONENTS_FROM_PRODUCTS and \
-            (MAP_ALL_KEYWORDS or component in KEYWORDS_MAPPING)):
+        if (COMPONENTS_FROM_PRODUCTS and
+                (MAP_ALL_KEYWORDS or component in KEYWORDS_MAPPING)):
             kw = KEYWORDS_MAPPING.get(component, component)
             if kw and kw not in keywords:
                 keywords.append(kw)
@@ -893,7 +893,7 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print("\n8. Importing users and passwords...")
     if BZ_VERSION >= 2164:
-        selectlogins = "SELECT login_name, cryptpassword FROM profiles";
+        selectlogins = "SELECT login_name, cryptpassword FROM profiles"
         if IGNORE_DISABLED_USERS:
             selectlogins = selectlogins + " WHERE disabledtext=''"
         mysql_cur.execute(selectlogins)

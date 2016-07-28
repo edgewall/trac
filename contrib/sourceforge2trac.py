@@ -519,8 +519,8 @@ def importData(f, env, opt):
 
     # Data conversion
     typeList = [x.name for x in trackers]
-    print("%d trackers will be converted to the following ticket types:\n  %s" \
-        % (len(trackers), typeList))
+    print("%d trackers will be converted to the following ticket types:\n  %s"
+          % (len(trackers), typeList))
 
     used_cat_names = set(project.used_categories.values())
     #: make names unique, forget about competing owners (the last one wins)

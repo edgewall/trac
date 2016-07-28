@@ -50,8 +50,8 @@ class CacheTestCase(unittest.TestCase):
                     get_oldest_rev=lambda: 0,
                     get_youngest_rev=lambda: youngest_rev,
                     normalize_rev=lambda x: get_changeset(x).rev,
-                    next_rev=(lambda x: int(x) < youngest_rev and x + 1 \
-                              or None))
+                    next_rev=(lambda x: int(x) < youngest_rev and x + 1
+                                        or None))
 
     def preset_cache(self, *args):
         """Each arg is a (rev tuple, changes list of tuples) pair."""

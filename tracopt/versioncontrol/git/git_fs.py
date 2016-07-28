@@ -425,8 +425,8 @@ class CsetPropertyRenderer(Component):
                 current_sha = context.resource.id
                 reponame = context.resource.parent.id
 
-                parent_links = intersperse(', ', \
-                    ((sha_link(rev),
+                parent_links = intersperse(', ',
+                                           ((sha_link(rev),
                       ' (',
                       tag.a(_("diff"),
                             title=_("Diff against this parent (show the "
