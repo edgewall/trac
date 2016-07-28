@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
-import io
 import unittest
 from datetime import datetime, timedelta
 

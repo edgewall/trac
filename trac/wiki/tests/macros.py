@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from datetime import datetime
 import io
 import os
 import shutil
