@@ -207,7 +207,7 @@ class RecipientMatcher(object):
             address = self.email_map[address]
         elif not is_email(address) and self.nodomaddr_re.match(address):
             if self.env.config.getbool('notification', 'use_short_addr'):
-                return (None, 0, address)
+                return None, 0, address
             domain = self.env.config.get('notification',
                                          'smtp_default_domain')
             if domain:
@@ -218,10 +218,10 @@ class RecipientMatcher(object):
 
         mo = self.shortaddr_re.search(address)
         if mo:
-            return (sid, auth, mo.group(1))
+            return sid, auth, mo.group(1)
         mo = self.longaddr_re.search(address)
         if mo:
-            return (sid, auth, mo.group(2))
+            return sid, auth, mo.group(2)
         self.env.log.info("Invalid email address: %s", address)
         return None
 

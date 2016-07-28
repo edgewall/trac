@@ -103,7 +103,7 @@ class CodeReviewActionController(Component):
             hint = "Next status will be one of " + \
                    ', '.join(["'%s'" % status
                               for option, status in review_options])
-        return (label, control, hint)
+        return label, control, hint
 
     def get_ticket_changes(self, req, ticket, action):
         new_status = self._get_new_status(req, ticket, action)

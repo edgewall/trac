@@ -441,7 +441,7 @@ class TracDatabase(object):
 
     def getLoginName(self, cursor, userid):
         if userid not in self.loginNameCache:
-            cursor.execute("SELECT * FROM profiles WHERE userid = %s", (userid))
+            cursor.execute("SELECT * FROM profiles WHERE userid = %s", userid)
             loginName = cursor.fetchall()
 
             if loginName:
@@ -463,10 +463,10 @@ class TracDatabase(object):
             # 2.23.3.
             if BZ_VERSION >= 2233:
                 cursor.execute("SELECT * FROM fielddefs WHERE id = %s",
-                               (fieldid))
+                               fieldid)
             else:
                 cursor.execute("SELECT * FROM fielddefs WHERE fieldid = %s",
-                               (fieldid))
+                               fieldid)
             fieldName = cursor.fetchall()
 
             if fieldName:

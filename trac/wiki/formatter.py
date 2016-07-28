@@ -711,7 +711,7 @@ class Formatter(object):
                 title = _('%(target)s in %(name)s', target=target, name=name)
             else:
                 title = name
-            return (url, title)
+            return url, title
 
     def shorthand_intertrac_helper(self, ns, target, label, fullmatch):
         if fullmatch: # short form
@@ -830,7 +830,7 @@ class Formatter(object):
         anchor = self._unique_anchor(anchor)
         if shorten:
             heading = format_to_oneliner(self.env, self.context, htext, True)
-        return (depth, heading, anchor)
+        return depth, heading, anchor
 
     def _heading_formatter(self, match, fullmatch):
         self.close_table()

@@ -861,7 +861,7 @@ class BrowserModule(Component):
                         else _("Download as Zip archive")
         except TracError:
             pass
-        return (node, raw_href, title)
+        return node, raw_href, title
 
     # IHTMLPreviewAnnotator methods
 

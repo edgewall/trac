@@ -499,7 +499,7 @@ class SubversionRepository(Repository):
 
     def get_changeset_uid(self, rev):
         """Build a value identifying the `rev` in this repository."""
-        return (self.uuid, rev)
+        return self.uuid, rev
 
     def get_node(self, path, rev=None):
         """Produce a `SubversionNode` from given path and optionally revision
@@ -1114,15 +1114,15 @@ def DiffChangeEditor():
         # -- svn.delta.Editor callbacks
 
         def open_root(self, base_revision, dir_pool):
-            return ('/', Changeset.EDIT)
+            return '/', Changeset.EDIT
 
         def add_directory(self, path, dir_baton, copyfrom_path, copyfrom_rev,
                           dir_pool):
             self.deltas.append((path, Node.DIRECTORY, Changeset.ADD))
-            return (path, Changeset.ADD)
+            return path, Changeset.ADD
 
         def open_directory(self, path, dir_baton, base_revision, dir_pool):
-            return (path, dir_baton[1])
+            return path, dir_baton[1]
 
         def change_dir_prop(self, dir_baton, name, value, pool):
             path, change = dir_baton

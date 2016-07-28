@@ -47,7 +47,7 @@ def get_change_extent(str1, str2):
     limit = limit - start
     while -end <= limit and str1[end] == str2[end]:
         end -= 1
-    return (start, end + 1)
+    return start, end + 1
 
 
 def get_filtered_hunks(fromlines, tolines, context=None,
@@ -350,4 +350,4 @@ def get_diff_options(req):
         options.append('-b')
     options_data['ignorewhitespace'] = arg
 
-    return (style, options, data)
+    return style, options, data

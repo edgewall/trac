@@ -121,7 +121,7 @@ class WikiParser(Component):
         #  * list
         r"(?P<list>^(?P<ldepth>\s*)"
         ur"(?:[%s]|(?P<lstart>[0-9]+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
-        % (BULLET_CHARS),
+        % BULLET_CHARS,
         # definition::
         r"(?P<definition>^\s+"
         r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"

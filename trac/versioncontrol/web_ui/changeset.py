@@ -1178,7 +1178,7 @@ class AnyDiffModule(Component):
             reponame, repos, path = rm.get_repository_by_path(dirname)
             # an entry is a (isdir, name, path) tuple
             def kind_order(entry):
-                return (not entry[0], embedded_numbers(entry[1]))
+                return not entry[0], embedded_numbers(entry[1])
 
             entries = []
             if repos:

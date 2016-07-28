@@ -414,7 +414,7 @@ def decode_pair(s, pos=0):
     value = s[pos:pos+valueLength]
     pos += valueLength
 
-    return (pos, (name, value))
+    return pos, (name, value)
 
 def encode_pair(name, value):
     """
