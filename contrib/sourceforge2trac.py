@@ -127,7 +127,7 @@ class FlatXML(object):
         """merge supplied ElementTree element into current object"""
         for c in el:
             if len(c.getchildren()) == 0:
-                if c.text != None and len(c.text.strip()) != 0:
+                if c.text is not None and len(c.text.strip()) != 0:
                     self.__setattr__(c.tag, c.text)
                 else:
                     self.__setattr__(c.tag, [])

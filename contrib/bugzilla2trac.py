@@ -374,7 +374,7 @@ class TracDatabase(object):
         return ticket_id
 
     def addTicketCustomField(self, ticket_id, field_name, field_value):
-        if field_value == None:
+        if field_value is None:
             return
         self.env.db_transaction("""
             INSERT INTO ticket_custom (ticket, name, value) VALUES (%s, %s, %s)

@@ -311,7 +311,7 @@ class Storage(object):
         assert len(rev) >= 4
         #assert GitCore.is_sha(rev)
         srev_key = int(rev[:4], 16)
-        assert srev_key >= 0 and srev_key <= 0xffff
+        assert 0 <= srev_key <= 0xffff
         return srev_key
 
     @staticmethod
