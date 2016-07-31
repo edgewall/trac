@@ -689,22 +689,22 @@ def wiki_setup(tc):
     wiki0 = WikiPage(tc.env)
     wiki0.name = 'Main/Sub'
     wiki0.text = '--'
-    wiki0.save('joe', 'subpage', '::1', now)
+    wiki0.save('joe', 'subpage', now)
 
     wiki1 = WikiPage(tc.env)
     wiki1.name = 'TestPage'
     wiki1.text = '--'
-    wiki1.save('joe', 'normal WikiPageNames', '::1', now)
+    wiki1.save('joe', 'normal WikiPageNames', now)
 
     wiki2 = WikiPage(tc.env)
     wiki2.name = 'Space 1 23'
     wiki2.text = '--'
-    wiki2.save('joe', 'not a WikiPageNames', '::1', now)
+    wiki2.save('joe', 'not a WikiPageNames', now)
 
     wiki3 = WikiPage(tc.env)
     wiki3.name = u"C'est l'\xe9t\xe9"
     wiki3.text = '--'
-    wiki3.save('joe', 'unicode WikiPageNames', '::1', now)
+    wiki3.save('joe', 'unicode WikiPageNames', now)
 
     imt = WikiPage(tc.env)
     imt.name = u"InterMapTxt"
@@ -724,7 +724,7 @@ javasc          javasc
 nolink          http://noweb
 }}}
 """
-    imt.save('joe', 'test InterWiki links', '::1', now)
+    imt.save('joe', 'test InterWiki links', now)
     tc.env.config.set('interwiki', 'inter',
                       'http://inter/$1/page/$2 Resource $2 in $1')
     tc.env.config.set('interwiki', 'over',
@@ -733,22 +733,22 @@ nolink          http://noweb
     w = WikiPage(tc.env)
     w.name = 'FirstLevel'
     w.text = '--'
-    w.save('joe', 'first level of hierarchy', '::1', now)
+    w.save('joe', 'first level of hierarchy', now)
 
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel'
     w.text = '--'
-    w.save('joe', 'second level of hierarchy', '::1', now)
+    w.save('joe', 'second level of hierarchy', now)
 
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel/ThirdLevel'
     w.text = '--'
-    w.save('joe', 'third level of hierarchy', '::1', now)
+    w.save('joe', 'third level of hierarchy', now)
 
     w = WikiPage(tc.env)
     w.name = 'FirstLevel/SecondLevel/OtherThirdLevel'
     w.text = '--'
-    w.save('joe', 'other third level of hierarchy', '::1', now)
+    w.save('joe', 'other third level of hierarchy', now)
 
     tc.env.db_transaction("INSERT INTO ticket (id) VALUES ('123')")
 

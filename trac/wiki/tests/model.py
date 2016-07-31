@@ -57,8 +57,8 @@ class TestWikiChangeListener(Component):
 
 class TestLegacyWikiChangeListener(TestWikiChangeListener):
 
-    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
-        self.changed.append((page, version, t, comment, author, ipnr))
+    def wiki_page_changed(self, page, version, t, comment, author):
+        self.changed.append((page, version, t, comment, author))
 
 
 class WikiPageTestCase(unittest.TestCase):
@@ -85,8 +85,8 @@ class WikiPageTestCase(unittest.TestCase):
     def test_existing_page(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage', 1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            ('TestPage', 1, to_utimestamp(t), 'joe', 'Bla bla',
              'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -103,7 +103,7 @@ class WikiPageTestCase(unittest.TestCase):
 
         history = list(page.get_history())
         self.assertEqual(1, len(history))
-        self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[0])
+        self.assertEqual((1, t, 'joe', 'Testing'), history[0])
 
         page = WikiPage(self.env, 'TestPage', 1)
         self.assertEqual(1, page.resource.version)
@@ -118,7 +118,7 @@ class WikiPageTestCase(unittest.TestCase):
         page.name = 'TestPage'
         page.text = 'Bla bla'
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
-        page.save('joe', 'Testing', '::1', t)
+        page.save('joe', 'Testing', t)
 
         self.assertTrue(page.exists)
         self.assertEqual(1, page.version)
@@ -129,9 +129,9 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(t, page.time)
 
         self.assertEqual(
-            [(1, to_utimestamp(t), 'joe', '::1', 'Bla bla', 'Testing', 0)],
+            [(1, to_utimestamp(t), 'joe', 'Bla bla', 'Testing', 0)],
             self.env.db_query("""
-                SELECT version, time, author, ipnr, text, comment, readonly
+                SELECT version, time, author, text, comment, readonly
                 FROM wiki WHERE name=%s
                 """, ('TestPage',)))
 
@@ -142,13 +142,13 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage', 1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            ('TestPage', 1, to_utimestamp(t), 'joe', 'Bla bla',
              'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         page.text = 'Bla'
-        page.save('kate', 'Changing', '192.168.0.101', t2)
+        page.save('kate', 'Changing', t2)
 
         self.assertEqual(2, page.version)
         self.assertIsNone(page.resource.version)
@@ -159,17 +159,17 @@ class WikiPageTestCase(unittest.TestCase):
 
         with self.env.db_query as db:
             rows = db("""
-               SELECT version, time, author, ipnr, text, comment, readonly
+               SELECT version, time, author, text, comment, readonly
                FROM wiki WHERE name=%s ORDER BY version
                """, ('TestPage',))
             self.assertEqual(2, len(rows))
-            self.assertEqual((1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
+            self.assertEqual((1, to_utimestamp(t), 'joe', 'Bla bla',
                               'Testing', 0), rows[0])
-            self.assertEqual((2, to_utimestamp(t2), 'kate', '192.168.0.101',
-                              'Bla', 'Changing', 0), rows[1])
+            self.assertEqual((2, to_utimestamp(t2), 'kate', 'Bla',
+                              'Changing', 0), rows[1])
 
         listener = TestLegacyWikiChangeListener(self.env)
-        self.assertEqual((page, 2, t2, 'Changing', 'kate', '192.168.0.101'),
+        self.assertEqual((page, 2, t2, 'Changing', 'kate'),
                          listener.changed[0])
         listener = TestWikiChangeListener(self.env)
         self.assertEqual((page, 2, t2, 'Changing', 'kate'),
@@ -178,14 +178,13 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         history = list(page.get_history())
         self.assertEqual(2, len(history))
-        self.assertEqual((2, t2, 'kate', 'Changing', '192.168.0.101'),
-                         history[0])
-        self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[1])
+        self.assertEqual((2, t2, 'kate', 'Changing'), history[0])
+        self.assertEqual((1, t, 'joe', 'Testing'), history[1])
 
     def test_delete_page(self):
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0))
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            ('TestPage', 1, 42, 'joe', 'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         page.delete()
@@ -193,7 +192,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertFalse(page.exists)
 
         self.assertEqual([], self.env.db_query("""
-            SELECT version, time, author, ipnr, text, comment, readonly
+            SELECT version, time, author, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('TestPage',)))
 
@@ -202,18 +201,18 @@ class WikiPageTestCase(unittest.TestCase):
 
     def test_delete_page_version(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            [('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0),
-             ('TestPage', 2, 43, 'kate', '192.168.0.11', 'Bla', 'Changing', 0)])
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            [('TestPage', 1, 42, 'joe', 'Bla bla', 'Testing', 0),
+             ('TestPage', 2, 43, 'kate', 'Bla', 'Changing', 0)])
 
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=2)
 
         self.assertTrue(page.exists)
         self.assertEqual(
-            [(1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)],
+            [(1, 42, 'joe', 'Bla bla', 'Testing', 0)],
             self.env.db_query("""
-                SELECT version, time, author, ipnr, text, comment, readonly
+                SELECT version, time, author, text, comment, readonly
                 FROM wiki WHERE name=%s
                 """, ('TestPage',)))
 
@@ -222,8 +221,8 @@ class WikiPageTestCase(unittest.TestCase):
 
     def test_delete_page_last_version(self):
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            ('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0))
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            ('TestPage', 1, 42, 'joe', 'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         page.delete(version=1)
@@ -231,7 +230,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertFalse(page.exists)
 
         self.assertEqual([], self.env.db_query("""
-            SELECT version, time, author, ipnr, text, comment, readonly
+            SELECT version, time, author, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('TestPage',)))
 
@@ -239,9 +238,9 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(page, listener.deleted[0])
 
     def test_rename_page(self):
-        data = (1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)
+        data = (1, 42, 'joe', 'Bla bla', 'Testing', 0)
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
             ('TestPage',) + data)
         attachment = Attachment(self.env, 'wiki', 'TestPage')
         attachment.insert('foo.txt', io.BytesIO(), 0, 1)
@@ -252,7 +251,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('PageRenamed', page.resource.id)
 
         self.assertEqual([data], self.env.db_query("""
-            SELECT version, time, author, ipnr, text, comment, readonly
+            SELECT version, time, author, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('PageRenamed',)))
 
@@ -265,7 +264,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertFalse(old_page.exists)
 
         self.assertEqual([], self.env.db_query("""
-            SELECT version, time, author, ipnr, text, comment, readonly
+            SELECT version, time, author, text, comment, readonly
             FROM wiki WHERE name=%s
             """, ('TestPage',)))
 
@@ -274,9 +273,9 @@ class WikiPageTestCase(unittest.TestCase):
 
     def test_edit_comment_of_page_version(self):
         self.env.db_transaction.executemany(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-            [('TestPage', 1, 42, 'joe', '::1', 'Bla bla', 'old 1', 0),
-             ('TestPage', 2, 43, 'kate', '::11', 'Bla', 'old 2', 0)])
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
+            [('TestPage', 1, 42, 'joe', 'Bla bla', 'old 1', 0),
+             ('TestPage', 2, 43, 'kate', 'Bla', 'old 2', 0)])
 
         page = WikiPage(self.env, 'TestPage')
         page.edit_comment('edited comment two')
@@ -287,10 +286,10 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('edited comment two', page.comment)
         self.assertEqual('new comment one', old_page.comment)
         self.assertEqual(
-            [(1, 42, 'joe', '::1', 'Bla bla', 'new comment one', 0),
-             (2, 43, 'kate', '::11', 'Bla', 'edited comment two', 0)],
+            [(1, 42, 'joe', 'Bla bla', 'new comment one', 0),
+             (2, 43, 'kate', 'Bla', 'edited comment two', 0)],
             self.env.db_query("""
-                SELECT version, time, author, ipnr, text, comment, readonly
+                SELECT version, time, author, text, comment, readonly
                 FROM wiki WHERE name=%s
                 ORDER BY version
                 """, ('TestPage',)))
@@ -308,23 +307,23 @@ class WikiPageTestCase(unittest.TestCase):
             page.name = name
             page.text = 'Bla bla'
             t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
-            self.assertRaises(TracError, page.save, 'joe', 'Testing', '::1', t)
+            self.assertRaises(TracError, page.save, 'joe', 'Testing', t)
 
         page = WikiPage(self.env)
         page.name = 'TestPage'
         page.text = 'Bla bla'
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
-        page.save('joe', 'Testing', '::1', t)
+        page.save('joe', 'Testing', t)
         for name in invalid_names:
             page = WikiPage(self.env, 'TestPage')
             self.assertRaises(TracError, page.rename, name)
 
     def test_invalid_version(self):
-        data = [(1, 42, 'joe', '::1', 'First revision', 'Rev1', 0),
-                (2, 42, 'joe', '::1', 'Second revision', 'Rev2', 0)]
+        data = [(1, 42, 'joe', 'First revision', 'Rev1', 0),
+                (2, 42, 'joe', 'Second revision', 'Rev2', 0)]
         with self.env.db_transaction as db:
             for d in data:
-                db("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+                db("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
                    ('TestPage',) + d)
 
         page = WikiPage(self.env, 'TestPage', '1abc')

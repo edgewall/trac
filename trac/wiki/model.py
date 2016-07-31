@@ -24,10 +24,7 @@ from trac.wiki.api import WikiSystem, validate_page_name
 
 
 class WikiPage(object):
-    """Represents a wiki page (new or existing).
-
-    :since 1.0.3: the `ipnr` is deprecated and will be removed in 1.3.1
-    """
+    """Represents a wiki page (new or existing)."""
 
     realm = WikiSystem.realm
 
@@ -147,12 +144,8 @@ class WikiPage(object):
                 if hasattr(listener, 'wiki_page_version_deleted'):
                     listener.wiki_page_version_deleted(self)
 
-    def save(self, author, comment, remote_addr=None, t=None):
-        """Save a new version of a page.
-
-        :since 1.0.3: `remote_addr` is optional and deprecated, and will be
-                      removed in 1.3.1
-        """
+    def save(self, author, comment, t=None):
+        """Save a new version of a page."""
         if not validate_page_name(self.name):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=self.name))
@@ -164,12 +157,11 @@ class WikiPage(object):
 
         with self.env.db_transaction as db:
             if new_text:
-                db("""INSERT INTO wiki (name, version, time, author, ipnr,
+                db("""INSERT INTO wiki (name, version, time, author,
                                         text, comment, readonly)
-                      VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                      VALUES (%s,%s,%s,%s,%s,%s,%s)
                       """, (self.name, self.version + 1, to_utimestamp(t),
-                            author, remote_addr, self.text, comment,
-                            self.readonly))
+                            author, self.text, comment, self.readonly))
                 self.version += 1
             else:
                 db("UPDATE wiki SET readonly=%s WHERE name=%s",
@@ -186,13 +178,8 @@ class WikiPage(object):
             if self.version == 1:
                 listener.wiki_page_added(self)
             else:
-                from trac.util import arity
-                if arity(listener.wiki_page_changed) == 6:
-                    listener.wiki_page_changed(self, self.version, t,
-                                               comment, author, remote_addr)
-                else:
-                    listener.wiki_page_changed(self, self.version, t,
-                                               comment, author)
+                listener.wiki_page_changed(self, self.version, t, comment,
+                                           author)
 
         self.old_readonly = self.readonly
         self.old_text = self.text
@@ -253,12 +240,11 @@ class WikiPage(object):
     def get_history(self):
         """Retrieve the edit history of a wiki page.
 
-        :return: a tuple containing the `version`, `datetime`, `author`,
-                  `comment` and `ipnr`.
-        :since 1.0.3: use of `ipnr` is deprecated and will be removed in 1.3.1
+        :return: a tuple containing the `version`, `datetime`, `author`
+                 and `comment`.
         """
-        for version, ts, author, comment, ipnr in self.env.db_query("""
-                SELECT version, time, author, comment, ipnr FROM wiki
+        for version, ts, author, comment in self.env.db_query("""
+                SELECT version, time, author, comment FROM wiki
                 WHERE name=%s AND version<=%s ORDER BY version DESC
                 """, (self.name, self.version)):
-            yield version, from_utimestamp(ts), author, comment, ipnr
+            yield version, from_utimestamp(ts), author, comment

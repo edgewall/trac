@@ -38,12 +38,8 @@ class IWikiChangeListener(Interface):
     def wiki_page_added(page):
         """Called whenever a new Wiki page is added."""
 
-    def wiki_page_changed(page, version, t, comment, author, ipnr):
-        """Called when a page has been modified.
-
-        :since 1.0.3: `ipnr` is optional and deprecated, and will
-                      be removed in 1.3.1
-        """
+    def wiki_page_changed(page, version, t, comment, author):
+        """Called when a page has been modified."""
 
     def wiki_page_deleted(page):
         """Called when a page has been deleted."""
@@ -513,7 +509,7 @@ class WikiSystem(Component):
         >>> from trac.wiki.model import WikiPage
         >>> main = WikiPage(env, 'WikiStart')
         >>> main.text = 'some content'
-        >>> main.save('author', 'no comment', '::1')
+        >>> main.save('author', 'no comment')
         >>> resource_exists(env, main.resource)
         True
         """

@@ -77,7 +77,7 @@ user nobody == anonymous
 Not implemented (feature:reason)
 --------------------------------
 attachments:made as a comment with links to attachments stored on SF
-            (type,id,filename,size,time,description,author,ipnr)
+            (type,id,filename,size,time,description,author)
 ticket_custom:unknown (ticket,name,value)
 history:imported only for summary, priority. closed date and owner fields
 

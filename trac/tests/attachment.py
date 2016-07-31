@@ -71,9 +71,9 @@ class AttachmentTestCase(unittest.TestCase):
             db("INSERT INTO wiki (name,version) VALUES ('SomePage',1)")
             db("INSERT INTO ticket (id) VALUES (42)")
             db("INSERT INTO ticket (id) VALUES (43)")
-            db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+            db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s)",
                ('ticket', '43', 'foo.txt', 8, to_utimestamp(self.datetime),
-                'A comment', 'joe', '::1'))
+                'A comment', 'joe'))
 
     def tearDown(self):
         self.env.reset_db_and_disk()
@@ -85,7 +85,6 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(None, attachment.size)
         self.assertEqual(None, attachment.date)
         self.assertEqual(None, attachment.author)
-        self.assertEqual(None, attachment.ipnr)
         self.assertEqual('<Attachment None>', repr(attachment))
 
     def test_existing_attachment(self):
@@ -95,7 +94,6 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(8, attachment.size)
         self.assertEqual(self.datetime, attachment.date)
         self.assertEqual('joe', attachment.author)
-        self.assertEqual('::1', attachment.ipnr)
         self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
 
     def test_existing_attachment_from_resource(self):
@@ -106,7 +104,6 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(8, attachment.size)
         self.assertEqual(self.datetime, attachment.date)
         self.assertEqual('joe', attachment.author)
-        self.assertEqual('::1', attachment.ipnr)
         self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
 
     def test_get_path(self):

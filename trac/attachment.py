@@ -422,7 +422,6 @@ class AttachmentModule(Component):
         attachment.filename = filename
         attachment.description = req.args.get('description', '')
         attachment.author = get_reporter_id(req, 'author')
-        attachment.ipnr = req.remote_addr
 
         # Validate attachment
         valid = True
@@ -645,10 +644,7 @@ class AttachmentModule(Component):
 
 
 class Attachment(object):
-    """Represents an attachment (new or existing).
-
-    :since 1.0.5: `ipnr` is deprecated and will be removed in 1.3.1
-    """
+    """Represents an attachment (new or existing)."""
 
     realm = AttachmentModule.realm
 
@@ -678,22 +674,20 @@ class Attachment(object):
             self.size = None
             self.date = None
             self.author = None
-            self.ipnr = None
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.filename)
 
-    def _from_database(self, filename, description, size, time, author, ipnr):
+    def _from_database(self, filename, description, size, time, author):
         self.filename = filename
         self.description = description
         self.size = int(size) if size else 0
         self.date = from_utimestamp(time or 0)
         self.author = author
-        self.ipnr = ipnr
 
     def _fetch(self, filename):
         for row in self.env.db_query("""
-                SELECT filename, description, size, time, author, ipnr
+                SELECT filename, description, size, time, author
                 FROM attachment WHERE type=%s AND id=%s AND filename=%s
                 ORDER BY time
                 """, (self.parent_realm, unicode(self.parent_id), filename)):
@@ -855,10 +849,9 @@ class Attachment(object):
         filename, targetfile = self._create_unique_file(dir, filename)
         with targetfile:
             with self.env.db_transaction as db:
-                db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s)",
                    (self.parent_realm, self.parent_id, filename, self.size,
-                    to_utimestamp(t), self.description, self.author,
-                    self.ipnr))
+                    to_utimestamp(t), self.description, self.author))
                 shutil.copyfileobj(fileobj, targetfile)
                 self.filename = filename
 
@@ -874,11 +867,10 @@ class Attachment(object):
         resource identified by `parent_realm` and `parent_id`.
 
         :returns: a tuple containing the `filename`, `description`, `size`,
-                  `time`, `author` and `ipnr`.
-        :since 1.0.5: use of `ipnr` is deprecated and will be removed in 1.3.1
+                  `time` and `author`.
         """
         for row in env.db_query("""
-                SELECT filename, description, size, time, author, ipnr
+                SELECT filename, description, size, time, author
                 FROM attachment WHERE type=%s AND id=%s ORDER BY time
                 """, (parent_realm, unicode(parent_id))):
             attachment = Attachment(env, parent_realm, parent_id)

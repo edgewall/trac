@@ -340,7 +340,7 @@ class WikiModule(Component):
                 author = get_reporter_id(req)
                 comment = u'[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (
                           new_name, old_version, old_name, new_name)
-                redirection.save(author, comment, req.remote_addr)
+                redirection.save(author, comment)
 
         add_notice(req, _("The page %(old_name)s has been renamed to "
                           "%(new_name)s.", old_name=old_name,
@@ -364,8 +364,7 @@ class WikiModule(Component):
             page.readonly = int('readonly' in req.args)
 
         try:
-            page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
-                      req.remote_addr)
+            page.save(get_reporter_id(req, 'author'), req.args.get('comment'))
         except TracError:
             add_warning(req, _("Page not modified, showing latest version."))
             return self._render_view(req, page)
@@ -392,7 +391,7 @@ class WikiModule(Component):
         num_versions = 0
         new_date = None
         old_date = None
-        for v, t, author, comment, ipnr in page.get_history():
+        for v, t, author, comment in page.get_history():
             if (v <= version or what == 'page') and new_date is None:
                 new_date = t
             if (v <= old_version and what == 'multiple' or
@@ -441,15 +440,14 @@ class WikiModule(Component):
         req.perm(latest_page.resource).require('WIKI_VIEW')
         new_version = int(page.version)
 
-        date = author = comment = ipnr = None
+        date = author = comment = None
         num_changes = 0
         prev_version = next_version = None
-        for version, t, a, c, i in latest_page.get_history():
+        for version, t, a, c in latest_page.get_history():
             if version == new_version:
                 date = t
                 author = a or 'anonymous'
                 comment = c or '--'
-                ipnr = i or ''
             else:
                 if version < new_version:
                     num_changes += 1
@@ -485,8 +483,7 @@ class WikiModule(Component):
 
         data = self._page_data(req, page, 'diff')
         data.update({
-            'change': {'date': date, 'author': author, 'ipnr': ipnr,
-                       'comment': comment},
+            'change': {'date': date, 'author': author, 'comment': comment},
             'new_version': new_version, 'old_version': old_version,
             'latest_version': latest_page.version,
             'num_changes': num_changes,
@@ -603,13 +600,12 @@ class WikiModule(Component):
         data = self._page_data(req, page, 'history')
 
         history = []
-        for version, date, author, comment, ipnr in page.get_history():
+        for version, date, author, comment in page.get_history():
             history.append({
                 'version': version,
                 'date': date,
                 'author': author,
-                'comment': comment,
-                'ipnr': ipnr
+                'comment': comment
             })
         data.update({
             'history': history,

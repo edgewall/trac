@@ -429,8 +429,8 @@ class TicketTestCase(unittest.TestCase):
         t2 = datetime(2001, 1, 1, 1, 1, 2, 0, utc)
         self.env.db_transaction("""
             INSERT INTO attachment (type, id, filename, size, time,
-                                    description, author, ipnr)
-            VALUES ('ticket',%s,'file.txt',1234,%s, 'My file','mark','')
+                                    description, author)
+            VALUES ('ticket',%s,'file.txt',1234,%s, 'My file','mark')
             """, (str(tkt_id), to_utimestamp(t2)))
         t3 = datetime(2001, 1, 1, 1, 1, 3, 0, utc)
         ticket.save_changes('jim', 'Other', t3)

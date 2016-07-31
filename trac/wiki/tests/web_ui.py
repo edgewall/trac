@@ -36,7 +36,7 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
         self.page = WikiPage(self.env, 'SomePage')
         self.page.text = 'This is a readonly page.'
         self.page.readonly = 1
-        self.page.save('user', 'readonly page added', '127.0.0.1')
+        self.page.save('user', 'readonly page added')
 
     def test_check_permission_returns_none(self):
         perm_cache = PermissionCache(self.env, 'user1')

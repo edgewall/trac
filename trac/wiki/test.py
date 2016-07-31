@@ -88,9 +88,9 @@ class WikiTestCase(unittest.TestCase):
         self.env.href = self.req.href
         self.env.abs_href = self.req.abs_href
         self.env.db_transaction(
-            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+            "INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s)",
             ('WikiStart', 1, to_utimestamp(datetime_now(utc)), 'joe',
-             '::1', '--', 'Entry page', 0))
+             '--', 'Entry page', 0))
         if self._setup:
             self._setup(self)
 

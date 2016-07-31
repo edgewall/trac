@@ -30,7 +30,7 @@ def add_pages(tc, names):
         w = WikiPage(tc.env)
         w.name = name
         w.text = '--'
-        w.save('joe', 'the page ' + name, '::1', now)
+        w.save('joe', 'the page ' + name, now)
 
 
 # == [[Image]]
@@ -570,7 +570,7 @@ def recentchanges_setup(tc):
             w = WikiPage(tc.env)
             w.name = name
             w.text = '--'
-            w.save('joe', 'the page ' + name, '::1', now)
+            w.save('joe', 'the page ' + name, now)
     add_pages(tc, [
         'WikiMid',
         'WikiEnd',

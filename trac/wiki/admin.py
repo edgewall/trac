@@ -139,9 +139,9 @@ class WikiAdmin(Component):
                                      WHERE name=%s)
                       """, (data, title, title))
             else:
-                db("""INSERT INTO wiki(version, name, time, author, ipnr, text)
-                      SELECT 1 + COALESCE(max(version), 0), %s, %s, 'trac',
-                             '127.0.0.1', %s FROM wiki WHERE name=%s
+                db("""INSERT INTO wiki(version, name, time, author, text)
+                      SELECT 1 + COALESCE(max(version), 0), %s, %s, 'trac', %s
+                      FROM wiki WHERE name=%s
                       """, (title, to_utimestamp(datetime_now(utc)), data,
                             title))
             if not old:

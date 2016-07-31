@@ -70,7 +70,6 @@
 
 /* Diff view */
 #overview .multi { color: #999 }
-#overview .ipnr { color: #999; font-size: 80% }
 #overview .comment { padding: 1em 0 0 }
 
 @media print {
