@@ -421,6 +421,13 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def concat(self, *args):
         return 'concat(%s)' % ', '.join(args)
 
+    def drop_column(self, table, column):
+        cursor = MySQLdb.cursors.Cursor(self.cnx)
+        if column in self.get_column_names(table):
+            cursor.execute("""
+                ALTER TABLE %s DROP COLUMN %s
+                """ % (self.quote(table), self.quote(column)))
+
     def drop_table(self, table):
         cursor = MySQLdb.cursors.Cursor(self.cnx)
         cursor._defer_warnings = True  # ignore "Warning: Unknown table ..."

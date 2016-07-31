@@ -268,6 +268,17 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
     def concat(self, *args):
         return '||'.join(args)
 
+    def drop_column(self, table, column):
+        if (self._version or '').startswith('8.'):
+            if column in self.get_column_names(table):
+                self.execute("""
+                    ALTER TABLE %s DROP COLUMN %s
+                    """ % (self.quote(table), self.quote(column)))
+        else:
+            self.execute("""
+                ALTER TABLE %s DROP COLUMN IF EXISTS %s
+                """ % (self.quote(table), self.quote(column)))
+
     def drop_table(self, table):
         if (self._version or '').startswith(('8.0.', '8.1.')):
             cursor = self.cursor()

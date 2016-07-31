@@ -123,6 +123,11 @@ class ConnectionBase(object):
         pass
 
     @abstractmethod
+    def drop_column(self, table, column):
+        """Drops the `column` from `table`."""
+        pass
+
+    @abstractmethod
     def drop_table(self, table):
         """Drops the `table`."""
         pass
@@ -273,6 +278,15 @@ class DatabaseManager(Component):
             for table in schema:
                 for sql in connector.to_sql(table):
                     db(sql)
+
+    def drop_columns(self, table, columns):
+        """Drops the specified columns from table.
+
+        :since: version 1.2
+        """
+        with self.env.db_transaction as db:
+            for col in columns:
+                db.drop_column(table, col)
 
     def drop_tables(self, schema):
         """Drop the specified tables.
