@@ -183,7 +183,10 @@ class SQLiteConnector(Component):
                 self._extensions.append(extpath)
         params['extensions'] = self._extensions
         if path == ':memory:':
-            if not self.memory_cnx:
+            try:
+                self.memory_cnx.cursor()
+            except (AttributeError, sqlite.DatabaseError):
+                # memory_cnx is None or database connection closed.
                 self.memory_cnx = SQLiteConnection(path, log, params)
             return self.memory_cnx
         else:
