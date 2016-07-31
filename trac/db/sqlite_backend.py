@@ -355,6 +355,24 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
     def concat(self, *args):
         return '||'.join(args)
 
+    def drop_column(self, table, column):
+        column_names = self.get_column_names(table)
+        if column in column_names:
+            temp_table = table + '_old'
+            table_name = self.quote(table)
+            temp_table_name = self.quote(temp_table)
+            column_names.remove(column)
+            cols_to_copy = ','.join(self.quote(col) for col in column_names)
+            cursor = self.cursor()
+            cursor.execute("""
+                CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
+                """ % (temp_table_name, table_name))
+            self.drop_table(table)
+            cursor.execute("""
+                CREATE TABLE %s AS SELECT %s FROM %s
+                """ % (table_name, cols_to_copy, temp_table_name))
+            self.drop_table(temp_table)
+
     def drop_table(self, table):
         cursor = self.cursor()
         if sqlite_version < (3, 7, 6):

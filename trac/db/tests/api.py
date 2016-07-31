@@ -419,16 +419,49 @@ class ConnectionTestCase(unittest.TestCase):
             ],
             Table('blog', key='bid')[
                 Column('bid', auto_increment=True),
-                Column('author')
+                Column('author'),
+                Column('comment')
             ]
         ]
-        dbm = DatabaseManager(self.env)
-        dbm.drop_tables(self.schema)
-        dbm.create_tables(self.schema)
+        self.dbm = DatabaseManager(self.env)
+        self.dbm.drop_tables(self.schema)
+        self.dbm.create_tables(self.schema)
 
     def tearDown(self):
         DatabaseManager(self.env).drop_tables(self.schema)
         self.env.reset_db()
+
+    def test_drop_column(self):
+        """Data is preserved when column is dropped."""
+        table_data = [
+            ('blog', ('author', 'comment'),
+             (('author1', 'comment one'),
+              ('author2', 'comment two'))),
+        ]
+        self.dbm.insert_into_tables(table_data)
+
+        with self.env.db_transaction as db:
+            db.drop_column('blog', 'comment')
+
+        data = list(self.env.db_query("SELECT * FROM blog"))
+        self.assertEqual((1, 'author1'), data[0])
+        self.assertEqual((2, 'author2'), data[1])
+
+    def test_drop_column_no_exists(self):
+        """Error is not raised when dropping non-existent column."""
+        table_data = [
+            ('blog', ('author', 'comment'),
+             (('author1', 'comment one'),
+              ('author2', 'comment two'))),
+        ]
+        self.dbm.insert_into_tables(table_data)
+
+        with self.env.db_transaction as db:
+            db.drop_column('blog', 'tags')
+
+        data = list(self.env.db_query("SELECT * FROM blog"))
+        self.assertEqual((1, 'author1', 'comment one'), data[0])
+        self.assertEqual((2, 'author2', 'comment two'), data[1])
 
     def test_get_last_id(self):
         q = "INSERT INTO report (author) VALUES ('anonymous')"
@@ -557,7 +590,7 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.assertEqual(db_ver, self.dbm.get_database_version(name))
 
 
-class UpgradeTableTestCase(unittest.TestCase):
+class ModifyTableTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
@@ -575,27 +608,19 @@ class UpgradeTableTestCase(unittest.TestCase):
             Table('table3', key='col2')[
                 Column('col1'),
                 Column('col2', type='int'),
+                Column('col3')
             ]
         ]
         self.dbm.create_tables(self.schema)
         self.new_schema = copy.deepcopy([self.schema[0], self.schema[2]])
         self.new_schema[0].remove_columns(('col2',))
-        self.new_schema[1].columns.append(Column('col3'))
+        self.new_schema[1].columns.append(Column('col4'))
 
     def tearDown(self):
         self.dbm.drop_tables(self.schema)
         self.env.reset_db()
 
-    def test_tables_have_new_schema(self):
-        """The upgraded tables have the new schema."""
-        self.dbm.upgrade_tables(self.new_schema)
-
-        for table in self.new_schema:
-            self.assertEqual([col.name for col in table.columns],
-                             self.dbm.get_column_names(table.name))
-
-    def test_data_is_migrated(self):
-        """The data is migrated to the upgraded tables."""
+    def _insert_data(self):
         table_data = [
             ('table1', ('col2', 'col3'),
              (('data1', 'data2'),
@@ -603,11 +628,45 @@ class UpgradeTableTestCase(unittest.TestCase):
             ('table2', ('col1', 'col2'),
              (('data5', 'data6'),
               ('data7', 'data8'))),
-            ('table3', ('col1', 'col2'),
-             (('data9', 10),
-              ('data11', 12))),
+            ('table3', ('col1', 'col2', 'col3'),
+             (('data9', 10, 'data11'),
+              ('data12', 13, 'data14'))),
         ]
         self.dbm.insert_into_tables(table_data)
+
+    def test_drop_columns(self):
+        """Data is preserved when column is dropped."""
+        self._insert_data()
+
+        self.dbm.drop_columns('table1', ('col2',))
+
+        self.assertEqual(['col1', 'col3'], self.dbm.get_column_names('table1'))
+        data = list(self.env.db_query("SELECT * FROM table1"))
+        self.assertEqual((1, 'data2'), data[0])
+        self.assertEqual((2, 'data4'), data[1])
+
+    def test_drop_columns_multiple_columns(self):
+        """Data is preserved when columns are dropped."""
+        self._insert_data()
+
+        self.dbm.drop_columns('table3', ('col1', 'col3'))
+
+        self.assertEqual(['col2'], self.dbm.get_column_names('table3'))
+        data = list(self.env.db_query("SELECT * FROM table3"))
+        self.assertEqual((10,), data[0])
+        self.assertEqual((13,), data[1])
+
+    def test_upgrade_tables_have_new_schema(self):
+        """The upgraded tables have the new schema."""
+        self.dbm.upgrade_tables(self.new_schema)
+
+        for table in self.new_schema:
+            self.assertEqual([col.name for col in table.columns],
+                             self.dbm.get_column_names(table.name))
+
+    def test_upgrade_tables_data_is_migrated(self):
+        """The data is migrated to the upgraded tables."""
+        self._insert_data()
 
         self.dbm.upgrade_tables(self.new_schema)
         self.env.db_transaction("""
@@ -623,8 +682,8 @@ class UpgradeTableTestCase(unittest.TestCase):
         self.assertEqual(('data5', 'data6'), data[0])
         self.assertEqual(('data7', 'data8'), data[1])
         data = list(self.env.db_query("SELECT * FROM table3"))
-        self.assertEqual(('data9', 10, None), data[0])
-        self.assertEqual(('data11', 12, None), data[1])
+        self.assertEqual(('data9', 10, 'data11', None), data[0])
+        self.assertEqual(('data12', 13, 'data14', None), data[1])
 
 
 def test_suite():
@@ -634,7 +693,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ConnectionTestCase))
     suite.addTest(unittest.makeSuite(WithTransactionTest))
     suite.addTest(unittest.makeSuite(DatabaseManagerTestCase))
-    suite.addTest(unittest.makeSuite(UpgradeTableTestCase))
+    suite.addTest(unittest.makeSuite(ModifyTableTestCase))
     return suite
 
 
