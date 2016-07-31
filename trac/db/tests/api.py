@@ -247,11 +247,11 @@ class ConnectionTestCase(unittest.TestCase):
         self.assertNotEqual(0, id1)
         self.assertEqual(id1 + 1, id2)
 
-    def test_update_sequence_default_column(self):
+    def test_update_sequence_default_column_name(self):
         with self.env.db_transaction as db:
             db("INSERT INTO report (id, author) VALUES (42, 'anonymous')")
             cursor = db.cursor()
-            db.update_sequence(cursor, 'report', 'id')
+            db.update_sequence(cursor, 'report')
 
         self.env.db_transaction(
             "INSERT INTO report (author) VALUES ('next-id')")
@@ -259,7 +259,7 @@ class ConnectionTestCase(unittest.TestCase):
         self.assertEqual(43, self.env.db_query(
                 "SELECT id FROM report WHERE author='next-id'")[0][0])
 
-    def test_update_sequence_nondefault_column(self):
+    def test_update_sequence_nondefault_column_name(self):
         with self.env.db_transaction as db:
             cursor = db.cursor()
             cursor.execute(
