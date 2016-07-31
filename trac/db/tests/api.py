@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import copy
 import os
 import unittest
 
@@ -358,12 +359,83 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.assertEqual(db_ver, self.dbm.get_database_version(name))
 
 
+class UpgradeTableTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.dbm = DatabaseManager(self.env)
+        self.schema = [
+            Table('table1', key='col1')[
+                Column('col1', auto_increment=True),
+                Column('col2'),
+                Column('col3'),
+            ],
+            Table('table2', key='col1')[
+                Column('col1'),
+                Column('col2'),
+            ],
+            Table('table3', key='col2')[
+                Column('col1'),
+                Column('col2', type='int'),
+            ]
+        ]
+        self.dbm.create_tables(self.schema)
+        self.new_schema = copy.deepcopy([self.schema[0], self.schema[2]])
+        self.new_schema[0].remove_columns(('col2',))
+        self.new_schema[1].columns.append(Column('col3'))
+
+    def tearDown(self):
+        self.dbm.drop_tables(self.schema)
+        self.env.reset_db()
+
+    def test_tables_have_new_schema(self):
+        """The upgraded tables have the new schema."""
+        self.dbm.upgrade_tables(self.new_schema)
+
+        for table in self.new_schema:
+            self.assertEqual([col.name for col in table.columns],
+                             self.dbm.get_column_names(table.name))
+
+    def test_data_is_migrated(self):
+        """The data is migrated to the upgraded tables."""
+        table_data = [
+            ('table1', ('col2', 'col3'),
+             (('data1', 'data2'),
+              ('data3', 'data4'))),
+            ('table2', ('col1', 'col2'),
+             (('data5', 'data6'),
+              ('data7', 'data8'))),
+            ('table3', ('col1', 'col2'),
+             (('data9', 10),
+              ('data11', 12))),
+        ]
+        self.dbm.insert_into_tables(table_data)
+
+        self.dbm.upgrade_tables(self.new_schema)
+        self.env.db_transaction("""
+                INSERT INTO table1 (col3) VALUES ('data12')
+                """)
+
+        data = list(self.env.db_query("SELECT * FROM table1"))
+        self.assertEqual((1, 'data2'), data[0])
+        self.assertEqual((2, 'data4'), data[1])
+        self.assertEqual(3, self.env.db_query("""
+                SELECT col1 FROM table1 WHERE col3='data12'""")[0][0])
+        data = list(self.env.db_query("SELECT * FROM table2"))
+        self.assertEqual(('data5', 'data6'), data[0])
+        self.assertEqual(('data7', 'data8'), data[1])
+        data = list(self.env.db_query("SELECT * FROM table3"))
+        self.assertEqual(('data9', 10, None), data[0])
+        self.assertEqual(('data11', 12, None), data[1])
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase))
     suite.addTest(unittest.makeSuite(StringsTestCase))
     suite.addTest(unittest.makeSuite(ConnectionTestCase))
     suite.addTest(unittest.makeSuite(DatabaseManagerTestCase))
+    suite.addTest(unittest.makeSuite(UpgradeTableTestCase))
     return suite
 
 

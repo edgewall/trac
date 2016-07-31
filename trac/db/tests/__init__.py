@@ -13,7 +13,8 @@
 
 import unittest
 
-from trac.db.tests import api, mysql_test, postgres_test, sqlite_test, util
+from trac.db.tests import api, mysql_test, postgres_test, schema, \
+                          sqlite_test, util
 from trac.db.tests.functional import functionalSuite
 
 
@@ -23,6 +24,7 @@ def test_suite():
     suite.addTest(mysql_test.test_suite())
     suite.addTest(postgres_test.test_suite())
     suite.addTest(sqlite_test.test_suite())
+    suite.addTest(schema.test_suite())
     suite.addTest(util.test_suite())
     return suite
 

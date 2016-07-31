@@ -318,6 +318,35 @@ class DatabaseManager(Component):
         with self.env.db_transaction as db:
             return db.reset_tables()
 
+    def upgrade_tables(self, new_schema):
+        """Upgrade table schema to `new_schema`, preserving data in
+        columns that exist in the current schema and `new_schema`.
+
+        :param new_schema: tuple or list of `Table` objects
+
+        :since: version 1.2
+        """
+        for new_table in new_schema:
+            temp_table_name = new_table.name + '_old'
+            old_column_names = set(self.get_column_names(new_table))
+            new_column_names = set(col.name for col in new_table.columns)
+            cols_to_copy = ','.join(old_column_names & new_column_names)
+            with self.env.db_transaction as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
+                    """ % (temp_table_name, new_table.name))
+                self.drop_tables((new_table,))
+                self.create_tables((new_table,))
+                cursor.execute("""
+                    INSERT INTO %s (%s) SELECT %s FROM %s
+                    """ % (new_table.name, cols_to_copy,
+                           cols_to_copy, temp_table_name))
+                for col in new_table.columns:
+                    if col.auto_increment:
+                        db.update_sequence(cursor, new_table.name, col.name)
+                self.drop_tables((temp_table_name,))
+
     def get_connection(self, readonly=False):
         """Get a database connection from the pool.
 
@@ -359,10 +388,13 @@ class DatabaseManager(Component):
     def get_column_names(self, table):
         """Returns a list of the column names for `table`.
 
+        :param schema: a `Table` object or table name.
+
         :since: 1.2
         """
+        table_name = table.name if isinstance(table, Table) else table
         with self.env.db_query as db:
-            return db.get_column_names(table)
+            return db.get_column_names(table_name)
 
     def set_database_version(self, version, name='database_version'):
         """Sets the database version in the SYSTEM table.
