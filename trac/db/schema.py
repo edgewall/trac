@@ -29,6 +29,12 @@ class Table(object):
         self.indices = [o for o in objs if isinstance(o, Index)]
         return self
 
+    def remove_columns(self, column_names):
+        """Remove columns specified in the list or tuple `column_names`."""
+        self.key = [key for key in self.key if key not in column_names]
+        self.columns = [col for col in self.columns
+                        if col.name not in column_names]
+
 
 class Column(object):
     """Declare a table column in a database schema."""
