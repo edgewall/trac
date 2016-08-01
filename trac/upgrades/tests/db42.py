@@ -64,7 +64,7 @@ class UpgradeTestCase(unittest.TestCase):
             self.dbm.set_database_version(VERSION - 1)
 
     def tearDown(self):
-        self.env.reset_db()
+        self.env.reset_db_and_disk()
 
     def test_attachment_table_upgraded(self):
         """The ipnr column is removed from the attachment table."""
