@@ -84,11 +84,16 @@ history:imported only for summary, priority. closed date and owner fields
 severities:no field in source data
 """
 
+import optparse
+import sys
+import time
+from xml.etree.ElementTree import ElementTree
+
+from trac.env import Environment
+from trac.util.text import printerr
 
 #: rename users from SF to Trac
 user_map = {"nobody":"anonymous"}
-
-
 
 complete_msg = """
 Conversion complete.
@@ -97,11 +102,6 @@ You may want to login into Trac to verify names for ticket owners. You may
 also want to rename ticket types and priorities to default.
 """
 
-from xml.etree.ElementTree import ElementTree
-import time
-import sys
-
-import trac.env
 
 # --- utility
 class DBNotEmpty(Exception):
@@ -388,7 +388,7 @@ class ExportedProjectData(object):
 
 class TracDatabase(object):
     def __init__(self, path):
-        self.env = trac.env.Environment(path)
+        self.env = Environment(path)
 
     def hasTickets(self):
         return int(self.env.db_query("SELECT count(*) FROM ticket")[0][0]) > 0
@@ -694,7 +694,6 @@ def importData(f, env, opt):
 
 
 def main():
-    import optparse
     p = optparse.OptionParser(
             "Usage: %prog xml_export.xml /path/to/trac/environment")
     opt, args = p.parse_args()
@@ -704,7 +703,7 @@ def main():
     try:
         importData(open(args[0]), args[1], opt)
     except DBNotEmpty as e:
-        print("Error: " + e)
+        printerr("Error: %s" % e)
         sys.exit(1)
 
     print(complete_msg)
