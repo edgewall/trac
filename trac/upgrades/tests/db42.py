@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import copy
+import tempfile
 import unittest
 
 from trac.db.api import DatabaseManager
@@ -56,7 +57,7 @@ new_schema = (new_attachment_schema, new_wiki_schema)
 class UpgradeTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(path=tempfile.mkdtemp())
         self.dbm = DatabaseManager(self.env)
         with self.env.db_transaction:
             self.dbm.drop_tables(new_schema)
