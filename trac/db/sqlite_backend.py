@@ -386,10 +386,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
             cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
     def get_column_names(self, table):
-        cursor = self.cnx.cursor()
-        rows = cursor.execute("PRAGMA table_info(%s)"
-                              % self.quote(table))
-        return [row[1] for row in rows]
+        cursor = self.cursor()
+        cursor.execute("PRAGMA table_info(%s)" % self.quote(table))
+        return [row[1] for row in cursor]
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
