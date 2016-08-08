@@ -1,29 +1,114 @@
 language: python
 sudo: false
-python:
-  - "2.6"
-  - "2.7_with_system_site_packages"
-env:
-  - "TRAC_TEST_DB_URI="
-  - "TRAC_TEST_DB_URI=sqlite:test.db"
-  - "TRAC_TEST_DB_URI=postgres://tracuser:password@localhost/trac?schema=tractest"
-  - "TRAC_TEST_DB_URI=mysql://tracuser:password@localhost/trac"
-before_install:
-  - psql -U postgres -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
-  - psql -U postgres -c "CREATE DATABASE trac OWNER tracuser;"
-  - mysql -u root -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
-  - mysql -u root -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
-  - mysql -u root -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
-install:
-  - pip install -q Genshi==0.7 'Babel!=2.3.0,!=2.3.1' configobj Pygments docutils lxml pytz twill==0.9.1 psycopg2 MySQL-python
-  - echo ".uri = $TRAC_TEST_DB_URI" >Makefile.cfg
 addons:
   apt:
     packages:
       - python-subversion
+matrix:
+  include:
+    - os: linux
+      python: "2.6"
+      env: tracdb=
+      cache: {pip: true}
+    - os: linux
+      python: "2.6"
+      env: tracdb=sqlite
+      cache: {pip: true}
+    - os: linux
+      python: "2.6"
+      env: tracdb=postgres
+      cache: {pip: true}
+    - os: linux
+      python: "2.6"
+      env: tracdb=mysql
+      cache: {pip: true}
+    - os: linux
+      python: "2.7_with_system_site_packages"
+      env: tracdb=
+      cache: {pip: true}
+    - os: linux
+      python: "2.7_with_system_site_packages"
+      env: tracdb=sqlite
+      cache: {pip: true}
+    - os: linux
+      python: "2.7_with_system_site_packages"
+      env: tracdb=postgres
+      cache: {pip: true}
+    - os: linux
+      python: "2.7_with_system_site_packages"
+      env: tracdb=mysql
+      cache: {pip: true}
+    - os: osx
+      language: generic
+      env: pyver=2.6.6 tracdb=
+    - os: osx
+      language: generic
+      env: pyver=2.6.6 tracdb=sqlite
+    - os: osx
+      language: generic
+      env: pyver=2.6.6 tracdb=postgres
+    - os: osx
+      language: generic
+      env: pyver=2.7.12 tracdb=
+    - os: osx
+      language: generic
+      env: pyver=2.7.12 tracdb=sqlite
+    - os: osx
+      language: generic
+      env: pyver=2.7.12 tracdb=postgres
+before_install:
+  - |
+    set -e
+    case "$tracdb" in
+      postgres)
+        if [ "$TRAVIS_OS_NAME" = osx ]; then
+          pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log
+          createuser -s postgres
+        fi
+        tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
+        echo "$tracdb_version"
+        psql -U postgres -e -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
+        psql -U postgres -e -c "CREATE DATABASE trac OWNER tracuser;"
+        ;;
+      mysql)
+        tracdb_version="MySQL: $(mysql -u root -sN -e 'SELECT version()')"
+        echo "$tracdb_version"
+        mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
+        mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
+        mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
+        ;;
+      *)
+        tracdb_version=
+        ;;
+    esac
+  - |
+    set -e
+    if [ "$TRAVIS_OS_NAME" = osx ]; then
+      PYENV_ROOT=$HOME/.pyenv
+      PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
+      export PYENV_ROOT PATH
+      brew update >/dev/null
+      brew outdated pyenv || brew upgrade --quiet pyenv
+      pyenv install -ks $pyver
+      pyenv global $pyver
+    fi
+install:
+  - pip install --upgrade pip
+  - pip install Genshi==0.7 'Babel!=2.3.0,!=2.3.1' configobj Pygments docutils lxml pytz twill==0.9.1
+  - if [ "$tracdb" = postgres ]; then pip install psycopg2; fi
+  - if [ "$tracdb" = mysql ]; then pip install MySQL-python; fi
+  - pip freeze
+  - |
+    set -e
+    case "$tracdb" in
+      sqlite)   tracdb_uri='sqlite:test.db' ;;
+      postgres) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
+      mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
+      *)        tracdb_uri= ;;
+    esac
+    echo ".uri = $tracdb_uri" >Makefile.cfg
 script:
-  - echo "$(psql -U postgres -t -c 'SELECT version()')"
-  - echo "$(mysql -u root -sN -e 'SELECT version()')"
+  - if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
   - make Trac.egg-info compile unit-test functional-test
 notifications:
   email:
