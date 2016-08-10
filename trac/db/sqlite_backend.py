@@ -205,7 +205,7 @@ class SQLiteConnector(Component):
     def init_db(self, path, schema=None, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
-            if os.path.exists(path):
+            if self.db_exists(path):
                 raise TracError(_("Database already exists at %(path)s",
                                   path=path))
             dir = os.path.dirname(path)
@@ -240,6 +240,9 @@ class SQLiteConnector(Component):
             except OSError as e:
                 if e.errno != errno.ENOENT:
                     raise
+
+    def db_exists(self, path, log=None, params={}):
+        return os.path.exists(path)
 
     def to_sql(self, table):
         return _to_sql(table)

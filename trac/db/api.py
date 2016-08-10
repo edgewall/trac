@@ -296,6 +296,9 @@ class IDatabaseConnector(Interface):
     def destroy_db(self, path, log=None, **kwargs):
         """Destroy the database."""
 
+    def db_exists(self, path, log=None, **kwargs):
+        """Return `True` if the database exists."""
+
     def to_sql(table):
         """Return the DDL statements necessary to create the specified
         table, including indices."""
@@ -338,8 +341,13 @@ class DatabaseManager(Component):
 
     def destroy_db(self):
         connector, args = self.get_connector()
-        connector.destroy_db(**args)
+        # Connections to on-disk db must be closed before deleting it.
         self.shutdown()
+        connector.destroy_db(**args)
+
+    def db_exists(self):
+        connector, args = self.get_connector()
+        return connector.db_exists(**args)
 
     def create_tables(self, schema):
         """Create the specified tables.

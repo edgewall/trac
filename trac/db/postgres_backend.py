@@ -134,6 +134,16 @@ class PostgreSQLConnector(Component):
         cnx.execute('DROP SCHEMA %s CASCADE' % _quote(cnx.schema))
         cnx.commit()
 
+    def db_exists(self, path, log=None, user=None, password=None, host=None,
+                  port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
+        cursor = cnx.cursor()
+        cursor.execute("""
+            SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname=%s);
+            """, (cnx.schema,))
+        return cursor.fetchone()[0]
+
     def to_sql(self, table):
         sql = ['CREATE TABLE %s (' % _quote(table.name)]
         coldefs = []
