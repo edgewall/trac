@@ -349,6 +349,14 @@ class DatabaseManagerTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def test_destroy_db(self):
+        """Database doesn't exist after calling destroy_db."""
+        self.env.db_query("SELECT name FROM system")
+        self.assertIsNotNone(self.dbm._cnx_pool)
+        self.dbm.destroy_db()
+        self.assertIsNone(self.dbm._cnx_pool)  # No connection pool
+        self.assertFalse(self.dbm.db_exists())
+
     def test_get_column_names(self):
         """Get column names for the default database."""
         for table in default_schema:
