@@ -650,6 +650,7 @@ class GitNode(Node):
             rev = repos.normalize_rev(to_unicode(rev))
         else:
             rev = repos.youngest_rev
+        created_rev = rev
 
         kind = Node.DIRECTORY
         p = path.strip('/')
@@ -667,7 +668,7 @@ class GitNode(Node):
             self.fs_perm, k, self.fs_sha, self.fs_size, fname = ls_tree_info
 
             # fix-up to the last commit-rev that touched this node
-            rev = repos.git.last_change(rev, p, historian)
+            created_rev = repos.git.last_change(rev, p, historian)
 
             if k == 'tree':
                 pass
@@ -682,7 +683,7 @@ class GitNode(Node):
                                   "kind '%(kind)s')", kind=k))
 
         self.created_path = path
-        self.created_rev = rev
+        self.created_rev = created_rev
 
         Node.__init__(self, repos, path, rev, kind)
 
