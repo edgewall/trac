@@ -46,7 +46,7 @@ from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
 from trac.util.datefmt import time_now, utc
 from trac.web.api import _RequestArgs, Request
-from trac.web.session import DetachedSession
+from trac.web.session import Session
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -215,7 +215,7 @@ def MockRequest(env, **kwargs):
         'locale': lambda req: kwargs.get('locale'),
         'incookie': Request._parse_cookies,
         'perm': lambda req: perm,
-        'session': lambda req: DetachedSession(env, authname),
+        'session': lambda req: Session(env, req),
         'tz': lambda req: kwargs.get('tz', utc),
         'use_xsendfile': False,
         'xsendfile_header': None,
