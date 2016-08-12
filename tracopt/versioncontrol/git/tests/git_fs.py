@@ -592,6 +592,192 @@ from :6
         self.assertEqual(expected,
                          repos.get_node('test.txt').get_annotations())
 
+    # *   79dff4ccf842f8e2d2da2ee3e7a2149df63b099b Merge branch 'A'
+    # |\
+    # | *   86387120095e9e43573bce61b9da70a8c5d1c1b9 Merge branch 'B' into A
+    # | |\
+    # | | * 64e12f96b6b3040cd9edc225734ab2b26a03758b Changed a1
+    # | * | 67fdcf11e2d083b123b9a79be4fce0600f313f81 Changed a2
+    # * | | 42fbe758709b2a65aba33e56b2f53cd126c190e3 Changed b2
+    # | |/
+    # |/|
+    # * | 24d94dc08eb77438e4ead192b3f7d1c7bdf1a9e1 Changed b2
+    # * | 998bf23843c8fd982bbc23f88ec33c4d08114557 Changed b1
+    # |/
+    # * c5b01c74e125aa034a1d4ae31dc16f1897a73779 First commit
+    _data_iter_nodes = """\
+blob
+mark :1
+data 2
+a1
+blob
+mark :2
+data 2
+a2
+blob
+mark :3
+data 2
+b1
+blob
+mark :4
+data 2
+b2
+reset refs/heads/A
+commit refs/heads/A
+mark :5
+author Joe <joe@example.com> 1470744252 +0000
+committer Joe <joe@example.com> 1470744252 +0000
+data 13
+First commit
+M 100644 :1 A/a1.txt
+M 100644 :2 A/a2.txt
+M 100644 :3 B/b1.txt
+M 100644 :4 B/b2.txt
+
+blob
+mark :6
+data 4
+b1-1
+commit refs/heads/master
+mark :7
+author Joe <joe@example.com> 1470744253 +0000
+committer Joe <joe@example.com> 1470744253 +0000
+data 11
+Changed b1
+from :5
+M 100644 :6 B/b1.txt
+
+blob
+mark :8
+data 4
+b2-1
+commit refs/heads/master
+mark :9
+author Joe <joe@example.com> 1470744254 +0000
+committer Joe <joe@example.com> 1470744254 +0000
+data 11
+Changed b2
+from :7
+M 100644 :8 B/b2.txt
+
+blob
+mark :10
+data 4
+b2-2
+commit refs/heads/master
+mark :11
+author Joe <joe@example.com> 1470744255 +0000
+committer Joe <joe@example.com> 1470744255 +0000
+data 11
+Changed b2
+from :9
+M 100644 :10 B/b2.txt
+
+blob
+mark :12
+data 4
+a2-1
+commit refs/heads/A
+mark :13
+author Joe <joe@example.com> 1470744256 +0000
+committer Joe <joe@example.com> 1470744256 +0000
+data 11
+Changed a2
+from :5
+M 100644 :12 A/a2.txt
+
+blob
+mark :14
+data 4
+a1-1
+commit refs/heads/B
+mark :15
+author Joe <joe@example.com> 1470744257 +0000
+committer Joe <joe@example.com> 1470744257 +0000
+data 11
+Changed a1
+from :9
+M 100644 :14 A/a1.txt
+
+commit refs/heads/A
+mark :16
+author Joe <joe@example.com> 1470744258 +0000
+committer Joe <joe@example.com> 1470744258 +0000
+data 24
+Merge branch 'B' into A
+from :13
+merge :15
+M 100644 :14 A/a1.txt
+M 100644 :6 B/b1.txt
+M 100644 :8 B/b2.txt
+
+commit refs/heads/master
+mark :17
+author Joe <joe@example.com> 1470744259 +0000
+committer Joe <joe@example.com> 1470744259 +0000
+data 17
+Merge branch 'A'
+from :11
+merge :16
+M 100644 :14 A/a1.txt
+M 100644 :12 A/a2.txt
+
+reset refs/heads/master
+from :17
+
+"""
+
+    def test_iter_nodes(self):
+        self._git_init(data=False)
+        self._git_fast_import(self._data_iter_nodes)
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        mod = BrowserModule(self.env)
+
+        root_node = repos.get_node('')
+        nodes = list(mod._iter_nodes(root_node))
+        self.assertEqual(['79dff4ccf842f8e2d2da2ee3e7a2149df63b099b'] * 7,
+                         [node.rev for node in nodes])
+        self.assertEqual([
+            ('79dff4ccf842f8e2d2da2ee3e7a2149df63b099b', ''),
+            ('64e12f96b6b3040cd9edc225734ab2b26a03758b', 'A'),
+            ('64e12f96b6b3040cd9edc225734ab2b26a03758b', 'A/a1.txt'),
+            ('67fdcf11e2d083b123b9a79be4fce0600f313f81', 'A/a2.txt'),
+            ('42fbe758709b2a65aba33e56b2f53cd126c190e3', 'B'),
+            ('998bf23843c8fd982bbc23f88ec33c4d08114557', 'B/b1.txt'),
+            ('42fbe758709b2a65aba33e56b2f53cd126c190e3', 'B/b2.txt'),
+            ], [(node.created_rev, node.path) for node in nodes])
+
+        root_node = repos.get_node('',
+                                   '86387120095e9e43573bce61b9da70a8c5d1c1b9')
+        nodes = list(mod._iter_nodes(root_node))
+        self.assertEqual(['86387120095e9e43573bce61b9da70a8c5d1c1b9'] * 7,
+                         [node.rev for node in nodes])
+        self.assertEqual([
+            ('86387120095e9e43573bce61b9da70a8c5d1c1b9', ''),
+            ('64e12f96b6b3040cd9edc225734ab2b26a03758b', 'A'),
+            ('64e12f96b6b3040cd9edc225734ab2b26a03758b', 'A/a1.txt'),
+            ('67fdcf11e2d083b123b9a79be4fce0600f313f81', 'A/a2.txt'),
+            ('24d94dc08eb77438e4ead192b3f7d1c7bdf1a9e1', 'B'),
+            ('998bf23843c8fd982bbc23f88ec33c4d08114557', 'B/b1.txt'),
+            ('24d94dc08eb77438e4ead192b3f7d1c7bdf1a9e1', 'B/b2.txt'),
+            ], [(node.created_rev, node.path) for node in nodes])
+
+        root_commit = 'c5b01c74e125aa034a1d4ae31dc16f1897a73779'
+        root_node = repos.get_node('', root_commit)
+        nodes = list(mod._iter_nodes(root_node))
+        self.assertEqual([root_commit] * 7, [node.rev for node in nodes])
+        self.assertEqual([
+            (root_commit, ''),
+            (root_commit, 'A'),
+            (root_commit, 'A/a1.txt'),
+            (root_commit, 'A/a2.txt'),
+            (root_commit, 'B'),
+            (root_commit, 'B/b1.txt'),
+            (root_commit, 'B/b2.txt'),
+            ], [(node.created_rev, node.path) for node in nodes])
+
     def _get_quickjump_names(self, repos):
         return list(name for type, name, path, rev
                          in repos.get_quickjump_entries('HEAD'))
