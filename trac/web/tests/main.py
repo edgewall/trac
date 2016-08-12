@@ -130,7 +130,7 @@ class DispatchRequestTestCase(unittest.TestCase):
                       'dispatch_request({}, None)'), stdin=PIPE,
                      stdout=PIPE, stderr=PIPE, close_fds=close_fds)
 
-        stdout, stderr = proc.communicate(input='')
+        stdout, stderr = proc.communicate()
         for f in (proc.stdin, proc.stdout, proc.stderr):
             f.close()
         self.assertEqual(1, proc.returncode)
