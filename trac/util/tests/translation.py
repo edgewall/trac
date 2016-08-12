@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import tempfile
 import unittest
 from pkg_resources import resource_exists, resource_filename
 try:
@@ -25,7 +24,7 @@ else:
     except ImportError:
         from babel.localedata import list as locale_identifiers
 
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.util import translation
 
 
@@ -33,7 +32,7 @@ class TranslationsProxyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env.path = mkdtemp()
 
     def tearDown(self):
         translation.deactivate()

@@ -19,14 +19,13 @@
 import base64
 import io
 import quopri
-import tempfile
 import re
 import unittest
 from datetime import datetime, timedelta
 
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
@@ -1597,8 +1596,7 @@ class FormatSubjectTestCase(unittest.TestCase):
 class AttachmentNotificationTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True,
-                                   path=tempfile.mkdtemp(prefix='trac-tempenv-'))
+        self.env = EnvironmentStub(default_data=True, path=mkdtemp())
         config_smtp(self.env)
         config_subscriber(self.env, reporter=True)
 
@@ -1675,8 +1673,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
 class BatchTicketNotificationTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
-        self.env = EnvironmentStub(default_data=True, path=self.env_path)
+        self.env = EnvironmentStub(default_data=True, path=mkdtemp())
         config_smtp(self.env)
 
         self.tktids = []

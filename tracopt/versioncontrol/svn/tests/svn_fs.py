@@ -18,7 +18,6 @@ from datetime import datetime
 import io
 import new
 import os.path
-import tempfile
 import unittest
 
 try:
@@ -29,7 +28,7 @@ except ImportError:
 
 from genshi.core import Stream
 
-from trac.test import EnvironmentStub, MockRequest, TestSetup
+from trac.test import EnvironmentStub, MockRequest, TestSetup, mkdtemp
 from trac.core import TracError
 from trac.mimeview.api import RenderingContext
 from trac.resource import Resource, resource_exists
@@ -1461,7 +1460,7 @@ class SubversionConnectorTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-svnrepos-')
+        self.repos_path = mkdtemp()
         self.dbprovider = DbRepositoryProvider(self.env)
         pool = core.svn_pool_create(None)
         repos.svn_repos_create(self.repos_path, '', '', None, None, pool)
@@ -1488,7 +1487,7 @@ def test_suite():
     global REPOS_PATH
     suite = unittest.TestSuite()
     if has_svn:
-        REPOS_PATH = tempfile.mkdtemp(prefix='trac-svnrepos-')
+        REPOS_PATH = mkdtemp()
         os.rmdir(REPOS_PATH)
         tests = [(NormalTests, ''),
                  (ScopedTests, u'/tête'),

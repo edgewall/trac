@@ -12,10 +12,9 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import os
-import tempfile
 import unittest
 
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.upgrades import db31
 
 VERSION = 31
@@ -27,7 +26,7 @@ class UpgradeTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.env = EnvironmentStub(path=tempfile.mkdtemp())
+        self.env = EnvironmentStub(path=mkdtemp())
         self.env.config.filename = os.path.join(self.env.path, 'trac.ini')
 
     def tearDown(self):

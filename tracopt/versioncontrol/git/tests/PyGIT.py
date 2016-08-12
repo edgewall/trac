@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
@@ -152,7 +152,7 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
+        self.repos_path = mkdtemp()
         # create git repository and master branch
         self._git('init')
         self._git('config', 'core.quotepath', 'true')  # ticket:11198
@@ -291,7 +291,7 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
+        self.repos_path = mkdtemp()
         # create git repository and master branch
         self._git('init')
         self._git('config', 'core.quotepath', 'true')  # ticket:11198

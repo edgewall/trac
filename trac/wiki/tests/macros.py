@@ -14,11 +14,10 @@
 import io
 import os
 import shutil
-import tempfile
 import unittest
 
 from trac.config import Option, ListOption, IntOption, BoolOption
-from trac.test import locale_en
+from trac.test import locale_en, mkdtemp
 from trac.util.datefmt import datetime_now, format_date, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
@@ -38,7 +37,7 @@ def add_pages(tc, names):
 def image_setup(tc):
     add_pages(tc, ['page:fr'])
     from trac.attachment import Attachment
-    tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+    tc.env.path = mkdtemp()
     attachment = Attachment(tc.env, 'wiki', 'page:fr')
     attachment.description = "image in page:fr"
     attachment.insert('img.png', io.BytesIO(), 0, 2)

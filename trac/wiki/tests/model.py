@@ -13,13 +13,12 @@
 
 from datetime import datetime
 import io
-import tempfile
 import unittest
 
 from trac.attachment import Attachment
 from trac.core import *
 from trac.resource import Resource
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
@@ -64,8 +63,7 @@ class TestLegacyWikiChangeListener(TestWikiChangeListener):
 class WikiPageTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env = EnvironmentStub(path=mkdtemp())
 
     def tearDown(self):
         self.env.reset_db_and_disk()

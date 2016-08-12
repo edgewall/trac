@@ -13,7 +13,6 @@
 
 import os.path
 import sys
-import tempfile
 import unittest
 from subprocess import PIPE, Popen
 
@@ -21,7 +20,7 @@ from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
@@ -144,7 +143,7 @@ class EnvironmentsTestCase(unittest.TestCase):
     files = ('myfile1', 'myfile2', '.dot_file')
 
     def setUp(self):
-        self.parent_dir = tempfile.mkdtemp(prefix='trac-')
+        self.parent_dir = mkdtemp()
         self.tracignore = os.path.join(self.parent_dir, '.tracignore')
         for dname in self.dirs:
             os.mkdir(os.path.join(self.parent_dir, dname))

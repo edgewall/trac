@@ -12,12 +12,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-import tempfile
 import unittest
 
 from trac.config import ConfigurationError
 from trac.env import Environment
-from trac.test import MockRequest
+from trac.test import MockRequest, mkdtemp
 from trac.tests.compat import rmtree
 from trac.util import translation
 
@@ -25,7 +24,7 @@ from trac.util import translation
 class DatabaseFileTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env_path = mkdtemp()
         self.db_path = os.path.join(self.env_path, 'db', 'trac.db')
 
     def tearDown(self):

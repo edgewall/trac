@@ -13,14 +13,13 @@
 
 from datetime import datetime, timedelta
 import io
-import tempfile
 import unittest
 
 from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import Resource, ResourceNotFound
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Type, Version
 )
@@ -940,7 +939,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env.path = mkdtemp()
         self.created_at = datetime(2001, 1, 1, tzinfo=utc)
         self.updated_at = self.created_at + timedelta(seconds=1)
 

@@ -14,7 +14,6 @@
 from ConfigParser import RawConfigParser
 import os
 import shutil
-import tempfile
 import unittest
 
 from trac import db_default
@@ -22,7 +21,7 @@ from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.env import Environment, IEnvironmentSetupParticipant, \
                      ISystemInfoProvider, open_environment
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -42,7 +41,7 @@ class EnvironmentCreatedWithoutData(Environment):
 class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        env_path = mkdtemp()
         self.env = EnvironmentCreatedWithoutData(env_path, create=True)
 
     def tearDown(self):
@@ -57,7 +56,7 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 class EnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        env_path = mkdtemp()
         self.env = Environment(env_path, create=True)
         self.env.config.set('trac', 'base_url',
                             'http://trac.edgewall.org/some/path')

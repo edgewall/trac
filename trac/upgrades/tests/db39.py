@@ -12,11 +12,9 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import os
-import shutil
-import tempfile
 import unittest
 
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.upgrades import db39
 from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy
@@ -32,7 +30,7 @@ class UpgradeTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.env = EnvironmentStub(path=tempfile.mkdtemp())
+        self.env = EnvironmentStub(path=mkdtemp())
         self.env.config.filename = os.path.join(self.env.path, 'trac.ini')
         AuthzSourcePolicy(self.env)
         RepositoryManager(self.env)

@@ -13,7 +13,6 @@
 
 import io
 import os
-import tempfile
 import unittest
 from datetime import datetime
 
@@ -21,7 +20,7 @@ from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.util.datefmt import utc, to_utimestamp
 from trac.web.api import HTTPBadRequest
 
@@ -56,7 +55,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env.path = mkdtemp()
         self.attachments_dir = os.path.join(self.env.path, 'files',
                                             'attachments')
         self.env.enable_component(TicketOnlyViewsTicket)
@@ -288,7 +287,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
                 return resource.id == 'parent_id'
 
         self.env = EnvironmentStub(enable=(GenericResourceManager,))
-        self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env.path = mkdtemp()
 
     def tearDown(self):
         self.env.reset_db_and_disk()

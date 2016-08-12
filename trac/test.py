@@ -24,6 +24,7 @@ import io
 import os
 import shutil
 import sys
+import tempfile
 import types
 import unittest
 
@@ -477,6 +478,13 @@ class EnvironmentStub(Environment):
         if self._component_name(cls).startswith('__main__.'):
             return True
         return Environment.is_component_enabled(self, cls)
+
+
+def mkdtemp():
+    """Create a temp directory with prefix `trac-tempenv`
+    and return the directory name.
+    """
+    return os.path.realpath(tempfile.mkdtemp(prefix='trac-testdir-'))
 
 
 def locate(fn):

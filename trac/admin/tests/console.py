@@ -21,7 +21,6 @@ import os
 import re
 import shutil
 import sys
-import tempfile
 import unittest
 from subprocess import PIPE, Popen
 
@@ -54,7 +53,7 @@ from trac.admin.console import TracAdmin, TracAdminHelpMacro, _run
 from trac.config import ConfigSection, Option
 from trac.core import Component, ComponentMeta, implements
 from trac.env import Environment
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import format_date, get_date_format_hint, \
@@ -1660,7 +1659,7 @@ class TracAdminComponentTestCase(unittest.TestCase):
 class TracAdminInitenvTestCase(TracAdminTestCaseBase):
 
     def setUp(self):
-        self.parent_dir = tempfile.mkdtemp()
+        self.parent_dir = mkdtemp()
         self.env_path = os.path.join(self.parent_dir, 'trac')
         self._admin = TracAdmin(self.env_path)
 

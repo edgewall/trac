@@ -18,7 +18,8 @@ import unittest
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionSystem
-from trac.test import EnvironmentStub, MockPerm, MockRequest, locale_en
+from trac.test import EnvironmentStub, MockPerm, MockRequest, locale_en, \
+                      mkdtemp
 from trac.tests.contentgen import random_sentence
 from trac.resource import Resource
 from trac.util import create_file
@@ -507,7 +508,7 @@ class ChromeTestCase(unittest.TestCase):
 class ChromeTestCase2(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(path=tempfile.mkdtemp())
+        self.env = EnvironmentStub(path=mkdtemp())
         self.chrome = Chrome(self.env)
 
     def tearDown(self):

@@ -12,10 +12,9 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import os
-import tempfile
 import unittest
 
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, mkdtemp
 from trac.upgrades import db32
 from trac.versioncontrol.api import DbRepositoryProvider, RepositoryManager
 from tracopt.versioncontrol.git.git_fs import GitwebProjectsRepositoryProvider
@@ -26,7 +25,7 @@ VERSION = 32
 class UpgradeTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(path=os.path.realpath(tempfile.mkdtemp()))
+        self.env = EnvironmentStub(path=mkdtemp())
         self.env.config.filename = os.path.join(self.env.path, 'trac.ini')
         self.env.config.set('trac', 'repository_sync_per_request',
                             'repos1, repos3, repos5')

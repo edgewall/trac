@@ -18,11 +18,11 @@ import random
 import re
 import shutil
 import sys
-import tempfile
 import unittest
 
 import trac
 from trac import util
+from trac.test import mkdtemp
 from trac.util.tests import concurrency, datefmt, presentation, text, \
                             translation, html
 
@@ -30,7 +30,7 @@ from trac.util.tests import concurrency, datefmt, presentation, text, \
 class AtomicFileTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.dir = tempfile.mkdtemp()
+        self.dir = mkdtemp()
         self.path = os.path.join(self.dir, 'trac-tempfile')
 
     def tearDown(self):
@@ -281,7 +281,7 @@ class LazyTestCase(unittest.TestCase):
 class FileTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.dir = tempfile.mkdtemp()
+        self.dir = mkdtemp()
         self.filename = os.path.join(self.dir, 'trac-tempfile')
         self.data = 'Lorem\ripsum\ndolor\r\nsit\namet,\rconsectetur\r\n'
 

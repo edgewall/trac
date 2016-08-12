@@ -15,14 +15,13 @@
 import contextlib
 import os
 import shutil
-import tempfile
 import time
 import unittest
 
 from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
-from trac.test import Configuration, EnvironmentStub
+from trac.test import Configuration, EnvironmentStub, mkdtemp
 from trac.util import create_file, read_file
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.datefmt import time_now
@@ -45,7 +44,7 @@ def readlines(filename):
 class UnicodeParserTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
+        self.tempdir = mkdtemp()
         self.filename = os.path.join(self.tempdir, 'config.ini')
         _write(self.filename, [
             u'[ä]', u'öption = ÿ',
@@ -161,9 +160,9 @@ class UnicodeParserTestCase(unittest.TestCase):
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        tmpdir = os.path.realpath(tempfile.gettempdir())
-        self.filename = os.path.join(tmpdir, 'trac-test.ini')
-        self.sitename = os.path.join(tmpdir, 'trac-site.ini')
+        self.tmpdir = mkdtemp()
+        self.filename = os.path.join(self.tmpdir, 'trac-test.ini')
+        self.sitename = os.path.join(self.tmpdir, 'trac-site.ini')
         self.env = EnvironmentStub()
         self._write([])
         self._orig = {
@@ -184,9 +183,7 @@ class BaseTestCase(unittest.TestCase):
         ComponentMeta._registry = self._orig['ComponentMeta._registry']
         ConfigSection.registry = self._orig['ConfigSection.registry']
         Option.registry = self._orig['Option.registry']
-        os.remove(self.filename)
-        if os.path.exists(self.sitename):
-            os.remove(self.sitename)
+        shutil.rmtree(self.tmpdir)
 
     def _read(self):
         return Configuration(self.filename)

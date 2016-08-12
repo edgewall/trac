@@ -15,13 +15,12 @@ import io
 import os
 import sys
 import shutil
-import tempfile
 import unittest
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 
 from trac.core import TracError
-from trac.test import EnvironmentStub, MockRequest, locate
+from trac.test import EnvironmentStub, MockRequest, locate, mkdtemp
 from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
@@ -106,7 +105,7 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
+        self.repos_path = mkdtemp()
         if self.git_bin:
             self.env.config.set('git', 'git_bin', self.git_bin)
 
@@ -969,7 +968,7 @@ class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.projects_base = os.path.realpath(tempfile.mkdtemp())
+        self.projects_base = mkdtemp()
         self.projects_list = os.path.join(self.projects_base, 'projects_list')
         with open(self.projects_list, 'w') as f:
             f.write("""

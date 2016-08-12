@@ -12,13 +12,12 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-import tempfile
 import unittest
 
 from trac.config import ConfigurationError
 from trac.perm import PermissionCache
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, mkdtemp
 from trac.util import create_file
 from trac.versioncontrol.api import Repository
 from tracopt.perm.authz_policy import AuthzPolicy
@@ -27,8 +26,8 @@ from tracopt.perm.authz_policy import AuthzPolicy
 class AuthzPolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        tmpdir = os.path.realpath(tempfile.gettempdir())
-        self.authz_file = os.path.join(tmpdir, 'trac-authz-policy')
+        temp_dir = mkdtemp()
+        self.authz_file = os.path.join(temp_dir, 'trac-authz-policy')
         create_file(self.authz_file, """\
 # -*- coding: utf-8 -*-
 # Unicode user names
@@ -69,7 +68,8 @@ administrators = éat
 @administrators = BROWSER_VIEW, FILE_VIEW
 * =
 """)
-        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy], path=tmpdir)
+        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
+                                   path=temp_dir)
         self.env.config.set('trac', 'permission_policies',
                             'AuthzPolicy, DefaultPermissionPolicy')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)

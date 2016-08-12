@@ -15,14 +15,13 @@ import io
 import os.path
 import shutil
 import sys
-import tempfile
 import unittest
 
 from genshi.builder import tag
 
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp
 from trac.util import as_int, create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
@@ -36,7 +35,7 @@ class RequestHandlerPermissionsTestCaseBase(unittest.TestCase):
     authz_policy = None
 
     def setUp(self, module_class):
-        self.path = tempfile.mkdtemp(prefix='trac-')
+        self.path = mkdtemp()
         if self.authz_policy is not None:
             self.authz_file = os.path.join(self.path, 'authz_policy.conf')
             create_file(self.authz_file, self.authz_policy)
@@ -529,7 +528,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.status = None
         self.headers = None
         self.response = io.BytesIO()
-        self.dir = tempfile.mkdtemp(prefix='trac-')
+        self.dir = mkdtemp()
         self.filename = os.path.join(self.dir, 'test.txt')
         self.data = 'contents\n'
         create_file(self.filename, self.data, 'wb')
