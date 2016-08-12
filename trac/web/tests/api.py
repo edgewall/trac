@@ -99,12 +99,9 @@ def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
 
 class RequestTestCase(unittest.TestCase):
 
-    def _make_environ(self, *args, **kwargs):
-        return _make_environ(*args, **kwargs)
-
     def test_as_bool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
-        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
         req = Request(environ, None)
 
         self.assertIsNone(req.args.as_bool('arg0'))
@@ -119,7 +116,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_as_int(self):
         qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
-        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
         req = Request(environ, None)
 
         self.assertIsNone(req.args.as_int('arg0'))
@@ -137,7 +134,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_getbool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
-        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
         req = Request(environ, None)
 
         self.assertIsNone(req.args.getbool('arg0'))
@@ -153,7 +150,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_getint(self):
         qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
-        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
         req = Request(environ, None)
 
         self.assertIsNone(req.args.getint('arg0'))
@@ -172,61 +169,61 @@ class RequestTestCase(unittest.TestCase):
 
     def test_require(self):
         qs = 'arg1=1'
-        environ = self._make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
         req = Request(environ, None)
 
         self.assertRaises(HTTPBadRequest, req.args.require, 'arg0')
         self.assertIsNone(req.args.require('arg1'))
 
     def test_is_xhr_true(self):
-        environ = self._make_environ(HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        environ = _make_environ(HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         req = Request(environ, None)
         self.assertTrue(req.is_xhr)
 
     def test_is_xhr_false(self):
-        environ = self._make_environ()
+        environ = _make_environ()
         req = Request(environ, None)
         self.assertFalse(req.is_xhr)
 
     def test_base_url(self):
-        environ = self._make_environ()
+        environ = _make_environ()
         req = Request(environ, None)
         self.assertEqual('http://example.org/trac', req.base_url)
 
     def test_base_url_host(self):
-        environ = self._make_environ(server_port=8080, HTTP_HOST='example.com')
+        environ = _make_environ(server_port=8080, HTTP_HOST='example.com')
         req = Request(environ, None)
         self.assertEqual('http://example.com/trac', req.base_url)
 
     def test_base_url_nondefaultport(self):
-        environ = self._make_environ(server_port=8080)
+        environ = _make_environ(server_port=8080)
         req = Request(environ, None)
         self.assertEqual('http://example.org:8080/trac', req.base_url)
 
     def test_base_url_https(self):
-        environ = self._make_environ(scheme='https', server_port=443)
+        environ = _make_environ(scheme='https', server_port=443)
         req = Request(environ, None)
         self.assertEqual('https://example.org/trac', req.base_url)
 
     def test_base_url_https_host(self):
-        environ = self._make_environ(scheme='https', server_port=443,
-                                     HTTP_HOST='example.com')
+        environ = _make_environ(scheme='https', server_port=443,
+                                HTTP_HOST='example.com')
         req = Request(environ, None)
         self.assertEqual('https://example.com/trac', req.base_url)
 
     def test_base_url_https_nondefaultport(self):
-        environ = self._make_environ(scheme='https', server_port=8443)
+        environ = _make_environ(scheme='https', server_port=8443)
         req = Request(environ, None)
         self.assertEqual('https://example.org:8443/trac', req.base_url)
 
     def test_base_url_proxy(self):
-        environ = self._make_environ(HTTP_HOST='localhost',
-                                     HTTP_X_FORWARDED_HOST='example.com')
+        environ = _make_environ(HTTP_HOST='localhost',
+                                HTTP_X_FORWARDED_HOST='example.com')
         req = Request(environ, None)
         self.assertEqual('http://localhost/trac', req.base_url)
 
     def test_languages(self):
-        environ = self._make_environ()
+        environ = _make_environ()
         environ['HTTP_ACCEPT_LANGUAGE'] = 'en-us,en;q=0.5'
         req = Request(environ, None)
         self.assertEqual(['en-us', 'en'], req.languages)
@@ -237,7 +234,7 @@ class RequestTestCase(unittest.TestCase):
         def start_response(status, headers):
             status_sent.append(status)
             headers_sent.update(dict(headers))
-        environ = self._make_environ(method='HEAD')
+        environ = _make_environ(method='HEAD')
         req = Request(environ, start_response)
         req.session = Mock(save=lambda: None)
         self.assertRaises(RequestDone, req.redirect, '/trac/test')
@@ -251,7 +248,7 @@ class RequestTestCase(unittest.TestCase):
         def start_response(status, headers):
             status_sent.append(status)
             headers_sent.update(dict(headers))
-        environ = self._make_environ(method='HEAD')
+        environ = _make_environ(method='HEAD')
         req = Request(environ, start_response,)
         req.session = Mock(save=lambda: None)
         self.assertRaises(RequestDone, req.redirect,
@@ -270,7 +267,7 @@ class RequestTestCase(unittest.TestCase):
             def start_response(status, headers):
                 status_sent.append(status)
                 headers_sent.update(dict(headers))
-            environ = self._make_environ(method='POST', HTTP_USER_AGENT=ua)
+            environ = _make_environ(method='POST', HTTP_USER_AGENT=ua)
             req = Request(environ, start_response,)
             req.session = Mock(save=lambda: None)
             self.assertRaises(RequestDone, req.redirect, url)
@@ -315,7 +312,7 @@ class RequestTestCase(unittest.TestCase):
             buf.write(data)
         def start_response(status, headers):
             return write
-        environ = self._make_environ(method='GET')
+        environ = _make_environ(method='GET')
 
         buf = io.BytesIO()
         req = Request(environ, start_response)
@@ -329,7 +326,7 @@ class RequestTestCase(unittest.TestCase):
             buf.write(data)
         def start_response(status, headers):
             return write
-        environ = self._make_environ(method='HEAD')
+        environ = _make_environ(method='HEAD')
 
         req = Request(environ, start_response)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
@@ -346,7 +343,7 @@ class RequestTestCase(unittest.TestCase):
             baton['status'] = status
             baton['headers'] = headers
             return write
-        environ = self._make_environ(method='GET')
+        environ = _make_environ(method='GET')
 
         def iterable():
             yield 'line1,'
@@ -364,25 +361,25 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual('line1,line2,line3\n', baton['content'].getvalue())
 
     def test_invalid_cookies(self):
-        environ = self._make_environ(HTTP_COOKIE='bad:key=value;')
+        environ = _make_environ(HTTP_COOKIE='bad:key=value;')
         req = Request(environ, None)
         self.assertEqual('', str(req.incookie))
 
     def test_multiple_cookies(self):
-        environ = self._make_environ(HTTP_COOKIE='key=value1; key=value2;')
+        environ = _make_environ(HTTP_COOKIE='key=value1; key=value2;')
         req = Request(environ, None)
         self.assertEqual('Set-Cookie: key=value1',
                          str(req.incookie).rstrip(';'))
 
     def test_read(self):
-        environ = self._make_environ(**{
+        environ = _make_environ(**{
             'wsgi.input': io.BytesIO(b'test input')
         })
         req = Request(environ, None)
         self.assertEqual('test input', req.read())
 
     def test_read_size(self):
-        environ = self._make_environ(**{
+        environ = _make_environ(**{
             'wsgi.input': io.BytesIO(b'test input')
         })
         req = Request(environ, None)
@@ -399,13 +396,13 @@ class RequestTestCase(unittest.TestCase):
             self.fail("HTTPBadRequest not raised.")
 
     def test_qs_with_null_bytes_for_name(self):
-        environ = self._make_environ(method='GET',
-                                     **{'QUERY_STRING': 'acti\x00n=fOO'})
+        environ = _make_environ(method='GET',
+                                **{'QUERY_STRING': 'acti\x00n=fOO'})
         self._test_qs_with_null_bytes(environ)
 
     def test_qs_with_null_bytes_for_value(self):
-        environ = self._make_environ(method='GET',
-                                     **{'QUERY_STRING': 'action=f\x00O'})
+        environ = _make_environ(method='GET',
+                                **{'QUERY_STRING': 'action=f\x00O'})
         self._test_qs_with_null_bytes(environ)
 
     def test_post_with_unnamed_value(self):
@@ -427,7 +424,7 @@ unnamed value\r\n\
 """
         form_data %= {'boundary': boundary}
         content_type = 'multipart/form-data; boundary="%s"' % boundary
-        environ = self._make_environ(method='POST', **{
+        environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
             'CONTENT_LENGTH': str(len(form_data)),
             'CONTENT_TYPE': content_type
@@ -443,7 +440,7 @@ unnamed value\r\n\
         content_type = b'multipart/form-data; boundary="%s"' % boundary
         form_data %= {'boundary': boundary}
 
-        environ = self._make_environ(method='POST', **{
+        environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
             'CONTENT_LENGTH': str(len(form_data)),
             'CONTENT_TYPE': content_type
@@ -498,11 +495,11 @@ ne\x00w\r\n\
         """Make sure req.args parsing is consistent even after the backwards
         incompatible change introduced in Python 2.6.
         """
-        environ = self._make_environ(method='GET',
-                                     **{'QUERY_STRING': 'action=foo'})
+        environ = _make_environ(method='GET',
+                                **{'QUERY_STRING': 'action=foo'})
         req = Request(environ, None)
         self.assertEqual('foo', req.args['action'])
-        environ = self._make_environ(method='POST', **{
+        environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(b'action=bar'),
             'CONTENT_LENGTH': '10',
             'CONTENT_TYPE': 'application/x-www-form-urlencoded',
@@ -512,12 +509,12 @@ ne\x00w\r\n\
         self.assertEqual('bar', req.args['action'])
 
     def test_qs_invalid_value_bytes(self):
-        environ = self._make_environ(**{'QUERY_STRING': 'name=%FF'})
+        environ = _make_environ(**{'QUERY_STRING': 'name=%FF'})
         req = Request(environ, None)
         self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
 
     def test_qs_invalid_name_bytes(self):
-        environ = self._make_environ(**{'QUERY_STRING': '%FF=value'})
+        environ = _make_environ(**{'QUERY_STRING': '%FF=value'})
         req = Request(environ, None)
         self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
 
