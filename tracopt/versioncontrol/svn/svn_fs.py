@@ -64,7 +64,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
 from trac.versioncontrol.cache import CachedRepository
 from trac.util import embedded_numbers
 from trac.util.concurrency import threading
-from trac.util.text import exception_to_unicode, to_unicode
+from trac.util.text import exception_to_unicode, to_unicode, to_utf8
 from trac.util.translation import _
 from trac.util.datefmt import from_utimestamp, to_datetime, utc
 from trac.web.href import Href
@@ -1218,8 +1218,8 @@ class FileContentStream(object):
 
         node = self.node
         mtime = to_datetime(node.last_modified, utc)
-        shortdate = mtime.strftime('%Y-%m-%d %H:%M:%SZ')
-        longdate = mtime.strftime('%Y-%m-%d %H:%M:%S +0000 (%a, %d %b %Y)')
+        shortdate = self._format_shortdate(mtime)
+        longdate = self._format_longdate(mtime)
         created_rev = unicode(node.created_rev)
         # Note that the `to_unicode` has a small probability to mess-up binary
         # properties, see #4321.
@@ -1254,7 +1254,7 @@ class FileContentStream(object):
                 values[name] = self.KEYWORD_EXPAND_RE.sub(expand, definition)
 
         if values:
-            return dict((key, value.encode('utf-8'))
+            return dict((key, to_utf8(value))
                         for key, value in values.iteritems())
         else:
             return None
@@ -1272,6 +1272,17 @@ class FileContentStream(object):
                 re.VERBOSE)
         else:
             return None
+
+    def _format_shortdate(self, mtime):
+        return mtime.strftime('%Y-%m-%d %H:%M:%SZ')
+
+    def _format_longdate(self, mtime):
+        text = mtime.strftime('%Y-%m-%d %H:%M:%S +0000 (%%(a)s, %d %%(b)s %Y)')
+        weekdays = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
+        months = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+        return text % {'a': weekdays[mtime.weekday()],
+                       'b': months[mtime.month - 1]}
 
     def _read_dumb(self, stream, n):
         return stream.read(n)
