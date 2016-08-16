@@ -16,6 +16,7 @@
 
 from datetime import datetime
 import io
+import locale
 import new
 import os.path
 import unittest
@@ -54,6 +55,50 @@ NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
 def _create_context(env):
     req = MockRequest(env)
     return web_context(req)
+
+
+def setlocale(*locales):
+    """Decorator to call test method with each locale.
+    """
+    if os.name != 'nt':
+        locales_map = {'de': 'de_DE.UTF8', 'fr': 'fr_FR.UTF8',
+                       'pl': 'pl_PL.UTF8', 'ja': 'ja_JP.UTF8',
+                       'zh_CN': 'zh_CN.UTF8'}
+    else:
+        locales_map = {'de': 'German_Germany', 'fr': 'French_France',
+                       'pl': 'Polish_Poland', 'ja': 'Japanese_Japan',
+                       'zh_CN': "Chinese_People's Republic of China"}
+    locales_map['C'] = 'C'
+
+    def getlocale():
+        rv = locale.getlocale(locale.LC_ALL)
+        return rv if rv[0] else 'C'
+
+    def setlocale(locale_id):
+        locale_id = locales_map[locale_id]
+        try:
+            locale.setlocale(locale.LC_ALL, locale_id)
+            return True
+        except locale.Error:
+            return False
+
+    def wrap(fn, locales):
+        def wrapped(*args, **kwargs):
+            saved_locale = getlocale()
+            try:
+                for locale_id in locales:
+                    if setlocale(locale_id):
+                        fn(*args, **kwargs)
+            finally:
+                locale.setlocale(locale.LC_ALL, saved_locale)
+        return wrapped
+
+    if len(locales) == 1 and hasattr(locales[0], '__call__'):
+        return wrap(locales[0], sorted(locales_map))
+    else:
+        def decorator(fn):
+            return wrap(fn, locales)
+        return decorator
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -346,6 +391,7 @@ Now with fixed width fields:
 En r\xe9sum\xe9 ... \xe7a marche.
 '''.splitlines(), f.get_processed_content().read().splitlines())
 
+    @setlocale
     def test_get_file_content_with_keyword_substitution_25(self):
         f = self.repos.get_node(u'/tête/Résumé.txt', 25)
         props = f.get_properties()
@@ -367,6 +413,7 @@ Now with fixed width fields:
 En r\xe9sum\xe9 ... \xe7a marche.
 '''.splitlines(), f.get_processed_content().read().splitlines())
 
+    @setlocale
     def test_get_file_content_with_keyword_substitution_30(self):
         self.maxDiff = None
         f = self.repos.get_node(u'/branches/v4/Résumé.txt', 30)
