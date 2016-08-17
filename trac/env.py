@@ -33,7 +33,6 @@ from trac.core import Component, ComponentManager, implements, Interface, \
 from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager)
 from trac.loader import load_components
-from trac.log import logger_handler_factory
 from trac.util import as_bool, copytree, create_file, get_pkginfo, lazy, \
                       makedirs, read_file
 from trac.util.concurrency import threading
@@ -657,7 +656,7 @@ class Environment(Component, ComponentManager):
                            .replace('%(path)s', self.path) \
                            .replace('%(basename)s', self.name) \
                            .replace('%(project)s', self.project_name)
-        self.log, self._log_handler = logger_handler_factory(
+        self.log, self._log_handler = log.logger_handler_factory(
             logtype, logfile, self.log_level, logid, format=format)
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       self.trac_version)
