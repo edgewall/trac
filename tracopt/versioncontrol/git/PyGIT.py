@@ -12,16 +12,16 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import codecs
+import contextlib
 import io
 import os
-import codecs
-from collections import deque
-from contextlib import contextmanager
-from functools import partial
 import re
+import weakref
+from collections import deque
+from functools import partial
 from subprocess import Popen, PIPE
 from threading import Lock
-import weakref
 
 from trac.core import TracBaseError
 from trac.util import terminate
@@ -902,7 +902,7 @@ class Storage(object):
         with self.__rev_cache_lock:
             return self._refresh_rev_cache(force=True)
 
-    @contextmanager
+    @contextlib.contextmanager
     def get_historian(self, sha, base_path):
         p = []
         change = {}
