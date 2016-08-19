@@ -598,7 +598,7 @@ class Content(object):
         if size == 0:
             return ''
         if self.content is None:
-            self.content = io.StringIO(self.input.read(self.max_size))
+            self.content = io.BytesIO(self.input.read(self.max_size))
         return self.content.read(size)
 
     def reset(self):

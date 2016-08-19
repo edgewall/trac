@@ -22,8 +22,9 @@ from genshi.input import HTMLParser
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, MockRequest
 from trac.mimeview import api
-from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
-                              _group_lines
+from trac.mimeview.api import IContentConverter, Mimeview, RenderingContext, \
+                              get_mimetype, _group_lines
+from trac.resource import Resource
 from trac.web.api import RequestDone
 
 
@@ -327,6 +328,28 @@ class MimeviewConverterTestCase(unittest.TestCase):
         self._test_send_converted('Ü' * 0x10000, 'unicode', True)
 
 
+class MimeviewRenderTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_plain_text_content(self):
+        """Render simple plain text content."""
+        mimeview = Mimeview(self.env)
+        req = MockRequest(self.env)
+        context = RenderingContext(Resource('wiki', 'readme.txt'))
+        context.req = req
+        content = io.BytesIO("""\
+Some text.
+""")
+
+        rendered = mimeview.render(context, 'text/plain', content)
+
+        self.assertEqual('<div class="code"><pre>Some text.\n</pre></div>',
+                         str(rendered))
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(api))
@@ -334,6 +357,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(MimeviewTestCase))
     suite.addTest(unittest.makeSuite(GroupLinesTestCase))
     suite.addTest(unittest.makeSuite(MimeviewConverterTestCase))
+    suite.addTest(unittest.makeSuite(MimeviewRenderTestCase))
     return suite
 
 if __name__ == '__main__':
