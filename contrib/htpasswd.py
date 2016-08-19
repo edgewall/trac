@@ -13,18 +13,27 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import argparse
 import getpass
-import optparse
 import sys
 
 from trac.util import salt
 from trac.util.compat import crypt, wait_for_file_mtime_change
-from trac.util.text import printerr, printout
+from trac.util.text import printerr
 
 if crypt is None:
     printerr("The crypt module is not found. Install the passlib package "
              "from PyPI.", newline=True)
     sys.exit(1)
+
+
+def ask_pass():
+    pass1 = getpass.getpass('New password: ')
+    pass2 = getpass.getpass('Re-type new password: ')
+    if pass1 != pass2:
+        printerr("htpasswd: password verification error")
+        sys.exit(1)
+    return pass1
 
 
 class HtpasswdFile(object):
@@ -70,65 +79,49 @@ class HtpasswdFile(object):
 
 def main():
     """
-        %prog [-c] filename username
-        %prog -b[c] filename username password
-        %prog -D filename username
+    %(prog)s [-c] passwordfile username
+    %(prog)s -b[c] passwordfile username password
+    %(prog)s -D passwordfile username\
     """
-    # For now, we only care about the use cases that affect tests/functional.py
-    parser = optparse.OptionParser(usage=main.__doc__)
-    parser.add_option('-b', action='store_true', dest='batch', default=False,
-        help='Batch mode; password is passed on the command line IN THE CLEAR.'
-        )
-    parser.add_option('-c', action='store_true', dest='create', default=False,
-        help='Create a new htpasswd file, overwriting any existing file.')
-    parser.add_option('-D', action='store_true', dest='delete_user',
-        default=False, help='Remove the given user from the password file.')
 
-    if len(sys.argv) <= 1:
-        parser.print_help()
-        sys.exit(1)
+    parser = argparse.ArgumentParser(usage=main.__doc__)
+    parser.add_argument('-b', action='store_true', dest='batch',
+                        help="batch mode; password is passed on the command "
+                             "line IN THE CLEAR")
+    parser_group = parser.add_mutually_exclusive_group()
+    parser_group.add_argument('-c', action='store_true', dest='create',
+                              help="create a new htpasswd file, overwriting "
+                                   "any existing file")
+    parser_group.add_argument('-D', action='store_true', dest='delete_user',
+                              help="remove the given user from the password "
+                                   "file")
+    parser.add_argument('passwordfile', help=argparse.SUPPRESS)
+    parser.add_argument('username', help=argparse.SUPPRESS)
+    parser.add_argument('password', nargs='?', help=argparse.SUPPRESS)
 
-    options, args = parser.parse_args()
-
-    def syntax_error(msg):
-        """Utility function for displaying fatal error messages with usage
-        help.
-        """
-        printerr("Syntax error: " + msg, newline=True)
-        printerr(parser.format_help(), newline=True)
-        sys.exit(1)
-
-    # Non-option arguments
-    if len(args) < 2:
-        syntax_error("Insufficient number of arguments.\n")
-    filename, username = args[:2]
-    password = None
-    if options.delete_user:
-        if len(args) != 2:
-            syntax_error("Incorrect number of arguments.\n")
+    args = parser.parse_args()
+    password = args.password
+    if args.delete_user:
+        if password is not None:
+            parser.error("too many arguments")
     else:
-        if len(args) == 3 and options.batch:
-            password = args[2]
-        elif len(args) == 2 and not options.batch:
-            first = getpass.getpass("New password:")
-            second = getpass.getpass("Re-type new password:")
-            if first == second:
-                password = first
-            else:
-                printout("htpasswd: password verification error")
-                return
-        else:
-            syntax_error("Incorrect number of arguments.\n")
+        if args.batch and password is None:
+            parser.error("too few arguments")
+        elif not args.batch and password is not None:
+            parser.error("too many arguments")
 
     try:
-        passwdfile = HtpasswdFile(filename, create=options.create)
-    except IOError:
-        syntax_error("File not found.\n")
+        passwdfile = HtpasswdFile(args.passwordfile, create=args.create)
+    except EnvironmentError:
+        printerr("File not found.")
+        sys.exit(1)
     else:
-        if options.delete_user:
-            passwdfile.delete(username)
+        if args.delete_user:
+            passwdfile.delete(args.username)
         else:
-            passwdfile.update(username, password)
+            if password is None:
+                password = ask_pass()
+            passwdfile.update(args.username, password)
         passwdfile.save()
 
 

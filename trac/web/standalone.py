@@ -21,14 +21,17 @@
 
 from __future__ import print_function
 
-import pkg_resources
+import argparse
+import functools
 import os
+import pkg_resources
 import socket
 import sys
 from SocketServer import ThreadingMixIn
 
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
+from trac.util.text import printerr
 from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
@@ -114,169 +117,186 @@ class TracHTTP11RequestHandler(TracHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
 
 
-def main():
-    from optparse import OptionParser, OptionValueError
-    parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
-                          version='%%prog %s' % VERSION)
+def parse_args(args=None):
+    parser = argparse.ArgumentParser()
 
-    auths = {}
-    def _auth_callback(option, opt_str, value, parser, cls):
-        info = value.split(',', 3)
-        if len(info) != 3:
-            raise OptionValueError("Incorrect number of parameters for %s"
-                                   % option)
+    class _AuthAction(argparse.Action):
 
-        env_name, filename, realm = info
-        if env_name in auths:
-            print('Ignoring duplicate authentication option for project: %s'
-                  % env_name, file=sys.stderr)
-        else:
-            auths[env_name] = cls(os.path.abspath(filename), realm)
+        def __init__(self, option_strings, dest, nargs=None, **kwargs):
+            self.cls = kwargs.pop('cls')
+            super(_AuthAction, self).__init__(option_strings, dest, nargs,
+                                              **kwargs)
 
-    def _validate_callback(option, opt_str, value, parser, valid_values):
-        if value not in valid_values:
-            raise OptionValueError('%s must be one of: %s, not %s'
-                                   % (opt_str, '|'.join(valid_values), value))
-        setattr(parser.values, option.dest, value)
+        def __call__(self, parser, namespace, values, option_string=None):
+            info = values.split(',')
+            if len(info) != 3:
+                raise argparse.ArgumentError(self,
+                                             "Incorrect number of parameters")
+            env_name, filename, realm = info
+            filepath = os.path.abspath(filename)
+            auths = getattr(namespace, self.dest)
+            if env_name in auths:
+                printerr("Ignoring duplicate authentication option for "
+                         "project: %s" % env_name)
+            else:
+                auths.update({env_name: self.cls(filepath, realm)})
+                setattr(namespace, self.dest, auths)
 
-    def _octal(option, opt_str, value, parser):
-        try:
-            setattr(parser.values, option.dest, int(value, 8))
-        except ValueError:
-            raise OptionValueError('Invalid octal umask value: %r' % value)
+    class _PathAction(argparse.Action):
 
-    parser.add_option('-a', '--auth', action='callback', type='string',
-                      metavar='DIGESTAUTH', callback=_auth_callback,
-                      callback_args=(DigestAuthentication,),
-                      help='[projectdir],[htdigest_file],[realm]')
-    parser.add_option('--basic-auth', action='callback', type='string',
-                      metavar='BASICAUTH', callback=_auth_callback,
-                      callback_args=(BasicAuthentication,),
-                      help='[projectdir],[htpasswd_file],[realm]')
+        def __call__(self, parser, namespace, values, option_string=None):
+            if isinstance(values, list):
+                paths = [os.path.abspath(paths) for paths in values]
+            else:
+                paths = os.path.abspath(values)
+            setattr(namespace, self.dest, paths)
 
-    parser.add_option('-p', '--port', action='store', type='int', dest='port',
-                      help='the port number to bind to')
-    parser.add_option('-b', '--hostname', action='store', dest='hostname',
-                      help='the host name or IP address to bind to')
-    parser.add_option('--protocol', action='callback', type="string",
-                      dest='protocol', callback=_validate_callback,
-                      callback_args=(('http', 'scgi', 'ajp', 'fcgi'),),
-                      help='http|scgi|ajp|fcgi')
-    parser.add_option('-q', '--unquote', action='store_true',
-                      dest='unquote',
-                      help='unquote PATH_INFO (may be needed when using ajp)')
-    parser.add_option('--http10', action='store_false', dest='http11',
-                      help='use HTTP/1.0 protocol version instead of HTTP/1.1')
-    parser.add_option('--http11', action='store_true', dest='http11',
-                      help='use HTTP/1.1 protocol version (default)')
-    parser.add_option('-e', '--env-parent-dir', action='store',
-                      dest='env_parent_dir', metavar='PARENTDIR',
-                      help='parent directory of the project environments')
-    parser.add_option('--base-path', action='store', type='string', # XXX call this url_base_path?
-                      dest='base_path',
-                      help='the initial portion of the request URL\'s "path"')
+    parser.add_argument('--version', action='version',
+                        version='%%(prog)s %s' % VERSION)
+    parser.add_argument('envs', action=_PathAction, nargs='*',
+                        help="path of the project environment(s)")
 
-    parser.add_option('-r', '--auto-reload', action='store_true',
-                      dest='autoreload',
-                      help='restart automatically when sources are modified')
+    parser_group = parser.add_mutually_exclusive_group()
+    parser_group.add_argument('-e', '--env-parent-dir', action=_PathAction,
+                              metavar='PARENTDIR',
+                              help="parent directory of the project "
+                                   "environments")
+    parser_group.add_argument('-s', '--single-env', action='store_true',
+                              help="only serve a single project without the "
+                                   "project list")
 
-    parser.add_option('-s', '--single-env', action='store_true',
-                      dest='single_env', help='only serve a single '
-                      'project without the project list', default=False)
+    parser_group = parser.add_mutually_exclusive_group()
+    parser_group.add_argument('-a', '--auth', default={},
+                              metavar='DIGESTAUTH', dest='auths',
+                              action=_AuthAction, cls=DigestAuthentication,
+                              help="[projectdir],[htdigest_file],[realm]")
+    parser_group.add_argument('--basic-auth', default={},
+                              metavar='BASICAUTH', dest='auths',
+                              action=_AuthAction, cls=BasicAuthentication,
+                              help="[projectdir],[htpasswd_file],[realm]")
+
+    parser.add_argument('-p', '--port', type=int,
+                        help="the port number to bind to")
+    parser.add_argument('-b', '--hostname', default='',
+                        help="the host name or IP address to bind to")
+    parser.add_argument('--protocol', default='http',
+                        choices=('http', 'scgi', 'ajp', 'fcgi'),
+                        help="the server protocol (default: http)")
+    parser.add_argument('-q', '--unquote', action='store_true',
+                        help="unquote PATH_INFO (may be needed when using "
+                             "the ajp protocol)")
+    parser.add_argument('--base-path', default='',  # XXX call this url_base_path?
+                        help="the initial portion of the request URL's "
+                             "\"path\"")
+
+    parser_group = parser.add_mutually_exclusive_group()
+    parser_group.add_argument('--http10', action='store_false', dest='http11',
+                              help="use HTTP/1.0 protocol instead of "
+                                   "HTTP/1.1")
+    parser_group.add_argument('--http11', action='store_true', default=True,
+                              help="use HTTP/1.1 protocol (default)")
 
     if os.name == 'posix':
-        parser.add_option('-d', '--daemonize', action='store_true',
-                          dest='daemonize',
-                          help='run in the background as a daemon')
-        parser.add_option('--pidfile', action='store',
-                          dest='pidfile',
-                          help='when daemonizing, file to which to write pid')
-        parser.add_option('--umask', action='callback', type='string',
-                          dest='umask', metavar='MASK', callback=_octal,
-                          help='when daemonizing, file mode creation mask '
-                          'to use, in octal notation (default 022)')
+        class _GroupAction(argparse.Action):
 
-        try:
-            import grp, pwd
-
-            def _group(option, opt_str, value, parser):
+            def __call__(self, parser, namespace, values, option_string=None):
+                import grp
                 try:
-                    value = int(value)
+                    value = int(values)
                 except ValueError:
                     try:
-                        value = grp.getgrnam(value)[2]
+                        value = grp.getgrnam(values)[2]
                     except KeyError:
-                        raise OptionValueError('group not found: %r' % value)
-                setattr(parser.values, option.dest, value)
+                        raise argparse.ArgumentError(self, "group not found: "
+                                                           "%r" % values)
+                setattr(namespace, self.dest, value)
 
-            def _user(option, opt_str, value, parser):
+        class _UserAction(argparse.Action):
+
+            def __call__(self, parser, namespace, values, option_string=None):
+                import pwd
                 try:
-                    value = int(value)
+                    value = int(values)
                 except ValueError:
                     try:
-                        value = pwd.getpwnam(value)[2]
+                        value = pwd.getpwnam(values)[2]
                     except KeyError:
-                        raise OptionValueError('user not found: %r' % value)
-                setattr(parser.values, option.dest, value)
+                        raise argparse.ArgumentError(self, "user not found: "
+                                                           "%r" % values)
+                setattr(namespace, self.dest, value)
 
-            parser.add_option('--group', action='callback', type='string',
-                              dest='group', metavar='GROUP', callback=_group,
-                              help='the group to run as')
-            parser.add_option('--user', action='callback', type='string',
-                              dest='user', metavar='USER', callback=_user,
-                              help='the user to run as')
-        except ImportError:
-            pass
+        class _OctalValueAction(argparse.Action):
 
-    parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
-                        protocol='http', http11=True, umask=022, user=None,
-                        group=None)
-    options, args = parser.parse_args()
+            octal = functools.partial(int, base=8)
 
-    if not args and not options.env_parent_dir:
-        parser.error('either the --env-parent-dir option or at least one '
-                     'environment must be specified')
-    if options.single_env:
-        if options.env_parent_dir:
-            parser.error('the --single-env option cannot be used with '
-                         '--env-parent-dir')
-        elif len(args) > 1:
-            parser.error('the --single-env option cannot be used with '
-                         'more than one enviroment')
-    if options.daemonize and options.autoreload:
-        parser.error('the --auto-reload option cannot be used with '
-                     '--daemonize')
+            def __call__(self, parser, namespace, values, option_string=None):
+                try:
+                    value = self.octal(values)
+                except ValueError:
+                    raise argparse.ArgumentError(self, "Invalid octal umask "
+                                                       "value: %r" % values)
+                setattr(namespace, self.dest, value)
 
-    if options.port is None:
-        options.port = {
+        parser_group = parser.add_mutually_exclusive_group()
+        parser_group.add_argument('-r', '--auto-reload', action='store_true',
+                                  help="restart automatically when sources "
+                                       "are modified")
+        parser_group.add_argument('-d', '--daemonize', action='store_true',
+                                  help="run in the background as a daemon")
+        parser.add_argument('--pidfile', action=_PathAction,
+                            help="file to write pid when daemonizing")
+        parser.add_argument('--umask', action=_OctalValueAction,
+                            default=0o022, metavar='MASK',
+                            help="when daemonizing, file mode creation mask "
+                                 "to use, in octal notation (default: 022)")
+        parser.add_argument('--group', action=_GroupAction,
+                            help="the group to run as")
+        parser.add_argument('--user', action=_UserAction,
+                            help="the user to run as")
+    else:
+        parser.add_argument('-r', '--auto-reload', action='store_true',
+                            help="restart automatically when sources are "
+                                 "modified")
+
+    parser.set_defaults(daemonize=False, user=None, group=None)
+    args = parser.parse_args(args)
+
+    if not args.env_parent_dir and not args.envs:
+        parser.error("either the --env-parent-dir (-e) option or at least "
+                     "one environment must be specified")
+    if args.single_env and len(args.envs) > 1:
+        parser.error("the --single-env (-s) option cannot be used with more "
+                     "than one environment")
+
+    if args.port is None:
+        args.port = {
             'http': 80,
             'scgi': 4000,
             'ajp': 8009,
             'fcgi': 8000,
-        }[options.protocol]
-    server_address = (options.hostname, options.port)
+        }[args.protocol]
 
-    # relative paths don't work when daemonized
-    args = [os.path.abspath(a) for a in args]
-    if options.env_parent_dir:
-        options.env_parent_dir = os.path.abspath(options.env_parent_dir)
-    if parser.has_option('pidfile') and options.pidfile:
-        options.pidfile = os.path.abspath(options.pidfile)
+    return args
 
-    wsgi_app = TracEnvironMiddleware(dispatch_request,
-                                     options.env_parent_dir, args,
-                                     options.single_env)
-    if auths:
-        if options.single_env:
-            project_name = os.path.basename(args[0])
-            wsgi_app = AuthenticationMiddleware(wsgi_app, auths, project_name)
+
+def main():
+    args = parse_args()
+
+    wsgi_app = TracEnvironMiddleware(dispatch_request, args.env_parent_dir,
+                                     args.envs, args.single_env)
+    if args.auths:
+        if args.single_env:
+            project_name = os.path.basename(args.envs[0])
+            wsgi_app = AuthenticationMiddleware(wsgi_app, args.auths,
+                                                project_name)
         else:
-            wsgi_app = AuthenticationMiddleware(wsgi_app, auths)
-    base_path = options.base_path.strip('/')
+            wsgi_app = AuthenticationMiddleware(wsgi_app, args.auths)
+    base_path = args.base_path.strip('/')
     if base_path:
         wsgi_app = BasePathMiddleware(wsgi_app, base_path)
 
-    if options.protocol == 'http':
+    server_address = (args.hostname, args.port)
+    if args.protocol == 'http':
         def serve():
             addr, port = server_address
             if not addr or addr == '0.0.0.0':
@@ -287,8 +307,8 @@ def main():
 
             try:
                 httpd = TracHTTPServer(server_address, wsgi_app,
-                                       options.env_parent_dir, args,
-                                       use_http_11=options.http11)
+                                       args.env_parent_dir, args.envs,
+                                       use_http_11=args.http11)
             except socket.error as e:
                 print("Error starting Trac server on %s" % loc)
                 print("[Errno %s] %s" % e.args)
@@ -296,39 +316,38 @@ def main():
 
             print("Server starting in PID %s." % os.getpid())
             print("Serving on %s" % loc)
-            if options.http11:
+            if args.http11:
                 print("Using HTTP/1.1 protocol version")
             httpd.serve_forever()
-    elif options.protocol in ('scgi', 'ajp', 'fcgi'):
+    elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
-            server_cls = __import__('flup.server.%s' % options.protocol,
+            server_cls = __import__('flup.server.%s' % args.protocol,
                                     None, None, ['']).WSGIServer
             flup_app = wsgi_app
-            if options.unquote:
+            if args.unquote:
                 from trac.web.fcgi_frontend import FlupMiddleware
                 flup_app = FlupMiddleware(flup_app)
             ret = server_cls(flup_app, bindAddress=server_address).run()
-            sys.exit(42 if ret else 0) # if SIGHUP exit with status 42
+            sys.exit(42 if ret else 0)  # if SIGHUP exit with status 42
 
     try:
-        if options.daemonize:
-            daemon.daemonize(pidfile=options.pidfile, progname='tracd',
-                             umask=options.umask)
-        if options.group is not None:
-            os.setgid(options.group)
-        if options.user is not None:
-            os.setuid(options.user)
+        if args.daemonize:
+            daemon.daemonize(pidfile=args.pidfile, progname='tracd',
+                             umask=args.umask)
+        if args.group is not None:
+            os.setgid(args.group)
+        if args.user is not None:
+            os.setuid(args.user)
 
-        if options.autoreload:
+        if args.auto_reload:
             def modification_callback(file):
-                print("Detected modification of %s, restarting." % file,
-                      file=sys.stderr)
+                printerr("Detected modification of %s, restarting." % file)
             autoreload.main(serve, modification_callback)
         else:
             serve()
 
     except OSError as e:
-        print("%s: %s" % (e.__class__.__name__, e), file=sys.stderr)
+        printerr("%s: %s" % (e.__class__.__name__, e))
         sys.exit(1)
     except KeyboardInterrupt:
         pass

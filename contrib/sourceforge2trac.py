@@ -85,7 +85,7 @@ history:imported only for summary, priority. closed date and owner fields
 severities:no field in source data
 """
 
-import optparse
+import argparse
 import sys
 import time
 from xml.etree.ElementTree import ElementTree
@@ -512,7 +512,7 @@ class TracDatabase(object):
                   """, (ticket, time, author, field, oldvalue, newvalue))
 
 
-def importData(f, env, opt):
+def importData(f, env):
     project = ExportedProjectData(f)
     trackers = project.trackers
 
@@ -695,15 +695,15 @@ def importData(f, env, opt):
 
 
 def main():
-    p = optparse.OptionParser(
-            "Usage: %prog xml_export.xml /path/to/trac/environment")
-    opt, args = p.parse_args()
-    if len(args) != 2:
-        p.error("Incorrect number of arguments")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help="XML export file from sourceforge")
+    parser.add_argument('environment', help="path to Trac environment")
+    args = parser.parse_args()
 
     try:
-        importData(open(args[0]), args[1], opt)
-    except DBNotEmpty as e:
+        with open(args.filename, 'r') as f:
+            importData(f, args.environment)
+    except Exception as e:
         printerr("Error: %s" % e)
         sys.exit(1)
 

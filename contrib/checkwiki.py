@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import argparse
 import os
 import sys
 from pkg_resources import resource_listdir, resource_string
@@ -114,16 +115,24 @@ class DummyIO(object):
         pass
 
 
-def parse_args():
-    from optparse import OptionParser
-    parser = OptionParser(usage='Usage: %prog [options] [PAGES...]')
-    parser.add_option('-d', '--download', dest='download', default=False,
-                      action='store_true',
-                      help='Download default pages from trac.edgewall.org '
-                           'before checking')
-    parser.add_option('-p', '--prefix', dest='prefix', default='',
-                      help='Prepend "prefix/" to the page when downloading')
-    return parser.parse_args()
+def parse_args(all_pages):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--download', action='store_true',
+                        help="download default pages from trac.edgewall.org "
+                             "before checking")
+    parser.add_argument('-p', '--prefix', default='',
+                        help="prepend PREFIX/ to the page name when "
+                             "downloading")
+    parser.add_argument('pages', metavar='page', nargs='*',
+                        help="the wiki page(s) to download and/or check")
+
+    args = parser.parse_args()
+    if args.pages:
+        for page in args.pages:
+            if page not in all_pages:
+                parser.error("%s is not one of the default pages." % page)
+
+    return args
 
 
 def download_default_pages(names, prefix):
@@ -156,22 +165,22 @@ def download_default_pages(names, prefix):
 
 
 def main():
-    options, args = parse_args()
-    names = sorted(name for name in resource_listdir('trac.wiki',
-                                                     'default-pages')
-                        if not name.startswith('.'))
-    if args:
-        args = sorted(set(names) & set(map(os.path.basename, args)))
+    all_pages = sorted(name for name
+                            in resource_listdir('trac.wiki', 'default-pages')
+                            if not name.startswith('.'))
+    args = parse_args(all_pages)
+    if args.pages:
+        pages = sorted(args.pages)
     else:
-        args = names
+        pages = all_pages
 
-    if options.download:
-        download_default_pages(args, options.prefix)
+    if args.download:
+        download_default_pages(pages, args.prefix)
 
     env = EnvironmentStub(disable=['trac.mimeview.pygments.*'])
     load_components(env)
     with env.db_transaction:
-        for name in names:
+        for name in all_pages:
             wiki = WikiPage(env, name)
             wiki.text = resource_string('trac.wiki', 'default-pages/' +
                                         name).decode('utf-8')
@@ -182,7 +191,7 @@ def main():
 
     req = Mock(href=Href('/'), abs_href=Href('http://localhost/'),
                perm=MockPerm())
-    for name in args:
+    for name in pages:
         wiki = WikiPage(env, name)
         if not wiki.exists:
             continue
