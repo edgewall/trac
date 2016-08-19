@@ -4,24 +4,24 @@ addons:
   apt:
     packages:
       - python-subversion
+cache:
+  directories:
+    - "$HOME/.cache/pip"
+    - "$HOME/.pyenv"
 matrix:
   include:
     - os: linux
       python: "2.7_with_system_site_packages"
       env: tracdb=
-      cache: {pip: true}
     - os: linux
       python: "2.7_with_system_site_packages"
       env: tracdb=sqlite
-      cache: {pip: true}
     - os: linux
       python: "2.7_with_system_site_packages"
       env: tracdb=postgres
-      cache: {pip: true}
     - os: linux
       python: "2.7_with_system_site_packages"
       env: tracdb=mysql
-      cache: {pip: true}
     - os: osx
       language: generic
       env: pyver=2.7.12 tracdb=
@@ -66,6 +66,12 @@ before_install:
       brew outdated pyenv || brew upgrade --quiet pyenv
       pyenv install -ks $pyver
       pyenv global $pyver
+      mkdir $HOME/venv-bin
+      pip install -t $HOME/venv-bin virtualenv
+      PYTHONPATH=$HOME/venv-bin python -m virtualenv $HOME/venv
+      source $HOME/venv/bin/activate
+      python --version
+      pip --version
     fi
 install:
   - pip install --upgrade pip
