@@ -373,10 +373,7 @@ class EnvironmentStub(Environment):
         tables = []
         dbm = DatabaseManager(self)
         try:
-            with self.db_transaction as db:
-                db.rollback()  # make sure there's no transaction in progress
-                # check database version
-                db_version = dbm.get_database_version()
+            db_version = dbm.get_database_version()
         except (TracError, self.db_exc.DatabaseError):
             pass
         else:
@@ -389,7 +386,7 @@ class EnvironmentStub(Environment):
 
         if not tables:
             dbm.init_db()
-            # we need to make sure the next get_db_cnx() will re-create
+            # Make sure the next db_query()/db_transaction() will create
             # a new connection aware of the new data model - see #8518.
             if self.dburi != 'sqlite::memory:':
                 dbm.shutdown()
