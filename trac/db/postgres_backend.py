@@ -204,11 +204,8 @@ class PostgreSQLConnector(Component):
                 args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
-            # Need quote for -n (--schema) option in PostgreSQL 8.2+
-            if re.search(r' 8\.[01]\.', self._version()):
-                args.extend(['-n', db_params['schema']])
-            else:
-                args.extend(['-n', '"%s"' % db_params['schema']])
+            # Need quote for -n (--schema) option
+            args.extend(['-n', '"%s"' % db_params['schema']])
 
         dest_file += ".gz"
         args.extend(['-f', dest_file, db_name])
@@ -279,28 +276,12 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         return '||'.join(args)
 
     def drop_column(self, table, column):
-        if (self._version or '').startswith('8.'):
-            if column in self.get_column_names(table):
-                self.execute("""
-                    ALTER TABLE %s DROP COLUMN %s
-                    """ % (self.quote(table), self.quote(column)))
-        else:
-            self.execute("""
-                ALTER TABLE %s DROP COLUMN IF EXISTS %s
-                """ % (self.quote(table), self.quote(column)))
+        self.execute("""
+            ALTER TABLE %s DROP COLUMN IF EXISTS %s
+            """ % (self.quote(table), self.quote(column)))
 
     def drop_table(self, table):
-        if (self._version or '').startswith(('8.0.', '8.1.')):
-            cursor = self.cursor()
-            cursor.execute("""SELECT table_name FROM information_schema.tables
-                              WHERE table_schema=current_schema()
-                              AND table_name=%s""", (table,))
-            for row in cursor:
-                if row[0] == table:
-                    self.execute("DROP TABLE " + self.quote(table))
-                    break
-        else:
-            self.execute("DROP TABLE IF EXISTS " + self.quote(table))
+        self.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
     def get_column_names(self, table):
         rows = self.execute("""
@@ -344,19 +325,11 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         if not self.schema:
             return []
         # reset sequences
-        # information_schema.sequences view is available in
-        # PostgreSQL 8.2+ however Trac supports PostgreSQL 8.0+, uses
-        # pg_get_serial_sequence()
         cursor = self.cursor()
         cursor.execute("""
-            SELECT sequence_name
-            FROM (
-                SELECT pg_get_serial_sequence(
-                    quote_ident(table_schema) || '.' ||
-                    quote_ident(table_name), column_name) AS sequence_name
-                FROM information_schema.columns
-                WHERE table_schema=%s) AS tab
-            WHERE sequence_name IS NOT NULL""", (self.schema,))
+            SELECT sequence_name FROM information_schema.sequences
+            WHERE sequence_schema=%s
+            """, (self.schema,))
         for seq, in cursor.fetchall():
             cursor.execute("ALTER SEQUENCE %s RESTART WITH 1" % seq)
         # clear tables
@@ -364,7 +337,7 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         for name in table_names:
             cursor.execute("DELETE FROM " + self.quote(name))
         # PostgreSQL supports TRUNCATE TABLE as well
-        # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
+        # (see https://www.postgresql.org/docs/9.1/static/sql-truncate.html)
         # but on the small tables used here, DELETE is actually much faster
         return table_names
 
@@ -381,6 +354,6 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         cursor = self.cursor()
         cursor.execute('SELECT version()')
         for version, in cursor:
-            # retrieve "8.1.23" from "PostgreSQL 8.1.23 on ...."
+            # retrieve "9.1.23" from "PostgreSQL 9.1.23 on ...."
             if version.startswith('PostgreSQL '):
                 return version.split(' ', 2)[1]
