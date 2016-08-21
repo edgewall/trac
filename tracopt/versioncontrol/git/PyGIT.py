@@ -154,10 +154,10 @@ class GitCore(object):
         return stdout_data
 
     def cat_file_batch(self):
-        return self.__pipe('cat-file', '--batch', stdin=PIPE, stdout=PIPE)
+        return self.__pipe('cat-file', '--batch')
 
     def log_pipe(self, *cmd_args):
-        return self.__pipe('log', stdout=PIPE, *cmd_args)
+        return self.__pipe('log', *cmd_args)
 
     def __getattr__(self, name):
         if name[0] == '_' or name in ['cat_file_batch', 'log_pipe']:
