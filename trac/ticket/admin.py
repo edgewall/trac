@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from functools import partial
+
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
                            console_datetime_format, get_console_locale
@@ -18,7 +20,7 @@ from trac.core import *
 from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
-from trac.ticket.roadmap import MilestoneModule
+from trac.ticket.roadmap import MilestoneModule, get_num_tickets_for_milestone
 from trac.util import getuser
 from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
@@ -341,10 +343,12 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
             query_href = lambda name: req.href.query({'groupby': 'status',
                                                       'milestone': name})
+            num_tickets = partial(get_num_tickets_for_milestone, self.env)
 
             data = {'view': 'list',
                     'milestones': model.Milestone.select(self.env),
                     'query_href': query_href,
+                    'num_tickets': num_tickets,
                     'ticket_default': ticket_default,
                     'retarget_default': retarget_default}
 

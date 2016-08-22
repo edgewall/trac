@@ -90,7 +90,7 @@
                   <input type="radio" name="retarget_default" value="$milestone.name"
                          checked="${milestone.name==retarget_default or None}" />
                 </td>
-                <td class="num" py:with="ticket_count = milestone.get_num_tickets()">
+                <td class="num" py:with="ticket_count = num_tickets(milestone)">
                   <a py:strip="ticket_count == 0"
                      href="${query_href(milestone.name)}">$ticket_count</a>
                 </td>

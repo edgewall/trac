@@ -308,6 +308,23 @@ def get_tickets_for_milestone(env, milestone=None, field='component'):
     return [{'id': tkt_id, 'status': status, field: fieldval}
             for tkt_id, status, fieldval in env.db_query(sql, args)]
 
+
+def get_num_tickets_for_milestone(env, milestone, exclude_closed=False):
+    """Returns the number of tickets associated with the milestone.
+
+    :param milestone: name of a milestone or a Milestone instance.
+    :param exclude_closed: whether tickets with status 'closed' should
+                           be excluded from the count. Defaults to False.
+
+    :since: 1.2
+    """
+    name = milestone.name if isinstance(milestone, Milestone) else milestone
+    sql = "SELECT COUNT(*) FROM ticket WHERE milestone=%s"
+    if exclude_closed:
+        sql += " AND status != 'closed'"
+    return env.db_query(sql, (name,))[0][0]
+
+
 def apply_ticket_permissions(env, req, tickets):
     """Apply permissions to a set of milestone tickets as returned by
     `get_tickets_for_milestone()`."""
@@ -888,7 +905,7 @@ class MilestoneModule(Component):
             'milestone': milestone,
             'milestone_groups': group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm),
-            'num_tickets': milestone.get_num_tickets(),
+            'num_tickets': get_num_tickets_for_milestone(self.env, milestone),
             'retarget_to': self.default_retarget_to,
             'attachments': list(attachments)
         }
@@ -910,8 +927,9 @@ class MilestoneModule(Component):
                           and 'MILESTONE_VIEW' in req.perm(m.resource)]
             data['milestone_groups'] = group_milestones(milestones,
                 'TICKET_ADMIN' in req.perm)
-            data['num_open_tickets'] = milestone \
-                                       .get_num_tickets(exclude_closed=True)
+            data['num_open_tickets'] = \
+                get_num_tickets_for_milestone(self.env, milestone,
+                                              exclude_closed=True)
             data['retarget_to'] = self.default_retarget_to
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
