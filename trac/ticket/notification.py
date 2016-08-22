@@ -19,20 +19,20 @@
 from __future__ import with_statement
 
 from contextlib import contextmanager
-from hashlib import md5
+import hashlib
 
 from genshi.template.text import NewTextTemplate
 
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
-from trac.notification import NotifyEmail
+from trac.notification import NotificationSystem, NotifyEmail
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util.datefmt import datetime_now, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
-from trac.util.translation import deactivate, reactivate
+from trac.util.translation import _, deactivate, reactivate
 
 
 class TicketNotificationSystem(Component):
@@ -141,6 +141,18 @@ def get_ticket_notification_recipients(env, config, tktid, prev_cc=None,
 
     return list(to_recipients), list(cc_recipients), \
            tkt['reporter'], tkt['owner']
+
+
+def _hash_msgid(env, source, from_email):
+    hash_type = NotificationSystem(env).message_id_hash
+    try:
+        h = hashlib.new(hash_type)
+    except:
+        raise ConfigurationError(_("Unknown hash type '%(type)s'",
+                                   type=hash_type))
+    h.update(source)
+    host = from_email[from_email.find('@') + 1:]
+    return '<%03d.%s@%s>' % (len(source), h.hexdigest(), host)
 
 
 class TicketNotifyEmail(NotifyEmail):
@@ -464,10 +476,7 @@ class TicketNotifyEmail(NotifyEmail):
         s = '%s.%08d.%d.%s' % (self.env.project_url.encode('utf-8'),
                                int(self.ticket.id), to_utimestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
-        dig = md5(s).hexdigest()
-        host = self.from_email[self.from_email.find('@') + 1:]
-        msgid = '<%03d.%s@%s>' % (len(s), dig, host)
-        return msgid
+        return _hash_msgid(self.env, s, self.from_email)
 
     def send(self, torcpts, ccrcpts):
         dest = self.reporter or 'anonymous'
@@ -611,10 +620,7 @@ class BatchTicketNotifyEmail(NotifyEmail):
         s = '%s.%s.%d' % (self.env.project_url.encode('utf-8'),
                           ','.join(map(str, self.tickets)),
                           to_utimestamp(modtime))
-        dig = md5(s).hexdigest()
-        host = self.from_email[self.from_email.find('@') + 1:]
-        msgid = '<%03d.%s@%s>' % (len(s), dig, host)
-        return msgid
+        return _hash_msgid(self.env, s, self.from_email)
 
     def send(self, torcpts, ccrcpts):
         hdrs = {'Message-ID': self.get_message_id(self.modtime)}

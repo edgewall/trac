@@ -124,6 +124,10 @@ class NotificationSystem(Component):
         If no prefix is desired, then specifying an empty option
         will disable it. (''since 0.10.1'')""")
 
+    message_id_hash = Option('notification', 'message_id_hash', 'md5',
+        """Hash algorithm to create unique Message-ID header.
+        ''(since 1.0.13)''""")
+
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
         self.email_sender.send(from_addr, recipients, message)
