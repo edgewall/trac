@@ -41,21 +41,16 @@ COOKIE_KEY = 'trac_session'
 #       accessing the tables in the same order within the transaction,
 #       first `session`, then `session_attribute`.
 
-class DetachedSession(dict):
-    def __init__(self, env, sid):
-        dict.__init__(self)
-        self.env = env
+class SessionDict(dict):
+
+    def __init__(self):
+        super(SessionDict, self).__init__()
+        self.authenticated = False
+        self.last_visit = 0
         self.sid = None
-        if sid:
-            self.get_session(sid, authenticated=True)
-        else:
-            self.authenticated = False
-            self.last_visit = 0
-            self._new = True
-            self._old = {}
 
     def __setitem__(self, key, value):
-        dict.__setitem__(self, key, unicode(value))
+        super(SessionDict, self).__setitem__(key, unicode(value))
 
     def as_bool(self, key, default=None):
         """Return the value as a boolean. Return `default` if
@@ -101,7 +96,18 @@ class DetachedSession(dict):
             if value == default:
                 self.pop(key, None)
                 return
-        dict.__setitem__(self, key, value)
+        super(SessionDict, self).__setitem__(key, value)
+
+
+class DetachedSession(SessionDict):
+
+    def __init__(self, env, sid):
+        super(DetachedSession, self).__init__()
+        self.env = env
+        self._new = True
+        self._old = {}
+        if sid:
+            self.get_session(sid, authenticated=True)
 
     def get_session(self, sid, authenticated=False):
         self.env.log.debug("Retrieving session for ID %r", sid)

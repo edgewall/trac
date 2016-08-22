@@ -22,11 +22,12 @@ from genshi.builder import tag
 from trac import perm
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp
-from trac.util import as_int, create_file
+from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
 from trac.web.api import HTTPBadRequest, HTTPInternalServerError, Request, \
                          RequestDone, parse_arg_list
+from trac.web.main import FakeSession
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
@@ -77,11 +78,6 @@ def _make_environ(scheme='http', server_name='example.org',
 def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
               form_token='A' * 40, chrome={'links': {}, 'scripts': []},
               perm=MockPerm(), tz=utc, locale=None, **kwargs):
-
-    class MockSession(dict):
-        def as_int(self, key, default=None, min=None, max=None):
-            return as_int(self.get(key), default, min, max)
-
     req = Request(environ, start_response)
     req.args = args
     req.arg_list = arg_list
@@ -89,7 +85,7 @@ def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
     req.form_token = form_token
     req.chrome = chrome
     req.perm = perm
-    req.session = MockSession()
+    req.session = FakeSession()
     req.tz = tz
     req.locale = locale
     for name, value in kwargs.iteritems():

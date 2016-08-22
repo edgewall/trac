@@ -61,7 +61,7 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          is_valid_default_handler
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice, add_warning
 from trac.web.href import Href
-from trac.web.session import Session
+from trac.web.session import SessionDict, Session
 
 #: This URL is used for semi-automatic bug reports (see
 #: `send_internal_error`).  Please modify it to point to your own
@@ -69,11 +69,11 @@ from trac.web.session import Session
 default_tracker = 'http://trac.edgewall.org'
 
 
-class FakeSession(dict):
-    sid = None
-    authenticated = False
-    last_visit = 0
-    
+class FakeSession(SessionDict):
+
+    def get_session(self, sid, authenticated=False):
+        pass
+
     def save(self):
         pass
 
