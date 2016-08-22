@@ -31,9 +31,8 @@ from trac.notification.mail import (RecipientMatcher, create_message_id,
 from trac.notification.model import Subscription
 from trac.ticket.api import translation_deactivated
 from trac.ticket.model import Ticket
-from trac.util.compat import md5
 from trac.util.datefmt import (datetime_now, format_date_or_datetime,
-                               get_timezone, to_utimestamp, utc)
+                               get_timezone, utc)
 from trac.util.text import exception_to_unicode, obfuscate_email_address, \
                            shorten_line, text_width, wrap
 from trac.util.translation import _
@@ -1019,13 +1018,8 @@ class BatchTicketNotifyEmail(NotifyEmail):
         return list(all_to_recipients), list(all_cc_recipients)
 
     def get_message_id(self, modtime=None):
-        s = '%s.%s.%d' % (self.env.project_url.encode('utf-8'),
-                          ','.join(map(str, self.tickets)),
-                          to_utimestamp(modtime))
-        dig = md5(s).hexdigest()
-        host = self.from_email[self.from_email.find('@') + 1:]
-        msgid = '<%03d.%s@%s>' % (len(s), dig, host)
-        return msgid
+        targetid = ','.join(map(str, self.tickets))
+        return create_message_id(self.env, targetid, self.from_email, modtime)
 
     def send(self, torcpts, ccrcpts):
         hdrs = {'Message-ID': self.get_message_id(self.modtime)}

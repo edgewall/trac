@@ -681,10 +681,12 @@ class NotificationTestCase(unittest.TestCase):
         ticket.insert()
         self._validate_mimebody((None, '8bit', 'utf-8'), ticket, True)
 
-    def test_md5_digest(self):
+    def _test_msgid_digest(self, hash_type):
         """MD5 digest w/ non-ASCII recipient address (#3491)"""
         config_subscriber(self.env, reporter=True)
         self.env.config.set('notification', 'smtp_always_cc', '')
+        if hash_type:
+            self.env.config.set('notification', 'message_id_hash', hash_type)
         ticket = Ticket(self.env)
         ticket['reporter'] = u'"Jöe Usèr" <joe.user@example.org>'
         ticket['summary'] = u'This is a summary'
@@ -693,8 +695,18 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('joe.user@example.org', headers['Cc'])
+        return headers
+
+    def test_md5_digest(self):
+        headers = self._test_msgid_digest(None)
         self.assertEqual('<071.cbea352f8c4fa58e4b10d24c17b091e6@localhost>',
                          headers['Message-ID'])
+
+    def test_sha1_digest(self):
+        headers = self._test_msgid_digest('sha1')
+        self.assertEqual(
+            '<071.0b6459808bc3603bd642b9a478928d9b5542a803@localhost>',
+            headers['Message-ID'])
 
     def test_add_to_cc_list(self):
         """Members added to CC list receive notifications."""

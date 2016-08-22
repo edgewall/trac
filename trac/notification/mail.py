@@ -16,6 +16,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import hashlib
 import os
 import re
 import smtplib
@@ -24,7 +25,6 @@ from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate, parseaddr, getaddresses
-from hashlib import md5
 from subprocess import Popen, PIPE
 
 from genshi.builder import tag
@@ -148,14 +148,21 @@ def create_mime_text(body, format, charset):
     return msg
 
 
-def create_message_id(env, targetid, from_email, time, more=''):
+def create_message_id(env, targetid, from_email, time, more=None):
     """Generate a predictable, but sufficiently unique message ID."""
-    s = '%s.%s.%d.%s' % (env.project_url.encode('utf-8'),
-                         targetid, to_utimestamp(time),
-                         more.encode('ascii', 'ignore'))
-    dig = md5(s).hexdigest()
+    items = [env.project_url.encode('utf-8'), targetid, to_utimestamp(time)]
+    if more is not None:
+        items.append(more.encode('ascii', 'ignore'))
+    source = '.'.join(str(item) for item in items)
+    hash_type = NotificationSystem(env).message_id_hash
+    try:
+        h = hashlib.new(hash_type)
+    except:
+        raise ConfigurationError(_("Unknown hash type '%(type)s'",
+                                   type=hash_type))
+    h.update(source)
     host = from_email[from_email.find('@') + 1:]
-    return '<%03d.%s@%s>' % (len(s), dig, host)
+    return '<%03d.%s@%s>' % (len(source), h.hexdigest(), host)
 
 
 def get_from_author(env, event):
@@ -385,7 +392,10 @@ class EmailDistributor(Component):
         headers['X-Trac-Realm'] = event.realm
         headers['Precedence'] = 'bulk'
         headers['Auto-Submitted'] = 'auto-generated'
-        targetid = get_target_id(event.target)
+        if isinstance(event.target, (list, tuple)):
+            targetid = ','.join(map(get_target_id, event.target))
+        else:
+            targetid = get_target_id(event.target)
         rootid = create_message_id(self.env, targetid, smtp_from, None,
                                    more=event.realm)
         if event.category == 'created':
