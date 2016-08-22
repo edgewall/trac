@@ -159,7 +159,7 @@ def MockRequest(env, **kwargs):
     :keyword method: the HTTP request method
     :keyword path_info: the request path inside the application
 
-    Additionally `format`, `locale`, `lc_time`, `remote_addr`,
+    Additionally `cookie`, `format`, `locale`, `lc_time`, `remote_addr`,
     `remote_user`, `script_name`, `server_name`, `server_port`
     and `tz` can be specified as keyword arguments.
 
@@ -180,6 +180,7 @@ def MockRequest(env, **kwargs):
         'trac.base_url': env.abs_href(),
         'wsgi.url_scheme': 'http',
         'HTTP_ACCEPT_LANGUAGE': 'en-US',
+        'HTTP_COOKIE': kwargs.get('cookie', ''),
         'PATH_INFO': kwargs.get('path_info', '/'),
         'REQUEST_METHOD': kwargs.get('method', 'GET'),
         'REMOTE_ADDR': kwargs.get('remote_addr', '127.0.0.1'),

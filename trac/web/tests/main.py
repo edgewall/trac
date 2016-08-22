@@ -14,11 +14,14 @@
 import os.path
 import sys
 import tempfile
+import types
 import unittest
 from subprocess import PIPE, Popen
 
+import trac.tests.compat
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
+from trac.db.api import DatabaseManager
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
@@ -27,7 +30,33 @@ from trac.util.compat import close_fds
 from trac.web.api import (HTTPForbidden, HTTPInternalError, HTTPNotFound,
     IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
-from trac.web.main import RequestDispatcher, get_environments
+from trac.web.main import FakeSession, RequestDispatcher, Session, \
+                          get_environments
+
+
+class TestStubRequestHandler(Component):
+
+    implements(IRequestHandler)
+
+    filename = 'test_stub.html'
+
+    template = """\
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/">
+  <body>
+    <h1>${greeting}</h1>
+  </body>
+</html>
+"""
+
+    def match_request(self, req):
+        return req.path_info == '/test-stub'
+
+    def process_request(self, req):
+        return self.filename, {'greeting': 'Hello World'}, None
 
 
 class AuthenticateTestCase(unittest.TestCase):
@@ -447,7 +476,22 @@ class PostProcessRequestTestCase(unittest.TestCase):
 class RequestDispatcherTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(
+            path=tempfile.mkdtemp(prefix='trac-tempenv-'))
+        os.mkdir(self.env.templates_dir)
+        filepath = os.path.join(self.env.templates_dir,
+                                TestStubRequestHandler.filename)
+        create_file(filepath, TestStubRequestHandler.template)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def _insert_session(self):
+        sid = '1234567890abcdef'
+        name = 'First Last'
+        email = 'first.last@example.com'
+        self.env.insert_users([(sid, name, email, 0)])
+        return sid, name, email
 
     def test_invalid_default_date_format_raises_exception(self):
         self.env.config.set('trac', 'default_date_format', u'ĭšo8601')
@@ -456,6 +500,57 @@ class RequestDispatcherTestCase(unittest.TestCase):
                          self.env.config.get('trac', 'default_date_format'))
         self.assertRaises(ConfigurationError, getattr,
                           RequestDispatcher(self.env), 'default_date_format')
+
+    def test_get_session_returns_session(self):
+        """Session is returned when database is reachable."""
+        sid, name, email = self._insert_session()
+        req = MockRequest(self.env, path_info='/test-stub',
+                          cookie='trac_session=%s;' % sid)
+        request_dispatcher = RequestDispatcher(self.env)
+
+        self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
+
+        self.assertIsInstance(req.session, Session)
+        self.assertEqual(sid, req.session.sid)
+        self.assertEqual(name, req.session['name'])
+        self.assertEqual(email, req.session['email'])
+        self.assertFalse(req.session.authenticated)
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+
+    def test_get_session_returns_fake_session(self):
+        """Fake session is returned when database is not reachable."""
+        sid = self._insert_session()[0]
+        _get_session = RequestDispatcher._get_session
+
+        def get_session(self, req):
+            """Simulates an unreachable database."""
+            _get_connector = DatabaseManager.get_connector
+
+            def get_connector(self):
+                raise TracError("Database not reachable")
+
+            DatabaseManager.get_connector = get_connector
+            DatabaseManager(self.env).shutdown()
+            session = _get_session(self, req)
+            DatabaseManager.get_connector = _get_connector
+            return session
+
+        req = MockRequest(self.env, path_info='/test-stub',
+                          cookie='trac_session=%s;' % sid)
+        request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher._get_session = \
+            types.MethodType(get_session, request_dispatcher)
+
+        self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
+
+        self.assertIsInstance(req.session, FakeSession)
+        self.assertIsNone(req.session.sid)
+        self.assertNotIn('name', req.session)
+        self.assertNotIn('email', req.session)
+        self.assertFalse(req.session.authenticated)
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
 
 
 class HdfdumpTestCase(unittest.TestCase):
