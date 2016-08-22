@@ -19,6 +19,7 @@ previous versions of Python from 2.6 onward.
 
 import math
 import os
+import subprocess
 import time
 
 from trac.util.text import cleandoc
@@ -47,6 +48,28 @@ from collections import OrderedDict
 from functools import partial
 from hashlib import md5, sha1
 from itertools import groupby, tee
+
+
+class Popen(subprocess.Popen):
+    """Popen objects are supported as context managers starting in
+    Python 3.2. This code was taken from Python 3.5 and can be removed
+    when support for Python < 3.2 is dropped.
+    """
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        if self.stdout:
+            self.stdout.close()
+        if self.stderr:
+            self.stderr.close()
+        try:  # Flushing a BufferedWriter may raise an error
+            if self.stdin:
+                self.stdin.close()
+        finally:
+            # Wait for the process to terminate, to avoid zombies.
+            self.wait()
 
 
 def rpartition(s, sep):

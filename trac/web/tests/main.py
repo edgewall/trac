@@ -15,7 +15,7 @@ import os.path
 import sys
 import types
 import unittest
-from subprocess import PIPE, Popen
+from subprocess import PIPE
 
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
@@ -24,7 +24,7 @@ from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.util import create_file
-from trac.util.compat import close_fds
+from trac.util.compat import Popen, close_fds
 from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
     HTTPNotFound, IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
@@ -152,14 +152,11 @@ class DispatchRequestTestCase(unittest.TestCase):
         """EnvironmentError exception is raised when dispatching request
         with optimizations enabled.
         """
-        proc = Popen((sys.executable, '-O', '-c',
-                      'from trac.web.main import dispatch_request; '
-                      'dispatch_request({}, None)'), stdin=PIPE,
-                     stdout=PIPE, stderr=PIPE, close_fds=close_fds)
-
-        stdout, stderr = proc.communicate()
-        for f in (proc.stdin, proc.stdout, proc.stderr):
-            f.close()
+        with Popen((sys.executable, '-O', '-c',
+                    'from trac.web.main import dispatch_request; '
+                    'dispatch_request({}, None)'), stdin=PIPE,
+                   stdout=PIPE, stderr=PIPE, close_fds=close_fds) as proc:
+            stdout, stderr = proc.communicate()
         self.assertEqual(1, proc.returncode)
         self.assertIn("EnvironmentError: Python with optimizations is not "
                       "supported.", stderr)

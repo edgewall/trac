@@ -17,13 +17,13 @@ import sys
 import shutil
 import unittest
 from datetime import datetime, timedelta
-from subprocess import Popen, PIPE
+from subprocess import PIPE
 
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockRequest, locate, mkdtemp
 from trac.tests.compat import rmtree
 from trac.util import create_file
-from trac.util.compat import close_fds
+from trac.util.compat import Popen, close_fds
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
@@ -59,9 +59,8 @@ class GitCommandMixin(object):
         return Popen(args, close_fds=close_fds, **kwargs)
 
     def _git(self, *args, **kwargs):
-        proc = self._spawn_git(*args, **kwargs)
-        stdout, stderr = proc.communicate()
-        self._close_proc_pipes(proc)
+        with self._spawn_git(*args, **kwargs) as proc:
+            stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
                          'git exits with %r, args %r, kwargs %r, stdout %r, '
                          'stderr %r' %
@@ -71,9 +70,8 @@ class GitCommandMixin(object):
     def _git_fast_import(self, data):
         if isinstance(data, unicode):
             data = data.encode('utf-8')
-        proc = self._spawn_git('fast-import', stdin=PIPE)
-        stdout, stderr = proc.communicate(input=data)
-        self._close_proc_pipes(proc)
+        with self._spawn_git('fast-import', stdin=PIPE) as proc:
+            stdout, stderr = proc.communicate(input=data)
         self.assertEqual(0, proc.returncode,
                          'git exits with %r, stdout %r, stderr %r' %
                          (proc.returncode, stdout, stderr))
@@ -94,11 +92,6 @@ class GitCommandMixin(object):
             dt = self._git_date_format(dt)
         env['GIT_COMMITTER_DATE'] = dt
         env['GIT_AUTHOR_DATE'] = dt
-
-    def _close_proc_pipes(self, proc):
-        for f in (proc.stdin, proc.stdout, proc.stderr):
-            if f:
-                f.close()
 
 
 class BaseTestCase(unittest.TestCase, GitCommandMixin):

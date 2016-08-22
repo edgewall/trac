@@ -20,12 +20,12 @@ import re
 import weakref
 from collections import deque
 from functools import partial
-from subprocess import Popen, PIPE
+from subprocess import PIPE
 from threading import Lock
 
 from trac.core import TracBaseError
 from trac.util import terminate
-from trac.util.compat import close_fds
+from trac.util.compat import Popen, close_fds
 from trac.util.datefmt import time_now
 from trac.util.text import to_unicode
 
@@ -85,13 +85,6 @@ def _unquote(path):
     return path
 
 
-def _close_proc_pipes(proc):
-    if proc:
-        for f in (proc.stdin, proc.stdout, proc.stderr):
-            if f:
-                f.close()
-
-
 class GitCore(object):
     """Low-level wrapper around git executable"""
 
@@ -143,9 +136,8 @@ class GitCore(object):
 
         #print("DEBUG:", git_cmd, cmd_args, file=sys.stderr)
 
-        p = self.__pipe(git_cmd, stdout=PIPE, stderr=PIPE, *cmd_args)
-        stdout_data, stderr_data = p.communicate()
-        _close_proc_pipes(p)
+        with self.__pipe(git_cmd, *cmd_args) as p:
+            stdout_data, stderr_data = p.communicate()
         if self.__log and (p.returncode != 0 or stderr_data):
             self.__log.debug('%s exits with %d, dir: %r, args: %s %r, '
                              'stderr: %r', self.__git_bin, p.returncode,
@@ -426,7 +418,9 @@ class Storage(object):
 
     def _cleanup_proc(self, proc):
         if proc:
-            _close_proc_pipes(proc)
+            for f in (proc.stdin, proc.stdout, proc.stderr):
+                if f:
+                    f.close()
             terminate(proc)
             proc.wait()
 
