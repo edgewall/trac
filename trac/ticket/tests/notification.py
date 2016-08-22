@@ -313,7 +313,8 @@ class NotificationTestCase(unittest.TestCase):
         # checks for expected headers
         self.assertIn('Date', headers)
         self.assertIn('Subject', headers)
-        self.assertIn('Message-ID', headers)
+        self.assertEqual('<073.8a48f9c2ab2dc64e820e391f8f784a04@localhost>',
+                         headers['Message-ID'])
         self.assertIn('From', headers)
 
     def test_date(self):
@@ -490,57 +491,81 @@ class NotificationTestCase(unittest.TestCase):
              ('jim@domain', 'Jim User', 'user-jim@example.com'),
              ('noemail', 'No e-mail', ''),
              ('noname', '', 'user-noname@example.com')])
+        def modtime(delta):
+            return datetime(2016, 8, 21, 12, 34, 56, 987654, utc) + \
+                   timedelta(seconds=delta)
         # Ticket creation uses the reporter
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joeuser'
         ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket.insert(when=modtime(0))
         notify_ticket_created(self.env, ticket)
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"Joe User" <user-joe@example.com>', headers['From'])
+        self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
+                         headers['Message-ID'])
+        self.assertNotIn('In-Reply-To', headers)
+        self.assertNotIn('References', headers)
         # Ticket change uses the change author
         ticket['summary'] = 'Modified summary'
-        ticket.save_changes('jim@domain', 'Made some changes')
+        ticket.save_changes('jim@domain', 'Made some changes', modtime(1))
         notify_ticket_changed(self.env, ticket, 'jim@domain')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"Jim User" <user-jim@example.com>', headers['From'])
+        self.assertEqual('<062.a890ee4ad5488fb49e60b68099995ba3@example.com>',
+                         headers['Message-ID'])
+        self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
+                         headers['In-Reply-To'])
+        self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
+                         headers['References'])
         # Known author without name uses e-mail address only
         ticket['summary'] = 'Final summary'
-        ticket.save_changes('noname', 'Final changes')
+        ticket.save_changes('noname', 'Final changes', modtime(2))
         notify_ticket_changed(self.env, ticket, 'noname')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('user-noname@example.com', headers['From'])
+        self.assertEqual('<062.732a7b25a21f5a86478c4fe47e86ade4@example.com>',
+                         headers['Message-ID'])
         # Known author without e-mail uses smtp_from and smtp_from_name
         ticket['summary'] = 'Other summary'
-        ticket.save_changes('noemail', 'More changes')
+        ticket.save_changes('noemail', 'More changes', modtime(3))
         notify_ticket_changed(self.env, ticket, 'noemail')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        self.assertEqual('<062.98cff27cb9fabd799bcb09f9edd6c99e@example.com>',
+                         headers['Message-ID'])
         # Unknown author with name and e-mail address
         ticket['summary'] = 'Some summary'
-        ticket.save_changes('Test User <test@example.com>', 'Some changes')
+        ticket.save_changes('Test User <test@example.com>', 'Some changes',
+                            modtime(4))
         notify_ticket_changed(self.env, ticket, 'Test User <test@example.com>')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        #self.assertEqual('"Test User" <test@example.com>', headers['From'])
+        self.assertEqual('"Test User" <test@example.com>', headers['From'])
+        self.assertEqual('<062.6e08a363c340c1d4e2ed84c6123a1e9d@example.com>',
+                         headers['Message-ID'])
         # Unknown author with e-mail address only
         ticket['summary'] = 'Some summary'
-        ticket.save_changes('test@example.com', 'Some changes')
+        ticket.save_changes('test@example.com', 'Some changes', modtime(5))
         notify_ticket_changed(self.env, ticket, 'test@example.com')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('test@example.com', headers['From'])
+        self.assertEqual('<062.5eb050ae6f322c33dde5940a5f318343@example.com>',
+                         headers['Message-ID'])
         # Unknown author uses smtp_from and smtp_from_name
         ticket['summary'] = 'Better summary'
-        ticket.save_changes('unknown', 'Made more changes')
+        ticket.save_changes('unknown', 'Made more changes', modtime(6))
         notify_ticket_changed(self.env, ticket, 'unknown')
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        self.assertEqual('<062.6d5543782e7aba4100302487e75ce16f@example.com>',
+                         headers['Message-ID'])
 
     def test_ignore_domains(self):
         """Non-SMTP domain exclusion"""
@@ -650,10 +675,12 @@ class NotificationTestCase(unittest.TestCase):
         ticket.insert()
         self._validate_mimebody((None, '8bit', 'utf-8'), ticket, True)
 
-    def test_md5_digest(self):
+    def _test_msgid_digest(self, hash_type):
         """MD5 digest w/ non-ASCII recipient address (#3491)"""
         config_subscriber(self.env, reporter=True)
         self.env.config.set('notification', 'smtp_always_cc', '')
+        if hash_type:
+            self.env.config.set('notification', 'message_id_hash', hash_type)
         ticket = Ticket(self.env)
         ticket['reporter'] = u'"Jöe Usèr" <joe.user@example.org>'
         ticket['summary'] = u'This is a summary'
@@ -662,6 +689,18 @@ class NotificationTestCase(unittest.TestCase):
         message = notifysuite.smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('joe.user@example.org', headers['Cc'])
+        return headers
+
+    def test_md5_digest(self):
+        headers = self._test_msgid_digest(None)
+        self.assertEqual('<071.cbea352f8c4fa58e4b10d24c17b091e6@localhost>',
+                         headers['Message-ID'])
+
+    def test_sha1_digest(self):
+        headers = self._test_msgid_digest('sha1')
+        self.assertEqual(
+            '<071.0b6459808bc3603bd642b9a478928d9b5542a803@localhost>',
+            headers['Message-ID'])
 
     def test_add_to_cc_list(self):
         """Members added to CC list receive notifications."""
@@ -1675,6 +1714,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True, path=mkdtemp())
         config_smtp(self.env)
+        self.env.config.set('project', 'url', 'http://localhost/project.url')
 
         self.tktids = []
         with self.env.db_transaction as db:
@@ -1707,7 +1747,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         new_values = {'milestone': 'milestone1'}
         author = 'author@example.org'
         comment = 'batch-modify'
-        when = datetime.now(utc)
+        when = datetime(2016, 8, 21, 12, 34, 56, 987654, utc)
 
         with self.env.db_transaction:
             for tktid in self.tktids:
@@ -1733,8 +1773,8 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         self.assertEqual('[TracTest] Batch modify: #3, #10, #4, #11, #5, #12, '
                          '#6, #13, #7, #14,...', headers['Subject'])
         self.assertEqual('"TracTest" <trac@localhost>', headers['From'])
-        self.assertIn('Message-ID', headers)
-        self.assertIn('@localhost', headers['Message-ID'])
+        self.assertEqual('<078.0b9de298f9080302285a0e333c75dd47@localhost>',
+                         headers['Message-ID'])
         self.assertIn('Batch modification to #3, #10, #4, #11, #5, #12, #6, '
                       '#13, #7, #14, #1, #2, #8, #9 by author@example.org:',
                       body)

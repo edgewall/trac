@@ -306,6 +306,10 @@ class NotificationSystem(Component):
         will disable it.
         """)
 
+    message_id_hash = Option('notification', 'message_id_hash', 'md5',
+        """Hash algorithm to create unique Message-ID header.
+        ''(since 1.0.13)''""")
+
     notification_subscriber_section = ConfigSection('notification-subscriber',
         """The notifications subscriptions are controlled by plugins. All
         `INotificationSubscriber` components are in charge. These components

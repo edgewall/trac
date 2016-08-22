@@ -27,7 +27,8 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)
-from trac.notification.mail import RecipientMatcher, set_header
+from trac.notification.mail import (RecipientMatcher, create_message_id,
+                                    get_from_author, set_header)
 from trac.notification.model import Subscription
 from trac.ticket.api import translation_deactivated
 from trac.ticket.model import Ticket, sort_tickets_by_priority
@@ -344,8 +345,7 @@ class TicketFormatter(Component):
             subj = "Re: " + subj
         return subj
 
-    def _format_subj_batchmodify(self, event):
-        tickets = sort_tickets_by_priority(self.env, event.target)
+    def _format_subj_batchmodify(self, tickets):
         tickets_descr = ', '.join('#%s' % t for t in tickets)
 
         template = self.config.get('notification', 'batch_subject_template')
@@ -490,22 +490,46 @@ class TicketFormatter(Component):
     def _get_text_width(self, text):
         return text_width(text, ambiwidth=self.ambiwidth)
 
+    def _get_from_email(self, event):
+        from_email = get_from_author(self.env, event)
+        if from_email and isinstance(from_email, tuple):
+            from_email = from_email[1]
+        if not from_email:
+            from_email = self.config.get('notification', 'smtp_from') or \
+                         self.config.get('notification', 'smtp_replyto')
+        return from_email
+
+    def _get_message_id(self, targetid, from_email, modtime, more=None):
+        return create_message_id(self.env, targetid, from_email, modtime, more)
+
     def decorate_message(self, event, message, charset):
         if event.realm != 'ticket':
             return
+        from_email = self._get_from_email(event)
         if event.category == 'batchmodify':
-            subject = self._format_subj_batchmodify(event)
+            tickets = sort_tickets_by_priority(self.env, event.target)
+            subject = self._format_subj_batchmodify(tickets)
+            targetid = ','.join(map(str, tickets))
+            msgid = self._get_message_id(targetid, from_email, event.time)
         else:
             subject = self._format_subj(event)
             ticket = event.target
+            targetid = '%08d' % ticket.id
+            more = ticket['reporter'] or ''
+            msgid = self._get_message_id(targetid, from_email, None, more)
             url = self.env.abs_href.ticket(ticket.id)
             if event.category != 'created':
+                set_header(message, 'In-Reply-To', msgid, charset)
+                set_header(message, 'References', msgid, charset)
+                msgid = self._get_message_id(targetid, from_email, event.time,
+                                             more)
                 cnum = ticket.get_comment_number(event.time)
                 if cnum is not None:
                     url += '#comment:%d' % cnum
             set_header(message, 'X-Trac-Ticket-ID', ticket.id, charset)
             set_header(message, 'X-Trac-Ticket-URL', url, charset)
         set_header(message, 'Subject', subject, charset)
+        set_header(message, 'Message-ID', msgid, charset)
 
 
 class TicketOwnerSubscriber(Component):
