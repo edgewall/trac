@@ -27,7 +27,7 @@ from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    NotificationEvent, NotificationSystem)
 from trac.notification.compat import NotifyEmail
 from trac.notification.mail import (RecipientMatcher, create_message_id,
-                                    set_header)
+                                    get_from_author, set_header)
 from trac.notification.model import Subscription
 from trac.ticket.api import translation_deactivated
 from trac.ticket.model import Ticket
@@ -216,6 +216,18 @@ class TicketFormatter(Component):
         return notify.format(event.target, event.new_values, event.comment,
                              event.action, event.author, event.time)
 
+    def _get_message_id(self, event, newticket=None):
+        ticket = event.target
+        from_email = get_from_author(self.env, event)
+        if from_email and isinstance(from_email, tuple):
+            from_email = from_email[1]
+        if not from_email:
+            from_email = self.config.get('notification', 'smtp_from') or \
+                         self.config.get('notification', 'smtp_replyto')
+        modtime = None if newticket else event.time
+        return create_message_id(self.env, '%08d' % ticket.id, from_email,
+                                 modtime, ticket['reporter'] or '')
+
     def decorate_message(self, event, message, charset):
         if event.realm != 'ticket':
             return
@@ -236,8 +248,15 @@ class TicketFormatter(Component):
                     values = change['fields']['summary']
                     summary = "%s (was: %s)" % (values['new'], values['old'])
             subject = notify.format_subj(summary, event.category == 'created')
+            msgid = self._get_message_id(event, newticket=True)
             url = self.env.abs_href.ticket(ticket.id)
-            if event.category != 'created':
+            if event.category == 'created':
+                set_header(message, 'Message-ID', msgid, charset)
+            else:
+                set_header(message, 'Message-ID', self._get_message_id(event),
+                           charset)
+                set_header(message, 'In-Reply-To', msgid, charset)
+                set_header(message, 'References', msgid, charset)
                 cnum = ticket.get_comment_number(event.time)
                 if cnum is not None:
                     url += '#comment:%d' % cnum

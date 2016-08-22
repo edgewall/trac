@@ -47,7 +47,7 @@ __all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
            'RecipientMatcher', 'SendmailEmailSender', 'SessionEmailResolver',
            'SmtpEmailSender', 'create_charset', 'create_header',
            'create_message_id', 'create_mime_multipart', 'create_mime_text',
-           'set_header']
+           'get_from_author', 'set_header']
 
 
 MAXHEADERLEN = 76
@@ -156,6 +156,15 @@ def create_message_id(env, targetid, from_email, time, more=''):
     dig = md5(s).hexdigest()
     host = from_email[from_email.find('@') + 1:]
     return '<%03d.%s@%s>' % (len(s), dig, host)
+
+
+def get_from_author(env, event):
+    if event.author and env.config.getbool('notification',
+                                           'smtp_from_author'):
+        matcher = RecipientMatcher(env)
+        from_ = matcher.match_from_author(event.author)
+        if from_:
+            return from_
 
 
 class RecipientMatcher(object):
@@ -584,9 +593,6 @@ class FromAuthorEmailDecorator(Component):
     implements(IEmailDecorator)
 
     def decorate_message(self, event, message, charset):
-        if event.author and self.config.getbool('notification',
-                                                'smtp_from_author'):
-            matcher = RecipientMatcher(self.env)
-            from_ = matcher.match_from_author(event.author)
-            if from_:
-                set_header(message, 'From', from_, charset)
+        from_ = get_from_author(self.env, event)
+        if from_:
+            set_header(message, 'From', from_, charset)
