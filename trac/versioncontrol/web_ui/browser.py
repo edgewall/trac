@@ -331,7 +331,7 @@ class BrowserModule(Component):
             req.redirect(presel)
 
         path = req.args.get('path', '/')
-        rev = req.args.get('rev', '')
+        rev = req.args.getfirst('rev', '')
         if rev.lower() in ('', 'head'):
             rev = None
         format = req.args.get('format')
