@@ -16,6 +16,7 @@ import os
 import shutil
 import unittest
 
+from trac.attachment import Attachment
 from trac.config import Option, ListOption, IntOption, BoolOption
 from trac.test import locale_en, mkdtemp
 from trac.util.datefmt import datetime_now, format_date, utc
@@ -32,15 +33,19 @@ def add_pages(tc, names):
         w.save('joe', 'the page ' + name, now)
 
 
+def add_attachment(tc, realm, id, file):
+    attachment = Attachment(tc.env, realm, id)
+    attachment.description = "image in %s" % id
+    attachment.insert(file, io.BytesIO(), 0, 2)
+
+
 # == [[Image]]
 
 def image_setup(tc):
-    add_pages(tc, ['page:fr'])
-    from trac.attachment import Attachment
+    add_pages(tc, ['page:fr', 'page'])
     tc.env.path = mkdtemp()
-    attachment = Attachment(tc.env, 'wiki', 'page:fr')
-    attachment.description = "image in page:fr"
-    attachment.insert('img.png', io.BytesIO(), 0, 2)
+    add_attachment(tc, 'wiki', 'page:fr', 'img.png')
+    add_attachment(tc, 'wiki', 'page', 'img.png')
     tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
     tc.env.config.set('interwiki', 'travis',
                       'https://travis-ci.org/$1?branch=$2')
@@ -188,7 +193,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(img.png, margin-bottom=-1)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/attachment/wiki/WikiStart/img.png"><img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" /></a>
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
 </p>
 ==============================
 [[Image(img.png, margin-bottom=--)]]
@@ -230,6 +235,18 @@ IMAGE_MACRO_TEST_CASES = u"""
 = [[Image]]
 ------------------------------
 <h1 id="Image">[[Image]]</h1>
+==============================  Invalid use of attachment TracLink
+[[Image(attachment:img.png:wiki:page)]]
+------------------------------
+<p>
+</p><div class="system-message"><strong>No filespec given</strong></div><p>
+</p>
+==============================  Non-existent attachment
+[[Image(wiki:page:img2.png)]]
+------------------------------
+<p>
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img2.png&#34; attached to page" title="No image &#34;img2.png&#34; attached to page" />
+</p>
 """
 
 # Note: in the <img> src attribute above, the Unicode characters
