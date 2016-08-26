@@ -41,7 +41,7 @@ from trac.web.chrome import chrome_resource_path
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import (
     MacroError, OutlineFormatter, extract_link, format_to_html,
-    format_to_oneliner
+    format_to_oneliner, system_message
 )
 
 
@@ -659,19 +659,24 @@ class ImageMacro(WikiMacroBase):
         elif len(parts) == 1:  # it's an attachment of the current resource
             attachment = formatter.resource.child('attachment', filespec)
         else:
-            raise TracError(_("No filespec given"))
-        if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
-            url = get_resource_url(self.env, attachment, formatter.href)
-            raw_url = get_resource_url(self.env, attachment, formatter.href,
-                                       format='raw')
+            return system_message(_("No filespec given"))
+        if attachment:
             try:
                 desc = get_resource_summary(self.env, attachment)
             except ResourceNotFound:
+                link = None
                 raw_url = chrome_resource_path(formatter.context.req,
                                                'common/attachment.png')
                 desc = _('No image "%(id)s" attached to %(parent)s',
                          id=attachment.id,
                          parent=get_resource_name(self.env, attachment.parent))
+            else:
+                if 'ATTACHMENT_VIEW' in formatter.perm(attachment):
+                    url = get_resource_url(self.env, attachment,
+                                           formatter.href)
+                    raw_url = get_resource_url(self.env, attachment,
+                                               formatter.href, format='raw')
+
         for key in ('title', 'alt'):
             if desc and key not in attr:
                 attr[key] = desc
