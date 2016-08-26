@@ -406,12 +406,16 @@ class PermissionSystem(Component):
         return dict((k, sorted(i[1] for i in list(g)))
                     for k, g in groupby(perms, key=lambda p: p[0]))
 
-    def get_user_permissions(self, username=None):
+    def get_user_permissions(self, username=None, undefined=False):
         """Return the permissions of the specified user.
 
         The return value is a dictionary containing all the actions granted to
-        the user mapped to `True`. If an action is missing as a key, or has
-        `False` as a value, permission is denied."""
+        the user mapped to `True`.
+
+        :param undefined: if `True`, include actions that are not defined.
+
+        :since 1.3.1: added the `undefined` parameter.
+        """
         if not username:
             # Return all permissions available in the system
             return dict.fromkeys(self.get_actions(), True)
@@ -420,7 +424,7 @@ class PermissionSystem(Component):
         actions = self.get_actions_dict()
         permissions = {}
         def expand_meta(action):
-            if action not in permissions:
+            if action not in permissions and (undefined or action in actions):
                 permissions[action] = True
                 for a in actions.get(action, ()):
                     expand_meta(a)
@@ -667,7 +671,7 @@ class PermissionAdmin(Component):
         permsys = PermissionSystem(self.env)
         if user:
             rows = []
-            perms = permsys.get_user_permissions(user)
+            perms = permsys.get_user_permissions(user, undefined=True)
             for action in perms:
                 if perms[action]:
                     rows.append((user, action))

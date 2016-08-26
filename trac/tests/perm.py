@@ -181,6 +181,17 @@ class PermissionSystemTestCase(unittest.TestCase):
                           'TEST_MODIFY': True,  'TEST_ADMIN': True},
                          self.perm.get_user_permissions('jane'))
 
+    def test_undefined_permissions(self):
+        """Only defined actions are returned in the dictionary."""
+        self.perm.grant_permission('bob', 'TEST_CREATE')
+        self.perm.grant_permission('jane', 'TEST_DELETE')
+        self.perm.grant_permission('jane', 'TEST_MODIFY')
+
+        self.env.disable_component(TestPermissionRequestor)
+
+        self.assertEqual({}, self.perm.get_user_permissions('bob'))
+        self.assertEqual({}, self.perm.get_user_permissions('jane'))
+
     def test_grant_permission_differs_from_action_by_casing(self):
         """`TracError` is raised when granting a permission that differs
         from an action by casing.

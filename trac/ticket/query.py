@@ -882,11 +882,8 @@ class QueryModule(Component):
         return 'tickets'
 
     def get_navigation_items(self, req):
-        from trac.ticket.report import ReportModule
         if 'TICKET_VIEW' in req.perm(self.realm) and \
-                (not self.env.is_component_enabled(ReportModule) or
-                 'REPORT_VIEW' not in req.perm(ReportModule.realm,
-                                               ReportModule.REPORT_LIST_ID)):
+                 'REPORT_VIEW' not in req.perm('report', -1):
             yield ('mainnav', 'tickets',
                    tag.a(_("View Tickets"), href=req.href.query()))
 
@@ -1114,10 +1111,8 @@ class QueryModule(Component):
         #
         # Note that with saved custom queries, there will be some convergence
         # between the report module and the query module.
-        from trac.ticket.report import ReportModule
-        report_resource = Resource(ReportModule.realm, query.id)
-        if 'REPORT_VIEW' in req.perm(report_resource) and \
-                self.env.is_component_enabled(ReportModule):
+        report_resource = Resource('report', query.id)
+        if 'REPORT_VIEW' in req.perm(report_resource):
             data['report_href'] = req.href.report()
             add_ctxtnav(req, _("Available Reports"), req.href.report())
             add_ctxtnav(req, _("New Custom Query"), req.href.query())
@@ -1131,9 +1126,8 @@ class QueryModule(Component):
             data['report_href'] = None
 
         # Only interact with the batch modify module it it is enabled
-        from trac.ticket.batch import BatchModifyModule
-        if 'TICKET_BATCH_MODIFY' in req.perm(self.realm) and \
-                self.env.is_component_enabled(BatchModifyModule):
+        if 'TICKET_BATCH_MODIFY' in req.perm(self.realm):
+            from trac.ticket.batch import BatchModifyModule
             self.env[BatchModifyModule].add_template_data(req, data, tickets)
 
         data.setdefault('report', None)

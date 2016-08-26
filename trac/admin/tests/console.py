@@ -339,11 +339,16 @@ class TracadminTestCase(TracAdminTestCaseBase):
     # Permission tests
 
     def test_permission_list_ok(self):
+        """Tests the 'permission list' command in trac-admin."""
+        rv, output = self._execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_list_includes_undefined_actions(self):
+        """Undefined actions are included in the User Action table,
+        but not in the Available Actions list.
         """
-        Tests the 'permission list' command in trac-admin.  Since this command
-        has no command arguments, it is hard to call it incorrectly.  As
-        a result, there is only this one test.
-        """
+        self.env.disable_component(trac.search.web_ui.SearchModule)
         rv, output = self._execute('permission list')
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)

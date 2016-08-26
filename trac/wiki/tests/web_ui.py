@@ -26,7 +26,7 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
         self.env = \
             EnvironmentStub(enable=['trac.attachment.LegacyAttachmentPolicy',
                                     'trac.perm.*',
-                                    'trac.wiki.web_ui.ReadonlyWikiPolicy'])
+                                    'trac.wiki.web_ui.*'])
         self.policy = ReadonlyWikiPolicy(self.env)
         store = DefaultPermissionStore(self.env)
         store.grant_permission('user1', 'WIKI_ADMIN')
@@ -42,7 +42,7 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
         perm_cache = PermissionCache(self.env, 'user1')
         self.assertIn('WIKI_ADMIN', perm_cache)
         for perm in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
-            self.assertNotIn(perm, perm_cache)
+            self.assertIn(perm, perm_cache)
             self.assertIsNone(
                 self.policy.check_permission(perm, perm_cache.username,
                                              self.page.resource, perm_cache))
