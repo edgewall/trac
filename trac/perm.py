@@ -82,17 +82,20 @@ class IPermissionRequestor(Interface):
 
 class IPermissionStore(Interface):
     """Extension point interface for components that provide storage and
-    management of permissions."""
+    management of permissions.
+    """
 
     def get_user_permissions(username):
         """Return all permissions for the user with the specified name.
 
-        The permissions are returned as a dictionary where the key is the name
-        of the permission, and the value is either `True` for granted
-        permissions or `False` for explicitly denied permissions."""
+        The permissions are returned as a dictionary where the key is
+        the name of the permission, and the value is either `True` for
+        granted permissions or `False` for explicitly denied permissions.
+        """
 
     def get_users_with_permissions(permissions):
-        """Retrieve a list of users that have any of the specified permissions.
+        """Retrieve a list of users that have any of the specified
+        permissions.
 
         Users are returned as a list of usernames.
         """
@@ -101,7 +104,8 @@ class IPermissionStore(Interface):
         """Return all permissions for all users.
 
         The permissions are returned as a list of (subject, action)
-        formatted tuples."""
+        formatted tuples.
+        """
 
     def grant_permission(username, action):
         """Grant a user permission to perform an action."""
@@ -111,13 +115,14 @@ class IPermissionStore(Interface):
 
 
 class IPermissionGroupProvider(Interface):
-    """Extension point interface for components that provide information about
-    user groups.
+    """Extension point interface for components that provide information
+    about user groups.
     """
 
     def get_permission_groups(username):
-        """Return a list of names of the groups that the user with the specified
-        name is a member of."""
+        """Return a list of names of the groups that the user with the
+        specified name is a member of.
+        """
 
 
 class IPermissionPolicy(Interface):
@@ -151,8 +156,8 @@ class IPermissionPolicy(Interface):
          * `None` if the action *can not* be performed for *some* resources.
            This corresponds to situation where the policy is only interested
            in returning `False` or `None` on specific resources.
-         * `False` if the action *can not* be performed for *any* resource in
-           that realm (that's a very strong decision as that will usually
+         * `False` if the action *can not* be performed for *any* resource
+           in that realm (that's a very strong decision as that will usually
            prevent any fine-grained check to even happen).
 
         Note that performing permission checks on realm resources may seem
@@ -176,9 +181,10 @@ class DefaultPermissionStore(Component):
         dictionary.
 
         The permissions are stored in the database as (username, action)
-        records. There's simple support for groups by using lowercase names for
-        the action column: such a record represents a group and not an actual
-        permission, and declares that the user is part of that group.
+        records. There's simple support for groups by using lowercase
+        names for the action column: such a record represents a group and
+        not an actual permission, and declares that the user is part of
+        that group.
         """
         subjects = set([username])
         for provider in self.group_providers:
@@ -202,19 +208,20 @@ class DefaultPermissionStore(Component):
         return list(actions)
 
     def get_users_with_permissions(self, permissions):
-        """Retrieve a list of users that have any of the specified permissions
+        """Retrieve a list of users that have any of the specified
+        permissions
 
         Users are returned as a list of usernames.
         """
-        # get_user_permissions() takes care of the magic 'authenticated' group.
-        # The optimized loop we had before didn't.  This is very inefficient,
-        # but it works.
+        # get_user_permissions() takes care of the magic 'authenticated'
+        # group. The optimized loop we had before didn't. This is very
+        # inefficient, but it works.
         result = set()
         users = set([u[0] for u in self.env.get_known_users()])
         for user in users:
-            userperms = self.get_user_permissions(user)
+            user_perms = self.get_user_permissions(user)
             for group in permissions:
-                if group in userperms:
+                if group in user_perms:
                     result.add(user)
         return list(result)
 
@@ -222,7 +229,8 @@ class DefaultPermissionStore(Component):
         """Return all permissions for all users.
 
         The permissions are returned as a list of (subject, action)
-        formatted tuples."""
+        formatted tuples.
+        """
         return self._all_permissions
 
     @cached
@@ -251,8 +259,9 @@ class DefaultPermissionStore(Component):
 
 
 class DefaultPermissionGroupProvider(Component):
-    """Permission group provider providing the basic builtin permission groups
-    'anonymous' and 'authenticated'."""
+    """Permission group provider providing the basic builtin permission
+    groups 'anonymous' and 'authenticated'.
+    """
 
     required = True
 
@@ -288,7 +297,8 @@ class DefaultPermissionPolicy(Component):
             self.permission_cache = {}
             self.last_reap = time_now()
 
-        timestamp, permissions = self.permission_cache.get(username, (0, None))
+        timestamp, permissions = \
+            self.permission_cache.get(username, (0, None))
 
         # Cache hit?
         if now - timestamp > self.CACHE_EXPIRY:
@@ -311,8 +321,8 @@ class PermissionSystem(Component):
 
     store = ExtensionOption('trac', 'permission_store', IPermissionStore,
                             'DefaultPermissionStore',
-        """Name of the component implementing `IPermissionStore`, which is used
-        for managing user and group permissions.""")
+        """Name of the component implementing `IPermissionStore`, which is
+        used for managing user and group permissions.""")
 
     policies = OrderedExtensionsOption('trac', 'permission_policies',
         IPermissionPolicy,
@@ -335,7 +345,8 @@ class PermissionSystem(Component):
 
     def grant_permission(self, username, action):
         """Grant the user with the given name permission to perform to
-        specified action."""
+        specified action.
+        """
         if action.isupper() and action not in self.get_actions():
             raise TracError(_('%(name)s is not a valid action.', name=action))
         elif not action.isupper() and action.upper() in self.get_actions():
@@ -409,8 +420,8 @@ class PermissionSystem(Component):
     def get_user_permissions(self, username=None, undefined=False):
         """Return the permissions of the specified user.
 
-        The return value is a dictionary containing all the actions granted to
-        the user mapped to `True`.
+        The return value is a dictionary containing all the actions
+        granted to the user mapped to `True`.
 
         :param undefined: if `True`, include actions that are not defined.
 
@@ -436,7 +447,8 @@ class PermissionSystem(Component):
         """Return all permissions for all users.
 
         The permissions are returned as a list of (subject, action)
-        formatted tuples."""
+        formatted tuples.
+        """
         return self.store.get_all_permissions() or []
 
     def get_users_with_permission(self, permission):
@@ -485,8 +497,9 @@ class PermissionSystem(Component):
 
     def check_permission(self, action, username=None, resource=None,
                          perm=None):
-        """Return True if permission to perform action for the given resource
-        is allowed."""
+        """Return True if permission to perform action for the given
+        resource is allowed.
+        """
         if username is None:
             username = 'anonymous'
         if resource and resource.realm is None:
@@ -622,19 +635,19 @@ class PermissionAdmin(Component):
 
     def get_admin_commands(self):
         yield ('permission list', '[user]',
-               'List permission rules',
+               "List permission rules",
                self._complete_list, self._do_list)
         yield ('permission add', '<user> <action> [action] [...]',
-               'Add a new permission rule',
+               "Add a new permission rule",
                self._complete_add, self._do_add)
         yield ('permission remove', '<user> <action> [action] [...]',
-               'Remove a permission rule',
+               "Remove a permission rule",
                self._complete_remove, self._do_remove)
         yield ('permission export', '[file]',
-               'Export permission rules to a file or stdout as CSV',
+               "Export permission rules to a file or stdout as CSV",
                self._complete_import_export, self._do_export)
         yield ('permission import', '[file]',
-               'Import permission rules from a file or stdin as CSV',
+               "Import permission rules from a file or stdin as CSV",
                self._complete_import_export, self._do_import)
 
     def get_user_list(self):
@@ -691,8 +704,8 @@ class PermissionAdmin(Component):
     def _do_add(self, user, *actions):
         permsys = PermissionSystem(self.env)
         if user.isupper():
-            raise AdminCommandError(_('All upper-cased tokens are reserved '
-                                      'for permission names'))
+            raise AdminCommandError(_("All upper-cased tokens are reserved "
+                                      "for permission names"))
         for action in actions:
             try:
                 permsys.grant_permission(user, action)
@@ -745,10 +758,10 @@ class PermissionAdmin(Component):
 
     def _do_import(self, filename=None):
         permsys = PermissionSystem(self.env)
+        linesep = os.linesep if filename else '\n'
         try:
             with file_or_std(filename, 'rb') as f:
                 encoding = stream_encoding(f)
-                linesep = os.linesep if filename else '\n'
                 reader = csv.reader(f, lineterminator=linesep)
                 for row in reader:
                     if len(row) < 2:
@@ -762,8 +775,9 @@ class PermissionAdmin(Component):
                     if user.isupper():
                         raise AdminCommandError(
                             _("Invalid user %(user)s on line %(line)d: All "
-                              "upper-cased tokens are reserved for permission "
-                              "names.", user=user, line=reader.line_num))
+                              "upper-cased tokens are reserved for "
+                              "permission names.",
+                              user=user, line=reader.line_num))
                     old_actions = self.get_user_perms(user)
                     for action in set(actions) - set(old_actions):
                         permsys.grant_permission(user, action)
