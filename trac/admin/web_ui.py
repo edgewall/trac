@@ -14,11 +14,11 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from functools import partial
 import os
 import pkg_resources
 import re
 import shutil
+from functools import partial
 
 from genshi.builder import tag
 
@@ -26,16 +26,16 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info
 from trac.log import LOG_LEVELS
-from trac.perm import PermissionSystem, IPermissionRequestor
+from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.util.datefmt import all_timezones, pytz
-from trac.util.text import exception_to_unicode, \
-                           unicode_to_base64, unicode_from_base64
+from trac.util.text import exception_to_unicode, unicode_from_base64, \
+                           unicode_to_base64
 from trac.util.translation import _, Locale, get_available_locales, ngettext
 from trac.web.api import HTTPNotFound, IRequestHandler, \
                          is_valid_default_handler
-from trac.web.chrome import add_notice, add_stylesheet, \
-                            add_warning, Chrome, INavigationContributor, \
-                            ITemplateProvider
+from trac.web.chrome import Chrome, INavigationContributor, \
+                            ITemplateProvider, add_notice, add_stylesheet, \
+                            add_warning
 from trac.wiki.formatter import format_to_html
 
 
@@ -206,7 +206,8 @@ class BasicsAdminPanel(Component):
             default_date_format = req.args.get('default_date_format')
             if default_date_format != 'iso8601':
                 default_date_format = ''
-            self.config.set('trac', 'default_date_format', default_date_format)
+            self.config.set('trac', 'default_date_format',
+                            default_date_format)
 
             default_dateinfo_format = req.args.get('default_dateinfo_format')
             if default_dateinfo_format not in ('relative', 'absolute'):
@@ -357,7 +358,7 @@ class PermissionAdminPanel(Component):
                                   "permission names."))
 
             # Grant permission to subject
-            if req.args.get('add') and subject and action:
+            if 'add' in req.args and subject and action:
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 if action not in all_actions:
                     raise TracError(_("Unknown action"))
@@ -369,18 +370,19 @@ class PermissionAdminPanel(Component):
                                       subject=subject, action=action))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req, _("The permission %(action)s was already "
-                                       "granted to %(subject)s.",
+                    add_warning(req, _("The permission %(action)s was "
+                                       "already granted to %(subject)s.",
                                        action=action, subject=subject))
 
             # Add subject to group
-            elif req.args.get('add') and subject and group:
+            elif 'add' in req.args and subject and group:
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
-                    if not action in all_actions: # plugin disabled?
+                    if action not in all_actions:  # plugin disabled?
                         self.env.log.warn("Adding %s to group %s: "
-                            "Permission %s unavailable, skipping perm check.",
-                            subject, group, action)
+                                          "Permission %s unavailable, "
+                                          "skipping perm check.",
+                                          subject, group, action)
                     else:
                         req.perm.require(action,
                             message=_("The subject %(subject)s was not added "
@@ -391,8 +393,8 @@ class PermissionAdminPanel(Component):
                                       group=group, perm=action))
                 if (subject, group) not in all_permissions:
                     perm.grant_permission(subject, group)
-                    add_notice(req, _("The subject %(subject)s has been added "
-                                      "to the group %(group)s.",
+                    add_notice(req, _("The subject %(subject)s has been "
+                                      "added to the group %(group)s.",
                                       subject=subject, group=group))
                     req.redirect(req.href.admin(cat, page))
                 else:
@@ -401,21 +403,21 @@ class PermissionAdminPanel(Component):
                                        subject=subject, group=group))
 
             # Copy permissions to subject
-            elif req.args.get('copy') and subject and target:
+            elif 'copy' in req.args and subject and target:
                 req.perm.require('PERMISSION_GRANT')
 
                 subject_permissions = [i[1] for i in all_permissions
                                             if i[0] == subject and
                                                i[1].isupper()]
                 if not subject_permissions:
-                    add_warning(req,_("The subject %(subject)s does not "
-                                      "have any permissions.",
-                                      subject=subject))
+                    add_warning(req, _("The subject %(subject)s does not "
+                                       "have any permissions.",
+                                       subject=subject))
 
                 for action in subject_permissions:
                     if (target, action) in all_permissions:
                         continue
-                    if not action in all_actions: # plugin disabled?
+                    if action not in all_actions:  # plugin disabled?
                         self.env.log.warn("Skipped granting %s to %s: "
                                           "permission unavailable.",
                                           action, target)
@@ -436,11 +438,9 @@ class PermissionAdminPanel(Component):
                 req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action
-            elif req.args.get('remove') and req.args.get('sel'):
+            elif 'remove' in req.args and 'sel' in req.args:
                 req.perm('admin', 'general/perm').require('PERMISSION_REVOKE')
-                sel = req.args.get('sel')
-                sel = sel if isinstance(sel, list) else [sel]
-                for key in sel:
+                for key in req.args.getlist('sel'):
                     subject, action = key.split(':', 1)
                     subject = unicode_from_base64(subject)
                     action = unicode_from_base64(action)
@@ -517,7 +517,7 @@ class PluginAdminPanel(Component):
             shutil.copyfileobj(upload.file, target_file)
             self.log.info("Plugin %s installed to %s", plugin_filename,
                           target_path)
-        # TODO: Validate that the uploaded file is actually a valid Trac plugin
+        # TODO: Validate that the uploaded file is a valid Trac plugin
 
         # Make the environment reset itself on the next request
         self.env.config.touch()
@@ -537,7 +537,7 @@ class PluginAdminPanel(Component):
         self.env.config.touch()
 
     def _do_update(self, req):
-        """Update component enablement."""
+        """Update component enable state."""
         components = req.args.getlist('component')
         enabled = req.args.getlist('enable')
         added, removed = [], []
