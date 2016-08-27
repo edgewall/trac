@@ -95,9 +95,8 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
             self._testenv.svn_add("root.txt", "Hello World")
 
         """
-        f = open(os.path.join(self.work_dir(), filename), 'w')
-        f.write(data)
-        f.close()
+        with open(os.path.join(self.work_dir(), filename), 'w') as f:
+            f.write(data)
         self.call_in_workdir(['svn', 'add', filename])
         environ = os.environ.copy()
         environ['LC_ALL'] = 'C'     # Force English messages in svn

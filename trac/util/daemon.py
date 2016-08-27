@@ -44,8 +44,8 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
 
         # The pid file must be writable
         try:
-            fileobj = open(pidfile, 'a+')
-            fileobj.close()
+            with open(pidfile, 'a+'):
+                pass
         except IOError as e:
             from trac.util.text import exception_to_unicode
             sys.exit('Error writing to pid file: %s' % exception_to_unicode(e))

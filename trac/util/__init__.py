@@ -366,9 +366,8 @@ class NaivePopen(object):
         command = '( %s ) > %s' % (command, outfile)
         if input is not None:
             infile = tempfile.mktemp()
-            tmp = open(infile, 'w')
-            tmp.write(input)
-            tmp.close()
+            with open(infile, 'w') as tmp:
+                tmp.write(input)
             command = command + ' <' + infile
         if capturestderr:
             errfile = tempfile.mktemp()

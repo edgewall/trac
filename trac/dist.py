@@ -342,11 +342,8 @@ try:
         def run(self):
             for filename in self._get_po_files():
                 log.info('checking catalog %s', filename)
-                f = open(filename)
-                try:
+                with open(filename) as f:
                     catalog = read_po(f, domain=self.domain)
-                finally:
-                    f.close()
                 for message in catalog:
                     for error in self._check_message(catalog, message):
                         log.warn('%s:%d: %s', filename, message.lineno, error)

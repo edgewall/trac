@@ -321,23 +321,23 @@ class BasicAuthentication(PasswordFileAuthentication):
     def load(self, filename):
         # FIXME use a logger
         self.hash = {}
-        fd = open(filename, 'r')
-        for line in fd:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                u, h = line.split(':')
-            except ValueError:
-                print("Warning: invalid password line in %s: %s"
-                      % (filename, line), file=sys.stderr)
-                continue
-            if '$' in h or h.startswith('{SHA}') or self.crypt:
-                self.hash[u] = h
-            else:
-                print('Warning: cannot parse password for user "%s" '
-                      'without the "crypt" module. Install the passlib '
-                      'package from PyPI' % u, file=sys.stderr)
+        with open(filename, 'r') as fd:
+            for line in fd:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    u, h = line.split(':')
+                except ValueError:
+                    print("Warning: invalid password line in %s: %s"
+                          % (filename, line), file=sys.stderr)
+                    continue
+                if '$' in h or h.startswith('{SHA}') or self.crypt:
+                    self.hash[u] = h
+                else:
+                    print('Warning: cannot parse password for user "%s" '
+                          'without the "crypt" module. Install the passlib '
+                          'package from PyPI' % u, file=sys.stderr)
 
         if self.hash == {}:
             print("Warning: found no users in file:", filename,
@@ -392,19 +392,19 @@ class DigestAuthentication(PasswordFileAuthentication):
         """
         # FIXME use a logger
         self.hash = {}
-        fd = open(filename, 'r')
-        for line in fd.readlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                u, r, a1 = line.split(':')
-            except ValueError:
-                print("Warning: invalid digest line in %s: %s"
-                      % (filename, line), file=sys.stderr)
-                continue
-            if r == self.realm:
-                self.hash[u] = a1
+        with open(filename, 'r') as fd:
+            for line in fd.readlines():
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    u, r, a1 = line.split(':')
+                except ValueError:
+                    print("Warning: invalid digest line in %s: %s"
+                          % (filename, line), file=sys.stderr)
+                    continue
+                if r == self.realm:
+                    self.hash[u] = a1
         if self.hash == {}:
             print("Warning: found no users in realm:", self.realm,
                   file=sys.stderr)
