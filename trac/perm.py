@@ -66,6 +66,10 @@ class PermissionError(StandardError, TracBaseError):
         return self.args[0]
 
 
+class PermissionExistsError(TracError):
+    """Thrown when a unique key constraint is violated."""
+
+
 class IPermissionRequestor(Interface):
     """Extension point interface for components that define actions."""
 
@@ -346,6 +350,11 @@ class PermissionSystem(Component):
     def grant_permission(self, username, action):
         """Grant the user with the given name permission to perform to
         specified action.
+
+        :raises PermissionExistsError: if user already has the permission
+                                       or is a member of the group.
+
+        :since 1.3.1: raises PermissionExistsError rather than IntegrityError
         """
         if action.isupper() and action not in self.get_actions():
             raise TracError(_('%(name)s is not a valid action.', name=action))
@@ -354,7 +363,17 @@ class PermissionSystem(Component):
                               "action by casing only, which is not allowed.",
                               name=action))
 
-        self.store.grant_permission(username, action)
+        try:
+            self.store.grant_permission(username, action)
+        except self.env.db_exc.IntegrityError:
+            if action in self.get_actions():
+                raise PermissionExistsError(
+                    _("The user %(user)s already has permission %(action)s.",
+                      user=username, action=action))
+            else:
+                raise PermissionExistsError(
+                    _("The user %(user)s is already in the group %(group)s.",
+                      user=username, group=action))
 
     def revoke_permission(self, username, action):
         """Revokes the permission of the specified user to perform an
@@ -706,14 +725,29 @@ class PermissionAdmin(Component):
         if user.isupper():
             raise AdminCommandError(_("All upper-cased tokens are reserved "
                                       "for permission names"))
-        for action in actions:
+
+        def grant_actions_atomically(actions):
+            action = None
             try:
-                permsys.grant_permission(user, action)
-            except self.env.db_exc.IntegrityError:
-                printout(_("The user %(user)s already has permission "
-                           "%(action)s.", user=user, action=action))
+                with self.env.db_transaction:
+                    for action in actions:
+                        permsys.grant_permission(user, action)
+            except PermissionExistsError as e:
+                printout(e)
+                return action
             except TracError as e:
                 raise AdminCommandError(e)
+
+        # An exception rolls back the atomic transaction so it's
+        # necessary to retry the transaction after removing the
+        # failed action from the list.
+        actions_to_grant = list(actions)
+        while actions_to_grant:
+            action_that_failed = grant_actions_atomically(actions_to_grant)
+            if action_that_failed is None:
+                break
+            else:
+                actions_to_grant.remove(action_that_failed)
 
     def _do_remove(self, user, *actions):
         permsys = PermissionSystem(self.env)

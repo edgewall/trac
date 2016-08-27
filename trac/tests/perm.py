@@ -199,6 +199,22 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.assertRaises(TracError, self.perm.grant_permission, 'user1',
                           'Test_Create')
 
+    def test_grant_permission_already_granted(self):
+        """`PermissionExistsError` is raised when granting a permission
+        that has already been granted.
+        """
+        self.perm.grant_permission('user1', 'TEST_CREATE')
+        self.assertRaises(perm.PermissionExistsError,
+                          self.perm.grant_permission, 'user1', 'TEST_CREATE')
+
+    def test_grant_permission_already_in_group(self):
+        """`PermissionExistsError` is raised when adding a user to
+        a group of which they are already a member.
+        """
+        self.perm.grant_permission('user1', 'group1')
+        self.assertRaises(perm.PermissionExistsError,
+                          self.perm.grant_permission, 'user1', 'group1')
+
     def test_get_all_permissions(self):
         self.perm.grant_permission('bob', 'TEST_CREATE')
         self.perm.grant_permission('jane', 'TEST_ADMIN')

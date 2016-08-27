@@ -13,9 +13,45 @@
 
 import unittest
 
-from trac.admin.web_ui import PluginAdminPanel
+from trac.admin.web_ui import PermissionAdminPanel, PluginAdminPanel
 from trac.core import Component
+from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
+
+
+class PermissionAdminPanelTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.panel = PermissionAdminPanel(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_grant_permission_action_already_granted(self):
+        """Warning is added when granting an action that has already
+        been granted.
+        """
+        req = MockRequest(self.env, method='POST', args={
+            'add': True, 'subject': 'anonymous', 'action': 'WIKI_VIEW'})
+
+        self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertIn("The user anonymous already has permission WIKI_VIEW.",
+                      req.chrome['warnings'])
+
+    def test_grant_permission_group_already_granted(self):
+        """Warning is added when adding a subject to a group and the
+        subject is already a member of the group.
+        """
+        PermissionSystem(self.env).grant_permission('user1', 'group1')
+        req = MockRequest(self.env, method='POST', args={
+            'add': True, 'subject': 'user1', 'group': 'group1'})
+
+        self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertIn("The user user1 is already in the group group1.",
+                      req.chrome['warnings'])
 
 
 class PluginAdminPanelTestCase(unittest.TestCase):
@@ -47,6 +83,7 @@ class PluginAdminPanelTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(PermissionAdminPanelTestCase))
     suite.addTest(unittest.makeSuite(PluginAdminPanelTestCase))
     return suite
 

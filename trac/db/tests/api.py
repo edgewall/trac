@@ -265,6 +265,41 @@ class ConnectionTestCase(unittest.TestCase):
         self.assertEqual((1, 'author1', 'comment one'), data[0])
         self.assertEqual((2, 'author2', 'comment two'), data[1])
 
+    def test_rollback_transaction_on_exception(self):
+        """Transaction is rolled back when an exception occurs in the
+        transaction context manager.
+        """
+        insert_sql = "INSERT INTO blog (bid, author) VALUES (42, 'anonymous')"
+        try:
+            with self.env.db_transaction as db:
+                db(insert_sql)
+                db(insert_sql)
+        except self.env.db_exc.IntegrityError:
+            pass
+
+        for _, in self.env.db_query("""
+                SELECT author FROM blog WHERE bid=42
+                """):
+            self.fail("Transaction was not rolled back")
+
+    def test_rollback_nested_transaction_on_exception(self):
+        """Transaction is rolled back when an exception occurs in the
+        inner transaction context manager.
+        """
+        sql = "INSERT INTO blog (bid, author) VALUES (42, 'anonymous')"
+        try:
+            with self.env.db_transaction as db_outer:
+                db_outer(sql)
+                with self.env.db_transaction as db_inner:
+                    db_inner(sql)
+        except self.env.db_exc.IntegrityError:
+            pass
+
+        for _, in self.env.db_query("""
+                SELECT author FROM blog WHERE bid=42
+                """):
+            self.fail("Transaction was not rolled back")
+
     def test_get_last_id(self):
         q = "INSERT INTO report (author) VALUES ('anonymous')"
         with self.env.db_transaction as db:

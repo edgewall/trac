@@ -26,7 +26,8 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info
 from trac.log import LOG_LEVELS
-from trac.perm import IPermissionRequestor, PermissionSystem
+from trac.perm import IPermissionRequestor, PermissionExistsError, \
+                      PermissionSystem
 from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, unicode_from_base64, \
                            unicode_to_base64
@@ -342,7 +343,6 @@ class PermissionAdminPanel(Component):
 
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
-        all_permissions = perm.get_all_permissions()
         all_actions = perm.get_actions()
 
         if req.method == 'POST':
@@ -363,16 +363,15 @@ class PermissionAdminPanel(Component):
                 if action not in all_actions:
                     raise TracError(_("Unknown action"))
                 req.perm.require(action)
-                if (subject, action) not in all_permissions:
+                try:
                     perm.grant_permission(subject, action)
+                except TracError as e:
+                    add_warning(req, e)
+                else:
                     add_notice(req, _("The subject %(subject)s has been "
                                       "granted the permission %(action)s.",
                                       subject=subject, action=action))
                     req.redirect(req.href.admin(cat, page))
-                else:
-                    add_warning(req, _("The permission %(action)s was "
-                                       "already granted to %(subject)s.",
-                                       action=action, subject=subject))
 
             # Add subject to group
             elif 'add' in req.args and subject and group:
@@ -391,32 +390,30 @@ class PermissionAdminPanel(Component):
                                       "users cannot grant permissions they "
                                       "don't possess.", subject=subject,
                                       group=group, perm=action))
-                if (subject, group) not in all_permissions:
+                try:
                     perm.grant_permission(subject, group)
+                except TracError as e:
+                    add_warning(req, e)
+                else:
                     add_notice(req, _("The subject %(subject)s has been "
                                       "added to the group %(group)s.",
                                       subject=subject, group=group))
                     req.redirect(req.href.admin(cat, page))
-                else:
-                    add_warning(req, _("The subject %(subject)s was already "
-                                       "added to the group %(group)s.",
-                                       subject=subject, group=group))
 
             # Copy permissions to subject
             elif 'copy' in req.args and subject and target:
                 req.perm.require('PERMISSION_GRANT')
 
-                subject_permissions = [i[1] for i in all_permissions
-                                            if i[0] == subject and
-                                               i[1].isupper()]
+                subject_permissions = [p[1] for p
+                                            in perm.get_all_permissions()
+                                            if p[0] == subject and
+                                               p[1].isupper()]
                 if not subject_permissions:
                     add_warning(req, _("The subject %(subject)s does not "
                                        "have any permissions.",
                                        subject=subject))
 
                 for action in subject_permissions:
-                    if (target, action) in all_permissions:
-                        continue
                     if action not in all_actions:  # plugin disabled?
                         self.env.log.warn("Skipped granting %s to %s: "
                                           "permission unavailable.",
@@ -430,11 +427,15 @@ class PermissionAdminPanel(Component):
                                           "permissions they don't possess.",
                                           action=action, subject=subject))
                             continue
-                        perm.grant_permission(target, action)
-                        add_notice(req, _("The subject %(subject)s has "
-                                          "been granted the permission "
-                                          "%(action)s.",
-                                          subject=target, action=action))
+                        try:
+                            perm.grant_permission(target, action)
+                        except PermissionExistsError:
+                            pass
+                        else:
+                            add_notice(req, _("The subject %(subject)s has "
+                                              "been granted the permission "
+                                              "%(action)s.",
+                                              subject=target, action=action))
                 req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action

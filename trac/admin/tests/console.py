@@ -388,24 +388,47 @@ class TracadminTestCase(TracAdminTestCaseBase):
         self.assertEqual(0, rv, output2)
         self.assertExpectedResult(output + output2)
 
+    def test_permission_add_subject_already_in_group(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a group that the subject is already a member of and
+        checks for the message. Other permissions passed are added.
+        """
+        rv, output1 = self._execute('permission add user1 group2')
+        self.assertEqual(0, rv, output1)
+        rv, output2 = self._execute('permission add user1 group1 group2 '
+                                    'group3')
+        self.assertEqual(0, rv, output2)
+        rv, output3 = self._execute('permission list')
+        self.assertEqual(0, rv, output3)
+        self.assertExpectedResult(output2 + output3)
+
     def test_permission_add_differs_from_action_by_casing(self):
         """
         Tests the 'permission add' command in trac-admin.  This particular
         test passes a permission that differs from an action by casing and
-        checks for the message.
+        checks for the message. None of the permissions in the list are
+        granted.
         """
-        rv, output = self._execute('permission add anonymous Trac_Admin')
+        rv, output = self._execute('permission add joe WIKI_CREATE '
+                                   'Trac_Admin WIKI_MODIFY')
         self.assertEqual(2, rv, output)
-        self.assertExpectedResult(output)
+        rv, output2 = self._execute('permission list')
+        self.assertEqual(0, rv, output2)
+        self.assertExpectedResult(output + output2)
 
     def test_permission_add_unknown_action(self):
         """
         Tests the 'permission add' command in trac-admin.  This particular
         test tries granting NOT_A_PERM to a user. NOT_A_PERM does not exist
-        in the system."""
-        rv, output = self._execute('permission add joe NOT_A_PERM')
+        in the system. None of the permissions in the list are granted.
+        """
+        rv, output = self._execute('permission add joe WIKI_CREATE '
+                                   'NOT_A_PERM WIKI_MODIFY')
         self.assertEqual(2, rv, output)
-        self.assertExpectedResult(output)
+        rv, output2 = self._execute('permission list')
+        self.assertEqual(0, rv, output2)
+        self.assertExpectedResult(output + output2)
 
     def test_permission_remove_one_action_ok(self):
         """
