@@ -25,7 +25,6 @@ import os.path
 import posixpath
 import re
 import shutil
-import sys
 import unicodedata
 
 from genshi.builder import tag
@@ -38,7 +37,8 @@ from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import content_disposition, create_zipinfo, get_reporter_id
+from trac.util import content_disposition, create_zipinfo, file_or_std, \
+                      get_reporter_id
 from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, path_to_unicode, \
@@ -1082,13 +1082,8 @@ class AttachmentAdmin(Component):
                 raise AdminCommandError(_("File '%(name)s' exists",
                                           name=path_to_unicode(destination)))
         with attachment.open() as input:
-            output = open(destination, "wb") if destination is not None \
-                     else sys.stdout
-            try:
+            with file_or_std(destination, 'wb') as output:
                 shutil.copyfileobj(input, output)
-            finally:
-                if destination is not None:
-                    output.close()
 
 
 _control_codes_re = re.compile(
