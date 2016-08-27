@@ -15,6 +15,7 @@
 import argparse
 import os
 import sys
+from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
 
 from trac.loader import load_components
@@ -140,28 +141,28 @@ def download_default_pages(names, prefix):
     host = 'trac.edgewall.org'
     if prefix and not prefix.endswith('/'):
         prefix += '/'
-    conn = HTTPSConnection(host)
-    for name in names:
-        if name in ('WikiStart', 'SandBox'):
-            continue
-        sys.stdout.write('Downloading %s%s' % (prefix, name))
-        conn.request('GET', '/wiki/%s%s?format=txt' % (prefix, name))
-        response = conn.getresponse()
-        content = response.read()
-        if prefix and (response.status != 200 or not content):
-            sys.stdout.write(' %s' % name)
-            conn.request('GET', '/wiki/%s?format=txt' % name)
+    with closing(HTTPSConnection(host)) as conn:
+        for name in names:
+            if name in ('WikiStart', 'SandBox'):
+                continue
+            sys.stdout.write('Downloading %s%s' % (prefix, name))
+            conn.request('GET', '/wiki/%s%s?format=txt' % (prefix, name))
             response = conn.getresponse()
             content = response.read()
-        if response.status == 200 and content:
-            with open('trac/wiki/default-pages/' + name, 'w') as f:
-                lines = content.replace('\r\n', '\n').splitlines(True)
-                f.write(''.join(line for line in lines
-                                     if line.strip() != '[[TranslatedPages]]'))
-            sys.stdout.write('\tdone.\n')
-        else:
-            sys.stdout.write('\tmissing or empty.\n')
-    conn.close()
+            if prefix and (response.status != 200 or not content):
+                sys.stdout.write(' %s' % name)
+                conn.request('GET', '/wiki/%s?format=txt' % name)
+                response = conn.getresponse()
+                content = response.read()
+            if response.status == 200 and content:
+                with open('trac/wiki/default-pages/' + name, 'w') as f:
+                    lines = content.replace('\r\n', '\n').splitlines(True)
+                    f.write(''.join(line for line in lines
+                                         if line.strip() !=
+                                            '[[TranslatedPages]]'))
+                sys.stdout.write('\tdone.\n')
+            else:
+                sys.stdout.write('\tmissing or empty.\n')
 
 
 def main():

@@ -7,6 +7,7 @@ import os.path
 import re
 import sys
 
+from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
 import html2rest
 
@@ -62,9 +63,8 @@ def wiki2rest(env, context, wiki):
     html = re.sub(r'<em>\s*([^<]*?)\s*</em>', r'<em>\1</em>', html)
     html = '<html><body>%s</body></html>' % html
     writer = io.BytesIO()
-    parser = Parser(writer, 'utf-8', None, None)
-    parser.feed(html)
-    parser.close()
+    with closing(Parser(writer, 'utf-8', None, None)) as parser:
+        parser.feed(html)
     rst = writer.getvalue().strip('\n')
     rst = re.sub('\n{4,}', '\n\n\n', rst)
     # sort links

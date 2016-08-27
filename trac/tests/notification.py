@@ -27,6 +27,7 @@ import socket
 import string
 import threading
 import unittest
+from contextlib import closing
 
 from trac.config import ConfigurationError
 from trac.notification import SendmailEmailSender, SmtpEmailSender
@@ -324,13 +325,12 @@ class SMTPThreadedServer(threading.Thread):
         # run from the main thread
         self.server.stop()
         # send a message to make the SMTP server quit gracefully
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            s.connect(('127.0.0.1', self.port))
-            r = s.send("QUIT\r\n")
-        except socket.error:
-            pass
-        s.close()
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+            try:
+                s.connect(('127.0.0.1', self.port))
+                s.send("QUIT\r\n")
+            except socket.error:
+                pass
         # wait for the SMTP server to complete (for up to 2 secs)
         self.join(2.0)
         # clean up the SMTP server (and force quit if needed)

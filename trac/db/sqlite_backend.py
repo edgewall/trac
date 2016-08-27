@@ -18,6 +18,7 @@ import errno
 import os
 import re
 import weakref
+from contextlib import closing
 
 from genshi.builder import tag
 
@@ -200,6 +201,14 @@ class SQLiteConnector(Component):
         return sqlite
 
     def init_db(self, path, schema=None, log=None, params={}):
+
+        def insert_schema(cursor, schema):
+            if schema is None:
+                from trac.db_default import schema
+            for table in schema:
+                for stmt in self.to_sql(table):
+                    cursor.execute(stmt)
+
         if path != ':memory:':
             # make the directory to hold the database
             if self.db_exists(path):
@@ -213,19 +222,15 @@ class SQLiteConnector(Component):
             # this direct connect will create the database if needed
             cnx = sqlite.connect(path, isolation_level=None,
                                  timeout=int(params.get('timeout', 10000)))
-            cursor = cnx.cursor()
-            _set_journal_mode(cursor, params.get('journal_mode'))
-            _set_synchronous(cursor, params.get('synchronous'))
+            with closing(cnx.cursor()) as cursor:
+                _set_journal_mode(cursor, params.get('journal_mode'))
+                _set_synchronous(cursor, params.get('synchronous'))
+                insert_schema(cursor, schema)
             cnx.isolation_level = 'DEFERRED'
         else:
             cnx = self.get_connection(path, log, params)
-            cursor = cnx.cursor()
-        if schema is None:
-            from trac.db_default import schema
-        for table in schema:
-            for stmt in self.to_sql(table):
-                cursor.execute(stmt)
-        cursor.close()
+            with closing(cnx.cursor()) as cursor:
+                insert_schema(cursor, schema)
         cnx.commit()
 
     def destroy_db(self, path, log=None, params={}):
@@ -325,10 +330,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
                 cnx.load_extension(ext)
             cnx.enable_load_extension(False)
 
-        cursor = cnx.cursor()
-        _set_journal_mode(cursor, params.get('journal_mode'))
-        _set_synchronous(cursor, params.get('synchronous'))
-        cursor.close()
+        with closing(cnx.cursor()) as cursor:
+            _set_journal_mode(cursor, params.get('journal_mode'))
+            _set_synchronous(cursor, params.get('synchronous'))
         cnx.isolation_level = 'DEFERRED'
         ConnectionWrapper.__init__(self, cnx, log)
 

@@ -16,6 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re
+from contextlib import closing
 
 _sql_escape_percent_re = re.compile("""
     '(?:[^']+|'')*' |
@@ -124,10 +125,9 @@ class ConnectionWrapper(object):
         When more control is needed, use `cursor()`.
         """
         dql = self.check_select(query)
-        cursor = self.cnx.cursor()
-        cursor.execute(query, params if params is not None else [])
-        rows = cursor.fetchall() if dql else None
-        cursor.close()
+        with closing(self.cnx.cursor()) as cursor:
+            cursor.execute(query, params if params is not None else [])
+            rows = cursor.fetchall() if dql else None
         return rows
 
     __call__ = execute
@@ -142,10 +142,9 @@ class ConnectionWrapper(object):
         When more control is needed, use `cursor()`.
         """
         dql = self.check_select(query)
-        cursor = self.cnx.cursor()
-        cursor.executemany(query, params)
-        rows = cursor.fetchall() if dql else None
-        cursor.close()
+        with closing(self.cnx.cursor()) as cursor:
+            cursor.executemany(query, params)
+            rows = cursor.fetchall() if dql else None
         return rows
 
     def check_select(self, query):

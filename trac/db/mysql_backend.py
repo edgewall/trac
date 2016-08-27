@@ -18,6 +18,7 @@ import os
 import re
 import sys
 import types
+from contextlib import closing
 
 from genshi.core import Markup
 
@@ -158,9 +159,8 @@ class MySQLConnector(Component):
     def _utf8_size(self, cnx):
         if cnx is None:
             connector, args = DatabaseManager(self.env).get_connector()
-            cnx = connector.get_connection(**args)
-            charset = cnx.charset
-            cnx.close()
+            with closing(connector.get_connection(**args)) as cnx:
+                charset = cnx.charset
         else:
             charset = cnx.charset
         return 4 if charset == 'utf8mb4' else 3
