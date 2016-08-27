@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009-2013 Edgewall Software
+# Copyright (C) 2009-2016 Edgewall Software
 # Copyright (C) 2009 Remy Blank <remy.blank@pobox.com>
 # All rights reserved.
 #
@@ -36,10 +36,11 @@ class MilestoneToVersion(Component):
 
     pattern = Option('milestone_to_version', 'pattern',
                      r'(?i)(?:v(?:er)?\.?|version)?\s*(?P<version>\d.*)',
-        """A regular expression to match the names of milestones that should be
-        made into versions when they are completed. The pattern must include
-        one named group called 'version' that matches the version number
-        itself.""")
+        """A regular expression to match the names of milestones that
+        should be made into versions when they are completed. The pattern
+        must include one named group called 'version' that matches the
+        version number itself.
+        """)
 
     def milestone_created(self, milestone):
         pass
@@ -56,6 +57,14 @@ class MilestoneToVersion(Component):
             return
         try:
             version = Version(self.env, version_name)
+        except ResourceNotFound:
+            version = Version(self.env)
+            version.name = version_name
+            version.time = milestone.completed
+            version.insert()
+            self.log.info('New version "%s" created from completed milestone '
+                          '"%s".', version.name, milestone.name)
+        else:
             if not version.time:
                 version.time = milestone.completed
                 version.update()
@@ -66,13 +75,6 @@ class MilestoneToVersion(Component):
                 self.log.info('Version "%s" already exists.  No new version '
                               'created from milestone "%s"', version.name,
                               milestone.name)
-        except ResourceNotFound:
-            version = Version(self.env)
-            version.name = version_name
-            version.time = milestone.completed
-            version.insert()
-            self.log.info('New version "%s" created from completed milestone '
-                          '"%s".', version.name, milestone.name)
 
     def milestone_deleted(self, milestone):
         pass
