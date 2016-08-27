@@ -91,7 +91,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                     ('dev', 'REPORT_ADMIN'),
                     ('john', 'dev')]
         for res in self.store.get_all_permissions():
-            self.assertFalse(res not in expected)
+            self.assertIn(res, expected)
 
 
 class TestPermissionRequestor(Component):
@@ -111,9 +111,9 @@ class PermissionErrorTestCase(unittest.TestCase):
 
     def test_default_message(self):
         permission_error = perm.PermissionError()
-        self.assertEqual(None, permission_error.action)
-        self.assertEqual(None, permission_error.resource)
-        self.assertEqual(None, permission_error.env)
+        self.assertIsNone(permission_error.action)
+        self.assertIsNone(permission_error.resource)
+        self.assertIsNone(permission_error.env)
         self.assertEqual("Insufficient privileges to perform this operation.",
                          unicode(permission_error))
         self.assertEqual("Forbidden", permission_error.title)
@@ -128,8 +128,8 @@ class PermissionErrorTestCase(unittest.TestCase):
         action = 'WIKI_VIEW'
         permission_error = perm.PermissionError(action)
         self.assertEqual(action, permission_error.action)
-        self.assertEqual(None, permission_error.resource)
-        self.assertEqual(None, permission_error.env)
+        self.assertIsNone(permission_error.resource)
+        self.assertIsNone(permission_error.env)
         self.assertEqual("WIKI_VIEW privileges are required to perform this "
                          "operation. You don't have the required "
                          "permissions.", unicode(permission_error))
@@ -205,7 +205,7 @@ class PermissionSystemTestCase(unittest.TestCase):
         expected = [('bob', 'TEST_CREATE'),
                     ('jane', 'TEST_ADMIN')]
         for res in self.perm.get_all_permissions():
-            self.assertFalse(res not in expected)
+            self.assertIn(res, expected)
 
     def test_get_groups_dict(self):
         permissions = [
@@ -350,8 +350,8 @@ class PermissionPolicyTestCase(unittest.TestCase):
 
     def test_grant_revoke_permissions(self):
         self.policy.grant('testuser', ['TEST_MODIFY', 'TEST_ADMIN'])
-        self.assertEqual('TEST_MODIFY' in self.perm, True)
-        self.assertEqual('TEST_ADMIN' in self.perm, True)
+        self.assertTrue('TEST_MODIFY' in self.perm)
+        self.assertTrue('TEST_ADMIN' in self.perm)
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): True,
                           ('testuser', 'TEST_ADMIN'): True})
@@ -366,8 +366,8 @@ class PermissionPolicyTestCase(unittest.TestCase):
         self.assertEqual(list(system.policies),
                          [self.policy,
                           perm.DefaultPermissionPolicy(self.env)])
-        self.assertEqual('TEST_MODIFY' in self.perm, True)
-        self.assertEqual('TEST_ADMIN' in self.perm, True)
+        self.assertTrue('TEST_MODIFY' in self.perm)
+        self.assertTrue('TEST_ADMIN' in self.perm)
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): True,
                           ('testuser', 'TEST_ADMIN'): None})
