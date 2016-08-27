@@ -44,8 +44,8 @@ class IAdminPanelProvider(Interface):
         """Process a request for an admin panel.
 
         This function should return a tuple of the form `(template, data)`,
-        where `template` is the name of the template to use and `data` is the
-        data to be passed to the template.
+        where `template` is the name of the template to use and `data` is
+        the data to be passed to the template.
         """
 
 
@@ -66,18 +66,18 @@ class IAdminCommandProvider(Interface):
         """Return a list of available admin commands.
 
         The items returned by this function must be tuples of the form
-        `(command, args, help, complete, execute)`, where `command` contains
-        the space-separated command and sub-command names, `args` is a string
-        describing the command arguments and `help` is the help text. The
-        first paragraph of the help text is taken as a short help, shown in the
-        list of commands.
+        `(command, args, help, complete, execute)`, where `command`
+        contains the space-separated command and sub-command names, `args`
+        is a string describing the command arguments and `help` is the
+        help text. The first paragraph of the help text is taken as a
+        short help, shown in the list of commands.
 
-        `complete` is called to auto-complete the command arguments, with the
-        current list of arguments as its only argument. It should return a list
-        of relevant values for the last argument in the list.
+        `complete` is called to auto-complete the command arguments, with
+        the current list of arguments as its only argument. It should
+        return a list of relevant values for the last argument in the list.
 
-        `execute` is called to execute the command, with the command arguments
-        passed as positional arguments.
+        `execute` is called to execute the command, with the command
+        arguments passed as positional arguments.
         """
 
 
@@ -104,11 +104,11 @@ class AdminCommandManager(Component):
             for cmd in provider.get_admin_commands() or []:
                 parts = cmd[0].split()
                 plen = min(len(parts), len(args) - 1)
-                if args[:plen] != parts[:plen]:         # Prefix doesn't match
+                if args[:plen] != parts[:plen]:        # Prefix doesn't match
                     continue
-                elif len(args) <= len(parts):           # Command name
+                elif len(args) <= len(parts):          # Command name
                     comp.append(parts[len(args) - 1])
-                elif not cmd_only:                      # Arguments
+                elif not cmd_only:                     # Arguments
                     if cmd[3] is None:
                         return []
                     return cmd[3](args[len(parts):]) or []
@@ -128,7 +128,7 @@ class AdminCommandManager(Component):
                     except AdminCommandError as e:
                         e.cmd = ' '.join(parts)
                         raise
-                    except TypeError as e:
+                    except TypeError:
                         tb = traceback.extract_tb(sys.exc_info()[2])
                         if len(tb) == 1:
                             raise AdminCommandError(_("Invalid arguments"),
@@ -144,7 +144,7 @@ class AdminCommandManager(Component):
         cmds = set()
         for provider in self.providers:
             for cmd in provider.get_admin_commands() or []:
-                cmds.add(cmd[0].split()[0]) # use only first token
+                cmds.add(cmd[0].split()[0])  # use only first token
 
         def score(cmd, arg):
             if cmd.startswith(arg):
