@@ -58,8 +58,6 @@ class EnvironmentTestCase(unittest.TestCase):
     def setUp(self):
         env_path = mkdtemp()
         self.env = Environment(env_path, create=True)
-        self.env.config.set('trac', 'base_url',
-                            'http://trac.edgewall.org/some/path')
         self.env.config.save()
 
     def tearDown(self):
@@ -70,21 +68,6 @@ class EnvironmentTestCase(unittest.TestCase):
         """TracError is raised when config file is missing."""
         os.remove(self.env.config_file_path)
         self.assertRaises(TracError, Environment, self.env.path)
-
-    def test_db_exc(self):
-        db_exc = self.env.db_exc
-        self.assertTrue(hasattr(db_exc, 'IntegrityError'))
-        self.assertIs(db_exc, self.env.db_exc)
-
-    def test_abs_href(self):
-        abs_href = self.env.abs_href
-        self.assertEqual('http://trac.edgewall.org/some/path', abs_href())
-        self.assertIs(abs_href, self.env.abs_href)
-
-    def test_href(self):
-        href = self.env.href
-        self.assertEqual('/some/path', href())
-        self.assertIs(href, self.env.href)
 
     def test_database_version(self):
         """Testing env.database_version"""
@@ -97,8 +80,6 @@ class EnvironmentTestCase(unittest.TestCase):
     def test_is_component_enabled(self):
         self.assertEqual(True, Environment.required)
         self.assertEqual(True, self.env.is_component_enabled(Environment))
-        self.assertEqual(False, EnvironmentStub.required)
-        self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
 
     def test_dumped_values_in_tracini(self):
         parser = RawConfigParser()
@@ -178,6 +159,37 @@ class EnvironmentTestCase(unittest.TestCase):
         self.env.upgrade()
         self.assertTrue(participant_a.called)
         self.assertFalse(participant_b.called)
+
+
+class EnvironmentAttributesTestCase(unittest.TestCase):
+    """Tests for attributes which don't require a real environment
+    on disk, and therefore can be executed against an `EnvironmentStub`
+    object (faster execution).
+    """
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.config.set('trac', 'base_url',
+                            'http://trac.edgewall.org/some/path')
+
+    def test_is_component_enabled(self):
+        self.assertEqual(False, EnvironmentStub.required)
+        self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
+
+    def test_db_exc(self):
+        db_exc = self.env.db_exc
+        self.assertTrue(hasattr(db_exc, 'IntegrityError'))
+        self.assertIs(db_exc, self.env.db_exc)
+
+    def test_abs_href(self):
+        abs_href = self.env.abs_href
+        self.assertEqual('http://trac.edgewall.org/some/path', abs_href())
+        self.assertIs(abs_href, self.env.abs_href)
+
+    def test_href(self):
+        href = self.env.href
+        self.assertEqual('/some/path', href())
+        self.assertIs(href, self.env.href)
 
 
 class KnownUsersTestCase(unittest.TestCase):
@@ -288,6 +300,7 @@ class SystemInfoProviderTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
