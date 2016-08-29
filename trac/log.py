@@ -40,9 +40,7 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     elif logtype == 'stderr':
         hdlr = logging.StreamHandler(sys.stderr)
     else:
-        hdlr = logging.handlers.BufferingHandler(0)
-        # Note: this _really_ throws away log events, as a `MemoryHandler`
-        # would keep _all_ records in case there's no target handler (a bug?)
+        hdlr = logging.NullHandler()
 
     level = level.upper()
     if level in ('DEBUG', 'ALL'):
