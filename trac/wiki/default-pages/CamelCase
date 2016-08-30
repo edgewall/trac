@@ -1,4 +1,3 @@
-
 = !CamelCase
 
 New wiki links are automatically created when concatenating capitalized words, such that for example the word 'Camel' and the word 'Case' concatenated form a link to this CamelCase page. 

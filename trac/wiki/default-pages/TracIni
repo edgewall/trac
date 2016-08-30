@@ -26,10 +26,6 @@ Note that the templates found in the `templates/` directory of the TracEnvironme
 
 This is a brief reference of available configuration options, and their default settings.
 
-{{{#!box note
-The `[hg]`, `[spam-filter]`, `[translatedpages]`, `[vote]`, `[wikiextras]` and `[wikiextras-symbols]` sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.
-}}}
-
 Documentation improvements should be discussed on the [trac:MailingList#Trac-dev trac-dev mailing list] or described in a [trac:NewTicket ticket]. Even better, [trac:TracDev/SubmittingPatches submit a patch] against the docstrings in the code.
 {{{ #!comment
 Please don't waste your time by editing the HTML code below, changes won't be picked up. Instead, follow the above guidance for suggesting documentation improvements.
