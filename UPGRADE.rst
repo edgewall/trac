@@ -1,3 +1,5 @@
+﻿.. charset=utf-8
+
 Upgrade Instructions
 ====================
 
@@ -11,7 +13,7 @@ Upgrade Instructions
     #. 5. Refresh static resources
     #. 6. Steps specific to a given Trac version
 
-        #. Upgrading from Trac 1.0 to 1.1.x
+        #. Upgrading from Trac 1.0 to 1.2
         #. Upgrading from Trac 0.12 to Trac 1.0
         #. Upgrading from Trac 0.11 to Trac 0.12
         #. Upgrading from Trac 0.10 to Trac 0.11
@@ -59,22 +61,18 @@ beginning.
 2. Update the Trac Code
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Get the new version as described in `TracInstall`_, or your operating
-system specific procedure.
+Get the new version as described in `TracInstall`_, or through your
+operating system package manager.
 
-If you already have a 0.12 version of Trac installed via
+If you already an earlier version of Trac installed via
 `easy_install`, it might be easiest to also use `easy_install` to
 upgrade your Trac installation:
 
 
 ::
 
-    easy_install --upgrade Trac==1.0
+    easy_install --upgrade Trac==1.2
 
-
-If you do a manual (not operating system-specific) upgrade, you should
-also stop any running Trac servers before the installation. Doing
-"hot" upgrades is not advised, especially on Windows (`#7265`_).
 
 You may also want to remove the pre-existing Trac code by deleting the
 `trac` directory from the Python `lib/site-packages` directory, or
@@ -89,13 +87,12 @@ locations are typical:
 + on MacOSX: `/Library/Python/2.X/site-packages`
 
 
-You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates`
-and `wiki-default` directories that are commonly found in a directory
-called `share/trac`. The exact location depends on your platform. This
-cleanup is not mandatory, but makes it easier to troubleshoot issues
-later on, as your installation is uncluttered by code or templates
-from a previous release that is not used anymore. As usual, make a
-backup before actually removing things.
+You may also want to remove the directory in which your static
+resources are `deployed`_. The exact location depends on your
+platform. This cleanup is not mandatory, but makes it easier to
+troubleshoot issues later on, as your installation is uncluttered by
+code or templates from a previous release that is not used anymore. As
+usual, make a backup before actually removing things.
 
 
 3. Upgrade the Trac Environment
@@ -114,12 +111,13 @@ scripts are run via `trac-admin`_:
     trac-admin /path/to/projenv upgrade
 
 
-This command will do nothing if the environment is already up-to-date.
+This command will not have any effect if the environment is already
+up-to-date.
 
 Note that a backup of your database will be performed automatically
 prior to the upgrade. This feature is relatively new for PostgreSQL or
 MySQL databases, so if it fails, you will have to backup the database
-manually. Then, to perform the actual upgrade, run:
+manually. Then, to perform the actual upgrade:
 
 
 ::
@@ -157,7 +155,7 @@ using the same command:
     trac-admin /path/to/env deploy /deploy/path
 
 
-this will extract static resources and CGI scripts ( `trac.wsgi`, etc)
+This will extract static resources and CGI scripts ( `trac.wsgi`, etc)
 from new Trac version and its plugins into `/deploy/path`.
 
 Some web browsers (IE, Opera) cache CSS and Javascript files
@@ -170,20 +168,39 @@ should be enough.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Upgrading from Trac 1.0 to 1.1.x
-````````````````````````````````
+Upgrading from Trac 1.0 to 1.2
+``````````````````````````````
 
 
 Python 2.5 no longer supported
 ++++++++++++++++++++++++++++++
 
-Upgrade Python to at least 2.6, but not 3.0.
+Upgrade Python to at least 2.6 or 2.7, but not 3.0 or greater.
+
+
+Obsolete Plugins
+++++++++++++++++
+
+Trac has added functionality equivalent to the following plugins:
+
+
++ `AdminEnumListPlugin`_
++ `DateFieldPlugin`_: see the time `custom field type`_
++ `GroupBasedRedirectionPlugin`_: the default handler can set as a
+  user preference.
++ `LinenoMacro`_: see `WikiProcessors#AvailableProcessors`_
++ `NeverNotifyUpdaterPlugin`_: see `notification subscribers`_
++ `QueryUiAssistPlugin`_: see `TracQuery#Filters`_.
++ `TicketCreationStatusPlugin`_: see `#NewWorkflowActions`_
+
+
+The plugins should be removed when upgrading Trac to 1.2.
 
 
 New workflow actions
 ++++++++++++++++++++
 
-The ticket creation step is now controlled with a workflow action. The
+The ticket creation step is controlled with a workflow action. The
 default workflow has `create` and `create_and_assign` actions. The
 `create` action will always be added when upgrading the database. The
 `create_and_assign` action will be added if the workflow has an
@@ -211,8 +228,8 @@ upgrading the environment:
      LegacyAttachmentPolicy
 
 
-If other permission policies are enabled, *trac.ini* will need to be
-edited to append `ReadonlyWikiPolicy` to the list of active
+If other permission policies are enabled, `trac.ini` will need to have
+`ReadonlyWikiPolicy` appended to the list of active
 `permission_policies`. See
 `TracFineGrainedPermissions#ReadonlyWikiPolicy`_ for additional
 details on the proper ordering.
@@ -226,6 +243,20 @@ Python 2.4 no longer supported
 ++++++++++++++++++++++++++++++
 
 Upgrade Python to at least 2.5, but not 3.0.
+
+
+Obsolete Plugins
+++++++++++++++++
+
+Trac has added functionality equivalent to the following plugins:
+
+
++ `BatchModifyPlugin`_
++ ​`GitPlugin`_
++ `OverrideEditPlugin`_
+
+
+The plugins should be removed when upgrading Trac to 1.0.
 
 
 Subversion components not enabled by default for new installations
@@ -298,6 +329,25 @@ of this format, you'll need to convert it to SQLite v3.x first. See
 
 `PySqlite`_ 1.1.x is no longer supported. Please install 2.5.5 or
 later if possible, see `Trac database upgrade`_ below.
+
+
+Obsolete Plugins
+++++++++++++++++
+
+Trac has added functionality equivalent to the following plugins:
+
+
++ `AutoQueryPlugin`_
++ ​`AdminConsoleProviderPatch`_
++ `AnchorMacro`_: see `WikiFormatting#SettingAnchors`_
++ `TicketChangePlugin`_: see `TICKET_EDIT_COMMENT permission`_
++ `TicketDeletePlugin`_: see `tracopt.ticket.deleter`
++ `SubversionLocationPlugin`_: see `TracRepositoryAdmin#Repositories`_
++ `WikiCreoleRendererPlugin`_: see `WikiCreole`_
++ `RepoRevisionSyntaxPlugin`_ (added in 0.12.1)
+
+
+The plugins should be removed when upgrading Trac to 0.12.
 
 
 Multiple Repository Support
@@ -431,9 +481,7 @@ New Default Configurable Workflow
 When you run `trac-admin <env> upgrade`, your `trac.ini` will be
 modified to include a `[ticket-workflow]` section. The workflow
 configured in this case is the original workflow, so that ticket
-actions will behave like they did in 0.10.
-
-Graphically, that looks like this:
+actions will behave like they did in 0.10:
 Enable JavaScript to display the workflow graph.
 There are some significant caveats in this, such as accepting a ticket
 sets it to 'assigned' state, and assigning a ticket sets it to 'new'
@@ -546,24 +594,45 @@ See also: `TracGuide`_, `TracInstall`_
 
 .. _ [inherit] templates_dir: http://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
 .. _#7014: http://trac.edgewall.org/intertrac/%237014
-.. _#7265: http://trac.edgewall.org/intertrac/%237265
 .. _#9434: http://trac.edgewall.org/intertrac/%239434
+.. _#NewWorkflowActions: http://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
+.. _AdminConsoleProviderPatch: https://trac-hacks.org/wiki/AdminConsoleProviderPatch
+.. _AdminEnumListPlugin: https://trac-hacks.org/wiki/AdminEnumListPlugin
 .. _Alagazam: http://alagazam.net/
+.. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
+.. _AutoQueryPlugin: https://trac-hacks.org/wiki/AutoQueryPlugin
+.. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _CGI: http://trac.edgewall.org/wiki/TracCgi
 .. _ClearSilver: http://trac.edgewall.org/intertrac/ClearSilver
 .. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
+.. _custom field type: http://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
+.. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
+.. _deployed: http://trac.edgewall.org/wiki/TracInstall#cgi-bin
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 .. _environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
+.. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin
 .. _here: http://trac.edgewall.org/wiki/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
 .. _hotcopy: http://trac.edgewall.org/wiki/TracBackup
 .. _internal errors: http://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
+.. _LinenoMacro: https://trac-hacks.org/wiki/LinenoMacro
+.. _NeverNotifyUpdaterPlugin: https://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
 .. _No changeset ??? in the repository: http://trac.edgewall.org/intertrac/%236120
+.. _notification subscribers: http://trac.edgewall.org/wiki/TracNotification#notification-subscriber-section
+.. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
 .. _PySqlite#UpgradingSQLitefrom2.xto3.x: http://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x
 .. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
+.. _QueryUiAssistPlugin: https://trac-hacks.org/wiki/QueryUiAssistPlugin
+.. _RepoRevisionSyntaxPlugin: https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin
+.. _SubversionLocationPlugin: https://trac-hacks.org/wiki/SubversionLocationPlugin
+.. _TICKET_EDIT_COMMENT permission: http://trac.edgewall.org/wiki/TracPermissions#TicketSystem
+.. _TicketChangePlugin: https://trac-hacks.org/wiki/TicketChangePlugin
+.. _TicketCreationStatusPlugin: https://trac-hacks.org/wiki/TicketCreationStatusPlugin
+.. _TicketDeletePlugin: https://trac-hacks.org/wiki/TicketDeletePlugin
 .. _Trac database upgrade: http://trac.edgewall.org/wiki/TracUpgrade#Tracdatabaseupgrade
 .. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
-.. _trac-hacks.org: http://trac-hacks.org
+.. _trac-hacks.org: https://trac-hacks.org
 .. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
 .. _TracEnvironment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _TracFineGrainedPermissions#ReadonlyWikiPolicy: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy
@@ -572,12 +641,18 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracInstall: http://trac.edgewall.org/wiki/TracInstall
 .. _TracInterfaceCustomization#SiteAppearance: http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
 .. _TracInterfaceCustomization: http://trac.edgewall.org/wiki/TracInterfaceCustomization
-.. _TracMigratePlugin: http://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracMigratePlugin: https://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracQuery#Filters: http://trac.edgewall.org/wiki/TracQuery#Filters
 .. _TracRepositoryAdmin#ExplicitSync: http://trac.edgewall.org/wiki/TracRepositoryAdmin#ExplicitSync
 .. _TracRepositoryAdmin#Migration: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration
+.. _TracRepositoryAdmin#Repositories: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Repositories
 .. _TracRepositoryAdmin#Synchronization: http://trac.edgewall.org/wiki/TracRepositoryAdmin#Synchronization
 .. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
 .. _TracWorkflow: http://trac.edgewall.org/wiki/TracWorkflow
 .. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
 .. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _WikiCreole: http://trac.edgewall.org/intertrac/WikiCreole
+.. _WikiCreoleRendererPlugin: https://trac-hacks.org/wiki/WikiCreoleRendererPlugin
+.. _WikiFormatting#SettingAnchors: http://trac.edgewall.org/wiki/WikiFormatting#SettingAnchors
 .. _WikiMacros: http://trac.edgewall.org/wiki/WikiMacros
+.. _WikiProcessors#AvailableProcessors: http://trac.edgewall.org/wiki/WikiProcessors#AvailableProcessors

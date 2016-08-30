@@ -10,6 +10,26 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
 
+=== 1.2rc1
+
+//(August 31, 2016)//
+
+The first Trac 1.2 release candidate is the culmination of nearly 4 years of development.
+
+Highlights of the changes since 1.1.6:
+
+ - Pygments lexer options can be specified as [WikiProcessors WikiProcessor] arguments and defaults can be set in the environment configuration ([trac:#5654]).
+ - Usernames are replaced with full names when `[trac]` `show_full_names` is true ([trac:#7339]).
+ - Enum tables on the Ticket Admin pages can be reordered by drag and drop. ([trac:#11682]).
+ - Ticket changelog is restyled and has a new //Show comments// preference ([trac:#11835]).
+ - Authentication cookies can be shared across subdomains when `[trac]` `auth_cookie_domain` is configured ([trac:#12251]).
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.2rc1]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8 through 1.0.12]]
+(as 1.2rc1 contains all the fixes done for 1.0.8 through 1.0.12).
+
+[trac:source:/tags/trac-1.2rc1 View Tag] | [trac:milestone:1.2 View Milestone]
+
 === 1.1.6
 
 //(July 17, 2015)//
@@ -137,7 +157,87 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 
 [trac:source:/tags/trac-1.1.1 View Tag] | [trac:milestone:1.1.1 View Milestone]
 
-== 1.0.x Releases ==
+== 1.0.x Releases
+
+=== 1.0.12
+
+//(July 4, 2016)//
+
+Trac 1.0.12 provides around 20 bug fixes and minor enhancements. The following are some highlights:
+
+ - Reconnect to PostgreSQL server after restarting it
+   ([trac:#4984]).
+ - Workflow actions on the batch modify form are sorted
+   by the default attribute ([trac:#12447]).
+ - Fixed Pygments stylesheet not found when style name
+   contained a dash ([trac:#12505]).
+ - Fixed incorrect parsing of projects list file by
+   `GitwebProjectsRepositoryProvider` ([trac:#12518]).
+ - `TracIni` macro displays option documentation as 
+   multi-line rather than one-liner ([trac:#12522]).
+ - Fixed regression with `GitConnector` leading to
+   `IOError: Too many open files` ([trac:#12524]).
+
+[trac:source:/tags/trac-1.0.12 View Tag] | [trac:milestone:1.0.12 View Milestone]
+
+=== 1.0.11
+
+//(May 7, 2016)//
+
+Trac 1.0.11 provides more than 30 bug fixes and minor
+enhancements. As in 1.0.10, an area of focus has been to
+eliminate tracebacks in the logs due to invalid requests.
+The following are some additional highlights:
+
+ - Fixed resetting //Oldest first// after auto-preview of
+   ticket change log ([trac:#12381]).
+ - Trac is now distributed as wheel package ([trac:#12391]).
+ - Fixed database exceptions in query system when 
+   ''milestones/versions/enums'' are not defined and a custom
+   field of the same name is added ([trac:#12399]).
+ - Custom field //milestone// was not shown when
+   standard //milestone// field was hidden ([trac:#12400]).
+ - Query system now sorts by `enum.value` rather than
+   `ticket.type` for `order=type` ([trac:#12402]). 
+ - Added support for Babel 2.3.2 (2.3.0 and 2.3.1 should
+   not be used)  ([trac:#12445]).
+
+[trac:source:/tags/trac-1.0.11 View Tag] | [trac:milestone:1.0.11 View Milestone]
+
+=== 1.0.10
+
+//(February 20, 2016)//
+
+Trac 1.0.10 provides more than 30 bug fixes and minor enhancements. Two areas of focus
+have been fixing test failures on Windows and eliminating tracebacks in the logs due to
+invalid requests.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.10]].
+
+[trac:source:/tags/trac-1.0.10 View Tag] | [trac:milestone:1.0.10 View Milestone]
+
+=== 1.0.9
+
+//(September 10, 2015)//
+
+Trac 1.0.9 provides more than a dozen minor fixes and enhancements, including significantly reduced memory usage by the Git repository connector.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.9]].
+
+[trac:source:/tags/trac-1.0.9 View Tag] | [trac:milestone:1.0.9 View Milestone]
+
+=== 1.0.8
+
+//(July 24, 2015)//
+
+Trac 1.0.8 fixes a regression introduced in Trac 1.0.7: the session
+for an authenticated username containing non-alphanumeric characters
+could not be retrieved, resulting in the user being denied access to
+every realm and resource ([trac:#12129]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8]].
+
+[trac:source:/tags/trac-1.0.8 View Tag] | [trac:milestone:1.0.8 View Milestone]
 
 === 1.0.7
 
@@ -163,7 +263,7 @@ Trac 1.0.6 provides more than 20 fixes and enhancements. The following are some 
  - Symbolic link can be used for `conf/trac.ini` in environment directory ([trac:#12000]).
  - Hyphen character can be used in !WikiProcessor parameter name ([trac:#12023]).
 
-See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.6]] and [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.7]] (as 1.0.6 contains all the changes in 0.12.7).
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.6]] and [[trac:wiki:TracDev/ReleaseNotes/0.12#MaintenanceReleases | 0.12.7]] (as 1.0.6 also contains the changes in 0.12.7).
 
 [trac:source:/tags/trac-1.0.6 View Tag] | [trac:milestone:1.0.6 View Milestone]
 
@@ -175,7 +275,8 @@ Trac 1.0.5 provides several fixes. The following are some highlights:
 
  - Images are not rendered in the timeline ([trac:#10751]).
  - Git tags are shown in the browser view ([trac:#11964]).
- - Added support for `journal_mode` and `synchronous` pragmas in `sqlite:` database connection string ([trac:#11967]).
+ - Added support for `journal_mode` and `synchronous` pragmas
+   in `sqlite:` database connection string ([trac:#11967]).
 
 See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.5]].
 
@@ -298,7 +399,7 @@ See the full list in [trac:wiki:TracDev/ReleaseNotes/1.0 1.0].
 
 === 0.12.7
 
-//(May 20, 2015)//
+//(July 12, 2015)//
 
 Trac 0.12.7 fixes a minor security issue, as well as a half dozen other minor issues:
  - InterWiki filters links through `[wiki] safe_schemes` option if `[wiki] render_unsafe_content` is disabled ([trac:#12053]).

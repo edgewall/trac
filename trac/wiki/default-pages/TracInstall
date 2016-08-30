@@ -26,7 +26,7 @@ You also need a database system and the corresponding python bindings. The datab
 
 As you must be using Python 2.6 or 2.7, you already have the SQLite database bindings bundled with the standard distribution of Python (the `sqlite3` module).
 
-Optionally, you may install a newer version of [pypi:pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
+Optionally, you may install a newer version of [http://pypi.python.org/pypi/pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
@@ -107,26 +107,28 @@ Please refer to the documentation of these packages to find out how they are bes
 
 The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracEnvironment project environments], as well as the [TracStandalone tracd] standalone server are installed along with Trac. There are several methods for installing Trac.
 
+It is assumed throughout this guide that you have elevated permissions as the `root` user or by prefixing commands with `sudo`. The umask `0002` should be used for a typical installation on a Unix-based platform.
+
 === Using `easy_install`
 Trac can be installed from PyPI or the Subversion repository using [http://pypi.python.org/pypi/setuptools setuptools].
 
 A few examples:
 
- - Install Trac 1.0:
-   {{{#!sh
-   easy_install Trac==1.0
-   }}}
+ - Install the latest stable version of Trac:
+ {{{#!sh
+$ easy_install Trac
+}}}
  - Install latest development version:
-   {{{#!sh
-   easy_install Trac==dev
-   }}}
+ {{{#!sh
+$ easy_install http://download.edgewall.org/trac/Trac-latest-dev.tar.gz
+}}}
    Note that in this case you won't have the possibility to run a localized version of Trac;
    either use a released version or install from source 
 
-More information can be found on the [trac:setuptools] page.
+More information can be found on the [trac:wiki:setuptools setuptools] page.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
-**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in the sections on [#RunningtheStandaloneServer Running The Standalone Server] and [#RunningTraconaWebServer Running Trac on a Web Server]. 
+**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in [#DeployingTrac Deploying Trac].
 }}}
 
 === Using `pip`
@@ -235,6 +237,24 @@ The actual username and groupname of the apache server may not be exactly `apach
 
 == Deploying Trac
 
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation.
+
+If running `tracd`, the environment variable can be set system-wide or for just the user that runs the `tracd` process. There are several ways to accomplish this in addition to what is discussed here, and depending on the distribution of your OS.
+
+To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`. To be effective for a user session the `export` statement may be added to `~/.profile`.
+{{{#!sh
+export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
+}}}
+
+Alternatively, the variable can be set in the shell before executing `tracd`:
+{{{#!sh
+$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
+}}}
+
+If running the Apache web server, !Ubuntu/Debian users should add the `export` statement to `/etc/apache2/envvars`. !RedHat/CentOS/Fedora should can add the `export` statement to `/etc/sysconfig/httpd`.
+}}}
+
 === Running the Standalone Server
 
 After having created a Trac environment, you can easily try the web interface by running the standalone server [TracStandalone tracd]:
@@ -247,26 +267,12 @@ Then, fire up a browser and visit `http://localhost:8000/`. You should get a sim
 $ tracd -s --port 8000 /path/to/myproject
 }}}
 
-{{{#!div style="border: 1pt dotted; margin: 1em"
-**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. The environment variable can be set system-wide, or for just the user that runs the `tracd` process. There are several ways to accomplish this in addition to what is discussed here, and depending on the distribution of your OS.
-
-To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`. To be effective for a user session the `export` statement may be added to `~/.profile`.
-{{{#!sh
-export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
-}}}
-
-Alternatively, the variable can be set in the shell before executing `tracd`:
-{{{#!sh
-$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
-}}}
-}}}
-
 === Running Trac on a Web Server
 
 Trac provides various options for connecting to a "real" web server: 
  - [TracFastCgi FastCGI]
- - [wiki:TracModWSGI mod_wsgi] 
- - [TracModPython mod_python]
+ - [wiki:TracModWSGI Apache with mod_wsgi] 
+ - [TracModPython Apache with mod_python]
  - //[TracCgi CGI] (should not be used, as the performance is far from optimal)//
 
 Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
@@ -286,19 +292,30 @@ Don't forget to check that the web server has the execution right on scripts in 
 
 ==== Mapping Static Resources
 
-Out of the box, Trac will pass static resources such as style sheets or images through itself. For anything but a tracd only based deployment, this is far from optimal as the web server could be set up to directly serve those static resources (for CGI setup, this is '''highly undesirable''' and will cause abysmal performance).
+Without additional configuration, Trac will handle requests for static resources such as stylesheets and images. For anything other than a TracStandalone deployment, this is not optimal as the web server can be set up to directly serve the static resources. For CGI setup, this is '''highly undesirable''' as it causes abysmal performance.
 
-Web servers such as [http://httpd.apache.org/ Apache] allow you to create “Aliases” to resources, giving them a virtual URL that doesn't necessarily reflect the layout of the servers file system. We also can map requests for static resources directly to the directory on the file system, avoiding processing these requests by Trac itself.
+Web servers such as [http://httpd.apache.org/ Apache] allow you to create //Aliases// to resources, giving them a virtual URL that doesn't necessarily reflect their location on the file system. We can map requests for static resources directly to directories on the file system, to avoid Trac processing the requests.
 
-There are two primary URL paths for static resources - `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible by `/chrome/<plugin>` path, so its important to override only known paths and not try to make universal `/chrome` alias for everything.
+There are two primary URL paths for static resources: `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible at the `/chrome/<plugin>` path.
 
-Note that in order to get those static resources on the filesystem, you need first to extract the relevant resources from Trac using the TracAdmin `deploy` command:
+A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
+
+The resources are extracted using the [TracAdmin trac-admin]` <environment> deploy` command:
 [[TracAdminHelp(deploy)]]
 
-The target `<directory>` will then contain an `htdocs` directory with:
- - `site/` - a copy of the environment's directory `htdocs/` 
- - `common/` - the static resources of Trac itself
- - `<plugins>/` - one directory for each resource directory managed by the plugins enabled for this environment
+The target `<directory>` will contain an `htdocs` directory with:
+ - `common/` - the static resources of Trac
+ - `site/` - a copy of the environment's `htdocs/` directory
+ - `shared` - the static resources shared by multiple Trac environments, with a location defined by the `[inherit]` `htdocs_dir` option
+ - `<plugin>/` - one directory for each resource directory provided by the plugins enabled for this environment
+
+The example that follows will create a single `/chrome` alias. If that isn't the correct approach for your installation you simply need to create more specific aliases:
+{{{#!apache
+Alias /trac/chrome/common /path/to/trac/htdocs/common
+Alias /trac/chrome/site /path/to/trac/htdocs/site
+Alias /trac/chrome/shared /path/to/trac/htdocs/shared
+Alias /trac/chrome/<plugin> /path/to/trac/htdocs/<plugin>
+}}}
 
 ===== Example: Apache and `ScriptAlias` #ScriptAlias-example
 
@@ -307,42 +324,54 @@ Assuming the deployment has been done this way:
 $ trac-admin /var/trac/env deploy /path/to/shared/trac
 }}}
 
-Add the following snippet to Apache configuration ''before'' the `ScriptAlias` or `WSGIScriptAlias` (which map all the other requests to the Trac application), changing paths to match your deployment:
+Add the following snippet to Apache configuration, changing paths to match your deployment. The snippet must be placed ''before'' the `ScriptAlias` or `WSGIScriptAlias` directive, because those directives map all requests to the Trac application:
 {{{#!apache
-Alias /trac/chrome/common /path/to/trac/htdocs/common
-Alias /trac/chrome/site /path/to/trac/htdocs/site
+Alias /trac/chrome /path/to/trac/htdocs
 
 <Directory "/path/to/www/trac/htdocs">
-  Order allow,deny
-  Allow from all
+  # For Apache 2.2
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+  </IfModule>
+  # For Apache 2.4
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
 </Directory>
 }}}
 
-If using mod_python, you might want to add this too (otherwise, the alias will be ignored):
+If using mod_python, add this too, otherwise the alias will be ignored:
 {{{#!apache
-<Location "/trac/chrome/common/">
+<Location "/trac/chrome/common">
   SetHandler None
 </Location>
 }}}
 
-Note that we mapped the `/trac` part of the URL to the `trac.*cgi` script, and the path `/trac/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
-
-Similarly, if you have static resources in a project's `htdocs` directory (which is referenced by `/trac/chrome/site` URL in themes), you can configure Apache to serve those resources (again, put this ''before'' the `ScriptAlias` or `WSGIScriptAlias` for the .*cgi scripts, and adjust names and locations to match your installation):
+Alternatively, if you wish to serve static resources directly from your project's `htdocs` directory rather than the location to which the files are extracted with the `deploy` command, you can configure Apache to serve those resources. Again, put this ''before'' the `ScriptAlias` or `WSGIScriptAlias` for the .*cgi scripts, and adjust names and locations to match your installation:
 {{{#!apache
 Alias /trac/chrome/site /path/to/projectenv/htdocs
 
 <Directory "/path/to/projectenv/htdocs">
-  Order allow,deny
-  Allow from all
+  # For Apache 2.2
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Allow from all
+  </IfModule>
+  # For Apache 2.4
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
 </Directory>
 }}}
 
-Alternatively to aliasing `/trac/chrome/common`, you can tell Trac to generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
 {{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/
 }}}
-Note that this makes it easy to have a dedicated domain serve those static resources (preferentially [http://code.google.com/speed/page-speed/docs/request.html#ServeFromCookielessDomain cookie-less]).
+
+Note that this makes it easy to have a dedicated domain serve those static resources, preferentially cookie-less.
 
 Of course, you still need to make the Trac `htdocs/common` directory available through the web server at the specified URL, for example by copying (or linking) the directory into the document root of the web server:
 {{{#!sh

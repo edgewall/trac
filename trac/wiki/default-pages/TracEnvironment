@@ -1,18 +1,21 @@
 = The Trac Environment
 
 [[TracGuideToc]]
-[[PageOutline(2-5)]]
+[[PageOutline(2-5,Contents,pullout)]]
 
 Trac uses a directory structure and a database for storing project data. The directory is referred to as the environment.
+Trac uses a directory structure and a database for storing project data. The directory is referred to as the '''environment'''.
+
+Trac supports [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL] and [http://mysql.com/ MySQL] databases. With PostgreSQL and MySQL you have to create the database before running `trac-admin initenv`.
 
 == Creating an Environment
 
-A new Trac environment is created using [TracAdmin#initenv trac-admin's initenv]:
+A new Trac environment is created using the [TracAdmin#initenv initenv] command:
 {{{#!sh
 $ trac-admin /path/to/myproject initenv
 }}}
 
-`trac-admin` will ask you for the name of the project and the database connection string, see below.
+`trac-admin` will ask you for the name of the project and the [#DatabaseConnectionStrings database connection string].
 
 === Useful Tips
 
@@ -20,13 +23,11 @@ $ trac-admin /path/to/myproject initenv
 
  - The user under which the web server runs will require file system write permission to the environment directory and all the files inside. Please remember to set the appropriate permissions. The same applies to the source code repository, although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
  
- - `initenv`, when using an svn repository, does not imply that trac-admin will perform `svnadmin create` for the specified repository path. You need to perform the `svnadmin create` prior to `trac-admin initenv` if you're creating a new svn repository altogether with a new Trac environment; otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.
+ - `initenv` does not create a version control repository for the specified path. If you wish to specify a default repository using optional the arguments to `initenv` you must create the repository first, otherwise you will see a message when initializing the environment: //Warning: couldn't index the default repository//.
 
  - Non-ascii environment paths are not supported.
- 
- - Also, it seems that project names with spaces can be problematic for authentication, see [trac:#7163].
 
- - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are currently not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment] before being able to use it.
+ - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment]. Alternatively you can avoid the need to upgrade the environment by specifying a configuration file at the time the environment is created, using the `--config` option. See TracAdmin#FullCommandReference for more information.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Caveat:** don't confuse the //Trac environment directory// with the //source code repository directory//.
@@ -37,7 +38,7 @@ It happens that the structure for a Trac environment is loosely modeled after th
 
 == Database Connection Strings
 
-Trac supports [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL] and [http://mysql.com/ MySQL] database backends. The default is SQLite, which is probably sufficient for most projects. The database file is then stored in the environment directory, and can easily be [wiki:TracBackup backed up] together with the rest of the environment.
+You will need to specify a database connection string at the time the environment is created. The default is SQLite, which is probably sufficient for most projects. The SQLite database file is stored in the environment directory, and can easily be [wiki:TracBackup backed up] together with the rest of the environment.
 
 Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be URL encoded.
 
@@ -51,7 +52,7 @@ where `db/trac.db` is the path to the database file within the Trac environment.
 
 === PostgreSQL Connection String
 
-If you want to use PostgreSQL instead, you'll have to use a different connection string. For example, to connect to a PostgreSQL database on the same machine called `trac` for user `johndoe` with the password `letmein` use:
+The connection string for PostgreSQL is a bit more complex. For example, to connect to a PostgreSQL database named `trac` on `localhost` for user `johndoe` and password `letmein`, use:
 {{{
 postgres://johndoe:letmein@localhost/trac
 }}}
@@ -71,8 +72,6 @@ or a specific one:
 postgres://user:password@/database?host=/path/to/socket/dir
 }}}
 
-Note that with PostgreSQL you will have to create the database before running `trac-admin initenv`.
-
 See the [http://www.postgresql.org/docs/ PostgreSQL documentation] for detailed instructions on how to administer [http://postgresql.org PostgreSQL].
 Generally, the following is sufficient to create a database user named `tracuser` and a database named `trac`:
 {{{#!sh
@@ -82,7 +81,7 @@ $ createdb -U postgres -O tracuser -E UTF8 trac
 
 When running `createuser` you will be prompted for the password for the user 'tracuser'. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a Trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command. Also note that the database should be created as UTF8. LATIN1 encoding causes errors, because of Trac's use of unicode. SQL_ASCII also seems to work.
 
-Under some default configurations (Debian) one will have run the `createuser` and `createdb` scripts as the `postgres` user:
+Under some default configurations (Debian), run the `createuser` and `createdb` scripts as the `postgres` user:
 {{{#!sh
 $ sudo su - postgres -c 'createuser -U postgres -S -D -R -E -P tracuser'
 $ sudo su - postgres -c 'createdb -U postgres -O tracuser -E UTF8 trac'
@@ -95,20 +94,20 @@ postgres://user:pass@server/database?schema=yourschemaname
 
 === MySQL Connection String
 
-The format of the MySQL connection string is similar to those for PostgreSQL, with the `postgres` scheme being replaced by `mysql`. For example, to connect to a MySQL database on the same machine called `trac` for user `johndoe` with password `letmein`:
+The format of the MySQL connection string is similar to those for PostgreSQL, with the `postgres` scheme being replaced by `mysql`. For example, to connect to a MySQL database on `localhost` named `trac` for user `johndoe` with password `letmein`:
 {{{
 mysql://johndoe:letmein@localhost:3306/trac
 }}}
 
 == Source Code Repository
 
-A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' toolbar item will not be displayed.
+A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' navigation item will not be displayed.
 
 There are many different ways to connect repositories to an environment, see TracRepositoryAdmin. A single repository can be specified when the environment is created by passing the optional arguments `repository_type` and `repository_dir` to the `initenv` command.
 
 == Directory Structure
 
-An environment directory will usually consist of the following files and directories:
+An environment consists of the following files and directories:
 
  * `README` - Brief description of the environment.
  * `VERSION` - Environment version identifier.
