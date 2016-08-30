@@ -134,7 +134,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         for name in sel:
                             model.Component(self.env, name).delete()
                             if name == default:
-                                self.config.set('ticket', 
+                                self.config.set('ticket',
                                                 'default_component', '')
                                 self._save_config(req)
                     add_notice(req, _("The selected components have been "
@@ -299,11 +299,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                                    "Milestone deleted")
                             milestone.delete()
                             if name == ticket_default:
-                                self.config.set('ticket', 
+                                self.config.set('ticket',
                                                 'default_milestone', '')
                                 save = True
                             if name == retarget_default:
-                                self.config.set('milestone', 
+                                self.config.set('milestone',
                                                 'default_retarget_to', '')
                                 save = True
                     if save:
@@ -680,7 +680,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         for name in sel:
                             self._enum_cls(self.env, name).delete()
                             if name == default:
-                                self.config.set('ticket', 
+                                self.config.set('ticket',
                                                 'default_%s' % self._type, '')
                                 self.config.save()
                     add_notice(req, _("The selected %(field)s values have "
