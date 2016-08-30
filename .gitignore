@@ -9,6 +9,7 @@ Trac.egg-info
 testenv
 testing.log
 functional-testing.log
+trac/test.db
 html
 htmlcov
 figleaf
