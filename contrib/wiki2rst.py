@@ -9,15 +9,20 @@ import sys
 
 from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
-import html2rest
 
 from trac.loader import load_components
 from trac.test import EnvironmentStub, Mock, MockPerm
-from trac.util.text import printout
+from trac.util.text import printerr, printout
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import format_to_html
 from trac.wiki.model import WikiPage
+
+try:
+    import html2rest
+except ImportError:
+    printerr("The html2rest package must be installed.")
+    sys.exit(1)
 
 
 class Parser(html2rest.Parser):
