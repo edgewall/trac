@@ -521,8 +521,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             db("DELETE FROM ticket")
             db("DELETE FROM ticket_custom")
             db("DELETE FROM attachment")
-        attachments_dir = os.path.join(os.path.normpath(trac.env.path),
-                                       "attachments")
+        attachments_dir = os.path.join(trac.env.path, 'attachments')
         # Straight from the Python documentation.
         for root, dirs, files in os.walk(attachments_dir, topdown=False):
             for name in files:

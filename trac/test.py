@@ -323,9 +323,8 @@ class EnvironmentStub(Environment):
         import trac
         self.path = path
         if self.path is None:
-            self.path = os.path.dirname(trac.__file__)
-            if not os.path.isabs(self.path):
-                self.path = os.path.join(os.getcwd(), self.path)
+            self.path = os.path.abspath(os.path.dirname(trac.__file__))
+        self.path = os.path.normpath(os.path.normcase(self.path))
 
         # -- configuration
         self.config = Configuration(None)

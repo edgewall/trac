@@ -775,8 +775,7 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(os.path.normpath(self.env.path),
-                                       'files', 'attachments')
+        attachments_dir = os.path.join(self.env.path, 'files', 'attachments')
         commonprefix = os.path.commonprefix([attachments_dir, new_path])
         if commonprefix != attachments_dir:
             raise TracError(_('Cannot reparent attachment "%(att)s" as '
@@ -834,8 +833,7 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(os.path.normpath(self.env.path),
-                                       'files', 'attachments')
+        attachments_dir = os.path.join(self.env.path, 'files', 'attachments')
         dir = self.path
         commonprefix = os.path.commonprefix([attachments_dir, dir])
         if commonprefix != attachments_dir:

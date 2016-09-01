@@ -277,7 +277,7 @@ class Environment(Component, ComponentManager):
         """
         ComponentManager.__init__(self)
 
-        self.path = path
+        self.path = os.path.normpath(os.path.normcase(path))
         self.log = None
         self.config = None
         self._log_handler = None
@@ -600,8 +600,7 @@ class Environment(Component, ComponentManager):
         return os.path.join(self.conf_dir, 'trac.ini')
 
     def _get_path_to_dir(self, dir):
-        path = os.path.join(self.path, dir)
-        return os.path.normcase(os.path.realpath(path))
+        return os.path.realpath(os.path.join(self.path, dir))
 
     @lazy
     def conf_dir(self):
@@ -820,7 +819,6 @@ def open_environment(env_path=None, use_cache=False):
                           'Trac requires this variable to point to a valid '
                           'Trac environment.'))
 
-    env_path = os.path.normcase(os.path.normpath(env_path))
     if use_cache:
         with env_cache_lock:
             env = env_cache.get(env_path)
