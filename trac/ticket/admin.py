@@ -172,19 +172,19 @@ class ComponentAdminPanel(TicketAdminPanel):
 
     def get_admin_commands(self):
         yield ('component list', '',
-               'Show available components',
+               "Show components",
                None, self._do_list)
         yield ('component add', '<name> [owner]',
-               'Add a new component',
+               "Add component",
                self._complete_add, self._do_add)
         yield ('component rename', '<name> <newname>',
-               'Rename a component',
-               self._complete_remove_rename, self._do_rename)
+               "Rename component",
+               self._complete_name, self._do_rename)
         yield ('component remove', '<name>',
-               'Remove/uninstall a component',
-               self._complete_remove_rename, self._do_remove)
+               "Remove component",
+               self._complete_name, self._do_remove)
         yield ('component chown', '<name> <owner>',
-               'Change component ownership',
+               "Change component owner",
                self._complete_chown, self._do_chown)
 
     def get_component_list(self):
@@ -197,7 +197,7 @@ class ComponentAdminPanel(TicketAdminPanel):
         if len(args) == 2:
             return self.get_user_list()
 
-    def _complete_remove_rename(self, args):
+    def _complete_name(self, args):
         if len(args) == 1:
             return self.get_component_list()
 
@@ -210,7 +210,7 @@ class ComponentAdminPanel(TicketAdminPanel):
     def _do_list(self):
         print_table([(c.name, c.owner)
                      for c in model.Component.select(self.env)],
-                    [_('Name'), _('Owner')])
+                    [_("Name"), _("Owner")])
 
     def _do_add(self, name, owner=None):
         component = model.Component(self.env)
@@ -516,7 +516,8 @@ class VersionAdminPanel(TicketAdminPanel):
                         for name in sel:
                             model.Version(self.env, name).delete()
                             if name == default:
-                                self.config.set('ticket', 'default_version', '')
+                                self.config.set('ticket',
+                                                'default_version', '')
                                 self._save_config(req)
                     add_notice(req, _("The selected versions have been "
                                       "removed."))
@@ -543,8 +544,8 @@ class VersionAdminPanel(TicketAdminPanel):
                     'default': default}
 
         Chrome(self.env).add_jquery_ui(req)
-
         data.update({'datetime_hint': get_datetime_format_hint(req.lc_time)})
+
         return 'admin_versions.html', data
 
     # IAdminCommandProvider methods
@@ -564,6 +565,9 @@ class VersionAdminPanel(TicketAdminPanel):
         yield ('version rename', '<name> <newname>',
                "Rename version",
                self._complete_name, self._do_rename)
+        yield ('version remove', '<name>',
+               "Remove version",
+               self._complete_name, self._do_remove)
         yield ('version time', '<name> <time>',
                """Set version date
 
@@ -574,9 +578,6 @@ class VersionAdminPanel(TicketAdminPanel):
                an empty string ("").
                """ % hints,
                self._complete_name, self._do_time)
-        yield ('version remove', '<name>',
-               "Remove version",
-               self._complete_name, self._do_remove)
 
     def get_version_list(self):
         return [v.name for v in model.Version.select(self.env)]
@@ -589,16 +590,15 @@ class VersionAdminPanel(TicketAdminPanel):
         print_table([(v.name,
                       format_date(v.time, console_date_format)
                       if v.time else None)
-                    for v in model.Version.select(self.env)],
+                     for v in model.Version.select(self.env)],
                     [_("Name"), _("Time")])
 
     def _do_add(self, name, time=None):
         version = model.Version(self.env)
         version.name = name
-        if time is not None:
-            version.time = parse_date(time, hint='datetime',
-                                      locale=get_console_locale(self.env)) \
-                           if time else None
+        version.time = parse_date(time, hint='datetime',
+                                  locale=get_console_locale(self.env)) \
+                       if time else None
         version.insert()
 
     def _do_rename(self, name, newname):
@@ -606,15 +606,15 @@ class VersionAdminPanel(TicketAdminPanel):
         version.name = newname
         version.update()
 
+    def _do_remove(self, name):
+        model.Version(self.env, name).delete()
+
     def _do_time(self, name, time):
         version = model.Version(self.env, name)
         version.time = parse_date(time, hint='datetime',
                                   locale=get_console_locale(self.env)) \
                        if time else None
         version.update()
-
-    def _do_remove(self, name):
-        model.Version(self.env, name).delete()
 
 
 class AbstractEnumAdminPanel(TicketAdminPanel):

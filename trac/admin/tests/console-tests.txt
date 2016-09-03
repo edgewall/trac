@@ -13,11 +13,11 @@ attachment list      List attachments of a resource
 attachment remove    Remove an attachment from a resource
 changeset added      Notify trac about changesets added to a repository
 changeset modified   Notify trac about changesets modified in a repository
-component add        Add a new component
-component chown      Change component ownership
-component list       Show available components
-component remove     Remove/uninstall a component
-component rename     Rename a component
+component add        Add component
+component chown      Change component owner
+component list       Show components
+component remove     Remove component
+component rename     Rename component
 config get           Get the value of the given option in "trac.ini"
 config remove        Remove the specified option from "trac.ini"
 config set           Set the value for the given option in "trac.ini"
