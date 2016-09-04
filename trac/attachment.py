@@ -703,15 +703,14 @@ class Attachment(object):
     # can be used in db28.py.
 
     @classmethod
-    def _get_path(cls, env_path, parent_realm, parent_id, filename):
+    def _get_path(cls, attachments_dir, parent_realm, parent_id, filename):
         """Get the path of an attachment.
 
         WARNING: This method is used by db28.py for moving attachments from
         the old "attachments" directory to the "files" directory. Please check
         all changes so that they don't break the upgrade.
         """
-        path = os.path.join(env_path, 'files', 'attachments',
-                            parent_realm)
+        path = os.path.join(attachments_dir, parent_realm)
         hash = hashlib.sha1(parent_id.encode('utf-8')).hexdigest()
         path = os.path.join(path, hash[0:3], hash)
         if filename:
@@ -734,8 +733,8 @@ class Attachment(object):
 
     @property
     def path(self):
-        return self._get_path(self.env.path, self.parent_realm, self.parent_id,
-                              self.filename)
+        return self._get_path(self.env.attachments_dir, self.parent_realm,
+                              self.parent_id, self.filename)
 
     @property
     def title(self):
@@ -770,14 +769,14 @@ class Attachment(object):
     def reparent(self, new_realm, new_id):
         assert self.filename, "Cannot reparent non-existent attachment"
         new_id = unicode(new_id)
-        new_path = self._get_path(self.env.path, new_realm, new_id,
-                                  self.filename)
+        new_path = self._get_path(self.env.attachments_dir, new_realm,
+                                  new_id, self.filename)
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(self.env.path, 'files', 'attachments')
-        commonprefix = os.path.commonprefix([attachments_dir, new_path])
-        if commonprefix != attachments_dir:
+        commonprefix = os.path.commonprefix([self.env.attachments_dir,
+                                             new_path])
+        if commonprefix != self.env.attachments_dir:
             raise TracError(_('Cannot reparent attachment "%(att)s" as '
                               '%(realm)s:%(id)s is invalid',
                               att=self.filename, realm=new_realm, id=new_id))
@@ -833,10 +832,9 @@ class Attachment(object):
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
-        attachments_dir = os.path.join(self.env.path, 'files', 'attachments')
         dir = self.path
-        commonprefix = os.path.commonprefix([attachments_dir, dir])
-        if commonprefix != attachments_dir:
+        commonprefix = os.path.commonprefix([self.env.attachments_dir, dir])
+        if commonprefix != self.env.attachments_dir:
             raise TracError(_('Cannot create attachment "%(att)s" as '
                               '%(realm)s:%(id)s is invalid',
                               att=filename, realm=self.parent_realm,

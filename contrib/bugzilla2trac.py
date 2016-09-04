@@ -521,15 +521,15 @@ def convert(_db, _host, _user, _password, _env, _force):
             db("DELETE FROM ticket")
             db("DELETE FROM ticket_custom")
             db("DELETE FROM attachment")
-        attachments_dir = os.path.join(trac.env.path, 'attachments')
         # Straight from the Python documentation.
-        for root, dirs, files in os.walk(attachments_dir, topdown=False):
+        for root, dirs, files in os.walk(trac.env.attachments_dir,
+                                         topdown=False):
             for name in files:
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
-        if not os.stat(attachments_dir):
-            os.mkdir(attachments_dir)
+        if not os.stat(trac.env.attachments_dir):
+            os.mkdir(trac.env.attachments_dir)
         print("All tickets cleaned...")
 
 

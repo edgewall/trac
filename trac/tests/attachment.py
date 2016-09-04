@@ -56,8 +56,6 @@ class AttachmentTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.env.path = mkdtemp()
-        self.attachments_dir = os.path.join(self.env.path, 'files',
-                                            'attachments')
         self.env.enable_component(TicketOnlyViewsTicket)
         self.env.config.set('trac', 'permission_policies',
                             'TicketOnlyViewsTicket, LegacyAttachmentPolicy')
@@ -108,13 +106,13 @@ class AttachmentTestCase(unittest.TestCase):
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'foo.txt'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['foo.txt'] + '.txt'),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', 'SomePage')
         attachment.filename = 'bar.jpg'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
                                       hashes['SomePage'][0:3],
                                       hashes['SomePage'],
                                       hashes['bar.jpg'] + '.jpg'),
@@ -123,26 +121,26 @@ class AttachmentTestCase(unittest.TestCase):
     def test_path_extension(self):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'Foo.Mp3'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['Foo.Mp3'] + '.Mp3'),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', 'SomePage')
         attachment.filename = 'bar.7z'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
                                       hashes['SomePage'][0:3],
                                       hashes['SomePage'],
                                       hashes['bar.7z'] + '.7z'),
                          attachment.path)
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'foo.$$$'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['foo.$$$']),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', 'SomePage')
         attachment.filename = u'bar.aäc'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
                                       hashes['SomePage'][0:3],
                                       hashes['SomePage'],
                                       hashes[u'bar.aäc']),
@@ -151,13 +149,13 @@ class AttachmentTestCase(unittest.TestCase):
     def test_get_path_encoded(self):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.filename = 'Teh foo.txt'
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['Teh foo.txt'] + '.txt'),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', u'ÜberSicht')
         attachment.filename = 'Teh bar.jpg'
-        self.assertEqual(os.path.join(self.attachments_dir, 'wiki',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
                                       hashes[u'ÜberSicht'][0:3],
                                       hashes[u'ÜberSicht'],
                                       hashes['Teh bar.jpg'] + '.jpg'),
@@ -187,7 +185,7 @@ class AttachmentTestCase(unittest.TestCase):
         attachment = Attachment(self.env, 'ticket', 42)
         attachment.insert('foo.txt', io.BytesIO(), 0)
         self.assertEqual('foo.2.txt', attachment.filename)
-        self.assertEqual(os.path.join(self.attachments_dir, 'ticket',
+        self.assertEqual(os.path.join(self.env.attachments_dir, 'ticket',
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['foo.2.txt'] + '.txt'),
                          attachment.path)

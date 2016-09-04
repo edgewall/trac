@@ -21,14 +21,12 @@ from trac.util.translation import _
 def do_upgrade(env, version, cursor):
     """Move attachments from the `attachments` directory into `files`, hashing
     the filenames in the process."""
-    path = env.path
-    old_dir = os.path.join(path, 'attachments')
-    if not os.path.exists(old_dir):
+    old_attachments_dir = os.path.join(env.path, 'attachments')
+    if not os.path.exists(old_attachments_dir):
         return
-    old_stat = os.stat(old_dir)
-    new_dir = os.path.join(path, 'files', 'attachments')
-    if not os.path.exists(new_dir):
-        os.makedirs(new_dir)
+    old_stat = os.stat(old_attachments_dir)
+    if not os.path.exists(env.attachments_dir):
+        os.makedirs(env.attachments_dir)
 
     cursor.execute("""
         SELECT type, id, filename FROM attachment ORDER BY type, id
@@ -38,7 +36,7 @@ def do_upgrade(env, version, cursor):
 
     # Try to preserve permissions and ownerships of the attachments
     # directory for $ENV/files
-    for dir, dirs, files in os.walk(os.path.join(path, 'files')):
+    for dir, dirs, files in os.walk(os.path.join(env.path, 'files')):
         try:
             if hasattr(os, 'chmod'):
                 os.chmod(dir, old_stat.st_mode)
@@ -51,11 +49,11 @@ def do_upgrade(env, version, cursor):
 
     # Remove empty directory hierarchy
     try:
-        for dir, dirs, files in os.walk(old_dir, topdown=False):
+        for dir, dirs, files in os.walk(old_attachments_dir, topdown=False):
             os.rmdir(dir)
     except OSError as e:
         env.log.warning("Can't delete old attachments directory %s: %s",
-                         old_dir, exception_to_unicode(e))
+                         old_attachments_dir, exception_to_unicode(e))
         # TRANSLATOR: Wrap message to 80 columns
         printerr(_("""\
 The upgrade of attachments was successful, but the old attachments directory:
@@ -69,7 +67,7 @@ referenced in the database. The error was:
 
 This error can be ignored, but for keeping your environment clean you should
 backup any remaining files in that directory and remove it manually.
-""", src_dir=old_dir, exception=exception_to_unicode(e)))
+""", src_dir=old_attachments_dir, exception=exception_to_unicode(e)))
 
 
 def move_attachment_file(env, parent_realm, parent_id, filename):
@@ -79,8 +77,8 @@ def move_attachment_file(env, parent_realm, parent_id, filename):
         old_path = os.path.join(old_path, unicode_quote(filename))
     old_path = os.path.normpath(old_path)
     if os.path.isfile(old_path):
-        new_path = Attachment._get_path(env.path, parent_realm, parent_id,
-                                        filename)
+        new_path = Attachment._get_path(env.attachments_dir, parent_realm,
+                                        parent_id, filename)
         try:
             os.renames(old_path, new_path)
         except OSError:

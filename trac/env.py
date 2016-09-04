@@ -599,8 +599,19 @@ class Environment(Component, ComponentManager):
         """Path of the trac.ini file."""
         return os.path.join(self.conf_dir, 'trac.ini')
 
-    def _get_path_to_dir(self, dir):
-        return os.path.realpath(os.path.join(self.path, dir))
+    def _get_path_to_dir(self, *dirs):
+        path = self.path
+        for dir in dirs:
+            path = os.path.join(path, dir)
+        return os.path.realpath(path)
+
+    @lazy
+    def attachments_dir(self):
+        """Absolute path to the attachments directory.
+
+        :since: 1.3.1
+        """
+        return self._get_path_to_dir('files', 'attachments')
 
     @lazy
     def conf_dir(self):
