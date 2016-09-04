@@ -19,7 +19,7 @@ def do_upgrade(env, ver, cursor):
     """Add an auto-increment primary key to `node_change` table and indices
     (repos, rev, path) and (repos, path, rev) (#3676).
     """
-    db_connector, _ = DatabaseManager(env)._get_connector()
+    db_connector, _ = DatabaseManager(env).get_connector()
     table = Table('node_change', key='id')[
         Column('id', auto_increment=True),
         Column('repos', type='int'),
