@@ -58,7 +58,7 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     else:
         # Should never be reached because level is restricted through
         # ChoiceOption, therefore message is intentionally left untranslated
-        raise AssertionError("Unrecognized log level '%(level)s'", level)
+        raise AssertionError("Unrecognized log level '%s'" % level)
 
     if not format:
         format = 'Trac[%(module)s] %(levelname)s: %(message)s'
