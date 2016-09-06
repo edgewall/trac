@@ -16,14 +16,13 @@ import os
 import socket
 import unittest
 
-from trac.util.text import empty, expandtabs, fix_eol, javascript_quote, \
-                           levenshtein_distance, normalize_whitespace, \
-                           print_table, quote_query_string, shorten_line, \
-                           strip_line_ws, stripws, sub_vars, text_width, \
-                           to_js_string, to_unicode, to_utf8, \
-                           unicode_from_base64, unicode_quote, \
-                           unicode_quote_plus, unicode_to_base64, \
-                           unicode_unquote, unicode_urlencode, wrap
+from trac.util.text import (
+    _get_default_ambiwidth, empty, expandtabs, fix_eol, javascript_quote,
+    levenshtein_distance, normalize_whitespace, print_table,
+    quote_query_string, shorten_line, strip_line_ws, stripws, sub_vars,
+    text_width, to_js_string, to_unicode, to_utf8, unicode_from_base64,
+    unicode_quote, unicode_quote_plus, unicode_to_base64, unicode_unquote,
+    unicode_urlencode, wrap)
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -426,6 +425,71 @@ class ShortenLineTestCase(unittest.TestCase):
         self.assertEqual('abcde ...', shorten_line(text, 9))
 
 
+class DefaultAmbiwidthTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.environ = os.environ.copy()
+
+    def tearDown(self):
+        for name in set(os.environ) - set(self.environ):
+            del os.environ[name]
+        os.environ.update(self.environ)
+
+    def _unset_locale_envs(self):
+        for name in ('LANGUAGE', 'LC_ALL', 'LC_MESSAGES', 'LANG'):
+            if name in os.environ:
+                del os.environ[name]
+
+    def _test_ambiwidth(self, expected, envs):
+        self._unset_locale_envs()
+        os.environ.update(envs)
+        self.assertEqual(expected, _get_default_ambiwidth())
+
+    def test_no_locale_envs(self):
+        self._unset_locale_envs()
+        self.assertEqual(1, _get_default_ambiwidth())
+
+    def test_language(self):
+        self._test_ambiwidth(1, {'LANGUAGE': 'C'})
+        self._test_ambiwidth(1, {'LANGUAGE': 'POSIX'})
+        self._test_ambiwidth(1, {'LANGUAGE': 'de_DE'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'ko'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'ko_KR'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'ja'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'ja_JP'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'zh_CN'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'zh_TW'})
+        self._test_ambiwidth(1, {'LANGUAGE': 'en_US:ja:zh_TW'})
+        self._test_ambiwidth(2, {'LANGUAGE': 'zh_CN:en:ko'})
+        self._test_ambiwidth(1, {'LANGUAGE': '*****'})
+
+    def test_simple_locale_env(self):
+        for name in ('LC_ALL', 'LC_MESSAGES', 'LANG'):
+            self._test_ambiwidth(1, {name: 'C'})
+            self._test_ambiwidth(1, {name: 'POSIX'})
+            self._test_ambiwidth(1, {name: 'en_US.UTF8'})
+            self._test_ambiwidth(1, {name: 'de_DE.UTF8'})
+            self._test_ambiwidth(2, {name: 'ko_KR.UTF8'})
+            self._test_ambiwidth(2, {name: 'ja_JP.UTF8'})
+            self._test_ambiwidth(2, {name: 'zh_CN.UTF8'})
+            self._test_ambiwidth(2, {name: 'zh_TW.UTF8'})
+            self._test_ambiwidth(1, {name: '*****'})
+
+    def test_combined_locale_envs(self):
+        os.environ.update({'LANGUAGE': 'en_US',
+                           'LC_ALL': 'zh_TW.UTF8', 'LC_MESSAGES': 'de_DE.UTF8',
+                           'LANG': 'ko_KR.UTF8'})
+        self.assertEqual(1, _get_default_ambiwidth())
+        del os.environ['LANGUAGE']
+        self.assertEqual(2, _get_default_ambiwidth())
+        del os.environ['LC_ALL']
+        self.assertEqual(1, _get_default_ambiwidth())
+        del os.environ['LC_MESSAGES']
+        self.assertEqual(2, _get_default_ambiwidth())
+        del os.environ['LANG']
+        self.assertEqual(1, _get_default_ambiwidth())
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase))
@@ -445,7 +509,10 @@ def test_suite():
     suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase))
     suite.addTest(unittest.makeSuite(SubVarsTestCase))
     suite.addTest(unittest.makeSuite(ShortenLineTestCase))
+    if os.name != 'nt':
+        suite.addTest(unittest.makeSuite(DefaultAmbiwidthTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
