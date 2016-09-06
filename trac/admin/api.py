@@ -197,19 +197,33 @@ def get_dir_list(path, dirs_only=False):
     return result
 
 
-def get_console_locale(env=None, lang=LANG):
-    """Return negotiated locale for console by LANG environment and
+def get_console_locale(env=None, lang=None,
+                       categories=('LANGUAGE', 'LC_ALL', 'LC_MESSAGES',
+                                   'LANG')):
+    """Return negotiated locale for console by locale environments and
     [trac] default_language."""
     if has_babel:
         from babel.core import Locale, UnknownLocaleError, parse_locale
+        def normalize(value):
+            if not value:
+                return None
+            try:
+                return '_'.join(filter(None, parse_locale(value)))
+            except:
+                return None
+        locales = [lang]
+        for category in categories:
+            value = os.environ.get(category)
+            if not value:
+                continue
+            if category == 'LANGUAGE' and ':' in value:
+                value = value.split(':')[0]
+            locales.append(value)
+        if env:
+            locales.append(env.config.get('trac', 'default_language'))
+        locales = filter(None, map(normalize, locales))
         try:
-            lang = '_'.join(filter(None, parse_locale(lang)))
-        except:
-            lang = None
-        default = env.config.get('trac', 'default_language', '') \
-                  if env else None
-        try:
-            return get_negotiated_locale([lang, default]) or Locale.default()
+            return get_negotiated_locale(locales)
         except UnknownLocaleError:
             pass
     return None

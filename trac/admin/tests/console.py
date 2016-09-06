@@ -139,12 +139,16 @@ class TracadminTestCase(unittest.TestCase):
                                    disable=('trac.tests.*',))
         self._admin = TracAdmin()
         self._admin.env_set('', self.env)
+        self.environ = os.environ.copy()
 
         # Set test date to 11th Jan 2004
         self._test_date = '2004-01-11'
 
     def tearDown(self):
         self.env = None
+        for name in set(os.environ) - set(self.environ):
+            del os.environ[name]
+        os.environ.update(self.environ)
 
     def _execute(self, cmd, strip_trailing_space=True, input=None):
         return execute_cmd(self._admin, cmd,
@@ -218,48 +222,72 @@ class TracadminTestCase(unittest.TestCase):
         locales = get_available_locales()
         en_US = Locale.parse('en_US')
         de = Locale.parse('de')
-        de_DE = Locale.parse('de_DE')
-        try:
-            default = Locale.default()
-        except UnknownLocaleError:
-            default = None
 
-        language = self.env.config.get('trac', 'default_language')
-        try:
-            self.assertEqual(default, get_console_locale(None, None))
-            self.env.config.set('trac', 'default_language', '')
-            if 'de' in locales:
-                self.assertEqual(de, get_console_locale(None, 'de_DE.UTF8'))
-                self.env.config.set('trac', 'default_language', 'de')
-                self.assertEqual(de, get_console_locale(self.env, None))
-                self.assertEqual(de, get_console_locale(self.env, 'C'))
-                self.env.config.set('trac', 'default_language', 'en_US')
-                self.assertEqual(en_US, get_console_locale(self.env, None))
-                self.assertEqual(en_US, get_console_locale(self.env, 'C'))
-                self.assertEqual(de, get_console_locale(self.env,
-                                                        'de_DE.UTF8'))
-            if not locales:  # compiled catalog is missing
-                self.assertEqual(default, get_console_locale(None,
-                                                             'de_DE.UTF8'))
-                self.env.config.set('trac', 'default_language', 'de')
-                self.assertEqual(default, get_console_locale(self.env, None))
-                self.assertEqual(default, get_console_locale(self.env, 'C'))
-                self.env.config.set('trac', 'default_language', 'en_US')
-                self.assertEqual(en_US, get_console_locale(self.env, None))
-                self.assertEqual(en_US, get_console_locale(self.env, 'C'))
-                self.assertEqual(en_US, get_console_locale(self.env,
-                                                           'de_DE.UTF8'))
-        finally:
-            self.env.config.set('trac', 'default_language', language)
+        def unset_locale_envs():
+            for name in ('LANGUAGE', 'LC_ALL', 'LC_MESSAGES', 'LANG'):
+                if name in os.environ:
+                    del os.environ[name]
+
+        if 'de' in locales:
+            unset_locale_envs()
+            self.assertEqual(None, get_console_locale(None, None))
+            self.assertEqual(de, get_console_locale(None, 'de_DE.UTF8'))
+            self.env.config.set('trac', 'default_language', 'de')
+            self.assertEqual(de, get_console_locale(self.env, None))
+            self.assertEqual(de, get_console_locale(self.env, 'C'))
+            self.env.config.set('trac', 'default_language', 'en_US')
+            self.assertEqual(en_US, get_console_locale(self.env, None))
+            self.assertEqual(en_US, get_console_locale(self.env, 'C'))
+            self.assertEqual(de, get_console_locale(self.env,
+                                                    'de_DE.UTF8'))
+
+            self.env.config.set('trac', 'default_language', 'de')
+            os.environ['LANG'] = 'POSIX'  # unavailable locale in Trac
+            self.assertEqual(None, get_console_locale())
+            self.assertEqual(de, get_console_locale(self.env))
+            os.environ['LANG'] = '****'  # invalid locale
+            self.assertEqual(None, get_console_locale())
+            self.assertEqual(de, get_console_locale(self.env))
+            os.environ['LANG'] = 'en_US.utf-8'
+            self.assertEqual(en_US, get_console_locale())
+            self.assertEqual(en_US, get_console_locale(self.env))
+            os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
+            self.assertEqual(de, get_console_locale())
+            self.assertEqual(de, get_console_locale(self.env))
+            os.environ['LC_ALL'] = 'en_US.utf-8'
+            self.assertEqual(en_US, get_console_locale())
+            self.assertEqual(en_US, get_console_locale(self.env))
+            os.environ['LANGUAGE'] = 'de_DE:en_US:en'
+            self.assertEqual(de, get_console_locale())
+            self.assertEqual(de, get_console_locale(self.env))
+
+        if not locales:  # compiled catalog is missing
+            unset_locale_envs()
+            self.assertEqual(None, get_console_locale(None, 'de_DE.UTF8'))
+            self.env.config.set('trac', 'default_language', 'de')
+            self.assertEqual(None, get_console_locale(self.env, None))
+            self.assertEqual(None, get_console_locale(self.env, 'C'))
+            self.assertEqual(None, get_console_locale(self.env,
+                                                      'de_DE.UTF8'))
+            os.environ['LANG'] = 'en_US.utf-8'
+            os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
+            os.environ['LC_ALL'] = 'en_US.utf-8'
+            os.environ['LANGUAGE'] = 'de_DE:en_US'
+            self.assertEqual(None, get_console_locale())
+            self.assertEqual(None, get_console_locale(self.env))
 
     def _test_get_console_locale_without_babel(self):
+        os.environ['LANG'] = 'en_US.utf-8'
+        os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
+        os.environ['LC_ALL'] = 'en_US.utf-8'
+        os.environ['LANGUAGE'] = 'de_DE:en_US'
         self.assertEqual(None, get_console_locale(None, 'en_US.UTF8'))
-        language = self.env.config.get('trac', 'default_language')
-        try:
-            self.env.config.set('trac', 'default_language', 'en_US')
-            self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
-        finally:
-            self.env.config.set('trac', 'default_language', language)
+        self.env.config.set('trac', 'default_language', '')
+        self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
+        self.assertEqual(None, get_console_locale(self.env))
+        self.env.config.set('trac', 'default_language', 'en_US')
+        self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
+        self.assertEqual(None, get_console_locale(self.env))
 
     if has_babel:
         test_get_console_locale = _test_get_console_locale_with_babel

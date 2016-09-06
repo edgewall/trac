@@ -327,26 +327,32 @@ def text_width(text, ambiwidth=1):
     return sum([2 if east_asian_width(chr) in twice else 1
                 for chr in to_unicode(text)])
 
-_default_ambiwidth = 1  # Default width of East Asian Ambiguous (A)
-if os.name == 'nt':
-    try:
-        # `ctypes` is available since Python 2.5
+
+def _get_default_ambiwidth():
+    """Return width of East Asian Ambiguous based on locale environment
+    variables or Windows codepage.
+    """
+
+    if os.name == 'nt':
         import ctypes
         codepage = ctypes.windll.kernel32.GetConsoleOutputCP()
-    except ImportError:
-        # Try to retrieve the codepage from stderr and stdout
-        codepage = (sys.stderr.encoding or sys.stdout.encoding or '')[2:]
-        codepage = codepage.isdigit() and int(codepage) or 0
+        if codepage in (932,   # Japanese (Shift-JIS)
+                        936,   # Chinese Simplified (GB2312)
+                        949,   # Korean (Unified Hangul Code)
+                        950):  # Chinese Traditional (Big5)
+            return 2
+    else:
+        for name in ('LANGUAGE', 'LC_ALL', 'LC_MESSAGES', 'LANG'):
+            value = os.environ.get(name) or ''
+            if value:
+                if name == 'LANGUAGE' and ':' in value:
+                    value = value.split(':')[0]
+                return 2 if value.lower().startswith(('zh', 'ja', 'ko')) else 1
 
-    if codepage in (932,  # Japanese (Shift-JIS)
-                    936,  # Chinese Simplified (GB2312)
-                    949,  # Korean (Unified Hangul Code)
-                    950): # Chinese Traditional (Big5)
-        _default_ambiwidth = 2
-    del codepage
-else:
-    if re.match(r'zh|ja|kr', os.environ.get('LANG') or '', re.IGNORECASE):
-        _default_ambiwidth = 2
+    return 1
+
+
+_default_ambiwidth = _get_default_ambiwidth()
 
 
 def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
