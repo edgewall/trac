@@ -40,6 +40,10 @@ class InvalidRepository(TracError):
     """Exception raised when a repository is invalid."""
 
 
+class InvalidConnector(TracError):
+    """Exception raised when a repository connector is invalid."""
+
+
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
@@ -365,6 +369,8 @@ class RepositoryManager(Component):
                 try:
                     repo = self.get_repository(repo_info['name'])
                     repo.sync()
+                except InvalidConnector:
+                    continue
                 except TracError as e:
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
@@ -565,6 +571,8 @@ class RepositoryManager(Component):
         :return: if no corresponding repository was defined,
                  simply return `None`.
 
+        :raises InvalidConnector: if the repository connector cannot be
+                                  opened.
         :raises InvalidRepository: if the repository cannot be opened.
         """
         reponame = reponame or ''
@@ -768,12 +776,12 @@ class RepositoryManager(Component):
             if prio >= 0: # no error condition
                 return connector
             else:
-                raise TracError(
+                raise InvalidConnector(
                     _('Unsupported version control system "%(name)s"'
                       ': %(error)s', name=rtype,
                       error=to_unicode(connector.error)))
         else:
-            raise TracError(
+            raise InvalidConnector(
                 _('Unsupported version control system "%(name)s": '
                   'Can\'t find an appropriate component, maybe the '
                   'corresponding plugin was not enabled? ', name=rtype))
