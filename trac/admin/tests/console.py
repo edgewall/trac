@@ -273,8 +273,8 @@ class TracadminTestCase(unittest.TestCase):
             os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
             os.environ['LC_ALL'] = 'en_US.utf-8'
             os.environ['LANGUAGE'] = 'de_DE:en_US'
-            self.assertEqual(None, get_console_locale())
-            self.assertEqual(None, get_console_locale(self.env))
+            self.assertEqual(en_US, get_console_locale())
+            self.assertEqual(en_US, get_console_locale(self.env))
 
     def _test_get_console_locale_without_babel(self):
         os.environ['LANG'] = 'en_US.utf-8'
