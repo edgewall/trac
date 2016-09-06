@@ -19,7 +19,7 @@ from datetime import datetime
 
 from trac.core import TracError
 from trac.resource import Resource, get_resource_description, get_resource_url
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockRequest
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     EmptyChangeset, Node, Repository, \
@@ -243,11 +243,32 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.db_provider.modify_repository('', {'dir': '/path/to/new-path'})
 
 
+class RepositoryManagerTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_pre_process_request_sync_skipped_for_invalid_connector(self):
+        """Repository synchronization is skipped for an invalid connector."""
+        self.env.config.set('repositories', 'repos.dir', '/some/path')
+        self.env.config.set('repositories', 'repos.type', 'invalid')
+        self.env.config.set('repositories', 'repos.sync_per_request', True)
+        req = MockRequest(self.env)
+        handler = Mock()
+        repos_manager = RepositoryManager(self.env)
+
+        repos_manager.pre_process_request(req, handler)
+
+        self.assertNotIn('invalid', repos_manager.get_supported_types())
+        self.assertEqual([], req.chrome['warnings'])
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ApiTestCase))
     suite.addTest(unittest.makeSuite(ResourceManagerTestCase))
     suite.addTest(unittest.makeSuite(DbRepositoryProviderTestCase))
+    suite.addTest(unittest.makeSuite(RepositoryManagerTestCase))
     return suite
 
 
