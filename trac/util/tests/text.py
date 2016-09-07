@@ -295,6 +295,27 @@ bar@….com    | bar@example.com
         self._validate_print_table(expected, data, headers=headers, sep=' | ',
                                    ambiwidth=2)
 
+    def test_multilines_in_cell(self):
+        data = (
+            (41, 'Trac', 'Trac-Hacks'),
+            (42, 'blah', 'foo\r\nbar\r\n'),
+            (43, 'alfa\r\nbravo\r\n', 'zero\r\none\r\ntwo'),
+        )
+        headers = ('Id', 'Column 1', 'Column 2')
+        expected = u"""\
+
+Id   Column 1   Column 2
+--------------------------
+41 | Trac     | Trac-Hacks
+42 | blah     | foo
+   |          | bar
+43 | alfa     | zero
+   | bravo    | one
+   |          | two
+
+"""
+        self._validate_print_table(expected, data, headers=headers, sep=' | ')
+
     def _validate_print_table(self, expected, data, **kwargs):
         out = StringIO()
         kwargs['out'] = out
