@@ -388,8 +388,23 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
     def tw(text):
         return text_width(text, ambiwidth=ambiwidth)
 
-    # Convert each cell to an unicode object
-    data = [[to_text(cell) for cell in row] for row in data]
+    def to_lines(data):
+        lines = []
+        for row in data:
+            row = [to_text(cell) for cell in row]
+            if any('\n' in cell for cell in row):
+                row = [cell.splitlines() for cell in row]
+                max_lines = max(len(cell) for cell in row)
+                for cell in row:
+                    if len(cell) < max_lines:
+                        cell += [''] * (max_lines - len(cell))
+                lines.extend([cell[idx] for cell in row]
+                             for idx in xrange(max_lines))
+            else:
+                lines.append(row)
+        return lines
+
+    data = to_lines(data)
 
     num_cols = len(data[0])
     col_width = [max(tw(row[idx]) for row in data)
@@ -398,15 +413,15 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
     out.write('\n')
     for ridx, row in enumerate(data):
         for cidx, cell in enumerate(row):
-            if headers and ridx == 0:
-                sp = '%*s' % (tw(sep), ' ') # No separator in header
-            else:
-                sp = sep
             if cidx + 1 == num_cols:
-                sp = '' # No separator after last column
-
-            line = u'%-*s%s' % (col_width[cidx] - tw(cell) + len(cell),
-                                cell, sp)
+                line = cell  # No separator after last column
+            else:
+                if headers and ridx == 0:
+                    sp = ' ' * tw(sep)  # No separator in header
+                else:
+                    sp = sep
+                line = u'%-*s%s' % (col_width[cidx] - tw(cell) + len(cell),
+                                    cell, sp)
             line = line.encode(charset, 'replace')
             out.write(line)
 
