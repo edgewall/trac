@@ -191,6 +191,17 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
         self.assertEqual('/some/path', href())
         self.assertIs(href, self.env.href)
 
+    def test_log_file_path_is_relative_path(self):
+        log_file_path = self.env.log_file_path
+        self.assertEqual(os.path.join(self.env.path, 'log', 'trac.log'),
+                         log_file_path)
+        self.assertIs(log_file_path, self.env.log_file_path)
+
+    def test_log_file_path_is_absolute_path(self):
+        log_file = os.path.join(self.env.path, 'trac.log')
+        self.env.config.set('logging', 'log_file', log_file)
+        self.assertEqual(log_file, self.env.log_file_path)
+
 
 class KnownUsersTestCase(unittest.TestCase):
 

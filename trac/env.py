@@ -595,6 +595,13 @@ class Environment(Component, ComponentManager):
         """Path of the trac.ini file."""
         return os.path.join(self.conf_dir, 'trac.ini')
 
+    @lazy
+    def log_file_path(self):
+        """Path to the log file."""
+        if not os.path.isabs(self.log_file):
+            return os.path.join(self.log_dir, self.log_file)
+        return self.log_file
+
     def _get_path_to_dir(self, *dirs):
         path = self.path
         for dir in dirs:
@@ -651,19 +658,16 @@ class Environment(Component, ComponentManager):
 
     def setup_log(self):
         """Initialize the logging sub-system."""
-        logtype = self.log_type
-        logfile = self.log_file
-        if logtype == 'file' and not os.path.isabs(logfile):
-            logfile = os.path.join(self.log_dir, logfile)
         format = self.log_format
-        logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         if format:
             format = format.replace('$(', '%(') \
                            .replace('%(path)s', self.path) \
                            .replace('%(basename)s', self.name) \
                            .replace('%(project)s', self.project_name)
+        logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         self.log = log.logger_handler_factory(
-            logtype, logfile, self.log_level, logid, format=format)
+            self.log_type, self.log_file_path, self.log_level, logid,
+            format=format)
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       self.trac_version)
 
