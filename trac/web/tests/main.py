@@ -119,6 +119,13 @@ class AuthenticateTestCase(unittest.TestCase):
         self.assertEqual('anonymous',
                          self.request_dispatcher.authenticate(self.req))
         self.assertEqual(1, len(self.req.chrome['warnings']))
+        expected = "Can't authenticate using RaisingAuthenticator: "
+        for level, message in self.env.log_messages:
+            if expected in message.split('\n'):
+                self.assertEqual('ERROR', level)
+                break
+        else:
+            self.fail("Expected log message not found: \"%s\"" % expected)
 
     def test_authenticate_once(self):
         class Authenticator(Component):
@@ -538,6 +545,11 @@ class RequestDispatcherTestCase(unittest.TestCase):
 
         self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
 
+        self.assertIn(('DEBUG', "Chosen handler is <Component trac.web.tests"
+                                ".main.TestStubRequestHandler>"),
+                       self.env.log_messages)
+        self.assertIn(('ERROR', "can't retrieve session: TracError: Database "
+                                "not reachable"), self.env.log_messages)
         self.assertIsInstance(req.session, FakeSession)
         self.assertIsNone(req.session.sid)
         self.assertNotIn('name', req.session)

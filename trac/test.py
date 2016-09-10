@@ -21,6 +21,8 @@ import abc
 import doctest
 import inspect
 import io
+import logging
+import logging.handlers
 import os
 import shutil
 import sys
@@ -38,6 +40,7 @@ else:
 import trac.db.mysql_backend
 import trac.db.postgres_backend
 import trac.db.sqlite_backend
+import trac.log
 from trac.config import Configuration
 from trac.core import ComponentManager, ComponentMeta, TracError
 from trac.db.api import DatabaseManager, parse_connection_uri
@@ -333,7 +336,7 @@ class EnvironmentStub(Environment):
         # better solution than this.
         load_workflow_config_snippet(self.config, 'basic-workflow.ini')
         self.config.set('logging', 'log_level', 'DEBUG')
-        self.config.set('logging', 'log_type', 'stderr')
+        self.config.set('logging', 'log_type', 'none')  # Ignored.
         if enable is not None:
             self.config.set('components', 'trac.*', 'disabled')
         else:
@@ -347,14 +350,26 @@ class EnvironmentStub(Environment):
             self.config.set('components', config_key, 'disabled')
 
         # -- logging
-        from trac.log import logger_handler_factory
-        self.log, self._log_handler = logger_handler_factory('test')
+        self.log = logging.getLogger('trac.test')
+        level = self.log_level.upper()
+        level_as_int = trac.log.LOG_LEVEL_MAP.get(level)
+        self.log.setLevel(level_as_int)
+        handler_cls = logging.handlers.BufferingHandler
+        if not self.log.handlers:
+            log_handler = handler_cls(sys.maxint)  # Never flush implicitly.
+            formatter = logging.Formatter(self.log_format)
+            log_handler.setFormatter(formatter)
+            self.log.addHandler(log_handler)
+        elif len(self.log.handlers) == 1 and \
+                isinstance(self.log.handlers[0], handler_cls):
+            self.log.handlers[0].flush()  # Reset buffer.
+        else:
+            raise TracError("Logger has unexpected handler(s).")
 
         # -- database
         self.dburi = get_dburi()
         self.config.set('components', 'trac.db.*', 'enabled')
         self.config.set('trac', 'database', self.dburi)
-        self.config.set('trac', 'debug_sql', True)
 
         if not destroying:
             self.reset_db(default_data)
@@ -362,6 +377,12 @@ class EnvironmentStub(Environment):
         self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
 
         translation.activate(locale_en)
+
+    @property
+    def log_messages(self):
+        """Returns a list of tuples (level, message)."""
+        return [(record.levelname, record.getMessage())
+                for record in self.log.handlers[0].buffer]
 
     def reset_db(self, default_data=None):
         """Remove all data from Trac tables, keeping the tables themselves.

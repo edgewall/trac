@@ -280,7 +280,6 @@ class Environment(Component, ComponentManager):
         self.path = os.path.normpath(os.path.normcase(path))
         self.log = None
         self.config = None
-        self._log_handler = None
 
         if create:
             self.create(options)
@@ -510,11 +509,8 @@ class Environment(Component, ComponentManager):
         from trac.versioncontrol.api import RepositoryManager
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
-        if tid is None and self._log_handler is not None:
-            self.log.removeHandler(self._log_handler)
-            self._log_handler.flush()
-            self._log_handler.close()
-            del self._log_handler
+        if tid is None:
+            log.shutdown(self.log)
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment,
@@ -666,7 +662,7 @@ class Environment(Component, ComponentManager):
                            .replace('%(path)s', self.path) \
                            .replace('%(basename)s', self.name) \
                            .replace('%(project)s', self.project_name)
-        self.log, self._log_handler = log.logger_handler_factory(
+        self.log = log.logger_handler_factory(
             logtype, logfile, self.log_level, logid, format=format)
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       self.trac_version)
