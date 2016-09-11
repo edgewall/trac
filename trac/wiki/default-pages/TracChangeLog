@@ -7,6 +7,20 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases ==
 
+=== 1.0.13
+
+//(September 11, 2016)//
+
+Trac 1.0.13 provides around a dozen bug fixes and minor
+enhancements. The following are some highlights:
+
+ - Use locale environment variables to negotiate locale 
+   on console ([trac:#12418]).
+ - Fixed using incorrect revisions when downloading a zip
+   file via browser page from Git repository ([trac:#12557]).
+
+[trac:source:/tags/trac-1.0.13 View Tag] | [trac:milestone:1.0.13 View Milestone]
+
 === 1.0.12
 
 //(July 4, 2016)//

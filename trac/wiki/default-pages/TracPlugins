@@ -50,10 +50,10 @@ To uninstall a plugin installed this way, remove the egg from the `plugins` dire
 
 ==== With an .egg file
 
-Some plugins, such as [trac:SpamFilter SpamFilter], are downloadable as an `.egg` file that can be installed with `easy_install` or `pip`:
+Some plugins, such as [https://trac-hacks.org/wiki/TagsPlugin TracTags], are downloadable as an `.egg` file that can be installed with `easy_install` or `pip`:
 {{{#!sh
-$ easy_install TracSpamFilter
-$ pip install TracSpamFilter
+$ easy_install TracTags
+$ pip install TracTags
 }}}
 
 If `easy_install` is not on your system, see the Requirements section above to install it. Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python27\Scripts`) to their `PATH` environment variable, or use the full path to `easy_install` (for example, `C:\Python27\Scripts\easy_install.py`). See [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information.
@@ -62,7 +62,7 @@ If `easy_install` is not on your system, see the Requirements section above to i
 
 If Trac reports permission errors after installing a zipped egg, and you would rather not bother providing an egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
 {{{#!sh
-$ easy_install --always-unzip TracSpamFilter-0.4.1_r10106-py2.6.egg
+$ easy_install --always-unzip TracTags
 }}}
 You should end up with a directory having the same name as the zipped egg, complete with `.egg` extension, and containing its uncompressed contents.
 
@@ -72,7 +72,7 @@ Trac also searches for plugins installed in the shared plugins directory, see Tr
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{#!sh
-$ easy_install https://svn.edgewall.org/repos/trac/plugins/1.0/spam-filter
+$ easy_install https://trac-hacks.org/svn/tagsplugin/trunk
 }}}
 
 ==== Enabling the plugin
@@ -82,7 +82,7 @@ Unlike plugins installed per environment, you'll have to explicitly enable globa
 This is done in the `[components]` section of the configuration file `trac.ini`. For example:
 {{{#!ini
 [components]
-tracspamfilter.* = enabled
+tractags.* = enabled
 }}}
 
 The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source: look for a top-level directory that contains a file named `__init__.py`.
