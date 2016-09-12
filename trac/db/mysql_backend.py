@@ -430,9 +430,24 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def drop_column(self, table, column):
         cursor = MySQLdb.cursors.Cursor(self.cnx)
         if column in self.get_column_names(table):
-            cursor.execute("""
-                ALTER TABLE %s DROP COLUMN %s
-                """ % (self.quote(table), self.quote(column)))
+            quoted_table = self.quote(table)
+            cursor.execute("SHOW INDEX FROM %s" % quoted_table)
+            columns = get_column_names(cursor)
+            keys = {}
+            for row in cursor.fetchall():
+                row = dict(zip(columns, row))
+                keys.setdefault(row['Key_name'], []).append(row['Column_name'])
+            # drop all composite indices which in the given column is involved
+            for key, columns in keys.iteritems():
+                if len(columns) > 1 and column in columns:
+                    if key == 'PRIMARY':
+                        cursor.execute("ALTER TABLE %s DROP PRIMARY KEY" %
+                                       quoted_table)
+                    else:
+                        cursor.execute("ALTER TABLE %s DROP KEY %s" %
+                                       (quoted_table, self.quote(key)))
+            cursor.execute("ALTER TABLE %s DROP COLUMN %s " %
+                           (quoted_table, self.quote(column)))
 
     def drop_table(self, table):
         cursor = MySQLdb.cursors.Cursor(self.cnx)

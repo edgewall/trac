@@ -32,8 +32,7 @@ class TableTestCase(unittest.TestCase):
         self.assertEqual(2, len(table.columns))
         self.assertEqual('col1', table.columns[0].name)
         self.assertEqual('col4', table.columns[1].name)
-        self.assertEqual(1, len(table.key))
-        self.assertEqual('col1', table.key[0])
+        self.assertEqual([], table.key)
 
 
 def test_suite():

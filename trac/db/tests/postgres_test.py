@@ -14,9 +14,10 @@
 import re
 import unittest
 
-from trac.db import Table, Column, Index
+from trac.db.api import DatabaseManager
 from trac.db.postgres_backend import PostgreSQLConnector, assemble_pg_dsn
-from trac.test import EnvironmentStub
+from trac.db.schema import Table, Column, Index
+from trac.test import EnvironmentStub, get_dburi
 
 
 class PostgresTableCreationSQLTest(unittest.TestCase):
@@ -172,10 +173,164 @@ class PostgresTableAlterationSQLTest(unittest.TestCase):
         self.assertEqual([], list(sql))
 
 
+class PostgresConnectionTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.schema = [
+            Table('test_simple', key='id')[
+                Column('id', auto_increment=True),
+                Column('username'),
+                Column('email'),
+                Column('enabled', type='int'),
+                Column('extra'),
+                Index(['username'], unique=True),
+                Index(['email'], unique=False),
+            ],
+            Table('test_composite', key=['id', 'name'])[
+                Column('id', type='int'),
+                Column('name'),
+                Column('value'),
+                Column('enabled', type='int'),
+                Index(['name', 'value'], unique=False),
+                Index(['name', 'enabled'], unique=True),
+            ],
+        ]
+        self.dbm = DatabaseManager(self.env)
+        self.dbm.drop_tables(self.schema)
+        self.dbm.create_tables(self.schema)
+        self.dbm.insert_into_tables([
+            ('test_simple',
+             ('username', 'email', 'enabled'),
+             [('joe', 'joe@example.org', 1), (u'joé', 'joe@example.org', 0)]),
+            ('test_composite',
+             ('id', 'name', 'value', 'enabled'),
+             [(1, 'foo', '42', 1),
+              (1, 'bar', '42', 1),
+              (2, 'foo', '43', 0),
+              (2, 'bar', '43', 0)]),
+        ])
+
+    def tearDown(self):
+        DatabaseManager(self.env).drop_tables(self.schema)
+        self.env.reset_db()
+
+    def _drop_column(self, table, column):
+        with self.env.db_transaction as db:
+            db.drop_column(table, column)
+
+    def _get_indices(self, table):
+        with self.env.db_query:
+            indices = self._query("""
+                SELECT ind.relname, d.indisprimary, d.indisunique
+                FROM pg_index d
+                INNER JOIN pg_class tab ON tab.oid = d.indrelid
+                INNER JOIN pg_class ind ON
+                    d.indexrelid = ind.oid AND ind.relkind = 'i'
+                INNER JOIN pg_namespace ns ON
+                    ns.oid = ind.relnamespace AND
+                    ns.nspname = ANY (current_schemas(false))
+                WHERE tab.relname=%s
+                ORDER BY tab.relname, ind.relname""",
+                table)
+            results = {}
+            for index, pk, unique in indices:
+                columns = self._get_index_columns(table, index)
+                results[index] = {'pk': bool(pk), 'unique': bool(unique),
+                                  'columns': columns}
+        return results
+
+    def _get_index_columns(self, table, index):
+        rows = self._query("""
+            SELECT a.attname
+            FROM pg_attribute a
+            INNER JOIN pg_index d ON
+                a.attrelid = d.indrelid AND a.attnum = ANY (d.indkey)
+            INNER JOIN pg_class tab ON a.attrelid = tab.oid
+            INNER JOIN pg_class ind ON
+                d.indexrelid = ind.oid AND ind.relkind = 'i'
+            INNER JOIN pg_namespace ns ON
+                ns.oid = ind.relnamespace AND
+                ns.nspname = ANY (current_schemas(false))
+            WHERE tab.relname=%s AND ind.relname=%s""",
+            table, index)
+        return [row[0] for row in rows]
+
+    def _query(self, stmt, *args):
+        return self.env.db_query(stmt, args)
+
+    def test_remove_simple_keys(self):
+        indices_0 = self._get_indices('test_simple')
+        self.assertEqual(['test_simple_email_idx', 'test_simple_pkey',
+                          'test_simple_username_idx'],
+                         sorted(indices_0))
+        self.assertEqual({'pk': False, 'unique': True,
+                          'columns': ['username']},
+                         indices_0['test_simple_username_idx'])
+        self.assertEqual({'pk': True, 'unique': True, 'columns': ['id']},
+                         indices_0['test_simple_pkey'])
+        self.assertEqual({'pk': False, 'unique': False, 'columns': ['email']},
+                         indices_0['test_simple_email_idx'])
+
+        self._drop_column('test_simple', 'enabled')
+        self.assertEqual(indices_0, self._get_indices('test_simple'))
+
+        self._drop_column('test_simple', 'username')
+        indices_1 = self._get_indices('test_simple')
+        self.assertEqual(['test_simple_email_idx', 'test_simple_pkey'],
+                         sorted(indices_1))
+
+        self._drop_column('test_simple', 'email')
+        indices_2 = self._get_indices('test_simple')
+        self.assertEqual(['test_simple_pkey'], sorted(indices_2))
+
+        self._drop_column('test_simple', 'id')
+        indices_3 = self._get_indices('test_simple')
+        self.assertEqual({}, indices_3)
+
+    def test_remove_composite_keys(self):
+        indices_0 = self._get_indices('test_composite')
+        self.assertEqual(['test_composite_name_enabled_idx',
+                          'test_composite_name_value_idx',
+                          'test_composite_pk'],
+                         sorted(indices_0))
+        self.assertEqual({'pk': False, 'unique': False,
+                          'columns': ['name', 'value']},
+                         indices_0['test_composite_name_value_idx'])
+        self.assertEqual({'pk': False, 'unique': True,
+                          'columns': ['name', 'enabled']},
+                         indices_0['test_composite_name_enabled_idx'])
+        self.assertEqual({'pk': True, 'unique': True,
+                          'columns': ['id', 'name']},
+                         indices_0['test_composite_pk'])
+
+        self._drop_column('test_composite', 'id')
+        indices_1 = self._get_indices('test_composite')
+        self.assertEqual(['test_composite_name_enabled_idx',
+                          'test_composite_name_value_idx'],
+                         sorted(indices_1))
+        self.assertEqual(indices_0['test_composite_name_value_idx'],
+                         indices_1['test_composite_name_value_idx'])
+        self.assertEqual(indices_0['test_composite_name_enabled_idx'],
+                         indices_1['test_composite_name_enabled_idx'])
+        rows = self._query("""SELECT * FROM test_composite
+                              ORDER BY name, value, enabled""")
+        self.assertEqual([('bar', '42', 1), ('bar', '43', 0),
+                          ('foo', '42', 1), ('foo', '43', 0)], rows)
+
+        self._drop_column('test_composite', 'name')
+        self.assertEqual({}, self._get_indices('test_composite'))
+        rows = self._query("""SELECT * FROM test_composite
+                              ORDER BY value, enabled""")
+        self.assertEqual([('42', 1), ('42', 1), ('43', 0), ('43', 0)], rows)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
     suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
+    if get_dburi().startswith('postgres:'):
+        suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
     return suite
 
 
