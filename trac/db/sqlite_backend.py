@@ -25,6 +25,7 @@ from genshi.builder import tag
 from trac.config import ConfigurationError, ListOption
 from trac.core import Component, TracError, implements
 from trac.db.api import ConnectionBase, IDatabaseConnector
+from trac.db.schema import Table, Column, Index
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.env import ISystemInfoProvider
 from trac.util import get_pkginfo, getuser, lazy
@@ -362,6 +363,8 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
     def drop_column(self, table, column):
         column_names = self.get_column_names(table)
         if column in column_names:
+            table_schema = self._get_table_schema(table)
+            table_schema.remove_columns([column])
             temp_table = table + '_old'
             table_name = self.quote(table)
             temp_table_name = self.quote(temp_table)
@@ -372,9 +375,12 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
                 CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
                 """ % (temp_table_name, table_name))
             self.drop_table(table)
+            for sql in _to_sql(table_schema):
+                cursor.execute(sql)
             cursor.execute("""
-                CREATE TABLE %s AS SELECT %s FROM %s
-                """ % (table_name, cols_to_copy, temp_table_name))
+                INSERT INTO %s (%s) SELECT %s FROM %s
+                """ % (table_name, cols_to_copy, cols_to_copy,
+                       temp_table_name))
             self.drop_table(temp_table)
 
     def drop_table(self, table):
@@ -435,6 +441,34 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         # SQLite handles sequence updates automagically
         # http://www.sqlite.org/autoinc.html
         pass
+
+    def _get_table_schema(self, table):
+        key = None
+        items = []
+        cursor = self.cursor()
+        cursor.execute("PRAGMA table_info(%s)" % self.quote(table))
+        for row in cursor:
+            column = row[1]
+            type_ = row[2]
+            pk = row[5]
+            if pk == 1 and type_ == 'integer':
+                key = [column]
+                auto_increment = True
+            else:
+                auto_increment = False
+            items.append(Column(column, type=type_,
+                                auto_increment=auto_increment))
+        cursor.execute("PRAGMA index_list(%s)" % self.quote(table))
+        for row in cursor.fetchall():
+            index = row[1]
+            unique = row[2]
+            cursor.execute("PRAGMA index_info(%s)" % self.quote(index))
+            columns = [row[2] for row in cursor]
+            if key is None and index.startswith('sqlite_autoindex_'):
+                key = columns
+            else:
+                items.append(Index(columns, unique=bool(unique)))
+        return Table(table, key=key or [])[items]
 
 
 def _quote(identifier):

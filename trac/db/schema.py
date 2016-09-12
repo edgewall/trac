@@ -31,9 +31,14 @@ class Table(object):
 
     def remove_columns(self, column_names):
         """Remove columns specified in the list or tuple `column_names`."""
-        self.key = [key for key in self.key if key not in column_names]
+        if not isinstance(column_names, (list, tuple)):
+            column_names = [column_names]
+        if any(c in column_names for c in self.key):
+            self.key = []
         self.columns = [col for col in self.columns
                         if col.name not in column_names]
+        self.indices = [idx for idx in self.indices
+                        if all(c not in column_names for c in idx.columns)]
 
 
 class Column(object):
