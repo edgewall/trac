@@ -193,7 +193,7 @@ class PostgresConnectionTestCase(unittest.TestCase):
                 Column('value'),
                 Column('enabled', type='int'),
                 Index(['name', 'value'], unique=False),
-                Index(['name', 'enabled'], unique=True),
+                Index(['enabled', 'name'], unique=True),
             ],
         ]
         self.dbm = DatabaseManager(self.env)
@@ -221,40 +221,31 @@ class PostgresConnectionTestCase(unittest.TestCase):
 
     def _get_indices(self, table):
         with self.env.db_query:
+            tab_oid = self._query("""
+                SELECT tab.oid FROM pg_class tab
+                INNER JOIN pg_namespace ns ON
+                    ns.oid = tab.relnamespace AND
+                    ns.nspname = ANY (current_schemas(false))
+                WHERE tab.relname=%s AND tab.relkind = 'r'
+                """, table)[0][0]
+            column_names = self._query("""
+                SELECT attnum, attname FROM pg_attribute
+                WHERE attrelid=%s AND attnum >= 0 AND NOT attisdropped
+                """, tab_oid)
+            column_names = dict((row[0], row[1]) for row in column_names)
             indices = self._query("""
-                SELECT ind.relname, d.indisprimary, d.indisunique
+                SELECT ind.relname, d.indisprimary, d.indisunique, d.indkey
                 FROM pg_index d
-                INNER JOIN pg_class tab ON tab.oid = d.indrelid
                 INNER JOIN pg_class ind ON
                     d.indexrelid = ind.oid AND ind.relkind = 'i'
-                INNER JOIN pg_namespace ns ON
-                    ns.oid = ind.relnamespace AND
-                    ns.nspname = ANY (current_schemas(false))
-                WHERE tab.relname=%s
-                ORDER BY tab.relname, ind.relname""",
-                table)
+                WHERE d.indrelid=%s
+                """, tab_oid)
             results = {}
-            for index, pk, unique in indices:
-                columns = self._get_index_columns(table, index)
+            for index, pk, unique, indkey in indices:
+                columns = [column_names[int(i)] for i in indkey.split()]
                 results[index] = {'pk': bool(pk), 'unique': bool(unique),
                                   'columns': columns}
         return results
-
-    def _get_index_columns(self, table, index):
-        rows = self._query("""
-            SELECT a.attname
-            FROM pg_attribute a
-            INNER JOIN pg_index d ON
-                a.attrelid = d.indrelid AND a.attnum = ANY (d.indkey)
-            INNER JOIN pg_class tab ON a.attrelid = tab.oid
-            INNER JOIN pg_class ind ON
-                d.indexrelid = ind.oid AND ind.relkind = 'i'
-            INNER JOIN pg_namespace ns ON
-                ns.oid = ind.relnamespace AND
-                ns.nspname = ANY (current_schemas(false))
-            WHERE tab.relname=%s AND ind.relname=%s""",
-            table, index)
-        return [row[0] for row in rows]
 
     def _query(self, stmt, *args):
         return self.env.db_query(stmt, args)
@@ -290,7 +281,7 @@ class PostgresConnectionTestCase(unittest.TestCase):
 
     def test_remove_composite_keys(self):
         indices_0 = self._get_indices('test_composite')
-        self.assertEqual(['test_composite_name_enabled_idx',
+        self.assertEqual(['test_composite_enabled_name_idx',
                           'test_composite_name_value_idx',
                           'test_composite_pk'],
                          sorted(indices_0))
@@ -298,21 +289,21 @@ class PostgresConnectionTestCase(unittest.TestCase):
                           'columns': ['name', 'value']},
                          indices_0['test_composite_name_value_idx'])
         self.assertEqual({'pk': False, 'unique': True,
-                          'columns': ['name', 'enabled']},
-                         indices_0['test_composite_name_enabled_idx'])
+                          'columns': ['enabled', 'name']},
+                         indices_0['test_composite_enabled_name_idx'])
         self.assertEqual({'pk': True, 'unique': True,
                           'columns': ['id', 'name']},
                          indices_0['test_composite_pk'])
 
         self._drop_column('test_composite', 'id')
         indices_1 = self._get_indices('test_composite')
-        self.assertEqual(['test_composite_name_enabled_idx',
+        self.assertEqual(['test_composite_enabled_name_idx',
                           'test_composite_name_value_idx'],
                          sorted(indices_1))
         self.assertEqual(indices_0['test_composite_name_value_idx'],
                          indices_1['test_composite_name_value_idx'])
-        self.assertEqual(indices_0['test_composite_name_enabled_idx'],
-                         indices_1['test_composite_name_enabled_idx'])
+        self.assertEqual(indices_0['test_composite_enabled_name_idx'],
+                         indices_1['test_composite_enabled_name_idx'])
         rows = self._query("""SELECT * FROM test_composite
                               ORDER BY name, value, enabled""")
         self.assertEqual([('bar', '42', 1), ('bar', '43', 0),
