@@ -34,9 +34,9 @@ from trac.util.translation import _, cleandoc_
 from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
 from trac.versioncontrol.web_ui.util import *
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
-                             add_script, add_stylesheet, prevnext_nav,
-                             web_context)
+from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
+                             add_link, add_script, add_stylesheet,
+                             prevnext_nav, web_context)
 from trac.wiki.api import IWikiMacroProvider, IWikiSyntaxProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 
@@ -926,7 +926,6 @@ class BrowserModule(Component):
             data = {'repo': repo, 'order': order, 'desc': 1 if desc else None,
                     'reponame': None, 'path': '/', 'stickyrev': None,
                     'wiki_format_messages': wiki_format_messages}
-            from trac.web.chrome import Chrome
             return Chrome(self.env).render_template(
                     formatter.req, 'repository_index.html', data, None,
                     fragment=True)

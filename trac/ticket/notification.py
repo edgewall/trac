@@ -20,10 +20,10 @@ import re
 
 from genshi.template.text import NewTextTemplate
 
+from trac.api import IEnvironmentSetupParticipant
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
 from trac.config import *
-from trac.env import IEnvironmentSetupParticipant
 from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)

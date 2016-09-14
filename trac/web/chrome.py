@@ -38,9 +38,9 @@ from genshi.filters import Translator
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
+from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import *
 from trac.core import *
-from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview.api import RenderingContext, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.resource import *

@@ -50,6 +50,7 @@ from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
 from trac.util.datefmt import time_now, utc
 from trac.web.api import _RequestArgs, Request
+from trac.web.chrome import Chrome
 from trac.web.session import Session
 
 
@@ -208,7 +209,6 @@ def MockRequest(env, **kwargs):
     req.headers_sent = headers_sent
     req.response_sent = response_sent
 
-    from trac.web.chrome import Chrome
     req.callbacks.update({
         'arg_list': None,
         'args': lambda req: args,

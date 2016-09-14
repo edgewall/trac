@@ -20,8 +20,8 @@ See also: https://github.com/textile/python-textile
 
 import textile
 
+from trac.api import ISystemInfoProvider
 from trac.core import *
-from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import get_pkginfo
 

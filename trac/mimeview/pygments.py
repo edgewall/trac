@@ -21,9 +21,9 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.styles import get_all_styles, get_style_by_name
 
+from trac.api import ISystemInfoProvider
 from trac.core import *
 from trac.config import ConfigSection, ListOption, Option
-from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
 from trac.util import get_pkginfo, lazy

@@ -19,12 +19,12 @@ import re
 
 from genshi import Markup
 
+from trac.api import ISystemInfoProvider
 from trac.core import *
 from trac.config import Option
 from trac.db.api import ConnectionBase, IDatabaseConnector, \
                         parse_connection_uri
 from trac.db.util import ConnectionWrapper, IterableCursor
-from trac.env import ISystemInfoProvider
 from trac.util import get_pkginfo, lazy
 from trac.util.compat import close_fds
 from trac.util.text import empty, exception_to_unicode, to_unicode

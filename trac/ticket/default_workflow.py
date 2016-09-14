@@ -24,9 +24,9 @@ from pkg_resources import resource_filename
 
 from genshi.builder import tag
 
+from trac.api import IEnvironmentSetupParticipant
 from trac.config import Configuration, ConfigSection
 from trac.core import *
-from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket.api import ITicketActionController, TicketSystem

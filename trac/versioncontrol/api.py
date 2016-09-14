@@ -28,7 +28,7 @@ from trac.util.datefmt import time_now, utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
-from trac.web.chrome import ITemplateProvider
+from trac.web.chrome import Chrome, ITemplateProvider, add_warning
 
 
 def is_default(reponame):
@@ -359,7 +359,6 @@ class RepositoryManager(Component):
     # IRequestFilter methods
 
     def pre_process_request(self, req, handler):
-        from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             for repo_info in self.get_all_repositories().values():
                 if not as_bool(repo_info.get('sync_per_request')):

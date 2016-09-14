@@ -35,8 +35,8 @@ try:
 except ImportError:
     has_docutils = False
 
+from trac.api import ISystemInfoProvider
 from trac.core import *
-from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Fragment, Markup, escape, find_element
 from trac.util.translation import _

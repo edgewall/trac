@@ -17,10 +17,10 @@ import shutil
 import unittest
 
 from trac import db_default
+from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
-from trac.env import Environment, IEnvironmentSetupParticipant, \
-                     ISystemInfoProvider, open_environment
+from trac.env import Environment, open_environment
 from trac.test import EnvironmentStub, mkdtemp
 
 

@@ -25,11 +25,12 @@ from urlparse import urlsplit
 
 from trac import db_default, log
 from trac.admin import AdminCommandError, IAdminCommandProvider
+from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.cache import CacheManager, cached
 from trac.config import BoolOption, ChoiceOption, ConfigSection, \
                         Configuration, Option, PathOption
-from trac.core import Component, ComponentManager, implements, Interface, \
-                      ExtensionPoint, TracBaseError, TracError
+from trac.core import Component, ComponentManager, ExtensionPoint, \
+                      TracBaseError, TracError, implements
 from trac.db.api import (DatabaseManager, QueryContextManager,
                          TransactionContextManager)
 from trac.loader import load_components
@@ -39,6 +40,7 @@ from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
 from trac.util.translation import _, N_
+from trac.web.chrome import Chrome
 from trac.web.href import Href
 
 __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
@@ -46,53 +48,6 @@ __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
 # Content of the VERSION file in the environment
 _VERSION = 'Trac Environment Version 1'
-
-
-class ISystemInfoProvider(Interface):
-    """Provider of system information, displayed in the "About Trac"
-    page and in internal error reports.
-    """
-    def get_system_info():
-        """Yield a sequence of `(name, version)` tuples describing the
-        name and version information of external packages used by a
-        component.
-        """
-
-
-class IEnvironmentSetupParticipant(Interface):
-    """Extension point interface for components that need to participate in
-    the creation and upgrading of Trac environments, for example to create
-    additional database tables.
-
-    Please note that `IEnvironmentSetupParticipant` instances are called in
-    arbitrary order. If your upgrades must be ordered consistently, please
-    implement the ordering in a single `IEnvironmentSetupParticipant`. See
-    the database upgrade infrastructure in Trac core for an example.
-    """
-
-    def environment_created():
-        """Called when a new Trac environment is created."""
-
-    def environment_needs_upgrade():
-        """Called when Trac checks whether the environment needs to be
-        upgraded.
-
-        Should return `True` if this participant needs an upgrade to
-        be performed, `False` otherwise.
-        """
-
-    def upgrade_environment():
-        """Actually perform an environment upgrade.
-
-        Implementations of this method don't need to commit any
-        database transactions. This is done implicitly for each
-        participant if the upgrade succeeds without an error being
-        raised.
-
-        However, if the `upgrade_environment` consists of small,
-        restartable, steps of upgrade, it can decide to commit on its
-        own after each successful step.
-        """
 
 
 class BackupError(TracBaseError, RuntimeError):
@@ -898,7 +853,6 @@ class EnvironmentAdmin(Component):
         # Copy static content
         makedirs(target, overwrite=True)
         makedirs(chrome_target, overwrite=True)
-        from trac.web.chrome import Chrome
         printout(_("Copying resources from:"))
         for provider in Chrome(self.env).template_providers:
             paths = list(provider.get_htdocs_dirs() or [])

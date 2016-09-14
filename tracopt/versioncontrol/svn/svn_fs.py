@@ -53,9 +53,9 @@ import weakref
 import posixpath
 from urllib import quote
 
+from trac.api import ISystemInfoProvider
 from trac.config import ListOption, ChoiceOption
 from trac.core import *
-from trac.env import ISystemInfoProvider
 from trac.versioncontrol import Changeset, Node, Repository, \
                                 IRepositoryConnector, InvalidRepository, \
                                 NoSuchChangeset, NoSuchNode
