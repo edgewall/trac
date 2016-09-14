@@ -150,7 +150,7 @@ class SQLiteConnector(Component):
     sqlite:path/to/trac.db
     }}}
     """
-    implements(IDatabaseConnector, ISystemInfoProvider)
+    implements(IDatabaseConnector)
 
     required = False
 
@@ -164,13 +164,6 @@ class SQLiteConnector(Component):
 
     def __init__(self):
         self.error = None
-
-    # ISystemInfoProvider methods
-
-    def get_system_info(self):
-        if self.required:
-            yield 'SQLite', sqlite_version_string
-            yield 'pysqlite', pysqlite_version_string
 
     # IDatabaseConnector methods
 
@@ -279,6 +272,10 @@ class SQLiteConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError(_("No destination file created"))
         return dest_file
+
+    def get_system_info(self):
+        yield 'SQLite', sqlite_version_string
+        yield 'pysqlite', pysqlite_version_string
 
     @lazy
     def _extensions(self):

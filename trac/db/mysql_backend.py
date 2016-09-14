@@ -22,7 +22,7 @@ from contextlib import closing
 
 from genshi.core import Markup
 
-from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
+from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.config import Option
 from trac.db.api import ConnectionBase, DatabaseManager, IDatabaseConnector, \
@@ -86,8 +86,7 @@ class MySQLConnector(Component):
      * `read_default_group`: Configuration group to use from the default file
      * `unix_socket`: Use a Unix socket at the given path to connect
     """
-    implements(IDatabaseConnector, IEnvironmentSetupParticipant,
-               ISystemInfoProvider)
+    implements(IDatabaseConnector, IEnvironmentSetupParticipant)
 
     required = False
 
@@ -95,15 +94,13 @@ class MySQLConnector(Component):
         """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
-        self._mysql_version = None
+        if has_mysqldb:
+            self._mysql_version = \
+                'server: (not-connected), client: "%s", thread-safe: %s' % \
+                (MySQLdb.get_client_info(), MySQLdb.thread_safe())
+        else:
+            self._mysql_version = None
         self.error = None
-
-    # ISystemInfoProvider methods
-
-    def get_system_info(self):
-        if self.required:
-            yield 'MySQL', self._mysql_version
-            yield 'MySQLdb', mysqldb_version
 
     # IDatabaseConnector methods
 
@@ -276,6 +273,11 @@ class MySQLConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError(_("No destination file created"))
         return dest_file
+
+    def get_system_info(self):
+        if has_mysqldb:
+            yield 'MySQL', self._mysql_version
+            yield 'MySQLdb', mysqldb_version
 
     # IEnvironmentSetupParticipant methods
 

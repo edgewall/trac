@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from ctypes.util import find_library
+import ctypes
 import os
 import re
 
@@ -38,6 +40,7 @@ try:
                                     register_adapter, AsIs, QuotedString
 except ImportError:
     has_psycopg = False
+    psycopg = None
     psycopg2_version = None
 else:
     has_psycopg = True
@@ -47,12 +50,22 @@ else:
     psycopg2_version = get_pkginfo(psycopg).get('version',
                                                 psycopg.__version__)
 
+if hasattr(psycopg, 'libpq_version'):
+    _libpq_pathname = None
+else:
+    try:
+        _libpq_pathname = find_library('pq')
+    except Exception:
+        _libpq_pathname = None
+
 _like_escape_re = re.compile(r'([/_%])')
 
 # Mapping from "abstract" SQL types to DB-specific types
 _type_map = {
     'int64': 'bigint',
 }
+
+min_postgresql_version = (9, 1, 0)
 
 
 def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
@@ -72,6 +85,25 @@ def _quote(identifier):
     return '"%s"' % identifier.replace('"', '""')
 
 
+def _version_tuple(ver):
+
+    if ver:
+        # Extract 9.1.23 from 90123.
+        def get_digit(version, n):
+            return version / 10 ** (2 * n) % 100
+        return get_digit(ver, 2), get_digit(ver, 1), get_digit(ver, 0)
+
+
+def _version_string(ver):
+    if ver and not isinstance(ver, tuple):
+        ver = _version_tuple(ver)
+    if ver:
+        return '.'.join(map(str, ver))
+    else:
+        return '(unknown)'
+
+
+
 class PostgreSQLConnector(Component):
     """Database connector for PostgreSQL.
 
@@ -80,7 +112,7 @@ class PostgreSQLConnector(Component):
     postgres://user[:password]@host[:port]/database[?schema=my_schema]
     }}}
     """
-    implements(IDatabaseConnector, ISystemInfoProvider)
+    implements(IDatabaseConnector)
 
     required = False
 
@@ -88,13 +120,13 @@ class PostgreSQLConnector(Component):
         """Location of pg_dump for Postgres database backups""")
 
     def __init__(self):
+        if has_psycopg:
+            self._postgresql_version = \
+                'server: (not-connected), client: %s' % \
+                _version_string(self._client_version)
+        else:
+            self._postgresql_version = None
         self.error = None
-
-    # ISystemInfoProvider methods
-
-    def get_system_info(self):
-        if self.required:
-            yield 'psycopg2', psycopg2_version
 
     # IDatabaseConnector methods
 
@@ -105,9 +137,22 @@ class PostgreSQLConnector(Component):
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
-        self.required = True
-        return PostgreSQLConnection(path, log, user, password, host, port,
-                                    params)
+        cnx = PostgreSQLConnection(path, log, user, password, host, port,
+                                   params)
+        if not self.required:
+            if cnx.server_version < min_postgresql_version:
+                error = _(
+                    "PostgreSQL version is %(version)s. Minimum required "
+                    "version is %(min_version)s.",
+                    version='%d.%d.%d' % cnx.server_version,
+                    min_version='%d.%d.%d' % min_postgresql_version)
+                raise TracError(error)
+            self._postgresql_version = \
+                'server: %s, client: %s' \
+                % (_version_string(cnx.server_version),
+                   _version_string(self._client_version))
+            self.required = True
+        return cnx
 
     def get_exceptions(self):
         return psycopg
@@ -227,7 +272,27 @@ class PostgreSQLConnector(Component):
             raise TracError(_("No destination file created"))
         return dest_file
 
-    def _version(self):
+    def get_system_info(self):
+        if has_psycopg:
+            yield 'PostgreSQL', self._postgresql_version
+            yield 'psycopg2', psycopg2_version
+
+    @lazy
+    def _client_version(self):
+        if hasattr(psycopg, 'libpq_version'):
+            version = psycopg.libpq_version()
+        elif _libpq_pathname:
+            try:
+                lib = ctypes.CDLL(_libpq_pathname)
+                version = lib.PQlibVersion()
+            except Exception as e:
+                self.log.warning("Exception caught while retrieving libpq's "
+                                 "version%s",
+                                 exception_to_unicode(e, traceback=True))
+                version = None
+        return _version_tuple(version)
+
+    def _pgdump_version(self):
         from subprocess import Popen, PIPE
         try:
             p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
@@ -350,10 +415,5 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         return '%s_%s_seq' % (table, column)
 
     @lazy
-    def _version(self):
-        cursor = self.cursor()
-        cursor.execute('SELECT version()')
-        for version, in cursor:
-            # retrieve "9.1.23" from "PostgreSQL 9.1.23 on ...."
-            if version.startswith('PostgreSQL '):
-                return version.split(' ', 2)[1]
+    def server_version(self):
+        return _version_tuple(self.cnx.server_version)

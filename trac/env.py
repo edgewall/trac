@@ -263,7 +263,7 @@ class Environment(Component, ComponentManager):
         # The cached decorator requires the object have an `env` attribute.
         return self
 
-    @lazy
+    @property
     def system_info(self):
         """List of `(name, version)` tuples describing the name and
         version information of external packages used by Trac and plugins.

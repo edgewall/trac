@@ -20,6 +20,7 @@ import urllib
 from abc import ABCMeta, abstractmethod
 
 from genshi.builder import tag
+from trac.api import ISystemInfoProvider
 from trac.config import BoolOption, ConfigurationError, IntOption, Option
 from trac.core import *
 from trac.db.pool import ConnectionPool
@@ -232,9 +233,17 @@ class IDatabaseConnector(Interface):
         """Backup the database to a location defined by
         trac.backup_dir"""
 
+    def get_system_info():
+        """Yield a sequence of `(name, version)` tuples describing the
+        name and version information of external packages used by the
+        connector.
+        """
+
 
 class DatabaseManager(Component):
     """Component used to manage the `IDatabaseConnector` implementations."""
+
+    implements(ISystemInfoProvider)
 
     connectors = ExtensionPoint(IDatabaseConnector)
 
@@ -547,6 +556,13 @@ class DatabaseManager(Component):
         if self.debug_sql:
             args['log'] = self.log
         return connector, args
+
+    # ISystemInfoProvider methods
+
+    def get_system_info(self):
+        connector = self.get_connector()[0]
+        for info in connector.get_system_info():
+            yield info
 
 
 def get_column_names(cursor):
