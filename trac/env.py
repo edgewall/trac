@@ -37,6 +37,7 @@ from trac.loader import load_components
 from trac.util import as_bool, copytree, create_file, get_pkginfo, lazy, \
                       makedirs, read_file
 from trac.util.concurrency import threading
+from trac.util.datefmt import pytz
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
 from trac.util.translation import _, N_
@@ -289,7 +290,6 @@ class Environment(Component, ComponentManager):
         yield 'Trac', self.trac_version
         yield 'Python', sys.version
         yield 'setuptools', setuptools.__version__
-        from trac.util.datefmt import pytz
         if pytz is not None:
             yield 'pytz', pytz.__version__
         if hasattr(self, 'webfrontend_version'):
