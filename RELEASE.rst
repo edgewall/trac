@@ -1,25 +1,28 @@
-Release Notes for Trac 1.0 'Cell' Release
+Release Notes for Trac 1.2rc1 'Hermes' Release
 =========================================
-September 7, 2012
+September 14, 2016
 
 Highlights
 ----------
-* Refreshed user interface
-* Git support
-* Branching structure displayed in the revision log
-* Ticket batch modification support
+* Extensible notification system
+* Notification preference panel
+* Usernames replaced with full names
+* Restyled ticket changelog
+* Workflow controls on the New Ticket page
+* Editable wiki page version comments
+* Datetime custom fields
 
 Detailed User Visible Changes
 -----------------------------
 
-A detailed view of the API changes since 0.12.x can be found in
-http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.0
+A detailed view of the API changes since 1.0.x can be found in
+https://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.2
 
 Developer-visible changes
 -------------------------
 
-A detailed view of the API changes since 0.12.x can be found in
-http://trac.edgewall.org/wiki/TracDev/ApiChanges/1.0
+A detailed view of the API changes since 1.0.x can be found in
+https://trac.edgewall.org/wiki/TracDev/ApiChanges/1.2
 
 Acknowledgements
 ----------------
@@ -37,4 +40,4 @@ improvement over the last version.
 
 Please let us know. :-)
 
-/The Trac Team http://trac.edgewall.org/
+/The Trac Team https://trac.edgewall.org/
