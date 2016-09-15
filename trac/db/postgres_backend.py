@@ -54,7 +54,7 @@ if hasattr(psycopg, 'libpq_version'):
     _libpq_pathname = None
 else:
     try:
-        _libpq_pathname = find_library('pq')
+        _libpq_pathname = find_library('pq' if os.name != 'nt' else 'libpq')
     except Exception:
         _libpq_pathname = None
 
@@ -279,6 +279,7 @@ class PostgreSQLConnector(Component):
 
     @lazy
     def _client_version(self):
+        version = None
         if hasattr(psycopg, 'libpq_version'):
             version = psycopg.libpq_version()
         elif _libpq_pathname:
@@ -289,7 +290,6 @@ class PostgreSQLConnector(Component):
                 self.log.warning("Exception caught while retrieving libpq's "
                                  "version%s",
                                  exception_to_unicode(e, traceback=True))
-                version = None
         return _version_tuple(version)
 
     def _pgdump_version(self):
