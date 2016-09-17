@@ -1125,11 +1125,6 @@ class QueryModule(Component):
         else:
             data['report_href'] = None
 
-        # Only interact with the batch modify module it it is enabled
-        if 'TICKET_BATCH_MODIFY' in req.perm(self.realm):
-            from trac.ticket.batch import BatchModifyModule
-            self.env[BatchModifyModule].add_template_data(req, data, tickets)
-
         data.setdefault('report', None)
         data.setdefault('description', None)
         data['title'] = title

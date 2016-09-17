@@ -26,7 +26,7 @@ from trac.ticket.notification import BatchTicketChangeEvent
 from trac.util.datefmt import datetime_now, parse_date, user_time, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
-from trac.web import IRequestHandler
+from trac.web.api import IRequestFilter, IRequestHandler
 from trac.web.chrome import add_warning, add_script_data
 
 
@@ -40,7 +40,7 @@ class BatchModifyModule(Component):
     modify.
     """
 
-    implements(IPermissionRequestor, IRequestHandler)
+    implements(IPermissionRequestor, IRequestFilter, IRequestHandler)
 
     is_valid_default_handler = False
 
@@ -72,6 +72,17 @@ class BatchModifyModule(Component):
 
         # Always redirect back to the query page we came from.
         req.redirect(req.session['query_href'])
+
+    # IRequestFilter methods
+
+    def pre_process_request(self, req, handler):
+        return handler
+
+    def post_process_request(self, req, template, data, content_type):
+        if req.path_info == '/query' and \
+                'TICKET_BATCH_MODIFY' in req.perm('ticket'):
+            self.add_template_data(req, data, data['tickets'])
+        return template, data, content_type
 
     # IPermissionRequestor methods
 
