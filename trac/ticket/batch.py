@@ -178,13 +178,11 @@ class BatchModifyModule(Component):
                 t = Ticket(self.env, int(id))
                 _values = new_values.copy()
                 for field in list_fields:
-                    if field in new_values:
+                    mode = req.args.get('batchmod_mode_' + field)
+                    if mode:
                         old = t.values[field] if field in t.values else ''
-                        new = new_values[field]
-                        mode = req.args.get('batchmod_value_' + field +
-                                            '_mode')
-                        new2 = req.args.get('batchmod_value_' + field +
-                                            '_secondary', '')
+                        new = req.args.get('batchmod_primary_' + field, '')
+                        new2 = req.args.get('batchmod_secondary_' + field, '')
                         _values[field] = self._change_list(old, new, new2,
                                                            mode)
                 controllers = list(self._get_action_controllers(req, t,

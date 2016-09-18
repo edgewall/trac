@@ -42,13 +42,13 @@ class BatchModifyTestCase(unittest.TestCase):
     def assertCommentAdded(self, ticket_id, comment):
         ticket = Ticket(self.env, int(ticket_id))
         changes = ticket.get_changelog()
-        comment_change = [c for c in changes if c[2] == 'comment'][0]
+        comment_change = [c for c in changes if c[2] == 'comment'][-1]
         self.assertEqual(comment_change[2], comment)
 
     def assertFieldChanged(self, ticket_id, field, new_value):
         ticket = Ticket(self.env, int(ticket_id))
         changes = ticket.get_changelog()
-        field_change = [c for c in changes if c[2] == field][0]
+        field_change = [c for c in changes if c[2] == field][-1]
         self.assertEqual(field_change[4], new_value)
 
     def _change_list_test_helper(self, original, new, new2, mode):
@@ -226,6 +226,48 @@ class BatchModifyTestCase(unittest.TestCase):
 
         self.assertFieldChanged(first_ticket_id, 'component', 'bar')
         self.assertFieldChanged(second_ticket_id, 'component', 'bar')
+
+    def test_save_list_fields(self):
+        batch = BatchModifyModule(self.env)
+        with self.env.db_transaction:
+            ticket_ids = [
+                self._insert_ticket('Test 1', reporter='joe', keywords='foo'),
+                self._insert_ticket('Test 2', reporter='joe', keywords='baz'),
+            ]
+
+        self.req.args = {'action': 'leave',
+                         'batchmod_mode_keywords': '+',  # add
+                         'batchmod_primary_keywords': 'baz new',
+                         'batchmod_secondary_keywords': '*****'}
+        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
+        self.assertFieldChanged(ticket_ids[0], 'keywords', 'foo, baz, new')
+        self.assertFieldChanged(ticket_ids[1], 'keywords', 'baz, new')
+
+        self.req.args = {'action': 'leave',
+                         'batchmod_mode_keywords': '+-',  # add / remove
+                         'batchmod_primary_keywords': 'one two three',
+                         'batchmod_secondary_keywords': 'baz missing'}
+        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
+        self.assertFieldChanged(ticket_ids[0], 'keywords',
+                                'foo, new, one, two, three')
+        self.assertFieldChanged(ticket_ids[1], 'keywords',
+                                'new, one, two, three')
+
+        self.req.args = {'action': 'leave',
+                         'batchmod_mode_keywords': '-',  # remove
+                         'batchmod_primary_keywords': 'new two',
+                         'batchmod_secondary_keywords': '*****'}
+        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
+        self.assertFieldChanged(ticket_ids[0], 'keywords', 'foo, one, three')
+        self.assertFieldChanged(ticket_ids[1], 'keywords', 'one, three')
+
+        self.req.args = {'action': 'leave',
+                         'batchmod_mode_keywords': '=',  # set
+                         'batchmod_primary_keywords': 'orange',
+                         'batchmod_secondary_keywords': '*****'}
+        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
+        self.assertFieldChanged(ticket_ids[0], 'keywords', 'orange')
+        self.assertFieldChanged(ticket_ids[1], 'keywords', 'orange')
 
     def test_action_with_state_change(self):
         """Actions can have change status."""
