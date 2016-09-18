@@ -360,7 +360,8 @@
           break;
         case 'text':
           if ($.inArray(propertyName, batch_list_properties) >= 0) {
-            focusElement = appendBatchListControls(td, inputName);
+            focusElement = appendBatchListControls(td, propertyName,
+                                                   inputName);
           } else {
             focusElement = createText(inputName, 42).attr("id", inputName);
             td.append(focusElement);
@@ -380,16 +381,15 @@
       return [td, focusElement];
     }
 
-    function appendBatchListControls(td, inputName) {
-      var modeSelect = createSelect(inputName + "_mode", batch_list_modes)
-                       .attr("id", inputName);
-      var text1 = createText(inputName + "_primary", 42)
-                             .attr("id", inputName + "_primary");
-      var text2 = createText(inputName + "_secondary", 42)
-                             .attr("id", inputName + "_secondary");
-      var label1 = createLabel(" " + batch_list_modes[0]['name'] + ":",
-                               inputName + "_primary");
-      var label2 = createLabel(_(" remove:"), inputName + "_secondary");
+    function appendBatchListControls(td, propertyName, inputName) {
+      var modeSelect = createSelect("batchmod_mode_" + propertyName,
+                                    batch_list_modes).attr("id", inputName);
+      var name1 = "batchmod_primary_" + propertyName;
+      var name2 = "batchmod_secondary_" + propertyName;
+      var text1 = createText(name1, 42).attr("id", name1);
+      var text2 = createText(name2, 42).attr("id", name2);
+      var label1 = createLabel(" " + batch_list_modes[0]['name'] + ":", name1);
+      var label2 = createLabel(_(" remove:"), name2);
       td.append(modeSelect);
       td.append(label1);
       td.append(text1);
