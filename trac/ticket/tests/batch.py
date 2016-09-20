@@ -23,6 +23,7 @@ from trac.ticket import default_workflow, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
 from trac.util.datefmt import datetime_now, utc
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import web_context
 
 
@@ -105,6 +106,20 @@ class BatchModifyTestCase(unittest.TestCase):
         batch = BatchModifyModule(self.env)
         selected_tickets = batch._get_selected_tickets(self.req)
         self.assertEqual(selected_tickets, [])
+
+    def test_require_post_method(self):
+        batch = BatchModifyModule(self.env)
+
+        req = MockRequest(self.env, method='GET', path_info='/batchmodify')
+        req.session['query_href'] = req.href.query()
+        self.assertTrue(batch.match_request(req))
+        self.assertRaises(HTTPBadRequest, batch.process_request, req)
+
+        req = MockRequest(self.env, method='POST', path_info='/batchmodify',
+                          args={'selected_tickets': ''})
+        req.session['query_href'] = req.href.query()
+        self.assertTrue(batch.match_request(req))
+        self.assertRaises(RequestDone, batch.process_request, req)
 
     # Assign list items
 

@@ -28,7 +28,7 @@ from trac.ticket.notification import BatchTicketNotifyEmail
 from trac.util.datefmt import datetime_now, utc
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
-from trac.web.api import IRequestFilter, IRequestHandler
+from trac.web.api import IRequestFilter, IRequestHandler, HTTPBadRequest
 from trac.web.chrome import add_warning, add_script_data
 
 
@@ -53,6 +53,8 @@ class BatchModifyModule(Component):
         return req.path_info == '/batchmodify'
 
     def process_request(self, req):
+        if req.method != 'POST':
+            raise HTTPBadRequest(_("Invalid request arguments."))
         req.perm.assert_permission('TICKET_BATCH_MODIFY')
 
         comment = req.args.get('batchmod_value_comment', '')
