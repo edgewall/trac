@@ -21,7 +21,7 @@ from trac.ticket import default_workflow, api, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
 from trac.util.datefmt import datetime_now, utc
-from trac.web.api import RequestDone
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import web_context
 from trac.web.session import DetachedSession
 
@@ -105,6 +105,20 @@ class BatchModifyTestCase(unittest.TestCase):
         batch = BatchModifyModule(self.env)
         selected_tickets = batch._get_selected_tickets(self.req)
         self.assertEqual(selected_tickets, [])
+
+    def test_require_post_method(self):
+        batch = BatchModifyModule(self.env)
+
+        req = MockRequest(self.env, method='GET', path_info='/batchmodify')
+        req.session['query_href'] = req.href.query()
+        self.assertTrue(batch.match_request(req))
+        self.assertRaises(HTTPBadRequest, batch.process_request, req)
+
+        req = MockRequest(self.env, method='POST', path_info='/batchmodify',
+                          args={'selected_tickets': ''})
+        req.session['query_href'] = req.href.query()
+        self.assertTrue(batch.match_request(req))
+        self.assertRaises(RequestDone, batch.process_request, req)
 
     # Assign list items
 
@@ -393,7 +407,8 @@ class ProcessRequestTestCase(unittest.TestCase):
         self._insert_ticket('Ticket 1', reporter='user1')
         self._insert_ticket('Ticket 2', reporter='user1')
 
-        req = MockRequest(self.env, authname='has_ta_&_bm', args={
+        req = MockRequest(self.env, method='POST', authname='has_ta_&_bm',
+                          args={
             'batchmod_value_reporter': 'user2',
             'batchmod_value_comment': '',
             'action': 'leave',
@@ -409,7 +424,7 @@ class ProcessRequestTestCase(unittest.TestCase):
         """User without TICKET_ADMIN cannot batch modify the reporter."""
         self._insert_ticket('Ticket 1', reporter='user1')
         self._insert_ticket('Ticket 2', reporter='user1')
-        req = MockRequest(self.env, authname='has_bm', args={
+        req = MockRequest(self.env, method='POST', authname='has_bm', args={
             'batchmod_value_reporter': 'user2',
             'batchmod_value_comment': '',
             'action': 'leave',
