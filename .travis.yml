@@ -84,7 +84,10 @@ before_install:
       PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
       export PYENV_ROOT PATH
       brew update >/dev/null
-      brew outdated pyenv || brew upgrade --quiet pyenv
+      if ! brew outdated pyenv; then
+        brew upgrade --quiet pyenv
+        pyenv rehash
+      fi
       pyenv install -ks $pyver
       pyenv global $pyver
       mkdir $HOME/venv-bin
