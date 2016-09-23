@@ -120,6 +120,23 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertTrue(batch.match_request(req))
         self.assertRaises(RequestDone, batch.process_request, req)
 
+    def test_redirect_to_query_href_in_req_args(self):
+        redirect_listener_args = []
+        def redirect_listener(req, url, permanent):
+            redirect_listener_args[:] = (url, permanent)
+
+        batch = BatchModifyModule(self.env)
+        req = MockRequest(self.env, method='POST', path_info='/batchmodify')
+        query_opened_tickets = req.href.query(status='!closed')
+        query_default = req.href.query()
+        req.args = {'selected_tickets': '', 'query_href': query_opened_tickets}
+        req.session['query_href'] = query_default
+        req.add_redirect_listener(redirect_listener)
+
+        self.assertTrue(batch.match_request(req))
+        self.assertRaises(RequestDone, batch.process_request, req)
+        self.assertEqual([query_opened_tickets, False], redirect_listener_args)
+
     # Assign list items
 
     def test_change_list_replace_empty_with_single(self):
