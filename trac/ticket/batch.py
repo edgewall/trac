@@ -66,8 +66,8 @@ class BatchModifyModule(Component):
         self._save_ticket_changes(req, selected_tickets,
                                   new_values, comment, action)
 
-        #Always redirect back to the query page we came from.
-        req.redirect(req.session['query_href'])
+        # Always redirect back to the query page we came from
+        req.redirect(req.args.get('query_href') or req.href.query())
 
     # IRequestFilter methods
 
