@@ -55,7 +55,6 @@ class TicketGroupStatsTestCase(unittest.TestCase):
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
         self.stats.add_interval('intTitle', 5, {'k1': 'v1'}, 'css', 0)
         self.stats.refresh_calcs()
-        interval = self.stats.intervals[1]
         self.assertEqual(0, self.stats.done_count, 'count added for no prog')
         self.assertEqual(0, self.stats.done_percent, 'percent incremented')
 
@@ -216,6 +215,16 @@ class MilestoneModuleTestCase(unittest.TestCase):
 
         self.assertIn('grouped_by', data)
         self.assertEqual('priority', data['grouped_by'])
+
+    def test_get_search_results_matches_ignorecase(self):
+        req = MockRequest(self.env)
+        def search(terms):
+            return list(self.mmodule.get_search_results(req, terms,
+                                                        ['milestone']))
+
+        results = search(self.terms)
+        self.assertEqual(results, search([t.lower() for t in self.terms]))
+        self.assertEqual(results, search([t.upper() for t in self.terms]))
 
 
 class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
