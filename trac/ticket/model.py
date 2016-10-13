@@ -53,7 +53,10 @@ class Ticket(object):
 
     @staticmethod
     def id_is_valid(num):
-        return 0 < int(num) <= 1L << 31
+        try:
+            return 0 < int(num) <= 1L << 31
+        except (ValueError, TypeError):
+            return False
 
     # 0.11 compatibility
     time_created = property(lambda self: self.values.get('time'))
@@ -65,9 +68,6 @@ class Ticket(object):
         in version 1.1.1
         """
         self.env = env
-        if tkt_id is not None:
-            tkt_id = int(tkt_id)
-        self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.editable_fields = \
             set(f['name'] for f in self.fields
@@ -86,6 +86,7 @@ class Ticket(object):
         else:
             self._init_defaults()
             self.id = None
+        self.resource = Resource('ticket', self.id, version)
         self._old = {}
 
     exists = property(lambda self: self.id is not None)
@@ -116,6 +117,7 @@ class Ticket(object):
         row = None
         if self.id_is_valid(tkt_id):
             # Fetch the standard ticket fields
+            tkt_id = int(tkt_id)
             for row in self.env.db_query("SELECT %s FROM ticket WHERE id=%%s" %
                                          ','.join(self.std_fields), (tkt_id,)):
                 break
