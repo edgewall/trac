@@ -60,7 +60,8 @@ def search_to_sql(db, columns, terms):
 
 def search_to_regexps(terms):
     """Convert search query terms into regular expressions."""
-    return [re.compile(re.escape(term)) for term in terms]
+    return [re.compile(re.escape(term), re.IGNORECASE | re.UNICODE)
+            for term in terms]
 
 
 def shorten_result(text='', keywords=[], maxlen=240, fuzz=60):
