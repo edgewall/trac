@@ -79,7 +79,10 @@ class Ticket(object):
 
     @staticmethod
     def id_is_valid(num):
-        return 0 < int(num) <= 1L << 31
+        try:
+            return 0 < int(num) <= 1L << 31
+        except (ValueError, TypeError):
+            return False
 
     @property
     def resource(self):
@@ -106,7 +109,6 @@ class Ticket(object):
         self.values = {}
         self._old = {}
         if tkt_id is not None:
-            tkt_id = int(tkt_id)
             self._fetch_ticket(tkt_id)
         else:
             self._init_defaults()
@@ -157,6 +159,7 @@ class Ticket(object):
         row = None
         if self.id_is_valid(tkt_id):
             # Fetch the standard ticket fields
+            tkt_id = int(tkt_id)
             for row in self.env.db_query("SELECT %s FROM ticket WHERE id=%%s" %
                                          ','.join(self.std_fields), (tkt_id,)):
                 break
