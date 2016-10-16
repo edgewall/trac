@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.12\n"
+"Project-Id-Version: Trac 1.0.14\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-06-23 17:49-0400\n"
+"POT-Creation-Date: 2016-10-16 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,15 +167,15 @@ msgstr ""
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:881
+#: tracopt/versioncontrol/git/git_fs.py:882
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:884
+#: tracopt/versioncontrol/git/git_fs.py:885
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:888
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -540,32 +540,38 @@ msgid ""
 "will disable it. (''since 0.10.1'')"
 msgstr ""
 
-#: trac/notification.py:137
+#: trac/notification.py:127
+msgid ""
+"Hash algorithm to create unique Message-ID header.\n"
+"''(since 1.0.13)''"
+msgstr ""
+
+#: trac/notification.py:141
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification.py:140
+#: trac/notification.py:144
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification.py:143
+#: trac/notification.py:147
 msgid "Username for SMTP server. (''since 0.9'')"
 msgstr ""
 
-#: trac/notification.py:146
+#: trac/notification.py:150
 msgid "Password for SMTP server. (''since 0.9'')"
 msgstr ""
 
-#: trac/notification.py:149
+#: trac/notification.py:153
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
 msgstr ""
 
-#: trac/notification.py:205
+#: trac/notification.py:209
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
 "The sendmail program must accept the `-i` and `-f` options.\n"
-" (''since 0.12'')"
+"(''since 0.12'')"
 msgstr ""
 
 #: trac/perm.py:318
