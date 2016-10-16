@@ -7,7 +7,7 @@ addons:
 cache:
   directories:
     - "$HOME/.cache/pip"
-    - "$HOME/.pyenv"
+    - "$HOME/venv-lib"
 matrix:
   include:
     - os: linux
@@ -36,22 +36,22 @@ matrix:
       env: tracdb=mysql
     - os: osx
       language: generic
-      env: pyver=2.6.6 tracdb=
+      env: pyver=2.6 tracdb=
     - os: osx
       language: generic
-      env: pyver=2.6.6 tracdb=sqlite
+      env: pyver=2.6 tracdb=sqlite
     - os: osx
       language: generic
-      env: pyver=2.6.6 tracdb=postgres
+      env: pyver=2.6 tracdb=postgres
     - os: osx
       language: generic
-      env: pyver=2.7.12 tracdb=
+      env: pyver=2.7 tracdb=
     - os: osx
       language: generic
-      env: pyver=2.7.12 tracdb=sqlite
+      env: pyver=2.7 tracdb=sqlite
     - os: osx
       language: generic
-      env: pyver=2.7.12 tracdb=postgres
+      env: pyver=2.7 tracdb=postgres
 before_install:
   - rvm get head
   - |
@@ -59,7 +59,13 @@ before_install:
     case "$tracdb" in
       postgres)
         if [ "$TRAVIS_OS_NAME" = osx ]; then
-          pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log
+          rm -rf /usr/local/var/postgres
+          pg_ctl initdb --pgdata /usr/local/var/postgres
+          pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
+            rc=$?
+            cat /usr/local/var/postgres/postgresql.log
+            exit $rc
+          }
           createuser -s postgres
         fi
         tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
@@ -81,22 +87,16 @@ before_install:
   - |
     set -e
     if [ "$TRAVIS_OS_NAME" = osx ]; then
-      PYENV_ROOT=$HOME/.pyenv
-      PATH=$PYENV_ROOT/shims:$PATH:$PYENV_ROOT/bin
-      export PYENV_ROOT PATH
-      brew update >/dev/null
-      brew outdated pyenv || brew upgrade --quiet pyenv
-      pyenv rehash
-      pyenv install -ks $pyver
-      pyenv global $pyver
-      mkdir $HOME/venv-bin
-      pip install -t $HOME/venv-bin virtualenv
-      PYTHONPATH=$HOME/venv-bin python -m virtualenv $HOME/venv
-      source $HOME/venv/bin/activate
+      test -d $HOME/venv-lib || mkdir $HOME/venv-lib
+      PYTHONPATH=$HOME/venv-lib /usr/bin/easy_install-$pyver -ZU -d $HOME/venv-lib virtualenv
+      PYTHONPATH=$HOME/venv-lib /usr/bin/python$pyver -m virtualenv $HOME/venv-$pyver
+      source $HOME/venv-$pyver/bin/activate
       python --version
       pip --version
     fi
 install:
+  - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
+  - ( echo "[global]"; echo "cache-dir = $HOME/.cache/pip" ) >"$HOME/.pip/pip.conf"
   - pip install --upgrade pip
   - pip install Genshi==0.7 'Babel!=2.3.0,!=2.3.1' configobj Pygments docutils lxml pytz twill==0.9.1
   - if [ "$tracdb" = postgres ]; then pip install psycopg2; fi
