@@ -17,6 +17,7 @@
 
 from datetime import datetime, timedelta
 from itertools import groupby
+import operator
 from math import ceil
 import csv
 import io
@@ -742,7 +743,13 @@ class Query(object):
             if name == 'owner' and field['type'] == 'select':
                 # Make $USER work when restrict_owner = true
                 field = field.copy()
-                field['options'].insert(0, '$USER')
+                field['options'] = sorted([
+                    {'name': Chrome(self.env).format_author(req, option),
+                     'value': option}
+                    for option in field['options']
+                ], key=operator.itemgetter('name'))
+                field['options'].insert(0, {'name': '$USER',
+                                            'value': '$USER'})
             if name == 'milestone':
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]

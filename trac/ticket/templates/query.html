@@ -94,12 +94,11 @@
                           py:choose="">
 
                         <py:def function="render_options(field_name, options)"
-                                py:with="format_and_sort = lambda options: sorted(zip(options, map(format_author, options)), key=operator.itemgetter(1))"
                                 py:choose="field_name">
                           <option py:when="'owner'"
-                                  py:for="option, option_label in format_and_sort(options)"
-                                  selected="${option == constraint_value or None}"
-                                  value="$option" py:content="option_label"></option>
+                                  py:for="option in options"
+                                  selected="${option.value == constraint_value or None}"
+                                  value="$option.value" py:content="option.name"></option>
                           <option py:otherwise=""
                                   py:for="option in options"
                                   selected="${option == constraint_value or None}"
