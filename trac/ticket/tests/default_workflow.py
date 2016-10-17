@@ -334,10 +334,10 @@ class RestrictOwnerTestCase(unittest.TestCase):
         self.env.config.set('ticket', 'restrict_owner', True)
 
         self.perm_sys = PermissionSystem(self.env)
-        self.env.insert_users([
-            ('user1', '', ''), ('user2', '', ''),
-            ('user3', '', ''), ('user4', '', '')
-        ])
+        self.env.insert_users([('user1', 'User C', 'user1@example.org'),
+                               ('user2', 'User A', 'user2@example.org'),
+                               ('user3', 'User D', 'user3@example.org'),
+                               ('user4', 'User B', 'user4@example.org')])
         self.perm_sys.grant_permission('user1', 'TICKET_MODIFY')
         self.perm_sys.grant_permission('user2', 'TICKET_VIEW')
         self.perm_sys.grant_permission('user3', 'TICKET_MODIFY')
@@ -361,6 +361,8 @@ class RestrictOwnerTestCase(unittest.TestCase):
     def test_set_owner(self):
         """Restricted owners list contains users with TICKET_MODIFY.
         """
+        self.env.config.set('trac', 'show_full_names', False)
+
         ctrl = self.ctlr.render_ticket_action_control(self.req1, self.ticket,
                                                       'reassign')
 
@@ -374,6 +376,7 @@ class RestrictOwnerTestCase(unittest.TestCase):
         """Fine-grained permission checks when populating the restricted
         owners list (#10833).
         """
+        self.env.config.set('trac', 'show_full_names', False)
         create_file(self.authz_file, """\
 [ticket:1]
 user4 = !TICKET_MODIFY
@@ -387,6 +390,20 @@ user4 = !TICKET_MODIFY
         self.assertNotIn('value="user2">user2</option>', str(ctrl[1]))
         self.assertIn('value="user3">user3</option>', str(ctrl[1]))
         self.assertNotIn('value="user4">user4</option>', str(ctrl[1]))
+
+    def test_set_owner_show_fullnames(self):
+        """Full names are sorted when [trac] show_full_names = True."""
+        ctrl = self.ctlr.render_ticket_action_control(self.req1, self.ticket,
+                                                      'reassign')
+
+        self.assertEqual('reassign', ctrl[0])
+        self.assertEqual("""\
+to <select name="action_reassign_reassign_owner" \
+id="action_reassign_reassign_owner">\
+<option value="user4">User B</option>\
+<option selected="True" value="user1">User C</option>\
+<option value="user3">User D</option></select>\
+""", str(ctrl[1]))
 
 
 def test_suite():
