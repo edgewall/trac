@@ -310,10 +310,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 selected_owner = req.args.get(id, default_owner)
                 control.append(tag_("to %(owner)s", owner=tag.select(
-                    [tag.option(format_author(x),
-                                value=x if x is not None else '',
-                                selected=(x == selected_owner or None))
-                     for x in owners],
+                    [tag.option(label, value=value if value is not None else '',
+                                selected=(value == selected_owner or None))
+                     for label, value in sorted((format_author(owner), owner)
+                                                for owner in owners)],
                     id=id, name=id)))
                 if not exists or current_owner is None:
                     hints.append(_("The owner will be the selected user"))
