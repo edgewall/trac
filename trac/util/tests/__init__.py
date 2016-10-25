@@ -184,6 +184,14 @@ class SafeReprTestCase(unittest.TestCase):
 
 class SetuptoolsUtilsTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        sys.path.append(self.dir)
+
+    def tearDown(self):
+        sys.path.remove(self.dir)
+        shutil.rmtree(self.dir)
+
     def test_get_module_path(self):
         self.assertEqual(util.get_module_path(trac),
                          util.get_module_path(util))
@@ -252,6 +260,37 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
             pkginfo = util.get_pkginfo(psycopg2)
             self.assertNotEqual({}, pkginfo)
             self.assertEqual(pkginfo, util.get_pkginfo(psycopg2.extensions))
+
+    def test_file_metadata(self):
+        pkgname = 'TestModule_' + util.hex_entropy(16)
+        modname = pkgname.lower()
+        with open(os.path.join(self.dir, pkgname + '-0.1.egg-info'), 'w') as f:
+            f.write('Metadata-Version: 1.1\n'
+                    'Name: %(pkgname)s\n'
+                    'Version: 0.1\n'
+                    'Author: Joe\n'
+                    'Author-email: joe@example.org\n'
+                    'Home-page: http://example.org/\n'
+                    'Summary: summary.\n'
+                    'Description: description.\n'
+                    'Provides: %(modname)s\n'
+                    'Provides: %(modname)s.foo\n'
+                    % {'pkgname': pkgname, 'modname': modname})
+        os.mkdir(os.path.join(self.dir, modname))
+        for name in ('__init__.py', 'bar.py', 'foo.py'):
+            with open(os.path.join(self.dir, modname, name), 'w') as f:
+                f.write('# -*- coding: utf-8 -*-\n')
+
+        mod = __import__(modname, {}, {}, ['bar', 'foo'])
+        pkginfo = util.get_pkginfo(mod)
+        self.assertEqual('0.1', pkginfo['version'])
+        self.assertEqual('Joe', pkginfo['author'])
+        self.assertEqual('joe@example.org', pkginfo['author_email'])
+        self.assertEqual('http://example.org/', pkginfo['home_page'])
+        self.assertEqual('summary.', pkginfo['summary'])
+        self.assertEqual('description.', pkginfo['description'])
+        self.assertEqual(pkginfo, util.get_pkginfo(mod.bar))
+        self.assertEqual(pkginfo, util.get_pkginfo(mod.foo))
 
 
 class LazyClass(object):
