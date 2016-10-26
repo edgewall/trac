@@ -81,7 +81,7 @@ class RaiseExceptionPlugin(Component):
             tc.go(self._tester.url + '/raise-exception')
             tc.find(internal_error)
             tc.find('<form class="newticket" method="get" '
-                    'action="http://trac.edgewall.org/newticket">')
+                    'action="https://trac.edgewall.org/newticket">')
 
             tc.go(self._tester.url + '/raise-exception?report=tho')
             tc.find(internal_error)

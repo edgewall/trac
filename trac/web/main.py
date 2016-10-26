@@ -66,7 +66,7 @@ from trac.web.session import SessionDict, Session
 #: This URL is used for semi-automatic bug reports (see
 #: `send_internal_error`).  Please modify it to point to your own
 #: Trac instance if you distribute a patched version of Trac.
-default_tracker = 'http://trac.edgewall.org'
+default_tracker = 'https://trac.edgewall.org'
 
 
 class FakeSession(SessionDict):
