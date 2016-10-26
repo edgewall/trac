@@ -17,6 +17,7 @@
 
 from StringIO import StringIO
 from datetime import datetime, timedelta
+import itertools
 import re
 
 from genshi.builder import tag
@@ -292,6 +293,7 @@ class DefaultTicketGroupStatsProvider(Component):
 def get_ticket_stats(provider, tickets):
     return provider.get_ticket_group_stats([t['id'] for t in tickets])
 
+
 def get_tickets_for_milestone(env, milestone=None, field='component'):
     """Retrieve all tickets associated with the given `milestone`.
     """
@@ -307,6 +309,33 @@ def get_tickets_for_milestone(env, milestone=None, field='component'):
         args = (field, milestone)
     return [{'id': tkt_id, 'status': status, field: fieldval}
             for tkt_id, status, fieldval in env.db_query(sql, args)]
+
+
+def get_tickets_for_all_milestones(env, field='component'):
+    with env.db_query as db:
+        fields = TicketSystem(env).get_ticket_fields()
+        if any(field == f['name'] and not f.get('custom') for f in fields):
+            sql = """SELECT id, status, %(field)s, milestone
+                     FROM ticket
+                     WHERE milestone != ''
+                     ORDER BY milestone, %(field)s, id
+                  """ % {'field': db.quote(field)}
+            args = ()
+        else:
+            sql = """SELECT t.id, t.status, c.value, t.milestone
+                     FROM ticket AS t
+                     LEFT OUTER JOIN ticket_custom AS c
+                     ON (t.id=c.ticket AND c.name=%s)
+                     WHERE t.milestone != ''
+                     ORDER BY t.milestone, c.value, t.id"""
+            args = (field,)
+        cursor = db.cursor()
+        cursor.execute(sql, args)
+        results = {}
+        for milestone, group in itertools.groupby(cursor, lambda row: row[3]):
+            results[milestone] = [{'id': row[0], 'status': row[1],
+                                   field: row[2]} for row in group]
+        return results
 
 
 def get_num_tickets_for_milestone(env, milestone, exclude_closed=False):
@@ -465,9 +494,9 @@ class RoadmapModule(Component):
         stats = []
         queries = []
 
+        all_tickets = get_tickets_for_all_milestones(self.env, field='owner')
         for milestone in milestones:
-            tickets = get_tickets_for_milestone(
-                    self.env, milestone=milestone.name, field='owner')
+            tickets = all_tickets.get(milestone.name) or []
             tickets = apply_ticket_permissions(self.env, req, tickets)
             stat = get_ticket_stats(self.stats_provider, tickets)
             stats.append(milestone_stats_data(self.env, req, stat,
@@ -562,6 +591,7 @@ class RoadmapModule(Component):
         write_prop('X-WR-CALDESC', self.env.project_description)
         write_prop('X-WR-TIMEZONE', str(req.tz))
 
+        all_tickets = get_tickets_for_all_milestones(self.env, field='owner')
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone.name,
                                             host)
@@ -576,8 +606,7 @@ class RoadmapModule(Component):
                 if milestone.description:
                     write_prop('DESCRIPTION', milestone.description)
                 write_prop('END', 'VEVENT')
-            tickets = get_tickets_for_milestone(
-                    self.env, milestone=milestone.name, field='owner')
+            tickets = all_tickets.get(milestone.name) or []
             tickets = apply_ticket_permissions(self.env, req, tickets)
             for tkt_id in [ticket['id'] for ticket in tickets
                            if ticket['owner'] == user]:

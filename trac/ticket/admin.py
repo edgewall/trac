@@ -20,7 +20,7 @@ from trac.core import *
 from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
-from trac.ticket.roadmap import MilestoneModule, get_num_tickets_for_milestone
+from trac.ticket.roadmap import MilestoneModule
 from trac.util import getuser
 from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
@@ -341,14 +341,20 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
+            # Get ticket count
+            num_tickets = dict(self.env.db_query("""
+                    SELECT milestone, COUNT(milestone) FROM ticket
+                    WHERE milestone != ''
+                    GROUP BY milestone
+                """))
             query_href = lambda name: req.href.query({'groupby': 'status',
                                                       'milestone': name})
-            num_tickets = partial(get_num_tickets_for_milestone, self.env)
 
             data = {'view': 'list',
                     'milestones': model.Milestone.select(self.env),
                     'query_href': query_href,
-                    'num_tickets': num_tickets,
+                    'num_tickets': lambda milestone:
+                                            num_tickets.get(milestone.name, 0),
                     'ticket_default': ticket_default,
                     'retarget_default': retarget_default}
 
