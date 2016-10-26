@@ -325,11 +325,13 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
-            milestones = [
-                (milestone, self.env.db_query("""
-                    SELECT COUNT(*) FROM ticket WHERE milestone=%s
-                    """, (milestone.name,))[0][0])
-                for milestone in model.Milestone.select(self.env)]
+            counts = dict(self.env.db_query("""
+                    SELECT milestone, COUNT(milestone) FROM ticket
+                    WHERE milestone != ''
+                    GROUP BY milestone
+                """))
+            milestones = [(milestone, counts.get(milestone.name, 0))
+                          for milestone in model.Milestone.select(self.env)]
 
             data = {'view': 'list',
                     'milestones': milestones,

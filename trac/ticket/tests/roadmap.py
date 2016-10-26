@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import unittest
 
 from trac.core import ComponentManager
@@ -20,7 +22,8 @@ from trac.tests.contentgen import random_sentence
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
-    TicketGroupStats)
+    TicketGroupStats, get_tickets_for_all_milestones,
+    get_tickets_for_milestone)
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
@@ -234,6 +237,53 @@ class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
         self.assertRaises(ResourceNotFound, self.process_request, req)
 
 
+class RoadmapTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        values = [
+            ('Summary', 'new', 'milestone1', 'joe'),
+            ('Summary', 'new', 'milestone2', 'joe'),
+            ('Summary', 'new', '',           'joe'),
+            ('Summary', 'new', None,         'john'),
+            ('Summary', 'new', 'milestone1', 'john'),
+            ('Summary', 'new', 'milestone2', 'blah'),
+            ('Summary', 'new', '',           'blah'),
+            ('Summary', 'new', None,         'blah'),
+            ('Summary', 'new', 'milestone1', 'blah'),
+            ('Summary', 'new', 'milestone2', 'blah'),
+        ]
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.executemany("""
+                INSERT INTO ticket (summary,status,milestone,owner)
+                VALUES (%s,%s,%s,%s)
+                """, values)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_get_tickets_for_all_milestones(self):
+        tickets = get_tickets_for_all_milestones(self.env, field='owner')
+        milestone1 = [{'id': 9, 'status': 'new', 'owner': 'blah'},
+                      {'id': 1, 'status': 'new', 'owner': 'joe'},
+                      {'id': 5, 'status': 'new', 'owner': 'john'}]
+        milestone2 = [{'id': 6, 'status': 'new', 'owner': 'blah'},
+                      {'id': 10, 'status': 'new', 'owner': 'blah'},
+                      {'id': 2, 'status': 'new', 'owner': 'joe'}]
+        self.assertEqual(milestone1, tickets['milestone1'])
+        self.assertEqual(milestone1,
+                         get_tickets_for_milestone(self.env,
+                                                   milestone='milestone1',
+                                                   field='owner'))
+        self.assertEqual(milestone2, tickets['milestone2'])
+        self.assertEqual(milestone2,
+                         get_tickets_for_milestone(self.env,
+                                                   milestone='milestone2',
+                                                   field='owner'))
+        self.assertEqual(['milestone1', 'milestone2'], sorted(tickets))
+
+
 def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
 
@@ -244,6 +294,7 @@ def suite():
     suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
     suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
     suite.addTest(unittest.makeSuite(MilestoneModulePermissionsTestCase))
+    suite.addTest(unittest.makeSuite(RoadmapTestCase))
     return suite
 
 
