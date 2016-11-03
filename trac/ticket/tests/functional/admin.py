@@ -206,11 +206,11 @@ class TestAdminMilestoneListing(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
                 % {'name': name1})
-        tc.find(r'<a href="/query\?groupby=status&amp;milestone=%(name)s">'
+        tc.find(r'<a href="/query\?group=status&amp;milestone=%(name)s">'
                 r'1</a>' % {'name': name1})
         tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
                 % {'name': name2})
-        tc.notfind(r'<a href="/query\?groupby=status&amp;milestone=%(name)s">'
+        tc.notfind(r'<a href="/query\?group=status&amp;milestone=%(name)s">'
                    r'0</a>' % {'name': name2})
 
 
