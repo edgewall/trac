@@ -152,6 +152,16 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         self.assertEqual('', self.env.config.get('milestone',
                                                  'default_retarget_to'))
 
+    def test_default_view(self):
+        panel = MilestoneAdminPanel(self.env)
+        req = MockRequest(self.env)
+        template, data = panel.render_admin_panel(req, 'ticket', 'milestone',
+                                                  None)
+        self.assertEqual('admin_milestones.html', template)
+        self.assertEqual('list', data['view'])
+        self.assertEqual('/trac.cgi/query?group=status&milestone=blah',
+                         data['query_href']('blah'))
+
 
 class AbstractEnumTestCase(BaseTestCase):
 

@@ -347,8 +347,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     WHERE milestone != ''
                     GROUP BY milestone
                 """))
-            query_href = lambda name: req.href.query({'groupby': 'status',
-                                                      'milestone': name})
+            query_href = lambda name: req.href.query([('group', 'status'),
+                                                      ('milestone', name)])
 
             data = {'view': 'list',
                     'milestones': model.Milestone.select(self.env),
