@@ -5,6 +5,30 @@ This is a rough list of changes between released versions.
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 
+== 1.2.x Releases
+
+=== 1.2 'Hermes'
+
+//(November 5, 2016)//
+
+Trac 1.2 is the first major release of Trac in more than 4 years.
+
+The following are some highlights from the release:
+
+* Extensible notification system ([trac:#3517])
+* Notification preference panel ([trac:#4056])
+* Usernames replaced with full names ([trac:#7339])
+* Restyled ticket changelog ([trac:#11835])
+* Workflow controls on the //New Ticket// page ([trac:#2045])
+* Editable wiki page version comments ([trac:#6573])
+* Datetime custom fields ([trac:#1942])
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.2 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#DevelopmentReleases | 1.2]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8 through 1.0.13]]
+(as 1.2 contains all the fixes done for 1.0.8 through 1.0.13).
+
+[trac:source:/tags/trac-1.2 View Tag] | [trac:milestone:1.2 View Milestone]
+
 == 1.1.x Releases
 // 1.1.x releases are development releases leading eventually to Trac 1.2. See them as kind of snapshots of [trac:source:trunk].
 
@@ -25,8 +49,8 @@ Highlights of the changes since 1.1.6:
  - Authentication cookies can be shared across subdomains when `[trac]` `auth_cookie_domain` is configured ([trac:#12251]).
 
 For more information see the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed
-release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.2rc1]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8 through 1.0.12]]
-(as 1.2rc1 contains all the fixes done for 1.0.8 through 1.0.12).
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.2rc1]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8 through 1.0.13]]
+(as 1.2rc1 contains all the fixes done for 1.0.8 through 1.0.13).
 
 [trac:source:/tags/trac-1.2rc1 View Tag] | [trac:milestone:1.2 View Milestone]
 
