@@ -1,6 +1,6 @@
-Release Notes for Trac 1.2rc1 'Hermes' Release
-=========================================
-September 14, 2016
+Release Notes for Trac 1.2 'Hermes' Release
+===========================================
+November 5, 2016
 
 Highlights
 ----------
