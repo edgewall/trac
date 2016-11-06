@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-06-01 15:06-0700\n"
+"POT-Creation-Date: 2016-10-15 16:37-0700\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -172,20 +172,26 @@ msgstr "git リポジトリ中のパスに対する文字エンコーディン�
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:886
+#: tracopt/versioncontrol/git/git_fs.py:887
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:889
+#: tracopt/versioncontrol/git/git_fs.py:890
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:892
+#: tracopt/versioncontrol/git/git_fs.py:893
 #, python-format
 msgid ""
-"Template for project URLs. %s will be replaced with the repo\n"
+"Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
-msgstr "プロジェクト URL のテンプレート。%s はリポジトリ名に置換されます。"
+msgstr "プロジェクト URL のテンプレート。`%s` はリポジトリ名に置換されます。"
+
+#: tracopt/versioncontrol/git/git_fs.py:897
+msgid ""
+"Repositories to sync on every request\n"
+"(not recommended)."
+msgstr ""
 
 #: tracopt/versioncontrol/svn/svn_fs.py:267
 msgid ""
@@ -575,7 +581,7 @@ msgstr ""
 "適用する順番で `IPermissionPolicy` を実装しているコンポーネントのリストを指定します。それらのコンポーネントは Trac "
 "のソリースに対して細かい粒度のアクセス制御を行います。"
 
-#: trac/db/api.py:308
+#: trac/db/api.py:316
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
@@ -584,11 +590,11 @@ msgstr ""
 "このプロジェクトのデータベース接続[wiki:TracEnvironment#DatabaseConnectionStrings "
 "文字列]を指定します。"
 
-#: trac/db/api.py:313
+#: trac/db/api.py:321
 msgid "Database backup location"
 msgstr "データベースバックアップの場所を指定します。"
 
-#: trac/db/api.py:316
+#: trac/db/api.py:324
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''."
@@ -596,7 +602,7 @@ msgstr ""
 "データベース接続のタイムアウトを秒単位で指定します。\n"
 "''タイムアウトなし''を指定するには '0' を使います。"
 
-#: trac/db/api.py:320
+#: trac/db/api.py:328
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。"
 
@@ -608,7 +614,7 @@ msgstr "MySQL データベースのバックアップに使う mysqldump の場�
 msgid "Location of pg_dump for Postgres database backups"
 msgstr "Postgres データベースのバックアップに使う pg_dump の場所を指定します。"
 
-#: trac/db/sqlite_backend.py:155
+#: trac/db/sqlite_backend.py:156
 msgid ""
 "Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
 "The paths may be absolute or relative to the Trac environment.\n"
@@ -859,6 +865,12 @@ msgstr ""
 
 #: trac/notification/api.py:309
 msgid ""
+"Hash algorithm to create unique Message-ID header.\n"
+"''(since 1.0.13)''"
+msgstr ""
+
+#: trac/notification/api.py:313
+msgid ""
 "The notifications subscriptions are controlled by plugins. All\n"
 "`INotificationSubscriber` components are in charge. These components\n"
 "may allow to be configured via this section in the `trac.ini` file.\n"
@@ -876,27 +888,27 @@ msgstr ""
 "有効な受信処理:\n"
 "[[SubscriberList]]"
 
-#: trac/notification/mail.py:421
+#: trac/notification/mail.py:440
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification/mail.py:424
+#: trac/notification/mail.py:443
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification/mail.py:427
+#: trac/notification/mail.py:446
 msgid "Username for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのユーザ名を指定します。"
 
-#: trac/notification/mail.py:430
+#: trac/notification/mail.py:449
 msgid "Password for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのパスワードを指定します。"
 
-#: trac/notification/mail.py:433
+#: trac/notification/mail.py:452
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。"
 
-#: trac/notification/mail.py:489
+#: trac/notification/mail.py:508
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -907,11 +919,11 @@ msgstr ""
 "\n"
 "sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。(''0.12 以降'')"
 
-#: trac/search/web_ui.py:48
+#: trac/search/web_ui.py:46
 msgid "Minimum length of query string allowed when performing a search."
 msgstr "検索の実行を許可する検索文字列の最小の長さを指定します。"
 
-#: trac/search/web_ui.py:52
+#: trac/search/web_ui.py:50
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -1025,7 +1037,7 @@ msgstr ""
 "そのコンポーネントは `trac.ini` ファイルのこのセクションでワークフローを設定するようになっています。詳細については "
 "TracWorkflow を参照してください。"
 
-#: trac/ticket/notification.py:64
+#: trac/ticket/notification.py:63
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -1038,7 +1050,7 @@ msgstr ""
 "テンプレート変数については [TracNotification#Customizingthee-mailsubject "
 "TracNotification] ページに説明があります。"
 
-#: trac/ticket/notification.py:73
+#: trac/ticket/notification.py:72
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
@@ -1046,7 +1058,7 @@ msgstr ""
 "ticket_subject_template に似ていますが一括更新用のものです。\n"
 "(''1.0 以降'')"
 
-#: trac/ticket/notification.py:78
+#: trac/ticket/notification.py:77
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -1209,7 +1221,7 @@ msgstr ""
 "ルールを使って簡単に追加できます。例えば `table.progress td.<class> { background: <color> }` "
 "を [TracInterfaceCustomization#SiteAppearance site/style.css] ファイルに追加します。"
 
-#: trac/ticket/roadmap.py:405
+#: trac/ticket/roadmap.py:422
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1218,7 +1230,7 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:609
+#: trac/ticket/roadmap.py:626
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1227,13 +1239,13 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはマイルストーンの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:616
+#: trac/ticket/roadmap.py:633
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr "マイルストーンを完了させたときや削除したときに、チケットに再設定するデフォルトのマイルストーンを指定します。(''1.1.2 以降'')"
 
-#: trac/ticket/roadmap.py:620
+#: trac/ticket/roadmap.py:637
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -1327,7 +1339,7 @@ msgstr ""
 "\n"
 "(''0.12.1 以降'')"
 
-#: trac/versioncontrol/api.py:325
+#: trac/versioncontrol/api.py:330
 msgid ""
 "One of the alternatives for registering new repositories is to\n"
 "populate the `[repositories]` section of the `trac.ini`.\n"
@@ -1350,7 +1362,7 @@ msgstr ""
 "\n"
 "(''0.12 以降'')"
 
-#: trac/versioncontrol/api.py:339
+#: trac/versioncontrol/api.py:344
 msgid ""
 "Default repository connector type.\n"
 "\n"
@@ -1597,7 +1609,7 @@ msgstr ""
 "認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。(''0.12 "
 "以降'')"
 
-#: trac/web/chrome.py:407
+#: trac/web/chrome.py:408
 msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
@@ -1608,7 +1620,7 @@ msgstr ""
 "\n"
 "このディレクトリのテンプレートを環境中の `templates` ディレクトリにあるテンプレートに加えてロードしますが、後者を優先して使用します。"
 
-#: trac/web/chrome.py:414
+#: trac/web/chrome.py:415
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1629,11 +1641,11 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:425
+#: trac/web/chrome.py:426
 msgid "Automatically reload template files after modification."
 msgstr "テンプレートの変更後に自動でリロードするかどうかを指定します。"
 
-#: trac/web/chrome.py:428
+#: trac/web/chrome.py:429
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. You may want to choose a higher value if your site uses a\n"
@@ -1641,7 +1653,7 @@ msgid ""
 "you can reduce it if you are short on memory."
 msgstr "テンプレートローダがメモリにキャッシュするテンプレートの最大数を指定します。もっと多くのテンプレートを使っていてメモリに余裕がある場合は、大きな値にすることもできます。メモリが少ない場合には、小さくすることもできます。"
 
-#: trac/web/chrome.py:434
+#: trac/web/chrome.py:435
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1666,7 +1678,7 @@ msgstr ""
 "ディレクトリにしか適用されず、デプロイしているリソース (例えばプラグインのリソース) に対してはこの方法は有効ではありません。Web "
 "サーバに対し、追加でリライトルールが必要になります。"
 
-#: trac/web/chrome.py:449
+#: trac/web/chrome.py:450
 #, python-format
 msgid ""
 "Location of the jQuery !JavaScript library (version %(version)s).\n"
@@ -1692,7 +1704,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:461
+#: trac/web/chrome.py:462
 #, python-format
 msgid ""
 "Location of the jQuery UI !JavaScript library (version %(version)s).\n"
@@ -1718,7 +1730,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:473
+#: trac/web/chrome.py:474
 #, python-format
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
@@ -1749,7 +1761,7 @@ msgstr ""
 "\n"
 "(''1.0 以降'')"
 
-#: trac/web/chrome.py:488
+#: trac/web/chrome.py:489
 msgid ""
 "Configures the main navigation bar,\n"
 "which by default contains //Wiki//, //Timeline//, //Roadmap//,\n"
@@ -1788,7 +1800,7 @@ msgstr ""
 "\n"
 "詳細は TracNavigation を参照してください。"
 
-#: trac/web/chrome.py:510
+#: trac/web/chrome.py:511
 msgid ""
 "Configures the meta navigation\n"
 "entries, which by default are //Login//, //Logout//, //Preferences//,\n"
@@ -1815,11 +1827,11 @@ msgstr ""
 "\n"
 "詳細は TracNavigation を参照してください。"
 
-#: trac/web/chrome.py:525
+#: trac/web/chrome.py:526
 msgid "URL to link to, from the header logo."
 msgstr "ヘッダロゴからリンクする URL を指定します。"
 
-#: trac/web/chrome.py:528
+#: trac/web/chrome.py:529
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1838,19 +1850,19 @@ msgstr ""
 "にすると、[#trac-section htdocs_location] URL に対応したフォルダにある `your-logo.png` "
 "を指します。単に `your-logo.png` を指定した場合は、後者と同じになります。"
 
-#: trac/web/chrome.py:539
+#: trac/web/chrome.py:540
 msgid "Alternative text for the header logo."
 msgstr "ヘッダロゴ画像の代替テキストを指定します。"
 
-#: trac/web/chrome.py:543
+#: trac/web/chrome.py:544
 msgid "Width of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の幅をピクセル単位で指定します。"
 
-#: trac/web/chrome.py:546
+#: trac/web/chrome.py:547
 msgid "Height of the header logo image in pixels."
 msgstr "ヘッダロゴ画像の高さをピクセル単位で指定します。"
 
-#: trac/web/chrome.py:549
+#: trac/web/chrome.py:550
 msgid ""
 "Show email addresses instead of usernames. If false, email\n"
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
@@ -1859,11 +1871,11 @@ msgstr ""
 "ユーザ名の代わりにメールアドレスを表示するかどうかを指定します。false の場合、EMAIL_VIEW "
 "権限を持たないユーザにはメールアドレスを表示しないようになります。"
 
-#: trac/web/chrome.py:555
+#: trac/web/chrome.py:556
 msgid "Show full names instead of usernames. (//since 1.2//)"
 msgstr "ユーザ名の代わりに名前を表示するかどうかを指定します。(//1.2 以降//)"
 
-#: trac/web/chrome.py:558
+#: trac/web/chrome.py:559
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user doesn't have\n"
@@ -1872,7 +1884,7 @@ msgstr ""
 "`show_email_addresses` が false、または、EMAIL_VIEW 権限がない場合でも、Wiki 中に明示的に記述してある"
 " `mailto:` リンクをぼかさないようにするかを指定します。"
 
-#: trac/web/chrome.py:565
+#: trac/web/chrome.py:566
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
 "option is deprecated and will be removed in 1.3.1."
@@ -1880,7 +1892,7 @@ msgstr ""
 "リソース編集時の IP アドレスを表示するかどうかを指定します (例えば Wiki)。\n"
 "(''0.11.3 以降'')1.0.5 でこのオプションは非推奨となり 1.3.1 で削除予定です。(''0.11.3 以降'')"
 
-#: trac/web/chrome.py:570
+#: trac/web/chrome.py:571
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
@@ -1888,13 +1900,13 @@ msgstr ""
 "`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
 "(''0.12 以降'')"
 
-#: trac/web/chrome.py:574
+#: trac/web/chrome.py:575
 msgid ""
 "Add a simple toolbar on top of Wiki `<textarea>`s.\n"
 "(''since 1.0.2'')"
 msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
-#: trac/web/chrome.py:578
+#: trac/web/chrome.py:579
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1905,7 +1917,7 @@ msgstr ""
 "プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。(''0.12"
 " 以降'')"
 
-#: trac/web/chrome.py:585
+#: trac/web/chrome.py:586
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
@@ -1914,7 +1926,7 @@ msgstr ""
 "日付情報の書式を指定します。有効な設定は相対書式で表示する 'relative' と絶対書式で表示する 'absolute' です。(''1.0 "
 "以降'')"
 
-#: trac/web/chrome.py:590
+#: trac/web/chrome.py:591
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"
