@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-06-23 17:49-0400\n"
+"POT-Creation-Date: 2016-10-16 16:58+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <LL@li.org>\n"
@@ -211,15 +211,15 @@ msgstr "git リポジトリ中のパスに対する文字エンコーディン�
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:881
+#: tracopt/versioncontrol/git/git_fs.py:882
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:884
+#: tracopt/versioncontrol/git/git_fs.py:885
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:888
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -734,32 +734,38 @@ msgstr ""
 "設定が定義されていない場合は、[$project_name] プレフィックスとなります。\n"
 "プレフィックスが必要ない場合は、空を指定すると無効になります。(''0.10.1 以降'')"
 
-#: trac/notification.py:137
+#: trac/notification.py:127
+msgid ""
+"Hash algorithm to create unique Message-ID header.\n"
+"''(since 1.0.13)''"
+msgstr "ユニークな Message-ID ヘッダの生成に使用するハッシュアルゴリズムを指定します。''(since 1.0.13)''"
+
+#: trac/notification.py:141
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification.py:140
+#: trac/notification.py:144
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification.py:143
+#: trac/notification.py:147
 msgid "Username for SMTP server. (''since 0.9'')"
 msgstr "SMTP サーバのユーザ名を指定します。(''0.9 以降'')"
 
-#: trac/notification.py:146
+#: trac/notification.py:150
 msgid "Password for SMTP server. (''since 0.9'')"
 msgstr "SMTP サーバのパスワードを指定します。(''0.9 以降'')"
 
-#: trac/notification.py:149
+#: trac/notification.py:153
 msgid "Use SSL/TLS to send notifications over SMTP. (''since 0.10'')"
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。(''0.10 以降'')"
 
-#: trac/notification.py:205
+#: trac/notification.py:209
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
 "The sendmail program must accept the `-i` and `-f` options.\n"
-" (''since 0.12'')"
+"(''since 0.12'')"
 msgstr ""
 "sendmail 実行ファイルへのパスを指定します。\n"
 "\n"
