@@ -1886,7 +1886,7 @@ msgstr "ヘッダー長が短すぎます"
 #: trac/notification/mail.py:161
 #, python-format
 msgid "Unknown hash type '%(type)s'"
-msgstr ""
+msgstr "未知のハッシュタイプ: '%(type)s'"
 
 #: trac/notification/mail.py:473
 #, python-format
