@@ -124,6 +124,8 @@ def parse_args(all_pages):
     parser.add_argument('-p', '--prefix', default='',
                         help="prepend PREFIX/ to the page name when "
                              "downloading")
+    parser.add_argument('-s', '--strict', action='store_true',
+                        help="only download pages below PREFIX/ if -p given")
     parser.add_argument('pages', metavar='page', nargs='*',
                         help="the wiki page(s) to download and/or check")
 
@@ -136,7 +138,7 @@ def parse_args(all_pages):
     return args
 
 
-def download_default_pages(names, prefix):
+def download_default_pages(names, prefix, strict):
     from httplib import HTTPSConnection
     host = 'trac.edgewall.org'
     if prefix and not prefix.endswith('/'):
@@ -149,7 +151,8 @@ def download_default_pages(names, prefix):
             conn.request('GET', '/wiki/%s%s?format=txt' % (prefix, name))
             response = conn.getresponse()
             content = response.read()
-            if prefix and (response.status != 200 or not content):
+            if prefix and (response.status != 200 or not content) \
+               and not strict:
                 sys.stdout.write(' %s' % name)
                 conn.request('GET', '/wiki/%s?format=txt' % name)
                 response = conn.getresponse()
@@ -176,7 +179,7 @@ def main():
         pages = all_pages
 
     if args.download:
-        download_default_pages(pages, args.prefix)
+        download_default_pages(pages, args.prefix, args.strict)
 
     env = EnvironmentStub(disable=['trac.mimeview.pygments.*'])
     load_components(env)
