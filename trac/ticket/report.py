@@ -340,6 +340,7 @@ class ReportModule(Component):
         title, description, sql = r.title, r.description, r.query
         try:
             args = self.get_var_args(req)
+            sql = self.get_default_var_args(args, sql)
         except ValueError as e:
             raise TracError(_("Report failed: %(error)s", error=e))
 
@@ -763,6 +764,14 @@ class ReportModule(Component):
 
         return cols, rows, num_items, missing_args, limit_offset
 
+    # Regular expression for default values of report variables,
+    # as defined in SQL comments:
+    #
+    #   -- VAR = VALUE
+
+    arg_default_re = re.compile(r'^\s*--\s*(\w*)[ ]*=[ ]*([^\r\n]*)\r?$',
+                                re.MULTILINE | re.UNICODE)
+
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
         report_args = {}
@@ -777,6 +786,11 @@ class ReportModule(Component):
 
         return report_args
 
+    def get_default_var_args(self, report_args, sql):
+        def extract_default_var(fullmatch):
+            report_args.setdefault(fullmatch.group(1), fullmatch.group(2))
+        return self.arg_default_re.sub(extract_default_var, sql)
+
     def sql_sub_vars(self, sql, args):
         """Extract $XYZ-style variables from the `sql` query.
         """
@@ -788,6 +802,11 @@ class ReportModule(Component):
             names.add(aname)
             try:
                 arg = args[aname]
+                # support one level of indirection (e.g. for $USER)
+                if arg.startswith('$'):
+                    arg = arg[1:]
+                    if not arg.startswith('$'): # $$ quotes for $
+                        arg = args[arg]
             except KeyError:
                 arg = args[str(aname)] = ''
                 missing_args.append(aname)

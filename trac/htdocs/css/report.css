@@ -62,7 +62,9 @@
 #prefs fieldset legend {
  margin: 0;
  padding: 2px;
+ font-size: 13px;
 }
+#prefs fieldset th { text-align: right }
 
 h1 .numrows, h2 .numrows {
  margin-left: 1em;

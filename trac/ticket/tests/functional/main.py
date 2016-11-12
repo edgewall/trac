@@ -722,9 +722,12 @@ class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
         summary = random_sentence(3)
         fields = {'component': 'component1'}
         ticket_id = self._tester.create_ticket(summary, fields)
+        fields2 = {'component': 'component2'}
+        ticket_id2 = self._tester.create_ticket(summary, fields2)
         reportnum = self._tester.create_report(
            "$USER's tickets for component $COMPONENT",
-           """SELECT DISTINCT
+           """-- COMPONENT = component2
+              SELECT DISTINCT
                t.id AS ticket, summary, component, version, milestone,
                t.type AS type, priority, t.time AS created,
                t.changetime AS _changetime, summary AS _description,
@@ -744,6 +747,12 @@ class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
         tc.find("Tickets assigned to admin for component component1")
         tc.find('<a title="View ticket" href="/ticket/%s">%s</a>' %
                 (ticket_id, summary))
+        # Testing default parameter
+        self._tester.go_to_report(reportnum)
+        tc.find("admin's tickets for component component2")
+        tc.find("Tickets assigned to admin for component component2")
+        tc.find('<a title="View ticket" href="/ticket/%s">%s</a>' %
+                (ticket_id2, summary))
 
 
 class TestReportSorting(FunctionalTwillTestCaseSetup):
