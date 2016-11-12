@@ -1158,8 +1158,8 @@ class Chrome(Component):
         def list_dir(path, suffix=None):
             if not os.path.isdir(path):
                 return []
-            return sorted(name for name in os.listdir(path)
-                               if suffix is None or name.endswith(suffix))
+            return sorted(to_unicode(name) for name in os.listdir(path)
+                          if suffix is None or name.endswith(suffix))
 
         files = {}
         # Collect templates list

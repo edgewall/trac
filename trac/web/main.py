@@ -684,7 +684,8 @@ def send_internal_error(env, req, exc_info):
     def get_description(_):
         if env and has_admin:
             sys_info = "".join("|| '''`%s`''' || `%s` ||\n"
-                               % (k, v.replace('\n', '` [[br]] `'))
+                               % (k, (v.replace('\n', '` [[br]] `') if v
+                                      else _('N/A')))
                                for k, v in env.system_info)
             sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n" \
                         "|| '''`jQuery UI`''' || `#JQUERYUI#` ||\n" \
