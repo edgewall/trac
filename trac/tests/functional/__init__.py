@@ -209,6 +209,8 @@ def test_suite():
         trac.timeline.tests.functionalSuite(suite)
         import trac.admin.tests
         trac.admin.tests.functionalSuite(suite)
+        import trac.search.tests
+        trac.search.tests.functionalSuite(suite)
         # The db tests should be last since the backup test occurs there.
         import trac.db.tests
         trac.db.tests.functionalSuite(suite)

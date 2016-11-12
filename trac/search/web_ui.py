@@ -97,7 +97,8 @@ class SearchModule(Component):
         filters = self._get_selected_filters(req, available_filters)
         data = self._prepare_data(req, query, available_filters, filters)
         if query:
-            data['quickjump'] = self._check_quickjump(req, query)
+            noquickjump = req.args.getbool('noquickjump', False)
+            data['quickjump'] = self._check_quickjump(req, noquickjump, query)
             if query.startswith('!'):
                 query = query[1:]
 
@@ -106,6 +107,8 @@ class SearchModule(Component):
                 results = self._do_search(req, terms, filters)
                 if results:
                     data.update(self._prepare_results(req, filters, results))
+            if noquickjump and filters:
+                req.session['search.filters'] = ','.join(filters)
 
         add_stylesheet(req, 'common/css/search.css')
         return 'search.html', data, None
@@ -145,9 +148,16 @@ class SearchModule(Component):
         """
         filters = [f[0] for f in available_filters if f[0] in req.args]
         if not filters:
-            filters = [f[0] for f in available_filters
-                       if f[0] not in self.default_disabled_filters and
-                       (len(f) < 3 or len(f) > 2 and f[2])]
+            session_filters = req.session.get('search.filters')
+            if session_filters:
+                available_filters_dict = dict([f[0:2]
+                                               for f in available_filters])
+                filters = [f for f in session_filters.split(',')
+                           if f in available_filters_dict]
+            else:
+                filters = [f[0] for f in available_filters
+                           if f[0] not in self.default_disabled_filters and
+                           (len(f) < 3 or len(f) > 2 and f[2])]
         return filters
 
     def _prepare_data(self, req, query, available_filters, filters):
@@ -156,9 +166,8 @@ class SearchModule(Component):
                             for f in available_filters],
                 'query': query, 'quickjump': None, 'results': []}
 
-    def _check_quickjump(self, req, kwd):
+    def _check_quickjump(self, req, noquickjump, kwd):
         """Look for search shortcuts"""
-        noquickjump = req.args.getbool('noquickjump', False)
         # Source quickjump  FIXME: delegate to ISearchSource.search_quickjump
         quickjump_href = None
         if kwd[0] == '/':
