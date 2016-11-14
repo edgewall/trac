@@ -5,8 +5,42 @@ This is a rough list of changes between released versions.
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 
+== 1.3.x Releases
+
+This series of releases correspond to the development branch i.e. [trac:source:trunk trunk], in preparation for the future 1.4.x stable releases.
+
+See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
+
+
+== 1.2.x Releases
+
+This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
+
+=== 1.2 'Hermes'
+
+//(November 5, 2016)//
+
+Trac 1.2 is the first major release of Trac in more than 4 years.
+
+The following are some highlights from the release:
+
+* Extensible notification system ([trac:#3517])
+* Notification preference panel ([trac:#4056])
+* Usernames replaced with full names ([trac:#7339])
+* Restyled ticket changelog ([trac:#11835])
+* Workflow controls on the //New Ticket// page ([trac:#2045])
+* Editable wiki page version comments ([trac:#6573])
+* Datetime custom fields ([trac:#1942])
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.2 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#DevelopmentReleases | 1.2]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.8 through 1.0.13]]
+(as 1.2 contains all the fixes done for 1.0.8 through 1.0.13).
+
+[trac:source:/tags/trac-1.2 View Tag] | [trac:milestone:1.2 View Milestone]
+
+
 == 1.1.x Releases
-// 1.1.x releases are development releases leading eventually to Trac 1.2. See them as kind of snapshots of [trac:source:trunk].
+// 1.1.x releases were development releases leading to Trac 1.2. See them as kind of snapshots of [trac:source:trunk].
 
 ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
 
@@ -84,7 +118,7 @@ The following list contains highlights of the changes:
  - Groups and permissions can be used in the workflow `set_owner` attribute
    ([trac:#11839]).
 
-See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.1.3]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]] (as 1.1.3 contains all the fixes done 
+See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.1.3]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]] (as 1.1.3 contains all the fixes done
 for 1.0.3).
 
 [trac:source:/tags/trac-1.1.3 View Tag] | [trac:milestone:1.1.3 View Milestone]
@@ -230,7 +264,7 @@ Trac 1.0.2 contains a number of bug fixes and minor enhancements, as well as a m
 
 The following list contains only a few highlights:
 
- - Subversion keywords are expanded and EOL substitutions made when viewing a file in the repository browser and when downloading a file ([trac:#717]). 
+ - Subversion keywords are expanded and EOL substitutions made when viewing a file in the repository browser and when downloading a file ([trac:#717]).
  - Notification email is sent to the old owner when a ticket is reassigned ([trac:#2311]).
  - Ticket change history is updated when renaming and deleting a milestone, and when retargeting tickets to another milestone ([trac:#4582], [trac:#5658]).
  - Numerous fixes for the Authz permissions policy in the browser/repository ([trac:#10961], [trac:#11646]), wiki ([trac:#8976], [trac:#11067]), admin ([trac:#11069]) and report ([trac:#11176]) realms.
@@ -280,10 +314,10 @@ See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#Maintena
 Trac 1.0 is a major release adding refreshed user interface and improved DVCS repository support as the most visible changes.
 
 The following list contains only a few highlights:
- - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7) 
+ - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7)
  - The [TH:GitPlugin] has been donated by Herbert Valerio Riedel to the Trac project (many thanks!) and is now maintained here as an optional component
  - As a consequence, the Subversion support has been moved below `tracopt.versioncontrol` as well
- - The Git and Mercurial log view feature a visualization of the branching structure 
+ - The Git and Mercurial log view feature a visualization of the branching structure
  - Usability improvements for the tickets, with a better support for conflict detection and resolution
  - Integration of the [TH:BatchModifyPlugin], contributed by Brian Meeker (many thanks!) and is now maintained there as a default component
  - jQuery/UI integration, featuring a date picker for date fields
@@ -342,7 +376,7 @@ Trac 0.12.5 contains fixes for a few issues:
 
 [trac:source:/tags/trac-0.12.5 View Tag] | [trac:milestone:0.12.5 View Milestone]
 
-=== 0.12.4 
+=== 0.12.4
 
 //(September 7, 2012)//
 

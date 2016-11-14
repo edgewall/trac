@@ -3,7 +3,6 @@
 [[TracGuideToc]]
 [[PageOutline(2-5)]]
 
-Trac uses a directory structure and a database for storing project data. The directory is referred to as the environment.
 
 == Creating an Environment
 

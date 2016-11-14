@@ -23,9 +23,9 @@ If a mimetype property such as `svn:mime-type` is set to `text/plain`, there is 
 
 Rich content may be directly //rendered// instead of syntax highlighted. This usually depends on which auxiliary packages are installed and on which components are activated in your setup. For example a `text/x-rst` document will be rendered via `docutils` if it is installed and the `trac.mimeview.rst.ReStructuredTextRenderer` is not disabled, and will be syntax highlighted otherwise.
 
-In a similar way, a document with the mimetype `text/x-trac-wiki` is rendered using the Trac wiki formatter, unless the `trac.mimeview.api.WikiTextRenderer` component is disabled.
+Similarly, a document with the mimetype `text/x-trac-wiki` is rendered using the Trac wiki formatter, unless the `trac.mimeview.api.WikiTextRenderer` component is disabled.
 
-HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in the TracIni (those settings are present in multiple sections, as there are different security concerns depending where the document comes from). If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
+HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in your TracIni file. Those settings are present in multiple sections, as there are different security concerns depending where the document comes from. If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
 
 === Known MIME types
 

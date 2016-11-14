@@ -12,7 +12,7 @@ When you first go to the query page, the default filter will display tickets rel
  * If not logged in but you have specified a name or email address in the preferences, then it will display all open tickets where your email (or name if email not defined) is in the CC list.
  * If not logged in and no name/email is defined in the preferences, then all open issues are displayed.
 
-Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the pulldown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''Or'' on the criteria.
+Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.  Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria.
 
 You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
 
