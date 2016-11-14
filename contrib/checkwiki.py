@@ -161,7 +161,7 @@ def download_default_pages(names, prefix, strict):
                 with open('trac/wiki/default-pages/' + name, 'w') as f:
                     lines = content.replace('\r\n', '\n').splitlines(True)
                     f.write(''.join(line for line in lines
-                                         if line.strip() !=
+                                         if strict or line.strip() !=
                                             '[[TranslatedPages]]'))
                 sys.stdout.write('\tdone.\n')
             else:
