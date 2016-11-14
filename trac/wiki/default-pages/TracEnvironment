@@ -3,7 +3,6 @@
 [[TracGuideToc]]
 [[PageOutline(2-5,Contents,pullout)]]
 
-Trac uses a directory structure and a database for storing project data. The directory is referred to as the environment.
 Trac uses a directory structure and a database for storing project data. The directory is referred to as the '''environment'''.
 
 Trac supports [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL] and [http://mysql.com/ MySQL] databases. With PostgreSQL and MySQL you have to create the database before running `trac-admin initenv`.

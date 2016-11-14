@@ -5,7 +5,16 @@ This is a rough list of changes between released versions.
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 
+== 1.3.x Releases
+
+This series of releases correspond to the development branch i.e. [trac:source:trunk trunk], in preparation for the future 1.4.x stable releases.
+
+See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
+
+
 == 1.2.x Releases
+
+This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
 
 === 1.2 'Hermes'
 
@@ -30,7 +39,7 @@ release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#DevelopmentReleases | 1.2
 [trac:source:/tags/trac-1.2 View Tag] | [trac:milestone:1.2 View Milestone]
 
 == 1.1.x Releases
-// 1.1.x releases are development releases leading eventually to Trac 1.2. See them as kind of snapshots of [trac:source:trunk].
+// 1.1.x releases were development releases leading to Trac 1.2. See them as kind of snapshots of [trac:source:trunk].
 
 ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
 
