@@ -1,4 +1,4 @@
-= Trac Installation Guide for 1.1
+= Trac Installation Guide for 1.2
 [[TracGuideToc]]
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
@@ -139,12 +139,12 @@ Assuming you want to have your entire pip installation in `/opt/user/trac`
 
  - 
  {{{#!sh
-pip install trac psycopg2 
+$ pip install trac psycopg2 
 }}}
 or
  - 
  {{{#!sh
-pip install trac mysql-python 
+$ pip install trac mysql-python 
 }}}
 
 Make sure your OS specific headers are available for pip to automatically build PostgreSQL (`libpq-dev`) or MySQL (`libmysqlclient-dev`) bindings.
@@ -185,18 +185,18 @@ Trac may be available in your platform's package repository. Note however, that 
 
 To install Trac to a custom location, or find out about other advanced installation options, run:
 {{{#!sh
-easy_install --help
+$ easy_install --help
 }}}
 
 Also see [http://docs.python.org/2/install/index.html Installing Python Modules] for detailed information.
 
 Specifically, you might be interested in:
 {{{#!sh
-easy_install --prefix=/path/to/installdir
+$ easy_install --prefix=/path/to/installdir
 }}}
 or, if installing Trac on a Mac OS X system:
 {{{#!sh
-easy_install --prefix=/usr/local --install-dir=/Library/Python/2.6/site-packages
+$ easy_install --prefix=/usr/local --install-dir=/Library/Python/2.6/site-packages
 }}}
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
@@ -283,10 +283,10 @@ In order for Trac to function properly with FastCGI you need to have a `trac.fcg
 
 There is, however, a bit of a chicken-and-egg problem. The [TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
 {{{#!sh
-mkdir -p /usr/share/trac/projects/my-project
-trac-admin /usr/share/trac/projects/my-project initenv
-trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-mv /tmp/deploy/* /usr/share/trac
+$ mkdir -p /usr/share/trac/projects/my-project
+$ trac-admin /usr/share/trac/projects/my-project initenv
+$ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
+$ mv /tmp/deploy/* /usr/share/trac
 }}}
 Don't forget to check that the web server has the execution right on scripts in the `/usr/share/trac/cgi-bin` directory.
 
