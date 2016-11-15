@@ -1,13 +1,15 @@
-= Accessibility Support in Trac =
+= Accessibility Support in Trac
 
-Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. In a Trac session, users can use devices other than a pointing device by enabling keyboard shortcuts through the [/prefs/keybindings Keyboard Shortcuts] preferences panel.
+Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links and activate form controls. In a Trac session, users can use devices other than a pointing device by enabling keyboard shortcuts through the [/prefs/keybindings Keyboard Shortcuts] preferences panel.
 
-Trac supports accessibility keys for the most common operations. The access keys differ by browser and the following work for several browsers, but see [http://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers access in different browsers] for more details.
+Trac supports accessibility keys for the most common operations. The access keys differ by browser and the following work for several browsers:
  - on Linux platforms, press any of the keys listed below in combination with the `<Alt>` key
  - on a Mac, use the `<Ctrl>` + `<Opt>` key instead
  - on Windows, you need to hit `<Shift> + <Alt> + <Key>`. This works for the most common browsers, such as Firefox, Chrome, Safari and Internet Explorer
 
-== Global Access Keys ==
+Also see [wikipedia:Access_key#Access_in_different_browsers access in different browsers] for more details.
+
+== Global Access Keys
 
  * `1` - WikiStart
  * `2` - [TracTimeline Timeline]
@@ -20,6 +22,12 @@ Trac supports accessibility keys for the most common operations. The access keys
  * `r` - Preview (wiki or ticket)
  * `f` - Search
 
+== TracBrowser Access Keys
+
+* `j` - Select next entry
+* `k` - Select previous entry
+* `o` - Expand folder/view file
+* `<Enter>` - Expand folder/view file
 
 ----
 See also: TracGuide

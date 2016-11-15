@@ -5,7 +5,7 @@ Processors are WikiMacros designed to provide alternative markup formats for the
 Wiki processors can be used in any Wiki text throughout Trac, such as:
  - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
  - rendering [#HTMLrelated Wiki markup inside a context], like inside <div> blocks or <span> or within <td> or <th> table cells
- - using an alternative markup syntax, like [wiki:WikiHtml raw HTML] and [wiki:WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
+ - using an alternative markup syntax, like [WikiHtml raw HTML] and [WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
 
 == Using Processors
 
@@ -141,19 +141,19 @@ You may want to indent the content of nested blocks for increased clarity, this 
 
 The following processors are included in the Trac distribution:
 
-|| '''`#!default`''' || Present the text verbatim in a preformatted text block. This is the same as specifying ''no'' processor name (and no `#!`) ||
+|| '''`#!default`''' || Present the text verbatim in a preformatted text block. This is the same as specifying ''no'' processor name (and no `#!`). ||
 || '''`#!comment`''' || Do not process the text in this section, i.e. contents exist only in the plain text - not in the rendered page. ||
-|| '''`#!rtl`''' || Introduce a Right-To-Left block with appropriate CSS direction and styling ''(since 0.12.2)'' ||
+|| '''`#!rtl`''' || Introduce a Right-To-Left block with appropriate CSS direction and styling. ''(since 0.12.2)'' ||
 |||| ||
 ||||= '''[=#HTMLrelated HTML related]''' =||
 || '''`#!html`''' || Insert custom HTML in a wiki page. ||
-|| '''`#!htmlcomment`''' || Insert an HTML comment in a wiki page (''since 0.12''). ||
+|| '''`#!htmlcomment`''' || Insert an HTML comment in a wiki page. (''since 0.12'') ||
 || || Note that `#!html` blocks have to be ''self-contained'', i.e. you can't start an HTML element in one block and close it later in a second block. Use the following processors for achieving a similar effect.  ||
-|| '''`#!div`''' || Wrap an arbitrary Wiki content inside a <div> element (''since 0.11''). ||
-|| '''`#!span`''' || Wrap an arbitrary Wiki content inside a <span> element (''since 0.11''). ||
-|| '''`#!td`''' || Wrap an arbitrary Wiki content inside a <td> element (''since 0.12'') ||
-|| '''`#!th`''' || Wrap an arbitrary Wiki content inside a <th> element (''since 0.12'') ||
-|| '''`#!tr`''' || Can optionally be used for wrapping `#!td` and `#!th` blocks, either for specifying row attributes or better visual grouping (''since 0.12'') ||
+|| '''`#!div`''' || Wrap wiki content inside a <div> element. ||
+|| '''`#!span`''' || Wrap wiki content inside a <span> element. ||
+|| '''`#!td`''' || Wrap wiki content inside a <td> element. (''since 0.12'') ||
+|| '''`#!th`''' || Wrap wiki content inside a <th> element. (''since 0.12'') ||
+|| '''`#!tr`''' || Can optionally be used for wrapping `#!td` and `#!th` blocks, either for specifying row attributes or better visual grouping. (''since 0.12'') ||
 || '''`#!table`''' || Can optionally be used for wrapping `#!tr`, `#!td` and `#!th` blocks, for specifying table attributes. One current limitation however is that tables cannot be nested. (''since 0.12'') || 
 || || See WikiHtml for example usage and more details about these processors. ||
 |||| ||
@@ -162,10 +162,10 @@ The following processors are included in the Trac distribution:
 || '''`#!textile`''' || Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference]. ||
 |||| ||
 ||||= '''[=#CodeHighlightingSupport Code Highlighting Support]''' =||
-|| '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] '''etc.''' [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on external software packages for syntax coloring, like [http://pygments.org Pygments]. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
+|| '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] '''etc.''' [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on [http://pygments.org Pygments] for syntax coloring. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
 |||| ||
 
-Since 1.1.2 the default, coding highlighting and MIME-type processors support the argument `lineno` for adding line numbering to the code block. When a value is specified, as in `lineno=3`, the numbering will start at the specified value. When used in combination with the `lineno` argument, the `marks` argument is also supported for highlighting lines. A single line number, set of line numbers and range of line numbers are allowed. For example, `marks=3`, `marks=3-6`, `marks=3,5,7` and `marks=3-5,7` are all allowed. The specified values are relative to the numbered lines, so if `lineno=2` is specified to start the line numbering at 2, `marks=2` will result in the first line being highlighted. 
+Since 1.1.2 the default, coding highlighting and MIME-type processors support the argument `lineno` for adding line numbering to the code block. When a value is specified, as in `lineno=3`, the numbering will start at the specified value. When used in combination with the `lineno` argument, the `marks` argument is also supported for highlighting lines. A single line number, set of line numbers and range of line numbers are allowed. For example, `marks=3`, `marks=3-6`, `marks=3,5,7` and `marks=3-5,7` are all allowed. The specified values are relative to the numbered lines, so if `lineno=2` is specified to start the line numbering at 2, `marks=2` will result in the first line being highlighted.
 
 Using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code.
 
@@ -174,16 +174,14 @@ Using the MIME type as processor, it is possible to syntax-highlight the same la
 {{{#!td
 Some examples:
  {{{
-{{{
-#!text/html
+{{{#!text/html
 <h1>text</h1>
 }}}
  }}}
 }}}
 {{{#!td
 The result will be syntax highlighted HTML code:
- {{{
-#!text/html
+ {{{#!text/html
 <h1>text</h1>
  }}}
 
@@ -192,8 +190,7 @@ The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime t
 }}}
 {{{#!td
  {{{
-{{{
-#!diff
+{{{#!diff
 --- Version 55
 +++ Version 56
 @@ -115,8 +115,9 @@
@@ -214,8 +211,7 @@ The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime t
 }}}
 {{{#!td
 '''`#!diff`''' has a particularly nice renderer:
- {{{
-#!diff
+ {{{#!diff
 --- Version 55
 +++ Version 56
 @@ -115,8 +115,9 @@
@@ -272,7 +268,7 @@ def expand_markup(stream, ctxt=None):
             yield event
 }}}
 
-For more processor macros developed and/or contributed by users, visit the [th:WikiStart Trac Hacks] community site.
+For more processor macros developed and/or contributed by users, visit the [https://trac-hacks.org Trac Hacks] community site.
 
 Developing processors is no different from Wiki macros. In fact, they work the same way, only the usage syntax differs. See WikiMacros#DevelopingCustomMacros for more information.
 

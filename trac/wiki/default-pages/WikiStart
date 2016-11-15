@@ -1,10 +1,10 @@
-= Welcome to Trac 1.2
+= Welcome to Trac 1.3.1
 
 Trac is a '''minimalistic''' approach to '''web-based''' management of
 '''software projects'''. Its goal is to simplify effective tracking and
 handling of software issues, enhancements and overall progress.
 
-All aspects of Trac have been designed with the single goal to 
+All aspects of Trac have been designed with the single goal to
 '''help developers write great software''' while '''staying out of the way'''
 and imposing as little as possible on a team's established process and
 culture.
@@ -17,12 +17,12 @@ available Wiki formatting commands.
 
 "[wiki:TracAdmin trac-admin] ''yourenvdir'' initenv" created
 a new Trac environment, containing a default set of wiki pages and some sample
-data. This newly created environment also contains 
+data. This newly created environment also contains
 [wiki:TracGuide documentation] to help you get started with your project.
 
 You can use [wiki:TracAdmin trac-admin] to configure
 [http://trac.edgewall.org/ Trac] to better fit your project, especially in
-regard to ''components'', ''versions'' and ''milestones''. 
+regard to ''components'', ''versions'' and ''milestones''.
 
 
 TracGuide is a good place to start.

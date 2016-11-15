@@ -4,7 +4,7 @@
 
 An InterWiki link can be used for referring to a Wiki page located in another Wiki system, and by extension, to any object located in any other Web application, provided a simple URL mapping can be done.
 
-At the extreme, InterWiki prefixes can even be used to simply introduce links to new protocols, such as `tsvn:` used by [trac:TortoiseSvn TortoiseSvn].
+InterWiki prefixes can even be used to simply introduce links to new protocols, such as `tsvn:` used by [trac:TortoiseSvn TortoiseSvn].
 
 == Link Syntax
 
@@ -26,7 +26,7 @@ The argument list is formed by splitting the page identifier using the ":" separ
 Every option in the `[interwiki]` section in TracIni defines one InterWiki prefix. The option name defines the prefix. The option value defines the URL, optionally followed by a description separated from the URL by whitespace. Parametric URLs are supported as well.
 
 '''Example:'''
-{{{
+{{{#!ini
 [interwiki]
 MeatBall = http://www.usemod.com/cgi-bin/mb.pl?
 PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal $1
@@ -61,8 +61,8 @@ MoinMoin http://moinmoin.wikiwikiweb.de/
 }}}
 
 Then, 
- * `MoinMoin:InterWikiMap` should be rendered as MoinMoin:InterWikiMap and the ''title'' for that link would be "!InterWikiMap in !MoinMoin"
- * `Trac-ML:4346` should be rendered as Trac-ML:4346 and the ''title'' for that link would be "Message 4346 in Trac Mailing List"
+ * `MoinMoin:InterWikiMap` should be rendered as MoinMoin:InterWikiMap and the ''title'' for that link would be "!InterWikiMap in !MoinMoin".
+ * `Trac-ML:4346` should be rendered as Trac-ML:4346 and the ''title'' for that link would be "Message 4346 in Trac Mailing List".
 
 ----
 See also: InterTrac, InterMapTxt

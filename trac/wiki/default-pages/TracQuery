@@ -18,6 +18,13 @@ You can use the fields just below the filters box to group the results based on 
 
 After you have edited your filters, click the ''Update'' button to refresh your results.
 
+Keyboard shortcuts are available for manipulating the //checkbox// filters:
+* Clicking on a filter row label toggles all checkboxes.
+* Pressing the modifier key while clicking on a filter row label inverts the state of all checkboxes.
+* Pressing the modifier key while clicking on a checkbox selects the checkbox and deselects all other checkboxes in the filter.
+
+The modifier key is platform and browser dependent. On Mac the modified key is !Option/Alt or Command. On Linux the modifier key is Ctrl + Alt. Opera on Windows seems to use Ctrl + Alt, while Alt is effective for other Windows browsers.
+
 == Navigating Tickets
 
 Clicking on one of the query results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
