@@ -4,12 +4,45 @@ This is a rough list of changes between released versions.
 
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
-
 == 1.3.x Releases
 
 This series of releases correspond to the development branch i.e. [trac:source:trunk trunk], in preparation for the future 1.4.x stable releases.
 
-See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
+// ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.3 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.3#DevelopmentReleases | 1.3]].
+
+=== 1.3.3 
+
+//(???, 2016)//
+
+Trac 1.3.3 will be the first release to feature [[Python3]] compatibility.
+
+=== 1.3.2 
+
+//(November 30, 2016)//
+
+Trac 1.3.2 will be the first release to feature [[Jinja2]] as the new template engine.
+
+
+=== 1.3.1
+
+//(November 15, 2016)//
+
+Trac 1.3.1 is the last release before the switch of the development branch to [[Jinja2]].
+
+It is in sync with the version 1.2, and as such contains all its fixes and enhancements as well.
+
+Highlights of the changes since 1.2:
+
+* Modernized the code to support Python 2.7 idioms (earlier versions are no longer supported)
+  (#12046, #12148, #12558, #12569)
+* Removed lots of backward compatibility APIs from pre-1.0 days; 
+  in particular, the database API is now exclusively based on the [[TracDev/ApiChanges/1.1#DatabaseAPIChanges|context managers]] (#9612, #11901)
+* Ticket changes can be used to format the subject template (#12205)
+
+[trac:source:/tags/trac-1.3.1rc1 View Tag] | [trac:milestone:1.3.1 View Milestone]
 
 
 == 1.2.x Releases

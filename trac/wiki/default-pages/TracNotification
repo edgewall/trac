@@ -72,6 +72,7 @@ $prefix #$ticket.id: $summary
 }}}
 The following variables are available in the template:
 
+ * `changes`: The ticket changes (prepared by [trac:source:/trunk/trac/ticket/model.py Ticket.get_change]). 
  * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.

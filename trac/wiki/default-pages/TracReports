@@ -136,6 +136,15 @@ To use multiple variables, separate them with an '&':
  http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
+It is possible to assign a default value to the variable, within a SQL comment:
+
+{{{#!sql
+-- PRIORITY = high
+
+SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
+}}}
+
+
 === !Special/Constant Variables
 
 There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports. 
