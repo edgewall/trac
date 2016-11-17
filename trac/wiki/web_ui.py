@@ -107,8 +107,8 @@ class WikiModule(Component):
     def process_request(self, req):
         action = req.args.get('action', 'view')
         pagename = req.args.get('page', 'WikiStart')
-        version = req.args.get('version')
-        old_version = req.args.get('old_version')
+        version = req.args.getint('version')
+        old_version = req.args.getint('old_version')
 
         if pagename.startswith('/') or pagename.endswith('/') or \
                 '//' in pagename:
@@ -118,20 +118,12 @@ class WikiModule(Component):
             raise TracError(_("Invalid Wiki page name '%(name)s'",
                               name=pagename))
 
-        if version is not None:
-            version_as_int = as_int(version, None)
-            if version_as_int is None:
-                raise ResourceNotFound(
-                    _('No version "%(num)s" for Wiki page "%(name)s"',
-                      num=version, name=pagename))
-            version = version_as_int
-
         page = WikiPage(self.env, pagename)
         versioned_page = WikiPage(self.env, pagename, version)
 
         req.perm(versioned_page.resource).require('WIKI_VIEW')
 
-        if version and versioned_page.version != int(version):
+        if version and versioned_page.version != version:
             raise ResourceNotFound(
                 _('No version "%(num)s" for Wiki page "%(name)s"',
                   num=version, name=page.name))
@@ -143,7 +135,7 @@ class WikiModule(Component):
                 if 'cancel' in req.args:
                     req.redirect(req.href.wiki(page.name))
 
-                has_collision = int(version) != page.version
+                has_collision = version != page.version
                 for a in ('preview', 'diff', 'merge'):
                     if a in req.args:
                         action = a
@@ -279,10 +271,10 @@ class WikiModule(Component):
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, page.resource, req.href))
 
-        version = int(req.args.get('version', 0)) or None
-        old_version = int(req.args.get('old_version', 0)) or version
+        version = req.args.getint('version')
+        old_version = req.args.getint('old_version', version)
 
-        with self.env.db_transaction as db:
+        with self.env.db_transaction:
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
                 for v in range(old_version, version):
@@ -382,7 +374,7 @@ class WikiModule(Component):
 
         version = None
         if 'delete_version' in req.args:
-            version = int(req.args.get('version', 0))
+            version = req.args.getint('version', 0)
         old_version = req.args.getint('old_version', version)
 
         what = 'multiple' if version and old_version \
@@ -427,9 +419,8 @@ class WikiModule(Component):
                               "exist",
                               num=req.args.get('version'), name=page.name))
 
-        old_version = req.args.get('old_version')
+        old_version = req.args.getint('old_version')
         if old_version:
-            old_version = int(old_version)
             if old_version == page.version:
                 old_version = None
             elif old_version > page.version:
@@ -439,7 +430,7 @@ class WikiModule(Component):
                 req.perm(page.resource).require('WIKI_VIEW')
         latest_page = WikiPage(self.env, page.name)
         req.perm(latest_page.resource).require('WIKI_VIEW')
-        new_version = int(page.version)
+        new_version = page.version
 
         date = author = comment = ipnr = None
         num_changes = 0
@@ -521,11 +512,11 @@ class WikiModule(Component):
                     'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
         elif 'version' in req.args:
-            old_page = WikiPage(self.env, page.name, int(req.args['version']))
+            version = req.args.getint('version')
+            old_page = WikiPage(self.env, page.name, version)
             req.perm(page.resource).require('WIKI_VIEW')
             page.text = old_page.text
-            comment = _("Reverted to version %(version)s.",
-                        version=req.args['version'])
+            comment = _("Reverted to version %(version)s.", version=version)
         if action in ('preview', 'diff'):
             page.readonly = 'readonly' in req.args
 

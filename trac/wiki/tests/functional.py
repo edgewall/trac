@@ -498,11 +498,11 @@ class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
         ResourceNotFound should be raised when version is invalid.
         """
         tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')
-        tc.find(r"<h1>Trac Error</h1>")
-        tc.find('No version "1abc" for Wiki page "WikiStart')
+        tc.find(r"<h1>Error: Bad Request</h1>")
+        tc.find(r"Invalid value for request argument <em>version</em>.")
         tc.go(self._tester.url + '/wiki/WikiStart?version=')
-        tc.find(r"<h1>Trac Error</h1>")
-        tc.find('No version "" for Wiki page "WikiStart')
+        tc.find(r"<h1>Error: Bad Request</h1>")
+        tc.find(r"Invalid value for request argument <em>version</em>.")
 
 
 def functionalSuite(suite=None):

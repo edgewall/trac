@@ -71,6 +71,19 @@ class WikiModuleTestCase(unittest.TestCase):
         self.assertRaises(HTTPBadRequest,
                           WikiModule(self.env).process_request, req)
 
+    def test_invalid_get_request_raises_exception(self):
+        req = MockRequest(self.env, method='GET', action=None,
+                          args=dict(version='a', old_version='1'))
+
+        self.assertRaises(HTTPBadRequest,
+                          WikiModule(self.env).process_request, req)
+
+        req = MockRequest(self.env, method='GET', action=None,
+                          args=dict(version='2', old_version='a'))
+
+        self.assertRaises(HTTPBadRequest,
+                          WikiModule(self.env).process_request, req)
+
 
 def test_suite():
     suite = unittest.TestSuite()
