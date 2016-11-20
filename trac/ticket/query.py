@@ -763,7 +763,7 @@ class Query(object):
                 # Make $USER work when restrict_owner = true
                 field = field.copy()
                 field['options'].insert(0, '$USER')
-            if name == 'milestone':
+            if name == 'milestone' and not field.get('custom'):
                 milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
                 milestones = [m for m in milestones
