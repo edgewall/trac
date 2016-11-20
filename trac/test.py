@@ -45,7 +45,7 @@ from trac.perm import PermissionCache
 from trac.ticket.default_workflow import load_workflow_config_snippet
 from trac.util import translation
 from trac.util.datefmt import time_now, utc
-from trac.web.api import _RequestArgs, Request
+from trac.web.api import _RequestArgs, Request, arg_list_to_args
 from trac.web.session import Session
 
 
@@ -173,8 +173,14 @@ def MockRequest(env, **kwargs):
     else:
         perm = PermissionCache(env, authname)
 
-    args = _RequestArgs()
-    args.update(kwargs.get('args', {}))
+    if 'arg_list' in kwargs:
+        arg_list = kwargs['arg_list']
+        args = arg_list_to_args(arg_list)
+    else:
+        args = _RequestArgs()
+        args.update(kwargs.get('args', {}))
+        arg_list = [(name, value) for name in args
+                                  for value in args.getlist(name)]
 
     environ = {
         'trac.base_url': env.abs_href(),
@@ -206,7 +212,7 @@ def MockRequest(env, **kwargs):
 
     from trac.web.chrome import Chrome
     req.callbacks.update({
-        'arg_list': None,
+        'arg_list': lambda req: arg_list,
         'args': lambda req: args,
         'authname': lambda req: authname,
         'chrome': Chrome(env).prepare_request,
