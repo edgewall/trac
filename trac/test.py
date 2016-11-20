@@ -158,7 +158,7 @@ def MockRequest(env, **kwargs):
     else:
         args = _RequestArgs()
         args.update(kwargs.get('args', {}))
-        arg_list = [(name, value) for name in args.iteritems()
+        arg_list = [(name, value) for name in args
                                   for value in args.getlist(name)]
 
     environ = {
