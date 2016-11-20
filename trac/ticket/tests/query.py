@@ -1177,6 +1177,33 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         data = query.template_data(context, tickets)
         self.assertEqual(['$USER'], data['clauses'][0]['owner']['values'])
 
+    def test_properties_script_data(self):
+        req = MockRequest(self.env, path_info='/query')
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        template, data, content_type = mod.process_request(req)
+        prop = req.chrome['script_data']['properties']['milestone']
+        self.assertEqual('select', prop['type'])
+        self.assertEqual('Milestone', prop['label'])
+        self.assertEqual([], prop['options'])
+        self.assertEqual([{'label': 'Open (by due date)',
+                           'options': ['milestone1', 'milestone2']},
+                          {'label': 'Open (no due date)',
+                           'options': ['milestone3', 'milestone4']},
+                          {'label': 'Closed', 'options': []}],
+                         prop['optgroups'])
+
+    def test_properties_script_data_with_no_milestones(self):
+        self.env.db_transaction("DELETE FROM milestone")
+        self.env.config.set('ticket-custom', 'milestone', 'text')
+        req = MockRequest(self.env, path_info='/query')
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        template, data, content_type = mod.process_request(req)
+        prop = req.chrome['script_data']['properties']['milestone']
+        self.assertEqual({'label': 'Milestone', 'type': 'text',
+                          'format': 'plain'}, prop)
+
 
 class QueryLinksTestCase(unittest.TestCase):
 
