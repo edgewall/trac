@@ -172,10 +172,10 @@ else:
         def __init__(self):
             raise ImportError("Twill not installed")
 
-    class FunctionalTwillTestCaseSetup:
+    class FunctionalTwillTestCaseSetup(object):
         pass
 
-    class FunctionalTestCaseSetup:
+    class FunctionalTestCaseSetup(object):
         pass
 
 
