@@ -746,7 +746,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             added = activity[activityFields['added']]
 
             # statuses and resolutions are in lowercase in trac
-            if field_name == "resolution" or field_name == "bug_status":
+            if field_name in ('resolution', 'bug_status'):
                 removed = removed.lower()
                 added = added.lower()
 
@@ -839,8 +839,8 @@ def convert(_db, _host, _user, _password, _env, _force):
                     break
                 # cc and attachments.isobsolete sometime appear
                 # in different activities with same time
-                if ((field_name == "cc" or field_name == "attachments.isobsolete")
-                    and oldChange['time'] == ticketChange['time']):
+                if field_name in ('cc', 'attachments.isobsolete') and \
+                        oldChange['time'] == ticketChange['time']:
                     oldChange['newvalue'] += ", " + ticketChange['newvalue']
                     break
             else:

@@ -156,7 +156,7 @@ def get_plugin_info(env, include_core=False):
                           'license', 'trac'):
                     v = getattr(module, k, '')
                     if v and isinstance(v, basestring):
-                        if k == 'home_page' or k == 'url':
+                        if k in ('home_page', 'url'):
                             k = 'home_page'
                             v = v.replace('$', '').replace('URL: ', '')
                         else:
