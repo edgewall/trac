@@ -298,10 +298,12 @@ class SystemInfoTestCase(unittest.TestCase):
         if self.env.dburi.startswith('mysql'):
             self.assertRegexpMatches(get_info(info_before, 'MySQL'),
                                      r'^server: \(not-connected\), '
-                                     r'client: "\d+(\.\d+)+", thread-safe: 1$')
+                                     r'client: "\d+(\.\d+)+(-.+)?", '
+                                     r'thread-safe: 1$')
             self.assertRegexpMatches(get_info(info_after, 'MySQL'),
-                                     r'^server: "\d+(\.\d+)+[^"]*", '
-                                     r'client: "\d+(\.\d+)+", thread-safe: 1$')
+                                     r'^server: "\d+(\.\d+)+(-.+)?", '
+                                     r'client: "\d+(\.\d+)+(-.+)?", '
+                                     r'thread-safe: 1$')
             self.assertRegexpMatches(get_info(info_before, 'MySQLdb'),
                                      r'^\d+(\.\d+)+$')
             self.assertRegexpMatches(get_info(info_after, 'MySQLdb'),
@@ -309,10 +311,10 @@ class SystemInfoTestCase(unittest.TestCase):
         elif self.env.dburi.startswith('postgres'):
             self.assertRegexpMatches(get_info(info_before, 'PostgreSQL'),
                                      r'^server: \(not-connected\), '
-                                     r'client: \d+(\.\d+)+$')
+                                     r'client: (\d+(\.\d+)+|\(unknown\))$')
             self.assertRegexpMatches(get_info(info_after, 'PostgreSQL'),
                                      r'^server: \d+(\.\d+)+, '
-                                     r'client: \d+(\.\d+)+$')
+                                     r'client: (\d+(\.\d+)+|\(unknown\))$')
             self.assertRegexpMatches(get_info(info_before, 'psycopg2'),
                                      r'^\d+(\.\d+)+$')
             self.assertRegexpMatches(get_info(info_after, 'psycopg2'),

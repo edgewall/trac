@@ -42,6 +42,7 @@ except ImportError:
     has_psycopg = False
     psycopg = None
     psycopg2_version = None
+    _libpq_pathname = None
 else:
     has_psycopg = True
     register_type(UNICODE)
@@ -49,14 +50,29 @@ else:
     register_adapter(type(empty), lambda empty: AsIs("''"))
     psycopg2_version = get_pkginfo(psycopg).get('version',
                                                 psycopg.__version__)
-
-if hasattr(psycopg, 'libpq_version'):
     _libpq_pathname = None
-else:
-    try:
-        _libpq_pathname = find_library('pq' if os.name != 'nt' else 'libpq')
-    except Exception:
-        _libpq_pathname = None
+    if not hasattr(psycopg, 'libpq_version'):
+        # search path of libpq only if it is dynamically linked
+        _f = _match = None
+        try:
+            with open(psycopg._psycopg.__file__, 'rb') as _f:
+                if os.name != 'nt':
+                    _match = re.search(
+                        r'''
+                            \0(
+                            (?:/[^/\0]+)*/?
+                            libpq\.(?:so\.[0-9]+|[0-9]+\.dylib)
+                            )\0
+                        ''',
+                        _f.read(), re.VERBOSE)
+                    if _match:
+                        _libpq_pathname = _match.group(1)
+                else:
+                    if re.search(r'\0libpq\.dll\0', _f.read(), re.IGNORECASE):
+                        _libpq_pathname = find_library('libpq')
+        except AttributeError:
+            pass
+        del _f, _match
 
 _like_escape_re = re.compile(r'([/_%])')
 
