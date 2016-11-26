@@ -14,6 +14,12 @@
      xmlns:xi="http://www.w3.org/2001/XInclude"
      id="batchmod_form" method="post" action="${req.href + '/batchmodify'}">
 
+<script type="text/javascript">
+  jQuery(document).ready(function($) {
+    initializeBatch();
+  });
+</script>
+
 <fieldset id="batchmod_fieldset">
   <legend class="foldable">Batch Modify</legend>
   <table summary="Batch modification fields">
