@@ -22,9 +22,6 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         initializeFilters();
-      <py:if test="batch_modify">
-        initializeBatch();
-      </py:if>
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
