@@ -1252,8 +1252,7 @@ class FileContentStream(object):
                 values[name] = self.KEYWORD_EXPAND_RE.sub(expand, definition)
 
         if values:
-            return dict((key, to_utf8(value))
-                        for key, value in values.iteritems())
+            return {key: to_utf8(value) for key, value in values.iteritems()}
         else:
             return None
 

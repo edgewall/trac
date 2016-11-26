@@ -72,7 +72,7 @@ class GitCachedRepository(CachedRepository):
             if len(csets) == 1:
                 yield csets[0]
                 continue
-            rev_csets = dict((cset.rev, cset) for cset in csets)
+            rev_csets = {cset.rev: cset for cset in csets}
             while rev_csets:
                 revs = [rev for rev in rev_csets
                             if not any(r in rev_csets

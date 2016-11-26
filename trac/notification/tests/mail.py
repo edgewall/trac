@@ -175,8 +175,8 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual(1, len(history))
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual(set(('foo@example.org', 'bar@example.org',
-                              'cc@example.org', 'bcc@example.org')),
+        self.assertEqual({'foo@example.org', 'bar@example.org',
+                          'cc@example.org', 'bcc@example.org'},
                          set(recipients))
         self._assert_mail(message, 'text/plain', 'blah')
 
@@ -195,7 +195,7 @@ class EmailDistributorTestCase(unittest.TestCase):
                 self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
             if 'cc@example.org' in recipients:
                 self.assertEqual('trac@example.org', from_addr)
-                self.assertEqual(set(('cc@example.org', 'bcc@example.org')),
+                self.assertEqual({'cc@example.org', 'bcc@example.org'},
                                  set(recipients))
                 self._assert_mail(message, 'text/plain', 'blah')
 
@@ -210,9 +210,9 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual(2, len(history))
         for from_addr, recipients, message in history:
             if 'foo@example.org' in recipients:
-                self.assertEqual(set(('foo@example.org', 'cc@example.org',
-                                      'bcc@example.org')),
-                                 set(recipients))
+                self.assertEqual(
+                    {'foo@example.org', 'cc@example.org', 'bcc@example.org'},
+                    set(recipients))
                 self._assert_mail(message, 'text/plain', 'blah')
             if 'bar@example.org' in recipients:
                 self.assertEqual(['bar@example.org'], recipients)
@@ -244,8 +244,8 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual(1, len(history))
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual(set(('foo@example.org', 'bar@example.org',
-                              'cc@example.org', 'bcc@example.org')),
+        self.assertEqual({'foo@example.org', 'bar@example.org',
+                          'cc@example.org', 'bcc@example.org'},
                          set(recipients))
         self._assert_mail(message, 'text/plain', 'raise-text-html')
 
@@ -270,8 +270,8 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual(1, len(history))
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual(set(('foo@example.org', 'bar@example.org',
-                              'cc@example.org', 'bcc@example.org')),
+        self.assertEqual({'foo@example.org', 'bar@example.org',
+                          'cc@example.org', 'bcc@example.org'},
                          set(recipients))
         self.assertEqual('cc@example.org, foo@example.org', message['Cc'])
         self.assertEqual(None, message['Bcc'])

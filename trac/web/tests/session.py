@@ -152,8 +152,8 @@ class SessionTestCase(unittest.TestCase):
         self._test_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
 
         sessions = self.env.db_query("SELECT sid, authenticated FROM session")
-        self.assertEqual(set([('john', 1), ('j.smith', 1), (u'Jöhn', 1),
-                              ('john@EXAMPLE.LOCAL', 1)]),
+        self.assertEqual({('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+                          ('john@EXAMPLE.LOCAL', 1)},
                          set(sessions))
 
     def _test_new_session_promotion(self, username):
@@ -180,8 +180,8 @@ class SessionTestCase(unittest.TestCase):
         self._test_new_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
 
         sessions = self.env.db_query("SELECT sid, authenticated FROM session")
-        self.assertEqual(set([('john', 1), ('j.smith', 1), (u'Jöhn', 1),
-                              ('john@EXAMPLE.LOCAL', 1)]),
+        self.assertEqual({('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+                          ('john@EXAMPLE.LOCAL', 1)},
                          set(sessions))
 
     def test_as_int(self):

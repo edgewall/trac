@@ -585,13 +585,13 @@ class NotificationTestCase(unittest.TestCase):
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertEqual('undisclosed-recipients: ;', headers['To'])
-        cclist = set(addr.strip() for addr in headers['Cc'].split(','))
+        cclist = {addr.strip() for addr in headers['Cc'].split(',')}
         # 'Cc' list should not contain addresses with non-SMTP domains
         self.assertNotIn('kerberos@example.com', cclist)
         self.assertNotIn('kerberos@example.org', cclist)
         # 'Cc' list should have been resolved to the actual email address
-        self.assertEqual(set(['kerb@example.net', 'joe.user@example.net',
-                              'joe.bar@example.net']), cclist)
+        self.assertEqual({'kerb@example.net', 'joe.user@example.net',
+                          'joe.bar@example.net'}, cclist)
 
     def test_admit_domains(self):
         """SMTP domain inclusion"""
@@ -616,9 +616,9 @@ class NotificationTestCase(unittest.TestCase):
         self.assertIn('joe.user@server', cclist)
         # 'Cc' list should not contain non-FQDN domains
         self.assertNotIn('joe.user@unknown', cclist)
-        self.assertEqual(set(['joeuser@example.com', 'joe.user@localdomain',
-                              'joe.user@server', 'joe.user@example.net',
-                              'joe.bar@example.net']), set(cclist))
+        self.assertEqual({'joeuser@example.com', 'joe.user@localdomain',
+                          'joe.user@server', 'joe.user@example.net',
+                          'joe.bar@example.net'}, set(cclist))
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
@@ -1303,7 +1303,7 @@ Security sensitive:  0                           |          Blocking:
         self.assertIsNotNone(notifysuite.smtpd.get_message())
         self.assertEqual('My Summary', ticket['summary'])
         self.assertEqual('Some description', ticket['description'])
-        valid_fieldnames = set([f['name'] for f in ticket.fields])
+        valid_fieldnames = {f['name'] for f in ticket.fields}
         current_fieldnames = set(ticket.values.keys())
         self.assertEqual(set(), current_fieldnames - valid_fieldnames)
 

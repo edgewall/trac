@@ -122,9 +122,9 @@ class Query(object):
         if verbose and 'description' not in rows:  # 0.10 compatibility
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
-        self.time_fields = set(f['name'] for f in self.fields
-                               if f['type'] == 'time')
-        field_names = set(f['name'] for f in self.fields)
+        self.time_fields = {f['name'] for f in self.fields
+                            if f['type'] == 'time'}
+        field_names = {f['name'] for f in self.fields}
         self.cols = [c for c in cols or [] if c in field_names or
                      c == 'id']
         self.rows = [c for c in rows if c in field_names]
@@ -430,10 +430,10 @@ class Query(object):
         add_cols('status', 'priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraint_cols if c not in cols])
 
-        custom_fields = set(f['name'] for f in self.fields if f.get('custom'))
-        list_fields = set(f['name'] for f in self.fields
-                                    if f['type'] == 'text' and
-                                       f.get('format') == 'list')
+        custom_fields = {f['name'] for f in self.fields if f.get('custom')}
+        list_fields = {f['name'] for f in self.fields
+                                 if f['type'] == 'text' and
+                                    f.get('format') == 'list'}
         enum_columns = [col for col in ('resolution', 'priority', 'severity',
                                         'type')
                             if col not in custom_fields and
@@ -1000,7 +1000,7 @@ class QueryModule(Component):
     def _get_constraints(self, req=None, arg_list=[]):
         fields = TicketSystem(self.env).get_ticket_fields()
         synonyms = TicketSystem(self.env).get_field_synonyms()
-        fields = dict((f['name'], f) for f in fields)
+        fields = {f['name']: f for f in fields}
         fields['id'] = {'type': 'id'}
         fields.update((k, fields[v]) for k, v in synonyms.iteritems())
 
@@ -1141,12 +1141,11 @@ class QueryModule(Component):
         data['all_columns'].remove('id')
         data['all_textareas'] = query.get_all_textareas()
 
-        properties = dict((name, dict((key, field[key])
-                                      for key in ('type', 'label', 'options',
-                                                  'optgroups', 'optional',
-                                                  'format')
-                                      if key in field))
-                          for name, field in data['fields'].iteritems())
+        properties = {name: {key: field[key]
+                             for key in ('type', 'label', 'options',
+                                         'optgroups', 'optional', 'format')
+                             if key in field}
+                      for name, field in data['fields'].iteritems()}
         add_script_data(req, properties=properties, modes=data['modes'])
 
         add_stylesheet(req, 'common/css/report.css')

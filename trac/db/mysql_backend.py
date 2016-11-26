@@ -332,7 +332,7 @@ class MySQLConnector(Component):
                        "'default_storage_engine','storage_engine',"
                        "'default_tmp_storage_engine',"
                        "'character_set_database','collation_database')")
-        vars = dict((row[0].lower(), row[1]) for row in cursor)
+        vars = {row[0].lower(): row[1] for row in cursor}
 
         engine = vars.get('default_storage_engine') or \
                  vars.get('storage_engine')

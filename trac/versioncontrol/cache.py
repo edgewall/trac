@@ -327,9 +327,8 @@ class CachedRepository(Repository):
                                                         in node_infos]
         sfirst = self.db_rev(min(first for node, first in node_infos))
         slast = self.db_rev(max(node.rev for node, first in node_infos))
-        path_infos = dict((node.path, (node, first)) for node, first
-                                                     in node_infos)
-        path_revs = dict((node.path, []) for node, first in node_infos)
+        path_infos = {node.path: (node, first) for node, first in node_infos}
+        path_revs = {node.path: [] for node, first in node_infos}
 
         # Prevent "too many SQL variables" since max number of parameters is
         # 999 on SQLite. No limitation on PostgreSQL and MySQL.

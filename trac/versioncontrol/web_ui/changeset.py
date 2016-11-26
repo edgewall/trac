@@ -866,7 +866,7 @@ class ChangesetModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         all_repos = 'changeset' in filters
-        repo_filters = set(f for f in filters if f.startswith('repo-'))
+        repo_filters = {f for f in filters if f.startswith('repo-')}
         if all_repos or repo_filters:
             show_files = self.timeline_show_files
             show_location = show_files == 'location'
@@ -1132,8 +1132,8 @@ class ChangesetModule(Component):
         if not 'changeset' in filters:
             return
         rm = RepositoryManager(self.env)
-        repositories = dict((repos.params['id'], repos)
-                            for repos in rm.get_real_repositories())
+        repositories = {repos.params['id']: repos
+                        for repos in rm.get_real_repositories()}
         uids_seen = set()
         with self.env.db_query as db:
             sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)

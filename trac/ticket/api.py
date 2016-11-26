@@ -39,7 +39,7 @@ class TicketFieldList(list):
 
     def __init__(self, *args):
         super(TicketFieldList, self).__init__(*args)
-        self._map = dict((value['name'], value) for value in self)
+        self._map = {value['name']: value for value in self}
 
     def append(self, value):
         super(TicketFieldList, self).append(value)
@@ -293,8 +293,7 @@ class TicketSystem(Component):
 
     def get_ticket_field_labels(self):
         """Produce a (name,label) mapping from `get_ticket_fields`."""
-        labels = dict((f['name'], f['label'])
-                      for f in self.get_ticket_fields())
+        labels = {f['name']: f['label'] for f in self.get_ticket_fields()}
         labels['attachment'] = _("Attachment")
         return labels
 

@@ -315,8 +315,8 @@ class RequestDispatcher(Component):
 
     @lazy
     def _request_handlers(self):
-        return dict((handler.__class__.__name__, handler)
-                    for handler in self.handlers)
+        return {handler.__class__.__name__: handler
+                for handler in self.handlers}
 
     def _get_valid_default_handler(self, req):
         # Use default_handler from the Session if it is a valid value.

@@ -106,8 +106,8 @@ class Ticket(object):
         self.env = env
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.editable_fields = \
-            set(f['name'] for f in self.fields
-                          if f['name'] not in self.protected_fields)
+            {f['name'] for f in self.fields
+                       if f['name'] not in self.protected_fields}
         self.std_fields, self.custom_fields, self.time_fields = [], [], []
         for f in self.fields:
             if f.get('custom'):
@@ -549,8 +549,8 @@ class Ticket(object):
 
         self._fetch_ticket(self.id)
 
-        changes = dict((field, (oldvalue, newvalue))
-                       for field, oldvalue, newvalue in fields)
+        changes = {field: (oldvalue, newvalue)
+                   for field, oldvalue, newvalue in fields}
         for listener in TicketSystem(self.env).change_listeners:
             if hasattr(listener, 'ticket_change_deleted'):
                 listener.ticket_change_deleted(self, cdate, changes)
@@ -1093,8 +1093,8 @@ class Milestone(object):
         # Fields need reset if renamed or completed/due changed
         TicketSystem(self.env).reset_ticket_fields()
 
-        old_values = dict((k, v) for k, v in old.iteritems()
-                          if getattr(self, k) != v)
+        old_values = {k: v for k, v in old.iteritems()
+                      if getattr(self, k) != v}
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_changed(self, old_values)
 

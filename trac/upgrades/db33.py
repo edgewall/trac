@@ -33,10 +33,10 @@ def do_upgrade(env, version, cursor):
     """
     save = False
     all_actions = get_workflow_config(env.config)
-    all_states = list(set(
-        [state for action in all_actions.itervalues()
-               for state in action['oldstates']] +
-        [action['newstate'] for action in all_actions.itervalues()]))
+    all_states = list(
+        {state for action in all_actions.itervalues()
+               for state in action['oldstates']} |
+        {action['newstate'] for action in all_actions.itervalues()})
 
     for action, attributes in new_actions.items():
         if action == 'create_and_assign' and 'assigned' not in all_states:

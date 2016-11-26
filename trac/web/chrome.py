@@ -841,8 +841,8 @@ class Chrome(Component):
         nav = {}
         for category, navitems in allitems.items():
             sect = self.config[category]
-            order = dict((name, sect.getfloat(name + '.order', float('inf')))
-                         for name in navitems)
+            order = {name: sect.getfloat(name + '.order', float('inf'))
+                     for name in navitems}
             nav[category] = []
             for name, label in navitems.items():
                 nav[category].append({

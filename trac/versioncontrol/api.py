@@ -518,9 +518,10 @@ class RepositoryManager(Component):
 
     def get_supported_types(self):
         """Return the list of supported repository types."""
-        types = set(type_ for connector in self.connectors
-                    for (type_, prio) in connector.get_supported_types() or []
-                    if prio >= 0)
+        types = {type_
+                 for connector in self.connectors
+                 for (type_, prio) in connector.get_supported_types() or []
+                 if prio >= 0}
         return list(types)
 
     def get_repositories_by_dir(self, directory):

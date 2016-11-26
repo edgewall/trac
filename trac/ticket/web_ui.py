@@ -544,8 +544,8 @@ class TicketModule(Component):
         fields = self._prepare_fields(req, ticket)
 
         data['fields'] = fields
-        data['fields_map'] = dict((field['name'], i)
-                                  for i, field in enumerate(fields))
+        data['fields_map'] = {field['name']: i
+                              for i, field in enumerate(fields)}
 
         if req.is_xhr:
             data['preview_mode'] = True
@@ -818,9 +818,9 @@ class TicketModule(Component):
 
     def _populate(self, req, ticket, plain_fields=False):
         if not plain_fields:
-            fields = dict((k[6:], v) for k, v in req.args.iteritems()
-                          if k.startswith('field_')
-                             and 'revert_' + k[6:] not in req.args)
+            fields = {k[6:]: v for k, v in req.args.iteritems()
+                      if k.startswith('field_') and
+                         'revert_' + k[6:] not in req.args}
             # Handle revert of checkboxes (in particular, revert to 1)
             for k in list(fields):
                 if k.startswith('checkbox_'):
@@ -1259,7 +1259,7 @@ class TicketModule(Component):
         if ticket.exists and ticket._old:
             # Status and resolution can be modified by the workflow even
             # without having TICKET_CHGPROP
-            changed = set(ticket._old) - set(['status', 'resolution'])
+            changed = set(ticket._old) - {'status', 'resolution'}
             if 'description' in changed \
                     and 'TICKET_EDIT_DESCRIPTION' not in req.perm(resource):
                 add_warning(req, _("No permission to edit the ticket "
@@ -1666,7 +1666,7 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket, field_changes)
-        fields_map = dict((field['name'], i) for i, field in enumerate(fields))
+        fields_map = {field['name']: i for i, field in enumerate(fields)}
 
         # -- Ticket Change History
 

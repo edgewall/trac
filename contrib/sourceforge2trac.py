@@ -315,8 +315,8 @@ class ExportedProjectData(object):
 
         root = ElementTree().parse(f)
 
-        self.users = dict([(FlatXML(u).userid, FlatXML(u).username)
-                          for u in root.find('referenced_users')])
+        self.users = {FlatXML(u).userid: FlatXML(u).username
+                      for u in root.find('referenced_users')}
 
         for tracker in root.find('trackers'):
             tr = Tracker(tracker)
@@ -555,7 +555,7 @@ def importData(f, env):
     trac.setComponentList(components)
     trac.setPriorityList(range(min(project.priorities),
                                max(project.priorities)))
-    trac.setVersionList(set([x[1] for x in project.groups]))
+    trac.setVersionList({x[1] for x in project.groups})
     trac.setResolutionList(resolutions)
     trac.setMilestoneList([])
 

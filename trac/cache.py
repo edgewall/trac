@@ -138,8 +138,8 @@ def cached(fn_or_attr=None):
         class WikiSystem(Component):
             @cached
             def pages(self):
-                return set(name for name, in self.env.db_query(
-                               "SELECT DISTINCT name FROM wiki"))
+                return {name for name, in self.env.db_query(
+                            "SELECT DISTINCT name FROM wiki")}
 
     Otherwise, when the decorator is used in non-"singleton" objects,
     a string specifying the name of an attribute containing a string

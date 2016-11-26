@@ -211,7 +211,7 @@ class TicketTestCase(unittest.TestCase):
         """Ticket fields with empty strings are NULL when creating ticket.
         """
         ticket = Ticket(self.env)
-        ticket.populate(dict((name, '') for name in ticket.editable_fields))
+        ticket.populate({name: '' for name in ticket.editable_fields})
         ticket.insert()
 
         self._test_empty_strings_stored_as_null(ticket)
@@ -221,7 +221,7 @@ class TicketTestCase(unittest.TestCase):
         """
         ticket = Ticket(self.env)
         ticket.insert()
-        ticket.populate(dict((name, '') for name in ticket.editable_fields))
+        ticket.populate({name: '' for name in ticket.editable_fields})
         ticket.save_changes()
 
         self._test_empty_strings_stored_as_null(ticket)

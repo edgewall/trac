@@ -788,9 +788,9 @@ class TracIniMacro(WikiMacroBase):
             key_filter = args.pop(0).strip()
 
         registry = ConfigSection.get_registry(self.compmgr)
-        sections = dict((name, section.doc)
-                        for name, section in registry.iteritems()
-                        if name.startswith(section_filter))
+        sections = {name: section.doc
+                    for name, section in registry.iteritems()
+                    if name.startswith(section_filter)}
 
         registry = Option.get_registry(self.compmgr)
         options = {}

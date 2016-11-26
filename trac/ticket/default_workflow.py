@@ -547,7 +547,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         def append_owners(users_perms_and_groups):
             for user_perm_or_group in users_perms_and_groups:
                 if user_perm_or_group == 'authenticated':
-                    owners.update(set(u[0] for u in self.env.get_known_users()))
+                    owners.update({u[0] for u in self.env.get_known_users()})
                 elif user_perm_or_group.isupper():
                     perm = user_perm_or_group
                     for user in ps.get_users_with_permission(perm):
@@ -632,10 +632,10 @@ class WorkflowMacro(WikiMacroBase):
                                       unicode(e))
             raw_actions = list(parser.items('ticket-workflow'))
         actions = parse_workflow_config(raw_actions)
-        states = list(set(
-            [state for action in actions.itervalues()
-                   for state in action['oldstates']] +
-            [action['newstate'] for action in actions.itervalues()]))
+        states = list(
+            {state for action in actions.itervalues()
+                   for state in action['oldstates']} |
+            {action['newstate'] for action in actions.itervalues()})
         action_labels = [attrs['label'] for attrs in actions.values()]
         action_names = actions.keys()
         edges = []

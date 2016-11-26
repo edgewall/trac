@@ -331,9 +331,9 @@ class RepositoryAdminPanel(Component):
             db_repos = dict(db_provider.get_repositories())
 
         # Prepare common rendering data
-        repositories = dict((reponame, self._extend_info(reponame, info.copy(),
-                                                         reponame in db_repos))
-                            for (reponame, info) in all_repos.iteritems())
+        repositories = {reponame: self._extend_info(reponame, info.copy(),
+                                                    reponame in db_repos)
+                        for (reponame, info) in all_repos.iteritems()}
         types = sorted([''] + rm.get_supported_types())
         data.update({'types': types,
                      'default_type': rm.default_repository_type,

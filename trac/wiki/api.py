@@ -284,8 +284,8 @@ class WikiSystem(Component):
     @cached
     def pages(self):
         """Return the names of all existing wiki pages."""
-        return set(name for name, in
-                   self.env.db_query("SELECT DISTINCT name FROM wiki"))
+        return {name for name,
+                     in self.env.db_query("SELECT DISTINCT name FROM wiki")}
 
     # Public API
 

@@ -232,7 +232,7 @@ class PostgresConnectionTestCase(unittest.TestCase):
                 SELECT attnum, attname FROM pg_attribute
                 WHERE attrelid=%s AND attnum >= 0 AND NOT attisdropped
                 """, tab_oid)
-            column_names = dict((row[0], row[1]) for row in column_names)
+            column_names = {row[0]: row[1] for row in column_names}
             indices = self._query("""
                 SELECT ind.relname, d.indisprimary, d.indisunique, d.indkey
                 FROM pg_index d

@@ -259,9 +259,8 @@ class DefaultTicketGroupStatsProvider(Component):
                         group1=group['name'], group2=catch_all_group['name']))
                 catch_all_group = group
             else:
-                group_statuses = set([s.strip()
-                                      for s in status_str.split(',')]) \
-                                      & all_statuses
+                group_statuses = {s.strip() for s in status_str.split(',')} \
+                                 & all_statuses
                 if group_statuses - remaining_statuses:
                     raise TracError(_(
                         "'%(groupname)s' milestone group reused status "

@@ -190,7 +190,7 @@ class DefaultPermissionStore(Component):
         not an actual permission, and declares that the user is part of
         that group.
         """
-        subjects = set([username])
+        subjects = {username}
         for provider in self.group_providers:
             subjects.update(provider.get_permission_groups(username) or [])
 
@@ -221,7 +221,7 @@ class DefaultPermissionStore(Component):
         # group. The optimized loop we had before didn't. This is very
         # inefficient, but it works.
         result = set()
-        users = set([u[0] for u in self.env.get_known_users()])
+        users = {u[0] for u in self.env.get_known_users()}
         for user in users:
             user_perms = self.get_user_permissions(user)
             for group in permissions:
@@ -419,8 +419,8 @@ class PermissionSystem(Component):
         groups = sorted((p for p in self.get_all_permissions()
                            if not p[1].isupper()), key=lambda p: p[1])
 
-        return dict((k, sorted(i[0] for i in list(g)))
-                    for k, g in groupby(groups, key=lambda p: p[1]))
+        return {k: sorted(i[0] for i in list(g))
+                for k, g in groupby(groups, key=lambda p: p[1])}
 
     def get_users_dict(self):
         """Get all users as a `dict`.
@@ -433,8 +433,8 @@ class PermissionSystem(Component):
         perms = sorted((p for p in self.get_all_permissions()
                           if p[1].isupper()), key=lambda p: p[0])
 
-        return dict((k, sorted(i[1] for i in list(g)))
-                    for k, g in groupby(perms, key=lambda p: p[0]))
+        return {k: sorted(i[1] for i in list(g))
+                for k, g in groupby(perms, key=lambda p: p[0])}
 
     def get_user_permissions(self, username=None, undefined=False):
         """Return the permissions of the specified user.
@@ -670,8 +670,8 @@ class PermissionAdmin(Component):
                self._complete_import_export, self._do_import)
 
     def get_user_list(self):
-        return set(user for (user, action) in
-                   PermissionSystem(self.env).get_all_permissions())
+        return {user for (user, action)
+                     in PermissionSystem(self.env).get_all_permissions()}
 
     def get_user_perms(self, user):
         return [action for (subject, action) in

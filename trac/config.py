@@ -821,7 +821,7 @@ class ChoiceOption(Option):
                  doc_args=None):
         Option.__init__(self, section, name, to_unicode(choices[0]), doc,
                         doc_domain, doc_args)
-        self.choices = set(to_unicode(c).strip() for c in choices)
+        self.choices = {to_unicode(c).strip() for c in choices}
 
     def accessor(self, section, name, default):
         value = section.get(name, default)

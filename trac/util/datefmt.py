@@ -462,7 +462,7 @@ def get_timezone_list_jquery_ui(t=None):
         sign = '-' if offset < 0 else '+'
         return '%s%02d:%02d' % (sign, abs(offset // 60), offset % 60)
     t = to_datetime(t, utc)
-    offsets = set(utcoffset(tz, t) for tz in all_timezones)
+    offsets = {utcoffset(tz, t) for tz in all_timezones}
     return [{'value': offset, 'label': label(offset)}
             for offset in sorted(offsets)]
 
@@ -507,8 +507,8 @@ def get_period_names_jquery_ui(req):
         return {'am': [english_names['am']], 'pm': [english_names['pm']]}
     if babel and locale:
         names = get_period_names(locale=locale)
-        return dict((period, [names[period], english_names[period]])
-                    for period in ('am', 'pm'))
+        return {period: [names[period], english_names[period]]
+                for period in ('am', 'pm')}
     else:
         # retrieve names of am/pm from libc
         names = {}
@@ -673,7 +673,7 @@ def _i18n_parse_date_pattern(locale):
                     order.append((idx, key))
                     break
         order.sort()
-        orders.append(dict((key, idx) for idx, (_, key) in enumerate(order)))
+        orders.append({key: idx for idx, (_, key) in enumerate(order)})
 
     # always allow using English names regardless of locale
     month_names = dict(zip(('jan', 'feb', 'mar', 'apr', 'may', 'jun',
@@ -784,7 +784,7 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
                 values[key], values['M'] = values['M'], value
             break
 
-    values = dict((key, int(value)) for key, value in values.iteritems())
+    values = {key: int(value) for key, value in values.iteritems()}
     values.setdefault('h', 0)
     values.setdefault('m', 0)
     values.setdefault('s', 0)
@@ -1135,15 +1135,15 @@ _timezones = [
     FixedOffset(600, 'GMT +10:00'),  FixedOffset(660, 'GMT +11:00'),
     FixedOffset(720, 'GMT +12:00'),  FixedOffset(780, 'GMT +13:00'),
     FixedOffset(840, 'GMT +14:00')]
-_tzmap = dict([(z.zone, z) for z in _timezones])
+_tzmap = {z.zone: z for z in _timezones}
 
 all_timezones = [z.zone for z in _timezones]
 
 try:
     import pytz
 
-    _tzoffsetmap = dict([(tz.utcoffset(None), tz) for tz in _timezones
-                         if tz.zone != 'UTC'])
+    _tzoffsetmap = {tz.utcoffset(None): tz
+                    for tz in _timezones if tz.zone != 'UTC'}
 
     def timezone(tzname):
         """Fetch timezone instance by name or raise `KeyError`"""

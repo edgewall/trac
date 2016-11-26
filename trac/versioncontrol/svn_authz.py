@@ -228,10 +228,11 @@ class AuthzSourcePolicy(Component):
             self.log.info('Parsing authz file: %s', self.authz_file)
             try:
                 self._authz = parse(read_file(self.authz_file), modules)
-                self._users = set(user for paths in self._authz.itervalues()
-                                  for path in paths.itervalues()
-                                  for user, result in path.iteritems()
-                                  if result)
+                self._users = {user
+                               for paths in self._authz.itervalues()
+                               for path in paths.itervalues()
+                               for user, result in path.iteritems()
+                               if result}
             except Exception as e:
                 self._authz = None
                 self._users = set()

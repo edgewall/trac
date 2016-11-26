@@ -717,11 +717,10 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                           "been saved."))
 
                     # Change enum values
-                    order = dict([(str(int(key[6:])),
-                                   str(int(req.args.get(key)))) for key
-                                  in req.args.keys()
-                                  if key.startswith('value_')])
-                    values = dict([(val, True) for val in order.values()])
+                    order = {str(int(key[6:])): str(int(req.args.get(key)))
+                             for key in req.args.keys()
+                             if key.startswith('value_')}
+                    values = {val: True for val in order.values()}
                     if len(order) != len(values):
                         raise TracError(_("Order numbers must be unique"))
                     with self.env.db_transaction:

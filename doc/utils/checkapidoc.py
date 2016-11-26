@@ -142,7 +142,7 @@ def get_default_symbols(module, only_documented, has_submodules):
     return all
 
 def get_public_symbols(m):
-    return set(symbol for symbol in dir(m) if not symbol.startswith('_'))
+    return {symbol for symbol in dir(m) if not symbol.startswith('_')}
 
 import_from_re = re.compile(r'''
 ^ \s* from \s+ ([\w\.]+) \s+ import \s+   # module

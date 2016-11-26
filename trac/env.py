@@ -655,7 +655,7 @@ class Environment(Component, ComponentManager):
 
     @cached
     def _known_users_dict(self):
-        return dict([(u[0], (u[1], u[2])) for u in self._known_users])
+        return {u[0]: (u[1], u[2]) for u in self._known_users}
 
     def invalidate_known_users_cache(self):
         """Clear the known_users cache."""

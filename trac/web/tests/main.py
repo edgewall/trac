@@ -196,9 +196,9 @@ class EnvironmentsTestCase(unittest.TestCase):
         os.rmdir(self.parent_dir)
 
     def env_paths(self, projects):
-        return dict((project, os.path.normpath(os.path.join(self.parent_dir,
-                                                            project)))
-                    for project in projects)
+        return {project: os.path.normpath(os.path.join(self.parent_dir,
+                                                       project))
+                for project in projects}
 
     def test_default_tracignore(self):
         self.assertEqual(self.env_paths(['mydir1', 'mydir2']),

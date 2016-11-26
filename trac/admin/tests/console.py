@@ -1672,9 +1672,9 @@ class TracAdminComponentTestCase(unittest.TestCase):
             'Option.registry': Option.registry,
         }
         ComponentMeta._components = list(ComponentMeta._components)
-        ComponentMeta._registry = dict((interface, list(classes))
-                                       for interface, classes
-                                       in ComponentMeta._registry.iteritems())
+        ComponentMeta._registry = {interface: list(classes)
+                                   for interface, classes
+                                   in ComponentMeta._registry.iteritems()}
         ConfigSection.registry = {}
         Option.registry = {}
 

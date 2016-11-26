@@ -519,8 +519,8 @@ class WikiModule(Component):
 
         author = get_reporter_id(req, 'author')
         defaults = {'editrows': str(self.default_edit_area_height)}
-        prefs = dict((key, req.session.get('wiki_%s' % key, defaults.get(key)))
-                     for key in ('editrows', 'sidebyside'))
+        prefs = {key: req.session.get('wiki_%s' % key, defaults.get(key))
+                 for key in ('editrows', 'sidebyside')}
 
         if 'from_editor' in req.args:
             sidebyside = req.args.get('sidebyside') or None

@@ -200,7 +200,7 @@ Type:  '?' or 'help' for help on commands.
         return [unicode(token, 'utf-8') for token in lex] or ['']
 
     def word_complete(self, text, words):
-        words = list(set(a for a in words if a.startswith(text)))
+        words = list({a for a in words if a.startswith(text)})
         if len(words) == 1:
             words[0] += ' '     # Only one choice, skip to next arg
         return words

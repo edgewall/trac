@@ -133,7 +133,7 @@ class SQLiteConnectionTestCase(unittest.TestCase):
         with self.env.db_query as db:
             cursor = db.cursor()
             cursor.execute("PRAGMA index_list(%s)" % db.quote(table))
-            results = dict((row[1], {'unique': row[2]}) for row in cursor)
+            results = {row[1]: {'unique': row[2]} for row in cursor}
             for index, info in results.iteritems():
                 cursor.execute("PRAGMA index_info(%s)" % db.quote(index))
                 info['columns'] = [row[2] for row in cursor]

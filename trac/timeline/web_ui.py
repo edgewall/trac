@@ -386,8 +386,7 @@ class TimelineModule(Component):
         self.log.error("Timeline event provider failed: %s",
                        exception_to_unicode(exc, traceback=True))
 
-        ep_kinds = dict((f[0], f[1])
-                        for f in ep.get_timeline_filters(req) or [])
+        ep_kinds = {f[0]: f[1] for f in ep.get_timeline_filters(req) or []}
         ep_filters = set(ep_kinds.keys())
         current_filters = set(current_filters)
         other_filters = set(current_filters) - ep_filters

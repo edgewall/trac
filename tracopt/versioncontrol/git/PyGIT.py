@@ -478,10 +478,9 @@ class Storage(object):
         def _rev_reuse(rev):
             return revs_seen.setdefault(rev, rev)
 
-        refs = dict((refname, _rev_reuse(rev))
-                    for refname, rev in refs.iteritems())
-        head_revs = set(rev for refname, rev in refs.iteritems()
-                            if refname.startswith('refs/heads/'))
+        refs = {refname: _rev_reuse(rev) for refname, rev in refs.iteritems()}
+        head_revs = {rev for refname, rev in refs.iteritems()
+                         if refname.startswith('refs/heads/')}
         rev_list = [map(_rev_reuse, line.split())
                     for line in self.repo.rev_list('--parents', '--topo-order',
                                                    '--all').splitlines()]
@@ -747,7 +746,7 @@ class Storage(object):
 
         # find a shortened id for which rev doesn't conflict with
         # the other ones from srevs
-        crevs = srevs - set([rev])
+        crevs = srevs - {rev}
 
         for l in range(min_len+1, 40):
             srev = rev[:l]

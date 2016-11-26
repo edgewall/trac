@@ -256,8 +256,8 @@ class PermissionSystemTestCase(unittest.TestCase):
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
-        perms = set(['TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',
-                     'TEST_CREATE', 'TEST_ADMIN'])
+        perms = {'TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY', 'TEST_CREATE',
+                 'TEST_ADMIN'}
         self.assertEqual(perms, self.perm.expand_actions(['TRAC_ADMIN']))
         self.assertEqual(perms, self.perm.expand_actions(iter(['TRAC_ADMIN'])))
 

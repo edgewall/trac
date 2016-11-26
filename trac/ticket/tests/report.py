@@ -431,8 +431,7 @@ class ExecuteReportTestCase(unittest.TestCase):
                           'new minor'],
                          [r[idx_summary] for r in results])
         idx_color = cols.index('__color__')
-        self.assertEqual(set(('2', '3', '4')),
-                         set(r[idx_color] for r in results))
+        self.assertEqual({'2', '3', '4'}, {r[idx_color] for r in results})
 
     REPORT_2_DATA = """\
         # status    version     priority
@@ -467,11 +466,11 @@ class ExecuteReportTestCase(unittest.TestCase):
                           'new None minor'],
                          [r[idx_summary] for r in results])
         idx_color = cols.index('__color__')
-        self.assertEqual(set(('2', '4')),
-                         set(r[idx_color] for r in results))
+        self.assertEqual({'2', '4'},
+                         {r[idx_color] for r in results})
         idx_group = cols.index('__group__')
-        self.assertEqual(set(('1.0', '2.0', None)),
-                         set(r[idx_group] for r in results))
+        self.assertEqual({'1.0', '2.0', None},
+                         {r[idx_group] for r in results})
 
     REPORT_3_DATA = """\
         # status    milestone   priority
@@ -506,12 +505,11 @@ class ExecuteReportTestCase(unittest.TestCase):
                           'new None minor'],
                          [r[idx_summary] for r in results])
         idx_color = cols.index('__color__')
-        self.assertEqual(set(('3', '4')),
-                         set(r[idx_color] for r in results))
+        self.assertEqual({'3', '4'}, {r[idx_color] for r in results})
         idx_group = cols.index('__group__')
-        self.assertEqual(set(('Milestone milestone1', 'Milestone milestone3',
-                              None)),
-                         set(r[idx_group] for r in results))
+        self.assertEqual(
+            {'Milestone milestone1', 'Milestone milestone3', None},
+            {r[idx_group] for r in results})
 
     REPORT_4_DATA = """\
         # status    owner   priority
@@ -552,11 +550,10 @@ class ExecuteReportTestCase(unittest.TestCase):
                           'accepted john trivial'],
                          [r[idx_summary] for r in results])
         idx_color = cols.index('__color__')
-        self.assertEqual(set(('1', '5')),
-                         set(r[idx_color] for r in results))
+        self.assertEqual({'1', '5'}, {r[idx_color] for r in results})
         idx_group = cols.index('__group__')
-        self.assertEqual(set(('jack', 'john', 'foo')),
-                         set(r[idx_group] for r in results))
+        self.assertEqual({'jack', 'john', 'foo'},
+                         {r[idx_group] for r in results})
         if full_description:
             self.assertNotIn('_description', cols)
             self.assertIn('_description_', cols)
@@ -618,11 +615,10 @@ class ExecuteReportTestCase(unittest.TestCase):
         self.assertEqual(None,
                          results[0][idx_style])  # not closed and not owned
         idx_color = cols.index('__color__')
-        self.assertEqual(set(('2', '5')),
-                         set(r[idx_color] for r in results))
+        self.assertEqual({'2', '5'}, {r[idx_color] for r in results})
         idx_group = cols.index('__group__')
-        self.assertEqual(set(('milestone2', 'milestone4', None)),
-                         set(r[idx_group] for r in results))
+        self.assertEqual({'milestone2', 'milestone4', None},
+                         {r[idx_group] for r in results})
 
     REPORT_7_DATA = """\
         # status    owner   reporter    priority
@@ -661,8 +657,8 @@ class ExecuteReportTestCase(unittest.TestCase):
                           'new foo john trivial'],
                          [r[idx_summary] for r in results])
         idx_group = cols.index('__group__')
-        self.assertEqual(set(('Accepted', 'Owned', 'Reported')),
-                         set(r[idx_group] for r in results))
+        self.assertEqual({'Accepted', 'Owned', 'Reported'},
+                         {r[idx_group] for r in results})
 
         self._save_ticket(tickets[-1], author='john', comment='commented')
         rv = self._execute_report(7, {'USER': 'john'})
@@ -670,8 +666,8 @@ class ExecuteReportTestCase(unittest.TestCase):
 
         self.assertEqual(7, len(results))
         self.assertEqual('new bar foo major', results[-1][idx_summary])
-        self.assertEqual(set(('Accepted', 'Owned', 'Reported', 'Commented')),
-                         set(r[idx_group] for r in results))
+        self.assertEqual({'Accepted', 'Owned', 'Reported', 'Commented'},
+                         {r[idx_group] for r in results})
 
         rv = self._execute_report(7, {'USER': 'blah <blah@example.org>'})
         cols, results, num_items, missing_args, limit_offset = rv
@@ -723,7 +719,7 @@ class ExecuteReportTestCase(unittest.TestCase):
                          [r[idx_summary] for r in results])
         idx_group = cols.index('__group__')
         self.assertEqual(['Active Tickets'],
-                         sorted(set(r[idx_group] for r in results)))
+                         sorted({r[idx_group] for r in results}))
 
     def test_asc_argument_is_invalid(self):
         """Invalid value for `asc` argument is coerced to default."""

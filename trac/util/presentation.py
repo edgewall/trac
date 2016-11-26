@@ -301,7 +301,7 @@ def separated(items, sep=',', last=None):
     yield next, last
 
 
-_js_quote = dict((c, '\\u%04x' % ord(c)) for c in '&<>')
+_js_quote = {c: '\\u%04x' % ord(c) for c in '&<>'}
 _js_quote_re = re.compile('[' + ''.join(_js_quote) + ']')
 
 

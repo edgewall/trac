@@ -360,7 +360,7 @@ class DatabaseManager(Component):
         for new_table in new_schema:
             temp_table_name = new_table.name + '_old'
             old_column_names = set(self.get_column_names(new_table))
-            new_column_names = set(col.name for col in new_table.columns)
+            new_column_names = {col.name for col in new_table.columns}
             cols_to_copy = ','.join(old_column_names & new_column_names)
             with self.env.db_transaction as db:
                 cursor = db.cursor()
@@ -665,7 +665,7 @@ def parse_connection_uri(db_str):
 
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
                (user, password, host, port, path, params))
-    return scheme, dict([(key, value) for key, value in args if value])
+    return scheme, {key: value for key, value in args if value}
 
 
 def _invalid_db_str(db_str):

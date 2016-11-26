@@ -911,8 +911,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(self.env,
                                   'priority_value=baz&priority_value=foo')
         tickets = query.execute()
-        self.assertEqual(set(['foo', 'baz']),
-                         set(t['priority_value'] for t in tickets))
+        self.assertEqual({'foo', 'baz'},
+                         {t['priority_value'] for t in tickets})
         self.assertIn(tickets[0]['_priority_value'],
                       (None, '1', '2', '3', '4', '5'))
 
@@ -1260,12 +1260,12 @@ class QueryLinksTestCase(unittest.TestCase):
         data = self._process_request(
                 'group=status&group=status&order=priority')
         self.assertNotEqual([], data['tickets'])
-        self.assertEqual(set(('new', 'assigned')),
-                         set(t['status'] for t in data['tickets']))
+        self.assertEqual({'new', 'assigned'},
+                         {t['status'] for t in data['tickets']})
         self.assertEqual(2, len(data['tickets']))
         self.assertNotEqual([], data['groups'])
-        self.assertEqual(set(('new', 'assigned')),
-                         set(value for value, tickets in data['groups']))
+        self.assertEqual({'new', 'assigned'},
+                         {value for value, tickets in data['groups']})
         self.assertEqual(2, len(data['groups']))
 
 

@@ -404,8 +404,7 @@ try:
     def _parse_genshi_markup(message):
         from genshi.filters.i18n import parse_msg
         try:
-            return set([idx for idx, text in parse_msg(message)
-                            if idx > 0])
+            return {idx for idx, text in parse_msg(message) if idx > 0}
         except Exception as e:
             raise TranslationError('cannot parse message (%s: %s)' % \
                                    (e.__class__.__name__, unicode(e)))

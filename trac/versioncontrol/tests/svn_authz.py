@@ -58,7 +58,7 @@ bar = rw
 ; Unused module, not parsed
 [unused:/some/path]
 foo = r
-""", set(['', 'module']))
+""", {'', 'module'})
         self.assertEqual({
             '': {
                 '/': {
@@ -90,11 +90,11 @@ user = r
 
 [module:/trunk]
 user = r
-""", set(['', 'module']))
+""", {'', 'module'})
         self.assertRaises(ParseError, parse, """\
 [module:/trunk]
 user
-""", set(['', 'module']))
+""", {'', 'module'})
 
 
 class AuthzSourcePolicyTestCase(unittest.TestCase):
@@ -206,9 +206,8 @@ jane = r
 
         class TestRepositoryManager(rm.__class__):
             def get_real_repositories(self):
-                return set([Mock(reponame='module'),
-                            Mock(reponame='other'),
-                            Mock(reponame='scoped')])
+                return {Mock(reponame='module'), Mock(reponame='other'),
+                        Mock(reponame='scoped')}
 
             def get_repository(self, reponame):
                 if reponame == 'scoped':

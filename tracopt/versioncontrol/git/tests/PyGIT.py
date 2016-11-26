@@ -524,7 +524,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        # check for loops
 #        def check4loops(head):
 #            print("check4loops", head)
-#            seen = set([head])
+#            seen = {head}
 #            for _sha in g.children_recursive(head):
 #                if _sha in seen:
 #                    print("dupe detected :-/", _sha, len(seen))

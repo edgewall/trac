@@ -331,8 +331,8 @@ class ReportModule(Component):
 
         return 'report_list.html', data, None
 
-    _html_cols = set(['__class__', '__style__', '__color__', '__fgcolor__',
-                      '__bgcolor__', '__grouplink__'])
+    _html_cols = {'__class__', '__style__', '__color__', '__fgcolor__',
+                  '__bgcolor__', '__grouplink__'}
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
@@ -635,7 +635,7 @@ class ReportModule(Component):
                         del req.session[var]
             except (ValueError, KeyError):
                 pass
-            if set(data['args']) - set(['USER']):
+            if set(data['args']) - {'USER'}:
                 data['show_args_form'] = True
                 add_script(req, 'common/js/folding.js')
             if missing_args:

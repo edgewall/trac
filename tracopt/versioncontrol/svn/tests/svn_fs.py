@@ -1384,9 +1384,9 @@ class ExternalsPropertyTests(object):
         while True:
             if not unicode(result.select('//li[%d]' % idx)):
                 break
-            items.append(dict((key, unicode(result.select('//li[%d]/a/%s' %
-                                                          (idx, key))))
-                              for key in ('text()', '@href', '@title')))
+            items.append({key: unicode(result.select('//li[%d]/a/%s'
+                                                     % (idx, key)))
+                          for key in ('text()', '@href', '@title')})
             idx += 1
         return items
 

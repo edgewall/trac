@@ -436,8 +436,9 @@ class SessionAdmin(Component):
     def _get_list(self, sids):
         all_anon = 'anonymous' in sids or '*' in sids
         all_auth = 'authenticated' in sids or '*' in sids
-        sids = set(self._split_sid(sid) for sid in sids
-                   if sid not in ('anonymous', 'authenticated', '*'))
+        sids = {self._split_sid(sid)
+                for sid in sids
+                if sid not in ('anonymous', 'authenticated', '*')}
         rows = self.env.db_query("""
             SELECT DISTINCT s.sid, s.authenticated, s.last_visit,
                             n.value, e.value, h.value
