@@ -612,8 +612,10 @@ class TicketModule(Component):
                 comment = req.args.get('edited_comment', '')
                 cnum = int(req.args['cnum_edit'])
                 change = ticket.get_change(cnum)
-                if not (req.authname and req.authname != 'anonymous'
-                        and change and change['author'] == req.authname):
+                if not change:
+                    raise TracError(_('Comment %(num)s not found', num=cnum))
+                if not (req.authname and req.authname != 'anonymous' and
+                        change['author'] == req.authname):
                     req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
                 ticket.modify_comment(change['date'], req.authname, comment)
                 req.redirect(req.href.ticket(ticket.id) + '#comment:%d' % cnum)

@@ -14,6 +14,7 @@
 from datetime import datetime, timedelta
 import unittest
 
+from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
@@ -230,6 +231,16 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertRaises(ResourceNotFound,
                           self.ticket_module.process_request, req)
+
+    def test_edit_comment_cnum_missing_raises(self):
+        id_ = self._insert_ticket()
+        req = MockRequest(
+            self.env, method='POST', path_info='/ticket/%d' % id_,
+            args={'edit_comment': 'Submit changes', 'cnum_edit': '42'})
+        self.assertTrue(self.ticket_module.match_request(req))
+        with self.assertRaises(TracError) as cm:
+            self.ticket_module.process_request(req)
+        self.assertEqual('Comment 42 not found', unicode(cm.exception))
 
     def _test_template_data_for_time_field(self, req, value, expected, format):
         self.env.config.set('ticket-custom', 'timefield', 'time')
