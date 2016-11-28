@@ -95,6 +95,14 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertRaises(ResourceNotFound,
                           self.ticket_module.process_request, req)
 
+    def test_edit_comment_cnum_missing_raises(self):
+        id_ = self._insert_ticket()
+        req = MockRequest(
+            self.env, method='POST', path_info='/ticket/%d' % id_,
+            args={'edit_comment': 'Submit changes', 'cnum_edit': '42'})
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.assertRaises(TracError, self.ticket_module.process_request, req)
+
     def _test_newticket_with_enum_as_custom_field(self, field_name):
         self.env.config.set('ticket-custom', field_name, 'text')
         self.env.config.set('ticket-custom', '%s.label' % field_name,
