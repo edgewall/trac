@@ -16,7 +16,6 @@ import unittest
 from trac.core import ComponentManager
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
-from trac.tests.contentgen import random_sentence
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
@@ -156,7 +155,14 @@ class MilestoneModuleTestCase(unittest.TestCase):
             m = Milestone(self.env)
             m.name = term
             m.due = datetime_now(utc)
-            m.description = random_sentence()
+            m.description = u"""\
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod \
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim \
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea \
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate \
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat \
+cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id \
+est laborum."""
             m.insert()
 
     def tearDown(self):
@@ -196,7 +202,12 @@ class MilestoneModuleTestCase(unittest.TestCase):
         self.assertEqual('Milestone ' + milestone.name, results[0][1])
         self.assertEqual(milestone.due, results[0][2])
         self.assertEqual('', results[0][3])
-        self.assertEqual(milestone.description, results[0][4])
+        shorten_desc = u"""\
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod \
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, \
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo \
+consequat. Duis a ..."""
+        self.assertEqual(shorten_desc, results[0][4])
 
     def test_default_group_by_default(self):
         """Default `default_group_by` is `component`."""
