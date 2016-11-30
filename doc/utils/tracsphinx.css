@@ -16,10 +16,10 @@ div.bodywrapper {
 /* Sidebar */
 
 div.sphinxsidebarwrapper {
-    -moz-box-shadow: 2px 2px 7px 0 grey;
-    -webkit-box-shadow: 2px 2px 7px 0 grey;
-    box-shadow: 2px 2px 7px 0 grey;
-    padding: 0 0 1px .4em;
+    box-shadow: .3em .3em .4em 0 #f2f2f2;
+    border-radius: .5em;
+    border: 1px solid #eee;
+    padding: 0 .5em;
 }
 
 div.sphinxsidebar h3 a,
@@ -107,9 +107,9 @@ div.body h4 a, div.body h5 a, div.body h6 a {
 }
 
 dl.class {
-    -moz-box-shadow: 1px 1px 6px 0 #888;
-    -webkit-box-shadow: 1px 1px 6px 0 #888;
-    box-shadow:  1px 1px 6px 0 #888;
+    box-shadow: .3em .3em .4em 0 #f2f2f2;
+    border-radius: .5em;
+    border: 1px solid #eee;
     padding: .5em;
 }
 dl.function {
