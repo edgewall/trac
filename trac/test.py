@@ -354,6 +354,8 @@ class EnvironmentStub(Environment):
         for name_or_class in disable or ():
             config_key = self._component_name(name_or_class)
             self.config.set('components', config_key, 'disabled')
+        self.config.set('trac', 'permission_policies',
+                        'DefaultPermissionPolicy, LegacyAttachmentPolicy')
 
         # -- logging
         self.log = logging.getLogger('trac.test')
