@@ -89,7 +89,7 @@
         <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="" id="editmilestone">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" value="${_('Edit milestone')}" />
+            <input type="submit" value="${_('Edit milestone')}" accesskey="e" />
           </div>
         </form>
         <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="" id="deletemilestone">
