@@ -1,15 +1,19 @@
-# == Makefile for Trac related tasks (beyond those supported by setuptools) ==
+# == Makefile for Trac related tasks
 #
-# Automating testing, i18n tasks, documentation generation, ... see HELP below
+# Automating testing, l10n tasks, documentation generation, ... see HELP below
 # ----------------------------------------------------------------------------
 #
 # Note about customization:
+#
 #   No changes to the present Makefile should be necessary,
-#   rather copy Makefile.cfg.sample to Makefile.cfg and adapt it
+#   configuration should take place in the Makefile.cfg file.
+#
+#   Copy Makefile.cfg.sample to Makefile.cfg and adapt it
 #   to match your local environment.
 #
 # Note that this is a GNU Makefile, nmake and other abominations are
-# not supported.
+# not supported. On Windows, you can use it from a msys2 shell, like
+# the one that comes part of https://git-for-windows.github.io.
 #
 # ============================================================================
 
@@ -38,131 +42,6 @@ define HELP
 endef 
 # `
 export HELP
-
-define HELP_testing
-
- ---------------- Testing tasks
-
-  unit-test           run unit tests
-  functional-test     run functional tests
-  test-wiki           shortcut for running all wiki unit tests
-  test                run all tests
-  coverage            run all tests, under coverage
-  figleaf             run all tests, under figleaf
-
-  [db=...]            variable for selecting database backend
-  [test=...]          variable for selecting a single test file
-  [testopts=...]      variable containing extra options for running tests
-  [coverageopts=...]  variable containing extra options for coverage
-
-endef
-export HELP_testing
-
-define HELP_code
-
- ---------------- Code checking tasks
-
-  pylint              check code with pylint
-
-endef
-export HELP_code
-
-define HELP_server
-
- ---------------- Standalone test server
-
-  [start-]server      start tracd
-
-  [port=...]          variable for selecting the port
-  [auth=...]          variable for specifying authentication
-  [env=...]           variable for the trac environment or parent dir
-  [tracdopts=...]     variable containing extra options for tracd
-
-endef
-export HELP_server
-
-define HELP_l10n
-
- ---------------- L10N tasks
-
-  init-xy             create catalogs for given xy locale
-
-  extraction          regenerate the catalog templates
-
-  update              update all the catalog files from the templates
-  update-xy           update the catalogs for the xy locale only
-
-  compile             compile all the catalog files
-  compile-xy          compile the catalogs for the xy locale only
-
-  check               verify all the catalog files
-  check-xy            verify the catalogs for the xy locale only
-
-  stats               detailed translation statistics for all catalogs
-  stats-pot           total messages in the catalog templates
-  stats-xy            translated, fuzzy, untranslated for the xy locale only
-
-  summary             display percent translated for all catalogs
-  summary-xy          display percent translated for the xy locale only
-                      (suitable for a commit message)
-
-  diff                show relevant changes after an update for all catalogs
-  diff-xy             show relevant changes after an update for the xy locale
-  [vc=...]            variable containing the version control command to use
-
-  [locale=...]        variable for selecting a set of locales
-
-  [updateopts=...]    variable containing extra options for update (e.g. -N)
-
-endef
-export HELP_l10n
-
-define HELP_doc
-
- ---------------- Documentation tasks
-
-  apidoc|sphinx       generate the Sphinx documentation (all specified formats)
-  apidoc-html         generate the Sphinx documentation in HTML format
-  apidoc-pdf          generate the Sphinx documentation in PDF format
-  apidoc-check        check for missing symbols in Sphinx documentation
-
-  apiref|epydoc       generate the full API reference using Epydoc
-
-  [sphinxformat=...]  list of formats for generated documentation
-  [sphinxopts=...]    variable containing extra options for Sphinx
-  [sphinxopts-html=...] variable containing extra options used for html format
-  [epydocopts=...]    variable containing extra options for Epydoc
-  [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
-endef
-export HELP_doc
-
-define HELP_release
-
- ---------------- Release tasks
-
-  release             release-exe on Windows, release-src otherwise
-  release-src         generates the .tar.gz, .zip and .whl packages
-  release-exe         generates the Windows installers (32- and 64-bits)
-  release-clean       remove the packages
-
-  checksum            MD5 and SHA1 checksums of packages of given version
-  upload              scp the packages of given version to user@lynx:~/dist
-
-  [version=...]       version number, mandatory for checksum and upload
-endef
-export HELP_release
-
-define HELP_misc
- ---------------- Miscellaneous
-
-  start-admin         start trac-admin (on `env')
-  start-python        start the Python interpreter
-
-  [adminopts=...]     variable containing extra options for trac-admin
-
-endef
-# ` (keep emacs font-lock happy)
-export HELP_misc
 
 define HELP_CFG
  It looks like you don't have a Makefile.cfg file yet.
@@ -241,12 +120,48 @@ Makefile: ;
 #
 # ----------------------------------------------------------------------------
 
-
+
 # ----------------------------------------------------------------------------
 #
 # L10N related tasks
 #
 # ----------------------------------------------------------------------------
+
+define HELP_l10n
+
+ ---------------- L10N tasks
+
+  init-xy             create catalogs for given xy locale
+
+  extraction          regenerate the catalog templates
+
+  update              update all the catalog files from the templates
+  update-xy           update the catalogs for the xy locale only
+
+  compile             compile all the catalog files
+  compile-xy          compile the catalogs for the xy locale only
+
+  check               verify all the catalog files
+  check-xy            verify the catalogs for the xy locale only
+
+  stats               detailed translation statistics for all catalogs
+  stats-pot           total messages in the catalog templates
+  stats-xy            translated, fuzzy, untranslated for the xy locale only
+
+  summary             display percent translated for all catalogs
+  summary-xy          display percent translated for the xy locale only
+                      (suitable for a commit message)
+
+  diff                show relevant changes after an update for all catalogs
+  diff-xy             show relevant changes after an update for the xy locale
+  [vc=...]            variable containing the version control command to use
+
+  [locale=...]        variable for selecting a set of locales
+
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
+
+endef
+export HELP_l10n
 
 catalogs = messages messages-js tracini
 
@@ -393,12 +308,58 @@ clean-mo:
 	find trac/locale -name \*.mo -exec rm {} \;
 	find trac/htdocs/js/messages -name \*.js -exec rm {} \;
 
+
+# ----------------------------------------------------------------------------
+#
+# Code checking tasks
+#
+# ----------------------------------------------------------------------------
 
+define HELP_code
+
+ ---------------- Code checking tasks
+
+  pylint              check code with pylint
+
+endef
+export HELP_code
+
+.PHONY: pylint
+
+pylint:
+	pylint \
+	    --include-ids=y --persistent=n --comment=n --init-import=y \
+	    --disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
+	    --disable=F0401 \
+	    --disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
+	    --disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
+	    --disable=C0103,C0111 \
+	    trac tracopt
+
+
 # ----------------------------------------------------------------------------
 #
 # Testing related tasks
 #
 # ----------------------------------------------------------------------------
+
+define HELP_testing
+
+ ---------------- Testing tasks
+
+  unit-test           run unit tests
+  functional-test     run functional tests
+  test-wiki           shortcut for running all wiki unit tests
+  test                run all tests
+  coverage            run all tests, under coverage
+
+  [db=...]            variable for selecting database backend
+  [test=...]          variable for selecting a single test file
+  [testopts=...]      variable containing extra options for running tests
+  [coverageopts=...]  variable containing extra options for coverage
+
+endef
+export HELP_testing
 
 .PHONY: test unit-test functional-test test-wiki
 
@@ -412,24 +373,6 @@ functional-test: Trac.egg-info
 
 test-wiki:
 	python trac/tests/allwiki.py $(testopts)
-
-# ----------------------------------------------------------------------------
-#
-# Code checking tasks
-#
-# ----------------------------------------------------------------------------
-
-.PHONY: pylint
-
-pylint:
-	pylint \
-	    --include-ids=y --persistent=n --comment=n --init-import=y \
-	    --disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
-	    --disable=F0401 \
-	    --disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
-	    --disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
-	    --disable=C0103,C0111 \
-	    trac tracopt
 
 # ----------------------------------------------------------------------------
 #
@@ -470,60 +413,26 @@ show-coverage: htmlcov/index.html
 htmlcov/index.html:
 	coverage html --omit=*/__init__.py
 
-# ----------------------------------------------------------------------------
-#
-# Figleaf based coverage tasks
-#
-# (see http://darcs.idyll.org/~t/projects/figleaf/doc/)
-#
-# ** NOTE: there are still several issues with this **
-#  - as soon as a DocTestSuite is run, figleaf gets confused
-#  - functional-test-figleaf is broken (no .figleaf generated)
-#
-# ----------------------------------------------------------------------------
-
-.PHONY: figleaf clean-figleaf show-figleaf
-
-figleaf: clean-figleaf test-figleaf show-figleaf
-
-clean-figleaf:
-	rm -f .figleaf* *.figleaf
-	rm -fr figleaf
-
-show-figleaf: figleaf/index.html
-
-figleaf/index.html: $(wildcard *.figleaf)
-	figleaf2html \
-	    --output-directory=figleaf \
-	    --exclude-patterns=trac/tests/figleaf-exclude \
-	    *.figleaf
-
-
-.PHONY: test-figleaf  unit-test-figleaf functional-test-figleaf
-
-test-figleaf: unit-test-figleaf functional-test-figleaf
-
-unit-test-figleaf: unit-test.figleaf
-
-functional-test-figleaf: functional-test.figleaf
-
-
-functional-test.figleaf: Trac.egg-info
-	rm -f .figleaf
-	FIGLEAF=figleaf python trac/tests/functional/testcases.py -v
-	@mv .figleaf $(@)
-
-unit-test.figleaf: Trac.egg-info
-	rm -f .figleaf
-	figleaf trac/test.py --skip-functional-tests
-	@mv .figleaf $(@)
-
-
+
 # ----------------------------------------------------------------------------
 #
 # Tracd related tasks
 #
 # ----------------------------------------------------------------------------
+
+define HELP_server
+
+ ---------------- Standalone test server
+
+  [start-]server      start tracd
+
+  [port=...]          variable for selecting the port
+  [auth=...]          variable for specifying authentication
+  [env=...]           variable for the trac environment or parent dir
+  [tracdopts=...]     variable containing extra options for tracd
+
+endef
+export HELP_server
 
 port ?= 8000
 tracdopts ?= -r
@@ -547,6 +456,26 @@ else
 endif
 
 
+
+# ----------------------------------------------------------------------------
+#
+# Miscellaneous tasks
+#
+# ----------------------------------------------------------------------------
+
+define HELP_misc
+ ---------------- Miscellaneous
+
+  start-admin         start trac-admin (on `env')
+  start-python        start the Python interpreter
+
+  [adminopts=...]     variable containing extra options for trac-admin
+
+endef
+# ` (keep emacs font-lock happy)
+export HELP_misc
+
+
 .PHONY: trac-admin start-admin
 
 trac-admin: start-admin
@@ -566,12 +495,31 @@ start-python:
 # (this doesn't seem to be much, but we're taking benefit of the
 # environment setup we're doing below)
 
-
+
 # ----------------------------------------------------------------------------
 #
 # Documentation related tasks
 #
 # ----------------------------------------------------------------------------
+
+define HELP_doc
+
+ ---------------- Documentation tasks
+
+  apidoc|sphinx       generate the Sphinx documentation (all specified formats)
+  apidoc-html         generate the Sphinx documentation in HTML format
+  apidoc-pdf          generate the Sphinx documentation in PDF format
+  apidoc-check        check for missing symbols in Sphinx documentation
+
+  apiref|epydoc       generate the full API reference using Epydoc
+
+  [sphinxformat=...]  list of formats for generated documentation
+  [sphinxopts=...]    variable containing extra options for Sphinx
+  [sphinxopts-html=...] variable containing extra options used for html format
+  [epydocopts=...]    variable containing extra options for Epydoc
+  [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
+endef
+export HELP_doc
 
 .PHONY: apidoc sphinx apidoc-check apiref epydoc clean-doc
 
@@ -610,12 +558,28 @@ build/doc/images:
 clean-doc:
 	rm -fr build/doc
 
-
+
 # ----------------------------------------------------------------------------
 #
 # Release related tasks
 #
 # ----------------------------------------------------------------------------
+
+define HELP_release
+
+ ---------------- Release tasks
+
+  release             release-exe on Windows, release-src otherwise
+  release-src         generates the .tar.gz, .zip and .whl packages
+  release-exe         generates the Windows installers (32- and 64-bits)
+  release-clean       remove the packages
+
+  checksum            MD5 and SHA1 checksums of packages of given version
+  upload              scp the packages of given version to user@lynx:~/dist
+
+  [version=...]       version number, mandatory for checksum and upload
+endef
+export HELP_release
 
 .PHONY: release release-src wheel dist release-exe wininst
 .PHONY: clean-release checksum upload
@@ -697,6 +661,7 @@ else
 endif # user
 
 
+
 # ============================================================================
 #
 # Setup environment variables
