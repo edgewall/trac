@@ -15,12 +15,31 @@
 
 define HELP
 
+ The Trac Makefile is here to help automate development and
+ maintenance tasks.
+
  Please use `make <target>' where <target> is one of:
 
   clean               delete all compiled files
   status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
+
+ As there are many more tasks available, you can ask for specific help:
+
+  help-code           tasks for checking the code style
+  help-testing        tasks and configuration parameters for testing
+  help-server         tasks and configuration for starting tracd
+  help-l10n           tasks and configuration for L10N maintenance
+  help-doc            tasks and configuration for preparing Trac documentation
+  help-release        tasks and configuration for preparing a Trac release
+  help-misc           several other tasks
+ 
+endef 
+# `
+export HELP
+
+define HELP_testing
 
  ---------------- Testing tasks
 
@@ -36,9 +55,19 @@ define HELP
   [testopts=...]      variable containing extra options for running tests
   [coverageopts=...]  variable containing extra options for coverage
 
+endef
+export HELP_testing
+
+define HELP_code
+
  ---------------- Code checking tasks
 
   pylint              check code with pylint
+
+endef
+export HELP_code
+
+define HELP_server
 
  ---------------- Standalone test server
 
@@ -48,6 +77,11 @@ define HELP
   [auth=...]          variable for specifying authentication
   [env=...]           variable for the trac environment or parent dir
   [tracdopts=...]     variable containing extra options for tracd
+
+endef
+export HELP_server
+
+define HELP_l10n
 
  ---------------- L10N tasks
 
@@ -80,6 +114,11 @@ define HELP
 
   [updateopts=...]    variable containing extra options for update (e.g. -N)
 
+endef
+export HELP_l10n
+
+define HELP_doc
+
  ---------------- Documentation tasks
 
   apidoc|sphinx       generate the Sphinx documentation (all specified formats)
@@ -94,6 +133,10 @@ define HELP
   [sphinxopts-html=...] variable containing extra options used for html format
   [epydocopts=...]    variable containing extra options for Epydoc
   [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
+endef
+export HELP_doc
+
+define HELP_release
 
  ---------------- Release tasks
 
@@ -106,7 +149,10 @@ define HELP
   upload              scp the packages of given version to user@lynx:~/dist
 
   [version=...]       version number, mandatory for checksum and upload
+endef
+export HELP_release
 
+define HELP_misc
  ---------------- Miscellaneous
 
   start-admin         start trac-admin (on `env')
@@ -115,9 +161,8 @@ define HELP
   [adminopts=...]     variable containing extra options for trac-admin
 
 endef
-export HELP
-
-# ' (keep emacs font-lock happy)
+# ` (keep emacs font-lock happy)
+export HELP_misc
 
 define HELP_CFG
  It looks like you don't have a Makefile.cfg file yet.
@@ -149,6 +194,8 @@ endif
 help: Makefile.cfg
 	@echo "$$HELP"
 
+help-%: Makefile.cfg
+	@echo "$${HELP_$*}"
 
 Makefile.cfg:
 	@echo "$$HELP_CFG"
