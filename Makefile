@@ -95,6 +95,18 @@ define HELP
   [epydocopts=...]    variable containing extra options for Epydoc
   [dotpath=/.../dot]  path to Graphviz dot program (not used yet)
 
+ ---------------- Release tasks
+
+  release             release-exe on Windows, release-src otherwise
+  release-src         generates the .tar.gz, .zip and .whl packages
+  release-exe         generates the Windows installers (32- and 64-bits)
+  release-clean       remove the packages
+
+  checksum            MD5 and SHA1 checksums of packages of given version
+  upload              scp the packages of given version to user@lynx:~/dist
+
+  [version=...]       version number, mandatory for checksum and upload
+
  ---------------- Miscellaneous
 
   start-admin         start trac-admin (on `env')
@@ -551,6 +563,91 @@ build/doc/images:
 clean-doc:
 	rm -fr build/doc
 
+
+# ----------------------------------------------------------------------------
+#
+# Release related tasks
+#
+# ----------------------------------------------------------------------------
+
+.PHONY: release release-src wheel dist release-exe wininst
+.PHONY: clean-release checksum upload
+
+ifeq "$(OS)" "Windows_NT"
+release: release-exe
+else # !Windows_NT
+release: release-src
+endif # Windows_NT
+
+clean-release:
+ifeq "$(version)" ""
+	$(error "specify version= on the make command-line")
+else
+	@rm $(sdist+wheel) $(wininst)
+endif
+
+user ?= $(or $(USER),$(LOGNAME),$(USERNAME))
+lynx = $(user)@lynx.edgewall.com:/home/$(user)/dist
+SCP ?= scp
+
+release-src: wheel sdist
+
+wheel:
+	@$(PYTHON) setup.py bdist_wheel
+sdist:
+	@$(PYTHON) setup.py sdist --formats=gztar,zip
+
+sdist+wheel = $(sdist_gztar) $(sdist_zip) $(bdist_wheel)
+
+sdist_gztar = dist/Trac-$(version).tar.gz
+sdist_zip = dist/Trac-$(version).zip
+bdist_wheel = dist/Trac-$(version)-py2-none-any.whl
+
+
+ifeq "$(OS)" "Windows_NT"
+release-exe:
+ifdef python.x86
+	make python=x86 wininst
+else
+	$(error "define python.x86 in Makefile.cfg for building $(wininst.x86)")
+endif
+ifdef python.x64
+	make python=x64 wininst
+else
+	$(error "define python.x64 in Makefile.cfg for building $(wininst.x64)")
+endif
+
+wininst = $(wininst.x86) $(wininst.x64)
+
+wininst.x86 = dist/Trac-$(version).win32.exe
+wininst.x64 = dist/Trac-$(version).win-amd64.exe
+
+wininst:
+	@$(PYTHON) setup.py bdist_wininst
+endif # Windows_NT
+
+packages = $(wildcard $(sdist+wheel) $(wininst))
+
+checksum:
+ifeq "$(version)" ""
+	$(error "specify version= on the make command-line")
+else
+	@echo "Packages for Trac-$(version):"
+	@echo
+	@$(if $(packages), \
+	    md5sum $(packages); \
+	    sha1sum $(packages); \
+	, \
+	    echo "No packages found: $(sdist+wheel) $(wininst)" \
+	)
+endif
+
+upload: checksum
+ifeq "$(user)" ""
+	$(error "define user in Makefile.cfg for uploading to lynx")
+else
+	$(if $(packages),$(SCP) $(packages) $(lynx))
+endif # user
 
 
 # ============================================================================
