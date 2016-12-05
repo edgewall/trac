@@ -102,7 +102,7 @@ status:
 Trac.egg-info: status
 	python setup.py egg_info
 
-clean: clean-bytecode clean-figleaf clean-coverage clean-doc
+clean: clean-bytecode clean-coverage clean-doc
 
 clean-bytecode:
 	find . -name \*.py[co] -exec rm {} \;
