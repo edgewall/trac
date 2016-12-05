@@ -15,6 +15,10 @@ python.ap25 = C:/Dev/ActivePython254
 python.26 = C:/Dev/Python261
 python.27 = C:/Dev/Python278
 
+python.x86 = C:/Dev/Python2712x86
+python.x64 = C:/Dev/Python2710x64
+# (mandatory for release-exe)
+
 # And also:
 
 # pythonpath.<key> = <extension to the PYTHONPATH for that installation>
@@ -72,6 +76,13 @@ auth = *,~/tracenvs/htdigest.realm,realm
 # Settings for the documentation
 
 dotpath = /usr/local/bin/dot
+
+# ----------------------------------------------------------------------------
+# Settings for the release
+
+# e.g. PuTTY's scp in Program Files (x86)
+# SCP = C:/PROGRA~2/PuTTY/pscp.exe
+
 
 # ----------------------------------------------------------------------------
 # Custom rules - let your imagination go wild ;-)
