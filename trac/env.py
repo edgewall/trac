@@ -829,7 +829,9 @@ class Environment(Component, ComponentManager):
                     args = (db,)
                 participant.upgrade_environment(*args)
             # Database schema may have changed, so close all connections
-            DatabaseManager(self).shutdown()
+            dbm = DatabaseManager(self)
+            if dbm.connection_uri != 'sqlite::memory:':
+                dbm.shutdown()
         del self.database_version
         return True
 

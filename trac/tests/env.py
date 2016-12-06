@@ -119,6 +119,72 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertTrue(parser.has_option('logging', 'log_format'))
         self.assertEqual('', parser.get('logging', 'log_format'))
 
+    def test_invalid_log_level_raises_exception(self):
+        self.env.config.set('logging', 'log_level', 'invalid')
+        self.env.config.save()
+
+        self.assertEqual('invalid',
+                         self.env.config.get('logging', 'log_level'))
+        self.assertRaises(ConfigurationError, open_environment,
+                          self.env.path, True)
+
+    def test_invalid_log_type_raises_exception(self):
+        self.env.config.set('logging', 'log_type', 'invalid')
+        self.env.config.save()
+
+        self.assertEqual('invalid',
+                         self.env.config.get('logging', 'log_type'))
+        self.assertRaises(ConfigurationError, open_environment,
+                          self.env.path, True)
+
+
+class EnvironmentUpgradeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_multiple_upgrade_participants(self):
+
+        class Participant1(Component):
+            implements(IEnvironmentSetupParticipant)
+            def environment_created(self):
+                pass
+            def environment_needs_upgrade(self, db):
+                return True
+            def upgrade_environment(self, db):
+                insert_value('value1', 1)
+
+        class Participant2(Component):
+            implements(IEnvironmentSetupParticipant)
+            def environment_created(self):
+                pass
+            def environment_needs_upgrade(self, db):
+                return True
+            def upgrade_environment(self, db):
+                insert_value('value2', 2)
+
+        def insert_value(name, value):
+            self.env.db_transaction("""
+                INSERT INTO system (name, value) VALUES (%s, %s)
+                """, (name, value))
+
+        def select_value(name):
+            for value, in self.env.db_query("""
+                    SELECT value FROM system WHERE name=%s
+                    """, (name,)):
+                return value
+
+        self.env.enable_component(Participant1)
+        self.env.enable_component(Participant2)
+
+        self.assertTrue(self.env.needs_upgrade())
+        self.assertTrue(self.env.upgrade())
+        self.assertEqual('1', select_value('value1'))
+        self.assertEqual('2', select_value('value2'))
+
     def test_needs_upgrade_legacy_participant(self):
         """For backward compatibility with plugin, environment_needs_upgrade
         with a `db` argument is deprecated but still allowed."""
@@ -161,24 +227,6 @@ class EnvironmentTestCase(unittest.TestCase):
                          len(self.env.setup_participants))
         self.assertTrue(self.env.needs_upgrade())
         self.assertTrue(self.env.upgrade())
-
-    def test_invalid_log_level_raises_exception(self):
-        self.env.config.set('logging', 'log_level', 'invalid')
-        self.env.config.save()
-
-        self.assertEqual('invalid',
-                         self.env.config.get('logging', 'log_level'))
-        self.assertRaises(ConfigurationError, open_environment,
-                          self.env.path, True)
-
-    def test_invalid_log_type_raises_exception(self):
-        self.env.config.set('logging', 'log_type', 'invalid')
-        self.env.config.save()
-
-        self.assertEqual('invalid',
-                         self.env.config.get('logging', 'log_type'))
-        self.assertRaises(ConfigurationError, open_environment,
-                          self.env.path, True)
 
 
 class KnownUsersTestCase(unittest.TestCase):
@@ -277,6 +325,7 @@ class SystemInfoProviderTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentUpgradeTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
