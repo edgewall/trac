@@ -204,6 +204,54 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
         self.assertEqual(log_file, self.env.log_file_path)
 
 
+class EnvironmentUpgradeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_multiple_upgrade_participants(self):
+
+        class Participant1(Component):
+            implements(IEnvironmentSetupParticipant)
+            def environment_created(self):
+                pass
+            def environment_needs_upgrade(self):
+                return True
+            def upgrade_environment(self):
+                insert_value('value1', 1)
+
+        class Participant2(Component):
+            implements(IEnvironmentSetupParticipant)
+            def environment_created(self):
+                pass
+            def environment_needs_upgrade(self):
+                return True
+            def upgrade_environment(self):
+                insert_value('value2', 2)
+
+        def insert_value(name, value):
+            self.env.db_transaction("""
+                INSERT INTO system (name, value) VALUES (%s, %s)
+                """, (name, value))
+
+        def select_value(name):
+            for value, in self.env.db_query("""
+                    SELECT value FROM system WHERE name=%s
+                    """, (name,)):
+                return value
+
+        self.env.enable_component(Participant1)
+        self.env.enable_component(Participant2)
+
+        self.assertTrue(self.env.needs_upgrade())
+        self.assertTrue(self.env.upgrade())
+        self.assertEqual('1', select_value('value1'))
+        self.assertEqual('2', select_value('value2'))
+
+
 class KnownUsersTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -375,6 +423,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentUpgradeTestCase))
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoTestCase))
