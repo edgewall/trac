@@ -280,9 +280,14 @@ class RequestDispatcher(Component):
                 except RequestDone:
                     raise
                 except Exception, e:
-                    self.log.error("Exception caught while post-processing"
-                                   " request: %s",
-                                   exception_to_unicode(e, traceback=True))
+                    if isinstance(e, TracError):
+                        self.log.warning("Exception caught while"
+                                         " post-processing request: %s",
+                                         exception_to_unicode(e))
+                    else:
+                        self.log.error("Exception caught while post-processing"
+                                       " request: %s",
+                                       exception_to_unicode(e, traceback=True))
                 raise err[0], err[1], err[2]
         except PermissionError, e:
             raise HTTPForbidden(e)
