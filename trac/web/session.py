@@ -492,10 +492,10 @@ class SessionAdmin(Component):
             except Exception:
                 raise AdminCommandError(_("Session '%(sid)s' already exists",
                                           sid=sid))
-            if name is not None:
+            if name:
                 db("INSERT INTO session_attribute VALUES (%s,%s,'name',%s)",
                     (sid, authenticated, name))
-            if email is not None:
+            if email:
                 db("INSERT INTO session_attribute VALUES (%s,%s,'email',%s)",
                     (sid, authenticated, email))
         self.env.invalidate_known_users_cache()
@@ -519,8 +519,9 @@ class SessionAdmin(Component):
                 DELETE FROM session_attribute
                 WHERE sid=%s AND authenticated=%s AND name=%s
                 """, (sid, authenticated, attr))
-            db("INSERT INTO session_attribute VALUES (%s, %s, %s, %s)",
-               (sid, authenticated, attr, val))
+            if val:
+                db("INSERT INTO session_attribute VALUES (%s, %s, %s, %s)",
+                   (sid, authenticated, attr, val))
         self.env.invalidate_known_users_cache()
 
     def _do_delete(self, *sids):
