@@ -58,17 +58,26 @@ def _prep_session_table(env, spread_visits=False):
     all_list = auth_list + anon_list
     return (auth_list, anon_list, all_list)
 
+def get_session_attrs(env, sid):
+    rows = env.db_query("""
+        SELECT a.sid, a.name, a.value
+        FROM session AS s
+        LEFT JOIN session_attribute AS a
+            ON a.sid=s.sid AND a.authenticated=s.authenticated
+        WHERE s.sid=%s
+        """, (sid,))
+    if rows:
+        return dict((row[1], row[2]) for row in rows if row[0])
+    else:
+        return None
+
 def get_session_info(env, sid):
     """:since 1.0: changed `db` input parameter to `env`"""
-    for row in env.db_query("""
-            SELECT DISTINCT s.sid, n.value, e.value FROM session AS s
-            LEFT JOIN session_attribute AS n ON (n.sid=s.sid AND n.name='name')
-            LEFT JOIN session_attribute AS e ON (e.sid=s.sid AND e.name='email')
-            WHERE s.sid=%s
-            """, (sid,)):
-        return row
+    attrs = get_session_attrs(env, sid)
+    if attrs is None:
+        return None, None, None
     else:
-        return (None, None, None)
+        return sid, attrs.get('name'), attrs.get('email')
 
 
 class SessionTestCase(unittest.TestCase):
@@ -564,6 +573,23 @@ class SessionTestCase(unittest.TestCase):
         result = get_session_info(self.env, 'john2')
         self.assertEqual(result, ('john2', 'John2', 'john2@example.org'))
 
+        sess_admin._do_add('alice1', None, 'alice1@example.org')
+        self.assertEqual({'email': 'alice1@example.org'},
+                         get_session_attrs(self.env, 'alice1'))
+        sess_admin._do_add('alice2', '', 'alice2@example.org')
+        self.assertEqual({'email': 'alice2@example.org'},
+                         get_session_attrs(self.env, 'alice2'))
+        sess_admin._do_add('bob1', 'Bob 1', None)
+        self.assertEqual({'name': 'Bob 1'},
+                         get_session_attrs(self.env, 'bob1'))
+        sess_admin._do_add('bob2', 'Bob 2', '')
+        self.assertEqual({'name': 'Bob 2'},
+                         get_session_attrs(self.env, 'bob2'))
+        sess_admin._do_add('charlie1', '', '')
+        self.assertEqual({}, get_session_attrs(self.env, 'charlie1'))
+        sess_admin._do_add('charlie2', None, None)
+        self.assertEqual({}, get_session_attrs(self.env, 'charlie2'))
+
     def test_session_admin_set(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin = SessionAdmin(self.env)
@@ -571,10 +597,16 @@ class SessionTestCase(unittest.TestCase):
                           'foo')
         sess_admin._do_set('name', 'name00', 'john')
         result = get_session_info(self.env, 'name00')
-        self.assertEqual(result, ('name00', 'john', 'val00'))
+        self.assertEqual({'name': 'john', 'email': 'val00'},
+                         get_session_attrs(self.env, 'name00'))
         sess_admin._do_set('email', 'name00', 'john@example.org')
-        result = get_session_info(self.env, 'name00')
-        self.assertEqual(result, ('name00', 'john', 'john@example.org'))
+        self.assertEqual({'name': 'john', 'email': 'john@example.org'},
+                         get_session_attrs(self.env, 'name00'))
+        sess_admin._do_set('name', 'name00', '')
+        self.assertEqual({'email': 'john@example.org'},
+                         get_session_attrs(self.env, 'name00'))
+        sess_admin._do_set('email', 'name00', '')
+        self.assertEqual({}, get_session_attrs(self.env, 'name00'))
 
     def test_session_admin_delete(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)
