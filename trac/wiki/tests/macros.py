@@ -704,11 +704,16 @@ TRACINI_MACRO_TEST_CASES = u"""\
 <p>
 </p><div class="tracini"><h3 id="section-42-section"><code>[section-42]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
-<tr class="odd"><td><code>option2</code></td><td><p>
+<tr class="even" id="section-42-option1-option">\
+<td><a class="tracini-option" href="#section-42-option1-option"><code>option1</code></a></td><td></td>\
+<td class="default"><code>value</code></td></tr>\
+<tr class="odd" id="section-42-option2-option">\
+<td><a class="tracini-option" href="#section-42-option2-option"><code>option2</code></a></td><td><p>
 blah
 </p>
-</td><td class="default"><code>value</code></td></tr><tr class="even"><td><code>option3</code></td><td><p>
+</td><td class="default"><code>value</code></td></tr>\
+<tr class="even" id="section-42-option3-option">\
+<td><a class="tracini-option" href="#section-42-option3-option"><code>option3</code></a></td><td><p>
 Doc for option3
 </p>
 </td><td class="default"><code>value</code></td></tr></tbody></table></div><p>
@@ -721,7 +726,9 @@ Doc for option3
 </p><div class="tracini">\
 <h3 id="section-list-section"><code>[section-list]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
+<tr class="even" id="section-list-option1-option">\
+<td><a class="tracini-option" href="#section-list-option1-option"><code>option1</code></a></td><td></td>\
+<td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -733,11 +740,21 @@ Doc for option3
 </p><div class="tracini">\
 <h3 id="section-def-section"><code>[section-def]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr class="odd"><td><code>option2</code></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr class="even"><td><code>option3</code></td><td></td><td class="default"><code>0</code></td></tr>\
-<tr class="odd"><td><code>option4</code></td><td></td><td class="default"><code>disabled</code></td></tr>\
-<tr class="even"><td><code>option5</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr class="even" id="section-def-option1-option">\
+<td><a class="tracini-option" href="#section-def-option1-option"><code>option1</code></a></td><td>\
+</td><td class="nodefault">(no default)</td></tr>\
+<tr class="odd" id="section-def-option2-option">\
+<td><a class="tracini-option" href="#section-def-option2-option"><code>option2</code></a></td><td></td>\
+<td class="nodefault">(no default)</td></tr>\
+<tr class="even" id="section-def-option3-option">\
+<td><a class="tracini-option" href="#section-def-option3-option"><code>option3</code></a></td><td></td>\
+<td class="default"><code>0</code></td></tr>\
+<tr class="odd" id="section-def-option4-option">\
+<td><a class="tracini-option" href="#section-def-option4-option"><code>option4</code></a></td><td></td>\
+<td class="default"><code>disabled</code></td></tr>\
+<tr class="even" id="section-def-option5-option">\
+<td><a class="tracini-option" href="#section-def-option5-option"><code>option5</code></a></td><td></td>\
+<td class="nodefault">(no default)</td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -749,7 +766,9 @@ Doc for option3
 </p><div class="tracini">\
 <h3 id="section-def-section"><code>[section-def]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option5</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr class="even" id="section-def-option5-option">\
+<td><a class="tracini-option" href="#section-def-option5-option"><code>option5</code></a></td><td></td>\
+<td class="nodefault">(no default)</td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -761,14 +780,19 @@ Doc for option3
 </p><div class="tracini">\
 <h3 id="section-42-section"><code>[section-42]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option2</code></td><td><p>
+<tr class="even" id="section-42-option2-option">\
+<td><a class="tracini-option" href="#section-42-option2-option"><code>option2</code></a></td><td><p>
 blah
 </p>
 </td><td class="default"><code>value</code></td></tr></tbody></table>\
 <h3 id="section-def-section"><code>[section-def]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option2</code></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr class="odd"><td><code>option4</code></td><td></td><td class="default"><code>disabled</code></td></tr>\
+<tr class="even" id="section-def-option2-option">\
+<td><a class="tracini-option" href="#section-def-option2-option"><code>option2</code></a></td><td></td>\
+<td class="nodefault">(no default)</td></tr>\
+<tr class="odd" id="section-def-option4-option">\
+<td><a class="tracini-option" href="#section-def-option4-option"><code>option4</code></a></td><td></td>\
+<td class="default"><code>disabled</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
@@ -780,20 +804,30 @@ blah
 </p><div class="tracini">\
 <h3 id="section-42-section"><code>[section-42]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
-<tr class="odd"><td><code>option3</code></td><td><p>
+<tr class="even" id="section-42-option1-option">\
+<td><a class="tracini-option" href="#section-42-option1-option"><code>option1</code></a></td><td></td>\
+<td class="default"><code>value</code></td></tr>\
+<tr class="odd" id="section-42-option3-option">\
+<td><a class="tracini-option" href="#section-42-option3-option"><code>option3</code></a></td>\
+<td><p>
 Doc for option3
 </p>
 </td><td class="default"><code>value</code></td></tr>\
 </tbody></table>\
 <h3 id="section-def-section"><code>[section-def]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="nodefault">(no default)</td></tr>\
-<tr class="odd"><td><code>option3</code></td><td></td><td class="default"><code>0</code></td></tr>\
+<tr class="even" id="section-def-option1-option">\
+<td><a class="tracini-option" href="#section-def-option1-option"><code>option1</code></a></td><td></td>\
+<td class="nodefault">(no default)</td></tr>\
+<tr class="odd" id="section-def-option3-option">\
+<td><a class="tracini-option" href="#section-def-option3-option"><code>option3</code></a></td><td></td>\
+<td class="default"><code>0</code></td></tr>\
 </tbody></table>\
 <h3 id="section-list-section"><code>[section-list]</code></h3>\
 <table class="wiki"><tbody>\
-<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
+<tr class="even" id="section-list-option1-option">\
+<td><a class="tracini-option" href="#section-list-option1-option"><code>option1</code></a></td><td></td>\
+<td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
 </tbody></table>\
 </div><p>
 </p>
