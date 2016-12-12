@@ -16,6 +16,7 @@
 
 from fnmatch import fnmatchcase
 from itertools import groupby
+import fnmatch
 import inspect
 import io
 import os
@@ -772,32 +773,56 @@ class TracIniMacro(WikiMacroBase):
     _description = cleandoc_(
     """Produce documentation for the Trac configuration file.
 
-    Typically, this will be used in the TracIni page.
-    Optional arguments are a configuration section filter,
+    Typically, this will be used in the TracIni page. The macro accepts
+    two ordered arguments and two named arguments.
+
+    The ordered arguments are a configuration section filter,
     and a configuration option name filter: only the configuration
     options whose section and name start with the filters are output.
+
+    The named arguments can be specified:
+
+     section :: a glob-style filtering on the section names
+     option  :: a glob-style filtering on the option names
     """)
 
     def expand_macro(self, formatter, name, content):
         from trac.config import ConfigSection, Option
-        section_filter = key_filter = ''
+
         args, kw = parse_args(content)
-        if args:
-            section_filter = args.pop(0).strip()
-        if args:
-            key_filter = args.pop(0).strip()
+        filters = {}
+        for name, index in (('section', 0), ('option', 1)):
+            pattern = kw.get(name, '').strip()
+            if pattern:
+                filters[name] = fnmatch.translate(pattern)
+                continue
+            prefix = args[index].strip() if index < len(args) else ''
+            if prefix:
+                filters[name] = re.escape(prefix)
+        has_option_filter = 'option' in filters
+        for name in ('section', 'option'):
+            filters[name] = re.compile(filters[name], re.IGNORECASE).match \
+                            if name in filters \
+                            else lambda v: True
+        section_filter = filters['section']
+        option_filter = filters['option']
 
-        registry = ConfigSection.get_registry(self.compmgr)
-        sections = {name: section.doc
-                    for name, section in registry.iteritems()
-                    if name.startswith(section_filter)}
-
-        registry = Option.get_registry(self.compmgr)
+        section_registry = ConfigSection.get_registry(self.compmgr)
+        option_registry = Option.get_registry(self.compmgr)
         options = {}
-        for (section, key), option in registry.iteritems():
-            if section.startswith(section_filter):
+        for (section, key), option in option_registry.iteritems():
+            if section_filter(section) and option_filter(key):
                 options.setdefault(section, {})[key] = option
-                sections.setdefault(section, '')
+        if not has_option_filter:
+            for section in section_registry:
+                if section_filter(section):
+                    options.setdefault(section, {})
+        for section in options:
+            options[section] = sorted(options[section].itervalues(),
+                                      key=lambda option: option.name)
+        sections = [(section, section_registry[section].doc
+                              if section in section_registry else '')
+                    for section in sorted(options)]
 
         def default_cell(option):
             default = option.default
@@ -807,20 +832,23 @@ class TracIniMacro(WikiMacroBase):
             else:
                 return tag.td(_("(no default)"), class_='nodefault')
 
+        def options_table(options):
+            if options:
+                return tag.table(class_='wiki')(
+                    tag.tbody(
+                        tag.tr(
+                            tag.td(tag.code(option.name)),
+                            tag.td(format_to_html(self.env, formatter.context,
+                                                  option.doc)),
+                            default_cell(option),
+                            class_='odd' if idx % 2 else 'even')
+                     for idx, option in enumerate(options)))
+
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
              format_to_html(self.env, formatter.context, section_doc),
-             tag.table(class_='wiki')(tag.tbody(
-                 tag.tr(tag.td(tag.code(option.name)),
-                        tag.td(format_to_html(self.env, formatter.context,
-                                              option.doc)),
-                        default_cell(option),
-                        class_='odd' if idx % 2 else 'even')
-                 for idx, option in
-                    enumerate(sorted(options.get(section, {}).itervalues(),
-                                     key=lambda o: o.name))
-                 if option.name.startswith(key_filter))))
-            for section, section_doc in sorted(sections.iteritems()))
+             options_table(options.get(section)))
+            for section, section_doc in sections)
 
 
 class KnownMimeTypesMacro(WikiMacroBase):

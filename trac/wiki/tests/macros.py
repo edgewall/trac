@@ -17,7 +17,8 @@ import shutil
 import unittest
 
 from trac.attachment import Attachment
-from trac.config import Option, ListOption, IntOption, BoolOption
+from trac.config import BoolOption, ConfigSection, IntOption, ListOption, \
+                        Option
 from trac.test import locale_en, mkdtemp
 from trac.util.datefmt import datetime_now, format_date, utc
 from trac.wiki.model import WikiPage
@@ -740,11 +741,87 @@ Doc for option3
 </div><p>
 </p>
 ------------------------------
+============================== TracIni, option argument
+[[TracIni(,option5)]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-def-section"><code>[section-def]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option5</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
+============================== TracIni, option named argument
+[[TracIni(option=opt?o*[24])]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-42-section"><code>[section-42]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option2</code></td><td><p>
+blah
+</p>
+</td><td class="default"><code>value</code></td></tr></tbody></table>\
+<h3 id="section-def-section"><code>[section-def]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option2</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr class="odd"><td><code>option4</code></td><td></td><td class="default"><code>disabled</code></td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
+============================== TracIni, section and option named argument
+[[TracIni(section=section-*,option=opt*[13])]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-42-section"><code>[section-42]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>value</code></td></tr>\
+<tr class="odd"><td><code>option3</code></td><td><p>
+Doc for option3
+</p>
+</td><td class="default"><code>value</code></td></tr>\
+</tbody></table>\
+<h3 id="section-def-section"><code>[section-def]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option1</code></td><td></td><td class="nodefault">(no default)</td></tr>\
+<tr class="odd"><td><code>option3</code></td><td></td><td class="default"><code>0</code></td></tr>\
+</tbody></table>\
+<h3 id="section-list-section"><code>[section-list]</code></h3>\
+<table class="wiki"><tbody>\
+<tr class="even"><td><code>option1</code></td><td></td><td class="default"><code>4.2|42|42||0|enabled</code></td></tr>\
+</tbody></table>\
+</div><p>
+</p>
+------------------------------
+============================== TracIni, section with no options
+[[TracIni(section=section-no-options)]]
+------------------------------
+<p>
+</p><div class="tracini">\
+<h3 id="section-no-options-section"><code>[section-no-options]</code></h3>\
+<p>
+No options
+</p>
+</div><p>
+</p>
+------------------------------
+============================== TracIni, ordered arguments don't glob
+[[TracIni(section*,option*)]]
+------------------------------
+<p>
+</p><div class="tracini"></div><p>
+</p>
+------------------------------
 """
 
 def tracini_setup(tc):
-    tc._orig_registry = Option.registry
+    tc._orig_registries = ConfigSection.registry, Option.registry
     class Foo(object):
+        section = (ConfigSection)('section-no-options', doc='No options')
         option_a1 = (Option)('section-42', 'option1', 'value', doc='')
         option_a2 = (Option)('section-42', 'option2', 'value', doc='blah')
         option_a3 = (Option)('section-42', 'option3', 'value',
@@ -760,7 +837,7 @@ def tracini_setup(tc):
         option_d5 = (ListOption)('section-def', 'option5', [])
 
 def tracini_teardown(tc):
-    Option.registry = tc._orig_registry
+    ConfigSection.registry, Option.registry = tc._orig_registries
 
 
 def test_suite():
