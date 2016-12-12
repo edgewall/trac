@@ -832,22 +832,26 @@ class TracIniMacro(WikiMacroBase):
             else:
                 return tag.td(_("(no default)"), class_='nodefault')
 
-        def options_table(options):
+        def options_table(section, options):
             if options:
                 return tag.table(class_='wiki')(
                     tag.tbody(
                         tag.tr(
-                            tag.td(tag.code(option.name)),
+                            tag.td(tag.a(tag.code(option.name),
+                                         class_='tracini-option',
+                                         href='#%s-%s-option' %
+                                              (section, option.name))),
                             tag.td(format_to_html(self.env, formatter.context,
                                                   option.doc)),
                             default_cell(option),
+                            id='%s-%s-option' % (section, option.name),
                             class_='odd' if idx % 2 else 'even')
                      for idx, option in enumerate(options)))
 
         return tag.div(class_='tracini')(
             (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
              format_to_html(self.env, formatter.context, section_doc),
-             options_table(options.get(section)))
+             options_table(section, options.get(section)))
             for section, section_doc in sections)
 
 

@@ -64,6 +64,22 @@ span:target {
  border-radius: .2em;
 }
 
+/* option anchors in TracIni macro */
+.tracini table.wiki tbody tr:target { background: #ffb }
+.tracini .tracini-option { border: none; position: relative }
+.tracini .tracini-option:link:hover, .tracini .tracini-option:visited:hover {
+ background-color: transparent;
+}
+.tracini tr[id]:hover .tracini-option:before {
+ content: "\00b6";
+ position: absolute;
+ display: block;
+ left: -1em;
+ width: 1em;
+ color: #d7d7d7;
+ z-index: 1;
+}
+
 @media screen {
  a.ext-link .icon {
   background: url(../extlink.gif) left center no-repeat;
