@@ -102,9 +102,11 @@ def parse(authz, modules):
     for (module, path), items in sections.iteritems():
         section = authz.setdefault(module, {}).setdefault(path, {})
         for subject, perms in items:
-            for user in resolve(subject, set()):
-                section.setdefault(user, 'r' in perms)  # The first match wins
-
+            readable = 'r' in perms
+            # Ordering isn't significant; any entry could grant permission
+            section.update((user, readable)
+                           for user in resolve(subject, set())
+                           if not section.get(user))
     return authz
 
 
@@ -173,28 +175,42 @@ class AuthzSourcePolicy(Component):
             if modules[0]:
                 modules.append('')
 
+            def check_path_0(spath):
+                sections = [authz.get(module, {}).get(spath)
+                            for module in modules]
+                sections = [section for section in sections if section]
+                denied = False
+                for user in usernames:
+                    for section in sections:
+                        if user in section:
+                            if section[user]:
+                                return True
+                            denied = True
+                            # Don't check section without module name
+                            # because the section with module name defines
+                            # the user's permissions.
+                            break
+                if denied:  # All users has no readable permission.
+                    return False
+
             def check_path(path):
                 path = '/' + join(repos.scope, path)
                 if path != '/':
                     path += '/'
 
                 # Allow access to parent directories of allowed resources
-                if any(section.get(user) is True
-                       for module in modules
-                       for spath, section in authz.get(module, {}).iteritems()
-                       if spath.startswith(path)
-                       for user in usernames):
-                    return True
+                for spath in set(sum((authz.get(module, {}).keys()
+                                      for module in modules), [])):
+                    if spath.startswith(path):
+                        result = check_path_0(spath)
+                        if result is True:
+                            return True
 
                 # Walk from resource up parent directories
                 for spath in parent_iter(path):
-                    for module in modules:
-                        section = authz.get(module, {}).get(spath)
-                        if section:
-                            for user in usernames:
-                                result = section.get(user)
-                                if result is not None:
-                                    return result
+                    result = check_path_0(spath)
+                    if result is not None:
+                        return result
 
             if realm == 'source':
                 return check_path(resource.id)

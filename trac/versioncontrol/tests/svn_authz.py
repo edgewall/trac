@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
+import shutil
 import tempfile
 import unittest
 
@@ -67,7 +68,7 @@ foo = r
                 '/trunk': {
                     'foo': True,
                     'bar': True,
-                    u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': False,
+                    u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
                 '/branches': {
                     'bar': True,
@@ -100,8 +101,8 @@ user
 class AuthzSourcePolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        tmpdir = os.path.realpath(tempfile.gettempdir())
-        self.authz = os.path.join(tmpdir, 'trac-authz')
+        self.tmpdir = tempfile.mkdtemp(prefix='trac-')
+        self.authz = os.path.join(self.tmpdir, 'trac-authz')
         create_file(self.authz, """\
 [groups]
 group1 = user
@@ -196,6 +197,54 @@ user =
 joe = r
 [scoped:/scope/dir2]
 jane = r
+
+# multiple entries
+[/multiple]
+$authenticated = r
+[/multiple/foo]
+joe =
+$authenticated =
+* = r
+[/multiple/bar]
+* =
+john = r
+jane = r
+$anonymous = r
+[/multiple/baz]
+$anonymous = r
+* =
+jane = r
+[module:/multiple/bar]
+joe = r
+john =
+
+# multiple entries with module and parent directory
+[/multiple/1]
+user = r
+@group1 = r
+$authenticated = r
+* = r
+[module:/multiple/1/user]
+user =
+[module:/multiple/1/group]
+@group1 =
+[module:/multiple/1/auth]
+$authenticated =
+[module:/multiple/1/star]
+* =
+[/multiple/2]
+user =
+@group1 =
+$authenticated =
+* =
+[module:/multiple/2/user]
+user = r
+[module:/multiple/2/group]
+@group1 = r
+[module:/multiple/2/auth]
+$authenticated = r
+[module:/multiple/2/star]
+* = r
 """)
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
         self.env.config.set('trac', 'authz_file', self.authz)
@@ -231,7 +280,7 @@ jane = r
 
     def tearDown(self):
         self.env.reset_db()
-        os.remove(self.authz)
+        shutil.rmtree(self.tmpdir)
 
     def assertPathPerm(self, result, user, reponame=None, path=None):
         """Assert that `user` is granted access `result` to `path` within
@@ -319,6 +368,7 @@ unknown = r
         # path, the non-module path can still apply
         self.assertPathPerm(True, 'user', 'module', '/module_c')
         # The module-specific rule takes precedence
+        self.assertPathPerm(True, 'user', '', '/module_d')
         self.assertPathPerm(False, 'user', 'module', '/module_d')
 
     def test_wildcard(self):
@@ -355,8 +405,8 @@ unknown = r
         # '/precedence_b/sub/test':
         self.assertPathPerm(True, 'user', '', '/precedence_b/sub')
         self.assertPathPerm(True, 'user', '', '/precedence_b')
-        # Within a section, the first matching rule applies
-        self.assertPathPerm(False, 'user', '', '/precedence_c')
+        # Ordering isn't significant; any entry could grant permission
+        self.assertPathPerm(True, 'user', '', '/precedence_c')
         self.assertPathPerm(True, 'user', '', '/precedence_d')
 
     def test_aliases(self):
@@ -373,6 +423,63 @@ unknown = r
         self.assertPathPerm(None, 'jane', 'scoped', '/dir1')
         self.assertPathPerm(True, 'jane', 'scoped', '/dir2')
         self.assertPathPerm(True, 'jane', 'scoped', '/')
+
+    def test_multiple_entries(self):
+        self.assertPathPerm(True,  'anonymous', '',       '/multiple/foo')
+        self.assertPathPerm(True,  'joe',       '',       '/multiple/foo')
+        self.assertPathPerm(True,  'anonymous', '',       '/multiple/bar')
+        self.assertPathPerm(False, 'joe',       '',       '/multiple/bar')
+        self.assertPathPerm(True,  'john',      '',       '/multiple/bar')
+        self.assertPathPerm(True,  'anonymous', '',       '/multiple/baz')
+        self.assertPathPerm(True,  'jane',      '',       '/multiple/baz')
+        self.assertPathPerm(False, 'joe',       '',       '/multiple/baz')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/foo')
+        self.assertPathPerm(True,  'joe',       'module', '/multiple/foo')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/bar')
+        self.assertPathPerm(True,  'joe',       'module', '/multiple/bar')
+        self.assertPathPerm(False, 'john',      'module', '/multiple/bar')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/baz')
+        self.assertPathPerm(True,  'jane',      'module', '/multiple/baz')
+        self.assertPathPerm(False, 'joe',       'module', '/multiple/baz')
+
+    def test_multiple_entries_with_module_and_parent_directory(self):
+        self.assertPathPerm(True,  'anonymous', '',       '/multiple/1')
+        self.assertPathPerm(True,  'user',      '',       '/multiple/1')
+        self.assertPathPerm(True,  'someone',   '',       '/multiple/1')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/1')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/1')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/1')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/1/user')
+        self.assertPathPerm(False, 'user',      'module', '/multiple/1/user')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/1/user')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/1/group')
+        self.assertPathPerm(False, 'user',      'module', '/multiple/1/group')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/1/group')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/1/auth')
+        self.assertPathPerm(False, 'user',      'module', '/multiple/1/auth')
+        self.assertPathPerm(False, 'someone',   'module', '/multiple/1/auth')
+        self.assertPathPerm(False, 'anonymous', 'module', '/multiple/1/star')
+        self.assertPathPerm(False, 'user',      'module', '/multiple/1/star')
+        self.assertPathPerm(False, 'someone',   'module', '/multiple/1/star')
+
+        self.assertPathPerm(False, 'anonymous', '',       '/multiple/2')
+        self.assertPathPerm(False, 'user',      '',       '/multiple/2')
+        self.assertPathPerm(False, 'someone',   '',       '/multiple/2')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/2')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/2')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/2')
+        self.assertPathPerm(False, 'anonymous', 'module', '/multiple/2/user')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/2/user')
+        self.assertPathPerm(False, 'someone',   'module', '/multiple/2/user')
+        self.assertPathPerm(False, 'anonymous', 'module', '/multiple/2/group')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/2/group')
+        self.assertPathPerm(False, 'someone',   'module', '/multiple/2/group')
+        self.assertPathPerm(False, 'anonymous', 'module', '/multiple/2/auth')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/2/auth')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/2/auth')
+        self.assertPathPerm(True,  'anonymous', 'module', '/multiple/2/star')
+        self.assertPathPerm(True,  'user',      'module', '/multiple/2/star')
+        self.assertPathPerm(True,  'someone',   'module', '/multiple/2/star')
 
     def test_changesets(self):
         # Changesets are allowed if at least one changed path is allowed, or
