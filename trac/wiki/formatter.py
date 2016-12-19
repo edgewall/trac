@@ -941,7 +941,11 @@ class Formatter(object):
     # Definition Lists
 
     def _definition_formatter(self, match, fullmatch):
-        tmp = '</dd>' if self.in_def_list else '<dl class="wiki">'
+        if self.in_def_list:
+            tmp = '</dd>'
+        else:
+            self.close_paragraph()
+            tmp = '<dl class="wiki">'
         definition = match[:match.find('::')]
         tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.env, self.context,
                                                       definition)

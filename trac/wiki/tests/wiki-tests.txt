@@ -1878,6 +1878,39 @@ complex topic:: multiline
 ------------------------------
 complex topic:: multiline
                  <code>not:: a dl</code>
+============================== Definition list after paragraph
+1st:
+ term:: definition
+2nd:
+ `not:: a`definition
+3rd:
+ term:: definition at last line
+------------------------------
+<p>
+1st:
+</p>
+<dl class="wiki"><dt>term</dt><dd>definition
+</dd></dl>
+<p>
+2nd:
+</p>
+<blockquote>
+<p>
+<code>not:: a</code>definition
+</p>
+</blockquote>
+<p>
+3rd:
+</p>
+<dl class="wiki"><dt>term</dt><dd>definition at last line
+</dd></dl>
+------------------------------
+1st:
+ term:: definition
+2nd:
+ <code>not:: a</code>definition
+3rd:
+ term:: definition at last line
 ============================================================
 
             Tables
@@ -2560,8 +2593,8 @@ A quote
 </blockquote>
 <p>
 A paragraph
-<dl class="wiki"><dt>definition</dt><dd>term
 </p>
+<dl class="wiki"><dt>definition</dt><dd>term
 </dd></dl>
 <blockquote class="citation">
 <blockquote>
@@ -2571,8 +2604,8 @@ A quote
 </blockquote>
 <p>
 A paragraph
-<dl class="wiki"><dt>definition</dt><dd>term
 </p>
+<dl class="wiki"><dt>definition</dt><dd>term
 </dd></dl>
 </blockquote>
 <blockquote class="citation">
@@ -2583,8 +2616,8 @@ A quote
 </blockquote>
 <p>
 A paragraph
-<dl class="wiki"><dt>definition</dt><dd>term
 </p>
+<dl class="wiki"><dt>definition</dt><dd>term
 </dd></dl>
 </blockquote>
 ------------------------------
