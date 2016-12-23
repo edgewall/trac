@@ -43,8 +43,8 @@ COOKIE_KEY = 'trac_session'
 
 class SessionDict(dict):
 
-    def __init__(self):
-        super(SessionDict, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(SessionDict, self).__init__(*args, **kwargs)
         self.authenticated = False
         self.last_visit = 0
         self.sid = None
