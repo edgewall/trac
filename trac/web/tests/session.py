@@ -18,8 +18,8 @@ import unittest
 from trac.admin.api import console_date_format
 from trac.test import EnvironmentStub, MockRequest
 from trac.util.datefmt import format_date, to_datetime
-from trac.web.session import DetachedSession, Session, PURGE_AGE, \
-                             UPDATE_INTERVAL, SessionAdmin
+from trac.web.session import DetachedSession, PURGE_AGE, Session, \
+                             SessionAdmin, SessionDict, UPDATE_INTERVAL
 from trac.core import TracError
 from trac.util.datefmt import time_now
 
@@ -82,6 +82,19 @@ def get_session_info(env, sid):
     else:
         return sid, attrs.get('name'), attrs.get('email'), \
                attrs.get('default_handler')
+
+
+class SessionDictTestCase(unittest.TestCase):
+
+    def test_initializer(self):
+        """`SessionDict` initializer accepts same arguments as `dict`."""
+        session = SessionDict(kwarg1=1, kwarg2='b')
+        self.assertEqual(1, session['kwarg1'])
+        self.assertEqual('b', session['kwarg2'])
+
+        session = SessionDict([('kwarg1', 1), ('kwarg2', 'b')])
+        self.assertEqual(1, session['kwarg1'])
+        self.assertEqual('b', session['kwarg2'])
 
 
 class SessionTestCase(unittest.TestCase):
@@ -746,7 +759,10 @@ class SessionTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(SessionTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SessionDictTestCase))
+    suite.addTest(unittest.makeSuite(SessionTestCase))
+    return suite
 
 
 if __name__ == '__main__':
