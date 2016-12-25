@@ -34,10 +34,10 @@ __all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
 class INotificationDistributor(Interface):
     """Deliver events over some transport (i.e. messaging protocol)."""
 
-    def transports(self):
+    def transports():
         """Return a list of supported transport names."""
 
-    def distribute(self, transport, recipients, event):
+    def distribute(transport, recipients, event):
         """Distribute the notification event.
 
         :param transport: the name of a supported transport
@@ -51,14 +51,14 @@ class INotificationDistributor(Interface):
 class INotificationFormatter(Interface):
     """Convert events into messages appropriate for a given transport."""
 
-    def get_supported_styles(self, transport):
+    def get_supported_styles(transport):
         """Return a list of supported styles.
 
         :param transport: the name of a transport
         :return: a list of tuples (style, realm)
         """
 
-    def format(self, transport, style, event):
+    def format(transport, style, event):
         """Convert the event to an appropriate message.
 
         :param transport: the name of a transport
@@ -107,7 +107,7 @@ class INotificationSubscriber(Interface):
 class IEmailAddressResolver(Interface):
     """Map sessions to email addresses."""
 
-    def get_address_for_session(self, sid, authenticated):
+    def get_address_for_session(sid, authenticated):
         """Map a session id and authenticated flag to an e-mail address.
 
         :param sid: the session id
@@ -117,7 +117,7 @@ class IEmailAddressResolver(Interface):
 
 
 class IEmailDecorator(Interface):
-    def decorate_message(self, event, message, charset):
+    def decorate_message(event, message, charset):
         """Manipulate the message before it is sent on it's way.
 
         :param event: a `NotificationEvent`
@@ -129,7 +129,7 @@ class IEmailDecorator(Interface):
 class IEmailSender(Interface):
     """Extension point interface for components that allow sending e-mail."""
 
-    def send(self, from_addr, recipients, message):
+    def send(from_addr, recipients, message):
         """Send message to recipients."""
 
 
