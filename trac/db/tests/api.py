@@ -460,6 +460,11 @@ class ModifyTableTestCase(unittest.TestCase):
         self.new_schema = copy.deepcopy([self.schema[0], self.schema[2]])
         self.new_schema[0].remove_columns(('col2',))
         self.new_schema[1].columns.append(Column('col4'))
+        self.new_schema.append(
+            Table('table4')[
+                Column('col1'),
+            ]
+        )
 
     def tearDown(self):
         self.dbm.drop_tables(self.schema)

@@ -357,26 +357,31 @@ class DatabaseManager(Component):
 
         :since: version 1.2
         """
+        existing_table_names = self.get_table_names()
         for new_table in new_schema:
             temp_table_name = new_table.name + '_old'
             old_column_names = set(self.get_column_names(new_table))
             new_column_names = {col.name for col in new_table.columns}
             cols_to_copy = ','.join(old_column_names & new_column_names)
             with self.env.db_transaction as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
-                    """ % (temp_table_name, new_table.name))
-                self.drop_tables((new_table,))
+                has_table = new_table.name in existing_table_names
+                if has_table:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
+                        """ % (temp_table_name, new_table.name))
+                    self.drop_tables((new_table,))
                 self.create_tables((new_table,))
-                cursor.execute("""
-                    INSERT INTO %s (%s) SELECT %s FROM %s
-                    """ % (new_table.name, cols_to_copy,
-                           cols_to_copy, temp_table_name))
-                for col in new_table.columns:
-                    if col.auto_increment:
-                        db.update_sequence(cursor, new_table.name, col.name)
-                self.drop_tables((temp_table_name,))
+                if has_table:
+                    cursor.execute("""
+                        INSERT INTO %s (%s) SELECT %s FROM %s
+                        """ % (new_table.name, cols_to_copy,
+                               cols_to_copy, temp_table_name))
+                    for col in new_table.columns:
+                        if col.auto_increment:
+                            db.update_sequence(cursor, new_table.name,
+                                               col.name)
+                    self.drop_tables((temp_table_name,))
 
     def get_connection(self, readonly=False):
         """Get a database connection from the pool.
