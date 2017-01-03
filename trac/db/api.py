@@ -427,18 +427,21 @@ class DatabaseManager(Component):
             temp_table_name = new_table.name + '_old'
             old_column_names = set(self.get_column_names(new_table))
             new_column_names = set(col.name for col in new_table.columns)
-            cols_to_copy = ','.join(old_column_names & new_column_names)
+            column_names = old_column_names & new_column_names
             with self.env.db_transaction as db:
+                cols_to_copy = ','.join(db.quote(name)
+                                        for name in column_names)
                 cursor = db.cursor()
                 cursor.execute("""
                     CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
-                    """ % (temp_table_name, new_table.name))
+                    """ % (db.quote(temp_table_name),
+                           db.quote(new_table.name)))
                 self.drop_tables((new_table,))
                 self.create_tables((new_table,))
                 cursor.execute("""
                     INSERT INTO %s (%s) SELECT %s FROM %s
-                    """ % (new_table.name, cols_to_copy,
-                           cols_to_copy, temp_table_name))
+                    """ % (db.quote(new_table.name), cols_to_copy,
+                           cols_to_copy, db.quote(temp_table_name)))
                 for col in new_table.columns:
                     if col.auto_increment:
                         db.update_sequence(cursor, new_table.name, col.name)
