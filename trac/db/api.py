@@ -423,29 +423,32 @@ class DatabaseManager(Component):
 
         :since: version 1.2
         """
-        for new_table in new_schema:
-            temp_table_name = new_table.name + '_old'
-            old_column_names = set(self.get_column_names(new_table))
-            new_column_names = set(col.name for col in new_table.columns)
-            column_names = old_column_names & new_column_names
-            with self.env.db_transaction as db:
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            for new_table in new_schema:
+                temp_table_name = new_table.name + '_old'
+                old_column_names = set(self.get_column_names(new_table))
+                new_column_names = set(col.name for col in new_table.columns)
+                column_names = old_column_names & new_column_names
                 cols_to_copy = ','.join(db.quote(name)
                                         for name in column_names)
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
-                    """ % (db.quote(temp_table_name),
-                           db.quote(new_table.name)))
+                if cols_to_copy:
+                    cursor.execute("""
+                        CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
+                        """ % (db.quote(temp_table_name),
+                               db.quote(new_table.name)))
                 self.drop_tables((new_table,))
                 self.create_tables((new_table,))
-                cursor.execute("""
-                    INSERT INTO %s (%s) SELECT %s FROM %s
-                    """ % (db.quote(new_table.name), cols_to_copy,
-                           cols_to_copy, db.quote(temp_table_name)))
-                for col in new_table.columns:
-                    if col.auto_increment:
-                        db.update_sequence(cursor, new_table.name, col.name)
-                self.drop_tables((temp_table_name,))
+                if cols_to_copy:
+                    cursor.execute("""
+                        INSERT INTO %s (%s) SELECT %s FROM %s
+                        """ % (db.quote(new_table.name), cols_to_copy,
+                               cols_to_copy, db.quote(temp_table_name)))
+                    for col in new_table.columns:
+                        if col.auto_increment:
+                            db.update_sequence(cursor, new_table.name,
+                                               col.name)
+                    self.drop_tables((temp_table_name,))
 
     def get_connection(self, readonly=False):
         """Get a database connection from the pool.
