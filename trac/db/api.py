@@ -357,25 +357,26 @@ class DatabaseManager(Component):
 
         :since: version 1.2
         """
-        existing_table_names = self.get_table_names()
-        for new_table in new_schema:
-            temp_table_name = new_table.name + '_old'
-            old_column_names = set(self.get_column_names(new_table))
-            new_column_names = {col.name for col in new_table.columns}
-            column_names = old_column_names & new_column_names
-            with self.env.db_transaction as db:
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            existing_table_names = self.get_table_names()
+            for new_table in new_schema:
+                temp_table_name = new_table.name + '_old'
+                old_column_names = set(self.get_column_names(new_table))
+                new_column_names = {col.name for col in new_table.columns}
+                column_names = old_column_names & new_column_names
+                cols_to_copy = ','.join(db.quote(name)
+                                        for name in column_names)
                 has_table = new_table.name in existing_table_names
                 if has_table:
-                    cursor = db.cursor()
-                    cursor.execute("""
-                        CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
-                        """ % (db.quote(temp_table_name),
-                               db.quote(new_table.name)))
+                    if cols_to_copy:
+                        cursor.execute("""
+                            CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
+                            """ % (db.quote(temp_table_name),
+                                   db.quote(new_table.name)))
                     self.drop_tables((new_table,))
                 self.create_tables((new_table,))
-                if has_table:
-                    cols_to_copy = ','.join(db.quote(name)
-                                            for name in column_names)
+                if has_table and cols_to_copy:
                     cursor.execute("""
                         INSERT INTO %s (%s) SELECT %s FROM %s
                         """ % (db.quote(new_table.name), cols_to_copy,

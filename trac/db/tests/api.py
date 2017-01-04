@@ -535,6 +535,19 @@ class ModifyTableTestCase(unittest.TestCase):
         self.assertEqual(('data9', 10, 'data11', None), data[0])
         self.assertEqual(('data12', 13, 'data14', None), data[1])
 
+    def test_upgrade_tables_no_common_columns(self):
+        schema = [
+            Table('table1', key='id')[
+                Column('id', auto_increment=True),
+                Column('name'),
+                Column('value'),
+            ],
+        ]
+        self.dbm.upgrade_tables(schema)
+        self.assertEqual(['id', 'name', 'value'],
+                         self.dbm.get_column_names('table1'))
+        self.assertEqual([], list(self.env.db_query("SELECT * FROM table1")))
+
 
 def test_suite():
     suite = unittest.TestSuite()
