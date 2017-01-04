@@ -64,9 +64,9 @@ class TransactionContextManager(DbContextManager):
     """
 
     def __enter__(self):
-        db = self.dbmgr._transaction_local.wdb # outermost writable db
+        db = self.dbmgr._transaction_local.wdb  # outermost writable db
         if not db:
-            db = self.dbmgr._transaction_local.rdb # reuse wrapped connection
+            db = self.dbmgr._transaction_local.rdb  # reuse wrapped connection
             if db:
                 db = ConnectionWrapper(db.cnx, db.log)
             else:
@@ -91,9 +91,9 @@ class QueryContextManager(DbContextManager):
     """
 
     def __enter__(self):
-        db = self.dbmgr._transaction_local.rdb # outermost readonly db
+        db = self.dbmgr._transaction_local.rdb  # outermost readonly db
         if not db:
-            db = self.dbmgr._transaction_local.wdb # reuse wrapped connection
+            db = self.dbmgr._transaction_local.wdb  # reuse wrapped connection
             if db:
                 db = ConnectionWrapper(db.cnx, db.log, readonly=True)
             else:
@@ -324,7 +324,8 @@ class DatabaseManager(Component):
                                  and row data:
                                  (table1,
                                   (column1, column2),
-                                  ((row1col1, row1col2), (row2col1, row2col2)),
+                                  ((row1col1, row1col2),
+                                   (row2col1, row2col2)),
                                   table2, ...)
                                 or a callable that takes a single parameter
                                 `db` and returns the aforementioned nested
@@ -409,10 +410,12 @@ class DatabaseManager(Component):
                      in the SYSTEM table. Defaults to `database_version`,
                      which contains the database version for Trac.
         """
-        rows = self.env.db_query("""
+        for value, in self.env.db_query("""
                 SELECT value FROM system WHERE name=%s
-                """, (name,))
-        return int(rows[0][0]) if rows else False
+                """, (name,)):
+            return int(value)
+        else:
+            return False
 
     def get_exceptions(self):
         return self.get_connector()[0].get_exceptions()
@@ -428,7 +431,7 @@ class DatabaseManager(Component):
     def get_column_names(self, table):
         """Returns a list of the column names for `table`.
 
-        :param schema: a `Table` object or table name.
+        :param table: a `Table` object or table name.
 
         :since: 1.2
         """
