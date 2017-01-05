@@ -151,6 +151,11 @@ class ConnectionBase(object):
         pass
 
     @abstractmethod
+    def has_table(self, table):
+        """Returns whether the table exists."""
+        pass
+
+    @abstractmethod
     def like(self):
         """Returns a case-insensitive `LIKE` clause."""
         pass
@@ -301,9 +306,13 @@ class DatabaseManager(Component):
 
         :since: version 1.2
         """
+        table_name = table.name if isinstance(table, Table) else table
         with self.env.db_transaction as db:
+            if not db.has_table(table_name):
+                raise self.env.db_exc.OperationalError('Table %s not found' %
+                                                       db.quote(table_name))
             for col in columns:
-                db.drop_column(table, col)
+                db.drop_column(table_name, col)
 
     def drop_tables(self, schema):
         """Drop the specified tables.
@@ -360,24 +369,23 @@ class DatabaseManager(Component):
         """
         with self.env.db_transaction as db:
             cursor = db.cursor()
-            existing_table_names = self.get_table_names()
             for new_table in new_schema:
                 temp_table_name = new_table.name + '_old'
-                old_column_names = set(self.get_column_names(new_table))
-                new_column_names = {col.name for col in new_table.columns}
-                column_names = old_column_names & new_column_names
-                cols_to_copy = ','.join(db.quote(name)
-                                        for name in column_names)
-                has_table = new_table.name in existing_table_names
+                has_table = self.has_table(new_table)
                 if has_table:
-                    if cols_to_copy:
+                    old_column_names = set(self.get_column_names(new_table))
+                    new_column_names = {col.name for col in new_table.columns}
+                    column_names = old_column_names & new_column_names
+                    if column_names:
+                        cols_to_copy = ','.join(db.quote(name)
+                                                for name in column_names)
                         cursor.execute("""
                             CREATE TEMPORARY TABLE %s AS SELECT * FROM %s
                             """ % (db.quote(temp_table_name),
                                    db.quote(new_table.name)))
                     self.drop_tables((new_table,))
                 self.create_tables((new_table,))
-                if has_table and cols_to_copy:
+                if has_table and column_names:
                     cursor.execute("""
                         INSERT INTO %s (%s) SELECT %s FROM %s
                         """ % (db.quote(new_table.name), cols_to_copy,
@@ -437,7 +445,16 @@ class DatabaseManager(Component):
         """
         table_name = table.name if isinstance(table, Table) else table
         with self.env.db_query as db:
+            if not db.has_table(table_name):
+                raise self.env.db_exc.OperationalError('Table %s not found' %
+                                                       db.quote(table_name))
             return db.get_column_names(table_name)
+
+    def has_table(self, table):
+        """Returns whether the table exists."""
+        table_name = table.name if isinstance(table, Table) else table
+        with self.env.db_query as db:
+            return db.has_table(table_name)
 
     def set_database_version(self, version, name='database_version'):
         """Sets the database version in the SYSTEM table.

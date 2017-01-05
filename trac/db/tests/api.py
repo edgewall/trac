@@ -374,6 +374,12 @@ class ConnectionTestCase(unittest.TestCase):
                 self.assertEqual(column_names,
                                  db.get_column_names(table.name))
 
+    def test_get_column_names_non_existent_table(self):
+        with self.assertRaises(self.env.db_exc.OperationalError) as cm:
+            self.dbm.get_column_names('blah')
+        self.assertIn(unicode(cm.exception), ('Table "blah" not found',
+                                              'Table `blah` not found'))
+
 
 class DatabaseManagerTestCase(unittest.TestCase):
 
@@ -409,6 +415,12 @@ class DatabaseManagerTestCase(unittest.TestCase):
         """Get table names for the default database."""
         self.assertEqual(sorted(table.name for table in default_schema),
                          sorted(self.dbm.get_table_names()))
+
+    def test_has_table(self):
+        self.assertIs(True, self.dbm.has_table('system'))
+        self.assertIs(True, self.dbm.has_table('wiki'))
+        self.assertIs(False, self.dbm.has_table('trac'))
+        self.assertIs(False, self.dbm.has_table('blah.blah'))
 
     def test_set_default_database_version(self):
         """Set database version for the default entry named
@@ -467,7 +479,7 @@ class ModifyTableTestCase(unittest.TestCase):
         )
 
     def tearDown(self):
-        self.dbm.drop_tables(self.schema)
+        self.dbm.drop_tables(['table1', 'table2', 'table3', 'table4'])
         self.env.reset_db()
 
     def _insert_data(self):
@@ -505,6 +517,12 @@ class ModifyTableTestCase(unittest.TestCase):
         data = list(self.env.db_query("SELECT * FROM table3"))
         self.assertEqual((10,), data[0])
         self.assertEqual((13,), data[1])
+
+    def test_drop_columns_non_existent_table(self):
+        with self.assertRaises(self.env.db_exc.OperationalError) as cm:
+            self.dbm.drop_columns('blah', ('col1',))
+        self.assertIn(unicode(cm.exception), ('Table "blah" not found',
+                                              'Table `blah` not found'))
 
     def test_upgrade_tables_have_new_schema(self):
         """The upgraded tables have the new schema."""

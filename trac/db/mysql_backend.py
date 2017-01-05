@@ -474,6 +474,13 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             """, (self.schema,))
         return [row[0] for row in rows]
 
+    def has_table(self, table):
+        rows = self.execute("""
+            SELECT EXISTS (SELECT * FROM information_schema.columns
+                           WHERE table_schema=%s AND table_name=%s)
+            """, (self.schema, table))
+        return bool(rows[0][0])
+
     def like(self):
         return "LIKE %%s COLLATE %s_general_ci ESCAPE '/'" % self.charset
 

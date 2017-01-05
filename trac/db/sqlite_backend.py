@@ -393,9 +393,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
             cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
     def get_column_names(self, table):
-        cursor = self.cursor()
-        cursor.execute("PRAGMA table_info(%s)" % self.quote(table))
-        return [row[1] for row in cursor]
+        return [row[1] for row in self._get_table_info(table)]
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
@@ -405,6 +403,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
             SELECT name FROM sqlite_master WHERE type='table'
             """)
         return [row[0] for row in rows]
+
+    def has_table(self, table):
+        return bool(self._get_table_info(table))
 
     def like(self):
         if sqlite_version >= (3, 1, 0):
@@ -439,12 +440,15 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         # http://www.sqlite.org/autoinc.html
         pass
 
+    def _get_table_info(self, table):
+        cursor = self.cursor()
+        cursor.execute("PRAGMA table_info(%s)" % self.quote(table))
+        return list(cursor)
+
     def _get_table_schema(self, table):
         key = None
         items = []
-        cursor = self.cursor()
-        cursor.execute("PRAGMA table_info(%s)" % self.quote(table))
-        for row in cursor:
+        for row in self._get_table_info(table):
             column = row[1]
             type_ = row[2]
             pk = row[5]
@@ -455,6 +459,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
                 auto_increment = False
             items.append(Column(column, type=type_,
                                 auto_increment=auto_increment))
+        cursor = self.cursor()
         cursor.execute("PRAGMA index_list(%s)" % self.quote(table))
         for row in cursor.fetchall():
             index = row[1]
