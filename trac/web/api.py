@@ -965,9 +965,15 @@ class Request(object):
         # Note that mod_wsgi raises an IOError with only a message
         # if the client disconnects
         if 'mod_wsgi.version' in self.environ:
-            return e.args[0] in ('failed to write data',
+            if 'mod_wsgi.version' in self.environ:
+                mod_wsgi_prefix = 'Apache/mod_wsgi '
+                m = e.args[0]
+                if m.startswith(mod_wsgi_prefix):
+                    m = m[len(mod_wsgi_prefix):]
+            return m.startswith(('failed to write response data',
+                                 'failed to write data',
                                  'client connection closed',
-                                 'request data read error')
+                                 'request data read error'))
         return False
 
 __no_apidoc__ = _HTTPException_subclass_names
