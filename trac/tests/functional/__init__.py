@@ -55,7 +55,6 @@ Requirements:
  - lxml for XHTML validation (optional)
 """
 
-import exceptions
 import os
 import shutil
 import signal
