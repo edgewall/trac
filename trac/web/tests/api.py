@@ -667,7 +667,7 @@ class SendErrorTestCase(unittest.TestCase):
     def _send_error(self, admin_trac_url='.', perm=None,
                     error_klass=ValueError):
         self.env.config.set('project', 'admin_trac_url', admin_trac_url)
-        self.assertEquals(admin_trac_url, self.env.project_admin_trac_url)
+        self.assertEqual(admin_trac_url, self.env.project_admin_trac_url)
 
         content = io.BytesIO()
         result = {'status': None, 'headers': []}
@@ -697,7 +697,7 @@ class SendErrorTestCase(unittest.TestCase):
                           data=data)
         content = content.getvalue().decode('utf-8')
         self.assertIn('<!DOCTYPE ', content)
-        self.assertEquals('500', result['status'].split()[0])
+        self.assertEqual('500', result['status'].split()[0])
         self.assertIn(('Content-Type', 'text/html;charset=utf-8'),
                       result['headers'])
         return content

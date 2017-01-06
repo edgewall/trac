@@ -29,17 +29,17 @@ class ToUnicodeTestCase(unittest.TestCase):
     def test_explicit_charset(self):
         uc = to_unicode('\xc3\xa7', 'utf-8')
         self.assertIsInstance(uc, unicode)
-        self.assertEquals(u'\xe7', uc)
+        self.assertEqual(u'\xe7', uc)
 
     def test_explicit_charset_with_replace(self):
         uc = to_unicode('\xc3', 'utf-8')
         self.assertIsInstance(uc, unicode)
-        self.assertEquals(u'\xc3', uc)
+        self.assertEqual(u'\xc3', uc)
 
     def test_implicit_charset(self):
         uc = to_unicode('\xc3\xa7')
         self.assertIsInstance(uc, unicode)
-        self.assertEquals(u'\xe7', uc)
+        self.assertEqual(u'\xe7', uc)
 
     def test_from_exception_using_unicode_args(self):
         u = u'\uB144'

@@ -278,9 +278,9 @@ class ConfigurationTestCase(unittest.TestCase):
 class IntegrationTestCase(BaseTestCase):
 
     def test_repr(self):
-        self.assertEquals('<Configuration None>', repr(Configuration(None)))
+        self.assertEqual('<Configuration None>', repr(Configuration(None)))
         config = self._read()
-        self.assertEquals("<Configuration %r>" % self.filename, repr(config))
+        self.assertEqual("<Configuration %r>" % self.filename, repr(config))
 
     def test_default(self):
         config = self._read()
@@ -346,14 +346,14 @@ class IntegrationTestCase(BaseTestCase):
             option_a = PathOption('a', 'opt1', 'file.ini')
             option_b = PathOption('a', 'opt2', '/somewhere/file.ini')
         self.assertEqual('file.ini', config.get('a', 'opt1'))
-        self.assertNotEquals('file.ini', config.getpath('a', 'opt1'))
+        self.assertNotEqual('file.ini', config.getpath('a', 'opt1'))
         self.assertTrue(os.path.isabs(config.getpath('a', 'opt1')))
         self.assertEqual('/somewhere/file.ini', os.path.splitdrive(
                          config.getpath('a', 'opt2'))[1].replace('\\', '/'))
         self.assertEqual('/none.ini', os.path.splitdrive(
                          config.getpath('a', 'opt3',
                                         '/none.ini'))[1].replace('\\', '/'))
-        self.assertNotEquals('none.ini', config.getpath('a', 'opt3', 'none.ini'))
+        self.assertNotEqual('none.ini', config.getpath('a', 'opt3', 'none.ini'))
 
     def test_read_and_get(self):
         self._write(['[a]', 'option = x'])
