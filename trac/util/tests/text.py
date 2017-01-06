@@ -44,14 +44,14 @@ class ToUnicodeTestCase(unittest.TestCase):
     def test_from_exception_using_unicode_args(self):
         u = u'\uB144'
         try:
-            raise ValueError, '%s is not a number.' % u
+            raise ValueError('%s is not a number.' % u)
         except ValueError as e:
             self.assertEqual(u'\uB144 is not a number.', to_unicode(e))
 
     def test_from_exception_using_str_args(self):
         u = u'Das Ger\xe4t oder die Ressource ist belegt'
         try:
-            raise ValueError, u.encode('utf-8')
+            raise ValueError(u.encode('utf-8'))
         except ValueError as e:
             self.assertEqual(u, to_unicode(e))
 

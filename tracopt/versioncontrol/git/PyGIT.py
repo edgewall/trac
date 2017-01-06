@@ -153,7 +153,7 @@ class GitCore(object):
 
     def __getattr__(self, name):
         if name[0] == '_' or name in ['cat_file_batch', 'log_pipe']:
-            raise AttributeError, name
+            raise AttributeError(name)
         return partial(self.__execute, name.replace('_','-'))
 
     __is_sha_pat = re.compile(r'[0-9A-Fa-f]*$')
