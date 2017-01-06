@@ -75,21 +75,10 @@ class AdminModule(Component):
         if not panels:
             raise HTTPNotFound(_("No administration panels available"))
 
-        def _panel_order(p1, p2):
-            if p1[::2] == ('general', 'basics'):
-                return -1
-            elif p2[::2] == ('general', 'basics'):
-                return 1
-            elif p1[0] == 'general':
-                if p2[0] == 'general':
-                    return cmp(p1[1:], p2[1:])
-                return -1
-            elif p2[0] == 'general':
-                if p1[0] == 'general':
-                    return cmp(p1[1:], p2[1:])
-                return 1
-            return cmp(p1, p2)
-        panels.sort(_panel_order)
+        def _panel_order(panel):
+            items = panel[::2]
+            return items[0] != 'general', items != ('general', 'basics'), items
+        panels.sort(key=_panel_order)
 
         cat_id = req.args.get('cat_id') or panels[0][0]
         panel_id = req.args.get('panel_id')

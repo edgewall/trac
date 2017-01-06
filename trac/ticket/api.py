@@ -430,8 +430,7 @@ class TicketSystem(Component):
                 field['format'] = config.get(name + '.format', 'datetime')
             fields.append(field)
 
-        fields.sort(lambda x, y: cmp((x['order'], x['name']),
-                                     (y['order'], y['name'])))
+        fields.sort(key=lambda f: (f['order'], f['name']))
         return fields
 
     def get_field_synonyms(self):

@@ -759,7 +759,7 @@ class Mimeview(Component):
             qr = renderer.get_quality_ratio(mimetype)
             if qr > 0:
                 candidates.append((qr, renderer))
-        candidates.sort(lambda x, y: cmp(y[0], x[0]))
+        candidates.sort(key=lambda item: -item[0])
 
         # Wrap file-like object so that it can be read multiple times
         if hasattr(content, 'read'):

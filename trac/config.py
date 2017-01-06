@@ -913,15 +913,13 @@ class OrderedExtensionsOption(ListOption):
                          for idx, impl in enumerate(not_found)),
                      option=tag.code("[%s] %s" % (self.section, self.name))))
 
-        def compare(x, y):
-            x, y = x.__class__.__name__, y.__class__.__name__
-            if x not in order:
-                return int(y in order)
-            if y not in order:
-                return -int(x in order)
-            return cmp(order.index(x), order.index(y))
-        components.sort(compare)
-        return components
+        def key(impl):
+            name = impl.__class__.__name__
+            if name in order:
+                return 0, order.index(name)
+            else:
+                return 1, components.index(impl)
+        return sorted(components, key=key)
 
 
 class ConfigurationAdmin(Component):

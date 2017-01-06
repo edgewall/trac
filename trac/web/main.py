@@ -794,7 +794,7 @@ def send_project_index(environ, start_response, parent_dir=None,
             except Exception as e:
                 proj = {'name': env_name, 'description': to_unicode(e)}
             projects.append(proj)
-        projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
+        projects.sort(key=lambda proj: proj['name'].lower())
 
         data['projects'] = projects
 
