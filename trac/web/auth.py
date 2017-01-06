@@ -321,7 +321,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def load(self, filename):
         # FIXME use a logger
         self.hash = {}
-        with open(filename, 'r') as fd:
+        with open(filename) as fd:
             for line in fd:
                 line = line.strip()
                 if not line:
@@ -392,8 +392,8 @@ class DigestAuthentication(PasswordFileAuthentication):
         """
         # FIXME use a logger
         self.hash = {}
-        with open(filename, 'r') as fd:
-            for line in fd.readlines():
+        with open(filename) as fd:
+            for line in fd:
                 line = line.strip()
                 if not line:
                     continue

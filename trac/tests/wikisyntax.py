@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import tempfile
 import unittest
 
@@ -133,11 +134,11 @@ def attachment_setup(tc):
         db("INSERT INTO wiki (name,version) VALUES ('SomePage/SubPage',1)")
         db("INSERT INTO ticket (id) VALUES (123)")
     attachment = Attachment(tc.env, 'ticket', 123)
-    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment.insert('file.txt', io.BytesIO(b''), 0)
     attachment = Attachment(tc.env, 'wiki', 'WikiStart')
-    attachment.insert('file.txt', tempfile.TemporaryFile(), 0)
+    attachment.insert('file.txt', io.BytesIO(b''), 0)
     attachment = Attachment(tc.env, 'wiki', 'SomePage/SubPage')
-    attachment.insert('foo.txt', tempfile.TemporaryFile(), 0)
+    attachment.insert('foo.txt', io.BytesIO(b''), 0)
 
 def attachment_teardown(tc):
     tc.env.reset_db_and_disk()
