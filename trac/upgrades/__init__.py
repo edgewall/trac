@@ -24,5 +24,5 @@ def backup_config_file(env, suffix):
         shutil.copyfile(env.config.filename, backup)
         env.log.info("Saved backup of configuration file in %s", backup)
     except IOError as e:
-        env.log.warn("Couldn't save backup of configuration file (%s)",
-                     exception_to_unicode(e))
+        env.log.warning("Couldn't save backup of configuration file (%s)",
+                        exception_to_unicode(e))

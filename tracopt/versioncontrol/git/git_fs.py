@@ -904,8 +904,8 @@ class GitwebProjectsRepositoryProvider(Component):
             return
 
         if not os.path.exists(self.projects_list):
-            self.log.warn("The [git] projects_list file was not found at "
-                          "'%s'", self.projects_list)
+            self.log.warning("The [git] projects_list file was not found at "
+                             "'%s'", self.projects_list)
             return
 
         with open(self.projects_list, 'r') as fp:

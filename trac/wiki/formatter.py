@@ -228,7 +228,7 @@ class WikiProcessor(object):
             stream = Stream(HTMLParser(io.StringIO(text)))
             return (stream | self._sanitizer).render('xhtml', encoding=None)
         except ParseError as e:
-            self.env.log.warn(e)
+            self.env.log.warning(e)
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
                                     message=escape(e.msg)), line)

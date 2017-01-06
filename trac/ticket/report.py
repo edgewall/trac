@@ -675,9 +675,10 @@ class ReportModule(Component):
                 try:
                     cursor.execute(count_sql, args)
                 except Exception as e:
-                    self.log.warn('Exception caught while executing Report '
-                                  '{%d}: %r, args %r%s', id, count_sql, args,
-                                  exception_to_unicode(e, traceback=True))
+                    self.log.warning('Exception caught while executing '
+                                     'Report {%d}: %r, args %r%s',
+                                     id, count_sql, args,
+                                     exception_to_unicode(e, traceback=True))
                     return e, count_sql
                 num_items = cursor.fetchone()[0]
 
@@ -689,9 +690,10 @@ class ReportModule(Component):
                 try:
                     cursor.execute(colnames_sql, args)
                 except Exception as e:
-                    self.log.warn('Exception caught while executing Report '
-                                  '{%d}: args %r%s', id, colnames_sql, args,
-                                  exception_to_unicode(e, traceback=True))
+                    self.log.warning('Exception caught while executing '
+                                     'Report {%d}: args %r%s',
+                                     id, colnames_sql, args,
+                                     exception_to_unicode(e, traceback=True))
                     return e, colnames_sql
                 cols = get_column_names(cursor)
 
@@ -744,9 +746,9 @@ class ReportModule(Component):
             try:
                 cursor.execute(sql, args)
             except Exception as e:
-                self.log.warn('Exception caught while executing Report {%d}: '
-                              '%r, args %r%s', id, sql, args,
-                              exception_to_unicode(e, traceback=True))
+                self.log.warning('Exception caught while executing Report '
+                                 '{%d}: %r, args %r%s', id, sql, args,
+                                 exception_to_unicode(e, traceback=True))
                 if order_by or limit_offset:
                     add_notice(req, _("Hint: if the report failed due to"
                                       " automatic modification of the ORDER"

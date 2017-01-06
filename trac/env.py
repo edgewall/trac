@@ -674,8 +674,8 @@ class Environment(Component, ComponentManager):
         """Return whether the environment needs to be upgraded."""
         for participant in self.setup_participants:
             if participant.environment_needs_upgrade():
-                self.log.warn("Component %s requires environment upgrade",
-                              participant)
+                self.log.warning("Component %s requires environment upgrade",
+                                 participant)
                 return True
         return False
 
@@ -719,8 +719,8 @@ class Environment(Component, ComponentManager):
     def abs_href(self):
         """The application URL"""
         if not self.base_url:
-            self.log.warn("base_url option not set in configuration, "
-                          "generated links may be incorrect")
+            self.log.warning("base_url option not set in configuration, "
+                             "generated links may be incorrect")
         return Href(self.base_url)
 
 
@@ -761,8 +761,8 @@ class EnvironmentSetup(Component):
                           "settings and their default values: %s",
                           filename)
         except IOError as e:
-            self.log.warn("Couldn't write sample configuration file (%s)", e,
-                          exc_info=True)
+            self.log.warning("Couldn't write sample configuration file (%s)%s",
+                             e, exception_to_unicode(e, traceback=True))
 
 
 env_cache = {}

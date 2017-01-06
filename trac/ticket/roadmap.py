@@ -883,9 +883,10 @@ class MilestoneModule(Component):
         if self._default_retarget_to and \
            not any(self._default_retarget_to == m.name
                    for m in Milestone.select(self.env)):
-            self.log.warn('Milestone "%s" does not exist. Update the '
-                          '"default_retarget_to" option in the [milestone] '
-                          'section of trac.ini', self._default_retarget_to)
+            self.log.warning('Milestone "%s" does not exist. Update the '
+                             '"default_retarget_to" option in the '
+                             '[milestone] section of trac.ini',
+                             self._default_retarget_to)
         return self._default_retarget_to
 
     def _do_delete(self, req, milestone):

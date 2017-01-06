@@ -646,8 +646,8 @@ class RepositoryManager(Component):
             for provider in self.providers:
                 for reponame, info in provider.get_repositories() or []:
                     if reponame in all_repositories:
-                        self.log.warn("Discarding duplicate repository '%s'",
-                                      reponame)
+                        self.log.warning("Discarding duplicate repository "
+                                         "'%s'", reponame)
                     else:
                         info['name'] = reponame
                         if 'id' not in info:
@@ -702,8 +702,8 @@ class RepositoryManager(Component):
             repositories = [r for r in self.get_real_repositories()
                             if r.get_base() == base]
         if not repositories:
-            self.log.warn("Found no repositories matching '%s' base.",
-                          base or reponame)
+            self.log.warning("Found no repositories matching '%s' base.",
+                             base or reponame)
             return [_("Repository '%(repo)s' not found",
                       repo=reponame or _("(default)"))]
 
@@ -718,7 +718,7 @@ class RepositoryManager(Component):
                         old_changeset = repos.sync_changeset(rev)
                     except NoSuchChangeset as e:
                         errors.append(exception_to_unicode(e))
-                        self.log.warn(
+                        self.log.warning(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
                             rev, reponame, event)
@@ -733,7 +733,7 @@ class RepositoryManager(Component):
                         changeset = repos.get_changeset(rev)
                     except NoSuchChangeset as e:
                         errors.append(exception_to_unicode(e))
-                        self.log.warn(
+                        self.log.warning(
                             "No changeset '%s' found in repository '%s'. "
                             "Skipping subscribers for event %s",
                             rev, reponame, event)

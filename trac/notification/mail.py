@@ -337,10 +337,11 @@ class EmailDistributor(Component):
             try:
                 outputs[fmt] = formatter.format(transport, fmt, event)
             except Exception as e:
-                self.log.warn('EmailDistributor caught exception while '
-                              'formatting %s to %s for %s: %s%s',
-                              event.realm, fmt, transport, formatter.__class__,
-                              exception_to_unicode(e, traceback=True))
+                self.log.warning('EmailDistributor caught exception while '
+                                 'formatting %s to %s for %s: %s%s',
+                                 event.realm, fmt, transport,
+                                 formatter.__class__,
+                                 exception_to_unicode(e, traceback=True))
                 failed.append(fmt)
 
         # Fallback to text/plain when formatter is broken
@@ -359,8 +360,9 @@ class EmailDistributor(Component):
                 bcc_addrs = sorted(addrs - always_cc)
                 self._do_send(transport, event, message, cc_addrs, bcc_addrs)
             else:
-                self.log.warn("EmailDistributor cannot send event '%s' as "
-                              "'%s': %s", event.realm, fmt, ', '.join(addrs))
+                self.log.warning("EmailDistributor cannot send event '%s' as "
+                                 "'%s': %s",
+                                 event.realm, fmt, ', '.join(addrs))
 
     def _create_message(self, format, outputs):
         if format not in outputs:

@@ -1367,7 +1367,7 @@ class TicketQueryMacro(WikiMacroBase):
         try:
             tickets = query.execute(req)
         except QueryValueError as e:
-            self.log.warn(e)
+            self.log.warning(e)
             return system_message(_("Error executing TicketQuery macro"), e)
 
         if format == 'table':
