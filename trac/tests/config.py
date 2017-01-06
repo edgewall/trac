@@ -737,12 +737,12 @@ class IntegrationTestCase(BaseTestCase):
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEqual(('option', 'x'), iter(config.options('a')).next())
-        self.assertEqual(('option', 'y'), iter(config.options('b')).next())
-        self.assertRaises(StopIteration, iter(config.options('c')).next)
-        self.assertEqual('option', iter(config['a']).next())
-        self.assertEqual('option', iter(config['b']).next())
-        self.assertRaises(StopIteration, iter(config['c']).next)
+        self.assertEqual(('option', 'x'), next(iter(config.options('a'))))
+        self.assertEqual(('option', 'y'), next(iter(config.options('b'))))
+        self.assertRaises(StopIteration, next, iter(config.options('c')))
+        self.assertEqual('option', next(iter(config['a'])))
+        self.assertEqual('option', next(iter(config['b'])))
+        self.assertRaises(StopIteration, next, iter(config['c']))
 
         class Foo(object):
             option_a = Option('a', 'b', 'c')
@@ -753,10 +753,10 @@ class IntegrationTestCase(BaseTestCase):
     def test_options_unicode(self):
         self._write([u'[ä]', u'öption = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEqual((u'öption', 'x'), iter(config.options(u'ä')).next())
-        self.assertEqual(('option', 'y'), iter(config.options('b')).next())
-        self.assertRaises(StopIteration, iter(config.options('c')).next)
-        self.assertEqual(u'öption', iter(config['ä']).next())
+        self.assertEqual((u'öption', 'x'), next(iter(config.options(u'ä'))))
+        self.assertEqual(('option', 'y'), next(iter(config.options('b'))))
+        self.assertRaises(StopIteration, next, iter(config.options('c')))
+        self.assertEqual(u'öption', next(iter(config['ä'])))
 
         class Foo(object):
             option_a = Option(u'ä', u'öption2', 'c')
@@ -878,21 +878,20 @@ class IntegrationTestCase(BaseTestCase):
         config = self._read()
         config.set_defaults()
         config.save()
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n',            f.next())
-            self.assertEqual('\n',                                   f.next())
-            self.assertEqual('[a]\n',                                f.next())
-            self.assertEqual('blah = Blàh!\n',                       f.next())
-            self.assertEqual('choice = -42\n',                       f.next())
-            self.assertEqual('false = disabled\n',                   f.next())
-            self.assertEqual('list = #cc0|4.2|42|0||enabled|disabled|\n',
-                             f.next())
-            self.assertEqual('list-seps = #cc0,4.2,42,0,,enabled,disabled,\n',
-                             f.next())
-            self.assertEqual('none = \n',                            f.next())
-            self.assertEqual('true = enabled\n',                     f.next())
-            self.assertEqual('\n',                                   f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[a]\n',
+            'blah = Blàh!\n',
+            'choice = -42\n',
+            'false = disabled\n',
+            'list = #cc0|4.2|42|0||enabled|disabled|\n',
+            'list-seps = #cc0,4.2,42,0,,enabled,disabled,\n',
+            'none = \n',
+            'true = enabled\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_unicode_option_with_raw_default(self):
         class Foo(object):
@@ -910,19 +909,19 @@ class IntegrationTestCase(BaseTestCase):
         config = self._read()
         config.set_defaults()
         config.save()
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n',            f.next())
-            self.assertEqual('\n',                                   f.next())
-            self.assertEqual('[résumé]\n',                           f.next())
-            self.assertEqual('bláh = Blàh!\n',                       f.next())
-            self.assertEqual('chöicé = -42\n',                       f.next())
-            self.assertEqual('fálsé = disabled\n',                   f.next())
-            self.assertEqual('liśt = #ccö|4.2|42|0||enabled|disabled|\n',
-                             f.next())
-            self.assertEqual('nöné = \n',                            f.next())
-            self.assertEqual('trüé = enabled\n',                     f.next())
-            self.assertEqual('\n',                                   f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[résumé]\n',
+            'bláh = Blàh!\n',
+            'chöicé = -42\n',
+            'fálsé = disabled\n',
+            'liśt = #ccö|4.2|42|0||enabled|disabled|\n',
+            'nöné = \n',
+            'trüé = enabled\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_option_with_non_normal_default(self):
         class Foo(object):
@@ -1000,41 +999,35 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
         config = self._read()
         config.set_defaults(component='trac.tests.conf')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        self.assertEqual(['# -*- coding: utf-8 -*-\n', '\n'],
+                         readlines(self.filename))
 
     def test_component_class_no_match(self):
         """No defaults written if module doesn't match."""
         config = self._read()
         config.set_defaults(component='trac.tests.conf.CompC')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        self.assertEqual(['# -*- coding: utf-8 -*-\n', '\n'],
+                         readlines(self.filename))
 
     def test_component_module_match(self):
         """Defaults of components in matching module are written."""
         config = self._read()
         config.set_defaults(component='trac.tests.config')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt1 = 1\n',                f.next())
-            self.assertEqual('opt2 = a\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compb]\n',                 f.next())
-            self.assertEqual('opt3 = 2\n',                f.next())
-            self.assertEqual('opt4 = b\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt1 = 1\n',
+            'opt2 = a\n',
+            '\n',
+            '[compb]\n',
+            'opt3 = 2\n',
+            'opt4 = b\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_component_module_wildcard_match(self):
         """Defaults of components in matching module are written.
@@ -1043,34 +1036,34 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
         config = self._read()
         config.set_defaults(component='trac.tests.config.*')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt1 = 1\n',                f.next())
-            self.assertEqual('opt2 = a\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compb]\n',                 f.next())
-            self.assertEqual('opt3 = 2\n',                f.next())
-            self.assertEqual('opt4 = b\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt1 = 1\n',
+            'opt2 = a\n',
+            '\n',
+            '[compb]\n',
+            'opt3 = 2\n',
+            'opt4 = b\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_component_class_match(self):
         """Defaults of matching component are written."""
         config = self._read()
         config.set_defaults(component='trac.tests.config.CompA')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt1 = 1\n',                f.next())
-            self.assertEqual('opt2 = a\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt1 = 1\n',
+            'opt2 = a\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_component_no_overwrite(self):
         """Values in configuration are not overwritten."""
@@ -1079,15 +1072,15 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
         config.save()
         config.set_defaults(component='trac.tests.config.CompA')
         config.save()
-
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt1 = 3\n',                f.next())
-            self.assertEqual('opt2 = a\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt1 = 3\n',
+            'opt2 = a\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
     def test_component_no_overwrite_parent(self):
         """Values in parent configuration are not overwritten."""
@@ -1101,24 +1094,26 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
         config.set_defaults(component='trac.tests.config.CompA')
         config.save()
 
-        with open(self.sitename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt1 = 3\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt1 = 3\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.sitename))
 
-        with open(self.filename, 'r') as f:
-            self.assertEqual('# -*- coding: utf-8 -*-\n', f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[compa]\n',                 f.next())
-            self.assertEqual('opt2 = a\n',                f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertEqual('[inherit]\n',               f.next())
-            self.assertEqual('file = trac-site.ini\n',    f.next())
-            self.assertEqual('\n',                        f.next())
-            self.assertRaises(StopIteration, f.next)
+        expected = [
+            '# -*- coding: utf-8 -*-\n',
+            '\n',
+            '[compa]\n',
+            'opt2 = a\n',
+            '\n',
+            '[inherit]\n',
+            'file = trac-site.ini\n',
+            '\n',
+        ]
+        self.assertEqual(expected, readlines(self.filename))
 
 
 class OptionDocTestCase(BaseTestCase):

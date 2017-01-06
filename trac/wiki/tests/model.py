@@ -254,8 +254,8 @@ class WikiPageTestCase(unittest.TestCase):
             """, ('PageRenamed',)))
 
         attachments = Attachment.select(self.env, 'wiki', 'PageRenamed')
-        self.assertEqual('foo.txt', attachments.next().filename)
-        self.assertRaises(StopIteration, attachments.next)
+        self.assertEqual('foo.txt', next(attachments).filename)
+        self.assertRaises(StopIteration, next, attachments)
         Attachment.delete_all(self.env, 'wiki', 'PageRenamed')
 
         old_page = WikiPage(self.env, 'TestPage')

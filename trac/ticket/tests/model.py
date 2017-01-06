@@ -1121,7 +1121,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual(False, milestone.exists)
 
         attachments = Attachment.select(self.env, 'milestone', milestone.name)
-        self.assertRaises(StopIteration, attachments.next)
+        self.assertRaises(StopIteration, next, attachments)
 
     def test_delete_milestone_retarget_tickets(self):
         self.env.db_transaction.executemany(
@@ -1182,10 +1182,10 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual('NewName', Milestone(self.env, 'NewName').name)
 
         attachments = Attachment.select(self.env, 'milestone', 'OldName')
-        self.assertRaises(StopIteration, attachments.next)
+        self.assertRaises(StopIteration, next, attachments)
         attachments = Attachment.select(self.env, 'milestone', 'NewName')
-        self.assertEqual('foo.txt', attachments.next().filename)
-        self.assertRaises(StopIteration, attachments.next)
+        self.assertEqual('foo.txt', next(attachments).filename)
+        self.assertRaises(StopIteration, next, attachments)
 
     def test_rename_milestone_retarget_tickets(self):
         self.env.db_transaction("INSERT INTO milestone (name) VALUES ('Test')")

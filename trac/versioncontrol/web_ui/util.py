@@ -120,7 +120,7 @@ def make_log_graph(repos, revs):
             thread.append([1, column, line])
 
     try:
-        next_rev = revs.next()
+        next_rev = next(revs)
         line = 0
         active = []
         active_thread = []
@@ -136,18 +136,18 @@ def make_log_graph(repos, revs):
             column = active.index(rev)
             vertices.append((column, threads.index(active_thread[column])))
 
-            next_rev = revs.next()  # Raises StopIteration when no more revs
-            next = active[:]
+            next_rev = next(revs)  # Raises StopIteration when no more revs
+            next_revs = active[:]
             parents = list(repos.parent_revs(rev))
 
             # Replace current item with parents not already present
             new_parents = [p for p in parents if p not in active]
-            next[column:column + 1] = new_parents
+            next_revs[column:column + 1] = new_parents
 
             # Add edges to parents
             for col, (r, thread) in enumerate(izip(active, active_thread)):
-                if r in next:
-                    add_edge(thread, next.index(r), line + 1)
+                if r in next_revs:
+                    add_edge(thread, next_revs.index(r), line + 1)
                 elif r == rev:
                     if new_parents:
                         parents.remove(new_parents[0])
@@ -155,7 +155,7 @@ def make_log_graph(repos, revs):
                     for parent in parents:
                         if parent != parents[0]:
                             thread.append([0, col, line])
-                        add_edge(thread, next.index(parent), line + 1)
+                        add_edge(thread, next_revs.index(parent), line + 1)
 
             if not new_parents:
                 del active_thread[column]
@@ -165,7 +165,7 @@ def make_log_graph(repos, revs):
                                for i in xrange(len(new_parents) - 1))
                 active_thread[column + 1:column + 1] = threads[base:]
 
-            active = next
+            active = next_revs
             line += 1
     except StopIteration:
         pass

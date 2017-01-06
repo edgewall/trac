@@ -229,11 +229,13 @@ class InputStream(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         r = self.readline()
         if not r:
             raise StopIteration
         return r
+
+    next = __next__
 
     def add_data(self, data):
         if not data:

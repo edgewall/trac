@@ -172,7 +172,7 @@ class GitCachedChangeset(CachedChangeset):
 def _last_iterable(iterable):
     """helper for detecting last iteration in for-loop"""
     i = iter(iterable)
-    v = i.next()
+    v = next(i)
     for nextv in i:
         yield False, v
         v = nextv

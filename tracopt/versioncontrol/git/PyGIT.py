@@ -939,7 +939,7 @@ class Storage(object):
                 return change[path]
             except KeyError:
                 next_path[:] = [path]
-                return gen.next()
+                return next(gen)
 
         try:
             yield historian

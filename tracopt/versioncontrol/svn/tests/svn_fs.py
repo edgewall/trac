@@ -266,18 +266,18 @@ class NormalTests(object):
     def test_get_dir_entries(self):
         node = self.repos.get_node(u'/tête')
         entries = node.get_entries()
-        self.assertEqual('dir1', entries.next().name)
-        self.assertEqual('mpp_proc', entries.next().name)
-        self.assertEqual('v2', entries.next().name)
-        self.assertEqual('README3.txt', entries.next().name)
-        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
-        self.assertEqual('README.txt', entries.next().name)
-        self.assertRaises(StopIteration, entries.next)
+        self.assertEqual('dir1', next(entries).name)
+        self.assertEqual('mpp_proc', next(entries).name)
+        self.assertEqual('v2', next(entries).name)
+        self.assertEqual('README3.txt', next(entries).name)
+        self.assertEqual(u'R\xe9sum\xe9.txt', next(entries).name)
+        self.assertEqual('README.txt', next(entries).name)
+        self.assertRaises(StopIteration, next, entries)
 
     def test_get_file_entries(self):
         node = self.repos.get_node(u'/tête/README.txt')
         entries = node.get_entries()
-        self.assertRaises(StopIteration, entries.next)
+        self.assertRaises(StopIteration, next, entries)
 
     def test_get_dir_content(self):
         node = self.repos.get_node(u'/tête')
@@ -572,26 +572,26 @@ En r\xe9sum\xe9 ... \xe7a marche.
     def test_get_node_history(self):
         node = self.repos.get_node(u'/tête/README3.txt')
         history = node.get_history()
-        self.assertEqual((u'tête/README3.txt', 14, 'copy'), history.next())
-        self.assertEqual((u'tête/README2.txt', 6, 'copy'), history.next())
-        self.assertEqual((u'tête/README.txt', 3, 'edit'), history.next())
-        self.assertEqual((u'tête/README.txt', 2, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual((u'tête/README3.txt', 14, 'copy'), next(history))
+        self.assertEqual((u'tête/README2.txt', 6, 'copy'), next(history))
+        self.assertEqual((u'tête/README.txt', 3, 'edit'), next(history))
+        self.assertEqual((u'tête/README.txt', 2, 'add'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_node_history_limit(self):
         node = self.repos.get_node(u'/tête/README3.txt')
         history = node.get_history(2)
-        self.assertEqual((u'tête/README3.txt', 14, 'copy'), history.next())
-        self.assertEqual((u'tête/README2.txt', 6, 'copy'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual((u'tête/README3.txt', 14, 'copy'), next(history))
+        self.assertEqual((u'tête/README2.txt', 6, 'copy'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_node_history_follow_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
-        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
-        self.assertEqual((u'tête/README.txt', 3, 'edit'), history.next())
-        self.assertEqual((u'tête/README.txt', 2, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), next(history))
+        self.assertEqual((u'tête/README.txt', 3, 'edit'), next(history))
+        self.assertEqual((u'tête/README.txt', 2, 'add'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_copy_ancestry(self):
         node = self.repos.get_node('/tags/v1/README.txt')
@@ -637,26 +637,26 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
     def test_get_path_history(self):
         history = self.repos.get_path_history(u'/tête/README2.txt', None)
-        self.assertEqual((u'tête/README2.txt', 14, 'delete'), history.next())
-        self.assertEqual((u'tête/README2.txt', 6, 'copy'), history.next())
-        self.assertEqual((u'tête/README.txt', 3, 'unknown'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual((u'tête/README2.txt', 14, 'delete'), next(history))
+        self.assertEqual((u'tête/README2.txt', 6, 'copy'), next(history))
+        self.assertEqual((u'tête/README.txt', 3, 'unknown'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_path_history_copied_file(self):
         history = self.repos.get_path_history('/tags/v1/README.txt', None)
-        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), history.next())
-        self.assertEqual((u'tête/README.txt', 3, 'unknown'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('tags/v1/README.txt', 7, 'copy'), next(history))
+        self.assertEqual((u'tête/README.txt', 3, 'unknown'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_path_history_copied_dir(self):
         history = self.repos.get_path_history('/branches/v1x', None)
-        self.assertEqual(('branches/v1x', 12, 'copy'), history.next())
-        self.assertEqual(('tags/v1.1', 10, 'unknown'), history.next())
-        self.assertEqual(('branches/v1x', 11, 'delete'), history.next())
-        self.assertEqual(('branches/v1x', 9, 'edit'), history.next())
-        self.assertEqual(('branches/v1x', 8, 'copy'), history.next())
-        self.assertEqual(('tags/v1', 7, 'unknown'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('branches/v1x', 12, 'copy'), next(history))
+        self.assertEqual(('tags/v1.1', 10, 'unknown'), next(history))
+        self.assertEqual(('branches/v1x', 11, 'delete'), next(history))
+        self.assertEqual(('branches/v1x', 9, 'edit'), next(history))
+        self.assertEqual(('branches/v1x', 8, 'copy'), next(history))
+        self.assertEqual(('tags/v1', 7, 'unknown'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     # Diffs
 
@@ -674,53 +674,53 @@ En r\xe9sum\xe9 ... \xe7a marche.
                                        u'tête/README.txt', 3)
         self._cmp_diff(((u'tête/README.txt', 2),
                         (u'tête/README.txt', 3),
-                        (Node.FILE, Changeset.EDIT)), diffs.next())
-        self.assertRaises(StopIteration, diffs.next)
+                        (Node.FILE, Changeset.EDIT)), next(diffs))
+        self.assertRaises(StopIteration, next, diffs)
 
     def test_diff_file_different_files(self):
         diffs = self.repos.get_changes('branches/v1x/README.txt', 12,
                                        'branches/v1x/README2.txt', 12)
         self._cmp_diff((('branches/v1x/README.txt', 12),
                         ('branches/v1x/README2.txt', 12),
-                        (Node.FILE, Changeset.EDIT)), diffs.next())
-        self.assertRaises(StopIteration, diffs.next)
+                        (Node.FILE, Changeset.EDIT)), next(diffs))
+        self.assertRaises(StopIteration, next, diffs)
 
     def test_diff_file_no_change(self):
         diffs = self.repos.get_changes(u'tête/README.txt', 7,
                                        'tags/v1/README.txt', 7)
-        self.assertRaises(StopIteration, diffs.next)
+        self.assertRaises(StopIteration, next, diffs)
 
     def test_diff_dir_different_revs(self):
         diffs = self.repos.get_changes(u'tête', 4, u'tête', 8)
         self._cmp_diff((None, (u'tête/README2.txt', 8),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
+                        (Node.FILE, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, (u'tête/dir1/dir2', 8),
-                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+                        (Node.DIRECTORY, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, (u'tête/dir1/dir3', 8),
-                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+                        (Node.DIRECTORY, Changeset.ADD)), next(diffs))
         self._cmp_diff(((u'tête/dir2', 4), None,
-                        (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
+                        (Node.DIRECTORY, Changeset.DELETE)), next(diffs))
         self._cmp_diff(((u'tête/dir3', 4), None,
-                        (Node.DIRECTORY, Changeset.DELETE)), diffs.next())
-        self.assertRaises(StopIteration, diffs.next)
+                        (Node.DIRECTORY, Changeset.DELETE)), next(diffs))
+        self.assertRaises(StopIteration, next, diffs)
 
     def test_diff_dir_different_dirs(self):
         diffs = self.repos.get_changes(u'tête', 1, 'branches/v1x', 12)
         self._cmp_diff((None, ('branches/v1x/README.txt', 12),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
+                        (Node.FILE, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, ('branches/v1x/README2.txt', 12),
-                        (Node.FILE, Changeset.ADD)), diffs.next())
+                        (Node.FILE, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, ('branches/v1x/dir1', 12),
-                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+                        (Node.DIRECTORY, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, ('branches/v1x/dir1/dir2', 12),
-                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
+                        (Node.DIRECTORY, Changeset.ADD)), next(diffs))
         self._cmp_diff((None, ('branches/v1x/dir1/dir3', 12),
-                        (Node.DIRECTORY, Changeset.ADD)), diffs.next())
-        self.assertRaises(StopIteration, diffs.next)
+                        (Node.DIRECTORY, Changeset.ADD)), next(diffs))
+        self.assertRaises(StopIteration, next, diffs)
 
     def test_diff_dir_no_change(self):
         diffs = self.repos.get_changes(u'tête', 7, 'tags/v1', 7)
-        self.assertRaises(StopIteration, diffs.next)
+        self.assertRaises(StopIteration, next, diffs)
 
     # Changesets
 
@@ -731,7 +731,7 @@ En r\xe9sum\xe9 ... \xe7a marche.
         self.assertEqual('', chgset.author)
         self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc),
                          chgset.date)
-        self.assertRaises(StopIteration, chgset.get_changes().next)
+        self.assertRaises(StopIteration, next, chgset.get_changes())
 
     def test_changeset_added_dirs(self):
         chgset = self.repos.get_changeset(1)
@@ -743,12 +743,12 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
         changes = chgset.get_changes()
         self.assertEqual(('branches', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('tags', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
+                         next(changes))
         self.assertEqual((u'tête', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_file_edit(self):
         chgset = self.repos.get_changeset(3)
@@ -760,8 +760,8 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/README.txt', Node.FILE, Changeset.EDIT,
-                          u'tête/README.txt', 2), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          u'tête/README.txt', 2), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_dir_moves(self):
         chgset = self.repos.get_changeset(5)
@@ -773,10 +773,10 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/dir1/dir2', Node.DIRECTORY, Changeset.MOVE,
-                          u'tête/dir2', 4), changes.next())
+                          u'tête/dir2', 4), next(changes))
         self.assertEqual((u'tête/dir1/dir3', Node.DIRECTORY, Changeset.MOVE,
-                          u'tête/dir3', 4), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          u'tête/dir3', 4), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_file_copy(self):
         chgset = self.repos.get_changeset(6)
@@ -788,8 +788,8 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/README2.txt', Node.FILE, Changeset.COPY,
-                          u'tête/README.txt', 3), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          u'tête/README.txt', 3), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_root_propset(self):
         chgset = self.repos.get_changeset(13)
@@ -798,10 +798,10 @@ En r\xe9sum\xe9 ... \xe7a marche.
                          chgset.message)
         changes = chgset.get_changes()
         self.assertEqual(('/', Node.DIRECTORY, Changeset.EDIT, '/', 12),
-                         changes.next())
+                         next(changes))
         self.assertEqual((u'tête', Node.DIRECTORY, Changeset.EDIT, u'tête', 6),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_base_path_rev(self):
         chgset = self.repos.get_changeset(9)
@@ -809,8 +809,8 @@ En r\xe9sum\xe9 ... \xe7a marche.
         changes = chgset.get_changes()
         self.assertEqual(('branches/v1x/README.txt', Node.FILE,
                           Changeset.EDIT, u'tête/README.txt', 3),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_rename_and_edit(self):
         chgset = self.repos.get_changeset(14)
@@ -818,8 +818,8 @@ En r\xe9sum\xe9 ... \xe7a marche.
         changes = chgset.get_changes()
         self.assertEqual((u'tête/README3.txt', Node.FILE,
                           Changeset.MOVE, u'tête/README2.txt', 13),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_edit_after_wc2wc_copy__original_deleted(self):
         chgset = self.repos.get_changeset(16)
@@ -827,11 +827,11 @@ En r\xe9sum\xe9 ... \xe7a marche.
         changes = chgset.get_changes()
         self.assertEqual(('branches/v2', Node.DIRECTORY, Changeset.COPY,
                           'tags/v1.1', 14),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('branches/v2/README2.txt', Node.FILE,
                           Changeset.EDIT, u'tête/README2.txt', 6),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_fancy_rename_double_delete(self):
         chgset = self.repos.get_changeset(19)
@@ -839,19 +839,19 @@ En r\xe9sum\xe9 ... \xe7a marche.
         changes = chgset.get_changes()
         self.assertEqual((u'tête/mpp_proc', Node.DIRECTORY,
                           Changeset.MOVE, u'tête/Xprimary_proc', 18),
-                         changes.next())
+                         next(changes))
         self.assertEqual((u'tête/mpp_proc/Xprimary_pkg.vhd',
                           Node.FILE, Changeset.DELETE,
                           u'tête/Xprimary_proc/Xprimary_pkg.vhd', 18),
-                         changes.next())
+                         next(changes))
         self.assertEqual((u'tête/mpp_proc/Xprimary_proc', Node.DIRECTORY,
                           Changeset.COPY, u'tête/Xprimary_proc', 18),
-                         changes.next())
+                         next(changes))
         self.assertEqual((u'tête/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd',
                           Node.FILE, Changeset.DELETE,
                           u'tête/Xprimary_proc/Xprimary_pkg.vhd', 18),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_copy_with_deletions_below_copy(self):
         """Regression test for #4900."""
@@ -859,14 +859,14 @@ En r\xe9sum\xe9 ... \xe7a marche.
         self.assertEqual(22, chgset.rev)
         changes = chgset.get_changes()
         self.assertEqual((u'branches/v3', 'dir', 'copy',
-                          u'tête', 21), changes.next())
+                          u'tête', 21), next(changes))
         self.assertEqual((u'branches/v3/dir1', 'dir', 'delete',
-                          u'tête/dir1', 21), changes.next())
+                          u'tête/dir1', 21), next(changes))
         self.assertEqual((u'branches/v3/mpp_proc', 'dir', 'delete',
-                          u'tête/mpp_proc', 21), changes.next())
+                          u'tête/mpp_proc', 21), next(changes))
         self.assertEqual((u'branches/v3/v2', 'dir', 'delete',
-                          u'tête/v2', 21), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          u'tête/v2', 21), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_utf_8(self):
         chgset = self.repos.get_changeset(20)
@@ -1126,18 +1126,18 @@ class ScopedTests(object):
     def test_get_dir_entries(self):
         node = self.repos.get_node('/')
         entries = node.get_entries()
-        self.assertEqual('dir1', entries.next().name)
-        self.assertEqual('mpp_proc', entries.next().name)
-        self.assertEqual('v2', entries.next().name)
-        self.assertEqual('README3.txt', entries.next().name)
-        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
-        self.assertEqual('README.txt', entries.next().name)
-        self.assertRaises(StopIteration, entries.next)
+        self.assertEqual('dir1', next(entries).name)
+        self.assertEqual('mpp_proc', next(entries).name)
+        self.assertEqual('v2', next(entries).name)
+        self.assertEqual('README3.txt', next(entries).name)
+        self.assertEqual(u'R\xe9sum\xe9.txt', next(entries).name)
+        self.assertEqual('README.txt', next(entries).name)
+        self.assertRaises(StopIteration, next, entries)
 
     def test_get_file_entries(self):
         node = self.repos.get_node('/README.txt')
         entries = node.get_entries()
-        self.assertRaises(StopIteration, entries.next)
+        self.assertRaises(StopIteration, next, entries)
 
     def test_get_dir_content(self):
         node = self.repos.get_node('/dir1')
@@ -1175,18 +1175,18 @@ class ScopedTests(object):
     def test_get_node_history(self):
         node = self.repos.get_node('/README3.txt')
         history = node.get_history()
-        self.assertEqual(('README3.txt', 14, 'copy'), history.next())
-        self.assertEqual(('README2.txt', 6, 'copy'), history.next())
-        self.assertEqual(('README.txt', 3, 'edit'), history.next())
-        self.assertEqual(('README.txt', 2, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('README3.txt', 14, 'copy'), next(history))
+        self.assertEqual(('README2.txt', 6, 'copy'), next(history))
+        self.assertEqual(('README.txt', 3, 'edit'), next(history))
+        self.assertEqual(('README.txt', 2, 'add'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_node_history_follow_copy(self):
         node = self.repos.get_node('dir1/dir3', )
         history = node.get_history()
-        self.assertEqual(('dir1/dir3', 5, 'copy'), history.next())
-        self.assertEqual(('dir3', 4, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('dir1/dir3', 5, 'copy'), next(history))
+        self.assertEqual(('dir3', 4, 'add'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_copy_ancestry(self):
         node = self.repos.get_node(u'/README3.txt')
@@ -1213,21 +1213,21 @@ class ScopedTests(object):
 
     def test_get_path_history(self):
         history = self.repos.get_path_history('dir3', None)
-        self.assertEqual(('dir3', 5, 'delete'), history.next())
-        self.assertEqual(('dir3', 4, 'add'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('dir3', 5, 'delete'), next(history))
+        self.assertEqual(('dir3', 4, 'add'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_path_history_copied_file(self):
         history = self.repos.get_path_history('README3.txt', None)
-        self.assertEqual(('README3.txt', 14, 'copy'), history.next())
-        self.assertEqual(('README2.txt', 6, 'unknown'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('README3.txt', 14, 'copy'), next(history))
+        self.assertEqual(('README2.txt', 6, 'unknown'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_get_path_history_copied_dir(self):
         history = self.repos.get_path_history('dir1/dir3', None)
-        self.assertEqual(('dir1/dir3', 5, 'copy'), history.next())
-        self.assertEqual(('dir3', 4, 'unknown'), history.next())
-        self.assertRaises(StopIteration, history.next)
+        self.assertEqual(('dir1/dir3', 5, 'copy'), next(history))
+        self.assertEqual(('dir3', 4, 'unknown'), next(history))
+        self.assertRaises(StopIteration, next, history)
 
     def test_changeset_repos_creation(self):
         chgset = self.repos.get_changeset(0)
@@ -1236,7 +1236,7 @@ class ScopedTests(object):
         self.assertEqual('', chgset.author)
         self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc),
                          chgset.date)
-        self.assertRaises(StopIteration, chgset.get_changes().next)
+        self.assertRaises(StopIteration, next, chgset.get_changes())
 
     def test_changeset_added_dirs(self):
         chgset = self.repos.get_changeset(4)
@@ -1248,12 +1248,12 @@ class ScopedTests(object):
 
         changes = chgset.get_changes()
         self.assertEqual(('dir1', Node.DIRECTORY, 'add', None, -1),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('dir2', Node.DIRECTORY, 'add', None, -1),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('dir3', Node.DIRECTORY, 'add', None, -1),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_file_edit(self):
         chgset = self.repos.get_changeset(3)
@@ -1265,8 +1265,8 @@ class ScopedTests(object):
 
         changes = chgset.get_changes()
         self.assertEqual(('README.txt', Node.FILE, Changeset.EDIT,
-                          'README.txt', 2), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          'README.txt', 2), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_dir_moves(self):
         chgset = self.repos.get_changeset(5)
@@ -1278,10 +1278,10 @@ class ScopedTests(object):
 
         changes = chgset.get_changes()
         self.assertEqual(('dir1/dir2', Node.DIRECTORY, Changeset.MOVE,
-                          'dir2', 4), changes.next())
+                          'dir2', 4), next(changes))
         self.assertEqual(('dir1/dir3', Node.DIRECTORY, Changeset.MOVE,
-                          'dir3', 4), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          'dir3', 4), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_file_copy(self):
         chgset = self.repos.get_changeset(6)
@@ -1293,8 +1293,8 @@ class ScopedTests(object):
 
         changes = chgset.get_changes()
         self.assertEqual(('README2.txt', Node.FILE, Changeset.COPY,
-                          'README.txt', 3), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          'README.txt', 3), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_root_propset(self):
         chgset = self.repos.get_changeset(13)
@@ -1303,8 +1303,8 @@ class ScopedTests(object):
                          chgset.message)
         changes = chgset.get_changes()
         self.assertEqual(('/', Node.DIRECTORY, Changeset.EDIT, '/', 6),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
     def test_changeset_copy_from_outside_and_delete(self):
         chgset = self.repos.get_changeset(21)
@@ -1313,12 +1313,12 @@ class ScopedTests(object):
                          chgset.message)
         changes = chgset.get_changes()
         self.assertEqual(('v2', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('v2/README2.txt', Node.FILE, Changeset.DELETE,
-                          None, -1), changes.next())
+                          None, -1), next(changes))
         self.assertEqual(('v2/dir1', Node.DIRECTORY, Changeset.DELETE,
-                          None, -1), changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                          None, -1), next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
 
 class RecentPathScopedTests(object):
@@ -1341,7 +1341,7 @@ class NonSelfContainedScopedTests(object):
         self.assertEqual(7, chgset.rev)
         changes = chgset.get_changes()
         self.assertEqual(('/', Node.DIRECTORY, Changeset.ADD, None, -1),
-                         changes.next())
+                         next(changes))
         self.assertRaises(TracError, lambda: self.repos.get_node(None, 6))
 
 
@@ -1353,7 +1353,7 @@ class AnotherNonSelfContainedScopedTests(object):
         changes = chgset.get_changes()
         self.assertEqual(('v1x/README.txt', Node.FILE, Changeset.EDIT,
                           'v1x/README.txt', 8),
-                         changes.next())
+                         next(changes))
 
 
 class ExternalsPropertyTests(object):

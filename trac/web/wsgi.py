@@ -62,11 +62,13 @@ class _FileWrapper(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         data = self.fileobj.read(self.blocksize)
         if not data:
             raise StopIteration
         return data
+
+    next = __next__
 
 
 class WSGIGateway(object):

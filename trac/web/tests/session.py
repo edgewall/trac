@@ -589,7 +589,7 @@ class SessionTestCase(unittest.TestCase):
         sess_admin = SessionAdmin(self.env)
 
         # Verify the empty case
-        self.assertRaises(StopIteration, sess_admin._get_list([]).next)
+        self.assertRaises(StopIteration, next, sess_admin._get_list([]))
 
         self.assertEqual([i for i in sess_admin._get_list(['authenticated'])],
                          auth_list)

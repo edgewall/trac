@@ -97,7 +97,7 @@ class PatchRenderer(Component):
         changes = []
         lines = iter(difflines)
         try:
-            line = lines.next()
+            line = next(lines)
             while True:
                 oldpath = oldrev = newpath = newrev = ''
                 oldinfo = newinfo = []
@@ -123,12 +123,12 @@ class PatchRenderer(Component):
                             oldrev, newrev = index[0].split()[-1].split('..')
                             oldinfo.append(oldrev)
                             newinfo.append(newrev)
-                        line = lines.next()
+                        line = next(lines)
                         while line:
                             comments.append(line)
-                            line = lines.next()
+                            line = next(lines)
                     else:
-                        line = lines.next()
+                        line = next(lines)
                         continue
 
                 if not oldinfo and not newinfo:
@@ -140,7 +140,7 @@ class PatchRenderer(Component):
                             oldrev = oldinfo[2]
 
                     # Changed filename/version from '+++ <file> [rev]'
-                    line = lines.next()
+                    line = next(lines)
                     if not line.startswith('+++ '):
                         self.log.debug('expected +++ after ---, got %s', line)
                         return None
@@ -195,7 +195,7 @@ class PatchRenderer(Component):
                                         'rev': ' '.join(newinfo[1:]),
                                         'shortrev': shortrev[1]}})
                 comments = []
-                line = lines.next()
+                line = next(lines)
                 while line:
                     # "@@ -333,10 +329,8 @@" or "@@ -1 +1 @@ [... title ...]"
                     r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@'
@@ -211,7 +211,7 @@ class PatchRenderer(Component):
 
                     fromend += fromline
                     toend += toline
-                    line = lines.next()
+                    line = next(lines)
                     while fromline < fromend or toline < toend or extra:
 
                         # First character is the command
@@ -258,7 +258,7 @@ class PatchRenderer(Component):
                             else:
                                 toline += 1
                             block[side]['lines'].append(line)
-                        line = lines.next()
+                        line = next(lines)
                         extra = line and line[0] == '\\'
         except StopIteration:
             pass

@@ -43,7 +43,7 @@ class TicketSystemTestCase(unittest.TestCase):
 
     def _get_ticket_field(self, field_name):
         fields = TicketSystem(self.env).get_ticket_fields()
-        return (i for i in fields if i['name'] == field_name).next()
+        return next((i for i in fields if i['name'] == field_name))
 
     def test_custom_field_text(self):
         self.env.config.set('ticket-custom', 'test', 'text')

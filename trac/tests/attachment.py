@@ -163,9 +163,9 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_select_empty(self):
         self.assertRaises(StopIteration,
-                          Attachment.select(self.env, 'ticket', 42).next)
+                          next, Attachment.select(self.env, 'ticket', 42))
         self.assertRaises(StopIteration,
-                          Attachment.select(self.env, 'wiki', 'SomePage').next)
+                          next, Attachment.select(self.env, 'wiki', 'SomePage'))
 
     def test_insert(self):
         attachment = Attachment(self.env, 'ticket', 42)
@@ -174,9 +174,9 @@ class AttachmentTestCase(unittest.TestCase):
         attachment.insert('bar.jpg', io.BytesIO(), 0, 2)
 
         attachments = Attachment.select(self.env, 'ticket', 42)
-        self.assertEqual('foo.txt', attachments.next().filename)
-        self.assertEqual('bar.jpg', attachments.next().filename)
-        self.assertRaises(StopIteration, attachments.next)
+        self.assertEqual('foo.txt', next(attachments).filename)
+        self.assertEqual('bar.jpg', next(attachments).filename)
+        self.assertRaises(StopIteration, next, attachments)
 
     def test_insert_unique(self):
         attachment = Attachment(self.env, 'ticket', 42)

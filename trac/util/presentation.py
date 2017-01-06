@@ -294,11 +294,11 @@ def separated(items, sep=',', last=None):
     [(1, ';'), (2, ';'), (3, '.')]
     """
     items = iter(items)
-    next = items.next()
+    nextval = next(items)
     for i in items:
-        yield next, sep
-        next = i
-    yield next, last
+        yield nextval, sep
+        nextval = i
+    yield nextval, last
 
 
 _js_quote = {c: '\\u%04x' % ord(c) for c in '&<>'}

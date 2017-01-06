@@ -272,10 +272,10 @@ class CacheTestCase(unittest.TestCase):
         cset_changes = cset.get_changes()
         self.assertEqual(('branches', Node.DIRECTORY, Changeset.ADD, None,
                           None),
-                         cset_changes.next())
+                         next(cset_changes))
         self.assertEqual(('tags', Node.DIRECTORY, Changeset.ADD, None, None),
-                         cset_changes.next())
-        self.assertRaises(StopIteration, cset_changes.next)
+                         next(cset_changes))
+        self.assertRaises(StopIteration, next, cset_changes)
 
         rows = self.env.db_query(
                 "SELECT time,author,message FROM revision ORDER BY rev")
@@ -338,10 +338,10 @@ class CacheTestCase(unittest.TestCase):
         self.assertEqual(t2, changeset.date)
         changes = changeset.get_changes()
         self.assertEqual(('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
-                         changes.next())
+                         next(changes))
         self.assertEqual(('trunk/RDME', Node.FILE, Changeset.ADD, None, None),
-                         changes.next())
-        self.assertRaises(StopIteration, changes.next)
+                         next(changes))
+        self.assertRaises(StopIteration, next, changes)
 
 
 def test_suite():

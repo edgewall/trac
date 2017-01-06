@@ -97,13 +97,13 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         self.grant_perm('anonymous', 'BROWSER_VIEW')
         provider = DbRepositoryProvider(self.env)
         req = MockRequest(self.env, path_info='/')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('allow')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('deny')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('(default)')
         self.assertEqual([], list(self.get_navigation_items(req)))
@@ -111,13 +111,13 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
     def test_get_navigation_items_without_browser_view(self):
         provider = DbRepositoryProvider(self.env)
         req = MockRequest(self.env, path_info='/')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('(default)')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('deny')
-        self.assertEqual('browser', self.get_navigation_items(req).next()[1])
+        self.assertEqual('browser', next(self.get_navigation_items(req))[1])
 
         provider.remove_repository('allow')
         self.assertEqual([], list(self.get_navigation_items(req)))
