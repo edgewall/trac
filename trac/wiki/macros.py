@@ -200,10 +200,12 @@ class TitleIndexMacro(WikiMacroBase):
                   grouped (path element, page_name) entries
                 - `nodes` is a list of nodes or leaves
             """
+            def keyfn(args):
+                elts, name = args
+                return elts[0] if elts else ''
             groups = []
 
-            for key, grouper in groupby(entries, lambda (elts, name):
-                                                    elts[0] if elts else ''):
+            for key, grouper in groupby(entries, keyfn):
                 # remove key from path_elements in grouped entries for further
                 # grouping
                 grouped_entries = [(path_elements[1:], page_name)
@@ -244,10 +246,12 @@ class TitleIndexMacro(WikiMacroBase):
                 - `page` is a page name (if one exists for that node)
                 - `nodes` is a list of nodes or leaves
             """
+            def keyfn(args):
+                elts, name = args
+                return elts[0] if elts else ''
             groups = []
 
-            for key, grouper in groupby(entries, lambda (elts, name):
-                                                    elts[0] if elts else ''):
+            for key, grouper in groupby(entries, keyfn):
                 grouped_entries = [e for e in grouper]
                 sub_entries = [e for e in grouped_entries if len(e[0]) > 1]
                 key_entries = [e for e in grouped_entries if len(e[0]) == 1]

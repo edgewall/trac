@@ -582,10 +582,12 @@ class Storage(object):
         """returns list of (local) branches, with active (= HEAD) one being
         the first item
         """
+        def fn(args):
+            name, rev, head = args
+            return not head, name
         branches = sorted(((self._fs_to_unicode(name), rev, head)
                            for name, rev, head
-                           in self.rev_cache.iter_branches()),
-                          key=lambda (name, rev, head): (not head, name))
+                           in self.rev_cache.iter_branches()), key=fn)
         return [(name, rev) for name, rev, head in branches]
 
     def get_commits(self):

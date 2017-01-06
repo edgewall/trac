@@ -273,7 +273,7 @@ class Environment(Component, ComponentManager):
         for provider in self.system_info_providers:
             info.extend(provider.get_system_info() or [])
         return sorted(set(info),
-                      key=lambda (name, ver): (name != 'Trac', name.lower()))
+                      key=lambda args: (args[0] != 'Trac', args[0].lower()))
 
     def get_systeminfo(self):
         """Return a list of `(name, version)` tuples describing the name
