@@ -17,7 +17,6 @@
 from datetime import datetime
 import io
 import locale
-import new
 import os.path
 import unittest
 
@@ -1553,14 +1552,14 @@ def test_suite():
                 ],
             }
         for test, scope in tests:
-            tc = new.classobj('SubversionRepository' + test.__name__,
-                              (SubversionRepositoryTestCase, test),
-                              {'path': REPOS_PATH + scope})
+            tc = type('SubversionRepository' + test.__name__,
+                      (SubversionRepositoryTestCase, test),
+                      {'path': REPOS_PATH + scope})
             suite.addTest(unittest.makeSuite(
                 tc, suiteClass=SubversionRepositoryTestSetup))
-            tc = new.classobj('SvnCachedRepository' + test.__name__,
-                              (SvnCachedRepositoryTestCase, test),
-                              {'path': REPOS_PATH + scope})
+            tc = type('SvnCachedRepository' + test.__name__,
+                      (SvnCachedRepositoryTestCase, test),
+                      {'path': REPOS_PATH + scope})
             for skip in skipped.get(tc.__name__, []):
                 setattr(tc, skip, lambda self: None)  # no skip, so we cheat...
             suite.addTest(unittest.makeSuite(
