@@ -113,13 +113,12 @@ def Mock(bases=(), *initargs, **kw):
     for base in bases:
         if getattr(base, '__metaclass__', None) is not abc.ABCMeta:
             continue
-        fn = types.UnboundMethodType(dummyfn, None, base)
+        fn = types.MethodType(dummyfn, base)
         for name, attr in inspect.getmembers(base):
             if name in attrs:
                 continue
             if isinstance(attr, abc.abstractproperty) or \
-                    isinstance(attr, types.UnboundMethodType) and \
-                    getattr(attr, '__isabstractmethod__', False) is True:
+                    getattr(attr, '__isabstractmethod__', False):
                 attrs[name] = fn
 
     cls = type('Mock', bases, attrs)
