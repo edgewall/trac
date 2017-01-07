@@ -47,7 +47,7 @@ if use_flup:
         use_flup = False
 
 if not use_flup:
-    from _fcgi import WSGIServer
+    from ._fcgi import WSGIServer
 
 def run():
     WSGIServer(dispatch_request, **params).run()
