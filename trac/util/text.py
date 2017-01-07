@@ -99,8 +99,8 @@ def path_to_unicode(path):
     return unicode(path)
 
 
-_ws_leading_re = re.compile(ur'\A[\s\u200b]+', re.UNICODE)
-_ws_trailing_re = re.compile(ur'[\s\u200b]+\Z', re.UNICODE)
+_ws_leading_re = re.compile(u'\\A[\\s\u200b]+', re.UNICODE)
+_ws_trailing_re = re.compile(u'[\\s\u200b]+\\Z', re.UNICODE)
 
 def stripws(text, leading=True, trailing=True):
     """Strips unicode white-spaces and ZWSPs from ``text``.
@@ -137,8 +137,8 @@ _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
 for i in range(0x20) + [ord(c) for c in u'&<>\u2028\u2029']:
     _js_quote.setdefault(unichr(i), '\\u%04x' % i)
-_js_quote_re = re.compile(ur'[\x00-\x1f\\"\b\f\n\r\t\'&<>\u2028\u2029]')
-_js_string_re = re.compile(ur'[\x00-\x1f\\"\b\f\n\r\t&<>\u2028\u2029]')
+_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>' + u'\u2028\u2029]')
+_js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>' + u'\u2028\u2029]')
 
 
 def javascript_quote(text):
@@ -493,12 +493,12 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
             pattern = u'[%s]+' % char_ranges
 
         cls.split_re = re.compile(
-            ur'(\s+|' +                                 # any whitespace
+            r'(\s+|' +                                  # any whitespace
             pattern + u'|' +                            # breakable text
-            ur'[^\s\w]*\w+[^0-9\W]-(?=\w+[^0-9\W])|' +  # hyphenated words
-            ur'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))',    # em-dash
+            r'[^\s\w]*\w+[^0-9\W]-(?=\w+[^0-9\W])|' +   # hyphenated words
+            r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))',     # em-dash
             re.UNICODE)
-        cls.breakable_re = re.compile(ur'\A' + pattern, re.UNICODE)
+        cls.breakable_re = re.compile(r'\A' + pattern, re.UNICODE)
 
     def __init__(self, cols, replace_whitespace=0, break_long_words=0,
                  initial_indent='', subsequent_indent='', ambiwidth=1):
