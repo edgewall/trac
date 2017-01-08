@@ -18,7 +18,7 @@
 
 import os.path
 
-from trac.config import Option, PathOption
+from trac.config import ConfigurationError, Option, PathOption
 from trac.core import *
 from trac.perm import IPermissionPolicy
 from trac.util import read_file
@@ -224,15 +224,16 @@ class AuthzSourcePolicy(Component):
                     return True
 
     def _get_authz_info(self):
+        if not self.authz_file:
+            self.log.error("The [svn] authz_file configuration option in "
+                           "trac.ini is empty or not defined")
+            raise ConfigurationError()
         try:
             mtime = os.path.getmtime(self.authz_file)
         except OSError as e:
-            if self._authz is not None:
-                self.log.error('Error accessing authz file: %s',
-                               exception_to_unicode(e))
-            self._mtime = mtime = 0
-            self._authz = None
-            self._users = set()
+            self.log.error("Error accessing svn authz permission policy "
+                           "file: %s", exception_to_unicode(e))
+            raise ConfigurationError()
         if mtime != self._mtime:
             self._mtime = mtime
             rm = RepositoryManager(self.env)
@@ -244,14 +245,14 @@ class AuthzSourcePolicy(Component):
             self.log.info('Parsing authz file: %s', self.authz_file)
             try:
                 self._authz = parse(read_file(self.authz_file), modules)
+            except Exception as e:
+                self.log.error("Error parsing svn authz permission policy "
+                               "file: %s", exception_to_unicode(e))
+                raise ConfigurationError()
+            else:
                 self._users = {user
                                for paths in self._authz.itervalues()
                                for path in paths.itervalues()
                                for user, result in path.iteritems()
                                if result}
-            except Exception as e:
-                self._authz = None
-                self._users = set()
-                self.log.error('Error parsing authz file: %s',
-                               exception_to_unicode(e))
         return self._authz, self._users

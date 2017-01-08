@@ -15,6 +15,7 @@ import os.path
 import shutil
 import unittest
 
+from trac.config import ConfigurationError
 from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock, mkdtemp
 from trac.util import create_file
@@ -246,8 +247,9 @@ $authenticated = r
 * = r
 """)
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
+        self.env.config.set('trac', 'permission_policies',
+                            'AuthzSourcePolicy, DefaultPermissionPolicy')
         self.env.config.set('svn', 'authz_file', self.authz)
-        self.policy = AuthzSourcePolicy(self.env)
 
         # Monkey-subclass RepositoryManager to serve mock repositories
         rm = RepositoryManager(self.env)
@@ -280,38 +282,83 @@ $authenticated = r
         self.env.reset_db()
         shutil.rmtree(self.tmpdir)
 
+    def test_get_authz_file_notfound_raises(self):
+        """ConfigurationError exception is raised if file not found."""
+        authz_file = os.path.join(self.env.path, 'some-nonexistent-file')
+        self.env.config.set('svn', 'authz_file', authz_file)
+        policy = AuthzSourcePolicy(self.env)
+        self.assertRaises(ConfigurationError, policy.check_permission,
+                          'BROWSER_VIEW', 'user', None, None)
+
+    def test_get_authz_file_notdefined_raises(self):
+        """ConfigurationError exception is raised if the option
+        `[svn] authz_file` is not specified in trac.ini."""
+        self.env.config.remove('svn', 'authz_file')
+        policy = AuthzSourcePolicy(self.env)
+        self.assertRaises(ConfigurationError, policy.check_permission,
+                          'BROWSER_VIEW', 'user', None, None)
+
+    def test_get_authz_file_empty_raises(self):
+        """ConfigurationError exception is raised if the option
+        `[svn] authz_file` is empty."""
+        self.env.config.set('svn', 'authz_file', '')
+        policy = AuthzSourcePolicy(self.env)
+        self.assertRaises(ConfigurationError, policy.check_permission,
+                          'BROWSER_VIEW', 'user', None, None)
+
+    def test_get_authz_file_removed_raises(self):
+        """ConfigurationError exception is raised if file is removed."""
+        policy = AuthzSourcePolicy(self.env)
+        os.remove(self.authz)
+        self.assertRaises(ConfigurationError, policy.check_permission,
+                          'BROWSER_VIEW', 'user', None, None)
+
+    def test_parse_error_raises(self):
+        """ConfigurationError exception is raised when exception occurs
+        parsing the `[svn authz_file`."""
+        create_file(self.authz, """\
+[/somepath
+joe = r
+""")
+        policy = AuthzSourcePolicy(self.env)
+        self.assertRaises(ConfigurationError, policy.check_permission,
+                          'BROWSER_VIEW', 'user', None, None)
+
     def assertPathPerm(self, result, user, reponame=None, path=None):
         """Assert that `user` is granted access `result` to `path` within
         the repository `reponame`.
         """
+        policy = AuthzSourcePolicy(self.env)
         resource = None
         if reponame is not None:
             resource = Resource('source', path,
                                 parent=Resource('repository', reponame))
         for perm in ('BROWSER_VIEW', 'FILE_VIEW', 'LOG_VIEW'):
-            check = self.policy.check_permission(perm, user, resource, None)
+            check = policy.check_permission(perm, user, resource, None)
             self.assertEqual(result, check)
 
     def assertRevPerm(self, result, user, reponame=None, rev=None):
         """Assert that `user` is granted access `result` to `rev` within
         the repository `reponame`.
         """
+        policy = AuthzSourcePolicy(self.env)
         resource = None
         if reponame is not None:
             resource = Resource('changeset', rev,
                                 parent=Resource('repository', reponame))
-        check = self.policy.check_permission('CHANGESET_VIEW', user, resource,
+        check = policy.check_permission('CHANGESET_VIEW', user, resource,
                                              None)
         self.assertEqual(result, check)
 
     def test_coarse_permissions(self):
+        policy = AuthzSourcePolicy(self.env)
         # Granted to all due to wildcard
         self.assertPathPerm(True, 'unknown')
         self.assertPathPerm(True, 'joe')
         self.assertRevPerm(True, 'unknown')
         self.assertRevPerm(True, 'joe')
         # Granted if at least one fine permission is granted
-        self.policy._mtime = 0
+        policy._mtime = 0
         create_file(self.authz, """\
 [/somepath]
 joe = r
