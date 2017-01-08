@@ -294,6 +294,15 @@ class PermissionCacheTestCase(unittest.TestCase):
         # Using cached GRANT here (from shared cache)
         perm2.assert_permission('TEST_ADMIN')
 
+    def test_has_permission_on_resource_none(self):
+        """'PERM' in perm(None) should cache the same value as
+        'PERM' in perm(None) (#12597).
+        """
+        'TEST_ADMIN' in self.perm
+        self.assertEqual(1, len(self.perm._cache))
+        'TEST_ADMIN' in self.perm(None)
+        self.assertEqual(1, len(self.perm._cache))
+
 
 class TestPermissionPolicy(Component):
     implements(perm.IPermissionPolicy)
@@ -363,6 +372,111 @@ class PermissionPolicyTestCase(unittest.TestCase):
                           ('testuser', 'TEST_ADMIN'): None})
 
 
+class RecursivePolicyTestCase(unittest.TestCase):
+    """Test case for policies that perform recursive permission checks."""
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.clear_component_registry()
+        decisions = []
+        self.decisions = decisions
+
+        class PermissionPolicy1(Component):
+
+            implements(perm.IPermissionPolicy)
+
+            def __init__(self):
+                self.call_count = 0
+
+            def check_permission(self, action, username, resource, perm):
+                self.call_count += 1
+                decision = None
+                if 'ACTION_2' in perm(resource):
+                    decision = None
+                elif action == 'ACTION_1':
+                    decision = username == 'user1'
+                decisions.append(('policy1', action, decision))
+                return decision
+
+        class PermissionPolicy2(Component):
+
+            implements(perm.IPermissionPolicy)
+
+            def __init__(self):
+                self.call_count = 0
+
+            def check_permission(self, action, username, resource, perm):
+                self.call_count += 1
+                decision = None
+                if action == 'ACTION_2':
+                    decision = username == 'user2'
+                decisions.append(('policy2', action, decision))
+                return decision
+
+        self.env.enable_component(PermissionPolicy1)
+        self.env.enable_component(PermissionPolicy2)
+        self.env.config.set('trac', 'permission_policies',
+                            'PermissionPolicy1, PermissionPolicy2')
+        self.ps = perm.PermissionSystem(self.env)
+
+    def tearDown(self):
+        self.env.restore_component_registry()
+        self.env.reset_db()
+
+    def test_user1_allowed_by_policy1(self):
+        """policy1 consulted for ACTION_1. policy1 and policy2 consulted
+        for ACTION_2.
+        """
+        perm_cache = perm.PermissionCache(self.env, 'user1')
+        self.assertTrue('ACTION_1' in perm_cache)
+        self.assertEqual(2, self.ps.policies[0].call_count)
+        self.assertEqual(1, self.ps.policies[1].call_count)
+        self.assertEqual([
+            ('policy1', 'ACTION_2', None),
+            ('policy2', 'ACTION_2', False),
+            ('policy1', 'ACTION_1', True),
+        ], self.decisions)
+
+    def test_user2_denied_by_no_decision(self):
+        """policy1 and policy2 consulted for ACTION_1. policy1 and
+        policy2 consulted for ACTION_2.
+        """
+        perm_cache = perm.PermissionCache(self.env, 'user2')
+        self.assertFalse('ACTION_1' in perm_cache)
+        self.assertEqual(2, self.ps.policies[0].call_count)
+        self.assertEqual(2, self.ps.policies[1].call_count)
+        self.assertEqual([
+            ('policy1', 'ACTION_2', None),
+            ('policy2', 'ACTION_2', True),
+            ('policy1', 'ACTION_1', None),
+            ('policy2', 'ACTION_1', None),
+        ], self.decisions)
+
+    def test_user1_denied_by_policy2(self):
+        """policy1 consulted for ACTION_2. policy2 consulted for ACTION_2.
+        """
+        perm_cache = perm.PermissionCache(self.env, 'user1')
+        self.assertFalse('ACTION_2' in perm_cache)
+        self.assertEqual(1, self.ps.policies[0].call_count)
+        self.assertEqual(1, self.ps.policies[1].call_count)
+        self.assertEqual([
+            ('policy1', 'ACTION_2', None),
+            ('policy2', 'ACTION_2', False),
+        ], self.decisions)
+
+    def test_user1_allowed_by_policy2(self):
+        """policy1 consulted for ACTION_2. policy2 consulted for ACTION_2.
+        """
+        perm_cache = perm.PermissionCache(self.env, 'user2')
+        self.assertTrue('ACTION_2' in perm_cache)
+        self.assertEqual(1, self.ps.policies[0].call_count)
+        self.assertEqual(1, self.ps.policies[1].call_count)
+        self.assertEqual([
+            ('policy1', 'ACTION_2', None),
+            ('policy2', 'ACTION_2', True),
+        ], self.decisions)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase))
@@ -370,6 +484,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(PermissionSystemTestCase))
     suite.addTest(unittest.makeSuite(PermissionCacheTestCase))
     suite.addTest(unittest.makeSuite(PermissionPolicyTestCase))
+    suite.addTest(unittest.makeSuite(RecursivePolicyTestCase))
     return suite
 
 

@@ -573,7 +573,8 @@ class PermissionCache(object):
             'WIKI_VIEW' in perm(resource)
 
         """
-        resource = Resource(realm_or_resource, id, version)
+        resource = Resource(realm_or_resource, id, version) \
+                   if realm_or_resource else None
         if resource and self._resource and resource == self._resource:
             return self
         else:
@@ -592,6 +593,8 @@ class PermissionCache(object):
             cache_decision, cache_resource = cached
             if resource == cache_resource:
                 return cache_decision
+        # Avoid recursion in policies that call has_permission.
+        self._cache[key] = (False, resource)
         perm = self
         if resource is not self._resource:
             perm = PermissionCache(self.env, self.username, resource,
