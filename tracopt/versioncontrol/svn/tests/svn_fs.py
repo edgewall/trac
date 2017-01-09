@@ -49,7 +49,7 @@ REPOS_PATH = None
 REPOS_NAME = 'repo'
 URL = 'svn://test'
 
-HEAD = 30
+HEAD = 31
 TETE = 26
 
 NATIVE_EOL = '\r\n' if os.name == 'nt' else '\n'
@@ -231,7 +231,7 @@ class NormalTests(object):
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(HEAD, node.rev)
         self.assertEqual(HEAD, node.created_rev)
-        self.assertEqual(datetime(2015, 6, 15, 14, 9, 13, 664490, utc),
+        self.assertEqual(datetime(2017, 1, 9, 6, 12, 33, 247657, utc),
                          node.last_modified)
         self.assertRaises(NoSuchChangeset, self.repos.get_node, u'/', -1)
         node = self.repos.get_node(u'/tête')
@@ -513,6 +513,40 @@ En r\xe9sum\xe9 ... \xe7a marche.
         ]
         self.assertEqual(expected,
                          f.get_processed_content().read().splitlines())
+
+    @setlocale
+    def test_get_file_content_with_keyword_substitution_31(self):
+        """$Author$ is is the last user to change this file in the repository.
+        Regression test for #12655.
+        """
+        self.assertEqual('john', self.repos.get_changeset(31).author)
+        self.assertEqual('jomae', self.repos.get_changeset(26).author)
+        f = self.repos.get_node(u'/tête/Résumé.txt', 31)
+        self.assertEqual(31, f.rev)
+        self.assertEqual(26, f.created_rev)
+        props = f.get_properties()
+        self.assertEqual('Revision Author URL Date Id Header',
+                         props['svn:keywords'])
+        self.assertEqual('''\
+# Simple test for svn:keywords property substitution (#717)
+# $Rev: 26 $:     Revision of last commit
+# $Author: jomae $:  Author of last commit
+# $Date: 2013-04-28 05:36:06 +0000 (Sun, 28 Apr 2013) $:    Date of last commit (now really substituted)
+# $Id: Résumé.txt 26 2013-04-28 05:36:06Z jomae $:      Combination
+
+Now with fixed width fields:
+# $URL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt    $ the configured URL
+# $HeadURL:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.tx#$ same
+# $URL:: svn://test/t%C#$ same, but truncated
+# $Header:: svn://test/t%C3%AAte/R%C3%A9sum%C3%A9.txt#$ combination with URL
+
+Overlapped keywords:
+# $Xxx$Rev: 26 $Xxx$
+# $Rev: 26 $Xxx$Rev: 26 $
+# $Rev: 26 $Rev$Rev: 26 $
+
+En r\xe9sum\xe9 ... \xe7a marche.
+'''.splitlines(), f.get_processed_content().read().splitlines())
 
     def test_created_path_rev(self):
         node = self.repos.get_node(u'/tête/README3.txt', 15)

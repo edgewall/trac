@@ -1203,8 +1203,8 @@ class FileContentStream(object):
         else:
             return self._read_substitute(self.stream, n)
 
-    def _get_revprop(self, name):
-        return fs.revision_prop(self.fs_ptr, self.node.rev, name, self.pool())
+    def _get_revprop(self, name, rev):
+        return fs.revision_prop(self.fs_ptr, rev, name, self.pool())
 
     def _split_keywords(self, keywords):
         return filter(None, self.KEYWORD_SPLIT_RE.split(keywords or ''))
@@ -1221,7 +1221,8 @@ class FileContentStream(object):
         created_rev = unicode(node.created_rev)
         # Note that the `to_unicode` has a small probability to mess-up binary
         # properties, see #4321.
-        author = to_unicode(self._get_revprop(core.SVN_PROP_REVISION_AUTHOR))
+        author = to_unicode(self._get_revprop(core.SVN_PROP_REVISION_AUTHOR,
+                                              node.created_rev))
         path = node.path.lstrip('/')
         url = node.repos.get_path_url(path, node.rev) or path
         root_url = node.repos.get_path_url('', node.rev) or '/'
