@@ -1134,3 +1134,36 @@ Custom keyword definitions with fixed width
 # $12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678::    $
 
 
+Revision-number: 31
+Prop-content-length: 162
+Content-length: 162
+
+K 10
+svn:author
+V 4
+john
+K 8
+svn:date
+V 27
+2017-01-09T06:12:33.247657Z
+K 7
+svn:log
+V 63
+$Author$ is the last user to change this file in the repository
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 53
+Content-length: 53
+
+K 10
+svn:ignore
+V 21
+*.py[co]
+__pycache__
+
+PROPS-END
+
+
