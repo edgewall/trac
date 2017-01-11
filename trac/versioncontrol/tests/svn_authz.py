@@ -97,8 +97,8 @@ class AuthzSourcePolicyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tmpdir = mkdtemp()
-        self.authz = os.path.join(self.tmpdir, 'trac-authz')
-        create_file(self.authz, """\
+        self.authz_file = os.path.join(self.tmpdir, 'trac-authz')
+        create_file(self.authz_file, """\
 [groups]
 group1 = user
 group2 = @group1
@@ -244,7 +244,7 @@ $authenticated = r
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
         self.env.config.set('trac', 'permission_policies',
                             'AuthzSourcePolicy, DefaultPermissionPolicy')
-        self.env.config.set('svn', 'authz_file', self.authz)
+        self.env.config.set('svn', 'authz_file', self.authz_file)
 
         # Monkey-subclass RepositoryManager to serve mock repositories
         rm = RepositoryManager(self.env)
@@ -304,14 +304,14 @@ $authenticated = r
     def test_get_authz_file_removed_raises(self):
         """ConfigurationError exception is raised if file is removed."""
         policy = AuthzSourcePolicy(self.env)
-        os.remove(self.authz)
+        os.remove(self.authz_file)
         self.assertRaises(ConfigurationError, policy.check_permission,
                           'BROWSER_VIEW', 'user', None, None)
 
     def test_parse_error_raises(self):
         """ConfigurationError exception is raised when exception occurs
         parsing the `[svn authz_file`."""
-        create_file(self.authz, """\
+        create_file(self.authz_file, """\
 [/somepath
 joe = r
 """)
@@ -354,7 +354,7 @@ joe = r
         self.assertRevPerm(True, 'joe')
         # Granted if at least one fine permission is granted
         policy._mtime = 0
-        create_file(self.authz, """\
+        create_file(self.authz_file, """\
 [/somepath]
 joe = r
 denied =

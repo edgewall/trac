@@ -20,7 +20,7 @@ import os.path
 
 from trac.config import ConfigurationError, Option, ParsingError, \
                         PathOption, UnicodeConfigParser
-from trac.core import *
+from trac.core import Component, TracError, implements
 from trac.perm import IPermissionPolicy
 from trac.util import pathjoin, to_list
 from trac.util.text import exception_to_unicode
@@ -105,11 +105,13 @@ class AuthzSourcePolicy(Component):
     authz_file = PathOption('svn', 'authz_file', '',
         """The path to the Subversion
         [%(svnbook)s authorization (authz) file].
-        To enable authz permission checking, the `AuthzSourcePolicy` permission
-        policy must be added to `[trac] permission_policies`. Non-absolute
-        paths are relative to the Environment `conf` directory.
+        To enable authz permission checking, the `AuthzSourcePolicy`
+        permission policy must be added to `[trac] permission_policies`.
+        Non-absolute paths are relative to the Environment `conf`
+        directory.
         """,
-        doc_args={'svnbook': 'http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html'})
+        doc_args={'svnbook': 'http://svnbook.red-bean.com/en/1.7/'
+                             'svn.serverconfig.pathbasedauthz.html'})
 
     authz_module_name = Option('svn', 'authz_module_name', '',
         """The module prefix used in the `authz_file` for the default
@@ -139,9 +141,9 @@ class AuthzSourcePolicy(Component):
                 return False
 
             if username == 'anonymous':
-                usernames = ('$anonymous', '*')
+                usernames = '$anonymous', '*'
             else:
-                usernames = (username, '$authenticated', '*')
+                usernames = username, '$authenticated', '*'
             if resource is None:
                 return True if users & set(usernames) else None
 
@@ -149,7 +151,7 @@ class AuthzSourcePolicy(Component):
             try:
                 repos = rm.get_repository(resource.parent.id)
             except TracError:
-                return True # Allow error to be displayed in the repo index
+                return True  # Allow error to be displayed in the repo index
             if repos is None:
                 return True
             modules = [resource.parent.id or self.authz_module_name]
@@ -221,7 +223,7 @@ class AuthzSourcePolicy(Component):
             if '' in modules and self.authz_module_name:
                 modules.add(self.authz_module_name)
             modules.add('')
-            self.log.info('Parsing authz file: %s', self.authz_file)
+            self.log.info("Parsing authz file: %s", self.authz_file)
             try:
                 self._authz = parse(self.authz_file, modules)
             except ParsingError as e:
