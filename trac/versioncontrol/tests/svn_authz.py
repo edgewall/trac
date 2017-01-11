@@ -20,14 +20,20 @@ from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock, mkdtemp
 from trac.util import create_file
 from trac.versioncontrol.api import RepositoryManager
-from trac.versioncontrol.svn_authz import AuthzSourcePolicy, ParseError, \
-                                          parse
+from trac.versioncontrol.svn_authz import AuthzSourcePolicy, parse
 
 
 class AuthzParserTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.tmpdir = mkdtemp()
+        self.authz_file = os.path.join(self.tmpdir, 'trac-authz')
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
+
     def test_parse_file(self):
-        authz = parse("""\
+        create_file(self.authz_file, """\
 [groups]
 developers = foo, bar
 users = @developers, &baz
@@ -59,43 +65,32 @@ bar = rw
 ; Unused module, not parsed
 [unused:/some/path]
 foo = r
-""", {'', 'module'})
+""")
+        authz = parse(self.authz_file, {'', 'module'})
         self.assertEqual({
             '': {
-                '/': {
-                    '*': True,
+                u'/': {
+                    u'*': True,
                 },
-                '/trunk': {
-                    'foo': True,
-                    'bar': True,
+                u'/trunk': {
+                    u'foo': True,
+                    u'bar': True,
                     u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
-                '/branches': {
-                    'bar': True,
+                u'/branches': {
+                    u'bar': True,
                 },
             },
-            'module': {
-                '/trunk': {
-                    'foo': True,
+            u'module': {
+                u'/trunk': {
+                    u'foo': True,
                     u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
                 u'/c/résumé': {
-                    'bar': True,
+                    u'bar': True,
                 },
             },
         }, authz)
-
-    def test_parse_errors(self):
-        self.assertRaises(ParseError, parse, """\
-user = r
-
-[module:/trunk]
-user = r
-""", {'', 'module'})
-        self.assertRaises(ParseError, parse, """\
-[module:/trunk]
-user
-""", {'', 'module'})
 
 
 class AuthzSourcePolicyTestCase(unittest.TestCase):

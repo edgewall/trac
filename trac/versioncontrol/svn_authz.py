@@ -18,12 +18,12 @@
 
 import os.path
 
-from trac.config import ConfigurationError, Option, PathOption
+from trac.config import ConfigurationError, Option, ParsingError, \
+                        PathOption, UnicodeConfigParser
 from trac.core import *
 from trac.perm import IPermissionPolicy
-from trac.util import read_file
-from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util import pathjoin, to_list
+from trac.util.text import exception_to_unicode
 from trac.versioncontrol.api import RepositoryManager
 
 
@@ -38,54 +38,33 @@ def parent_iter(path):
         path = path[:idx + 1]
 
 
-def join(*args):
-    args = (arg.strip('/') for arg in args)
-    return '/'.join(arg for arg in args if arg)
-
-
-class ParseError(TracBaseError):
-    """Exception thrown for parse errors in authz files"""
-
-
-def parse(authz, modules):
+def parse(authz_file, modules):
     """Parse a Subversion authorization file.
 
     Return a dict of modules, each containing a dict of paths, each containing
     a dict mapping users to permissions. Only modules contained in `modules`
     are retained.
     """
+    parser = UnicodeConfigParser()
+    parser.read(authz_file)
+
     groups = {}
     aliases = {}
     sections = {}
-    section = None
-    lineno = 0
-    for line in authz.splitlines():
-        lineno += 1
-        line = to_unicode(line.strip())
-        if not line or line.startswith(('#', ';')):
-            continue
-        if line.startswith('[') and line.endswith(']'):
-            section = line[1:-1]
-            continue
-        if section is None:
-            raise ParseError(_('Line %(lineno)d: Entry before first '
-                               'section header', lineno=lineno))
-        parts = line.split('=', 1)
-        if len(parts) != 2:
-            raise ParseError(_('Line %(lineno)d: Invalid entry',
-                               lineno=lineno))
-        name, value = parts
-        name = name.strip()
+    for section in parser.sections():
         if section == 'groups':
-            group = groups.setdefault(name, set())
-            group.update(each.strip() for each in value.split(','))
+            for name, value in parser.items(section):
+                groups.setdefault(name, set()).update(to_list(value))
         elif section == 'aliases':
-            aliases[name] = value.strip()
+            for name, value in parser.items(section):
+                aliases[name] = value.strip()
         else:
-            parts = section.split(':', 1)
-            module, path = parts[0] if len(parts) > 1 else '', parts[-1]
-            if module in modules:
-                sections.setdefault((module, path), []).append((name, value))
+            for name, value in parser.items(section):
+                parts = section.split(':', 1)
+                module, path = parts[0] if len(parts) > 1 else '', parts[-1]
+                if module in modules:
+                    sections.setdefault((module, path), []) \
+                            .append((name, value))
 
     def resolve(subject, done):
         if subject.startswith('@'):
@@ -196,7 +175,7 @@ class AuthzSourcePolicy(Component):
                     return False
 
             def check_path(path):
-                path = '/' + join(repos.scope, path)
+                path = '/' + pathjoin(repos.scope, path)
                 if path != '/':
                     path += '/'
 
@@ -244,8 +223,8 @@ class AuthzSourcePolicy(Component):
             modules.add('')
             self.log.info('Parsing authz file: %s', self.authz_file)
             try:
-                self._authz = parse(read_file(self.authz_file), modules)
-            except Exception as e:
+                self._authz = parse(self.authz_file, modules)
+            except ParsingError as e:
                 self.log.error("Error parsing svn authz permission policy "
                                "file: %s", exception_to_unicode(e))
                 raise ConfigurationError()
