@@ -363,7 +363,7 @@ class EnvironmentStub(Environment):
         self.log.setLevel(level_as_int)
         handler_cls = logging.handlers.BufferingHandler
         if not self.log.handlers:
-            log_handler = handler_cls(sys.maxint)  # Never flush implicitly.
+            log_handler = handler_cls(sys.maxsize)  # Never flush implicitly.
             formatter = logging.Formatter(self.log_format)
             log_handler.setFormatter(formatter)
             self.log.addHandler(log_handler)
