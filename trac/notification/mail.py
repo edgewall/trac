@@ -36,6 +36,7 @@ from trac.notification.api import (
     get_target_id, IEmailAddressResolver, IEmailDecorator, IEmailSender,
     INotificationDistributor, INotificationFormatter, INotificationSubscriber,
     NotificationSystem)
+from trac.util import lazy
 from trac.util.compat import close_fds
 from trac.util.datefmt import time_now, to_utimestamp
 from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
@@ -181,25 +182,25 @@ class RecipientMatcher(object):
     def __init__(self, env):
         self.env = env
         addrfmt = EMAIL_LOOKALIKE_PATTERN
-        notify_sys = NotificationSystem(env)
-        admit_domains = notify_sys.admit_domains_list
+        self.notify_sys = NotificationSystem(env)
+        admit_domains = self.notify_sys.admit_domains_list
         if admit_domains:
             localfmt, domainfmt = addrfmt.split('@')
             domains = '|'.join(re.escape(x) for x in admit_domains)
             addrfmt = r'%s@(?:(?:%s)|%s)' % (localfmt, domainfmt, domains)
         self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
         self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
-        self.ignore_domains = [x.lower()
-                               for x in notify_sys.ignore_domains_list]
+        self.ignore_domains = set(x.lower()
+                                  for x in self.notify_sys.ignore_domains_list)
+        self.users = self.env.get_known_users(as_dict=True)
 
-        # Get the name and email addresses of all known users
-        self.name_map = {}
-        self.email_map = {}
-        for username, name, email in self.env.get_known_users():
-            if name:
-                self.name_map[username] = name
-            if email:
-                self.email_map[username] = email
+    @lazy
+    def use_short_addr(self):
+        return self.notify_sys.use_short_addr
+
+    @lazy
+    def smtp_default_domain(self):
+        return self.notify_sys.smtp_default_domain
 
     def match_recipient(self, address):
         if not address:
@@ -217,19 +218,19 @@ class RecipientMatcher(object):
             return None
         sid = None
         auth = 0
-        if address in self.email_map:
+        if address in self.users:
             sid = address
             auth = 1
-            address = self.email_map[address]
+            address = self.users[address][1]
+            if not address:
+                return sid, auth, None
         elif not is_email(address) and self.nodomaddr_re.match(address):
-            if self.env.config.getbool('notification', 'use_short_addr'):
+            if self.use_short_addr:
                 return None, 0, address
-            domain = self.env.config.get('notification',
-                                         'smtp_default_domain')
-            if domain:
-                address = "%s@%s" % (address, domain)
+            if self.smtp_default_domain:
+                address = "%s@%s" % (address, self.smtp_default_domain)
             else:
-                self.env.log.info("Email address w/o domain: %s", address)
+                self.env.log.debug("Email address w/o domain: %s", address)
                 return None
 
         mo = self.shortaddr_re.search(address)
@@ -238,7 +239,7 @@ class RecipientMatcher(object):
         mo = self.longaddr_re.search(address)
         if mo:
             return sid, auth, mo.group(2)
-        self.env.log.info("Invalid email address: %s", address)
+        self.env.log.debug("Invalid email address: %s", address)
         return None
 
     def match_from_author(self, author):
@@ -246,9 +247,11 @@ class RecipientMatcher(object):
         if not recipient:
             return None
         sid, authenticated, address = recipient
+        if not address:
+            return None
         from_name = None
-        if sid and authenticated:
-            from_name = self.name_map.get(sid)
+        if sid and authenticated and sid in self.users:
+            from_name = self.users[sid][0]
         if not from_name:
             mo = self.longaddr_re.search(author)
             if mo:
