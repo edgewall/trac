@@ -103,8 +103,13 @@ class NotifyEmail(Notify):
         self.shortaddr_re = self.recipient_matcher.shortaddr_re
         self.longaddr_re = self.recipient_matcher.longaddr_re
         self._ignore_domains = self.recipient_matcher.ignore_domains
-        self.name_map = self.recipient_matcher.name_map
-        self.email_map = self.recipient_matcher.email_map
+        self.name_map = {}
+        self.email_map = {}
+        for username, name, email in self.env.get_known_users():
+            if name:
+                self.name_map[username] = name
+            if email:
+                self.email_map[username] = email
 
         notify_sys = NotificationSystem(self.env)
         self._charset = create_charset(notify_sys.mime_encoding)

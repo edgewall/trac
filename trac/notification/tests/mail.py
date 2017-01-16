@@ -14,17 +14,17 @@
 import unittest
 from email import message_from_string
 
-from genshi.builder import tag
-
 import trac.tests.compat
 from trac.core import Component, implements
 from trac.notification.api import (
-    IEmailSender, INotificationFormatter, INotificationSubscriber,
-    NotificationEvent, NotificationSystem,
+    IEmailAddressResolver, IEmailSender, INotificationFormatter,
+    INotificationSubscriber, NotificationEvent, NotificationSystem,
 )
+from trac.notification.mail import RecipientMatcher
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub
 from trac.util.datefmt import datetime_now, utc
+from trac.util.html import escape
 from trac.web.session import DetachedSession
 
 
@@ -60,7 +60,7 @@ class TestFormatter(Component):
         if style == 'text/html':
             if 'raise-text-html' in text:
                 raise ValueError()
-            return unicode(tag.p(text))
+            return u'<p>%s</p>' % escape(text)
 
 
 class TestSubscriber(Component):
@@ -86,6 +86,15 @@ class TestSubscriber(Component):
         return ()
 
 
+class TestEmailAddressResolver(Component):
+
+    implements(IEmailAddressResolver)
+
+    def get_address_for_session(self, sid, authenticated):
+        if authenticated == 1:
+            return '%s@example.net' % sid
+
+
 class TestNotificationEvent(NotificationEvent): pass
 
 
@@ -101,19 +110,24 @@ class EmailDistributorTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=['trac.*', TestEmailSender,
-                                           TestFormatter, TestSubscriber])
+                                           TestFormatter, TestSubscriber,
+                                           TestEmailAddressResolver])
         config = self.env.config
         config.set('notification', 'smtp_from', 'trac@example.org')
         config.set('notification', 'smtp_enabled', 'enabled')
         config.set('notification', 'smtp_always_cc', 'cc@example.org')
         config.set('notification', 'smtp_always_bcc', 'bcc@example.org')
         config.set('notification', 'email_sender', 'TestEmailSender')
+        config.set('notification', 'email_address_resolvers',
+                   'SessionEmailResolver,TestEmailAddressResolver')
         self.sender = TestEmailSender(self.env)
         self.notsys = NotificationSystem(self.env)
         with self.env.db_transaction:
             self._add_session('foo', email='foo@example.org')
             self._add_session('bar', email='bar@example.org',
                               name=u"Bäŕ's name")
+            self._add_session('baz', name='Baz')
+            self._add_session('qux', tz='UTC')
 
     def tearDown(self):
         self.env.reset_db()
@@ -169,6 +183,8 @@ class EmailDistributorTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._add_subscription(sid='foo')
             self._add_subscription(sid='bar')
+            self._add_subscription(sid='baz')
+            self._add_subscription(sid='qux')
         self._notify_event('blah')
 
         history = self.sender.history
@@ -177,6 +193,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
         self.assertEqual(set(('foo@example.org', 'bar@example.org',
+                              'baz@example.net', 'qux@example.net',
                               'cc@example.org', 'bcc@example.org')),
                          set(recipients))
         self._assert_mail(message, 'text/plain', 'blah')
