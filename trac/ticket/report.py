@@ -664,7 +664,7 @@ class ReportModule(Component):
         limit_offset = None
         base_sql = sql.replace(SORT_COLUMN, '1').replace(LIMIT_OFFSET, '')
 
-        with self.env.db_transaction as db:
+        with self.env.db_query as db:
             cursor = db.cursor()
             if id == self.REPORT_LIST_ID or limit == 0:
                 sql = base_sql
