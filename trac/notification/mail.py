@@ -267,7 +267,8 @@ class EmailDistributor(Component):
     resolvers = OrderedExtensionsOption('notification',
         'email_address_resolvers', IEmailAddressResolver,
         'SessionEmailResolver',
-        """Comma seperated list of email resolver components in the order
+        include_missing=False,
+        doc="""Comma seperated list of email resolver components in the order
         they will be called.  If an email address is resolved, the remaining
         resolvers will not be called.
         """)
