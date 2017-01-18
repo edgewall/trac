@@ -32,7 +32,7 @@ class ExtraPermissionsProvider(Component):
         To add new permissions, create a new section `[extra-permissions]` in
         your `trac.ini`. Every entry in that section defines a meta-permission
         and a comma-separated list of permissions. For example:
-        {{{
+        {{{#!ini
         [extra-permissions]
         EXTRA_ADMIN = EXTRA_VIEW, EXTRA_MODIFY, EXTRA_DELETE
         }}}
@@ -46,7 +46,7 @@ class ExtraPermissionsProvider(Component):
 
         If you don't want a meta-permission, start the meta-name with an
         underscore (`_`):
-        {{{
+        {{{#!ini
         [extra-permissions]
         _perms = EXTRA_VIEW, EXTRA_MODIFY
         }}}
