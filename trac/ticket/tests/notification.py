@@ -31,21 +31,32 @@ from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
 from trac.ticket.model import Ticket
 from trac.ticket.notification import (
     BatchTicketChangeEvent, TicketChangeEvent, TicketNotificationSystem)
+from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import datetime_now, utc
 
 MAXBODYWIDTH = 76
-notifysuite = None
+smtpd = None
+
+
+def setUpModule():
+    global smtpd
+    smtpd = SMTPThreadedServer(SMTP_TEST_PORT)
+    smtpd.start()
+
+
+def tearDownModule():
+    smtpd.stop()
 
 
 def notify_ticket_created(env, ticket):
-    notifysuite.smtpd.cleanup()
+    smtpd.cleanup()
     event = TicketChangeEvent('created', ticket, ticket['time'],
                               ticket['reporter'])
     NotificationSystem(env).notify(event)
 
 
 def notify_ticket_changed(env, ticket, author='anonymous'):
-    notifysuite.smtpd.cleanup()
+    smtpd.cleanup()
     event = TicketChangeEvent('changed', ticket, ticket['changetime'], author)
     NotificationSystem(env).notify(event)
 
@@ -66,11 +77,12 @@ def config_subscriber(env, updater=False, owner=False, reporter=False):
                        'TicketReporterSubscriber')
     del NotificationSystem(env).subscriber_defaults
 
+
 def config_smtp(env):
     env.config.set('project', 'name', 'TracTest')
     env.config.set('notification', 'smtp_enabled', 'true')
     env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
-    env.config.set('notification', 'smtp_server', notifysuite.smtpd.host)
+    env.config.set('notification', 'smtp_server', smtpd.host)
     # Note: when specifying 'localhost', the connection may be attempted
     #       for '::1' first, then only '127.0.0.1' after a 1s timeout
 
@@ -83,7 +95,7 @@ class RecipientTestCase(unittest.TestCase):
         config_smtp(self.env)
 
     def tearDown(self):
-        notifysuite.tear_down()
+        smtpd.cleanup()
         self.env.reset_db()
 
     def _create_ticket(self, props):
@@ -100,9 +112,9 @@ class RecipientTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
-        sender = notifysuite.smtpd.get_sender()
-        message = notifysuite.smtpd.get_message()
+        recipients = smtpd.get_recipients()
+        sender = smtpd.get_sender()
+        message = smtpd.get_message()
         self.assertEqual(0, len(recipients))
         self.assertIsNone(sender)
         self.assertIsNone(message)
@@ -115,7 +127,7 @@ class RecipientTestCase(unittest.TestCase):
                                       'summary': 'New ticket recipients'})
 
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
 
         self.assertEqual(2, len(recipients))
         for r in cc_list:
@@ -147,7 +159,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket['summary'] = 'New ticket recipients'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         for r in always_cc + ticket_cc + \
                 (ticket['owner'], ticket['reporter']):
             self.assertIn(r, recipients)
@@ -161,7 +173,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         for r in always_cc:
             self.assertIn(r, recipients)
 
@@ -177,7 +189,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket.save_changes('joe.bar2@example.com', 'This is a change',
                                 when=now)
             notify_ticket_changed(self.env, ticket)
-            recipients = notifysuite.smtpd.get_recipients()
+            recipients = smtpd.get_recipients()
             if enabled:
                 self.assertEqual(1, len(recipients))
                 self.assertIn('joe.bar2@example.com', recipients)
@@ -202,7 +214,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
             notify_ticket_created(self.env, ticket)
-            recipients = notifysuite.smtpd.get_recipients()
+            recipients = smtpd.get_recipients()
             if enabled:
                 self.assertEqual(1, len(recipients))
                 self.assertEqual('jim@example.org', recipients[0])
@@ -224,7 +236,7 @@ class RecipientTestCase(unittest.TestCase):
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
             notify_ticket_created(self.env, ticket)
-            recipients = notifysuite.smtpd.get_recipients()
+            recipients = smtpd.get_recipients()
             if enabled:
                 self.assertEqual(1, len(recipients))
                 self.assertEqual('joe@example.org', recipients[0])
@@ -245,7 +257,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket['summary'] = 'No duplicates'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         self.assertEqual(1, len(recipients))
         self.assertIn('joe.user@example.com', recipients)
 
@@ -259,7 +271,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket['summary'] = 'Long form'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         self.assertEqual(3, len(recipients))
         self.assertIn('joe.user@example.com', recipients)
         self.assertIn('joe.user@example.net', recipients)
@@ -282,7 +294,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
-        notifysuite.tear_down()
+        smtpd.cleanup()
         self.env.reset_db()
 
     def _insert_ticket(self, **props):
@@ -304,7 +316,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # checks for header existence
         self.assertTrue(headers)
@@ -337,7 +349,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertIn('Date', headers)
         mo = date_re.match(headers['Date'])
@@ -362,14 +374,14 @@ class NotificationTestCase(unittest.TestCase):
             ticket['summary'] = 'This is a summary'
             ticket.insert()
             notify_ticket_created(self.env, ticket)
-            message = notifysuite.smtpd.get_message()
+            message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # Msg should have a To header
             self.assertEqual('undisclosed-recipients: ;', headers['To'])
             # Extract the list of 'Cc' recipients from the message
             cc = [rcpt.strip() for rcpt in headers['Cc'].split(',')]
             # Extract the list of the actual SMTP recipients
-            rcptlist = notifysuite.smtpd.get_recipients()
+            rcptlist = smtpd.get_recipients()
             # Build the list of the expected 'Cc' recipients
             ccrcpt = self.env.config.getlist('notification', 'smtp_always_cc')
             for rcpt in ccrcpt:
@@ -401,7 +413,7 @@ class NotificationTestCase(unittest.TestCase):
                                 'joe.bar@example.net')
             self.env.config.set('notification', 'use_short_addr', enabled)
             notify_ticket_created(self.env, ticket)
-            message = notifysuite.smtpd.get_message()
+            message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'To' field
             self.assertEqual('undisclosed-recipients: ;', headers['To'])
@@ -438,7 +450,7 @@ class NotificationTestCase(unittest.TestCase):
                 self.env.config.set('notification', 'smtp_default_domain',
                                     'example.org')
             notify_ticket_created(self.env, ticket)
-            message = notifysuite.smtpd.get_message()
+            message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
             self.assertIn('Cc', headers)
@@ -470,7 +482,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertEqual('undisclosed-recipients: ;', headers['To'])
@@ -500,7 +512,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert(when=modtime(0))
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"Joe User" <user-joe@example.com>', headers['From'])
         self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
@@ -511,7 +523,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Modified summary'
         ticket.save_changes('jim@domain', 'Made some changes', modtime(1))
         notify_ticket_changed(self.env, ticket, 'jim@domain')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"Jim User" <user-jim@example.com>', headers['From'])
         self.assertEqual('<062.a890ee4ad5488fb49e60b68099995ba3@example.com>',
@@ -524,7 +536,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Final summary'
         ticket.save_changes('noname', 'Final changes', modtime(2))
         notify_ticket_changed(self.env, ticket, 'noname')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('user-noname@example.com', headers['From'])
         self.assertEqual('<062.732a7b25a21f5a86478c4fe47e86ade4@example.com>',
@@ -533,7 +545,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Other summary'
         ticket.save_changes('noemail', 'More changes', modtime(3))
         notify_ticket_changed(self.env, ticket, 'noemail')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
         self.assertEqual('<062.98cff27cb9fabd799bcb09f9edd6c99e@example.com>',
@@ -543,7 +555,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket.save_changes('Test User <test@example.com>', 'Some changes',
                             modtime(4))
         notify_ticket_changed(self.env, ticket, 'Test User <test@example.com>')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"Test User" <test@example.com>', headers['From'])
         self.assertEqual('<062.6e08a363c340c1d4e2ed84c6123a1e9d@example.com>',
@@ -552,7 +564,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Some summary'
         ticket.save_changes('test@example.com', 'Some changes', modtime(5))
         notify_ticket_changed(self.env, ticket, 'test@example.com')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('test@example.com', headers['From'])
         self.assertEqual('<062.5eb050ae6f322c33dde5940a5f318343@example.com>',
@@ -561,7 +573,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'Better summary'
         ticket.save_changes('unknown', 'Made more changes', modtime(6))
         notify_ticket_changed(self.env, ticket, 'unknown')
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
         self.assertEqual('<062.6d5543782e7aba4100302487e75ce16f@example.com>',
@@ -581,7 +593,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = 'This is a summary'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertEqual('undisclosed-recipients: ;', headers['To'])
@@ -605,7 +617,7 @@ class NotificationTestCase(unittest.TestCase):
                        'joe.user@server'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
         self.assertEqual('undisclosed-recipients: ;', headers['To'])
@@ -629,7 +641,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Discards the project name & ticket number
         subject = headers['Subject']
@@ -686,7 +698,7 @@ class NotificationTestCase(unittest.TestCase):
         ticket['summary'] = u'This is a summary'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertEqual('joe.user@example.org', headers['Cc'])
         return headers
@@ -712,7 +724,7 @@ class NotificationTestCase(unittest.TestCase):
         now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Added to cc', now)
         notify_ticket_changed(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         self.assertIn('joe.user1@example.net', recipients)
 
     def test_previous_cc_list(self):
@@ -726,7 +738,7 @@ class NotificationTestCase(unittest.TestCase):
         now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
         notify_ticket_changed(self.env, ticket)
-        recipients = notifysuite.smtpd.get_recipients()
+        recipients = smtpd.get_recipients()
         self.assertIn('joe.user1@example.net', recipients)
         self.assertIn('joe.user2@example.net', recipients)
 
@@ -743,7 +755,7 @@ class NotificationTestCase(unittest.TestCase):
             now = datetime_now(utc)
             ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
             notify_ticket_changed(self.env, ticket)
-            recipients = notifysuite.smtpd.get_recipients()
+            recipients = smtpd.get_recipients()
             if enabled:
                 self.assertIn(prev_owner, recipients)
                 self.assertIn(new_owner, recipients)
@@ -761,7 +773,7 @@ class NotificationTestCase(unittest.TestCase):
             notify_ticket_created(self.env, ticket)
         else:
             notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertIn('MIME-Version', headers)
         self.assertIn('Content-Type', headers)
@@ -1280,7 +1292,7 @@ Security sensitive:  0                           |          Blocking:
 
     def _validate_props_format(self, expected, ticket):
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         bodylines = body.splitlines()
         # Extract ticket properties
@@ -1300,7 +1312,7 @@ Security sensitive:  0                           |          Blocking:
         ticket['description'] = 'Some description'
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        self.assertIsNotNone(notifysuite.smtpd.get_message())
+        self.assertIsNotNone(smtpd.get_message())
         self.assertEqual('My Summary', ticket['summary'])
         self.assertEqual('Some description', ticket['description'])
         valid_fieldnames = {f['name'] for f in ticket.fields}
@@ -1320,7 +1332,7 @@ Security sensitive:  0                           |          Blocking:
         def notify(from_name):
             self.env.config.set('notification', 'smtp_from_name', from_name)
             notify_ticket_created(self.env, ticket)
-            message = notifysuite.smtpd.get_message()
+            message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
             return message, headers, body
 
@@ -1346,7 +1358,7 @@ Security sensitive:  0                           |          Blocking:
         ticket['summary'] = summary
         ticket.insert()
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         self.assertIn('\nSubject: =?utf-8?b?', message)  # is mime-encoded
         self.assertEqual(summary,
@@ -1365,7 +1377,7 @@ Security sensitive:  0                           |          Blocking:
         ticket['summary'] = 'Summary'
         ticket.insert(when=when)
         notify_ticket_created(self.env, ticket)
-        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        headers, body = parse_smtp_message(smtpd.get_message())
         validates(headers)
         self.assertEqual('http://localhost/trac/ticket/%d' % ticket.id,
                          headers.get('X-Trac-Ticket-URL'))
@@ -1373,7 +1385,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes(comment='New comment 1',
                             when=when + timedelta(days=1))
         notify_ticket_changed(self.env, ticket)
-        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        headers, body = parse_smtp_message(smtpd.get_message())
         validates(headers)
         self.assertEqual('http://localhost/trac/ticket/%d#comment:1' %
                          ticket.id, headers.get('X-Trac-Ticket-URL'))
@@ -1381,7 +1393,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes(comment='Reply to comment:1', replyto='1',
                             when=when + timedelta(days=2))
         notify_ticket_changed(self.env, ticket)
-        headers, body = parse_smtp_message(notifysuite.smtpd.get_message())
+        headers, body = parse_smtp_message(smtpd.get_message())
         validates(headers)
         self.assertEqual('http://localhost/trac/ticket/%d#comment:2' %
                          ticket.id, headers.get('X-Trac-Ticket-URL'))
@@ -1396,7 +1408,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user0@d.com', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by user0@…)', body)
@@ -1409,7 +1421,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user@d.com', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Comment (by user@…)', body)
@@ -1426,7 +1438,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user0@d.com', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by user0@d.com)', body)
@@ -1441,7 +1453,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user@d.com', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Comment (by user@d.com)', body)
@@ -1463,7 +1475,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user0', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by Ußęr0)', body)
@@ -1480,7 +1492,7 @@ Security sensitive:  0                           |          Blocking:
         ticket.save_changes('user', "The comment")
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Comment (by Thę Ußęr)', body)
@@ -1508,7 +1520,7 @@ class FormatSubjectTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_enabled', 'true')
 
     def tearDown(self):
-        notifysuite.tear_down()
+        smtpd.cleanup()
         self.env.reset_db()
 
     def _create_ticket(self):
@@ -1523,7 +1535,7 @@ class FormatSubjectTestCase(unittest.TestCase):
         ticket = self._create_ticket()
 
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('[TracTest] #1: The summary', headers['Subject'])
@@ -1534,7 +1546,7 @@ class FormatSubjectTestCase(unittest.TestCase):
         ticket.save_changes(author='user@domain.com')
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] #1: The summary', headers['Subject'])
@@ -1545,7 +1557,7 @@ class FormatSubjectTestCase(unittest.TestCase):
         ticket.save_changes(author='user@domain.com')
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] #1: The changed summary '
@@ -1558,7 +1570,7 @@ class FormatSubjectTestCase(unittest.TestCase):
                             self.custom_template)
 
         notify_ticket_created(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('[TracTest] (new) #1: The summary',
@@ -1575,7 +1587,7 @@ class FormatSubjectTestCase(unittest.TestCase):
                             self.custom_template)
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] (updated) #1: The summary',
@@ -1592,7 +1604,7 @@ class FormatSubjectTestCase(unittest.TestCase):
                             self.custom_template)
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] (commented) #1: The summary',
@@ -1609,7 +1621,7 @@ class FormatSubjectTestCase(unittest.TestCase):
                             self.custom_template)
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] (accepted) #1: The summary',
@@ -1625,7 +1637,7 @@ class FormatSubjectTestCase(unittest.TestCase):
                             self.custom_template)
 
         notify_ticket_changed(self.env, ticket)
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertEqual('Re: [TracTest] (worksforme) #1: The summary',
@@ -1641,7 +1653,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
-        notifysuite.tear_down()
+        smtpd.cleanup()
         self.env.reset_db_and_disk()
 
     def _insert_attachment(self, author):
@@ -1658,7 +1670,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
     def test_ticket_notify_attachment_enabled_attachment_added(self):
         self._insert_attachment('user@example.com')
 
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertIn("Re: [TracTest] #1: Ticket summary", headers['Subject'])
@@ -1669,7 +1681,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         attachment = self._insert_attachment('user@example.com')
         attachment.delete()
 
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
 
         self.assertIn("Re: [TracTest] #1: Ticket summary", headers['Subject'])
@@ -1681,7 +1693,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.env.config.set('trac', 'show_full_names', False)
         self._insert_attachment('user@example.com')
 
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by user@…)', body)
@@ -1691,7 +1703,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.env.config.set('trac', 'show_full_names', False)
         self._insert_attachment('user@example.com')
 
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by user@example.com)', body)
@@ -1703,7 +1715,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         ])
         self._insert_attachment('user')
 
-        message = notifysuite.smtpd.get_message()
+        message = smtpd.get_message()
         body = parse_smtp_message(message)[1]
 
         self.assertIn('Changes (by Thę Ußęr)', body)
@@ -1738,7 +1750,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         config_subscriber(self.env, updater=True, reporter=True)
 
     def tearDown(self):
-        notifysuite.tear_down()
+        smtpd.cleanup()
         self.env.reset_db_and_disk()
 
     def test_batchmod_notify(self):
@@ -1757,11 +1769,11 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
                 t.save_changes(author, comment, when=when)
         event = BatchTicketChangeEvent(self.tktids, when, author, comment,
                                        new_values, 'leave')
-        notifysuite.smtpd.cleanup()
+        smtpd.cleanup()
         NotificationSystem(self.env).notify(event)
-        recipients = sorted(notifysuite.smtpd.get_recipients())
-        sender = notifysuite.smtpd.get_sender()
-        message = notifysuite.smtpd.get_message()
+        recipients = sorted(smtpd.get_recipients())
+        sender = smtpd.get_sender()
+        message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         body = body.splitlines()
 
@@ -1783,36 +1795,15 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
                       '%2C9>', body)
 
 
-class NotificationTestSuite(unittest.TestSuite):
-    """Thin test suite wrapper to start and stop the SMTP test server"""
-
-    def __init__(self):
-        """Start the local SMTP test server"""
-        unittest.TestSuite.__init__(self)
-        self.smtpd = SMTPThreadedServer(SMTP_TEST_PORT)
-        self.smtpd.start()
-        self.addTest(unittest.makeSuite(RecipientTestCase))
-        self.addTest(unittest.makeSuite(NotificationTestCase))
-        self.addTest(unittest.makeSuite(FormatSubjectTestCase))
-        self.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
-        self.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
-        self.remaining = self.countTestCases()
-
-    def tear_down(self):
-        """Reset the local SMTP test server"""
-        self.smtpd.cleanup()
-        self.remaining -= 1
-        if self.remaining > 0:
-            return
-        # stop the SMTP test server when all tests have been completed
-        self.smtpd.stop()
-
-
 def test_suite():
-    global notifysuite
-    if not notifysuite:
-        notifysuite = NotificationTestSuite()
-    return notifysuite
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(RecipientTestCase))
+    suite.addTest(unittest.makeSuite(NotificationTestCase))
+    suite.addTest(unittest.makeSuite(FormatSubjectTestCase))
+    suite.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
+    suite.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
