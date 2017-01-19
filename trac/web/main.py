@@ -629,7 +629,9 @@ def _dispatch_request(req, env, env_error):
 def _send_user_error(req, env, e):
     # See trac/web/api.py for the definition of HTTPException subclasses.
     if env:
-        env.log.warning('[%s] %s', req.remote_addr, exception_to_unicode(e))
+        env.log.warning('[%s] %s, %r, referrer %r',
+                        req.remote_addr, exception_to_unicode(e),
+                        req, req.environ.get('HTTP_REFERER'))
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and req.authname == 'anonymous':
@@ -645,8 +647,8 @@ def _send_user_error(req, env, e):
 
 def send_internal_error(env, req, exc_info):
     if env:
-        env.log.error("Internal Server Error: %r, referrer %r%s",
-                      req, req.environ.get('HTTP_REFERER'),
+        env.log.error("[%s] Internal Server Error: %r, referrer %r%s",
+                      req.remote_addr, req, req.environ.get('HTTP_REFERER'),
                       exception_to_unicode(exc_info[1], traceback=True))
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()
