@@ -1556,12 +1556,12 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
     def test_changeset_add_invalid_repository(self):
         rv, output = self._execute('changeset added repos 123')
-        self.assertEqual(0, rv, output)
+        self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_changeset_modify_invalid_repository(self):
         rv, output = self._execute('changeset modified repos 123')
-        self.assertEqual(0, rv, output)
+        self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
 
