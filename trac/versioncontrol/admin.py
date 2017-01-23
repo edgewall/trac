@@ -23,7 +23,7 @@ from trac.perm import IPermissionRequestor
 from trac.util import as_bool, is_path_below
 from trac.util.compat import any
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
-                           printout
+                           printerr, printout
 from trac.util.translation import _, ngettext, tag_
 from trac.versioncontrol import DbRepositoryProvider, InvalidRepository, \
                                 NoSuchChangeset, RepositoryManager, is_default
@@ -95,7 +95,8 @@ class VersionControlAdmin(Component):
         rm = RepositoryManager(self.env)
         errors = rm.notify('changeset_added', reponame, (first_rev,) + revs)
         for error in errors:
-            printout(error)
+            printerr(error)
+        return 2 if errors else 0
 
     def _do_changeset_modified(self, reponame, first_rev, *revs):
         if is_default(reponame):
@@ -103,7 +104,8 @@ class VersionControlAdmin(Component):
         rm = RepositoryManager(self.env)
         errors = rm.notify('changeset_modified', reponame, (first_rev,) + revs)
         for error in errors:
-            printout(error)
+            printerr(error)
+        return 2 if errors else 0
 
     def _do_list(self):
         rm = RepositoryManager(self.env)
