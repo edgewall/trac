@@ -15,12 +15,12 @@
 # Author: Alec Thomas <alec@swapoff.org>
 
 import os
-from ConfigParser import ParsingError
 from fnmatch import fnmatchcase
 from itertools import groupby
 
-from trac.config import ConfigurationError, PathOption, UnicodeConfigParser
-from trac.core import *
+from trac.config import ConfigurationError, ParsingError, PathOption, \
+                        UnicodeConfigParser
+from trac.core import Component, implements
 from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.util import to_list
 from trac.util.text import exception_to_unicode
@@ -126,10 +126,9 @@ class AuthzPolicy(Component):
                             "Non-absolute paths are relative to the "
                             "Environment `conf` directory.")
 
-    authz = None
-    authz_mtime = None
-
     def __init__(self):
+        self.authz = None
+        self.authz_mtime = None
         self.groups_by_user = {}
 
     # IPermissionPolicy methods
