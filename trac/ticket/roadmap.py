@@ -736,11 +736,13 @@ class MilestoneModule(Component):
 
     def process_request(self, req):
         milestone_id = req.args.get('id')
+        action = req.args.get('action', 'view')
+        if not milestone_id and action == 'view':
+            req.redirect(req.href.roadmap())
         req.perm(self.realm, milestone_id).require('MILESTONE_VIEW')
 
         add_link(req, 'up', req.href.roadmap(), _("Roadmap"))
 
-        action = req.args.get('action', 'view')
         try:
             milestone = Milestone(self.env, milestone_id)
         except ResourceNotFound:

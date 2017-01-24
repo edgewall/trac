@@ -14,6 +14,7 @@
 import unittest
 
 from trac.core import ComponentManager
+from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.model import Ticket
@@ -22,7 +23,7 @@ from trac.ticket.roadmap import (
     TicketGroupStats, get_tickets_for_all_milestones,
     get_tickets_for_milestone)
 from trac.util.datefmt import datetime_now, utc
-from trac.web.api import HTTPBadRequest
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -169,10 +170,33 @@ est laborum."""
         self.env.reset_db()
 
     def test_invalid_post_request_raises_exception(self):
-        req = MockRequest(self.env, method='POST', action=None)
+        req = MockRequest(self.env, method='POST', action=None,
+                          args={'id': 'milestone1'})
 
         self.assertRaises(HTTPBadRequest,
                           MilestoneModule(self.env).process_request, req)
+
+    def test_milestone_redirects_to_roadmap(self):
+        """The path /milestone redirects to /roadmap."""
+        def test_milestone_redirect(authname=None):
+            req = MockRequest(self.env, method='GET', path_info='/milestone',
+                              authname=authname)
+            with self.assertRaises(RequestDone):
+                self.mmodule.process_request(req)
+            self.assertEqual('http://example.org/trac.cgi/roadmap',
+                             req.headers_sent['Location'])
+            self.assertEqual('302 Found', req._status)
+            return req
+
+        # Redirects for user with MILESTONE_VIEW
+        req = test_milestone_redirect()
+        self.assertTrue('MILESTONE_VIEW' in req.perm)
+
+        # Redirects for user without MILESTONE_VIEW
+        perm_sys = PermissionSystem(self.env)
+        perm_sys.revoke_permission('anonymous', 'MILESTONE_VIEW')
+        req = test_milestone_redirect('user1')
+        self.assertFalse('MILESTONE_VIEW' in req.perm)
 
     def test_get_search_filters(self):
         req = MockRequest(self.env)
