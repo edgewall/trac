@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-import shutil
 import tempfile
 import unittest
 
@@ -29,8 +28,8 @@ from tracopt.perm.authz_policy import AuthzPolicy
 class AuthzPolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.tmpdir = tempfile.mkdtemp(prefix='trac-')
-        self.authz_file = os.path.join(self.tmpdir, 'trac-authz-policy')
+        tmpdir = tempfile.mkdtemp(prefix='trac-')
+        self.authz_file = os.path.join(tmpdir, 'trac-authz-policy')
         create_file(self.authz_file, """\
 # -*- coding: utf-8 -*-
 # Unicode user names
@@ -72,14 +71,13 @@ administrators = éat
 * =
 """)
         self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
-                                   path=self.tmpdir)
+                                   path=tmpdir)
         self.env.config.set('trac', 'permission_policies',
                             'AuthzPolicy, DefaultPermissionPolicy')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 
     def tearDown(self):
-        self.env.reset_db()
-        shutil.rmtree(self.tmpdir)
+        self.env.reset_db_and_disk()
 
     def check_permission(self, action, user, resource, perm):
         authz_policy = AuthzPolicy(self.env)
