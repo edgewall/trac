@@ -43,7 +43,7 @@ sqlite.uri = sqlite:test.db
 mysql.uri = mysql://tracuser:tracpassword@localhost/trac
 postgres.uri = postgres://tracuser:tracpassword@localhost:5432/trac?schema=tractest
 
-# db backend to use if when `db=<backend>` parameter was given to `make`
+# db backend to use when `db=<backend>` parameter was not given to `make`
 .uri =
 # (if left undefined, use in-memory sqlite)
 

@@ -112,7 +112,7 @@ Makefile: ;
 # ----------------------------------------------------------------------------
 #
 # Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local
-# environment, no customizations to the present Makefile should be
+# environment, no customization of the present Makefile should be
 # necessary.
 #
 #
@@ -297,7 +297,7 @@ diff-%:
 	    $(PYTHON) contrib/l10n_diff_index.py $$diff; \
 	} || rm $$diff
 
-# The above create l10n-xy.diff files but also a  l10n-xy.diff.index
+# The above creates l10n-xy.diff files but also a l10n-xy.diff.index
 # file pointing to "interesting" diffs (message changes or addition
 # for valid msgid).
 #
@@ -568,8 +568,8 @@ define HELP_release
  ---------------- Release tasks
 
   release             release-exe on Windows, release-src otherwise
-  release-src         generates the .tar.gz, .zip and .whl packages
-  release-exe         generates the Windows installers (32- and 64-bits)
+  release-src         generate the .tar.gz, .zip and .whl packages
+  release-exe         generate the Windows installers (32- and 64-bits)
   release-clean       remove the packages
 
   checksum            MD5 and SHA1 checksums of packages of given version
