@@ -110,6 +110,25 @@ class PathTestCase(unittest.TestCase):
         self.assertFalse(util.is_path_below('../sub/repos',
                                             os.path.join(os.getcwd())))
 
+    def test_native_path(self):
+        self.assertIsNone(util.native_path(None))
+        if os.name == 'posix':
+            self.assertEqual('/D/Trac/x', util.native_path('D:\\Trac\\x'))
+            self.assertEqual('/D/Trac/x', util.native_path('/D/Trac/x'))
+            self.assertEqual('/D/', util.native_path('D:\\'))
+            self.assertEqual('/Trac/x', util.native_path('\\Trac\\x'))
+            self.assertEqual('Trac/x', util.native_path('Trac\\x'))
+            self.assertEqual('Trac/x', util.native_path('Trac/x'))
+        elif os.name == 'nt':
+            self.assertEqual('D:\\Trac\\x', util.native_path('/D/Trac/x'))
+            self.assertEqual('D:\\Trac\\x', util.native_path('D:/Trac/x'))
+            self.assertEqual('D:\\Trac\\x', util.native_path('D:\\Trac\\x'))
+            self.assertEqual('D:\\', util.native_path('/D/'))
+            self.assertEqual('D:', util.native_path('/D'))
+            self.assertEqual('C:\\', util.native_path('/'))
+            self.assertEqual('C:\\Trac\\x', util.native_path('/Trac/x'))
+            self.assertEqual('Trac\\x', util.native_path('Trac/x'))
+            self.assertEqual('Trac\\x', util.native_path('Trac\\x'))
 
 class RandomTestCase(unittest.TestCase):
 

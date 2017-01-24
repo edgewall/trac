@@ -22,7 +22,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, get_dir_list
 from trac.config import ConfigSection, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
-from trac.util import as_bool
+from trac.util import as_bool, native_path
 from trac.util.concurrency import threading
 from trac.util.datefmt import time_now, utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
@@ -299,7 +299,7 @@ class DbRepositoryProvider(Component):
                     v = ''
                 if k in ('hidden', 'sync_per_request'):
                     v = '1' if as_bool(v) else None
-                if k == 'dir' and not os.path.isabs(v):
+                if k == 'dir' and not os.path.isabs(native_path(v)):
                     raise TracError(_("The repository directory must be "
                                       "absolute"))
                 db("UPDATE repository SET value=%s WHERE id=%s AND name=%s",
@@ -530,10 +530,10 @@ class RepositoryManager(Component):
            :param directory: the key for identifying the repositories.
            :return: list of `Repository` instances.
         """
-        directory = os.path.join(os.path.normcase(directory), '')
+        directory = os.path.join(os.path.normcase(native_path(directory)), '')
         repositories = []
         for reponame, repoinfo in self.get_all_repositories().iteritems():
-            dir = repoinfo.get('dir')
+            dir = native_path(repoinfo.get('dir'))
             if dir:
                 dir = os.path.join(os.path.normcase(dir), '')
                 if dir.startswith(directory):
@@ -580,7 +580,7 @@ class RepositoryManager(Component):
         if 'alias' in repoinfo:
             reponame = repoinfo['alias']
             repoinfo = self.get_all_repositories().get(reponame, {})
-        rdir = repoinfo.get('dir')
+        rdir = native_path(repoinfo.get('dir'))
         if not rdir:
             return None
         rtype = repoinfo.get('type') or self.default_repository_type
