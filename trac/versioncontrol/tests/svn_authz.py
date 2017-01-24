@@ -96,8 +96,8 @@ foo = r
 class AuthzSourcePolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.tmpdir = mkdtemp()
-        self.authz_file = os.path.join(self.tmpdir, 'trac-authz')
+        tmpdir = mkdtemp()
+        self.authz_file = os.path.join(tmpdir, 'trac-authz')
         create_file(self.authz_file, """\
 [groups]
 group1 = user
@@ -241,7 +241,7 @@ $authenticated = r
 [module:/multiple/2/star]
 * = r
 """)
-        self.env = EnvironmentStub(enable=[AuthzSourcePolicy])
+        self.env = EnvironmentStub(enable=[AuthzSourcePolicy], path=tmpdir)
         self.env.config.set('trac', 'permission_policies',
                             'AuthzSourcePolicy, DefaultPermissionPolicy')
         self.env.config.set('svn', 'authz_file', self.authz_file)
@@ -274,8 +274,7 @@ $authenticated = r
         rm.__class__ = TestRepositoryManager
 
     def tearDown(self):
-        self.env.reset_db()
-        shutil.rmtree(self.tmpdir)
+        self.env.reset_db_and_disk()
 
     def test_get_authz_file_notfound_raises(self):
         """ConfigurationError exception is raised if file not found."""
