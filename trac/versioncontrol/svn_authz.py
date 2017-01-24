@@ -137,10 +137,6 @@ class AuthzSourcePolicy(Component):
         repository. If left empty, the global section is used.
         """)
 
-    _mtime = 0
-    _authz = {}
-    _users = set()
-
     _handled_perms = frozenset([(None, 'BROWSER_VIEW'),
                                 (None, 'CHANGESET_VIEW'),
                                 (None, 'FILE_VIEW'),
@@ -149,6 +145,11 @@ class AuthzSourcePolicy(Component):
                                 ('source', 'FILE_VIEW'),
                                 ('source', 'LOG_VIEW'),
                                 ('changeset', 'CHANGESET_VIEW')])
+
+    def __init__(self):
+        self._mtime = 0
+        self._authz = {}
+        self._users = set()
 
     # IPermissionPolicy methods
 
