@@ -427,7 +427,7 @@ class SessionTestCase(unittest.TestCase):
         req = MockRequest(self.env, authname='anonymous')
         req.incookie['trac_session'] = 'john'
         session = Session(self.env, req)
-        self.assertTrue('foo' not in session)
+        self.assertNotIn('foo', session)
         session['foo'] = 'baz'
         session.save()
 

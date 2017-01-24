@@ -190,13 +190,13 @@ est laborum."""
 
         # Redirects for user with MILESTONE_VIEW
         req = test_milestone_redirect()
-        self.assertTrue('MILESTONE_VIEW' in req.perm)
+        self.assertIn('MILESTONE_VIEW', req.perm)
 
         # Redirects for user without MILESTONE_VIEW
         perm_sys = PermissionSystem(self.env)
         perm_sys.revoke_permission('anonymous', 'MILESTONE_VIEW')
         req = test_milestone_redirect('user1')
-        self.assertFalse('MILESTONE_VIEW' in req.perm)
+        self.assertNotIn('MILESTONE_VIEW', req.perm)
 
     def test_get_search_filters(self):
         req = MockRequest(self.env)

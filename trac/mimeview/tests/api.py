@@ -36,7 +36,7 @@ class GetMimeTypeTestCase(unittest.TestCase):
 
     def test_from_suffix_using_mimetypes(self):
         accepted = ('image/png', 'image/x-png')
-        self.assertTrue(get_mimetype('doc/trac_logo.png', None) in accepted)
+        self.assertIn(get_mimetype('doc/trac_logo.png', None), accepted)
 
     def test_from_content_using_CONTENT_RE(self):
         self.assertEqual('text/x-python',

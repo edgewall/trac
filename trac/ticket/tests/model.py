@@ -399,8 +399,8 @@ class TicketTestCase(unittest.TestCase):
         # Add a custom field of type 'time'
         self.env.config.set('ticket-custom', 'due', 'time')
         ticket = Ticket(self.env)
-        self.assertFalse('due' in ticket.std_fields)
-        self.assertTrue('due' in ticket.time_fields)
+        self.assertNotIn('due', ticket.std_fields)
+        self.assertIn('due', ticket.time_fields)
         ticket['reporter'] = 'john'
         ticket['summary'] = 'Task1'
         tktid = ticket.insert()

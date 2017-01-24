@@ -256,7 +256,7 @@ class AttachmentTestCase(unittest.TestCase):
         `ATTACHMENT_VIEW` maps to `TICKET_VIEW`, the `TICKET_VIEW` is tested
         against the ticket's resource."""
         attachment = Attachment(self.env, 'ticket', 42)
-        self.assertTrue('ATTACHMENT_VIEW' in self.perm(attachment.resource))
+        self.assertIn('ATTACHMENT_VIEW', self.perm(attachment.resource))
 
     def test_resource_exists(self):
         att = Attachment(self.env, 'wiki', 'WikiStart')

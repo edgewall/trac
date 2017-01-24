@@ -281,9 +281,9 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_contains(self):
-        self.assertTrue('TEST_MODIFY' in self.perm)
-        self.assertTrue('TEST_ADMIN' in self.perm)
-        self.assertFalse('TRAC_ADMIN' in self.perm)
+        self.assertIn('TEST_MODIFY', self.perm)
+        self.assertIn('TEST_ADMIN', self.perm)
+        self.assertNotIn('TRAC_ADMIN', self.perm)
 
     def test_has_permission(self):
         self.assertTrue(self.perm.has_permission('TEST_MODIFY'))
@@ -375,8 +375,8 @@ class PermissionPolicyTestCase(unittest.TestCase):
 
     def test_grant_revoke_permissions(self):
         self.policy.grant('testuser', ['TEST_MODIFY', 'TEST_ADMIN'])
-        self.assertTrue('TEST_MODIFY' in self.perm)
-        self.assertTrue('TEST_ADMIN' in self.perm)
+        self.assertIn('TEST_MODIFY', self.perm)
+        self.assertIn('TEST_ADMIN', self.perm)
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): True,
                           ('testuser', 'TEST_ADMIN'): True})
@@ -391,8 +391,8 @@ class PermissionPolicyTestCase(unittest.TestCase):
         self.assertEqual(list(system.policies),
                          [self.policy,
                           perm.DefaultPermissionPolicy(self.env)])
-        self.assertTrue('TEST_MODIFY' in self.perm)
-        self.assertTrue('TEST_ADMIN' in self.perm)
+        self.assertIn('TEST_MODIFY', self.perm)
+        self.assertIn('TEST_ADMIN', self.perm)
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): True,
                           ('testuser', 'TEST_ADMIN'): None})
@@ -454,7 +454,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
         for ACTION_2.
         """
         perm_cache = perm.PermissionCache(self.env, 'user1')
-        self.assertTrue('ACTION_1' in perm_cache)
+        self.assertIn('ACTION_1', perm_cache)
         self.assertEqual(2, self.ps.policies[0].call_count)
         self.assertEqual(1, self.ps.policies[1].call_count)
         self.assertEqual([
@@ -468,7 +468,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
         policy2 consulted for ACTION_2.
         """
         perm_cache = perm.PermissionCache(self.env, 'user2')
-        self.assertFalse('ACTION_1' in perm_cache)
+        self.assertNotIn('ACTION_1', perm_cache)
         self.assertEqual(2, self.ps.policies[0].call_count)
         self.assertEqual(2, self.ps.policies[1].call_count)
         self.assertEqual([
@@ -482,7 +482,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
         """policy1 consulted for ACTION_2. policy2 consulted for ACTION_2.
         """
         perm_cache = perm.PermissionCache(self.env, 'user1')
-        self.assertFalse('ACTION_2' in perm_cache)
+        self.assertNotIn('ACTION_2', perm_cache)
         self.assertEqual(1, self.ps.policies[0].call_count)
         self.assertEqual(1, self.ps.policies[1].call_count)
         self.assertEqual([
@@ -494,7 +494,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
         """policy1 consulted for ACTION_2. policy2 consulted for ACTION_2.
         """
         perm_cache = perm.PermissionCache(self.env, 'user2')
-        self.assertTrue('ACTION_2' in perm_cache)
+        self.assertIn('ACTION_2', perm_cache)
         self.assertEqual(1, self.ps.policies[0].call_count)
         self.assertEqual(1, self.ps.policies[1].call_count)
         self.assertEqual([

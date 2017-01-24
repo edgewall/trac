@@ -1645,7 +1645,7 @@ class TracAdminHelpMacroTestCase(unittest.TestCase):
 
         macro = TracAdminHelpMacro(self.env)
         help = unicode(macro.expand_macro(None, None, 'unicode-help'))
-        self.assertTrue(unicode_help in help)
+        self.assertIn(unicode_help, help)
 
     def test_invalid_command(self):
         macro = TracAdminHelpMacro(self.env)

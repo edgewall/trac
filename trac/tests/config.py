@@ -249,15 +249,15 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_contains_from_config(self):
         """Contains returns `True` for section defined in config."""
-        self.assertTrue(u'séction1' in self.config)
+        self.assertIn(u'séction1', self.config)
 
     def test_contains_from_inherited(self):
         """Contains returns `True` for section defined in inherited config."""
-        self.assertTrue(u'séction2' in self.config)
+        self.assertIn(u'séction2', self.config)
 
     def test_contains_from_default(self):
         """Contains returns `True` for section defined in an option."""
-        self.assertTrue(u'séction3' in self.config)
+        self.assertIn(u'séction3', self.config)
 
     def test_remove_from_config(self):
         """Value is removed from configuration."""
@@ -767,11 +767,11 @@ class IntegrationTestCase(BaseTestCase):
     def test_has_option(self):
         config = self._read()
         self.assertFalse(config.has_option('a', 'option'))
-        self.assertFalse('option' in config['a'])
+        self.assertNotIn('option', config['a'])
         self._write(['[a]', 'option = x'])
         config = self._read()
         self.assertTrue(config.has_option('a', 'option'))
-        self.assertTrue('option' in config['a'])
+        self.assertIn('option', config['a'])
 
         class Foo(object):
             option_a = Option('a', 'option2', 'x2')
@@ -781,11 +781,11 @@ class IntegrationTestCase(BaseTestCase):
     def test_has_option_unicode(self):
         config = self._read()
         self.assertFalse(config.has_option(u'ä', u'öption'))
-        self.assertFalse(u'öption' in config[u'ä'])
+        self.assertNotIn(u'öption', config[u'ä'])
         self._write([u'[ä]', u'öption = x'])
         config = self._read()
         self.assertTrue(config.has_option(u'ä', u'öption'))
-        self.assertTrue(u'öption' in config[u'ä'])
+        self.assertIn(u'öption', config[u'ä'])
 
         class Foo(object):
             option_a = Option(u'ä', u'öption2', 'x2')
@@ -820,7 +820,7 @@ class IntegrationTestCase(BaseTestCase):
             config.remove('a', 'option') # Should *not* remove option in parent
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
-            self.assertTrue('a' in config)
+            self.assertIn('a', config)
 
     def test_inherit_multiple(self):
         class Foo(object):
