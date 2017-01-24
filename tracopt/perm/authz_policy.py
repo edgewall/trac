@@ -23,7 +23,7 @@ from trac.config import ConfigurationError, PathOption, UnicodeConfigParser
 from trac.core import *
 from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.util import to_list
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode
 
 
 class AuthzPolicy(Component):
@@ -130,17 +130,6 @@ class AuthzPolicy(Component):
     authz_mtime = None
 
     def __init__(self):
-        if not self.authz_file:
-            self.log.error("The `[authz_policy] authz_file` configuration "
-                           "option in trac.ini is empty or not defined.")
-            raise ConfigurationError()
-
-        try:
-            os.stat(self.authz_file)
-        except OSError as e:
-            self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e))
-            raise ConfigurationError()
         self.groups_by_user = {}
 
     # IPermissionPolicy methods
@@ -174,12 +163,23 @@ class AuthzPolicy(Component):
         self.log.debug("Parsing authz security policy %s",
                        self.authz_file)
 
+        if not self.authz_file:
+            self.log.error("The `[authz_policy] authz_file` configuration "
+                           "option in trac.ini is empty or not defined.")
+            raise ConfigurationError()
+        try:
+            self.authz_mtime = os.path.getmtime(self.authz_file)
+        except OSError as e:
+            self.log.error("Error parsing authz permission policy file: %s",
+                           exception_to_unicode(e))
+            raise ConfigurationError()
+
         self.authz = UnicodeConfigParser()
         try:
             self.authz.read(self.authz_file)
         except ParsingError as e:
             self.log.error("Error parsing authz permission policy file: %s",
-                           to_unicode(e))
+                           exception_to_unicode(e))
             raise ConfigurationError()
         groups = {}
         if self.authz.has_section('groups'):
@@ -197,8 +197,6 @@ class AuthzPolicy(Component):
 
         for group, users in groups.iteritems():
             add_items('@' + group, users)
-
-        self.authz_mtime = os.path.getmtime(self.authz_file)
 
     def normalise_resource(self, resource):
         def to_descriptor(resource):
