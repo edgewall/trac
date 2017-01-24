@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import shutil
 import tempfile
 import unittest
 
@@ -28,8 +29,8 @@ from tracopt.perm.authz_policy import AuthzPolicy
 class AuthzPolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        tmpdir = os.path.realpath(tempfile.gettempdir())
-        self.authz_file = os.path.join(tmpdir, 'trac-authz-policy')
+        self.tmpdir = tempfile.mkdtemp(prefix='trac-')
+        self.authz_file = os.path.join(self.tmpdir, 'trac-authz-policy')
         create_file(self.authz_file, """\
 # -*- coding: utf-8 -*-
 # Unicode user names
@@ -70,14 +71,15 @@ administrators = éat
 @administrators = BROWSER_VIEW, FILE_VIEW
 * =
 """)
-        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy], path=tmpdir)
+        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
+                                   path=self.tmpdir)
         self.env.config.set('trac', 'permission_policies',
                             'AuthzPolicy, DefaultPermissionPolicy')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 
     def tearDown(self):
         self.env.reset_db()
-        os.remove(self.authz_file)
+        shutil.rmtree(self.tmpdir)
 
     def check_permission(self, action, user, resource, perm):
         authz_policy = AuthzPolicy(self.env)
@@ -171,26 +173,34 @@ administrators = éat
         """get_authz_file should resolve a relative path."""
         authz_policy = AuthzPolicy(self.env)
         authz_file = authz_policy.authz_file
-        self.assertEqual(os.path.join(self.env.path, 'trac-authz-policy'),
-                         authz_file)
+        self.assertTrue(os.path.isabs(authz_file))
 
     def test_get_authz_file_notfound_raises(self):
         """ConfigurationError exception should be raised if file not found."""
         authz_file = os.path.join(self.env.path, 'some-nonexistent-file')
         self.env.config.set('authz_policy', 'authz_file', authz_file)
-        self.assertRaises(ConfigurationError, AuthzPolicy, self.env)
+        self.assertRaises(ConfigurationError, self.check_permission,
+                          'WIKI_VIEW', 'änon', None, None)
 
     def test_get_authz_file_notdefined_raises(self):
         """ConfigurationError exception should be raised if the option
         `[authz_policy] authz_file` is not specified in trac.ini."""
         self.env.config.remove('authz_policy', 'authz_file')
-        self.assertRaises(ConfigurationError, AuthzPolicy, self.env)
+        self.assertRaises(ConfigurationError, self.check_permission,
+                          'WIKI_VIEW', 'änon', None, None)
 
     def test_get_authz_file_empty_raises(self):
         """ConfigurationError exception should be raised if the option
         `[authz_policy] authz_file` is empty."""
         self.env.config.set('authz_policy', 'authz_file', '')
-        self.assertRaises(ConfigurationError, AuthzPolicy, self.env)
+        self.assertRaises(ConfigurationError, self.check_permission,
+                          'WIKI_VIEW', 'änon', None, None)
+
+    def test_get_authz_file_removed_raises(self):
+        """ConfigurationError exception is raised if file is removed."""
+        os.remove(self.authz_file)
+        self.assertRaises(ConfigurationError, self.check_permission,
+                          'WIKI_VIEW', 'änon', None, None)
 
     def test_parse_authz_empty(self):
         """Allow the file to be empty."""
