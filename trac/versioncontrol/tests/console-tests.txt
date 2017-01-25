@@ -1,0 +1,52 @@
+===== test_changeset_add_no_repository_revision =====
+Error: Invalid arguments
+
+changeset added <repos> <rev> [rev] [...]
+
+    Notify trac about changesets added to a repository
+
+    This command should be called from a post-commit hook. It will trigger a
+    cache update and notify components about the addition.
+
+===== test_changeset_add_no_revision =====
+Error: Invalid arguments
+
+changeset added <repos> <rev> [rev] [...]
+
+    Notify trac about changesets added to a repository
+
+    This command should be called from a post-commit hook. It will trigger a
+    cache update and notify components about the addition.
+
+===== test_changeset_modify_no_repository_revision =====
+Error: Invalid arguments
+
+changeset modified <repos> <rev> [rev] [...]
+
+    Notify trac about changesets modified in a repository
+
+    This command should be called from a post-revprop hook after revision
+    properties like the commit message, author or date have been changed. It
+    will trigger a cache update for the given revisions and notify components
+    about the change.
+
+===== test_changeset_modify_no_revision =====
+Error: Invalid arguments
+
+changeset modified <repos> <rev> [rev] [...]
+
+    Notify trac about changesets modified in a repository
+
+    This command should be called from a post-revprop hook after revision
+    properties like the commit message, author or date have been changed. It
+    will trigger a cache update for the given revisions and notify components
+    about the change.
+
+===== test_changeset_add_invalid_repository =====
+Repository 'invalid' not found
+===== test_changeset_modify_invalid_repository =====
+Repository 'invalid' not found
+===== test_changeset_add_invalid_changeset =====
+NoSuchChangeset: No changeset invalid in the repository
+===== test_changeset_modify_invalid_changeset =====
+NoSuchChangeset: No changeset invalid in the repository
