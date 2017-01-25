@@ -24,7 +24,6 @@ import io
 import mimetypes
 import os
 import re
-import socket
 import sys
 import urlparse
 
@@ -832,8 +831,8 @@ class Request(object):
                     buf[:] = ()
             if bufsize > 0:
                 self._write(''.join(buf))
-        except (IOError, socket.error) as e:
-            if self._is_client_disconnected(e):
+        except IOError as e:
+            if is_client_disconnect_exception(e):
                 raise RequestDone
             raise
 
@@ -862,8 +861,8 @@ class Request(object):
         try:
             fs = _FieldStorage(fp, environ=self.environ,
                                keep_blank_values=True)
-        except (IOError, socket.error) as e:
-            if self._is_client_disconnected(e):
+        except IOError as e:
+            if is_client_disconnect_exception(e):
                 raise HTTPBadRequest(
                     _("Exception caught while reading request: %(msg)s",
                       msg=exception_to_unicode(e)))
@@ -958,21 +957,5 @@ class Request(object):
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
 
-    def _is_client_disconnected(self, e):
-        if is_client_disconnect_exception(e):
-            return True
-        # Note that mod_wsgi raises an IOError with only a message
-        # if the client disconnects
-        if 'mod_wsgi.version' in self.environ:
-            if 'mod_wsgi.version' in self.environ:
-                mod_wsgi_prefix = 'Apache/mod_wsgi '
-                m = e.args[0]
-                if m.startswith(mod_wsgi_prefix):
-                    m = m[len(mod_wsgi_prefix):]
-            return m.startswith(('failed to write response data',
-                                 'failed to write data',
-                                 'client connection closed',
-                                 'request data read error'))
-        return False
 
 __no_apidoc__ = _HTTPException_subclass_names

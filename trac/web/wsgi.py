@@ -16,7 +16,6 @@
 
 from abc import ABCMeta, abstractmethod
 import errno
-import socket
 import sys
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ForkingMixIn, ThreadingMixIn
@@ -29,9 +28,14 @@ _WSAECONNRESET = 10054
 
 
 def is_client_disconnect_exception(e):
-    return isinstance(e, (IOError, socket.error)) and \
-           e.args[0] in (errno.EPIPE, errno.ECONNRESET, _WSAECONNABORTED,
-                         _WSAECONNRESET)
+    """Determines whether the exception was caused by a disconnecting client.
+
+    :type e: IOError
+    :rtype: bool
+    """
+    return e.errno in (errno.EPIPE, errno.ECONNRESET, # Unix
+                       _WSAECONNABORTED, _WSAECONNRESET, # Windows
+                       None) # mod_wsgi, uwsgi, ... (see #12650)
 
 
 class _ErrorsWrapper(object):
@@ -197,7 +201,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
     def handle_one_request(self):
         try:
             environ = self.setup_environ()
-        except (IOError, socket.error) as e:
+        except IOError as e:
             environ = None
             if is_client_disconnect_exception(e):
                 self.close_connection = 1
@@ -212,7 +216,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         """We need to help the garbage collector a little."""
         try:
             BaseHTTPRequestHandler.finish(self)
-        except (IOError, socket.error) as e:
+        except IOError as e:
             # ignore an exception if client disconnects
             if not is_client_disconnect_exception(e):
                 raise
@@ -256,7 +260,7 @@ class WSGIServerGateway(WSGIGateway):
                 self.handler.wfile.write('%x\r\n%s\r\n' % (len(data), data))
             else:
                 self.handler.wfile.write(data)
-        except (IOError, socket.error) as e:
+        except IOError as e:
             if is_client_disconnect_exception(e):
                 self.handler.close_connection = 1
             else:
