@@ -841,9 +841,10 @@ class EnvironmentAdmin(Component):
         yield ('upgrade', '[--no-backup]',
                """Upgrade database to current version
 
-               The database is backed up to the environment 'db' directory,
-               unless the --no-backup option is specified. The shorthand alias
-               -b can also be used to specify --no-backup.
+               The database is backed up to the directory specified by [trac]
+               backup_dir (the default is 'db'), unless the --no-backup
+               option is specified. The shorthand alias -b can also be used
+               to specify --no-backup.
                """,
                None, self._do_upgrade)
 
