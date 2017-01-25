@@ -1,14 +1,14 @@
 # Translations template for Trac.
-# Copyright (C) 2016 Edgewall Software
+# Copyright (C) 2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.2\n"
+"Project-Id-Version: Trac 1.2.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-15 16:37-0700\n"
+"POT-Creation-Date: 2017-01-25 11:31-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -659,27 +659,34 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:440
+#: trac/notification/mail.py:270
+msgid ""
+"Comma seperated list of email resolver components in the order\n"
+"they will be called.  If an email address is resolved, the remaining\n"
+"resolvers will not be called."
+msgstr ""
+
+#: trac/notification/mail.py:444
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:443
+#: trac/notification/mail.py:447
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:446
+#: trac/notification/mail.py:450
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:449
+#: trac/notification/mail.py:453
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:452
+#: trac/notification/mail.py:456
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:508
+#: trac/notification/mail.py:512
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -815,7 +822,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:839
+#: trac/ticket/query.py:846
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -823,7 +830,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:847
+#: trac/ticket/query.py:854
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -831,7 +838,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:855
+#: trac/ticket/query.py:862
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -847,7 +854,7 @@ msgstr ""
 msgid "Number of tickets displayed in the rss feeds for reports."
 msgstr ""
 
-#: trac/ticket/roadmap.py:143
+#: trac/ticket/roadmap.py:144
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -909,27 +916,27 @@ msgid ""
 "for example."
 msgstr ""
 
-#: trac/ticket/roadmap.py:422
+#: trac/ticket/roadmap.py:451
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:626
+#: trac/ticket/roadmap.py:655
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:633
+#: trac/ticket/roadmap.py:662
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:637
+#: trac/ticket/roadmap.py:666
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -1001,7 +1008,7 @@ msgid ""
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:172
+#: trac/versioncontrol/admin.py:174
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1034,7 +1041,7 @@ msgid ""
 "the \"Repositories\" admin panel. (''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:124
+#: trac/versioncontrol/svn_authz.py:126
 #, python-format
 msgid ""
 "The path to the Subversion\n"
@@ -1044,7 +1051,7 @@ msgid ""
 "paths are relative to the Environment `conf` directory."
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:133
+#: trac/versioncontrol/svn_authz.py:135
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
