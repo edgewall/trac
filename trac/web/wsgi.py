@@ -28,9 +28,10 @@ _WSAECONNRESET = 10054
 
 
 def is_client_disconnect_exception(e):
-    return isinstance(e, (IOError, socket.error)) and \
-           e.args[0] in (errno.EPIPE, errno.ECONNRESET, _WSAECONNABORTED,
-                         _WSAECONNRESET)
+    return (isinstance(e, IOError) and
+            e.errno in (errno.EPIPE, errno.ECONNRESET, # Unix
+                        _WSAECONNABORTED, _WSAECONNRESET, # Windows
+                        None)) # mod_wsgi, uwsgi, ... (see #12650)
 
 
 class _ErrorsWrapper(object):
