@@ -40,6 +40,7 @@ define HELP
   help-release        tasks and configuration for preparing a Trac release
   help-misc           several other tasks
 
+  help-all            all the tasks at a glance...
 endef
 # `
 export HELP
@@ -59,7 +60,7 @@ export HELP_CFG
 #
 # ----------------------------------------------------------------------------
 
-.PHONY: all help status clean clean-bytecode clean-mo
+.PHONY: all help help-all status clean clean-bytecode clean-mo
 
 %.py : status
 	$(PYTHON) setup.py -q test -s $(subst /,.,$(@:.py=)).test_suite $(testopts)
@@ -73,6 +74,13 @@ endif
 
 help: Makefile.cfg
 	@echo "$$HELP"
+
+help_variables = $(filter HELP_%,$(.VARIABLES))
+help_targets = $(filter-out help-CFG,$(help_variables:HELP_%=help-%))
+
+.SECONDEXPANSION:
+help-all: $$(sort $$(help_targets))
+
 
 help-%: Makefile.cfg
 	@echo "$${HELP_$*}"

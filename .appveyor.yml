@@ -50,3 +50,5 @@ test_script:
     . .\contrib\appveyor.ps1
 
     Trac-Tests
+artifacts:
+- path: 'dist\*'
