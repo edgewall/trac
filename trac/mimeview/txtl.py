@@ -18,7 +18,10 @@
 See also: https://github.com/textile/python-textile
 """
 
-import textile
+try:
+    import textile
+except ImportError:
+    pass
 
 from trac.api import ISystemInfoProvider
 from trac.core import *

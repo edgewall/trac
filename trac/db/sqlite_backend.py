@@ -259,7 +259,7 @@ class SQLiteConnector(Component):
     def backup(self, dest_file):
         """Simple SQLite-specific backup of the database.
 
-        @param dest_file: Destination file basename
+        :param dest_file: Destination file basename
         """
         import shutil
         db_str = self.config.get('trac', 'database')

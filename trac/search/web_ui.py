@@ -35,6 +35,7 @@ from trac.wiki.formatter import extract_link
 
 
 class SearchModule(Component):
+    """Controller for the search sub-system"""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITemplateProvider, IWikiSyntaxProvider)

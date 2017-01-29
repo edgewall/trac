@@ -23,10 +23,14 @@ def _reloader_thread(modification_callback, loop_callback):
     """When this function is run from the main thread, it will force other
     threads to exit when any modules currently loaded change.
 
-    @param modification_callback: a function taking a single argument, the
-        modified file, which is called every time a modification is detected
-    @param loop_callback: a function taking no arguments, which is called
-        after every modification check
+    :param modification_callback: a function taking a single argument,
+                                  the modified file, which is called
+                                  every time a modification is
+                                  detected
+
+    :param loop_callback: a function taking no arguments, which is
+                          called after every modification check
+
     """
     mtimes = {}
     while True:

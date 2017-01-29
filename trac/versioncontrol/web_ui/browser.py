@@ -54,6 +54,7 @@ class IPropertyRenderer(Interface):
          - 'browser' rendered in the browser view
          - 'changeset' rendered in the changeset view as a node property
          - 'revprop' rendered in the changeset view as a revision property
+
         Other identifiers might be used by plugins, so it's advised to simply
         ignore unknown modes.
 
@@ -72,13 +73,13 @@ class IPropertyRenderer(Interface):
         (i.e. the `node.get_properties()`).
 
         The rendered result can be one of the following:
-        - `None`: the property will be skipped
-        - an `unicode` value: the property will be displayed as text
-        - a `RenderedProperty` instance: the property will only be displayed
-          using the instance's `content` attribute, and the other attributes
-          will also be used in some display contexts (like `revprop`)
-        - `Markup` or other Genshi content: the property will be displayed
-          normally, using that content as a block-level markup
+         - `None`: the property will be skipped
+         - an `unicode` value: the property will be displayed as text
+         - a `RenderedProperty` instance: the property will only be displayed
+           using the instance's `content` attribute, and the other attributes
+           will also be used in some display contexts (like `revprop`)
+         - `Markup` or other Genshi content: the property will be displayed
+           normally, using that content as a block-level markup
         """
 
 

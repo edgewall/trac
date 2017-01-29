@@ -59,3 +59,18 @@ Functions
 
 .. autofunction :: trac.mimeview.api.content_to_unicode
 
+
+Sub-modules
+-----------
+
+.. automodule :: trac.mimeview.patch
+   :members:
+
+.. automodule :: trac.mimeview.pygments
+   :members:
+
+.. automodule :: trac.mimeview.rst
+   :members:
+
+.. automodule :: trac.mimeview.txtl
+   :members:

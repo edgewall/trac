@@ -74,10 +74,12 @@ _type_map = {
 class MySQLConnector(Component):
     """Database connector for MySQL version 4.1 and greater.
 
-    Database URLs should be of the form:
-    {{{
-    mysql://user[:password]@host[:port]/database[?param1=value&param2=value]
-    }}}
+    Database URLs should be of the form::
+
+      {{{
+      mysql://user[:password]@host[:port]/database[?param1=value&param2=value]
+      }}}
+
     The following parameters are supported:
      * `compress`: Enable compression (0 or 1)
      * `init_command`: Command to run once the connection is created
