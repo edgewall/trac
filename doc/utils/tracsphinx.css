@@ -16,10 +16,10 @@ div.bodywrapper {
 /* Sidebar */
 
 div.sphinxsidebarwrapper {
-    -moz-box-shadow: 2px 2px 7px 0 grey;
-    -webkit-box-shadow: 2px 2px 7px 0 grey;
-    box-shadow: 2px 2px 7px 0 grey;
-    padding: 0 0 1px .4em;
+    box-shadow: .2em .2em .5em 0 #dcdcdc;
+    border: 1px solid #ccc;
+    border-radius: .3em;
+    padding: .4em;
 }
 
 div.sphinxsidebar h3 a,
@@ -58,35 +58,36 @@ div.related ul li a:hover {
 /* Content */
 
 body {
-    font: normal 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
+    font: normal 1em Roboto,Segoe UI,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
     background-color: #4b4d4d;
     border: none;
     border-top: 1px solid #aaa;
 }
 h1, h2, h3, h4 {
-    font-family: Arial,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif;
+    color: #822;
     font-weight: bold;
-    letter-spacing: -0.018em;
     page-break-after: avoid;
 }
 
 h1 { color: #555 }
-h2 { border-bottom: 1px solid #ddd }
+h2 { border-bottom: .1em solid #822 }
 
 div.body a { text-decoration: none }
 a { color: #b00 }
-a code, a tt { color: #d50 }
-a:visited { color: #800 }
-a:visited code, a:visited tt { color: #b30 }
+a code, a tt { color: #900 }
+a:visited { color: #a00 }
+a:visited code, a:visited tt { color: #800 }
 
 :link:hover, :visited:hover {
     background-color: #eee;
     color: #400;
+    border-radius: .2em;
 }
 a code:hover, a:visited code:hover, 
 a tt:hover, a:visited tt:hover {
     background-color: #eee;
     color: #600;
+    border-radius: .2em;
 }
 
 a.headerlink, a.headerlink:hover {
@@ -106,18 +107,54 @@ div.body h4 a, div.body h5 a, div.body h6 a {
     color: #d7d7d7 !important;
 }
 
+div.section > dl {
+    margin: 1em;
+}
 dl.class {
-    -moz-box-shadow: 1px 1px 6px 0 #888;
-    -webkit-box-shadow: 1px 1px 6px 0 #888;
-    box-shadow:  1px 1px 6px 0 #888;
+    box-shadow: .2em .2em .5em 0 #eaeaea;
+    border: 1px solid #ccc;
+    border-radius: .3em;
     padding: .5em;
 }
 dl.function {
-    margin-bottom: 24px;
+    border-left: .2em solid #eee;
+    padding-left: .4em;
+    margin-bottom: 1.5em;
+    margin-right: 1em;
 }
-
-dl.class > dt, dl.function > dt {
-    border-bottom: 1px solid #ddd;
+dl.method {
+    border-left: .2em solid #eaeaea;
+    padding-left: .4em;
+    margin-right: 1em;
+}
+dl.classmethod, dl.staticmethod {
+    border-left: .2em solid #eaeaea;
+    padding-left: .2em;
+    margin-right: 1em;
+}
+dl.attribute, dl.data {
+    border-left: .2em dotted #eaeaea;
+    padding-left: .4em;
+    margin-right: 1em;
+}
+dl.class > dt {
+    border-bottom: .5em solid #f6f6f6;
+    padding-bottom: .3em;
+    margin-bottom: .5em;
+}
+dl.function > dt {
+    border-bottom: .2em solid #eee;
+    padding-bottom: .1em;
+    margin-bottom: .2em;
+}
+dt {
+    font-size: 110%;
+}
+code.descname {
+    font-size: 110%;
+}
+dd > p {
+    font-size: 95%;
 }
 
 th.field-name {
@@ -135,6 +172,13 @@ td.field-body > ul > li > strong {
     font-style: italic;
 }
 
+pre {
+    box-shadow: .2em .2em .5em 0 #ccc;
+    border: 1px solid #ccc;
+    border-radius: .3em;
+    margin: 1em 2em;
+}
+
 /* Admonitions */
 
 div.admonition p.admonition-title, div.warning p.admonition-title {
@@ -146,13 +190,13 @@ div.admonition p.admonition-title, div.warning p.admonition-title {
 div.admonition {
     background: none;
     border: none;
-    border-left: 2px solid #acc;
+    border-left: .5em solid #e3f3f3;
 }
 
 div.warning {
     background: none;
     border: none;
-    border-left: 3px solid #c33;
+    border-left: .5em solid #c33;
 }
 
 /* Search */

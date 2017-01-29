@@ -77,7 +77,7 @@ extensions.append('sphinx.ext.ifconfig')
 # -- Link to other Sphinx documentations
 extensions.append('sphinx.ext.intersphinx')
 
-intersphinx_mapping = {'python': ('http://docs.python.org/2.7', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None)}
 
 # -- Keep track of :todo: items
 extensions.append('sphinx.ext.todo')
@@ -362,4 +362,4 @@ def setup(app):
     roles.register_canonical_role('extensionpoints', extensionpoints_role)
 
     # ifconfig variables
-    app.add_config_value('devel', '', True)
+    app.add_config_value('devel', True, '')

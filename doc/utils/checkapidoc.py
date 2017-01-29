@@ -14,10 +14,11 @@
 
 """Trac API doc checker
 
-Verify that all symbols belonging to modules already documented in the doc/api
-Sphinx sources are referenced.
+Verify that all symbols belonging to modules already documented in the
+doc/api Sphinx sources are referenced.
 
 See http://trac.edgewall.org/wiki/TracDev/ApiDocs
+
 """
 
 import fnmatch
