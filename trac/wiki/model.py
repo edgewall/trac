@@ -83,7 +83,7 @@ class WikiPage(object):
         """Delete one or all versions of a page.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
+                    in version 1.1.1
         """
         if not self.exists:
             raise TracError(_("Cannot delete non-existent page"))

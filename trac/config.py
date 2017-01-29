@@ -602,11 +602,11 @@ class Option(object):
                  doc_domain='tracini'):
         """Create the configuration option.
 
-        @param section: the name of the configuration section this option
-            belongs to
-        @param name: the name of the option
-        @param default: the default value for the option
-        @param doc: documentation of the option
+        :param section: the name of the configuration section this option
+                        belongs to
+        :param name: the name of the option
+        :param default: the default value for the option
+        :param doc: documentation of the option
         """
         self.section = section
         self.name = name

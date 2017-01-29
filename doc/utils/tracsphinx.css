@@ -120,22 +120,23 @@ dl.function {
     border-left: .2em solid #eee;
     padding-left: .4em;
     margin-bottom: 1.5em;
-    margin-right: 1em;
+}
+dl.exception {
+    border-left: .2em solid #ebb;
+    padding-left: .4em;
+    margin-bottom: 1.5em;
 }
 dl.method {
     border-left: .2em solid #eaeaea;
     padding-left: .4em;
-    margin-right: 1em;
 }
 dl.classmethod, dl.staticmethod {
-    border-left: .2em solid #eaeaea;
+    border-left: .2em solid #ccc;
     padding-left: .2em;
-    margin-right: 1em;
 }
 dl.attribute, dl.data {
     border-left: .2em dotted #eaeaea;
     padding-left: .4em;
-    margin-right: 1em;
 }
 dl.class > dt {
     border-bottom: .5em solid #f6f6f6;

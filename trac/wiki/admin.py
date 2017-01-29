@@ -93,7 +93,7 @@ class WikiAdmin(Component):
     def export_page(self, page, filename, cursor=None):
         """
         :since 1.0: the `cursor` parameter is no longer needed and will be
-        removed in version 1.1.1
+                    removed in version 1.1.1
         """
         for text, in self.env.db_query("""
                 SELECT text FROM wiki WHERE name=%s

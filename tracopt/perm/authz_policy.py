@@ -43,20 +43,21 @@ class AuthzPolicy(Component):
     permissions here. Only additional rights or restrictions should be added.
 
     === Installation ===
-    Note that this plugin requires the `configobj` package:
+    Note that this plugin requires the `configobj` package::
 
-        http://www.voidspace.org.uk/python/configobj.html
+      http://www.voidspace.org.uk/python/configobj.html
 
     You should be able to install it by doing a simple `easy_install configobj`
 
-    Enabling this policy requires listing it in `trac.ini:
-    {{{
-    [trac]
-    permission_policies = AuthzPolicy, DefaultPermissionPolicy
+    Enabling this policy requires listing it in `trac.ini`::
 
-    [authz_policy]
-    authz_file = conf/authzpolicy.conf
-    }}}
+      {{{
+      [trac]
+      permission_policies = AuthzPolicy, DefaultPermissionPolicy
+
+      [authz_policy]
+      authz_file = conf/authzpolicy.conf
+      }}}
 
     This means that the `AuthzPolicy` permissions will be checked first, and
     only if no rule is found will the `DefaultPermissionPolicy` be used.
@@ -66,31 +67,35 @@ class AuthzPolicy(Component):
     The `authzpolicy.conf` file is a `.ini` style configuration file.
 
      - Each section of the config is a glob pattern used to match against a
-       Trac resource descriptor. These descriptors are in the form:
-       {{{
-       <realm>:<id>@<version>[/<realm>:<id>@<version> ...]
-       }}}
+       Trac resource descriptor. These descriptors are in the form::
+
+         {{{
+         <realm>:<id>@<version>[/<realm>:<id>@<version> ...]
+         }}}
+
        Resources are ordered left to right, from parent to child. If any
        component is inapplicable, `*` is substituted. If the version pattern is
        not specified explicitely, all versions (`@*`) is added implicitly
 
-       Example: Match the WikiStart page
-       {{{
-       [wiki:*]
-       [wiki:WikiStart*]
-       [wiki:WikiStart@*]
-       [wiki:WikiStart]
-       }}}
+       Example: Match the WikiStart page::
 
-       Example: Match the attachment `wiki:WikiStart@117/attachment/FOO.JPG@*`
-       on WikiStart
-       {{{
-       [wiki:*]
-       [wiki:WikiStart*]
-       [wiki:WikiStart@*]
-       [wiki:WikiStart@*/attachment/*]
-       [wiki:WikiStart@117/attachment/FOO.JPG]
-       }}}
+         {{{
+         [wiki:*]
+         [wiki:WikiStart*]
+         [wiki:WikiStart@*]
+         [wiki:WikiStart]
+         }}}
+
+       Example: Match the attachment
+       ``wiki:WikiStart@117/attachment/FOO.JPG@*`` on WikiStart::
+
+         {{{
+         [wiki:*]
+         [wiki:WikiStart*]
+         [wiki:WikiStart@*]
+         [wiki:WikiStart@*/attachment/*]
+         [wiki:WikiStart@117/attachment/FOO.JPG]
+         }}}
 
      - Sections are checked against the current Trac resource '''IN ORDER''' of
        appearance in the configuration file. '''ORDER IS CRITICAL'''.
@@ -101,33 +106,36 @@ class AuthzPolicy(Component):
        denied rather than granted. The username will match any of 'anonymous',
        'authenticated', <username> or '*', using normal Trac permission rules.
 
-    Example configuration:
-    {{{
-    [groups]
-    administrators = athomas
+    Example configuration::
 
-    [*/attachment:*]
-    * = WIKI_VIEW, TICKET_VIEW
+      {{{
+      [groups]
+      administrators = athomas
 
-    [wiki:WikiStart@*]
-    @administrators = WIKI_ADMIN
-    anonymous = WIKI_VIEW
-    * = WIKI_VIEW
+      [*/attachment:*]
+      * = WIKI_VIEW, TICKET_VIEW
 
-    # Deny access to page templates
-    [wiki:PageTemplates/*]
-    * =
+      [wiki:WikiStart@*]
+      @administrators = WIKI_ADMIN
+      anonymous = WIKI_VIEW
+      * = WIKI_VIEW
 
-    # Match everything else
-    [*]
-    @administrators = TRAC_ADMIN
-    anonymous = BROWSER_VIEW, CHANGESET_VIEW, FILE_VIEW, LOG_VIEW,
-        MILESTONE_VIEW, POLL_VIEW, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_VIEW,
-        SEARCH_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
-        WIKI_CREATE, WIKI_MODIFY, WIKI_VIEW
-    # Give authenticated users some extra permissions
-    authenticated = REPO_SEARCH, XML_RPC
-    }}}
+      # Deny access to page templates
+      [wiki:PageTemplates/*]
+      * =
+
+      # Match everything else
+      [*]
+      @administrators = TRAC_ADMIN
+      anonymous = BROWSER_VIEW, CHANGESET_VIEW, FILE_VIEW, LOG_VIEW,
+          MILESTONE_VIEW, POLL_VIEW, REPORT_SQL_VIEW, REPORT_VIEW,
+          ROADMAP_VIEW, SEARCH_VIEW, TICKET_CREATE, TICKET_MODIFY,
+          TICKET_VIEW, TIMELINE_VIEW,
+          WIKI_CREATE, WIKI_MODIFY, WIKI_VIEW
+      # Give authenticated users some extra permissions
+      authenticated = REPO_SEARCH, XML_RPC
+      }}}
+
     """
     implements(IPermissionPolicy)
 

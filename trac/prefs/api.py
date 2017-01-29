@@ -15,6 +15,7 @@ from trac.core import *
 
 
 class IPreferencePanelProvider(Interface):
+    """Provides panels for managing user preferences."""
 
     def get_preference_panels(req):
         """Return a list of available preference panels.

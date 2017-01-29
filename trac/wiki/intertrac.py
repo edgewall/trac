@@ -47,6 +47,7 @@ class InterTracDispatcher(Component):
 
         The `.compat` option can be used to activate or disable a
         ''compatibility'' mode:
+
          * If the targeted Trac is running a version below
            [trac:milestone:0.10 0.10] ([trac:r3526 r3526] to be precise), then
            it doesn't know how to dispatch an InterTrac link, and it's up to
