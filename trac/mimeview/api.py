@@ -82,17 +82,17 @@ __all__ = ['Context', 'Mimeview', 'RenderingContext', 'get_mimetype',
 
 
 class RenderingContext(object):
-    """
-    A rendering context specifies ''how'' the content should be rendered.
+    """A rendering context specifies ''how'' the content should be rendered.
 
     It holds together all the needed contextual information that will be
     needed by individual renderer components.
 
-    To that end, a context keeps track of the Href instance (`.href`) which
-    should be used as a base for building URLs.
+    To that end, a context keeps track of the Href instance
+    (``.href``) which should be used as a base for building URLs.
 
-    It also provides a `PermissionCache`  (`.perm`) which can be used to
-    restrict the output so that only the authorized information is shown.
+    It also provides a `PermissionCache` (``.perm``) which can be used
+    to restrict the output so that only the authorized information is
+    shown.
 
     A rendering context may also be associated to some Trac resource which
     will be used as the implicit reference when rendering relative links
@@ -101,7 +101,7 @@ class RenderingContext(object):
 
     Rendering contexts can be nested, and a new context can be created from
     an existing context using the call syntax. The previous context can be
-    retrieved using the `.parent` attribute.
+    retrieved using the ``.parent`` attribute.
 
     For example, when rendering a wiki text of a wiki page, the context will
     be associated to a resource identifying that wiki page.
@@ -111,6 +111,7 @@ class RenderingContext(object):
     rendering the ticket descriptions.
 
     :since: version 1.0
+
     """
 
     def __init__(self, resource, href=None, perm=None):
@@ -134,8 +135,9 @@ class RenderingContext(object):
 
     @staticmethod
     def from_request(*args, **kwargs):
-        """:deprecated: since 1.0, use `web_context` instead. Will be removed
-                        in release 1.3.1.
+        """
+        :deprecated: since 1.0, use `web_context` instead. Will be removed
+                     in release 1.3.1.
         """
         from trac.web.chrome import web_context
         return web_context(*args, **kwargs)
@@ -526,7 +528,8 @@ class IHTMLPreviewRenderer(Interface):
         """
 
     def render(context, mimetype, content, filename=None, url=None):
-        """Render an XHTML preview of the raw `content` in a RenderingContext.
+        """Render an XHTML preview of the raw ``content`` in a
+        `RenderingContext`.
 
         The `content` might be:
          * a `str` object
@@ -543,6 +546,7 @@ class IHTMLPreviewRenderer(Interface):
         Can return the generated XHTML text as a single string or as an
         iterable that yields strings. In the latter case, the list will
         be considered to correspond to lines of text in the original content.
+
         """
 
 

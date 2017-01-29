@@ -573,7 +573,7 @@ class Chrome(Component):
         (''since 0.12'')""")
 
     wiki_toolbars = BoolOption('trac', 'wiki_toolbars', 'true',
-        """Add a simple toolbar on top of Wiki `<textarea>`s.
+        """Add a simple toolbar on top of Wiki <textarea>s.
         (''since 1.0.2'')""")
 
     auto_preview_timeout = FloatOption('trac', 'auto_preview_timeout', 2.0,

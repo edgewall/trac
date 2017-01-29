@@ -32,6 +32,8 @@ from trac.web.chrome import Chrome, INavigationContributor, \
 
 
 class PreferencesModule(Component):
+    """Displays the preference panels and dispatch control to the
+    individual panels"""
 
     implements(INavigationContributor, IRequestHandler, ITemplateProvider)
 

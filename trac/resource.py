@@ -89,7 +89,6 @@ class Resource(object):
     environment is manipulated.
 
     A resource is identified by:
-    (- a `project` identifier) 0.12?
      - a `realm` (a string like `'wiki'` or `'ticket'`)
      - an `id`, which uniquely identifies a resource within its realm.
        If the `id` information is not set, then the resource represents
@@ -452,8 +451,9 @@ def resource_exists(env, resource):
     """Checks for resource existence without actually instantiating a model.
 
         :return: `True` if the resource exists, `False` if it doesn't
-        and `None` in case no conclusion could be made (i.e. when
-        `IResourceManager.resource_exists` is not implemented).
+                 and `None` in case no conclusion could be made
+                 (i.e. when `IResourceManager.resource_exists` is not
+                 implemented).
 
         >>> from trac.test import EnvironmentStub
         >>> env = EnvironmentStub()
@@ -462,6 +462,7 @@ def resource_exists(env, resource):
         True
         >>> resource_exists(env, Resource('dummy-realm'))
         False
+
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
     if manager and hasattr(manager, 'resource_exists'):

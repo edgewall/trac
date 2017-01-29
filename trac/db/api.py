@@ -387,14 +387,17 @@ class DatabaseManager(Component):
         """Insert data into existing tables.
 
         :param data_or_callable: Nested tuples of table names, column names
-                                 and row data:
-                                 (table1,
-                                  (column1, column2),
-                                  ((row1col1, row1col2), (row2col1, row2col2)),
-                                  table2, ...)
-                                or a callable that takes a single parameter
-                                `db` and returns the aforementioned nested
-                                tuple.
+                                 and row data::
+
+                                   (table1,
+                                    (column1, column2),
+                                    ((row1col1, row1col2),
+                                     (row2col1, row2col2)),
+                                    table2, ...)
+
+                                 or a callable that takes a single parameter
+                                 `db` and returns the aforementioned nested
+                                 tuple.
         :since: version 1.1.3
         """
         with self.env.db_transaction as db:

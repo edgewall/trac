@@ -75,11 +75,11 @@ class IPropertyDiffRenderer(Interface):
         `options` are the current diffs options.
 
         The rendered result can be one of the following:
-        - `None`: the property change will be shown the normal way
-          (''changed from `old` to `new`'')
-        - an `unicode` value: the change will be shown as textual content
-        - `Markup` or other Genshi content: the change will shown as block
-          markup
+         - `None`: the property change will be shown the normal way
+           (''changed from `old` to `new`'')
+         - an `unicode` value: the change will be shown as textual content
+         - `Markup` or other Genshi content: the change will shown as block
+           markup
         """
 
 

@@ -11,5 +11,6 @@ convenient way to implement a new `~trac.wiki.api.IWikiMacroProvider`
 interface.
 
 .. autoclass :: WikiMacroBase
-
+   :members:
+      
 See also :teo:`wiki/WikiMacros#DevelopingCustomMacros`.
