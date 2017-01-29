@@ -612,9 +612,9 @@ SCP ?= scp
 release-src: wheel sdist
 
 wheel:
-	@$(PYTHON) setup.py bdist_wheel
+	@python setup.py bdist_wheel
 sdist:
-	@$(PYTHON) setup.py sdist --formats=gztar,zip
+	@python setup.py sdist --formats=gztar,zip
 
 sdist+wheel = $(sdist_gztar) $(sdist_zip) $(bdist_wheel)
 
@@ -642,7 +642,7 @@ wininst.x86 = dist/Trac-$(version).win32.exe
 wininst.x64 = dist/Trac-$(version).win-amd64.exe
 
 wininst:
-	@$(PYTHON) setup.py bdist_wininst
+	@python setup.py bdist_wininst
 endif # Windows_NT
 
 packages = $(wildcard $(sdist+wheel) $(wininst))
