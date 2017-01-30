@@ -33,7 +33,10 @@ except ImportError:
         crypt = None
     else:
         def crypt(secret, salt):
-            return des_crypt.encrypt(secret, salt=salt)
+            # encrypt method deprecated in favor of hash in passlib 1.7
+            hash_method = des_crypt.hash if hasattr(des_crypt, 'hash') \
+                                         else des_crypt.encrypt
+            return hash_method(secret, salt=salt)
 
 # Import symbols previously defined here, kept around so that plugins importing
 # them don't suddenly stop working
