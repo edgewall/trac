@@ -527,7 +527,8 @@ class ImageMacro(WikiMacroBase):
     _quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
 
     def expand_macro(self, formatter, name, content):
-        # args will be null if the macro is called without parenthesis.
+        if content:
+            content = stripws(content)
         if not content:
             return ''
         # parse arguments

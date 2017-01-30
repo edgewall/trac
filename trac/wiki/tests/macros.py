@@ -61,6 +61,22 @@ def image_teardown(tc):
 #       normal ASCII SPACE, second is Unicode NO-BREAK SPACE).
 
 IMAGE_MACRO_TEST_CASES = u"""
+============================== Image, no arguments
+[[Image]]
+------------------------------
+
+============================== Image, no arguments
+[[Image()]]
+------------------------------
+
+============================== Image, whitespace argument
+[[Image( )]]
+------------------------------
+
+============================== Image, ZWSP argument
+[[Image(​)]]
+------------------------------
+
 ============================== source: Image, no other arguments
 [[Image(source:« test ».png)]]
 ------------------------------
