@@ -139,7 +139,7 @@ dl.attribute, dl.data {
     padding-left: .4em;
 }
 dl.class > dt {
-    border-bottom: .5em solid #f6f6f6;
+    border-bottom: .5em solid #eee;
     padding-bottom: .3em;
     margin-bottom: .5em;
 }
@@ -148,7 +148,7 @@ dl.function > dt {
     padding-bottom: .1em;
     margin-bottom: .2em;
 }
-dt {
+div.section > dl > dt {
     font-size: 110%;
 }
 code.descname {

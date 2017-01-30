@@ -544,7 +544,6 @@ apidoc-check:
 	@$(PYTHON) doc/utils/checkapidoc.py
 
 apidoc-%:
-	@echo $$PYTHONPATH
 	@$(SPHINXBUILD) -b $(*) \
 	    $(sphinxopts) $(sphinxopts-$(*)) \
 	    -d build/doc/doctree \
