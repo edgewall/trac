@@ -533,7 +533,7 @@ class RoadmapModule(Component):
     def _render_ics(self, req, milestones):
         req.send_response(200)
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
-        buf = io.BytesIO()
+        buf = io.StringIO()
 
         from trac.ticket import Priority
         priorities = {}
@@ -570,6 +570,7 @@ class RoadmapModule(Component):
                                                   in params.items()]) + \
                    ':' + escape_value(value)
             firstline = 1
+            text = to_unicode(text)
             while text:
                 if not firstline:
                     text = ' ' + text
