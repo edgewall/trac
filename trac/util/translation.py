@@ -309,6 +309,12 @@ try:
     tagn_ = tngettext
     dtngettext = translations.dtngettext
 
+    def add_domain(domain, env_path, locale_dir):
+        translations.add_domain(domain, env_path, locale_dir)
+
+    def activate(locale, env_path=None):
+        translations.activate(locale, env_path)
+
     def deactivate():
         """Deactivate translations.
         :return: the current Translations, if any
@@ -327,12 +333,6 @@ try:
         :param env_path: the environment to use for looking up catalogs
         """
         translations.make_activable(get_locale, env_path)
-
-    def activate(locale, env_path=None):
-        translations.activate(locale, env_path)
-
-    def add_domain(domain, env_path, locale_dir):
-        translations.add_domain(domain, env_path, locale_dir)
 
     def get_translations():
         return translations
@@ -402,5 +402,5 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     def get_available_locales():
         return []
 
-    def get_negotiated_locale(preferred=None, default=None):
+    def get_negotiated_locale(preferred_locales):
         return None
