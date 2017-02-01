@@ -924,6 +924,35 @@ class Chrome(Component):
             logo = {'link': self.logo_link, 'alt': self.logo_alt}
         return logo
 
+    def get_interface_customization_files(self):
+        """Returns a dictionary containing the lists of files present in the
+        site and shared templates and htdocs directories.
+        """
+        def list_dir(path, suffix=None):
+            if not os.path.isdir(path):
+                return []
+            return sorted(to_unicode(name) for name in os.listdir(path)
+                          if suffix is None or name.endswith(suffix))
+
+        files = {}
+        # Collect templates list
+        site_templates = list_dir(self.env.templates_dir, '.html')
+        shared_templates = list_dir(Chrome(self.env).shared_templates_dir,
+                                    '.html')
+
+        # Collect static resources list
+        site_htdocs = list_dir(self.env.htdocs_dir)
+        shared_htdocs = list_dir(Chrome(self.env).shared_htdocs_dir)
+
+        if any((site_templates, shared_templates, site_htdocs, shared_htdocs)):
+            files = {
+                'site-templates': site_templates,
+                'shared-templates': shared_templates,
+                'site-htdocs': site_htdocs,
+                'shared-htdocs': shared_htdocs,
+            }
+        return files
+
     # E-mail formatting utilities
 
     def author_email(self, author, email_map):
@@ -1534,35 +1563,6 @@ class Chrome(Component):
         """
         string = template.render(data)
         return string if text else Markup(string)
-
-    def get_interface_customization_files(self):
-        """Returns a dictionary containing the lists of files present in the
-        site and shared templates and htdocs directories.
-        """
-        def list_dir(path, suffix=None):
-            if not os.path.isdir(path):
-                return []
-            return sorted(to_unicode(name) for name in os.listdir(path)
-                          if suffix is None or name.endswith(suffix))
-
-        files = {}
-        # Collect templates list
-        site_templates = list_dir(self.env.templates_dir, '.html')
-        shared_templates = list_dir(Chrome(self.env).shared_templates_dir,
-                                    '.html')
-
-        # Collect static resources list
-        site_htdocs = list_dir(self.env.htdocs_dir)
-        shared_htdocs = list_dir(Chrome(self.env).shared_htdocs_dir)
-
-        if any((site_templates, shared_templates, site_htdocs, shared_htdocs)):
-            files = {
-                'site-templates': site_templates,
-                'shared-templates': shared_templates,
-                'site-htdocs': site_htdocs,
-                'shared-htdocs': shared_htdocs,
-            }
-        return files
 
     def iterable_content(self, stream, text=False, **kwargs):
         """Generate an iterable object which iterates `str` instances
