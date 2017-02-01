@@ -219,7 +219,7 @@ def MockRequest(env, **kwargs):
         'args': lambda req: args,
         'authname': lambda req: authname,
         'chrome': Chrome(env).prepare_request,
-        'form_token': lambda req: kwargs.get('form_token'),
+        'form_token': lambda req: kwargs.get('form_token', 0),
         'languages': Request._parse_languages,
         'lc_time': lambda req: kwargs.get('lc_time', locale_en),
         'locale': lambda req: kwargs.get('locale'),

@@ -14,9 +14,6 @@
 import os
 import unittest
 
-from genshi.core import Stream
-from genshi.input import HTMLParser, XML
-
 from trac.mimeview.api import Mimeview
 from trac.mimeview.patch import PatchRenderer
 from trac.test import EnvironmentStub, MockRequest
@@ -31,16 +28,22 @@ class PatchRendererTestCase(unittest.TestCase):
         self.context = web_context(req)
         self.patch = Mimeview(env).renderers[0]
         patch_html = open(os.path.join(os.path.split(__file__)[0],
-                                       'patch.html'))
-        self.patch_html = Stream(list(HTMLParser(patch_html, encoding='utf-8')))
+                                       'patch.data'))
+        self.patch_html = {}
+        testcase = []
+        for line in patch_html.readlines():
+            if line.startswith('#'):
+                self.patch_html[line[1:].strip()] = testcase = []
+            else:
+                testcase.append(line.rstrip())
 
     def _expected(self, expected_id):
-        return self.patch_html.select('//div[@id="%s"]/div' % expected_id)
+        return self.patch_html[expected_id]
 
     def _test(self, expected_id, result):
-        expected = self._expected(expected_id).render(encoding='utf-8')
-        result = XML(result.render(encoding='utf-8')).render(encoding='utf-8')
-        expected, result = expected.splitlines(), result.splitlines()
+        expected = self._expected(expected_id)
+        result = result.splitlines()
+        self.maxDiff = None
         for exp, res in zip(expected, result):
             self.assertEqual(exp, res)
         self.assertEqual(len(expected), len(result))
