@@ -96,14 +96,22 @@ class PreferencesModule(Component):
         children = []
         if child_panels.get(panel_id):
             for name, label in child_panels[panel_id]:
-                ctemplate, cdata = provider.render_preference_panel(req, name)
+                resp = provider.render_preference_panel(req, name)
+                ctemplate, cdata = resp[:2]
                 cdata.update(session_data)
-                rendered = chrome.render_template(req, ctemplate, cdata,
-                                                  {'fragment': True})
+                if len(resp) == 2:
+                    rendered = chrome.render_template(req, ctemplate, cdata,
+                                                      {'fragment': True})
+                else:
+                    # Backward compatibility with Genshi preference panels
+                    # TODO (1.5.1) remove
+                    rendered = chrome.render_template(req, ctemplate, cdata,
+                                                      None, fragment=True)
                 children.append((name, label, rendered))
 
-        template, data = \
-            chosen_provider.render_preference_panel(req, panel_id)
+        resp = chosen_provider.render_preference_panel(req, panel_id)
+        template, data = resp
+
         data.update(session_data)
         data.update({
             'active_panel': panel_id,
@@ -112,7 +120,7 @@ class PreferencesModule(Component):
         })
 
         add_stylesheet(req, 'common/css/prefs.css')
-        return template, data
+        return resp
 
     # ITemplateProvider methods
 

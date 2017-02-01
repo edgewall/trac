@@ -1,0 +1,57 @@
+<!--!  Copyright (C) 2006-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+-->
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+
+  <py:match path="head" once="true"><head>
+    <title>Preferences: ${select('title/text()')}</title>
+    ${select("*[local-name() != 'title']")}
+  </head></py:match>
+
+  <py:match path="body" once="true" buffer="true"><body>
+    <div id="content" class="prefs">
+      <h1>Preferences</h1>
+      <p>This page lets you customize your personal settings for this site.
+      These settings are stored on the server and are identified by a session
+      key stored in a browser cookie. That cookie allows your settings to be
+      restored on subsequent visits.</p>
+      <ul id="tabs">
+        <li py:for="name, label in panels"
+            class="${'active' if name == active_panel else None}"
+            id="${('tab_%s' % name) if name else None}">
+          <a py:strip="name == active_panel" href="${href.prefs(name)}">${label}</a>
+        </li>
+      </ul>
+      <div id="tabcontent" py:with="has_forms = list(select('.//form'))">
+        <form id="userprefs" action="" method="post" py:strip="has_forms">
+          ${select("*|text()")}
+          <div py:for="(name, title, child) in children"
+               class="prefs_child">
+            <h2 id="${name}-section">${title}</h2>
+            ${child}
+          </div>
+          <div class="buttons" py:if="not has_forms">
+            <input type="hidden" name="action" value="save" />
+            <input type="submit" value="${_('Save changes')}" />
+          </div >
+        </form>
+      </div>
+    </div>
+
+  </body></py:match>
+
+  <xi:include href="layout.html" />
+</html>

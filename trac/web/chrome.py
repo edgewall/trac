@@ -747,7 +747,8 @@ class Chrome(Component):
         return filter(None, [
             self.env.templates_dir,
             self.shared_templates_dir,
-            pkg_resources.resource_filename('trac', 'templates'),
+            # pkg_resources.resource_filename('trac', 'templates'),
+            # TODO (1.5.1) reenable
         ])
 
     # IWikiSyntaxProvider methods
@@ -1274,10 +1275,13 @@ class Chrome(Component):
         .. note::
 
         """
-        # TODO (1.5.1) merge in  `load_template`
+        # TODO (1.5.1) merge in `load_template`
         if not self.jenv:
+            jinja2_dirs = [
+                pkg_resources.resource_filename('trac', 'templates')
+            ] + self.get_all_templates_dirs()
             self.jenv = jinja2env(
-                loader=FileSystemLoader(self.get_all_templates_dirs()),
+                loader=FileSystemLoader(jinja2_dirs),
                 auto_reload=self.auto_reload,
                 autoescape=True,
             )
@@ -1593,9 +1597,11 @@ class Chrome(Component):
 
         def _load_genshi_template(self, filename, method=None):
             if not self.templates:
+                genshi_dirs = [
+                    pkg_resources.resource_filename('trac', 'templates/genshi')
+                ] + self.get_all_templates_dirs()
                 self.templates = TemplateLoader(
-                    [pkg_resources.resource_filename('trac', 'templates/genshi')
-                    ] + self.get_all_templates_dirs(),
+                    genshi_dirs,
                     auto_reload=self.auto_reload,
                     max_cache_size=self.genshi_cache_size,
                     default_encoding="utf-8",

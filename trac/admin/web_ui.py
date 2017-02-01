@@ -93,8 +93,8 @@ class AdminModule(Component):
         if not provider:
             raise HTTPNotFound(_("Unknown administration panel"))
 
-        template, data = \
-            provider.render_admin_panel(req, cat_id, panel_id, path_info)
+        resp = provider.render_admin_panel(req, cat_id, panel_id, path_info)
+        template, data = resp[:2]
 
         data.update({
             'active_cat': cat_id, 'active_panel': panel_id,
@@ -106,7 +106,7 @@ class AdminModule(Component):
         })
 
         add_stylesheet(req, 'common/css/admin.css')
-        return template, data
+        return resp
 
     # ITemplateProvider methods
 
