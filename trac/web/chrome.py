@@ -1595,7 +1595,9 @@ class Chrome(Component):
         def _load_genshi_template(self, filename, method=None):
             if not self.templates:
                 self.templates = TemplateLoader(
-                    self.get_all_templates_dirs(), auto_reload=self.auto_reload,
+                    [pkg_resources.resource_filename('trac', 'templates/genshi')
+                    ] + self.get_all_templates_dirs(),
+                    auto_reload=self.auto_reload,
                     max_cache_size=self.genshi_cache_size,
                     default_encoding="utf-8",
                     variable_lookup='lenient', callback=lambda template:
