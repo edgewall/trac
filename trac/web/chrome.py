@@ -923,6 +923,179 @@ class Chrome(Component):
             logo = {'link': self.logo_link, 'alt': self.logo_alt}
         return logo
 
+    # E-mail formatting utilities
+
+    def author_email(self, author, email_map):
+        """Returns the author email from the `email_map` if `author`
+        doesn't look like an email address."""
+        if email_map and '@' not in author and email_map.get(author):
+            author = email_map.get(author)
+        return author
+
+    def authorinfo(self, req, author, email_map=None, resource=None):
+        """Format a username to HTML.
+
+        Calls `Chrome.format_author` to format the username, and wraps
+        the formatted username in a `span` with class `trac-author`,
+        `trac-author-anonymous` or `trac-author-none`.
+
+        :param req: the `Request` object.
+        :param author: the author string to be formatted.
+        :param email_map: dictionary mapping usernames to email addresses.
+        :param resource: optional `Resource` object for `EMAIL_VIEW`
+                         fine-grained permissions checks.
+
+        :since 1.1.6: accepts the optional `resource` keyword parameter.
+        """
+        author = self.author_email(author, email_map)
+        return tag.span(self.format_author(req, author, resource),
+                        class_=self.author_class(req, author))
+
+    def author_class(self, req, author):
+        suffix = ''
+        if author == 'anonymous':
+            suffix = '-anonymous'
+        elif not author:
+            suffix = '-none'
+        elif req and author == req.authname:
+            suffix = '-user'
+        return 'trac-author' + suffix
+
+    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
+
+    def authorinfo_short(self, author):
+        shortened = None
+        match = self._long_author_re.match(author or '')
+        if match:
+            shortened = match.group(1) or match.group(2)
+        return self.authorinfo(None, shortened or author)
+
+    def cc_list(self, cc_field):
+        """Split a CC: value in a list of addresses."""
+        ccs = []
+        for cc in re.split(r'[;,]', cc_field or ''):
+            cc = cc.strip()
+            if cc:
+                ccs.append(cc)
+        return ccs
+
+    def format_author(self, req, author, resource=None, show_email=None):
+        """Format a username in plain text.
+
+        If `[trac]` `show_email_addresses` is `False`, email addresses
+        will be obfuscated when the user doesn't have `EMAIL_VIEW`
+        (for the resource) and the optional parameter `show_email` is
+        `None`. Returns translated `anonymous` or `none`,  when the
+        author string is `anonymous` or evaluates to `False`,
+        respectively.
+
+        :param req: a `Request` or `RenderingContext` object.
+        :param author: the author string to be formatted.
+        :param resource: an optional `Resource` object for performing
+                         fine-grained permission checks for `EMAIL_VIEW`.
+        :param show_email: an optional parameter that allows explicit
+                           control of e-mail obfuscation.
+
+        :since 1.1.6: accepts the optional `resource` keyword parameter.
+        :since 1.2: Full name is returned when `[trac]` `show_full_names`
+                    is `True`.
+        :since 1.2: Email addresses are obfuscated when
+                    `show_email_addresses` is False and `req` is Falsy.
+                    Previously email addresses would not be obfuscated
+                    whenever `req` was Falsy (typically `None`).
+        """
+        if author == 'anonymous':
+            return _("anonymous")
+        if not author:
+            return _("(none)")
+        users = self.env.get_known_users(as_dict=True)
+        if self.show_full_names and author in users:
+            name = users[author][0]
+            if name:
+                return name
+        if show_email is None:
+            show_email = self.show_email_addresses
+            if not show_email and req:
+                show_email = 'EMAIL_VIEW' in req.perm(resource)
+        return author if show_email else obfuscate_email_address(author)
+
+    def format_emails(self, context, value, sep=', '):
+        """Normalize a list of e-mails and obfuscate them if needed.
+
+        :param context: the context in which the check for obfuscation should
+                        be done
+        :param   value: a string containing a comma-separated list of e-mails
+        :param     sep: the separator to use when rendering the list again
+        """
+        formatted = [self.format_author(context, author)
+                     for author in self.cc_list(value)]
+        return sep.join(formatted)
+
+    def get_email_map(self):
+        """Get the email addresses of all known users."""
+        email_map = {}
+        if self.show_email_addresses:
+            for username, name, email in self.env.get_known_users():
+                if email:
+                    email_map[username] = email
+        return email_map
+
+    # Element modifiers
+
+    def add_textarea_grips(self, req):
+        """Make `<textarea class="trac-resizable">` fields resizable if enabled
+        by configuration."""
+        if self.resizable_textareas:
+            add_script(req, 'common/js/resizer.js')
+
+    def add_wiki_toolbars(self, req):
+        """Add wiki toolbars to `<textarea class="wikitext">` fields."""
+        if self.wiki_toolbars:
+            add_script(req, 'common/js/wikitoolbar.js')
+        self.add_textarea_grips(req)
+
+    def add_auto_preview(self, req):
+        """Setup auto-preview for `<textarea>` fields."""
+        add_script(req, 'common/js/auto_preview.js')
+        add_script_data(req, auto_preview_timeout=self.auto_preview_timeout,
+                        form_token=req.form_token)
+
+    def add_jquery_ui(self, req):
+        """Add a reference to the jQuery UI script and link the stylesheet."""
+        add_script(req, self.jquery_ui_location
+                        or 'common/js/jquery-ui.js')
+        add_stylesheet(req, self.jquery_ui_theme_location
+                            or 'common/css/jquery-ui/jquery-ui.css')
+        add_script(req, 'common/js/jquery-ui-addons.js')
+        add_stylesheet(req, 'common/css/jquery-ui-addons.css')
+        is_iso8601 = req.lc_time == 'iso8601'
+        now = datetime_now(req.tz)
+        tzoffset = now.strftime('%z')
+        if is_iso8601:
+            default_timezone = (-1 if tzoffset.startswith('-') else 1) * \
+                               (int(tzoffset[1:3]) * 60 + int(tzoffset[3:5]))
+            timezone_list = get_timezone_list_jquery_ui(now)
+        else:
+            default_timezone = None
+            timezone_list = None
+        add_script_data(req, jquery_ui={
+            'month_names': get_month_names_jquery_ui(req),
+            'day_names': get_day_names_jquery_ui(req),
+            'date_format': get_date_format_jquery_ui(req.lc_time),
+            'time_format': get_time_format_jquery_ui(req.lc_time),
+            'ampm': not is_24_hours(req.lc_time),
+            'period_names': get_period_names_jquery_ui(req),
+            'first_week_day': get_first_week_day_jquery_ui(req),
+            'timepicker_separator': get_timepicker_separator_jquery_ui(req),
+            'show_timezone': is_iso8601,
+            'default_timezone': default_timezone,
+            'timezone_list': timezone_list,
+            'timezone_iso8601': is_iso8601,
+        })
+        add_script(req, 'common/js/jquery-ui-i18n.js')
+
+    # Template data (Jinja2 + legacy Genshi)
+
     def populate_data(self, req=None, data=None, d=None):
         """Fills a dictionary with the standard set of fields expected
         by templates.
@@ -1059,6 +1232,8 @@ class Chrome(Component):
         if data:
             d.update(data)
         return d
+
+    # Template rendering (Jinja2 + legacy Genshi)
 
     def load_template(self, filename, text=False):
         """Retrieves a template with the given name.
@@ -1411,178 +1586,7 @@ class Chrome(Component):
                            'text' if text else 'XML/HTML',
                            exception_to_unicode(e, traceback=True))
 
-    # E-mail formatting utilities
-
-    def author_email(self, author, email_map):
-        """Returns the author email from the `email_map` if `author`
-        doesn't look like an email address."""
-        if email_map and '@' not in author and email_map.get(author):
-            author = email_map.get(author)
-        return author
-
-    def authorinfo(self, req, author, email_map=None, resource=None):
-        """Format a username to HTML.
-
-        Calls `Chrome.format_author` to format the username, and wraps
-        the formatted username in a `span` with class `trac-author`,
-        `trac-author-anonymous` or `trac-author-none`.
-
-        :param req: the `Request` object.
-        :param author: the author string to be formatted.
-        :param email_map: dictionary mapping usernames to email addresses.
-        :param resource: optional `Resource` object for `EMAIL_VIEW`
-                         fine-grained permissions checks.
-
-        :since 1.1.6: accepts the optional `resource` keyword parameter.
-        """
-        author = self.author_email(author, email_map)
-        return tag.span(self.format_author(req, author, resource),
-                        class_=self.author_class(req, author))
-
-    def author_class(self, req, author):
-        suffix = ''
-        if author == 'anonymous':
-            suffix = '-anonymous'
-        elif not author:
-            suffix = '-none'
-        elif req and author == req.authname:
-            suffix = '-user'
-        return 'trac-author' + suffix
-
-    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
-
-    def authorinfo_short(self, author):
-        shortened = None
-        match = self._long_author_re.match(author or '')
-        if match:
-            shortened = match.group(1) or match.group(2)
-        return self.authorinfo(None, shortened or author)
-
-    def cc_list(self, cc_field):
-        """Split a CC: value in a list of addresses."""
-        ccs = []
-        for cc in re.split(r'[;,]', cc_field or ''):
-            cc = cc.strip()
-            if cc:
-                ccs.append(cc)
-        return ccs
-
-    def format_author(self, req, author, resource=None, show_email=None):
-        """Format a username in plain text.
-
-        If `[trac]` `show_email_addresses` is `False`, email addresses
-        will be obfuscated when the user doesn't have `EMAIL_VIEW`
-        (for the resource) and the optional parameter `show_email` is
-        `None`. Returns translated `anonymous` or `none`,  when the
-        author string is `anonymous` or evaluates to `False`,
-        respectively.
-
-        :param req: a `Request` or `RenderingContext` object.
-        :param author: the author string to be formatted.
-        :param resource: an optional `Resource` object for performing
-                         fine-grained permission checks for `EMAIL_VIEW`.
-        :param show_email: an optional parameter that allows explicit
-                           control of e-mail obfuscation.
-
-        :since 1.1.6: accepts the optional `resource` keyword parameter.
-        :since 1.2: Full name is returned when `[trac]` `show_full_names`
-                    is `True`.
-        :since 1.2: Email addresses are obfuscated when
-                    `show_email_addresses` is False and `req` is Falsy.
-                    Previously email addresses would not be obfuscated
-                    whenever `req` was Falsy (typically `None`).
-        """
-        if author == 'anonymous':
-            return _("anonymous")
-        if not author:
-            return _("(none)")
-        users = self.env.get_known_users(as_dict=True)
-        if self.show_full_names and author in users:
-            name = users[author][0]
-            if name:
-                return name
-        if show_email is None:
-            show_email = self.show_email_addresses
-            if not show_email and req:
-                show_email = 'EMAIL_VIEW' in req.perm(resource)
-        return author if show_email else obfuscate_email_address(author)
-
-    def format_emails(self, context, value, sep=', '):
-        """Normalize a list of e-mails and obfuscate them if needed.
-
-        :param context: the context in which the check for obfuscation should
-                        be done
-        :param   value: a string containing a comma-separated list of e-mails
-        :param     sep: the separator to use when rendering the list again
-        """
-        formatted = [self.format_author(context, author)
-                     for author in self.cc_list(value)]
-        return sep.join(formatted)
-
-    def get_email_map(self):
-        """Get the email addresses of all known users."""
-        email_map = {}
-        if self.show_email_addresses:
-            for username, name, email in self.env.get_known_users():
-                if email:
-                    email_map[username] = email
-        return email_map
-
-    # Element modifiers
-
-    def add_textarea_grips(self, req):
-        """Make `<textarea class="trac-resizable">` fields resizable if enabled
-        by configuration."""
-        if self.resizable_textareas:
-            add_script(req, 'common/js/resizer.js')
-
-    def add_wiki_toolbars(self, req):
-        """Add wiki toolbars to `<textarea class="wikitext">` fields."""
-        if self.wiki_toolbars:
-            add_script(req, 'common/js/wikitoolbar.js')
-        self.add_textarea_grips(req)
-
-    def add_auto_preview(self, req):
-        """Setup auto-preview for `<textarea>` fields."""
-        add_script(req, 'common/js/auto_preview.js')
-        add_script_data(req, auto_preview_timeout=self.auto_preview_timeout,
-                        form_token=req.form_token)
-
-    def add_jquery_ui(self, req):
-        """Add a reference to the jQuery UI script and link the stylesheet."""
-        add_script(req, self.jquery_ui_location
-                        or 'common/js/jquery-ui.js')
-        add_stylesheet(req, self.jquery_ui_theme_location
-                            or 'common/css/jquery-ui/jquery-ui.css')
-        add_script(req, 'common/js/jquery-ui-addons.js')
-        add_stylesheet(req, 'common/css/jquery-ui-addons.css')
-        is_iso8601 = req.lc_time == 'iso8601'
-        now = datetime_now(req.tz)
-        tzoffset = now.strftime('%z')
-        if is_iso8601:
-            default_timezone = (-1 if tzoffset.startswith('-') else 1) * \
-                               (int(tzoffset[1:3]) * 60 + int(tzoffset[3:5]))
-            timezone_list = get_timezone_list_jquery_ui(now)
-        else:
-            default_timezone = None
-            timezone_list = None
-        add_script_data(req, jquery_ui={
-            'month_names': get_month_names_jquery_ui(req),
-            'day_names': get_day_names_jquery_ui(req),
-            'date_format': get_date_format_jquery_ui(req.lc_time),
-            'time_format': get_time_format_jquery_ui(req.lc_time),
-            'ampm': not is_24_hours(req.lc_time),
-            'period_names': get_period_names_jquery_ui(req),
-            'first_week_day': get_first_week_day_jquery_ui(req),
-            'timepicker_separator': get_timepicker_separator_jquery_ui(req),
-            'show_timezone': is_iso8601,
-            'default_timezone': default_timezone,
-            'timezone_list': timezone_list,
-            'timezone_iso8601': is_iso8601,
-        })
-        add_script(req, 'common/js/jquery-ui-i18n.js')
-
-    # Legacy Genshi support - TODO (1.5.1) remove
+    # Template rendering (legacy Genshi support) - TODO (1.5.1) remove
 
     if genshi:
         # DocType for 'text/html' output
