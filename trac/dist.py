@@ -286,7 +286,7 @@ try:
 
 
     def extract_javascript_script(fileobj, keywords, comment_tags, options):
-        """Extract messages from Javascript embedding in <script> tags.
+        """Extract messages from Javascript embedded in <script> tags.
 
         Select <script type="javascript/text"> tags and delegate to
         `extract_javascript`.
@@ -297,7 +297,7 @@ try:
             key = filepath[-1][0]
             if key == 'j':
                 # Jinja2 templates
-                out = io.BytesIO()
+                out = io.StringIO()
                 extractor = ScriptExtractor(out)
                 extractor.feed(unicode(fileobj.read(), 'utf-8'))
                 extractor.close()
@@ -307,7 +307,7 @@ try:
                 from genshi.core import Stream
                 from genshi.input import XMLParser
 
-                out = io.BytesIO()
+                out = io.StringIO()
                 stream = Stream(XMLParser(fileobj))
                 stream = stream.select('//script[@type="text/javascript"]')
                 stream.render(out=out, encoding='utf-8')
