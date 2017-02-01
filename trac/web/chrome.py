@@ -1253,7 +1253,7 @@ class Chrome(Component):
                                'scripts': scripts, 'script_data': script_data})
             raise
 
-    def generate_template_fragment(self, req, filename, data, text):
+    def generate_template_fragment(self, req, filename, data, text=False):
         """Produce content from given template, with minimal data overhead.
 
         See `prepare_template` for the parameter documentation.
