@@ -875,14 +875,14 @@ class EnvironmentAdmin(Component):
         # Create and copy scripts
         makedirs(script_target, overwrite=True)
         printout(_("Creating scripts."))
-        data = {'env': self.env, 'executable': sys.executable}
+        data = {'env': self.env, 'executable': sys.executable, 'repr': repr}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.' + script)
-            template = Chrome(self.env).load_template('deploy_trac.' + script,
-                                                      'text')
-            stream = template.generate(**data)
+            text = Chrome(self.env).render_template_as_string(
+                Chrome(self.env)._load_jinja_template('jdeploy_trac.' + script),
+                data, method='text')
             with open(dest, 'w') as out:
-                stream.render('text', out=out, encoding='utf-8')
+                out.write(text.encode('utf-8'))
 
     def _do_hotcopy(self, dest, no_db=None):
         if no_db not in (None, '--no-database'):
