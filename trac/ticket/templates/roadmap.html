@@ -53,9 +53,12 @@
           # set mstats = milestone_stats[loop.index0]
           <div class="info trac-progress">
             <h2><a href="${href.milestone(milestone.name)}">
-                # trans name = milestone.name
+                # set name
+                <em>${milestone.name}</em>
+                # endset
+                # trans name
 
-                Milestone: <em>${name}</em>
+                Milestone: ${name}
 
                 # endtrans
             </a></h2>
@@ -69,13 +72,9 @@
 
               #   endtrans
               # elif milestone.is_late:
-              #   set duration = dateinfo(milestone.due)
-              #   set date = format_datetime(milestone.due)
-              #   trans duration, date
-
-              <strong>${duration} late</strong> (${date})
-
-              #   endtrans
+              <strong>
+                ${_("%(duration)s late", duration=dateinfo(milestone.due))}
+              </strong> (${format_datetime(milestone.due)})
               # elif milestone.due:
               #   set duration = dateinfo(milestone.due)
               #   set date = format_datetime(milestone.due)
@@ -120,11 +119,15 @@
       # endif
 
       <div id="help">
-        # trans href = href.wiki('TracRoadmap')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_roadmap
+        <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a>
+        # endset
+        # trans trac_roadmap
 
-        <strong>Note:</strong> See
-        <a href="${href}">TracRoadmap</a> for help on using the
-        roadmap.
+        ${note} See ${trac_roadmap} for help on using the roadmap.
 
         # endtrans
       </div>

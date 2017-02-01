@@ -193,16 +193,25 @@
 
       #     with q = quote_plus(message[:80])
       <p>
-        #     set search_href = tracker + "/search?ticket=yes&amp;noquickjump=1&amp;q=" + q
-        #     trans search_href, trac_ml = trac.homepage + 'wiki/MailingList'
+        #     set search_href = "/search?ticket=yes&amp;noquickjump=1&amp;q="
+        #     set searching
+        <a href="${tracker + search_href + q}">${_("searching")}</a>
+        #     endset
+        #     set searching_for_similar_issues
+        <strong>${_("%(searching)s for similar issues", searching=searching)}
+        </strong>
+        #     endset
+        #     set mailing_list
+        <a href="${trac.homepage + 'wiki/MailingList'}">${_("mailing list")}
+        </a>
+        #     endset
+        #     trans searching_for_similar_issues, mailing_list
 
         Before you do that, though, please first try
-        <strong><a href="${search_href}">searching</a> for similar
-        issues</strong>, as it is quite likely that this problem has
-        been reported before. For questions about installation and
-        configuration of Trac or its plugins, please try the
-        <a href="${trac_ml}">mailing list</a> instead of creating a
-        ticket.
+        ${searching_for_similar_issues}, as it is quite likely that
+        this problem has been reported before. For questions about
+        installation and configuration of Trac or its plugins, please
+        try the ${mailing_list} instead of creating a ticket.
 
         #     endtrans
       </p>
@@ -228,13 +237,17 @@
           <li class="frame">
             <a href="#frame${loop.index0}" id="frame${loop.index0}">
               #   set file = frame.filename
-              #   set line = frame.lineno + 1
-              #   set function = frame.function
-              #   trans file, line, function
-              <span class="file">File "${file}", line <strong>${line}</strong>,
-                in</span>
-              <var>${function}</var>
-              #   endtrans
+              #   set line
+              <strong>${frame.lineno + 1}</strong>
+              #   endset
+              <span class="file">
+                #   trans file, line
+
+                File "${file}", line ${line}, in
+
+                # endtrans
+              </span>
+              <var>${frame.function}</var>
             </a>
             #     if frame.line:
             <div class="source" style="display: none">
@@ -286,7 +299,9 @@
           #     set line = frame.lineno + 1
           #     set function = frame.function
           #     trans file, line, function
+
           File "${file}", line ${line}, in ${function}
+
           #     endtrans
           #     if frame.line:
           ${'\n  ' + frame.line.lstrip()}
@@ -309,10 +324,12 @@
       #   endif
       # endif
       <p>
-        # trans href_guide = href.wiki('TracGuide')
+        # set trac_guide
+        <a href="${href.wiki('TracGuide')}">TracGuide</a>
+        # endset
+        # trans trac_guide
 
-        <a href="${href_guide}">TracGuide</a> &mdash; The Trac User
-        and Administration Guide
+        ${trac_guide} &mdash; The Trac User and Administration Guide
 
         # endtrans
       </p>

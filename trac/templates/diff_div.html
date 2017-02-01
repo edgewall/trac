@@ -99,15 +99,21 @@ Arguments:
         <li>
           #     if both:
           #       trans name = prop_name(name, name_attrs), old = render_property(prop.old), new = render_property(prop.new)
+
           Property ${name} changed from ${old} to ${new}
+
           #       endtrans
           #     elif not prop.old:
           #       trans name = prop_name(name, name_attrs), value = render_property(prop.new)
+
           Property ${name} set to ${value}
+
           #       endtrans
           #     else:
           #       trans name = prop_name(name, name_attrs)
+
           Property ${name} deleted
+
           #       endtrans
           #     endif
         </li>
@@ -169,7 +175,7 @@ Arguments:
               <a title="${new.get('title')}"
                  href="${new.get('href')}#L${toline}"
                  >${shortcol}${new.shortrev}</a>
-	      # else:
+              # else:
               ${shortcol}${new.shortrev}
               # endif
             </th>
@@ -258,9 +264,8 @@ Arguments:
             #           set within_change = loop.index0 is lessthan(len(block.base.lines))
             <th>${block.base.offset + loop.index if within_change else
               '&nbsp;'|safe}</th>
-            <td class="l">{%
-              if within_change %}<span>${block.base.lines[loop.index0]}</span>{%
-              endif %}</td>
+            <td class="l">{% if within_change
+              %}<span>${block.base.lines[loop.index0]}</span>{% endif %}</td>
             <th>${block.changed.offset + loop.index}</th>
             <td class="r"><span>${line}</span></td>
           </tr>

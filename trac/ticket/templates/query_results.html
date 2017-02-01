@@ -29,9 +29,10 @@
 
 <div>
   # if paginator.has_more_pages:
-  <h2 class="report-result">
-    Results <span class="numresults">(${paginator.displayed_items()})</span>
-  </h2>
+  #   set numresults
+  <span class="numresults">(${paginator.displayed_items()})</span>
+  #   endset
+  <h2 class="report-result">${tag_("Results %(num)s", num=numresults)}</h2>
   # endif
   # include 'page_index.html' if paginator.show_index
 
@@ -43,10 +44,14 @@
     #     set groupname =  (authorinfo(groupname) if
                             query.group in ('owner', 'reporter')
                             else (groupname or _('None')))
-    #     set count = ngettext('%(num)s match', '%(num)s matches', len(results))
+    #     set count
+    <span class="numrows">
+      (${ngettext('%(num)s match', '%(num)s matches', len(results))})
+    </span>
+    #     endset
     #     trans grouplabel, groupname, count
 
-    ${grouplabel}: ${groupname} <span class="numrows">(${count})</span>
+    ${grouplabel}: ${groupname} ${count}
 
     #     endtrans
     #  endwith
@@ -144,7 +149,7 @@
       #       if ticket_context.resource in context:
       <tr class="fullrow">
         <td colspan="${num_cols}">
-          <p class="meta"><em>(this ticket)</em></p>
+          <p class="meta"><em>${_("(this ticket)")}</em></p>
         </td>
       </tr>
       #       else:

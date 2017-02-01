@@ -174,9 +174,18 @@
          ><img src="${chrome.htdocs_location}trac_logo_mini.png" height="30"
                width="107" alt="${_("Trac Powered")}"/></a>
       <p class="left">
-        # trans href = href.about(), version = trac.version
-        Powered by <a href="${href}"><strong>Trac ${version}</strong></a><br />
-        By <a href="http://www.edgewall.org/">Edgewall Software</a>.
+        # set trac_version
+        <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a>
+        <br />
+        # endset
+        # set eo
+        <a href="http://www.edgewall.org/">Edgewall Software</a>
+        # endset
+        # trans trac_version, eo
+
+        Powered by ${trac_version}
+        By ${eo}.
+
         # endtrans
       </p>
       <p class="right">${chrome.footer}</p>

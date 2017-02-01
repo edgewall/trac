@@ -204,10 +204,16 @@
     # endwith
 
     <p class="help">
-      # trans
+      # set subject
+      <em>${_("Subject")}</em>
+      # endset
+      # set group
+      <em>${_("Group")}</em>
+      # endset
+      # trans subject, group
 
-      Note that <em>Subject</em> or <em>Group</em> names can't be all
-      upper-case, as that is reserved for permission names.
+      Note that ${subject} or ${group} names can't be all upper-case,
+      as that is reserved for permission names.
 
       # endtrans
     </p>

@@ -160,10 +160,12 @@
               <th>
                 ${_("Component")}
                 <span class="trac-toggler">
-                  [<a title="Show all descriptions" href="${href.admin('general', 'plugin', show=plugin.name)
-                                                            + '#trac-plugin-' + plugin.name}">+</a>]
-                  [<a title="Hide all descriptions" href="${href.admin('general', 'plugin')
-                                                            + '#trac-plugin-' + plugin.name}">&ndash;</a>]
+                  [<a title="${_("Show all descriptions")}"
+                      href="${href.admin('general', 'plugin', show=plugin.name)
+                              + '#trac-plugin-' + plugin.name}">+</a>]
+                  [<a title="${_("Hide all descriptions")}"
+                      href="${href.admin('general', 'plugin')
+                              + '#trac-plugin-' + plugin.name}">&ndash;</a>]
                 </span>
               </th>
               <th class="sel">${_("Enabled")}</th>

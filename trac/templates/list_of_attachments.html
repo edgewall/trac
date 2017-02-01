@@ -26,14 +26,15 @@
           class="trac-rawlink" title="${_("Download")}">&#8203;</a>
 #  endset
 #   with
-#     set size = pretty_size(attachment.size)
+#     set size
+<span title="${_('%(size)s bytes', size=attachment.size)}">${
+  pretty_size(attachment.size)}</span>
+#     endset
 #     set author = authorinfo(attachment.author)
 #     set date = pretty_dateinfo(attachment.date)
-#     set title = _('%(size)s bytes', size=attachment.size)
-#     trans attachment_links, size, author, date, title
+#     trans attachment_links, size, author, date
 
-${attachment_links}(<span title="${title}">${size}</span>)
-- added by ${author} ${date}.
+${attachment_links} (${size}) - added by ${author} ${date}.
 
 #     endtrans
 #   endwith
@@ -99,4 +100,4 @@ ${attachment_links}(<span title="${title}">${size}</span>)
 </div>
 #   endif
 # endwith
-## jinjacheck: "got (a a CDATA span CDATA p div )" OK
+## jinjacheck: "got (a a span CDATA p div )" OK

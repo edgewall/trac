@@ -70,16 +70,16 @@
               <input type="text" name="author" class="trac-fullwidth"
                      value="${attachment.author or author}" />
             </label>
-            # set preferences_link
+            # set preferences
             <a href="${href.prefs()}" class="trac-target-new">${
               _("Preferences")}</a>
             # endset
             # if author == 'anonymous':
             <p class="hint">
-              # trans preferences_link
+              # trans preferences
 
               E-mail address and name can be saved in the
-              ${preferences_link}.
+              ${preferences}.
 
               # endtrans
             </p>
@@ -152,14 +152,16 @@
           <th scope="col">
             # with
             #   set file = attachment.filename
-            #   set size = _('%(size)s bytes', size=attachment.size)
-            #   set psize = pretty_size(attachment.size)
+            #   set size
+            <span title="${ngettext('%(num)d byte', '%(num)s bytes',
+                                    num=attachment.size)}">${
+              pretty_size(attachment.size)}</span>
+            #   endset
             #   set author = authorinfo(attachment.author)
             #   set pdate = pretty_dateinfo(attachment.date)
-            #   trans file, size, psize, author, pdate
+            #   trans file, size, author, pdate
 
-            File ${file}, <span title="${size}">${psize}</span> (added
-            by ${author}, ${pdate})
+            File ${file}, ${size} (added by ${author}, ${pdate})
 
             #   endtrans
             # endwith

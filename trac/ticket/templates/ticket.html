@@ -236,7 +236,7 @@
 
         <div>
           # if ticket.exists:
-          <h3 class="foldable">Modify Ticket</h3>
+          <h3 class="foldable">${_("Modify Ticket")}</h3>
           # endif
           <div id="modify">
 
@@ -291,9 +291,10 @@
                       <a href="${href.prefs()}" class="trac-target-new">${
                         _("Preferences")}</a>
                       # endset
-                      # trans prefs = preferences
+                      # trans preferences
 
-                      E-mail address and name can be saved in the ${prefs}
+                      E-mail address and name can be saved in the
+                      ${preferences}
 
                       # endtrans
                     </p>
@@ -309,10 +310,13 @@
                     <fieldset>
                       <label for="field-description"
                              id="field-description-help">
-                        # trans href = href.wiki('WikiFormatting')
+                        # set wikiformatting
+                        <a tabindex="42" href="${href.wiki('WikiFormatting')}">
+                          WikiFormatting</a>
+                        # endset
+                        # trans wikiformatting
 
-                        You may use <a tabindex="42"
-                                       href="${href}">WikiFormatting</a> here.
+                        You may use ${wikiformatting} here.
 
                         # endtrans
                       </label>
@@ -486,16 +490,20 @@
           <div>
             <div id="trac-edit-warning" class="warning system-message" ${
                {'style': 'display: none;' if start_time == ticket['changetime']
-               }|htmlattr}>
-              # trans
+                 }|htmlattr}>
+              # set other_modifications
+              <em class="trac-new">other modifications</em>
+              # endset
+              # set conflicts
+              <em class="trac-conflict">conflicts</em>
+              # endset
+              # trans other_modifications, conflicts
 
               This ticket has been modified since you started
-              editing. You should review the
-              <em class="trac-new">other modifications</em> which have
-              been appended above, and
-              any <em class="trac-conflict">conflicts</em> shown in
-              the preview below.  You can nevertheless proceed and
-              submit your changes if you wish so.
+              editing. You should review the ${other_modifications}
+              which have been appended above, and any ${conflicts}
+              shown in the preview below.  You can nevertheless
+              proceed and submit your changes if you wish so.
 
               # endtrans
             </div>
@@ -519,10 +527,14 @@
                 </table>
                 # if author_id == 'anonymous':
                 <p class="hint">
-                  # trans href = href.prefs()
+                  # set preferences
+                  <a href="${href.prefs()}" class="trac-target-new">
+                    ${_("Preferences")}</a>
+                  # endset
+                  # trans preferences
 
                   E-mail address and name can be saved in the
-                  <a href="${href}" class="trac-target-new">Preferences</a>.
+                  ${preferences}.
 
                   # endtrans
                 </p>
@@ -530,10 +542,13 @@
               </div>
               # endif
               <label for="comment">
-                # trans href = href.wiki('WikiFormatting')
+                # set wikiformatting
+                <a tabindex="42" href="${href.wiki('WikiFormatting')}">
+                  WikiFormatting</a>
+                # endset
+                # trans wikiformatting
 
-                You may use <a tabindex="42" href="${href}">WikiFormatting</a>
-                here.
+                You may use ${wikiformatting} here.
 
                 # endtrans
               </label>
@@ -614,10 +629,15 @@
       # endif
 
       <div id="help">
-        # trans href = href.wiki('TracTickets')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_tickets
+        <a href="${href.wiki('TracTickets')}">TracTickets</a>
+        # endset
+        # trans trac_tickets
 
-        <strong>Note:</strong> See
-        <a href="${href}">TracTickets</a> for help on using tickets.
+        ${note} See ${trac_tickets} for help on using tickets.
 
         # endtrans
       </div>

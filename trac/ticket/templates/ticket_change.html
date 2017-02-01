@@ -51,17 +51,20 @@
     # endif
     # if 'replyto' in change:
     <span class="trac-in-reply-to">
-      in reply to: ${commentref('&nbsp;'|safe, change.replyto, 'in-reply-to')}
-      {% if change_replies: %}; {% endif %}
+      # set refs = commentref('&nbsp;'|safe, change.replyto, 'in-reply-to')
+      # trans refs
+
+      in reply to: ${refs}
+
+      # endtrans
+      {% if change_replies: %}${_(";")}{% endif %}
+      ## don't forget french typographic rules!
     </span>
     # endif
     # if change_replies:
     <span class="trac-follow-ups">
-      # trans numeral = change_replies|length
-      <span>follow-up:</span>
-      # pluralize
-      <span>follow-ups:</span>
-      # endtrans
+      <span>${
+        ngettext("follow-up:", "follow-ups:", change_replies|length)}</span>
       # for reply in change_replies:
       ${commentref('&nbsp;'|safe, reply, 'follow-up')}
       # endfor
@@ -133,7 +136,9 @@
                                   class="trac-rawlink">&#8203;</a>
         #   endset
         #   trans attachment_link
+
         ${attachment_link} added
+
         #   endtrans
         # elif 'rendered' in field:
         ${field.rendered}

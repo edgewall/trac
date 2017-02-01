@@ -39,13 +39,16 @@
       </form>
 
       <div id="help">
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
         # set trac_reports
         <a href="${href.wiki('TracReports')}">TracReports</a>
         # endset
         # trans trac_reports
 
-        <strong>Note:</strong> See ${trac_reports} for help on using
-        and creating reports.
+        ${note} See ${trac_reports} for help on using and creating
+        reports.
 
         # endtrans
       </div>

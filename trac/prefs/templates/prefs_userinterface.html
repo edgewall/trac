@@ -28,14 +28,16 @@
         ${_("Enable access keys")}
       </label>
       <p class="hint">
-        # trans href = href.wiki('TracAccessibility')
+        # set trac_accessibility
+        <a href="${href.wiki('TracAccessibility')}">TracAccessibility</a>
+        # endset
+        # trans trac_accessibility
 
         This site provides keyboard shortcuts for faster access to
         certain functions of this site. As these shortcuts can cause
         conflicts with shortcuts provided by the desktop system or web
         browser, they are disabled by default. See
-        <a href="${href}">TracAccessibility</a>
-        for more information on access keys.
+        ${trac_accessibility} for more information on access keys.
 
         # endtrans
       </p>

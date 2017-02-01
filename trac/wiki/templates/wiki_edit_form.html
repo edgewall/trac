@@ -46,12 +46,19 @@ history and logs, available at http://trac.edgewall.org/.
 ${page.text}</textarea>
     </p>
     <div id="help">
-      # trans href_wf = href.wiki('WikiFormatting'), href_w = href.wiki('TracWiki')
+      # set note
+      <strong>${_("Note:")}</strong>
+      # endset
+      # set wikiformatting
+      <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+      # endset
+      # set trac_wiki
+      <a href="${href.wiki('TracWiki')}">TracWiki</a>
+      # endset
+      # trans wikiformatting, trac_wiki
 
-      <strong>Note:</strong>
-      See <a href="${href_wf}">WikiFormatting</a> and
-      <a href="${href_w}">TracWiki</a> for help on editing wiki
-      content.
+      ${note} See ${wikiformatting} and ${trac_wiki} for help on
+      editing wiki content.
 
       # endtrans
     </div>
@@ -68,11 +75,13 @@ ${page.text}</textarea>
         </label>
         # if author == 'anonymous':
         <p class="hint">
-          # set attrs = {'href': href.prefs(), 'class': 'trac-target-new'}
-          # trans attrs = attrs|htmlattr
+          # set preferences
+          <a class="trac-target-new" href="${href.prefs()}">${
+            _("Preferences")}</a>
+          # endset
+          # trans preferences
 
-          E-mail address and name can be saved in the
-          <a ${attrs}>Preferences</a>.
+          E-mail address and name can be saved in the ${preferences}
 
           # endtrans
         </p>

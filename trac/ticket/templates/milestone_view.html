@@ -45,11 +45,10 @@
               duration=dateinfo(milestone.completed),
               date=format_datetime(milestone.completed))}
           # elif milestone.is_late:
-          #   trans duration = dateinfo(milestone.due), date = format_datetime(milestone.due)
-
-          <strong>${duration} late</strong> (${date})
-
-          #   endtrans
+          <strong>
+            ${_("%(duration)s late", duration=dateinfo(milestone.due))}
+          </strong>
+          (${format_datetime(milestone.due)})
           # elif milestone.due:
           ${_("Due in %(duration)s (%(date)s)",
               duration=dateinfo(milestone.due),
@@ -126,10 +125,15 @@
       # endif
 
       <div id="help">
-        # trans href = href.wiki('TracRoadmap')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_roadmap
+        <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a>
+        # endset
+        # trans trac_roadmap
 
-        <strong>Note:</strong> See <a href="${href}">TracRoadmap</a>
-        for help on using the roadmap.
+        ${note} See ${trac_roadmap} for help on using the roadmap.
 
         # endtrans
       </div>

@@ -134,10 +134,13 @@
       # endif
       <div class="field description">
         <label for="description">
-          # trans href = href.wiki('WikiFormatting')
+          # set wikiformatting
+          <a tabindex="42" href="${href.wiki('WikiFormatting')}">
+            WikiFormatting</a>
+          # endset
+          # trans wikiformatting
 
-          Description: (you may use
-          <a tabindex="42" href="${href}">WikiFormatting</a> here)
+          Description: (you may use ${wikiformatting} here)
 
           # endtrans
         </label>

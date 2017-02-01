@@ -39,9 +39,13 @@
     <div id="content" class="ticket">
       # if action == 'delete':
       <h1>
-        # trans id = ticket.id, href = href.ticket(ticket.id)
+        # set ticket
+        <a href="${href.ticket(ticket.id)}">${
+          _("Ticket #%(id)s", id=ticket.id)}</a>
+        # endset
+        # trans ticket
 
-        Delete <a href="${href}">Ticket #${id}</a>
+        Delete ${ticket}
 
         # endtrans
         <span class="status">(${ticket.status}{%

@@ -67,11 +67,14 @@
             #   set version = page.version
             #   set author = authorinfo(page.author)
             #   set date = pretty_dateinfo(page.time)
-            #   set href = href.wiki(page.name, action='diff', version=version)
-            #   trans version, author, date, href
+            #   set diff
+            <a href="${href.wiki(page.name, action='diff', version=version)}">
+              ${_("diff")}</a>
+            #   endset
+            #   trans version, author, date, diff
 
             Version ${version} (modified by ${author}, ${date})
-            (<a href="${href}">diff</a>)
+            (${diff})
 
             #   endtrans
             # endwith
@@ -87,23 +90,32 @@
         <div id="wikipage" class="trac-content">${
           wiki_to_html(context, text)
           }</div>
-        #   set last_modification = (page.comment and
-        _('Version %(version)s by %(author)s: %(comment)s',
-        version=page.version, author=format_author(page.author),
-        comment=page.comment) or
-        _('Version %(version)s by %(author)s',
-        version=page.version, author=format_author(page.author)))
         #   if not version:
         <div class="trac-modifiedby">
           <span>
             # with
             #   set href = href.wiki(page.name, action='diff',
                                      version=page.version)
+            #   set last_modification
+            #     if page.comment:
+            _('Version %(version)s by %(author)s: %(comment)s',
+              version=page.version,
+              author=format_author(page.author),
+              comment=page.comment)
+            #     else:
+            _('Version %(version)s by %(author)s',
+              version=page.version,
+              author=format_author(page.author))
+            #     endif
+            #   endset
+            #   set last_modified
+            <a href="${href}" title="${last_modification}">${
+              _("Last modified")}</a>
+            #   endset
             #   set date = pretty_dateinfo(page.time)
-            #   trans href, last_modification, date
+            #   trans last_modified, date
 
-            <a href="${href}"
-               title="${last_modification}">Last modified</a> ${date}
+            ${last_modified} ${date}
 
             #   endtrans
             # endwith
@@ -115,10 +127,12 @@
         #   endif
         # else:
         <p>
-          # trans name = name_of(page.resource)
+          # set name
+          <strong>${name_of(page.resource)}</strong>
+          # endset
+          # trans name
 
-          The page <strong>${name}</strong> does not exist.
-          You can create it here.
+          The page ${name} does not exist.  You can create it here.
 
           # endtrans
         </p>

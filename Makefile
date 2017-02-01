@@ -347,7 +347,8 @@ pylint:
 
 
 templates ?= $(shell \
-    find $$(find -type d -a -name templates) -mindepth 1 -maxdepth 1 -type f | \
+    find $$(find trac tracopt -type d -a -name templates) \
+        -mindepth 1 -maxdepth 1 -type f | \
     grep -v "~" | grep -v README )
 
 jinja:

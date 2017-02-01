@@ -17,7 +17,9 @@
   <channel>
     <title>
       # trans project = project.name
+
       ${project}: Ticket Query
+
       # endtrans
     </title>
     <link>${query_href}</link>

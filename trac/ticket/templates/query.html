@@ -202,9 +202,17 @@
                                  value="${end}" size="14"
                                  class="trac-${date_or_datetime}picker" />
                           #   endset
-                          #   trans start_picker, end_picker
-                          <label>between</label> ${start_picker}
-                          <label>and</label> ${end_picker}
+                          #   set between_label
+                          <label>${_("between")}</label>
+                          #   endset
+                          #   set and_label
+                          <label>${_("and")}</label>
+                          #   endset
+                          #   trans between_label, and_label, start_picker, end_picker
+
+                          ${between_label} ${start_picker}
+                          ${and_label} ${end_picker}
+
                           #   endtrans
                           # endif
                         </td>
@@ -319,7 +327,7 @@
         </p>
 
         <p class="option">
-          <label for="max">Max items per page</label>
+          <label for="max">${_("Max items per page")}</label>
           <input type="text" name="max" id="max" size="10"
                  value="${query.max}"/>
         </p>
@@ -390,9 +398,16 @@
       </div>
 
       <div id="help">
-        # trans hhref = href.wiki('TracQuery')
-        <strong>Note:</strong> See <a href="${hhref}">TracQuery</a>
-        for help on using queries.
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_query
+        <a href="${href.wiki('TracQuery')}">TracQuery</a>
+        # endset
+        # trans trac_query
+
+        ${note} See ${trac_query} for help on using queries.
+
         # endtrans
       </div>
     </div>

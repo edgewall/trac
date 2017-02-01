@@ -252,14 +252,17 @@
           # endtrans
         </p>
         <p class="hint">
-          # trans
+          # set never_notify
+          <strong>"${_("Never notify: I update a ticket")}"</strong>
+          # endset
+          # set any_changes
+          <strong>"${_("Notify: Any ticket changes")}"</strong>
+          # endset
+          # trans never_notify, any_changes
 
-          Example: The rule
-          <strong>"Never notify: I update a ticket"</strong>
-          should be above
-          <strong>"Notify: Any ticket changes"</strong>
-          to get notifications of any ticket changes except when
-          you update a ticket.
+          Example: The rule ${never_notify} should be above
+          ${any_changes} to get notifications of any ticket changes
+          except when you update a ticket.
 
           # endtrans
         </p>
@@ -288,12 +291,10 @@
           # endtrans
         </p>
         <p class="hint">
-          # trans
+          # trans any_changes, never_notify
 
-          Example: The subscription rule
-          <strong>"Notify: Any ticket changes"</strong>
-          overrides the default rule
-          <strong>"Never notify: I update a ticket"</strong>.
+          Example: The subscription rule ${any_changes} overrides the
+          default rule ${never_notify}.
 
           # endtrans
         </p>

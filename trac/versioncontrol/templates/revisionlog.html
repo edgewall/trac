@@ -88,24 +88,33 @@
           <input type="text" id="stop_rev" name="stop_rev"
                  value="${stop_rev}" size="5" />
           # endset
-          # trans input_start, input_end
+          # set start_label
           <label>
-            View log starting at ${input_start}
+            ${tag_("View log starting at %(start)s", start=input_start)}
           </label>
+          # endset
+          # set end_label
           <label>
-            and back to ${input_end}
+            ${tag_("back to %(end)s", end=input_end)}
           </label>
+          # endset
+          # trans start_label, end_label
+
+          ${start_label} and ${end_label}
+
           # endtrans
           <br />
           # set input_max
           <input type="text" id="limit" name="limit" value="${limit}"
                  size="3" maxlength="3" />
           # endset
-          # trans input_max
           <label>
+            # trans input_max
+
             Show at most ${input_max} revisions per page.
+
+            # endtrans
           </label>
-          # endtrans
           <br />
           <label>
             <input type="checkbox" id="verbose" name="verbose"
@@ -291,11 +300,16 @@
       # endfor
 
       <div id="help">
-        # trans href = href.wiki('TracRevisionLog')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_revision_log
+        <a href="${href.wiki('TracRevisionLog')}">TracRevisionLog</a>
+        # endset
+        # trans trac_revision_log
 
-        <strong>Note:</strong>
-        See <a href="${href}">TracRevisionLog</a> for help on using
-        the revision log.
+        ${note} See ${trac_revision_log} for help on using the
+        revision log.
 
         # endtrans
       </div>

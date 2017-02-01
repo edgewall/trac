@@ -259,7 +259,7 @@ class FunctionalTester(object):
         if content is None:
             content = random_page()
         self.go_to_wiki(name)
-        tc.find("The page %s does not exist." % tag.strong(name))
+        tc.find("The page[ \n]+%s[ \n]+does not exist." % tag.strong(name))
 
         self.edit_wiki_page(name, content, comment)
 

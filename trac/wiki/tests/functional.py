@@ -274,7 +274,7 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
         # this time, the original page is gone
         tc.go(page_url)
         tc.url(page_url)
-        tc.find("The page %s does not exist" % tag.strong(pagename))
+        tc.find("The page[ \n]+%s[ \n]+does not exist" % tag.strong(pagename))
 
 
 class RegressionTestTicket4812(FunctionalTwillTestCaseSetup):

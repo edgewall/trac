@@ -28,7 +28,7 @@
         <img src="${chrome.htdocs_location}trac_banner.png"
              alt="Trac: Integrated SCM &amp; Project Management" />
       </a>
-      <h1>About Trac</h1>
+      <h1>${_("About Trac")}</h1>
       <p>
         # trans
 
@@ -41,13 +41,17 @@
         # endtrans
       </p>
       <p>
-        # trans
+        # set online
+        <a href="http://trac.edgewall.org/wiki/TracLicense">${_("online")}</a>
+        # endset
+        # set copying
+        <code>COPYING</code>
+        # endset
+        # trans online, copying
 
-        Trac is distributed under the modified BSD License.<br />
-        The complete text of the license can be found
-        <a href="http://trac.edgewall.org/wiki/TracLicense">online</a>
-        as well as in the <code>COPYING</code> file included in the
-        distribution.
+        Trac is distributed under the modified BSD License.<br />  The
+        complete text of the license can be found ${online} as well as
+        in the ${copying} file included in the distribution.
 
         # endtrans
       </p>
@@ -55,10 +59,12 @@
         <img src="${chrome.htdocs_location}python.png" alt="python powered" />
       </a>
       <p>
-        # trans
-
-        Please visit the Trac open source project:
+        # set teo
         <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
+        # endset
+        # trans teo
+
+        Please visit the Trac open source project: ${teo}
 
         # endtrans
       </p>

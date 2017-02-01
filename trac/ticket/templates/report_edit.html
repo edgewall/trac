@@ -64,13 +64,13 @@
           </div>
           <div class="field">
             <label for="description">
-              # set wiki_formatting
+              # set wikiformatting
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">
                 WikiFormatting</a>
               # endset
-              # trans wiki_formatting
+              # trans wikiformatting
 
-              Description: (you may use ${wiki_formatting} here)
+              Description: (you may use ${wikiformatting} here)
 
               # endtrans
             </label>
@@ -89,10 +89,13 @@ ${report.description}</textarea>
               <a tabindex="42" href="${href.wiki('TracQuery')
                                        + '#QueryLanguage'}">TracQuery</a>
               # endset
-              # trans trac_query
+              # set query_prefix
+              <code>query:</code>
+              # endset
+              # trans query_prefix, trac_query
 
-              Query: (can be either SQL or, if starting
-              with <code>query:</code>, a ${trac_query} expression)
+              Query: (can be either SQL or, if starting with
+              ${query_prefix}, a ${trac_query} expression)
 
               # endtrans
             </label>
@@ -109,13 +112,16 @@ ${report.sql}</textarea>
       </form>
 
       <div id="help">
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
         # set trac_reports
         <a href="${href.wiki('TracReports')}">TracReports</a>
         # endset
         # trans trac_reports
 
-        <strong>Note:</strong> See ${trac_reports} for help on using
-        and creating reports.
+        ${note} See ${trac_reports} for help on using and creating
+        reports.
 
         # endtrans
       </div>

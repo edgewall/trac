@@ -93,10 +93,17 @@
         </form>
       </div>
       <div id="help">
-        # trans href = href.wiki('TracChangeset#ExaminingDifferencesBetweenBranches')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_changeset
+        <a href="${href.wiki('TracChangeset#ExaminingDifferencesBetweenBranches')}">
+          TracChangeset</a>
+        # endset
+        # trans trac_changeset
 
-        <strong>Note:</strong> See <a href="${href}">TracChangeset</a>
-        for help on using the diff feature.
+        ${note} See ${trac_changeset} for help on using the diff
+        feature.
 
         # endtrans
       </div>

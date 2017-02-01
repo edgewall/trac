@@ -38,7 +38,8 @@
       }</p>
     # endif
     # if not ticket.exists:
-    <p><span class="trac-loading"></span><i>(ticket not yet created)</i></p>
+    <p><span class="trac-loading"></span><i>${
+        _("(ticket not yet created)")}</i></p>
     # endif
   </div>
   ## use a placeholder if it's a new ticket
@@ -68,13 +69,16 @@
     # if version is not none:
     #   set version_link
     #     if version == 0:
-    <a href="#comment:description">Initial Version</a>
+    <a href="#comment:description">${_("Initial Version")}</a>
     #     else:
-    <a href="#comment:${version}">Version ${version}</a>
+    <a href="#comment:${version}">${
+      _("Version %(version)s", version=version)}</a>
     #     endif
     #   endset
     #   trans version_link
+
     &mdash; at ${version_link}
+
     #   endtrans
     # endif
   </h1>
@@ -142,8 +146,7 @@
     # endwith
   </table> {# jinjacheck: "got (CDATA tr tr )" OK #}
   <div class="description">
-    <h3 id="comment:description">
-      Description
+    <h3 id="comment:description">${_("Description")}
       # if description_change:
       <a href="${href.ticket(ticket.id, action='diff',
                version=description_change.cnum)}"

@@ -253,8 +253,13 @@
                 <div ${prop.rendered.content_attributes|htmlattr}>${
                   prop.rendered.content}</div>
                 #   else:
-                #     trans name = prop.name, value = prop_value(prop)
-                Property <strong>${name}</strong> set to ${value}
+                #     set name
+                <strong>${prop.name}</strong>
+                #     endset
+                #     trans name, value = prop_value(prop)
+
+                Property ${name} set to ${value}
+
                 #     endtrans
                 #   endif
               </li>
@@ -319,9 +324,17 @@
       </div>
 
       <div id="help">
-        # trans href = href.wiki('TracBrowser')
-        <strong>Note:</strong> See <a href="${href}">TracBrowser</a> for help
-        on using the repository browser.
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_browser
+        <a href="${href.wiki('TracBrowser')}">TracBrowser</a>
+        # endset
+        # trans trac_browser
+
+        ${note} See ${trac_browser} for help on using the repository
+        browser.
+
         # endtrans
       </div>
     </div>

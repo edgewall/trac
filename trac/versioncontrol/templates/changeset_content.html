@@ -149,7 +149,7 @@
   </a>
   #   endif
   <span class="comment">(${kind})</span>
-  #   if item.old and item.old.get('path') and item.change == 'copy' or item.change == 'move':
+  #   if item.old and item.old.get('path') and item.change in ('copy', 'move'):
   <small><em>
       # set oldpath
       <a href="${item.old.href}"
@@ -158,7 +158,9 @@
         ${item.old.path}</a>
       # endset
       # trans kind, oldpath
+
       (${kind} from ${oldpath})
+
       # endtrans
   </em></small>
   #   endif
@@ -190,7 +192,9 @@
       ${_("(less than one hour ago)")}
       #   else:
       #     trans age = dateinfo(changeset.date)
+
       (${age} ago)
+
       #     endtrans
       #   endif
       # endwith
@@ -303,10 +307,16 @@
     # endwith
 
     <div id="help">
-      # trans href = href.wiki('TracChangeset')
+      # set note
+      <strong>${_("Note:")}</strong>
+      # endset
+      # set trac_changeset
+      <a href="${href.wiki('TracChangeset')}">TracChangeset</a>
+      # endset
+      # trans trac_changeset
 
-      <strong>Note:</strong> See <a href="${href}">TracChangeset</a>
-      for help on using the changeset viewer.
+      ${note} See ${trac_changeset} for help on using the changeset
+      viewer.
 
       # endtrans
     </div>

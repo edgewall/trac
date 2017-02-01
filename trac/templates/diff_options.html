@@ -22,19 +22,26 @@ Arguments:
           value="sidebyside">side by side</option>
 </select>
 <div class="field">
-  # set radio_contextall_0
+  # set input_radio
   <input type="radio" name="contextall" value="0"
          ${{"checked": not diff.options.contextall}|htmlattr}/>
   # endset
-  # set text_contextlines
+  # set input_text
   <input type="text" name="contextlines" id="contextlines" size="2"
          maxlength="3"
          value="${'all' if diff.options.contextlines is lessthan(0) else
                 diff.options.contextlines}"/>
   # endset
-  # trans radio = radio_contextall_0, text = text_contextlines
-  <label>${radio} Show</label>
-  <label>${text} lines around each change</label>
+  # set n_context_lines
+  <label>${tag_("%(text)s lines around each change", text=input_text)}</label>
+  # endset
+  # set radio_button_show
+  <label>${tag_("%(radio)s Show", radio=input_radio)}</label>
+  # endset
+  # trans radio_button_show, n_context_lines
+
+  ${radio_button_show} ${n_context_lines}
+
   # endtrans
   <br/>
   <label><input type="radio" name="contextall" value="1"

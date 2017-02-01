@@ -68,14 +68,20 @@
         <div class="field">
           <label>${_("Log file:")}<br />
             <input type="text" id="log_file" name="log_file" value="${log.file}"
-		   size="48"/>
+                   size="48"/>
           </label>
           <p class="help">
-            # trans dir = log.dir
+            # set log
+            <code>log</code>
+            # endset
+            # set dir
+            <code>${log.dir}</code>
+            # endset
+            # trans log, dir
 
             If you specify a relative path, the log file will be
-            stored inside the <code>log</code> directory of the
-            project environment (<code>${dir}</code>).
+            stored inside the ${log} directory of the project
+            environment (${dir}).
 
             # endtrans
           </p>

@@ -35,31 +35,37 @@
         # set old_url = old_url or url_of(resource, version=old_version)
         # set new_url = new_url or url_of(resource, version=new_version)
         # set url = url or url_of(resource, version=none)
-        # set name = name or name_of(resource)
+        # set new_link
+        <a href="${new_url}">${
+          _("Version %(version)s", version=new_version)}</a>
+        # endset
+        # set src_link
+        <a href="${url}">${name or name_of(resource)}</a>
+        # endset
+
         # if old_version:
-        #   trans old_url, old_version, new_url, new_version, url, name
-
-        Changes between
-        <a href="${old_url}">Version ${old_version}</a> and
-        <a href="${new_url}">Version ${new_version}</a> of
-        <a href="${url}">${name}</a>
-
-        #   endtrans
+        #   set old_link
+        <a href="${old_url}">${
+          _("Version %(version)s", version=old_version)}</a>
+        #   endset
         # elif old_version == 0:
-        #   trans old_url, new_url, new_version, url, name
+        #   set old_link
+        <a href="${old_url}">${_("Initial Version")}</a>
+        #   endset
+        # else:
+        #   set old_link = ''
+        # endif
 
-        Changes between
-        <a href="${old_url}">Initial Version</a> and
-        <a href="${new_url}">Version ${new_version}</a> of
-        <a href="${url}">${name}</a>
+        # if old_link:
+        #   trans old_link, new_link, src_link
+
+        Changes between ${old_link} and ${new_link} of ${src_link}
 
         #   endtrans
         # else:
-        #   trans new, name
+        #   trans new_link, src_link
 
-        Changes from
-        <a href="${new_url}">Version ${new_version}</a> of
-        <a href="${url}">${name}</a>
+        Changes from ${new_link} of ${src_link}
 
         #   endtrans
         # endif

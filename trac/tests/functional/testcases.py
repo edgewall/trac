@@ -27,8 +27,8 @@ class TestAttachmentNonexistentParent(FunctionalTwillTestCaseSetup):
         """TracError should be raised when navigating to the attachment
         page for a nonexistent resource."""
         self._tester.go_to_wiki('NonexistentPage')
-        tc.find("The page <strong>NonexistentPage</strong> does not exist."
-                "[ \n]+You can create it here.")
+        tc.find("The page[ \n]+<strong>NonexistentPage</strong>[ \n]+"
+                "does not exist. You can create it here.")
         tc.find(r"\bCreate this page\b")
 
         tc.go(self._tester.url + '/attachment/wiki/NonexistentPage')

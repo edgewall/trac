@@ -43,10 +43,26 @@
           # set authors_input
           <input type="text" size="16" name="authors" value="${authors}" />
           # endset
-          # trans fromdate = fromdate_input, daysback = daysback_input, authors = authors_input
-          <label>View changes from ${fromdate}</label> <br />
-          <label>going back ${daysback} days</label><br />
-          <label>by author ${authors}</label>
+          # set view_from_label
+          <label>
+            ${tag_("View changes from %(fromdate)s",
+            fromdate=fromdate_input)}
+          </label>
+          # endset
+          # set back_to_label
+          <label>
+            ${tag_("going back %(daysback)s days", daysback=daysback_input)}
+          </label>
+          # endset
+          # set by_author_label
+          <label>
+            ${tag_("by author %(authors)s", authors=authors_input)}
+          </label>
+          # endset
+          # trans view_from_label, back_to_label, by_author_label
+
+          ${view_from_label} <br /> ${back_to_label} <br /> ${by_author_label}
+
           # endtrans
         </div>
         <fieldset>
@@ -78,7 +94,9 @@
             # set title = event.render('title', context)
             # if event.author:
             #   trans time, title, author = authorinfo(event.author)
+
             ${time} ${title} by ${author}
+
             #   endtrans
             # else:
             ${time} ${title}
@@ -94,11 +112,16 @@
       # endfor
 
       <div id="help">
-        # trans timeline_href = href.wiki('TracTimeline')
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # set trac_timeline
+        <a href="${href.wiki('TracTimeline')}">TracTimeline</a>
+        # endset
+        # trans trac_timeline
 
-        <strong>Note:</strong>
-        See <a href="${timeline_href}">TracTimeline</a> for
-        information about the timeline view.
+        ${note} See ${trac_timeline} for information about the
+        timeline view.
 
         # endtrans
       </div>

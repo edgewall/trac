@@ -106,9 +106,16 @@ history and logs, available at http://trac.edgewall.org/.
       # endif
 
       <div id="help">
-        # trans href = href.wiki('TracSearch')
-        <strong>Note:</strong>
-        See <a href="${href}">TracSearch</a> for help on searching.
+        # set trac_search
+        <a href="${href.wiki('TracSearch')}">TracSearch</a>
+        # endset
+        # set note
+        <strong>${_("Note:")}</strong>
+        # endset
+        # trans note, trac_search
+
+        ${note} See ${trac_search} for help on searching.
+
         # endtrans
       </div>
     </div>

@@ -62,9 +62,16 @@
     </table>
 
     <div id="batchmod_help">
-      # trans hhref = href.wiki('TracBatchModify')
-      <strong>Note:</strong> See <a href="${hhref}">TracBatchModify</a>
-      for help on using batch modify.
+      # set note
+      <strong>${_("Note:")}</strong>
+      # endset
+      # set trac_batch_modify
+      <a href="${href.wiki('TracBatchModify')}">TracBatchModify</a>
+      # endset
+      # trans trac_batch_modify
+
+      ${note} See ${trac_batch_modify} for help on using batch modify.
+
       # endtrans
     </div>
 

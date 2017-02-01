@@ -174,22 +174,27 @@
           # endtrans
         </p><br />
         <p>
-          # trans
-
+          # set revert_warning
           <strong>
-            If you save right away, you risk to revert those changes
-          </strong> (highlighted below as deletions).
+            ${_("If you save right away, you risk to revert those changes")}
+          </strong>
+          # endset
+          # trans revert_warning
+
+           ${revert_warning} (highlighted below as deletions).
 
           # endtrans
         </p><br />
         <p>
-          # trans
+          #   set cancel
+          <code>${_("Cancel")}</code>
+          #   endset
+          # trans cancel
 
           Please review all those changes and manually merge them with
           your own changes. <br /> If you're unsure about what you're
-          doing, please press <code>Cancel</code> (losing your
-          changes) and start editing the latest version of the page
-          again.
+          doing, please press ${cancel} (losing your changes) and
+          start editing the latest version of the page again.
 
           # endtrans
         </p>

@@ -106,9 +106,12 @@
         #   endif
         #   if readonly:
         <p class="hint">
-          #   trans
+          #   set note
+          <strong>${_("Note:")}</strong>
+          #   endset
+          #   trans note
 
-          <strong>Note:</strong> This repository is not defined in
+          ${note} This repository is not defined in
           the database and cannot be edited on this page.
 
           #   endtrans
@@ -147,7 +150,8 @@
           </label>
           <span class="hint">
             # set tracreposadmin
-            <a href="${href.wiki('TracRepositoryAdmin') + '#ExplicitSync'}">${_("explicit synchronization")}</a>
+            <a href="${href.wiki('TracRepositoryAdmin') + '#ExplicitSync'}">${
+              _("explicit synchronization")}</a>
             # endset
             # trans tracreposadmin
 
@@ -257,7 +261,8 @@
               </em>
               # else:
               #   if info.error:
-              <span class="missing" title="${info.error}">${info.prettydir}</span>
+              <span class="missing" title="${info.error}">${
+                info.prettydir}</span>
               #   else:
               ${info.prettydir}
               #   endif

@@ -1559,8 +1559,8 @@ class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'name', name + '__')
         tc.submit('Add milestone')
         tc.go(self._tester.url + "/roadmap")
-        tc.find('Milestone: <em>%s</em>' % name)
-        tc.find('Milestone: <em>%s</em>' % (name + '__'))
+        tc.find('Milestone: +<em>%s</em>' % name)
+        tc.find('Milestone: +<em>%s</em>' % (name + '__'))
 
 
 class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
@@ -1664,20 +1664,22 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11028"""
         self._tester.go_to_roadmap()
 
+        logged_out = False
         try:
             # Check that a milestone is found on the roadmap,
             # even for anonymous
             tc.find('<a href="/milestone/milestone1">[ \n]*'
-                    'Milestone: <em>milestone1</em>[ \n]*</a>')
+                    'Milestone: +<em>milestone1</em>[ \n]*</a>')
             self._tester.logout()
+            logged_out = True
             tc.find('<a href="/milestone/milestone1">[ \n]*'
-                    'Milestone: <em>milestone1</em>[ \n]*</a>')
+                    'Milestone: +<em>milestone1</em>[ \n]*</a>')
 
             # Check that no milestones are found on the roadmap when
             # MILESTONE_VIEW is revoked
             self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
             tc.reload()
-            tc.notfind('Milestone: <em>milestone\d+</em>')
+            tc.notfind('Milestone: +<em>milestone\d+</em>')
 
             # Check that roadmap can't be viewed without ROADMAP_VIEW
 
@@ -1686,7 +1688,8 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
             tc.find('<h1>Error: Forbidden</h1>')
         finally:
             # Restore state prior to test execution
-            self._tester.login('admin')
+            if logged_out:
+                self._tester.login('admin')
             self._testenv.grant_perm('anonymous',
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 

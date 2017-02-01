@@ -23,19 +23,32 @@ ${preview.rendered}
 </p>
 # elif not preview.rendered:
 <p>
+# set html_preview_not_available
+<strong>${_("HTML preview not available")}</strong>
+# endset
 #   if preview.max_file_size_reached:
-#     trans prettysize = pretty_size(preview.max_file_size)
-<strong>HTML preview not available</strong>, since the file size exceeds
-${prettysize}.
+#     set size = pretty_size(preview.max_file_size)
+#     trans html_preview_not_available, size
+
+      ${html_preview_not_available}, since the file size exceeds
+      ${size}.
+
 #     endtrans
 #   else:
-#     trans
-<strong>HTML preview not available</strong>, since no preview renderer
-could handle it.
+#     trans html_preview_not_available
+
+      ${html_preview_not_available}, since no preview renderer could
+      handle it.
+
 #     endtrans
 #   endif
-#   trans phref = preview.raw_href
-Try <a href="${phref}">downloading</a> the file instead.
+#   set downloading
+<a href="${preview.raw_href}">${_("downloading")}</a>
+#   endset
+#   trans downloading
+
+    Try ${downloading} the file instead.
+
 #   endtrans
 # endif
 </p>

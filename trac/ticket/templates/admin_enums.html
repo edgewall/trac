@@ -116,10 +116,13 @@ history and logs, available at http://trac.edgewall.org/.
       </p>
       #     if type == 'priority':
       <p class="help">
-        #     trans
+        #     set note
+        <strong>${_("Note:")}</strong>
+        #     endset
+        #     trans note
 
-        <strong>Note:</strong> The order of priorities determines the
-        coloring of entries in the ticket queries and reports.
+        ${note} The order of priorities determines the coloring of
+        entries in the ticket queries and reports.
 
         #     endtrans
       </p>

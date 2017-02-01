@@ -68,24 +68,31 @@
             # endtrans
           </p>
           <p class="hint">
-            # trans
+            # set default_language
+            <strong>${_("Default language")}</strong>
+            # endset
+            # trans default_language
 
-            The <strong>Default language</strong> option uses the
-            browser's language negotiation feature to select the
-            appropriate language.
+            The ${default_language} option uses the browser's language
+            negotiation feature to select the appropriate language.
 
             # endtrans
           </p>
           # else:
           <p class="hint" xml:lang="en">
             # if 'TRAC_ADMIN' in req.perm:
-            #   trans href = href.wiki('TracInstall')
+            #   set babel
+            <a href="http://babel.edgewall.org">Babel</a>
+            #   endset
+            #   set trac_install
+            <a href="${href.wiki('TracInstall')}">TracInstall</a>
+            #   endset
+            #   trans babel, trac_install
 
             Trac has been localized to more than a dozen of languages
-            but in order to be able to use them,
-            the <a href="http://babel.edgewall.org">Babel</a> package
+            but in order to be able to use them, the ${babel} package
             needs to be present when installing Trac. See
-            <a href="${href}">TracInstall</a> for details.
+            ${trac_install} for details.
 
             #   endtrans
             # else:
@@ -138,23 +145,30 @@
           <p class="hint">
             # set now = datetime.now(utc)
             # set nowtz = selected_tz.normalize(now.astimezone(selected_tz))
-            # set formatted = format_time(now, 'iso8601', tzinfo=req.tz)
-            # trans time = format_time(now, 'iso8601', tzinfo=utc)
-            Example: The current time is <strong>${time}</strong> (UTC).
+            # set formatted
+            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>
+            # endset
+            # set time
+            <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong>
+            # endset
+            # trans time
+
+            Example: The current time is ${time} (UTC).
+
             # endtrans
             <br />
             # if session_tzname:
             #   trans tz = nowtz.tzname(), formatted
 
             In your time zone ${tz}, this would be displayed as
-            <strong>${formatted}</strong>.
+            ${formatted}.
 
             #   endtrans
             # else:
             #   trans formatted
 
-            In the default time zone, this would be displayed
-            as <strong>${formatted}</strong>.
+            In the default time zone, this would be displayed as
+            ${formatted}.
 
             #   endtrans
             # endif
