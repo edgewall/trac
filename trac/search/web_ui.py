@@ -28,7 +28,7 @@ from trac.util.text import quote_query_string
 from trac.util.translation import _
 from trac.web.api import IRequestHandler
 from trac.web.chrome import (INavigationContributor, ITemplateProvider,
-                             add_link, add_notice, add_stylesheet,
+                             accesskey, add_link, add_notice, add_stylesheet,
                              add_warning, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import extract_link
@@ -69,7 +69,8 @@ class SearchModule(Component):
     def get_navigation_items(self, req):
         if 'SEARCH_VIEW' in req.perm:
             yield ('mainnav', 'search',
-                   tag.a(_('Search'), href=req.href.search(), accesskey=4))
+                   tag.a(_('Search'), href=req.href.search(),
+                         accesskey=accesskey(req, 4)))
 
     # IPermissionRequestor methods
 
@@ -192,6 +193,7 @@ class SearchModule(Component):
             else:
                 help_url = req.href.wiki('TracSearch') + '#Quicksearches'
                 search_url = req.href.search(q=kwd, noquickjump=1)
+                # FIXME: use tag_
                 add_notice(req, Markup(_(
                     'You arrived here through the <a href="%(help_url)s">'
                     'quick-jump</a> search feature. To instead search for the '
