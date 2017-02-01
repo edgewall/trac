@@ -1181,7 +1181,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         req = MockRequest(self.env, path_info='/query')
         mod = QueryModule(self.env)
         self.assertTrue(mod.match_request(req))
-        template, data, content_type = mod.process_request(req)
+        template, data = mod.process_request(req)
         prop = req.chrome['script_data']['properties']['milestone']
         self.assertEqual('select', prop['type'])
         self.assertEqual('Milestone', prop['label'])
@@ -1199,7 +1199,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         req = MockRequest(self.env, path_info='/query')
         mod = QueryModule(self.env)
         self.assertTrue(mod.match_request(req))
-        template, data, content_type = mod.process_request(req)
+        template, data = mod.process_request(req)
         prop = req.chrome['script_data']['properties']['milestone']
         self.assertEqual({'label': 'Milestone', 'type': 'text',
                           'format': 'plain'}, prop)
@@ -1240,8 +1240,7 @@ class QueryLinksTestCase(unittest.TestCase):
         self.req.arg_list = parse_arg_list(query_string)
         self.req.args = arg_list_to_args(self.req.arg_list)
         self.assertEqual(True, self.query_module.match_request(self.req))
-        template, data, content_type = \
-                self.query_module.process_request(self.req)
+        template, data = self.query_module.process_request(self.req)
         return data
 
     def test_duplicated_order_arguments(self):

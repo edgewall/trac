@@ -394,8 +394,8 @@ class RepositoryManager(Component):
                               repo_name, time_now() - start)
         return handler
 
-    def post_process_request(self, req, template, data, content_type):
-        return template, data, content_type
+    def post_process_request(self, req, template, data, metadata):
+        return template, data, metadata
 
     # IResourceManager methods
 

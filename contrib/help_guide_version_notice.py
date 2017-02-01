@@ -59,7 +59,7 @@ class HelpGuideVersionNotice(Component):
     def pre_process_request(self, req, handler):
         return handler
 
-    def post_process_request(self, req, template, data, content_type):
+    def post_process_request(self, req, template, data, metadata):
         if data and 'page' in data and 'text' in data:
             name = data['page'].name
             notice = ""
@@ -96,4 +96,4 @@ class HelpGuideVersionNotice(Component):
                                             'alt_notice': alt_notice}
             data['text'] = notice + data['text']
 
-        return template, data, content_type
+        return template, data, metadata

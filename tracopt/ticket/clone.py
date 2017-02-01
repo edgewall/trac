@@ -34,12 +34,12 @@ class TicketCloneButton(Component):
     def pre_process_request(self, req, handler):
         return handler
 
-    def post_process_request(self, req, template, data, content_type):
+    def post_process_request(self, req, template, data, metadata):
         if template == 'ticket.html':
             add_script(req, 'ticketopt/ticketclone.js')
             add_script_data(req, baseurl=req.href(), ui={
                     'use_symbols': req.session.get('ui.use_symbols')})
-        return template, data, content_type
+        return template, data, metadata
 
     # ITemplateProvider methods
 

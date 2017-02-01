@@ -39,11 +39,8 @@ class TestStubRequestHandler(Component):
     filename = 'test_stub.html'
 
     template = """\
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/">
+<!DOCTYPE html>
+<html>
   <body>
     <h1>${greeting}</h1>
   </body>
@@ -54,7 +51,7 @@ class TestStubRequestHandler(Component):
         return req.path_info == '/test-stub'
 
     def process_request(self, req):
-        return self.filename, {'greeting': 'Hello World'}, None
+        return self.filename, {'greeting': 'Hello World'}
 
 
 class AuthenticateTestCase(unittest.TestCase):
@@ -248,8 +245,8 @@ class PreProcessRequestTestCase(unittest.TestCase):
             implements(IRequestFilter)
             def pre_process_request(self, req, handler):
                 raise TracError("Raised in pre_process_request")
-            def post_process_request(self, req, template, data, content_type):
-                return template, data, content_type
+            def post_process_request(self, req, template, data, metadata):
+                return template, data, metadata
         req = MockRequest(self.env)
 
         try:
@@ -363,12 +360,24 @@ class PostProcessRequestTestCase(unittest.TestCase):
         self.assertEqual(0, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args + (None,), resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'})
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args + (None,), resp)
 
     def test_no_request_filters_request_handler_returns_method_true(self):
         """IRequestHandler returns `method` and no IRequestFilters
         are registered. The `method` is forwarded.
         """
         args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(0, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -382,9 +391,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
             implements(IRequestFilter)
             def pre_process_request(self, handler):
                 return handler
-            def post_process_request(self, req, template, data, content_type):
-                return template, data, content_type
+            def post_process_request(self, req, template, data, metadata):
+                return template, data, metadata
         args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args + (None,), resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'})
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -399,9 +414,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
             implements(IRequestFilter)
             def pre_process_request(self, handler):
                 return handler
-            def post_process_request(self, req, template, data, content_type):
-                return template, data, content_type
+            def post_process_request(self, req, template, data, metadata):
+                return template, data, metadata
         args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -416,8 +437,8 @@ class PostProcessRequestTestCase(unittest.TestCase):
             def pre_process_request(self, handler):
                 return handler
             def post_process_request(self, req, template, data,
-                                     content_type, method=None):
-                return template, data, content_type, method
+                                     metadata, method=None):
+                return template, data, metadata, method
         args = ('template.html', {}, 'text/html')
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
@@ -434,9 +455,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
             def pre_process_request(self, handler):
                 return handler
             def post_process_request(self, req, template, data,
-                                     content_type, method=None):
-                return template, data, content_type, method
+                                     metadata, method=None):
+                return template, data, metadata, method
         args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args, resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -450,9 +477,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
             def pre_process_request(self, handler):
                 return handler
             def post_process_request(self, req, template, data,
-                                     content_type, method=None):
-                return template, data, content_type, 'xml'
+                                     metadata, method=None):
+                return template, data, metadata, 'xml'
         args = ('template.html', {}, 'text/html')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args[:3] + ('xml',), resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'})
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -466,9 +499,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
             def pre_process_request(self, handler):
                 return handler
             def post_process_request(self, req, template, data,
-                                     content_type, method=None):
-                return template, data, content_type, 'xml'
+                                     metadata, method=None):
+                return template, data, metadata, 'xml'
         args = ('template.html', {}, 'text/html', 'xhtml')
+        resp = self.request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(self.request_dispatcher.filters))
+        self.assertEqual(4, len(resp))
+        self.assertEqual(args[:3] + ('xml',), resp)
+        # TODO (1.5.1) remove old API (genshi style)
+        args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
         resp = self.request_dispatcher._post_process_request(self.req, *args)
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
@@ -579,7 +618,7 @@ class HdfdumpTestCase(unittest.TestCase):
                 return True
             def process_request(self, req):
                 data = {'name': 'value'}
-                return 'error.html', data, None
+                return 'error.html', data
 
         self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch,

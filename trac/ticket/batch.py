@@ -79,11 +79,11 @@ class BatchModifyModule(Component):
     def pre_process_request(self, req, handler):
         return handler
 
-    def post_process_request(self, req, template, data, content_type):
+    def post_process_request(self, req, template, data, metadata):
         if req.path_info == '/query' and \
                 'TICKET_BATCH_MODIFY' in req.perm('ticket'):
             self.add_template_data(req, data, data['tickets'])
-        return template, data, content_type
+        return template, data, metadata
 
     # IPermissionRequestor methods
 

@@ -380,7 +380,7 @@ class Fragment(object):
         def __iter__(self):
             """Genshi compatibility layer.
 
-            :deprecated: this will be removed before Trac 1.4
+            :deprecated: this will be in Trac 1.5.1.
             """
             yield TEXT, Markup(self), (None, -1, -1)
 
@@ -643,7 +643,7 @@ class TracHTMLSanitizer(object):
             """Apply the filter to the given stream.
 
             :deprecated: the ability to behave as a Genshi filter will be
-                         removed in Trac 1.4.
+                         removed in Trac 1.5.1.
 
             :param stream: the markup event stream to filter
             """
@@ -1073,7 +1073,7 @@ if genshi:
     def expand_markup(stream, ctxt=None):
         """A Genshi stream filter for expanding `genshi.Markup` events.
 
-        :deprecated: will be removed before Trac 1.4
+        :deprecated: will be removed in Trac 1.5.1.
 
         Note: Expansion may not be possible if the fragment is badly
         formed, or partial.

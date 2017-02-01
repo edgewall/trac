@@ -230,7 +230,7 @@ class AttachmentModule(Component):
             data = self._render_view(req, attachment)
 
         add_stylesheet(req, 'common/css/code.css')
-        return 'attachment.html', data, None
+        return 'attachment.html', data
 
     # IWikiSyntaxProvider methods
 
@@ -531,7 +531,7 @@ class AttachmentModule(Component):
             'attachments': self.attachment_data(web_context(req, parent))
         }
 
-        return 'attachment.html', data, None
+        return 'attachment.html', data
 
     def _render_view(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_VIEW')

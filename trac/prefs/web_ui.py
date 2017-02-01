@@ -99,7 +99,7 @@ class PreferencesModule(Component):
                 ctemplate, cdata = provider.render_preference_panel(req, name)
                 cdata.update(session_data)
                 rendered = chrome.render_template(req, ctemplate, cdata,
-                                                  fragment=True)
+                                                  {'fragment': True})
                 children.append((name, label, rendered))
 
         template, data = \
@@ -112,7 +112,7 @@ class PreferencesModule(Component):
         })
 
         add_stylesheet(req, 'common/css/prefs.css')
-        return template, data, None
+        return template, data
 
     # ITemplateProvider methods
 

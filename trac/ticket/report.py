@@ -180,7 +180,7 @@ class ReportModule(Component):
         elif id == self.REPORT_LIST_ID:
             template, data, content_type = self._render_list(req)
             if content_type:  # i.e. alternate format
-                return template, data, content_type
+                return template, data, {'content_type': content_type}
             if action == 'clear':
                 if 'query_href' in req.session:
                     del req.session['query_href']
@@ -212,7 +212,7 @@ class ReportModule(Component):
             data['query_href'] = None
 
         add_stylesheet(req, 'common/css/report.css')
-        return template, data, None
+        return template, data
 
     # Internal methods
 

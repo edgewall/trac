@@ -63,7 +63,7 @@ class TicketDeleter(Component):
         else:
             return handler
 
-    def post_process_request(self, req, template, data, content_type):
+    def post_process_request(self, req, template, data, metadata):
         if template in ('ticket.html', 'ticket_preview.html'):
             ticket = data.get('ticket')
             if (ticket and ticket.exists
@@ -71,7 +71,7 @@ class TicketDeleter(Component):
                 add_script(req, 'ticketopt/ticketdeleter.js')
                 add_script_data(req, ui={'use_symbols':
                                          req.session.get('ui.use_symbols')})
-        return template, data, content_type
+        return template, data, metadata
 
     # IRequestHandler methods
 
@@ -126,4 +126,4 @@ class TicketDeleter(Component):
             data.update(attachments=list(attachments))
 
         add_stylesheet(req, 'common/css/ticket.css')
-        return 'ticket_delete.html', data, None
+        return 'ticket_delete.html', data

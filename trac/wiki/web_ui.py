@@ -402,7 +402,7 @@ class WikiModule(Component):
         if version is not None:
             data.update({'new_version': version, 'old_version': old_version})
         self._wiki_ctxtnav(req, page)
-        return 'wiki_delete.html', data, None
+        return 'wiki_delete.html', data
 
     def _render_confirm_rename(self, req, page, new_name=None):
         req.perm(page.resource).require('WIKI_RENAME')
@@ -410,7 +410,7 @@ class WikiModule(Component):
         data = self._page_data(req, page, 'rename')
         data['new_name'] = new_name if new_name is not None else page.name
         self._wiki_ctxtnav(req, page)
-        return 'wiki_rename.html', data, None
+        return 'wiki_rename.html', data
 
     def _render_diff(self, req, page):
         if not page.exists:
@@ -484,7 +484,7 @@ class WikiModule(Component):
         })
         prevnext_nav(req, _("Previous Change"), _("Next Change"),
                      _("Wiki History"))
-        return 'wiki_diff.html', data, None
+        return 'wiki_diff.html', data
 
     def _render_editor(self, req, page, action='edit', has_collision=False):
         if has_collision:
@@ -571,13 +571,13 @@ class WikiModule(Component):
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
         add_script(req, 'common/js/folding.js')
-        return 'wiki_edit.html', data, None
+        return 'wiki_edit.html', data
 
     def _render_edit_comment(self, req, page):
         req.perm(page.resource).require('WIKI_ADMIN')
         data = self._page_data(req, page, 'edit_comment')
         self._wiki_ctxtnav(req, page)
-        return 'wiki_edit_comment.html', data, None
+        return 'wiki_edit_comment.html', data
 
     def _render_history(self, req, page):
         """Extract the complete history for a given page.
@@ -605,7 +605,7 @@ class WikiModule(Component):
         })
         add_ctxtnav(req, _("Back to %(wikipage)s", wikipage=page.name),
                     req.href.wiki(page.name))
-        return 'history_view.html', data, None
+        return 'history_view.html', data
 
     def _render_view(self, req, page):
         version = page.resource.version
@@ -717,7 +717,7 @@ class WikiModule(Component):
             'resourcepath_template': 'jwiki_page_path.html',
         })
         add_script(req, 'common/js/folding.js')
-        return 'wiki_view.html', data, None
+        return 'wiki_view.html', data
 
     def _wiki_ctxtnav(self, req, page):
         """Add the normal wiki ctxtnav entries."""

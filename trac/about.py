@@ -78,4 +78,4 @@ class AboutModule(Component):
             # Collect config information
             data['config'] = get_configinfo(self.env)
 
-        return 'about.html', data, None
+        return 'about.html', data

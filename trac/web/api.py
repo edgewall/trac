@@ -67,14 +67,33 @@ class IRequestHandler(Interface):
     def process_request(req):
         """Process the request.
 
-        Return a `(template_name, data, content_type)` tuple, where
+        Return a `(template_name, data)` pair, where
         `data` is a dictionary of substitutions for the Jinja2
         template (the template context, in Jinja2 terms).
 
-        "text/html" is assumed if `content_type` is `None`.
+        Optionally, the return value can also be a `(template_name,
+        data, metadata)` triple, where `metadata` is a `dict` with
+        hints for the renderer or the web front-end.
+        Keys supported are:
+          - `'content_type'`: the mimetype used for content delivery;
+            "text/html" is assumed if the key is not present or the
+            `metadata` was not specified
+          - `'method'`: the rendering method that will be used by the
+            Jinja2 template engine; a value of `'text'` disables HTML
+            auto-escaping
 
-        Note that if template processing should not occur, this method can
-        simply send the response itself and not return anything.
+        Note that if template processing should not occur, this method
+        can simply send the response itself (see `Request` methods)
+        and not return anything.
+
+        For backward compatibility reasons, the pre-Jinja2 return
+        value of a `(template_name, data, content_type)` tuple is
+        still supported. However, using it is a way of signaling that
+        the template is actually a legacy Genshi template.  For the
+        same backward compatibility reasons, returning `(template,
+        data, None)` is taken to be a `content_type` of `None`
+        (i.e. the "text/html" default).  This support will be removed
+        in Trac 1.5.1.
 
         :Since 1.0: Clearsilver templates are no longer supported.
 
@@ -82,6 +101,9 @@ class IRequestHandler(Interface):
            returned as a fourth parameter in the tuple, but if not specified
            it will be inferred from the `content_type` when rendering the
            template.
+
+        :Since 1.3.2: returns a pair, or a tuple in which the third
+           element is a `dict` instead of a string.
 
         """
 
@@ -105,16 +127,24 @@ class IRequestFilter(Interface):
         Always returns the request handler, even if unchanged.
         """
 
-    def post_process_request(req, template, data, content_type, method=None):
+    def post_process_request(req, template, data, metadata=None, method=None):
         """Do any post-processing the request might need
 
         This typically means adding values to the template `data`
-        dictionary, or changing the Jinja2 template or mime type.
+        dictionary, or changing the Jinja2 template or metadata dict.
 
         `data` may be updated in place.
 
-        Always returns a tuple of ``(template, data, content_type)``,
-        even if unchanged.
+        Always returns a tuple of ``(template, data)`` or ``(template,
+        data, metadata)``, even if unchanged.
+
+        Be aware that returning a ``(template, data, None)`` triple
+        will be interpreted as using the legacy API and will indicate
+        that the template is a legacy Genshi template. The same will
+        happen if the third value of the tuple is a string.
+
+        The `method` last parameter is deprecated and is now supposed
+        to be passed via the `metadata` dict.
 
         Note that `template`, `data`, `content_type` will be `None` if:
          - called when processing an error page
@@ -127,6 +157,13 @@ class IRequestFilter(Interface):
            backward compatibility, the parameter is optional in the
            implementation's signature.
 
+        :Since 1.3.2: Genshi templates are still supported, and if
+           `process_request` used the old API (`(template, data,
+           content_type)`), the `metadata` parameter passed to
+           `post_process_request` will actually be the `content_type`
+           value (`String` or `None`).  This support will be removed
+           in Trac 1.5.1.
+
         """
 
 
@@ -138,6 +175,7 @@ class ITemplateStreamFilter(Interface):
                  anymore to Jinja2 templates, please consider
                  converting your plugins to perform browser-side
                  modifications of the rendered page using JavaScript.
+                 This interface will be removed in Trac 1.5.1.
 
     See https://trac.edgewall.org/wiki/TracDev/PortingFromGenshiToJinja#ReplacingITemplateStreamFilter
     for details.
@@ -702,14 +740,15 @@ class Request(object):
                 if env:
                     from trac.web.chrome import Chrome, add_stylesheet
                     add_stylesheet(self, 'common/css/code.css')
+                    metadata = {'content_type': 'text/html'}
                     try:
                         data = Chrome(env).render_template(self, template,
-                                                           data, 'text/html')
+                                                           data, metadata)
                     except Exception:
                         # second chance rendering, in "safe" mode
                         data['trac_error_rendering'] = True
                         data = Chrome(env).render_template(self, template,
-                                                           data, 'text/html')
+                                                           data, metadata)
                 else:
                     content_type = 'text/plain'
                     data = '%s\n\n%s: %s' % (data.get('title'),

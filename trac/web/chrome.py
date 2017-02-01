@@ -53,7 +53,8 @@ from trac.util import as_bool, as_int, get_pkginfo, get_reporter_id, html, \
                       pathjoin, presentation, translation
 from trac.util.html import (Element, Markup, escape, plaintext, tag,
                             to_fragment, valid_html_bytes)
-from trac.util.text import (exception_to_unicode, javascript_quote, jinja2env, 
+from trac.util.text import (exception_to_unicode, is_obfuscated,
+                            javascript_quote, jinja2env,
                             obfuscate_email_address, pretty_size, shorten_line,
                             to_js_string, to_unicode, unicode_quote_plus)
 from trac.util.datefmt import (
@@ -403,7 +404,7 @@ class Chrome(Component):
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
-    stream_filters = ExtensionPoint(ITemplateStreamFilter) # TODO: delete 1.4
+    stream_filters = ExtensionPoint(ITemplateStreamFilter) # TODO (1.5.1): del
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the //shared templates directory//.
@@ -432,7 +433,7 @@ class Chrome(Component):
         larger number of templates, and you have enough memory to spare, or
         you can reduce it if you are short on memory.
 
-        (''deprecated, will be removed for Trac 1.4'')
+        (''deprecated, will be removed in Trac 1.5.1'')
         """)
 
     htdocs_location = Option('trac', 'htdocs_location', '',
@@ -606,6 +607,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'groupby': itertools.groupby,
         'http_date': http_date,
+        'is_obfuscated': is_obfuscated,
         'javascript_quote': javascript_quote,
         'operator': operator,
         'partial': partial,
@@ -1033,7 +1035,7 @@ class Chrome(Component):
             'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
-            'get_systeminfo': self.env.get_systeminfo,  # Remove in 1.5.1
+            'get_systeminfo': self.env.get_systeminfo,  # TODO (1.5.1) remove
             'captioned_button': partial(presentation.captioned_button, req),
             'accesskey': accesskey_attr,
 
@@ -1081,32 +1083,46 @@ class Chrome(Component):
             presentation.jinja2_update(self.jenv)
         return self.jenv.get_template(filename)
 
-    def render_template(self, req, filename, data, content_type=None,
+    def render_template(self, req, filename, data, metadata=None,
                         fragment=False, iterable=False, method=None):
-        """Renders the `filename` template using `data` for the context.
+        """Renders the ``filename`` template using ``data`` for the context.
 
-        First attempts to load a Jinja2 template, then if not found, a
-        Genshi template.
+        It attempts to load a Jinja2 template.
+
+        The ``fragment``, ``iterable`` and ``method`` parameters are
+        deprecated and will be removed in Trac 1.5.1.  Instead, use
+        the ``metadata`` dictionary with keys of the same name.
 
         .. note::
 
-        This method will only try to load a Genshi template during the
-        transition period (Trac 1.3.x). Before Trac 1.4, this method
-        will be merged with `_render_jinja_template`.
+        If the Jinja2 template is not found, this method will try to
+        load a Genshi template instead.
+
+        Also if ``metadata`` is *not* a dictionary, we assume that it
+        is the ``content_type`` value from the legacy API (a string or
+        `None`) and that a the template will be a Genshi template.
+
+        This backward compatibility behavior will be removed in Trac
+        1.5.1.
 
         """
-        try:
+        # TODO (1.5.1) merge with _render_jinja_template
+        if isinstance(metadata, dict):
             return self._render_jinja_template(req, filename, data,
-                                               content_type, fragment,
+                                               metadata, fragment,
                                                iterable, method)
-        except TemplateNotFound:
-            if genshi:
-                return self.render_genshi_template(req, filename, data,
-                                                   content_type, fragment,
-                                                   iterable, method)
-            raise
+        elif not genshi:
+            self.log.error("Genshi template (%s) detected but "
+                           "Genshi is not installed", filename)
+            raise TracError(
+                _("Legacy Genshi template needs the 'genshi' package to be "
+                  "installed. Please contact your Trac administrator."))
 
-    def _render_jinja_template(self, req, filename, data, content_type=None,
+        return self._render_genshi_template(req, filename, data,
+                                            metadata, fragment,
+                                            iterable, method)
+
+    def _render_jinja_template(self, req, filename, data, metadata=None,
                                fragment=False, iterable=False, method=None):
         """Render the `filename` using the `data` for the context.
 
@@ -1128,7 +1144,20 @@ class Chrome(Component):
         When `iterable` is specified, the content is returned as an
         iterable of UTF-8 encoded bytes.
 
+        TODO (1.5.1): merge into render_template
+
         """
+        content_type = None
+
+        if metadata:
+            content_type = metadata.get('content_type')
+            if fragment is None:
+                fragment = metadata.get('fragment')
+            if iterable is None:
+                iterable = metadata.get('iterable')
+            if method is None:
+                method = metadata.get('method')
+
         if content_type is None:
             content_type = 'text/html'
 
@@ -1150,8 +1179,9 @@ class Chrome(Component):
 
         jtemplate, jdata = self.prepare_template(filename, data, req)
 
-        # Hack for supporting Genshi stream filters (remove for Trac 1.4)
-        if genshi and self._check_for_stream_filters(req, method, filename, jdata):
+        # Hack for supporting Genshi stream filters - TODO (1.5.1) remove
+        if genshi and self._check_for_stream_filters(req, method, filename,
+                                                     jdata):
             page = self.render_template_as_string(jtemplate, jdata, method)
             return self._filter_jinja_page(req, page, method, filename,
                                            content_type, jdata,
@@ -1176,6 +1206,7 @@ class Chrome(Component):
         # TODO (Jinja2): I get the feeling the late links logic will
         #                have to be revisited... <head> should use the
         #                early_*, <body> the late_*
+        # TODO (1.3.2) clean this up...
         jdata.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
@@ -1483,7 +1514,7 @@ class Chrome(Component):
         })
         add_script(req, 'common/js/jquery-ui-i18n.js')
 
-    # legacy Genshi support - will be removed before Trac 1.4
+    # Legacy Genshi support - TODO (1.5.1) remove
 
     if genshi:
         # DocType for 'text/html' output
@@ -1511,7 +1542,7 @@ class Chrome(Component):
                 cls = MarkupTemplate
             return self.templates.load(filename, cls=cls)
 
-        def get_genshi_data(self):
+        def _get_genshi_data(self):
             def classes(*args, **kwargs):
                 s = presentation.classes(*args, **kwargs)
                 return s or None
@@ -1532,9 +1563,11 @@ class Chrome(Component):
             d.update(translation.functions)
             return d
 
-        def render_genshi_template(self, req, filename, data, content_type=None,
-                                   fragment=False, iterable=False, method=None):
-            """Legacy Genshi rendering"""
+        def _render_genshi_template(self, req, filename, data,
+                                    content_type=None, fragment=False,
+                                    iterable=False, method=None):
+            self.log.warning("Rendering Genshi template '%s' (convert to "
+                             "Jinja2 before Trac 1.5.1)", filename)
             if content_type is None:
                 content_type = 'text/html'
 
@@ -1557,7 +1590,7 @@ class Chrome(Component):
             template = self.load_template(filename, method=method)
 
             # Populate data with request dependent data
-            data = self.populate_data(req, data, self.get_genshi_data())
+            data = self.populate_data(req, data, self._get_genshi_data())
             data['chrome']['content_type'] = content_type
             stream = None
             stream = template.generate(**data)

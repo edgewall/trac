@@ -546,7 +546,7 @@ class TicketModule(Component):
         if req.is_xhr:
             data['preview_mode'] = True
             data['chrome_info_script'] = chrome_info_script
-            return 'ticket_box.html', data, None
+            return 'ticket_box.html', data
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
@@ -554,7 +554,7 @@ class TicketModule(Component):
         chrome.add_wiki_toolbars(req)
         chrome.add_auto_preview(req)
         chrome.add_jquery_ui(req)
-        return 'ticket.html', data, None
+        return 'ticket.html', data
 
     def _process_ticket_request(self, req):
         id = int(req.args.get('id'))
@@ -692,7 +692,7 @@ class TicketModule(Component):
         if req.is_xhr:
             data['preview_mode'] = bool(data['change_preview']['fields'])
             data['chrome_info_script'] = chrome_info_script
-            return 'ticket_preview.html', data, None
+            return 'ticket_preview.html', data
 
         mime = Mimeview(self.env)
         format = req.args.get('format')
@@ -771,7 +771,7 @@ class TicketModule(Component):
         prevnext_nav(req, _("Previous Ticket"), _("Next Ticket"),
                      _("Back to Query"))
 
-        return 'ticket.html', data, None
+        return 'ticket.html', data
 
     def _get_prefs(self, req):
         return {'comments_order': req.session.get('ticket_comments_order',
@@ -887,7 +887,7 @@ class TicketModule(Component):
 
         add_ctxtnav(req, _("Back to Ticket #%(num)s", num=ticket.id),
                     req.href.ticket(ticket.id))
-        return 'history_view.html', data, None
+        return 'history_view.html', data
 
     def _render_diff(self, req, ticket, data, text_fields):
         """Show differences between two versions of a ticket description.
@@ -1052,7 +1052,7 @@ class TicketModule(Component):
             'longcol': '', 'shortcol': ''
         })
 
-        return 'diff_view.html', data, None
+        return 'diff_view.html', data
 
     def _make_comment_url(self, req, ticket, cnum, version=None):
         return req.href.ticket(ticket.id,
@@ -1087,7 +1087,7 @@ class TicketModule(Component):
             'history': history,
         })
         add_ctxtnav(req, _("Back to Ticket #%(num)s", num=ticket.id), url)
-        return 'history_view.html', data, None
+        return 'history_view.html', data
 
     def _render_comment_diff(self, req, ticket, data, cnum):
         """Show differences between two versions of a ticket comment."""
@@ -1186,7 +1186,7 @@ class TicketModule(Component):
             'longcol': '', 'shortcol': ''
         })
 
-        return 'diff_view.html', data, None
+        return 'diff_view.html', data
 
     def export_csv(self, req, ticket, sep=',', mimetype='text/plain'):
         # FIXME: consider dumping history of changes here as well
@@ -1249,9 +1249,12 @@ class TicketModule(Component):
 
         data = self._prepare_data(req, ticket, absurls=True)
         data['changes'] = changes
+        metadata = {
+            'content_type': 'application/rss+xml',
+            'iterable': True
+        }
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
-                                                  'application/rss+xml',
-                                                  iterable=True)
+                                                  metadata)
         return output, 'application/rss+xml'
 
     # Ticket validation and changes

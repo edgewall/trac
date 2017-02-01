@@ -288,12 +288,13 @@ class LogModule(Component):
         }
 
         if format == 'changelog':
-            return 'revisionlog.txt', data, 'text/plain'
+            return 'revisionlog.txt', data, {'content_type': 'text/plain'}
         elif format == 'rss':
             data['context'] = web_context(req, 'source',
                                           path, parent=repos.resource,
                                           absurls=True)
-            return 'revisionlog.rss', data, 'application/rss+xml'
+            return ('revisionlog.rss', data,
+                    {'content_type': 'application/rss+xml'})
 
         item_ranges = []
         range = []
@@ -335,7 +336,7 @@ class LogModule(Component):
                                             href=next['href']),
                                       Markup(' &rarr;')))
 
-        return 'revisionlog.html', data, None
+        return 'revisionlog.html', data
 
     # IWikiSyntaxProvider methods
 

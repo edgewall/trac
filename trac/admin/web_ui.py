@@ -106,7 +106,7 @@ class AdminModule(Component):
         })
 
         add_stylesheet(req, 'common/css/admin.css')
-        return template, data, None
+        return template, data
 
     # ITemplateProvider methods
 

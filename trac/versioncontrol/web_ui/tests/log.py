@@ -178,7 +178,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_without_rev(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'limit': '4'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         self.assertEqual('revisionlog.html', template)
         items = data['items']
         self.assertEqual(5, len(items))
@@ -194,7 +194,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_with_rev(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'rev': '49'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
         self.assertEqual([49, 46, 43, 40, 37],
@@ -208,7 +208,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_with_rev_and_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'rev': '49', 'limit': '4'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
         self.assertEqual([49, 46, 43, 40, 37],
@@ -228,7 +228,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_with_rev_on_start(self):
         req = MockRequest(self.env, path_info='/log/mock/file-old',
                           args={'rev': '10'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(4, len(items))
         self.assertEqual([10, 7, 4, 1],
@@ -244,7 +244,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_with_rev_and_limit_on_start(self):
         req = MockRequest(self.env, path_info='/log/mock/file-old',
                           args={'rev': '10', 'limit': '4'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(4, len(items))
         self.assertEqual([10, 7, 4, 1],
@@ -272,7 +272,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_1(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '70,79-82,94-100'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(9, len(items))
         self.assertEqual([100, 97, 94, 91, 82, 79, 76, 70, 67],
@@ -290,7 +290,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_2(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '22-49'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
         self.assertEqual([49, 46, 43, 40, 37],
@@ -307,7 +307,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_3(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '22-46,55-61'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
         self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
@@ -325,7 +325,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_4(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '40-46,55-61'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
         self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
@@ -343,7 +343,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_1_with_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '70,79-82,94-100', 'limit': '4'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(6, len(items))
         self.assertEqual([100, 97, 94, 91, 82, 79],
@@ -366,7 +366,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
             req = MockRequest(self.env, path_info='/log/mock/file',
                               args={'revs': '70,79-82,94-100',
                                     'limit': str(limit)})
-            template, data, ctype = self.process_request(req)
+            template, data = self.process_request(req)
             links = req.chrome['links']
             if 'next' in links:
                 link = links['next'][0]['href']
@@ -390,7 +390,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_2_with_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '22-49', 'limit': '4'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
         self.assertEqual([49, 46, 43, 40, 37],
@@ -411,7 +411,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_3_with_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '22-46,55-61', 'limit': '7'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
         self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
@@ -429,7 +429,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_revranges_4_with_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'revs': '40-46,55-61', 'limit': '7'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(8, len(items))
         self.assertEqual([61, 58, 55, 52, 46, 43, 40, 37],
@@ -465,7 +465,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'rev': '43', 'limit': '4',
                                 'mode': 'follow_copy'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(5, len(items))
         self.assertEqual([43, 40, 37, 34, 31],
@@ -485,7 +485,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_path_history(self):
         req = MockRequest(self.env, path_info='/log/mock/file',
                           args={'mode': 'path_history'})
-        template, data, ctype = self.process_request(req)
+        template, data = self.process_request(req)
         items = data['items']
         self.assertEqual(3, len(items))
         self.assertEqual(['delete', 'move', 'add'],

@@ -1154,7 +1154,7 @@ class QueryModule(Component):
         Chrome(self.env).add_jquery_ui(req)
         add_script(req, 'common/js/query.js')
 
-        return 'query.html', data, None
+        return 'query.html', data
 
     def _export_csv(self, req, query, sep=',', mimetype='text/plain'):
         def iterate():
@@ -1208,9 +1208,12 @@ class QueryModule(Component):
             'results': results,
             'query_href': query_href
         }
+        metadata = {
+            'content_type': 'application/rss+xml',
+            'iterable': True
+        }
         output = Chrome(self.env).render_template(req, 'query.rss', data,
-                                                  'application/rss+xml',
-                                                  iterable=True)
+                                                  metadata)
         return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods
@@ -1378,8 +1381,8 @@ class TicketQueryMacro(WikiMacroBase):
 
             add_stylesheet(req, 'common/css/report.css')
 
-            return Chrome(self.env).render_template(
-                req, 'query_results.html', data, None, fragment=True)
+            return Chrome(self.env).render_template(req, 'query_results.html',
+                                                    data, {'fragment': True})
 
         if format == 'progress':
             from trac.ticket.roadmap import (RoadmapModule,
@@ -1420,8 +1423,8 @@ class TicketQueryMacro(WikiMacroBase):
                     'legend': True,
                 }
                 return tag.div(
-                    chrome.render_template(req, 'progress_bar.html',
-                                           data, None, fragment=True),
+                    chrome.render_template(req, 'progress_bar.html', data,
+                                           {'fragment': True}),
                     class_='trac-progress')
 
             def per_group_stats_data(gstat, group_name):
@@ -1445,7 +1448,7 @@ class TicketQueryMacro(WikiMacroBase):
             }
             return tag.div(
                 chrome.render_template(req, 'progress_bar_grouped.html', data,
-                                       None, fragment=True),
+                                       {'fragment': True}),
                 class_='trac-groupprogress')
 
         # Formats above had their own permission checks, here we need to

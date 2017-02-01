@@ -372,7 +372,7 @@ class ChangesetModule(Component):
                                           old=new, old_path=full_new_path)
             add_ctxtnav(req, _('Reverse Diff'), href=rev_href)
 
-        return 'changeset.html', data, None
+        return 'changeset.html', data
 
     # Internal methods
 
@@ -1217,4 +1217,4 @@ class AnyDiffModule(Component):
 
         Chrome(self.env).add_jquery_ui(req)
         add_stylesheet(req, 'common/css/diff.css')
-        return 'diff_form.html', data, None
+        return 'diff_form.html', data

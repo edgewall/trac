@@ -435,7 +435,7 @@ class BrowserModule(Component):
                 self.config['changeset'].getbool('wiki_format_messages'),
         }
         if req.is_xhr: # render and return the content only
-            return 'dir_entries.html', data, None
+            return 'dir_entries.html', data
 
         if dir_data or repo_data:
             add_script(req, 'common/js/expand_dir.js')
@@ -496,7 +496,7 @@ class BrowserModule(Component):
                 add_ctxtnav(req, _('Repository URL'), href=path_url)
 
         add_stylesheet(req, 'common/css/browser.css')
-        return 'browser.html', data, None
+        return 'browser.html', data
 
     # Internal methods
 
@@ -929,8 +929,8 @@ class BrowserModule(Component):
                     'reponame': None, 'path': '/', 'stickyrev': None,
                     'wiki_format_messages': wiki_format_messages}
             return Chrome(self.env).render_template(
-                    formatter.req, 'repository_index.html', data, None,
-                    fragment=True)
+                    formatter.req, 'repository_index.html', data,
+                    {'fragment': True})
 
         def get_repository(reponame):
             try:

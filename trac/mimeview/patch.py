@@ -59,8 +59,8 @@ class PatchRenderer(Component):
 
         add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/diff.css')
-        return Chrome(self.env).render_template(req, 'diff_div.html',
-                                                data, fragment=True)
+        return Chrome(self.env).render_template(req, 'diff_div.html', data,
+                                                {'fragment': True})
 
     # Internal methods
 

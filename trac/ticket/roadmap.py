@@ -526,7 +526,7 @@ class RoadmapModule(Component):
             'show': show,
         }
         add_stylesheet(req, 'common/css/roadmap.css')
-        return 'roadmap.html', data, None
+        return 'roadmap.html', data
 
     # Internal methods
 
@@ -952,7 +952,7 @@ class MilestoneModule(Component):
             'attachments': list(attachments)
         }
         add_stylesheet(req, 'common/css/roadmap.css')
-        return 'milestone_delete.html', data, None
+        return 'milestone_delete.html', data
 
     def _render_editor(self, req, milestone):
         data = {
@@ -983,7 +983,7 @@ class MilestoneModule(Component):
         chrome.add_jquery_ui(req)
         chrome.add_wiki_toolbars(req)
         add_stylesheet(req, 'common/css/roadmap.css')
-        return 'milestone_edit.html', data, None
+        return 'milestone_edit.html', data
 
     def _render_view(self, req, milestone):
         milestone_groups = []
@@ -1056,7 +1056,7 @@ class MilestoneModule(Component):
         prevnext_nav(req, _("Previous Milestone"), _("Next Milestone"),
                      _("Back to Roadmap"))
 
-        return 'milestone_view.html', data, None
+        return 'milestone_view.html', data
 
     # IWikiSyntaxProvider methods
 

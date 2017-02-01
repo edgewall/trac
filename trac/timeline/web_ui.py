@@ -210,7 +210,7 @@ class TimelineModule(Component):
             rss_context = web_context(req, absurls=True)
             rss_context.set_hints(wiki_flavor='html', shorten_lines=False)
             data['context'] = rss_context
-            return 'timeline.rss', data, 'application/rss+xml'
+            return 'timeline.rss', data, {'content_type': 'application/rss+xml'}
         else:
             req.session.set('timeline.daysback', daysback,
                             self.default_daysback)
@@ -257,7 +257,7 @@ class TimelineModule(Component):
                      _("Next Period"))
         prevnext_nav(req, _("Previous Period"), _("Next Period"))
 
-        return 'timeline.html', data, None
+        return 'timeline.html', data
 
     # ITemplateProvider methods
 
@@ -272,7 +272,7 @@ class TimelineModule(Component):
     def pre_process_request(self, req, handler):
         return handler
 
-    def post_process_request(self, req, template, data, content_type):
+    def post_process_request(self, req, template, data, metadata):
         if data:
             def pretty_dateinfo(date, format=None, dateonly=False):
                 if not date:
@@ -321,7 +321,7 @@ class TimelineModule(Component):
                 return pretty_dateinfo(date, format='relative', dateonly=True)
             data['pretty_dateinfo'] = pretty_dateinfo
             data['dateinfo'] = dateinfo
-        return template, data, content_type
+        return template, data, metadata
 
     # IWikiSyntaxProvider methods
 

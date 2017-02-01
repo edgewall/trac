@@ -402,11 +402,10 @@ class TicketModuleTestCase(unittest.TestCase):
 
         def timefield_text():
             self.assertTrue(self.ticket_module.match_request(req))
-            rv = self.ticket_module.process_request(req)
-            stream = Chrome(self.env).render_template(req, rv[0], rv[1], rv[2],
-                                                      fragment=True)
-            stream = stream.select('//td[@headers="h_timefield"]')
-            return stream.render('text', encoding=None).strip()
+            template, data = self.ticket_module.process_request(req)
+            content = Chrome(self.env).render_template(req, template, data,
+                                                      {'fragment': True})
+            return content.strip() ## FIXME NOW
 
         self._insert_ticket(summary='Time fields')
         self.assertEqual('', timefield_text())
