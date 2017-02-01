@@ -17,13 +17,12 @@ import shutil
 import sys
 import unittest
 
-from genshi.builder import tag
-
 from trac import perm
 from trac.core import TracError
 from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp
 from trac.util import create_file
 from trac.util.datefmt import utc
+from trac.util.html import tag
 from trac.util.text import shorten_line
 from trac.web.api import HTTPBadRequest, HTTPInternalServerError, Request, \
                          RequestDone, parse_arg_list
@@ -76,7 +75,9 @@ def _make_environ(scheme='http', server_name='example.org',
 
 
 def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
-              form_token='A' * 40, chrome={'links': {}, 'scripts': []},
+              form_token='A' * 40,
+              chrome={'links': {}, 'scripts': [], 'theme': 'theme.html',
+                      'logo': '', 'nav': ''},
               perm=MockPerm(), tz=utc, locale=None, **kwargs):
     req = Request(environ, start_response)
     req.args = args
@@ -610,7 +611,7 @@ class SendErrorTestCase(unittest.TestCase):
     def test_internal_error_for_non_admin(self):
         content = self._send_error(perm={})
         self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>To that end, you could', content)
+        self.assertIn('<p>\nTo that end, you could', content)
         self.assertNotIn('This is probably a local installation issue.',
                          content)
         self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
@@ -619,7 +620,7 @@ class SendErrorTestCase(unittest.TestCase):
         content = self._send_error(perm={},
                                    admin_trac_url='http://example.org/admin')
         self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>To that end, you could', content)
+        self.assertIn('<p>\nTo that end, you could', content)
         self.assertIn(' action="http://example.org/admin/newticket#"', content)
         self.assertNotIn('This is probably a local installation issue.',
                          content)
@@ -628,7 +629,7 @@ class SendErrorTestCase(unittest.TestCase):
     def test_internal_error_without_admin_trac_for_non_admin(self):
         content = self._send_error(perm={}, admin_trac_url='')
         self.assertIn('There was an internal error in Trac.', content)
-        self.assertNotIn('<p>To that end, you could', content)
+        self.assertNotIn('<p>\nTo that end, you could', content)
         self.assertNotIn('This is probably a local installation issue.',
                          content)
         self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
@@ -639,7 +640,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertIn('This is probably a local installation issue.', content)
         self.assertNotIn('a ticket at the admin Trac to report', content)
         self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>Otherwise, please', content)
+        self.assertIn('<p>\nOtherwise, please', content)
         self.assertIn(' action="http://example.org/tracker/newticket"',
                       content)
 
@@ -650,7 +651,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertIn('a ticket at the admin Trac to report', content)
         self.assertIn(' action="http://example.org/admin/newticket#"', content)
         self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>Otherwise, please', content)
+        self.assertIn('<p>\nOtherwise, please', content)
         self.assertIn(' action="http://example.org/tracker/newticket"',
                       content)
 
@@ -660,7 +661,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertIn('This is probably a local installation issue.', content)
         self.assertNotIn('a ticket at the admin Trac to report', content)
         self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>Otherwise, please', content)
+        self.assertIn('<p>\nOtherwise, please', content)
         self.assertIn(' action="http://example.org/tracker/newticket"',
                       content)
 
@@ -696,6 +697,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertRaises(RequestDone, req.send_error, exc_info, env=self.env,
                           data=data)
         content = content.getvalue().decode('utf-8')
+        ## print>>sys.stderr,content.encode('utf-8')
         self.assertIn('<!DOCTYPE ', content)
         self.assertEqual('500', result['status'].split()[0])
         self.assertIn(('Content-Type', 'text/html;charset=utf-8'),
