@@ -21,8 +21,6 @@ import pkg_resources
 import re
 from datetime import datetime, timedelta
 
-from genshi.builder import tag
-
 from trac.config import IntOption, BoolOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
@@ -31,11 +29,12 @@ from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                format_time, localtz, parse_date,
                                pretty_timedelta, utc, to_datetime,
                                to_utimestamp, user_time)
+from trac.util.html import tag
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
-from trac.web.chrome import (Chrome, INavigationContributor,
-                             ITemplateProvider, add_link, add_stylesheet,
+from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
+                             accesskey, add_link, add_stylesheet,
                              add_warning, auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import concat_path_query_fragment, \
@@ -76,7 +75,8 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if 'TIMELINE_VIEW' in req.perm('timeline'):
             yield ('mainnav', 'timeline',
-                   tag.a(_("Timeline"), href=req.href.timeline(), accesskey=2))
+                   tag.a(_("Timeline"), href=req.href.timeline(),
+                         accesskey=accesskey(req, 2)))
 
     # IPermissionRequestor methods
 
@@ -147,8 +147,7 @@ class TimelineModule(Component):
                 'yesterday': user_time(req, format_date, yesterday),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
-                'abbreviated_messages': self.abbreviated_messages,
-                'lastvisit': lastvisit}
+                'abbreviated_messages': self.abbreviated_messages}
 
         available_filters = []
         for event_provider in self.event_providers:
@@ -192,9 +191,10 @@ class TimelineModule(Component):
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters) or []:
                     author = (event[2] or '').lower()
-                    if (not include or author in include) \
-                            and author not in exclude:
-                        events.append(self._event_data(provider, event))
+                    if ((not include or author in include) and
+                        author not in exclude):
+                        events.append(
+                            self._event_data(provider, event, lastvisit))
             except Exception as e:  # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
@@ -363,7 +363,7 @@ class TimelineModule(Component):
 
     # Internal methods
 
-    def _event_data(self, provider, event):
+    def _event_data(self, provider, event, lastvisit):
         """Compose the timeline event date from the event tuple and prepared
         provider methods"""
         if len(event) == 5:  # with special provider
@@ -374,6 +374,8 @@ class TimelineModule(Component):
                  provider.render_timeline_event(context, field, event)
         dateuid = to_utimestamp(date)
         return {'kind': kind, 'author': author, 'date': date,
+                'key_date': format_date(date, format='iso8601'),
+                'unread': lastvisit and lastvisit < dateuid,
                 'dateuid': dateuid, 'render': render, 'event': event,
                 'data': data, 'provider': provider}
 
