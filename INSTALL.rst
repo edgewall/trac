@@ -1,9 +1,12 @@
-Trac Installation Guide for 1.2
+﻿.. charset=utf-8
+
+Trac Installation Guide for 1.3
 ===============================
 
 Trac is written in the Python programming language and needs a
 database, `SQLite`_, `PostgreSQL`_, or `MySQL`_. For HTML rendering,
-Trac uses the `Genshi`_ templating system.
+Trac now uses the `Jinja2_` templating system, though `Genshi`_
+templates will still be supported until some times before Trac 1.4.
 
 Trac can also be localized, and there is probably a translation
 available in your language. If you want to use the Trac interface in
@@ -66,7 +69,7 @@ To install Trac, the following software packages must be installed:
 + `Python`_, version >= 2.6 and < 3.0 (note that we dropped the
   support for Python 2.5 in this release)
 + `setuptools`_, version >= 0.6
-+ `Genshi*`_, version >= 0.6
++ `Jinja2*`_, version >= 2.8
 
 
 You also need a database system and the corresponding python bindings.
@@ -821,7 +824,6 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _docutils: http://docutils.sourceforge.net/
 .. _FastCGI*: http://trac.edgewall.org/wiki/TracFastCgi
 .. _FastCGI: http://www.fastcgi.com/
-.. _Genshi*: http://genshi.edgewall.org/wiki/Download
 .. _Genshi: http://genshi.edgewall.org
 .. _Git: http://git-scm.com/
 .. _here: https://pypi.python.org/pypi?:action=browse&show=all&c=516
@@ -830,6 +832,8 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _Installing Trac: http://trac.edgewall.org/wiki/TracInstall#InstallingTrac
 .. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
 .. _Isapi-wsgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisIsapi
+.. _Jinja2: http://jinja.pocoo.org/
+.. _Jinja2*: https://pypi.python.org/pypi/Jinja2
 .. _MailingList: http://trac.edgewall.org/intertrac/MailingList
 .. _mod_python 3.5.0: http://modpython.org/
 .. _mod_wsgi: https://github.com/GrahamDumpleton/mod_wsgi

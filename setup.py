@@ -29,17 +29,6 @@ extra = {}
 try:
     import babel
 
-    extractors = [
-        ('**.py',                'trac.dist:extract_python', None),
-        ('**/templates/**.html', 'genshi', None),
-        ('**/templates/**.txt',  'genshi',
-         {'template_class': 'genshi.template:NewTextTemplate'}),
-    ]
-    extra['message_extractors'] = {
-        'trac': extractors,
-        'tracopt': extractors,
-    }
-
     from trac.dist import get_l10n_trac_cmdclass
     extra['cmdclass'] = get_l10n_trac_cmdclass()
 
@@ -47,10 +36,10 @@ except ImportError:
     pass
 
 try:
-    import genshi
+    import jinja2
 except ImportError:
-    print("Genshi is needed by Trac setup, pre-installing")
-    # give some context to the warnings we might get when installing Genshi
+    print("Jinja2 is needed by Trac setup, pre-installing")
+    # give some context to the warnings we might get when installing Jinja2
 
 
 setup(
@@ -90,19 +79,21 @@ facilities.
                  'locale/*/LC_MESSAGES/tracini.mo'],
         'trac.wiki': ['default-pages/*'],
         'trac.ticket': ['workflows/*.ini'],
+        'tracopt': ['ticket/htdocs/*.js'],
     },
 
     test_suite = 'trac.test.test_suite',
     zip_safe = True,
 
     setup_requires = [
-        'Genshi>=0.6',
+        'jinja2>=2.8',
     ],
     install_requires = [
         'setuptools>=0.6',
-        'Genshi>=0.6',
+        'jinja2>=2.8',
     ],
     extras_require = {
+        'genshi': ['Genshi>=0.6'],
         'babel': ['Babel>=0.9.5'],
         'mysql': ['MySQL-python >= 1.2.2'],
         'postgresql': ['psycopg2 >= 2.0'],

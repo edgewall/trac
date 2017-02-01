@@ -504,20 +504,20 @@ Known Issues
 Customized Templates
 ~~~~~~~~~~~~~~~~~~~~
 
-Trac supports customization of its Genshi templates by placing copies
-of the templates in the `<env>/templates` folder of your
-`environment`_ or in a common location specified in the ` [inherit]
-templates_dir`_ configuration setting. If you choose to do so, be
-aware that you will need to repeat your changes manually on a copy of
-the new templates when you upgrade to a new release of Trac (even a
-minor one), as the templates will likely evolve. So keep a diff
-around.
+Trac supports customization of its templates by placing copies of the
+templates in the `<env>/templates` folder of your `environment`_ or in
+a common location specified in the ` [inherit] templates_dir`_
+configuration setting. If you choose to do so, be aware that you will
+need to repeat your changes manually on a copy of the new templates
+when you upgrade to a new release of Trac (even a minor one), as the
+templates will likely evolve. So keep a diff around.
 
 The preferred way to perform `TracInterfaceCustomization`_ is to write
-a custom plugin doing an appropriate `ITemplateStreamFilter`
-transformation, as this is more robust in case of changes: we usually
-won't modify element `id`s or change CSS `class`es, and if we have to
-do so, this will be documented in the `TracDev/ApiChanges`_ pages.
+a custom plugin doing client-side JavaScript transformation of the
+generated output, as this is more robust in case of changes: we
+usually won't modify element `id`s or change CSS `class`es, and if we
+have to do so, this will be documented in the `TracDev/ApiChanges`_
+pages.
 
 
 ZipImportError
