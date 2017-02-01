@@ -26,14 +26,13 @@ try:
 except ImportError:
     has_svn = False
 
-from genshi.core import Stream
-
 from trac.test import EnvironmentStub, MockRequest, TestSetup, mkdtemp
 from trac.core import TracError
 from trac.mimeview.api import RenderingContext
 from trac.resource import Resource, resource_exists
 from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
+from trac.util.html import Element, Fragment, Markup
 from trac.versioncontrol.api import DbRepositoryProvider, Changeset, \
                                     InvalidRepository, Node, \
                                     NoSuchChangeset, RepositoryManager
@@ -134,6 +133,25 @@ class SubversionRepositoryTestSetup(TestSetup):
 # -- Re-usable test mixins
 
 class NormalTests(object):
+
+    def _row_col(self, elt, row, col):
+        row_idx = 1
+        if not isinstance(elt, Fragment):
+            return
+        for tr in elt.children:
+            if isinstance(tr, Element) and tr.tag == 'tr':
+                if row_idx == row:
+                    col_idx = 1
+                    for td in tr.children:
+                        if isinstance(td, Element) and td.tag == 'td':
+                            if col_idx == col:
+                                return unicode(td)
+                            col_idx += 1
+                row_idx += 1
+            else:
+                td = self._row_col(tr, row, col) # recurse
+                if td:
+                    return td
 
     def test_invalid_path_raises(self):
         self.assertRaises(InvalidRepository, svn_fs.SubversionRepository,
@@ -928,30 +946,30 @@ En r\xe9sum\xe9 ... \xe7a marche.
 /branches/v3:22
 /branches/v2:16
 """}
-        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
-                                                 context, props))
+        result = renderer.render_property('svn:mergeinfo', 'browser',
+                                          context, props)
 
-        node = unicode(result.select('//tr[1]//td[1]'))
+        node = self._row_col(result, 1, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/branches/v2?rev=%d"'
                       % HEAD, node)
         self.assertIn('>/branches/v2</a>', node)
-        node = unicode(result.select('//tr[1]//td[2]'))
+        node = self._row_col(result, 1, 2)
         self.assertIn(' title="16"', node)
         self.assertIn('>merged</a>', node)
-        node = unicode(result.select('//tr[1]//td[3]'))
+        node = self._row_col(result, 1, 3)
         self.assertIn(' title="No revisions"', node)
         self.assertIn('>eligible</span>', node)
 
-        node = unicode(result.select('//tr[3]//td[1]'))
+        node = self._row_col(result, 3, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/%s?rev=%d"'
                       % ('t%C3%AAte', HEAD), node)
         self.assertIn(u'>/tête</a>', node)
-        node = unicode(result.select('//tr[3]//td[2]'))
+        node = self._row_col(result, 3, 2)
         self.assertIn(' title="1-20, 23-26"', node)
         self.assertIn(' href="/trac.cgi/log/repo/t%C3%AAte?revs=1-20%2C23-26"',
                       node)
         self.assertIn('>merged</a>', node)
-        node = unicode(result.select('//tr[3]//td[3]'))
+        node = self._row_col(result, 3, 3)
         self.assertIn(' title="21"', node)
         self.assertIn(' href="/trac.cgi/changeset/21/repo/t%C3%AAte"', node)
         self.assertIn('>eligible</a>', node)
@@ -968,29 +986,30 @@ En r\xe9sum\xe9 ... \xe7a marche.
 /branches/v3:22
 /branches/deleted:1,3-5,22
 """}
-        result = Stream(renderer.render_property('svn:mergeinfo', 'browser',
-                                                 context, props))
+        result = renderer.render_property('svn:mergeinfo', 'browser',
+                                          context, props)
 
-        node = unicode(result.select('//tr[1]//td[1]'))
+        node = self._row_col(result, 1, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/branches/v3?rev=%d"'
                       % HEAD, node)
         self.assertIn('>/branches/v3</a>', node)
-        node = unicode(result.select('//tr[1]//td[2]'))
+        node = self._row_col(result, 1, 2)
         self.assertIn(' title="22"', node)
         self.assertIn('>merged</a>', node)
-        node = unicode(result.select('//tr[1]//td[3]'))
+        node = self._row_col(result, 1, 3)
         self.assertIn(' title="No revisions"', node)
         self.assertIn('>eligible</span>', node)
 
-        node = unicode(result.select('//tr[2]//td[1]'))
+        node = self._row_col(result, 2, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/%s?rev=%d"'
-                      % ('t%C3%AAte', HEAD), node)
+                      % ('t%C3%AAte', HEAD),
+                      node)
         self.assertIn(u'>/tête</a>', node)
-        node = unicode(result.select('//tr[2]//td[2]'))
+        node = self._row_col(result, 2, 2)
         self.assertIn(' title="19"', node)
         self.assertIn(' href="/trac.cgi/changeset/19/repo/t%C3%AAte"', node)
         self.assertIn('>merged</a>', node)
-        node = unicode(result.select('//tr[2]//td[3]'))
+        node = self._row_col(result, 2, 3)
         self.assertIn(' title="13-14, 17-18, 20-21, 23-26"', node)
         self.assertIn(' href="/trac.cgi/log/repo/t%C3%AAte?revs='
                       '13-14%2C17-18%2C20-21%2C23-26"', node)
@@ -998,9 +1017,9 @@ En r\xe9sum\xe9 ... \xe7a marche.
 
         self.assertIn('(toggle deleted branches)', unicode(result))
         self.assertIn('<td>/branches/deleted</td>',
-                      unicode(result.select('//tr[3]//td[1]')))
+                      self._row_col(result, 3, 1))
         self.assertIn(u'<td colspan="2">1,\u200b3-5,\u200b22</td>',
-                      unicode(result.select('//tr[3]//td[2]')))
+                      self._row_col(result, 3, 2))
 
     def test_merge_prop_diff_renderer_added(self):
         context = _create_context(self.env)
@@ -1018,14 +1037,14 @@ En r\xe9sum\xe9 ... \xe7a marche.
 """}
         options = {}
         renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
-        result = Stream(renderer.render_property_diff(
-                'svn:mergeinfo', old_context, old_props, new_context,
-                new_props, options))
+        result = renderer.render_property_diff(
+            'svn:mergeinfo', old_context, old_props, new_context,
+            new_props, options)
 
-        node = unicode(result.select('//tr[1]//td[1]'))
+        node = self._row_col(result, 1, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/branches/v2?rev=21"', node)
         self.assertIn('>/branches/v2</a>', node)
-        node = unicode(result.select('//tr[1]//td[2]'))
+        node = self._row_col(result, 1, 2)
         self.assertIn(' title="16"', node)
         self.assertIn(' href="/trac.cgi/changeset/16/repo/branches/v2"', node)
 
@@ -1037,15 +1056,15 @@ En r\xe9sum\xe9 ... \xe7a marche.
         new_context = context(self.repos.get_node(u'tête', rev).resource)
         new_mergeinfo = '/missing:12-15\n'
         renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
-        result = Stream(renderer.render_property_diff(
+        result = renderer.render_property_diff(
             'svn:mergeinfo', old_context, {'svn:mergeinfo': old_mergeinfo},
-            new_context, {'svn:mergeinfo': new_mergeinfo}, {}))
+            new_context, {'svn:mergeinfo': new_mergeinfo}, {})
 
-        node = unicode(result.select('//tr[1]//td[1]'))
+        node = self._row_col(result, 1, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/missing?rev=%d"'
                       % rev, node)
         self.assertIn('>/missing</a>', node)
-        node = unicode(result.select('//tr[1]//td[2]'))
+        node = self._row_col(result, 1, 2)
         self.assertIn(' title="13-15"', node)
         self.assertIn(' href="/trac.cgi/log/repo/missing?revs=13-15"', node)
 
@@ -1064,15 +1083,15 @@ En r\xe9sum\xe9 ... \xe7a marche.
         """}
 
         renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
-        result = Stream(renderer.render_property_diff(
+        result = renderer.render_property_diff(
             'svnmerge-integrated', old_context, old_props, new_context,
-            new_props, {}))
+            new_props, {})
 
-        node = unicode(result.select('//tr[1]//td[1]'))
+        node = self._row_col(result, 1, 1)
         self.assertIn(' href="/trac.cgi/browser/repo/branches/v2?rev=21"',
                       node)
         self.assertIn('>/branches/v2</a>', node)
-        node = unicode(result.select('//tr[1]//td[2]'))
+        node = self._row_col(result, 1, 2)
         self.assertIn(' title="16"', node)
         self.assertIn(' href="/trac.cgi/changeset/16/repo/branches/v2"',
                       node)
@@ -1392,9 +1411,6 @@ class AnotherNonSelfContainedScopedTests(object):
 
 class ExternalsPropertyTests(object):
 
-    def _xpath_text(self, stream, path):
-        return unicode(stream.select(path))
-
     def _modify_repository(self, reponame, changes):
         DbRepositoryProvider(self.env).modify_repository(reponame, changes)
 
@@ -1410,17 +1426,18 @@ class ExternalsPropertyTests(object):
                                    .child('source', 'build/posix', 42))
         return renderer.render_property('svn:externals', None, context, props)
 
-    def _parse_result(self, result):
-        result = Stream(result)
-        idx = 1
+    def _parse_result(self, ul):
         items = []
-        while True:
-            if not unicode(result.select('//li[%d]' % idx)):
-                break
-            items.append({key: unicode(result.select('//li[%d]/a/%s'
-                                                     % (idx, key)))
-                          for key in ('text()', '@href', '@title')})
-            idx += 1
+        for li in ul.children:
+            if li.tag != 'li':
+                continue
+            for a in li.children:
+                if a.tag != 'a':
+                    continue
+                href = a.attrib.get('href')
+                title = a.attrib.get('title')
+                text = Fragment.__unicode__(a)
+                items.append({'text()': text, '@href': href, '@title': title})
         return items
 
     def test_match_property(self):
@@ -1432,25 +1449,30 @@ class ExternalsPropertyTests(object):
         result = self._parse_result(self._render(
             'blah svn://server/repos1',
             'vendor http://example.org/svn/eng-soft'))
-        self.assertEqual({'text()': 'blah', '@href': '',
-                          '@title': 'No svn:externals configured in trac.ini'},
+        self.assertEqual(
+            {'text()': u'blah', '@href': None,
+             '@title': Markup('No svn:externals configured in trac.ini')},
                          result[0])
-        self.assertEqual({'text()': 'vendor',
-                          '@href': 'http://example.org/svn/eng-soft',
-                          # XXX           v should be "//"
-                          '@title': 'http:/example.org/svn/eng-soft'},
-                         result[1])
+        self.assertEqual(
+            {'text()': u'vendor',
+             '@href': Markup('http://example.org/svn/eng-soft'),
+             # XXX           v should be "//"
+             '@title': Markup('http:/example.org/svn/eng-soft')},
+            result[1])
         self.assertEqual(2, len(result))
 
     def test_render_property_non_absolute_url(self):
-        externals = ['blah1 ../src', 'blah2 ^/src', 'blah3 /svn/trunk',
-                     'blah4 //localhost/svn']
+        externals = [u'blah1 ../src',
+                     u'blah2 ^/src',
+                     u'blah3 /svn/trunk',
+                     u'blah4 //localhost/svn']
         result = self._parse_result(self._render(*externals))
-        self.assertEqual([{'text()': externals[0], '@href': '', '@title': ''},
-                          {'text()': externals[1], '@href': '', '@title': ''},
-                          {'text()': externals[2], '@href': '', '@title': ''},
-                          {'text()': externals[3], '@href': '', '@title': ''}],
-                         result)
+        self.assertEqual(
+            [{'text()': externals[0], '@href': None, '@title': Markup()},
+             {'text()': externals[1], '@href': None, '@title': Markup()},
+             {'text()': externals[2], '@href': None, '@title': Markup()},
+             {'text()': externals[3], '@href': None, '@title': Markup()}],
+            result)
 
     def test_render_property_comment(self):
         result = self._parse_result(self._render(
@@ -1459,12 +1481,15 @@ class ExternalsPropertyTests(object):
             '',
             '   # path rev url .....',
             'vendor http://example.org/svn/eng-soft'))
-        self.assertEqual({'text()': '   # For blah', '@href': '',
-                          '@title': ''}, result[0])
-        self.assertEqual('blah', result[1]['text()'])
-        self.assertEqual({'text()': '   # path rev url .....', '@href': '',
-                          '@title': ''}, result[2])
-        self.assertEqual('vendor', result[3]['text()'])
+        self.assertEqual(
+            {'text()': u'   # For blah', '@href': None, '@title':  Markup()},
+            result[0])
+        self.assertEqual(u'blah', result[1]['text()'])
+        self.assertEqual(
+            {'text()': u'   # path rev url .....', '@href': None,
+             '@title': Markup()},
+            result[2])
+        self.assertEqual(u'vendor', result[3]['text()'])
         self.assertEqual(4, len(result))
 
     def test_render_property_with_tracini(self):
