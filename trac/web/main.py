@@ -783,7 +783,7 @@ def send_project_index(environ, start_response, parent_dir=None,
         tmpl_path, template = os.path.split(env_index_template)
         loadpaths.insert(0, tmpl_path)
     else:
-        template = 'jindex.html'
+        template = 'index.html'
 
     data = {'trac': {'version': TRAC_VERSION,
                      'time': user_time(req, format_datetime)},

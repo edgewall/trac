@@ -714,7 +714,7 @@ class WikiModule(Component):
             'templates': templates,
             'version': version,
             'higher': higher, 'related': related,
-            'resourcepath_template': 'jwiki_page_path.html',
+            'resourcepath_template': 'wiki_page_path.html',
         })
         add_script(req, 'common/js/folding.js')
         return 'wiki_view.html', data
