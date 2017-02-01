@@ -33,7 +33,7 @@
       <span class="trac-count">(${len(repositories)})</span>
       #   endif
       # endset
-      # trans nb_repos = nb_repos|safe
+      # trans nb_repos = nb_repos
 
       Manage Repositories ${nb_repos}
 
@@ -146,7 +146,7 @@
             # set tracreposadmin
             <a href="${href.wiki('TracRepositoryAdmin') + '#ExplicitSync'}">${_("explicit synchronization")}</a>
             # endset
-            # trans tracreposadmin = tracreposadmin|safe
+            # trans tracreposadmin = tracreposadmin
 
             Not recommended. See ${tracreposadmin} for more info.
 
@@ -166,7 +166,7 @@
             # set wikiformatting
             <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
             # endset
-            # trans wikiformatting = wikiformatting|safe
+            # trans wikiformatting = wikiformatting
 
             Description: (you may use ${wikiformatting} here)
 

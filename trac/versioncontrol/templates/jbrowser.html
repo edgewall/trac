@@ -202,14 +202,14 @@
                title="${_("View changeset %(rev)s", rev=drev)}">${drev}</a>
             #-    endset
             #     if stickyrev:
-            #       trans last_change = last_change_link|safe, stickyrev = display_rev(stickyrev), rev = rev_link|safe, author, age
+            #       trans last_change = last_change_link, stickyrev = display_rev(stickyrev), rev = rev_link, author, age
 
             ${last_change} on this file since ${stickyrev} was ${rev},
             checked in by ${author}, ${age}
 
             #       endtrans
             #     else:
-            #       trans last_change = last_change_link|safe, rev = rev_link|safe, author, age
+            #       trans last_change = last_change_link, rev = rev_link, author, age
 
             ${last_change} on this file was ${rev},
             checked in by ${author}, ${age}

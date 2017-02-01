@@ -28,6 +28,7 @@ def _genshi_version():
 PACKAGES = [
     ("Python",            'sys.version'),
     ("Setuptools",        'setuptools.__version__'),
+    ("Jinja2",            'jinja2.__version__'),
     ("Genshi",            '__main__._genshi_version()'),
     ("Babel",             'babel.__version__'),
     ("sqlite3",           ('sqlite3.version',

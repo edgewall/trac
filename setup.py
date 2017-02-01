@@ -86,11 +86,11 @@ facilities.
     zip_safe = True,
 
     setup_requires = [
-        'jinja2>=2.8',
+        'jinja2>=2.9.3',
     ],
     install_requires = [
         'setuptools>=0.6',
-        'jinja2>=2.8',
+        'jinja2>=2.9.3',
     ],
     extras_require = {
         'genshi': ['Genshi>=0.6'],

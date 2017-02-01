@@ -39,19 +39,19 @@
     <h1>
     # if reponame:
     #   if changeset and restricted:
-    #     trans newrev = newrev|safe, newpath = newpath|safe, reponame
+    #     trans newrev = newrev, newpath = newpath, reponame
 
     Changeset ${newrev} in ${reponame} for ${newpath}
 
     #     endtrans
     #   elif not changeset and restricted:
-    #     trans newpath = newpath|safe, logoldnew = logoldnew|safe, reponame
+    #     trans newpath = newpath, logoldnew = logoldnew, reponame
 
     Changes in ${newpath} ${logoldnew} in ${reponame}
 
     #     endtrans
     #   elif not changeset and not restricted:
-    #     trans reponame, oldpath = oldpath|safe, oldrrev = oldrrev|safe, newpath = newpath|safe, newrrev = newrrev|safe
+    #     trans reponame, oldpath = oldpath, oldrrev = oldrrev, newpath = newpath, newrrev = newrrev
 
     Changes in ${reponame} from ${oldpath} at ${oldrev}
     to ${newpath} at ${newrev}
@@ -59,7 +59,7 @@
     #     endtrans
     #   else:
     #     if annotated:
-    #       trans shortnewrev = shortnewrev|safe, reponame
+    #       trans shortnewrev = shortnewrev, reponame
 
     Changeset ${shortnewrev} in ${reponame}
 
@@ -74,26 +74,26 @@
     #   endif
     # else:
     #   if changeset and restricted:
-    #     trans newrev = newrev|safe, newpath=newpath|safe
+    #     trans newrev = newrev, newpath=newpath
 
     Changeset ${newrev} for ${newpath}
 
     #     endtrans
     #   elif not changeset and restricted:
-    #     trans newpath = newpath|safe, logoldnew = logoldnew|safe
+    #     trans newpath = newpath, logoldnew = logoldnew
 
     Changes in ${newpath} ${logoldnew}
 
     #     endtrans
     #   elif not changeset and not restricted:
-    #     trans oldpath = oldpath|safe, oldrrev = oldrrev|safe, newpath = newpath|safe, newrrev = newrrev|safe
+    #     trans oldpath = oldpath, oldrrev = oldrrev, newpath = newpath, newrrev = newrrev
 
     Changes from ${oldpath} at ${oldrrev} to ${newpath} at ${newrrev}
 
     #     endtrans
     #   else:
     #     if annotated:
-    #       trans shortnewrev = shortnewrev|safe
+    #       trans shortnewrev = shortnewrev
 
     Changeset ${shortnewrev}
 
@@ -157,7 +157,7 @@
                     old_rev=display_rev(item.old.rev))}">
         ${item.old.path}</a>
       # endset
-      # trans kind, oldpath = oldpath|safe
+      # trans kind, oldpath = oldpath
       (${kind} from ${oldpath})
       # endtrans
   </em></small>

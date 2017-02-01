@@ -43,7 +43,7 @@
           # set authors_input
           <input type="text" size="16" name="authors" value="${authors}" />
           # endset
-          # trans fromdate = fromdate_input|safe, daysback = daysback_input|safe, authors = authors_input|safe
+          # trans fromdate = fromdate_input, daysback = daysback_input, authors = authors_input
           <label>View changes from ${fromdate}</label> <br />
           <label>going back ${daysback} days</label><br />
           <label>by author ${authors}</label>
@@ -77,7 +77,7 @@
             # endset
             # set title = event.render('title', context)
             # if event.author:
-            #   trans time = time|safe, title, author = authorinfo(event.author)
+            #   trans time = time, title, author = authorinfo(event.author)
             ${time} ${title} by ${author}
             #   endtrans
             # else:
