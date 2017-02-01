@@ -1373,7 +1373,8 @@ class Chrome(Component):
         generate some content which does not need all of the chrome
         related data, typically HTML fragments, XML or plain text.
         Unless `iterable` is set, see `render_template_as_string` for
-        the return value.
+        the details about the content of the string return value. That
+        unicode or Markup string is then UTF-8 encoded.
 
         When `iterable` is specified, the content is returned as an
         iterable of UTF-8 encoded bytes.
@@ -1432,7 +1433,8 @@ class Chrome(Component):
                 return self.generate_template_stream(template, data, text,
                                                      iterable)
             else:
-                return self.render_template_as_string(template, data, text)
+                s = self.render_template_as_string(template, data, text)
+                return s.encode('utf-8')
 
         data['chrome']['content_type'] = content_type
 
