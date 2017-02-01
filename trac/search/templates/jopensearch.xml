@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  ## jinjacheck: "no DTD found" OK
+  <ShortName>Search ${project.name}</ShortName>
+  <InputEncoding>UTF-8</InputEncoding>
+  # if chrome.icon.abs_src:
+  <Image width="16" height="16" type="${chrome.icon.mimetype}">${
+  chrome.icon.abs_src}</Image>
+  # endif
+  <Url type="text/html"
+       template="${abs_href.search()}?q={searchTerms}&amp;page={startPage}"/>
+</OpenSearchDescription>

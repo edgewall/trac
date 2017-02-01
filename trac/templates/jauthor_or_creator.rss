@@ -1,0 +1,17 @@
+{#
+Generate an <author> or a <dc:creator> tag, based on the presence
+of an email or not in the author's information.
+
+Arguments:
+ - author: the author to be used
+#}
+# if author:
+## Try our best to retrieve an email address if wanted and possible
+#   with author = format_author(author_email(author))
+#     if '@' in author:
+      <author>${author}</author>
+#     else:
+      <dc:creator>${author}</dc:creator>
+#     endif
+#   endwith
+# endif
