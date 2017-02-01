@@ -1,4 +1,4 @@
-This directory contains Trac's default Genshi templates.
+This directory contains Trac's default Jinja2 templates.
 
 It is not advised to make local modifications to those files after
 installation, as they might be lost during the installation of a new
@@ -12,7 +12,7 @@ templates_dir` setting (the former having precedence over the latter).
 Nevertheless, if you use such a locally modified template, it will be
 easy to miss the functionality provided by a newer version of the
 template, after an upgrade. Because of that, the preferred way to
-alter the output would be to write plugins doing Genshi stream
+alter the output would be to write plugins doing client-side JavaScript
 transformation (see for example the sample-plugins/ticket_clone.py),
 as this is robust when upgrading to a newer version of Trac: you only
 have to check that your filtering still matches and that the

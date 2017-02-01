@@ -37,7 +37,7 @@
       </py:for>
     </py:if>
     <style id="trac-noscript" type="text/css">.trac-noscript { display: none !important }</style>
-    <py:if test="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm" id="search">
+    <py:if test="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm">
       <link type="application/opensearchdescription+xml" rel="search"
             href="${href.search('opensearch')}"
             title="${_('Search %(project)s', project=project.name)}"/>
