@@ -70,7 +70,7 @@ facilities.
 
     packages = find_packages(exclude=['*.tests', 'tests.*', '*.tests.*']),
     package_data = {
-        '': ['templates/*'],
+        '': ['templates/*.*', 'templates/genshi/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*.*',
                  'htdocs/js/messages/*.*', 'htdocs/css/*.*',
                  'htdocs/css/jquery-ui/*.*',
