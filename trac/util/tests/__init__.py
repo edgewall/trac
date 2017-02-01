@@ -23,8 +23,8 @@ import unittest
 import trac
 from trac import util
 from trac.test import mkdtemp
-from trac.util.tests import concurrency, datefmt, presentation, text, \
-                            translation, html
+from trac.util.tests import (concurrency, datefmt, presentation, text,
+                             translation, html)
 
 
 class AtomicFileTestCase(unittest.TestCase):
