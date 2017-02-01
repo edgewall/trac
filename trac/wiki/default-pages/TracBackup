@@ -23,12 +23,20 @@ Please note, the `hotcopy` command will not overwrite a target directory and whe
 
 To restore an environment from a backup, stop the process running Trac, ie the Web server or [wiki:TracStandalone tracd], restore the contents of your backup (path/to/backupdir) to your [wiki:TracEnvironment project environment] directory and restart the service.
 
+If you are using a database other than SQLite, you'll need to restore the database from the dump file. The dump file is saved in the environment `db` directory.
+
 To restore a PostgreSQL database backup, use the command:
 {{{#!sh
-psql -U <user> -d <database> -f postgresql.dump
+$ psql -U <user> -d <database> -f postgresql.dump
 }}}
 
 The `<database>` option is the same as the [TracEnvironment#DatabaseConnectionStrings database connection string] in the `[trac]` `database` option of //trac.ini//.
+
+Similarly, for MySQL:
+
+{{{#!sh
+$ mysql -u <user> -p <database> < mysql.dump
+}}}
 
 ----
 See also: TracAdmin, TracEnvironment, TracGuide, [trac:TracMigrate TracMigrate]

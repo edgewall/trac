@@ -27,6 +27,8 @@ Some commands have a more detailed help, which you can access by specifying the 
 trac-admin /path/to/projenv help <command>
 }}}
 
+When an error occurs in a `trac-admin` command the return value will be `2` and error messages are printed to `stderr`.
+
 === `trac-admin <targetdir> initenv` === #initenv
 
 This subcommand is very important as is the one used to create a TracEnvironment in the specified `<targetdir>`. That directory must not exist prior to the call.

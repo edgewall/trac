@@ -99,6 +99,25 @@ $ trac-admin /path/to/env upgrade
 
 A database backup will be made before upgrading the environment, unless the `--no-backup` option is specified. For more information, refer to the documentation output by `trac-admin /path/to/env help upgrade`.
 
+==== Redeploying static resources
+
+If you [TracInstall#MappingStaticResources mapped static resources] so they are served by the web server, and the plugin contains static resources (CSS, !JavaScript and image files), the resources will need to be deployed to the location on the filesystem that is served by the web server.
+
+Execute the `deploy` command, as was done during install and [TracUpgrade#a5.Refreshstaticresources upgrade]:
+
+{{{#!sh
+$ trac-admin /path/to/env deploy /deploy/path
+}}}
+
+After executing the command, you must restart your web server.
+
+{{{#!div style="border: 1pt dotted; margin: 1em"
+**Note:** Some web browsers (IE, Opera) cache CSS and Javascript files, so you should instruct your users to manually erase the contents of their browser's cache. A forced refreshed (SHIFT + <F5>) should be enough.
+{{{#!comment
+Remove above note once #9936 is fixed.
+}}}
+}}}
+
 ==== Uninstalling
 
 Neither `easy_install` nor `python setup.py` have an uninstall feature. However, it is usually trivial to remove a globally installed egg and reference:

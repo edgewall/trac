@@ -254,7 +254,7 @@ The link syntax for attachments is as follows:
  * !attachment:the_file.txt:wiki:MyPage creates a link to the attachment the_file.txt of the !MyPage wiki page
  * !attachment:the_file.txt:ticket:753 creates a link to the attachment the_file.txt of the ticket 753
 
-Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt.
+Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt, but is not recommended.
 
 If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use `raw-attachment:` instead of `attachment:`.
 

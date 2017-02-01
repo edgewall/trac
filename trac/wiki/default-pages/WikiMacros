@@ -170,12 +170,12 @@ Hello World, text = <Hello World!>, args = {}
 Hello World, text = <Hello World!>, args = None
 }}}
 
-Note that the return value of `expand_macro` is '''not''' HTML escaped. Depending on the expected result, you should escape it yourself (using `return Markup.escape(result)`) or, if this is indeed HTML, wrap it in a Markup object (`return Markup(result)`) with `Markup` coming from Genshi (`from genshi.core import Markup`).
+Note that the return value of `expand_macro` is '''not''' HTML escaped. Depending on the expected result, you should escape it yourself (using `return Markup.escape(result)`) or, if this is indeed HTML, wrap it in a Markup object: `return Markup(result)` (`from trac.util.html import Markup`).
 
 You can also recursively use a wiki Formatter (`from trac.wiki import Formatter`) to process the `text` as wiki markup:
 
 {{{#!python
-from genshi.core import Markup
+from trac.util.html import Markup
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki import Formatter
 import StringIO

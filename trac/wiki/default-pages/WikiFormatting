@@ -158,8 +158,8 @@ Second paragraph.
 || wiki:WikiFormatting, wiki:"WikiFormatting" ||
 || `#1 (ticket)`, `[1] (changeset)`, `{1} (report)` ||\
 || #1 (ticket), [1] (changeset), {1} (report) ||
-|| `ticket:1, ticket:1#comment:1` ||\
-|| ticket:1, ticket:1#comment:1 ||
+|| `ticket:1, ticket:1#comment:1, comment:1:ticket:1` ||\
+|| ticket:1, ticket:1#comment:1, comment:1:ticket:1 ||
 || `Ticket [ticket:1]`, `[ticket:1 ticket one]` ||\
 || Ticket [ticket:1], [ticket:1 ticket one] ||
 || `Ticket [[ticket:1]]`, `[[ticket:1|ticket one]]` ||\
