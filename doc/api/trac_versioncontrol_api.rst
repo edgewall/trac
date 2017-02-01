@@ -1,7 +1,7 @@
 :mod:`trac.versioncontrol.api` -- Trac Version Control APIs
 ===========================================================
 
-.. automodule :: trac.versioncontrol.api
+.. module :: trac.versioncontrol.api
 
 This module implements an abstraction layer over different kind of
 version control systems and the mechanism to access several

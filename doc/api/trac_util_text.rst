@@ -2,20 +2,33 @@
 
 :mod:`trac.util.text` -- Text manipulation
 ==========================================
+
 .. module :: trac.util.text
+
+.. _text_util_jinja2:
+
+The Jinja2 template engine
+--------------------------
+
+As Jinja2 is mainly a text template engine, the low-level helper
+functions dealing with this package are placed here.
+
+.. autofunction :: jinja2env
+
+.. autofunction :: jinja2template
+
 
 The Unicode toolbox
 -------------------
 
 Trac internals are almost exclusively dealing with Unicode text,
-represented by `unicode` instances. The main advantage of using
+represented by `unicode` objects. The main advantage of using
 `unicode` over UTF-8 encoded `str` (as this used to be the case before
 version 0.10), is that text transformation functions in the present
 module will operate in a safe way on individual characters, and won't
-risk to eventually cut a multi-byte sequence in the middle. Similar
-issues with Python string handling routines are avoided as well, like
-surprising results when splitting text in lines. For example, did you
-know that "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in UTF-8?
+risk to cut a multi-byte sequence in the middle. Similar issues with
+Python string handling routines are avoided as well. For example, did
+you know that "Priorità" is encoded as ``'Priorit\xc3\x0a'`` in UTF-8?
 Calling `strip()` on this value in some locales can cut away the
 trailing ``\x0a`` and it's no longer valid UTF-8...
 
@@ -79,6 +92,8 @@ Miscellaneous
 
 .. autofunction :: levenshtein_distance
 
+.. autofunction :: getpreferredencoding
+
 
 Text formatting
 ---------------
@@ -107,7 +122,13 @@ Text formatting
 
 .. autofunction :: stripws
 
+.. autofunction :: strip_line_ws
+
 .. autofunction :: wrap
+
+.. autofunction :: cleandoc
+
+.. autofunction :: sub_vars
 
 
 Conversion utilities

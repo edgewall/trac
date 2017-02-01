@@ -1249,12 +1249,11 @@ class TicketModule(Component):
 
         data = self._prepare_data(req, ticket, absurls=True)
         data['changes'] = changes
-        metadata = {
-            'content_type': 'application/rss+xml',
-            'iterable': True
-        }
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
-                                                  metadata)
+                                                  {'content_type':
+                                                   'application/rss+xml',
+                                                   'iterable': True})
+
         return output, 'application/rss+xml'
 
     # Ticket validation and changes

@@ -405,8 +405,7 @@ class TicketModuleTestCase(unittest.TestCase):
         def timefield_text():
             self.assertTrue(self.ticket_module.match_request(req))
             template, data = self.ticket_module.process_request(req)
-            content = Chrome(self.env).render_template(req, template, data,
-                                                      {'fragment': True})
+            content = Chrome(self.env).render_fragment(req, template, data)
             # select('//td[@headers="h_timefield"') replacement
             class TimefieldExtractor(HTMLTransform):
                 pick_next_text = False

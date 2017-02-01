@@ -796,8 +796,6 @@ class Mimeview(Component):
                                                 False)):
                     # Direct rendering of content
                     if isinstance(result, basestring):
-                        if not isinstance(result, unicode):
-                            result = to_unicode(result)
                         return Markup(to_unicode(result))
                     elif isinstance(result, Fragment):
                         return result.__html__()

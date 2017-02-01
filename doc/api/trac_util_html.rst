@@ -1,7 +1,7 @@
 :mod:`trac.util.html` -- HTML transformations
 =============================================
-.. automodule :: trac.util.html
-   :no-members:
+
+.. module :: trac.util.html
 
 Building HTML programmatically
 ------------------------------

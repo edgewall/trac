@@ -880,7 +880,7 @@ class EnvironmentAdmin(Component):
             dest = os.path.join(script_target, 'trac.' + script)
             chrome = Chrome(self.env)
             template = chrome.load_template('deploy_trac.' + script, text=True)
-            text = chrome.render_template_as_string(template, data, text=True)
+            text = chrome.render_template_string(template, data, text=True)
 
             with open(dest, 'w') as out:
                 out.write(text.encode('utf-8'))

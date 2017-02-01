@@ -756,38 +756,38 @@ class Request(object):
                     add_stylesheet(self, 'common/css/code.css')
                     metadata = {'content_type': 'text/html'}
                     try:
-                        data = Chrome(env).render_template(self, template,
-                                                           data, metadata)
+                        out = Chrome(env).render_template(self, template, data,
+                                                          metadata)
                     except Exception:
                         # second chance rendering, in "safe" mode
                         data['trac_error_rendering'] = True
-                        data = Chrome(env).render_template(self, template,
-                                                           data, metadata)
+                        out = Chrome(env).render_template(self, template, data,
+                                                          metadata)
                 else:
                     content_type = 'text/plain'
-                    data = '%s\n\n%s: %s' % (data.get('title'),
+                    out = '%s\n\n%s: %s' % (data.get('title'),
                                              data.get('type'),
                                              data.get('message'))
         except Exception: # failed to render
-            data = get_last_traceback()
+            out = get_last_traceback()
             content_type = 'text/plain'
 
-        if isinstance(data, unicode):
-            data = data.encode('utf-8')
+        if isinstance(out, unicode):
+            out = out.encode('utf-8')
 
         self.send_response(status)
         self._outheaders = []
         self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        self.send_header('Content-Length', len(data))
+        self.send_header('Content-Length', len(out))
         self._send_cookie_headers()
 
         self._write = self._start_response(self._status, self._outheaders,
                                            exc_info)
 
         if self.method != 'HEAD':
-            self.write(data)
+            self.write(out)
         raise RequestDone
 
     def send_no_content(self):

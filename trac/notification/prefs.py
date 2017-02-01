@@ -47,6 +47,7 @@ class NotificationPreferences(Component):
         }
 
     # IPreferencePanelProvider
+
     def get_preference_panels(self, req):
         yield ('notification', _('Notifications'))
 

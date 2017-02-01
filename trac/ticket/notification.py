@@ -314,8 +314,7 @@ class TicketFormatter(Component):
         # don't translate the e-mail stream
         with translation_deactivated():
             try:
-                body = chrome.render_template_as_string(template, data,
-                                                        text=True)
+                body = chrome.render_template_string(template, data, text=True)
                 return body.encode('utf-8')
             except Exception as e:
                 self.log.debug("Failed to format body of notification mail: %s",

@@ -100,8 +100,7 @@ class PreferencesModule(Component):
                 ctemplate, cdata = resp[:2]
                 cdata.update(session_data)
                 if len(resp) == 2:
-                    rendered = chrome.render_template(req, ctemplate, cdata,
-                                                      {'fragment': True})
+                    rendered = chrome.render_fragment(req, ctemplate, cdata)
                 else:
                     # Backward compatibility with Genshi preference panels
                     # TODO (1.5.1) remove

@@ -1324,11 +1324,26 @@ class Chrome(Component):
                         fragment=False, iterable=False, method=None):
         """Renders the ``filename`` template using ``data`` for the context.
 
-        It attempts to load a Jinja2 template.
+        It attempts to load a Jinja2 template, augments the provided
+        *data* with standard data, and renders it according to the
+        options provided in *metadata*.
 
         The ``fragment``, ``iterable`` and ``method`` parameters are
         deprecated and will be removed in Trac 1.5.1.  Instead, use
-        the ``metadata`` dictionary with keys of the same name.
+        the ``metadata`` dictionary with keys with the same name.  The
+        ``method`` key is itself deprecated, use ``text=True`` instead
+        of ``method='text'`` to indicate that the template is a plain
+        text one, with no need for HTML/XML escaping to take place.
+
+        When ``fragment`` is specified, or ``method`` is ``'text'``,
+        or ``text`` is ``True``, we generate some content which does
+        not need all of the chrome related data, typically HTML
+        fragments, XML or plain text.
+
+        If ``iterable`` is set, we use `generate_template_stream` to
+        produce the output (iterable of UTF-8 encoded bytes),
+        otherwise we use `render_template_string` and UTF-8 encode the
+        result.
 
         .. note::
 
@@ -1337,8 +1352,9 @@ class Chrome(Component):
 
            Also if ``metadata`` is *not* a dictionary, we assume that
            it is the ``content_type`` value from the legacy API (a
-           string or `None`) and that a the template will be a Genshi
-           template.
+           string or `None`). As a consequence, we assume the template
+           will be a Genshi template and we'll use the legacy Genshi
+           template engine for the rendering.
 
            This backward compatibility behavior will be removed in
            Trac 1.5.1.
@@ -1361,23 +1377,6 @@ class Chrome(Component):
     def _render_jinja_template(self, req, filename, data, metadata=None,
                                fragment=False, iterable=False, method=None):
         """Render the `filename` using the `data` for the context.
-
-        The `content_type` argument is passed on to the templates
-        (defaults to ``'text/html'``).
-
-        The rendering `method` (``'xml'``, ``'xhtml'`` or ``'text'``)
-        may be specified directly or can be inferred from the
-        `content_type`.
-
-        When `fragment` is specified, or `method` is ``'text'``, we
-        generate some content which does not need all of the chrome
-        related data, typically HTML fragments, XML or plain text.
-        Unless `iterable` is set, see `render_template_as_string` for
-        the details about the content of the string return value. That
-        unicode or Markup string is then UTF-8 encoded.
-
-        When `iterable` is specified, the content is returned as an
-        iterable of UTF-8 encoded bytes.
 
         TODO (1.5.1): merge into render_template
 
@@ -1417,13 +1416,13 @@ class Chrome(Component):
         if text is None:
             text = method == 'text'
 
-        template, data = self.prepare_template(filename, data, req, text,
+        template, data = self.prepare_template(req, filename, data, text,
                                                domain)
 
         # Hack for supporting Genshi stream filters - TODO (1.5.1) remove
         if genshi and self._check_for_stream_filters(req, method, filename,
                                                      data):
-            page = self.render_template_as_string(template, data, text)
+            page = self.render_template_string(template, data, text)
             return self._filter_jinja_page(req, page, method, filename,
                                            content_type, data, fragment,
                                            iterable)
@@ -1433,12 +1432,15 @@ class Chrome(Component):
                 return self.generate_template_stream(template, data, text,
                                                      iterable)
             else:
-                s = self.render_template_as_string(template, data, text)
+                s = self.render_template_string(template, data, text)
                 return s.encode('utf-8')
 
         data['chrome']['content_type'] = content_type
 
-        doctype = None
+        # TODO (1.5.1) - have another try at simplifying all this...
+        # With Jinja2, it's certainly possible to do things
+        # differently, but for as long as we have to support Genshi,
+        # better keep one way.
         links = req.chrome.get('links')
         scripts = req.chrome.get('scripts')
         script_data = req.chrome.get('script_data')
@@ -1461,25 +1463,53 @@ class Chrome(Component):
                                'scripts': scripts, 'script_data': script_data})
             raise
 
-    def generate_template_fragment(self, req, filename, data, text=False,
-                                   domain=None):
-        """Produce content from given template, with minimal data overhead.
+    def generate_fragment(self, req, filename, data, text=False, domain=None):
+        """Produces content ready to be sent from the given template
+        *filename* and input *data*, with minimal overhead.
 
-        See `prepare_template` for the parameter documentation.
+        It calls `prepare_template` to augment the *data* with the
+        usual helper functions that can be expected in Trac templates,
+        including the translation helper functions adapted to the given
+        *domain*, except for some of the chrome "late" data.
 
-        Use this when the chrome content used for a full themed HTML
-        page generation is not needed (note: doesn't do that for now).
+        If you don't need that and don't want the overhead, use
+        `load_template` and `generate_template_stream` directly.
 
         The generated output is suitable to pass directly to
         `Request.send`, see `generate_template_stream` for details.
 
+        See also `render_fragment`, which returns a string instead.
+
         """
-        template, data = self.prepare_template(filename, data, req, text,
+        template, data = self.prepare_template(req, filename, data, text,
                                                domain)
         return self.generate_template_stream(template, data, text)
 
-    def prepare_template(self, filename, data, req=None, text=False,
-                         domain=None):
+
+    def render_fragment(self, req, filename, data, text=False, domain=None):
+        """Produces a string from given template *filename* and input *data*,
+        with minimal overhead.
+
+        It calls `prepare_template` to augment the *data* with the
+        usual helper functions that can be expected in Trac templates,
+        including the translation helper functions adapted to the given
+        *domain*, except for some of the chrome "late" data.
+
+        If you don't need that and don't want the overhead, use
+        `load_template` and `render_template_string` directly.
+
+        :rtype: the generated output is an `unicode` string if *text*
+                is ``True``, or a `Markup` string otherwise.
+
+        See also `generate_fragment`, which produces an output
+        suitable to pass directly to `Request.send` instead.
+
+        """
+        template, data = self.prepare_template(req, filename, data, text,
+                                               domain)
+        return self.render_template_string(template, data, text)
+
+    def prepare_template(self, req, filename, data, text=False, domain=None):
         """Prepares the rendering of a Jinja2 template.
 
         This loads the template and prepopulates a data `dict` with
@@ -1544,8 +1574,8 @@ class Chrome(Component):
                 bytes = valid_html_bytes(bytes)
             return bytes
 
-    def render_template_as_string(self, template, data, text=False):
-        """Renders the template as an unicode string.
+    def render_template_string(self, template, data, text=False):
+        """Renders the template as an unicode or Markup string.
 
         :param template: the Jinja2 template
         :type template: ``jinja2.Template``

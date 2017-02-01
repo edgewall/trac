@@ -1208,12 +1208,10 @@ class QueryModule(Component):
             'results': results,
             'query_href': query_href
         }
-        metadata = {
-            'content_type': 'application/rss+xml',
-            'iterable': True
-        }
         output = Chrome(self.env).render_template(req, 'query.rss', data,
-                                                  metadata)
+                                                  {'content_type':
+                                                   'application/rss+xml',
+                                                   'iterable': True})
         return output, 'application/rss+xml'
 
     # IWikiSyntaxProvider methods
@@ -1381,8 +1379,8 @@ class TicketQueryMacro(WikiMacroBase):
 
             add_stylesheet(req, 'common/css/report.css')
 
-            return Chrome(self.env).render_template(req, 'query_results.html',
-                                                    data, {'fragment': True})
+            return Chrome(self.env).render_fragment(req, 'query_results.html',
+                                                    data)
 
         if format == 'progress':
             from trac.ticket.roadmap import (RoadmapModule,
@@ -1423,8 +1421,7 @@ class TicketQueryMacro(WikiMacroBase):
                     'legend': True,
                 }
                 return tag.div(
-                    chrome.render_template(req, 'progress_bar.html', data,
-                                           {'fragment': True}),
+                    chrome.render_fragment(req, 'progress_bar.html', data),
                     class_='trac-progress')
 
             def per_group_stats_data(gstat, group_name):
@@ -1447,8 +1444,7 @@ class TicketQueryMacro(WikiMacroBase):
                              group=by),
             }
             return tag.div(
-                chrome.render_template(req, 'progress_bar_grouped.html', data,
-                                       {'fragment': True}),
+                chrome.render_fragment(req, 'progress_bar_grouped.html', data),
                 class_='trac-groupprogress')
 
         # Formats above had their own permission checks, here we need to

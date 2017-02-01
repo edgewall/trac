@@ -908,13 +908,13 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertIs(t1_text, t2_text)
         self.assertIsNot(t1, t1_text)
 
-    def test_render_template_as_string(self):
+    def test_render_template_string(self):
         t = self.chrome.load_template(self.filename)
         self.assertIsNotNone(t)
         t_text = self.chrome.load_template(self.filename, text=True)
         self.assertIsNotNone(t_text)
         data = {'greeting': u"Hell&ö"}
-        content = self.chrome.render_template_as_string(t, data)
+        content = self.chrome.render_template_string(t, data)
         self.assertIsInstance(content, Markup)
         self.assertEqual(u"""\
 <!DOCTYPE html>
@@ -923,8 +923,8 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
     <h1>Hell&amp;ö</h1>
   </body>
 </html>""", content)
-        content_text = self.chrome.render_template_as_string(t_text, data,
-                                                             text=True)
+        content_text = self.chrome.render_template_string(t_text, data,
+                                                          text=True)
         self.assertFalse(isinstance(content_text, Markup))
         self.assertIsInstance(content_text, unicode)
         self.assertEqual(u"""\
@@ -940,8 +940,8 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         content = self.chrome.render_template(MockRequest(self.env),
                                               self.filename, data,
                                               {'fragment': True})
-        self.assertIsInstance(content, Markup)
-        self.assertEqual(u"""\
+        self.assertIsInstance(content, str)
+        self.assertEqual("""\
 <!DOCTYPE html>
 <html>
   <body>

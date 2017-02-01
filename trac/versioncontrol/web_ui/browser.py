@@ -928,9 +928,9 @@ class BrowserModule(Component):
             data = {'repo': repo, 'order': order, 'desc': 1 if desc else None,
                     'reponame': None, 'path': '/', 'stickyrev': None,
                     'wiki_format_messages': wiki_format_messages}
-            return Chrome(self.env).render_template(
-                    formatter.req, 'repository_index.html', data,
-                    {'fragment': True})
+            return Chrome(self.env).render_fragment(formatter.context.req,
+                                                    'repository_index.html',
+                                                    data)
 
         def get_repository(reponame):
             try:

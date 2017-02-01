@@ -1,7 +1,7 @@
 :mod:`trac.mimeview.api` -- Trac content transformation APIs
 ============================================================
 
-.. automodule :: trac.mimeview.api
+.. module :: trac.mimeview.api
 
 
 Interfaces

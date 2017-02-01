@@ -45,7 +45,7 @@ class IAdminPanelProvider(Interface):
 
         This function should return a tuple of the form `(template, data)`,
         where `template` is the name of the template to use and `data` is
-        the data to be passed to the template.
+        the data to use when rendering the template.
 
         .. note::
 

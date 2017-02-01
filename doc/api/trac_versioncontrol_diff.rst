@@ -1,7 +1,7 @@
 :mod:`trac.versioncontrol.diff` -- Utilities for generation of diffs
 ====================================================================
 
-.. automodule :: trac.versioncontrol.diff
+.. module :: trac.versioncontrol.diff
 
 Synopsis
 --------
