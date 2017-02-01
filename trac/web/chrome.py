@@ -1106,16 +1106,11 @@ class Chrome(Component):
                 auto_reload=self.auto_reload,
                 autoescape=True,
             )
-            self.jenv_text = jinja2env(
-                loader=FileSystemLoader(self.get_all_templates_dirs()),
-                auto_reload=self.auto_reload,
-                autoescape=False,
-            )
-            for jenv in self.jenv, self.jenv_text:
-                jenv.globals.update(self._default_context_data.copy())
-                jenv.globals.update(translation.functions)
-                jenv.globals.update(unicode=to_unicode)
-                presentation.jinja2_update(jenv)
+            self.jenv.globals.update(self._default_context_data.copy())
+            self.jenv.globals.update(translation.functions)
+            self.jenv.globals.update(unicode=to_unicode)
+            presentation.jinja2_update(self.jenv)
+            self.jenv_text = self.jenv.overlay(autoescape=False)
         return (self.jenv_text if text else self.jenv).get_template(filename)
 
     def render_template(self, req, filename, data, metadata=None,
