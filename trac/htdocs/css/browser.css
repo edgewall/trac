@@ -18,6 +18,7 @@ h1 :link, h1 :visited { color: #b00 }
 h1 .first:link, h1 .first:visited { color: #998 }
 h1 .sep { color: #666; padding: 0 .1em }
 h1 .pathentry { float: left; padding: 0 .1em }
+h1#repoindex { margin-top: 1em; }
 
 #diffrev, #jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em 2em; }
 #diffrev form, #jumprev form, #jumploc form { margin: 0 }

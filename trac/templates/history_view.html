@@ -34,7 +34,7 @@
 
   <body>
     # block content
-    <div id="content" class="ticket">
+    <div id="content" class="${resource.realm}">
       <h1>${tag_("Change History for %(name)s",
             name='<a href="%s">%s</a>'|safe %
                  (url or url_of(resource), name or name_of(resource)))}

@@ -17,11 +17,14 @@
       ${_("Components")}
       # endblock admintitle
     </title>
+    # block head
+    ${ super() }
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#complist").addSelectAllCheckboxes();
       });
     </script>
+    # endblock head
   </head>
 
   <body>

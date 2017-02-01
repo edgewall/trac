@@ -36,7 +36,7 @@
         <div>
           <input type="checkbox" id="hidenoduedate" name="show"
                  value="noduedate"${
-               {'checked': 'noduedate' in show}}/>
+               {'checked': 'noduedate' in show}|htmlattr}/>
           <label for="hidenoduedate">${
             _("Hide milestones with no due date")}</label>
         </div>

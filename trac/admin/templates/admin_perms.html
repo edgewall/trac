@@ -17,6 +17,8 @@
       ${_("Permissions")}
       # endblock admintitle
     </title>
+    # block head
+    ${ super() }
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         // Add group toggling behavior to row label.
@@ -29,6 +31,7 @@
           .attr({"title": _("Toggle all")});
       });
     </script>
+    # endblock head
   </head>
 
   <body>

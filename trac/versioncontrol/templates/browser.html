@@ -86,7 +86,7 @@
       #     set path_links = none if repo_index else path_links
       <h1>
         #   if repo_index:
-        <span class="pathentry">Default Repository</span>
+        <span class="pathentry">${_("Default Repository")}</span>
         #   endif
         #   include 'path_links.html'
       </h1>
@@ -285,7 +285,7 @@
       # endif
 
       # if repo and repo.repositories:
-      <h1>${_("Repository Index")}</h1>
+      <h1 id="repoindex">${_("Repository Index")}</h1>
       #   with repoindex = 'repoindex'
       #     include 'repository_index.html'
       #   endwith
