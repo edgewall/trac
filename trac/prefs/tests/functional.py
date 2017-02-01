@@ -112,7 +112,7 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/5765
         Unable to turn off 'Enable access keys' in Preferences
         """
-        self._tester.go_to_preferences("Keyboard Shortcuts")
+        self._tester.go_to_preferences("User Interface")
         tc.formvalue('userprefs', 'accesskeys', True)
         tc.submit()
         tc.find('name="accesskeys".*checked="checked"')
