@@ -16,9 +16,8 @@
 import pkg_resources
 import re
 
-from genshi.builder import tag
-
 from trac.util.concurrency import ThreadLocal, threading
+from trac.util.html import tag
 from trac.util.text import cleandoc
 
 
@@ -403,3 +402,21 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
 
     def get_negotiated_locale(preferred_locales):
         return None
+
+
+# For template engines:
+
+def s_gettext(message, **kwargs):
+    """A version suitable for trans blocks in Template, which also
+    squeezes white-space.
+    """
+    return gettext(' '.join(message.split()), **kwargs)
+
+functions = {
+    '_': gettext,
+    'dgettext': dgettext,
+    'dngettext': dngettext,
+    'gettext': s_gettext,
+    'ngettext': ngettext,
+    'tag_': tag_,
+}

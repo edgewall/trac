@@ -116,10 +116,10 @@ var babel = new function() {
      * three new methods on the window object: _, gettext and ngettext
      */
     install: function() {
-      window._ = window.gettext = function() {
+      window.j_ = window._ = window.jgettext = window.gettext = function() {
         return merged.gettext.apply(merged, arguments);
       };
-      window.ngettext = function(singular, plural, n) {
+      window.jngettext = window.ngettext = function(singular, plural, n) {
         return merged.ngettext.apply(merged, arguments);
       };
       return this;
