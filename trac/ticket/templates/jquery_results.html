@@ -101,7 +101,7 @@
       #     if 'TICKET_VIEW' in perm(ticket_context.resource):
       <tr class="${classes(
                  loop.cycle('odd', 'even'),
-                 'prio' + (result.priority_value or ''),
+                 'prio' + (result._priority_value or ''),
                  added='added' in result,
                  changed='changed' in result,
                  removed='removed' in result)}">

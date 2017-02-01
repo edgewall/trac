@@ -68,7 +68,11 @@
               input = $("#propertyform input[name=cc_update]").val([]);
             }
             input.change();
-            $(this).closest("li").remove();
+            // Remove the revert button
+            if ($(this).closest("tbody").children("tr").length === 1)
+              $(this).closest(".trac-change-panel").remove();
+            else
+              $(this).closest("tr").remove();
             return false;
           });
         }
@@ -81,15 +85,11 @@
           var items = $(reply);
           // Update ticket box
           $("#ticket").replaceWith(items.filter('#ticket'));
-          // Unthread, unrevert and update changelog
-          if (!$('#trac-comments-oldest').prop('checked'))
-            $('#trac-comments-oldest').click().change();
-          $("#changelog").replaceWith(items.filter("#changelog"));
-          if (!$('#trac-show-property-changes-toggle').prop('checked'))
-            $('#trac-show-property-changes-toggle').click()
-               .prop('checked', false);
-          if (!$('#trac-show-comments-toggle').prop('checked'))
-            $('#trac-show-comments-toggle').click().prop('checked', false);
+          // Replaces content of #changelog, without recreating it
+          $("#changelog").empty().append(items.filter("#changelog").contents());
+          // Apply comments order and "Show" preferences
+          applyCommentsOrder(
+            $('#prefs input[name="trac-comments-order"]:checked').val());
           // Show warning
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
@@ -179,7 +179,7 @@
       #   endif
 
       <div${{'style': 'display: none' if not changes}|htmlattr}>
-        <div style="position: relative">
+        <div class="trac-noscript" style="position: relative">
           <form id="prefs" method="get" action="${href.prefs()}"
                 style="position: absolute; right: 0">
             <div id="trac-comments-order">
@@ -258,8 +258,7 @@
                 <col class="th" /><col class="td" />
                 # if can_modify or can_create:
                 <tr>
-                  <th><label for="field-summary">${
-                      _("Summary:")}</label></th>
+                  <th><label for="field-summary">${_("Summary:")}</label></th>
                   <td class="fullrow" colspan="3">
                     <input type="text" id="field-summary" name="field_summary"${
                          {'class': 'trac-autofocus' if not ticket.exists and
@@ -407,7 +406,8 @@
                     <input type="text" id="field-${field.name}"
                            title="${field.format_hint}"
                            name="field_${field.name}" value="${field.edit}"
-                           class="trac-${field.format}picker"/>
+                           class="trac-${'date' if field.format == 'date' else
+                                         'datetime'}picker"/>
                     ## jinjacheck: "ID field- already defined" OK
                     #       else:
                     ##        # Special case for Cc: field

@@ -90,21 +90,21 @@
 
   # if show_buttons:
   <div class="trac-ticket-buttons">
-    # if 'cnum' in change and can_edit_comment:
-    <form id="edit-comment-${cnum}" method="get" action="#comment:${cnum}">
-      <div class="inlinebuttons">
-        <input type="hidden" name="cnum_edit" value="${cnum}"/>
-        <input type="submit" value="${captioned_button('✎', _('Edit'))}"
-               title="${_('Edit comment %(cnum)s', cnum=cnum)}" />
-      </div>
-    </form>
-    # endif
     # if 'cnum' in change and can_append:
     <form id="reply-to-comment-${cnum}" method="get" action="#comment">
       <div class="inlinebuttons">
         <input type="hidden" name="replyto" value="${cnum}"/>
         <input type="submit" value="${captioned_button('↳', _('Reply'))}"
                title="${_('Reply to comment %(cnum)s', cnum=cnum)}" />
+      </div>
+    </form>
+    # endif
+    # if 'cnum' in change and can_edit_comment:
+    <form id="edit-comment-${cnum}" method="get" action="#comment:${cnum}">
+      <div class="inlinebuttons">
+        <input type="hidden" name="cnum_edit" value="${cnum}"/>
+        <input type="submit" value="${captioned_button('✎', _('Edit'))}"
+               title="${_('Edit comment %(cnum)s', cnum=cnum)}" />
       </div>
     </form>
     # endif

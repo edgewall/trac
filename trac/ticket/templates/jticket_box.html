@@ -120,10 +120,11 @@
            }|htmlattr}>
         #   if field:
         #     set value = ticket[field.name]
-        #     if 'dateinfo' in field:
-        ${pretty_dateinfo(field.dateinfo, field.format)}
-        #     elif 'rendered' in field:
+        #     if 'rendered' in field:
         ${field.rendered}
+        #     elif field.type == 'time':
+        ${pretty_dateinfo(value, field.format,
+                          dateonly=field.format != 'relative') if value}
         #     elif field.type == 'text' and field.format == 'wiki':
         ${wiki_to_oneliner(context, value) if value}
         #     elif field.type == 'textarea' and field.format == 'wiki':

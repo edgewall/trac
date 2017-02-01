@@ -32,9 +32,6 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         initializeFilters();
-      # if batch_modify:
-        initializeBatch();
-      # endif
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
@@ -130,20 +127,24 @@
                           # if field.type == 'select':
                           <select name="${n_field_name}">
 
-                            # macro render_options(field_name, options, option_labels=none)
+                            # macro render_options(field_name, options)
                             #   for option in options:
-                            <option${{'value': option,
-                                      'selected': option == constraint_value
-                                     }|htmlattr}>${
-                              option_labels[loop.index0] if option_labels else
-                              option
-                              }</option>
+                            #     if field_name == 'owner':
+                            #         set opt_name = option.name
+                            #         set opt_value = option.value
+                            #     else:
+                            #         set opt_name = option
+                            #         set opt_value = option
+                            #     endif
+                            <option${{'value': opt_value,
+                                      'selected': opt_value == constraint_value
+                                     }|htmlattr}>${opt_name}
+                            </option>
                             #   endfor
                             # endmacro
 
                             <option></option>
-                            ${render_options(field.name, field.options,
-                                             field.option_labels)}
+                            ${render_options(field.name, field.options)}
                             # for ogroup in field.optgroups if ogroup.options:
                             <optgroup label="${ogroup.label}">
                               ${render_options(field.name, ogroup.options)}
