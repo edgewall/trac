@@ -14,16 +14,24 @@
 from __future__ import absolute_import
 
 import os
-import unittest
 from pkg_resources import parse_version
-
-from genshi.core import Stream, TEXT
-from genshi.input import HTMLParser
+from pprint import pformat
+import re
+import unittest
 
 try:
+    # Note: if trac/mimeview/tests is in sys.path, then the absolute
+    #       import will try to load this pygments.py file again, which is bad.
+    import os, sys
+    dir = os.path.dirname(__file__)
+    if dir in sys.path:
+        sys.path.remove(dir)
+
     import pygments
     have_pygments = True
-except ImportError:
+except ImportError, e:
+    from trac.util.text import exception_to_unicode
+    print exception_to_unicode(e, True)
     have_pygments = False
 
 from trac.mimeview.api import LineNumberAnnotator, Mimeview
@@ -48,29 +56,36 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.req = MockRequest(self.env)
         self.context = web_context(self.req)
         pygments_html = open(os.path.join(os.path.split(__file__)[0],
-                                       'pygments.html'))
-        self.pygments_html = Stream(list(HTMLParser(pygments_html, encoding='utf-8')))
+                                          'pygments.data'))
+        self.pygments_html = {}
+        testcase = []
+        for line in pygments_html.readlines():
+            if line.startswith('#'):
+                self.pygments_html[line[1:].strip()] = testcase = []
+            else:
+                testcase.append(unicode(line.rstrip(), 'utf-8'))
 
     def _expected(self, expected_id):
-        return self.pygments_html.select(
-            '//div[@id="%s"]/*|//div[@id="%s"]/text())' %
-            (expected_id, expected_id))
+        return self.pygments_html[expected_id]
 
     def _test(self, expected_id, result):
-        expected = unicode(self._expected(expected_id))
-        result = unicode(result)
-        #print("\nE: " + repr(expected))
-        #print("\nR: " + repr(result))
-        expected, result = expected.splitlines(), result.splitlines()
+        expected = self._expected(expected_id)
+        result = unicode(result).splitlines()
+        # print("\nE: " + expected_id + "\n" + pformat(expected))
+        # print("\nR: " + expected_id + "\n" + pformat(result))
+        self.maxDiff = None
+        def split(s):
+            sp = re.split('(>)', s)
+            return [a + b for (a, b) in zip(sp[0::2], sp[1::2])]
         for exp, res in zip(expected, result):
-            self.assertEqual(exp, res)
+            self.assertEqual(split(exp), split(res))
         self.assertEqual(len(expected), len(result))
 
     def test_python_hello(self):
         """
         Simple Python highlighting with Pygments (direct)
         """
-        result = self.pygments.render(self.context, 'text/x-python', """
+        result = self.pygments.render(self.context, 'text/x-python', """\
 def hello():
         return "Hello World!"
 """)
@@ -218,7 +233,7 @@ if (class_exists('MyClass')) {
         result = self.pygments.render(self.context, 'text/x-python',
                                       '\n\n\n\n')
         self.assertTrue(result)
-        t = "".join(r[1] for r in result if r[0] is TEXT)
+        t = result
 
         self.assertEqual("\n\n\n\n", t)
 

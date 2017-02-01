@@ -1,0 +1,91 @@
+# python_hello
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
+# python_hello_pygments_2.1plus
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
+# python_hello_mimeview
+<div class="code"><pre>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
+</pre></div>
+# python_hello_mimeview_pygments_2.1plus
+<div class="code"><pre>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
+</pre></div>
+# python_with_lineno_1
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td><span class="k">print</span> <span class="s">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="k">print</span> <span class="s">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_lineno_1_pygments_2.1plus
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td><span class="k">print</span> <span class="s1">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s2">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="k">print</span> <span class="s1">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_lineno_2:
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="k">print</span> <span class="s">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L5"><a href="#a-L5">5</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L6"><a href="#a-L6">6</a></th><td><span class="k">print</span> <span class="s">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_lineno_2_pygments_2.1plus
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="k">print</span> <span class="s1">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L5"><a href="#a-L5">5</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s2">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L6"><a href="#a-L6">6</a></th><td><span class="k">print</span> <span class="s1">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_lineno_and_markups
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="b-L3"><a href="#b-L3">3</a></th><td><span class="k">print</span> <span class="s">&#39;this is a python sample&#39;</span>
+</td></tr><tr class="hilite"><th id="b-L4"><a href="#b-L4">4</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr class="hilite"><th id="b-L5"><a href="#b-L5">5</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="b-L6"><a href="#b-L6">6</a></th><td><span class="k">print</span> <span class="s">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_lineno_and_markups_pygments_2.1plus
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="b-L3"><a href="#b-L3">3</a></th><td><span class="k">print</span> <span class="s1">&#39;this is a python sample&#39;</span>
+</td></tr><tr class="hilite"><th id="b-L4"><a href="#b-L4">4</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr class="hilite"><th id="b-L5"><a href="#b-L5">5</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s2">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="b-L6"><a href="#b-L6">6</a></th><td><span class="k">print</span> <span class="s1">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_invalid_arguments_1
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td><span class="k">print</span> <span class="s">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="k">print</span> <span class="s">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_invalid_arguments_1_pygments_2.1plus
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td><span class="k">print</span> <span class="s1">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s2">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td><span class="k">print</span> <span class="s1">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_invalid_arguments_2
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="d-L1"><a href="#d-L1">1</a></th><td><span class="k">print</span> <span class="s">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="d-L2"><a href="#d-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="d-L3"><a href="#d-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="d-L4"><a href="#d-L4">4</a></th><td><span class="k">print</span> <span class="s">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# python_with_invalid_arguments_2_pygments_2.1plus
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="d-L1"><a href="#d-L1">1</a></th><td><span class="k">print</span> <span class="s1">&#39;this is a python sample&#39;</span>
+</td></tr><tr><th id="d-L2"><a href="#d-L2">2</a></th><td><span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="o">+</span><span class="mi">3</span>
+</td></tr><tr><th id="d-L3"><a href="#d-L3">3</a></th><td><span class="n">z</span> <span class="o">=</span> <span class="s2">&quot;this is a string&quot;</span>
+</td></tr><tr><th id="d-L4"><a href="#d-L4">4</a></th><td><span class="k">print</span> <span class="s1">&#39;this is the end of the python sample&#39;</span>
+</td></tr></tbody></table></div>
+# pygments_lexer_options
+<div class="wiki-code"><div class="code"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">class_exists</span><span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$myclass</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div></div>
+# pygments_lexer_arguments
+<div class="wiki-code"><div class="code"><pre><span class="k">if</span> <span class="p">(</span><span class="nx">class_exists</span><span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$myclass</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div></div>
+# pygments_lexer_arguments_override_options
+<div class="wiki-code"><div class="code"><pre><span class="k">if</span> <span class="p">(</span><span class="nb">class_exists</span><span class="p">(</span><span class="s1">&#39;MyClass&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$myclass</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div></div>

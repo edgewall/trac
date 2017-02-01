@@ -13,10 +13,12 @@
 from __future__ import absolute_import
 
 import os
-import pygments
 import re
 from datetime import datetime
 from pkg_resources import resource_filename
+from StringIO import StringIO
+
+import pygments
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.styles import get_all_styles, get_style_by_name
@@ -28,12 +30,10 @@ from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
 from trac.util import get_pkginfo, lazy
 from trac.util.datefmt import http_date, localtz
+from trac.util.html import Markup
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
-
-from genshi import QName, Stream
-from genshi.core import Attrs, START, END, TEXT
 
 __all__ = ['PygmentsRenderer']
 
@@ -248,53 +248,9 @@ class PygmentsRenderer(Component):
         if context:
             lexer_options.update(context.get_hint('lexer_options', {}))
         lexer = get_lexer_by_name(lexer_name, **lexer_options)
-        return GenshiHtmlFormatter().generate(lexer.get_tokens(content))
+        out = StringIO()
+        HtmlFormatter(nowrap=True).format(lexer.get_tokens(content), out)
+        return Markup(out.getvalue())
 
     def _lexer_alias_to_name(self, alias):
         return self._lexer_alias_name_map.get(alias, alias)
-
-
-class GenshiHtmlFormatter(HtmlFormatter):
-    """A Pygments formatter subclass that generates a Python stream instead
-    of writing markup as strings to an output file.
-    """
-
-    def _chunk(self, tokens):
-        """Groups tokens with the same CSS class in the token stream
-        and yields them one by one, along with the CSS class, with the
-        values chunked together."""
-
-        last_class = None
-        text = []
-        for ttype, value in tokens:
-            c = self._get_css_class(ttype)
-            if c == 'n':
-                c = ''
-            if c == last_class:
-                text.append(value)
-                continue
-
-            # If no value, leave the old <span> open.
-            if value:
-                yield last_class, u''.join(text)
-                text = [value]
-                last_class = c
-
-        if text:
-            yield last_class, u''.join(text)
-
-    def generate(self, tokens):
-        pos = None, -1, -1
-        span = QName('span')
-        class_ = QName('class')
-
-        def _generate():
-            for c, text in self._chunk(tokens):
-                if c:
-                    attrs = Attrs([(class_, c)])
-                    yield START, (span, attrs), pos
-                    yield TEXT, text, pos
-                    yield END, span, pos
-                else:
-                    yield TEXT, text, pos
-        return Stream(_generate())
