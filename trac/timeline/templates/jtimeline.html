@@ -33,17 +33,17 @@
 
       <form id="prefs" method="get" action="">
         <div>
-          # set fromdate
+          # set fromdate_input
           <input type="text" id="fromdate" class="trac-datepicker" size="10"
                  name="from" value="${format_date(fromdate)}" />
           # endset
-          # set daysback
+          # set daysback_input
           <input type="text" size="3" name="daysback" value="${daysback}" />
           # endset
-          # set authors
+          # set authors_input
           <input type="text" size="16" name="authors" value="${authors}" />
           # endset
-          # trans fromdate = fromdate|safe, daysback = daysback|safe, authors = authors|safe
+          # trans fromdate = fromdate_input|safe, daysback = daysback_input|safe, authors = authors_input|safe
           <label>View changes from ${fromdate}</label> <br />
           <label>going back ${daysback} days</label><br />
           <label>by author ${authors}</label>
