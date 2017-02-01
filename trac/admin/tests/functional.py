@@ -119,8 +119,8 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
                                      'disabled')
             self._tester.go_to_admin("Basic Settings")
             tc.find(r'<option value="TimelineModule">TimelineModule</option>')
-            tc.find(r'<span class="hint">TimelineModule is not a valid '
-                    r'IRequestHandler or is not enabled.</span>')
+            tc.find(r'<span class="hint">\s*TimelineModule is not a valid '
+                    r'IRequestHandler or is not enabled.\s*</span>')
             tc.go(self._tester.url)
             tc.find(r'<h1>Configuration Error</h1>')
             tc.find(r'Cannot find an implementation of the '
@@ -137,14 +137,14 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
             self._tester.go_to_admin("Basic Settings")
             tc.find(r'<option value="BatchModifyModule">BatchModifyModule'
                     r'</option>')
-            tc.find(r'<span class="hint">BatchModifyModule is not a valid '
-                    r'IRequestHandler or is not enabled.</span>')
+            tc.find(r'<span class="hint">\s*BatchModifyModule is not a valid '
+                    r'IRequestHandler or is not enabled.\s*</span>')
             tc.formvalue('modbasic', 'default_handler', 'BatchModifyModule')
             tc.submit()  # Invalid value should not be replaced on submit
             tc.find(r'<option value="BatchModifyModule">BatchModifyModule'
                     r'</option>')
-            tc.find(r'<span class="hint">BatchModifyModule is not a valid '
-                    r'IRequestHandler or is not enabled.</span>')
+            tc.find(r'<span class="hint">\s*BatchModifyModule is not a valid '
+                    r'IRequestHandler or is not enabled.\s*</span>')
             tc.go(self._tester.url)
             tc.find(r'<h1>Configuration Error</h1>')
             tc.find(r'<code>BatchModifyModule</code> is not a valid default '
@@ -161,7 +161,7 @@ class TestLoggingNone(FunctionalTwillTestCaseSetup):
         tc.find('trac.log')
         tc.formvalue('modlog', 'log_type', 'none')
         tc.submit()
-        tc.find('selected="selected">None</option')
+        tc.find('selected="selected" value="none">None</option')
 
 
 class TestLoggingAuthorization(AuthorizationTestCaseSetup):
@@ -181,7 +181,7 @@ class TestLoggingToFile(FunctionalTwillTestCaseSetup):
         tc.formvalue('modlog', 'log_file', 'trac.log2')
         tc.formvalue('modlog', 'log_level', 'INFO')
         tc.submit()
-        tc.find('selected="selected">File</option')
+        tc.find('selected="selected" value="file">File</option')
         tc.find('id="log_file".*value="trac.log2"')
         tc.find('selected="selected">INFO</option>')
 
@@ -195,7 +195,7 @@ class TestLoggingToFileNormal(FunctionalTwillTestCaseSetup):
         tc.formvalue('modlog', 'log_file', 'trac.log')
         tc.formvalue('modlog', 'log_level', 'DEBUG')
         tc.submit()
-        tc.find('selected="selected">File</option')
+        tc.find('selected="selected" value="file">File</option')
         tc.find('id="log_file".*value="trac.log"')
         tc.find('selected="selected">DEBUG</option>')
 
@@ -249,7 +249,7 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
             tc.find("The subject someuser was not added to the "
                     "group authenticated because the group has "
                     "TICKET_CHGPROP permission and users cannot "
-                    "grant permissions they don't possess.")
+                    "grant permissions they don&#39;t possess.")
         finally:
             self._tester.login('admin')
             self._tester.go_to_admin("Permissions")
