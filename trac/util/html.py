@@ -380,7 +380,7 @@ class Fragment(object):
         def __iter__(self):
             """Genshi compatibility layer.
 
-            :deprecated: this will be in Trac 1.5.1.
+            :deprecated: this will be removed in Trac 1.5.1.
             """
             yield TEXT, Markup(self), (None, -1, -1)
 

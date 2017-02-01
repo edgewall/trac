@@ -1233,10 +1233,6 @@ class Chrome(Component):
         req.chrome.update({'early_links': links, 'early_scripts': scripts,
                            'early_script_data': script_data,
                            'links': {}, 'scripts': [], 'script_data': {}})
-        # TODO (Jinja2): I get the feeling the late links logic will
-        #                have to be revisited... <head> should use the
-        #                early_*, <body> the late_*
-        # TODO (1.3.2) clean this up...
         jdata.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
