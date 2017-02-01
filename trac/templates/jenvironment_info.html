@@ -12,15 +12,15 @@
 ## Display system information.
 
 {# Arguments:
- - systeminfo: the output of `Environment.get_systeminfo`.
+ - system_info: the output of `Environment.get_systeminfo`.
  - plugins: the output of `get_plugin_info`.
  - config: the output of `get_configinfo`.
 #}
-# if systeminfo or plugins or config:
+# if system_info or plugins or config:
 <div id="environmentinfo">
   <hr />
 
-  # if systeminfo:
+  # if system_info:
   <div id="systeminfo">
     <script type="text/javascript">//<![CDATA[
       jQuery(document).ready(function ($) {
@@ -37,7 +37,7 @@
     <table class="listing">
       <thead><tr><th>${_("Package")}</th><th>${_("Version")}</th></tr></thead>
       <tbody>
-        # for name, value in systeminfo:
+        # for name, value in system_info:
         <tr>
           <th>${name}</th>
           <td>${value}</td>

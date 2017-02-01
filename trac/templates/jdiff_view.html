@@ -97,9 +97,6 @@
           <em class="multi">${_("(multiple changes)")}</em>
           # else:
           ${authorinfo(change.author)}
-          #   if show_ip_addresses and 'ipnr' in change:
-          <span class="ipnr">${_("IP: %(ipnr)s", ipnr=change.ipnr)}</span>
-          #   endif
           # endif
         </dd>
         <dt class="property message">${_("Comment:")}</dt>

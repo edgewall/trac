@@ -72,10 +72,7 @@
                    title="${_("View this version")}">${item.version}</a>
               </td>
               <td class="date">${pretty_dateinfo(item.date, dateonly=True)}</td>
-              <td class="author"
-                  ${{'title': _('IP-Address: %(ipnr)s', ipnr=item.ipnr)
-                              if show_ip_addresses and item.ipnr}|htmlattr}>${
-                authorinfo(item.author)}</td>
+              <td class="author">${authorinfo(item.author)}</td>
               <td class="comment">
                 ${wiki_to_oneliner(context.child(resource), item.comment,
                                    shorten=true)}
