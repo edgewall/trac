@@ -13,11 +13,27 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
+import re
 import unittest
 
 from trac.core import TracError
+from trac.test import Mock
 from trac.util import presentation
 
+
+class FiltersTestCase(unittest.TestCase):
+    def test_htmlattr(self):
+        self.assertEqual(
+            (' autocomplete="on" checked="checked" class="my list"'
+             ' id="list-42"'
+             ' style="border-radius: 3px; background: #f7f7f7"'),
+            presentation.htmlattr_filter(
+                Mock(autoescape=False),
+                {'class': {'my': 1, 'list': True, 'empty': False},
+                 'missing': None, 'checked': 1, 'selected': False,
+                 'autocomplete': True, 'id': 'list-%d' % 42,
+                 'style': {'border-radius': '3px',
+                           'background': '#f7f7f7'}}))
 
 class ToJsonTestCase(unittest.TestCase):
 
@@ -71,6 +87,7 @@ class PaginatorTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(presentation))
+    suite.addTest(unittest.makeSuite(FiltersTestCase))
     suite.addTest(unittest.makeSuite(ToJsonTestCase))
     suite.addTest(unittest.makeSuite(PaginatorTestCase))
     return suite

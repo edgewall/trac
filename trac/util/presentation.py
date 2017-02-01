@@ -16,52 +16,199 @@
 tasks such as grouping or pagination.
 """
 
-from json import dumps
+from json import JSONEncoder
+from datetime import datetime
 from math import ceil
 import re
 
+from jinja2 import (Markup, Undefined, contextfilter, evalcontextfilter,
+                    escape as escape_quotes)
+from jinja2.filters import make_attrgetter
+from jinja2.utils import soft_unicode
+from jinja2._compat import iteritems
+
 from trac.core import TracError
+from .datefmt import to_utimestamp
+from .html import Fragment, classes, html_attribute, styles, tag
+from .text import javascript_quote
 
 __all__ = ['captioned_button', 'classes', 'first_last', 'group', 'istext',
            'prepared_paginate', 'paginate', 'Paginator']
 __no_apidoc__ = 'prepared_paginate'
+
+
+def jinja2_update(jenv):
+    """Augment a Jinja2 environment with filters, tests and global functions
+    defined in this module.
+
+    """
+    jenv.filters.update(
+        flatten=flatten_filter,
+        groupattr=groupattr_filter,
+        htmlattr=htmlattr_filter,
+        max=max_filter,
+        mix=min_filter,
+        trim=trim_filter,
+    )
+    jenv.tests.update(
+        greaterthan=is_greaterthan,
+        greaterthanorequal=is_greaterthanorequal,
+        lessthan=is_lessthan,
+        lessthanorequal=is_lessthanorequal,
+        not_equalto=is_not_equalto,
+        not_in=is_not_in,
+        text=istext,
+    )
+    jenv.globals.update(
+        classes=classes,
+        first_last=first_last,
+        group=group,
+        istext=istext,
+        paginate=paginate,
+        separated=separated,
+        styles=styles,
+        tag=tag,
+        to_json=to_json,
+    )
+
+
+# -- Jinja2 custom filters
+
+@evalcontextfilter
+def htmlattr_filter(_eval_ctx, d, autospace=True):
+    """Create an SGML/XML attribute string based on the items in a dict.
+
+    If the dict itself is `none` or `undefined`, it returns the empty
+    string. ``d`` can also be an iterable or a mapping, in which case
+    it will be converted to a ``dict``.
+
+    All values that are neither `none` nor `undefined` are
+    automatically escaped.
+
+    For HTML attributes like `'checked'` and `'selected'`, a truth
+    value will be converted to the key value itself. For others it
+    will be `'true'` or `'on'`. For `'class'`, the `classes`
+    processing will be applied.
+
+    Example:
+
+    .. sourcecode:: html+jinja
+
+        <ul${{'class': {'my': 1, 'list': True, 'empty': False},
+              'missing': none, 'checked': 1, 'selected': False,
+              'autocomplete': True, 'id': 'list-%d'|format(variable),
+              'style': {'border-radius': '3px' if rounded,
+                        'background': '#f7f7f7'}
+             }|htmlattr}>
+        ...
+        </ul>
+
+    Results in something like this:
+
+    .. sourcecode:: html
+
+        <ul class="my list" id="list-42" checked="checked" autocomplete="on"
+            style="border-radius: 3px; background: #f7f7f7">
+        ...
+        </ul>
+
+    As you can see it automatically prepends a space in front of the item
+    if the filter returned something unless the second parameter is false.
+
+    Adapted from Jinja2's builtin ``do_xmlattr`` filter.
+
+    """
+    if not d:
+        return ''
+    d = d if isinstance(d, dict) else dict(d)
+    # Note: at some point, switch to
+    #       https://www.w3.org/TR/html-markup/syntax.html#syntax-attr-empty
+    attrs = []
+    for key in sorted(d):
+        val = d[key]
+        val = html_attribute(key, None if isinstance(val, Undefined) else val)
+        if val is not None :
+            attrs.append(u'%s="%s"' % (key, val))
+    rv = u' '.join(attrs)
+    if autospace and rv:
+        rv = u' ' + rv
+    if _eval_ctx.autoescape:
+        rv = Markup(rv)
+    return rv
+
+
+def max_filter(seq, default=None):
+    """Returns the max value from the sequence."""
+    if len(seq):
+        return max(seq)
+    return default
+
+def min_filter(seq, default=None):
+    """Returns the min value from the sequence."""
+    if len(seq):
+        return min(seq)
+    return default
+
+
+def trim_filter(value, what=None):
+    """Strip leading and trailing whitespace or other specified character.
+
+    Adapted from Jinja2's builtin ``trim`` filter.
+    """
+    return soft_unicode(value).strip(what)
+
+def flatten_filter(value):
+    """Combine incoming sequences in one."""
+    seq = []
+    for s in value:
+        seq.extend(s)
+    return seq
+
+
+# -- Jinja2 custom tests
+
+def is_not_equalto(a, b):
+    return a != b
+
+def is_greaterthan(a, b):
+    return a > b
+
+def is_greaterthanorequal(a, b):
+    return a >= b
+
+def is_lessthan(a, b):
+    return a < b
+
+def is_lessthanorequal(a, b):
+    return a <= b
+
+def is_in(a, b):
+    return a in b
+
+def is_not_in(a, b):
+    return a not in b
+
+# Note: see which of the following should become Jinja2 filters
 
 def captioned_button(req, symbol, text):
     """Return symbol and text or only symbol, according to user preferences."""
     return symbol if req.session.get('ui.use_symbols') \
         else u'%s %s' % (symbol, text)
 
-def classes(*args, **kwargs):
-    """Helper function for dynamically assembling a list of CSS class names
-    in templates.
-
-    Any positional arguments are added to the list of class names. All
-    positional arguments must be strings:
-
-    >>> classes('foo', 'bar')
-    u'foo bar'
-
-    In addition, the names of any supplied keyword arguments are added if they
-    have a truth value:
-
-    >>> classes('foo', bar=True)
-    u'foo bar'
-    >>> classes('foo', bar=False)
-    u'foo'
-
-    If none of the arguments are added to the list, this function returns
-    `None`:
-
-    >>> classes(bar=False)
-    """
-    classes = list(filter(None, args)) + [k for k, v in kwargs.items() if v]
-    if not classes:
-        return None
-    return u' '.join(classes)
 
 def first_last(idx, seq):
     """Generate ``first`` or ``last`` or both, according to the
     position `idx` in sequence `seq`.
+
+    In Jinja2 templates, rather use:
+
+    .. sourcecode:: html+jinja
+
+       <li ${{'class': {'first': loop.first, 'last': loop.last}}|htmlattr}>
+
+    This is less error prone, as the sequence remains implicit and
+    therefore can't be wrong.
+
     """
     return classes(first=idx == 0, last=idx == len(seq) - 1)
 
@@ -114,9 +261,22 @@ def group(iterable, num, predicate=None):
         yield tuple(buf)
 
 
+@contextfilter
+def groupattr_filter(_eval_ctx, iterable, num, attr, *args, **kwargs):
+    """Similar to `group`, but as an attribute filter."""
+    attr_getter = make_attrgetter(_eval_ctx.environment, attr)
+    try:
+        name = args[0]
+        args = args[1:]
+        test_func = lambda item: _eval_ctx.environment.call_test(name, item,
+                                                                 args, kwargs)
+    except LookupError:
+        test_func = bool
+    return group(iterable, num, lambda item: test_func(attr_getter(item)))
+
+
 def istext(text):
     """`True` for text (`unicode` and `str`), but `False` for `Markup`."""
-    from genshi.core import Markup
     return isinstance(text, basestring) and not isinstance(text, Markup)
 
 def prepared_paginate(items, num_items, max_per_page):
@@ -304,10 +464,19 @@ def separated(items, sep=',', last=None):
 _js_quote = {c: '\\u%04x' % ord(c) for c in '&<>'}
 _js_quote_re = re.compile('[' + ''.join(_js_quote) + ']')
 
+class TracJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Undefined):
+            return ''
+        elif isinstance(o, datetime):
+            return to_utimestamp(o)
+        elif isinstance(o, Fragment):
+            return '"%s"' % javascript_quote(unicode(o))
+        return JSONEncoder.default(self, o)
 
 def to_json(value):
     """Encode `value` to JSON."""
     def replace(match):
         return _js_quote[match.group(0)]
-    text = dumps(value, sort_keys=True, separators=(',', ':'))
+    text = TracJSONEncoder(sort_keys=True, separators=(',', ':')).encode(value)
     return _js_quote_re.sub(replace, text)
