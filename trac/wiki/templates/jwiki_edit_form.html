@@ -1,0 +1,117 @@
+{# Copyright (C) 2009-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+This software consists of voluntary contributions made by many
+individuals. For the exact contribution history, see the revision
+history and logs, available at http://trac.edgewall.org/.
+#}
+
+# import "jmacros.html" as jmacros with context
+
+<form id="edit" class="mod" action="${href.wiki(page.name)}" method="post">
+  <fieldset${{'class': classes(sidebyside=sidebyside)}|htmlattr}>
+    ${jmacros.form_token_input()}
+    <input type="hidden" name="from_editor" value="1" />
+    <input type="hidden" name="action" value="edit" />
+    <input type="hidden" name="version" value="${page.version}" />
+    <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos"
+           value="${scroll_bar_pos}" />
+    <div id="rows">
+      # if not sidebyside:
+      <label for="editrows">${_("Adjust edit area height:")}</label>
+      <select size="1" name="editrows" id="editrows" tabindex="43">
+        # for rows in range(8, 42, 4):
+        <option${{'value': rows,
+                  'selected': to_unicode(rows) == edit_rows
+                 }|htmlattr}>${rows}</option>
+        # endfor
+      </select>
+      # endif
+      <label for="sidebyside"
+             title="${_("Selecting and pressing 'Preview'
+                         enters a two-column [edit|preview] mode")}">
+        ${_("Edit side-by-side")}
+      </label>
+      <input type="checkbox" name="sidebyside" id="sidebyside" ${
+           {'checked': sidebyside}|htmlattr}/>
+    </div>
+    <p><textarea id="text"
+                 class="${classes('wikitext', 'trac-autofocus',
+                                  'trac-fullwidth',
+                                  'trac-resizable' if not sidebyside)}"
+                 name="text" cols="80" rows="${edit_rows}">
+${page.text}</textarea>
+    </p>
+    <div id="help">
+      # trans href_wf = href.wiki('WikiFormatting'), href_w = href.wiki('TracWiki')
+
+      <strong>Note:</strong>
+      See <a href="${href_wf}">WikiFormatting</a> and
+      <a href="${href_w}">TracWiki</a> for help on editing wiki
+      content.
+
+      # endtrans
+    </div>
+  </fieldset>
+
+  <fieldset id="changeinfo">
+    <legend>${_("Change information")}</legend>
+    <div id="changeinfo1">
+      # if authname == 'anonymous':
+      <div class="field">
+        <label>${_("Your email or username:")}<br />
+          <input id="author" type="text" class="trac-fullwidth" name="author"
+                 value="${author}" />
+        </label>
+        # if author == 'anonymous':
+        <p class="hint">
+          # set attrs = {'href': href.prefs(), 'class': 'trac-target-new'}
+          # trans attrs = attrs|htmlattr
+
+          E-mail address and name can be saved in the
+          <a ${attrs}>Preferences</a>.
+
+          # endtrans
+        </p>
+        # endif
+      </div>
+      # endif
+      <div class="field">
+        <label>${_("Comment about this change (optional):")}<br />
+          <input id="comment" type="text" class="trac-fullwidth" name="comment"
+                 value="${comment}" />
+        </label>
+      </div>
+    </div>
+    # if show_readonly_checkbox and 'WIKI_ADMIN' in perm(page.resource):
+    <div id="changeinfo2" class="options">
+      <label><input type="checkbox" name="readonly" id="readonly"${
+                  {'checked': page.readonly}|htmlattr}/>
+        ${_("Page is read-only")}
+      </label>
+    </div>
+    # endif
+  </fieldset>
+
+  <div class="buttons">
+    # if action == 'collision':
+    <input type="submit" name="preview" value="${_('Preview')}"
+           disabled="disabled" />&nbsp;
+    <input type="submit" name="merge" value="${_('Merge changes')}"
+           ${accesskey("r")}/>&nbsp;
+    <input type="submit" name="save" value="${_('Submit changes')}"
+           disabled="disabled" />&nbsp;
+    # else:
+    <input type="submit" name="preview" value="${_('Preview Page')}"
+           ${accesskey("p")}/>&nbsp;
+    <input type="submit" name="diff" value="${_('Review Changes')}"
+           ${accesskey("r")}/>&nbsp;
+    <input type="submit" id="save" name="save" class="trac-disable-on-submit"
+           value="${_('Submit changes')}" />&nbsp;
+    # endif
+    <input type="submit" name="cancel" value="${_('Cancel')}" />
+  </div>
+</form>

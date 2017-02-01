@@ -19,8 +19,6 @@
 import pkg_resources
 import re
 
-from genshi.builder import tag
-
 from trac.attachment import AttachmentModule, Attachment
 from trac.config import IntOption
 from trac.core import *
@@ -31,12 +29,13 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_int, get_reporter_id
 from trac.util.datefmt import from_utimestamp, to_utimestamp
+from trac.util.html import tag
 from trac.util.text import shorten_line
 from trac.util.translation import _, tag_
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.api import HTTPBadRequest, IRequestHandler
-from trac.web.chrome import (Chrome, INavigationContributor,
-                             ITemplateProvider, add_ctxtnav, add_link,
+from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
+                             accesskey, add_ctxtnav, add_link,
                              add_notice, add_script, add_stylesheet,
                              add_warning, prevnext_nav, web_context)
 from trac.wiki.api import IWikiPageManipulator, WikiSystem, validate_page_name
@@ -82,11 +81,12 @@ class WikiModule(Component):
     def get_navigation_items(self, req):
         if 'WIKI_VIEW' in req.perm(self.realm, 'WikiStart'):
             yield ('mainnav', 'wiki',
-                   tag.a(_("Wiki"), href=req.href.wiki(), accesskey=1))
+                   tag.a(_("Wiki"), href=req.href.wiki(),
+                         accesskey=accesskey(req, 1)))
         if 'WIKI_VIEW' in req.perm(self.realm, 'TracGuide'):
             yield ('metanav', 'help',
                    tag.a(_("Help/Guide"), href=req.href.wiki('TracGuide'),
-                         accesskey=6))
+                         accesskey=accesskey(req, 6)))
 
     # IPermissionRequestor methods
 
@@ -714,7 +714,7 @@ class WikiModule(Component):
             'templates': templates,
             'version': version,
             'higher': higher, 'related': related,
-            'resourcepath_template': 'wiki_page_path.html',
+            'resourcepath_template': 'jwiki_page_path.html',
         })
         add_script(req, 'common/js/folding.js')
         return 'wiki_view.html', data, None
