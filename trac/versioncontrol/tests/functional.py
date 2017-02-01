@@ -168,11 +168,12 @@ class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
         tc.formvalue('trac-addrepos', 'name', name)
         tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
         tc.submit()
+        # Jinja2 tc.find('The repository &#34;%s&#34; has been added.' % name)
         tc.find('The repository "%s" has been added.' % name)
         tc.formvalue('trac-addrepos', 'name', name)
         tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
         tc.submit()
-        tc.find('The repository "%s" already exists.' % name)
+        tc.find('The repository &#34;%s&#34; already exists.' % name)
         tc.notfind(internal_error)
 
 
@@ -191,15 +192,17 @@ class RegressionTestTicket11186Alias(FunctionalTwillTestCaseSetup):
         tc.formvalue('trac-addrepos', 'name', target)
         tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % target)
         tc.submit()
+        # Jinja2 tc.find('The repository &#34;%s&#34; has been added.' % target)
         tc.find('The repository "%s" has been added.' % target)
         tc.formvalue('trac-addalias', 'name', name)
         tc.formvalue('trac-addalias', 'alias', target)
         tc.submit()
+        # Jinja2 tc.find('The alias &#34;%s&#34; has been added.' % name)
         tc.find('The alias "%s" has been added.' % name)
         tc.formvalue('trac-addalias', 'name', name)
         tc.formvalue('trac-addalias', 'alias', target)
         tc.submit()
-        tc.find('The alias "%s" already exists.' % name)
+        tc.find('The alias &#34;%s&#34; already exists.' % name)
         tc.notfind(internal_error)
 
 
@@ -242,7 +245,7 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
         tc.url(self._tester.url + '/admin/versioncontrol/repository/' + names[2])
         tc.formvalue('edit', 'name', names[0])
         tc.submit('save')
-        tc.find('The repository "%s" already exists.' % names[0])
+        tc.find('The repository &#34;%s&#34; already exists.' % names[0])
         tc.notfind(internal_error)
 
 
@@ -275,6 +278,7 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
         tc.formvalue('trac-addrepos', 'name', name)
         tc.formvalue('trac-addrepos', 'dir', dir)
         tc.submit('add_repos')
+        # Jinja2 tc.find('The repository &#34;%s&#34; has been added.' % name)
         tc.find('The repository "%s" has been added.' % name)
 
         # Save unmodified form and redirect back to listing page

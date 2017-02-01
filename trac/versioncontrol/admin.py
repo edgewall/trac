@@ -14,13 +14,12 @@
 import os.path
 import sys
 
-from genshi.builder import tag
-
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
 from trac.config import ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import as_bool, is_path_below
+from trac.util.html import tag
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printerr, printout
 from trac.util.translation import _, ngettext, tag_
@@ -337,9 +336,12 @@ class RepositoryAdminPanel(Component):
                                                     reponame in db_repos)
                         for (reponame, info) in all_repos.iteritems()}
         types = sorted([''] + rm.get_supported_types())
-        data.update({'types': types,
-                     'default_type': rm.default_repository_type,
-                     'repositories': repositories})
+        data.update(
+            {'types': types,
+             'default_type': rm.default_repository_type,
+             'repositories': repositories,
+             'can_add_alias': any('alias' not in info
+                                  for info in repositories.itervalues())})
 
         return 'admin_repositories.html', data
 
