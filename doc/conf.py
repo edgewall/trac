@@ -31,6 +31,12 @@ from datetime import datetime
 
 from trac.util import get_pkginfo
 
+try:
+    from pygments.lexers.templates import DjangoLexer
+    html_jinja_lexer = DjangoLexer()
+except ImportError:
+    html_jinja_lexer = None
+
 pkg_info = get_pkginfo(sys.modules['trac'])
 
 # General substitutions.
@@ -364,3 +370,5 @@ def setup(app):
 
     # ifconfig variables
     app.add_config_value('devel', True, '')
+    if html_jinja_lexer:
+        app.add_lexer('html+jinja', html_jinja_lexer)
