@@ -1,0 +1,75 @@
+{# Copyright (C) 2006-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+# extends "jlayout.html"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block title
+    About Trac
+    ${ super() }
+    # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="about">
+
+      <a id="trac-logo" class="logo" href="http://trac.edgewall.org/">
+        <img src="${chrome.htdocs_location}trac_banner.png"
+             alt="Trac: Integrated SCM &amp; Project Management" />
+      </a>
+      <h1>About Trac</h1>
+      <p>
+        # trans
+
+        Trac is a web-based software project management and bug/issue
+        tracking system emphasizing ease of use and low ceremony.
+        It provides an integrated Wiki, an interface to version control
+        systems, and a number of convenient ways to stay on top of events
+        and changes within a project.
+
+        # endtrans
+      </p>
+      <p>
+        # trans
+
+        Trac is distributed under the modified BSD License.<br />
+        The complete text of the license can be found
+        <a href="http://trac.edgewall.org/wiki/TracLicense">online</a>
+        as well as in the <code>COPYING</code> file included in the
+        distribution.
+
+        # endtrans
+      </p>
+      <a id="python-logo" class="logo" href="http://www.python.org/">
+        <img src="${chrome.htdocs_location}python.png" alt="python powered" />
+      </a>
+      <p>
+        # trans
+
+        Please visit the Trac open source project:
+        <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a>
+
+        # endtrans
+      </p>
+      <p class="copyright">Copyright &copy; 2003-2015
+        <a href="http://www.edgewall.org/">Edgewall Software</a>
+      </p>
+
+      # include "jenvironment_info.html"
+
+    </div>
+  </body>
+  ${ super() }
+  # endblock content
+</html>

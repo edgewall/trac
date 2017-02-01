@@ -19,15 +19,14 @@
 
 import re
 
-from genshi.builder import tag
-
 from trac.config import get_configinfo
 from trac.core import *
 from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
+from trac.util.html import tag
 from trac.util.translation import _
 from trac.web.api import IRequestHandler
-from trac.web.chrome import Chrome, INavigationContributor
+from trac.web.chrome import Chrome, INavigationContributor, accesskey
 
 
 class AboutModule(Component):
@@ -45,7 +44,8 @@ class AboutModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'about',
-               tag.a(_("About Trac"), href=req.href.about(), accesskey=9))
+               tag.a(_("About Trac"), href=req.href.about(),
+                     accesskey=accesskey(req, 9)))
 
     # IPermissionRequestor methods
 
