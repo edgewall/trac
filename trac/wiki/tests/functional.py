@@ -15,12 +15,11 @@
 import os
 import unittest
 
-from genshi.builder import tag
-
 from trac.mimeview.rst import has_docutils
 from trac.tests.contentgen import random_sentence, random_unique_camel
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 from trac.util import create_file, get_pkginfo
+from trac.util.html import tag
 
 
 class TestWiki(FunctionalTwillTestCaseSetup):
@@ -75,7 +74,7 @@ class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
 
         self._tester.go_to_wiki(name)
         tc.find("Attach another file")
-        tc.find('Attachments <span class="trac-count">\(1\)</span>')
+        tc.find('Attachments[ \n]+<span class="trac-count">\(1\)</span>')
         tc.find(filename)
         tc.find('Download all attachments as:\s+<a rel="nofollow" '
                 'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
@@ -88,8 +87,8 @@ class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
         env.config.set('components', plugin_name + '.*', 'enabled')
         env.config.save()
         create_file(os.path.join(env.plugins_dir, plugin_name + '.py'), """\
-from genshi.builder import tag
 from trac.core import Component, implements
+from trac.util.html import tag
 from trac.util.translation import tag_
 from trac.wiki.api import IWikiPageManipulator
 
@@ -132,10 +131,10 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
         self._tester.edit_wiki_page(pagename)
         tc.follow(r"\bHistory\b")
         tc.url(self._tester.url + r'/wiki/%s\?action=history' % pagename)
-        version_link = '<td class="version">[ \t\n]*' \
-                       '<a href="/wiki/%(pagename)s\?version=%%(version)s" ' \
-                       'title="View this version">%%(version)s[ \t\n]*</a>' \
-                       % {'pagename': pagename}
+        version_link = ('<td class="version">[ \n]*'
+                        '<a href="/wiki/%(pagename)s\?version=%%(version)s"'
+                        '[ \n]*title="View this version">%%(version)s[ \n]*</a>'
+                        % {'pagename': pagename})
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
         tc.formvalue('history', 'old_version', '1')
@@ -157,10 +156,10 @@ class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
         page_name = self._tester.create_wiki_page()
         permission_policies = \
             self._testenv.get_config('trac', 'permission_policies')
-        readonly_checkbox = '<input type="checkbox" name="readonly" ' + \
-                            'id="readonly" />'
-        attach_button = '<input type="submit" id="attachfilebutton" ' + \
-                        'value="Attach.+file" />'
+        readonly_checkbox = (
+            '<input type="checkbox" name="readonly" id="readonly"/>')
+        attach_button = (
+            '<input type="submit" id="attachfilebutton" value="Attach.+file"/>')
         try:
             # User without WIKI_ADMIN can't set a page read-only
             tc.formvalue('modifypage', 'action', 'edit')
@@ -321,7 +320,7 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
         self._tester.go_to_wiki(pagename)
         tc.notfind("code-block")
         tc.find('print')
-        tc.find('"123"')
+        tc.find('&quot;123&quot;')
 
 
 class RegressionTestTicket8976(FunctionalTwillTestCaseSetup):
@@ -376,11 +375,11 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/10274"""
         self._tester.go_to_wiki('WikiStart/..')
-        tc.find("Invalid Wiki page name 'WikiStart/..'")
+        tc.find("Invalid Wiki page name &#39;WikiStart/..&#39;")
         self._tester.go_to_wiki('../WikiStart')
-        tc.find("Invalid Wiki page name '../WikiStart'")
+        tc.find("Invalid Wiki page name &#39;../WikiStart&#39;")
         self._tester.go_to_wiki('WikiStart/./SubPage')
-        tc.find("Invalid Wiki page name 'WikiStart/./SubPage'")
+        tc.find("Invalid Wiki page name &#39;WikiStart/./SubPage&#39;")
 
 
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
@@ -431,7 +430,7 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
             tc.go(self._tester.url + '/wiki/%s?action=edit' % page_name)
             tc.find("Error: Forbidden")
             tc.find("WIKI_CREATE privileges are required to perform this "
-                    "operation on %s. You don't have the required permissions."
+                    "operation on %s. You don&#39;t have the required permissions."
                     % page_name)
 
             # Check that page can be created when user has WIKI_CREATE
@@ -446,7 +445,7 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
             tc.go(self._tester.url + '/wiki/%s?action=edit' % page_name)
             tc.find("Error: Forbidden")
             tc.find("WIKI_MODIFY privileges are required to perform this "
-                    "operation on %s. You don't have the required permissions."
+                    "operation on %s. You don&#39;t have the required permissions."
                     % page_name)
 
             # Check that page can be edited when user has WIKI_MODIFY
@@ -472,7 +471,7 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
             tc.notfind("Revert to this version")
             tc.go(self._tester.url + '/wiki/%s?action=edit&version=1' % page_name)
             tc.find("WIKI_MODIFY privileges are required to perform this "
-                    "operation on %s. You don't have the required permissions."
+                    "operation on %s. You don&#39;t have the required permissions."
                     % page_name)
 
         finally:

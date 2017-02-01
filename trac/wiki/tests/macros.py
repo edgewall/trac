@@ -84,7 +84,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(source:« test ».png)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB.png"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" title="source:« test ».png" /></a>
 </p>
 ------------------------------
 [[Image(...)]]
@@ -92,157 +92,157 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(source:« test ».png, inline)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB.png"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" title="source:« test ».png" /></a>
 </p>
 ------------------------------
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB.png"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" alt="source:« test ».png" title="source:« test ».png" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" title="source:« test ».png" /></a>
 ============================== intertrac:source: Image, no other arguments
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
 ------------------------------
 <p>
-<img src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" alt="source:« test »" title="source:« test »" />
+<img alt="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" title="source:« test »" />
 </p>
 ============================== source: Image, normal args
 [[Image(source:« test », align=left, title=Test)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" alt="source:« test »" style="float:left" title="Test" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB" style="padding:0; border:none"><img alt="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" style="float:left" title="Test" /></a>
 </p>
 ============================== source: Image, size arg
 [[Image(source:« test », 30%)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB"><img width="30%" alt="source:« test »" title="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB" style="padding:0; border:none"><img alt="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" title="source:« test »" width="30%" /></a>
 </p>
 ============================== source: Image, keyword alignment
 [[Image(source:« test », right)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/browser/%C2%AB%20test%C2%A0%C2%BB"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" alt="source:« test »" style="float:right" title="source:« test »" /></a>
+<a href="/browser/%C2%AB%20test%C2%A0%C2%BB" style="padding:0; border:none"><img alt="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" style="float:right" title="source:« test »" /></a>
 </p>
 ============================== http: Image, nolink
 [[Image(http://www.edgewall.com/gfx/shredder_« test ».png, nolink)]]
 ------------------------------
 <p>
-<img src="http://www.edgewall.com/gfx/shredder_« test ».png" alt="http://www.edgewall.com/gfx/shredder_« test ».png" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
+<img alt="http://www.edgewall.com/gfx/shredder_« test ».png" src="http://www.edgewall.com/gfx/shredder_« test ».png" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
 </p>
 ============================== http: Image, absolute, many ':'
 [[Image(http://chart.apis.google.com:80/chart?cht=p3&chd=s:hW&chs=250x100&chl=Héllo|Wôrld, title=Google & Charting, link=)]]
 ------------------------------
 <p>
-<img src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" alt="http://chart.apis.google.com:80/chart" title="Google &amp; Charting" />
+<img alt="http://chart.apis.google.com:80/chart" src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" title="Google &amp; Charting" />
 </p>
 ============================== // Image, server-relative
 [[Image(//browser/« test »?format=raw, link=)]]
 ------------------------------
 <p>
-<img src="/browser/« test »?format=raw" alt="/browser/« test »" title="/browser/« test »" />
+<img alt="/browser/« test »" src="/browser/« test »?format=raw" title="/browser/« test »" />
 </p>
 ============================== / Image, project-relative, link to WikiStart
 [[Image(/browser/« test »?format=raw, link=wiki:WikiStart)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="/wiki/WikiStart"><img src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" alt="/browser/« test »" title="/browser/« test »" /></a>
+<a href="/wiki/WikiStart" style="padding:0; border:none"><img alt="/browser/« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" title="/browser/« test »" /></a>
 </p>
 ============================== Strip unicode white-spaces and ZWSPs (#10668)
 [[Image(  ​source:« test ».png　 ​, nolink, 100%　 ​)]]
 ------------------------------
 <p>
-<img width="100%" alt="source:« test ».png" title="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" />
+<img alt="source:« test ».png" src="/browser/%C2%AB%20test%C2%A0%C2%BB.png?format=raw" title="source:« test ».png" width="100%" />
 </p>
 ============================== Attachments on page with ':' characters (#10562)
 [[Image("page:fr":img.png​,nolink)]]
 ------------------------------
 <p>
-<img src="/raw-attachment/wiki/page%3Afr/img.png" alt="image in page:fr" title="image in page:fr" />
+<img alt="image in page:fr" src="/raw-attachment/wiki/page%3Afr/img.png" title="image in page:fr" />
 </p>
 ============================== htdocs: Image, nolink
 [[Image(htdocs:trac_logo.png, nolink)]]
 ------------------------------
 <p>
-<img src="/chrome/site/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+<img alt="trac_logo.png" src="/chrome/site/trac_logo.png" title="trac_logo.png" />
 </p>
 ============================== shared: Image, nolink
 [[Image(shared:trac_logo.png, nolink)]]
 ------------------------------
 <p>
-<img src="/chrome/shared/trac_logo.png" alt="trac_logo.png" title="trac_logo.png" />
+<img alt="trac_logo.png" src="/chrome/shared/trac_logo.png" title="trac_logo.png" />
 </p>
 ==============================
 [[Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=")]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII="><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" /></a>
+<a href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" style="padding:0; border:none"><img alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" /></a>
 </p>
 ==============================
 [[Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=", nolink)]]
 ------------------------------
 <p>
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" />
+<img alt="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" title="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoAQMAAAC2MCouAAAAA1BMVEXLQ0MOAUiXAAAAC0lEQVQIHWMYYQAAAPAAASEIRrcAAAAASUVORK5CYII=" />
 </p>
 ============================== InterWiki
 [[Image(shields:travis/edgewall/trac.svg, link=trac:source:/trunk)]]
 [[Image(travis:edgewall/trac.svg:1.0-stable, link=trac:source:/branches/1.0-stable)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk"><img src="https://img.shields.io/travis/edgewall/trac.svg" alt="travis/edgewall/trac.svg in shields" title="travis/edgewall/trac.svg in shields" /></a>
-<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable"><img src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" alt="edgewall/trac.svg:1.0-stable in travis" title="edgewall/trac.svg:1.0-stable in travis" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/trunk" style="padding:0; border:none"><img alt="travis/edgewall/trac.svg in shields" src="https://img.shields.io/travis/edgewall/trac.svg" title="travis/edgewall/trac.svg in shields" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable" style="padding:0; border:none"><img alt="edgewall/trac.svg:1.0-stable in travis" src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" title="edgewall/trac.svg:1.0-stable in travis" /></a>
 </p>
 ============================== InterWiki, nolink
 [[Image(shields:pypi/dm/trac.svg, nolink)]]
 ------------------------------
 <p>
-<img src="https://img.shields.io/pypi/dm/trac.svg" alt="pypi/dm/trac.svg in shields" title="pypi/dm/trac.svg in shields" />
+<img alt="pypi/dm/trac.svg in shields" src="https://img.shields.io/pypi/dm/trac.svg" title="pypi/dm/trac.svg in shields" />
 </p>
-==============================
+============================== No attachment, nolink
 [[Image(notfound.png, nolink)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;notfound.png&#34; attached to WikiStart" title="No image &#34;notfound.png&#34; attached to WikiStart" />
+<img alt="No image &#34;notfound.png&#34; attached to WikiStart" src="http://assets.example.org/common/attachment.png" title="No image &#34;notfound.png&#34; attached to WikiStart" />
 </p>
-==============================
+============================== No attachment, correct CSS
 [[Image(img.png, margin-bottom=-1)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
+<img alt="No image &#34;img.png&#34; attached to WikiStart" src="http://assets.example.org/common/attachment.png" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
 </p>
-==============================
+============================== No attachment, invalid arg
 [[Image(img.png, margin-bottom=--)]]
 ------------------------------
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>margin-bottom=--</code></strong></div>
 </p>
-==============================
+============================== No attachment, invalid arg 2
 [[Image(img.png, margin-top=--)]]
 ------------------------------
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>margin-top=--</code></strong></div>
 </p>
-==============================
+============================== No attachment, invalid arg 3
 [[Image(img.png, margin=--)]]
 ------------------------------
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>margin=--</code></strong></div>
 </p>
-==============================
+============================== No attachment, invalid arg 3
 [[Image(img.png, margin-left=--)]]
 ------------------------------
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>margin-left=--</code></strong></div>
 </p>
-==============================
+============================== No attachment, invalid arg 4
 [[Image(img.png, margin-right=--)]]
 ------------------------------
 <p>
 <div class="system-message"><strong>Invalid macro argument <code>margin-right=--</code></strong></div>
 </p>
-==============================
+============================== No attachment, invalid arg 5
 [[Image(img.png, border=--)]]
 ------------------------------
 <p>
@@ -262,7 +262,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(wiki:page:img2.png)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img2.png&#34; attached to page" title="No image &#34;img2.png&#34; attached to page" />
+<img alt="No image &#34;img2.png&#34; attached to page" src="http://assets.example.org/common/attachment.png" title="No image &#34;img2.png&#34; attached to page" />
 </p>
 """
 

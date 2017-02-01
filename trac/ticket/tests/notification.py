@@ -1500,15 +1500,15 @@ Security sensitive:  0                           |          Blocking:
 
 class FormatSubjectTestCase(unittest.TestCase):
 
-    custom_template = \
-        "$prefix " \
-        "(${'new' if not changes" \
-        "   else ticket.resolution if ticket.status == 'closed' " \
-        "   else ticket.status if 'status' in changes.fields " \
-        "   else 'commented' if 'comment' in changes.fields " \
-        "                       and changes.fields['comment']['new'] " \
-        "   else 'updated'}) " \
-        "#$ticket.id: $summary" \
+    custom_template = """\
+${prefix} (${
+   'new' if not changes
+   else ticket.resolution if ticket.status == 'closed'
+   else ticket.status if 'status' in changes.fields
+   else 'commented' if 'comment' in changes.fields
+                       and changes.fields['comment']['new']
+   else 'updated'
+}) #${ticket.id}: ${summary}"""
 
 
     def setUp(self):

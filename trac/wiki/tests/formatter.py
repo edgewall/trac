@@ -14,12 +14,21 @@
 import os
 import unittest
 
-from genshi.template import MarkupTemplate
 from trac.core import Component, TracError, implements
-from trac.util.html import html
+from trac.util.html import genshi, html
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki.test import wikisyntax_test_suite
+
+
+# WikiProcessor code block tests should always use PlainTextRenderer
+# and not the PygmentsRenderer, as the latter renders quotes as &quot;
+
+from trac.mimeview.api import PlainTextRenderer
+_old_ratio = PlainTextRenderer.get_quality_ratio
+def override_pygments(self, mimetype):
+    return (10 if mimetype == 'text/plain' else _old_ratio(self, mimetype))
+PlainTextRenderer.get_quality_ratio = override_pygments
 
 
 # We need to supply our own macro because the real macros
@@ -56,20 +65,27 @@ class DivCodeMacro(WikiMacroBase):
 
 
 class DivCodeElementMacro(WikiMacroBase):
-    """A dummy macro returning a Genshi Element, used by the unit test."""
+    """A dummy macro returning an Element, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
-        return html.DIV('Hello World, args = ', content, class_="code")
+        return html.div('Hello World, args = ', content, class_="code")
 
 
 class DivCodeStreamMacro(WikiMacroBase):
     """A dummy macro returning a Genshi Stream, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
-        tmpl = MarkupTemplate("""
-        <div>Hello World, args = $args</div>
-        """)
-        return tmpl.generate(args=content)
+        template = """
+            <div>Hello World, args = ${args}</div>
+            """
+        if genshi:
+            from genshi.template import MarkupTemplate
+            tmpl = MarkupTemplate(template)
+            return tmpl.generate(args=content)
+        else:
+            from trac.util.text import jinja2template
+            tmpl = jinja2template(template.strip())
+            return tmpl.render(args=content)
 
 
 class NoneMacro(WikiMacroBase):
@@ -120,7 +136,7 @@ class SampleResolver(Component):
             module = 'thing'
         except ValueError:
             pass
-        return html.A(label, class_='%s resolver' % kind,
+        return html.a(label, class_='%s resolver' % kind,
                       href=formatter.href(module, target))
 
 
