@@ -568,7 +568,8 @@ h2 .trac-count, h3 .trac-count {
 #info th { font-weight: bold; text-align: left }
 #info td.message { width: 100% }
 #info .message ul { padding: 0; margin: 0 2em }
-#info .message p { margin: 0; padding: 0 }
+#info .message p { margin: .5em 0; padding: 0 }
+#info .message hr { margin: .5em 0; padding: 0 }
 a.trac-diff:after { content: "∆" }
 
 /* Wiki */
