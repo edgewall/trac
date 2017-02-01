@@ -67,33 +67,38 @@ class IRequestHandler(Interface):
     def process_request(req):
         """Process the request.
 
-        Return a `(template_name, data)` pair, where
-        `data` is a dictionary of substitutions for the Jinja2
-        template (the template context, in Jinja2 terms).
+        Return a `(template_name, data)` pair, where `data` is a
+        dictionary of substitutions for the Jinja2 template (the
+        template context, in Jinja2 terms).
 
         Optionally, the return value can also be a `(template_name,
         data, metadata)` triple, where `metadata` is a `dict` with
-        hints for the renderer or the web front-end.
+        hints for the template engine or the web front-end.
+
         Keys supported are:
+
           - `'content_type'`: the mimetype used for content delivery;
             "text/html" is assumed if the key is not present or the
             `metadata` was not specified
-          - `'method'`: the rendering method that will be used by the
-            Jinja2 template engine; a value of `'text'` disables HTML
-            auto-escaping
+
+          - `'text'`: a boolean value indicating whether the Jinja2
+            auto-escaping feature should be deactivated
+            (``text=True``) or not (``text=False``); defaults to
+            ``False``, suitable for generating HTML or XML content
+
+          - `'fragment'`: a boolean value indicating whether the
+            generated content will be used as part of another page
+            (``fragment=True``) or as a stand-alone page
+            (``fragment=False``), the default
+
+          - `'domain'`: a string value indicating the translation
+            domain to which the translated strings in the template
+            belong to
 
         Note that if template processing should not occur, this method
         can simply send the response itself (see `Request` methods)
-        and not return anything.
-
-        For backward compatibility reasons, the pre-Jinja2 return
-        value of a `(template_name, data, content_type)` tuple is
-        still supported. However, using it is a way of signaling that
-        the template is actually a legacy Genshi template.  For the
-        same backward compatibility reasons, returning `(template,
-        data, None)` is taken to be a `content_type` of `None`
-        (i.e. the "text/html" default).  This support will be removed
-        in Trac 1.5.1.
+        and not return anything, as the `Request` methods raise a
+        `RequestDone` exception.
 
         :Since 1.0: Clearsilver templates are no longer supported.
 
@@ -103,7 +108,13 @@ class IRequestHandler(Interface):
            template.
 
         :Since 1.3.2: returns a pair, or a tuple in which the third
-           element is a `dict` instead of a string.
+           element is a `dict` instead of a string like in the old
+           API.  Note that the old API (`(template, data,
+           content_type)` where `content_type` is a string or `None`)
+           is still supported. When used, this means that `template`
+           is a legacy Genshi template. This support for the old API
+           will be removed in Trac 1.5.1, in which `metadata` will
+           always be a `dict` or `None` when specified.
 
         """
 
@@ -131,9 +142,9 @@ class IRequestFilter(Interface):
         """Do any post-processing the request might need
 
         This typically means adding values to the template `data`
-        dictionary, or changing the Jinja2 template or metadata dict.
+        dictionary, or changing the Jinja2 template.
 
-        `data` may be updated in place.
+        `data` and `metdata` may be updated in place.
 
         Always returns a tuple of ``(template, data)`` or ``(template,
         data, metadata)``, even if unchanged.
@@ -144,7 +155,9 @@ class IRequestFilter(Interface):
         happen if the third value of the tuple is a string.
 
         The `method` last parameter is deprecated and is now supposed
-        to be passed via the `metadata` dict.
+        to be passed as `'method'` in the `metadata` dict. Even
+        better, use directly the `'text'` indication (`True` or
+        `False`).
 
         Note that `template`, `data`, `content_type` will be `None` if:
          - called when processing an error page
@@ -161,8 +174,9 @@ class IRequestFilter(Interface):
            `process_request` used the old API (`(template, data,
            content_type)`), the `metadata` parameter passed to
            `post_process_request` will actually be the `content_type`
-           value (`String` or `None`).  This support will be removed
-           in Trac 1.5.1.
+           value (`String` or `None`).  This support for the old API
+           will be removed in Trac 1.5.1, in which `metadata` will
+           always be a `dict` or `None`.
 
         """
 

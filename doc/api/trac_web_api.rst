@@ -17,6 +17,26 @@ stages of the web requests processing pipeline.
 
    See also :extensionpoints:`trac.web.api.IRequestHandler`
 
+.. note ::
+
+   The `IRequestHandler.process_request` method plays a major role
+   during the compatibility period in which both the legacy Genshi
+   templates and the new Jinja2 templates are supported by Trac.
+
+   The return type of `(template_name, data, content_type)` tuple is
+   still supported, and when it is used, it is interpreted as an
+   indication that the template is actually a legacy Genshi template,
+   and not a Jinja2 template.  For the same backward compatibility
+   reasons, returning `(template, data, None)` is interpreted as
+   specifying a `content_type` of `None` (i.e. ending up with the
+   `"text/html"` default).
+
+   This support for legacy Genshi templates will be removed in Trac
+   1.5.1, where only the new API will be supported. At that point, if
+   the third value in the returned tuple is `None`, this will have the
+   same effect as returning only a `(template, data)` pair or
+   `(template, data, {})` triple (i.e. an empty metadata dict).
+
 .. autoclass :: IRequestFilter
    :members:
 

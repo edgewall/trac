@@ -41,7 +41,7 @@ if genshi:
     from genshi.output import DocType
     from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
-from jinja2 import FileSystemLoader, TemplateNotFound
+from jinja2 import FileSystemLoader
 
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import *
@@ -1135,6 +1135,7 @@ class Chrome(Component):
         d['chrome'] = {
             'footer': Markup(footer and translation.gettext(footer))
         }
+
         if req:
             d['chrome'].update(req.chrome)
         else:
@@ -1352,11 +1353,12 @@ class Chrome(Component):
         TODO (1.5.1): merge into render_template
 
         """
-        content_type = text = None
+        content_type = text = domain = None
 
         if metadata:
             content_type = metadata.get('content_type')
             text = metadata.get('text')
+            domain = metadata.get('domain')
             if fragment is False:
                 fragment = metadata.get('fragment')
             if iterable is False:
@@ -1386,24 +1388,25 @@ class Chrome(Component):
         if text is None:
             text = method == 'text'
 
-        jtemplate, jdata = self.prepare_template(filename, data, req, text)
+        template, data = self.prepare_template(filename, data, req, text,
+                                               domain)
 
         # Hack for supporting Genshi stream filters - TODO (1.5.1) remove
         if genshi and self._check_for_stream_filters(req, method, filename,
-                                                     jdata):
-            page = self.render_template_as_string(jtemplate, jdata, text)
+                                                     data):
+            page = self.render_template_as_string(template, data, text)
             return self._filter_jinja_page(req, page, method, filename,
-                                           content_type, jdata,
-                                           fragment, iterable)
+                                           content_type, data, fragment,
+                                           iterable)
 
         if fragment or text:
             if iterable:
-                return self.generate_template_stream(jtemplate, jdata, text,
+                return self.generate_template_stream(template, data, text,
                                                      iterable)
             else:
-                return self.render_template_as_string(jtemplate, jdata, text)
+                return self.render_template_as_string(template, data, text)
 
-        jdata['chrome']['content_type'] = content_type
+        data['chrome']['content_type'] = content_type
 
         doctype = None
         links = req.chrome.get('links')
@@ -1412,14 +1415,14 @@ class Chrome(Component):
         req.chrome.update({'early_links': links, 'early_scripts': scripts,
                            'early_script_data': script_data,
                            'links': {}, 'scripts': [], 'script_data': {}})
-        jdata.setdefault('chrome', {}).update({
+        data.setdefault('chrome', {}).update({
             'late_links': req.chrome['links'],
             'late_scripts': req.chrome['scripts'],
             'late_script_data': req.chrome['script_data'],
         })
 
         try:
-            return self.generate_template_stream(jtemplate, jdata, text,
+            return self.generate_template_stream(template, data, text,
                                                  iterable)
         except Exception as e:
             # restore what may be needed by the error template
@@ -1428,7 +1431,8 @@ class Chrome(Component):
                                'scripts': scripts, 'script_data': script_data})
             raise
 
-    def generate_template_fragment(self, req, filename, data, text=False):
+    def generate_template_fragment(self, req, filename, data, text=False,
+                                   domain=None):
         """Produce content from given template, with minimal data overhead.
 
         See `prepare_template` for the parameter documentation.
@@ -1440,10 +1444,12 @@ class Chrome(Component):
         `Request.send`, see `generate_template_stream` for details.
 
         """
-        jtemplate, jdata = self.prepare_template(filename, data, req, text)
-        return self.generate_template_stream(jtemplate, jdata, text)
+        template, data = self.prepare_template(filename, data, req, text,
+                                               domain)
+        return self.generate_template_stream(template, data, text)
 
-    def prepare_template(self, filename, data, req=None, text=False):
+    def prepare_template(self, filename, data, req=None, text=False,
+                         domain=None):
         """Prepares the rendering of a Jinja2 template.
 
         This loads the template and prepopulates a data `dict` with
@@ -1462,19 +1468,23 @@ class Chrome(Component):
         :rtype: a pair of Jinja2 `Template` and a `dict`.
 
         """
-        jtemplate = self._load_jinja_template(filename, text)
-        jdata = self.populate_data(req, data)
-        return jtemplate, jdata
+        template = self._load_jinja_template(filename, text)
+        if domain:
+            symbols = translation.functions.keys()
+            domain_functions = translation.domain_functions(domain, symbols)
+            data.update(dict(zip(symbols, domain_functions)))
+        data = self.populate_data(req, data)
+        return template, data
 
-    def generate_template_stream(self, jtemplate, jdata, text=False,
+    def generate_template_stream(self, template, data, text=False,
                                  iterable=None):
         """Returns the rendered template in a form that can be "sent".
 
         This will be either a single UTF-8 encoded `str` object, or an
         iterable made of chunks of the above.
 
-        :param jtemplate: the Jinja2 template
-        :type jtemplate: ``jinja2.Template``
+        :param template: the Jinja2 template
+        :type template: ``jinja2.Template``
 
         :param text: in text mode (``True``) the generated bytes will
                      not be sanitized (see `valid_html_bytes`).
@@ -1495,20 +1505,20 @@ class Chrome(Component):
 
         """
         if iterable or iterable is None and self.use_chunked_encoding:
-            stream = jtemplate.stream(jdata)
+            stream = template.stream(data)
             stream.enable_buffering(75) # buffer_size
             return self._iterable_jinja_content(stream, text)
         else:
-            bytes = jtemplate.render(jdata).encode('utf-8')
+            bytes = template.render(data).encode('utf-8')
             if not text:
                 bytes = valid_html_bytes(bytes)
             return bytes
 
-    def render_template_as_string(self, jtemplate, jdata, text=False):
+    def render_template_as_string(self, template, data, text=False):
         """Renders the template as an unicode string.
 
-        :param jtemplate: the Jinja2 template
-        :type jtemplate: ``jinja2.Template``
+        :param template: the Jinja2 template
+        :type template: ``jinja2.Template``
 
         :param text: in text mode (``True``) the generated string
                      will not be wrapped in `Markup`
@@ -1523,7 +1533,7 @@ class Chrome(Component):
         *text* parameter.
 
         """
-        string = jtemplate.render(jdata)
+        string = template.render(data)
         return string if text else Markup(string)
 
     def get_interface_customization_files(self):

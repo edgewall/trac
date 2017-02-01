@@ -13,10 +13,12 @@
 
 """Extra commands for setup.py.
 
-In addition to providing a few extra command classes in `l10n_cmdclass`,
-we also modify the standard `distutils.command.build` and
-`setuptools.command.install_lib` classes so that the relevant l10n commands
-for compiling catalogs are issued upon install.
+We provide a few extra command classes in `l10n_cmdclass` for
+localization tasks.  We also modify the standard commands
+`distutils.command.build` and `setuptools.command.install_lib` classes
+in order to call the l10n commands for compiling catalogs at the right
+time during install.
+
 """
 
 from HTMLParser import HTMLParser
@@ -26,14 +28,13 @@ import os
 import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
 
-from jinja2.ext import babel_extract
+from jinja2.ext import babel_extract as jinja2_extractor
 
 try:
-    import nogenshi
-    from genshi.filters.i18n import extract as extract_html_genshi
-    genshi = True
+    import genshi
+    from genshi.filters.i18n import extract as genshi_extractor
 except ImportError:
-    genshi = extract_html_genshi = None
+    genshi = None
 
 from distutils import log
 from distutils.cmd import Command
@@ -42,23 +43,12 @@ from distutils.errors import DistutilsOptionError
 from setuptools.command.install_lib import install_lib as _install_lib
 
 
-def extract_jinja2(*args, **kwargs):
-    """Extracts translatable texts from templates.
-
-    It filters the output of `jinja2.ext.babel_extract` in order to
-    simplify white-space found translatable texts collected via the
-    ``gettext`` function, which is what the ``trans`` directives do.
-
-    We assume the template function ``gettext`` will do the same
-    before trying to fetch the translation from the catalog.
+def simplify_message(message):
+    """Transforms an extracted messsage (string or tuple) into one in
+    which the repeated white-space has been simplified to a single
+    space.
 
     """
-    for lineno, func, message, comments in babel_extract(*args, **kwargs):
-        if func == 'gettext':
-            message = simplify_message(message)
-        yield lineno, func, message, comments
-
-def simplify_message(message):
     tuple_len = len(message) if isinstance(message, tuple) else 0
     if tuple_len:
         message = message[0]
@@ -291,69 +281,58 @@ try:
         Select <script type="javascript/text"> tags and delegate to
         `extract_javascript`.
         """
-        out = None
-        if fileobj.name:
-            filepath = fileobj.name.replace('\\', '/').rsplit('/', 1)
-            key = filepath[-1][0]
-            if key == 'j':
-                # Jinja2 templates
-                out = io.StringIO()
-                extractor = ScriptExtractor(out)
-                extractor.feed(unicode(fileobj.read(), 'utf-8'))
-                extractor.close()
-                out.seek(0)
-            elif genshi:
-                # Genshi templates - TODO (1.5.1) remove
-                from genshi.core import Stream
-                from genshi.input import XMLParser
-
-                out = io.StringIO()
-                stream = Stream(XMLParser(fileobj))
-                stream = stream.select('//script[@type="text/javascript"]')
-                stream.render(out=out, encoding='utf-8')
-                out.seek(0)
-
-        if out:
-            return extract_javascript(out, keywords, comment_tags, options)
-        return []
+        if not fileobj.name:
+            return []
+        filepath = fileobj.name.replace('\\', '/').rsplit('/', 1)
+        out = io.StringIO()
+        extractor = ScriptExtractor(out)
+        extractor.feed(unicode(fileobj.read(), 'utf-8'))
+        extractor.close()
+        out.seek(0)
+        return extract_javascript(out, keywords, comment_tags, options)
 
 
-    def extract_html(fileobj, keywords, comment_tags, options):
-        """Extract messages from Genshi or Jinja2 templates.
+    def extract_html(fileobj, keywords, comment_tags, options, text=False):
+        """Extracts translatable texts from templates.
 
-        This is only needed as an interim measure, as long as we have both.
+        We simplify white-space found in translatable texts collected
+        via the ``gettext`` function (which is what the ``trans``
+        directives use) and for text in the legacy Genshi templates,
+        otherwise we would have near duplicates (e.g. admin.html,
+        prefs.html).
+
+        We assume the template function ``gettext`` will do the same
+        before trying to fetch the translation from the catalog.
+
         """
         extractor = None
-        if fileobj.name:
-            filepath = fileobj.name.replace('\\', '/').rsplit('/', 1)
-            filename = filepath[-1]
-            key = filename[0]
-            if key == 'j':
-                extractor = extract_jinja2 # Jinja2 HTML template
+        # TODO (1.5.1) remove genshi support
+        if fileobj:
+            if 'xmlns:py="http://genshi.edgewall.org/"' in fileobj.read():
+                if genshi:
+                    if text:
+                        options.update(template_class=
+                                       'genshi.template:NewTextTemplate')
+                    extractor = genshi_extractor
             else:
-                extractor = extract_html_genshi # Genshi template only
-        if extractor:
+                extractor = jinja2_extractor
+            fileobj.seek(0)
             for m in extractor(fileobj, keywords, comment_tags, options):
-                yield m
+                # lineno, func, message, comments = m
+                if m[1] in ('gettext', None):
+                    #   (Jinja2 trans, Genshi)
+                    yield m[0], m[1], simplify_message(m[2]), m[3]
+                else:
+                    yield m
 
     def extract_text(fileobj, keywords, comment_tags, options):
         """Extract messages from Genshi or Jinja2 text templates.
 
         This is only needed as an interim measure, as long as we have both.
         """
-        extractor = None
-        if fileobj.name:
-            filepath = fileobj.name.replace('\\', '/').rsplit('/', 1)
-            filename = filepath[-1]
-            key = filename[0]
-            if key == 'j':
-                extractor = extract_jinja2 # Jinja2 text template
-            else:
-                extractor = extract_html_genshi # Genshi template only
-                options.update(template_class='genshi.template:NewTextTemplate')
-        if extractor:
-            for m in extractor(fileobj, keywords, comment_tags, options):
-                yield m
+        for m in extract_html(fileobj, keywords, comment_tags, options,
+                              text=True):
+            yield m
 
 
     class generate_messages_js(Command):

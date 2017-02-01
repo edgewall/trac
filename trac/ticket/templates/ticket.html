@@ -428,7 +428,8 @@
                       #           else:
                       <label for="field-cc"><em>${field.cc_entry}</em></label>
                       <input type="checkbox" id="field-cc" name="cc_update"${
-                           {'title': _("This checkbox allows you to add or
+                           {'title': gettext(
+                                        "This checkbox allows you to add or
                                         remove yourself from the CC list."),
                             'disabled': field.cc_action is none,
                             'checked': field.cc_update

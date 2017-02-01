@@ -79,7 +79,7 @@ def domain_functions(domain, *symbols):
     if symbols and not isinstance(symbols[0], basestring):
         symbols = symbols[0]
     _functions = {
-      'gettext': gettext_noop,
+      'gettext': s_gettext,
       '_': gettext_noop,
       'N_': _noop,
       'ngettext': ngettext_noop,
@@ -280,7 +280,7 @@ try:
         if symbols and not isinstance(symbols[0], basestring):
             symbols = symbols[0]
         _functions = {
-          'gettext': translations.dgettext,
+          'gettext': s_dgettext,
           '_': translations.dgettext,
           'ngettext': translations.dngettext,
           'tgettext': translations.dtgettext,
@@ -404,17 +404,37 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
         return None
 
 
-# For template engines:
+# White-space simplification of msgids
 
-def s_gettext(message, **kwargs):
-    """A version suitable for trans blocks in Template, which also
-    squeezes white-space.
+def s_dgettext(domain, msgid, **kwargs):
+    """Retrieves translations for "squeezed" messages, in a domain.
+
+    See `s_gettext` for additional details.
+
     """
-    return gettext(' '.join(message.split()), **kwargs)
+    return dgettext(domain, ' '.join(msgid.split()), **kwargs)
+
+def s_gettext(msgid, **kwargs):
+    """Retrieves translations for "squeezed" messages (in default domain).
+
+    Squeezed messages are text blocks in which white-space has been
+    simplified during extraction (see `trac.dist.extract_html`). The
+    catalog contain msgid with minimal whitespace.  As a consequence,
+    the msgid have to be normalized as well at retrieval time
+    (i.e. here).
+
+    This typically happens for trans blocks and gettext functions in
+    Jinja2 templates, as well as all the text extracted from legacy
+    Genshi templates.
+
+    """
+    return gettext(' '.join(msgid.split()), **kwargs)
+
+# TODO (1.3.2) do the same for pluralize (ngettext/dngettext_noop)
 
 functions = {
     '_': gettext,
-    'dgettext': dgettext,
+    'dgettext': s_dgettext,
     'dngettext': dngettext,
     'gettext': s_gettext,
     'ngettext': ngettext,
