@@ -346,9 +346,9 @@ pylint:
 	    trac tracopt
 
 
-templates ?= \
-    $(shell find trac -name "j*.*" | grep /templates/ | grep -v "~" ) \
-    $(shell find tracopt -name "j*.*" | grep /templates/ | grep -v "~" )
+templates ?= $(shell \
+    find $$(find -type d -a -name templates) -mindepth 1 -maxdepth 1 -type f | \
+    grep -v "~" | grep -v README )
 
 jinja:
 	python contrib/jinjachecker.py $(jinjaopts) $(templates)
