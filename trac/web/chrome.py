@@ -1250,16 +1250,16 @@ class Chrome(Component):
 
         .. note::
 
-        If the `text` argument is set to a string instead of a
-        boolean, this corresponds to the legacy API and it will be
-        assumed that you want to load a Genshi template instead of a
-        Jinja2 template.  If *text* is ``'text'`` , a
-        `NewTextTemplate` instance will be created. If it is set to
-        ``None`` or to another string value, a `MarkupTemplate`
-        instance will be created and returned.
+           If the `text` argument is set to a string instead of a
+           boolean, this corresponds to the legacy API and it will be
+           assumed that you want to load a Genshi template instead of
+           a Jinja2 template.  If *text* is ``'text'`` , a
+           `NewTextTemplate` instance will be created. If it is set to
+           ``None`` or to another string value, a `MarkupTemplate`
+           instance will be created and returned.
 
-        This backward compatibility behavior will be removed in Trac
-        1.5.1.
+           This backward compatibility behavior will be removed in
+           Trac 1.5.1.
 
         """
         if text in (True, False):
@@ -1272,8 +1272,6 @@ class Chrome(Component):
 
         Also responsible for initializing the main Jinja2
         `Environment`s on first use.
-
-        .. note::
 
         """
         # TODO (1.5.1) merge in `load_template`
@@ -1305,15 +1303,16 @@ class Chrome(Component):
 
         .. note::
 
-        If the Jinja2 template is not found, this method will try to
-        load a Genshi template instead.
+           If the Jinja2 template is not found, this method will try
+           to load a Genshi template instead.
 
-        Also if ``metadata`` is *not* a dictionary, we assume that it
-        is the ``content_type`` value from the legacy API (a string or
-        `None`) and that a the template will be a Genshi template.
+           Also if ``metadata`` is *not* a dictionary, we assume that
+           it is the ``content_type`` value from the legacy API (a
+           string or `None`) and that a the template will be a Genshi
+           template.
 
-        This backward compatibility behavior will be removed in Trac
-        1.5.1.
+           This backward compatibility behavior will be removed in
+           Trac 1.5.1.
 
         """
         # TODO (1.5.1) merge with _render_jinja_template

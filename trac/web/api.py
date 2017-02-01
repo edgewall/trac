@@ -191,7 +191,7 @@ class ITemplateStreamFilter(Interface):
                  modifications of the rendered page using JavaScript.
                  This interface will be removed in Trac 1.5.1.
 
-    See https://trac.edgewall.org/wiki/TracDev/PortingFromGenshiToJinja#ReplacingITemplateStreamFilter
+    See :teo:`TracDev/PortingFromGenshiToJinja#ReplacingITemplateStreamFilter`
     for details.
 
     """

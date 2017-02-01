@@ -47,12 +47,12 @@ class IAdminPanelProvider(Interface):
         where `template` is the name of the template to use and `data` is
         the data to be passed to the template.
 
-        .. note:
+        .. note::
 
-        When a plugin wants to use a legacy Genshi template instead of
-        a Jinja2 template, it needs to return instead a *triple* of
-        the form `(template, data, None)`, similar to what
-        `IRequestHandler.process_request` does.
+           When a plugin wants to use a legacy Genshi template instead
+           of a Jinja2 template, it needs to return instead a *triple*
+           of the form ``(template, data, None)``, similar to what
+           `.IRequestHandler.process_request` does.
 
         """
 
