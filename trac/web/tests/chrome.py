@@ -15,6 +15,8 @@ import os
 import tempfile
 import unittest
 
+import jinja2
+
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionSystem
@@ -873,6 +875,84 @@ user2 =
                          unicode(author_short))
 
 
+
+class ChromeTemplateRenderingTestCase(unittest.TestCase):
+
+    filename = 'test_chrome.html'
+
+    template = """\
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>${greeting}</h1>
+  </body>
+</html>
+"""
+
+    def setUp(self):
+        self.env = EnvironmentStub(path=mkdtemp())
+        os.mkdir(self.env.templates_dir)
+        filepath = os.path.join(self.env.templates_dir, self.filename)
+        create_file(filepath, self.template)
+        jfilepath = os.path.join(self.env.templates_dir, 'j' + self.filename)
+        create_file(jfilepath, self.template)
+        # TODO (1.3.2) don't save a 'j' file
+        self.chrome = Chrome(self.env)
+
+    def test_load_template(self):
+        t1 = self.chrome.load_template(self.filename)
+        self.assertTrue(isinstance(t1, jinja2.Template))
+        t1_text = self.chrome.load_template(self.filename, text=True)
+        self.assertTrue(isinstance(t1_text, jinja2.Template))
+        # testing template cache
+        t2 = self.chrome.load_template(self.filename)
+        t2_text = self.chrome.load_template(self.filename, text=True)
+        self.assertIs(t1, t2)
+        self.assertIs(t1_text, t2_text)
+        self.assertIsNot(t1, t1_text)
+
+    def test_render_template_as_string(self):
+        t = self.chrome.load_template(self.filename)
+        self.assertIsNotNone(t)
+        t_text = self.chrome.load_template(self.filename, text=True)
+        self.assertIsNotNone(t_text)
+        data = {'greeting': u"Hell&ö"}
+        content = self.chrome.render_template_as_string(t, data)
+        self.assertIsInstance(content, Markup)
+        self.assertEqual(u"""\
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hell&amp;ö</h1>
+  </body>
+</html>""", content)
+        content_text = self.chrome.render_template_as_string(t_text, data,
+                                                             text=True)
+        self.assertFalse(isinstance(content_text, Markup))
+        self.assertIsInstance(content_text, unicode)
+        self.assertEqual(u"""\
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hell&ö</h1>
+  </body>
+</html>""", content_text)
+
+    def test_render_template(self):
+        data = {'greeting': u"Hell&ö"}
+        content = self.chrome.render_template(MockRequest(self.env),
+                                              self.filename, data,
+                                              {'fragment': True})
+        self.assertIsInstance(content, Markup)
+        self.assertEqual(u"""\
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hell&amp;ö</h1>
+  </body>
+</html>""", content)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ChromeTestCase))
@@ -880,6 +960,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(NavigationOrderTestCase))
     suite.addTest(unittest.makeSuite(FormatAuthorTestCase))
     suite.addTest(unittest.makeSuite(AuthorInfoTestCase))
+    suite.addTest(unittest.makeSuite(ChromeTemplateRenderingTestCase))
     return suite
 
 

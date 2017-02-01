@@ -295,7 +295,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         provider.modify_repository('(default)', {'hidden': 'enabled'})
         req = MockRequest(self.env, authname='anonymous',
                           path_info='/browser/')
-        template, data, content_type = self.process_request(req)
+        template, data = self.process_request(req)
         self.assertEqual(None, data['repos'])
         repo_data = data['repo']  # for repository index
         self.assertEqual('allow', repo_data['repositories'][0][0])
@@ -307,7 +307,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         provider = DbRepositoryProvider(self.env)
         provider.modify_repository('(default)', {'hidden': 'enabled'})
         req = MockRequest(self.env, path_info='/browser/blah-blah-file')
-        template, data, content_type = self.process_request(req)
+        template, data = self.process_request(req)
         self.assertEqual('', data['reponame'])
         self.assertEqual('blah-blah-file', data['path'])
 

@@ -878,9 +878,11 @@ class EnvironmentAdmin(Component):
         data = {'env': self.env, 'executable': sys.executable, 'repr': repr}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.' + script)
-            text = Chrome(self.env).render_template_as_string(
-                Chrome(self.env)._load_jinja_template('jdeploy_trac.' + script),
-                data, method='text')
+            chrome = Chrome(self.env)
+            template = chrome.load_template('jdeploy_trac.' + script, text=True)
+            text = chrome.render_template_as_string(template, data, text=True)
+
+            # TODO (1.3.2) remove 'j' and rename templates
             with open(dest, 'w') as out:
                 out.write(text.encode('utf-8'))
 

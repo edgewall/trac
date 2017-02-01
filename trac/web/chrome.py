@@ -1060,28 +1060,63 @@ class Chrome(Component):
             d.update(data)
         return d
 
-    def _load_jinja_template(self, filename):
-        """Retrieves the Jinja2 `Template` corresponding to the given name.
+    def load_template(self, filename, text=False):
+        """Retrieves a template with the given name.
 
-        Also responsible for initializing the main Jinja2
-        `Environment` on first use.
+        This simply loads the template. If you want to make use of the
+        "standard" Trac API for templates, also call `populate_data`,
+        or consider using the shortcut method `prepare_template`
+        instead.
+
+        :param text: in text mode (``True``) XML/HTML auto-escape of
+                     variable expansion is disabled.
 
         .. note::
 
-        This method will be renamed to `load_template` once we remove
-        the Genshi compatibility layer.
+        If the `text` argument is set to a string instead of a
+        boolean, this corresponds to the legacy API and it will be
+        assumed that you want to load a Genshi template instead of a
+        Jinja2 template.  If *text* is ``'text'`` , a
+        `NewTextTemplate` instance will be created. If it is set to
+        ``None`` or to another string value, a `MarkupTemplate`
+        instance will be created and returned.
+
+        This backward compatibility behavior will be removed in Trac
+        1.5.1.
 
         """
+        if text in (True, False):
+            return self._load_jinja_template(filename, text)
+        elif genshi:
+            return self._load_genshi_template(filename, text)
+
+    def _load_jinja_template(self, filename, text=False):
+        """Retrieves the Jinja2 `Template` corresponding to the given name.
+
+        Also responsible for initializing the main Jinja2
+        `Environment`s on first use.
+
+        .. note::
+
+        """
+        # TODO (1.5.1) merge in  `load_template`
         if not self.jenv:
             self.jenv = jinja2env(
                 loader=FileSystemLoader(self.get_all_templates_dirs()),
                 auto_reload=self.auto_reload,
+                autoescape=True,
             )
-            self.jenv.globals.update(self._default_context_data.copy())
-            self.jenv.globals.update(translation.functions)
-            self.jenv.globals.update(unicode=to_unicode)
-            presentation.jinja2_update(self.jenv)
-        return self.jenv.get_template(filename)
+            self.jenv_text = jinja2env(
+                loader=FileSystemLoader(self.get_all_templates_dirs()),
+                auto_reload=self.auto_reload,
+                autoescape=False,
+            )
+            for jenv in self.jenv, self.jenv_text:
+                jenv.globals.update(self._default_context_data.copy())
+                jenv.globals.update(translation.functions)
+                jenv.globals.update(unicode=to_unicode)
+                presentation.jinja2_update(jenv)
+        return (self.jenv_text if text else self.jenv).get_template(filename)
 
     def render_template(self, req, filename, data, metadata=None,
                         fragment=False, iterable=False, method=None):
@@ -1108,9 +1143,8 @@ class Chrome(Component):
         """
         # TODO (1.5.1) merge with _render_jinja_template
         if isinstance(metadata, dict):
-            return self._render_jinja_template(req, filename, data,
-                                               metadata, fragment,
-                                               iterable, method)
+            return self._render_jinja_template(req, filename, data, metadata,
+                                               fragment, iterable, method)
         elif not genshi:
             self.log.error("Genshi template (%s) detected but "
                            "Genshi is not installed", filename)
@@ -1118,9 +1152,8 @@ class Chrome(Component):
                 _("Legacy Genshi template needs the 'genshi' package to be "
                   "installed. Please contact your Trac administrator."))
 
-        return self._render_genshi_template(req, filename, data,
-                                            metadata, fragment,
-                                            iterable, method)
+        return self._render_genshi_template(req, filename, data, metadata,
+                                            fragment, iterable, method)
 
     def _render_jinja_template(self, req, filename, data, metadata=None,
                                fragment=False, iterable=False, method=None):
@@ -1131,9 +1164,7 @@ class Chrome(Component):
 
         The rendering `method` (``'xml'``, ``'xhtml'`` or ``'text'``)
         may be specified directly or can be inferred from the
-        `content_type`.  Note however that Jinja2's autoescape mode
-        gets activated based solely on the `filename` *extension* (see
-        `jinja2env`).
+        `content_type`.
 
         When `fragment` is specified, or `method` is ``'text'``, we
         generate some content which does not need all of the chrome
@@ -1147,13 +1178,14 @@ class Chrome(Component):
         TODO (1.5.1): merge into render_template
 
         """
-        content_type = None
+        content_type = text = None
 
         if metadata:
             content_type = metadata.get('content_type')
-            if fragment is None:
+            text = metadata.get('text')
+            if fragment is False:
                 fragment = metadata.get('fragment')
-            if iterable is None:
+            if iterable is False:
                 iterable = metadata.get('iterable')
             if method is None:
                 method = metadata.get('method')
@@ -1177,22 +1209,25 @@ class Chrome(Component):
                 except KeyError:
                     pass
 
-        jtemplate, jdata = self.prepare_template(filename, data, req)
+        if text is None:
+            text = method == 'text'
+
+        jtemplate, jdata = self.prepare_template(filename, data, req, text)
 
         # Hack for supporting Genshi stream filters - TODO (1.5.1) remove
         if genshi and self._check_for_stream_filters(req, method, filename,
                                                      jdata):
-            page = self.render_template_as_string(jtemplate, jdata, method)
+            page = self.render_template_as_string(jtemplate, jdata, text)
             return self._filter_jinja_page(req, page, method, filename,
                                            content_type, jdata,
                                            fragment, iterable)
 
-        if fragment or method == 'text':
+        if fragment or text:
             if iterable:
-                return self.generate_template_stream(jtemplate, jdata, method,
-                                                     True)
+                return self.generate_template_stream(jtemplate, jdata, text,
+                                                     iterable)
             else:
-                return self.render_template_as_string(jtemplate, jdata, method)
+                return self.render_template_as_string(jtemplate, jdata, text)
 
         jdata['chrome']['content_type'] = content_type
 
@@ -1214,7 +1249,7 @@ class Chrome(Component):
         })
 
         try:
-            return self.generate_template_stream(jtemplate, jdata, method,
+            return self.generate_template_stream(jtemplate, jdata, text,
                                                  iterable)
         except Exception as e:
             # restore what may be needed by the error template
@@ -1223,8 +1258,10 @@ class Chrome(Component):
                                'scripts': scripts, 'script_data': script_data})
             raise
 
-    def generate_template_fragment(self, req, filename, data, method='html'):
+    def generate_template_fragment(self, req, filename, data, text):
         """Produce content from given template, with minimal data overhead.
+
+        See `prepare_template` for the parameter documentation.
 
         Use this when the chrome content used for a full themed HTML
         page generation is not needed (note: doesn't do that for now).
@@ -1233,62 +1270,92 @@ class Chrome(Component):
         `Request.send`, see `generate_template_stream` for details.
 
         """
-        jtemplate, jdata = self.prepare_template(filename, data, req)
-        return self.generate_template_stream(jtemplate, jdata, method)
+        jtemplate, jdata = self.prepare_template(filename, data, req, text)
+        return self.generate_template_stream(jtemplate, jdata, text)
 
-    def prepare_template(self, filename, data, req=None):
-        """Prepares the rendering of a template.
+    def prepare_template(self, filename, data, req=None, text=False):
+        """Prepares the rendering of a Jinja2 template.
 
+        This loads the template and prepopulates a data `dict` with
+        the "standard" Trac API for templates.
+
+        :param req: a `Request` instance (optional)
         :param filename: the name of a Jinja2 template, which must be
                          found in one of the template directories (see
                          `get_templates_dirs`)
         :param data: user specified data dictionary, used to override
                      the default context set from the request *req*
                      (see `populate_data`)
-        :param req: a `Request` instance (optional)
+        :param text: in text mode (``True``) XML/HTML auto-escape of
+                     variable expansion is disabled.
+
         :rtype: a pair of Jinja2 `Template` and a `dict`.
+
         """
-        jtemplate = self._load_jinja_template('j' + filename)
+        jtemplate = self._load_jinja_template('j' + filename, text)
         # TODO (1.3.2) remove the 'j' prefix, rename all Jinja2 templates
         jdata = self.populate_data(req, data)
         return jtemplate, jdata
 
-    def generate_template_stream(self, jtemplate, jdata, method='',
+    def generate_template_stream(self, jtemplate, jdata, text=False,
                                  iterable=None):
         """Returns the rendered template in a form that can be "sent".
 
-        It will be either a single UTF-8 encoded `str` object, or an
+        This will be either a single UTF-8 encoded `str` object, or an
         iterable made of chunks of the above.
 
-        :param method: if not ``'text'``, the generated bytes will be
-                       sanitized (see `valid_html_bytes`)
+        :param jtemplate: the Jinja2 template
+        :type jtemplate: ``jinja2.Template``
+
+        :param text: in text mode (``True``) the generated bytes will
+                     not be sanitized (see `valid_html_bytes`).
 
         :param iterable: determine whether the output should be
                          generated in chunks or as a single `str`; if
                          `None`, the `use_chunked_encoding` property
                          will be used to determine this instead
+
         :rtype: `str` or an iterable of `str`, depending on *iterable*
+
+        .. note:
+
+        Turning off the XML/HTML auto-escape feature for variable
+        expansions has to be disabled when loading the template (see
+        `load_template`), so remember to stay consistent with the
+        *text* parameter.
 
         """
         if iterable or iterable is None and self.use_chunked_encoding:
             stream = jtemplate.stream(jdata)
             stream.enable_buffering(75) # buffer_size
-            return self._jiterable_content(stream, method)
+            return self._iterable_jinja_content(stream, text)
         else:
             bytes = jtemplate.render(jdata).encode('utf-8')
-            if method != 'text':
+            if not text:
                 bytes = valid_html_bytes(bytes)
             return bytes
 
-    def render_template_as_string(self, jtemplate, jdata, method='html'):
+    def render_template_as_string(self, jtemplate, jdata, text=False):
         """Renders the template as an unicode string.
 
-        :rtype: `unicode` if *method* is ``'text'``, `Markup`
-                otherwise.
+        :param jtemplate: the Jinja2 template
+        :type jtemplate: ``jinja2.Template``
+
+        :param text: in text mode (``True``) the generated string
+                     will not be wrapped in `Markup`
+
+        :rtype: `unicode` if *text* is ``True``, `Markup` otherwise.
+
+        .. note:
+
+        Turning off the XML/HTML auto-escape feature for variable
+        expansions has to be disabled when loading the template (see
+        `load_template`), so remember to stay consistent with the
+        *text* parameter.
 
         """
         string = jtemplate.render(jdata)
-        return string if method == 'text' else Markup(string)
+        return string if text else Markup(string)
 
     def get_interface_customization_files(self):
         """Returns a dictionary containing the lists of files present in the
@@ -1319,20 +1386,29 @@ class Chrome(Component):
             }
         return files
 
-    def _jiterable_content(self, stream, method):
+    def iterable_content(self, stream, text=False, **kwargs):
         """Generate an iterable object which iterates `str` instances
-        from the given generator.
+        from the given stream instance.
 
-        :param method: the serialization method; can be either "xml",
-                       "xhtml", "html", "text", or a custom serializer
-                       class
+        :param text: in text mode (``True``) XML/HTML auto-escape of
+                     variable expansion is disabled.
 
-        .. note:: will be renamed to ``iterable_content`` once we
-                  remove the Genshi compatibility layer.
+        .. note:
+
+        If text is a string, this corresponds to the old API and we
+        assume to have a Genshi stream. This backward compatibility
+        behavior will be removed in Trac 1.5.1.
 
         """
+        if text in (True, False):
+            return self._iterable_jinja_content(stream, text)
+        elif genshi:
+            return self._iterable_genshi_content(stream, text, **kwargs)
+
+    def _iterable_jinja_content(self, stream, text):
+        # TODO (1.5.1) merge with iterable_content
         try:
-            if method == 'text':
+            if text:
                 for chunk in stream:
                     yield chunk.encode('utf-8')
             else:
@@ -1340,7 +1416,8 @@ class Chrome(Component):
                     yield valid_html_bytes(chunk.encode('utf-8'))
         except Exception as e:
             self.log.error('Jinja2 %s error while rendering %s template %s',
-                           e.__class__.__name__, method,
+                           e.__class__.__name__,
+                           'text' if text else 'XML/HTML',
                            exception_to_unicode(e, traceback=True))
 
     # E-mail formatting utilities
@@ -1520,14 +1597,7 @@ class Chrome(Component):
         # DocType for 'text/html' output
         html_doctype = DocType.XHTML_STRICT
 
-        def load_template(self, filename, method=None):
-            """Retrieve a Template and optionally preset the template data.
-
-            Also, if the optional `method` argument is set to
-            ``'text'``, a `NewTextTemplate` instance will be created
-            instead of a `MarkupTemplate`.
-
-            """
+        def _load_genshi_template(self, filename, method=None):
             if not self.templates:
                 self.templates = TemplateLoader(
                     self.get_all_templates_dirs(), auto_reload=self.auto_reload,
@@ -1587,7 +1657,7 @@ class Chrome(Component):
                     except KeyError:
                         pass
 
-            template = self.load_template(filename, method=method)
+            template = self.load_template(filename, method)
 
             # Populate data with request dependent data
             data = self.populate_data(req, data, self._get_genshi_data())
@@ -1658,7 +1728,7 @@ class Chrome(Component):
                                       location=location))
                 raise
 
-        def iterable_content(self, stream, method, **kwargs):
+        def _iterable_genshi_content(self, stream, method, **kwargs):
             """Generate an iterable object which iterates `str` instances
             from the given stream instance.
 

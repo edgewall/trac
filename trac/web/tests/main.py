@@ -520,7 +520,8 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.env = EnvironmentStub(path=mkdtemp())
         os.mkdir(self.env.templates_dir)
         filepath = os.path.join(self.env.templates_dir,
-                                TestStubRequestHandler.filename)
+                                'j' + TestStubRequestHandler.filename)
+        # TODO (1.3.2) remove 'j'
         create_file(filepath, TestStubRequestHandler.template)
 
     def tearDown(self):
@@ -623,7 +624,7 @@ class HdfdumpTestCase(unittest.TestCase):
         self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch,
                           self.req)
-        self.assertIn("{'name': 'value'}\n",
+        self.assertIn("{'name': 'value'}",
                       self.req.response_sent.getvalue())
         self.assertEqual('text/plain;charset=utf-8',
                          self.req.headers_sent['Content-Type'])

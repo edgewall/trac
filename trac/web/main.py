@@ -442,7 +442,7 @@ class RequestDispatcher(Component):
         elif len(resp) == 4:
             metadata = resp[2]
             method = resp[3]
-        if method:
+        if method and isinstance(metadata, dict):
             metadata['method'] = method
         nbargs = len(resp)
         for f in reversed(self.filters):
