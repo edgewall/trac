@@ -12,6 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from datetime import datetime, timedelta
+import io
 import unittest
 
 from trac.core import TracError
@@ -23,6 +24,7 @@ from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
+from trac.util.html import HTMLTransform
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 
@@ -405,7 +407,25 @@ class TicketModuleTestCase(unittest.TestCase):
             template, data = self.ticket_module.process_request(req)
             content = Chrome(self.env).render_template(req, template, data,
                                                       {'fragment': True})
-            return content.strip() ## FIXME NOW
+            # select('//td[@headers="h_timefield"') replacement
+            class TimefieldExtractor(HTMLTransform):
+                pick_next_text = False
+                value = ''
+                def handle_starttag(self, tag, attrs):
+                    if tag == 'td':
+                        for name, value in attrs:
+                            if name == 'headers' and value == 'h_timefield':
+                                self.pick_next_text = True
+                def handle_data(self, data):
+                    if self.pick_next_text:
+                        self.value += data
+                def handle_endtag(self, tag):
+                    if self.pick_next_text:
+                        self.pick_next_text = False
+
+            extractor = TimefieldExtractor(io.BytesIO())
+            extractor.feed(content.encode('utf-8'))
+            return extractor.value.decode('utf-8').strip()
 
         self._insert_ticket(summary='Time fields')
         self.assertEqual('', timefield_text())
