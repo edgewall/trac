@@ -28,10 +28,10 @@ class TestSyntaxHighlightingPreferences(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Set preferences for syntax highlighting."""
         self._tester.go_to_preferences("Syntax Highlighting")
-        tc.find('<option value="trac" selected="selected">')
+        tc.find('<option selected="selected" value="trac">')
         tc.formvalue('userprefs', 'style', 'Emacs')
         tc.submit()
-        tc.find('<option value="emacs" selected="selected">')
+        tc.find('<option selected="selected" value="emacs">')
 
 
 def functionalSuite(suite=None):
