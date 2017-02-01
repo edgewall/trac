@@ -328,9 +328,12 @@ define HELP_code
  ---------------- Code checking tasks
 
   pylint              check code with pylint
+  jinja               check Jinja2 templates
 
 endef
 export HELP_code
+
+.PHONY: pylint jinja
 
 pylint:
 	pylint \
@@ -341,6 +344,14 @@ pylint:
 	    --disable=W0401,W0511,W0603,W0613,W0614,W0621,W0622,W0703 \
 	    --disable=C0103,C0111 \
 	    trac tracopt
+
+
+templates ?= \
+    $(shell find trac -name "j*.*" | grep /templates/ | grep -v "~" ) \
+    $(shell find tracopt -name "j*.*" | grep /templates/ | grep -v "~" )
+
+jinja:
+	python contrib/jinjachecker.py $(jinjaopts) $(templates)
 
 
 # ----------------------------------------------------------------------------
