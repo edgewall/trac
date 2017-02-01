@@ -17,6 +17,7 @@
 #         Alec Thomas <alec@swapoff.org>
 
 from trac.core import *
+from trac.util.html import Fragment, tag
 from trac.util.presentation import classes
 from trac.util.translation import _
 
@@ -436,7 +437,6 @@ def render_resource_link(env, context, resource, format='default'):
     in order to directly generate rich content. Otherwise, the textual output
     is wrapped in a link to the resource.
     """
-    from genshi.builder import Fragment, tag
     link = get_resource_description(env, resource, format, context=context)
     if not isinstance(link, Fragment):
         missing = resource_exists(env, resource) is False

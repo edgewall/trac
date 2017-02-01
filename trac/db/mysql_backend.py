@@ -20,8 +20,6 @@ import sys
 import types
 from contextlib import closing
 
-from genshi.core import Markup
-
 from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.config import Option
@@ -29,6 +27,7 @@ from trac.db.api import ConnectionBase, DatabaseManager, IDatabaseConnector, \
                         get_column_names, parse_connection_uri
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import as_int, get_pkginfo
+from trac.util.html import Markup
 from trac.util.compat import close_fds
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _

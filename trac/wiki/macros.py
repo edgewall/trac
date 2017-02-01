@@ -22,9 +22,6 @@ import io
 import os
 import re
 
-from genshi.builder import tag
-from genshi.core import Markup
-
 from trac.core import *
 from trac.resource import (
     Resource, ResourceNotFound, get_resource_name, get_resource_summary,
@@ -32,7 +29,7 @@ from trac.resource import (
 )
 from trac.util import as_int
 from trac.util.datefmt import format_date, from_utimestamp, user_time
-from trac.util.html import escape, find_element
+from trac.util.html import Markup, escape, find_element, tag
 from trac.util.presentation import separated
 from trac.util.text import unicode_quote, to_unicode, stripws
 from trac.util.translation import _, dgettext, cleandoc_, tag_

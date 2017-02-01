@@ -94,9 +94,8 @@ To test the following code, save it in a `timestamp_sample.py` file located in t
 from datetime import datetime
 # Note: since Trac 0.11, datetime objects are used internally
 
-from genshi.builder import tag
-
 from trac.util.datefmt import format_datetime, utc
+from trac.util.html import tag
 from trac.wiki.macros import WikiMacroBase
 
 class TimeStampMacro(WikiMacroBase):
@@ -115,8 +114,7 @@ class TimeStampMacro(WikiMacroBase):
 To test the following code, save it in a `helloworld_sample.py` file located in the TracEnvironment's `plugins/` directory.
 
 {{{#!python
-from genshi.core import Markup
-
+from trac.util.html import Markup
 from trac.wiki.macros import WikiMacroBase
 
 class HelloWorldMacro(WikiMacroBase):

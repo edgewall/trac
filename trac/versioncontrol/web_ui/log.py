@@ -18,14 +18,12 @@
 
 import re
 
-from genshi.builder import tag
-from genshi.core import Markup
-
 from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.resource import ResourceNotFound
 from trac.util import Ranges
+from trac.util.html import Markup, escape, tag
 from trac.util.text import to_unicode, wrap
 from trac.util.translation import _
 from trac.versioncontrol.api import (Changeset, NoSuchChangeset,

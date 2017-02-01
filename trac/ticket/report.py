@@ -20,8 +20,6 @@ import csv
 import io
 import re
 
-from genshi.builder import tag
-
 from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
@@ -31,6 +29,7 @@ from trac.ticket.api import TicketSystem
 from trac.ticket.model import Report
 from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
+from trac.util.html import tag
 from trac.util.presentation import Paginator
 from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
                             sub_vars_re, to_unicode)

@@ -14,9 +14,8 @@
 
 """Sample Wiki syntax extension plugin."""
 
-from genshi.builder import tag
-
 from trac.core import *
+from trac.util.html import tag
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
 from trac.versioncontrol.web_ui import ChangesetModule

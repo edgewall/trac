@@ -48,5 +48,7 @@ class HelloWorldMacro(WikiMacroBase):
         """
         return 'Hello World, content = ' + unicode(content)
 
-    # Note that there's no need to HTML escape the returned data,
-    # as the template engine (Genshi) will do it for us.
+    # Note that there's no need to HTML escape the returned data, as
+    # the template engine (Jinja2) will do it for us.  To prevent
+    # escaping, return a Markup instance or use the tag builder API
+    # from trac.util.html.

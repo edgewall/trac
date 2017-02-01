@@ -16,11 +16,9 @@
 
 import re
 
-from genshi.builder import Element, Fragment, tag
-
 from trac.config import ConfigSection
 from trac.core import *
-from trac.util.html import find_element
+from trac.util.html import Element, Fragment, find_element, tag
 from trac.util.translation import N_, _, tag_
 from trac.web.api import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider

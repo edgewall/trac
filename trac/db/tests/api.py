@@ -130,7 +130,7 @@ class StringsTestCase(unittest.TestCase):
             "SELECT value FROM system WHERE name='test-empty'"))
 
     def test_insert_markup(self):
-        from genshi.core import Markup
+        from trac.util.html import Markup
         self.env.db_transaction(
                 "INSERT INTO system (name,value) VALUES (%s,%s)",
                 ('test-markup', Markup(u'<em>märkup</em>')))

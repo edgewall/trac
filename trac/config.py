@@ -17,12 +17,11 @@ import os.path
 import re
 from ConfigParser import ConfigParser, ParsingError
 
-from genshi.builder import tag
-
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
 from trac.util import AtomicFile, as_bool
 from trac.util.compat import wait_for_file_mtime_change
+from trac.util.html import tag
 from trac.util.text import cleandoc, printout, to_unicode, to_utf8
 from trac.util.translation import N_, _, dgettext, tag_
 

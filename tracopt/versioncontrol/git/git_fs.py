@@ -16,15 +16,13 @@ from datetime import datetime
 import itertools
 import os
 
-from genshi.builder import tag
-from genshi.core import Markup
-
 from trac.api import ISystemInfoProvider
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
 from trac.core import *
 from trac.util import TracError, shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
+from trac.util.html import Markup, tag
 from trac.util.text import to_unicode, exception_to_unicode
 from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \

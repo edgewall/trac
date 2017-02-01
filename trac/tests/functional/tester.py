@@ -18,11 +18,11 @@ working with a Trac environment to make test cases more succinct.
 import io
 import re
 
-from genshi.builder import tag
 from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
                                   random_unique_camel
+from trac.util.html import tag
 from trac.util.text import to_utf8, unicode_quote
 
 

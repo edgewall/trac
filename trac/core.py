@@ -37,7 +37,7 @@ class TracError(TracBaseError):
     """Standard exception for errors in Trac."""
 
     def __init__(self, message, title=None, show_traceback=False):
-        """If message is a genshi.builder.tag object, everything up to
+        """If message is an Element object, everything up to
         the first <p> will be displayed in the red box, and everything
         after will be displayed below the red box.  If title is given,
         it will be displayed as the large header above the error

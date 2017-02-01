@@ -17,8 +17,6 @@ import re
 from operator import itemgetter
 from pkg_resources import resource_filename
 
-from genshi.builder import tag
-
 from trac.core import Component, implements, ExtensionPoint
 from trac.notification.api import (INotificationDistributor,
                                    INotificationFormatter,
@@ -26,9 +24,10 @@ from trac.notification.api import (INotificationDistributor,
                                    NotificationSystem)
 from trac.notification.model import Subscription
 from trac.prefs.api import IPreferencePanelProvider
+from trac.util.html import tag
+from trac.util.translation import _, cleandoc_
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice
 from trac.wiki.macros import WikiMacroBase
-from trac.util.translation import _, cleandoc_
 
 
 class NotificationPreferences(Component):

@@ -19,8 +19,6 @@ import re
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 
-from genshi.builder import tag
-
 from trac.config import BoolOption, ListOption, Option
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
@@ -28,7 +26,7 @@ from trac.perm import IPermissionRequestor, PermissionError
 from trac.resource import Resource, ResourceNotFound
 from trac.util import as_bool, embedded_numbers
 from trac.util.datefmt import datetime_now, http_date, to_datetime, utc
-from trac.util.html import Markup, escape
+from trac.util.html import Markup, escape, tag
 from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _, cleandoc_
 from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
@@ -78,7 +76,7 @@ class IPropertyRenderer(Interface):
          - a `RenderedProperty` instance: the property will only be displayed
            using the instance's `content` attribute, and the other attributes
            will also be used in some display contexts (like `revprop`)
-         - `Markup` or other Genshi content: the property will be displayed
+         - `Markup` or `Fragment`: the property will be displayed
            normally, using that content as a block-level markup
         """
 

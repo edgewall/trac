@@ -27,8 +27,6 @@ from email.mime.text import MIMEText
 from email.utils import formatdate, parseaddr, getaddresses
 from subprocess import Popen, PIPE
 
-from genshi.builder import tag
-
 from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
                          OrderedExtensionsOption)
 from trac.core import Component, ExtensionPoint, TracError, implements
@@ -39,6 +37,7 @@ from trac.notification.api import (
 from trac.util import lazy
 from trac.util.compat import close_fds
 from trac.util.datefmt import time_now, to_utimestamp
+from trac.util.html import tag
 from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
 from trac.util.translation import _, tag_
 

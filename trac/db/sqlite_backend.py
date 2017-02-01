@@ -20,8 +20,6 @@ import re
 import weakref
 from contextlib import closing
 
-from genshi.builder import tag
-
 from trac.api import ISystemInfoProvider
 from trac.config import ConfigurationError, ListOption
 from trac.core import Component, TracError, implements
@@ -29,6 +27,7 @@ from trac.db.api import ConnectionBase, IDatabaseConnector
 from trac.db.schema import Table, Column, Index
 from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo, getuser, lazy
+from trac.util.html import tag
 from trac.util.translation import _, tag_
 
 _like_escape_re = re.compile(r'([/_%])')

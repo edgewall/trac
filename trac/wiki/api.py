@@ -18,12 +18,11 @@
 
 import re
 
-from genshi.builder import tag
-
 from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
+from trac.util.html import tag
 from trac.util.text import unquote_label
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser

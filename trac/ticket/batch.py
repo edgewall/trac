@@ -15,8 +15,6 @@
 
 import re
 
-from genshi.builder import tag
-
 from trac.core import *
 from trac.notification.api import NotificationSystem
 from trac.perm import IPermissionRequestor
@@ -24,6 +22,7 @@ from trac.ticket import TicketSystem, Ticket
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.notification import BatchTicketChangeEvent
 from trac.util.datefmt import datetime_now, parse_date, user_time, utc
+from trac.util.html import tag
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web.api import IRequestFilter, IRequestHandler, HTTPBadRequest

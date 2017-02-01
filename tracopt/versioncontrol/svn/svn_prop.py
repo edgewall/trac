@@ -18,14 +18,13 @@
 
 import posixpath
 
-from genshi.builder import tag
-
 from trac.config import ConfigSection
 from trac.core import *
 from trac.versioncontrol.api import NoSuchNode, RepositoryManager
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
 from trac.util import Ranges, to_ranges
+from trac.util.html import tag
 from trac.util.translation import _, tag_
 from trac.web.chrome import chrome_resource_path
 from tracopt.versioncontrol.svn.svn_fs import _path_within_scope

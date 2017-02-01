@@ -12,12 +12,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from genshi.builder import tag
-
 from trac.core import Component, implements
 from trac.perm import IPermissionRequestor
 from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
+from trac.util.html import tag
 
 revision = "$Rev$"
 url = "$URL$"

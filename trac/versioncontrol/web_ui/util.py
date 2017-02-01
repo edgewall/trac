@@ -20,11 +20,10 @@ import io
 from itertools import izip
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from genshi.builder import tag
-
 from trac.resource import ResourceNotFound
 from trac.util import content_disposition, create_zipinfo
 from trac.util.datefmt import http_date
+from trac.util.html import tag
 from trac.util.translation import tag_, _
 from trac.versioncontrol.api import EmptyChangeset, NoSuchChangeset, \
                                     NoSuchNode

@@ -200,7 +200,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
     space_re = re.compile(' ( +)|^ ')
     def htmlify(match):
         div, mod = divmod(len(match.group(0)), 2)
-        return div * '&nbsp; ' + mod * '&nbsp;'
+        return Markup(div * '&nbsp; ' + mod * '&nbsp;')
 
     def markup_intraline_changes(opcodes):
         for tag, i1, i2, j1, j2 in opcodes:

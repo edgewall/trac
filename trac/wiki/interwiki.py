@@ -16,12 +16,11 @@
 
 import re
 
-from genshi.builder import tag
-
 from trac.cache import cached
 from trac.config import ConfigSection
 from trac.core import *
 from trac.util import lazy
+from trac.util.html import tag
 from trac.util.translation import _, N_
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider, WikiSystem
 from trac.wiki.parser import WikiParser
