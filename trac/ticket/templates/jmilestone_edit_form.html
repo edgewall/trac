@@ -1,0 +1,162 @@
+{# Copyright (C) 2006-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+# import "jmacros.html" as jmacros with context
+  <script type="text/javascript">/*<![CDATA[*/
+    jQuery(document).ready(function($) {
+      function updateDueDate() {
+        $("#duedate").enable($("#due").checked());
+      }
+      $("#due").click(updateDueDate);
+      updateDueDate();
+      function updateCompletedDate() {
+        var checked = $("#completed").checked();
+        $("#completeddate").enable(checked);
+        var retarget = $("#retarget");
+        retarget.enable(checked);
+        $("#target").enable(checked && retarget.checked());
+        $("#retarget-comment").enable(checked && retarget.checked());
+        $("#retargeting").toggleClass("disabled", !checked);
+      }
+      $("#completed").click(updateCompletedDate);
+      updateCompletedDate();
+      $("#retarget").click(function() {
+        $("#target").enable(this.checked);
+        $("#retarget-comment").enable(this.checked);
+      });
+    });
+  /*]]>*/</script>
+  # with
+  <form id="edit" class="mod" method="post" action="">
+    ${jmacros.form_token_input()}
+    # set disabled = 'disabled' if can_modify is sameas false
+    # set readonly = 'readonly' if can_modify is sameas false
+    <fieldset>
+      <legend>
+        # if readonly:
+        ${_("View Milestone:")}
+        # elif milestone.name:
+        ${_("Modify Milestone:")}
+        # else:
+        ${_("Create Milestone:")}
+        # endif
+      </legend>
+      <div class="field">
+        <input type="hidden" name="action" value="edit"/>
+        <label>${_("Name:")}<br />{# /!\ #}
+          ## Twill trips up on a <br/> and wouldn't detect the "name" field...
+          <input type="text" id="name" name="name" class="trac-autofocus"{#
+              #} size="32"${
+               {'value': milestone.name or req.args.get('name'),
+                'readonly': readonly
+               }|htmlattr}/>
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="due" name="due"${
+               {'checked': milestone.due,
+                'disabled': disabled
+               }|htmlattr}/>
+          ${_("Due:")}<br/>
+        </label>
+        <label${{'class': {'readonly': readonly}}|htmlattr}>
+          <input type="text" id="duedate" name="duedate"
+                 class="trac-datetimepicker"${
+               {'size': len(datetime_hint) + 1,
+                'value': format_datetime(milestone.due or default_due),
+                'readonly': readonly,
+                'title': _('Format: %(datehint)s', datehint=datetime_hint)
+               }|htmlattr}/>
+          <span class="trac-datetimehint">${
+            _("Format: %(datehint)s", datehint=datetime_hint)}</span>
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="completed" name="completed"${
+               {'checked': milestone.completed,
+                'disabled': disabled
+               }|htmlattr}/>
+          ${_("Completed:")}<br/>
+        </label>
+        <label${{'class': {'readonly': readonly}}|htmlattr}>
+          <input type="text" id="completeddate" name="completeddate"
+                 class="trac-datetimepicker"${
+               {'size': len(datetime_hint) + 1,
+                'value': format_datetime(milestone.completed),
+                'readonly': readonly,
+                'title': _('Format: %(datehint)s', datehint=datetime_hint)
+               }|htmlattr}/>
+          <span class="trac-datetimehint">${
+            _("Format: %(datehint)s", datehint=datetime_hint)}</span>
+        </label>
+      </div>
+      # if num_open_tickets or num_open_tickets == 0:
+      <fieldset id="retargeting">
+        <legend>${_("Retargeting")}</legend>
+        # if num_open_tickets != 0:
+        <label>
+          <input type="checkbox" id="retarget" name="retarget"${
+               {'checked': not milestone.completed}|htmlattr}/>
+            ${_("Retarget associated open tickets to milestone:")}
+        </label>
+        <select id="target" name="target">
+          <option value="">${_("None")}</option>
+          # for label, milestones in milestone_groups if milestones:
+          <optgroup label="${label}">
+            # for milestone in milestones:
+            <option${{'selected': retarget_to == milestone.name,
+                      'value': milestone.name
+                     }|htmlattr}>${milestone.name}</option>
+            # endfor
+          </optgroup>
+          # endfor
+        </select>
+        <br/>
+        <label for="retarget-comment">${_("Comment:")}</label>
+        ## Don't translate ticket comment (comment:40:ticket:5658)
+        <input type="text" id="retarget-comment" name="comment" size="40"
+               value="Ticket retargeted after milestone closed"/>
+        # else:
+        <p class="help">
+          ${_("There are no open tickets associated with this milestone.")}
+        </p>
+        # endif
+      </fieldset>
+      # endif
+      <div class="field description">
+        <label for="description">
+          # trans href = href.wiki('WikiFormatting')
+
+          Description: (you may use
+          <a tabindex="42" href="${href}">WikiFormatting</a> here)
+
+          # endtrans
+        </label>
+        <textarea id="description" name="description" rows="8" cols="78"
+                  class="wikitext trac-fullwidth trac-resizable"${
+                {'readonly': readonly}|htmlattr}>
+${milestone.description}</textarea>
+      </div>
+    </fieldset>
+    <div class="buttons">
+      # if milestone.exists:
+      <input type="submit" name="save" class="trac-disable-on-submit"${
+           {'disabled': disabled,
+            'value': _('Submit changes')
+           }|htmlattr}/>
+      # else:
+      <input type="submit" name="add" value="${_('Add milestone')}"/>
+      # endif
+      <input type="submit" name="cancel" value="${_('Cancel')}"/>
+    </div>
+  </form>
+  # endwith

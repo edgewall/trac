@@ -22,8 +22,6 @@ from collections import defaultdict
 from functools import partial
 from pkg_resources import resource_filename
 
-from genshi.builder import tag
-
 from trac.api import IEnvironmentSetupParticipant
 from trac.config import Configuration, ConfigSection
 from trac.core import *
@@ -32,6 +30,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Component as TicketComponent, Resolution
 from trac.util import get_reporter_id, sub_val, to_list
+from trac.util.html import tag
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
 from trac.web.chrome import Chrome, add_script, add_script_data

@@ -18,8 +18,6 @@
 
 import re
 
-from genshi.template.text import NewTextTemplate
-
 from trac.api import IEnvironmentSetupParticipant
 from trac.attachment import IAttachmentChangeListener
 from trac.core import *
@@ -62,8 +60,8 @@ class TicketNotificationSystem(Component):
         pass
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
-                                     '$prefix #$ticket.id: $summary',
-        """A Genshi text template snippet used to get the notification
+                                     '${prefix} #${ticket.id}: ${summary}',
+        """A Jinja2 text template snippet used to get the notification
         subject.
 
         The template variables are documented on the
@@ -71,7 +69,7 @@ class TicketNotificationSystem(Component):
         """)
 
     batch_subject_template = Option('notification', 'batch_subject_template',
-                                    '$prefix Batch modify: $tickets_descr',
+                                    '${prefix} Batch modify: ${tickets_descr}',
         """Like `ticket_subject_template` but for batch modifications.
         (''since 1.0'')""")
 

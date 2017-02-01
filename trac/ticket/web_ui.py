@@ -21,9 +21,6 @@ import io
 import pkg_resources
 import re
 
-from genshi.core import Markup
-from genshi.builder import tag
-
 from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption
 from trac.core import *
@@ -45,7 +42,7 @@ from trac.util.datefmt import (
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
     user_time, utc
 )
-from trac.util.html import to_fragment
+from trac.util.html import Markup, tag, to_fragment
 from trac.util.text import (
     exception_to_unicode, empty, is_obfuscated, shorten_line
 )
@@ -54,7 +51,7 @@ from trac.util.translation import _, tag_, tagn_, N_, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.api import IRequestHandler, arg_list_to_args, parse_arg_list
 from trac.web.chrome import (
-    Chrome, INavigationContributor, ITemplateProvider,
+    Chrome, INavigationContributor, ITemplateProvider, accesskey,
     add_ctxtnav, add_link, add_notice, add_script, add_script_data,
     add_stylesheet, add_warning, auth_link, chrome_info_script, prevnext_nav,
     web_context
@@ -158,7 +155,7 @@ class TicketModule(Component):
         if 'TICKET_CREATE' in req.perm:
             yield ('mainnav', 'newticket',
                    tag.a(_("New Ticket"), href=req.href.newticket(),
-                         accesskey=7))
+                         accesskey=accesskey(req, 7)))
 
     # IRequestHandler methods
 
@@ -746,7 +743,14 @@ class TicketModule(Component):
                             add_ticket_link('next', int(next_id))
                     break
 
-        add_script_data(req, {'comments_prefs': self._get_prefs(req)})
+        # Data need for Javascript-specific logic
+        old_values = dict((name, ticket[name]) for name in
+                          [field['name'] for field in ticket.fields])
+        old_values['id'] = ticket.id
+        add_script_data(req, {'comments_prefs': self._get_prefs(req),
+                              'old_values': old_values,
+                              'changes': data['changes'],
+                              })
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         chrome = Chrome(self.env)

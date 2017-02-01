@@ -23,8 +23,6 @@ import csv
 import io
 import re
 
-from genshi.builder import tag
-
 from trac.config import Option, IntOption
 from trac.core import *
 from trac.db import get_column_names
@@ -37,6 +35,7 @@ from trac.util import Ranges, as_bool
 from trac.util.datefmt import (datetime_now, from_utimestamp,
                                format_date_or_datetime, parse_date,
                                to_timestamp, to_utimestamp, utc, user_time)
+from trac.util.html import tag
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, quote_query_string
 from trac.util.translation import _, cleandoc_, ngettext, tag_
@@ -758,6 +757,12 @@ class Query(object):
                     for (label, milestones) in groups]
             fields[name] = field
 
+        def by_label(name):
+            if 'label' in fields[name]:
+                return fields[name]['label'].lower()
+            return ''
+        field_names = sorted(fields.iterkeys(), key=by_label)
+
         groups = {}
         groupsequence = []
         for ticket in tickets:
@@ -825,6 +830,7 @@ class Query(object):
                 'clauses': clauses,
                 'headers': headers,
                 'fields': fields,
+                'field_names': field_names,
                 'modes': self.get_modes(),
                 'tickets': tickets,
                 'groups': groupsequence or [(None, tickets)],
@@ -1414,8 +1420,8 @@ class TicketQueryMacro(WikiMacroBase):
                     'legend': True,
                 }
                 return tag.div(
-                    chrome.render_template(req, 'progress_bar.html', data,
-                                           None, fragment=True),
+                    chrome.render_template(req, 'progress_bar.html',
+                                           data, None, fragment=True),
                     class_='trac-progress')
 
             def per_group_stats_data(gstat, group_name):

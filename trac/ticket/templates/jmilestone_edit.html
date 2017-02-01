@@ -1,0 +1,52 @@
+{# Copyright (C) 2006-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+# extends "jlayout.html"
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      #   if milestone.exists:
+      ${_("Edit Milestone %(name)s", name=milestone.name)}
+      #   else:
+      ${_("New Milestone")}
+      #   endif
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="milestone">
+      <h1>
+        # if milestone.exists:
+        ${_("Edit Milestone %(name)s", name=milestone.name)}
+        # else:
+        ${_("New Milestone")}
+        # endif
+      </h1>
+
+      # include "jmilestone_edit_form.html"
+
+      <div id="help">
+        # trans href = href.wiki('TracRoadmap')
+
+        <strong>Note:</strong> See <a href="${href}">TracRoadmap</a>
+        for help on using the roadmap.
+
+        # endtrans
+      </div>
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

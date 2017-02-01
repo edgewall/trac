@@ -1,0 +1,184 @@
+{# Copyright (C) 2010-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+
+## Ticket Box (ticket fields along with description).
+
+{# Arguments:
+ - ticket: the ticket to be shown
+ - fields: ticket field metadata
+ - description_change: metadata about changes in the description
+ - can_append: True if the user is allowed to append to tickets
+ - preview_mode: if True, show the "draft" background
+ - hide=False: if True, hide the box
+ - reporter_link=None: rendered link for the reporter field
+ - owner_link=None: rendered link for the owner field
+#}
+<div id="ticket"${
+   {'class': ['trac-content', 'ticketdraft' if preview_mode],
+    'style': 'display: none' if hide
+   }|htmlattr}>
+  <div class="date">
+    # if ticket.exists:
+    <p>${tag_("Opened %(date)s", date=pretty_dateinfo(ticket.time))}</p>
+    # endif
+    # if closetime:
+    <p>${tag_("Closed %(date)s", date=pretty_dateinfo(closetime))}</p>
+    # endif
+    # if ticket.changetime != ticket.time and ticket.changetime != closetime:
+    <p>${
+      tag_("Last modified %(date)s", date=pretty_dateinfo(ticket.changetime))
+      }</p>
+    # endif
+    # if not ticket.exists:
+    <p><span class="trac-loading"></span><i>(ticket not yet created)</i></p>
+    # endif
+  </div>
+  ## use a placeholder if it's a new ticket
+
+  <h2>
+    <a href="${href.ticket(ticket.id)}" class="trac-id">#${ticket.id}</a>
+    <span class="trac-status">
+      ${'status' in fields_map and
+      fields[fields_map['status']].rendered or ticket.status}
+    </span>
+    # if ticket.type:
+    <span class="trac-type">
+      ${'type' in fields_map and
+      fields[fields_map['type']].rendered or ticket.type}
+    </span>
+    # endif
+    # if ticket.resolution:
+    <span class="trac-resolution">
+      (${'resolution' in fields_map and
+      fields[fields_map['resolution']].rendered or ticket.resolution})
+    </span>
+    # endif
+  </h2>
+
+  <h1 id="trac-ticket-title" class="searchable">
+    <span class="summary">${ticket.summary}</span>
+    # if version is not none:
+    #   set version_link
+    #     if version == 0:
+    <a href="#comment:description">Initial Version</a>
+    #     else:
+    <a href="#comment:${version}">Version ${version}</a>
+    #     endif
+    #   endset
+    #   trans version_link = version_link|safe
+    &mdash; at ${version_link}
+    #   endtrans
+    # endif
+  </h1>
+
+  <table class="properties">
+    ## fields = [f for f in fields if not f.skip and f.name not in ('type', 'owner')]
+    # with
+    #   set fields = fields|rejectattr('skip')
+    #   set fields = fields|selectattr('name', 'not_in', ('type', 'owner'))
+    #   set v_reporter = (reporter_link if reporter_link else
+                          authorinfo(ticket.reporter))
+    #   set v_owner = ((owner_link if owner_link else authorinfo(ticket.owner))
+                       if ticket.owner)
+    <tr>
+      <th id="h_reporter"${{'class': {'missing': not v_reporter}}|htmlattr}>${
+        _("Reported by:")}</th>
+      <td class="searchable" headers="h_reporter">${v_reporter}</td>
+
+      <th id="h_owner"${{'class': {'missing': not v_owner}}|htmlattr}>${
+        _("Owned by:")}</th>
+      <td headers="h_owner">${v_owner}</td>
+    </tr>
+    # for row in fields|groupattr(2, 'type', 'not_equalto', 'textarea'):
+    <tr>
+      # set fullrow = len(row) == 1
+      # for field in row:
+      #   if loop.first or not fullrow:
+      <th${{'id': 'h_' + field.name if field,
+            'class': {'missing': not field or
+                        ('rendered' in field and not field.rendered) or
+                        not ticket[field.name]}
+           }|htmlattr}>
+        #   if field:
+        ${_("%(label)s:", label=field.label or field.name)}
+        #   endif
+      </th>
+      #   endif
+      #   if loop.first or not fullrow:
+      <td${{'headers': 'h_' + field.name if field,
+            'class': 'searchable' if field and
+                                     field.name in ('cc', 'keywords'),
+            'colspan': 3 if fullrow
+           }|htmlattr}>
+        #   if field:
+        #     set value = ticket[field.name]
+        #     if 'dateinfo' in field:
+        ${pretty_dateinfo(field.dateinfo, field.format)}
+        #     elif 'rendered' in field:
+        ${field.rendered}
+        #     elif field.type == 'text' and field.format == 'wiki':
+        ${wiki_to_oneliner(context, value) if value}
+        #     elif field.type == 'textarea' and field.format == 'wiki':
+        ${wiki_to_html(context, value, escape_newlines=preserve_newlines)
+          if value}
+        #     else:
+        ${value}
+        #     endif
+        #   endif
+      </td>
+      #   endif
+      # endfor
+    </tr>
+    # endfor
+    # endwith
+  </table> {# jinjacheck: "got (CDATA tr tr )" OK #}
+  <div class="description">
+    <h3 id="comment:description">
+      Description
+      # if description_change:
+      <a href="${href.ticket(ticket.id, action='diff',
+               version=description_change.cnum)}"
+         class="lastmod trac-diff"
+         title="${description_change.date}">
+        # trans author = authorinfo(description_change.author)
+
+        (last modified by ${author})
+
+        # endtrans
+      </a>
+      # endif
+    </h3>
+
+    ## Quote the description (only for existing tickets)
+
+    # if ticket.exists and ticket.description and can_append:
+    <form id="addreply" method="get" action="#comment">
+      <div class="inlinebuttons">
+        <input type="hidden" name="replyto" value="description" />
+        <input type="submit" name="reply"
+               value="${captioned_button('↳', _('Reply'))}"
+               title="${_("Reply, quoting this description")}" />
+      </div>
+    </form>
+    # endif
+    # if ticket.description:
+    <div class="searchable">
+      ${wiki_to_html(context, ticket.description,
+                     escape_newlines=preserve_newlines)}
+    </div>
+    # else:
+    <br style="clear: both" />
+    # endif
+  </div>
+  # if chrome_info_script:
+  ${chrome_info_script(req)}
+  # endif
+</div>
