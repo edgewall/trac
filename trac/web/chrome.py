@@ -1458,8 +1458,7 @@ class Chrome(Component):
         :rtype: a pair of Jinja2 `Template` and a `dict`.
 
         """
-        jtemplate = self._load_jinja_template('j' + filename, text)
-        # TODO (1.3.2) remove the 'j' prefix, rename all Jinja2 templates
+        jtemplate = self._load_jinja_template(filename, text)
         jdata = self.populate_data(req, data)
         return jtemplate, jdata
 

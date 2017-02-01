@@ -309,7 +309,6 @@ class TicketFormatter(Component):
         return Chrome(self.env).format_author(None, author)
 
     def _format_body(self, data, template_name):
-        template_name = 'j' + template_name # FIXME (1.3.2) remove
         chrome = Chrome(self.env)
         template = chrome.load_template(template_name, text=True)
         # don't translate the e-mail stream

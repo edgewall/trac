@@ -1,0 +1,72 @@
+{# Copyright (C) 2006-2014 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block preftitle
+    ${_("Syntax Highlighting")}
+    # endblock preftitle
+    </title>
+
+    # block head
+    ${ super() }
+    <style type="text/css">
+      div.code pre { border: 1px solid #999; font-size: 90%; margin: 1em 2em;
+        padding: 5px; width: 60%;
+      }
+    </style>
+    <script type="text/javascript">
+      (function($){
+        window.switchStyleSheet = function(title) {
+          $('link[rel="stylesheet"][title]').each(function() {
+            this.disabled = true; // needed to force correct behavior for WebKit (see #10923)
+            this.disabled = this.getAttribute('title') != title;
+          });
+        }
+      })(jQuery);
+      jQuery(document).ready(function($) {
+        switchStyleSheet("${selection.title()}");
+        $("#pygment_theme").attr("autocomplete", "off").bind('change keypress', function() {
+          switchStyleSheet(this.options[this.selectedIndex].text);
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block prefpanel
+    <div class="field">
+      <p class="hint">
+        # trans
+
+        The Pygments syntax highlighter can be used with different
+        coloring styles.
+
+        # endtrans
+      </p>
+      <p><label>${_("Style:")}
+        <select id="pygment_theme" name="style">
+          # for style in sorted(styles):
+          <option${{'value': style,
+                    'selected': selection == style
+                   }|htmlattr}>${style.title()}</option>
+          # endfor
+        </select>
+      </label></p>
+      ${_("Preview:")}
+      <div class="code"><pre>${output|safe}</pre></div>
+    </div>
+    # endblock prefpanel
+  </body>
+</html>

@@ -520,8 +520,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.env = EnvironmentStub(path=mkdtemp())
         os.mkdir(self.env.templates_dir)
         filepath = os.path.join(self.env.templates_dir,
-                                'j' + TestStubRequestHandler.filename)
-        # TODO (1.3.2) remove 'j'
+                                TestStubRequestHandler.filename)
         create_file(filepath, TestStubRequestHandler.template)
 
     def tearDown(self):

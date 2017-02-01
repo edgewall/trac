@@ -894,9 +894,6 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         os.mkdir(self.env.templates_dir)
         filepath = os.path.join(self.env.templates_dir, self.filename)
         create_file(filepath, self.template)
-        jfilepath = os.path.join(self.env.templates_dir, 'j' + self.filename)
-        create_file(jfilepath, self.template)
-        # TODO (1.3.2) don't save a 'j' file
         self.chrome = Chrome(self.env)
 
     def test_load_template(self):
