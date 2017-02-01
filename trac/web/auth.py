@@ -25,8 +25,6 @@ import sys
 import urllib2
 import urlparse
 
-from genshi.builder import tag
-
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
@@ -35,6 +33,7 @@ from trac.util import hex_entropy, md5crypt
 from trac.util.compat import crypt
 from trac.util.concurrency import threading
 from trac.util.datefmt import time_now
+from trac.util.html import tag
 from trac.util.translation import _, tag_
 
 
@@ -115,10 +114,15 @@ class LoginModule(Component):
                    tag_("logged in as %(user)s",
                         user=Chrome(self.env).authorinfo(req, req.authname)))
             yield ('metanav', 'logout',
-                   tag.form(tag.div(tag.button(_("Logout"),
-                                               name='logout', type='submit')),
-                            action=req.href.logout(), method='post',
-                            id='logout', class_='trac-logout'))
+                   tag.form(
+                       tag.div(
+                           tag.button(_("Logout"), name='logout',
+                                      type='submit'),
+                           tag.input(type='hidden', name='__FORM_TOKEN',
+                                     value=req.form_token)
+                       ),
+                       action=req.href.logout(), method='post',
+                       id='logout', class_='trac-logout'))
         else:
             yield ('metanav', 'login',
                    tag.a(_("Login"), href=req.href.login()))
