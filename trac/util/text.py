@@ -27,6 +27,8 @@ import textwrap
 from urllib import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
+import jinja2
+
 CRLF = '\r\n'
 
 class Empty(unicode):
@@ -36,6 +38,52 @@ class Empty(unicode):
 empty = Empty()
 
 del Empty # shouldn't be used outside of Trac core
+
+
+# -- Jinja2
+
+def jinja2env(**kwargs):
+    """Creates a Jinja2 ``Environment`` configured with Trac conventions.
+
+    All default parameters can optionally be overriden. The ``loader``
+    parameter is not set by default, so unless it is set by the
+    caller, only inline templates can be created from the environment.
+
+    :rtype: `jinja.Environment`
+
+    """
+    exts = ('html', 'rss', 'xml')
+    def filterout_none(v):
+        return '' if v is None else v
+    def autoescape_extensions(template):
+        return template and template.rsplit('.', 1)[1] in exts
+    defaults = dict(
+        variable_start_string='${',
+        variable_end_string='}',
+        line_statement_prefix='#',
+        line_comment_prefix='##',
+        trim_blocks=True,
+        lstrip_blocks=True,
+        extensions=['jinja2.ext.i18n', 'jinja2.ext.with_'],
+        finalize=filterout_none,
+        autoescape=autoescape_extensions,
+    )
+    defaults.update(kwargs)
+    jenv = jinja2.Environment(**defaults)
+    jenv.globals.update(
+        len=len,
+    )
+    return jenv
+
+def jinja2template(template, text=False):
+    """Creates a Jinja2 ``Template`` from inlined source.
+
+    :param template: the template content
+    :param text: if set to `False`, the result of the variable
+                 expansion will be XML/HTML escaped
+
+    """
+    return jinja2env(autoescape=not text).from_string(template)
 
 
 # -- Unicode

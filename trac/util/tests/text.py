@@ -18,7 +18,7 @@ import unittest
 
 from trac.util.text import (
     _get_default_ambiwidth, empty, expandtabs, fix_eol, javascript_quote,
-    levenshtein_distance, normalize_whitespace, print_table,
+    jinja2template, levenshtein_distance, normalize_whitespace, print_table,
     quote_query_string, shorten_line, strip_line_ws, stripws, sub_vars,
     text_width, to_js_string, to_unicode, to_utf8, unicode_from_base64,
     unicode_quote, unicode_quote_plus, unicode_to_base64, unicode_unquote,
@@ -412,6 +412,17 @@ class StripwsTestCase(unittest.TestCase):
                                  leading=False, trailing=False))
 
 
+class Jinja2TemplateTestCase(unittest.TestCase):
+    def test_html_template(self):
+        self.assertEqual("<h1>Hell&amp;O</h1>",
+                         jinja2template("<h1>${hell}O</h1>").render(
+                             {'hell': 'Hell&'}))
+    def test_text_template(self):
+        self.assertEqual("<h1>Hell&O</h1>",
+                         jinja2template("<h1>${hell}O</h1>", text=True).render(
+                             {'hell': 'Hell&'}))
+
+
 class LevenshteinDistanceTestCase(unittest.TestCase):
     def test_distance(self):
         self.assertEqual(5, levenshtein_distance('kitten', 'sitting'))
@@ -527,6 +538,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(FixEolTestCase))
     suite.addTest(unittest.makeSuite(UnicodeBase64TestCase))
     suite.addTest(unittest.makeSuite(StripwsTestCase))
+    suite.addTest(unittest.makeSuite(Jinja2TemplateTestCase))
     suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase))
     suite.addTest(unittest.makeSuite(SubVarsTestCase))
     suite.addTest(unittest.makeSuite(ShortenLineTestCase))
