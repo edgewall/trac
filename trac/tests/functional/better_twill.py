@@ -168,6 +168,7 @@ if twill:
         try:
             fv(form, field, value)
         except (twill.errors.TwillAssertionError,
+                twill.errors.TwillException,
                 twill.utils.ClientForm.ItemNotFoundError) as e:
             filename = twill_write_html()
             raise twill.errors.TwillAssertionError('%s at %s' %
