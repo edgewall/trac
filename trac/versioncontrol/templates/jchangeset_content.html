@@ -39,19 +39,19 @@
     <h1>
     # if reponame:
     #   if changeset and restricted:
-    #     trans newrev = newrev, newpath = newpath, reponame
+    #     trans newrev, newpath, reponame
 
     Changeset ${newrev} in ${reponame} for ${newpath}
 
     #     endtrans
     #   elif not changeset and restricted:
-    #     trans newpath = newpath, logoldnew = logoldnew, reponame
+    #     trans newpath, logoldnew, reponame
 
     Changes in ${newpath} ${logoldnew} in ${reponame}
 
     #     endtrans
     #   elif not changeset and not restricted:
-    #     trans reponame, oldpath = oldpath, oldrrev = oldrrev, newpath = newpath, newrrev = newrrev
+    #     trans reponame, oldpath, oldrrev, newpath, newrrev
 
     Changes in ${reponame} from ${oldpath} at ${oldrev}
     to ${newpath} at ${newrev}
@@ -59,7 +59,7 @@
     #     endtrans
     #   else:
     #     if annotated:
-    #       trans shortnewrev = shortnewrev, reponame
+    #       trans shortnewrev, reponame
 
     Changeset ${shortnewrev} in ${reponame}
 
@@ -74,26 +74,26 @@
     #   endif
     # else:
     #   if changeset and restricted:
-    #     trans newrev = newrev, newpath=newpath
+    #     trans newrev, newpath=newpath
 
     Changeset ${newrev} for ${newpath}
 
     #     endtrans
     #   elif not changeset and restricted:
-    #     trans newpath = newpath, logoldnew = logoldnew
+    #     trans newpath, logoldnew
 
     Changes in ${newpath} ${logoldnew}
 
     #     endtrans
     #   elif not changeset and not restricted:
-    #     trans oldpath = oldpath, oldrrev = oldrrev, newpath = newpath, newrrev = newrrev
+    #     trans oldpath, oldrrev, newpath, newrrev
 
     Changes from ${oldpath} at ${oldrrev} to ${newpath} at ${newrrev}
 
     #     endtrans
     #   else:
     #     if annotated:
-    #       trans shortnewrev = shortnewrev
+    #       trans shortnewrev
 
     Changeset ${shortnewrev}
 
@@ -157,7 +157,7 @@
                     old_rev=display_rev(item.old.rev))}">
         ${item.old.path}</a>
       # endset
-      # trans kind, oldpath = oldpath
+      # trans kind, oldpath
       (${kind} from ${oldpath})
       # endtrans
   </em></small>
