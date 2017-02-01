@@ -63,16 +63,12 @@ import io
 import re
 from collections import namedtuple
 
-from genshi import Markup, Stream
-from genshi.core import TEXT, START, END, START_NS, END_NS
-from genshi.builder import Fragment, tag
-from genshi.input import HTMLParser
-
 from trac.config import IntOption, ListOption, Option
 from trac.core import Component, ExtensionPoint, Interface, TracError, \
                       implements
 from trac.resource import Resource
 from trac.util import Ranges, content_disposition
+from trac.util.html import Fragment, Markup, tag
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 
@@ -804,7 +800,7 @@ class Mimeview(Component):
                             result = to_unicode(result)
                         return Markup(to_unicode(result))
                     elif isinstance(result, Fragment):
-                        return result.generate()
+                        return result.__html__()
                     else:
                         return result
 
@@ -818,7 +814,7 @@ class Mimeview(Component):
                 else:
                     if isinstance(result, list):
                         result = Markup('\n').join(result)
-                    return tag.div(class_='code')(tag.pre(result)).generate()
+                    return tag.div(class_='code')(tag.pre(result))
 
             except Exception as e:
                 self.log.warning('HTML preview using %s with %r failed: %s',
@@ -831,7 +827,7 @@ class Mimeview(Component):
                           renderer=renderer.__class__.__name__,
                           err=exception_to_unicode(e)))
 
-    def _render_source(self, context, stream, annotations):
+    def _render_source(self, context, lines, annotations):
         from trac.web.chrome import add_warning
         annotators, labels, titles = {}, {}, {}
         for annotator in self.annotators:
@@ -842,14 +838,10 @@ class Mimeview(Component):
                 annotators[atype] = annotator
         annotations = [a for a in annotations if a in annotators]
 
-        if isinstance(stream, list):
-            stream = HTMLParser(io.StringIO(u'\n'.join(stream)))
-        elif isinstance(stream, unicode):
-            text = stream
-            def linesplitter():
-                for line in text.splitlines(True):
-                    yield TEXT, line, (None, -1, -1)
-            stream = linesplitter()
+        if isinstance(lines, unicode):
+            lines = lines.splitlines(True)
+        # elif isinstance(lines, list):
+        #    pass # assume these are lines already
 
         annotator_datas = []
         for a in annotations:
@@ -872,11 +864,12 @@ class Mimeview(Component):
             )
 
         def _body_rows():
-            for idx, line in enumerate(_group_lines(stream)):
+            for idx, line in enumerate(lines):
                 row = tag.tr()
                 for annotator, data in annotator_datas:
                     if annotator:
-                        annotator.annotate_row(context, row, idx+1, line, data)
+                        annotator.annotate_row(context, row, idx + 1,
+                                               line, data)
                     else:
                         row.append(tag.td())
                 row.append(tag.td(line))
@@ -1050,82 +1043,6 @@ class Mimeview(Component):
         req.end_headers()
         req.write(content)
         raise RequestDone
-
-
-def _group_lines(stream):
-    space_re = re.compile('(?P<spaces> (?: +))|^(?P<tag><\w+.*?>)?( )')
-
-    def pad_spaces(match):
-        m = match.group('spaces')
-        if m:
-            div, mod = divmod(len(m), 2)
-            return div * u'\xa0 ' + mod * u'\xa0'
-        return (match.group('tag') or '') + u'\xa0'
-
-    def _generate():
-        stack = []
-        def _reverse():
-            for event in reversed(stack):
-                if event[0] is START:
-                    yield END, event[1][0], event[2]
-                else:
-                    yield END_NS, event[1][0], event[2]
-
-        for kind, data, pos in stream:
-            if kind is TEXT:
-                lines = data.split('\n')
-                if lines:
-                    # First element
-                    for e in stack:
-                        yield e
-                    yield kind, lines.pop(0), pos
-                    for e in _reverse():
-                        yield e
-                    # Subsequent ones, prefix with \n
-                    for line in lines:
-                        yield TEXT, '\n', pos
-                        for e in stack:
-                            yield e
-                        yield kind, line, pos
-                        for e in _reverse():
-                            yield e
-            else:
-                if kind is START or kind is START_NS:
-                    stack.append((kind, data, pos))
-                elif kind is END or kind is END_NS:
-                    stack.pop()
-                else:
-                    yield kind, data, pos
-
-    buf = []
-
-    # Fix the \n at EOF.
-    if not isinstance(stream, list):
-        stream = list(stream)
-    found_text = False
-
-    for i in range(len(stream)-1, -1, -1):
-        if stream[i][0] is TEXT:
-            e = stream[i]
-            # One chance to strip a \n
-            if not found_text and e[1].endswith('\n'):
-                stream[i] = (e[0], e[1][:-1], e[2])
-            if len(e[1]):
-                found_text = True
-                break
-    if not found_text:
-        raise StopIteration
-
-    for kind, data, pos in _generate():
-        if kind is TEXT and data == '\n':
-            yield Stream(buf[:])
-            del buf[:]
-        else:
-            if kind is TEXT:
-                data = space_re.sub(pad_spaces, data)
-            buf.append((kind, data, pos))
-    if buf:
-        yield Stream(buf[:])
 
 
 # -- Default annotators
