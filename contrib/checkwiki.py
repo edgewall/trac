@@ -133,7 +133,7 @@ def download_default_pages(names, prefix):
         prefix += '/'
     conn = HTTPSConnection(host)
     for name in names:
-        if name in ('WikiStart', 'SandBox'):
+        if name in ('SandBox', 'TitleIndex', 'WikiStart'):
             continue
         sys.stdout.write('Downloading %s%s' % (prefix, name))
         conn.request('GET', '/wiki/%s%s?format=txt' % (prefix, name))
