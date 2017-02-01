@@ -165,7 +165,7 @@ history and logs, available at http://trac.edgewall.org/.
           #     endfor
           #   endset
 
-          ${column_headers | safe} ## Note: see also Jinja2 issue #490
+          ${column_headers}
           ## jinjacheck: "(tr CDATA)" OK
         </thead>
         #   else:
@@ -175,7 +175,7 @@ history and logs, available at http://trac.edgewall.org/.
               ${group_heading(value_for_group or _("(empty)"), row_group)}
             </th>
           </tr>
-          ${column_headers | safe} ## Note: see also Jinja2 issue #490
+          ${column_headers}
           ## jinjacheck: "(tr CDATA)" OK
         </tbody>
         #   endif
