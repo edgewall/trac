@@ -99,6 +99,10 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
     def sanitize(self, html):
         return unicode(TracHTMLSanitizer().sanitize(html))
 
+    def test_input_type_password(self):
+        html = '<input type="password" />'
+        self.assertEqual('', self.sanitize(html))
+
     def test_expression(self):
         html = '<div style="top:expression(alert())">XSS</div>'
         self.assertEqual('<div>XSS</div>', self.sanitize(html))

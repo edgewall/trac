@@ -694,7 +694,7 @@ class TracHTMLSanitizer(object):
         :param tag: the tag name of the element
         :type tag: QName or basestring
         :param attrs: the element attributes
-        :type attrs: Attrs or dict
+        :type attrs: Attrs or list
         :return: whether the element should be considered safe
         :rtype: bool
 
@@ -704,9 +704,14 @@ class TracHTMLSanitizer(object):
         if hasattr(tag, 'localname'): # in Genshi QName
             tag = tag.localname
         if tag == 'input':
-            input_type = attrs.get('type', '').lower()
-            if input_type == 'password':
-                return False
+            # TODO (1.5.1) no more Attrs
+            if isinstance(attrs, Attrs):
+                input_type = attrs.get('type', '').lower()
+                if input_type == 'password':
+                    return False
+            else:
+                if ('type', 'password') in attrs:
+                    return False
         return True
 
     def is_safe_uri(self, uri):
