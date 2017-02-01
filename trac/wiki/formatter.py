@@ -18,22 +18,23 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@edgewall.org>
 
+from HTMLParser import HTMLParseError
 import io
 import re
 import os
-
-from genshi.builder import tag, Element
-from genshi.core import Stream
-from genshi.input import HTMLParser, ParseError
-from genshi.util import plaintext
 
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity, as_int
-from trac.util.html import Markup, TracHTMLSanitizer, escape
-from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
-                           unicode_quote, unquote_label
+from trac.util.text import (
+    exception_to_unicode, shorten_line, to_unicode, 
+    unicode_quote, unicode_quote_plus, unquote_label
+)
+from trac.util.html import (
+    Element, Fragment, Markup, Stream, TracHTMLSanitizer,
+    escape, genshi, plaintext, stream_to_unicode, tag
+)
 from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
@@ -42,6 +43,14 @@ __all__ = ['wiki_to_outline', 'Formatter', 'format_to', 'format_to_html',
            'format_to_oneliner', 'extract_link',
            'split_url_into_path_query_fragment', 'concat_path_query_fragment']
 
+
+def _markup_to_unicode(markup):
+    if isinstance(markup, Fragment):
+        return Markup(markup)
+    elif genshi and isinstance(markup, Stream):
+        return stream_to_unicode(markup)
+    else:
+        return to_unicode(markup)
 
 def system_message(msg, text=None):
     return tag.div(tag.strong(msg), text and tag.pre(text),
@@ -97,20 +106,8 @@ def concat_path_query_fragment(path, query, fragment=None):
     return p + q + ('' if f == '#' else f)
 
 
-def _markup_to_unicode(markup):
-    stream = None
-    if isinstance(markup, Element):
-        stream = markup.generate()
-    elif isinstance(markup, Stream):
-        stream = markup
-    if stream:
-        markup = stream.render('xhtml', encoding=None, strip_whitespace=False)
-    return to_unicode(markup)
-
-
 class MacroError(TracError):
     pass
-
 
 class ProcessorError(TracError):
     pass
@@ -225,9 +222,8 @@ class WikiProcessor(object):
         if WikiSystem(self.env).render_unsafe_content:
             return Markup(text)
         try:
-            stream = Stream(HTMLParser(io.StringIO(text)))
-            return (stream | self._sanitizer).render('xhtml', encoding=None)
-        except ParseError as e:
+            return self._sanitizer.sanitize(text)
+        except HTMLParseError as e:
             self.env.log.warning(e)
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
@@ -245,9 +241,7 @@ class WikiProcessor(object):
         elt = getattr(tag, eltname)(**(self.args or {}))
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
-            for (k, data, pos) in (Stream(elt) | self._sanitizer):
-                sanitized_elt.attrib = data[1]
-                break # only look at START (elt,attrs)
+            sanitized_elt.attrib = self._sanitizer.sanitize_attrs(elt.attrib)
             elt = sanitized_elt
         elt.append(format_to(self.env, self.formatter.context, text))
         return elt
