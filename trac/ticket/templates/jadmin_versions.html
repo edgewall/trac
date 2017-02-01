@@ -96,6 +96,7 @@
                    name="time" size="${len(datetime_hint) + 1}"
                    title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
                    value="${format_datetime()}"/>
+            ## jinjacheck: "releaseddate already defined" OK
             <span class="trac-datetimehint">
               ${_("Format: %(datehint)s", datetime_hint=datetime_hint)}
             </span>
