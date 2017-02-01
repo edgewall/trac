@@ -154,7 +154,7 @@
         #     set old = (ticket.get_default(field_name) if
                          field.old is sameas(empty) else field.old)
         (<button type="submit" name="revert_${field_name}" class="trac-revert"
-                 title="Revert this change">${
+                 title="${_('Revert this change')}">${
           _("revert")}<div id="revert-${field_name}">${
             '0' if 'cc_update' in field else old}</div></button>)
         #   endif
@@ -188,7 +188,7 @@ ${edited_comment if edited_comment is not none else change.comment
            title="${_('Submit changes to comment %(cnum)s', cnum=cnum)}"
            class="trac-disable-on-submit" />
     <input type="submit" name="cancel_comment" value="${_('Cancel')}"
-           title="Cancel comment edit"/>
+           title="${_('Cancel comment edit')}"/>
   </div>
 </form>
 #   endif

@@ -251,8 +251,8 @@ history and logs, available at http://trac.edgewall.org/.
             #       elif col == 'milestone':
             <td class="${col}" ${td_attrs|htmlattr}>
               #       if cell.value:
-              <a title="View milestone" href="${href.milestone(cell.value)}">${
-                cell.value}</a>
+              <a title="${_('View milestone')}"
+                 href="${href.milestone(cell.value)}">${cell.value}</a>
               #       endif
               {% if fullrow %}<hr />{% endif %}
             </td>

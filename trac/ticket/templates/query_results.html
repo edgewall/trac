@@ -118,7 +118,7 @@
         #       set wikitextarea = (header.field.type == 'textarea' and
                                     header.field.format == 'wiki')
         #       if name == 'id':
-        <td class="id"><a href="${result.href}" title="View ticket"
+        <td class="id"><a href="${result.href}" title="${_('View ticket')}"
                           class="${classes(closed=result.status == 'closed')}"
                           >#${result.id}</a></td>
         #       else:

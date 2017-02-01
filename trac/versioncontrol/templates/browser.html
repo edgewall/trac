@@ -184,7 +184,7 @@
       #     endif
 
       #     if properties or file:
-      <table id="info" summary="Revision info">
+      <table id="info" summary="${_('Revision info')}">
         #     if file:
         <tr>
           <th>
@@ -195,7 +195,8 @@
             authorinfo(file.changeset.author),
             pretty_dateinfo(file.changeset.date))
             #     set last_change_link
-            <a href="${rcset}" title="View differences">Last change</a>
+            <a href="${rcset}"
+               title="${_('View differences')}">${_('Last change')}</a>
             #     endset
             #     set rev_link
             <a href="${cset}"
