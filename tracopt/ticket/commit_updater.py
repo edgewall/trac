@@ -37,8 +37,6 @@
 
 import re
 
-from genshi.builder import tag
-
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
 from trac.notification.api import NotificationSystem
@@ -47,6 +45,7 @@ from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketChangeEvent
 from trac.util.datefmt import datetime_now, utc
+from trac.util.html import tag
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _, cleandoc_
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
