@@ -61,19 +61,13 @@
       </tr>
     </table>
 
-    <div id="batchmod_help">
-      # set note
-      <strong>${_("Note:")}</strong>
-      # endset
-      # set trac_batch_modify
-      <a href="${href.wiki('TracBatchModify')}">TracBatchModify</a>
-      # endset
-      # trans trac_batch_modify
+    # call(note, page) jmacros.wikihelp('TracBatchModify'):
+    #   trans note, page
 
-      ${note} See ${trac_batch_modify} for help on using batch modify.
+    ${note} See ${page} for help on using batch modify.
 
-      # endtrans
-    </div>
+    #   endtrans
+    # endcall
 
     <div>
       <input type="hidden" name="selected_tickets" value=""/>

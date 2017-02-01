@@ -323,20 +323,13 @@
         </form>
       </div>
 
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_browser
-        <a href="${href.wiki('TracBrowser')}">TracBrowser</a>
-        # endset
-        # trans trac_browser
+      # call(note, page) jmacros.wikihelp('TracBrowser'):
+      #   trans note, page
 
-        ${note} See ${trac_browser} for help on using the repository
-        browser.
+      ${note} See ${page} for help on using the repository browser.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

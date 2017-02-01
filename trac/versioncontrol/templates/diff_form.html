@@ -92,21 +92,15 @@
           </div>
         </form>
       </div>
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_changeset
-        <a href="${href.wiki('TracChangeset#ExaminingDifferencesBetweenBranches')}">
-          TracChangeset</a>
-        # endset
-        # trans trac_changeset
 
-        ${note} See ${trac_changeset} for help on using the diff
-        feature.
+      # call(note, page) jmacros.wikihelp('TracChangeset',
+                                          '#ExaminingDifferencesBetweenBranches'):
+      #   trans note, page
 
-        # endtrans
-      </div>
+      ${note} See ${page} for help on using the diff feature.
+
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

@@ -106,13 +106,10 @@
         #   endif
         #   if readonly:
         <p class="hint">
-          #   set note
-          <strong>${_("Note:")}</strong>
-          #   endset
-          #   trans note
+          #   trans note = jmacros.note()
 
-          ${note} This repository is not defined in
-          the database and cannot be edited on this page.
+          ${note} This repository is not defined in the database and
+          cannot be edited on this page.
 
           #   endtrans
         </p>
@@ -170,10 +167,7 @@
         </div>
         <div class="field description">
           <label for="description">
-            # set wikiformatting
-            <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
-            # endset
-            # trans wikiformatting
+            # trans wikiformatting = jmacros.wikiformatting_link()
 
             Description: (you may use ${wikiformatting} here)
 

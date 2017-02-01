@@ -116,10 +116,7 @@ history and logs, available at http://trac.edgewall.org/.
       </p>
       #     if type == 'priority':
       <p class="help">
-        #     set note
-        <strong>${_("Note:")}</strong>
-        #     endset
-        #     trans note
+        #     trans note = jmacros.note()
 
         ${note} The order of priorities determines the coloring of
         entries in the ticket queries and reports.

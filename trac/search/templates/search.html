@@ -105,19 +105,13 @@ history and logs, available at http://trac.edgewall.org/.
       </div>
       # endif
 
-      <div id="help">
-        # set trac_search
-        <a href="${href.wiki('TracSearch')}">TracSearch</a>
-        # endset
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # trans note, trac_search
+      # call(note, page) jmacros.wikihelp('TracSearch'):
+      #   trans note, page
 
-        ${note} See ${trac_search} for help on searching.
+      ${note} See ${page} for help on searching.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

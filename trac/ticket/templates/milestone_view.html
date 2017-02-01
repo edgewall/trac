@@ -124,19 +124,13 @@
       </div>
       # endif
 
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_roadmap
-        <a href="${href.wiki('TracRoadmap')}">TracRoadmap</a>
-        # endset
-        # trans trac_roadmap
+      # call(note, page) jmacros.wikihelp('TracRoadmap'):
+      #   trans note, page
 
-        ${note} See ${trac_roadmap} for help on using the roadmap.
+      ${note} See ${page} for help on using the roadmap.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
 
     </div>
     ${ super() }

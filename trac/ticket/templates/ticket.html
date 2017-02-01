@@ -310,11 +310,7 @@
                     <fieldset>
                       <label for="field-description"
                              id="field-description-help">
-                        # set wikiformatting
-                        <a tabindex="42" href="${href.wiki('WikiFormatting')}">
-                          WikiFormatting</a>
-                        # endset
-                        # trans wikiformatting
+                        # trans wikiformatting = jmacros.wikiformatting_link()
 
                         You may use ${wikiformatting} here.
 
@@ -542,11 +538,7 @@
               </div>
               # endif
               <label for="comment">
-                # set wikiformatting
-                <a tabindex="42" href="${href.wiki('WikiFormatting')}">
-                  WikiFormatting</a>
-                # endset
-                # trans wikiformatting
+                # trans wikiformatting = jmacros.wikiformatting_link()
 
                 You may use ${wikiformatting} here.
 
@@ -628,19 +620,13 @@
       #   endwith
       # endif
 
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_tickets
-        <a href="${href.wiki('TracTickets')}">TracTickets</a>
-        # endset
-        # trans trac_tickets
+      # call(note, page) jmacros.wikihelp('TracTickets'):
+      #   trans note, page
 
-        ${note} See ${trac_tickets} for help on using tickets.
+      ${note} See ${page} for help on using tickets.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

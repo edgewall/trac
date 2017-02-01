@@ -111,20 +111,13 @@
       # endfor
       # endfor
 
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_timeline
-        <a href="${href.wiki('TracTimeline')}">TracTimeline</a>
-        # endset
-        # trans trac_timeline
+      # call(note, page) jmacros.wikihelp('TracTimeline'):
+      #   trans note, page
 
-        ${note} See ${trac_timeline} for information about the
-        timeline view.
+      ${note} See ${page} for information about the timeline view.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

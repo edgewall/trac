@@ -16,9 +16,9 @@
      # import 'macros.html' as jmacros with context
 
    Note that this import is not necessary in templates that extend the
-   "jlayout.html" template, as the latter contains that import.
+   "layout.html" template, as the latter contains that import.
    However, in secondary templates included from a template extending
-   "jlayout.html", jmacros is no longer accessible and the import
+   "layout.html", jmacros is no longer accessible and the import
    statement has to be written again.
 
 #}
@@ -39,3 +39,22 @@
 <input type="hidden" name="__FORM_TOKEN" value="${form_token}" />
 # endmacro
 ## jinjacheck: "input" OK
+
+{# Utilities for the repetitive help divs #}
+
+# macro note()
+<strong>${_("Note:")}</strong>
+# endmacro
+
+# macro wikihelp(page, anchor='')
+<div id="help">
+  # set trac_page
+  <a href="${href.wiki(page) + anchor}">${page}</a>
+  # endset
+  ${caller(note(), trac_page)}
+</div>
+#endmacro
+
+# macro wikiformatting_link()
+<a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+# endmacro

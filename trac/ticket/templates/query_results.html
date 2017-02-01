@@ -70,7 +70,7 @@
                    query.order == header.name else '')}">
           # with asc = _('(ascending)'), desc = _('(descending)')
           <a title="${_("Sort by %(col)s %(direction)s", col=header.label,
-                                                       direction=(desc if query.order == header.name and not query.desc else asc))}"
+                        direction=(desc if query.order == header.name and not query.desc else asc))}"
              href="${header.href}">${header.label}</a>
           # endwith
         </th>

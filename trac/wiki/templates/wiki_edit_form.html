@@ -45,23 +45,15 @@ history and logs, available at http://trac.edgewall.org/.
                  name="text" cols="80" rows="${edit_rows}">
 ${page.text}</textarea>
     </p>
-    <div id="help">
-      # set note
-      <strong>${_("Note:")}</strong>
-      # endset
-      # set wikiformatting
-      <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
-      # endset
-      # set trac_wiki
-      <a href="${href.wiki('TracWiki')}">TracWiki</a>
-      # endset
-      # trans wikiformatting, trac_wiki
 
-      ${note} See ${wikiformatting} and ${trac_wiki} for help on
-      editing wiki content.
+    # call(note, page) jmacros.wikihelp('TracWiki'):
+    #   trans note, page, wikiformatting = jmacros.wikiformatting_link()
 
-      # endtrans
-    </div>
+    ${note} See ${wikiformatting} and ${page} for help on editing wiki
+    content.
+
+    #   endtrans
+    # endcall
   </fieldset>
 
   <fieldset id="changeinfo">

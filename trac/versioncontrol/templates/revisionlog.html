@@ -299,20 +299,13 @@
       </form>
       # endfor
 
-      <div id="help">
-        # set note
-        <strong>${_("Note:")}</strong>
-        # endset
-        # set trac_revision_log
-        <a href="${href.wiki('TracRevisionLog')}">TracRevisionLog</a>
-        # endset
-        # trans trac_revision_log
+      # call(note, page) jmacros.wikihelp('TracRevisionLog'):
+      #   trans note, page
 
-        ${note} See ${trac_revision_log} for help on using the
-        revision log.
+      ${note} See ${page} for help on using the revision log.
 
-        # endtrans
-      </div>
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

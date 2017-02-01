@@ -306,20 +306,12 @@
     #   include 'diff_div.html'
     # endwith
 
-    <div id="help">
-      # set note
-      <strong>${_("Note:")}</strong>
-      # endset
-      # set trac_changeset
-      <a href="${href.wiki('TracChangeset')}">TracChangeset</a>
-      # endset
-      # trans trac_changeset
+    # call(note, page) jmacros.wikihelp('TracChangeset'):
+    #   trans note, page
 
-      ${note} See ${trac_changeset} for help on using the changeset
-      viewer.
+    ${note} See ${page} for help on using the changeset viewer.
 
-      # endtrans
-    </div>
-
+    #   endtrans
+    # endcall
   </div>
 </div>
