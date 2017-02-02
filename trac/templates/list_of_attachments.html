@@ -20,10 +20,10 @@
 
 # macro show_one_attachment(attachment)
 #   set attachment_links
-<a href="${url_of(attachment.resource)}" title="${_("View attachment")}">${
+<a href="${url_of(attachment.resource)}" title="${_('View attachment')}">${
   attachment.filename
   }</a><a href="${url_of(attachment.resource, format='raw')}"
-          class="trac-rawlink" title="${_("Download")}">&#8203;</a>
+          class="trac-rawlink" title="${_('Download')}">&#8203;</a>
 #  endset
 #   with
 #     set size

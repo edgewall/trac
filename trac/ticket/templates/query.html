@@ -66,7 +66,7 @@
         ${jmacros.form_token_input()}
         <fieldset id="filters">
           <legend class="foldable">${_("Filters")}</legend>
-          <table summary="${_("Query filters")}">
+          <table summary="${_('Query filters')}">
             # for constraints in (clauses or [{}]):
             #   set clause_num = loop.index0
             <tbody>
@@ -362,7 +362,7 @@
                           _("Edit report {%(id)s} corresponding to this query",
                           id=report_resource.id)
                           }"
-                   value="${_("Edit query")}" />
+                   value="${_('Edit query')}" />
           </div>
         </form>
         # endif
@@ -373,7 +373,7 @@
             <input type="hidden" name="action"
                    value="${'edit' if edit else 'new'}" />
             <input type="hidden" name="query" value="${query.to_string()}" />
-            <input type="submit" value="${_("Save query")}"
+            <input type="submit" value="${_('Save query')}"
                    title="${
                           _('Save updated query in report {%(id)s}',
                           id=report_resource.id) if edit
@@ -391,7 +391,7 @@
                    title="${
                        _("Delete report {%(id)s} corresponding to this query",
                          id=report_resource.id)}"
-                   value="${_("Delete query")}" />
+                   value="${_('Delete query')}" />
           </div>
         </form>
         # endif

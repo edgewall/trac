@@ -35,7 +35,7 @@
     <link rel="alternate" type="application/x-wiki"
           href="${href.wiki(page.name, action='edit',
                 version=page.version if is_not_latest)}"
-          title="${_("Revert page to this version") if is_not_latest else
+          title="${_('Revert page to this version') if is_not_latest else
                    _("Edit this page")}"/>
     #   endif
     <script type="text/javascript">
@@ -61,7 +61,7 @@
 
       # if version:
       <br />
-      <table id="info" summary="${_("Revision info")}">
+      <table id="info" summary="${_('Revision info')}">
         <tr><th scope="row">
             # with
             #   set version = page.version

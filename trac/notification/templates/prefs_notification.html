@@ -125,7 +125,7 @@
           <p>
             &nbsp;
             <button class="trac-button" type="submit" name="action"
-                    title="${_("Save format")}"
+                    title="${_('Save format')}"
                     value="set-format_${distributor}"
                     >${_("Save")}</button>
           </p>
@@ -142,7 +142,7 @@
       <div class="field">
         <label>${_("Subscription rules:")}</label>
         <table class="subscription-rules"
-               summary="${_("Subscription rules")}">
+               summary="${_('Subscription rules')}">
           <tbody class="rules rules-${distributor}">
             # for rule in rules:
             <tr class="rule">
@@ -150,7 +150,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button move-up-rule"
                           type="submit" name="action"
-                          title="${_("Move rule up")}"
+                          title="${_('Move rule up')}"
                           value="move-rule_${rule.id}-${rule.priority - 1}"
                           >↑</button>
                 </div>
@@ -159,7 +159,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button move-down-rule"
                           type="submit" name="action"
-                          title="${_("Move rule down")}"
+                          title="${_('Move rule down')}"
                           value="move-rule_${rule.id}-${rule.priority + 1}"
                           >↓</button>
                 </div>
@@ -168,7 +168,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button delete-rule"
                           type="submit" name="action"
-                          title="${_("Delete rule")}"
+                          title="${_('Delete rule')}"
                           value="delete-rule_${rule.id}"
                           >–</button>
                 </div>
@@ -194,7 +194,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button move-up-rule"
                           type="submit" name="action"
-                          title="${_("Move rule up")}"
+                          title="${_('Move rule up')}"
                           value="">↑</button>
                 </div>
               </td>
@@ -202,7 +202,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button move-down-rule"
                           type="submit" name="action"
-                          title="${_("Move rule down")}"
+                          title="${_('Move rule down')}"
                           value="">↓</button>
                 </div>
               </td>
@@ -210,7 +210,7 @@
                 <div class="inlinebuttons">
                   <button class="trac-button delete-rule"
                           type="submit" name="action"
-                          title="${_("Delete rule")}"
+                          title="${_('Delete rule')}"
                           value="">–</button>
                 </div>
               </td>
@@ -239,7 +239,7 @@
           </select>
           <button class="trac-button add-rule"
                   type="submit" name="action"
-                  title="${_("Add rule")}"
+                  title="${_('Add rule')}"
                   value="add-rule_${distributor}">${_("Add")}</button>
         </p>
         <p class="hint">
@@ -253,10 +253,10 @@
         </p>
         <p class="hint">
           # set never_notify
-          <strong>"${_("Never notify: I update a ticket")}"</strong>
+          <strong>"${_('Never notify: I update a ticket')}"</strong>
           # endset
           # set any_changes
-          <strong>"${_("Notify: Any ticket changes")}"</strong>
+          <strong>"${_('Notify: Any ticket changes')}"</strong>
           # endset
           # trans never_notify, any_changes
 

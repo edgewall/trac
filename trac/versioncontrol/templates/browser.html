@@ -95,7 +95,7 @@
         <form action="${href.changeset()}" method="get">
           <div>
             #   with full_path = (reponame, path)|reject('none')|map('trim', '/')|join('/')
-            <label title="${_("Show the diff against a specific revision")}">
+            <label title="${_('Show the diff against a specific revision')}">
               ${_("View diff against:")}
               <input type="text" name="old" size="6"/>
               <input type="hidden" name="old_path" value="${full_path}"/>
@@ -111,7 +111,7 @@
         <form action="" method="get">
           <div>
             <label for="rev"
-                   title="${_("Hint: clear the field to view latest revision"
+                   title="${_('Hint: clear the field to view latest revision'
                              ) if stickyrev}">
               ${_("View revision:")}</label>
             <input type="text" id="rev" name="rev" value="${stickyrev}"
@@ -136,8 +136,8 @@
               </optgroup>
               #   endfor
             </select>
-            <input type="submit" value="${_("Go!")}"
-                   title="${_("Jump to the chosen preselected path")}" />
+            <input type="submit" value="${_('Go!')}"
+                   title="${_('Jump to the chosen preselected path')}" />
           </div>
         </form>
       </div>
@@ -147,14 +147,14 @@
       <div class="trac-tags">
         #     for branch, head in changeset.get_branches() if branch not in ('default', 'master'):
         <span ${{'class': classes('branch', head=head)}|htmlattr}
-              title="${_("Branch head") if head else _("Branch")}">${
+              title="${_('Branch head') if head else _("Branch")}">${
           branch}</span>
         #     endfor
         #     for tag in changeset.get_tags():
-        <span class="tag" title="${_("Tag")}">${tag}</span>
+        <span class="tag" title="${_('Tag')}">${tag}</span>
         #     endfor
         #     for bookmark in changeset.get_bookmarks():
-        <span class="trac-bookmark" title="${_("Bookmark")}">${bookmark}</span>
+        <span class="trac-bookmark" title="${_('Bookmark')}">${bookmark}</span>
         #     endfor
       </div>
       #     endif
@@ -166,7 +166,7 @@
           #     if 'up' in chrome.links:
           <tr class="even">
             <td class="name" colspan="6">
-              <a class="parent" title="${_("Parent Directory")}"
+              <a class="parent" title="${_('Parent Directory')}"
                  href="${chrome.links.up[0].href}">../</a>
             </td>
           </tr>
@@ -196,11 +196,11 @@
             pretty_dateinfo(file.changeset.date))
             #     set last_change_link
             <a href="${rcset}"
-               title="${_('View differences')}">${_('Last change')}</a>
+               title="${_('View differences')}">${_("Last change")}</a>
             #     endset
             #     set rev_link
             <a href="${cset}"
-               title="${_("View changeset %(rev)s", rev=drev)}">${drev}</a>
+               title="${_('View changeset %(rev)s', rev=drev)}">${drev}</a>
             #-    endset
             #     if stickyrev:
             #       trans last_change = last_change_link, stickyrev = display_rev(stickyrev), rev = rev_link, author, age
@@ -273,7 +273,7 @@
         <tr>
           <td colspan="2">
             <strong>${_("File size:")}</strong>
-            <span title="${_("%(size)s bytes", size=file.size)}">${
+            <span title="${_('%(size)s bytes', size=file.size)}">${
               pretty_size(file.size)}</span>
           </td>
         </tr>
@@ -318,8 +318,8 @@
                    value="${stickyrev|d('', true)}" />
             <input type="hidden" name="old_rev"
                    value="${stickyrev|d('', true)}" />
-            <input type="submit" value="${_("View changes...")}"
-                   title="${_("Select paths and revs for Diff")}" />
+            <input type="submit" value="${_('View changes...')}"
+                   title="${_('Select paths and revs for Diff')}" />
           </div>
         </form>
       </div>

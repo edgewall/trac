@@ -59,7 +59,7 @@
             <div class="inlinebuttons">
               <input type="hidden" name="action" value="clear"/>
               <input type="submit" value="${captioned_button('x', _('Clear'))}"
-                     title="${_("Forget last query")}" class="trac-delete"/>
+                     title="${_('Forget last query')}" class="trac-delete"/>
             </div>
           </form>
           <h3>
@@ -131,7 +131,7 @@
             <div class="inlinebuttons">
               <input type="hidden" name="action" value="delete"/>
               <input type="submit" value="${captioned_button('–', _('Delete'))}"
-                     title="${_("Delete report")}" class="trac-delete"/>
+                     title="${_('Delete report')}" class="trac-delete"/>
             </div>
           </form>
           #   endif
@@ -140,12 +140,12 @@
             <div class="inlinebuttons">
               <input type="hidden" name="action" value="edit"/>
               <input type="submit" value="${captioned_button('✎', _('Edit'))}"
-                     title="${_("Edit report")}"/>
+                     title="${_('Edit report')}"/>
             </div>
           </form>
           #   endif
           <h3>
-            <a title="${_("View report")}" href="${href.report(id)}">
+            <a title="${_('View report')}" href="${href.report(id)}">
               # if sort == 'title':
               ${title} <em>{${id}}</em>
               # else:

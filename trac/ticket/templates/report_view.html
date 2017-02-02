@@ -55,7 +55,7 @@ history and logs, available at http://trac.edgewall.org/.
             # if show_args_form:
             <fieldset id="reportfilters">
               <legend class="foldable">${_("Arguments")}</legend>
-              <table summary="${_("Report arguments")}">
+              <table summary="${_('Report arguments')}">
                 <tbody>
                   <tr style="height: 1px"><td colspan="2"></td></tr>
                 </tbody>
@@ -77,7 +77,7 @@ history and logs, available at http://trac.edgewall.org/.
             # endif
           </div>
           <div class="buttons">
-            <input type="submit" value="${_("Update")}" />
+            <input type="submit" value="${_('Update')}" />
           </div>
         </div>
       </form>
@@ -93,7 +93,7 @@ history and logs, available at http://trac.edgewall.org/.
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" value="${_("Edit report")}" ${accesskey("e")}/>
+            <input type="submit" value="${_('Edit report')}" ${accesskey("e")}/>
           </div>
         </form>
         # endif
@@ -101,7 +101,7 @@ history and logs, available at http://trac.edgewall.org/.
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
-            <input type="submit" value="${_("Copy report")}" />
+            <input type="submit" value="${_('Copy report')}" />
           </div>
         </form>
         # endif
@@ -109,7 +109,7 @@ history and logs, available at http://trac.edgewall.org/.
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
-            <input type="submit" value="${_("Delete report")}" />
+            <input type="submit" value="${_('Delete report')}" />
           </div>
         </form>
         # endif
@@ -201,20 +201,20 @@ history and logs, available at http://trac.edgewall.org/.
             #       set col = cell.header.col.strip('_')
             #       if col == 'report':
             <td class="${col}"${td_attrs|htmlattr}>
-              <a title="${_("View report")}"
+              <a title="${_('View report')}"
                  href="${href.report(cell.value)}">{${cell.value}}</a>
               {% if fullrow %}<hr />{% endif %}
             </td>
             #       elif col in ('ticket', 'id'):
             <td class="ticket" ${td_attrs|htmlattr}>
-              <a title="${_("View %(realm)s", realm=row.resource.realm)}"
+              <a title="${_('View %(realm)s', realm=row.resource.realm)}"
                  href="${url_of(row.resource)}">${
                 shortname_of(row.resource)}</a>
               {% if fullrow %}<hr />{% endif %}
             </td>
             #       elif col == 'summary' and row.id:
             <td class="${col}" ${td_attrs|htmlattr}>
-              <a title="${_("View %(realm)s", realm=row.resource.realm)}"
+              <a title="${_('View %(realm)s', realm=row.resource.realm)}"
                  href="${url_of(row.resource)}">${cell.value}</a>
               {% if fullrow %}<hr />{% endif %}
             </td>

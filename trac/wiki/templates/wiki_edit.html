@@ -113,9 +113,9 @@
       # if not sidebyside and preview_or_review:
       <div class="trac-topnav">
         # if diff:
-        <a href="#info" title="${_("See the diffs")}">${_("Review")}</a>
+        <a href="#info" title="${_('See the diffs')}">${_("Review")}</a>
         # else:
-        <a href="#info" title="${_("See the preview")}">${_("Preview")}</a>
+        <a href="#info" title="${_('See the preview')}">${_("Preview")}</a>
         # endif
         &darr;
       </div>
@@ -220,7 +220,7 @@
       <div ${{'class': sidebyside and 'sidebyside preview-right'}|htmlattr}>
         # if not sidebyside and preview_or_review:
         <div class="trac-nav">
-          <a href="#content" title="${_("Go to the editor")}">${_("Edit")}</a>
+          <a href="#content" title="${_('Go to the editor')}">${_("Edit")}</a>
           &uarr;
         </div>
         # endif
@@ -251,7 +251,7 @@
         # if not sidebyside and page.text:
         <div class="trac-nav">
           <a href="#changeinfo"
-             title="${_("Go to Save, Preview, Review or Cancel buttons")}">${
+             title="${_('Go to Save, Preview, Review or Cancel buttons')}">${
             _("Actions")}</a> &uarr;
         </div>
         # endif

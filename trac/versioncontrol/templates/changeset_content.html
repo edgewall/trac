@@ -6,32 +6,32 @@
     # set new_drev = display_rev(new_rev)
 
     # set newpath
-    <a title="${_("Show entry in browser")}"
+    <a title="${_('Show entry in browser')}"
        href="${href.browser(reponame, new_path, rev=new_rev)}"
        >${new_path}</a>
     # endset
     # set oldpath
-    <a title="${_("Show entry in browser")}"
+    <a title="${_('Show entry in browser')}"
        href="${href.browser(reponame, old_path, rev=old_rev)}"
        >${old_path}</a>
     # endset
     # set newrev
-    <a title="${_("Show full changeset")}"
+    <a title="${_('Show full changeset')}"
        href="${cset_href}">${new_drev}</a>
     # endset
     # set newrrev
-    <a title="${_("Show full changeset")}"
+    <a title="${_('Show full changeset')}"
        href="${cset_href}">r${new_drev}</a>
     # endset
     # set shortnewrev
     <a href="${cset_href}">${new_drev}</a>
     # endset
     # set oldrrev
-    <a title="${_("Show full changeset")}"
+    <a title="${_('Show full changeset')}"
        href="${href.changeset(old_rev, reponame)}">r${old_drev}</a>
     # endset
     # set logoldnew
-    <a title="${_("Show revision log")}"
+    <a title="${_('Show revision log')}"
        href="${href.log(reponame, new_path, rev=new_rev, stop_rev=old_rev)}"
        >[${old_drev}:${new_drev}]</a>
     # endset
@@ -153,7 +153,7 @@
   <small><em>
       # set oldpath
       <a href="${item.old.href}"
-         title="${_("Show original file (revision %(old_rev)s)",
+         title="${_('Show original file (revision %(old_rev)s)',
                     old_rev=display_rev(item.old.rev))}">
         ${item.old.path}</a>
       # endset
@@ -165,10 +165,10 @@
   </em></small>
   #   endif
   #   if 'hide_diff' in item:
-  (<a title="${_("Show differences")}" href="${item.href}">${
+  (<a title="${_('Show differences')}" href="${item.href}">${
     _("view diffs")}</a>)
   #   elif ndiffs + nprops is greaterthan(0):
-  (<a title="${_("Show differences")}" href="#file${idx}">${
+  (<a title="${_('Show differences')}" href="#file${idx}">${
     ngettext('%(num)d diff', '%(num)d diffs', ndiffs) if ndiffs
     }${
     ', ' if ndiffs and nprops
@@ -177,7 +177,7 @@
     }</a>)
   #   endif
   #   if cl == 'mod' and item.diffs is none:
-  (<a title="${_("Show previous version in browser")}" href="${item.old.href}">
+  (<a title="${_('Show previous version in browser')}" href="${item.old.href}">
     previous</a>)
   #   endif
   # endmacro

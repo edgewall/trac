@@ -69,7 +69,7 @@
         <th class="${header.name + ((' desc' if query.desc else ' asc') if
                    query.order == header.name else '')}">
           # with asc = _('(ascending)'), desc = _('(descending)')
-          <a title="${_("Sort by %(col)s %(direction)s", col=header.label,
+          <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
                         direction=(desc if query.order == header.name and not query.desc else asc))}"
              href="${header.href}">${header.label}</a>
           # endwith
@@ -124,7 +124,7 @@
         #       else:
         <td class="${name}">
           #       if name == 'summary':
-          <a href="${result.href}" title="${_("View ticket")}">${value}</a>
+          <a href="${result.href}" title="${_('View ticket')}">${value}</a>
           #       elif header.field.type == 'time':
           ${pretty_dateinfo(value, header.field.format)}
           #       elif name == 'reporter':

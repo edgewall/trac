@@ -93,7 +93,7 @@
           <label for="proj-search">${_("Search:")}</label>
           <input type="text" id="proj-search" name="q" size="18"
                  ${accesskey("f")} value="" />
-          <input type="submit" value="${_("Search")}" />
+          <input type="submit" value="${_('Search')}" />
         </div>
         # endif
       </form>
@@ -123,7 +123,7 @@
       # if chrome.warnings:
       <div id="warning" class="system-message">
         <a class="trac-close-msg" href="#"
-           title="${_("Hide this warning")}"><span>${_("close")}</span></a>
+           title="${_('Hide this warning')}"><span>${_("close")}</span></a>
         <strong>${_("Warning:")}</strong>
         # if len(chrome.warnings) == 1:
         ${chrome.warnings[0]}
@@ -140,7 +140,7 @@
       # if chrome.notices:
       <div id="notice" class="system-message">
         <a class="trac-close-msg" href="#"
-           title="${_("Hide this notice")}"><span>${_("close")}</span></a>
+           title="${_('Hide this notice')}"><span>${_("close")}</span></a>
         # if len(chrome.notices) == 1:
         ${chrome.notices[0]}
         # else:
@@ -172,7 +172,7 @@
     <div id="footer"><hr/>
       <a id="tracpowered" href="http://trac.edgewall.org/"
          ><img src="${chrome.htdocs_location}trac_logo_mini.png" height="30"
-               width="107" alt="${_("Trac Powered")}"/></a>
+               width="107" alt="${_('Trac Powered')}"/></a>
       <p class="left">
         # set trac_version
         <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a>
