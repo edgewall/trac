@@ -15,7 +15,6 @@ import doctest
 import io
 import unittest
 
-import trac.tests.compat
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, MockRequest
 from trac.mimeview import api
