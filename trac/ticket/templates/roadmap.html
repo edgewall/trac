@@ -73,7 +73,7 @@
               #   endtrans
               # elif milestone.is_late:
               <strong>
-                ${_("%(duration)s late", duration=dateinfo(milestone.due))}
+                ${tag_("%(duration)s late", duration=dateinfo(milestone.due))}
               </strong> (${format_datetime(milestone.due)})
               # elif milestone.due:
               #   set duration = dateinfo(milestone.due)
