@@ -238,7 +238,7 @@ class PygmentsRenderer(Component):
 
         # Pygments < 1.4 doesn't know application/javascript
         if 'application/javascript' not in types:
-            js_entry = self._types.get('text/javascript')
+            js_entry = types.get('text/javascript')
             if js_entry:
                 types['application/javascript'] = js_entry
 
