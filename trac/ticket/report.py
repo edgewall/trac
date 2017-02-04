@@ -291,11 +291,11 @@ class ReportModule(Component):
     def _render_list(self, req):
         """Render the list of available reports."""
         sort = req.args.get('sort', 'report')
-        asc = req.args.getbool('asc', True)
+        asc = req.args.getint('asc', 1, min=0, max=1)
         format = req.args.get('format')
 
         rows = [(report.id, report.title, report.description)
-                for report in Report.select(self.env, sort, asc)
+                for report in Report.select(self.env, sort, bool(asc))
                 if 'REPORT_VIEW' in req.perm(self.realm, report.id)]
 
         if format == 'rss':
@@ -311,8 +311,8 @@ class ReportModule(Component):
                            filename='reports.tsv')
 
         def report_href(**kwargs):
-            return req.href.report(sort=req.args.get('sort'),
-                                   asc=1 if asc else 0, **kwargs)
+            return req.href.report(sort=req.args.get('sort'), asc=asc,
+                                   **kwargs)
 
         add_link(req, 'alternate',
                  auth_link(req, report_href(format='rss')),
@@ -326,7 +326,7 @@ class ReportModule(Component):
                     'REPORT_MODIFY' in req.perm(self.realm, id),
                     'REPORT_DELETE' in req.perm(self.realm, id))
                    for id, title, description in rows]
-        data = {'reports': reports, 'sort': sort, 'asc': 1 if asc else 0}
+        data = {'reports': reports, 'sort': sort, 'asc': asc}
 
         return 'report_list.html', data, None
 
@@ -392,7 +392,7 @@ class ReportModule(Component):
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')
-        asc = req.args.getbool('asc', True)
+        asc = req.args.getint('asc', 1, min=0, max=1)
 
         def report_href(**kwargs):
             """Generate links to this report preserving user variables,
@@ -478,7 +478,7 @@ class ReportModule(Component):
             }
 
             if col == sort_col:
-                header['asc'] = asc
+                header['asc'] = bool(asc)
                 if not paginator and need_reorder:
                     # this dict will have enum values for sorting
                     # and will be used in sortkey(), if non-empty:
@@ -503,7 +503,7 @@ class ReportModule(Component):
                         if isinstance(val, basestring):
                             val = val.lower()
                         return val
-                    results = sorted(results, key=sortkey, reverse=(not asc))
+                    results = sorted(results, key=sortkey, reverse=not asc)
 
             header_group = header_groups[-1]
 
