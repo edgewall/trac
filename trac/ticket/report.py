@@ -698,7 +698,7 @@ class ReportModule(Component):
 
                 # The ORDER BY columns are inserted
                 sort_col = req.args.get('sort', '')
-                asc = req.args.getbool('asc', True)
+                asc = req.args.getint('asc', 1, min=0, max=1)
                 self.log.debug("%r %s (%s)", cols, sort_col,
                                '^' if asc else 'v')
                 order_cols = []
