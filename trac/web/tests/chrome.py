@@ -46,17 +46,7 @@ class Request(object):
 class ChromeTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
-
-    def tearDown(self):
-        self.env.restore_component_registry()
-
-    def _get_navigation_item(self, items, name):
-        for item in items:
-            if item['name'] == name:
-                return item
-        return {}
+        self.env = EnvironmentStub(enable=('trac.web.chrome.*',))
 
     def test_add_meta(self):
         req = Request(href=Href('/trac.cgi'))
@@ -294,37 +284,6 @@ class ChromeTestCase(unittest.TestCase):
                          links['icon'][0]['href'])
         self.assertNotIn('shortcut icon', links)
 
-    def test_nav_contributor(self):
-        class TestNavigationContributor(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test', 'Test'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
-                      base_path='/trac.cgi',
-                      add_redirect_listener=lambda listener: None)
-        nav = Chrome(self.env).prepare_request(req)['nav']
-        self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
-                         nav['metanav'][0])
-
-    def test_nav_contributor_active(self):
-        class TestNavigationContributor(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return 'test'
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test', 'Test'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
-                      base_path='/trac.cgi',
-                      add_redirect_listener=lambda listener: None)
-        handler = TestNavigationContributor(self.env)
-        nav = Chrome(self.env).prepare_request(req, handler)['nav']
-        self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
-                         nav['metanav'][0])
-
     def _get_jquery_ui_script_data(self, lc_time):
         req = Request(href=Href('/trac.cgi'), tz=utc, lc_time=lc_time)
         Chrome(self.env).add_jquery_ui(req)
@@ -417,6 +376,107 @@ class ChromeTestCase(unittest.TestCase):
             verify_tzprops('iso8601', panama, -300, '-05:00')
             verify_tzprops(locale_en, panama, None, None)
 
+    def test_cc_list(self):
+        """Split delimited string to a list of email addresses."""
+        chrome = Chrome(self.env)
+        cc_field1 = 'user1@abc.com,user2@abc.com, user3@abc.com'
+        cc_field2 = 'user1@abc.com;user2@abc.com; user3@abc.com'
+        expected = ['user1@abc.com', 'user2@abc.com', 'user3@abc.com']
+        self.assertEqual(expected, chrome.cc_list(cc_field1))
+        self.assertEqual(expected, chrome.cc_list(cc_field2))
+
+    def test_cc_list_is_empty(self):
+        """Empty list is returned when input is `None` or empty."""
+        chrome = Chrome(self.env)
+        self.assertEqual([], chrome.cc_list(None))
+        self.assertEqual([], chrome.cc_list(''))
+        self.assertEqual([], chrome.cc_list([]))
+
+
+class ChromeTestCase2(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(path=mkdtemp())
+        self.chrome = Chrome(self.env)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def test_permission_requestor(self):
+        self.assertIn('EMAIL_VIEW', PermissionSystem(self.env).get_actions())
+
+    def test_malicious_filename_raises(self):
+        req = Request(path_info='/chrome/site/../conf/trac.ini')
+        self.assertTrue(self.chrome.match_request(req))
+        self.assertRaises(TracError, self.chrome.process_request, req)
+
+    def test_empty_shared_htdocs_dir_raises_file_not_found(self):
+        req = Request(path_info='/chrome/shared/trac_logo.png')
+        self.assertEqual('', self.chrome.shared_htdocs_dir)
+        self.assertTrue(self.chrome.match_request(req))
+        from trac.web.api import HTTPNotFound
+        self.assertRaises(HTTPNotFound, self.chrome.process_request, req)
+
+    def test_shared_htdocs_dir_file_is_found(self):
+        from trac.web.api import RequestDone
+        def send_file(path, mimetype):
+            raise RequestDone
+        req = Request(path_info='/chrome/shared/trac_logo.png',
+                      send_file=send_file)
+        shared_htdocs_dir = os.path.join(self.env.path, 'chrome', 'shared')
+        os.makedirs(shared_htdocs_dir)
+        create_file(os.path.join(shared_htdocs_dir, 'trac_logo.png'))
+        self.env.config.set('inherit', 'htdocs_dir', shared_htdocs_dir)
+        self.assertTrue(self.chrome.match_request(req))
+        self.assertRaises(RequestDone, self.chrome.process_request, req)
+
+
+class NavigationContributorTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.env.clear_component_registry()
+
+    def tearDown(self):
+        self.env.restore_component_registry()
+
+    def _get_navigation_item(self, items, name):
+        for item in items:
+            if item['name'] == name:
+                return item
+        return {}
+
+    def test_nav_contributor(self):
+        class TestNavigationContributor(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return None
+            def get_navigation_items(self, req):
+                yield 'metanav', 'test', 'Test'
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), path_info='/',
+                      base_path='/trac.cgi',
+                      add_redirect_listener=lambda listener: None)
+        nav = Chrome(self.env).prepare_request(req)['nav']
+        self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
+                         nav['metanav'][0])
+
+    def test_nav_contributor_active(self):
+        class TestNavigationContributor(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return 'test'
+            def get_navigation_items(self, req):
+                yield 'metanav', 'test', 'Test'
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), path_info='/',
+                      base_path='/trac.cgi',
+                      add_redirect_listener=lambda listener: None)
+        handler = TestNavigationContributor(self.env)
+        nav = Chrome(self.env).prepare_request(req, handler)['nav']
+        self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
+                         nav['metanav'][0])
+
     def test_navigation_item_customization(self):
         class TestNavigationContributor1(Component):
             implements(INavigationContributor)
@@ -489,60 +549,6 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual(str(tag.a('Test Two', href='testtwo',
                                    target='blank')),
                          str(item['label']))
-
-    def test_cc_list(self):
-        """Split delimited string to a list of email addresses."""
-        chrome = Chrome(self.env)
-        cc_field1 = 'user1@abc.com,user2@abc.com, user3@abc.com'
-        cc_field2 = 'user1@abc.com;user2@abc.com; user3@abc.com'
-        expected = ['user1@abc.com', 'user2@abc.com', 'user3@abc.com']
-        self.assertEqual(expected, chrome.cc_list(cc_field1))
-        self.assertEqual(expected, chrome.cc_list(cc_field2))
-
-    def test_cc_list_is_empty(self):
-        """Empty list is returned when input is `None` or empty."""
-        chrome = Chrome(self.env)
-        self.assertEqual([], chrome.cc_list(None))
-        self.assertEqual([], chrome.cc_list(''))
-        self.assertEqual([], chrome.cc_list([]))
-
-
-class ChromeTestCase2(unittest.TestCase):
-
-    def setUp(self):
-        self.env = EnvironmentStub(path=mkdtemp())
-        self.chrome = Chrome(self.env)
-
-    def tearDown(self):
-        self.env.reset_db_and_disk()
-
-    def test_permission_requestor(self):
-        self.assertIn('EMAIL_VIEW', PermissionSystem(self.env).get_actions())
-
-    def test_malicious_filename_raises(self):
-        req = Request(path_info='/chrome/site/../conf/trac.ini')
-        self.assertTrue(self.chrome.match_request(req))
-        self.assertRaises(TracError, self.chrome.process_request, req)
-
-    def test_empty_shared_htdocs_dir_raises_file_not_found(self):
-        req = Request(path_info='/chrome/shared/trac_logo.png')
-        self.assertEqual('', self.chrome.shared_htdocs_dir)
-        self.assertTrue(self.chrome.match_request(req))
-        from trac.web.api import HTTPNotFound
-        self.assertRaises(HTTPNotFound, self.chrome.process_request, req)
-
-    def test_shared_htdocs_dir_file_is_found(self):
-        from trac.web.api import RequestDone
-        def send_file(path, mimetype):
-            raise RequestDone
-        req = Request(path_info='/chrome/shared/trac_logo.png',
-                      send_file=send_file)
-        shared_htdocs_dir = os.path.join(self.env.path, 'chrome', 'shared')
-        os.makedirs(shared_htdocs_dir)
-        create_file(os.path.join(shared_htdocs_dir, 'trac_logo.png'))
-        self.env.config.set('inherit', 'htdocs_dir', shared_htdocs_dir)
-        self.assertTrue(self.chrome.match_request(req))
-        self.assertRaises(RequestDone, self.chrome.process_request, req)
 
 
 class NavigationOrderTestCase(unittest.TestCase):
@@ -954,6 +960,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
+    suite.addTest(unittest.makeSuite(NavigationContributorTestCase))
     suite.addTest(unittest.makeSuite(NavigationOrderTestCase))
     suite.addTest(unittest.makeSuite(FormatAuthorTestCase))
     suite.addTest(unittest.makeSuite(AuthorInfoTestCase))
