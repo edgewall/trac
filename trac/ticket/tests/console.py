@@ -37,6 +37,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
     def datetime_format_hint(self):
         return get_datetime_format_hint(get_console_locale(self.env))
 
+    def test_component_help(self):
+        rv, output = self.execute('help component')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
     def test_component_list_ok(self):
         """
         Tests the 'component list' command in trac-admin.  Since this command
@@ -205,6 +210,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
+    def test_ticket_help(self):
+        rv, output = self.execute('help ticket')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
     def test_ticket_type_list_ok(self):
         """
         Tests the 'ticket_type list' command in trac-admin.  Since this command
@@ -309,6 +319,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         """
         rv, output = self.execute('ticket_type order bad_type up')
         self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_priority_help(self):
+        rv, output = self.execute('help priority')
+        self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
 
     def test_priority_list_ok(self):
@@ -426,6 +441,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         """
         rv, output = self.execute('priority remove bad_priority')
         self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_severity_help(self):
+        rv, output = self.execute('help severity')
+        self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
 
     def test_severity_list_ok(self):
@@ -548,6 +568,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertIn(self.datetime_format_hint, doc)
         self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
+    def test_version_help(self):
+        rv, output = self.execute('help version')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
     def test_version_list_ok(self):
         """
         Tests the 'version list' command in trac-admin.  Since this command
@@ -566,6 +591,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.execute('version add 9.9 "%s"' % self._test_date)
         rv, output = self.execute('version list')
         self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_version_add_too_many_arguments(self):
+        rv, output = self.execute('version add 7.7 8.8 9.9')
+        self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_version_add_error_already_exists(self):
@@ -647,6 +677,11 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         """
         rv, output = self.execute('version remove bad_version')
         self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_milestone_help(self):
+        rv, output = self.execute('help milestone')
+        self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
 
     def test_help_milestone_due(self):

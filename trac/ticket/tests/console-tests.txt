@@ -1,3 +1,24 @@
+===== test_component_help =====
+component add <name> [owner]
+
+    Add component
+
+component chown <name> <owner>
+
+    Change component owner
+
+component list
+
+    Show components
+
+component remove <name>
+
+    Remove component
+
+component rename <name> <newname>
+
+    Rename component
+
 ===== test_component_list_ok =====
 
 Name        Owner
@@ -51,6 +72,11 @@ component2  somebody
 
 ===== test_component_remove_error_bad_component =====
 ResourceNotFound: Component bad_component does not exist.
+===== test_ticket_help =====
+ticket remove <number>
+
+    Remove ticket
+
 ===== test_ticket_type_list_ok =====
 
 Possible Values
@@ -109,6 +135,27 @@ task
 
 ===== test_ticket_type_order_error_bad_type =====
 ResourceNotFound: ticket_type bad_type does not exist.
+===== test_priority_help =====
+priority add <value>
+
+    Add a priority value option
+
+priority change <value> <newvalue>
+
+    Change a priority value
+
+priority list
+
+    Show possible ticket priorities
+
+priority order <value> up|down
+
+    Move a priority value up or down in the list
+
+priority remove <value>
+
+    Remove a priority value
+
 ===== test_priority_list_ok =====
 
 Possible Values
@@ -200,6 +247,27 @@ trivial
 
 ===== test_priority_order_error_bad_priority =====
 ResourceNotFound: priority bad_priority does not exist.
+===== test_severity_help =====
+severity add <value>
+
+    Add a severity value option
+
+severity change <value> <newvalue>
+
+    Change a severity value
+
+severity list
+
+    Show possible ticket severities
+
+severity order <value> up|down
+
+    Move a severity value up or down in the list
+
+severity remove <value>
+
+    Remove a severity value
+
 ===== test_severity_list_ok =====
 
 Possible Values
@@ -246,6 +314,27 @@ foo
 
 ===== test_severity_order_error_bad_severity =====
 ResourceNotFound: severity bad_severity does not exist.
+===== test_version_help =====
+version add <name> [time]
+
+    Add version
+
+version list
+
+    Show versions
+
+version remove <name>
+
+    Remove version
+
+version rename <name> <newname>
+
+    Rename version
+
+version time <name> <time>
+
+    Set version date
+
 ===== test_version_list_ok =====
 
 Name  Time
@@ -260,6 +349,13 @@ Name  Time
 2.0
 1.0
 9.9   2004-01-11
+
+===== test_version_add_too_many_arguments =====
+Error: Invalid arguments
+
+version add <name> [time]
+
+    Add version
 
 ===== test_version_add_error_already_exists =====
 IntegrityError: [...]
@@ -296,6 +392,31 @@ Name  Time
 
 ===== test_version_remove_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
+===== test_milestone_help =====
+milestone add <name> [due]
+
+    Add milestone
+
+milestone completed <name> <completed>
+
+    Set milestone complete date
+
+milestone due <name> <due>
+
+    Set milestone due date
+
+milestone list
+
+    Show milestones
+
+milestone remove <name>
+
+    Remove milestone
+
+milestone rename <name> <newname>
+
+    Rename milestone
+
 ===== test_milestone_list_ok =====
 
 Name        Due  Completed
