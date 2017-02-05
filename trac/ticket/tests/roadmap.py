@@ -20,9 +20,9 @@ from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
-    TicketGroupStats, get_tickets_for_all_milestones,
+    RoadmapModule, TicketGroupStats, get_tickets_for_all_milestones,
     get_tickets_for_milestone)
-from trac.util.datefmt import datetime_now, utc
+from trac.util.datefmt import datetime_now, format_datetime, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
@@ -315,6 +315,13 @@ class RoadmapTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def insert_milestone(self, name, due=None):
+        milestone = Milestone(self.env)
+        milestone.name = name
+        milestone.due = due
+        milestone.insert()
+        return milestone
+
     def test_get_tickets_for_all_milestones(self):
         tickets = get_tickets_for_all_milestones(self.env, field='owner')
         milestone1 = [{'id': 9, 'status': 'new', 'owner': 'blah'},
@@ -334,6 +341,36 @@ class RoadmapTestCase(unittest.TestCase):
                                                    milestone='milestone2',
                                                    field='owner'))
         self.assertEqual(['milestone1', 'milestone2'], sorted(tickets))
+
+    def test_export_ical_from_roadmap(self):
+        self.insert_milestone('milestone1', datetime_now(utc))
+        self.insert_milestone('milestone2')
+        rm = RoadmapModule(self.env)
+        req = MockRequest(self.env, path_info='/roadmap',
+                          args={'format': 'ics'})
+
+        self.assertTrue(rm.match_request(req))
+        with self.assertRaises(RequestDone):
+            rm.process_request(req)
+
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertRegexpMatches(req.response_sent.getvalue(), """\
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Edgewall Software//NONSGML Trac [\.\w]+//EN
+METHOD:PUBLISH
+X-WR-CALNAME:My Project - Roadmap
+X-WR-CALDESC:My example project
+X-WR-TIMEZONE:UTC
+BEGIN:VEVENT
+UID:</trac.cgi/milestone/milestone1@example.org/trac.cgi>
+DTSTAMP:\w+
+DTSTART;VALUE=DATE:\w+
+SUMMARY:Milestone milestone1
+URL:http://example.org/trac.cgi/milestone/milestone1
+END:VEVENT
+END:VCALENDAR
+""".replace('\n', '\r\n'))
 
 
 def in_tlist(ticket, list):
