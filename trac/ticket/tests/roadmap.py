@@ -22,7 +22,7 @@ from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
     RoadmapModule, TicketGroupStats, get_tickets_for_all_milestones,
     get_tickets_for_milestone)
-from trac.util.datefmt import datetime_now, format_datetime, utc
+from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
@@ -45,7 +45,8 @@ class TicketGroupStatsTestCase(unittest.TestCase):
         int = self.stats.intervals[0]
         self.assertEqual('intTitle', int['title'], 'title incorrect')
         self.assertEqual(3, int['count'], 'count incorrect')
-        self.assertEqual({'k1': 'v1'}, int['qry_args'], 'query args incorrect')
+        self.assertEqual({'k1': 'v1'}, int['qry_args'],
+                         'query args incorrect')
         self.assertEqual('css', int['css_class'], 'css class incorrect')
         self.assertEqual(100, int['percent'], 'percent incorrect')
         self.stats.add_interval('intTitle', 3, {'k1': 'v1'}, 'css', 0)
@@ -94,16 +95,16 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.milestone2.insert()
 
         tkt1 = Ticket(self.env)
-        tkt1.populate({'summary': 'Foo', 'milestone': 'Test', 'owner': 'foman',
-                        'status': 'new'})
+        tkt1.populate({'summary': 'Foo', 'milestone': 'Test',
+                       'owner': 'foman', 'status': 'new'})
         tkt1.insert()
         tkt2 = Ticket(self.env)
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test',
                         'status': 'closed', 'owner': 'barman'})
         tkt2.insert()
         tkt3 = Ticket(self.env)
-        tkt3.populate({'summary': 'Sum', 'milestone': 'Test', 'owner': 'suman',
-                        'status': 'reopened'})
+        tkt3.populate({'summary': 'Sum', 'milestone': 'Test',
+                       'owner': 'suman', 'status': 'reopened'})
         tkt3.insert()
         self.tkt1 = tkt1
         self.tkt2 = tkt2
@@ -120,12 +121,14 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
     def test_stats(self):
         self.assertEqual(self.stats.title, 'ticket status', 'title incorrect')
         self.assertEqual(self.stats.unit, 'tickets', 'unit incorrect')
-        self.assertEqual(2, len(self.stats.intervals), 'more than 2 intervals')
+        self.assertEqual(2, len(self.stats.intervals),
+                         'more than 2 intervals')
 
     def test_closed_interval(self):
         closed = self.stats.intervals[0]
         self.assertEqual('closed', closed['title'], 'closed title incorrect')
-        self.assertEqual('closed', closed['css_class'], 'closed class incorrect')
+        self.assertEqual('closed', closed['css_class'],
+                         'closed class incorrect')
         self.assertTrue(closed['overall_completion'],
                         'closed should contribute to overall completion')
         self.assertEqual({'status': ['closed'], 'group': ['resolution']},
@@ -254,6 +257,7 @@ consequat. Duis a ..."""
 
     def test_get_search_results_matches_ignorecase(self):
         req = MockRequest(self.env)
+
         def search(terms):
             return list(self.mmodule.get_search_results(req, terms,
                                                         ['milestone']))

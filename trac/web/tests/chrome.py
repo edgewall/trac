@@ -881,7 +881,6 @@ user2 =
                          unicode(author_short))
 
 
-
 class ChromeTemplateRenderingTestCase(unittest.TestCase):
 
     filename = 'test_chrome.html'

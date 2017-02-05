@@ -388,7 +388,6 @@ def _save_messages(req, url, permanent):
             req.session['chrome.%s.%d' % (type_, i)] = escape(message, False)
 
 
-
 class Chrome(Component):
     """Web site chrome assembly manager.
 
