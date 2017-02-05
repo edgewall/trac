@@ -36,7 +36,7 @@ from trac.ticket.model import Milestone, Ticket
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, get_reporter_id, lazy
+from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
     datetime_now, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
@@ -1306,13 +1306,13 @@ class TicketModule(Component):
             add_warning(req, _("Tickets must contain a summary."))
             valid = False
 
-        # Always validate for known values
+        # Validate select fields for known values
         for field in ticket.fields:
             if 'options' not in field:
                 continue
-            if field['name'] == 'status':
-                continue
             name = field['name']
+            if name == 'status':
+                continue
             if name in ticket and name in ticket._old:
                 value = ticket[name]
                 if value:
@@ -1347,13 +1347,9 @@ class TicketModule(Component):
                                num=self.max_summary_size))
             valid = False
 
-        # Validate comment numbering
-        try:
-            # replyto must be 'description' or a number
-            replyto = req.args.get('replyto')
-            if replyto != 'description':
-                int(replyto or 0)
-        except ValueError:
+        # Validate comment id: replyto must be 'description' or a number
+        replyto = req.args.get('replyto') or 0
+        if replyto != 'description' and as_int(replyto, None) is None:
             # Shouldn't happen in "normal" circumstances, hence not a warning
             raise InvalidTicket(_("Invalid comment threading identifier"))
 
@@ -1362,8 +1358,8 @@ class TicketModule(Component):
             value = ticket[field]
             if not (field in ticket.std_fields or
                     isinstance(value, datetime)):
+                format = ticket.fields.by_name(field).get('format')
                 try:
-                    format = ticket.fields.by_name(field).get('format')
                     ticket[field] = user_time(req, parse_date, value,
                                               hint=format) \
                                     if value else None
