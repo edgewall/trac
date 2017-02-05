@@ -523,7 +523,7 @@ class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
         catalog_hint = "Message catalogs have not been compiled."
         language_select = '<select name="default_language">'
         disabled_language_select = \
-            '<select name="default_language" disabled="disabled" ' \
+            '<select disabled="disabled" name="default_language" ' \
             'title="Translations are currently unavailable">'
 
         self._tester.go_to_admin("Basic Settings")
