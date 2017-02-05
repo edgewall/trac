@@ -29,6 +29,14 @@ from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 
 
+def insert_ticket(env, **kw):
+    """Helper for inserting a ticket into the database"""
+    ticket = Ticket(env)
+    for k, v in kw.items():
+        ticket[k] = v
+    return ticket.insert()
+
+
 class TicketModuleTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -53,10 +61,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def _insert_ticket(self, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = Ticket(self.env)
-        for k, v in kw.items():
-            ticket[k] = v
-        return ticket.insert()
+        return insert_ticket(self.env, **kw)
 
     def test_ticket_module_as_default_handler(self):
         """The New Ticket mainnav entry is active when TicketModule is the
@@ -501,9 +506,76 @@ class TicketModuleTestCase(unittest.TestCase):
         self._test_newticket_with_enum_as_custom_field('version')
 
 
+class CustomFieldMaxSizeTestCase(unittest.TestCase):
+    """Tests for [ticket-custom] max_size attribute."""
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.ticket_module = TicketModule(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _setup_env_and_req(self, max_size, field_value):
+        self.env.config.set('ticket-custom', 'text1', 'text')
+        self.env.config.set('ticket-custom', 'text1.max_size', max_size)
+        tid = insert_ticket(self.env, summary='summary', text1='init')
+        view_time = str(to_utimestamp(Ticket(self.env, tid)['changetime']))
+        req = MockRequest(
+            self.env, method='POST', path_info='/ticket/%d' % tid,
+            args={'submit': 'Submit changes', 'field_text1': field_value,
+                  'action': 'leave', 'view_time': view_time})
+        return req
+
+    def test_ticket_custom_field_greater_than_max_size(self):
+        """Validation fails for a ticket custom field with content length
+        greater than max_size.
+        """
+        max_size = 5
+        field_value = 'a' * (max_size + 1)
+        req = self._setup_env_and_req(max_size, field_value)
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.ticket_module.process_request(req)
+
+        self.assertTrue(req.args['preview'])
+        self.assertEqual(1, len(req.chrome['warnings']))
+        self.assertIn("Ticket field 'Text1' is too long (must be less "
+                      "than 5 characters)", req.chrome['warnings'])
+
+    def test_ticket_custom_field_less_than_max_size(self):
+        """Validation succeeds for a ticket custom field with content length
+        less than or equal to max_size.
+        """
+        max_size = 5
+        field_value = 'a' * max_size
+        req = self._setup_env_and_req(max_size, field_value)
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        with self.assertRaises(RequestDone):
+            self.ticket_module.process_request(req)
+
+        self.assertEqual(0, len(req.chrome['warnings']))
+        self.assertEqual(field_value, Ticket(self.env, 1)['text1'])
+
+    def test_ticket_custom_field_max_size_is_zero(self):
+        """Validation is skipped when max_size attribute is <= 0."""
+        max_size = 0
+        field_value = 'a' * 100
+        req = self._setup_env_and_req(max_size, field_value)
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        with self.assertRaises(RequestDone):
+            self.ticket_module.process_request(req)
+
+        self.assertEqual(0, len(req.chrome['warnings']))
+        self.assertEqual(field_value, Ticket(self.env, 1)['text1'])
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketModuleTestCase))
+    suite.addTest(unittest.makeSuite(CustomFieldMaxSizeTestCase))
     return suite
 
 

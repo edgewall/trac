@@ -1347,6 +1347,17 @@ class TicketModule(Component):
                                num=self.max_summary_size))
             valid = False
 
+        # Validate custom field length
+        for field in ticket.custom_fields:
+            field_attrs = ticket.fields.by_name(field)
+            max_size = field_attrs.get('max_size', 0)
+            label = field_attrs.get('label')
+            if 0 < max_size < len(ticket[field] or ''):
+                add_warning(req, _("Ticket field '%(field)s' is too long "
+                                   "(must be less than %(num)s characters)",
+                                   field=label or field, num=max_size))
+                valid = False
+
         # Validate comment id: replyto must be 'description' or a number
         replyto = req.args.get('replyto') or 0
         if replyto != 'description' and as_int(replyto, None) is None:

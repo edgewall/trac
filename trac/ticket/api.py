@@ -422,8 +422,10 @@ class TicketSystem(Component):
                         field['options'].remove('')
             elif field['type'] == 'text':
                 field['format'] = config.get(name + '.format', 'plain')
+                field['max_size'] = config.getint(name + '.max_size', 0)
             elif field['type'] == 'textarea':
                 field['format'] = config.get(name + '.format', 'plain')
+                field['max_size'] = config.getint(name + '.max_size', 0)
                 field['height'] = config.getint(name + '.rows')
             elif field['type'] == 'time':
                 field['format'] = config.get(name + '.format', 'datetime')
