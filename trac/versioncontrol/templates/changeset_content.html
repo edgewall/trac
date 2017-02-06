@@ -306,12 +306,14 @@
     #   include 'diff_div.html'
     # endwith
 
-    # call(note, page) jmacros.wikihelp('TracChangeset'):
-    #   trans note, page
+    # if jmacros is defined:
+    #   call(note, page) jmacros.wikihelp('TracChangeset'):
+    #     trans note, page
 
     ${note} See ${page} for help on using the changeset viewer.
 
-    #   endtrans
-    # endcall
+    #     endtrans
+    #   endcall
+    # endif
   </div>
 </div>
