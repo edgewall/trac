@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from functools import partial
-
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            IAdminPanelProvider, console_date_format, \
                            console_datetime_format, get_console_locale
