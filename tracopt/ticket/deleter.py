@@ -17,8 +17,6 @@ from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import get_reporter_id
 from trac.util.datefmt import from_utimestamp
-from trac.util.html import tag
-from trac.util.presentation import captioned_button
 from trac.util.translation import _
 from trac.web.api import IRequestFilter, IRequestHandler
 from trac.web.chrome import (ITemplateProvider, add_notice, add_stylesheet,
