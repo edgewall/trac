@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2010-2017 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -19,8 +19,8 @@ from trac.util import get_reporter_id
 from trac.util.datefmt import from_utimestamp
 from trac.util.translation import _
 from trac.web.api import IRequestFilter, IRequestHandler
-from trac.web.chrome import (ITemplateProvider, add_notice, add_stylesheet,
-                             add_script, add_script_data)
+from trac.web.chrome import (ITemplateProvider, add_notice, add_script,
+                             add_script_data, add_stylesheet)
 
 
 class TicketDeleter(Component):
@@ -64,8 +64,8 @@ class TicketDeleter(Component):
     def post_process_request(self, req, template, data, metadata):
         if template in ('ticket.html', 'ticket_preview.html'):
             ticket = data.get('ticket')
-            if (ticket and ticket.exists
-                and 'TICKET_ADMIN' in req.perm(ticket.resource)):
+            if (ticket and ticket.exists and
+                    'TICKET_ADMIN' in req.perm(ticket.resource)):
                 add_script(req, 'ticketopt/ticketdeleter.js')
                 add_script_data(req, ui={'use_symbols':
                                          req.session.get('ui.use_symbols')})
@@ -77,7 +77,7 @@ class TicketDeleter(Component):
         return False
 
     def process_request(self, req):
-        id = int(req.args.get('id'))
+        id = req.args.getint('id')
         req.perm('ticket', id).require('TICKET_ADMIN')
         ticket = Ticket(self.env, id)
         action = req.args['action']
@@ -91,15 +91,15 @@ class TicketDeleter(Component):
 
             if action == 'delete':
                 ticket.delete()
-                add_notice(req, _('The ticket #%(id)s has been deleted.',
+                add_notice(req, _("The ticket #%(id)s has been deleted.",
                                   id=ticket.id))
                 req.redirect(req.href())
 
             elif action == 'delete-comment':
                 cdate = from_utimestamp(long(req.args.get('cdate')))
                 ticket.delete_change(cdate=cdate)
-                add_notice(req, _('The ticket comment %(num)s on ticket '
-                                  '#%(id)s has been deleted.',
+                add_notice(req, _("The ticket comment %(num)s on ticket "
+                                  "#%(id)s has been deleted.",
                                   num=cnum, id=ticket.id))
                 req.redirect(req.href.ticket(id))
 
@@ -118,7 +118,7 @@ class TicketDeleter(Component):
                     data['cnum'] = change.get('cnum')
                     break
             else:
-                raise TracError(_('Comment %(num)s not found', num=cnum))
+                raise TracError(_("Comment %(num)s not found", num=cnum))
         elif action == 'delete':
             attachments = Attachment.select(self.env, ticket.realm, ticket.id)
             data.update(attachments=list(attachments))
