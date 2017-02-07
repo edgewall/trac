@@ -91,8 +91,8 @@ class TicketDeleter(Component):
 
             if action == 'delete':
                 ticket.delete()
-                add_notice(req, _("Ticket #%(num)s and all associated data "
-                                  "removed.", num=ticket.id))
+                add_notice(req, _("The ticket #%(id)s has been deleted.",
+                                  id=ticket.id))
                 req.redirect(req.href())
 
             elif action == 'delete-comment':

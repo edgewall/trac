@@ -1000,7 +1000,7 @@ class AttachmentAdmin(Component):
                The resource is identified by its realm and identifier.""",
                self._complete_remove, self._do_remove)
         yield ('attachment export', '<realm:id> <name> [destination]',
-               """Export an attachment from a resource to file or stdout
+               """Export an attachment from a resource to a file or stdout
 
                The resource is identified by its realm and identifier. If no
                destination is specified, the attachment is output to stdout.
