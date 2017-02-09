@@ -31,8 +31,8 @@ deleteTicket = () ->
      <div class="inlinebuttons">
       <input type="hidden" name="action" value="delete">
       <input type="submit" 
-             value="#{captionedButton '–', _("Delete")}"
-             title="#{_("Delete ticket")}"
+             value="#{captionedButton '–', _('Delete')}"
+             title="#{_('Delete ticket')}"
              class="trac-delete">
       <input type="hidden" name="__FORM_TOKEN" value="#{form_token}">
      </div>
@@ -50,8 +50,8 @@ deleteComment = (c) ->
       <input type="hidden" name="cnum", value="#{cnum}">
       <input type="hidden" name="cdate" value="#{cdate}">
       <input type="submit"
-             value="#{captionedButton '–', _("Delete")}"
-             title="#{_("Delete comment %(num)s", num: cnum)}"
+             value="#{captionedButton '–', _('Delete')}"
+             title="#{_('Delete comment %(num)s', num: cnum)}"
              class="trac-delete">
       <input type="hidden" name="__FORM_TOKEN" value="#{form_token}">
      </div>
