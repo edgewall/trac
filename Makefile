@@ -329,11 +329,15 @@ define HELP_code
 
   pylint              check code with pylint
   jinja               check Jinja2 templates
+  coffee              compile .coffee script files into .js files
+
+  [templates=...]     list of Jinja2 templates to check
+  [coffeescripts=...] list of coffee script files to compile
 
 endef
 export HELP_code
 
-.PHONY: pylint jinja
+.PHONY: pylint jinja coffee
 
 pylint:
 	pylint \
@@ -352,7 +356,12 @@ templates ?= $(shell \
     grep -v "~" | grep -v README )
 
 jinja:
-	python contrib/jinjachecker.py $(jinjaopts) $(templates)
+	$(PYTHON) contrib/jinjachecker.py $(jinjaopts) $(templates)
+
+coffeescripts ?= $(shell find trac tracopt -name \*.coffee)
+
+coffee:
+	coffee -c  $(coffeescripts)
 
 
 # ----------------------------------------------------------------------------
