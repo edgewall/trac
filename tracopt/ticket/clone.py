@@ -39,8 +39,10 @@ class TicketCloneButton(Component):
             ticket = data.get('ticket')
             if ticket and ticket.exists:
                 add_script(req, 'ticketopt/ticketclone.js')
-                add_script_data(req, baseurl=req.href(), ui={
-                    'use_symbols': req.session.get('ui.use_symbols')})
+                add_script_data(req,
+                                newticket_href=req.href('newticket'),
+                                ui={'use_symbols':
+                                    req.session.get('ui.use_symbols')})
         return template, data, metadata
 
     # ITemplateProvider methods

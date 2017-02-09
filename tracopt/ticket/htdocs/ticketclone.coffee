@@ -16,8 +16,8 @@
 # The script is added via the tracopt.ticket.clone component.
 #
 # It uses the following Trac global variables:
-#  - from add_script_data in tracopt.ticket.clone: baseurl, ui
-#    (TODO: generalize this)
+#  - from add_script_data in tracopt.ticket.clone: newticket_href, ui
+#    (TODO: generalize this, have an href() js utility function)
 #  - from add_script_data in trac.web.chrome: form_token
 #  - from add_script_data in trac.ticket.web_ui:
 #     * old_values: {name: value} for each field of the current ticket
@@ -38,7 +38,7 @@ addField = (form, name, value) ->
 createCloneAction = (title) ->
   # the action needs to be wrapped in a <form>, as we want a POST
   form = $ """
-    <form action="#{baseurl}/newticket" method="post">
+    <form action="#{newticket_href}" method="post">
      <div class="inlinebuttons">
       <input type="submit" name="clone"
              value="#{captionedButton '+', _('Clone')}"
