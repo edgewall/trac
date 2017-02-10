@@ -1,4 +1,17 @@
 <?xml version="1.0"?>
+{# Copyright (C) 2006-2017 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Revision log view - RSS flavor
+##
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   ## jinjacheck: "no DTD found" OK
   # with log_href = abs_href.log(reponame, path, rev=rev)
@@ -32,10 +45,13 @@
       }</guid>
       # set m = change.message
       <description>${
-        to_unicode((wiki_to_html(item_context, m) if verbose
-                    else wiki_to_oneliner(item_context, m)) if wiki_format_messages
-                   else m)
-        }</description>
+      (wiki_to_html(item_context, m)
+         if verbose else
+       wiki_to_oneliner(item_context, m)
+         if wiki_format_messages else
+       m)
+      |forceescape
+      }</description>
       <category>Log</category>
     </item>
     # endfor

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-{# Copyright (C) 2006-2014 Edgewall Software
+{# Copyright (C) 2006-2017 Edgewall Software
 
   This software is licensed as described in the file COPYING, which
   you should have received as part of this distribution. The terms
@@ -13,7 +13,7 @@
 ## Query view - RSS flavor
 ##
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
-## jinjacheck: "no DTD" OK
+  ## jinjacheck: "no DTD" OK
   <channel>
     <title>
       # trans project = project.name
@@ -45,7 +45,10 @@
       #   endif
       #   set author = result.reporter
       #   include 'author_or_creator.rss'
-      <description>${wiki_to_html(context.child('ticket', result.id), result.description)}</description>
+      <description>${
+      wiki_to_html(context.child('ticket', result.id), result.description)
+      |forceescape
+      }</description>
       <category>Results</category>
       <comments>${href}#changelog</comments>
       # endif

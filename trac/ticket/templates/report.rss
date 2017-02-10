@@ -1,4 +1,17 @@
 <?xml version="1.0"?>
+{# Copyright (C) 2006-2017 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Timeline view - RSS flavor
+##
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>${project.name}: ${title}</title>
@@ -27,13 +40,13 @@
       #       elif col in ('time', 'changetime', 'created', 'modified'):
       ##        # FIXME: we end up with multiple pubDate
       #         if cell.value is not none:
-      <pubDate>${http_date(from_utimestamp(long(cell.value)))}</pubDate>
+      <pubDate>${http_date(from_utimestamp(as_int(cell.value, 0)))}</pubDate>
       #         endif
       #       elif col == 'summary':
       <title>#${row.id}: ${cell.value}</title>
       #     elif col == 'description':
       <description>${
-      unicode(wiki_to_html(context.child(row.resource), cell.value))
+      wiki_to_html(context.child(row.resource), cell.value)|forceescape
       }</description>
       #     endif
       #   endfor

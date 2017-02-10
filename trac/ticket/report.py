@@ -189,7 +189,7 @@ class ReportModule(Component):
         else:
             template, data, content_type = self._render_view(req, id)
             if content_type:  # i.e. alternate format
-                return template, data, content_type
+                return template, data, {'content_type': content_type}
 
         from trac.ticket.query import QueryModule
         show_query_link = 'TICKET_VIEW' in req.perm(TicketSystem.realm) and \
