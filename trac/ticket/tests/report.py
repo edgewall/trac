@@ -278,6 +278,20 @@ class ReportModuleTestCase(unittest.TestCase):
                          " * Color each row based on priority.\n",
                          data['description'])
 
+    def test_render_view_sort_order_preserved_on_update(self):
+        """Sort column and order are preserved on update."""
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'view',
+            'id': 1,
+            'sort': 'summary',
+            'asc': '1'
+        })
+
+        data = self.report_module.process_request(req)[1]
+
+        self.assertEqual(1, data['asc'])
+        self.assertEqual('summary', data['sort'])
+
     def test_sub_var_no_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
             u"$VAR", {'VAR': 'value'})

@@ -387,12 +387,12 @@ class ReportModule(Component):
         page = req.args.getint('page', 1)
         default_max = {'rss': self.items_per_page_rss,
                        'csv': 0, 'tab': 0}.get(format, self.items_per_page)
-        max = req.args.get('max')
+        max = req.args.getint('max')
         limit = as_int(max, default_max, min=0)  # explict max takes precedence
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')
-        asc = req.args.getint('asc', 1, min=0, max=1)
+        asc = req.args.getint('asc', 0, min=0, max=1)
 
         def report_href(**kwargs):
             """Generate links to this report preserving user variables,
@@ -401,11 +401,12 @@ class ReportModule(Component):
             params = args.copy()
             if sort_col:
                 params['sort'] = sort_col
-            params['page'] = page
-            if max:
+            if page != 1:
+                params['page'] = page
+            if max != default_max:
                 params['max'] = max
             params.update(kwargs)
-            params['asc'] = as_int(params.get('asc'), asc, min=0, max=1)
+            params['asc'] = 1 if params.get('asc', asc) else None
             return req.href.report(id, params)
 
         data = {'action': 'view',
@@ -478,6 +479,9 @@ class ReportModule(Component):
             }
 
             if col == sort_col:
+                if asc:
+                    data['asc'] = asc
+                data['sort'] = sort_col
                 header['asc'] = bool(asc)
                 if not paginator and need_reorder:
                     # this dict will have enum values for sorting
@@ -698,7 +702,7 @@ class ReportModule(Component):
 
                 # The ORDER BY columns are inserted
                 sort_col = req.args.get('sort', '')
-                asc = req.args.getint('asc', 1, min=0, max=1)
+                asc = req.args.getint('asc', 0, min=0, max=1)
                 self.log.debug("%r %s (%s)", cols, sort_col,
                                '^' if asc else 'v')
                 order_cols = []

@@ -767,7 +767,8 @@ class TestReportSorting(FunctionalTwillTestCaseSetup):
         """
         tid = (self._tester.create_ticket(),
                self._tester.create_ticket())
-        sort_href = 'href="/report/1\?sort=ticket&amp;asc=%d&amp;page=1'
+        sort_href_desc = 'href="/report/1\?sort=ticket"'
+        sort_href_asc = sort_href_desc[:-1] + '&amp;asc=1"'
         sort_text = r'(?<!New )\bTicket\b'
 
         def find_table_entries(tid):
@@ -776,14 +777,26 @@ class TestReportSorting(FunctionalTwillTestCaseSetup):
                     '<a [^>]+ href="/ticket/%d">' % tid, 's')
 
         self._tester.go_to_report(1)
-        tc.find(sort_href % 1)
+        tc.find(sort_href_asc)
         find_table_entries(tid)
         tc.follow(sort_text)  # Sort ascending
-        tc.find(sort_href % 0)
+        tc.find(sort_href_desc)
         find_table_entries(tid)
         tc.follow(sort_text)  # Sort descending
-        tc.find(sort_href % 1)
+        tc.find(sort_href_asc)
         find_table_entries(tuple(reversed(tid)))
+        # Sort order preserved when submitting preferences form.
+        sort_href_desc = 'href="/report/1\?sort=summary"'
+        sort_href_asc = sort_href_desc[:-1] + '&amp;asc=1"'
+        tc.find(sort_href_asc)
+        tc.follow(r'\bSummary\b')
+        tc.find(sort_href_desc)
+        tc.submit(formname='trac-report-prefs')
+        tc.find(sort_href_desc)
+        tc.follow(r'\bSummary\b')
+        tc.find(sort_href_asc)
+        tc.submit(formname='trac-report-prefs')
+        tc.find(sort_href_asc)
 
 
 class TestMilestone(FunctionalTwillTestCaseSetup):

@@ -45,7 +45,7 @@ history and logs, available at http://trac.edgewall.org/.
         # endif
       </h1>
 
-      <form method="get" action="">
+      <form method="get" id="trac-report-prefs" action="">
         <div id="prefs">
           <div>
             <label>
@@ -77,6 +77,10 @@ history and logs, available at http://trac.edgewall.org/.
             # endif
           </div>
           <div class="buttons">
+            <input type="hidden" name="sort" value="${sort}" />
+            # if asc:
+            <input type="hidden" name="asc" value="1" />
+            # endif
             <input type="submit" value="${_('Update')}" />
           </div>
         </div>
