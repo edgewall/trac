@@ -66,7 +66,7 @@ class WikiAdmin(Component):
                directory are imported.""",
                self._complete_load_replace, self._do_load)
         yield ('wiki replace', '<path> [...]',
-               """Replace the content of wiki pages from files (DANGEROUS!)
+               """Replace content of wiki pages from files (DANGEROUS!)
 
                This command replaces the content of the last version of one
                or more wiki pages with new content. The previous content is

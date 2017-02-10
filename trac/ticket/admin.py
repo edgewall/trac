@@ -865,8 +865,10 @@ class TicketAdmin(Component):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
-        yield ('ticket remove', '<ticket#>', 'Remove ticket',
-               None, self._do_remove)
+        yield ('ticket remove', '<ticket#>',
+               'Remove ticket', None, self._do_remove)
+        yield ('ticket remove_comment', '<ticket#> <comment#>',
+               'Remove ticket comment', None, self._do_remove_comment)
 
     def _do_remove(self, number):
         number = as_int(number, None)
@@ -876,3 +878,20 @@ class TicketAdmin(Component):
             model.Ticket(self.env, number).delete()
         printout(_("Ticket #%(num)s and all associated data removed.",
                    num=number))
+
+    def _do_remove_comment(self, ticket_number, comment_number):
+        ticket_number = as_int(ticket_number, None)
+        if ticket_number is None:
+            raise AdminCommandError(_('<ticket#> must be a number'))
+        comment_number = as_int(comment_number, None)
+        if comment_number is None:
+            raise AdminCommandError(_('<comment#> must be a number'))
+        with self.env.db_transaction:
+            ticket = model.Ticket(self.env, ticket_number)
+            change = ticket.get_change(comment_number)
+            if not change:
+                raise AdminCommandError(_("Comment %(num)s not found",
+                                          num=comment_number))
+            ticket.delete_change(comment_number)
+        printout(_("The ticket comment %(num)s on ticket #%(id)s has been "
+                   "deleted.", num=comment_number, id=ticket_number))
