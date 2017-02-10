@@ -18,6 +18,7 @@ from trac.admin.api import get_console_locale
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.test import EnvironmentStub
+from trac.ticket.model import Ticket
 from trac.util.datefmt import get_datetime_format_hint
 
 
@@ -213,6 +214,33 @@ class TracAdminTestCase(TracAdminTestCaseBase):
     def test_ticket_help(self):
         rv, output = self.execute('help ticket')
         self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_ticket_remove_ok(self):
+        """Ticket is successfully deleted."""
+        Ticket(self.env).insert()
+        rv, output = self.execute('ticket remove 1')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_ticket_remove_error_no_argument(self):
+        """Error reported when ticket# argument is missing."""
+        rv, output = self.execute('ticket remove')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_ticket_remove_error_ticket_id_not_an_int(self):
+        """Error reported when ticket id is not an int."""
+        Ticket(self.env).insert()
+        rv, output = self.execute('ticket remove a')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_ticket_remove_error_invalid_ticket_id(self):
+        """ResourceNotFound error reported when ticket does not exist."""
+        Ticket(self.env).insert()
+        rv, output = self.execute('ticket remove 2')
+        self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_ticket_type_list_ok(self):

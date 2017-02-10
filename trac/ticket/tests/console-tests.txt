@@ -73,10 +73,23 @@ component2  somebody
 ===== test_component_remove_error_bad_component =====
 ResourceNotFound: Component bad_component does not exist.
 ===== test_ticket_help =====
-ticket remove <number>
+ticket remove <ticket#>
 
     Remove ticket
 
+===== test_ticket_remove_ok =====
+Ticket #1 and all associated data removed.
+===== test_ticket_remove_error_no_argument =====
+Error: Invalid arguments
+
+ticket remove <ticket#>
+
+    Remove ticket
+
+===== test_ticket_remove_error_ticket_id_not_an_int =====
+Error: <ticket#> must be a number
+===== test_ticket_remove_error_invalid_ticket_id =====
+ResourceNotFound: Ticket 2 does not exist.
 ===== test_ticket_type_list_ok =====
 
 Possible Values

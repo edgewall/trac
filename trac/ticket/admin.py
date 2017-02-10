@@ -19,7 +19,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
 from trac.ticket.roadmap import MilestoneModule
-from trac.util import getuser
+from trac.util import as_int, getuser
 from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
 from trac.util.text import exception_to_unicode, print_table, printout
@@ -865,14 +865,13 @@ class TicketAdmin(Component):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
-        yield ('ticket remove', '<number>', 'Remove ticket',
+        yield ('ticket remove', '<ticket#>', 'Remove ticket',
                None, self._do_remove)
 
     def _do_remove(self, number):
-        try:
-            number = int(number)
-        except ValueError:
-            raise AdminCommandError(_("<number> must be a number"))
+        number = as_int(number, None)
+        if number is None:
+            raise AdminCommandError(_("<ticket#> must be a number"))
         with self.env.db_transaction:
             model.Ticket(self.env, number).delete()
         printout(_("Ticket #%(num)s and all associated data removed.",
