@@ -778,7 +778,7 @@ table.listing {
  border-collapse: collapse;
  border-spacing: 0;
  box-shadow: .3em .3em .4em 0 #f2f2f2; /* main_box_shadow */
- margin-top: 1em;
+ margin: 1em 0;
  width: 100%;
 }
 table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 1em }

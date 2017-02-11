@@ -30,7 +30,7 @@
       <h1>${tag_("Rename %(name)s",
                  name='<a href="%s">%s</a>'|safe % (current_href, page.name))}
       </h1>
-      <form id="rename-form" action="${current_href}" method="post">
+      <form id="rename-form" action="${current_href}" method="post" class="mod">
         ${jmacros.form_token_input()}
         <p>
           <input type="hidden" name="action" value="rename" />
