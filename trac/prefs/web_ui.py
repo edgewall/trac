@@ -246,7 +246,8 @@ class UserInterfacePreferencePanel(Component):
     _request_handlers = ExtensionPoint(IRequestHandler)
 
     _form_fields = ('accesskeys', 'default_handler',
-                    'ui.hide_help', 'ui.use_symbols')
+                    'ui.hide_help', 'ui.use_symbols',
+                    'wiki_fullwidth')
 
     # IPreferencePanelProvider methods
 

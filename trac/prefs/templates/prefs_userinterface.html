@@ -44,6 +44,24 @@
     </div>
 
     <div class="field">
+      <input type="hidden" name="wiki_fullwidth_cb" value="" />
+      <label>
+        <input type="checkbox" name="wiki_fullwidth" value="1"${
+             {'checked': session.get('wiki_fullwidth')}|htmlattr}/>
+        ${_("Show wiki pages in full-width by default.")}
+      </label>
+      <p class="hint">
+        # trans
+
+	Use all the available browser width to display the wiki page
+	content, instead of the fixed-width central column aimed at
+	improving readability.
+
+        # endtrans
+      </p>
+    </div>
+
+    <div class="field">
       <input type="hidden" name="ui.use_symbols_cb" value="" />
       <label>
         <input type="checkbox" name="ui.use_symbols" value="1"${
