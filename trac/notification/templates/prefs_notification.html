@@ -105,6 +105,7 @@
     # endblock head
   </head>
   <body>
+    # set prefpanel_has_forms = true
     # block prefpanel
     <h2 id="subscriptions-section">${_("Subscriptions")}</h2>
     #   for distributor, rules in data['rules'].iteritems():
@@ -302,6 +303,9 @@
       #   endif
     </div>
     #   endfor
+    <p class="trac-noscript">
+      <button class="trac-button" type="submit" name="action" value="replace_all">${_("Save changes")}</button>
+    </p>
     # endblock prefpanel
   </body>
 </html>
