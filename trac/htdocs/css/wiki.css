@@ -1,29 +1,174 @@
+@charset "UTF-8"; /* -*- coding: utf-8 -*- */
 @import url(code.css);
 
 #info { margin: 0 0 1em 0 }
-#wikipage { clear: both }
 
-.wikipage h2 {
- border-bottom: 1px solid #ddd;
- box-shadow: .1em .4em .7em 0 #f2f2f2;
- padding: 0.2em .3em .1em;
+#wikipage {
+ clear: both;
 }
-@media print { .wikipage h2 { box-shadow: none } }
 
-.wikipage h3 {
- border-bottom: 1px dashed #ddd;
- padding: 0.2em .3em .1em;
+/* Wide wiki page */
+#content #wikipage {
+ max-width: none;
 }
+#content #trac-wiki-expander {
+ cursor: pointer;
+}
+#content #trac-wiki-expander:before {
+ content: "↹";
+}
+
+/* Narrow wiki page */
+#trac-wiki-expander {
+ float: right;
+ margin-top: -.5em;
+ margin-right: -.5em;
+}
+
+#content.narrow #wikipage {
+ max-width: 56em;
+}
+#content.narrow #trac-wiki-expander:before {
+ content: "↔";
+}
+
+
+/* Wiki page headings -- h1 to h6 (h2 and h3 have a special underline) */
+
+h1.section {
+ font-size: 1.8em;
+ color: #822;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h2.section {
+ font-size: 1.6em;
+ color: #822;
+ margin-top: 1.4em;
+ padding: .2em .3em 1em .5rem; /* wiki_h_underline_padding _ _ wiki_h_left_padding */
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(215, 215, 215, .4) .79em,
+  #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
+  #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  rgba(255, 255, 255, 0) .9em,
+  rgba(255, 255, 255, 0) 100%
+ )
+ /* wiki_h2_underline_background */
+}
+h3.section {
+ font-size: 1.3em;
+ font-weight: 600;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: 1em;
+ padding: .2em .3em 1em .5rem; /* _ _ (wiki_h_underline_padding + wiki_h_underline_shadow) wiki_h_left_padding */
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(215, 215, 215, .4) .8em,
+  #822 .8em,  /* _ wiki_h_underline_shadow */
+  #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  rgba(255, 255, 255, 0) .9em,
+  rgba(255, 255, 255, 0) 100%
+ ) /* wiki_h3_underline_background */
+}
+
+h2.section + *, h3.section + * {
+ margin-top: -1em !important;
+}
+
+
+h2.section:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(215, 215, 215, .4) .79em,
+  #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
+  #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  #fbffb6 .9em, /* trac_hl_color */
+  #fbffb6 100%	/* trac_hl_color */
+ );
+ box-shadow: none;
+}
+h3.section:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(215, 215, 215, .4) .8em,
+  #822 .8em,  /* _ wiki_h_underline_shadow */
+  #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  #fbffb6 .9em, /* trac_hl_color */
+  #fbffb6 100%  /* trac_hl_color */
+ );
+ box-shadow: none;
+}
+
+
+@media print {
+ #content.narrow #wikipage { max-width: none }
+ #content.narrow #trac-wiki-expander:before, #content #trac-wiki-expander { display: none }
+ h2.section:target {
+  background: linear-gradient(to top,
+   #fff 0,
+   #fff .79em,
+   #822 .8em,
+   #822 .9em,
+   #fff .9em,
+   #fff 100%
+  )
+ }
+ h3.section:target {
+  background: linear-gradient(to top,
+   #fff 0,
+   #fff .8em,
+   #822 .8em,
+   #822 .85em,
+   #fff .9em,
+   #fff 100%
+  )
+ }
+}
+
+h4.section {
+ font-size: 1.15em;
+ font-weight: 600;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: 1em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h5.section {
+ font-size: 1.1em;
+ font-weight: normal;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: .9em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h6.section {
+ font-size: 1em;
+ font-style: italic;
+ font-weight: normal;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: .8em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+
 .wikipage .trac-content {
- margin-left: -18px;
- padding-left: 28px;
+ margin: .3em auto;
+ padding-left: 1.5rem;  /* wikipage_content_padding_left */
+}
+.wikipage .wikipage {  /* not perfect... should also work for tickets! */
+ margin-left: -1.5rem;
+ padding-left: 1.5rem;
+}
+table.wiki {
+ background-color: inherit;
 }
 
 /* Styles for the path of hierarchical pages */
 #pagepath {
- font-size: 10px; /* same as .nav ul in trac.css */
+ font-size: .9em; /* ctxtnav_font_size */
  float: left;
- padding: .4em 0;
+ padding: .4em 0; /* mainnav_padding */
 }
 #pagepath :link, #pagepath :visited { margin: 0 .2em }
 #pagepath .first:link, #pagepath .first:visited { color: #998 }
@@ -34,6 +179,7 @@
 .create #modifypage input { margin: 2px /* trac.css' input {} */ }
 
 /* Styles for the page editing form */
+.wikipage h2.editor { margin-left: 0 }
 .preview-right {
  float: right;
  width: 50%;
@@ -41,7 +187,10 @@
  margin: 0 0 0 1em;
 }
 .sidebyside > h2 { margin: .4em 0 }
-.sidebyside #preview { margin: 0 }
+.sidebyside #preview {
+ margin: 0;
+ padding-left: 28px;
+}
 .sidebyside #text { overflow: hidden }
 
 #edit { margin-top: .5em }
@@ -63,7 +212,7 @@
 #edit + #attachments { margin-top: 1.5em }
 #delete, #rename, #save { margin-left: 3em }
 #preview {
- background: #f8f8f8 url(../draft.png);
+ background: #fbfbfb url(../draft.png);
  margin: 1em 0 2em;
  overflow: auto;
 }
@@ -82,17 +231,25 @@
  margin: 0 0 2em 1em;
  float: right;
  clear: right;
- border: 1px outset #ddc;
+ border: 1px solid #ddc;
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .1em .3em .5em 0 #d4d4d4; /* aside_box_shadow */
  background: #ffd;
  font-size: 85%;
  position: relative;
 }
-.wiki-toc h4 { font-size: 12px; margin: 0 }
+.wiki-toc h4 {
+ font-size: 1.2em;
+ margin: 0 0 .5em;
+ padding: 0;
+}
 .wiki-toc ul, .wiki-toc ol { list-style: none; padding: 0; margin: 0 }
 .wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
 .wiki-toc li { margin: 0; padding: 0 }
 .wiki-toc .active { background: #ff9; position: relative; }
 .wiki-toc-un ul, .wiki-toc-un ol { list-style: none; }
+.wiki-toc ol li { font-weight: normal }
+.wiki-toc > ol > li { font-weight: 500 }
 
 div.trac-modifiedby {
  margin: .3em .5em;

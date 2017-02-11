@@ -378,11 +378,11 @@ class RecentChangesMacro(WikiMacroBase):
             for date, entries in entries_per_date)
 
         if group == 'date':
-            out = ((tag.h3(date), tag.ul(entries))
+            out = ((tag.h3(date, class_='section'), tag.ul(entries))
                    for date, entries in items_per_date)
         else:
             out = tag.ul(entries for date, entries in items_per_date)
-        return tag.div(out)
+        return tag.div(out, class_="wikipage")
 
 
 class PageOutlineMacro(WikiMacroBase):

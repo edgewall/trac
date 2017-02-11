@@ -833,7 +833,7 @@ class Formatter(object):
         self.close_list()
         self.close_def_list()
         depth, heading, anchor = self._parse_heading(match, fullmatch, False)
-        self.out.write(u'<h%d id="%s">%s</h%d>' %
+        self.out.write(u'<h%d class="section" id="%s">%s</h%d>' %
                        (depth, anchor, heading, depth))
 
     # Generic indentation (as defined by lists and quotes)

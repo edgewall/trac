@@ -571,6 +571,7 @@ class WikiModule(Component):
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
         add_script(req, 'common/js/folding.js')
+        add_script(req, 'common/js/wiki.js')
         return 'wiki_edit.html', data
 
     def _render_edit_comment(self, req, page):
@@ -717,6 +718,7 @@ class WikiModule(Component):
             'resourcepath_template': 'wiki_page_path.html',
         })
         add_script(req, 'common/js/folding.js')
+        add_script(req, 'common/js/wiki.js')
         return 'wiki_view.html', data
 
     def _wiki_ctxtnav(self, req, page):

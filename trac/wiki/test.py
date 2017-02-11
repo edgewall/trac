@@ -39,14 +39,16 @@ class WikiTestCase(unittest.TestCase):
 
     generate_opts = {}
 
-    def __init__(self, title, input, correct, file, line, setup=None,
-                 teardown=None, context=None, default_data=False,
+    def __init__(self, title, input, expected, file, line,
+                 setup=None, teardown=None, context=None, default_data=False,
                  enable_components=None, disable_components=None,
                  env_path='', destroying=False):
         unittest.TestCase.__init__(self, 'test')
         self.title = title
         self.input = input
-        self.correct = correct
+        self.expected = expected
+        if file.endswith('.pyc'):
+            file = file.replace('.pyc', '.py')
         self.file = file
         self.line = line
         self._setup = setup
@@ -106,7 +108,7 @@ class WikiTestCase(unittest.TestCase):
         v = v.replace('\r', '').replace(u'\u200b', '')  # FIXME: keep ZWSP
         v = strip_line_ws(v, leading=False)
         try:
-            self.assertEqual(self.correct, v)
+            self.assertEqual(self.expected, v)
         except AssertionError as e:
             msg = to_unicode(e)
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
@@ -188,16 +190,16 @@ def wikisyntax_test_suite(data=None, setup=None, file=None, teardown=None,
             if len(blocks) < 5:
                 blocks.extend([None] * (5 - len(blocks)))
             input, page, oneliner, page_escape_nl, outline = blocks[:5]
-            for cls, correct in [
+            for cls, expected in [
                     (WikiTestCase, page),
                     (OneLinerTestCase, oneliner and oneliner[:-1]),
                     (EscapeNewLinesTestCase, page_escape_nl),
                     (OutlineTestCase, outline)]:
-                if correct:
-                    tc = cls(title, input, correct, filename, line, setup,
-                             teardown, context, default_data,
-                             enable_components, disable_components, env_path,
-                             destroying)
+                if expected:
+                    tc = cls(title, input, expected, filename, line,
+                             setup, teardown, context, default_data,
+                             enable_components, disable_components,
+                             env_path, destroying)
                     suite.addTest(tc)
 
     if data:

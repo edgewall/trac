@@ -40,12 +40,7 @@
     #   endif
     <script type="text/javascript">
       jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6")
-          .addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-        $(this).addAnchor(babel.format(j_("Link to #%(id)s"), {id: this.id}));
-        });
-        $(".foldable").enableFolding(true, true);
+        wikiColumn($("#wikipage"));
       });
     </script>
     # endblock head
@@ -57,7 +52,7 @@
     #   set create_perm = 'WIKI_CREATE' in perm(page.resource)
     #   set admin_perm = 'WIKI_ADMIN' in perm(page.resource)
     #   set is_not_latest = page.exists and page.version != latest_version
-    <div id="content" class="${classes('wiki', create=not page.exists)}">
+    <div id="content" class="${classes('wiki', 'narrow', create=not page.exists)}">
 
       # if version:
       <br />

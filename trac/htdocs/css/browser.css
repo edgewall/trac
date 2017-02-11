@@ -20,11 +20,15 @@ h1 .sep { color: #666; padding: 0 .1em }
 h1 .pathentry { float: left; padding: 0 .1em }
 h1#repoindex { margin-top: 1em; }
 
-#diffrev, #jumprev, #jumploc { float: right; font-size: 10px; margin: 0 0 0.6em 2em; }
+#diffrev, #jumprev, #jumploc {
+ float: right;
+ font-size: .9em;
+ margin: 0 0 0.6em 2em;
+}
 #diffrev form, #jumprev form, #jumploc form { margin: 0 }
 #diffrev input, #jumprev input, #jumploc select, #jumploc input {
-  font-size: 10px;
-  margin: 0;
+ font-size: .9em;
+ margin: 0;
 }
 #jumploc div.buttons { margin: 0; }
 
@@ -55,8 +59,7 @@ table.dirlist td.rev, table.dirlist td.age, table.dirlist td.author, table.dirli
 }
 table.dirlist td.rev {
  font-family: monospace;
- letter-spacing: -0.08em;
- font-size: 90%;
+ letter-spacing: -0.01em;
  text-align: right;
 }
 table.dirlist td.size {
@@ -81,6 +84,7 @@ table.dirlist td.name a.parent {
 }
 table.dirlist td.name a.dir {
   background: url(../folder.png) 0 50% no-repeat;
+  font-weight: 500;
   padding-left: 20px;
 }
 table.dirlist td.name a.file {
@@ -145,8 +149,7 @@ table.chglist { margin-top: 0 }
 .chglist td.author { font-size: 85% }
 .chglist td.rev {
  font-family: monospace;
- letter-spacing: -0.08em;
- font-size: 90%;
+ letter-spacing: -0.01em;
  text-align: right;
 }
 .chglist td.rev a { border-bottom: none }

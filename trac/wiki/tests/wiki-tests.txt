@@ -344,10 +344,10 @@ Relative links are supported:
 ------------------------------
 <p>
 Relative links are supported:
-<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above?</a> Note: see wikisyntax tests for other parent tests
-<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next?</a>
-<a class="missing wiki" href="/wiki/WikiStart/sibling#index" rel="nofollow">See next (index)?</a>
-<a class="missing wiki" href="/wiki/WikiStart/sibling?version=1" rel="nofollow">See next (v1)?</a>
+<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above</a> Note: see wikisyntax tests for other parent tests
+<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next</a>
+<a class="missing wiki" href="/wiki/WikiStart/sibling#index" rel="nofollow">See next (index)</a>
+<a class="missing wiki" href="/wiki/WikiStart/sibling?version=1" rel="nofollow">See next (v1)</a>
 [... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
@@ -374,10 +374,10 @@ Relative links are supported:
 ------------------------------
 <p>
 Relative links are supported:
-<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above?</a> Note: see wikisyntax tests for other parent tests
-<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next?</a>
-<a class="missing wiki" href="/wiki/..." rel="nofollow">nothing to see?</a> <a class="missing wiki" href="/wiki/..." rel="nofollow">...?</a>
-<a class="missing wiki" href="/wiki/a%20%5D%20" rel="nofollow">a ] ?</a>
+<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above</a> Note: see wikisyntax tests for other parent tests
+<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next</a>
+<a class="missing wiki" href="/wiki/..." rel="nofollow">nothing to see</a> <a class="missing wiki" href="/wiki/..." rel="nofollow">...</a>
+<a class="missing wiki" href="/wiki/a%20%5D%20" rel="nofollow">a ] </a>
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="/">/</a>
@@ -527,7 +527,7 @@ i.e. [[mailto:cboos@edgewall.org|me]]
 <a class="text resolver" href="/stuff/Foo%20Bar">Foo Bar</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">Foo Bar</a>
 </p>
 <p>
-<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Fu Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar?</a>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar</a> <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Fu Bar</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar</a>
 </p>
 <p>
 <a class="text resolver" href="/stuff/Argv">*argv[] versus **argv</a>
@@ -565,7 +565,7 @@ i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></
 [[ ]] is not completely empty...
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/coffeehouse%20setup" rel="nofollow">How to set up a coffee house?</a>
+<a class="missing wiki" href="/wiki/coffeehouse%20setup" rel="nofollow">How to set up a coffee house</a>
 </p>
 <p>
 <a class="text resolver" href="/stuff/Template">Template</a>
@@ -580,7 +580,7 @@ i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></
 </p>
 <p>
 [[]] no "empty" link here
-<a class="missing wiki" href="/wiki/%20" rel="nofollow"> ?</a> is not completely empty...
+<a class="missing wiki" href="/wiki/%20" rel="nofollow"> </a> is not completely empty...
 </p>
 ------------------------------
 ============================== Link resolver counter examples
@@ -992,7 +992,7 @@ Headings are now inside the block thanks to the default .wikipage class.
 }}}
 Done.
 ------------------------------
-<div class="wikipage" style="background: #aeaeae"><h2 id="Heading">Heading</h2>
+<div class="wikipage" style="background: #aeaeae"><h2 class="section" id="Heading">Heading</h2>
 <p>
 Headings are now inside the block thanks to the default .wikipage class.
 </p>
@@ -1048,10 +1048,10 @@ Hello, [[HelloWorld(...)]]
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) </a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) </a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
@@ -1306,56 +1306,56 @@ Inline  comment
 ============================== I18N heading
 = ça marche! =
 ------------------------------
-<h1 id="çamarche">ça marche!</h1>
+<h1 class="section" id="çamarche">ça marche!</h1>
 ------------------------------
 = ça marche! =
 ============================== Quoted heading
 = "Test" =
 ------------------------------
-<h1 id="Test">"Test"</h1>
+<h1 class="section" id="Test">"Test"</h1>
 ------------------------------
 = "Test" =
 ============================== Heading with < and >
 = Foo <Bar> Baz =
 ------------------------------
-<h1 id="FooBarBaz">Foo &lt;Bar&gt; Baz</h1>
+<h1 class="section" id="FooBarBaz">Foo &lt;Bar&gt; Baz</h1>
 ------------------------------
 = Foo &lt;Bar&gt; Baz =
 ============================== Heading with .
 = Version 0.10 =
 ------------------------------
-<h1 id="Version0.10">Version 0.10</h1>
+<h1 class="section" id="Version0.10">Version 0.10</h1>
 ------------------------------
 = Version 0.10 =
 ============================== Normal heading
 == Heading with trailing white-space ==
 ------------------------------
-<h2 id="Headingwithtrailingwhite-space">Heading with trailing white-space</h2>
+<h2 class="section" id="Headingwithtrailingwhite-space">Heading with trailing white-space</h2>
 ------------------------------
 == Heading with trailing white-space ==
 ============================== Formatted heading
 == ''Formatted'' ~~Heading~~ ==
 ------------------------------
-<h2 id="FormattedHeading"><em>Formatted</em> <del>Heading</del></h2>
+<h2 class="section" id="FormattedHeading"><em>Formatted</em> <del>Heading</del></h2>
 ------------------------------
 == ''Formatted'' ~~Heading~~ ==
 ============================== Heading with link
 == [wiki:SandBox Linked Heading] ==
 ------------------------------
-<h2 id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading?</a></h2>
+<h2 class="section" id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading</a></h2>
 ------------------------------
 == [wiki:SandBox Linked Heading] ==
 ============================== Normal heading, fixed id
 == Heading with fixed id == #heading-fixed-id
 ------------------------------
-<h2 id="heading-fixed-id">Heading with fixed id</h2>
+<h2 class="section" id="heading-fixed-id">Heading with fixed id</h2>
 ------------------------------
 == Heading with fixed id == #heading-fixed-id
 ============================== Normal heading, auto-corrected id
 == 10 tips ==
 [[br]] oops!
 ------------------------------
-<h2 id="a10tips">10 tips</h2>
+<h2 class="section" id="a10tips">10 tips</h2>
 <p>
 <br /> oops!
 </p>
@@ -1383,12 +1383,12 @@ Inline  comment
 ====== h6
 ======== but no h7
 ------------------------------
-<h1 id="Title">Title</h1>
-<h2 id="Chapter">Chapter</h2>
-<h3 id="Section">Section</h3>
-<h4 id="Subsection">Subsection</h4>
-<h5 id="h5">Subsubsection</h5>
-<h6 id="h6">h6</h6>
+<h1 class="section" id="Title">Title</h1>
+<h2 class="section" id="Chapter">Chapter</h2>
+<h3 class="section" id="Section">Section</h3>
+<h4 class="section" id="Subsection">Subsection</h4>
+<h5 class="section" id="h5">Subsubsection</h5>
+<h6 class="section" id="h6">h6</h6>
 <p>
 ======== but no h7
 </p>
@@ -2384,7 +2384,7 @@ Paragraph
    * Item 2
 Another paragraph
 ------------------------------
-<h1 id="Heading1">Heading 1</h1>
+<h1 class="section" id="Heading1">Heading 1</h1>
 <p>
 Paragraph
 </p>
@@ -2400,7 +2400,7 @@ Paragraph
    * Item 2
 Another paragraph
 ------------------------------
-<h1 id="Heading1">Heading 1</h1>
+<h1 class="section" id="Heading1">Heading 1</h1>
 <p>
 Paragraph<br />
 </p>

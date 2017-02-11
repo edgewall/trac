@@ -1,7 +1,7 @@
 /* Timeline */
 
 .timeline #prefs fieldset label { display: block }
-.timeline #prefs .buttons { margin-top: -1.6em }
+.timeline #prefs .buttons { margin: -.5em 0 0 }
 
 .timeline h2 {
  background: #f7f7f7;
@@ -9,8 +9,9 @@
  font-size: 105%;
  margin: 2em 0 .5em;
  padding: .4em;
- box-shadow: 1px 1px .5em 0 #ccc;
- border-radius: .1em;
+ box-shadow: .2em .3em .5em 0 #f6f6f6; /* wiki_h2_box_shadow */
+ /* box-shadow: 0em .1em .3em 0 #eee;  timeline_box_shadow */
+ border-radius: .2em; /* sep_border_radius */
 }
 .timeline dl {
  line-height: 1.3em;
@@ -117,8 +118,9 @@
  font-size: 80%;
  background: #f6f6f6;
  border: 1px solid #ddd;
+ border-radius: .1em;
  margin: 0 0 0 .5em;
- padding: 0 .2em;
+ padding: 0 .2em .15em;
 }
 .timeline dt.changeset .head {
  background: #d0ffd0;

@@ -72,7 +72,7 @@
             $("#preview").height(0); // neutralize preview
             $("#text").height("auto"); // adapt textarea to its content
             var text_height = $("#text").prop("scrollHeight");
-            var wikipage_height = $("#preview div.wikipage").height();
+            var wikipage_height = $("#preview").height(); // used to be #preview div.wikipage
             if (wikipage_height > text_height) {
               // expand #text to its natural height and adapt #preview to it
               $("#text").height(text_height).css("overflow-y", "hidden");
@@ -94,7 +94,7 @@
             }, function(textarea, text, rendered) {
               var window_scroll_top = $(window).scrollTop();
               var editor_scroll_top = $("#text").scrollTop();
-              $("#preview div.wikipage").html(rendered);
+              $("#preview").html(rendered); // used to be #preview div.wikipage
               autoResizeText();
               $(window).scrollTop(window_scroll_top);
               $("#text").scrollTop(editor_scroll_top);
@@ -243,9 +243,7 @@
             # endwith
           </div>
           # else:
-          <div class="wikipage">
-            ${wiki_to_html(context, page.text)}
-          </div>
+          ${wiki_to_html(context, page.text)}
           # endif
         </div>
         # if not sidebyside and page.text:

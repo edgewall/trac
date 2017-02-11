@@ -251,7 +251,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 ==============================  # Regression test for #12333
 = [[Image]]
 ------------------------------
-<h1 id="Image">[[Image]]</h1>
+<h1 class="section" id="Image">[[Image]]</h1>
 ==============================  Invalid use of attachment TracLink
 [[Image(attachment:img.png:wiki:page)]]
 ------------------------------
@@ -565,26 +565,26 @@ RECENTCHANGES_MACRO_TEST_CASES = u""""
 [[RecentChanges(Wiki,1,group=none)]]
 ------------------------------
 <p>
-</p><div><h3>%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><h3 class="section">%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li><li><a href="/wiki/WikiMid">WikiMid</a>
 </li><li><a href="/wiki/WikiStart">WikiStart</a>
 </li></ul></div><p>
-</p><div><h3>%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><h3 class="section">%(date)s</h3><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li><li><a href="/wiki/WikiMid">WikiMid</a>
 </li><li><a href="/wiki/WikiStart">WikiStart</a>
 </li></ul></div><p>
-</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li><li><a href="/wiki/WikiMid">WikiMid</a>
 </li><li><a href="/wiki/WikiStart">WikiStart</a>
 </li></ul></div><p>
-</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li><li><a href="/wiki/WikiMid">WikiMid</a>
 </li></ul></div><p>
-</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li><li><a href="/wiki/WikiMid">WikiMid</a>
 </li><li><a href="/wiki/WikiStart">WikiStart</a>
 </li></ul></div><p>
-</p><div><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
+</p><div class="wikipage"><ul><li><a href="/wiki/WikiEnd">WikiEnd</a>
 </li></ul></div><p>
 </p>
 ==============================
@@ -608,8 +608,8 @@ def recentchanges_setup(tc):
         'WikiMid',
         'WikiEnd',
         ])
-    tc.correct = tc.correct % {'date': format_date(tzinfo=utc,
-                                                   locale=locale_en)}
+    tc.expected = tc.expected % {'date': format_date(tzinfo=utc,
+                                                     locale=locale_en)}
 
 def recentchanges_teardown(tc):
     tc.env.reset_db()
@@ -642,8 +642,8 @@ PAGEOUTLINE_MACRO_TEST_CASES = u""""\
 </ol>
 </div><p>
 </p>
-<h1 id="HeadingLevel1">Heading Level 1</h1>
-<h2 id="HeadingLevel2">Heading Level 2</h2>
+<h1 class="section" id="HeadingLevel1">Heading Level 1</h1>
+<h2 class="section" id="HeadingLevel2">Heading Level 2</h2>
 ==============================
 [[PageOutline(7)]]
 ===== Heading Level 5
@@ -658,8 +658,8 @@ PAGEOUTLINE_MACRO_TEST_CASES = u""""\
                     </ol>
 </div><p>
 </p>
-<h5 id="HeadingLevel5">Heading Level 5</h5>
-<h6 id="HeadingLevel6">Heading Level 6</h6>
+<h5 class="section" id="HeadingLevel5">Heading Level 5</h5>
+<h6 class="section" id="HeadingLevel6">Heading Level 6</h6>
 ==============================
 [[PageOutline(0-7)]]
 = Heading Level 1
@@ -703,12 +703,12 @@ PAGEOUTLINE_MACRO_TEST_CASES = u""""\
 </ol>
 </div><p>
 </p>
-<h1 id="HeadingLevel1">Heading Level 1</h1>
-<h2 id="HeadingLevel2">Heading Level 2</h2>
-<h3 id="HeadingLevel3">Heading Level 3</h3>
-<h4 id="HeadingLevel4">Heading Level 4</h4>
-<h5 id="HeadingLevel5">Heading Level 5</h5>
-<h6 id="HeadingLevel6">Heading Level 6</h6>
+<h1 class="section" id="HeadingLevel1">Heading Level 1</h1>
+<h2 class="section" id="HeadingLevel2">Heading Level 2</h2>
+<h3 class="section" id="HeadingLevel3">Heading Level 3</h3>
+<h4 class="section" id="HeadingLevel4">Heading Level 4</h4>
+<h5 class="section" id="HeadingLevel5">Heading Level 5</h5>
+<h6 class="section" id="HeadingLevel6">Heading Level 6</h6>
 """
 
 

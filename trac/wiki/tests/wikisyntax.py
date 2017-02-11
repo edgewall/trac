@@ -43,9 +43,9 @@ wiki:abc
 <a class="wiki" href="/wiki/TestPage">/TestPage</a>
 <a class="wiki" href="/wiki/Space%201%2023">wiki:"Space 1 23"</a>
 <a class="wiki" href="/wiki/C'est%20l'%C3%A9t%C3%A9">wiki:"C'est l'\xe9t\xe9"</a>
-<a class="missing wiki" href="/wiki/MissingPage" rel="nofollow">wiki:MissingPage?</a>
-<a class="missing wiki" href="/wiki/12" rel="nofollow">wiki:12?</a>
-<a class="missing wiki" href="/wiki/abc" rel="nofollow">wiki:abc?</a>
+<a class="missing wiki" href="/wiki/MissingPage" rel="nofollow">wiki:MissingPage</a>
+<a class="missing wiki" href="/wiki/12" rel="nofollow">wiki:12</a>
+<a class="missing wiki" href="/wiki/abc" rel="nofollow">wiki:abc</a>
 </p>
 ------------------------------
 ============================== wiki: link resolver + query and fragment
@@ -65,7 +65,7 @@ wiki:"Space 1 23#heading"
 CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a> AlabamA ABc AlaBamA <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>
+<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase</a> AlabamA ABc AlaBamA <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>
 </p>
 ------------------------------
 ============================== WikiPageNames conformance (unicode)
@@ -73,8 +73,8 @@ SmÅogstore should produce a link
 and so should wiki:ÜberflüssigkeitsTheorie
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/Sm%C3%85ogstore" rel="nofollow">SmÅogstore?</a> should produce a link
-and so should <a class="missing wiki" href="/wiki/%C3%9Cberfl%C3%BCssigkeitsTheorie" rel="nofollow">wiki:ÜberflüssigkeitsTheorie?</a>
+<a class="missing wiki" href="/wiki/Sm%C3%85ogstore" rel="nofollow">SmÅogstore</a> should produce a link
+and so should <a class="missing wiki" href="/wiki/%C3%9Cberfl%C3%BCssigkeitsTheorie" rel="nofollow">wiki:ÜberflüssigkeitsTheorie</a>
 </p>
 ------------------------------
 ============================== More WikiPageNames conformance
@@ -83,7 +83,7 @@ But not CamelCase2
 nor CamelCase_
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>: <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a>
+<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase</a>,<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase</a>.<a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase</a>: <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase</a>
 But not CamelCase2
 nor CamelCase_
 </p>
@@ -110,18 +110,18 @@ foo "FooBar"
 foo [FooBar]
 ------------------------------
 <p>
-foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a> )
-foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>: something
-foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>.
-<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>, foo
-foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>;
-foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>!
-foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>?
-foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>)
-foo {<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>}
-foo '<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>'
-foo "<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>"
-foo [<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>]
+foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a> )
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>: something
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>.
+<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>, foo
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>;
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>!
+foo <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>?
+foo (<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>)
+foo {<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>}
+foo '<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>'
+foo "<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>"
+foo [<a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar</a>]
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples
@@ -138,11 +138,11 @@ wiki:TracSubversion#TracandSubversion1.3.1. etc.
 TracSubversion#TracandSubversion1.3.1. etc.
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/SandBox#heading-fixed-id" rel="nofollow">SandBox#heading-fixed-id?</a>
+<a class="missing wiki" href="/wiki/SandBox#heading-fixed-id" rel="nofollow">SandBox#heading-fixed-id</a>
 </p>
 <p>
-<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">wiki:TracSubversion#TracandSubversion1.3.1?</a>. etc.
-<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">TracSubversion#TracandSubversion1.3.1?</a>. etc.
+<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">wiki:TracSubversion#TracandSubversion1.3.1</a>. etc.
+<a class="missing wiki" href="/wiki/TracSubversion#TracandSubversion1.3.1" rel="nofollow">TracSubversion#TracandSubversion1.3.1</a>. etc.
 </p>
 ------------------------------
 ============================== WikiPageNames with fragment id (performance test)
@@ -153,13 +153,13 @@ BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil)
 [BillOfMaterials#get_bill_of_materials_from_room_xml(fpxml=nil) speed]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil)
+<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml</a>(fpxml=nil)
 </p>
 <p>
-[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil)]
+[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml</a>(fpxml=nil)]
 </p>
 <p>
-[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml?</a>(fpxml=nil) speed]
+[<a class="missing wiki" href="/wiki/BillOfMaterials#get_bill_of_materials_from_room_xml" rel="nofollow">BillOfMaterials#get_bill_of_materials_from_room_xml</a>(fpxml=nil) speed]
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples (paths)
@@ -169,8 +169,8 @@ and ../Relative/Camel or /Absolute/Camel as well
 ------------------------------
 <p>
 /absolute/path/is/NotWiki and relative/path/is/NotWiki and ../higher/is/NotWiki
-but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki?</a> and now <a class="missing wiki" href="/wiki/This/Also" rel="nofollow">This/Also?</a>
-and <a class="missing wiki" href="/wiki/Relative/Camel" rel="nofollow">../Relative/Camel?</a> or <a class="missing wiki" href="/wiki/Absolute/Camel" rel="nofollow">/Absolute/Camel?</a> as well
+but <a class="missing wiki" href="/wiki/ThisIs/SubWiki" rel="nofollow">ThisIs/SubWiki</a> and now <a class="missing wiki" href="/wiki/This/Also" rel="nofollow">This/Also</a>
+and <a class="missing wiki" href="/wiki/Relative/Camel" rel="nofollow">../Relative/Camel</a> or <a class="missing wiki" href="/wiki/Absolute/Camel" rel="nofollow">/Absolute/Camel</a> as well
 </p>
 ------------------------------
 ============================== WikiPageNames counter examples (numbers)
@@ -208,9 +208,9 @@ This is a ["Wiki" wiki page] link with label.
 This is a ["Wiki?param=1#fragment"] page link with query and fragment.
 ------------------------------
 <p>
-This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki?</a> page link.
-This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">wiki page?</a> link with label.
-This is a <a class="missing wiki" href="/wiki/Wiki?param=1#fragment" rel="nofollow">Wiki?</a> page link with query and fragment.
+This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki</a> page link.
+This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">wiki page</a> link with label.
+This is a <a class="missing wiki" href="/wiki/Wiki?param=1#fragment" rel="nofollow">Wiki</a> page link with query and fragment.
 </p>
 ------------------------------
 ============================== Wiki links with @version
@@ -223,12 +223,12 @@ This is a ["Wiki@12"] page link.
 [wiki:WikiStart@12?format=txt v12 as text]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/page?version=12" rel="nofollow">wiki:page@12?</a>
+<a class="missing wiki" href="/wiki/page?version=12" rel="nofollow">wiki:page@12</a>
 <a class="wiki" href="/wiki/WikiStart?version=12">WikiStart@12</a>
 <a class="wiki" href="/wiki/WikiStart?version=12#heading">WikiStart@12#heading</a>
 [<a class="wiki" href="/wiki/WikiStart?version=12">WikiStart@12</a>]
 [<a class="wiki" href="/wiki/WikiStart?version=12#heading">WikiStart@12#heading</a>]
-This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wiki@12?</a> page link.
+This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wiki@12</a> page link.
 <a class="wiki" href="/wiki/WikiStart?version=12&amp;format=txt">v12 as text</a>
 </p>
 ------------------------------
@@ -239,10 +239,10 @@ We can also [WikiLabels '"use [quotes]"']
 or [WikiLabels "'use [quotes]'"]
 ------------------------------
 <p>
-See details of the <a class="missing wiki" href="/wiki/WikiPageNames" rel="nofollow">wiki page name?</a> syntax.
-Here's a <a class="missing wiki" href="/wiki/BadExample" rel="nofollow">bad?</a> example with special whitespace.
-We can also <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">"use [quotes]"?</a>
-or <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">'use [quotes]'?</a>
+See details of the <a class="missing wiki" href="/wiki/WikiPageNames" rel="nofollow">wiki page name</a> syntax.
+Here's a <a class="missing wiki" href="/wiki/BadExample" rel="nofollow">bad</a> example with special whitespace.
+We can also <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">"use [quotes]"</a>
+or <a class="missing wiki" href="/wiki/WikiLabels" rel="nofollow">'use [quotes]'</a>
 </p>
 ------------------------------
 ============================== WikiPageName with label should be strict...
@@ -312,8 +312,8 @@ in trac.ini <a class="ext-link" href="http://over/c/page/something" title="c:som
 </p>
 <p>
 NoLink:ignored
-<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink?</a>:
-<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink?</a>: ...
+<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink</a>:
+<a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink</a>: ...
 </p>
 ------------------------------
 ============================== InterWiki links with parameters and fragment
@@ -413,18 +413,18 @@ RELATIVE_LINKS_TESTS = u"""
 <p>
 <a class="wiki" href="/wiki/Main/Sub">.</a>
 <a class="wiki" href="/wiki/Main/Sub">./</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">../?</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">./../.?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">..</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">../</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">./../.</a>
 <a class="wiki" href="/wiki/Main/Sub">this page</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">../Other?</a>
-<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">../Other</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other</a>
 </p>
 ------------------------------
 ============================== Relative to the current page, in wiki realm
@@ -448,22 +448,22 @@ RELATIVE_LINKS_TESTS = u"""
 ------------------------------
 <p>
 <a class="wiki" href="/wiki/Main/Sub">this page</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other</a>
 <a class="wiki" href="/wiki/Main/Sub">.</a>
 <a class="wiki" href="/wiki/Main/Sub?param=1#fragment">.</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#fragment" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
-<a class="missing wiki" href="/wiki/Main?param=1#fragment" rel="nofollow">..?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
-<a class="missing wiki" href="/wiki/Main/Other?param=1#fragment" rel="nofollow">Other?</a>
-<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#fragment" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">..</a>
+<a class="missing wiki" href="/wiki/Main?param=1#fragment" rel="nofollow">..</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#fragment" rel="nofollow">Other</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other</a>
 </p>
 ------------------------------
 ============================== Relative to the current page, as CamelCase
@@ -474,11 +474,11 @@ OnePage/SubPage
 /TopPage
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/Main/OnePage/SubPage" rel="nofollow">OnePage/SubPage?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/SubPage" rel="nofollow">./SubPage?</a>
-<a class="missing wiki" href="/wiki/Main/SiblingPage" rel="nofollow">../SiblingPage?</a>
-<a class="missing wiki" href="/wiki/HigherPage" rel="nofollow">.././../HigherPage?</a>
-<a class="missing wiki" href="/wiki/TopPage" rel="nofollow">/TopPage?</a>
+<a class="missing wiki" href="/wiki/Main/OnePage/SubPage" rel="nofollow">OnePage/SubPage</a>
+<a class="missing wiki" href="/wiki/Main/Sub/SubPage" rel="nofollow">./SubPage</a>
+<a class="missing wiki" href="/wiki/Main/SiblingPage" rel="nofollow">../SiblingPage</a>
+<a class="missing wiki" href="/wiki/HigherPage" rel="nofollow">.././../HigherPage</a>
+<a class="missing wiki" href="/wiki/TopPage" rel="nofollow">/TopPage</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with query strings and fragments
@@ -508,18 +508,18 @@ OnePage/SubPage
 <a class="wiki" href="/wiki/Main/Sub?param=1#topic">see topic</a>
 <a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
 <a class="wiki" href="/wiki/Main/Sub?param=1#topic">see topic</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail#topic" rel="nofollow">see detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">see detail?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">Detail?</a>
-<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent?</a>
-<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">Other?</a>
-<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail#topic" rel="nofollow">see detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">see detail</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">Detail</a>
+<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent</a>
+<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">Other</a>
+<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other</a>
 </p>
 ------------------------------
 """ # "
@@ -541,14 +541,14 @@ And not [../WikiPage WikiPage]
 <p>
 <a href="/WikiPage">Wiki Page</a>
 <a href="/WikiPage">Wiki Page</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
 <a href="/WikiPage?param=1#fragment">Wiki Page</a>
 <a href="/WikiPage?param=1#fragment">Wiki Page</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
-And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage</a>
 </p>
 ------------------------------
 ============================== Splitting scoped links
@@ -564,16 +564,16 @@ But not [wiki:./wiki_page]
 And not [wiki:../WikiPage WikiPage]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
-And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage</a>
 </p>
 ------------------------------
 ============================== Splitting internal free links
@@ -588,15 +588,15 @@ But not ["./wiki_page"]
 And not ["../WikiPage" WikiPage]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
-But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
-And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage</a>
 </p>
 ------------------------------
 """ # "
@@ -641,17 +641,17 @@ MissingFirstLevel/MissingPage
 <a class="wiki" href="/wiki/FirstLevel">FirstLevel</a>
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
-<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel?</a>
-<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel?</a>
-<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel</a>
 </p>
 ------------------------------
 """ # "

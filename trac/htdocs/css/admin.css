@@ -4,38 +4,36 @@
 /* Navigation panel */
 #tabs {
  background: #f7f7f0;
- border: 1px solid black;
- border-color: #ccc #666 #666 #ccc;
+ border: 1px solid #d4d4d4;
  clear: left;
  margin: 1em 0 2em;
  padding: .5em 0 0;
  float: left;
  width: 12em;
- /* taken from #prefs */
- border-radius: 1em;
- box-shadow: .2em .2em .7em 0 #777;
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .1em .3em .5em 0 #eee; /* aside_box_shadow */
 }
 #tabs ul { list-style: none; margin: 0 0 .5em; padding: 0; }
-#tabs li { color: #999; font-size: 90%; font-weight: bold; margin: 0;
-  padding: 0.1em 5px;
+#tabs li {
+ color: #999;
+ /* font-size: 90%; */
+ font-weight: bold;
+ margin: 0;
+ padding: 0.1em 5px;
 }
+#tabs li a { font-size: 90% }
 #tabs li li { color: #000; font-size: 110%; font-weight: normal;
   margin: 0 -3px; padding: 1px 0 1px 10px;
 }
 #tabs li li.active {
- background: #ddc;
- border: 1px solid;
- border-color: #ccc #999 #999 #ccc;
- border-radius: .2em;
- box-shadow: .1em .2em .5em #aa9;
- padding: 0 0 0 9px;
+ background: linear-gradient(to top, #dbdbdb 0%, #eee 30%, #fbfbfb 100%); /* select_gradient_darker */
+ border: 1px solid #aaa;
+ border-color: #d4d4d4 #bbb #bbb #d4d4d4;
+ border-radius: .2em; /* content_border_radius */
+ box-shadow: .1em .3em .5em #eee; /* aside_box_shadow */
+ padding: 0 0 .2em .5em;
 }
 #tabs :link, #tabs :visited { border: none; display: block }
-#tabs :link:hover,
-#tabs :visited:hover {
- background: transparent;
- color: #000;
-}
 
 #tabcontent { padding: 0.4em 0 0.4em 2em; margin-left: 12em; min-height: 300px; }
 #tabcontent h2 { color: #333; }
@@ -86,6 +84,7 @@ table.listing .num { text-align: right; width: 1% }
 .plugin > .foldable { margin: .5em 0; color: #bb0000; }
 .plugin .foldable > :link, .plugin .foldable > :visited {
  border-radius: 0;
+ border: none;
  box-shadow: none;
  text-shadow: none;
 }

@@ -1,9 +1,14 @@
 @import url(code.css);
 
+.report.edit {
+ max-width: 56em;
+ margin: 0 auto;
+}
+
 /* Report listing */
 .report #trac-sort-order {
  float: right;
- font-size: 11px;
+ font-size: .5em;
  font-weight: normal;
 }
 
@@ -27,13 +32,12 @@
 
 .report div.reports h2 {
  /* taken from .wikipage h2 */
- border-bottom: 1px solid #ddd;
- box-shadow: .1em .4em .7em 0 #f2f2f2;
- padding: 0.2em .3em .1em;
+ padding: 0.2em .3em .1em 0; /* wiki_h2_padding */
+ border-bottom: 2pt solid #b00; /* wiki_h2_bottom */
+ box-shadow: .2em .3em .5em 0 #f6f6f6; /* wiki_h2_box_shadow */
 }
 .report div.reports h3 {
  /* taken from .wikipage h3 */
- border-bottom: 1px dashed #ddd;
 }
 .report div.reports h3 :link, .report div.reports h3 :visited {
  color: #000;
@@ -62,7 +66,7 @@
 #prefs fieldset legend {
  margin: 0;
  padding: 2px;
- font-size: 13px;
+ font-size: 1.1em;
 }
 #prefs fieldset th { text-align: right }
 
@@ -92,7 +96,7 @@ h2.report-result {
 
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select {
- font-size: 11px;
+ font-size: .9em; /* query_filter_font_size */
 }
 #query fieldset { margin-top: 1em }
 #query fieldset.collapsed {
@@ -100,7 +104,9 @@ h2.report-result {
  margin-bottom: 0pt;
  padding: 0pt .5em;
 }
-#query .option, #query .option input, #query .option select { font-size: 11px }
+#query .option, #query .option input, #query .option select {
+ font-size: .9em; /* query_filter_font_size */
+}
 #query .option { float: left; line-height: 2em; margin: .9em 2.5em 0 .5em; padding: 0 0 .1em }
 #query .buttons { float: right; margin-top: .5em }
 #query .buttons input { margin: .5em }
@@ -131,8 +137,14 @@ h2.report-result {
 
 #filters tr { height: 2em }
 #filters th, #filters td { padding: 0 .2em; vertical-align: middle }
-#filters th { font-size: 11px; text-align: right; white-space: nowrap; }
-#filters td label { font-size: 11px }
+#filters th {
+ font-size: .9em; /* query_filter_font_size */
+ text-align: right;
+ white-space: nowrap;
+}
+#filters td label {
+ font-size: .9em; /* query_filter_font_size */
+}
 #filters td.mode { text-align: right }
 #filters td.filter { width: 100% }
 #filters td.filter label.control { padding-right: 1em }
@@ -157,7 +169,7 @@ h2.report-result {
 .tickets tr.trac-columns th {
  border: 1px solid #d7d7d7;
  border-bottom-color: #999;
- font-size: 11px;
+ font-size: .9em;
  font-weight: bold;
  padding: 2px .5em;
  vertical-align: bottom;
@@ -245,17 +257,17 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
 .batchmod_required:before { content: " * "; }
 #batchmod_form fieldset input,
 #batchmod_form fieldset select, .batchmod_property, .batchmod_label {
- font-size: 11px;
+ font-size: .9em;  /* query_filter_font_size */
 }
 #action { margin-top: 0; line-height: 2em; }
 #batchmod_form th {
  text-align: right;
  white-space: nowrap;
- font-size: 11px;
+ font-size: .9em; /* query_filter_font_size */
 }
 .batchmod_required {
  color: red;
- font-size: 11px;
+ font-size: .9em; /* query_filter_font_size */
  font-weight: bold;
  font-style: italic;
  padding-left: .5em;

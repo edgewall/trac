@@ -424,10 +424,10 @@ class WikiSystem(Component):
                     return original_label or label
                 if 'WIKI_CREATE' in \
                         formatter.perm(self.realm, pagename, version):
-                    return tag.a(label + '?', class_='missing wiki',
+                    return tag.a(label, class_='missing wiki',
                                  href=href, rel='nofollow')
                 else:
-                    return tag.a(label + '?', class_='missing wiki')
+                    return tag.a(label, class_='missing wiki')
         elif ignore_missing and not self.has_page(pagename):
             return original_label or label
         else:

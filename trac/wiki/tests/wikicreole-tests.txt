@@ -99,16 +99,16 @@ But, should <em>not be...
 === Also level 3 ==
 === **not** //parsed// ===
 ------------------------------
-<h1 id="Level1largest">Level 1 (largest)</h1>
-<h2 id="Level2">Level 2</h2>
-<h3 id="Level3">Level 3</h3>
-<h4 id="Level4">Level 4</h4>
-<h5 id="Level5">Level 5</h5>
-<h6 id="Level6">Level 6</h6>
-<h3 id="Alsolevel3">Also level 3</h3>
-<h3 id="Alsolevel31">Also level 3 =</h3>
-<h3 id="Alsolevel32">Also level 3 ==</h3>
-<h3 id="notparsed"><strong>not</strong> <em>parsed</em></h3>
+<h1 class="section" id="Level1largest">Level 1 (largest)</h1>
+<h2 class="section" id="Level2">Level 2</h2>
+<h3 class="section" id="Level3">Level 3</h3>
+<h4 class="section" id="Level4">Level 4</h4>
+<h5 class="section" id="Level5">Level 5</h5>
+<h6 class="section" id="Level6">Level 6</h6>
+<h3 class="section" id="Alsolevel3">Also level 3</h3>
+<h3 class="section" id="Alsolevel31">Also level 3 =</h3>
+<h3 class="section" id="Alsolevel32">Also level 3 ==</h3>
+<h3 class="section" id="notparsed"><strong>not</strong> <em>parsed</em></h3>
 ------------------------------
 ============================== Links - Internal, External and Interwiki (SKIP)
 [[link]]
@@ -138,13 +138,13 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 [[Trac:WikiFamily]]
 ------------------------------
 <p>
-<a class="missing wiki" href="/wiki/link" rel="nofollow">link?</a>
-<a class="missing wiki" href="/wiki/MyBigPage" rel="nofollow">Go to my page?</a>
+<a class="missing wiki" href="/wiki/link" rel="nofollow">link</a>
+<a class="missing wiki" href="/wiki/MyBigPage" rel="nofollow">Go to my page</a>
 <a class="missing ticket"></a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>http://www.wikicreole.org/</a>
 <a class="ext-link" href="http://www.rawlink.org/"><span class="icon"></span>http://www.rawlink.org/</a>, <a class="ext-link" href="http://www.another.rawlink.org"><span class="icon"></span>http://www.another.rawlink.org</a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>Visit the WikiCreole website</a>
-<a class="missing wiki" href="/wiki/Weird%20Stuff" rel="nofollow">**Weird** //Stuff//?</a>
+<a class="missing wiki" href="/wiki/Weird%20Stuff" rel="nofollow">**Weird** //Stuff//</a>
 <a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in Trac's Trac"><span class="icon"></span>WikiFamily</a>
 </p>
 ============================================================
@@ -281,9 +281,9 @@ CamelCaseLink
 //**[[Important page]]**//
 ------------------------------
 <p>
-<em><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">this link is italicized?</a></em>
-<strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></strong>
-<em><strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></strong></em>
+<em><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">this link is italicized</a></em>
+<strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page</a></strong>
+<em><strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page</a></strong></em>
 </p>
 ------------------------------
 ============================== Bold, Italics, Links, Pre in Lists (SKIP)

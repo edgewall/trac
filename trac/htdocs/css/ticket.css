@@ -15,6 +15,7 @@
  margin-top: 0;
 }
 
+
 /* "Yellow Ticket Box" */
 #ticket {
  background: #ffd;
@@ -155,17 +156,33 @@ ul.children > li.child {
 
 /* Comment contents */
 #changelog h3, #ticketchange h3 {
- border-bottom: 1px solid #d7d7d7;
- box-shadow: .1em .2em .4em 0 #f2f2f2;
- padding: 0 .2em;
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0),
+  rgba(198, 198, 198, 0.21) .7em,
+  #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
+  rgba(255, 255, 255, 0) .8em,
+  rgba(255, 255, 255, 0) 100%
+ );
+ padding: 0 .2em 1em; /* ticket_h_underline_padding _ (ticket_h_underline_padding + ticket_h_underline_shadow) */
  margin-bottom: .2em;
- color: #999;
+ color: #655b5b;
  font-size: 100%;
  font-weight: normal;
 }
-@media print {
- #changelog h3, #ticketchange h3 { box-shadow: none }
+#changelog h3:target, #ticketchange h3:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0),
+  rgba(198, 198, 198, 0.21) .7em,
+  #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
+  #fbffb6 .8em, /* trac_hl_color */
+  #fbffb6 100%
+ );
+ box-shadow: none;
 }
+@media print {
+ #changelog h3, #ticketchange h3 { background: none }
+}
+
 
 /* Comment editor */
 #trac-comment-editor { margin-left: .5em; margin-bottom: 1em }
@@ -194,6 +211,9 @@ ul.children > li.child {
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
 /*  - Change controls */
+.trac-change-panel {
+ margin-top: -.5em; /* related to #changelog h3, #ticketchange h3 { padding-bottom: 1em } */
+}
 .trac-ticket-buttons {
  clear: right;
  visibility: hidden;
@@ -262,7 +282,7 @@ label[for=comment] { float: right }
 
 #propertyform {
  clear: both;
- margin-bottom: 2em; 
+ margin-bottom: 2em;
 }
 #propertyform table.trac-properties {
  border-spacing: 0;

@@ -26,7 +26,7 @@
 
 /* Legend for diff and file colors */
 .legend {
- font-size: 9px;
+ font-size: .9em;
  line-height: 1em;
  padding: .5em 0;
 }
@@ -67,21 +67,29 @@
 .diff li.entry {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
+ border-radius: .3em; /* content_border_radius */
+ box-shadow: 0.3em 0.3em 0.75em 0.1em rgba(210, 215, 220, 0.3); /* content_box_shadow */
  list-style-type: none;
  margin: 0 0 2em;
  padding: 2px;
  position: relative;
  width: 100%;
 }
+@media print {
+    .diff li.entry { box-shadow: none }
+}
 .diff h2 {
  color: #333;
- font-size: 14px;
+ font-size: 1.1em;
  letter-spacing: normal;
  margin: 0 auto;
  padding: .1em 0 .25em .5em;
 }
-.diff h2 .switch { color: #999; float: right; font-size: 75%;
-  line-height: 1.6;
+.diff h2 .switch {
+ color: #999;
+ float: right;
+ font-size: 75%;
+ line-height: 1.6em;
 }
 .diff h2 .switch span { border-left: 1px solid #ccc; cursor: pointer;
   padding: 0 1em;
@@ -95,18 +103,22 @@
  border-spacing: 0;
  border-top: 0;
  empty-cells: show;
- font-size: 12px;
- line-height: 130%;
+ font-size: .9em; /* code_font_size */
+ line-height: 120%; /* code_line_height */
  padding: 0;
  margin: 0 auto;
  table-layout: fixed;
  width: 100%;
 }
-.diff table.trac-diff col.lineno { width: 4em }
+.diff table.trac-diff col.lineno {
+ font-size: .9em; /* diff_lineno_font_size */ /* (cumulative) */
+ width: 9ch;
+}
 .diff table.trac-diff th {
  border-right: 1px solid #d7d7d7;
- border-bottom: 1px solid #998;
- font-size: 11px;
+ border-top: 1px solid #ccc;
+ font-size: .9em; /* diff_lineno_font_size */ /* (cumulative) */
+ font-weight: normal;
 }
 .diff table.trac-diff thead th {
  background: #eee;
@@ -122,11 +134,10 @@
  font-weight: normal;
  padding: 0 .5em;
  text-align: right;
- vertical-align: top;
 }
 .diff table.trac-diff td {
  background: #fff;
- font: normal 11px monospace;
+ font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
  overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
@@ -194,8 +205,11 @@ pre.diff .add { background: #dfd; }
 }
 
 /* Styles for the plain-text diff view */
-.diff pre { background: #fff; border: 1px solid #ddd; font-size: 85%;
-  margin: 0;
+.diff pre {
+ background: #fff;
+ border: 1px solid #ddd;
+ font-size: .9em; /* code_font_size */
+ margin: 0;
 }
 
 /* Styles for the property diffs */
