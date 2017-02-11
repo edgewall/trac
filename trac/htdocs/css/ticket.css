@@ -219,6 +219,12 @@ ul.children > li.child {
  box-shadow: .1em .2em 1em #eee;
 }
 div.change, ul.children { clear: both; }
+div.change:after {
+ content: "";
+ display: block;
+ clear: both;
+ height: 0;
+}
 
 .changes th {
  text-align: right;
