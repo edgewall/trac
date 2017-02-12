@@ -128,7 +128,7 @@ class VersionControlAdmin(Component):
                 reponame = ''
             repos = rm.get_repository(reponame)
             if repos is None:
-                raise TracError(_("Repository '%(repo)s' not found",
+                raise TracError(_("Repository \"%(repo)s\" doesn't exist",
                                   repo=reponame or '(default)'))
             if rev is not None:
                 repos.sync_changeset(rev)
