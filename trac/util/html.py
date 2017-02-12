@@ -157,6 +157,8 @@ def stripentities(text, keepxmlentities=False):
     Markup(u'\u2026')
     >>> stripentities('&#x2026;')
     Markup(u'\u2026')
+    >>> stripentities(Markup(u'\u2026'))
+    Markup(u'\u2026')
 
     If the `keepxmlentities` parameter is provided and is a truth value, the
     core XML entities (&amp;, &apos;, &gt;, &lt; and &quot;) are left intact.
@@ -750,7 +752,7 @@ class TracHTMLSanitizer(object):
         """
         new_attrs = {}
         for attr, value in attrs.iteritems():
-            value = stripentities(value)
+            value = stripentities(value) if value is not None else attr
             if attr not in self.safe_attrs:
                 continue
             elif attr in self.uri_attrs:

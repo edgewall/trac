@@ -381,6 +381,7 @@ def test_suite():
     suite.addTest(text.test_suite())
     suite.addTest(translation.test_suite())
     suite.addTest(html.test_suite())
+    suite.addTest(doctest.DocTestSuite(util.html))
     return suite
 
 if __name__ == '__main__':

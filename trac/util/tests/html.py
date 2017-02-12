@@ -103,6 +103,12 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         html = '<input type="password" />'
         self.assertEqual('', self.sanitize(html))
 
+    def test_empty_attribute(self):
+        html = '<option value="1236" selected>Family B</option>'
+        self.assertEqual(
+            '<option selected="selected" value="1236">Family B</option>',
+            self.sanitize(html))
+
     def test_expression(self):
         html = '<div style="top:expression(alert())">XSS</div>'
         self.assertEqual('<div>XSS</div>', self.sanitize(html))
