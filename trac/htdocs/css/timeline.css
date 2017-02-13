@@ -106,6 +106,8 @@
 .timeline dd.changeset .changes li span {
  margin-right: .8em;
 }
+
+.timeline dd.changeset .changes .add    { background: #bfb }
 .timeline dd.changeset .changes .delete { background: #f88 }
 .timeline dd.changeset .changes .edit   { background: #fd8 }
 .timeline dd.changeset .changes .copy   { background: #88f }
