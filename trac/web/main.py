@@ -354,8 +354,8 @@ class RequestDispatcher(Component):
         try:
             return Session(self.env, req)
         except TracError as e:
-            self.log.error("can't retrieve session: %s",
-                           exception_to_unicode(e))
+            self.log.warning("can't retrieve session: %s",
+                             exception_to_unicode(e))
             return FakeSession()
 
     def _get_locale(self, req):
