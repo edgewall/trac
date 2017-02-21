@@ -32,7 +32,7 @@ The `Environment` is special in the sense it is not only a
 .. autoclass :: EnvironmentAdmin
    :members:
 
-     
+
 Functions
 ---------
 
