@@ -70,3 +70,34 @@ Helper Functions
 
 .. autofunction :: arg_list_to_args
 .. autofunction :: parse_arg_list
+
+
+Exceptions
+----------
+
+.. autoclass :: TracNotImplementedError
+
+.. autoclass :: HTTPBadGateway
+.. autoclass :: HTTPBadRequest
+.. autoclass :: HTTPConflict
+.. autoclass :: HTTPExpectationFailed
+.. autoclass :: HTTPForbidden
+.. autoclass :: HTTPGatewayTimeout
+.. autoclass :: HTTPGone
+.. autoclass :: HTTPInternalError
+.. autoclass :: HTTPLengthRequired
+.. autoclass :: HTTPMethodNotAllowed
+.. autoclass :: HTTPNotAcceptable
+.. autoclass :: HTTPNotFound
+.. autoclass :: HTTPNotImplemented
+.. autoclass :: HTTPPaymentRequired
+.. autoclass :: HTTPPreconditionFailed
+.. autoclass :: HTTPProxyAuthenticationRequired
+.. autoclass :: HTTPRequestEntityTooLarge
+.. autoclass :: HTTPRequestTimeout
+.. autoclass :: HTTPRequestUriTooLong
+.. autoclass :: HTTPRequestedRangeNotSatisfiable
+.. autoclass :: HTTPServiceUnavailable
+.. autoclass :: HTTPUnauthorized
+.. autoclass :: HTTPUnsupportedMediaType
+.. autoclass :: HTTPVersionNotSupported

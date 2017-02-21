@@ -551,6 +551,8 @@ apidoc-%:
 	    $(sphinxopts) $(sphinxopts-$(*)) \
 	    -d build/doc/doctree \
 	    doc $(BUILDDIR)/$(*)
+	@$(if $(findstring coverage,$(*)),\
+	    diff -u doc/utils/python.txt $(BUILDDIR)/coverage/python.txt)
 
 
 epydoc: apiref

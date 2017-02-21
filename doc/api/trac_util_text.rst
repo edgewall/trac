@@ -31,40 +31,29 @@ left to the `to_unicode` helper function, which converts `str` to
 `unicode` in a robust and guaranteed successful way.
 
 .. autofunction :: to_unicode
-
 .. autofunction :: exception_to_unicode
 
 Web utilities
 .............
 
 .. autofunction :: unicode_quote
-
 .. autofunction :: unicode_quote_plus
-
 .. autofunction :: unicode_unquote
-
 .. autofunction :: unicode_urlencode
-
 .. autofunction :: quote_query_string
-
 .. autofunction :: javascript_quote
-
 .. autofunction :: to_js_string
 
 
 Console and file system
 .......................
 
+.. autofunction :: getpreferredencoding
 .. autofunction :: path_to_unicode
-
 .. autofunction :: stream_encoding
-
 .. autofunction :: console_print
-
 .. autofunction :: printout
-
 .. autofunction :: printerr
-
 .. autofunction :: raw_input
 
 Miscellaneous
@@ -84,27 +73,17 @@ Text formatting
 ---------------
 
 .. autofunction :: pretty_size
-
 .. autofunction :: breakable_path
-
 .. autofunction :: normalize_whitespace
-
 .. autofunction :: unquote_label
-
 .. autofunction :: fix_eol
-
 .. autofunction :: expandtabs
-
 .. autofunction :: obfuscate_email_address
-
 .. autofunction :: text_width
-
 .. autofunction :: print_table
-
 .. autofunction :: shorten_line
-
 .. autofunction :: stripws
-
+.. autofunction :: strip_line_ws
 .. autofunction :: wrap
 
 
@@ -112,7 +91,5 @@ Conversion utilities
 --------------------
 
 .. autofunction :: unicode_to_base64
-
 .. autofunction :: unicode_from_base64
-
 .. autofunction :: to_utf8

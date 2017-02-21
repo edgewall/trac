@@ -27,6 +27,8 @@ HTML clean-up and sanitization
 ------------------------------
 
 .. autoclass :: TracHTMLSanitizer
+   :members:
+
 .. autoclass :: Deuglifier
 
    See some usage examples in
@@ -45,4 +47,4 @@ Misc. HTML processing
 .. autofunction :: expand_markup
 .. autofunction :: find_element
 .. autofunction :: plaintext
-
+.. autofunction :: to_fragment

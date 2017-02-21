@@ -29,6 +29,19 @@ Components
 .. autoclass :: trac.mimeview.api.Mimeview
    :members:
 
+.. autoclass :: trac.mimeview.api.ImageRenderer
+   :members:
+
+.. autoclass :: trac.mimeview.api.LineNumberAnnotator
+   :members:
+
+.. autoclass :: trac.mimeview.api.PlainTextRenderer
+   :members:
+
+.. autoclass :: trac.mimeview.api.WikiTextRenderer
+   :members:
+
+
 Helper classes
 --------------
 
@@ -70,6 +83,9 @@ Sub-modules
    :members:
 
 .. automodule :: trac.mimeview.pygments
+   :members:
+
+.. autoclass :: trac.mimeview.pygments.GenshiHtmlFormatter
    :members:
 
 .. automodule :: trac.mimeview.rst

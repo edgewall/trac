@@ -128,6 +128,11 @@ Miscellaneous
 .. autoclass :: trac.core.TracError
    :members:
 
+.. autoclass :: ComponentMeta
+   :members:
+
+.. autofunction :: N_
+
 
 .. [*] Ok, it *might* happen that more than one component instance get
    created due to a race condition. This is usually harmless, see
