@@ -51,3 +51,5 @@ Helper Functions
 .. autofunction :: apply_ticket_permissions
 .. autofunction :: get_tickets_for_milestone
 .. autofunction :: grouped_stats_data
+.. autofunction :: get_num_tickets_for_milestone
+.. autofunction :: group_milestones

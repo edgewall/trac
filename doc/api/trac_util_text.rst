@@ -66,7 +66,9 @@ Miscellaneous
 
 .. autoclass :: unicode_passwd
 
+.. autofunction :: cleandoc
 .. autofunction :: levenshtein_distance
+.. autofunction :: sub_vars
 
 
 Text formatting

@@ -122,11 +122,18 @@ resources on first use. Never do such costly initializations in the
 constructor itself.
 
 
-Miscellaneous
--------------
+Exceptions
+----------
+
+.. autoclass :: trac.core.TracBaseError
+   :members:
 
 .. autoclass :: trac.core.TracError
    :members:
+
+
+Miscellaneous
+-------------
 
 .. autoclass :: ComponentMeta
    :members:

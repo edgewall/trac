@@ -34,6 +34,13 @@ The above are both subclasses of `DbContextManager`:
 .. autoclass :: DbContextManager
    :members:
 
+The API of database backend specific connection classes (like
+`~trac.db.api.SQLiteConnection`) is specified and documented in a base
+class, the `ConnectionBase`.
+
+.. autoclass :: ConnectionBase
+   :members:
+
 
 Components
 ----------

@@ -45,6 +45,9 @@ Components
 Exceptions
 ----------
 
+.. autoclass :: InvalidConnector
+   :members:
+
 .. autoclass :: InvalidRepository
    :members:
 
@@ -67,6 +70,9 @@ Abstract classes
    :members:
 
 .. autoclass :: Changeset
+   :members:
+
+.. autoclass :: EmptyChangeset
    :members:
 
 

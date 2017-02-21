@@ -70,6 +70,7 @@ Helper Functions
 
 .. autofunction :: arg_list_to_args
 .. autofunction :: parse_arg_list
+.. autofunction :: is_valid_default_handler
 
 
 Exceptions
