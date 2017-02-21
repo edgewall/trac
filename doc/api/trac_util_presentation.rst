@@ -3,6 +3,8 @@
 
 .. module :: trac.util.presentation
 
+.. autofunction :: jinja2_update
+
 We define a few Jinja2 custom filters_.
 
 .. autofunction :: flatten_filter

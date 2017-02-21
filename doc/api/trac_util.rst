@@ -32,6 +32,7 @@ OS related utilies
 .. autofunction :: getuser
 .. autofunction :: is_path_below
 .. autofunction :: makedirs
+.. autofunction :: native_path
 .. autofunction :: read_file
 .. autofunction :: rename
 .. autofunction :: terminate

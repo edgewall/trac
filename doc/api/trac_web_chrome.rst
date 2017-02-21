@@ -96,6 +96,7 @@ Contextual Navigation
 Miscellaneous
 ~~~~~~~~~~~~~
 
+.. autofunction :: accesskey
 .. autofunction :: auth_link
 
 

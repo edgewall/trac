@@ -33,6 +33,9 @@ Components
 Classes
 -------
 
+.. autoclass :: PathList
+   :members:
+
 .. autoclass :: PrefixList
    :members:
 

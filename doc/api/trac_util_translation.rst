@@ -12,7 +12,8 @@ Functions
 .. autofunction :: make_activable
 .. autofunction :: get_available_locales
 .. autofunction :: domain_functions
-
+.. autofunction :: s_dgettext
+.. autofunction :: s_gettext
 
 Internals
 ---------
