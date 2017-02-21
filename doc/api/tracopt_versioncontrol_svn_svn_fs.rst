@@ -23,6 +23,7 @@ Components
 ----------
 
 .. autoclass :: SubversionConnector
+   :members:
 
 Concrete classes
 ----------------
@@ -34,4 +35,13 @@ Concrete classes
    :members:
 
 .. autoclass :: SubversionChangeset
+   :members:
+
+Miscellaneous
+-------------
+
+.. autoclass :: Pool
+   :members:
+
+.. autoclass :: SvnCachedRepository
    :members:

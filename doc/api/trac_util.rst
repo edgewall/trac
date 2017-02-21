@@ -34,6 +34,8 @@ OS related utilies
 .. autofunction :: makedirs
 .. autofunction :: read_file
 .. autofunction :: rename
+.. autofunction :: terminate
+.. autofunction :: touch_file
 
 .. autoclass :: AtomicFile
    :members:
@@ -86,7 +88,9 @@ Data structures which don't fit anywhere else
 .. autoclass :: Ranges
    :members:
 
+.. autofunction :: create_zipinfo
 .. autofunction :: to_ranges
+.. autofunction :: to_list
 
 .. autoclass :: lazy
 

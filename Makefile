@@ -516,6 +516,7 @@ define HELP_doc
   apidoc-html         generate the Sphinx documentation in HTML format
   apidoc-pdf          generate the Sphinx documentation in PDF format
   apidoc-check        check for missing symbols in Sphinx documentation
+  apidoc-coverage     generate coverage information for Sphinx documentation
 
   apiref|epydoc       generate the full API reference using Epydoc
 
@@ -548,6 +549,8 @@ apidoc-%:
 	    $(sphinxopts) $(sphinxopts-$(*)) \
 	    -d build/doc/doctree \
 	    doc $(BUILDDIR)/$(*)
+	@$(if $(findstring coverage,$(*)),\
+	    diff -u doc/utils/python.txt $(BUILDDIR)/coverage/python.txt)
 
 
 epydoc: apiref

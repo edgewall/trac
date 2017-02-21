@@ -48,3 +48,5 @@ Both classes inherit from a common base:
 
 .. autoclass :: CachedPropertyBase
    :members:
+
+.. function :: key_to_id

@@ -45,6 +45,9 @@ Components
 Exceptions
 ----------
 
+.. autoclass :: InvalidRepository
+   :members:
+
 Subclasses of `ResourceNotFound`.
 
 .. autoclass :: NoSuchChangeset

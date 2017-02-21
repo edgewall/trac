@@ -31,34 +31,41 @@ Functions
 Most of the helper functions are related to content generation,
 and in particular, (X)HTML content generation, in one way or another.
 
-.. autofunction :: trac.web.chrome.web_context
-.. autofunction :: trac.web.chrome.add_meta
+.. autofunction :: web_context
+.. autofunction :: add_meta
 
 
 Web resources
 ~~~~~~~~~~~~~
 
-.. autofunction :: trac.web.chrome.add_stylesheet
-.. autofunction :: trac.web.chrome.add_script
-.. autofunction :: trac.web.chrome.add_script_data
+.. autofunction :: add_stylesheet
+.. autofunction :: add_script
+.. autofunction :: add_script_data
 
 
 Page admonitions
 ~~~~~~~~~~~~~~~~
 
-.. autofunction :: trac.web.chrome.add_warning
-.. autofunction :: trac.web.chrome.add_notice
+.. autofunction :: add_warning
+.. autofunction :: add_notice
 
 
 Contextual Navigation
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction :: trac.web.chrome.add_link
-.. autofunction :: trac.web.chrome.add_ctxtnav
-.. autofunction :: trac.web.chrome.prevnext_nav
+.. autofunction :: add_link
+.. autofunction :: add_ctxtnav
+.. autofunction :: prevnext_nav
 
 
 Miscellaneous
 ~~~~~~~~~~~~~
 
 .. autofunction :: auth_link
+
+
+Internals
+~~~~~~~~~
+
+.. autofunction :: chrome_info_script
+.. autofunction :: chrome_resource_path

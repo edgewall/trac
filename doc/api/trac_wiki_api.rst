@@ -65,6 +65,6 @@ The wiki system provide an access to all the pages.
 Other Functions
 ---------------
 
-.. autofunction :: trac.wiki.api.parse_args
-.. autofunction :: trac.wiki.api.validate_page_name
+.. autofunction :: parse_args
+.. autofunction :: validate_page_name
 
