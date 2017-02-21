@@ -43,7 +43,7 @@ OS related utilies
 .. autoclass :: NaivePopen
    :members:
 
-.. autoclass :: WindowsError
+.. autoexception :: WindowsError
 
    Also defined on non-Windows systems (by a dummy OSError subclass).
 

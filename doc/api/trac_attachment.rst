@@ -42,7 +42,7 @@ Classes
 .. autoclass :: Attachment
    :members:
 
-.. autoclass :: InvalidAttachment
+.. autoexception :: InvalidAttachment
    :members:
 
 Components

@@ -45,18 +45,18 @@ Components
 Exceptions
 ----------
 
-.. autoclass :: InvalidConnector
+.. autoexception :: InvalidConnector
    :members:
 
-.. autoclass :: InvalidRepository
+.. autoexception :: InvalidRepository
    :members:
 
 Subclasses of `ResourceNotFound`.
 
-.. autoclass :: NoSuchChangeset
+.. autoexception :: NoSuchChangeset
    :members:
 
-.. autoclass :: NoSuchNode
+.. autoexception :: NoSuchNode
    :members:
 
 
