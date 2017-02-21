@@ -125,7 +125,7 @@ constructor itself.
 Miscellaneous
 -------------
 
-.. autoclass :: trac.core.TracError
+.. autoexception :: TracError
    :members:
 
 .. autoclass :: ComponentMeta

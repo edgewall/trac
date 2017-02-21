@@ -45,15 +45,15 @@ Components
 Exceptions
 ----------
 
-.. autoclass :: InvalidRepository
+.. autoexception :: InvalidRepository
    :members:
 
 Subclasses of `ResourceNotFound`.
 
-.. autoclass :: NoSuchChangeset
+.. autoexception :: NoSuchChangeset
    :members:
 
-.. autoclass :: NoSuchNode
+.. autoexception :: NoSuchNode
    :members:
 
 

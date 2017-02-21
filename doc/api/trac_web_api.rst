@@ -75,29 +75,29 @@ Helper Functions
 Exceptions
 ----------
 
-.. autoclass :: TracNotImplementedError
+.. autoexception :: TracNotImplementedError
 
-.. autoclass :: HTTPBadGateway
-.. autoclass :: HTTPBadRequest
-.. autoclass :: HTTPConflict
-.. autoclass :: HTTPExpectationFailed
-.. autoclass :: HTTPForbidden
-.. autoclass :: HTTPGatewayTimeout
-.. autoclass :: HTTPGone
-.. autoclass :: HTTPInternalError
-.. autoclass :: HTTPLengthRequired
-.. autoclass :: HTTPMethodNotAllowed
-.. autoclass :: HTTPNotAcceptable
-.. autoclass :: HTTPNotFound
-.. autoclass :: HTTPNotImplemented
-.. autoclass :: HTTPPaymentRequired
-.. autoclass :: HTTPPreconditionFailed
-.. autoclass :: HTTPProxyAuthenticationRequired
-.. autoclass :: HTTPRequestEntityTooLarge
-.. autoclass :: HTTPRequestTimeout
-.. autoclass :: HTTPRequestUriTooLong
-.. autoclass :: HTTPRequestedRangeNotSatisfiable
-.. autoclass :: HTTPServiceUnavailable
-.. autoclass :: HTTPUnauthorized
-.. autoclass :: HTTPUnsupportedMediaType
-.. autoclass :: HTTPVersionNotSupported
+.. autoexception :: HTTPBadGateway
+.. autoexception :: HTTPBadRequest
+.. autoexception :: HTTPConflict
+.. autoexception :: HTTPExpectationFailed
+.. autoexception :: HTTPForbidden
+.. autoexception :: HTTPGatewayTimeout
+.. autoexception :: HTTPGone
+.. autoexception :: HTTPInternalError
+.. autoexception :: HTTPLengthRequired
+.. autoexception :: HTTPMethodNotAllowed
+.. autoexception :: HTTPNotAcceptable
+.. autoexception :: HTTPNotFound
+.. autoexception :: HTTPNotImplemented
+.. autoexception :: HTTPPaymentRequired
+.. autoexception :: HTTPPreconditionFailed
+.. autoexception :: HTTPProxyAuthenticationRequired
+.. autoexception :: HTTPRequestEntityTooLarge
+.. autoexception :: HTTPRequestTimeout
+.. autoexception :: HTTPRequestUriTooLong
+.. autoexception :: HTTPRequestedRangeNotSatisfiable
+.. autoexception :: HTTPServiceUnavailable
+.. autoexception :: HTTPUnauthorized
+.. autoexception :: HTTPUnsupportedMediaType
+.. autoexception :: HTTPVersionNotSupported
