@@ -793,12 +793,7 @@ class Storage(object):
 
     def ls_tree(self, rev, path=''):
         rev = rev and str(rev) or 'HEAD' # paranoia
-
-        path = self._fs_from_unicode(path)
-
-        if path.startswith('/'):
-            path = path[1:]
-
+        path = self._fs_from_unicode(path).lstrip('/') or '.'
         tree = self.repo.ls_tree('-z', '-l', rev, '--', path).split('\0')
 
         def split_ls_tree_line(l):
@@ -806,12 +801,7 @@ class Storage(object):
 
             meta, fname = l.split('\t', 1)
             _mode, _type, _sha, _size = meta.split()
-
-            if _size == '-':
-                _size = None
-            else:
-                _size = int(_size)
-
+            _size = None if _size == '-' else int(_size)
             return _mode, _type, _sha, _size, self._fs_to_unicode(fname)
 
         return [ split_ls_tree_line(e) for e in tree if e ]
@@ -907,7 +897,7 @@ class Storage(object):
         p = []
         change = {}
         next_path = []
-        base_path = self._fs_from_unicode(base_path)
+        base_path = self._fs_from_unicode(base_path) or '.'
 
         def name_status_gen():
             p[:] = [self.repo.log_pipe('--pretty=format:%n%H',
@@ -1014,7 +1004,7 @@ class Storage(object):
         # diff-tree returns records with the following structure:
         # :<old-mode> <new-mode> <old-sha> <new-sha> <change> NUL <old-path> NUL [ <new-path> NUL ]
 
-        path = self._fs_from_unicode(path).strip('/')
+        path = self._fs_from_unicode(path).strip('/') or '.'
         diff_tree_args = ['-z', '-r']
         if find_renames:
             diff_tree_args.append('-M')
