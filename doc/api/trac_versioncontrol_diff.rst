@@ -28,13 +28,9 @@ Function Reference
 ------------------
 
 .. autofunction :: get_change_extent
-
 .. autofunction :: get_filtered_hunks
-
 .. autofunction :: get_hunks
-
 .. autofunction :: diff_blocks
-
 .. autofunction :: unified_diff
-
 .. autofunction :: get_diff_options
+.. autofunction :: filter_ignorable_lines

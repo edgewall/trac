@@ -34,6 +34,8 @@ OS related utilies
 .. autofunction :: makedirs
 .. autofunction :: read_file
 .. autofunction :: rename
+.. autofunction :: terminate
+.. autofunction :: touch_file
 
 .. autoclass :: AtomicFile
    :members:
@@ -67,6 +69,7 @@ Complements the `inspect`, `traceback` and `sys` modules.
 .. autofunction :: safe_repr
 .. autofunction :: get_doc
 
+
 Setuptools utilities
 --------------------
 
@@ -74,11 +77,14 @@ Setuptools utilities
 .. autofunction :: get_sources
 .. autofunction :: get_pkginfo
 
+
 Cryptographic related utilities
 -------------------------------
 
 .. autofunction :: hex_entropy
 .. autofunction :: md5crypt
+.. autofunction :: salt
+
 
 Data structures which don't fit anywhere else
 ---------------------------------------------
@@ -86,7 +92,9 @@ Data structures which don't fit anywhere else
 .. autoclass :: Ranges
    :members:
 
+.. autofunction :: create_zipinfo
 .. autofunction :: to_ranges
+.. autofunction :: to_list
 
 .. autoclass :: lazy
 
@@ -99,3 +107,4 @@ Algorithmic utilities
 .. autofunction :: as_int
 .. autofunction :: as_bool
 .. autofunction :: pathjoin
+.. autofunction :: sub_val

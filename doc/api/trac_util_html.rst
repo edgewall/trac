@@ -67,6 +67,8 @@ HTML clean-up and sanitization
 ------------------------------
 
 .. autoclass :: TracHTMLSanitizer
+   :members:
+
 .. autoclass :: Deuglifier
 
 .. autofunction :: escape
@@ -87,8 +89,8 @@ Misc. HTML processing
 .. autofunction :: find_element
 .. autofunction :: to_fragment
 .. autofunction :: valid_html_bytes
+.. autofunction :: to_fragment
 
 Kept for backward compatibility purposes:
 
 .. autofunction :: expand_markup
-

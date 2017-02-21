@@ -45,6 +45,12 @@ Components
 Exceptions
 ----------
 
+.. autoclass :: InvalidConnector
+   :members:
+
+.. autoclass :: InvalidRepository
+   :members:
+
 Subclasses of `ResourceNotFound`.
 
 .. autoclass :: NoSuchChangeset
@@ -64,6 +70,9 @@ Abstract classes
    :members:
 
 .. autoclass :: Changeset
+   :members:
+
+.. autoclass :: EmptyChangeset
    :members:
 
 

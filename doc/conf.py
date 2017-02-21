@@ -98,6 +98,11 @@ try:
 except ImportError:
     pass
 
+# -- Documentation coverage (`make apidoc-coverage`)
+extensions.append('sphinx.ext.coverage')
+
+coverage_skip_undoc_in_source = True
+
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['utils/templates']
