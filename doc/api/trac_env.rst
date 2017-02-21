@@ -39,8 +39,8 @@ Functions
 .. autofunction :: trac.env.open_environment
 
 
-Miscellaneous
--------------
+Exceptions
+----------
 
-.. autoclass :: BackupError
+.. autoexception :: BackupError
    :members:

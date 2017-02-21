@@ -125,10 +125,10 @@ constructor itself.
 Exceptions
 ----------
 
-.. autoclass :: trac.core.TracBaseError
+.. autoexception :: TracBaseError
    :members:
 
-.. autoclass :: trac.core.TracError
+.. autoexception :: TracError
    :members:
 
 
