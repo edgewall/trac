@@ -22,7 +22,8 @@ import re
 
 from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            console_date_format, get_console_locale
-from trac.core import Component, ExtensionPoint, TracError, implements
+from trac.core import Component, ExtensionPoint, TracError, TracValueError, \
+                      implements
 from trac.util import as_bool, as_int, hex_entropy, lazy
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, time_now, to_datetime, to_timestamp
@@ -267,7 +268,7 @@ class Session(DetachedSession):
         refresh_cookie = False
 
         if not authenticated and not self._valid_sid_re.match(sid):
-            raise TracError(_("Session ID must be alphanumeric."))
+            raise TracValueError(_("Session ID must be alphanumeric."))
         if self.sid and sid != self.sid:
             refresh_cookie = True
 
@@ -286,8 +287,8 @@ class Session(DetachedSession):
         if new_sid == self.sid:
             return
         if not self._valid_sid_re.match(new_sid):
-            raise TracError(_("Session ID must be alphanumeric."),
-                            _("Error renaming session"))
+            raise TracValueError(_("Session ID must be alphanumeric."),
+                                 _("Error renaming session"))
         with self.env.db_transaction as db:
             if db("SELECT sid FROM session WHERE sid=%s", (new_sid,)):
                 raise TracError(_("Session '%(id)s' already exists. "

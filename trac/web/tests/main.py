@@ -597,6 +597,27 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertEqual('200 Ok', req.status_sent[0])
         self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
 
+    def test_invalid_session_id_returns_fake_session(self):
+        """Fake session is returned when session id is invalid."""
+        sid = 'a' * 23 + '$'  # last char invalid, sid must be alphanumeric.
+        req = MockRequest(self.env, path_info='/test-stub',
+                          cookie='trac_session=%s;' % sid)
+        request_dispatcher = RequestDispatcher(self.env)
+
+        with self.assertRaises(RequestDone):
+            request_dispatcher.dispatch(req)
+
+        self.assertIn(('DEBUG', "Chosen handler is <Component trac.web.tests"
+                                ".main.TestStubRequestHandler>"),
+                      self.env.log_messages)
+        self.assertIn(('WARNING', "can't retrieve session: "
+                                  "Session ID must be alphanumeric."),
+                      self.env.log_messages)
+        self.assertIsInstance(req.session, FakeSession)
+        self.assertIsNone(req.session.sid)
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+
 
 class HdfdumpTestCase(unittest.TestCase):
 

@@ -11,4 +11,17 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import unittest
+
+from trac.prefs.tests import web_ui
 from trac.prefs.tests.functional import functionalSuite
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(web_ui.test_suite())
+    return suite
+
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
