@@ -17,7 +17,7 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
-           'TracBaseError', 'TracError']
+           'TracBaseError', 'TracError', 'TracValueError']
 
 
 def N_(string):
@@ -54,6 +54,14 @@ class TracError(TracBaseError):
 
     def __unicode__(self):
         return unicode(self.message)
+
+
+class TracValueError(TracError, ValueError):
+    """Raised when a function or operator receives an argument that is
+    the correct type, but inappropriate value.
+
+    :since: 1.2.1
+    """
 
 
 class Interface(object):
