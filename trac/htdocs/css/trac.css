@@ -2,6 +2,7 @@
 
 html { overflow-y: scroll }
 body {
+ font-size: .9em;
  background: #fff; /* body_bg */
  color: #000;
  margin: .5em;
@@ -9,7 +10,6 @@ body {
 }
 body, th, tr {
  font-style: normal;
- font-size: 1em;
  font-family: Roboto,Segoe UI,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
 }
 h1, h2, h3, h4 {
@@ -361,7 +361,6 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
 
 #mainnav :link, #mainnav :visited {
  border-bottom: none;
-/* box-shadow: 0 .1em .3em 0 #999; */
  color: #666;
  padding: .4em 20px;  /* mainnav_v_padding */
 }
@@ -371,8 +370,7 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
  background: linear-gradient(to bottom,#888 0%,#555 25%,#333 49%,#333 51%,#444 85%,#888 100%);
  color: #eee;
  border-radius: 0;
- padding: .4em 20px; /* mainnav_v_padding */
-/* box-shadow: 0 .1em .6em 0 #666; */
+ padding: .5em 20px; /* mainnav_v_padding */
 }
 
 #mainnav .active {
@@ -382,7 +380,6 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
  background: #000 url(../topbar_gradient2.png) 0 0 repeat-x; /* fallback */
  background: linear-gradient(to bottom,#555 0%,#333 25%,#111 49%,#000 51%,#333 75%,#555 100%);
  color: #eee;
- /* text-shadow: .5px 0 #eee;  */
 }
 
 /* Context-dependent navigation links */

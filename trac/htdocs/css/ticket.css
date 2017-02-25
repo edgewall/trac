@@ -1,7 +1,7 @@
 @import url(code.css);
 
 #content.ticket {
- width: 58em;
+ width: 56em;
  max-width: 100%;
  margin-left: auto;
  margin-right: auto;
@@ -92,7 +92,7 @@
 #ticket table.properties > tbody > tr { border-bottom: 1px dotted #eed }
 #ticket table.properties > tbody > tr > td,
 #ticket table.properties > tbody > tr > th {
- font-size: 80%;
+ font-size: .9em;
  padding: .5em 1em;
  vertical-align: top;
 }
