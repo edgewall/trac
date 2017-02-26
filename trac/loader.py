@@ -18,8 +18,8 @@ from glob import glob
 import imp
 import os.path
 import pkg_resources
-from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
-                          UnknownExtra
+from pkg_resources import working_set, DistributionNotFound, \
+                          VersionConflict, UnknownExtra
 import sys
 
 from trac.util import get_doc, get_module_path, get_sources, get_pkginfo
@@ -33,6 +33,7 @@ def _enable_plugin(env, module):
     if env.is_component_enabled(module) is None:
         env.enable_component(module)
 
+
 def load_eggs(entry_point_name):
     """Loader that loads any eggs on the search path and `sys.path`."""
     def _load_eggs(env, search_path, auto_enable=None):
@@ -42,7 +43,7 @@ def load_eggs(entry_point_name):
         )
         for dist in distributions:
             if dist not in working_set:
-                env.log.debug('Adding plugin %s from %s', dist, dist.location)
+                env.log.debug("Adding plugin %s from %s", dist, dist.location)
                 working_set.add(dist)
 
         def _log_error(item, e):
@@ -65,7 +66,8 @@ def load_eggs(entry_point_name):
 
         for entry in sorted(working_set.iter_entry_points(entry_point_name),
                             key=lambda entry: entry.name):
-            env.log.debug('Loading %s from %s', entry.name, entry.dist.location)
+            env.log.debug("Loading %s from %s", entry.name,
+                          entry.dist.location)
             try:
                 entry.load(require=True)
             except Exception as e:
@@ -74,6 +76,7 @@ def load_eggs(entry_point_name):
                 if os.path.dirname(entry.dist.location) == auto_enable:
                     _enable_plugin(env, entry.module_name)
     return _load_eggs
+
 
 def load_py_files():
     """Loader that look for Python source files in the plugins directories,
