@@ -1342,9 +1342,15 @@ QUERY_TEST_CASES = u"""
 [[TicketQuery(created=...)]]
 ------------------------------
 <p>
-</p><div class="system-message"><strong>Error executing TicketQuery macro</strong><pre>Invalid query constraint value</pre></div><p>
+<div class="system-message"><strong>Macro TicketQuery(created=...) failed</strong><pre>Invalid query constraint value</pre></div>
 </p>
 ------------------------------
+============================== TicketQuery(keywords~=x&y)
+[[TicketQuery(keywords~=x&y)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Macro TicketQuery(keywords~=x&amp;y) failed</strong><pre>Query filter requires field and constraints separated by a "="</pre></div>
+</p>
 ============================== TicketQuery(format=progress)
 [[TicketQuery(format=progress)]]
 ------------------------------

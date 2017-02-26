@@ -216,37 +216,37 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(img.png, margin-bottom=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>margin-bottom=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, margin-bottom=--) failed</strong><pre>Invalid macro argument <code>margin-bottom=--</code></pre></div>
 </p>
 ============================== No attachment, invalid arg 2
 [[Image(img.png, margin-top=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>margin-top=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, margin-top=--) failed</strong><pre>Invalid macro argument <code>margin-top=--</code></pre></div>
 </p>
 ============================== No attachment, invalid arg 3
 [[Image(img.png, margin=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>margin=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, margin=--) failed</strong><pre>Invalid macro argument <code>margin=--</code></pre></div>
 </p>
 ============================== No attachment, invalid arg 3
 [[Image(img.png, margin-left=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>margin-left=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, margin-left=--) failed</strong><pre>Invalid macro argument <code>margin-left=--</code></pre></div>
 </p>
 ============================== No attachment, invalid arg 4
 [[Image(img.png, margin-right=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>margin-right=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, margin-right=--) failed</strong><pre>Invalid macro argument <code>margin-right=--</code></pre></div>
 </p>
 ============================== No attachment, invalid arg 5
 [[Image(img.png, border=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>border=--</code></strong></div>
+<div class="system-message"><strong>Macro Image(img.png, border=--) failed</strong><pre>Invalid macro argument <code>border=--</code></pre></div>
 </p>
 ==============================  # Regression test for #12333
 = [[Image]]
@@ -301,13 +301,13 @@ TITLEINDEX1_MACRO_TEST_CASES = u"""
 [[TitleIndex(min=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>min=--</code></strong></div>
+<div class="system-message"><strong>Macro TitleIndex(min=--) failed</strong><pre>Invalid macro argument <code>min=--</code></pre></div>
 </p>
 ==============================
 [[TitleIndex(depth=--)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>depth=--</code></strong></div>
+<div class="system-message"><strong>Macro TitleIndex(depth=--) failed</strong><pre>Invalid macro argument <code>depth=--</code></pre></div>
 </p>
 ------------------------------
 """
@@ -591,7 +591,7 @@ RECENTCHANGES_MACRO_TEST_CASES = u""""
 [[RecentChanges(Trac, --)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>--</code></strong></div>
+<div class="system-message"><strong>Macro RecentChanges(Trac, --) failed</strong><pre>Invalid macro argument <code>--</code></pre></div>
 </p>
 ------------------------------
 """
@@ -615,18 +615,18 @@ def recentchanges_teardown(tc):
     tc.env.reset_db()
 
 
-PAGEOUTLINE_MACRO_TEST_CASES = u""""\
+PAGEOUTLINE_MACRO_TEST_CASES = u""""
 ==============================
 [[PageOutline(a)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>a</code></strong></div>
+<div class="system-message"><strong>Macro PageOutline(a) failed</strong><pre>Invalid macro argument <code>a</code></pre></div>
 </p>
 ==============================
 [[PageOutline(a-b)]]
 ------------------------------
 <p>
-<div class="system-message"><strong>Invalid macro argument <code>a</code></strong></div>
+<div class="system-message"><strong>Macro PageOutline(a-b) failed</strong><pre>Invalid macro argument <code>a</code></pre></div>
 </p>
 ==============================
 [[PageOutline(0)]]
