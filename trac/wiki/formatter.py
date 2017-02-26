@@ -32,7 +32,7 @@ from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity, as_int
-from trac.util.html import Markup, TracHTMLSanitizer, escape
+from trac.util.html import Markup, TracHTMLSanitizer, escape, to_fragment
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unquote_label
 from trac.util.translation import _, tag_
@@ -801,12 +801,13 @@ class Formatter(object):
         try:
             return macro.ensure_inline(macro.process(args))
         except MacroError as e:
-            return system_message(e)
+            return system_message(_("Macro %(name)s(%(args)s) failed",
+                                    name=name, args=args), to_fragment(e))
         except Exception as e:
             self.env.log.error('Macro %s(%s) failed:%s', name, args,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Macro %(name)s(%(args)s) failed",
-                                    name=name, args=args), to_unicode(e))
+                                    name=name, args=args), to_fragment(e))
 
     # Headings
 

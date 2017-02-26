@@ -47,7 +47,7 @@ from trac.web.chrome import (INavigationContributor, Chrome,
                              add_script_data, add_stylesheet, add_warning,
                              web_context)
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import system_message
+from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
 
@@ -1370,7 +1370,10 @@ class TicketQueryMacro(WikiMacroBase):
             query_string += '&'
 
         query_string += '&'.join('%s=%s' % item for item in kwargs.iteritems())
-        query = Query.from_string(self.env, query_string)
+        try:
+            query = Query.from_string(self.env, query_string)
+        except QuerySyntaxError as e:
+            raise MacroError(e)
 
         if format in ('count', 'rawcount'):
             cnt = query.count(req)
@@ -1386,8 +1389,7 @@ class TicketQueryMacro(WikiMacroBase):
         try:
             tickets = query.execute(req)
         except QueryValueError as e:
-            self.log.warn(e)
-            return system_message(_("Error executing TicketQuery macro"), e)
+            raise MacroError(e)
 
         if format == 'table':
             data = query.template_data(formatter.context, tickets,
