@@ -967,12 +967,13 @@ class QueryModule(Component):
         group = args.get('group')
         if isinstance(group, (list, tuple)):
             group = group[0] if group else None
+        page = args.get('page')
+        if isinstance(page, (list, tuple)):
+            page = page[0] if page else None
         query = Query(self.env, report_id,
                       constraints, cols, order, 'desc' in args, group,
                       'groupdesc' in args, 'verbose' in args,
-                      rows,
-                      args.get('page'),
-                      max)
+                      rows, page, max)
 
         if 'update' in req.args:
             # Reset session vars
