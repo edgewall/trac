@@ -24,13 +24,13 @@ def do_upgrade(env, version, cursor):
 
     env.config.set('notification-subscriber', 'always_notify_cc',
                    'CarbonCopySubscriber')
-    if env.config.getbool('notification', 'always_notify_owner'):
+    if env.config.getbool('notification', 'always_notify_owner', False):
         env.config.set('notification-subscriber', 'always_notify_owner',
                        'TicketOwnerSubscriber')
-    if env.config.getbool('notification', 'always_notify_reporter'):
+    if env.config.getbool('notification', 'always_notify_reporter', False):
         env.config.set('notification-subscriber', 'always_notify_reporter',
                        'TicketReporterSubscriber')
-    if env.config.getbool('notification', 'always_notify_updater'):
+    if env.config.getbool('notification', 'always_notify_updater', True):
         env.config.set('notification-subscriber', 'always_notify_updater',
                        'TicketUpdaterSubscriber')
         env.config.set('notification-subscriber',
