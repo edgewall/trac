@@ -28,8 +28,8 @@
       };
       var centerLargeElement = function($e, wpleft) {
           var shift_left;
-	  var excess = $e.data('excess');
-	  var rol = $e.data('rol');
+          var excess = $e.data('excess');
+          var rol = $e.data('rol');
           if (excess > rol)
               shift_left = rol + (excess - rol) / 2;
           else
@@ -55,7 +55,7 @@
       $("#wikipage > p > a > img").one("load", detectLargeImage).each(
         function() {
           if (this.complete)
-            detectLargeImage(this);
+            detectLargeImage.apply(this);
         }
       );
 
