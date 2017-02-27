@@ -445,7 +445,7 @@ class PageOutlineMacro(WikiMacroBase):
         outline = Markup(out.getvalue())
 
         if title:
-            outline = tag.h4(title) + outline
+            outline = tag.h4(title, class_='section') + outline
         if not inline:
             outline = tag.div(outline, class_='wiki-toc')
         elif not numbered:
