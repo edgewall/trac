@@ -901,7 +901,7 @@ class Storage(object):
         base_path = self._fs_from_unicode(base_path) or '.'
 
         def name_status_gen():
-            p[:] = [self.repo.log_pipe('--pretty=format:%n%H',
+            p[:] = [self.repo.log_pipe('--pretty=format:%n%H', '--no-renames',
                                        '--name-status', sha, '--', base_path)]
             f = p[0].stdout
             for l in f:
