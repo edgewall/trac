@@ -221,16 +221,17 @@ class Query(object):
             if col in cols:
                 cols.remove(col)
                 cols.append(col)
+        constrained_fields = set(self.constraint_cols)
 
-        def fn(col):
-            if col == 'id':
-                return 0  # Ticket ID is always the first column
-            if col == 'summary':
-                return 1  # Ticket summary is always the second column
-            if col in self.constraint_cols:
-                return 2  # Constrained columns appear before other columns
-            return 3
-        cols.sort(key=fn)
+        def sort_columns(name):
+            if name == 'id':
+                return 1  # Ticket ID is always the first column
+            if name == 'summary':
+                return 2  # Ticket summary is always the second column
+            if name in constrained_fields:
+                return 3  # Constrained columns appear before other columns
+            return 4
+        cols.sort(key=sort_columns)
         return cols
 
     def get_default_columns(self):
