@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-16 16:58+0000\n"
+"POT-Creation-Date: 2017-02-27 07:11+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
+"Language: ja\n"
 "Language-Team: ja <LL@li.org>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 2.3.4\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -59,7 +60,7 @@ msgstr ""
 "には変換に使う SilverCity のモード、`quality` にはその変換処理に対する割合を指定します。\n"
 "またこれは SilverCity の描画時に使われるデフォルトの比率3を上書きすることもできます。(''0.10 以降'')"
 
-#: tracopt/perm/authz_policy.py:134
+#: tracopt/perm/authz_policy.py:142
 msgid "Location of authz policy configuration file."
 msgstr "authz ポリシーの設定ファイルのパスを指定します。"
 
@@ -818,7 +819,7 @@ msgid ""
 "''(Since 0.11.5)''"
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。''(0.11.5 以降)''"
 
-#: trac/db/mysql_backend.py:84
+#: trac/db/mysql_backend.py:86
 msgid "Location of mysqldump for MySQL database backups"
 msgstr "MySQL データベースのバックアップに使う mysqldump の場所を指定します。"
 
@@ -832,19 +833,19 @@ msgid ""
 "directory or absolute. (''since 0.12'')"
 msgstr "SQLite 拡張のパスを Trac 環境ディレクトリからの相対パス、または、絶対パスで指定します。(''0.12 以降'')"
 
-#: trac/mimeview/api.py:633
+#: trac/mimeview/api.py:637
 msgid "Charset to be used when in doubt."
 msgstr "文字コードが不明な場合に使用する文字コードを指定します。"
 
-#: trac/mimeview/api.py:636
+#: trac/mimeview/api.py:640
 msgid "Displayed tab width in file preview. (''since 0.9'')"
 msgstr "ファイルのプレビューで表示するタブの幅を指定します。(''0.9 以降'')"
 
-#: trac/mimeview/api.py:639
+#: trac/mimeview/api.py:643
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
 msgstr "HTML プレビューするファイルの上限サイズを指定します。(''0.9 以降'')"
 
-#: trac/mimeview/api.py:642
+#: trac/mimeview/api.py:646
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -855,7 +856,7 @@ msgstr ""
 "マッピングはカンマ区切りで、MIME タイプごとに関連するキーワードまたはファイル拡張子のコロン区切り (\":\") "
 "のリストを持ちます。(''0.10 以降'')"
 
-#: trac/mimeview/api.py:650
+#: trac/mimeview/api.py:654
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -865,7 +866,7 @@ msgstr ""
 "追加する MIME タイプとそれに対応させるファイルパターンを指定します。マッピングはカンマ区切りで、マッピングごとに MIME "
 "タイプとファイルマッチングに使う Python 正規表現をコロン (`:`) で区切るようにします。(''1.0 以降'')"
 
-#: trac/mimeview/api.py:658
+#: trac/mimeview/api.py:662
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
@@ -893,11 +894,11 @@ msgstr ""
 "には変換に使う Pygments のモード、`quality` にはその変換処理に対する割合を指定します。またこれは Pygments "
 "の描画時に使われるデフォルトの比率を上書きすることもできます。"
 
-#: trac/search/web_ui.py:49
+#: trac/search/web_ui.py:50
 msgid "Minimum length of query string allowed when performing a search."
 msgstr "検索の実行を許可する検索文字列の最小の長さを指定します。"
 
-#: trac/search/web_ui.py:52
+#: trac/search/web_ui.py:53
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -1116,7 +1117,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr "レポートの RSS フィードに表示するチケット数を指定します (''0.11 以降'')"
 
-#: trac/ticket/roadmap.py:146
+#: trac/ticket/roadmap.py:147
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -1230,7 +1231,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/ticket/roadmap.py:397
+#: trac/ticket/roadmap.py:427
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1239,7 +1240,7 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:599
+#: trac/ticket/roadmap.py:629
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1331,7 +1332,7 @@ msgstr ""
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/admin.py:173
+#: trac/versioncontrol/admin.py:175
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1412,7 +1413,7 @@ msgstr ""
 "(推奨)。そうでないのであれば、リポジトリの名前をカンマ区切りで指定します。注意事項として、これはパフォーマンスに悪影響があり、チェンジセット・リスナーが指定したリポジトリからのイベント取得を妨げることになります。デフォルトは、下位互換のためデフォルトのリポジトリと同期を行います。(''0.12"
 " 以降'')"
 
-#: trac/versioncontrol/svn_authz.py:124
+#: trac/versioncontrol/svn_authz.py:126
 msgid ""
 "The path to the Subversion\n"
 "[http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html "
@@ -1426,13 +1427,13 @@ msgstr ""
 "authz 権限チェックを有効にするには、`AuthzSourcePolicy` 権限ポリシーを `[trac] "
 "permission_policies` に追加してください。"
 
-#: trac/versioncontrol/svn_authz.py:131
+#: trac/versioncontrol/svn_authz.py:133
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
 msgstr "`authz_file` で使うデフォルトのリポジトリに対応するモジュール名を指定します。空の場合はグローバルセクションを使用します。"
 
-#: trac/versioncontrol/web_ui/browser.py:117
+#: trac/versioncontrol/web_ui/browser.py:118
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser.\n"
@@ -1443,7 +1444,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:124
+#: trac/versioncontrol/web_ui/browser.py:125
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser.\n"
@@ -1454,7 +1455,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:183
+#: trac/versioncontrol/web_ui/browser.py:184
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1476,7 +1477,7 @@ msgstr ""
 "また、パスのプレフィックスマッチング処理はシンプルhもので、自動でエイリアスの解決は行わないことに注意してください。\n"
 "(''0.10 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:196
+#: trac/versioncontrol/web_ui/browser.py:197
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1489,7 +1490,7 @@ msgstr ""
 "これにはソースコードの注釈と同じカラースケールを使います。青が古く、赤が新しいものとなります。\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:205
+#: trac/versioncontrol/web_ui/browser.py:206
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
@@ -1500,7 +1501,7 @@ msgstr ""
 "が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:213
+#: trac/versioncontrol/web_ui/browser.py:214
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
@@ -1511,7 +1512,7 @@ msgstr ""
 "が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:219
+#: trac/versioncontrol/web_ui/browser.py:220
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
@@ -1522,7 +1523,7 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:225
+#: trac/versioncontrol/web_ui/browser.py:226
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1535,7 +1536,7 @@ msgstr ""
 "参照)。指定しない場合は、`oldest_color` と `newest_color` の中間色を使います。\n"
 "(''0.11 以降'')"
 
-#: trac/versioncontrol/web_ui/browser.py:233
+#: trac/versioncontrol/web_ui/browser.py:234
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1554,7 +1555,7 @@ msgstr ""
 "\n"
 "誰でもファイルをチェックインできる公開リポジトリでは、この設定を無効のままにすることを推奨します。(これがデフォルトです)"
 
-#: trac/versioncontrol/web_ui/browser.py:245
+#: trac/versioncontrol/web_ui/browser.py:246
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser.\n"
@@ -1909,9 +1910,9 @@ msgstr ""
 
 #: trac/web/chrome.py:546
 msgid ""
-"Add a simple toolbar on top of Wiki `<textarea>`s.\n"
+"Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
-msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
+msgstr "Wiki <textarea> の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
 #: trac/web/chrome.py:550
 msgid ""
@@ -2058,6 +2059,7 @@ msgid ""
 "\n"
 "The `.compat` option can be used to activate or disable a\n"
 "''compatibility'' mode:\n"
+"\n"
 " * If the targeted Trac is running a version below\n"
 "   [trac:milestone:0.10 0.10] ([trac:r3526 r3526] to be precise), then\n"
 "   it doesn't know how to dispatch an InterTrac link, and it's up to\n"
@@ -2088,6 +2090,7 @@ msgstr ""
 "`.title` 情報は InterTrac リンクの上にカーソルを持っていたときのツールチップを表示するのに使います。\n"
 "\n"
 "`.compat` は''互換''モードを有効または無効にするのに使います。\n"
+"\n"
 " * 対象の Trac が [trac:milestone:0.10 0.10] 以下のバージョン (正確には [trac:r3526 "
 "r3526]) で動作している場合、InterTrac リンクを処理する方法を知らないのでローカルの Trac "
 "が正しいリンクを用意します。すべてのリンクが機能するとは限らないが、大抵は動作します。これを互換モードと呼んでいて `false` "
