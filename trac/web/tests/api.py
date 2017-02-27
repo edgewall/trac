@@ -96,6 +96,17 @@ def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
 
 class RequestTestCase(unittest.TestCase):
 
+    def test_repr_with_path(self):
+        environ = _make_environ(**{'PATH_INFO': '/path'})
+        req = Request(environ, None)
+        self.assertEqual(repr(req), """<Request "GET '/path'">""")
+
+    def test_repr_with_path_and_query_string(self):
+        environ = _make_environ(**{'QUERY_STRING': 'A=B',
+                                   'PATH_INFO': '/path'})
+        req = Request(environ, None)
+        self.assertEqual(repr(req), """<Request "GET '/path?A=B'">""")
+
     def test_as_bool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
         environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
