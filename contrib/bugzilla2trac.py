@@ -487,8 +487,8 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' AND ', '!='
     else:
         connector, op = ' OR ', '='
-    clause = connector.join(["%s %s '%s'" % (fieldName, op, value)
-                             for value in values])
+    clause = connector.join("%s %s '%s'" % (fieldName, op, value)
+                            for value in values)
     return ' (' + clause + ')'
 
 def convert(_db, _host, _user, _password, _env, _force):

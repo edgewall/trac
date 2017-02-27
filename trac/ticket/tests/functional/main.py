@@ -259,8 +259,8 @@ class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test non-ticket search"""
         # Create a summary containing only unique words
-        summary = ' '.join([random_word() + '_TestNonTicketSearch'
-                            for i in range(5)])
+        summary = ' '.join(random_word() + '_TestNonTicketSearch'
+                           for i in range(5))
         self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
@@ -1165,8 +1165,8 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket("regression test 5394a")
 
         options = 'name="action_reassign_reassign_owner">' + \
-            ''.join(['<option[^>]*>%s</option>' % user for user in
-                     sorted(test_users + ['admin', 'joe', 'user'])])
+            ''.join('<option[^>]*>%s</option>' % user for user in
+                    sorted(test_users + ['admin', 'joe', 'user']))
         tc.find(to_utf8(options), 's')
         # We don't have a good way to fully delete a user from the Trac db.
         # Once we do, we may want to cleanup our list of users here.
@@ -1184,9 +1184,6 @@ class RegressionTestTicket5394b(FunctionalTwillTestCaseSetup):
 
         test_users = ['alice', 'bob', 'jane', 'john', 'charlie', 'alan',
                       'zorro']
-        options = 'id="field-owner"[^>]*>[[:space:]]*<option/>.*' + \
-            '.*'.join(['<option[^>]*>%s</option>' % user for user in
-                     sorted(test_users + ['admin', 'user'])])
         options = '.*'.join(sorted(test_users + ['admin', 'user']))
         tc.find(options, 's')
 

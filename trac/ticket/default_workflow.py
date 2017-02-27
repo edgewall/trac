@@ -620,7 +620,7 @@ class WorkflowMacro(WikiMacroBase):
             raw_actions = self.config.options('ticket-workflow')
         else:
             if args is None:
-                text = '\n'.join([line.lstrip() for line in text.split(';')])
+                text = '\n'.join(line.lstrip() for line in text.split(';'))
             if '[ticket-workflow]' not in text:
                 text = '[ticket-workflow]\n' + text
             parser = RawConfigParser()

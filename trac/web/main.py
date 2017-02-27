@@ -581,7 +581,7 @@ def dispatch_request(environ, start_response):
             if mod_wsgi_version:
                 mod_wsgi_version = (
                         "%s (WSGIProcessGroup %s WSGIApplicationGroup %s)" %
-                        ('.'.join([str(x) for x in mod_wsgi_version]),
+                        ('.'.join(str(x) for x in mod_wsgi_version),
                          environ.get('mod_wsgi.process_group'),
                          environ.get('mod_wsgi.application_group') or
                          '%{GLOBAL}'))

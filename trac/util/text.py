@@ -119,7 +119,7 @@ def to_unicode(text, charset=None):
             return unicode(text)
         except UnicodeError:
             # unicode arguments given to the exception (e.g. parse_date)
-            return ' '.join([to_unicode(arg) for arg in text.args])
+            return ' '.join(to_unicode(arg) for arg in text.args)
     return unicode(text)
 
 
@@ -318,8 +318,8 @@ def console_print(out, *args, **kwargs):
                    (defaults to `True`)
     """
     cons_charset = stream_encoding(out)
-    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace')
-                        for a in args]))
+    out.write(' '.join(to_unicode(a).encode(cons_charset, 'replace')
+                       for a in args))
     if kwargs.get('newline', True):
         out.write('\n')
 

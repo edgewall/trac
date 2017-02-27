@@ -279,8 +279,8 @@ class PatchRenderer(Component):
                     for i in xrange(len(f)):
                         line = expandtabs(f[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
-                        line = '<del>'.join([space_re.sub(htmlify, seg)
-                                             for seg in line.split('\0')])
+                        line = '<del>'.join(space_re.sub(htmlify, seg)
+                                            for seg in line.split('\0'))
                         line = line.replace('\1', '</del>')
                         f[i] = Markup(line)
                         if 'meta' in base and i in base['meta']:
@@ -288,8 +288,8 @@ class PatchRenderer(Component):
                     for i in xrange(len(t)):
                         line = expandtabs(t[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
-                        line = '<ins>'.join([space_re.sub(htmlify, seg)
-                                             for seg in line.split('\0')])
+                        line = '<ins>'.join(space_re.sub(htmlify, seg)
+                                            for seg in line.split('\0'))
                         line = line.replace('\1', '</ins>')
                         t[i] = Markup(line)
                         if 'meta' in changed and i in changed['meta']:

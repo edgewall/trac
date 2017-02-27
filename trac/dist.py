@@ -625,8 +625,8 @@ try:
             indices = indices_markup - indices_alternative
             if indices:
                 raise TranslationError(
-                    'genshi markups are unbalanced %s' % \
-                    ' '.join(['[%d:]' % idx for idx in indices]))
+                    'genshi markups are unbalanced %s' %
+                    ' '.join('[%d:]' % idx for idx in indices))
 
 
         def _parse_genshi_markup(message):

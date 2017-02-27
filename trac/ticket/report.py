@@ -350,7 +350,7 @@ class ReportModule(Component):
         #
         # It may eventually contain newlines, for increased clarity.
         #
-        query = ''.join([line.strip() for line in sql.splitlines()])
+        query = ''.join(line.strip() for line in sql.splitlines())
         if query and (query[0] == '?' or query.startswith('query:?')):
             query = query if query[0] == '?' else query[6:]
             report_id = 'report=%s' % id
@@ -627,8 +627,8 @@ class ReportModule(Component):
             # navigate report results as well
             try:
                 req.session['query_tickets'] = \
-                    ' '.join([str(int(row['id']))
-                              for rg in row_groups for row in rg[1]])
+                    ' '.join(str(int(row['id']))
+                             for rg in row_groups for row in rg[1])
                 req.session['query_href'] = \
                     req.session['query_href'] = report_href()
                 # Kludge: we have to clear the other query session

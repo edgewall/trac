@@ -151,8 +151,8 @@ class RegressionTestTicket5819(FunctionalTwillTestCaseSetup):
                      'Create component1/%s' % filename)
         self._tester.go_to_timeline()
         # They are supposed to show up in d, c, b, a order.
-        components = '.*'.join(['Create component1/%s' % f for f in
-                                      reversed(files)])
+        components = '.*'.join('Create component1/%s' % f
+                               for f in reversed(files))
         tc.find(components, 's')
 
 

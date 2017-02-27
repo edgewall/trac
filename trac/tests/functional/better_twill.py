@@ -104,8 +104,8 @@ if twill:
                                             entry.line + 6]
                 msg.append("\n# %s\n# URL: %s\n# Line %d, column %d\n\n%s\n"
                            % (entry.message, entry.filename, entry.line,
-                              entry.column, "\n".join([each.decode('utf-8')
-                                                       for each in context])))
+                              entry.column, "\n".join(each.decode('utf-8')
+                                                      for each in context)))
             return "\n".join(msg).encode('ascii', 'xmlcharrefreplace')
 
         def _validate_xhtml(func_name, *args, **kwargs):

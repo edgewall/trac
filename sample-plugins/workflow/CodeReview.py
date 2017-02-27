@@ -100,8 +100,8 @@ class CodeReviewActionController(Component):
             hint = "Next status will be '%s'" % new_status
         else:
             hint = "Next status will be one of " + \
-                   ', '.join(["'%s'" % status
-                              for option, status in review_options])
+                   ', '.join("'%s'" % status
+                             for option, status in review_options)
         return label, control, hint
 
     def get_ticket_changes(self, req, ticket, action):

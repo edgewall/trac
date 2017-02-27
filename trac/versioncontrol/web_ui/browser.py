@@ -102,8 +102,8 @@ class DefaultPropertyRenderer(Component):
         # No special treatment besides respecting newlines in values.
         value = props[name]
         if value and '\n' in value:
-            value = Markup(''.join(['<br />%s' % escape(v)
-                                    for v in value.split('\n')]))
+            value = Markup(''.join('<br />%s' % escape(v)
+                                   for v in value.split('\n')))
         return value
 
 
@@ -958,8 +958,8 @@ class BrowserModule(Component):
                     tag.dd(repos.params.get('description')))
                 for reponame, repos in all_repos])
         else: # compact
-            return Markup(', ').join([repolink(reponame, repos)
-                                      for reponame, repos in all_repos])
+            return Markup(', ').join(repolink(reponame, repos)
+                                     for reponame, repos in all_repos)
 
 
 
