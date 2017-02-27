@@ -1,14 +1,14 @@
 # Translations template for Trac.
-# Copyright (C) 2016 Edgewall Software
+# Copyright (C) 2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.14\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-16 16:58+0000\n"
+"POT-Creation-Date: 2017-02-27 07:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgid ""
 "(''since 0.10'')."
 msgstr ""
 
-#: tracopt/perm/authz_policy.py:134
+#: tracopt/perm/authz_policy.py:142
 msgid "Location of authz policy configuration file."
 msgstr ""
 
@@ -613,7 +613,7 @@ msgid ""
 "''(Since 0.11.5)''"
 msgstr ""
 
-#: trac/db/mysql_backend.py:84
+#: trac/db/mysql_backend.py:86
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
@@ -627,19 +627,19 @@ msgid ""
 "directory or absolute. (''since 0.12'')"
 msgstr ""
 
-#: trac/mimeview/api.py:633
+#: trac/mimeview/api.py:637
 msgid "Charset to be used when in doubt."
 msgstr ""
 
-#: trac/mimeview/api.py:636
+#: trac/mimeview/api.py:640
 msgid "Displayed tab width in file preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:639
+#: trac/mimeview/api.py:643
 msgid "Maximum file size for HTML preview. (''since 0.9'')"
 msgstr ""
 
-#: trac/mimeview/api.py:642
+#: trac/mimeview/api.py:646
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -647,7 +647,7 @@ msgid ""
 "or file extensions. (''since 0.10'')"
 msgstr ""
 
-#: trac/mimeview/api.py:650
+#: trac/mimeview/api.py:654
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -655,7 +655,7 @@ msgid ""
 "(\":\"). (''since 1.0'')"
 msgstr ""
 
-#: trac/mimeview/api.py:658
+#: trac/mimeview/api.py:662
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data. (''since 0.11.5'')"
@@ -678,11 +678,11 @@ msgid ""
 "Pygments render."
 msgstr ""
 
-#: trac/search/web_ui.py:49
+#: trac/search/web_ui.py:50
 msgid "Minimum length of query string allowed when performing a search."
 msgstr ""
 
-#: trac/search/web_ui.py:52
+#: trac/search/web_ui.py:53
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -861,7 +861,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:146
+#: trac/ticket/roadmap.py:147
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -925,14 +925,14 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:397
+#: trac/ticket/roadmap.py:427
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:599
+#: trac/ticket/roadmap.py:629
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1006,7 +1006,7 @@ msgid ""
 "(''Since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:173
+#: trac/versioncontrol/admin.py:175
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1063,7 +1063,7 @@ msgid ""
 "repository, for backward compatibility. (''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:124
+#: trac/versioncontrol/svn_authz.py:126
 msgid ""
 "The path to the Subversion\n"
 "[http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html "
@@ -1072,13 +1072,13 @@ msgid ""
 "policy must be added to `[trac] permission_policies`."
 msgstr ""
 
-#: trac/versioncontrol/svn_authz.py:131
+#: trac/versioncontrol/svn_authz.py:133
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:117
+#: trac/versioncontrol/web_ui/browser.py:118
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser.\n"
@@ -1086,7 +1086,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:124
+#: trac/versioncontrol/web_ui/browser.py:125
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser.\n"
@@ -1094,7 +1094,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:183
+#: trac/versioncontrol/web_ui/browser.py:184
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1108,7 +1108,7 @@ msgid ""
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:196
+#: trac/versioncontrol/web_ui/browser.py:197
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1117,7 +1117,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:205
+#: trac/versioncontrol/web_ui/browser.py:206
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
@@ -1125,7 +1125,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:213
+#: trac/versioncontrol/web_ui/browser.py:214
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
@@ -1133,7 +1133,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:219
+#: trac/versioncontrol/web_ui/browser.py:220
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
@@ -1141,7 +1141,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:225
+#: trac/versioncontrol/web_ui/browser.py:226
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1151,7 +1151,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:233
+#: trac/versioncontrol/web_ui/browser.py:234
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1164,7 +1164,7 @@ msgid ""
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:245
+#: trac/versioncontrol/web_ui/browser.py:246
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser.\n"
@@ -1429,7 +1429,7 @@ msgstr ""
 
 #: trac/web/chrome.py:546
 msgid ""
-"Add a simple toolbar on top of Wiki `<textarea>`s.\n"
+"Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
 msgstr ""
 
@@ -1549,6 +1549,7 @@ msgid ""
 "\n"
 "The `.compat` option can be used to activate or disable a\n"
 "''compatibility'' mode:\n"
+"\n"
 " * If the targeted Trac is running a version below\n"
 "   [trac:milestone:0.10 0.10] ([trac:r3526 r3526] to be precise), then\n"
 "   it doesn't know how to dispatch an InterTrac link, and it's up to\n"
