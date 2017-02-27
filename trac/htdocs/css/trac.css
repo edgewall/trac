@@ -369,7 +369,6 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
  background: #000 url(../topbar_gradient2.png) 0 0 repeat-x; /* fallback */
  background: linear-gradient(to bottom,#888 0%,#555 25%,#333 49%,#333 51%,#444 85%,#888 100%);
  color: #eee;
- border-radius: 0;
  padding: .5em 20px; /* mainnav_v_padding */
 }
 
