@@ -16,6 +16,7 @@ import unittest
 from datetime import datetime, timedelta
 
 import trac
+from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket
@@ -277,6 +278,21 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertEqual(" * List all active tickets by priority.\n"
                          " * Color each row based on priority.\n",
                          data['description'])
+
+    def test_render_empty_report(self):
+        """Empty report raises a TracError."""
+        report = Report(self.env)
+        report.title = "Empty report"
+        report.insert()
+        req = MockRequest(self.env, method='GET', args={
+            'action': 'view',
+            'id': report.id})
+
+        with self.assertRaises(TracError) as cm:
+            self.report_module.process_request(req)[1]
+
+        self.assertEqual("Report {%d} has no SQL query." % report.id,
+                         unicode(cm.exception))
 
     def test_render_view_sort_order_preserved_on_update(self):
         """Sort column and order are preserved on update."""

@@ -1167,9 +1167,9 @@ class Report(object):
                         WHERE id=%s
                         """, (id_as_int,)):
                     self.id = id_as_int
-                    self.title = title or ''
-                    self.description = description or ''
-                    self.query = query or ''
+                    self.title = title or u''
+                    self.description = description or u''
+                    self.query = query or u''
                     return
             raise ResourceNotFound(_("Report {%(num)s} does not exist.",
                                      num=id), _("Invalid Report Number"))
