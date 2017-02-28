@@ -451,7 +451,8 @@
                     </span>
                     #         else:
                     ##          # All the other text input fields
-                    <input type="text" id="field-${field.name}"
+                    <input type="text" id="field-${field.name}"${
+                         {'class': 'wikitext' if field.format == 'wiki' else None}|htmlattr}
                            name="field_${field.name}"${
                          {'value': value}|htmlattr}/>
                     ## jinjacheck: "ID field- already defined" OK
