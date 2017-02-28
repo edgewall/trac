@@ -1331,6 +1331,19 @@ class ReportTestCase(unittest.TestCase):
         report.insert()
         self.assertEqual(9, report.id)
 
+    def test_insert_query_is_empty(self):
+        """TracError is raised when query attribute is empty."""
+        report = Report(self.env)
+        report.title = "The report"
+        report.description = "The description"
+        report.query = ""
+
+        with self.assertRaises(TracError) as cm:
+            report.insert()
+        self.assertIsNone(report.id)
+        self.assertEqual("Query cannot be empty.",
+                         unicode(cm.exception))
+
     def test_insert_existing_report(self):
         report = Report(self.env, 1)
         self.assertRaises(AssertionError, report.insert)
@@ -1361,6 +1374,16 @@ class ReportTestCase(unittest.TestCase):
         self.assertEqual("The report", report.title)
         self.assertEqual("The description", report.description)
         self.assertEqual("SELECT 1", report.query)
+
+    def test_update_query_is_empty(self):
+        """TracError is raised when query attribute is empty."""
+        report = Report(self.env, 1)
+        report.query = ""
+
+        with self.assertRaises(TracError) as cm:
+            report.update()
+        self.assertEqual("Query cannot be empty.",
+                         unicode(cm.exception))
 
     def test_select(self):
         reports = list(Report.select(self.env))

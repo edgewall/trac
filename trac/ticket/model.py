@@ -1184,8 +1184,13 @@ class Report(object):
         self.id = None
 
     def insert(self):
-        """Insert a new report."""
+        """Insert a new report.
+
+        :raises TracError: if `query` is empty
+        """
         assert not self.exists, "Cannot insert existing report"
+        if not self.query:
+            raise TracError(_("Query cannot be empty."))
 
         self.env.log.debug("Creating new report '%s'", self.id)
         with self.env.db_transaction as db:
@@ -1196,6 +1201,12 @@ class Report(object):
             self.id = db.get_last_id(cursor, 'report')
 
     def update(self):
+        """Update a report.
+
+        :raises TracError: if `query` is empty
+        """
+        if not self.query:
+            raise TracError(_("Query cannot be empty."))
         self.env.db_transaction("""
             UPDATE report SET title=%s, query=%s, description=%s
             WHERE id=%s

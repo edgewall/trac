@@ -37,6 +37,15 @@ class ReportModuleTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def _insert_report(self, title, query, description):
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                INSERT INTO report (title,query,description)
+                VALUES (%s,%s,%s)
+                """, (title, query, description))
+            return db.get_last_id(cursor, 'report')
+
     def test_create_report(self):
         req = MockRequest(self.env, method='POST', args={
             'action': 'new',
@@ -96,7 +105,9 @@ class ReportModuleTestCase(unittest.TestCase):
                          req.headers_sent['Location'])
 
     def test_update_report(self):
-        Report(self.env).insert()
+        report = Report(self.env)
+        report.query = "SELECT 1"
+        report.insert()
         req = MockRequest(self.env, method='POST', args={
             'action': 'edit',
             'id': '1',
@@ -113,7 +124,9 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertIn("Your changes have been saved.", req.chrome['notices'])
 
     def test_update_report_cancel(self):
-        Report(self.env).insert()
+        report = Report(self.env)
+        report.query = "SELECT 1"
+        report.insert()
         req = MockRequest(self.env, method='POST', args={
             'action': 'edit',
             'cancel': True,
@@ -192,17 +205,15 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_render_empty_report(self):
         """Empty report raises a TracError."""
-        report = Report(self.env)
-        report.title = "Empty report"
-        report.insert()
+        rid = self._insert_report('Empty report', '', '')
         req = MockRequest(self.env, method='GET', args={
             'action': 'view',
-            'id': report.id})
+            'id': rid})
 
         with self.assertRaises(TracError) as cm:
             self.report_module.process_request(req)[1]
 
-        self.assertEqual("Report {%d} has no SQL query." % report.id,
+        self.assertEqual("Report {%d} has no SQL query." % rid,
                          unicode(cm.exception))
 
     def test_render_view_sort_order_preserved_on_update(self):
@@ -262,17 +273,13 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_saved_custom_query_redirect(self):
         query = u'query:?type=résumé'
-        with self.env.db_transaction as db:
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO report (title,query,description) "
-                           "VALUES (%s,%s,%s)", ('redirect', query, ''))
-            id = db.get_last_id(cursor, 'report')
+        rid = self._insert_report('redirect', query, '')
         req = MockRequest(self.env)
 
         self.assertRaises(RequestDone,
-                          self.report_module._render_view, req, id)
+                          self.report_module._render_view, req, rid)
         self.assertEqual('http://example.org/trac.cgi/query?' +
-                         'type=r%C3%A9sum%C3%A9&report=' + str(id),
+                         'type=r%C3%A9sum%C3%A9&report=' + str(rid),
                          req.headers_sent['Location'])
 
     def test_quoted_id_with_var(self):
