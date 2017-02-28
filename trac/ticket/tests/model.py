@@ -23,7 +23,7 @@ from trac.core import TracError, implements
 from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub
 from trac.ticket.model import (
-    Ticket, Component, Milestone, Priority, Type, Version
+    Ticket, Component, Milestone, Priority, Report, Type, Version
 )
 from trac.ticket.roadmap import MilestoneModule
 from trac.ticket.api import (
@@ -876,6 +876,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
                               foo=('change 1', 'change2')),
                          listener.changes)
 
+
 class EnumTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -1294,6 +1295,98 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual([('Test', 'joe', None)], self.env.db_query(
             "SELECT name, owner, description FROM component WHERE name='Test'"))
 
+
+class ReportTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_repr(self):
+        report = Report(self.env)
+        report.query = "SELECT 1"
+        report.insert()
+        self.assertEqual("<Report 1>", repr(Report(self.env, 1)))
+        self.assertEqual("<Report None>", repr(Report(self.env)))
+
+    def test_create(self):
+        report = Report(self.env, 4)
+        self.assertTrue(report.exists)
+        self.assertEqual(4, report.id)
+        self.assertEqual("Accepted, Active Tickets by Owner", report.title)
+        self.assertEqual("List accepted tickets, group by ticket owner, "
+                         "sorted by priority.\n", report.description)
+        self.assertIn("SELECT p.value AS __color__,", report.query)
+
+    def test_create_exists_false(self):
+        self.assertRaises(ResourceNotFound, Report, self.env, 9)
+
+    def test_insert(self):
+        report = Report(self.env)
+        report.title = "The report"
+        report.description = "The description"
+        report.query = "SELECT 1"
+        report.insert()
+        self.assertEqual(9, report.id)
+
+    def test_insert_existing_report(self):
+        report = Report(self.env, 1)
+        self.assertRaises(AssertionError, report.insert)
+
+    def test_delete(self):
+        report = Report(self.env, 1)
+        report.delete()
+        self.assertFalse(report.exists)
+        self.assertRaises(ResourceNotFound, Report, self.env, 1)
+
+    def test_delete_not_exists(self):
+        report = Report(self.env)
+        self.assertRaises(AssertionError, report.delete)
+
+    def test_update(self):
+        report = Report(self.env, 1)
+        title, description, query = \
+            report.title, report.description, report.query
+        report.title = "The report"
+        report.description = "The description"
+        report.query = "SELECT 1"
+        report.update()
+
+        report = Report(self.env, 1)
+        self.assertNotEqual(title, report.title)
+        self.assertNotEqual(description, report.description)
+        self.assertNotEqual(query, report.query)
+        self.assertEqual("The report", report.title)
+        self.assertEqual("The description", report.description)
+        self.assertEqual("SELECT 1", report.query)
+
+    def test_select(self):
+        reports = list(Report.select(self.env))
+        self.assertEqual(1, reports[0].id)
+        self.assertEqual('Active Tickets', reports[0].title)
+        self.assertEqual(" * List all active tickets by priority.\n"
+                         " * Color each row based on priority.\n",
+                         reports[0].description)
+        self.assertIn("SELECT p.value AS __color__", reports[0].query)
+        self.assertEqual(8, len(reports))
+        self.assertEqual(1, reports[0].id)
+        self.assertEqual(8, reports[-1].id)
+
+    def test_select_sort_desc(self):
+        reports = list(Report.select(self.env, asc=False))
+        self.assertEqual(8, len(reports))
+        self.assertEqual(8, reports[0].id)
+        self.assertEqual(1, reports[-1].id)
+
+    def test_select_order_by_title(self):
+        reports = list(Report.select(self.env, sort='title'))
+        self.assertEqual(8, len(reports))
+        self.assertEqual(4, reports[0].id)
+        self.assertEqual(7, reports[-1].id)
+
+
 class VersionTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -1341,6 +1434,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(EnumTestCase))
     suite.addTest(unittest.makeSuite(MilestoneTestCase))
     suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(unittest.makeSuite(ReportTestCase))
     suite.addTest(unittest.makeSuite(VersionTestCase))
     return suite
 
