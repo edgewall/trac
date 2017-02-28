@@ -96,7 +96,9 @@ class ReportModuleTestCase(unittest.TestCase):
                          req.headers_sent['Location'])
 
     def test_update_report(self):
-        Report(self.env).insert()
+        report = Report(self.env)
+        report.query = "SELECT 1"
+        report.insert()
         req = MockRequest(self.env, method='POST', args={
             'action': 'edit',
             'id': '1',
@@ -113,7 +115,9 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertIn("Your changes have been saved.", req.chrome['notices'])
 
     def test_update_report_cancel(self):
-        Report(self.env).insert()
+        report = Report(self.env)
+        report.query = "SELECT 1"
+        report.insert()
         req = MockRequest(self.env, method='POST', args={
             'action': 'edit',
             'cancel': True,
