@@ -306,7 +306,8 @@ ${value}</textarea>
                             </span>
                             <!--! All the other text input fields -->
                             <input py:otherwise="" type="text" id="field-${field.name}"
-                              name="field_${field.name}" value="${value}" />
+                                   class="${'wikitext' if field.format == 'wiki' else None}"
+                                   name="field_${field.name}" value="${value}" />
                           </py:choose>
                         </py:otherwise>
                       </py:choose>

@@ -58,7 +58,8 @@
               </py:if>
             <div class="field">
               <label>Description of the file (optional):<br />
-                <input type="text" class="trac-fullwidth" name="description" value="$attachment.description" />
+                <input type="text" class="trac-fullwidth wikitext"
+                       name="description" value="$attachment.description" />
               </label>
             </div>
             <py:if test="authname and authname != 'anonymous'">
