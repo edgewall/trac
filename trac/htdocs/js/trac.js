@@ -48,6 +48,32 @@
     }
   };
 
+  $.fn.exclusiveOnClick = function(selector) {
+    var $container = $(this);
+    $container.on("click", selector,
+      function(event) {
+        if (!event.metaKey && !event.altKey)
+          return;
+        var clicked;
+        if (this.tagName === "LABEL") {
+          if (this.htmlFor) {
+            clicked = document.getElementById(this.htmlFor);
+          } else {
+            clicked = this.children[0];
+          }
+        } else {
+          clicked = this;
+        }
+        var $clicked = $(clicked);
+        $container.find(":checkbox").not(clicked).prop("checked", false);
+        $clicked.prop("checked", true);
+      }).mousedown(function(event) {
+        if (event.metaKey || event.altKey) {
+          event.preventDefault(); // Prevent border on Firefox.
+        }
+      });
+  };
+
   // Conditionally disable the submit button. Returns a jQuery object.
   $.fn.disableSubmit = function(determinant) {
     determinant = $(determinant);

@@ -128,22 +128,9 @@
       return false;
     });
 
-    // Enable only clicked checkbox and clear others
-    $filters.on("click", "td :checkbox, td :checkbox + label", function(event) {
-      if (!event.metaKey && !event.altKey)
-        return;
-      var clicked = this.tagName === "LABEL" ?
-                    document.getElementById(this.htmlFor) : this;
-      $('input[name="' + clicked.name + '"]', $filters).prop("checked", false);
-      $(clicked).prop("checked", true);
-      if (this.tagName === "LABEL") {
-        return false;
-      }
-    }).mousedown(function(event) {
-      if (event.metaKey || event.altKey) {
-        event.preventDefault(); // Prevent border on Firefox.
-      }
-    });
+    // Select only clicked checkbox and clear others
+    $filters.exclusiveOnClick("td :checkbox, td :checkbox + label");
+    $("fieldset#columns").exclusiveOnClick("label");
 
     // Make the submit buttons for removing filters client-side triggers
     $filters.find("input[type='submit'][name^='rm_filter_']").each(function() {

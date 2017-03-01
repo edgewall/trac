@@ -21,22 +21,10 @@
       }
     }
     return this.each(function() { highlight(this) });
-  }
+  };
 
   $(document).ready(function() {
-    $("p.filters").on("click", ":checkbox, :checkbox + label",
-      function(event) {
-        if (!event.metaKey && !event.altKey)
-          return;
-        var clicked = this.tagName === "LABEL" ?
-                      document.getElementById(this.htmlFor) : this;
-        var $clicked = $(clicked);
-        $clicked.prop("checked", true);
-        $clicked.siblings(":checkbox").prop("checked", false);
-        if (this.tagName === "LABEL") {
-          return false;
-        }
-      });
+    $("p.filters").exclusiveOnClick(":checkbox, :checkbox + label");
 
     var elems = $(".searchable");
     if (!elems.length) return;
@@ -53,7 +41,7 @@
           var terms = [];
           $.each(query.split(/(".*?"|'.*?'|\s+)/), function() {
             if (terms.length < 10) {
-              term = this.replace(/^\s+$/, "")
+              var term = this.replace(/^\s+$/, "")
                          .replace(/^['"]/, "")
                          .replace(/['"]$/, "");
               if (term.length >= 3)
