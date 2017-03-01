@@ -79,8 +79,8 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual(db_default.db_version, self.env.database_initial_version)
 
     def test_is_component_enabled(self):
-        self.assertEqual(True, Environment.required)
-        self.assertEqual(True, self.env.is_component_enabled(Environment))
+        self.assertTrue(Environment.required)
+        self.assertTrue(self.env.is_component_enabled(Environment))
 
     def test_dumped_values_in_tracini(self):
         parser = RawConfigParser()
@@ -174,8 +174,8 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
                             'http://trac.edgewall.org/some/path')
 
     def test_is_component_enabled(self):
-        self.assertEqual(False, EnvironmentStub.required)
-        self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
+        self.assertFalse(EnvironmentStub.required)
+        self.assertIsNone(self.env.is_component_enabled(EnvironmentStub))
 
     def test_db_exc(self):
         db_exc = self.env.db_exc

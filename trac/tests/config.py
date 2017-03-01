@@ -1127,7 +1127,7 @@ class OptionDocTestCase(BaseTestCase):
             section_c = (ConfigSection)('c', '')
 
         self.assertEqual('Doc for a', Dummy.section_a.__doc__)
-        self.assertEqual(None, Dummy.section_a.doc_args)
+        self.assertIsNone(Dummy.section_a.doc_args)
         self.assertEqual('Doc for a', Dummy.section_a.doc)
         self.assertEqual('Doc for [%(page)s@%(version)d b]',
                          Dummy.section_b.__doc__)
@@ -1135,7 +1135,7 @@ class OptionDocTestCase(BaseTestCase):
                          Dummy.section_b.doc_args)
         self.assertEqual('Doc for [WikiStart@42 b]', Dummy.section_b.doc)
         self.assertEqual('', Dummy.section_c.__doc__)
-        self.assertEqual(None, Dummy.section_c.doc_args)
+        self.assertIsNone(Dummy.section_c.doc_args)
         self.assertEqual('', Dummy.section_c.doc)
 
     def test_options(self):
@@ -1170,7 +1170,7 @@ class OptionDocTestCase(BaseTestCase):
                 doc='Doc for %(name)s', doc_args={'name': 'ordered_ext_opt'})
 
         self.assertEqual('', Dummy.opt_nodoc.__doc__)
-        self.assertEqual(None, Dummy.opt_nodoc.doc_args)
+        self.assertIsNone(Dummy.opt_nodoc.doc_args)
         self.assertEqual('', Dummy.opt_nodoc.doc)
         self.assertEqual('Doc for %(name)s', Dummy.opt.__doc__)
         self.assertEqual({'name': 'opt'}, Dummy.opt.doc_args)

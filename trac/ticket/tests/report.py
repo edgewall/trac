@@ -294,7 +294,7 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertEqual([name, 'user'], cols)
         self.assertEqual([(1, 'joe')], results)
         self.assertEqual([], missing_args)
-        self.assertEqual(None, limit_offset)
+        self.assertIsNone(limit_offset)
 
 
 class ExecuteReportTestCase(unittest.TestCase):
@@ -560,8 +560,7 @@ class ExecuteReportTestCase(unittest.TestCase):
                          results[3][idx_style])  # closed and not owned
         self.assertEqual('font-weight: bold',
                          results[1][idx_style])  # not closed and owned
-        self.assertEqual(None,
-                         results[0][idx_style])  # not closed and not owned
+        self.assertIsNone(results[0][idx_style])  # not closed and not owned
         idx_color = cols.index('__color__')
         self.assertEqual({'2', '5'}, {r[idx_color] for r in results})
         idx_group = cols.index('__group__')

@@ -77,11 +77,11 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_new_attachment(self):
         attachment = Attachment(self.env, 'ticket', 42)
-        self.assertEqual(None, attachment.filename)
-        self.assertEqual(None, attachment.description)
-        self.assertEqual(None, attachment.size)
-        self.assertEqual(None, attachment.date)
-        self.assertEqual(None, attachment.author)
+        self.assertIsNone(attachment.filename)
+        self.assertIsNone(attachment.description)
+        self.assertIsNone(attachment.size)
+        self.assertIsNone(attachment.date)
+        self.assertIsNone(attachment.author)
         self.assertEqual('<Attachment None>', repr(attachment))
 
     def test_existing_attachment(self):

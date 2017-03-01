@@ -385,7 +385,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
                           'mode': 'stop_on_copy'}, next_link_args(4))
         self.assertEqual({'limit': '5', 'rev': '76', 'revs': '70',
                           'mode': 'stop_on_copy'}, next_link_args(5))
-        self.assertEqual(None, next_link_args(6))
+        self.assertIsNone(next_link_args(6))
 
     def test_revranges_2_with_limit(self):
         req = MockRequest(self.env, path_info='/log/mock/file',

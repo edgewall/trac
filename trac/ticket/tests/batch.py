@@ -343,7 +343,7 @@ class BatchModifyTestCase(unittest.TestCase):
         stop = now + timedelta(hours=1)
         events = tktmod.get_timeline_events(self.req, start, stop,
                                             ['ticket_details'])
-        self.assertEqual(True, all(ev[0] != 'batchmodify' for ev in events))
+        self.assertTrue(all(ev[0] != 'batchmodify' for ev in events))
 
         prio_ids = {}
         for i in xrange(20):

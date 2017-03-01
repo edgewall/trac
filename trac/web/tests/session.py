@@ -687,12 +687,12 @@ class SessionTestCase(unittest.TestCase):
         self.assertIn(('name00', 'val00', 'val00'),
                       list(self.env.get_known_users()))
         sess_admin._do_delete('name00')
-        self.assertEqual(None, get_session_attrs(self.env, 'name00'))
+        self.assertIsNone(get_session_attrs(self.env, 'name00'))
         self.assertNotIn(('name00', 'val00', 'val00'),
                          list(self.env.get_known_users()))
 
         sess_admin._do_delete('nothere')
-        self.assertEqual(None, get_session_attrs(self.env, 'nothere'))
+        self.assertIsNone(get_session_attrs(self.env, 'nothere'))
 
         auth_list, anon_list, all_list = _prep_session_table(self.env)
         sess_admin._do_delete('anonymous')
@@ -721,7 +721,7 @@ class SessionTestCase(unittest.TestCase):
             SELECT name, value FROM session_attribute WHERE sid = %s
             """, (anon_list[0][0],))
         self.assertEqual([], rows)
-        self.assertEqual(None, get_session_attrs(self.env, anon_list[0][0]))
+        self.assertIsNone(get_session_attrs(self.env, anon_list[0][0]))
         self.assertEqual({'name': 'val11', 'email': 'val11'},
                          get_session_attrs(self.env, anon_list[1][0]))
 

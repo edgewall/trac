@@ -577,7 +577,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual('200 Ok', self.status)
         self.assertEqual('text/plain', self.headers['Content-Type'])
         self.assertEqual(self.filename, self.headers['X-Sendfile'])
-        self.assertEqual(None, req._response)
+        self.assertIsNone(req._response)
         self.assertEqual('', self.response.getvalue())
 
     def test_send_file_with_xsendfile_header(self):
@@ -589,7 +589,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual('text/plain', self.headers['Content-Type'])
         self.assertEqual(self.filename, self.headers['X-Accel-Redirect'])
         self.assertNotIn('X-Sendfile', self.headers)
-        self.assertEqual(None, req._response)
+        self.assertIsNone(req._response)
         self.assertEqual('', self.response.getvalue())
 
     def test_send_file_with_xsendfile_and_empty_header(self):

@@ -123,7 +123,7 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
         if 'de' in locales:
             unset_locale_envs()
-            self.assertEqual(None, get_console_locale(None, None))
+            self.assertIsNone(get_console_locale(None, None))
             self.assertEqual(de, get_console_locale(None, 'de_DE.UTF8'))
             self.env.config.set('trac', 'default_language', 'de')
             self.assertEqual(de, get_console_locale(self.env, None))
@@ -136,10 +136,10 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
             self.env.config.set('trac', 'default_language', 'de')
             os.environ['LANG'] = 'POSIX'  # unavailable locale in Trac
-            self.assertEqual(None, get_console_locale())
+            self.assertIsNone(get_console_locale())
             self.assertEqual(de, get_console_locale(self.env))
             os.environ['LANG'] = '****'  # invalid locale
-            self.assertEqual(None, get_console_locale())
+            self.assertIsNone(get_console_locale())
             self.assertEqual(de, get_console_locale(self.env))
             os.environ['LANG'] = 'en_US.utf-8'
             self.assertEqual(en_US, get_console_locale())
@@ -156,11 +156,11 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
         if not locales:  # compiled catalog is missing
             unset_locale_envs()
-            self.assertEqual(None, get_console_locale(None, 'de_DE.UTF8'))
+            self.assertIsNone(get_console_locale(None, 'de_DE.UTF8'))
             self.env.config.set('trac', 'default_language', 'de')
-            self.assertEqual(None, get_console_locale(self.env, None))
-            self.assertEqual(None, get_console_locale(self.env, 'C'))
-            self.assertEqual(None, get_console_locale(self.env,
+            self.assertIsNone(get_console_locale(self.env, None))
+            self.assertIsNone(get_console_locale(self.env, 'C'))
+            self.assertIsNone(get_console_locale(self.env,
                                                       'de_DE.UTF8'))
             os.environ['LANG'] = 'en_US.utf-8'
             os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
@@ -174,13 +174,13 @@ class TracadminTestCase(TracAdminTestCaseBase):
         os.environ['LC_MESSAGES'] = 'de_DE.utf-8'
         os.environ['LC_ALL'] = 'en_US.utf-8'
         os.environ['LANGUAGE'] = 'de_DE:en_US'
-        self.assertEqual(None, get_console_locale(None, 'en_US.UTF8'))
+        self.assertIsNone(get_console_locale(None, 'en_US.UTF8'))
         self.env.config.set('trac', 'default_language', '')
-        self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
-        self.assertEqual(None, get_console_locale(self.env))
+        self.assertIsNone(get_console_locale(self.env, 'en_US.UTF8'))
+        self.assertIsNone(get_console_locale(self.env))
         self.env.config.set('trac', 'default_language', 'en_US')
-        self.assertEqual(None, get_console_locale(self.env, 'en_US.UTF8'))
-        self.assertEqual(None, get_console_locale(self.env))
+        self.assertIsNone(get_console_locale(self.env, 'en_US.UTF8'))
+        self.assertIsNone(get_console_locale(self.env))
 
     if has_babel:
         test_get_console_locale = _test_get_console_locale_with_babel

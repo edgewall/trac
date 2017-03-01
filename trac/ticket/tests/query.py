@@ -1239,7 +1239,7 @@ class QueryLinksTestCase(unittest.TestCase):
     def _process_request(self, query_string):
         self.req.arg_list = parse_arg_list(query_string)
         self.req.args = arg_list_to_args(self.req.arg_list)
-        self.assertEqual(True, self.query_module.match_request(self.req))
+        self.assertTrue(self.query_module.match_request(self.req))
         template, data = self.query_module.process_request(self.req)
         return data
 

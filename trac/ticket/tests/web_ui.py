@@ -310,12 +310,12 @@ class TicketModuleTestCase(unittest.TestCase):
                             timefield=datetime_now(utc))
         self.env.db_transaction("UPDATE ticket_custom SET value='invalid' "
                                 "WHERE ticket=1 AND name='timefield'")
-        self.assertEqual(None, Ticket(self.env, 1)['timefield'])
+        self.assertIsNone(Ticket(self.env, 1)['timefield'])
 
         req = MockRequest(self.env, method='GET', path_info='/ticket/1')
         self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
-        self.assertEqual(None, data['ticket']['timefield'])
+        self.assertIsNone(data['ticket']['timefield'])
 
         for f in data['fields']:
             if f['name'] == 'timefield':
@@ -391,7 +391,7 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertIn('is an invalid date, or the date format is not known.',
                       unicode(warnings[0]))
         ticket = Ticket(self.env, 1)
-        self.assertEqual(None, ticket['timefield'])
+        self.assertIsNone(ticket['timefield'])
 
         args = args_base.copy()
         args['field_timefield'] = '2016-01-02T12:34:56Z'
@@ -472,7 +472,7 @@ class TicketModuleTestCase(unittest.TestCase):
         del tktsys.custom_fields
 
         req = MockRequest(self.env, path_info='/newticket')
-        self.assertEqual(True, self.ticket_module.match_request(req))
+        self.assertTrue(self.ticket_module.match_request(req))
         resp = self.ticket_module.process_request(req)
         for field in resp[1]['fields']:
             if field['name'] == field_name:

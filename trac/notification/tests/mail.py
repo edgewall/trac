@@ -291,7 +291,7 @@ class EmailDistributorTestCase(unittest.TestCase):
                           'cc@example.org', 'bcc@example.org'},
                          set(recipients))
         self.assertEqual('cc@example.org, foo@example.org', message['Cc'])
-        self.assertEqual(None, message['Bcc'])
+        self.assertIsNone(message['Bcc'])
         self._assert_mail(message, 'text/plain', 'blah')
 
     def test_from_author_disabled(self):

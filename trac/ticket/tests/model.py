@@ -406,7 +406,7 @@ class TicketTestCase(unittest.TestCase):
         tktid = ticket.insert()
         ticket = Ticket(self.env, tktid)
         # Empty string is default value, but not a time stamp
-        self.assertEqual(None, ticket['due'])
+        self.assertIsNone(ticket['due'])
         ts = datetime(2011, 11, 11, 0, 0, 0, 0, utc)
         ticket['due'] = ts
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -1119,7 +1119,7 @@ class MilestoneTestCase(unittest.TestCase):
         attachment.insert('foo.txt', io.BytesIO(), 0, 1)
 
         milestone.delete()
-        self.assertEqual(False, milestone.exists)
+        self.assertFalse(milestone.exists)
 
         attachments = Attachment.select(self.env, 'milestone', milestone.name)
         self.assertRaises(StopIteration, next, attachments)

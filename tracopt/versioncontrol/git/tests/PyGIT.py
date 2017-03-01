@@ -268,10 +268,10 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         self.assertEqual(['b1', 'master'],
                          sorted(b[0] for b in storage.get_branches()))
         self._git('branch', '-D', 'b1')
-        self.assertEqual(True, storage.sync())
+        self.assertTrue(storage.sync())
         self.assertEqual(['master'],
                          sorted(b[0] for b in storage.get_branches()))
-        self.assertEqual(False, storage.sync())
+        self.assertFalse(storage.sync())
 
     def test_turn_off_persistent_cache(self):
         # persistent_cache is enabled
@@ -313,7 +313,7 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def test_unicode_verifyrev(self):
         storage = self._storage()
-        self.assertNotEqual(None, storage.verifyrev(u'master'))
+        self.assertIsNotNone(storage.verifyrev(u'master'))
         self.assertIsNone(storage.verifyrev(u'tété'))
 
     def test_unicode_filename(self):
@@ -358,11 +358,11 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         self.assertEqual([u'tɐg-t10980', 'v0.42.1'], tags)
 
         rev = storage.verifyrev(u'tɐg-t10980')
-        self.assertNotEqual(None, rev)
+        self.assertIsNotNone(rev)
         self.assertEqual([u'tɐg-t10980'], storage.get_tags(rev))
 
         rev = storage.verifyrev('v0.42.1')
-        self.assertNotEqual(None, rev)
+        self.assertIsNotNone(rev)
         self.assertEqual(['v0.42.1'], storage.get_tags(rev))
 
     def test_ls_tree(self):

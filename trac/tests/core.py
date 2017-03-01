@@ -26,7 +26,7 @@ class TracErrorTestCase(unittest.TestCase):
         e = TracError("the message", "the title", True)
         self.assertEqual("the message", e.message)
         self.assertEqual("the title", e.title)
-        self.assertEqual(True, e.show_traceback)
+        self.assertTrue(e.show_traceback)
 
     def test_unicode(self):
         e = TracError("the message")

@@ -259,7 +259,7 @@ class GitNormalTestCase(BaseTestCase):
         self._add_repository()
         repos = self._repomgr.get_repository('gitrepos')
         rev = repos.youngest_rev
-        self.assertNotEqual(None, rev)
+        self.assertIsNotNone(rev)
         self.assertEqual(40, len(rev))
 
         self.assertEqual(rev, repos.get_node('/').rev)
@@ -304,14 +304,14 @@ class GitNormalTestCase(BaseTestCase):
         else:
             repos.sync()
         youngest_rev = repos.youngest_rev
-        self.assertEqual(None, youngest_rev)
-        self.assertEqual(None, repos.oldest_rev)
-        self.assertEqual(None, repos.normalize_rev(''))
-        self.assertEqual(None, repos.normalize_rev(None))
-        self.assertEqual(None, repos.display_rev(''))
-        self.assertEqual(None, repos.display_rev(None))
-        self.assertEqual(None, repos.short_rev(''))
-        self.assertEqual(None, repos.short_rev(None))
+        self.assertIsNone(youngest_rev)
+        self.assertIsNone(repos.oldest_rev)
+        self.assertIsNone(repos.normalize_rev(''))
+        self.assertIsNone(repos.normalize_rev(None))
+        self.assertIsNone(repos.display_rev(''))
+        self.assertIsNone(repos.display_rev(None))
+        self.assertIsNone(repos.short_rev(''))
+        self.assertIsNone(repos.short_rev(None))
 
         node = repos.get_node('/', youngest_rev)
         self.assertEqual([], list(node.get_entries()))
@@ -323,7 +323,7 @@ class GitNormalTestCase(BaseTestCase):
         self.assertTrue(browser_mod.match_request(req))
         rv = browser_mod.process_request(req)
         self.assertEqual('browser.html', rv[0])
-        self.assertEqual(None, rv[1]['rev'])
+        self.assertIsNone(rv[1]['rev'])
 
         req = MockRequest(self.env, path_info='/log/gitrepos')
         log_mod = LogModule(self.env)

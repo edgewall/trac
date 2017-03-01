@@ -150,7 +150,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         DbRepositoryProvider(self.env).remove_repository('(default)')
         req = MockRequest(self.env, path_info='/browser/')
         rv = self.process_request(req)
-        self.assertEqual(None, rv[1]['repos'])
+        self.assertIsNone(rv[1]['repos'])
 
         req = MockRequest(self.env, path_info='/browser/blah-blah-file')
         try:
@@ -164,7 +164,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
                           path_info='/browser/')
         rv = self.process_request(req)
         # cannot view default repository but don't raise PermissionError
-        self.assertEqual(None, rv[1]['repos'])
+        self.assertIsNone(rv[1]['repos'])
 
         req = MockRequest(self.env, path_info='/browser/allow')
         rv = self.process_request(req)
@@ -185,7 +185,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         DbRepositoryProvider(self.env).remove_repository('(default)')
         req = MockRequest(self.env, path_info='/browser/')
         rv = self.process_request(req)
-        self.assertEqual(None, rv[1]['repos'])
+        self.assertIsNone(rv[1]['repos'])
 
         req = MockRequest(self.env, authname='anonymous',
                           path_info='/browser/blah-blah-file')
@@ -194,7 +194,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.fail('PermissionError not raised')
         except PermissionError as e:
             self.assertEqual('BROWSER_VIEW', e.action)
-            self.assertEqual(None, e.resource)
+            self.assertIsNone(e.resource)
 
     def test_node_with_file_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
@@ -296,7 +296,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         req = MockRequest(self.env, authname='anonymous',
                           path_info='/browser/')
         template, data = self.process_request(req)
-        self.assertEqual(None, data['repos'])
+        self.assertIsNone(data['repos'])
         repo_data = data['repo']  # for repository index
         self.assertEqual('allow', repo_data['repositories'][0][0])
         self.assertEqual('raise', repo_data['repositories'][1][0])
@@ -368,7 +368,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.fail('PermissionError not raised')
         except PermissionError as e:
             self.assertEqual('BROWSER_VIEW', e.action)
-            self.assertEqual(None, e.resource)
+            self.assertIsNone(e.resource)
         provider.remove_repository('deny')
         provider.remove_repository('(default)')
         req = MockRequest(self.env, authname='anonymous',
@@ -378,7 +378,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.fail('PermissionError not raised')
         except PermissionError as e:
             self.assertEqual('BROWSER_VIEW', e.action)
-            self.assertEqual(None, e.resource)
+            self.assertIsNone(e.resource)
 
 
 def test_suite():
