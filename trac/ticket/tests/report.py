@@ -209,12 +209,9 @@ class ReportModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', args={
             'action': 'view',
             'id': rid})
-
-        with self.assertRaises(TracError) as cm:
-            self.report_module.process_request(req)[1]
-
-        self.assertEqual("Report {%d} has no SQL query." % rid,
-                         unicode(cm.exception))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual("Report failed: Report {%d} has no SQL query." % rid,
+                         data['message'])
 
     def test_render_view_sort_order_preserved_on_update(self):
         """Sort column and order are preserved on update."""
@@ -295,6 +292,60 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertEqual([(1, 'joe')], results)
         self.assertEqual([], missing_args)
         self.assertIsNone(limit_offset)
+
+    def test_value_error_from_get_var_args(self):
+        req = MockRequest(self.env, path_info='/report/1')
+        def get_var_args(req):
+            raise ValueError('<error>')
+        self.report_module.get_var_args = get_var_args
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('Report failed: <error>', data['message'])
+
+    def test_title_and_description_with_sub_vars(self):
+        with self.env.db_transaction:
+            id_ = self._insert_report(
+                'Tickets on $M for $USER',
+                'SELECT * FROM ticket WHERE milestone=$M AND owner=$USER',
+                'Show tickets on $M for $USER')
+            for milestone in ('milestone1', 'milestone2'):
+                ticket = Ticket(self.env)
+                ticket.populate({'status': 'new', 'summary': 'Test 1',
+                                 'owner': 'joe', 'milestone': milestone})
+                ticket.insert()
+        req = MockRequest(self.env, path_info='/report/%d' % id_,
+                          authname='joe', args={'M': 'milestone2'})
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('{%d} Tickets on milestone2 for joe' % id_,
+                         data['title'])
+        self.assertEqual('Show tickets on milestone2 for joe',
+                         data['description'])
+        self.assertIsNone(data['message'])
+        self.assertEqual(1, data['numrows'])
+
+    def test_title_and_description_with_sub_vars_in_sql(self):
+        with self.env.db_transaction:
+            id_ = self._insert_report(
+                'Tickets on $M for $USER',
+                '-- M=milestone1\r\n'
+                'SELECT * FROM ticket WHERE milestone=$M AND owner=$USER\r\n',
+                'Show tickets on $M for $USER')
+            for milestone in ('milestone1', 'milestone2'):
+                ticket = Ticket(self.env)
+                ticket.populate({'status': 'new', 'summary': 'Test 1',
+                                 'owner': 'joe', 'milestone': milestone})
+                ticket.insert()
+        req = MockRequest(self.env, path_info='/report/%d' % id_,
+                          authname='joe')
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('{%d} Tickets on milestone1 for joe' % id_,
+                         data['title'])
+        self.assertEqual('Show tickets on milestone1 for joe',
+                         data['description'])
+        self.assertIsNone(data['message'])
+        self.assertEqual(1, data['numrows'])
 
 
 class ExecuteReportTestCase(unittest.TestCase):
