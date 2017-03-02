@@ -137,6 +137,7 @@ facilities.
         trac.ticket.admin = trac.ticket.admin
         trac.ticket.batch = trac.ticket.batch
         trac.ticket.query = trac.ticket.query
+        trac.ticket.notification = trac.ticket.notification
         trac.ticket.report = trac.ticket.report
         trac.ticket.roadmap = trac.ticket.roadmap
         trac.ticket.web_ui = trac.ticket.web_ui
