@@ -338,10 +338,6 @@ class ReportModule(Component):
         """Retrieve the report results and pre-process them for rendering."""
         r = Report(self.env, id)
         title, description, sql = r.title, r.description, r.query
-        try:
-            args = self.get_var_args(req)
-        except ValueError as e:
-            raise TracError(_("Report failed: %(error)s", error=e))
 
         # If this is a saved custom query, redirect to the query module
         #
@@ -393,6 +389,7 @@ class ReportModule(Component):
 
         sort_col = req.args.get('sort', '')
         asc = req.args.getint('asc', 1, min=0, max=1)
+        args = {}
 
         def report_href(**kwargs):
             """Generate links to this report preserving user variables,
@@ -410,23 +407,33 @@ class ReportModule(Component):
 
         data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
-                'context': context,
-                'title': sub_vars(title, args),
-                'description': sub_vars(description or '', args),
+                'context': context, 'title': title, 'description': description,
                 'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator': None,
-                'report_href': report_href,
-                }
+                'report_href': report_href}
 
-        res = self.execute_paginated_report(req, id, sql, args, limit, offset)
+        try:
+            args = self.get_var_args(req)
+        except ValueError as e:
+            data['message'] = _("Report failed: %(error)s", error=e)
+            return 'report_view.html', data, None
+        data.update({'args': args, 'title': sub_vars(title, args),
+                     'description': sub_vars(description or '', args)})
 
-        if len(res) == 2:
-            e, sql = res
-            data['message'] = \
-                tag_("Report execution failed: %(error)s %(sql)s",
-                     error=tag.pre(exception_to_unicode(e)),
-                     sql=tag(tag.hr(),
-                             tag.pre(sql, style="white-space: pre")))
+        try:
+            res = self.execute_paginated_report(req, id, sql, args, limit,
+                                                offset)
+        except TracError as e:
+            data['message'] = _("Report failed: %(error)s", error=e)
+        else:
+            if len(res) == 2:
+                e, sql = res
+                data['message'] = \
+                    tag_("Report execution failed: %(error)s %(sql)s",
+                         error=tag.pre(exception_to_unicode(e)),
+                         sql=tag(tag.hr(),
+                                 tag.pre(sql, style="white-space: pre")))
+        if data['message']:
             return 'report_view.html', data, None
 
         cols, results, num_items, missing_args, limit_offset = res

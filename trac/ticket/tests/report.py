@@ -264,6 +264,53 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertEqual([], missing_args)
         self.assertEqual(None, limit_offset)
 
+    def test_with_no_sql(self):
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute("""INSERT INTO report (title,query,description)
+                              VALUES ('#12709', '', '')""")
+            id_ = db.get_last_id(cursor, 'report')
+        req = MockRequest(self.env, path_info='/report/%d' % id_)
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('Report failed: Report {%d} has no SQL query.' % id_,
+                         data['message'])
+
+    def test_value_error_from_get_var_args(self):
+        req = MockRequest(self.env, path_info='/report/1')
+        def get_var_args(req):
+            raise ValueError('<error>')
+        self.report_module.get_var_args = get_var_args
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('Report failed: <error>', data['message'])
+
+    def test_title_and_description_with_sub_vars(self):
+        with self.env.db_transaction as db:
+            cursor = db.cursor()
+            cursor.execute(
+                """INSERT INTO report (title,query,description)
+                   VALUES (%s,%s,%s)""",
+                ('Tickets on $M for $USER',
+                 'SELECT * FROM ticket WHERE milestone=$M AND owner=$USER',
+                 'Show tickets on $M for $USER'))
+            id_ = db.get_last_id(cursor, 'report')
+            for milestone in ('milestone1', 'milestone2'):
+                ticket = Ticket(self.env)
+                ticket.populate({'status': 'new', 'summary': 'Test 1',
+                                 'owner': 'joe', 'milestone': milestone})
+                ticket.insert()
+        req = MockRequest(self.env, path_info='/report/%d' % id_,
+                          authname='joe', args={'M': 'milestone2'})
+        self.assertTrue(self.report_module.match_request(req))
+        data = self.report_module.process_request(req)[1]
+        self.assertEqual('{%d} Tickets on milestone2 for joe' % id_,
+                         data['title'])
+        self.assertEqual('Show tickets on milestone2 for joe',
+                         data['description'])
+        self.assertIsNone(data['message'])
+        self.assertEqual(1, data['numrows'])
+
 
 class ExecuteReportTestCase(unittest.TestCase):
 
