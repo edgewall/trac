@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-01-25 11:31-0800\n"
+"POT-Creation-Date: 2017-03-02 13:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: tracopt/perm/authz_policy.py:124
+#: tracopt/perm/authz_policy.py:131
 msgid ""
 "Location of authz policy configuration file. Non-absolute paths are "
 "relative to the Environment `conf` directory."
@@ -443,7 +443,7 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
-#: trac/db/mysql_backend.py:93
+#: trac/db/mysql_backend.py:95
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
@@ -458,19 +458,19 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:638
 msgid "Charset to be used when in doubt."
 msgstr ""
 
-#: trac/mimeview/api.py:637
+#: trac/mimeview/api.py:641
 msgid "Displayed tab width in file preview."
 msgstr ""
 
-#: trac/mimeview/api.py:640
+#: trac/mimeview/api.py:644
 msgid "Maximum file size for HTML preview."
 msgstr ""
 
-#: trac/mimeview/api.py:643
+#: trac/mimeview/api.py:647
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -478,7 +478,7 @@ msgid ""
 "or file extensions."
 msgstr ""
 
-#: trac/mimeview/api.py:651
+#: trac/mimeview/api.py:655
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -486,7 +486,7 @@ msgid ""
 "(\":\"). (''since 1.0'')"
 msgstr ""
 
-#: trac/mimeview/api.py:659
+#: trac/mimeview/api.py:663
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data."
@@ -694,11 +694,11 @@ msgid ""
 " (''since 0.12'')"
 msgstr ""
 
-#: trac/search/web_ui.py:46
+#: trac/search/web_ui.py:47
 msgid "Minimum length of query string allowed when performing a search."
 msgstr ""
 
-#: trac/search/web_ui.py:50
+#: trac/search/web_ui.py:51
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -822,7 +822,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:846
+#: trac/ticket/query.py:843
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -830,7 +830,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:854
+#: trac/ticket/query.py:851
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -838,7 +838,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:862
+#: trac/ticket/query.py:859
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1057,19 +1057,19 @@ msgid ""
 "repository. If left empty, the global section is used."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:116
+#: trac/versioncontrol/web_ui/browser.py:117
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:122
+#: trac/versioncontrol/web_ui/browser.py:123
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:182
+#: trac/versioncontrol/web_ui/browser.py:183
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1082,7 +1082,7 @@ msgid ""
 "performed on the paths, so aliases won't get automatically resolved."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:195
+#: trac/versioncontrol/web_ui/browser.py:196
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1090,28 +1090,28 @@ msgid ""
 "blue is older, red is newer."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:204
+#: trac/versioncontrol/web_ui/browser.py:205
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
 "the browser ''age'' column if `color_scale` is enabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:212
+#: trac/versioncontrol/web_ui/browser.py:213
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
 "the browser ''age'' column if `color_scale` is enabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:218
+#: trac/versioncontrol/web_ui/browser.py:219
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
 "the color value."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:224
+#: trac/versioncontrol/web_ui/browser.py:225
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1120,7 +1120,7 @@ msgid ""
 "`newest_color` will be used."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:232
+#: trac/versioncontrol/web_ui/browser.py:233
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1133,7 +1133,7 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:244
+#: trac/versioncontrol/web_ui/browser.py:245
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser."
@@ -1434,7 +1434,7 @@ msgstr ""
 
 #: trac/web/chrome.py:575
 msgid ""
-"Add a simple toolbar on top of Wiki `<textarea>`s.\n"
+"Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
 msgstr ""
 

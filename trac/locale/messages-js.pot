@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-01-25 11:31-0800\n"
+"POT-Creation-Date: 2017-03-02 13:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,39 +136,39 @@ msgstr ""
 msgid "Now"
 msgstr ""
 
-#: trac/htdocs/js/query.js:169
+#: trac/htdocs/js/query.js:156
 msgid "A filter already exists for that property"
 msgstr ""
 
-#: trac/htdocs/js/query.js:196
+#: trac/htdocs/js/query.js:183
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:356
+#: trac/htdocs/js/query.js:206 trac/htdocs/js/query.js:343
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:359
+#: trac/htdocs/js/query.js:209 trac/htdocs/js/query.js:346
 msgid "no"
 msgstr ""
 
-#: trac/htdocs/js/query.js:234
+#: trac/htdocs/js/query.js:221
 msgid "between"
 msgstr ""
 
-#: trac/htdocs/js/query.js:236
+#: trac/htdocs/js/query.js:223
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:392
+#: trac/htdocs/js/query.js:379
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:402
+#: trac/htdocs/js/query.js:389
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:435
+#: trac/htdocs/js/query.js:422
 #, python-format
 msgid "Select ticket #%(id)s for modification"
 msgstr ""
@@ -189,11 +189,11 @@ msgstr ""
 msgid "Toggle group"
 msgstr ""
 
-#: trac/htdocs/js/trac.js:70
+#: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
 msgstr ""
 
-#: trac/htdocs/js/trac.js:217
+#: trac/htdocs/js/trac.js:243
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
