@@ -313,6 +313,15 @@ class _RequestArgs(dict):
     """Dictionary subclass that provides convenient access to request
     parameters that may contain multiple values."""
 
+    def get(self, name, default=None):
+        """Return the first value for the specified parameter, or `default`
+        if the parameter was not provided.
+
+        :since 1.3.2: aliases `getfirst`. Use `getlist` if the value is
+                      expected to be a list.
+        """
+        return self.getfirst(name, default)
+
     def as_int(self, name, default=None, min=None, max=None):
         """Return the value as an integer. Return `default` if
         if an exception is raised while converting the value to an
@@ -329,7 +338,7 @@ class _RequestArgs(dict):
         """
         if name not in self:
             return default
-        return as_int(self.getfirst(name), default, min, max)
+        return as_int(self.get(name), default, min, max)
 
     def as_bool(self, name, default=None):
         """Return the value as a boolean. Return `default` if
@@ -345,7 +354,7 @@ class _RequestArgs(dict):
         """
         if name not in self:
             return default
-        return as_bool(self.getfirst(name), default)
+        return as_bool(self.get(name), default)
 
     def getbool(self, name, default=None):
         """Return the value as a boolean. Raise an `HTTPBadRequest`
@@ -392,8 +401,10 @@ class _RequestArgs(dict):
         return value
 
     def getfirst(self, name, default=None):
-        """Return the first value for the specified parameter, or `default` if
-        the parameter was not provided.
+        """Return the first value for the specified parameter, or `default`
+        if the parameter was not provided.
+
+        :since 1.3.2: `get` aliases `getfirst` and should be used instead.
         """
         if name not in self:
             return default

@@ -90,7 +90,7 @@ class SearchModule(Component):
             return ('opensearch.xml', {},
                     {'content_type': 'application/opensearchdescription+xml'})
 
-        query = req.args.getfirst('q')
+        query = req.args.get('q')
         available_filters = []
         for source in self.search_sources:
             available_filters.extend(source.get_search_filters(req) or [])

@@ -91,7 +91,7 @@ class TimelineModule(Component):
     def process_request(self, req):
         req.perm('timeline').require('TIMELINE_VIEW')
 
-        format = req.args.getfirst('format')
+        format = req.args.get('format')
         maxrows = req.args.getint('max', 50 if format == 'rss' else 0)
         lastvisit = req.session.as_int('timeline.lastvisit', 0)
 
@@ -110,7 +110,7 @@ class TimelineModule(Component):
         precisedate = precision = None
         if 'from' in req.args:
             # Acquire from date only from non-blank input
-            reqfromdate = req.args.getfirst('from').strip()
+            reqfromdate = req.args.get('from').strip()
             if reqfromdate:
                 try:
                     precisedate = user_time(req, parse_date, reqfromdate)
@@ -118,7 +118,7 @@ class TimelineModule(Component):
                     add_warning(req, e)
                 else:
                     fromdate = precisedate.astimezone(req.tz)
-            precision = req.args.getfirst('precision', '')
+            precision = req.args.get('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
             elif precision.startswith('minute'):
@@ -136,7 +136,7 @@ class TimelineModule(Component):
         daysback = req.args.as_int('daysback', default,
                                    min=1, max=self.max_daysback)
 
-        authors = req.args.getfirst('authors')
+        authors = req.args.get('authors')
         if authors is None and format != 'rss':
             authors = req.session.get('timeline.authors')
         authors = (authors or '').strip()

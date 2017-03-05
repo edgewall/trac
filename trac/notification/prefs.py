@@ -144,7 +144,7 @@ class NotificationPreferences(Component):
     def _replace_rules(self, arg, req):
         subscriptions = []
         for transport in self._iter_transports():
-            format_ = req.args.getfirst('format-' + transport)
+            format_ = req.args.get('format-' + transport)
             styles = self._get_supported_styles(transport)
             if not styles:
                 format_ = None

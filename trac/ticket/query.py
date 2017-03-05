@@ -904,7 +904,7 @@ class QueryModule(Component):
 
     def process_request(self, req):
         req.perm(self.realm).assert_permission('TICKET_VIEW')
-        report_id = req.args.getfirst('report')
+        report_id = req.args.get('report')
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
 
@@ -928,12 +928,13 @@ class QueryModule(Component):
                 constraints = self._get_constraints(arg_list=arg_list)
             else:
                 query = Query.from_string(self.env, qstring)
-                args = {'order': query.order, 'group': query.group,
-                        'col': query.cols, 'max': query.max}
+                args = [('order', query.order), ('group', query.group),
+                        ('col', query.cols), ('max', query.max)]
                 if query.desc:
-                    args['desc'] = '1'
+                    args.append(('desc', '1'))
                 if query.groupdesc:
-                    args['groupdesc'] = '1'
+                    args.append(('groupdesc', '1'))
+                args = arg_list_to_args(args)
                 constraints = query.constraints
 
             # Substitute $USER, or ensure no field constraints that depend
@@ -947,29 +948,19 @@ class QueryModule(Component):
                             del clause[field]
                             break
 
-        cols = args.get('col')
-        if isinstance(cols, basestring):
-            cols = [cols]
+        cols = args.getlist('col')
         # Since we don't show 'id' as an option to the user,
         # we need to re-insert it here.
         if cols and 'id' not in cols:
             cols.insert(0, 'id')
-        rows = args.get('row', [])
-        if isinstance(rows, basestring):
-            rows = [rows]
+        rows = args.getlist('row')
         format = req.args.get('format')
         max = args.get('max')
         if max is None and format in ('csv', 'tab'):
             max = 0  # unlimited unless specified explicitly
         order = args.get('order')
-        if isinstance(order, (list, tuple)):
-            order = order[0] if order else None
         group = args.get('group')
-        if isinstance(group, (list, tuple)):
-            group = group[0] if group else None
         page = args.get('page')
-        if isinstance(page, (list, tuple)):
-            page = page[0] if page else None
         query = Query(self.env, report_id,
                       constraints, cols, order, 'desc' in args, group,
                       'groupdesc' in args, 'verbose' in args,
@@ -1027,7 +1018,8 @@ class QueryModule(Component):
             # requested for clients without JavaScript
             add_num = None
             constraints = {}
-            for k, vals in req.args.iteritems():
+            for k in req.args:
+                vals = req.args.getlist(k)
                 match = self.add_re.match(k)
                 if match:
                     add_num = match.group(1)
@@ -1039,8 +1031,6 @@ class QueryModule(Component):
                 clause_num = int(match.group('clause'))
                 if field not in fields:
                     continue
-                if not isinstance(vals, (list, tuple)):
-                    vals = [vals]
                 if vals:
                     mode = req.args.get(k + '_mode')
                     if mode:

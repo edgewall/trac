@@ -25,7 +25,7 @@ import inspect
 import io
 from itertools import izip, tee
 import locale
-import os
+import os.path
 from pkg_resources import find_distributions
 import random
 import re
@@ -434,6 +434,7 @@ def terminate(process):
         ctypes.windll.kernel32.CloseHandle(handle)
 
     def terminate_nix():
+        import os
         import signal
         try:
             os.kill(pid, signal.SIGTERM)

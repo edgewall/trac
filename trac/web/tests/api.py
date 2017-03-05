@@ -107,6 +107,30 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual(repr(req), """<Request "GET '/path?A=B'">""")
 
+    def test_get(self):
+        qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertEqual('0', req.args.get('arg1'))
+        self.assertEqual('def', req.args.get('arg3'))
+
+    def test_getfirst(self):
+        qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertEqual('0', req.args.getfirst('arg1'))
+        self.assertEqual('def', req.args.getfirst('arg3'))
+
+    def test_get_list(self):
+        qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
+        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        req = Request(environ, None)
+
+        self.assertEqual(['0', 'abc'], req.args.getlist('arg1'))
+        self.assertEqual(['def', '1'], req.args.getlist('arg3'))
+
     def test_as_bool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
         environ = _make_environ(method='GET', **{'QUERY_STRING': qs})

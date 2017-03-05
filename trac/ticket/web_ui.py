@@ -823,7 +823,7 @@ class TicketModule(Component):
 
     def _populate(self, req, ticket, plain_fields=False):
         if not plain_fields:
-            fields = {k[6:]: v for k, v in req.args.iteritems()
+            fields = {k[6:]: req.args.get(k) for k in req.args
                       if k.startswith('field_') and
                          'revert_' + k[6:] not in req.args}
             # Handle revert of checkboxes (in particular, revert to 1)
@@ -833,7 +833,7 @@ class TicketModule(Component):
                     if 'revert_' + k in req.args:
                         fields[k] = ticket[k]
         else:
-            fields = req.args.copy()
+            fields = {k: req.args.get(k) for k in req.args}
         # Prevent direct changes to protected fields (status and resolution are
         # set in the workflow, in get_ticket_changes())
         for each in Ticket.protected_fields:

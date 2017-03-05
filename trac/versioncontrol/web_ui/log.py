@@ -79,7 +79,7 @@ class LogModule(Component):
 
         mode = req.args.get('mode', 'stop_on_copy')
         path = req.args.get('path', '/')
-        rev = req.args.getfirst('rev')
+        rev = req.args.get('rev')
         stop_rev = req.args.get('stop_rev')
         revs = req.args.get('revs')
         format = req.args.get('format')
