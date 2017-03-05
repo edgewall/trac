@@ -43,20 +43,16 @@ def load_eggs(entry_point_name):
         )
         for dist in distributions:
             if dist not in working_set:
-                env.log.debug("Adding plugin %s from %s", dist, dist.location)
+                env.log.debug('Loading plugin "%s" from "%s"',
+                              dist, dist.location)
                 working_set.add(dist)
 
         def _log_error(item, e):
             ue = exception_to_unicode(e)
             if isinstance(e, DistributionNotFound):
-                env.log.debug('Skipping "%s": ("%s" not found)', item, ue)
-            elif isinstance(e, VersionConflict):
-                env.log.error('Skipping "%s": (version conflict "%s")',
-                              item, ue)
-            elif isinstance(e, UnknownExtra):
-                env.log.error('Skipping "%s": (unknown extra "%s")', item, ue)
-            elif isinstance(e, ImportError):
-                env.log.error('Skipping "%s": (%s)', item, ue)
+                env.log.debug('Skipping "%s": %s', item, ue)
+            elif isinstance(e, (ImportError, UnknownExtra, VersionConflict)):
+                env.log.error('Skipping "%s": %s', item, ue)
             else:
                 env.log.error('Skipping "%s": %s', item,
                               exception_to_unicode(e, traceback=True))
@@ -66,8 +62,8 @@ def load_eggs(entry_point_name):
 
         for entry in sorted(working_set.iter_entry_points(entry_point_name),
                             key=lambda entry: entry.name):
-            env.log.debug("Loading %s from %s", entry.name,
-                          entry.dist.location)
+            env.log.debug('Loading plugin "%s" from "%s"',
+                          entry.name, entry.dist.location)
             try:
                 entry.load(require=True)
             except Exception as e:
@@ -87,18 +83,22 @@ def load_py_files():
         for path in search_path:
             plugin_files = glob(os.path.join(path, '*.py'))
             for plugin_file in plugin_files:
+                plugin_name = os.path.basename(plugin_file[:-3])
+                env.log.debug("Loading file plugin %s from %s",
+                              plugin_name, plugin_file)
                 try:
-                    plugin_name = os.path.basename(plugin_file[:-3])
-                    env.log.debug('Loading file plugin %s from %s',
-                                  plugin_name, plugin_file)
                     if plugin_name not in sys.modules:
-                        module = imp.load_source(plugin_name, plugin_file)
+                        imp.load_source(plugin_name, plugin_file)
+                except (ImportError, VersionConflict) as e:
+                    env.log.error('Skipping "%s": %s', plugin_name,
+                                  exception_to_unicode(e))
+                except Exception as e:
+                    env.log.error(
+                        "Failed to load plugin from %s: %s", plugin_file,
+                        exception_to_unicode(e, traceback=True))
+                else:
                     if path == auto_enable:
                         _enable_plugin(env, plugin_name)
-                except Exception as e:
-                    env.log.error('Failed to load plugin from %s: %s',
-                                  plugin_file,
-                                  exception_to_unicode(e, traceback=True))
 
     return _load_py_files
 
