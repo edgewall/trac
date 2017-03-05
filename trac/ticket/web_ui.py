@@ -557,7 +557,7 @@ class TicketModule(Component):
         return 'ticket.html', data
 
     def _process_ticket_request(self, req):
-        id = int(req.args.get('id'))
+        id = req.args.getint('id')
         version = req.args.getint('version', None)
 
         if req.is_xhr and 'preview_comment' in req.args:
@@ -606,7 +606,7 @@ class TicketModule(Component):
                 req.redirect(req.href.ticket(ticket.id))
             elif 'edit_comment' in req.args:
                 comment = req.args.get('edited_comment', '')
-                cnum = int(req.args['cnum_edit'])
+                cnum = req.args.getint('cnum_edit')
                 change = ticket.get_change(cnum)
                 if not change:
                     raise TracError(_('Comment %(num)s not found', num=cnum))

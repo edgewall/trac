@@ -787,7 +787,7 @@ class ReportModule(Component):
     def get_var_args(self, req):
         # reuse somehow for #9574 (wiki vars)
         report_args = {}
-        for arg in req.args.keys():
+        for arg in req.args:
             if not arg.isupper():
                 continue
             report_args[arg] = to_unicode(req.args.get(arg))

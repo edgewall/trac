@@ -468,7 +468,7 @@ class PluginAdminPanel(Component):
                 self._do_update(req)
             anchor = ''
             if 'plugin' in req.args:
-                anchor = '#no%d' % (int(req.args.get('plugin')) + 1)
+                anchor = '#no%d' % (req.args.getint('plugin') + 1)
             req.redirect(req.href.admin(cat, page) + anchor)
 
         return self._render_view(req)

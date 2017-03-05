@@ -715,8 +715,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                           "been saved."))
 
                     # Change enum values
-                    order = {str(int(key[6:])): str(int(req.args.get(key)))
-                             for key in req.args.keys()
+                    order = {str(int(key[6:])): str(req.args.getint(key))
+                             for key in req.args
                              if key.startswith('value_')}
                     values = {val: True for val in order.values()}
                     if len(order) != len(values):
