@@ -58,6 +58,7 @@ def _prep_session_table(env, spread_visits=False):
     all_list = auth_list + anon_list
     return auth_list, anon_list, all_list
 
+
 def get_session_attrs(env, sid):
     rows = env.db_query("""
         SELECT a.sid, a.name, a.value
@@ -67,9 +68,10 @@ def get_session_attrs(env, sid):
         WHERE s.sid=%s
         """, (sid,))
     if rows:
-        return dict((row[1], row[2]) for row in rows if row[0])
+        return {row[1]: row[2] for row in rows if row[0]}
     else:
         return None
+
 
 def get_session_info(env, sid):
     """

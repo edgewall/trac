@@ -461,9 +461,9 @@ class Element(XMLElement):
 
     """
 
-    VOID_ELEMENTS = set(('area', 'base', 'br', 'col', 'command', 'embed', 'hr',
-                         'img', 'input', 'keygen', 'link', 'meta', 'param',
-                         'source', 'track', 'wbr'))
+    VOID_ELEMENTS = {'area', 'base', 'br', 'col', 'command', 'embed', 'hr',
+                     'img', 'input', 'keygen', 'link', 'meta', 'param',
+                     'source', 'track', 'wbr'}
     CLOSE_TAG = u' />'
 
     __slot__ = ()
