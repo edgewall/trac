@@ -43,7 +43,7 @@ def load_eggs(entry_point_name):
         )
         for dist in distributions:
             if dist not in working_set:
-                env.log.debug('Loading plugin "%s" from "%s"',
+                env.log.debug('Adding plugin "%s" from "%s"',
                               dist, dist.location)
                 working_set.add(dist)
 
