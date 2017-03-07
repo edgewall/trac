@@ -522,8 +522,14 @@ class Query(object):
                     else:
                         return None
 
+                def split_words(splittable):
+                    return [w.strip() for wl in
+                            ([x[1:-1]] if x[0] == x[-1] == '"' else x.split()
+                             for x in re.split('("[^"]+")', splittable) if x)
+                            for w in wl]
+
                 if mode == '~' and name in list_fields:
-                    words = value.split()
+                    words = split_words(value)
                     clauses, args = [], []
                     for word in words:
                         cneg = ''
