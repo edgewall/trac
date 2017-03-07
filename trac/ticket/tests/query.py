@@ -852,6 +852,22 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
                           'foo bar baz', ''],
                          [t['keywords'] for t in tickets])
 
+    def test_constrained_by_keyword_phrase(self):
+        query = Query.from_string(self.env, 'keywords~="bar baz" -foo',
+                                  order='id')
+        sql, args = query.get_sql()
+        with self.env.db_query as db:
+            like = db.like()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.keywords AS keywords,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS _priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
+WHERE (((COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
+        self.assertEqual(['%bar baz%', '%foo%'], args)
+        tickets = query.execute(self.req)
+        self.assertEqual(['bar baz'], [t['keywords'] for t in tickets])
+
     def test_constrained_by_milestone_or_version(self):
         query = Query.from_string(self.env, 'milestone=milestone1&or&version=version1', order='id')
         sql, args = query.get_sql()
