@@ -870,7 +870,7 @@ class QueryModule(Component):
 
     items_per_page = IntOption('query', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket queries,
-        by default.
+        by default. Set to `0` to specify no limit.
         """)
 
     # IContentConverter methods
