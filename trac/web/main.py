@@ -289,9 +289,10 @@ class RequestDispatcher(Component):
                 self.log.warning("Exception caught while post-processing"
                                  " request: %s", exception_to_unicode(e2))
             except Exception as e2:
-                self.log.error("Exception caught while post-processing"
-                               " request: %s",
-                               exception_to_unicode(e2, traceback=True))
+                if not (type(e) is type(e2) and e.args == e2.args):
+                    self.log.error("Exception caught while post-processing"
+                                   " request: %s",
+                                   exception_to_unicode(e2, traceback=True))
             if isinstance(e, PermissionError):
                 raise HTTPForbidden(e)
             if isinstance(e, ResourceNotFound):
