@@ -1034,10 +1034,13 @@ class LocalTimezone(tzinfo):
         else:
             dt = dt.replace(tzinfo=utc)
             utc_ts = to_timestamp(dt)
-            dt -= timedelta(hours=6)
+            dt -= timedelta(seconds=21600)
             tt = (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second,
                   dt.weekday(), 0, -1)
-            tz_offset = timedelta(seconds=utc_ts - time.mktime(tt) - 6 * 3600)
+            try:
+                tz_offset = timedelta(seconds=utc_ts - time.mktime(tt) - 21600)
+            except (ValueError, OverflowError):
+                return self._std_tz
 
         # if UTC offset doesn't match timezone offset, create a
         # LocalTimezone instance with the UTC offset (#11563)
@@ -1056,7 +1059,13 @@ class LocalTimezone(tzinfo):
         return False
 
     def utcoffset(self, dt):
-        return self._tzinfo(dt)._offset
+        offset = self._tzinfo(dt)._offset
+        if offset.seconds % 60 != 0:
+            # Avoid "ValueError: tzinfo.utcoffset() must return a whole
+            # number of minutes" (#12617)
+            seconds = offset.days * 86400 + offset.seconds
+            offset = timedelta(seconds=int((seconds + 30) // 60) * 60)
+        return offset
 
     def dst(self, dt):
         if self._is_dst(dt):
