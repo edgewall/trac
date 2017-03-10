@@ -191,20 +191,6 @@ class RequestDispatcher(Component):
         self.log.debug('Dispatching %r', req)
         chrome = Chrome(self.env)
 
-        # Setup request callbacks for lazily-evaluated properties
-        req.callbacks.update({
-            'authname': self.authenticate,
-            'chrome': chrome.prepare_request,
-            'form_token': self._get_form_token,
-            'lc_time': self._get_lc_time,
-            'locale': self._get_locale,
-            'perm': self._get_perm,
-            'session': self._get_session,
-            'tz': self._get_timezone,
-            'use_xsendfile': self._get_use_xsendfile,
-            'xsendfile_header': self._get_xsendfile_header,
-        })
-
         try:
             # Select the component that should handle the request
             chosen_handler = None
@@ -289,10 +275,9 @@ class RequestDispatcher(Component):
                 self.log.warning("Exception caught while post-processing"
                                  " request: %s", exception_to_unicode(e2))
             except Exception as e2:
-                if not (type(e) is type(e2) and e.args == e2.args):
-                    self.log.error("Exception caught while post-processing"
-                                   " request: %s",
-                                   exception_to_unicode(e2, traceback=True))
+                self.log.error("Exception caught while post-processing"
+                               " request: %s",
+                               exception_to_unicode(e2, traceback=True))
             if isinstance(e, PermissionError):
                 raise HTTPForbidden(e)
             if isinstance(e, ResourceNotFound):
@@ -316,6 +301,22 @@ class RequestDispatcher(Component):
         return [pkg_resources.resource_filename('trac.web', 'templates')]
 
     # Internal methods
+
+    def set_default_callbacks(self, req):
+        """Setup request callbacks for lazily-evaluated properties.
+        """
+        req.callbacks.update({
+            'authname': self.authenticate,
+            'chrome': Chrome(self.env).prepare_request,
+            'form_token': self._get_form_token,
+            'lc_time': self._get_lc_time,
+            'locale': self._get_locale,
+            'perm': self._get_perm,
+            'session': self._get_session,
+            'tz': self._get_timezone,
+            'use_xsendfile': self._get_use_xsendfile,
+            'xsendfile_header': self._get_xsendfile_header,
+        })
 
     @lazy
     def _request_handlers(self):
@@ -615,8 +616,9 @@ def _dispatch_request(req, env, env_error):
     try:
         if not env and env_error:
             raise HTTPInternalError(env_error)
+        dispatcher = RequestDispatcher(env)
         try:
-            dispatcher = RequestDispatcher(env)
+            dispatcher.set_default_callbacks(req)
             dispatcher.dispatch(req)
         except RequestDone as req_done:
             resp = req_done.iterable

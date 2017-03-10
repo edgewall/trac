@@ -14,7 +14,6 @@
 import os.path
 import sys
 import tempfile
-import types
 import unittest
 from subprocess import PIPE, Popen
 
@@ -140,6 +139,7 @@ class AuthenticateTestCase(unittest.TestCase):
                             'AuthenticateRequestHandler')
         authenticated = [0]
         req = MockRequest(self.env)
+        self.request_dispatcher.set_default_callbacks(req)
 
         self.assertEqual(1, len(self.request_dispatcher.authenticators))
         self.assertIsInstance(self.request_dispatcher.authenticators[0],
@@ -507,6 +507,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         req = MockRequest(self.env, path_info='/test-stub',
                           cookie='trac_session=%s;' % sid)
         request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher.set_default_callbacks(req)
 
         self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
 
@@ -521,9 +522,9 @@ class RequestDispatcherTestCase(unittest.TestCase):
     def test_get_session_returns_fake_session(self):
         """Fake session is returned when database is not reachable."""
         sid = self._insert_session()[0]
-        _get_session = RequestDispatcher._get_session
+        request_dispatcher = RequestDispatcher(self.env)
 
-        def get_session(self, req):
+        def get_session(req):
             """Simulates an unreachable database."""
             _get_connector = DatabaseManager.get_connector
 
@@ -532,15 +533,13 @@ class RequestDispatcherTestCase(unittest.TestCase):
 
             DatabaseManager.get_connector = get_connector
             DatabaseManager(self.env).shutdown()
-            session = _get_session(self, req)
+            session = request_dispatcher._get_session(req)
             DatabaseManager.get_connector = _get_connector
             return session
 
         req = MockRequest(self.env, path_info='/test-stub',
                           cookie='trac_session=%s;' % sid)
-        request_dispatcher = RequestDispatcher(self.env)
-        request_dispatcher._get_session = \
-            types.MethodType(get_session, request_dispatcher)
+        req.callbacks['session'] = get_session
 
         self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
 
@@ -558,6 +557,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         req = MockRequest(self.env, path_info='/test-stub',
                           cookie='trac_session=%s;' % sid)
         request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher.set_default_callbacks(req)
 
         self.assertRaises(RequestDone, request_dispatcher.dispatch, req)
 
