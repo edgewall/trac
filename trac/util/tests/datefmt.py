@@ -1597,6 +1597,26 @@ class LocalTimezoneTestCase(unittest.TestCase):
                          datetime.datetime(2011, 10, 30, 2, 45, 42, 123456,
                                            datefmt.localtz).utcoffset())
 
+    def test_utcoffset_non_whole_number_of_minutes(self):
+        self._tzset('Europe/Dublin')
+        dt = datetime.datetime(1910, 12, 13, 20, 20, 31)
+        self.assertEqual(datetime.timedelta(days=-1, seconds=84900),
+                         datefmt.localtz.utcoffset(dt))
+
+    def test_utcoffset_overflow_error_on_osx(self):
+        self._tzset('Europe/Dublin')
+        tt = (1901, 12, 13, 20, 20, 30)
+        try:
+            time.mktime(tt + (-1, 0, 0))
+        except OverflowError:  # OSX
+            dt = datetime.datetime(*tt)
+            self.assertEqual(datetime.timedelta(),
+                             datefmt.localtz.utcoffset(dt))
+        else:  # Linux
+            dt = datetime.datetime(*tt)
+            self.assertEqual(datetime.timedelta(days=-1, seconds=84900),
+                             datefmt.localtz.utcoffset(dt))
+
     def test_localized_non_existent_time(self):
         self._tzset('Europe/Paris')
         dt = datetime.datetime(2012, 3, 25, 2, 15, 42, 123456)
