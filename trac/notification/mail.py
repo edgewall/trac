@@ -55,8 +55,8 @@ EMAIL_LOOKALIKE_PATTERN = (
         # the local part
         r"[a-zA-Z0-9.'+_-]+" '@'
         # the domain name part (RFC:1035)
-        '(?:[a-zA-Z0-9_-]+\.)+' # labels (but also allow '_')
-        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
+        '(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
+        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?'  # TLD
         )
 
 _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
@@ -270,7 +270,7 @@ class EmailDistributor(Component):
         'email_address_resolvers', IEmailAddressResolver,
         'SessionEmailResolver',
         include_missing=False,
-        doc="""Comma seperated list of email resolver components in the order
+        doc="""Comma separated list of email resolver components in the order
         they will be called.  If an email address is resolved, the remaining
         resolvers will not be called.
         """)
@@ -279,7 +279,8 @@ class EmailDistributor(Component):
         self._charset = create_charset(self.config.get('notification',
                                                        'mime_encoding'))
 
-    # INotificationDistributor
+    # INotificationDistributor methods
+
     def transports(self):
         yield 'email'
 
@@ -378,8 +379,8 @@ class EmailDistributor(Component):
         preferred = create_mime_text(outputs[format], subtype, self._charset)
         if format != 'text/plain' and 'text/plain' in outputs:
             alternative = create_mime_multipart('alternative')
-            alternative.attach(create_mime_text(outputs['text/plain'], 'plain',
-                                                self._charset))
+            alternative.attach(create_mime_text(outputs['text/plain'],
+                                                'plain', self._charset))
             alternative.attach(preferred)
             preferred = alternative
         message.attach(preferred)
@@ -597,7 +598,8 @@ class AlwaysEmailSubscriber(Component):
         section = self.config['notification']
         def getlist(name):
             return section.getlist(name, sep=(',', ' '), keep_empty=False)
-        return set(getlist('smtp_always_cc')) | set(getlist('smtp_always_bcc'))
+        return set(getlist('smtp_always_cc')) | \
+               set(getlist('smtp_always_bcc'))
 
 
 class FromAuthorEmailDecorator(Component):
