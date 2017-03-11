@@ -31,7 +31,7 @@
 #   set preview = preview|default(false)
 #   set can_edit_comment = has_edit_comment or (
        authname and authname != 'anonymous' and authname == change.author)
-#   set show_editor = can_edit_comment and to_unicode(cnum) == cnum_edit
+#   set show_editor = can_edit_comment and cnum == cnum_edit
 #   set show_history = cnum is equalto(cnum_hist)
 #   set max_version = change.comment_history|max(0)
 #   set comment_version = (as_int(cversion, max_version, 0, max_version) if
