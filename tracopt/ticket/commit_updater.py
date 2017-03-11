@@ -218,9 +218,9 @@ In [changeset:"%s" %s]:
         authname = self._authname(changeset)
         perm = PermissionCache(self.env, authname)
         for tkt_id, cmds in tickets.iteritems():
+            self.log.debug("Updating ticket #%d", tkt_id)
+            save = False
             try:
-                self.log.debug("Updating ticket #%d", tkt_id)
-                save = False
                 with self.env.db_transaction:
                     ticket = Ticket(self.env, tkt_id)
                     ticket_perm = perm(ticket.resource)
@@ -270,7 +270,7 @@ In [changeset:"%s" %s]:
 
     def cmd_close(self, ticket, changeset, perm):
         authname = self._authname(changeset)
-        if self.check_perms and not 'TICKET_MODIFY' in perm:
+        if self.check_perms and 'TICKET_MODIFY' not in perm:
             self.log.info("%s doesn't have TICKET_MODIFY permission for #%d",
                           authname, ticket.id)
             return False
@@ -280,7 +280,7 @@ In [changeset:"%s" %s]:
             ticket['owner'] = authname
 
     def cmd_refs(self, ticket, changeset, perm):
-        if self.check_perms and not 'TICKET_APPEND' in perm:
+        if self.check_perms and 'TICKET_APPEND' not in perm:
             self.log.info("%s doesn't have TICKET_APPEND permission for #%d",
                           self._authname(changeset), ticket.id)
             return False
@@ -309,18 +309,19 @@ class CommitTicketReferenceMacro(WikiMacroBase):
         repos = RepositoryManager(self.env).get_repository(reponame)
         try:
             changeset = repos.get_changeset(rev)
-            message = changeset.message
-            rev = changeset.rev
-            resource = repos.resource
         except Exception:
             message = content
             resource = Resource('repository', reponame)
+        else:
+            message = changeset.message
+            rev = changeset.rev
+            resource = repos.resource
         if formatter.context.resource.realm == 'ticket':
             ticket_re = CommitTicketUpdater.ticket_re
             if not any(int(tkt_id) == int(formatter.context.resource.id)
                        for tkt_id in ticket_re.findall(message)):
-                return tag.p(_("(The changeset message doesn't reference this "
-                               "ticket)"), class_='hint')
+                return tag.p(_("(The changeset message doesn't reference "
+                               "this ticket)"), class_='hint')
         if ChangesetModule(self.env).wiki_format_messages:
             return tag.div(format_to_html(self.env,
                 formatter.context.child('changeset', rev, parent=resource),
