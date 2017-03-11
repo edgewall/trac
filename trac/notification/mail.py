@@ -287,7 +287,8 @@ class EmailDistributor(Component):
         if transport != 'email':
             return
         if not self.config.getbool('notification', 'smtp_enabled'):
-            self.log.debug("EmailDistributor smtp_enabled set to false")
+            self.log.debug("%s skipped because smtp_enabled set to false",
+                           self.__class__.__name__)
             return
 
         formats = {}
@@ -296,12 +297,12 @@ class EmailDistributor(Component):
                 if realm == event.realm:
                     formats[style] = f
         if not formats:
-            self.log.error("EmailDistributor No formats found for %s %s",
-                           transport, event.realm)
+            self.log.error("%s No formats found for %s %s",
+                           self.__class__.__name__, transport, event.realm)
             return
-        self.log.debug("EmailDistributor has found the following formats "
-                       "capable of handling '%s' of '%s': %s", transport,
-                       event.realm, ', '.join(formats.keys()))
+        self.log.debug("%s has found the following formats capable of "
+                       "handling '%s' of '%s': %s", self.__class__.__name__,
+                       transport, event.realm, ', '.join(formats.keys()))
 
         notify_sys = NotificationSystem(self.env)
         always_cc = set(notify_sys.smtp_always_cc_list)
@@ -309,8 +310,9 @@ class EmailDistributor(Component):
         addresses = {}
         for sid, authed, addr, fmt in recipients:
             if fmt not in formats:
-                self.log.debug("EmailDistributor format %s not available for "
-                               "%s %s", fmt, transport, event.realm)
+                self.log.debug("%s format %s not available for %s %s",
+                               self.__class__.__name__, fmt, transport,
+                               event.realm)
                 continue
 
             if sid and not addr:
@@ -319,8 +321,9 @@ class EmailDistributor(Component):
                     if addr:
                         status = 'authenticated' if authed else \
                                  'not authenticated'
-                        self.log.debug("EmailDistributor found the address "
-                                       "'%s' for '%s (%s)' via %s", addr, sid,
+                        self.log.debug("%s found the address '%s' for '%s "
+                                       "(%s)' via %s",
+                                       self.__class__.__name__, addr, sid,
                                        status, resolver.__class__.__name__)
                         break
             if addr:
@@ -329,8 +332,8 @@ class EmailDistributor(Component):
                     always_cc.add(addr)
             else:
                 status = 'authenticated' if authed else 'not authenticated'
-                self.log.debug("EmailDistributor was unable to find an "
-                               "address for: %s (%s)", sid, status)
+                self.log.debug("%s was unable to find an address for: %s "
+                               "(%s)", self.__class__.__name__, sid, status)
 
         outputs = {}
         failed = []
@@ -340,10 +343,10 @@ class EmailDistributor(Component):
             try:
                 outputs[fmt] = formatter.format(transport, fmt, event)
             except Exception as e:
-                self.log.warning('EmailDistributor caught exception while '
+                self.log.warning('%s caught exception while '
                                  'formatting %s to %s for %s: %s%s',
-                                 event.realm, fmt, transport,
-                                 formatter.__class__,
+                                 self.__class__.__name__, event.realm, fmt,
+                                 transport, formatter.__class__,
                                  exception_to_unicode(e, traceback=True))
                 failed.append(fmt)
 
@@ -354,8 +357,8 @@ class EmailDistributor(Component):
                          .update(addresses.pop(fmt, ()))
 
         for fmt, addrs in addresses.iteritems():
-            self.log.debug("EmailDistributor is sending event as '%s' to: %s",
-                           fmt, ', '.join(addrs))
+            self.log.debug("%s is sending event as '%s' to: %s",
+                           self.__class__.__name__, fmt, ', '.join(addrs))
             message = self._create_message(fmt, outputs)
             if message:
                 addrs = set(addrs)
@@ -363,9 +366,9 @@ class EmailDistributor(Component):
                 bcc_addrs = sorted(addrs - always_cc)
                 self._do_send(transport, event, message, cc_addrs, bcc_addrs)
             else:
-                self.log.warning("EmailDistributor cannot send event '%s' as "
-                                 "'%s': %s",
-                                 event.realm, fmt, ', '.join(addrs))
+                self.log.warning("%s cannot send event '%s' as '%s': %s",
+                                 self.__class__.__name__, event.realm, fmt,
+                                 ', '.join(addrs))
 
     def _create_message(self, format, outputs):
         if format not in outputs:
