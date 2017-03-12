@@ -158,7 +158,7 @@ class TimelineModule(Component):
         filters = [f[0] for f in available_filters if f[0] in req.args]
         if not filters and format != 'rss':
             filters = [f[0] for f in available_filters
-                       if req.session.get('timeline.filter.' + f[0]) == '1']
+                            if req.session.as_int('timeline.filter.' + f[0])]
         if not filters:
             filters = [f[0] for f in available_filters if len(f) == 2 or f[2]]
 
