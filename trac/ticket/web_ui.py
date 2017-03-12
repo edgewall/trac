@@ -1581,10 +1581,9 @@ class TicketModule(Component):
                         'status', 'resolution', 'time', 'changetime'):
                 field['skip'] = True
             elif name == 'milestone' and not field.get('custom'):
-                milestones = [Milestone(self.env, opt)
-                              for opt in field['options']]
-                milestones = [m for m in milestones
-                              if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                milestones = [m for m in (Milestone(self.env, opt)
+                                          for opt in field['options'])
+                                if 'MILESTONE_VIEW' in req.perm(m.resource)]
                 field['editable'] = milestones != []
                 groups = group_milestones(milestones, ticket.exists
                     and 'TICKET_ADMIN' in req.perm(ticket.resource))
