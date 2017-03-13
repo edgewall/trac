@@ -956,7 +956,7 @@ def open_environment(env_path=None, use_cache=False):
                           exception_to_unicode(e, traceback=True))
         if needs_upgrade:
             raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
-                              'Run "trac-admin %(path)s upgrade"',
+                              'Run \'trac-admin "%(path)s" upgrade\'',
                               path=env_path))
 
     return env
