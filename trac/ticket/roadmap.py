@@ -33,6 +33,7 @@ from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                parse_date, pretty_timedelta, to_datetime,
                                user_time, utc)
 from trac.util.html import tag
+from trac.util.presentation import classes
 from trac.util.text import CRLF, exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.ticket.api import TicketSystem
@@ -1082,7 +1083,8 @@ class MilestoneModule(Component):
         # should simply be false if the milestone doesn't exist in the db
         # (related to #4130)
         href = context.href.milestone(name)
-        if milestone and milestone.exists:
+        exists = milestone and milestone.exists
+        if exists:
             if 'MILESTONE_VIEW' in context.perm(milestone.resource):
                 title = None
                 if hasattr(context, 'req'):
@@ -1110,7 +1112,7 @@ class MilestoneModule(Component):
         elif 'MILESTONE_CREATE' in context.perm(self.realm, name):
             return tag.a(label, class_='missing milestone', href=href + extra,
                          rel='nofollow')
-        return tag.a(label, class_='missing milestone')
+        return tag.a(label, class_=classes('milestone', missing=not exists))
 
     # IResourceManager methods
 
