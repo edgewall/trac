@@ -81,16 +81,22 @@ class INavigationContributor(Interface):
     """
 
     def get_active_navigation_item(req):
-        """This method is only called for the `IRequestHandler` processing the
-        request.
+        """This method is only called for the `IRequestHandler` processing
+        the request.
 
-        It should return the name of the navigation item that should be
-        highlighted as active/current.
+        It should return the name of the navigation item to be highlighted
+        as active/current.
         """
 
     def get_navigation_items(req):
         """Should return an iterable object over the list of navigation items
         to add, each being a tuple in the form (category, name, text).
+
+        The category determines the location of the navigation item and
+        can be `mainnav` or `metanav`. The name is a unique identifier that
+        must match the string returned by get_active_navigation_item.
+        The text is typically a link element with text that corresponds
+        to the desired label for the navigation item, and an href.
         """
 
 
