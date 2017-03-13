@@ -14,7 +14,7 @@
 import unittest
 
 from trac.core import ComponentManager
-from trac.resource import ResourceNotFound
+from trac.resource import Resource, ResourceNotFound, render_resource_link
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
@@ -23,6 +23,7 @@ from trac.ticket.roadmap import (
     get_tickets_for_milestone)
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest
+from trac.web.chrome import web_context
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -312,6 +313,53 @@ class RoadmapTestCase(unittest.TestCase):
         self.assertEqual(['milestone1', 'milestone2'], sorted(tickets))
 
 
+class ResourceTestCase(unittest.TestCase):
+    """Test cases for milestone resources."""
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_resource_link_ticket_context_milestone_exists(self):
+        """Resource link in ticket context for viewable milestone.
+        """
+        milestone = Milestone(self.env)
+        milestone.name = 'milestone1'
+        milestone.insert()
+        req = MockRequest(self.env, path_info='/ticket/1')
+        resource = Resource('milestone', 'milestone1')
+        context = web_context(req)
+        link = render_resource_link(self.env, context, resource,
+                                    format='compact')
+        self.assertEqual('<a class="milestone" href="/trac.cgi/milestone/'
+                         'milestone1" title="No date set">milestone1</a>',
+                         unicode(link))
+
+    def test_resource_link_ticket_context_milestone_missing(self):
+        """Resource link in ticket context for non-existent milestone.
+        """
+        req = MockRequest(self.env, path_info='/ticket/1', authname='user1')
+        resource = Resource('milestone', 'milestone1')
+        context = web_context(req)
+        link = render_resource_link(self.env, context, resource,
+                                    format='compact')
+        self.assertEqual('<a class="milestone missing">milestone1</a>',
+                         unicode(link))
+
+    def test_resource_link_ticket_context_milestone_no_view_perm(self):
+        """Resource link in ticket context with no milestone view permission.
+        """
+        milestone = Milestone(self.env)
+        milestone.name = 'milestone1'
+        milestone.insert()
+        req = MockRequest(self.env, path_info='/ticket/1', authname='user1')
+        resource = Resource('milestone', 'milestone1')
+        context = web_context(req)
+        link = render_resource_link(self.env, context, resource,
+                                    format='compact')
+        self.assertEqual('<a class="milestone">milestone1</a>',
+                         unicode(link))
+
+
 def in_tlist(ticket, list):
     return len([t for t in list if t['id'] == ticket.id]) > 0
 
@@ -323,6 +371,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
     suite.addTest(unittest.makeSuite(MilestoneModulePermissionsTestCase))
     suite.addTest(unittest.makeSuite(RoadmapTestCase))
+    suite.addTest(unittest.makeSuite(ResourceTestCase))
     return suite
 
 
