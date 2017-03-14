@@ -127,7 +127,7 @@ class ITemplateProvider(Interface):
 def accesskey(req, key):
     """Helper function for creating accesskey HTML attribute according
     to preference values"""
-    return key if int(req.session.get('accesskeys', 0)) else None
+    return key if req.session.as_int('accesskeys') else None
 
 
 def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
@@ -1723,7 +1723,7 @@ class Chrome(Component):
                 doctype = self.html_doctype
                 if req.form_token:
                     stream |= self._add_form_token(req.form_token)
-                if not req.session.as_int('accesskeys', 0):
+                if not req.session.as_int('accesskeys'):
                     stream |= self._strip_accesskeys
 
             return self._send_genshi_content(req, stream, filename, method,
