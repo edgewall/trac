@@ -33,27 +33,27 @@ class InterTracDispatcher(Component):
     is_valid_default_handler = False
 
     intertrac_section = ConfigSection('intertrac',
-        """This section configures InterTrac prefixes. Options in this section
-        whose name contain a `.` define aspects of the InterTrac prefix
-        corresponding to the option name up to the `.`. Options whose name
-        don't contain a `.` define an alias.
+        """This section configures InterTrac prefixes. Option names in
+        this section that contain a `.` are of the format
+        `<name>.<attribute>`. Option names that don't contain a `.` define
+        an alias.
 
-        The `.url` is mandatory and is used for locating the other Trac.
-        This can be a relative URL in case that Trac environment is located
-        on the same server.
+        The `.url` attribute is mandatory and is used for locating the
+        other Trac. This can be a relative path when the other Trac
+        environment is located on the same server.
 
-        The `.title` information is used for providing a useful tooltip when
-        moving the cursor over an InterTrac link.
+        The `.title` attribute is used for generating a tooltip when the
+        cursor is hovered over an InterTrac link.
 
         Example configuration:
-        {{{
+        {{{#!ini
         [intertrac]
         # -- Example of setting up an alias:
         t = trac
 
         # -- Link to an external Trac:
-        trac.title = Edgewall's Trac for Trac
-        trac.url = http://trac.edgewall.org
+        genshi.title = Edgewall's Trac for Genshi
+        genshi.url = http://genshi.edgewall.org
         }}}
         """)
 
