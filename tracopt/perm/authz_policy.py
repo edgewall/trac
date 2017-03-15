@@ -253,7 +253,7 @@ class AuthzPolicy(Component):
         # TODO: Handle permission negation in sections. eg. "if in this
         # ticket, remove TICKET_MODIFY"
         if username and username != 'anonymous':
-            valid_users = ['*', 'authenticated', username]
+            valid_users = ['*', 'authenticated', 'anonymous', username]
         else:
             valid_users = ['*', 'anonymous']
         for resource_section in [a for a in self.authz.sections

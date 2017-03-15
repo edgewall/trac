@@ -72,6 +72,9 @@ administrators = éat
 änon = BROWSER_VIEW, FILE_VIEW
 @administrators = BROWSER_VIEW, FILE_VIEW
 * =
+
+[milestone:milestone1]
+anonymous = MILESTONE_VIEW
 """)
         self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy], path=tmpdir)
         self.env.config.set('trac', 'permission_policies',
@@ -83,7 +86,7 @@ administrators = éat
         self.env.reset_db()
         os.remove(self.authz_file)
 
-    def check_permission(self, action, user, resource, perm):
+    def check_permission(self, action, user, resource, perm=None):
         return self.authz_policy.check_permission(action, user, resource, perm)
 
     def get_repository(self, reponame):
@@ -166,9 +169,19 @@ administrators = éat
     def test_case_sensitive_resource(self):
         resource = Resource('WIKI', 'wikistart')
         self.assertIsNone(
-            self.check_permission('WIKI_VIEW', 'anonymous', resource, None))
+            self.check_permission('WIKI_VIEW', 'anonymous', resource))
         self.assertIsNone(
-            self.check_permission('WIKI_VIEW', u'änon', resource, None))
+            self.check_permission('WIKI_VIEW', u'änon', resource))
+
+    def test_authenticated_inherits_anonymous_permission(self):
+        """Metagroup authenticated inherits all permissions granted to
+        anonymous.
+        """
+        resource  = Resource('milestone', 'milestone1')
+        self.assertTrue(self.check_permission('MILESTONE_VIEW',
+                                              'anonymous', resource))
+        self.assertTrue(self.check_permission('MILESTONE_VIEW',
+                                              'authenticated', resource))
 
     def test_get_authz_file(self):
         """get_authz_file should resolve a relative path and lazily compute.
