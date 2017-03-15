@@ -73,7 +73,7 @@ class TicketModule(Component):
 
     realm = TicketSystem.realm
 
-    timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
+    timeline_details = BoolOption('timeline', 'ticket_show_details', 'true',
         """Enable the display of all ticket changes in the timeline, not only
         open / close operations.""")
 
@@ -236,7 +236,7 @@ class TicketModule(Component):
         if 'TICKET_VIEW' in req.perm:
             yield ('ticket', _("Tickets opened and closed"))
             if self.timeline_details:
-                yield ('ticket_details', _("Ticket updates"), False)
+                yield ('ticket_details', _("Ticket updates"), True)
 
     def get_timeline_events(self, req, start, stop, filters):
         ts_start = to_utimestamp(start)
