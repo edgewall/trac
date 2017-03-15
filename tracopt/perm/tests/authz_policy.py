@@ -172,11 +172,15 @@ anonymous = MILESTONE_VIEW
         """Metagroup authenticated inherits all permissions granted to
         anonymous.
         """
-        resource  = Resource('milestone', 'milestone1')
+        resource = Resource('milestone', 'milestone1')
         self.assertTrue(self.check_permission('MILESTONE_VIEW',
                                               'anonymous', resource))
         self.assertTrue(self.check_permission('MILESTONE_VIEW',
                                               'authenticated', resource))
+        self.assertIn('MILESTONE_VIEW', self.get_perm('anonymous',
+                                                      resource))
+        self.assertIn('MILESTONE_VIEW', self.get_perm('authenticated',
+                                                      resource))
 
     def test_get_authz_file(self):
         """get_authz_file should resolve a relative path."""
