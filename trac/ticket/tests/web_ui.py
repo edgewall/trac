@@ -34,7 +34,8 @@ def insert_ticket(env, **kw):
     ticket = Ticket(env)
     for k, v in kw.items():
         ticket[k] = v
-    return ticket.insert()
+    ticket.insert()
+    return ticket
 
 
 class TicketModuleTestCase(unittest.TestCase):
@@ -82,10 +83,10 @@ class TicketModuleTestCase(unittest.TestCase):
         """Full name of reporter and owner are used in ticket properties."""
         self.env.insert_users([('user1', 'User One', ''),
                                ('user2', 'User Two', '')])
-        tkt_id = self._insert_ticket(reporter='user1', owner='user2')
+        ticket = self._insert_ticket(reporter='user1', owner='user2')
         PermissionSystem(self.env).grant_permission('user2', 'TICKET_VIEW')
         req = MockRequest(self.env, authname='user2', method='GET',
-                          args={'id': tkt_id, 'replyto': '1'})
+                          args={'id': ticket.id, 'replyto': '1'})
 
         data = self.ticket_module.process_request(req)[1]
 
@@ -242,9 +243,9 @@ class TicketModuleTestCase(unittest.TestCase):
                           self.ticket_module.process_request, req)
 
     def test_edit_comment_cnum_missing_raises(self):
-        id_ = self._insert_ticket()
+        ticket = self._insert_ticket()
         req = MockRequest(
-            self.env, method='POST', path_info='/ticket/%d' % id_,
+            self.env, method='POST', path_info='/ticket/%d' % ticket.id,
             args={'edit_comment': 'Submit changes', 'cnum_edit': '42'})
         self.assertTrue(self.ticket_module.match_request(req))
         with self.assertRaises(TracError) as cm:
@@ -505,6 +506,40 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_newticket_with_version_as_custom_field(self):
         self._test_newticket_with_enum_as_custom_field('version')
 
+    def test_add_comment_requires_ticket_append(self):
+        """Adding a ticket comment requires TICKET_APPEND."""
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'TICKET_VIEW')
+        ps.grant_permission('user1', 'TICKET_APPEND')
+        ps.grant_permission('user2', 'TICKET_VIEW')
+        ps.grant_permission('user2', 'TICKET_CHGPROP')
+        ticket = self._insert_ticket(summary='the summary')
+        comment = 'the comment'
+
+        def make_req(authname):
+            change_time = Ticket(self.env, 1)['changetime']
+            return MockRequest(
+                self.env, authname=authname,
+                method='POST', path_info='/ticket/1',
+                args={'comment': comment, 'action': 'leave', 'submit': True,
+                      'view_time': unicode(to_utimestamp(change_time))})
+
+
+        req = make_req('user1')
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.assertRaises(RequestDone, self.ticket_module.process_request,
+                          req)
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(comment,
+                         ticket.get_change(1)['fields']['comment']['new'])
+
+        req = make_req('user2')
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.ticket_module.process_request(req)
+        self.assertEqual(1, len(req.chrome['warnings']))
+        self.assertEqual("No permissions to add a comment.",
+                         unicode(req.chrome['warnings'][0]))
+
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):
     """Tests for [ticket-custom] max_size attribute."""
@@ -519,10 +554,11 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
     def _setup_env_and_req(self, max_size, field_value):
         self.env.config.set('ticket-custom', 'text1', 'text')
         self.env.config.set('ticket-custom', 'text1.max_size', max_size)
-        tid = insert_ticket(self.env, summary='summary', text1='init')
-        view_time = str(to_utimestamp(Ticket(self.env, tid)['changetime']))
+        ticket = insert_ticket(self.env, summary='summary', text1='init')
+        change_time = Ticket(self.env, ticket.id)['changetime']
+        view_time = str(to_utimestamp(change_time))
         req = MockRequest(
-            self.env, method='POST', path_info='/ticket/%d' % tid,
+            self.env, method='POST', path_info='/ticket/%d' % ticket.id,
             args={'submit': 'Submit changes', 'field_text1': field_value,
                   'action': 'leave', 'view_time': view_time})
         return req

@@ -1286,11 +1286,9 @@ class TicketModule(Component):
                 ticket.populate(ticket._old)
 
         comment = req.args.get('comment')
-        if comment:
-            if not ('TICKET_CHGPROP' in req.perm(resource) or
-                    'TICKET_APPEND' in req.perm(resource)):
-                add_warning(req, _("No permissions to add a comment."))
-                valid = False
+        if comment and 'TICKET_APPEND' not in req.perm(resource):
+            add_warning(req, _("No permissions to add a comment."))
+            valid = False
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment or force_collision_check):
