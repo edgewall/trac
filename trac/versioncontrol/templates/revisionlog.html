@@ -118,7 +118,7 @@
               <th class="diff" title="Old / New">Diff</th>
               <th class="change"></th>
               <th class="rev">Rev</th>
-              <th class="age">Age</th>
+              <th class="age">${_("Age") if dateinfo_format == 'relative' else _("Date")}</th>
               <th class="author">Author</th>
               <th class="summary"><py:if test="not verbose">Log Message</py:if></th>
             </tr>
