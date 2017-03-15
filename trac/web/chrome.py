@@ -1221,6 +1221,10 @@ class Chrome(Component):
             key = accesskey(req, key)
             return Markup('accesskey="%s"') % key if key else ''
 
+        dateinfo_format = \
+            req.session.get('dateinfo', self.default_dateinfo_format) \
+            if req else self.default_dateinfo_format
+
         d.update({
             'env': self.env,
             'context': web_context(req) if req else None,
@@ -1250,6 +1254,7 @@ class Chrome(Component):
 
             # Date/time formatting
             'dateinfo': dateinfo,
+            'dateinfo_format': dateinfo_format,
             'pretty_dateinfo': pretty_dateinfo,
             'format_datetime': partial(user_time, req, format_datetime),
             'format_date': partial(user_time, req, format_date),

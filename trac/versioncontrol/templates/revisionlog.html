@@ -165,7 +165,7 @@
               <th class="diff" title="${_('Old / New')}">${_("Diff")}</th>
               <th class="change"></th>
               <th class="rev">${_("Rev")}</th>
-              <th class="age">${_("Age")}</th>
+              <th class="age">${_("Age") if dateinfo_format == 'relative' else _("Date")}</th>
               <th class="author">${_("Author")}</th>
               <th class="summary">
                 # if not verbose:

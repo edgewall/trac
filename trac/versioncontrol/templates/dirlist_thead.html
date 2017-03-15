@@ -21,7 +21,7 @@
     #   include 'sortable_th.html'
     # endwith
     <th class="rev">Rev</th>
-    # with class_ = 'date', title = _("Age")
+    # with class_ = 'date', title = _("Age") if dateinfo_format == 'relative' else _("Date")
     #   include 'sortable_th.html'
     # endwith
     # with class_ = 'author', title = _("Author")
