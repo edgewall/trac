@@ -40,6 +40,7 @@ from trac.util.datefmt import time_now, to_utimestamp
 from trac.util.html import tag
 from trac.util.text import CRLF, exception_to_unicode, fix_eol, to_unicode
 from trac.util.translation import _, tag_
+from trac.web.session import get_session_attribute
 
 
 __all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
@@ -274,6 +275,9 @@ class EmailDistributor(Component):
         they will be called.  If an email address is resolved, the remaining
         resolvers will not be called.
         """)
+
+    default_format = Option('notification', 'default_format.email',
+        'text/plain', doc="Default format to distribute email notifications.")
 
     def __init__(self):
         self._charset = create_charset(self.config.get('notification',
@@ -549,19 +553,7 @@ class SessionEmailResolver(Component):
     implements(IEmailAddressResolver)
 
     def get_address_for_session(self, sid, authenticated):
-        with self.env.db_query as db:
-            cursor = db.cursor()
-            cursor.execute("""
-                SELECT value
-                  FROM session_attribute
-                 WHERE sid=%s
-                   AND authenticated=%s
-                   AND name=%s
-            """, (sid, 1 if authenticated else 0, 'email'))
-            result = cursor.fetchone()
-            if result:
-                return result[0]
-            return None
+        return get_session_attribute(self.env, sid, authenticated, 'email')
 
 
 class AlwaysEmailSubscriber(Component):
@@ -576,7 +568,7 @@ class AlwaysEmailSubscriber(Component):
     def matches(self, event):
         matcher = RecipientMatcher(self.env)
         klass = self.__class__.__name__
-        format = 'text/plain'
+        format = None
         priority = 0
         for address in self._get_address_list():
             recipient = matcher.match_recipient(address)

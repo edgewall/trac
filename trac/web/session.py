@@ -558,3 +558,13 @@ class SessionAdmin(Component):
                       AND sid NOT IN (SELECT sid FROM session
                                       WHERE authenticated=0)
                 """)
+
+
+def get_session_attribute(env, sid, authenticated, name, default=None):
+    for row in env.db_query("""
+            SELECT value FROM session_attribute
+            WHERE sid=%s AND authenticated=%s AND name=%s
+            """, (sid, 1 if authenticated else 0, name)):
+        return row[0]
+    else:
+        return default

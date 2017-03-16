@@ -13,7 +13,7 @@
 
 import unittest
 
-from . import api, mail, model
+from . import api, mail, model, prefs
 
 
 def test_suite():
@@ -21,6 +21,7 @@ def test_suite():
     suite.addTest(api.test_suite())
     suite.addTest(mail.test_suite())
     suite.addTest(model.test_suite())
+    suite.addTest(prefs.test_suite())
     return suite
 
 

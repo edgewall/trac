@@ -156,7 +156,7 @@ def parse_subscriber_config(rawsubscriptions):
         'distributor': 'email',
         'priority': 100,
         'adverb': 'always',
-        'format': 'text/plain',
+        'format': None,
     }
     optional_attrs = {}
     known_attrs = required_attrs.copy()
@@ -350,6 +350,16 @@ class NotificationSystem(Component):
             yield (klass, d['distributor'], d['format'], d['priority'],
                    d['adverb'])
 
+    def get_default_format(self, transport):
+        return self.config.get('notification',
+                               'default_format.' + transport) or 'text/plain'
+
+    def get_preferred_format(self, sid, authenticated, transport):
+        from trac.notification.prefs import get_preferred_format
+        return get_preferred_format(self.env, sid, authenticated,
+                                    transport) or \
+               self.get_default_format(transport)
+
     def send_email(self, from_addr, recipients, message):
         """Send message to recipients via e-mail."""
         self.email_sender.send(from_addr, recipients, message)
@@ -371,12 +381,18 @@ class NotificationSystem(Component):
         """
         packages = {}
         for sid, authenticated, address, transport, format in subscriptions:
-            package = packages.setdefault(transport, set())
-            package.add((sid, authenticated, address, format))
+            package = packages.setdefault(transport, {})
+            key = (sid, authenticated, address)
+            if key in package:
+                continue
+            package[key] = format or self.get_preferred_format(
+                                                sid, authenticated, transport)
         for distributor in self.distributors:
             for transport in distributor.transports():
                 if transport in packages:
-                    recipients = list(packages[transport])
+                    recipients = [(k[0], k[1], k[2], format)
+                                  for k, format
+                                  in packages[transport].iteritems()]
                     distributor.distribute(transport, recipients, event)
 
     def subscriptions(self, event):

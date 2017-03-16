@@ -28,6 +28,11 @@ class Subscription(object):
         self.env = env
         self.values = {}
 
+    def __repr__(self):
+        values = ' '.join('%s=%r' % (name, self.values.get(name))
+                          for name in self.fields)
+        return '<%s %s>' % (self.__class__.__name__, values)
+
     def __getitem__(self, name):
         if name not in self.fields:
             raise KeyError(name)
@@ -44,7 +49,7 @@ class Subscription(object):
         self['sid'] = sid
         self['authenticated'] = int(authenticated)
         self['distributor'] = distributor
-        self['format'] = format
+        self['format'] = format or None
         self['priority'] = int(priority)
         self['adverb'] = adverb
         self['class'] = class_
@@ -65,56 +70,63 @@ class Subscription(object):
                                      class)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (now, now, subscription['sid'], int(subscription['authenticated']),
-             subscription['distributor'], subscription['format'],
+             subscription['distributor'], subscription['format'] or None,
              int(priority), subscription['adverb'],
              subscription['class']))
             return db.get_last_id(cursor, 'notify_subscription')
 
     @classmethod
-    def delete(cls, env, rule_id):
+    def delete(cls, env, rule_id, sid=None, authenticated=None):
         with env.db_transaction as db:
-            cursor = db.cursor()
-            cursor.execute("SELECT sid, authenticated, distributor "
-                           "FROM notify_subscription WHERE id=%s",
-                           (rule_id,))
-            sid, authenticated, distributor = cursor.fetchone()
-            cursor.execute("DELETE FROM notify_subscription WHERE id = %s""",
-                           (rule_id,))
-            i = 1
-            for s in cls.find_by_sid_and_distributor(env, sid, authenticated,
-                                                     distributor):
-                s['priority'] = i
-                s._update_priority()
-                i += 1
+            kwargs = {'id': rule_id}
+            if sid is not None or authenticated is not None:
+                kwargs['sid'] = sid
+                kwargs['authenticated'] = 1 if authenticated else 0
+            for sub in cls._find(env, **kwargs):
+                break
+            else:
+                return
+            db("DELETE FROM notify_subscription WHERE id=%s", (sub['id'],))
+            subs = cls.find_by_sid_and_distributor(
+                env, sub['sid'], sub['authenticated'], sub['distributor'])
+            now = to_utimestamp(datetime_now(utc))
+            values = [(new_priority, now, sub['id'])
+                      for new_priority, sub in enumerate(subs, 1)
+                      if new_priority != sub['priority']]
+            db.executemany("""
+                UPDATE notify_subscription
+                SET priority=%s, changetime=%s WHERE id=%s
+                """, values)
 
     @classmethod
-    def move(cls, env, rule_id, priority):
+    def move(cls, env, rule_id, priority, sid=None, authenticated=None):
         with env.db_transaction as db:
-            cursor = db.cursor()
-            cursor.execute("""
-                SELECT sid, authenticated, distributor
-                  FROM notify_subscription
-                 WHERE id=%s
-            """, (rule_id,))
-            sid, authenticated, distributor = cursor.fetchone()
-            subs = cls.find_by_sid_and_distributor(env, sid, authenticated,
-                                                   distributor)
-            if priority > len(subs):
+            kwargs = {'id': rule_id}
+            if sid is not None or authenticated is not None:
+                kwargs['sid'] = sid
+                kwargs['authenticated'] = 1 if authenticated else 0
+            for sub in cls._find(env, **kwargs):
+                break
+            else:
                 return
-            i = 1
-            for s in subs:
-                if int(s['id']) == int(rule_id):
-                    s['priority'] = priority
-                    s._update_priority()
-                    i -= 1
-                elif i == priority:
-                    i += 1
-                    s['priority'] = i
-                    s._update_priority()
-                else:
-                    s['priority'] = i
-                    s._update_priority()
-                i += 1
+            subs = cls.find_by_sid_and_distributor(
+                env, sub['sid'], sub['authenticated'], sub['distributor'])
+            if not (1 <= priority <= len(subs)):
+                return
+            for idx, sub in enumerate(subs):
+                if sub['id'] == rule_id:
+                    break
+            else:
+                return
+            subs.insert(priority - 1, subs.pop(idx))
+            now = to_utimestamp(datetime_now(utc))
+            values = [(new_priority, now, sub['id'])
+                      for new_priority, sub in enumerate(subs, 1)
+                      if new_priority != sub['priority']]
+            db.executemany("""
+                UPDATE notify_subscription
+                SET priority=%s, changetime=%s WHERE id=%s
+                """, values)
 
     @classmethod
     def replace_all(cls, env, sid, authenticated, subscriptions):
@@ -144,7 +156,7 @@ class Subscription(object):
                         SET changetime=%s,distributor=%s,format=%s,priority=%s,
                             adverb=%s,class=%s
                         WHERE id=%s""",
-                        (now, sub['distributor'], sub['format'], prio,
+                        (now, sub['distributor'], sub['format'] or None, prio,
                          sub['adverb'], sub['class'], id_))
                 else:
                     db("""\
@@ -153,7 +165,8 @@ class Subscription(object):
                             format,priority,adverb,class)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                         (now, now, sid, authenticated, sub['distributor'],
-                         sub['format'], prio, sub['adverb'], sub['class']))
+                         sub['format'] or None, prio, sub['adverb'],
+                         sub['class']))
 
             delete_ids = []
             for ids in ids_map.itervalues():
@@ -173,7 +186,7 @@ class Subscription(object):
                  WHERE distributor=%s
                    AND sid=%s
                    AND authenticated=%s
-            """, (format, distributor, sid, int(authenticated)))
+            """, (format or None, distributor, sid, int(authenticated)))
 
     @classmethod
     def _find(cls, env, order=None, **kwargs):
@@ -229,7 +242,7 @@ class Subscription(object):
             self.values['sid'],
             self.values['authenticated'],
             None,
-            self.values['format'],
+            self.values['format'] or None,
             int(self.values['priority']),
             self.values['adverb']
         )
