@@ -112,7 +112,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.env = EnvironmentStub(enable=['trac.*', TestEmailSender,
                                            TestFormatter, TestSubscriber,
                                            TestEmailAddressResolver])
-        config = self.env.config
+        self.config = config = self.env.config
         config.set('notification', 'smtp_from', 'trac@example.org')
         config.set('notification', 'smtp_enabled', 'enabled')
         config.set('notification', 'smtp_always_cc', 'cc@example.org')
@@ -138,8 +138,10 @@ class EmailDistributorTestCase(unittest.TestCase):
                                       time or datetime_now(utc), author=author)
         self.notsys.notify(event)
 
-    def _add_session(self, sid, **attrs):
+    def _add_session(self, sid, values=None, **attrs):
         session = DetachedSession(self.env, sid)
+        if values is not None:
+            attrs.update(values)
         for name, value in attrs.iteritems():
             session[name] = value
         session.save()
@@ -234,6 +236,41 @@ class EmailDistributorTestCase(unittest.TestCase):
                 self._assert_mail(message, 'text/plain', 'blah')
             if 'bar@example.org' in recipients:
                 self.assertEqual(['bar@example.org'], recipients)
+                self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
+
+    def test_formats_in_session_and_tracini(self):
+        self.config.set('notification', 'smtp_always_cc', 'bar,quux')
+        self.config.set('notification', 'smtp_always_bcc', '')
+        self.config.set('notification', 'default_format.email', 'text/html')
+        with self.env.db_transaction:
+            for user in ('foo', 'bar', 'baz', 'qux', 'quux'):
+                self._add_session(user, email='%s@example.org' % user)
+            self._add_subscription(sid='foo', format='text/plain')
+            # bar - no subscriptions
+            self._add_session('bar',
+                              {'notification.format.email': 'text/plain'})
+            self._add_subscription(sid='baz', format='text/plain')
+            self._add_session('baz',
+                              {'notification.format.email': 'text/html'})
+            self._add_subscription(sid='qux', format='text/html')
+            self._add_session('qux',
+                              {'notification.format.email': 'text/plain'})
+            # quux - no subscriptions and no preferred format in session
+        self._notify_event('blah')
+
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        self.assertEqual(2, len(history))
+        for from_addr, recipients, message in history:
+            self.assertEqual('trac@example.org', from_addr)
+            recipients = sorted(recipients)
+            if 'bar@example.org' in recipients:
+                self.assertEqual(['bar@example.org', 'baz@example.org',
+                                  'foo@example.org'], recipients)
+                self._assert_mail(message, 'text/plain', 'blah')
+            if 'qux@example.org' in recipients:
+                self.assertEqual(['quux@example.org', 'qux@example.org'],
+                                 recipients)
                 self._assert_alternative_mail(message, 'blah', '<p>blah</p>')
 
     def test_broken_plain_formatter(self):

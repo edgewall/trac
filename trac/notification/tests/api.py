@@ -27,7 +27,7 @@ class ParseSubscriberConfigTestCase(unittest.TestCase):
         config = [('1', 'TicketOwnerSubscriber')]
         expected = {
             'TicketOwnerSubscriber': [
-                {'name': '1', 'adverb': 'always', 'format': 'text/plain',
+                {'name': '1', 'adverb': 'always', 'format': None,
                  'priority': 100, 'distributor': 'email',
                  'class': 'TicketOwnerSubscriber'},
             ],
@@ -59,7 +59,7 @@ class ParseSubscriberConfigTestCase(unittest.TestCase):
         ]
         expected = {
             'TicketOwnerSubscriber': [
-                {'name': '1', 'adverb': 'always', 'format': 'text/plain',
+                {'name': '1', 'adverb': 'always', 'format': None,
                  'priority': 100, 'distributor': 'email',
                  'blah': 'blah', 'blah.blah': 'blah.blah',
                  'class': 'TicketOwnerSubscriber'},
@@ -80,13 +80,13 @@ class ParseSubscriberConfigTestCase(unittest.TestCase):
         ]
         expected = {
             'TicketOwnerSubscriber': [
-                {'name': '2', 'adverb': 'always', 'format': 'text/plain',
+                {'name': '2', 'adverb': 'always', 'format': None,
                  'priority': 42, 'distributor': 'email',
                  'class': 'TicketOwnerSubscriber'},
                 {'name': '1', 'adverb': 'never', 'format': 'text/html',
                  'priority': 43, 'distributor': 'webhook',
                  'class': 'TicketOwnerSubscriber'},
-                {'name': '0', 'adverb': 'always', 'format': 'text/plain',
+                {'name': '0', 'adverb': 'always', 'format': None,
                  'priority': 100, 'distributor': 'email',
                  'class': 'TicketOwnerSubscriber'},
             ],
@@ -107,7 +107,7 @@ class ParseSubscriberConfigTestCase(unittest.TestCase):
         expected = {
             'TicketOwnerSubscriber': [
                 {'name': 'ticket_owner', 'adverb': 'always',
-                 'format': 'text/plain', 'priority': 42,
+                 'format': None, 'priority': 42,
                  'distributor': 'email', 'class': 'TicketOwnerSubscriber'},
             ],
             'TicketUpdaterSubscriber': [

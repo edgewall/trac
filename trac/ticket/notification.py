@@ -188,7 +188,7 @@ class TicketFormatter(Component):
     implements(INotificationFormatter, IEmailDecorator)
 
     def get_supported_styles(self, transport):
-        yield ('text/plain', 'ticket')
+        yield 'text/plain', 'ticket'
 
     def format(self, transport, style, event):
         if event.realm != 'ticket':
@@ -294,7 +294,7 @@ class TicketOwnerSubscriber(Component):
 
             # Default subscription
             for s in self.default_subscriptions():
-                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
             if sid:
                 sids.add((sid,auth))
 
@@ -332,7 +332,7 @@ class TicketUpdaterSubscriber(Component):
 
         # Default subscription
         for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+            yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
 
         if sid:
             klass = self.__class__.__name__
@@ -382,7 +382,7 @@ class TicketPreviousUpdatersSubscriber(Component):
 
             # Default subscription
             for s in self.default_subscriptions():
-                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
             if sid:
                 sids.add((sid,auth))
 
@@ -422,7 +422,7 @@ class TicketReporterSubscriber(Component):
 
         # Default subscription
         for s in self.default_subscriptions():
-            yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+            yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
 
         if sid:
             klass = self.__class__.__name__
@@ -473,7 +473,7 @@ class CarbonCopySubscriber(Component):
 
             # Default subscription
             for s in self.default_subscriptions():
-                yield (s[0], s[1], sid, auth, addr, s[2], s[3], s[4])
+                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
             if sid:
                 sids.add((sid,auth))
 
