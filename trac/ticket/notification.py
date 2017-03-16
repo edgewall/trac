@@ -59,30 +59,6 @@ class TicketNotificationSystem(Component):
     def upgrade_environment(self):
         pass
 
-    ticket_subject_template = Option('notification', 'ticket_subject_template',
-                                     '${prefix} #${ticket.id}: ${summary}',
-        """A Jinja2 text template snippet used to get the notification
-        subject.
-
-        The template variables are documented on the
-        [TracNotification#Customizingthee-mailsubject TracNotification] page.
-        """)
-
-    batch_subject_template = Option('notification', 'batch_subject_template',
-                                    '${prefix} Batch modify: ${tickets_descr}',
-        """Like `ticket_subject_template` but for batch modifications.
-        (''since 1.0'')""")
-
-    ambiguous_char_width = Option('notification', 'ambiguous_char_width',
-                                  'single',
-        """Width of ambiguous characters that should be used in the table
-        of the notification mail.
-
-        If `single`, the same width as characters in US-ASCII. This is
-        expected by most users. If `double`, twice the width of
-        US-ASCII characters.  This is expected by CJK users. (''since
-        0.12.2'')""")
-
 
 class TicketChangeEvent(NotificationEvent):
     """Represent a ticket change `NotificationEvent`."""
@@ -123,11 +99,33 @@ class TicketFormatter(Component):
     COLS = 75
     addrsep_re = re.compile(r'[;\s,]+')
 
+    ambiguous_char_width = Option('notification', 'ambiguous_char_width',
+                                  'single',
+        """Width of ambiguous characters that should be used in the table
+        of the notification mail.
+
+        If `single`, the same width as characters in US-ASCII. This is
+        expected by most users. If `double`, twice the width of
+        US-ASCII characters.  This is expected by CJK users.
+        """)
+
+    batch_subject_template = Option('notification', 'batch_subject_template',
+                                    '${prefix} Batch modify: ${tickets_descr}',
+        """Like `ticket_subject_template` but for batch modifications.
+        (''since 1.0'')""")
+
+    ticket_subject_template = Option('notification', 'ticket_subject_template',
+                                     '${prefix} #${ticket.id}: ${summary}',
+        """A Jinja2 text template snippet used to get the notification
+        subject.
+
+        The template variables are documented on the
+        [TracNotification#Customizingthee-mailsubject TracNotification] page.
+        """)
+
     @lazy
     def ambiwidth(self):
-        char_width = self.config.get('notification', 'ambiguous_char_width',
-                                     'single')
-        return 2 if char_width == 'double' else 1
+        return 2 if self.ambiguous_char_width == 'double' else 1
 
     def get_supported_styles(self, transport):
         yield 'text/plain', 'ticket'
@@ -341,8 +339,7 @@ class TicketFormatter(Component):
             'env': self.env,
         }
 
-        template = self.config.get('notification', 'ticket_subject_template')
-        template = jinja2template(template, text=True)
+        template = jinja2template(self.ticket_subject_template, text=True)
         subj = template.render(**data).strip()
         if not is_newticket:
             subj = "Re: " + subj
@@ -351,8 +348,7 @@ class TicketFormatter(Component):
     def _format_subj_batchmodify(self, tickets):
         tickets_descr = ', '.join('#%s' % t for t in tickets)
 
-        template = self.config.get('notification', 'batch_subject_template')
-        template = jinja2template(template, text=True)
+        template = jinja2template(self.batch_subject_template, text=True)
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__':
