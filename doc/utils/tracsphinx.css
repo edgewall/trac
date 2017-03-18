@@ -13,6 +13,10 @@ div.bodywrapper {
     border-right: none;
 }
 
+div.document {
+    background-image: none;
+}
+
 /* Sidebar */
 
 div.sphinxsidebarwrapper {
