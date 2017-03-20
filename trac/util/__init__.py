@@ -493,8 +493,12 @@ def is_path_below(path, parent):
     """Return True iff `path` is equal to parent or is located below `parent`
     at any level.
     """
-    path = os.path.abspath(path)
-    parent = os.path.abspath(parent)
+    def normalize(path):
+        if os.name == 'nt' and not isinstance(path, unicode):
+            path = path.decode('mbcs')
+        return os.path.normcase(os.path.abspath(path))
+    path = normalize(path)
+    parent = normalize(parent)
     return path == parent or path.startswith(parent + os.sep)
 
 

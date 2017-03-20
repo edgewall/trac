@@ -35,7 +35,7 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
 from trac.loader import load_components
 from trac.log import logger_handler_factory
 from trac.util import arity, as_bool, copytree, create_file, get_pkginfo, \
-                      lazy, makedirs, read_file
+                      is_path_below, lazy, makedirs, read_file
 from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
                            printout
@@ -975,18 +975,37 @@ class EnvironmentAdmin(Component):
                None, self._do_upgrade)
 
     def _do_deploy(self, dest):
+        from trac.web.chrome import Chrome
+
         target = os.path.normpath(dest)
         chrome_target = os.path.join(target, 'htdocs')
         script_target = os.path.join(target, 'cgi-bin')
 
+        # Check source and destination to avoid recursively copying files
+        for provider in Chrome(self.env).template_providers:
+            paths = list(provider.get_htdocs_dirs() or [])
+            if not paths:
+                continue
+            for key, root in paths:
+                if not root:
+                    continue
+                source = os.path.normpath(root)
+                dest = os.path.join(chrome_target, key)
+                if os.path.exists(source) and is_path_below(dest, source):
+                    raise AdminCommandError(
+                        _("Resources cannot be deployed to a target "
+                          "directory that is equal to or below the source "
+                          "directory '%(source)s'.\n\nPlease choose a "
+                          "different target directory and try again.",
+                          source=source))
+
         # Copy static content
         makedirs(target, overwrite=True)
         makedirs(chrome_target, overwrite=True)
-        from trac.web.chrome import Chrome
         printout(_("Copying resources from:"))
         for provider in Chrome(self.env).template_providers:
             paths = list(provider.get_htdocs_dirs() or [])
-            if not len(paths):
+            if not paths:
                 continue
             printout('  %s.%s' % (provider.__module__,
                                   provider.__class__.__name__))

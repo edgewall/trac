@@ -1771,6 +1771,42 @@ the_plugin.* = enabled
         })
 
 
+class TracAdminDeployTestCase(TracAdminTestCaseBase):
+    """Tests for the trac-admin deploy command."""
+
+    def setUp(self):
+        self.env = Environment(path=tempfile.mkdtemp(), create=True)
+        self._admin = TracAdmin(self.env.path)
+        self._admin.env_set('', self.env)
+
+    def tearDown(self):
+        self.env.shutdown()  # really closes the db connections
+        shutil.rmtree(self.env.path)
+
+    def test_deploy(self):
+        """Deploy into valid target directory."""
+        target = os.path.join(self.env.path, 'www')
+        htdocs_dir = os.path.join(target, 'htdocs')
+
+        rv, output = self._execute('deploy %s' % target)
+
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+        self.assertTrue(os.path.exists(os.path.join(target, 'cgi-bin')))
+        self.assertTrue(os.path.exists(htdocs_dir))
+        self.assertTrue(os.path.exists(os.path.join(htdocs_dir, 'common')))
+        self.assertTrue(os.path.exists(os.path.join(htdocs_dir, 'site')))
+
+    def test_deploy_to_invalid_target_raises_error(self):
+        """Running deploy with target directory equal to or below the source 
+        directory raises AdminCommandError.
+        """
+        rv, output = self._execute('deploy %s' % self.env.htdocs_dir)
+
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TracadminTestCase))
@@ -1782,6 +1818,7 @@ def test_suite():
         print("SKIP: trac.admin.tests.console.TracAdminComponentTestCase "
               "(__name__ is not trac.admin.tests.console)")
     suite.addTest(unittest.makeSuite(TracAdminInitenvTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminDeployTestCase))
     return suite
 
 
