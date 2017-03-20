@@ -204,6 +204,16 @@ class AuthzPolicy(Component):
         for group, users in groups.iteritems():
             add_items('@' + group, users)
 
+        all_actions = PermissionSystem(self.env).get_actions()
+        for section in self.authz.sections():
+            for _, actions in self.authz.items(section):
+                for action in to_list(actions):
+                    if action not in all_actions:
+                        self.log.warning("The action %s in the [%s] section "
+                                         "of %s is not a valid action.",
+                                         action, section,
+                                         os.path.basename(self.authz_file))
+
     def normalise_resource(self, resource):
         def to_descriptor(resource):
             id = resource.id
