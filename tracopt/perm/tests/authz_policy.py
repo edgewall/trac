@@ -182,6 +182,26 @@ anonymous = MILESTONE_VIEW
         self.assertIn('MILESTONE_VIEW', self.get_perm('authenticated',
                                                       resource))
 
+    def test_undefined_action_is_logged(self):
+        """Undefined action is logged at warning level."""
+        create_file(self.authz_file, """\
+[wiki:WikiStart]
+änon = UNKNOWN_VIEW, WIKI_VIEW
+[milestone:milestone1]
+* = UNKNOWN_EDIT
+""")
+        authz_policy = AuthzPolicy(self.env)
+        authz_policy.parse_authz()
+
+        self.assertIn(('WARNING', 'The action UNKNOWN_VIEW in the '
+                                  '[wiki:WikiStart] section of '
+                                  'trac-authz-policy is not a valid action.'),
+                      self.env.log_messages)
+        self.assertIn(('WARNING', 'The action UNKNOWN_EDIT in the '
+                                  '[milestone:milestone1] section of '
+                                  'trac-authz-policy is not a valid action.'),
+                      self.env.log_messages)
+
     def test_get_authz_file(self):
         """get_authz_file should resolve a relative path."""
         authz_policy = AuthzPolicy(self.env)
