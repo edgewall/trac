@@ -283,8 +283,8 @@ Type:  '?' or 'help' for help on commands.
         if args[0] == 'upgrade':
             self.needs_upgrade = None
         elif self.needs_upgrade:
-            raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
-                              'Run "trac-admin %(path)s upgrade"',
+            raise TracError(_('The Trac Environment needs to be upgraded. '
+                              'Run:\n\n  trac-admin "%(path)s" upgrade',
                               path=self.envname))
         return self.cmd_mgr.execute_command(*args)
 
