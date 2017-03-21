@@ -447,8 +447,8 @@ class AttachmentModule(Component):
             try:
                 old_attachment = Attachment(self.env,
                                             attachment.resource(id=filename))
-                if not (req.authname and req.authname != 'anonymous'
-                        and old_attachment.author == req.authname) \
+                if not (req.is_authenticated and
+                        old_attachment.author == req.authname) \
                    and 'ATTACHMENT_DELETE' \
                                         not in req.perm(attachment.resource):
                     raise PermissionError(msg=_("You don't have permission to "

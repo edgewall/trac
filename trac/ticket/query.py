@@ -918,7 +918,7 @@ class QueryModule(Component):
         args = req.args
         if not constraints and 'order' not in req.args:
             # If no constraints are given in the URL, use the default ones.
-            if req.authname and req.authname != 'anonymous':
+            if req.is_authenticated:
                 qstring = self.default_query
                 user = req.authname
             else:

@@ -322,7 +322,7 @@ def auth_link(req, link):
     users, returns a link to `/login` that redirects to `link` after
     authentication.
     """
-    if req.authname != 'anonymous':
+    if req.is_authenticated:
         return req.href.login(referer=link)
     return link
 

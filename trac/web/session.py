@@ -240,7 +240,7 @@ class Session(DetachedSession):
     def __init__(self, env, req):
         super(Session, self).__init__(env, None)
         self.req = req
-        if req.authname == 'anonymous':
+        if not req.is_authenticated:
             if COOKIE_KEY not in req.incookie:
                 self.sid = hex_entropy(24)
                 self.bake_cookie()
@@ -281,7 +281,7 @@ class Session(DetachedSession):
             self.bake_cookie()
 
     def change_sid(self, new_sid):
-        assert self.req.authname == 'anonymous', \
+        assert not self.req.is_authenticated, \
                'Cannot change ID of authenticated session'
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
@@ -309,7 +309,7 @@ class Session(DetachedSession):
         """Promotes an anonymous session to an authenticated session, if there
         is no preexisting session data for that user name.
         """
-        assert self.req.authname != 'anonymous', \
+        assert self.req.is_authenticated, \
                "Cannot promote session of anonymous user"
 
         with self.env.db_transaction as db:

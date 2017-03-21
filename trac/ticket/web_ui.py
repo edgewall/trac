@@ -610,7 +610,7 @@ class TicketModule(Component):
                 change = ticket.get_change(cnum)
                 if not change:
                     raise TracError(_('Comment %(num)s not found', num=cnum))
-                if not (req.authname and req.authname != 'anonymous' and
+                if not (req.is_authenticated and
                         change['author'] == req.authname):
                     req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
                 ticket.modify_comment(change['date'], req.authname, comment)
@@ -797,7 +797,7 @@ class TicketModule(Component):
         email = req.session.get('email', '').strip()
         if email:
             entries.append(email)
-        if req.authname != 'anonymous':
+        if req.is_authenticated:
             entries.append(req.authname)
         else:
             author = get_reporter_id(req, 'author').strip()

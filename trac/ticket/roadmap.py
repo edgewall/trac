@@ -514,7 +514,7 @@ class RoadmapModule(Component):
 
         # FIXME should use the 'webcal:' scheme, probably
         username = None
-        if req.authname and req.authname != 'anonymous':
+        if req.is_authenticated:
             username = req.authname
         icshref = req.href.roadmap(show=show, user=username, format='ics')
         add_link(req, 'alternate', auth_link(req, icshref), _("iCalendar"),

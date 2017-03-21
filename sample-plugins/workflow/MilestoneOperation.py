@@ -54,7 +54,7 @@ class MilestoneOperation(Component):
 
     def get_ticket_actions(self, req, ticket):
         actions_we_handle = []
-        if req.authname != 'anonymous' and \
+        if req.is_authenticated and \
                 'TICKET_MODIFY' in req.perm(ticket.resource):
             controller = ConfigurableTicketWorkflow(self.env)
             actions_we_handle = controller.get_actions_by_operation_for_req(

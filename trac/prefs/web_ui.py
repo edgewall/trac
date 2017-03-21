@@ -160,7 +160,7 @@ class AdvancedPreferencePanel(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
-        if not req.authname or req.authname == 'anonymous':
+        if not req.is_authenticated:
             yield 'advanced', _("Advanced")
 
     def render_preference_panel(self, req, panel):
@@ -172,7 +172,7 @@ class AdvancedPreferencePanel(Component):
         return 'prefs_advanced.html', {'session_id': req.session.sid}
 
     def _do_load(self, req):
-        if req.authname == 'anonymous':
+        if not req.is_authenticated:
             oldsid = req.args.get('loadsid')
             if oldsid:
                 req.session.get_session(oldsid)

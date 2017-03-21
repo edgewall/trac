@@ -109,7 +109,7 @@ class LoginModule(Component):
         return 'login'
 
     def get_navigation_items(self, req):
-        if req.authname and req.authname != 'anonymous':
+        if req.is_authenticated:
             yield ('metanav', 'login',
                    tag_("logged in as %(user)s",
                         user=Chrome(self.env).authorinfo(req, req.authname)))
@@ -208,10 +208,7 @@ class LoginModule(Component):
         Simply deletes the corresponding record from the auth_cookie
         table.
         """
-        if req.method != 'POST':
-            return
-        if req.authname == 'anonymous':
-            # Not logged in
+        if req.method != 'POST' or not req.is_authenticated:
             return
 
         if 'trac_auth' in req.incookie:

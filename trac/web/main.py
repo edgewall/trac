@@ -652,7 +652,7 @@ def _send_user_error(req, env, e):
                         req, req.environ.get('HTTP_REFERER'))
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
-    if e.code == 403 and req.authname == 'anonymous':
+    if e.code == 403 and not req.is_authenticated:
         # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
         do_so = tag.a(_("do so"), href=req.href.login())
         add_notice(req, tag_("You are currently not logged in. You may want "

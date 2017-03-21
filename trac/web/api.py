@@ -569,6 +569,14 @@ class Request(object):
     # Public API
 
     @lazy
+    def is_authenticated(self):
+        """Returns `True` if `authname` is not `anonymous`.
+        
+        :since: 1.3.2
+        """
+        return self.authname and self.authname != 'anonymous'
+
+    @lazy
     def is_xhr(self):
         """Returns `True` if the request is an `XMLHttpRequest`.
 

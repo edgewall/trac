@@ -217,6 +217,24 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertFalse(req.is_xhr)
 
+    def test_is_authenticated_as_none(self):
+        environ = _make_environ()
+        req = Request(environ, None)
+        req.authname = None
+        self.assertFalse(req.is_authenticated)
+
+    def test_is_authenticated_as_anonymous(self):
+        environ = _make_environ()
+        req = Request(environ, None)
+        req.authname = 'anonymous'
+        self.assertFalse(req.is_authenticated)
+
+    def test_is_authenticated_as_valid_user(self):
+        environ = _make_environ()
+        req = Request(environ, None)
+        req.authname = 'user'
+        self.assertTrue(req.is_authenticated)
+
     def test_base_url(self):
         environ = _make_environ()
         req = Request(environ, None)

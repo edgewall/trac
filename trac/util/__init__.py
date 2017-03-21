@@ -53,7 +53,7 @@ def get_reporter_id(req, arg_name=None):
     :param arg_name: if given, a `Request` argument which may contain
       the id for non-authentified users
     """
-    if req.authname != 'anonymous':
+    if req.is_authenticated:
         return req.authname
     if arg_name:
         r = req.args.get(arg_name)
