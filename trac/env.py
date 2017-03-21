@@ -1122,7 +1122,7 @@ class EnvironmentAdmin(Component):
                                "anymore. Please remove it by hand.",
                                err=exception_to_unicode(e)))
 
-        printout(_("Upgrade done.\n\n"
-                   "You may want to upgrade the Trac documentation now by "
-                   "running:\n\n  trac-admin %(path)s wiki upgrade",
+        printout(_('Upgrade done.\n\n'
+                   'You may want to upgrade the Trac documentation now by '
+                   'running:\n\n  trac-admin "%(path)s" wiki upgrade',
                    path=path_to_unicode(self.env.path)))
