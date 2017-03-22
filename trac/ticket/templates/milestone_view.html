@@ -41,18 +41,18 @@
       <div class="info trac-progress">
         <p class="date">
           # if milestone.completed:
-          ${_("Completed %(duration)s ago (%(date)s)",
-              duration=dateinfo(milestone.completed),
-              date=format_datetime(milestone.completed))}
+          ${tag_("Completed %(duration)s ago (%(date)s)",
+                 duration=dateinfo(milestone.completed),
+                 date=format_datetime(milestone.completed))}
           # elif milestone.is_late:
           <strong>
             ${tag_("%(duration)s late", duration=dateinfo(milestone.due))}
           </strong>
           (${format_datetime(milestone.due)})
           # elif milestone.due:
-          ${_("Due in %(duration)s (%(date)s)",
-              duration=dateinfo(milestone.due),
-              date=format_datetime(milestone.due))}
+          ${tag_("Due in %(duration)s (%(date)s)",
+                 duration=dateinfo(milestone.due),
+                 date=format_datetime(milestone.due))}
           # else:
           ${_("No date set")}
           # endif
