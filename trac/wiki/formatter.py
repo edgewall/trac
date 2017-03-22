@@ -1270,7 +1270,6 @@ class Formatter(object):
         self.paragraph_open = 0
         return source
 
-
     def format(self, text, out=None, escape_newlines=False):
         text = self.reset(text, out)
         if isinstance(text, basestring):
@@ -1319,6 +1318,10 @@ class Formatter(object):
             line = line.replace('\t', ' '*8)
             if not line.startswith(' '):
                 self._tabstops = []
+
+            # Handle end of indentation
+            if not line.startswith(' ') and self._quote_stack:
+                self.close_indentation()
 
             self.in_list_item = False
             self.in_quote = False

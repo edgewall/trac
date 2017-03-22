@@ -2851,3 +2851,48 @@ A paragraph in div element.
 End.
 </p>
 ------------------------------
+============================== Binary inline markup after indent - 1 (#12675)
+  **foo
+    //bar
+  **baz
+//missing
+closed markup
+------------------------------
+<blockquote>
+<p>
+<strong>foo
+</strong></p>
+<blockquote>
+<p>
+<em>bar
+</em></p>
+</blockquote>
+<p>
+<strong>baz
+</strong></p>
+</blockquote>
+<p>
+<em>missing
+closed markup
+</em></p>
+------------------------------
+============================== Binary inline markup after indent - 2 (#12675)
+54******94
+Vl
+
+       C
+54******94
+------------------------------
+<p>
+54<strong></strong><strong>94
+Vl
+</strong></p>
+<blockquote>
+<p>
+C
+</p>
+</blockquote>
+<p>
+54<strong></strong><strong>94
+</strong></p>
+------------------------------
