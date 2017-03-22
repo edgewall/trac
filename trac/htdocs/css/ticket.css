@@ -256,7 +256,10 @@ div.change, ul.children { clear: both; }
 .changes .trac-field-new { font-weight: bold }
 .changes .trac-field-deleted { text-decoration: line-through }
 
-.trac-conflict { border-left: .3em solid #e44; padding-left: .3em; }
+.trac-conflict, .trac-conflict th {
+ border-left: .3em solid #e44;
+ padding-left: .3em;
+}
 #changelog .comment, #ticketchange .comment { margin-left: .5em }
 button.trac-revert, button.trac-revert:hover {
  margin: 0;
