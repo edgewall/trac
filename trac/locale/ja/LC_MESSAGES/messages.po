@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-02-27 07:11+0000\n"
+"POT-Creation-Date: 2017-03-22 09:56+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -661,16 +661,16 @@ msgid ""
 " point to a valid Trac environment."
 msgstr "環境変数 \"TRAC_ENV\" が見つかりません。Trac ではこの変数を設定する必要があります。"
 
-#: trac/admin/console.py:286 trac/env.py:958
+#: trac/env.py:958
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
 "\n"
-"Run \"trac-admin %(path)s upgrade\""
+"Run 'trac-admin \"%(path)s\" upgrade'"
 msgstr ""
-"この Trac Environment はアップグレードを行う必要があります。\n"
+"Trac Environment をアップグレードする必要があります。\n"
 "\n"
-"\"trac-admin %(path)s upgrade\" を実行してください"
+"'trac-admin \"%(path)s\" upgrade' を実行してください。"
 
 #: trac/env.py:997
 msgid "Copying resources from:"
@@ -754,13 +754,13 @@ msgid ""
 "\n"
 "You may want to upgrade the Trac documentation now by running:\n"
 "\n"
-"  trac-admin %(path)s wiki upgrade"
+"  trac-admin \"%(path)s\" wiki upgrade"
 msgstr ""
 "アップグレードが終了しました。\n"
 "\n"
 "次のコマンドを実行すると Trac のドキュメントをアップグレードできます:\n"
 "\n"
-"  trac-admin %(path)s wiki upgrade"
+"  trac-admin \"%(path)s\" wiki upgrade"
 
 #: trac/notification.py:174
 #, python-format
@@ -933,6 +933,17 @@ msgstr "TracEnv を開けませんでした: %(err)s"
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "補完エラー: %(err)s"
+
+#: trac/admin/console.py:286
+#, python-format
+msgid ""
+"The Trac Environment needs to be upgraded. Run:\n"
+"\n"
+"  trac-admin \"%(path)s\" upgrade"
+msgstr ""
+"Trac Environment をアップグレードする必要があります。以下を実行してください:\n"
+"\n"
+"  trac-admin \"%(path)s\" upgrade"
 
 #: trac/admin/console.py:321
 #, python-format
