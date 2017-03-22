@@ -150,14 +150,14 @@
         → <span class="trac-field-new">${field.new}</span>
         # else:
         <span class="trac-field-deleted">${field.old}</span>
-        #   if preview and field.by == 'user':
-        #     set old = (ticket.get_default(field_name) if
-                         field.old is sameas(empty) else field.old)
+        # endif
+        # if preview and field.by == 'user':
+        #   set old = (ticket.get_default(field_name)
+                       if field.old is sameas(empty) else field.old)
         (<button type="submit" name="revert_${field_name}" class="trac-revert"
                  title="${_('Revert this change')}">${
           _("revert")}<div id="revert-${field_name}">${
             '0' if 'cc_update' in field else old}</div></button>)
-        #   endif
         # endif
       </td>
     </tr>
