@@ -4,14 +4,14 @@
     var fragId = document.location.hash;
     if (fragId && /^#no\d+$/.test(fragId))
       fragId = parseInt(fragId.substr(3));
-    if (snap == undefined)
+    if (snap === undefined)
       snap = false;
 
     var count = 1;
     return this.each(function() {
       // Use first child <a> as a trigger, or generate a trigger from the text
       var trigger = $(this).children("a").eq(0);
-      if (trigger.length == 0) {
+      if (trigger.length === 0) {
         trigger = $("<a" + (snap? " id='no" + count + "'": "")
             + " href='#no" + count + "'></a>");
         trigger.html($(this).html());
@@ -23,11 +23,11 @@
         var div = $(this.parentNode.parentNode).toggleClass("collapsed");
         return snap && !div.hasClass("collapsed");
       });
-      if (autofold && (count != fragId))
+      if (autofold && (count !== fragId))
         trigger.parents().eq(1).addClass("collapsed");
       count++;
     });
-  }
+  };
 
   /** Enable columns of a table to be hidden by clicking on the column header.
    *
@@ -46,7 +46,6 @@
     // row headers
     var tbody = $('tbody', this);
     var row_headers = $('th', tbody);
-    var rows = $('tr', tbody);
     var n = row_headers.length / k;
 
     // add a 'hide' callback to each column header
@@ -67,7 +66,7 @@
                 row_headers.eq(i*k+j).css('display', 'table-cell');
             })
           );
-        };
+        }
         $(this).click(hide)
           .css('cursor', 'pointer')
           .attr('title', _("%(title)s (click to hide column)",
