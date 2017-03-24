@@ -648,7 +648,6 @@ class ReportModule(Component):
                 pass
             if set(data['args']) - {'USER'}:
                 data['show_args_form'] = True
-                add_script(req, 'common/js/folding.js')
             if missing_args:
                 add_warning(req, _(
                     'The following arguments are missing: %(args)s',

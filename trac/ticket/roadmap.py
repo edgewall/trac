@@ -1036,7 +1036,6 @@ class MilestoneModule(Component):
                                    by, per_group_stats_data))
 
         add_stylesheet(req, 'common/css/roadmap.css')
-        add_script(req, 'common/js/folding.js')
 
         def add_milestone_link(rel, milestone):
             href = req.href.milestone(milestone.name, by=req.args.get('by'))

@@ -809,6 +809,7 @@ class Chrome(Component):
             add_script(req, 'common/js/messages/%s.js' % req.locale)
         add_script(req, 'common/js/trac.js')
         add_script(req, 'common/js/search.js')
+        add_script(req, 'common/js/folding.js')
 
         # Shortcut icon
         chrome['icon'] = self.get_icon_data(req)

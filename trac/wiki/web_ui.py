@@ -570,7 +570,6 @@ class WikiModule(Component):
         self._wiki_ctxtnav(req, page)
         Chrome(self.env).add_wiki_toolbars(req)
         Chrome(self.env).add_auto_preview(req)
-        add_script(req, 'common/js/folding.js')
         add_script(req, 'common/js/wiki.js')
         return 'wiki_edit.html', data
 
@@ -718,7 +717,6 @@ class WikiModule(Component):
             'resourcepath_template': 'wiki_page_path.html',
             'fullwidth': req.session.get('wiki_fullwidth'),
         })
-        add_script(req, 'common/js/folding.js')
         add_script(req, 'common/js/wiki.js')
         return 'wiki_view.html', data
 

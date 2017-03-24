@@ -549,7 +549,6 @@ class TicketModule(Component):
             return 'ticket_box.html', data
 
         add_stylesheet(req, 'common/css/ticket.css')
-        add_script(req, 'common/js/folding.js')
         chrome = Chrome(self.env)
         chrome.add_wiki_toolbars(req)
         chrome.add_auto_preview(req)
@@ -752,7 +751,6 @@ class TicketModule(Component):
                               'changes': data['changes'],
                               })
         add_stylesheet(req, 'common/css/ticket.css')
-        add_script(req, 'common/js/folding.js')
         chrome = Chrome(self.env)
         chrome.add_wiki_toolbars(req)
         chrome.add_auto_preview(req)
