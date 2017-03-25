@@ -21,9 +21,9 @@ from genshi.core import Markup
 
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
-from trac.core import *
+from trac.core import Component, TracError, implements
 from trac.env import ISystemInfoProvider
-from trac.util import TracError, shorten_line
+from trac.util import shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.text import to_unicode, exception_to_unicode
 from trac.util.translation import _
@@ -543,8 +543,11 @@ class GitRepository(Repository):
         return self.git.shortrev(self.normalize_rev(rev),
                                  min_len=self.shortrev_len)
 
-    def get_node(self, path, rev=None, historian=None):
-        return GitNode(self, path, rev, self.log, None, historian)
+    def get_node(self, path, rev=None):
+        return self._get_node(path, rev)
+
+    def _get_node(self, path, rev, ls_tree_info=None, historian=None):
+        return GitNode(self, path, rev, self.log, ls_tree_info, historian)
 
     def get_quickjump_entries(self, rev):
         for bname, bsha in self.git.get_branches():
@@ -570,30 +573,44 @@ class GitRepository(Repository):
     def get_changes(self, old_path, old_rev, new_path, new_rev,
                     ignore_ancestry=0):
         # TODO: handle renames/copies, ignore_ancestry
+        old_path = self.normalize_path(old_path)
+        new_path = self.normalize_path(new_path)
         if old_path != new_path:
             raise TracError(_("Not supported in git_fs"))
 
-        with self.git.get_historian(old_rev,
-                                    old_path.strip('/')) as old_historian:
-            with self.git.get_historian(new_rev,
-                                        new_path.strip('/')) as new_historian:
-                for chg in self.git.diff_tree(old_rev, new_rev,
-                                              self.normalize_path(new_path)):
-                    mode1, mode2, obj1, obj2, action, path, path2 = chg
+        old_rev = self.normalize_rev(old_rev)
+        new_rev = self.normalize_rev(new_rev)
+        if old_rev == new_rev:
+            return
 
-                    kind = Node.FILE
-                    if mode2.startswith('04') or mode1.startswith('04'):
-                        kind = Node.DIRECTORY
+        def get_tree(rev):
+            results = self.git.ls_tree(rev, target_path, recursive=True)
+            return dict((result[4], result) for result in results)
+
+        def is_dir(mode):
+            return mode.startswith('04')
+
+        target_path = old_path.strip('/')
+        old_tree = get_tree(old_rev)
+        new_tree = get_tree(new_rev)
+
+        with self.git.get_historian(old_rev, target_path) as old_historian:
+            with self.git.get_historian(new_rev, target_path) as new_historian:
+                for chg in self.git.diff_tree(old_rev, new_rev, target_path):
+                    mode1, mode2, obj1, obj2, action, path, path2 = chg
+                    kind = Node.DIRECTORY \
+                           if is_dir(mode2) or is_dir(mode1) \
+                           else Node.FILE
 
                     change = GitChangeset.action_map[action]
-
-                    old_node = None
-                    new_node = None
-
-                    if change != Changeset.ADD:
-                        old_node = self.get_node(path, old_rev, old_historian)
-                    if change != Changeset.DELETE:
-                        new_node = self.get_node(path, new_rev, new_historian)
+                    old_node = self._get_node(path, old_rev,
+                                              old_tree.get(path, False),
+                                              old_historian) \
+                               if change != Changeset.ADD else None
+                    new_node = self._get_node(path, new_rev,
+                                              new_tree.get(path, False),
+                                              new_historian) \
+                               if change != Changeset.DELETE else None
 
                     yield old_node, new_node, kind, change
 
@@ -657,14 +674,12 @@ class GitNode(Node):
         if p:  # ie. not the root-tree
             if not rev:
                 raise NoSuchNode(path, rev)
-            if not ls_tree_info:
-                ls_tree_info = repos.git.ls_tree(rev, p) or None
+            if ls_tree_info is None:
+                ls_tree_info = repos.git.ls_tree(rev, p)
                 if ls_tree_info:
-                    [ls_tree_info] = ls_tree_info
-
+                    ls_tree_info = ls_tree_info[0]
             if not ls_tree_info:
                 raise NoSuchNode(path, rev)
-
             self.fs_perm, k, self.fs_sha, self.fs_size, fname = ls_tree_info
 
             # fix-up to the last commit-rev that touched this node
