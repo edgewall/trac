@@ -786,10 +786,11 @@ class Storage(object):
                       for name, rev_ in self.rev_cache.iter_tags()
                       if rev is None or rev == rev_)
 
-    def ls_tree(self, rev, path=''):
+    def ls_tree(self, rev, path='', recursive=False):
         rev = rev and str(rev) or 'HEAD' # paranoia
         path = self._fs_from_unicode(path).lstrip('/') or '.'
-        tree = self.repo.ls_tree('-z', '-l', rev, '--', path).split('\0')
+        tree = self.repo.ls_tree('-zlr' if recursive else '-zl',
+                                 rev, '--', path).split('\0')
 
         def split_ls_tree_line(l):
             """split according to '<mode> <type> <sha> <size>\t<fname>'"""
