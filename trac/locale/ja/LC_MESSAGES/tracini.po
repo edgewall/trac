@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-15 16:37-0700\n"
+"POT-Creation-Date: 2017-03-26 07:26+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
-#: tracopt/perm/authz_policy.py:124
+#: tracopt/perm/authz_policy.py:131
 msgid ""
 "Location of authz policy configuration file. Non-absolute paths are "
 "relative to the Environment `conf` directory."
@@ -172,22 +172,22 @@ msgstr "git リポジトリ中のパスに対する文字エンコーディン�
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:902
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:905
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:893
+#: tracopt/versioncontrol/git/git_fs.py:908
 #, python-format
 msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr "プロジェクト URL のテンプレート。`%s` はリポジトリ名に置換されます。"
 
-#: tracopt/versioncontrol/git/git_fs.py:897
+#: tracopt/versioncontrol/git/git_fs.py:912
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
@@ -606,7 +606,7 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。"
 
-#: trac/db/mysql_backend.py:93
+#: trac/db/mysql_backend.py:95
 msgid "Location of mysqldump for MySQL database backups"
 msgstr "MySQL データベースのバックアップに使う mysqldump の場所を指定します。"
 
@@ -623,19 +623,19 @@ msgstr ""
 "[https://sqlite.org/loadext.html SQLite 拡張]のパスを絶対パス、または Trac "
 "環境ディレクトリからの相対パスで指定します。(''0.12 以降'')"
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:638
 msgid "Charset to be used when in doubt."
 msgstr "文字コードが不明な場合に使用する文字コードを指定します。"
 
-#: trac/mimeview/api.py:637
+#: trac/mimeview/api.py:641
 msgid "Displayed tab width in file preview."
 msgstr "ファイルのプレビューで表示するタブの幅を指定します。"
 
-#: trac/mimeview/api.py:640
+#: trac/mimeview/api.py:644
 msgid "Maximum file size for HTML preview."
 msgstr "HTML プレビューするファイルの上限サイズを指定します。"
 
-#: trac/mimeview/api.py:643
+#: trac/mimeview/api.py:647
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -645,7 +645,7 @@ msgstr ""
 "追加する MIME タイプとキーワードのマッピングのリストを指定します。\n"
 "マッピングはカンマ区切りで、MIME タイプごとに関連するキーワードまたはファイル拡張子のコロン区切り (\":\") のリストを持ちます。"
 
-#: trac/mimeview/api.py:651
+#: trac/mimeview/api.py:655
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -655,7 +655,7 @@ msgstr ""
 "追加する MIME タイプとそれに対応させるファイルパターンを指定します。マッピングはカンマ区切りで、マッピングごとに MIME "
 "タイプとファイルマッチングに使う Python 正規表現をコロン (`:`) で区切るようにします。(''1.0 以降'')"
 
-#: trac/mimeview/api.py:659
+#: trac/mimeview/api.py:663
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data."
@@ -888,27 +888,40 @@ msgstr ""
 "有効な受信処理:\n"
 "[[SubscriberList]]"
 
-#: trac/notification/mail.py:440
+#: trac/notification/mail.py:271
+msgid ""
+"Comma separated list of email resolver components in the order\n"
+"they will be called.  If an email address is resolved, the remaining\n"
+"resolvers will not be called."
+msgstr ""
+"!IEmailAddressResolver "
+"コンポーネントを呼び出し順にカンマ区切りで指定します。メールアドレスが解決すると、それ以降のコンポーネントは呼び出されません。"
+
+#: trac/notification/mail.py:280
+msgid "Default format to distribute email notifications."
+msgstr "メール通知を配信する際に使用するデフォルトのフォーマットを指定します。"
+
+#: trac/notification/mail.py:454
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification/mail.py:443
+#: trac/notification/mail.py:457
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification/mail.py:446
+#: trac/notification/mail.py:460
 msgid "Username for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのユーザ名を指定します。"
 
-#: trac/notification/mail.py:449
+#: trac/notification/mail.py:463
 msgid "Password for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのパスワードを指定します。"
 
-#: trac/notification/mail.py:452
+#: trac/notification/mail.py:466
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。"
 
-#: trac/notification/mail.py:508
+#: trac/notification/mail.py:522
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -919,11 +932,11 @@ msgstr ""
 "\n"
 "sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。(''0.12 以降'')"
 
-#: trac/search/web_ui.py:46
+#: trac/search/web_ui.py:47
 msgid "Minimum length of query string allowed when performing a search."
 msgstr "検索の実行を許可する検索文字列の最小の長さを指定します。"
 
-#: trac/search/web_ui.py:50
+#: trac/search/web_ui.py:51
 msgid ""
 "Specifies which search filters should be disabled by\n"
 "default on the search page. This will also restrict the\n"
@@ -1074,7 +1087,7 @@ msgstr ""
 "文字の倍の幅になります。これは CJK ユーザが期待するものです。\n"
 "(''0.12.2 以降'')"
 
-#: trac/ticket/query.py:839
+#: trac/ticket/query.py:849
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1085,7 +1098,7 @@ msgstr ""
 "シンタックス、または `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:847
+#: trac/ticket/query.py:857
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1096,7 +1109,7 @@ msgstr ""
 " `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:855
+#: trac/ticket/query.py:865
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1112,7 +1125,7 @@ msgstr "チケットのレポートで1ページあたりに表示するチケ�
 msgid "Number of tickets displayed in the rss feeds for reports."
 msgstr "レポートの RSS フィードに表示するチケット数を指定します。"
 
-#: trac/ticket/roadmap.py:143
+#: trac/ticket/roadmap.py:145
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -1221,7 +1234,7 @@ msgstr ""
 "ルールを使って簡単に追加できます。例えば `table.progress td.<class> { background: <color> }` "
 "を [TracInterfaceCustomization#SiteAppearance site/style.css] ファイルに追加します。"
 
-#: trac/ticket/roadmap.py:422
+#: trac/ticket/roadmap.py:452
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1230,7 +1243,7 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:626
+#: trac/ticket/roadmap.py:656
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1239,13 +1252,13 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはマイルストーンの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:633
+#: trac/ticket/roadmap.py:663
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr "マイルストーンを完了させたときや削除したときに、チケットに再設定するデフォルトのマイルストーンを指定します。(''1.1.2 以降'')"
 
-#: trac/ticket/roadmap.py:637
+#: trac/ticket/roadmap.py:667
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -1328,7 +1341,7 @@ msgstr ""
 "\n"
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。"
 
-#: trac/versioncontrol/admin.py:172
+#: trac/versioncontrol/admin.py:174
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1375,7 +1388,7 @@ msgstr ""
 "[[TracIni#repositories-section repositories]] "
 "セクションで定義するリポジトリや「リポジトリ」管理パネルなどでも使用します。(''0.12 以降'')"
 
-#: trac/versioncontrol/svn_authz.py:124
+#: trac/versioncontrol/svn_authz.py:126
 #, python-format
 msgid ""
 "The path to the Subversion\n"
@@ -1388,25 +1401,25 @@ msgstr ""
 "authz 権限チェックを有効にするには、`AuthzSourcePolicy` 権限ポリシーを `[trac] "
 "permission_policies` に追加してください。また、絶対パスでない場合は `conf` ディレクトリからの相対となります。"
 
-#: trac/versioncontrol/svn_authz.py:133
+#: trac/versioncontrol/svn_authz.py:135
 msgid ""
 "The module prefix used in the `authz_file` for the default\n"
 "repository. If left empty, the global section is used."
 msgstr "`authz_file` で使うデフォルトのリポジトリに対応するモジュール名を指定します。空の場合はグローバルセクションを使用します。"
 
-#: trac/versioncontrol/web_ui/browser.py:116
+#: trac/versioncontrol/web_ui/browser.py:117
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser."
 msgstr "リポジトリブラウザで Wiki として描画するバージョン管理のプロパティをカンマ区切りで指定します。"
 
-#: trac/versioncontrol/web_ui/browser.py:122
+#: trac/versioncontrol/web_ui/browser.py:123
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser."
 msgstr "リポジトリブラウザで1行スタイルの Wiki として描画するバージョン管理のプロパティをカンマ区切りで指定します。"
 
-#: trac/versioncontrol/web_ui/browser.py:182
+#: trac/versioncontrol/web_ui/browser.py:183
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1426,7 +1439,7 @@ msgstr ""
 "/reponame/trunk)。\n"
 "また、パスのプレフィックスマッチング処理はシンプルhもので、自動でエイリアスの解決は行わないことに注意してください。"
 
-#: trac/versioncontrol/web_ui/browser.py:195
+#: trac/versioncontrol/web_ui/browser.py:196
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1437,7 +1450,7 @@ msgstr ""
 "\n"
 "これにはソースコードの注釈と同じカラースケールを使います。青が古く、赤が新しいものとなります。"
 
-#: trac/versioncontrol/web_ui/browser.py:204
+#: trac/versioncontrol/web_ui/browser.py:205
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
@@ -1446,7 +1459,7 @@ msgstr ""
 "最新のものに対応する色を (r,g,b) で指定します。`color_scale` "
 "が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。"
 
-#: trac/versioncontrol/web_ui/browser.py:212
+#: trac/versioncontrol/web_ui/browser.py:213
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
@@ -1455,14 +1468,14 @@ msgstr ""
 "最古のものに対応する色を (r,g,b) で指定します。`color_scale` "
 "が有効の場合に、''注釈履歴''やソースブラウザの''時期''列で使います。"
 
-#: trac/versioncontrol/web_ui/browser.py:218
+#: trac/versioncontrol/web_ui/browser.py:219
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
 "the color value."
 msgstr "0より大きく1未満の値を設定すると、カラースケールの補間処理で設定した位置で `intermediate_color` の色を使うようになります。"
 
-#: trac/versioncontrol/web_ui/browser.py:224
+#: trac/versioncontrol/web_ui/browser.py:225
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1473,7 +1486,7 @@ msgstr ""
 "カラースケールの2つの線形補間を行う場合の中間部分に対応する色を (r,g,b) で指定します (`intermediate_point` "
 "参照)。指定しない場合は、`oldest_color` と `newest_color` の中間色を使います。"
 
-#: trac/versioncontrol/web_ui/browser.py:232
+#: trac/versioncontrol/web_ui/browser.py:233
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1492,7 +1505,7 @@ msgstr ""
 "\n"
 "誰でもファイルをチェックインできる公開リポジトリでは、この設定を無効のままにすることを推奨します。"
 
-#: trac/versioncontrol/web_ui/browser.py:244
+#: trac/versioncontrol/web_ui/browser.py:245
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser."
@@ -1902,9 +1915,9 @@ msgstr ""
 
 #: trac/web/chrome.py:575
 msgid ""
-"Add a simple toolbar on top of Wiki `<textarea>`s.\n"
+"Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
-msgstr "Wiki `<textarea>` の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
+msgstr "Wiki <textarea> の上部にシンプルなツールバーを追加するかを指定します。(''1.0.2 以降'')"
 
 #: trac/web/chrome.py:579
 msgid ""

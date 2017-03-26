@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2016-10-15 16:37-0700\n"
+"POT-Creation-Date: 2017-03-26 07:26+0000\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
@@ -137,39 +137,39 @@ msgstr "タイムゾーン"
 msgid "Now"
 msgstr "現時刻"
 
-#: trac/htdocs/js/query.js:169
+#: trac/htdocs/js/query.js:156
 msgid "A filter already exists for that property"
 msgstr "このプロパティは既にフィルタで使っています"
 
-#: trac/htdocs/js/query.js:196
+#: trac/htdocs/js/query.js:183
 msgid "or"
 msgstr "or"
 
-#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:356
+#: trac/htdocs/js/query.js:206 trac/htdocs/js/query.js:343
 msgid "yes"
 msgstr "はい"
 
-#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:359
+#: trac/htdocs/js/query.js:209 trac/htdocs/js/query.js:346
 msgid "no"
 msgstr "いいえ"
 
-#: trac/htdocs/js/query.js:234
+#: trac/htdocs/js/query.js:221
 msgid "between"
 msgstr "​"
 
-#: trac/htdocs/js/query.js:236
+#: trac/htdocs/js/query.js:223
 msgid "and"
 msgstr "から"
 
-#: trac/htdocs/js/query.js:392
+#: trac/htdocs/js/query.js:379
 msgid " remove:"
 msgstr " 削除:"
 
-#: trac/htdocs/js/query.js:402
+#: trac/htdocs/js/query.js:389
 msgid " add:"
 msgstr " 追加:"
 
-#: trac/htdocs/js/query.js:435
+#: trac/htdocs/js/query.js:422
 #, python-format
 msgid "Select ticket #%(id)s for modification"
 msgstr "更新対象としてチケット #%(id)s を選択する"
@@ -190,11 +190,11 @@ msgstr "ここにリンクする"
 msgid "Toggle group"
 msgstr "グループごと切り替えを行う"
 
-#: trac/htdocs/js/trac.js:70
+#: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
 msgstr "最低1つは選択してください"
 
-#: trac/htdocs/js/trac.js:217
+#: trac/htdocs/js/trac.js:243
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
