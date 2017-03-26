@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-03-02 13:20+0000\n"
+"POT-Creation-Date: 2017-03-26 07:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -135,22 +135,22 @@ msgstr ""
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:887
+#: tracopt/versioncontrol/git/git_fs.py:902
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:890
+#: tracopt/versioncontrol/git/git_fs.py:905
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:893
+#: tracopt/versioncontrol/git/git_fs.py:908
 #, python-format
 msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:897
+#: tracopt/versioncontrol/git/git_fs.py:912
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
@@ -659,34 +659,38 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:270
+#: trac/notification/mail.py:271
 msgid ""
-"Comma seperated list of email resolver components in the order\n"
+"Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
 "resolvers will not be called."
 msgstr ""
 
-#: trac/notification/mail.py:444
+#: trac/notification/mail.py:280
+msgid "Default format to distribute email notifications."
+msgstr ""
+
+#: trac/notification/mail.py:454
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:447
+#: trac/notification/mail.py:457
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:450
+#: trac/notification/mail.py:460
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:453
+#: trac/notification/mail.py:463
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:456
+#: trac/notification/mail.py:466
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:512
+#: trac/notification/mail.py:522
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -822,7 +826,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:843
+#: trac/ticket/query.py:849
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -830,7 +834,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:851
+#: trac/ticket/query.py:857
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -838,7 +842,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:859
+#: trac/ticket/query.py:865
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -854,7 +858,7 @@ msgstr ""
 msgid "Number of tickets displayed in the rss feeds for reports."
 msgstr ""
 
-#: trac/ticket/roadmap.py:144
+#: trac/ticket/roadmap.py:145
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -916,27 +920,27 @@ msgid ""
 "for example."
 msgstr ""
 
-#: trac/ticket/roadmap.py:451
+#: trac/ticket/roadmap.py:452
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:655
+#: trac/ticket/roadmap.py:656
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:662
+#: trac/ticket/roadmap.py:663
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:666
+#: trac/ticket/roadmap.py:667
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
