@@ -538,14 +538,15 @@ class ImageMacro(WikiMacroBase):
     _quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
 
     def expand_macro(self, formatter, name, content):
+        args = None
         if content:
             content = stripws(content)
-        if not content:
+            # parse arguments
+            # we expect the 1st argument to be a filename (filespec)
+            args = [stripws(arg) for arg
+                                 in self._split_args_re.split(content)[1::2]]
+        if not args:
             return ''
-        # parse arguments
-        # we expect the 1st argument to be a filename (filespec)
-        args = [stripws(arg) for arg
-                             in self._split_args_re.split(content)[1::2]]
         # strip unicode white-spaces and ZWSPs are copied from attachments
         # section (#10668)
         filespec = args.pop(0)
