@@ -61,7 +61,7 @@ class TicketNotificationSystem(Component):
         pass
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
-                                     '$prefix #$ticket.id: $summary',
+                                     '${prefix} #${ticket.id}: ${summary}',
         """A Genshi text template snippet used to get the notification
         subject.
 
@@ -70,7 +70,7 @@ class TicketNotificationSystem(Component):
         """)
 
     batch_subject_template = Option('notification', 'batch_subject_template',
-                                    '$prefix Batch modify: $tickets_descr',
+                                    '${prefix} Batch modify: ${tickets_descr}',
         """Like `ticket_subject_template` but for batch modifications.
         (''since 1.0'')""")
 
