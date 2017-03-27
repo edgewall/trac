@@ -53,7 +53,7 @@ class TicketNotificationSystem(Component):
         property change and to any previous updater of that ticket.""")
 
     ticket_subject_template = Option('notification', 'ticket_subject_template',
-                                     '$prefix #$ticket.id: $summary',
+                                     '${prefix} #${ticket.id}: ${summary}',
         """A Genshi text template snippet used to get the notification subject.
 
         By default, the subject template is `$prefix #$ticket.id: $summary`.
@@ -61,7 +61,7 @@ class TicketNotificationSystem(Component):
         ''(since 0.11)''""")
 
     batch_subject_template = Option('notification', 'batch_subject_template',
-                                    '$prefix Batch modify: $tickets_descr',
+                                    '${prefix} Batch modify: ${tickets_descr}',
         """Like ticket_subject_template but for batch modifications.
 
         By default, the template is `$prefix Batch modify: $tickets_descr`.
