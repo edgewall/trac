@@ -27,8 +27,8 @@ from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                format_time, localtz, parse_date,
-                               pretty_timedelta, utc, to_datetime,
-                               to_utimestamp, user_time)
+                               pretty_timedelta, to_datetime, to_utimestamp,
+                               truncate_datetime, user_time, utc)
 from trac.util.html import tag
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
@@ -104,7 +104,8 @@ class TimelineModule(Component):
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
-        fromdate = today = datetime_now(req.tz)
+        fromdate = datetime_now(req.tz)
+        today = truncate_datetime(fromdate)
         yesterday = to_datetime(today.replace(tzinfo=None) - timedelta(days=1),
                                 req.tz)
         precisedate = precision = None
@@ -142,9 +143,7 @@ class TimelineModule(Component):
         authors = (authors or '').strip()
 
         data = {'fromdate': fromdate, 'daysback': daysback,
-                'authors': authors,
-                'today': user_time(req, format_date, today),
-                'yesterday': user_time(req, format_date, yesterday),
+                'authors': authors, 'today': today, 'yesterday': yesterday,
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
                 'abbreviated_messages': self.abbreviated_messages}
@@ -194,13 +193,13 @@ class TimelineModule(Component):
                     if ((not include or author in include) and
                         author not in exclude):
                         events.append(
-                            self._event_data(provider, event, lastvisit))
+                            self._event_data(req, provider, event, lastvisit))
             except Exception as e:  # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
         # prepare sorted global list
-        events = sorted(events, key=lambda e: e['date'], reverse=True)
+        events = sorted(events, key=lambda e: e['datetime'], reverse=True)
         if maxrows:
             events = events[:maxrows]
 
@@ -217,7 +216,7 @@ class TimelineModule(Component):
             req.session.set('timeline.authors', authors, '')
             # store lastvisit
             if events and not revisit:
-                lastviewed = to_utimestamp(events[0]['date'])
+                lastviewed = to_utimestamp(events[0]['datetime'])
                 req.session['timeline.lastvisit'] = max(lastvisit, lastviewed)
                 req.session['timeline.nextlastvisit'] = lastvisit
             html_context = web_context(req)
@@ -363,21 +362,22 @@ class TimelineModule(Component):
 
     # Internal methods
 
-    def _event_data(self, provider, event, lastvisit):
+    def _event_data(self, req, provider, event, lastvisit):
         """Compose the timeline event date from the event tuple and prepared
         provider methods"""
         if len(event) == 5:  # with special provider
-            kind, date, author, data, provider = event
+            kind, datetime, author, data, provider = event
         else:
-            kind, date, author, data = event
+            kind, datetime, author, data = event
         render = lambda field, context: \
                  provider.render_timeline_event(context, field, event)
-        dateuid = to_utimestamp(date)
-        return {'kind': kind, 'author': author, 'date': date,
-                'key_date': format_date(date, format='iso8601'),
-                'unread': lastvisit and lastvisit < dateuid,
-                'dateuid': dateuid, 'render': render, 'event': event,
-                'data': data, 'provider': provider}
+        localized_datetime = to_datetime(datetime, tzinfo=req.tz)
+        localized_date = truncate_datetime(localized_datetime)
+        datetime_uid = to_utimestamp(localized_datetime)
+        return {'kind': kind, 'author': author, 'date': localized_date,
+                'datetime': localized_datetime, 'render': render,
+                'unread': lastvisit and lastvisit < datetime_uid,
+                'event': event, 'data': data, 'provider': provider}
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):
         """Raise a TracError exception explaining the failure of a provider.

@@ -178,6 +178,12 @@ def to_datetime(t, tzinfo=None):
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
 
+
+def truncate_datetime(dt):
+    """Truncate a datetime object to the start of the day."""
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 def to_timestamp(dt):
     """Return the corresponding POSIX timestamp"""
     if dt:

@@ -78,18 +78,18 @@
         </div>
       </form>
 
-      # for day, events in events|groupby('key_date')|sort(reverse=true):
-      <h2>${day}: ${_("Today") if day == today else _("Yesterday") if
-        day == yesterday}</h2>
+      # for date, events in events|groupby('date')|sort(reverse=true):
+      <h2>${format_date(date)}: ${_("Today") if date == today else
+                                  _("Yesterday") if date == yesterday}</h2>
       # for unread, events in events|groupby('unread')|sort(reverse=true):
       <dl ${{'class': 'unread' if events[0].unread}|htmlattr}>
         # for event in events:
-        #   set event_delta = precisedate and (event.date - precisedate)
+        #   set event_delta = precisedate and (event.datetime - precisedate)
         #   set highlight = precision and precisedate and timedelta(0) is lessthanorequal(event_delta) and event_delta is lessthan(precision)
         <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
           <a href="${event.render('url', context)}">
             # set time
-            <span class="time">${format_time(event.date, 'short')}</span>
+            <span class="time">${format_time(event.datetime, 'short')}</span>
             # endset
             # set title = event.render('title', context)
             # if event.author:
