@@ -58,3 +58,40 @@
 # macro wikiformatting_link()
 <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
 # endmacro
+
+# macro warnings(messages)
+  # if messages:
+  <div id="warning" class="system-message">
+    <a class="trac-close-msg" href="#"
+       title="${_('Hide this warning')}"><span>${_("close")}</span></a>
+    <strong>${_("Warning:")}</strong>
+    # if len(messages) == 1:
+    ${messages[0]}
+    # else:
+    <ul>
+      # for message in messages:
+      <li>${message}</li>
+      # endfor
+    </ul>
+    # endif
+  </div>
+  # endif
+# endmacro
+
+# macro notices(messages)
+  # if messages:
+  <div id="notice" class="system-message">
+    <a class="trac-close-msg" href="#"
+       title="${_('Hide this notice')}"><span>${_("close")}</span></a>
+    # if len(messages) == 1:
+    ${messages[0]}
+    # else:
+    <ul>
+      # for message in messages:
+      <li>${message}</li>
+      # endfor
+    </ul>
+    # endif
+  </div>
+  # endif
+# endmacro

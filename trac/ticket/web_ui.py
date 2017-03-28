@@ -600,20 +600,28 @@ class TicketModule(Component):
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
                          'start_time': ticket['changetime']})
-        elif req.method == 'POST':
-            if 'cancel_comment' in req.args:
-                req.redirect(req.href.ticket(ticket.id))
-            elif 'edit_comment' in req.args:
-                comment = req.args.get('edited_comment', '')
-                cnum = req.args.getint('cnum_edit')
-                change = ticket.get_change(cnum)
-                if not change:
-                    raise TracError(_('Comment %(num)s not found', num=cnum))
-                if not (req.is_authenticated and
-                        change['author'] == req.authname):
-                    req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
+            self._validate_ticket(req, ticket)
+        elif 'cancel_comment' in req.args:
+            req.redirect(req.href.ticket(ticket.id))
+        elif 'edit_comment' in req.args:
+            comment = req.args.get('edited_comment', '')
+            cnum = req.args.getint('cnum_edit')
+            change = ticket.get_change(cnum)
+            if not change:
+                raise TracError(_("Comment %(num)s not found", num=cnum))
+            if not req.is_authenticated or change['author'] != req.authname:
+                req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
+            if self._validate_ticket(req, ticket):
                 ticket.modify_comment(change['date'], req.authname, comment)
-                req.redirect(req.href.ticket(ticket.id) + '#comment:%d' % cnum)
+                req.redirect(req.href.ticket(ticket.id) +
+                             '#comment:%d' % cnum)
+            else:
+                field_changes = {}
+                data.update({'action': None,
+                             'reassign_owner': req.authname,
+                             'resolve_resolution': None,
+                             'start_time': ticket['changetime']})
+        elif req.method == 'POST':
 
             valid = True
 
@@ -1330,7 +1338,8 @@ class TicketModule(Component):
             valid = False
 
         # Validate comment length
-        if len(comment or '') > self.max_comment_size:
+        edited_comment = req.args.get('edited_comment')
+        if len(comment or edited_comment or '') > self.max_comment_size:
             add_warning(req, _("Ticket comment is too long (must be less "
                                "than %(num)s characters)",
                                num=self.max_comment_size))

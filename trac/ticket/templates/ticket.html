@@ -485,25 +485,6 @@
              class="${classes('field', 'trac-scroll' if preview_mode)}">
           <h3 class="foldable" id="edit">${_("Add Comment")}</h3>
           <div>
-            <div id="trac-edit-warning" class="warning system-message" ${
-               {'style': 'display: none;' if start_time == ticket['changetime']
-                 }|htmlattr}>
-              # set emph_other_modifications
-              <em class="trac-new">other modifications</em>
-              # endset
-              # set emph_conflicts
-              <em class="trac-conflict">conflicts</em>
-              # endset
-              # trans emph_other_modifications, emph_conflicts
-
-              This ticket has been modified since you started
-              editing. You should review the ${emph_other_modifications}
-              which have been appended above, and any ${emph_conflicts}
-              shown in the preview below.  You can nevertheless
-              proceed and submit your changes if you wish so.
-
-              # endtrans
-            </div>
 
             ## Comment field
 
@@ -601,6 +582,26 @@
         ## Preview of ticket changes
 
         # if ticket.exists and can_append:
+        ${jmacros.warnings(chrome.warnings)}
+        <div id="trac-edit-warning" class="warning system-message" ${
+           {'style': 'display: none;' if start_time == ticket['changetime']
+             }|htmlattr}>
+          # set emph_other_modifications
+          <em class="trac-new">other modifications</em>
+          # endset
+          # set emph_conflicts
+          <em class="trac-conflict">conflicts</em>
+          # endset
+          # trans emph_other_modifications, emph_conflicts
+
+          This ticket has been modified since you started
+          editing. You should review the ${emph_other_modifications}
+          which have been appended above, and any ${emph_conflicts}
+          shown in the preview below.  You can nevertheless
+          proceed and submit your changes if you wish so.
+
+          # endtrans
+        </div>
         <div id="ticketchange" class="ticketdraft"${
            {'style': 'display: none' if not
                (change_preview.fields or change_preview.comment) or

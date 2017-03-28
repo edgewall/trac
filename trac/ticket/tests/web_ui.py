@@ -19,7 +19,7 @@ from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.api import TicketSystem
+from trac.ticket.api import ITicketManipulator, TicketSystem
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
@@ -251,6 +251,50 @@ class TicketModuleTestCase(unittest.TestCase):
         with self.assertRaises(TracError) as cm:
             self.ticket_module.process_request(req)
         self.assertEqual('Comment 42 not found', unicode(cm.exception))
+
+    def test_edit_comment_validate_max_comment_size(self):
+        """The [ticket] max_comment_size attribute is validated during
+        ticket comment edit.
+        """
+        perm_sys = PermissionSystem(self.env)
+        perm_sys.grant_permission('user1', 'TICKET_VIEW')
+        perm_sys.grant_permission('user1', 'TICKET_APPEND')
+        self.env.config.set('ticket', 'max_comment_size', 5)
+        ticket = self._insert_ticket(summary='the summary')
+        ticket.save_changes('user1', '12345')
+        req = MockRequest(
+            self.env, method='POST', authname='user1',
+            path_info='/ticket/%d' % ticket.id,
+            args={'id': '1', 'edit_comment': True, 'cnum_edit': '1',
+                  'edited_comment': '123456'})
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.ticket_module.process_request(req)
+
+        self.assertIn("Ticket comment is too long (must be less than 5 "
+                      "characters)", unicode(req.chrome['warnings'][0]))
+
+    def test_preview_comment_validate_max_comment_size(self):
+        """The [ticket] max_comment_size attribute is validated during
+        ticket comment edit preview.
+        """
+        perm_sys = PermissionSystem(self.env)
+        perm_sys.grant_permission('user1', 'TICKET_VIEW')
+        perm_sys.grant_permission('user1', 'TICKET_APPEND')
+        self.env.config.set('ticket', 'max_comment_size', 5)
+        ticket = self._insert_ticket(summary='the summary')
+        ticket.save_changes('user1', '12345')
+        req = MockRequest(
+            self.env, method='POST', authname='user1',
+            path_info='/ticket/%d' % ticket.id,
+            args={'id': '1', 'preview_comment': True, 'cnum_edit': '1',
+                  'edited_comment': '123456'})
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        self.ticket_module.process_request(req)
+
+        self.assertIn("Ticket comment is too long (must be less than 5 "
+                      "characters)", unicode(req.chrome['warnings'][0]))
 
     def _test_template_data_for_time_field(self, req, value, expected, format):
         self.env.config.set('ticket-custom', 'timefield', 'time')

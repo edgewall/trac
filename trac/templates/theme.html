@@ -120,39 +120,10 @@
         <hr />
       </div>
 
-      # if chrome.warnings:
-      <div id="warning" class="system-message">
-        <a class="trac-close-msg" href="#"
-           title="${_('Hide this warning')}"><span>${_("close")}</span></a>
-        <strong>${_("Warning:")}</strong>
-        # if len(chrome.warnings) == 1:
-        ${chrome.warnings[0]}
-        # else:
-        <ul>
-          # for warning in chrome.warnings:
-          <li>${warning}</li>
-          # endfor
-        </ul>
-        # endif
-      </div>
-      # endif
+      ${jmacros.warnings(chrome.warnings)}
 
-      # if chrome.notices:
-      <div id="notice" class="system-message">
-        <a class="trac-close-msg" href="#"
-           title="${_('Hide this notice')}"><span>${_("close")}</span></a>
-        # if len(chrome.notices) == 1:
-        ${chrome.notices[0]}
-        # else:
-        <ul>
-          # for notice in chrome.notices:
-          <li>${notice}</li>
-          # endfor
-        </ul>
-        # endif
+      ${jmacros.notices(chrome.notices)}
 
-      </div>
-      # endif
       <!-- # block content (placeholder in theme.html) -->
       # block content
 

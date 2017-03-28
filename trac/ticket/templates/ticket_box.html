@@ -21,6 +21,9 @@
  - reporter_link=None: rendered link for the reporter field
  - owner_link=None: rendered link for the owner field
 #}
+# if not ticket.exists
+${jmacros.warnings(chrome.warnings)}
+# endif
 <div id="ticket"${
    {'class': ['trac-content', 'ticketdraft' if preview_mode],
     'style': 'display: none' if hide
