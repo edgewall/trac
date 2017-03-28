@@ -19,7 +19,7 @@ from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.api import ITicketManipulator, TicketSystem
+from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
@@ -391,8 +391,10 @@ class TicketModuleTestCase(unittest.TestCase):
         with self.env.db_transaction:
             self._insert_ticket(summary='Time fields',
                                 timefield=datetime_now(utc))
-            self.env.db_transaction("UPDATE ticket_custom SET value='invalid' "
-                                    "WHERE ticket=1 AND name='timefield'")
+            self.env.db_transaction("""
+                UPDATE ticket_custom SET value='invalid'
+                WHERE ticket=1 AND name='timefield'
+                """)
             t = Ticket(self.env, 1)
             t['timefield'] = dt1
             t.save_changes('anonymous')
@@ -567,7 +569,6 @@ class TicketModuleTestCase(unittest.TestCase):
                 method='POST', path_info='/ticket/1',
                 args={'comment': comment, 'action': 'leave', 'submit': True,
                       'view_time': unicode(to_utimestamp(change_time))})
-
 
         req = make_req('user1')
         self.assertTrue(self.ticket_module.match_request(req))
