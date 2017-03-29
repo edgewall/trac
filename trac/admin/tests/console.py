@@ -1798,7 +1798,7 @@ class TracAdminDeployTestCase(TracAdminTestCaseBase):
         self.assertTrue(os.path.exists(os.path.join(htdocs_dir, 'site')))
 
     def test_deploy_to_invalid_target_raises_error(self):
-        """Running deploy with target directory equal to or below the source 
+        """Running deploy with target directory equal to or below the source
         directory raises AdminCommandError.
         """
         rv, output = self._execute('deploy %s' % self.env.htdocs_dir)
