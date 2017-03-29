@@ -1,6 +1,4 @@
-.. charset=utf-8
-
-Trac Installation Guide for 1.1
+Trac Installation Guide for 1.2
 ===============================
 
 Trac is written in the Python programming language and needs a
@@ -266,7 +264,7 @@ Assuming you want to have your entire pip installation in
 
 ::
 
-    pip install trac psycopg2 
+    $ pip install trac psycopg2 
 
 
 or
@@ -276,7 +274,7 @@ or
 
 ::
 
-    pip install trac mysql-python 
+    $ pip install trac mysql-python 
 
 
 Make sure your OS specific headers are available for pip to
@@ -360,7 +358,7 @@ installation options, run:
 
 ::
 
-    easy_install --help
+    $ easy_install --help
 
 
 Also see `Installing Python Modules`_ for detailed information.
@@ -370,7 +368,7 @@ Specifically, you might be interested in:
 
 ::
 
-    easy_install --prefix=/path/to/installdir
+    $ easy_install --prefix=/path/to/installdir
 
 
 or, if installing Trac on a Mac OS X system:
@@ -378,7 +376,7 @@ or, if installing Trac on a Mac OS X system:
 
 ::
 
-    easy_install --prefix=/usr/local --install-dir=/Library/Python/2.6/site-packages
+    $ easy_install --prefix=/usr/local --install-dir=/Library/Python/2.6/site-packages
 
 
 Mac OS X Note: On Mac OS X 10.6, running `easy_install trac` will
@@ -550,10 +548,10 @@ The solution is to do something like this:
 
 ::
 
-    mkdir -p /usr/share/trac/projects/my-project
-    trac-admin /usr/share/trac/projects/my-project initenv
-    trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-    mv /tmp/deploy/* /usr/share/trac
+    $ mkdir -p /usr/share/trac/projects/my-project
+    $ trac-admin /usr/share/trac/projects/my-project initenv
+    $ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
+    $ mv /tmp/deploy/* /usr/share/trac
 
 
 Don't forget to check that the web server has the execution right on

@@ -71,7 +71,7 @@ upgrade your Trac installation:
 
 ::
 
-    easy_install --upgrade Trac==1.2
+    easy_install --upgrade Trac
 
 
 You may also want to remove the pre-existing Trac code by deleting the
@@ -115,14 +115,8 @@ This command will not have any effect if the environment is already
 up-to-date.
 
 Note that a backup of your database will be performed automatically
-prior to the upgrade. This feature is relatively new for PostgreSQL or
-MySQL databases, so if it fails, you will have to backup the database
-manually. Then, to perform the actual upgrade:
-
-
-::
-
-    trac-admin /path/to/projenv upgrade --no-backup
+prior to the upgrade. The backup will be saved in the location
+specified by `[trac]` `backup_dir`.
 
 
 4. Update the Trac Documentation
@@ -145,9 +139,9 @@ Note that this procedure will leave your `WikiStart` page intact.
 5. Refresh static resources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you have set up a web server to give out static resources directly
-(accessed using the `/chrome/` URL) then you will need to refresh them
-using the same command:
+If you have configured your web server to serve static resources
+directly (accessed using the `/chrome/` URL) then you will need to
+refresh them using the `same command`_:
 
 
 ::
@@ -156,12 +150,11 @@ using the same command:
 
 
 This will extract static resources and CGI scripts ( `trac.wsgi`, etc)
-from new Trac version and its plugins into `/deploy/path`.
+from the new Trac version and plugins into `/deploy/path`.
 
-Some web browsers (IE, Opera) cache CSS and Javascript files
-aggressively, so you may need to instruct your users to manually erase
-the contents of their browser's cache, a forced refreshed ( `<F5>`)
-should be enough.
+Note: Some web browsers (IE, Opera) cache CSS and Javascript files, so
+you should instruct your users to manually erase the contents of their
+browser's cache. A forced refreshed (SHIFT + <F5>) should be enough.
 
 
 6. Steps specific to a given Trac version
@@ -200,7 +193,7 @@ The plugins should be removed when upgrading Trac to 1.2.
 New workflow actions
 ++++++++++++++++++++
 
-The ticket creation step is controlled with a workflow action. The
+The ticket creation step is controlled with a `workflow action`_. The
 default workflow has `create` and `create_and_assign` actions. The
 `create` action will always be added when upgrading the database. The
 `create_and_assign` action will be added if the workflow has an
@@ -624,6 +617,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
 .. _QueryUiAssistPlugin: https://trac-hacks.org/wiki/QueryUiAssistPlugin
 .. _RepoRevisionSyntaxPlugin: https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin
+.. _same command: http://trac.edgewall.org/wiki/TracInstall#MappingStaticResources
 .. _SubversionLocationPlugin: https://trac-hacks.org/wiki/SubversionLocationPlugin
 .. _TICKET_EDIT_COMMENT permission: http://trac.edgewall.org/wiki/TracPermissions#TicketSystem
 .. _TicketChangePlugin: https://trac-hacks.org/wiki/TicketChangePlugin
@@ -656,3 +650,4 @@ See also: `TracGuide`_, `TracInstall`_
 .. _WikiFormatting#SettingAnchors: http://trac.edgewall.org/wiki/WikiFormatting#SettingAnchors
 .. _WikiMacros: http://trac.edgewall.org/wiki/WikiMacros
 .. _WikiProcessors#AvailableProcessors: http://trac.edgewall.org/wiki/WikiProcessors#AvailableProcessors
+.. _workflow action: http://trac.edgewall.org/wiki/TracWorkflow#TicketCreateAction
