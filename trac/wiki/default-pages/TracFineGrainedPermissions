@@ -1,41 +1,43 @@
-= Fine grained permissions =
+= Fine grained permissions
 [[PageOutline(2-5, Contents, floated)]]
 [[TracGuideToc]]
 
-There is a general mechanism in place that allows custom **permission policy plugins** to grant or deny any action on any kind of Trac resource, even at the level of specific versions of such resources.
+There is a general mechanism in place that allows custom **permission policies** to grant or deny any action on any Trac resource, or even specific versions of a resource.
 
 That mechanism is `authz_policy`, which is an optional module in `tracopt.perm.authz_policy.*`, so it is installed by default. It can be activated via the //Plugins// panel in the Trac administration module.
 
-== Permission Policies ==
+== Permission Policies
 
 A great diversity of permission policies can be implemented and Trac comes with a few examples. 
 
-Which policies are currently active is determined by a configuration setting in TracIni:
+The active policies are determined by a [TracIni#trac-permission_policies-option configuration setting]:
 
 {{{#!ini
 [trac]
 permission_policies = ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
-This lists the [#ReadonlyWikiPolicy] which controls readonly access to wiki pages, followed by the !DefaultPermissionPolicy which checks for the traditional coarse grained style permissions described in TracPermissions, and the !LegacyAttachmentPolicy which knows how to use the coarse grained permissions for checking the permissions available on attachments.
+
+* [#ReadonlyWikiPolicy] controls readonly access to wiki pages.
+* !DefaultPermissionPolicy checks for the traditional coarse-grained permissions described in TracPermissions.
+* !LegacyAttachmentPolicy uses the coarse-grained permissions to check permissions on attachments.
 
 Among the optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
-[trac:source:branches/1.0-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
+[trac:source:branches/1.2-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
 
-Another popular permission policy [#AuthzSourcePolicy], re-implements the pre-0.12 support for checking fine-grained permissions limited to Subversion repositories in terms of the new system.
+Another permission policy [#AuthzSourcePolicy], uses the [http://svnbook.red-bean.com/nightly/en/svn.serverconfig.pathbasedauthz.html path-based authorization] defined by Subversion to enforce permissions on the version control system.
 
-See also [trac:source:branches/1.0-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
+See also [trac:source:branches/1.2-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
 
-=== !AuthzPolicy === 
-==== Configuration ====
-* Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
+=== !AuthzPolicy
+==== Configuration
+* Put a [http://swapoff.org/files/authzpolicy.conf conf] file in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section:
 {{{#!ini
 [trac]
-...
 permission_policies = AuthzPolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
-  1. add a new `[authz_policy]` section:
+  1. add a new `[authz_policy]` section and point the `authz_file` option to the conf file:
 {{{#!ini
 [authz_policy]
 authz_file = /some/trac/env/conf/authzpolicy.conf
@@ -46,7 +48,7 @@ authz_file = /some/trac/env/conf/authzpolicy.conf
 tracopt.perm.authz_policy.* = enabled
 }}}
 
-==== Usage Notes ====
+==== Usage Notes
 
 Note the order in which permission policies are specified: policies are implemented in the sequence provided and therefore may override earlier policy specifications.
 
@@ -172,7 +174,7 @@ john = BROWSER_VIEW, FILE_VIEW
 
 Note: In order for Timeline to work/visible for John, we must add CHANGESET_VIEW to the above permission list.
 
-==== Missing Features ====
+==== Missing Features
 Although possible with the !DefaultPermissionPolicy handling (see Admin panel), fine-grained permissions still miss those grouping features (see [trac:ticket:9573 #9573], [trac:ticket:5648 #5648]). Patches are partially available, see authz_policy.2.patch, part of [trac:ticket:6680 #6680].
 
 You cannot do the following:
@@ -195,11 +197,9 @@ permission_level_2  = permission_level_1, WIKI_MODIFY, TICKET_MODIFY
 @team3 = permission_level_2, TICKET_CREATE
 }}}
 
-=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) === #AuthzSourcePolicy
+=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) #AuthzSourcePolicy
 
-At the time of this writing, the old granular permissions system from Trac 0.11 and before used for restricting access to the repository has been converted to a permission policy component. But from the user's point of view, this makes little if any difference.
-
-That kind of granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
+`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
 More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
@@ -219,7 +219,7 @@ harry =
  * '''/branches/calc/bug-142''' = ''harry has read/write access, sally read only''
  * '''/branches/calc/bug-142/secret''' = ''harry has no access, sally has read access (inherited as a sub folder permission)''
 
-==== Trac Configuration ====
+==== Trac Configuration
 
 To activate granular permissions you __must__ specify the {{{authz_file}}} option in the `[svn]` section of trac.ini. If this option is set to null or not specified, the permissions will not be used.
 
@@ -256,7 +256,7 @@ As of version 0.12, make sure you have ''!AuthzSourcePolicy'' included in the pe
 permission_policies = AuthzSourcePolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
 
-==== Subversion Configuration ====
+==== Subversion Configuration
 
 The same access file is typically applied to the corresponding Subversion repository using an Apache directive like this:
 {{{#!apache

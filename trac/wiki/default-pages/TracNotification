@@ -33,7 +33,7 @@ trac.ticket.notification.TicketAttachmentNotifier = disabled
 === Configuration Options
 These are the available options for the `[notification]` section in trac.ini:
 
-[[TracIni(notification)]]
+[[TracIni(section=notification)]]
 
 === Example Configuration (SMTP)
 {{{#!ini
@@ -59,61 +59,93 @@ smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 === Subscriber Configuration
 The default subscriptions are configured in the `[notification-subscriber]` section in trac.ini:
 
-[[TracIni(notification-subscriber)]]
+[[TracIni(section=notification-subscriber)]]
 
 Each user can override these defaults in his ''Notifications'' preferences.
 
 For example to unsubscribe from notifications for one's own changes and comments, the rule "Never notify: I update a ticket" should be added above other subscription rules.
 
+The subscription rule name on the left side of the `=` can be anything, it has no meaning outside this configuration file. The subscriber name on the right side of the `=` must be one of the subscribers listed in the above table.
+
+The following attributes of default subscriptions can be configured:
+* `.distributor` (Default: `email`)
+  * Other values require plugins. For example `on-site` requires th:OnSiteNotificationsPlugin.
+* `.priority` (Default: `100`)
+  * Smaller values override larger values.
+  * If you use `0`, then users will not be able to override this rule.
+* `.adverb` (Default: `always`)
+  * `never` can be used to silence other subscription rules with higher values.
+* `.format` (Default: `text/plain`)
+  * Other values require plugins. For example `text/html` requires th:TracHtmlNotificationPlugin.
+
+=== Example Configuration (default subscriptions)
+{{{#!ini
+[notification-subscriber]
+always_notify_owner = TicketOwnerSubscriber
+always_notify_owner.distributor = email
+always_notify_owner.priority = 100
+always_notify_owner.adverb = always
+always_notify_owner.format = text/plain
+
+always_notify_previous_updater = TicketPreviousUpdatersSubscriber
+
+never_notify_updater = TicketUpdaterSubscriber
+never_notify_updater.adverb = never
+never_notify_updater.priority = 0
+
+notify_cc_html = CarbonCopySubscriber
+notify_cc_html.format = text/html
+}}}
+
 === Customizing the e-mail subject
 The e-mail subject can be customized with the `ticket_subject_template` option, which contains a [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet. The default value is:
 {{{#!genshi
-$prefix #$ticket.id: $summary
+${prefix} #${ticket.id}: ${summary}
 }}}
 The following variables are available in the template:
 
  * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
+ * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `${ticket.milestone}`.
 
 === Customizing the e-mail content
 
 The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{#!genshi
-$ticket_body_hdr
-$ticket_props
+${ticket_body_hdr}
+${ticket_props}
 {% choose ticket.new %}\
 {%   when True %}\
-$ticket.description
+${ticket.description}
 {%   end %}\
 {%   otherwise %}\
 {%     if changes_body %}\
 ${_('Changes (by %(author)s):', author=change.author)}
 
-$changes_body
+${changes_body}
 {%     end %}\
 {%     if changes_descr %}\
 {%       if not changes_body and not change.comment and change.author %}\
 ${_('Description changed by %(author)s:', author=change.author)}
 {%       end %}\
-$changes_descr
+${changes_descr}
 --
 {%     end %}\
 {%     if change.comment %}\
 
 ${changes_body and _('Comment:') or _('Comment (by %(author)s):', author=change.author)}
 
-$change.comment
+${change.comment}
 {%     end %}\
 {%   end %}\
 {% end %}\
 
 -- 
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
-$project.name <${project.url or abs_href()}>
-$project.descr
+${project.name} <${project.url or abs_href()}>
+${project.descr}
 }}}
 
 == Sample Email
@@ -148,7 +180,7 @@ MS Outlook normally presents plain text e-mails with a variable-width font, and 
 
 Replace the following second row in the template:
 {{{
-$ticket_props
+${ticket_props}
 }}}
 
 with this (requires Python 2.6 or later):

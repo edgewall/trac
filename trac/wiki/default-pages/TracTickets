@@ -120,5 +120,15 @@ To create a link to the new-ticket form filled with preset values, you need to c
 
 Example: `[/newticket?summary=Compile%20Error&version=1.0&component=gui]`
 
+== Deleting Tickets
+
+Ticket delete and ticket change delete functions are enabled through an optional component. To enable the functionality edit the [TracIni#components-section "[components]"] section of TracIni:
+{{{#!ini
+[components]
+tracopt.ticket.deleter.* = enabled
+}}}
+
+The //Delete// buttons appears next to the //Reply// buttons in the ticket description and ticket change areas. `TICKET_ADMIN` permission is required for deleting tickets and ticket changes.
+
 ----
-See also: TracGuide, TracWiki, TracTicketsCustomFields, TracNotification, TracReports, TracQuery
+See also: TracTicketsCustomFields, TracNotification, TracReports, TracQuery

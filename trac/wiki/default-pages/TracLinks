@@ -98,6 +98,16 @@ and any other text fields explicitly marked as supporting WikiFormatting.
 {{{#!td
 <wiki:Strange(page@!)>
 }}}
+|--------------------------------------------------------------------------------------
+|||| Quoting can be used with the full notation to allow brackets in the label. ||
+{{{#!td
+{{{
+[TracIni#logging-log_type-option "[logging] log_type"]
+}}}
+}}}
+{{{#!td
+[TracIni#logging-log_type-option "[logging] log_type"]
+}}}
 }}}
 
 TracLinks are a very simple idea, but actually allow quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
@@ -254,7 +264,7 @@ The link syntax for attachments is as follows:
  * !attachment:the_file.txt:wiki:MyPage creates a link to the attachment the_file.txt of the !MyPage wiki page
  * !attachment:the_file.txt:ticket:753 creates a link to the attachment the_file.txt of the ticket 753
 
-Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt.
+Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt, but is not recommended.
 
 If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use `raw-attachment:` instead of `attachment:`.
 

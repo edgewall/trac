@@ -103,6 +103,10 @@ leave.default = 1
 This also shows the use of the `.default` attribute. This value is expected to be an integer, and the order in which the actions are displayed is determined by this value. The action with the highest `.default` value is listed first, and is selected by default. The rest of the actions are listed in order of decreasing `.default` values.
 If not specified for an action, `.default` is 0. The value may be negative.
 
+There is one hard-coded constraint to the workflow: tickets are expected to have a `closed` state. The default reports/queries treat any state other than `closed` as an open state.
+
+=== Ticket Create Action
+
 The ticket create actions are specified by a transition from the special `<none>` state. At least one create action must be available to the user in order for tickets to be created. The create actions defined in the default workflow are:
 {{{#!ini
 create = <none> -> new
@@ -114,8 +118,7 @@ create_and_assign.permissions = TICKET_MODIFY
 create_and_assign.operations = may_set_owner
 }}}
 
-
-There is one hard-coded constraints to the workflow: tickets are expected to have a `closed` state. The default reports/queries treat any state other than `closed` as an open state.
+=== Ticket Reset Action
 
 The special `_reset` action is added by default for tickets that are in states that are no longer defined. This allows tickets to be individually "repaired" after the workflow is changed, although it's recommended that the administrator perform the action by batch modifying the affected tickets. By default the `_reset` action is available to users with the `TICKET_ADMIN` permission and reset tickets are put in the //new// state. The default `_reset` action is equivalent to the following `[ticket-workflow]` action definition:
 

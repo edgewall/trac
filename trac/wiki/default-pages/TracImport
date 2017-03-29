@@ -14,9 +14,9 @@ To migrate issue tickets from other issue-tracking systems into Trac or perform 
 
 == Bugzilla
 
-[https://trac-hacks.org/wiki/BugzillaIssueTrackingPlugin BugzillaIssueTrackingPlugin]: a plugin that integrates Bugzilla issue data into Trac keeping TracLinks. Ticket data can be imported from Bugzilla using the [trac:browser:trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
+[https://trac-hacks.org/wiki/BugzillaIssueTrackingPlugin BugzillaIssueTrackingPlugin]: a plugin that integrates Bugzilla issue data into Trac keeping TracLinks. Ticket data can be imported from Bugzilla using the [trac:browser:trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the `contrib/` directory of the Trac distribution.
 
-{{{
+{{{#!python
 $ bugzilla2trac.py
 bugzilla2trac - Imports a bug database from Bugzilla into Trac.
 
@@ -38,7 +38,7 @@ Currently, the following data is imported from Bugzilla:
  * bugs
  * bug activity (field changes)
  * bug attachments
- * user names and passwords (put into a htpasswd file)
+ * user names and passwords (put into an htpasswd file)
 
 The script provides a number of features to ease the conversion, such as:
  * PRODUCT_KEYWORDS: Trac has no concept of products, so the script provides the ability to attach a ticket keyword instead.
@@ -47,19 +47,11 @@ The script provides a number of features to ease the conversion, such as:
 
 For more details on the available options, see the configuration section at the top of the script.
 
-=== Known Issues
-{{{#!comment
-Don't merge this section in the default page
-}}}
-[[TicketQuery(keywords=~bugzilla,status=!closed)]]
-
-The adequate milestone for valid bugzilla2trac issue is usually ''Not applicable'', which means that fixes to the contributed script are not planned for a particular Trac release, but can happen anytime.
-
 == Jira
 
 [https://trac-hacks.org/wiki/JiraToTracIntegration JiraToTracIntegration]: a plugin that provides tools to import Atlassian Jira backup files into Trac. The plugin consists of a Python 3.1 commandline tool that:
  - Parses the Jira backup XML file.
- - Sends the imported Jira data and attachments to Trac using the [th:XmlRpcPlugin].
+ - Sends the imported Jira data and attachments to Trac using the [https://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin].
  - Generates a htpasswd file containing the imported Jira users and their SHA-512 base64 encoded passwords.
 
 == Mantis
@@ -76,7 +68,7 @@ The adequate milestone for valid bugzilla2trac issue is usually ''Not applicable
 
 == Scarab
 
-[https://trac-hacks.org/wiki/ScarabToTracScript ScarabToTracScript]: a script that migrates Scarab issues to Trac tickets. Requires [th:XmlRpcPlugin].
+[https://trac-hacks.org/wiki/ScarabToTracScript ScarabToTracScript]: a script that migrates Scarab issues to Trac tickets. Requires [https://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin].
 
 == Sourceforge
 

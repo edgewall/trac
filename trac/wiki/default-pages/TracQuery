@@ -14,6 +14,8 @@ When you first go to the query page, the default filter will display tickets rel
 
 Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.  Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria.
 
+For text fields such as Keywords and CC the `-` operator can be used to negate a match and double quotes (//since 1.2.1//) can be used to match a phrase. For example, a //contains// match for `word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and `word4 word5`.
+
 You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
 
 After you have edited your filters, click the ''Update'' button to refresh your results.
@@ -21,7 +23,7 @@ After you have edited your filters, click the ''Update'' button to refresh your 
 Keyboard shortcuts are available for manipulating the //checkbox// filters:
 * Clicking on a filter row label toggles all checkboxes.
 * Pressing the modifier key while clicking on a filter row label inverts the state of all checkboxes.
-* Pressing the modifier key while clicking on a checkbox selects the checkbox and deselects all other checkboxes in the filter.
+* Pressing the modifier key while clicking on a checkbox selects the checkbox and deselects all other checkboxes in the filter. Since 1.2.1 this also works for the //Columns// checkboxes.
 
 The modifier key is platform and browser dependent. On Mac the modified key is !Option/Alt or Command. On Linux the modifier key is Ctrl + Alt. Opera on Windows seems to use Ctrl + Alt, while Alt is effective for other Windows browsers.
 
@@ -97,6 +99,15 @@ All of these operators can also be negated:
 || '''`!~=`''' || the field content does not contain any of the values ||
 || '''`!^=`''' || the field content does not start with any of the values ||
 || '''`!$=`''' || the field content does not end with any of the values ||
+
+Filters combining matches and negated matches can be constructed for text fields such as Keywords and CC when using the //contains// (`~=`) operator. The `-` operator is used to negate a match and double quotes (//since 1.2.1//) are used for whitespace-separated words in a phrase. For example, `keywords~=word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and also `word4 word5`.
+|| '''`status=closed,keywords~=firefox`''' || query closed tickets that contain keyword `firefox` ||
+|| '''`status=closed,keywords~=opera`''' || query closed tickets that contain keyword `opera` ||
+|| '''`status=closed,keywords~=firefox opera`''' || query closed tickets that contain keywords `firefox` and `opera` ||
+|| '''`status=closed,keywords~=firefox|opera`''' || query closed tickets that contain keywords `firefox` or `opera` ||
+|| '''`status=closed,keywords~=firefox,or,keywords~=opera`''' || query closed tickets that contain keyword `firefox`, or (closed or unclosed) tickets that contain keyword `opera` ||
+|| '''`status=closed,keywords~=firefox -opera`''' || query closed tickets that contain keyword `firefox`, but not `opera` ||
+|| '''`status=closed,keywords~=opera -firefox`''' || query closed tickets that contain keyword `opera`, but no `firefox` ||
 
 The date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string. 
 || '''`created=2007-01-01..2008-01-01`''' || query tickets created in 2007 ||
