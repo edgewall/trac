@@ -811,7 +811,7 @@ class TicketModule(Component):
                 email = author.split()[-1]
                 if (email[0], email[-1]) == ('<', '>'):
                     email = email[1:-1]
-                entries.append(email)
+                    entries.append(email)
         add = []
         remove = []
         cc_list = self._cc_list(cc)
