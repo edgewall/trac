@@ -427,14 +427,15 @@
                       </em>
                       #           else:
                       <label for="field-cc"><em>${field.cc_entry}</em></label>
+                      #           endif
                       <input type="checkbox" id="field-cc" name="cc_update"${
                            {'title': gettext(
                                         "This checkbox allows you to add or
                                         remove yourself from the CC list."),
+                            'style': 'display: none' if field.cc_action is none,
                             'disabled': field.cc_action is none,
                             'checked': field.cc_update
                            }|htmlattr} />
-                      #           endif
                       #         elif field.cc_action is none:
                       ##          # Unauthenticated user without TICKET_EDIT_CC
                       ##          # and no email set in prefs
