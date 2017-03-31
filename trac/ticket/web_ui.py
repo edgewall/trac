@@ -790,32 +790,23 @@ class TicketModule(Component):
     def _toggle_cc(self, req, cc):
         """Return an (action, recipient) tuple corresponding to a change
         of CC status for this user relative to the current `cc_list`."""
-        entries = []
-        email = req.session.get('email', '').strip()
-        if email:
-            entries.append(email)
+        entry = None
         if req.authname != 'anonymous':
-            entries.append(req.authname)
+            entry = req.authname
         else:
-            author = get_reporter_id(req, 'author').strip()
-            if author and author != 'anonymous':
-                email = author.split()[-1]
-                if (email[0], email[-1]) == ('<', '>'):
-                    email = email[1:-1]
-                    entries.append(email)
-        add = []
-        remove = []
-        cc_list = self._cc_list(cc)
-        for entry in entries:
-            if entry in cc_list:
-                remove.append(entry)
+            email = req.session.get('email', '').strip()
+            if email:
+                entry = email
             else:
-                add.append(entry)
-        action = entry = None
-        if remove:
-            action, entry = ('remove', remove[0])
-        elif add:
-            action, entry = ('add', add[0])
+                author = get_reporter_id(req, 'author').strip()
+                if author and author != 'anonymous':
+                    email = author.split()[-1]
+                    if email.startswith('<') and email.endswith('>'):
+                        entry = email.strip('<>')
+        action = None
+        cc_list = self._cc_list(cc)
+        if entry:
+            action = 'remove' if entry in cc_list else 'add'
         return action, entry, cc_list
 
     def _populate(self, req, ticket, plain_fields=False):
