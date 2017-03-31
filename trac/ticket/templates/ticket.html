@@ -290,7 +290,7 @@ ${value}</textarea>
                                   <label py:otherwise="" for="field-cc"><em>$field.cc_entry</em></label>
                                   <input type="checkbox" id="field-cc" name="cc_update"
                                          title="This checkbox allows you to add or remove yourself from the CC list."
-                                         disabled="${field.cc_action is None or None}" checked="${field.cc_update or None}" />
+                                         py:if="field.cc_action" checked="${field.cc_update or None}" />
                                 </py:when>
                                 <!--! Unauthenticated user without TICKET_EDIT_CC and no email set in prefs -->
                                 <py:when test="field.cc_action is None">
