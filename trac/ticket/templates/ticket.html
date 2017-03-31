@@ -287,7 +287,7 @@ ${value}</textarea>
                                   <em py:when="field.cc_action is None" i18n:msg="">
                                     Set your email in <a href="${href.prefs()}" class="trac-target-new">Preferences</a>
                                   </em>
-                                  <label py:otherwise="" for="field-cc"><em>$field.cc_entry</em></label>
+                                  <label py:otherwise="" py:strip="not field.cc_action" for="field-cc"><em>$field.cc_entry</em></label>
                                   <input type="checkbox" id="field-cc" name="cc_update"
                                          title="This checkbox allows you to add or remove yourself from the CC list."
                                          py:if="field.cc_action" checked="${field.cc_update or None}" />
