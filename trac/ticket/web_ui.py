@@ -1599,8 +1599,8 @@ class TicketModule(Component):
                     cc_update = 'cc_update' in req.args \
                                 and 'revert_cc' not in req.args
                     field['edit_label'] = {
-                            'add': _("Add to Cc"),
-                            'remove': _("Remove from Cc"),
+                            'add': _("Add Cc"),
+                            'remove': _("Remove Cc"),
                             None: _("Cc")}[cc_action]
                     field['cc_action'] = cc_action
                     field['cc_entry'] = cc_entry
