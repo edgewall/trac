@@ -62,7 +62,15 @@ def _reloader_thread(modification_callback, loop_callback):
 
 def _restart_with_reloader():
     while True:
-        args = [sys.executable] + sys.argv
+        if os.path.isfile(sys.argv[0]):
+            args = sys.argv if os.access(sys.argv[0], os.X_OK) \
+                   else [sys.executable] + sys.argv
+        elif sys.platform == 'win32' and \
+                os.access(sys.argv[0] + '.exe', os.X_OK):
+            args = [sys.argv[0] + '.exe'] + sys.argv[1:]
+        else:
+            args = [sys.executable] + sys.argv
+        path = args[0]
         if sys.platform == 'win32':
             args = ['"%s"' % arg for arg in args]
         new_environ = os.environ.copy()
@@ -70,8 +78,7 @@ def _restart_with_reloader():
 
         # This call reinvokes ourself and goes into the other branch of main as
         # a new process.
-        exit_code = os.spawnve(os.P_WAIT, sys.executable,
-                               args, new_environ)
+        exit_code = os.spawnve(os.P_WAIT, path, args, new_environ)
         if exit_code != 3:
             return exit_code
 
