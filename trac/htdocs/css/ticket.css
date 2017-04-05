@@ -17,7 +17,7 @@
 
 
 /* "Yellow Ticket Box" */
-#ticket {
+#ticketbox {
  background: #ffd;
  border: 1px solid #dd9;
  border-radius: .4em;
@@ -27,7 +27,7 @@
 }
 
 /* YTB in preview mode */
-#ticket.ticketdraft {
+#ticketbox.ticketdraft {
  background: #f8f8f8 url(../draft.png);
 }
 #ticketchange.ticketdraft {
@@ -53,69 +53,69 @@
  clear: right;
 }
 
-#ticket > h2 {
+#ticketbox > h2 {
  color: #844;
  margin: .3em 0 .4em 0;
 }
-#ticket > h2 .trac-id {
+#ticketbox > h2 .trac-id {
  font-size: 145%;
  vertical-align: middle;
  margin: 0 .4em 0 0;
 }
-#ticket > h2 .trac-status {
+#ticketbox > h2 .trac-status {
  vertical-align: middle;
 }
-#ticket > h2 .trac-type {
+#ticketbox > h2 .trac-type {
  color: #955;
  vertical-align: middle;
 }
-#ticket > h2 .trac-resolution {
+#ticketbox > h2 .trac-resolution {
  vertical-align: middle;
 }
 
-#ticket .date {
+#ticketbox .date {
  color: #996;
  float: right;
  font-size: 85%;
  position: relative;
  top: -.2em;
 }
-#ticket .date p { margin: .3em }
+#ticketbox .date p { margin: .3em }
 
-#ticket table.properties {
+#ticketbox table.properties {
  clear: both;
  border-top: 1px solid #dd9;
  border-collapse: collapse;
  table-layout: fixed;
  width: 100%;
 }
-#ticket table.properties > tbody > tr { border-bottom: 1px dotted #eed }
-#ticket table.properties > tbody > tr > td,
-#ticket table.properties > tbody > tr > th {
+#ticketbox table.properties > tbody > tr { border-bottom: 1px dotted #eed }
+#ticketbox table.properties > tbody > tr > td,
+#ticketbox table.properties > tbody > tr > th {
  font-size: .9em;
  padding: .5em 1em;
  vertical-align: top;
 }
-#ticket table.properties > tbody > tr > th {
+#ticketbox table.properties > tbody > tr > th {
  color: #663;
  font-weight: normal;
  text-align: left;
  width: 20%;
 }
-#ticket table.properties > tbody > tr > th.missing { color: #d3d398; }
-#ticket table.properties > tbody > tr > td { width: 30% }
-#ticket table.properties > tbody > tr > td p:first-child { margin-top: 0 }
-#ticket table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
-#ticket div.description h3 {
+#ticketbox table.properties > tbody > tr > th.missing { color: #d3d398; }
+#ticketbox table.properties > tbody > tr > td { width: 30% }
+#ticketbox table.properties > tbody > tr > td p:first-child { margin-top: 0 }
+#ticketbox table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
+#ticketbox div.description h3 {
  border-bottom: 1px solid #dd9;
  color: #663;
  font-size: 100%;
  font-weight: normal;
 }
-#ticket div.description h3 .lastmod {
+#ticketbox div.description h3 .lastmod {
  font-size: 90%;
 }
-#ticket .inlinebuttons {
+#ticketbox .inlinebuttons {
  float: right;
  position: relative;
  bottom: 0.3em;
