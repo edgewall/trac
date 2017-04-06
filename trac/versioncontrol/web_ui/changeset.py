@@ -559,8 +559,7 @@ class ChangesetModule(Component):
                 context = options.get('contextlines', 3)
                 if context < 0 or options.get('contextall'):
                     context = None
-                tabwidth = self.config['diff'].getint('tab_width') or \
-                           self.config['mimeviewer'].getint('tab_width', 8)
+                tabwidth = self.config.getint('mimeviewer', 'tab_width', 8)
                 ignore_blank_lines = options.get('ignoreblanklines')
                 ignore_case = options.get('ignorecase')
                 ignore_space = options.get('ignorewhitespace')
