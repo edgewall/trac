@@ -16,7 +16,8 @@ import os
 import unittest
 from datetime import datetime
 
-from trac.attachment import Attachment, AttachmentModule
+from trac.attachment import Attachment, AttachmentModule, \
+                            LegacyAttachmentPolicy
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
@@ -49,6 +50,25 @@ class TicketOnlyViewsTicket(Component):
             return resource.realm == 'ticket'
         else:
             return None
+
+
+class ResourceManagerStub(Component):
+    """Fake implementation of IResourceManager."""
+
+    implements(IResourceManager)
+
+    def get_resource_realms(self):
+        yield 'parent_realm'
+
+    def get_resource_url(self, resource, href, **kwargs):
+        pass
+
+    def get_resource_description(self, resource, format='default',
+                                 context=None, **kwargs):
+        pass
+
+    def resource_exists(self, resource):
+        return resource.id == 'parent_id'
 
 
 class AttachmentTestCase(unittest.TestCase):
@@ -267,24 +287,7 @@ class AttachmentTestCase(unittest.TestCase):
 class AttachmentModuleTestCase(unittest.TestCase):
 
     def setUp(self):
-        class GenericResourceManager(Component):
-
-            implements(IResourceManager)
-
-            def get_resource_realms(self):
-                yield 'parent_realm'
-
-            def get_resource_url(self, resource, href, **kwargs):
-                pass
-
-            def get_resource_description(self, resource, format='default',
-                                         context=None, **kwargs):
-                pass
-
-            def resource_exists(self, resource):
-                return resource.id == 'parent_id'
-
-        self.env = EnvironmentStub(enable=(GenericResourceManager,))
+        self.env = EnvironmentStub(enable=(ResourceManagerStub,))
         self.env.path = mkdtemp()
 
     def tearDown(self):
@@ -331,10 +334,62 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.assertFalse(AttachmentModule(self.env).resource_exists(r))
 
 
+class LegacyAttachmentPolicyTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=('trac.attachment.*', 'trac.perm.*',
+                                           ResourceManagerStub),
+                                   path=mkdtemp())
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultPermissionPolicy,LegacyAttachmentPolicy')
+        self.policy = LegacyAttachmentPolicy(self.env)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def _insert_attachment(self, author):
+        parent_resource = Resource('parent_realm', 'parent_id')
+        att = Attachment(self.env, 'parent_realm', 'parent_id')
+        att.author = author
+        att.insert('file.txt', io.BytesIO(), 1)
+        return Resource('attachment', 'file.txt', parent=parent_resource)
+
+    def test_authenticated_can_delete_own_attachments(self):
+        """Authenticated user can delete their own attachments."""
+        resource = self._insert_attachment(author='user1')
+        perm_cache = PermissionCache(self.env, 'user1', resource)
+        action = 'ATTACHMENT_DELETE'
+
+        self.assertIn(action, perm_cache)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_authenticated_cannot_delete_other_attachments(self):
+        """Authenticated user cannot delete other attachments."""
+        resource = self._insert_attachment(author='user1')
+        perm_cache = PermissionCache(self.env, 'user2', resource)
+        action = 'ATTACHMENT_DELETE'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_anonymous_cannot_delete_attachments(self):
+        """Anonymous user cannot delete attachments."""
+        resource = self._insert_attachment(author='anonymous')
+        perm_cache = PermissionCache(self.env, 'anonymous', resource)
+        action = 'ATTACHMENT_DELETE'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AttachmentTestCase))
     suite.addTest(unittest.makeSuite(AttachmentModuleTestCase))
+    suite.addTest(unittest.makeSuite(LegacyAttachmentPolicyTestCase))
     return suite
 
 if __name__ == '__main__':

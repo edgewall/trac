@@ -17,17 +17,19 @@ from trac.perm import DefaultPermissionStore, PermissionCache
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import HTTPBadRequest
 from trac.wiki.model import WikiPage
-from trac.wiki.web_ui import ReadonlyWikiPolicy, WikiModule
+from trac.wiki.web_ui import DefaultWikiPolicy, WikiModule
 
 
-class ReadonlyWikiPolicyTestCase(unittest.TestCase):
+class DefaultWikiPolicyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = \
             EnvironmentStub(enable=['trac.attachment.LegacyAttachmentPolicy',
                                     'trac.perm.*',
                                     'trac.wiki.web_ui.*'])
-        self.policy = ReadonlyWikiPolicy(self.env)
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultWikiPolicy,DefaultPermissionPolicy')
+        self.policy = DefaultWikiPolicy(self.env)
         store = DefaultPermissionStore(self.env)
         store.grant_permission('user1', 'WIKI_ADMIN')
         store.grant_permission('user2', 'WIKI_DELETE')
@@ -38,8 +40,9 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
         self.page.readonly = 1
         self.page.save('user', 'readonly page added')
 
-    def test_check_permission_returns_none(self):
-        perm_cache = PermissionCache(self.env, 'user1')
+    def test_user_with_wiki_admin_can_modify_readonly_page(self):
+        """User with WIKI_ADMIN cannot modify a readonly page."""
+        perm_cache = PermissionCache(self.env, 'user1', self.page.resource)
         self.assertIn('WIKI_ADMIN', perm_cache)
         for perm in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
             self.assertIn(perm, perm_cache)
@@ -47,16 +50,15 @@ class ReadonlyWikiPolicyTestCase(unittest.TestCase):
                 self.policy.check_permission(perm, perm_cache.username,
                                              self.page.resource, perm_cache))
 
-    def test_check_permission_returns_false(self):
-        perm_cache = PermissionCache(self.env, 'user2')
+    def test_user_without_wiki_admin_cannot_modify_readonly_page(self):
+        """User without WIKI_ADMIN cannot modify a readonly page."""
+        perm_cache = PermissionCache(self.env, 'user2', self.page.resource)
         self.assertNotIn('WIKI_ADMIN', perm_cache)
         for perm in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
-            self.assertIn(perm, perm_cache)
-            self.assertIs(False,
-                          self.policy.check_permission(perm,
-                                                       perm_cache.username,
-                                                       self.page.resource,
-                                                       perm_cache))
+            self.assertNotIn(perm, perm_cache)
+            self.assertFalse(
+                self.policy.check_permission(perm, perm_cache.username,
+                                             self.page.resource, perm_cache))
 
 
 class WikiModuleTestCase(unittest.TestCase):
@@ -86,7 +88,7 @@ class WikiModuleTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ReadonlyWikiPolicyTestCase))
+    suite.addTest(unittest.makeSuite(DefaultWikiPolicyTestCase))
     suite.addTest(unittest.makeSuite(WikiModuleTestCase))
     return suite
 

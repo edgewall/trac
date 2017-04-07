@@ -87,7 +87,7 @@ ${page.text}</textarea>
         </label>
       </div>
     </div>
-    # if show_readonly_checkbox and 'WIKI_ADMIN' in perm(page.resource):
+    # if 'WIKI_CHANGE_READONLY' in perm(page.resource):
     <div id="changeinfo2" class="options">
       <label><input type="checkbox" name="readonly" id="readonly"${
                   {'checked': page.readonly}|htmlattr}/>

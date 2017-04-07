@@ -25,8 +25,7 @@ def do_upgrade(env, version, cursor):
     the default value. Otherwise, echo a message about the need to manually
     add ReadonlyWikiPolicy to the list of permission_policies."""
 
-    policies = [p.strip() for p in
-                env.config.getlist('trac', 'permission_policies')]
+    policies = env.config.getlist('trac', 'permission_policies')
     if policies == _old_default:
         backup_config_file(env, '.db30.bak')
         env.config.set('trac', 'permission_policies', ', '.join(_new_default))

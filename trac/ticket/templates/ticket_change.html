@@ -18,7 +18,6 @@
  - edited_comment: the current value of the comment editor
  - cnum_hist=None: the comment number for which to show a historical content
  - can_append=False: True if the user is allowed to append to tickets
- - has_edit_comment=False: True if the user is allowed to edit all comments
  - preview=False: True if rendering a change preview
 #}
 
@@ -30,10 +29,9 @@
 #   set cnum_edit = cnum_edit|default('')
 #   set cnum_hist = cnum_hist|default('')
 #   set can_append = can_append|default(false)
-#   set has_edit_comment = has_edit_comment|default(false)
+#   set comment_resource = Resource('comment', cnum, parent=ticket.resource)
+#   set can_edit_comment = 'TICKET_EDIT_COMMENT' in perm(comment_resource)
 #   set preview = preview|default(false)
-#   set can_edit_comment = has_edit_comment or (
-       authname and authname != 'anonymous' and authname == change.author)
 #   set show_editor = can_edit_comment and cnum == cnum_edit
 #   set show_history = cnum is equalto(cnum_hist)
 #   set max_version = change.comment_history|max(0)

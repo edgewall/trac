@@ -26,6 +26,7 @@ from trac.config import BoolOption, Option, IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.notification.api import NotificationSystem
+from trac.perm import IPermissionPolicy
 from trac.resource import (
     Resource, ResourceNotFound, get_resource_url, render_resource_link,
     get_resource_shortname
@@ -609,8 +610,9 @@ class TicketModule(Component):
             change = ticket.get_change(cnum)
             if not change:
                 raise TracError(_("Comment %(num)s not found", num=cnum))
-            if not req.is_authenticated or change['author'] != req.authname:
-                req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
+            comment_resource = \
+                Resource('comment', cnum, parent=ticket.resource)
+            req.perm(comment_resource).require('TICKET_EDIT_COMMENT')
             if self._validate_ticket(req, ticket):
                 ticket.modify_comment(change['date'], req.authname, comment)
                 req.redirect(req.href.ticket(ticket.id) +
@@ -1917,3 +1919,38 @@ class TicketModule(Component):
             last_comment = comment_history[max(comment_history)]
             last_comment['comment'] = current['comment']
             yield current
+
+
+class DefaultTicketPolicy(Component):
+    """Default permission policy for the ticket system.
+    
+    Authenticated users with `TICKET_APPEND` can edit their own ticket 
+    comments. Authenticated users with `TICKET_APPEND` or
+    `TICKET_CHGPROP` can edit the description of a ticket they reported.
+    """
+
+    implements(IPermissionPolicy)
+
+    realm = TicketSystem.realm
+
+    def check_permission(self, action, username, resource, perm):
+        if username != 'anonymous' and \
+                action == 'TICKET_EDIT_DESCRIPTION' and \
+                self._is_valid_resource(resource, self.realm) and \
+                ('TICKET_CHGPROP' in perm or 'TICKET_APPEND' in perm):
+            ticket = Ticket(self.env, resource.id)
+            if username == ticket['reporter']:
+                return True
+
+        if username != 'anonymous' and \
+                action == 'TICKET_EDIT_COMMENT' and \
+                self._is_valid_resource(resource, 'comment') and \
+                self._is_valid_resource(resource.parent, self.realm) and \
+                'TICKET_APPEND' in perm(resource.parent):
+            ticket = Ticket(self.env, resource.parent.id)
+            change = ticket.get_change(resource.id)
+            if change and username == change['author']:
+                return True
+
+    def _is_valid_resource(self, resource, expected_realm):
+        return resource and resource.realm == expected_realm and resource.id

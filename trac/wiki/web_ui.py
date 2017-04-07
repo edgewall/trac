@@ -23,7 +23,8 @@ from trac.attachment import AttachmentModule, Attachment
 from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import IContentConverter, Mimeview
-from trac.perm import IPermissionPolicy, IPermissionRequestor
+from trac.perm import IPermissionPolicy, IPermissionRequestor, \
+                      PermissionSystem
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
@@ -350,7 +351,7 @@ class WikiModule(Component):
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
 
-        if 'WIKI_ADMIN' in req.perm(page.resource):
+        if 'WIKI_CHANGE_READONLY' in req.perm(page.resource):
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int('readonly' in req.args)
@@ -551,10 +552,7 @@ class WikiModule(Component):
             'sidebyside': sidebyside,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
-            'attachments': AttachmentModule(self.env).attachment_data(context),
-            'show_readonly_checkbox': ReadonlyWikiPolicy.__name__ in
-                                      self.config.get('trac',
-                                                      'permission_policies')
+            'attachments': AttachmentModule(self.env).attachment_data(context)
         })
         if action in ('diff', 'merge'):
             old_text = original_text.splitlines() if original_text else []
@@ -804,9 +802,12 @@ class WikiModule(Component):
             yield result
 
 
-class ReadonlyWikiPolicy(Component):
-    """Permission policy for the wiki that enforces the read-only attribute
-    for wiki pages."""
+class DefaultWikiPolicy(Component):
+    """Default permission policy for the wiki system.
+    
+    Wiki pages with the read-only attribute require `WIKI_ADMIN` to delete,
+    modify or rename the page.
+    """
 
     implements(IPermissionPolicy)
 
@@ -815,8 +816,10 @@ class ReadonlyWikiPolicy(Component):
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        if resource and resource.realm == self.realm and \
-                action in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
-            page = WikiPage(self.env, resource)
-            if page.readonly and 'WIKI_ADMIN' not in perm(resource):
-                return False
+        if resource and resource.realm == self.realm:
+            if action == 'WIKI_CHANGE_READONLY':
+                return 'WIKI_ADMIN' in perm(resource)
+            if action in ('WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME'):
+                page = WikiPage(self.env, resource)
+                if page.readonly and 'WIKI_ADMIN' not in perm(resource):
+                    return False

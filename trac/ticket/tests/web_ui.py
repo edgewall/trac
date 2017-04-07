@@ -16,12 +16,12 @@ import io
 import unittest
 
 from trac.core import TracError
-from trac.perm import PermissionSystem
-from trac.resource import ResourceNotFound
+from trac.perm import PermissionCache, PermissionSystem
+from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
-from trac.ticket.web_ui import TicketModule
+from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
 from trac.util.html import HTMLTransform
@@ -42,6 +42,9 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.config.set('trac', 'permission_policies',
+            'DefaultTicketPolicy, DefaultPermissionPolicy, '
+            'LegacyAttachmentPolicy')
         self.ticket_module = TicketModule(self.env)
 
     def tearDown(self):
@@ -653,10 +656,136 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
         self.assertEqual(field_value, Ticket(self.env, 1)['text1'])
 
 
+class DefaultTicketPolicyTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=('trac.ticket.*', 'trac.perm.*'))
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultTicketPolicy,DefaultPermissionPolicy')
+        self.perm_sys = PermissionSystem(self.env)
+        self.policy = DefaultTicketPolicy(self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _create_ticket(self, reporter):
+        return insert_ticket(self.env, reporter=reporter,
+                             summary='The summary', description='The text.')
+
+    def test_reporter_can_edit_own_ticket_description(self):
+        """Authenticated user can modify description of ticket they
+        reported. The authenticated user must have TICKET_CHGPROP or 
+        TICKET_APPEND.
+        """
+        self.perm_sys.grant_permission('somebody1', 'TICKET_CHGPROP')
+        self.perm_sys.grant_permission('somebody2', 'TICKET_APPEND')
+        ticket1 = self._create_ticket('somebody1')
+        ticket2 = self._create_ticket('somebody2')
+        ticket3 = self._create_ticket('somebody3')
+        action = 'TICKET_EDIT_DESCRIPTION'
+
+        perm_cache = PermissionCache(self.env, 'somebody1', ticket1.resource)
+        self.assertIn(action, perm_cache)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache.username, ticket1.resource, perm_cache))
+
+        perm_cache = PermissionCache(self.env, 'somebody2', ticket2.resource)
+        self.assertIn(action, perm_cache)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache.username, ticket2.resource, perm_cache))
+
+        perm_cache = PermissionCache(self.env, 'somebody3', ticket3.resource)
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, ticket3.resource, perm_cache))
+
+    def test_reporter_cannot_edit_other_ticket_description(self):
+        """Authenticated user cannot modify description of ticket they
+        didn't report.
+        """
+        ticket = self._create_ticket('somebodyelse')
+        perm_cache = PermissionCache(self.env, 'somebody', ticket.resource)
+        action = 'TICKET_EDIT_DESCRIPTION'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, ticket.resource, perm_cache))
+
+    def test_anonymous_cannot_edit_ticket_description(self):
+        """Anonymous user cannot modify description of ticket they
+        reported.
+        """
+        ticket = self._create_ticket('anonymous')
+        perm_cache = PermissionCache(self.env, 'anonymous')
+        action = 'TICKET_EDIT_DESCRIPTION'
+
+        self.assertNotIn('TICKET_EDIT_DESCRIPTION',
+                         perm_cache(ticket.resource))
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, ticket.resource, perm_cache))
+
+    def _test_edit_ticket_comment(self, commenter, editor):
+        ticket = self._create_ticket(commenter)
+        ticket.save_changes(commenter, comment='The comment')
+        comment_resource = Resource('comment', 1, parent=ticket.resource)
+        perm_cache = PermissionCache(self.env, editor, comment_resource)
+        return perm_cache, comment_resource
+
+    def test_user_can_edit_own_ticket_comment(self):
+        """Authenticated user can modify their own ticket comment.
+        """
+        self.perm_sys.grant_permission('somebody', 'TICKET_APPEND')
+        perm_cache, resource = \
+            self._test_edit_ticket_comment('somebody', 'somebody')
+        action = 'TICKET_EDIT_COMMENT'
+
+        self.assertIn(action, perm_cache)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_user_must_have_ticket_append_to_edit(self):
+        """Authenticated user must have TICKET_APPEND to edit own ticket 
+        comment.
+        """
+        perm_cache, resource = \
+            self._test_edit_ticket_comment('somebody', 'somebody')
+        action = 'TICKET_EDIT_COMMENT'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_user_cannot_edit_other_ticket_comment(self):
+        """Authenticated user cannot modify the ticket comment of another
+        user.
+        """
+        self.perm_sys.grant_permission('somebody', 'TICKET_APPEND')
+        perm_cache, resource = \
+            self._test_edit_ticket_comment('someother', 'somebody')
+        action = 'TICKET_EDIT_COMMENT'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_anonymous_cannot_edit_ticket_comment(self):
+        """Anonymous user cannot modify a ticket comment.
+        """
+        self.perm_sys.grant_permission('anonymous', 'TICKET_APPEND')
+        perm_cache, resource = \
+            self._test_edit_ticket_comment('anonymous', 'anonymous')
+        action = 'TICKET_EDIT_COMMENT'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketModuleTestCase))
     suite.addTest(unittest.makeSuite(CustomFieldMaxSizeTestCase))
+    suite.addTest(unittest.makeSuite(DefaultTicketPolicyTestCase))
     return suite
 
 

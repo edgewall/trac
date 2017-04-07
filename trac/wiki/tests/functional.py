@@ -168,7 +168,7 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
 
 class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
     """Test the wiki readonly attribute, which is enforce when
-    ReadonlyWikiPolicy is in the list of active permission policies."""
+    DefaultWikiPolicy is in the list of active permission policies."""
     def runTest(self):
         self._tester.logout()
         self._tester.login('user')
@@ -205,10 +205,10 @@ class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
             tc.go(self._tester.url + '/attachment/wiki/' + page_name)
             tc.notfind(attach_button)
 
-            # Read-only checkbox is not present when ReadonlyWikiPolicy
+            # Read-only checkbox is not present when DefaultWikiPolicy
             # is not in the list of active permission policies
             pp_list = [p.strip() for p in permission_policies.split(',')]
-            pp_list.remove('ReadonlyWikiPolicy')
+            pp_list.remove('DefaultWikiPolicy')
             self._testenv._tracadmin('trac', 'permission_policies',
                                      ', '.join(pp_list))
             self._testenv.grant_perm('user', 'WIKI_ADMIN')

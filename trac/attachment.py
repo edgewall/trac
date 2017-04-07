@@ -447,15 +447,14 @@ class AttachmentModule(Component):
             try:
                 old_attachment = Attachment(self.env,
                                             attachment.resource(id=filename))
-                if not (req.is_authenticated and
-                        old_attachment.author == req.authname) \
-                   and 'ATTACHMENT_DELETE' \
-                                        not in req.perm(attachment.resource):
-                    raise PermissionError(msg=_("You don't have permission to "
-                        "replace the attachment %(name)s. You can only "
-                        "replace your own attachments. Replacing other's "
-                        "attachments requires ATTACHMENT_DELETE permission.",
-                        name=filename))
+
+                req.perm(attachment.resource).require(
+                    'ATTACHMENT_DELETE',
+                    message=_("You don't have permission to replace the "
+                              "attachment %(name)s. You can only replace "
+                              "your own attachments. Replacing other's "
+                              "attachments requires ATTACHMENT_DELETE "
+                              "permission.", name=filename))
                 if (not attachment.description.strip() and
                         old_attachment.description):
                     attachment.description = old_attachment.description
@@ -936,7 +935,10 @@ class Attachment(object):
 
 
 class LegacyAttachmentPolicy(Component):
-
+    """Default permission policy for the attachment system.
+    
+    Authenticated users can delete attachments they added.
+    """
     implements(IPermissionPolicy)
 
     delegates = ExtensionPoint(ILegacyAttachmentPolicyDelegate)
@@ -958,6 +960,14 @@ class LegacyAttachmentPolicy(Component):
         perm_map = self._perm_maps.get(action)
         if not perm_map or not resource or resource.realm != self.realm:
             return
+
+        # User can delete their own attachments.
+        if resource.id and username != 'anonymous' and \
+                action == 'ATTACHMENT_DELETE':
+            attachment = Attachment(self.env, resource)
+            if username == attachment.author:
+                return True
+
         legacy_action = perm_map.get(resource.parent.realm)
         if legacy_action:
             decision = legacy_action in perm(resource.parent)
