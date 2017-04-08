@@ -88,15 +88,15 @@ This is displayed as:
 
 The available operators are:
 || '''`=`''' || the field content exactly matches one of the values ||
-|| '''`~=`''' || the field content contains one or more of the values ||
-|| '''`^=`''' || the field content starts with one of the values ||
-|| '''`$=`''' || the field content ends with one of the values ||
+|| '''`=~`''' || the field content contains one or more of the values ||
+|| '''`=^`''' || the field content starts with one of the values ||
+|| '''`=$`''' || the field content ends with one of the values ||
 
 All of these operators can also be negated:
-|| '''`!=`''' || the field content matches none of the values ||
-|| '''`!~=`''' || the field content does not contain any of the values ||
-|| '''`!^=`''' || the field content does not start with any of the values ||
-|| '''`!$=`''' || the field content does not end with any of the values ||
+|| '''`=!`''' || the field content matches none of the values ||
+|| '''`=!~`''' || the field content does not contain any of the values ||
+|| '''`=!^`''' || the field content does not start with any of the values ||
+|| '''`=!$`''' || the field content does not end with any of the values ||
 
 The date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string. 
 || '''`created=2007-01-01..2008-01-01`''' || query tickets created in 2007 ||
