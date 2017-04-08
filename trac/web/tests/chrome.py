@@ -28,8 +28,8 @@ from trac.util import create_file
 from trac.util.datefmt import pytz, timezone, utc
 from trac.util.html import Markup, tag
 from trac.web.chrome import (
-    Chrome, INavigationContributor, add_link, add_meta, add_notice, add_script,
-    add_script_data, add_stylesheet, add_warning, web_context)
+    Chrome, INavigationContributor, add_link, add_meta, add_notice,
+    add_script, add_script_data, add_stylesheet, add_warning, web_context)
 from trac.web.href import Href
 
 
@@ -49,7 +49,7 @@ class ChromeTestCase(unittest.TestCase):
         self.env = EnvironmentStub(enable=('trac.web.chrome.*',))
 
     def test_add_meta(self):
-        req = Request(href=Href('/trac.cgi'))
+        req = MockRequest(self.env)
         add_meta(req, 'Jim Smith', name='Author', scheme='test', lang='en-us')
         add_meta(req, 'Tue, 20 Aug 1996 14:25:27 GMT', http_equiv='Expires')
         metas = req.chrome['metas']
@@ -65,16 +65,17 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('Expires', meta['http-equiv'])
 
     def test_add_link_simple(self):
-        req = Request(href=Href('/trac.cgi'))
-        add_link(req, 'start', '/trac/wiki')
-        self.assertEqual('/trac/wiki',
+        req = Request()
+        add_link(req, 'start', '/trac.cgi/wiki')
+        self.assertEqual('/trac.cgi/wiki',
                          req.chrome['links']['start'][0]['href'])
 
     def test_add_link_advanced(self):
-        req = Request(href=Href('/trac.cgi'))
-        add_link(req, 'start', '/trac/wiki', 'Start page', 'text/html', 'home')
+        req = Request()
+        add_link(req, 'start', '/trac.cgi/wiki', 'Start page', 'text/html',
+                 'home')
         link = req.chrome['links']['start'][0]
-        self.assertEqual('/trac/wiki', link['href'])
+        self.assertEqual('/trac.cgi/wiki', link['href'])
         self.assertEqual('Start page', link['title'])
         self.assertEqual('text/html', link['type'])
         self.assertEqual('home', link['class'])
@@ -104,14 +105,14 @@ class ChromeTestCase(unittest.TestCase):
                          scripts[4]['href'])
 
     def test_add_script_data(self):
-        req = Request(href=Href('/trac.cgi'))
+        req = MockRequest(self.env)
         add_script_data(req, {'var1': 1, 'var2': 'Testing'})
         add_script_data(req, var2='More testing', var3=3)
         self.assertEqual({'var1': 1, 'var2': 'More testing', 'var3': 3},
                          req.chrome['script_data'])
 
     def test_add_stylesheet(self):
-        req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
+        req = MockRequest(self.env)
         add_stylesheet(req, 'common/css/trac.css')
         add_stylesheet(req, 'common/css/trac.css')
         add_stylesheet(req, 'https://example.com/trac.css')
@@ -142,29 +143,21 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('print', links[0]['media'])
 
     def test_add_warning_is_unique(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-        Chrome(self.env).prepare_request(req)
+        req = MockRequest(self.env)
         message = random_sentence(5)
         add_warning(req, message)
         add_warning(req, message)
         self.assertEqual(1, len(req.chrome['warnings']))
 
     def test_add_notice_is_unique(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-        Chrome(self.env).prepare_request(req)
+        req = MockRequest(self.env)
         message = random_sentence(5)
         add_notice(req, message)
         add_notice(req, message)
         self.assertEqual(1, len(req.chrome['notices']))
 
     def _test_add_message_escapes_markup(self, msgtype, add_fn):
-        req = Request(chrome={msgtype: []})
+        req = MockRequest(self.env)
         add_fn(req, 'Message with an "&"')
         add_fn(req, Exception("Exception message with an &"))
         add_fn(req, tag("Message with text ", tag.b("& markup")))
@@ -188,62 +181,52 @@ class ChromeTestCase(unittest.TestCase):
         self._test_add_message_escapes_markup('notices', add_notice)
 
     def test_htdocs_location(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-        info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/trac.cgi/chrome/common/', info['htdocs_location'])
+        req = MockRequest(self.env)
+        self.assertEqual('/trac.cgi/chrome/common/',
+                         req.chrome['htdocs_location'])
 
     def test_logo(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-
         # Verify that no logo data is put in the HDF if no logo is configured
+        req = MockRequest(self.env)
         self.env.config.set('header_logo', 'src', '')
-        info = Chrome(self.env).prepare_request(req)
-        self.assertNotIn('src', info['logo'])
-        self.assertNotIn('src_abs', info['logo'])
+        self.assertNotIn('src', req.chrome['logo'])
+        self.assertNotIn('src_abs', req.chrome['logo'])
 
         # Test with a relative path to the logo image
+        req = MockRequest(self.env)
         self.env.config.set('header_logo', 'src', 'foo.png')
-        info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/common/foo.png',
-                         info['logo']['src'])
+                         req.chrome['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png',
-                         info['logo']['src_abs'])
+                         req.chrome['logo']['src_abs'])
 
         # Test with a location in project htdocs
+        req = MockRequest(self.env)
         self.env.config.set('header_logo', 'src', 'site/foo.png')
-        info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/site/foo.png',
-                         info['logo']['src'])
+                         req.chrome['logo']['src'])
         self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png',
-                         info['logo']['src_abs'])
+                         req.chrome['logo']['src_abs'])
 
         # Test with a server-relative path to the logo image
+        req = MockRequest(self.env)
         self.env.config.set('header_logo', 'src', '/img/foo.png')
-        info = Chrome(self.env).prepare_request(req)
-        self.assertEqual('/img/foo.png', info['logo']['src'])
-        self.assertEqual('/img/foo.png', info['logo']['src_abs'])
+        self.assertEqual('/img/foo.png', req.chrome['logo']['src'])
+        self.assertEqual('/img/foo.png', req.chrome['logo']['src_abs'])
 
         # Test with an absolute path to the logo image
+        req = MockRequest(self.env)
         self.env.config.set('header_logo', 'src',
                             'http://www.example.org/foo.png')
-        info = Chrome(self.env).prepare_request(req)
         self.assertEqual('http://www.example.org/foo.png',
-                         info['logo']['src'])
+                         req.chrome['logo']['src'])
         self.assertEqual('http://www.example.org/foo.png',
-                         info['logo']['src_abs'])
+                         req.chrome['logo']['src_abs'])
 
     def test_default_links(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-        links = Chrome(self.env).prepare_request(req)['links']
+        req = MockRequest(self.env)
+        links = req.chrome['links']
+
         self.assertEqual('/trac.cgi/wiki', links['start'][0]['href'])
         self.assertEqual('/trac.cgi/search', links['search'][0]['href'])
         self.assertEqual('/trac.cgi/wiki/TracGuide', links['help'][0]['href'])
@@ -251,41 +234,39 @@ class ChromeTestCase(unittest.TestCase):
                          links['stylesheet'][0]['href'])
 
     def test_icon_links(self):
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='',
-                      add_redirect_listener=lambda listener: None)
-        chrome = Chrome(self.env)
-
         # No icon set in config, so no icon links
+        req = MockRequest(self.env)
         self.env.config.set('project', 'icon', '')
-        links = chrome.prepare_request(req)['links']
+        links = req.chrome['links']
         self.assertNotIn('icon', links)
         self.assertNotIn('shortcut icon', links)
 
         # Relative URL for icon config option
+        req = MockRequest(self.env)
         self.env.config.set('project', 'icon', 'foo.ico')
-        links = chrome.prepare_request(req)['links']
+        links = req.chrome['links']
         self.assertEqual('/trac.cgi/chrome/common/foo.ico',
                          links['icon'][0]['href'])
         self.assertNotIn('shortcut icon', links)
 
         # URL relative to the server root for icon config option
+        req = MockRequest(self.env)
         self.env.config.set('project', 'icon', '/favicon.ico')
-        links = chrome.prepare_request(req)['links']
+        links = req.chrome['links']
         self.assertEqual('/favicon.ico', links['icon'][0]['href'])
         self.assertNotIn('shortcut icon', links)
 
         # Absolute URL for icon config option
+        req = MockRequest(self.env)
         self.env.config.set('project', 'icon',
                             'http://example.com/favicon.ico')
-        links = chrome.prepare_request(req)['links']
+        links = req.chrome['links']
         self.assertEqual('http://example.com/favicon.ico',
                          links['icon'][0]['href'])
         self.assertNotIn('shortcut icon', links)
 
     def _get_jquery_ui_script_data(self, lc_time):
-        req = Request(href=Href('/trac.cgi'), tz=utc, lc_time=lc_time)
+        req = MockRequest(self.env, lc_time=lc_time)
         Chrome(self.env).add_jquery_ui(req)
         return req.chrome['script_data']['jquery_ui']
 
@@ -304,14 +285,15 @@ class ChromeTestCase(unittest.TestCase):
 
         self.assertEqual(u'ābšolute',
                          self.env.config.get('trac', 'default_dateinfo_format'))
-        self.assertRaises(ConfigurationError, getattr, Chrome(self.env),
-                          'default_dateinfo_format')
+        with self.assertRaises(ConfigurationError):
+            Chrome(self.env).default_dateinfo_format
 
     def test_add_jquery_ui_first_week_day(self):
         def first_week_day(locale, lc_time, languages):
             chrome = Chrome(self.env)
-            req = Request(href=Href('/trac.cgi'), locale=locale,
-                          lc_time=lc_time, tz=utc, languages=languages)
+            languages = ','.join(languages) if languages else ''
+            req = MockRequest(self.env, locale=locale, lc_time=lc_time,
+                              language=languages)
             chrome.add_jquery_ui(req)
             return req.chrome['script_data']['jquery_ui']['first_week_day']
 
@@ -343,12 +325,12 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_add_jquery_ui_timezone_list_has_default_timezone(self):
         chrome = Chrome(self.env)
-        href = Href('/trac.cgi')
         gmt07b = timezone('GMT -7:00')
         gmt04a = timezone('GMT +4:00')
 
         def verify_tzprops(lc_time, tz, tz_default, tz_label):
-            req = Request(href=href, locale=locale_en, lc_time=lc_time, tz=tz)
+            req = MockRequest(self.env, locale=locale_en, lc_time=lc_time,
+                              tz=tz)
             chrome.add_jquery_ui(req)
             data = req.chrome['script_data']['jquery_ui']
             self.assertEqual(tz_default, data['default_timezone'])
@@ -406,16 +388,18 @@ class ChromeTestCase2(unittest.TestCase):
         self.assertIn('EMAIL_VIEW', PermissionSystem(self.env).get_actions())
 
     def test_malicious_filename_raises(self):
-        req = Request(path_info='/chrome/site/../conf/trac.ini')
+        req = MockRequest(self.env, path_info='/chrome/site/../conf/trac.ini')
         self.assertTrue(self.chrome.match_request(req))
-        self.assertRaises(TracError, self.chrome.process_request, req)
+        with self.assertRaises(TracError):
+            self.chrome.process_request(req)
 
     def test_empty_shared_htdocs_dir_raises_file_not_found(self):
-        req = Request(path_info='/chrome/shared/trac_logo.png')
+        req = MockRequest(self.env, path_info='/chrome/shared/trac_logo.png')
         self.assertEqual('', self.chrome.shared_htdocs_dir)
         self.assertTrue(self.chrome.match_request(req))
         from trac.web.api import HTTPNotFound
-        self.assertRaises(HTTPNotFound, self.chrome.process_request, req)
+        with self.assertRaises(HTTPNotFound):
+            self.chrome.process_request(req)
 
     def test_shared_htdocs_dir_file_is_found(self):
         from trac.web.api import RequestDone
@@ -423,22 +407,46 @@ class ChromeTestCase2(unittest.TestCase):
             raise RequestDone
         req = Request(path_info='/chrome/shared/trac_logo.png',
                       send_file=send_file)
+
         shared_htdocs_dir = os.path.join(self.env.path, 'chrome', 'shared')
         os.makedirs(shared_htdocs_dir)
         create_file(os.path.join(shared_htdocs_dir, 'trac_logo.png'))
         self.env.config.set('inherit', 'htdocs_dir', shared_htdocs_dir)
         self.assertTrue(self.chrome.match_request(req))
-        self.assertRaises(RequestDone, self.chrome.process_request, req)
+        with self.assertRaises(RequestDone):
+            self.chrome.process_request(req)
 
 
 class NavigationContributorTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
+        class TestNavigationContributor1(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return 'test1'
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test1', 'Test 1'
 
-    def tearDown(self):
-        self.env.restore_component_registry()
+        class TestNavigationContributor2(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return 'test2'
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test2', \
+                      tag.a('Test 2', href='test2', target='blank')
+
+        class TestNavigationContributor3(Component):
+            implements(INavigationContributor)
+            def get_active_navigation_item(self, req):
+                return 'test3'
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test3', \
+                      tag.a('Test 3', href='test3', target='blank')
+
+        self.nav_contributors = (TestNavigationContributor1,
+                                 TestNavigationContributor2,
+                                 TestNavigationContributor3)
+        self.env = EnvironmentStub(enable=self.nav_contributors)
 
     def _get_navigation_item(self, items, name):
         for item in items:
@@ -447,121 +455,58 @@ class NavigationContributorTestCase(unittest.TestCase):
         return {}
 
     def test_nav_contributor(self):
-        class TestNavigationContributor(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test', 'Test'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
-                      base_path='/trac.cgi',
-                      add_redirect_listener=lambda listener: None)
-        nav = Chrome(self.env).prepare_request(req)['nav']
-        self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
-                         nav['metanav'][0])
+        req = MockRequest(self.env)
+        nav = req.chrome['nav']
+        self.assertEqual({'name': 'test1', 'label': 'Test 1',
+                          'active': False}, nav['mainnav'][0])
 
     def test_nav_contributor_active(self):
-        class TestNavigationContributor(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return 'test'
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test', 'Test'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), path_info='/',
-                      base_path='/trac.cgi',
-                      add_redirect_listener=lambda listener: None)
-        handler = TestNavigationContributor(self.env)
+        req = MockRequest(self.env)
+        handler = self.nav_contributors[0](self.env)
         nav = Chrome(self.env).prepare_request(req, handler)['nav']
-        self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
-                         nav['metanav'][0])
+        self.assertEqual({'name': 'test1', 'label': 'Test 1', 'active': True},
+                         nav['mainnav'][0])
 
     def test_navigation_item_customization(self):
-        class TestNavigationContributor1(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'mainnav', 'test1', 'Test 1'
-        class TestNavigationContributor2(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'mainnav', 'test2', 'Test 2'
-        class TestNavigationContributor3(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'mainnav', 'test3', 'Test 3'
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='/',
-                      add_redirect_listener=lambda listener: None)
+        req = MockRequest(self.env)
         self.env.config.set('mainnav', 'test2.href', 'testtwo')
         self.env.config.set('mainnav', 'test3.label', 'Test Three')
         self.env.config.set('mainnav', 'test3.href', 'testthree')
 
-        chrome = Chrome(self.env)
-        items = chrome.prepare_request(req)['nav']['mainnav']
+        mainnav = req.chrome['nav']['mainnav']
 
-        item = self._get_navigation_item(items, 'test1')
+        item = self._get_navigation_item(mainnav, 'test1')
         self.assertEqual('Test 1', item['label'])
-        item = self._get_navigation_item(items, 'test2')
-        self.assertEqual(str(tag.a('Test 2', href='testtwo')),
-                         str(item['label']))
-        item = self._get_navigation_item(items, 'test3')
-        self.assertEqual(str(tag.a('Test Three', href='testthree')),
-                         str(item['label']))
+        item = self._get_navigation_item(mainnav, 'test2')
+        self.assertEqual(unicode(tag.a('Test 2', href='testtwo',
+                                       target='blank')),
+                         unicode(item['label']))
+        item = self._get_navigation_item(mainnav, 'test3')
+        self.assertEqual(unicode(tag.a('Test Three', href='testthree',
+                                       target='blank')),
+                         unicode(item['label']))
 
     def test_attributes_preserved_in_navigation_item(self):
-        class TestNavigationContributor1(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'mainnav', 'test1', \
-                      tag.a('Test 1', href='test1', target='blank')
-        class TestNavigationContributor2(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'mainnav', 'test2', \
-                      tag.a('Test 2', href='test2', target='blank')
-        req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                      href=Href('/trac.cgi'), base_path='/trac.cgi',
-                      path_info='/',
-                      add_redirect_listener=lambda listener: None)
-        self.env.config.set('mainnav', 'test1.label', 'Test One')
+        req = MockRequest(self.env)
         self.env.config.set('mainnav', 'test2.label', 'Test Two')
-        self.env.config.set('mainnav', 'test2.href', 'testtwo')
+        self.env.config.set('mainnav', 'test3.label', 'Test Three')
+        self.env.config.set('mainnav', 'test3.href', 'testthree')
 
-        chrome = Chrome(self.env)
-        items = chrome.prepare_request(req)['nav']['mainnav']
+        mainnav = req.chrome['nav']['mainnav']
 
-        item = self._get_navigation_item(items, 'test1')
-        self.assertEqual(str(tag.a('Test One', href='test1', target='blank')),
-                         str(item['label']))
-        item = self._get_navigation_item(items, 'test2')
-        self.assertEqual(str(tag.a('Test Two', href='testtwo',
-                                   target='blank')),
-                         str(item['label']))
+        item = self._get_navigation_item(mainnav, 'test2')
+        self.assertEqual(unicode(tag.a('Test Two', href='test2',
+                                       target='blank')),
+                         unicode(item['label']))
+        item = self._get_navigation_item(mainnav, 'test3')
+        self.assertEqual(unicode(tag.a('Test Three', href='testthree',
+                                       target='blank')),
+                         unicode(item['label']))
 
 
 class NavigationOrderTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
-        self.req = Request(abs_href=Href('http://example.org/trac.cgi'),
-                           href=Href('/trac.cgi'), base_path='/trac.cgi',
-                           path_info='/',
-                           add_redirect_listener=lambda listener: None)
-        self.chrome = Chrome(self.env)
-
         class TestNavigationContributor1(Component):
             implements(INavigationContributor)
             def get_active_navigation_item(self, req):
@@ -576,39 +521,41 @@ class NavigationOrderTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test2', 'Test 2'
 
-    def tearDown(self):
-        self.env.restore_component_registry()
+        self.env = EnvironmentStub(enable=(TestNavigationContributor1,
+                                           TestNavigationContributor2))
+        self.req = MockRequest(self.env)
+        self.chrome = Chrome(self.env)
 
     def test_explicit_ordering(self):
         """Ordering is explicitly specified."""
         self.env.config.set('metanav', 'test1.order', 2)
         self.env.config.set('metanav', 'test2.order', 1)
-        items = self.chrome.prepare_request(self.req)['nav']['metanav']
-        self.assertEqual('test2', items[0]['name'])
-        self.assertEqual('test1', items[1]['name'])
+        metanav = self.req.chrome['nav']['metanav']
+        self.assertEqual('test2', metanav[0]['name'])
+        self.assertEqual('test1', metanav[1]['name'])
 
     def test_partial_explicit_ordering_1(self):
         """Ordering for one item is explicitly specified."""
         self.env.config.set('metanav', 'test1.order', 1)
-        items = self.chrome.prepare_request(self.req)['nav']['metanav']
-        self.assertEqual('test1', items[0]['name'])
-        self.assertEqual('test2', items[1]['name'])
+        metanav = self.req.chrome['nav']['metanav']
+        self.assertEqual('test1', metanav[0]['name'])
+        self.assertEqual('test2', metanav[1]['name'])
 
     def test_partial_explicit_ordering_2(self):
         """Ordering for one item is explicitly specified."""
         self.env.config.set('metanav', 'test2.order', 1)
-        items = self.chrome.prepare_request(self.req)['nav']['metanav']
-        self.assertEqual('test2', items[0]['name'])
-        self.assertEqual('test1', items[1]['name'])
+        metanav = self.req.chrome['nav']['metanav']
+        self.assertEqual('test2', metanav[0]['name'])
+        self.assertEqual('test1', metanav[1]['name'])
 
     def test_implicit_ordering(self):
         """When not specified, ordering is alphabetical."""
         self.env.config.set('metanav', 'foo.order', 1)
         self.env.config.set('metanav', 'bar.order', 2)
 
-        items = self.chrome.prepare_request(self.req)['nav']['metanav']
-        self.assertEqual('test1', items[0]['name'])
-        self.assertEqual('test2', items[1]['name'])
+        metanav = self.req.chrome['nav']['metanav']
+        self.assertEqual('test1', metanav[0]['name'])
+        self.assertEqual('test2', metanav[1]['name'])
 
 
 class FormatAuthorTestCase(unittest.TestCase):
@@ -731,22 +678,24 @@ user2 =
         self.assertEqual('user2', format_author(req, 'user2'))
 
     def test_show_email_addresses_true(self):
+        req = MockRequest(self.env)
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_email_addresses', True)
 
         self.assertEqual('user3@example.org',
                          format_author(None, 'user3@example.org'))
         self.assertEqual('user3@example.org',
-                         format_author(Request(), 'user3@example.org'))
+                         format_author(req, 'user3@example.org'))
 
     def test_show_email_addresses_false(self):
+        req = MockRequest(self.env)
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_email_addresses', False)
 
         self.assertEqual(u'user3@\u2026',
                          format_author(None, 'user3@example.org'))
         self.assertEqual('user3@example.org',
-                         format_author(Request(), 'user3@example.org'))
+                         format_author(req, 'user3@example.org'))
 
     def test_format_emails(self):
         format_emails = Chrome(self.env).format_emails
@@ -798,7 +747,7 @@ user2 =
 
     def test_subject_is_anonymous(self):
         chrome = Chrome(self.env)
-        req = Request()
+        req = MockRequest(self.env)
         self.assertEqual('<span class="trac-author-anonymous">anonymous</span>',
                          str(chrome.authorinfo(req, 'anonymous')))
         self.assertEqual('<span class="trac-author-anonymous">anonymous</span>',
@@ -806,7 +755,7 @@ user2 =
 
     def test_subject_is_none(self):
         chrome = Chrome(self.env)
-        req = Request(authname=None)
+        req = MockRequest(self.env)
         self.assertEqual('<span class="trac-author">(none)</span>',
                          str(chrome.authorinfo(req, '(none)')))
         self.assertEqual('<span class="trac-author-none">(none)</span>',
