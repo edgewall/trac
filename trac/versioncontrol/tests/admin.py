@@ -22,11 +22,9 @@ from trac.versioncontrol.admin import RepositoryAdminPanel
 class RepositoryAdminPanelTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
+        self.env = EnvironmentStub(enable=('trac.versioncontrol.admin.*',))
 
     def tearDown(self):
-        self.env.restore_component_registry()
         self.env.reset_db()
 
     def test_panel_not_exists_when_no_repository_connectors(self):
@@ -52,6 +50,7 @@ class RepositoryAdminPanelTestCase(unittest.TestCase):
             def get_repository(self, repos_type, repos_dir, params):
                 pass
 
+        self.env.enable_component(RepositoryConnector)
         req = MockRequest(self.env)
         rap = RepositoryAdminPanel(self.env)
         panels = [panel for panel in rap.get_admin_panels(req)]
