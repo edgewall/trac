@@ -1124,12 +1124,12 @@ class TicketModule(Component):
         def get_text(version):
             try:
                 text = history[version]['value']
-                return text.splitlines() if text else []
             except KeyError:
                 raise ResourceNotFound(_("No version %(version)d for comment "
                                          "%(cnum)d on ticket #%(ticket)s",
                                          version=version, cnum=cnum,
                                          ticket=ticket.id))
+            return text.splitlines() if text else []
 
         old_text = get_text(old_version)
         new_text = get_text(new_version)
