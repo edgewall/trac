@@ -401,71 +401,82 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_short_login(self):
         """Email addresses without a FQDN"""
-        def _test_short_login(enabled):
+        def _test_short_login(use_short_addr, username, address):
             config_subscriber(self.env, reporter=True)
             ticket = Ticket(self.env)
-            ticket['reporter'] = 'joeuser'
+            ticket['reporter'] = username
             ticket['summary'] = 'This is a summary'
             ticket.insert()
             # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
-                                'joe.bar@example.net')
-            self.env.config.set('notification', 'use_short_addr', enabled)
+                                'joe.bar@example.net, john')
+            self.env.config.set('notification', 'use_short_addr',
+                                'enabled' if use_short_addr else 'disabled')
             notify_ticket_created(self.env, ticket)
             message = smtpd.get_message()
+            recipients = set(smtpd.get_recipients())
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'To' field
             self.assertEqual('undisclosed-recipients: ;', headers['To'])
             # Msg should have a 'Cc' field
             self.assertIn('Cc', headers)
-            cclist = [addr.strip() for addr in headers['Cc'].split(',')]
-            if enabled:
+            cclist = set(addr.strip() for addr in headers['Cc'].split(','))
+            if use_short_addr:
                 # Msg should be delivered to the reporter
-                self.assertIn(ticket['reporter'], cclist)
+                self.assertEqual(set([address, 'joe.bar@example.net',
+                                      'john']), cclist)
+                self.assertEqual(set([address, 'joe.bar@example.net',
+                                      'john']), recipients)
             else:
-                # Msg should not be delivered to joeuser
-                self.assertNotIn(ticket['reporter'], cclist)
-            # Msg should still be delivered to the always_cc list
-            self.assertIn(self.env.config.get('notification',
-                                              'smtp_always_cc'), cclist)
+                # Msg should not be delivered to the reporter
+                self.assertEqual(set(['joe.bar@example.net']), cclist)
+                self.assertEqual(set(['joe.bar@example.net']), recipients)
+
         # Validate with and without the short addr option enabled
-        for enable in False, True:
-            _test_short_login(enable)
+        self.env.insert_users([('bar', 'Bar User', ''),
+                               ('qux', 'Qux User', 'qux-mail')])
+        for use_short_addr in (False, True):
+            _test_short_login(use_short_addr, 'foo', 'foo')
+            _test_short_login(use_short_addr, 'bar', 'bar')
+            _test_short_login(use_short_addr, 'qux', 'qux-mail')
 
     def test_default_domain(self):
         """Default domain name"""
-        def _test_default_domain(enabled):
+        def _test_default_domain(enable):
             config_subscriber(self.env)
             self.env.config.set('notification', 'smtp_always_cc', '')
             ticket = Ticket(self.env)
-            ticket['cc'] = 'joenodom, joewithdom@example.com'
+            ticket['cc'] = 'joenodom, foo, bar, qux, joewithdom@example.com'
             ticket['summary'] = 'This is a summary'
             ticket.insert()
             # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
                                 'joe.bar@example.net')
-            if enabled:
-                self.env.config.set('notification', 'smtp_default_domain',
-                                    'example.org')
+            self.env.config.set('notification', 'smtp_default_domain',
+                                'example.org' if enable else '')
             notify_ticket_created(self.env, ticket)
             message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
             self.assertIn('Cc', headers)
-            cclist = [addr.strip() for addr in headers['Cc'].split(',')]
-            self.assertIn('joewithdom@example.com', cclist)
-            self.assertIn('joe.bar@example.net', cclist)
-            if enabled:
-                self.assertEqual(3, len(cclist))
-                self.assertIn('joenodom@example.org', cclist)
+            cclist = set(addr.strip() for addr in headers['Cc'].split(','))
+            if enable:
+                self.assertEqual(set(['joenodom@example.org',
+                                      'foo@example.org',
+                                      'bar@example.org',
+                                      'qux-mail@example.org',
+                                      'joewithdom@example.com',
+                                      'joe.bar@example.net']), cclist)
             else:
-                self.assertEqual(2, len(cclist))
-                self.assertNotIn('joenodom', cclist)
+                self.assertEqual(set(['joewithdom@example.com',
+                                      'joe.bar@example.net']), cclist)
 
         # Validate with and without a default domain
-        for enable in False, True:
+        self.env.insert_users([('bar', 'Bar User', ''),
+                               ('qux', 'Qux User', 'qux-mail')])
+        for enable in (False, True):
             _test_default_domain(enable)
 
     def test_email_map(self):
