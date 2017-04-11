@@ -151,16 +151,16 @@ class Ticket(object):
             try:
                 default = options[int(default)]
             except (ValueError, IndexError):
-                self.env.log.warning('Invalid default value "%s" '
-                                     'for custom field "%s"',
+                self.env.log.warning("Invalid default value '%s' "
+                                     "for custom field '%s'",
                                      default, field['name'])
         if default and field.get('type') == 'time':
             try:
                 default = parse_date(default,
                                      hint=field.get('format'))
             except TracError as e:
-                self.env.log.warning('Invalid default value "%s" '
-                                     'for custom field "%s": %s',
+                self.env.log.warning("Invalid default value '%s' "
+                                     "for custom field '%s': %s",
                                      default, field['name'], e)
                 default = None
         return default
@@ -170,8 +170,9 @@ class Ticket(object):
         if self.id_is_valid(tkt_id):
             # Fetch the standard ticket fields
             tkt_id = int(tkt_id)
-            for row in self.env.db_query("SELECT %s FROM ticket WHERE id=%%s" %
-                                         ','.join(self.std_fields), (tkt_id,)):
+            for row in self.env.db_query("""
+                    SELECT %s FROM ticket WHERE id=%%s
+                    """ % ','.join(self.std_fields), (tkt_id,)):
                 break
         if not row:
             raise ResourceNotFound(_("Ticket %(id)s does not exist.",
@@ -564,9 +565,9 @@ class Ticket(object):
             when = datetime_now(utc)
         when_ts = to_utimestamp(when)
 
+        old_comment = False
         with self.env.db_transaction as db:
             # Find the current value of the comment
-            old_comment = False
             for old_comment, in db("""
                     SELECT newvalue FROM ticket_change
                     WHERE ticket=%s AND time=%s AND field='comment'
@@ -581,7 +582,8 @@ class Ticket(object):
                            WHERE ticket=%%s AND time=%%s AND field %s
                            """ % db.prefix_match(),
                            (self.id, ts, db.prefix_match_value('_comment')))
-            rev = max(int(field[8:]) for field, in fields) + 1 if fields else 0
+            rev = max(int(field[8:]) for field, in fields) + 1 \
+                  if fields else 0
             db("""INSERT INTO ticket_change
                     (ticket,time,author,field,oldvalue,newvalue)
                   VALUES (%s,%s,%s,%s,%s,%s)
@@ -748,8 +750,8 @@ class AbstractEnum(object):
         """
         assert self.exists, "Cannot delete non-existent %s" % self.type
 
+        self.env.log.info("Deleting %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Deleting %s %s", self.type, self.name)
             db("DELETE FROM enum WHERE type=%s AND value=%s",
                (self.type, self._old_value))
             # Re-order any enums that have higher value than deleted
@@ -773,12 +775,12 @@ class AbstractEnum(object):
         if not self.name:
             raise TracError(_('Invalid %(type)s name.', type=self.type))
 
+        self.env.log.debug("Creating new %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
-            self.env.log.debug("Creating new %s '%s'", self.type, self.name)
             if not self.value:
-                row = db("SELECT COALESCE(MAX(%s), 0) FROM enum WHERE type=%%s"
-                         % db.cast('value', 'int'),
-                         (self.type,))
+                row = db("""SELECT COALESCE(MAX(%s), 0) FROM enum
+                            WHERE type=%%s
+                            """ % db.cast('value', 'int'), (self.type,))
                 self.value = int(float(row[0][0])) + 1 if row else 0
             db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
                (self.type, self.name, self.value))
@@ -795,8 +797,8 @@ class AbstractEnum(object):
         if not self.name:
             raise TracError(_("Invalid %(type)s name.", type=self.type))
 
+        self.env.log.info("Updating %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Updating %s '%s'", self.type, self.name)
             db("UPDATE enum SET name=%s,value=%s WHERE type=%s AND name=%s",
                (self.name, self.value, self.type, self._old_name))
             if self.name != self._old_name:
@@ -881,11 +883,11 @@ class Component(object):
         """
         assert self.exists, "Cannot delete non-existent component"
 
+        self.env.log.info("Deleting component '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Deleting component %s", self.name)
             db("DELETE FROM component WHERE name=%s", (self.name,))
-            self.name = self._old_name = None
             TicketSystem(self.env).reset_ticket_fields()
+        self.name = self._old_name = None
 
     def insert(self):
         """Insert a new component.
@@ -895,13 +897,13 @@ class Component(object):
         if not self.name:
             raise TracError(_("Invalid component name."))
 
+        self.env.log.debug("Creating new component '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.debug("Creating new component '%s'", self.name)
             db("""INSERT INTO component (name,owner,description)
                   VALUES (%s,%s,%s)
                   """, (self.name, self.owner, self.description))
-            self._old_name = self.name
             TicketSystem(self.env).reset_ticket_fields()
+        self._old_name = self.name
 
     def update(self):
         """Update the component.
@@ -911,8 +913,8 @@ class Component(object):
         if not self.name:
             raise TracError(_("Invalid component name."))
 
+        self.env.log.info("Updating component '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Updating component '%s'", self.name)
             db("""UPDATE component SET name=%s,owner=%s, description=%s
                   WHERE name=%s
                   """, (self.name, self.owner, self.description,
@@ -1037,13 +1039,13 @@ class Milestone(object):
 
     def delete(self):
         """Delete the milestone."""
+        self.env.log.info("Deleting milestone '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Deleting milestone %s", self.name)
             db("DELETE FROM milestone WHERE name=%s", (self.name,))
             Attachment.delete_all(self.env, self.realm, self.name)
-            self._old['name'] = None
             del self.cache.milestones
             TicketSystem(self.env).reset_ticket_fields()
+        self._old['name'] = None
 
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_deleted(self)
@@ -1055,8 +1057,8 @@ class Milestone(object):
         if not self.name:
             raise TracError(_("Invalid milestone name."))
 
+        self.env.log.debug("Creating new milestone '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.debug("Creating new milestone '%s'", self.name)
             db("""INSERT INTO milestone (name, due, completed, description)
                   VALUES (%s,%s,%s,%s)
                   """, (self.name, to_utimestamp(self.due),
@@ -1121,10 +1123,10 @@ class Milestone(object):
                     _("Milestone %(name)s does not exist.",
                       name=new_milestone), _("Invalid milestone name."))
         now = datetime_now(utc)
+        sql = "SELECT id FROM ticket WHERE milestone=%s"
+        if exclude_closed:
+            sql += " AND status != 'closed'"
         with self.env.db_transaction as db:
-            sql = "SELECT id FROM ticket WHERE milestone=%s"
-            if exclude_closed:
-                sql += " AND status != 'closed'"
             tkt_ids = [int(row[0]) for row in db(sql, (self._old['name'],))]
             if tkt_ids:
                 self.env.log.info("Moving tickets associated with milestone "
@@ -1254,11 +1256,11 @@ class Version(object):
         """
         assert self.exists, "Cannot delete non-existent version"
 
+        self.env.log.info("Deleting version '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Deleting version %s", self.name)
             db("DELETE FROM version WHERE name=%s", (self.name,))
-            self.name = self._old_name = None
             TicketSystem(self.env).reset_ticket_fields()
+        self.name = self._old_name = None
 
     def insert(self):
         """Insert a new version.
@@ -1268,12 +1270,12 @@ class Version(object):
         if not self.name:
             raise TracError(_("Invalid version name."))
 
+        self.env.log.debug("Creating new version '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.debug("Creating new version '%s'", self.name)
             db("INSERT INTO version (name,time,description) VALUES (%s,%s,%s)",
                 (self.name, to_utimestamp(self.time), self.description))
-            self._old_name = self.name
             TicketSystem(self.env).reset_ticket_fields()
+        self._old_name = self.name
 
     def update(self):
         """Update the version.
@@ -1283,8 +1285,8 @@ class Version(object):
         if not self.name:
             raise TracError(_("Invalid version name."))
 
+        self.env.log.info("Updating version '%s'", self.name)
         with self.env.db_transaction as db:
-            self.env.log.info("Updating version '%s'", self.name)
             db("""UPDATE version
                   SET name=%s, time=%s, description=%s WHERE name=%s
                   """, (self.name, to_utimestamp(self.time), self.description,
@@ -1294,8 +1296,8 @@ class Version(object):
                 db("UPDATE ticket SET version=%s WHERE version=%s",
                    (self.name, self._old_name))
                 self._old_name = self.name
-        # Fields need reset if renamed or if time is changed
-        TicketSystem(self.env).reset_ticket_fields()
+            # Fields need reset if renamed or if time is changed
+            TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env):
