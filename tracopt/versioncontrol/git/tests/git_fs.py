@@ -781,6 +781,70 @@ from :17
             (root_commit, 'B/b2.txt'),
             ], [(node.created_rev, node.path) for node in nodes])
 
+    def test_colon_character_in_filename(self):
+        self._git_init(data=False)
+        self._git_fast_import(self._data_colon_character_in_filename)
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+        rev1 = '382e1e6b85ba20ce8a84af1a875eaa50b8e1e092'  # root commit
+        rev2 = 'd8001832aad079f85a39a54a388a8b15fe31093d'
+        ADD = Changeset.ADD
+        MOVE = Changeset.MOVE
+        FILE = Node.FILE
+
+        cset = repos.get_changeset(rev1)
+        self.assertEqual(set([('0100644',     FILE, ADD, None, None),
+                              ('0100644.txt', FILE, ADD, None, None),
+                              (':100644',     FILE, ADD, None, None),
+                              (':100644.txt', FILE, ADD, None, None),
+                              ('a100644',     FILE, ADD, None, None),
+                              ('a100644.txt', FILE, ADD, None, None)
+                             ]),
+                         set(cset.get_changes()))
+
+        cset = repos.get_changeset(rev2)
+        self.assertEqual(set([(':100666', FILE, MOVE, ':100644', rev1)]),
+                         set(cset.get_changes()))
+
+    _data_colon_character_in_filename = """\
+blob
+mark :1
+data 0
+
+blob
+mark :2
+data 16
+...............
+
+reset refs/heads/master
+commit refs/heads/master
+mark :3
+author Joe <joe@example.com> 1491387182 +0000
+committer Joe <joe@example.com> 1491387182 +0000
+data 9
+(#12758)
+M 100644 :1 0100644.txt
+M 100644 :1 0100644
+M 100644 :1 :100644.txt
+M 100644 :2 :100644
+M 100644 :1 a100644.txt
+M 100644 :1 a100644
+
+commit refs/heads/master
+mark :4
+author Joe <joe@example.com> 1491387183 +0000
+committer Joe <joe@example.com> 1491387183 +0000
+data 16
+(#12758) rename
+from :3
+D :100644
+M 100644 :2 :100666
+
+reset refs/heads/master
+from :4
+"""
+
     def _get_quickjump_names(self, repos):
         return list(name for type, name, path, rev
                          in repos.get_quickjump_entries('HEAD'))

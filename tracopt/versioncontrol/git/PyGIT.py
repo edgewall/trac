@@ -1010,44 +1010,44 @@ class Storage(object):
         if find_renames:
             diff_tree_args.append('-M')
         diff_tree_args.extend([str(tree1) if tree1 else '--root',
-                               str(tree2),
-                               '--', path])
+                               str(tree2), '--', path])
+        result = self.repo.diff_tree(*diff_tree_args)
+        if not result:
+            return
 
-        lines = self.repo.diff_tree(*diff_tree_args).split('\0')
+        def iter_entry(result):
+            start = 0
+            while True:
+                idx = result.find('\0', start)
+                if idx == -1:
+                    return
+                yield result[start:idx]
+                start = idx + 1
 
-        assert lines[-1] == ''
-        del lines[-1]
+        iterate = iter_entry(result)
 
-        if tree1 is None and lines:
+        def next_entry():
+            return iterate.next()
+
+        if not tree1:
             # if only one tree-sha is given on commandline,
             # the first line is just the redundant tree-sha itself...
-            assert not lines[0].startswith(':')
-            del lines[0]
+            entry = next_entry()
+            assert not entry.startswith(':')
 
-        # FIXME: the following code is ugly, needs rewrite
-
-        chg = None
-
-        def __chg_tuple():
-            if len(chg) == 6:
-                chg.append(None)
-            else:
-                chg[6] = self._fs_to_unicode(chg[6])
-            chg[5] = self._fs_to_unicode(chg[5])
-
-            assert len(chg) == 7
-            return tuple(chg)
-
-        for line in lines:
-            if line.startswith(':'):
-                if chg:
-                    yield __chg_tuple()
-
-                chg = line[1:].split()
-                assert len(chg) == 5
-            else:
-                chg.append(line)
-
-        # handle left-over chg entry
-        if chg:
-            yield __chg_tuple()
+        while True:
+            try:
+                entry = next_entry()
+            except StopIteration:
+                return
+            assert entry.startswith(':')
+            values = entry[1:].split(' ')
+            assert len(values) == 5
+            old_mode, new_mode, old_sha, new_sha, change = values
+            change = change[:1]
+            old_path = self._fs_to_unicode(next_entry())
+            new_path = None
+            if change in ('R', 'C'):  # renamed or copied
+                new_path = self._fs_to_unicode(next_entry())
+            yield (old_mode, new_mode, old_sha, new_sha, change, old_path,
+                   new_path)
