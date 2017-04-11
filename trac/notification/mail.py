@@ -204,7 +204,7 @@ class RecipientMatcher(object):
         return self.notify_sys.smtp_default_domain
 
     def match_recipient(self, address):
-        if not address:
+        if not address or address == 'anonymous':
             return None
 
         def is_email(address):
@@ -215,19 +215,17 @@ class RecipientMatcher(object):
                 return False
             return True
 
-        if address == 'anonymous':
-            return None
-        sid = None
-        auth = 0
         if address in self.users:
             sid = address
             auth = 1
-            address = self.users[address][1]
-            if not address:
-                return sid, auth, None
-        elif not is_email(address) and self.nodomaddr_re.match(address):
+            address = (self.users[address][1] or '').strip() or sid
+        else:
+            sid = None
+            auth = 0
+
+        if not is_email(address) and self.nodomaddr_re.match(address):
             if self.use_short_addr:
-                return None, 0, address
+                return sid, auth, address
             if self.smtp_default_domain:
                 address = "%s@%s" % (address, self.smtp_default_domain)
             else:
