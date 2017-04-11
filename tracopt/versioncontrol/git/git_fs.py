@@ -872,7 +872,7 @@ class GitChangeset(Changeset):
                    if mode2.startswith('04') or mode1.startswith('04') \
                    else Node.FILE
 
-            action = GitChangeset.action_map[action[0]]
+            action = GitChangeset.action_map[action]
 
             if action == Changeset.ADD:
                 p_path = p_rev = None
