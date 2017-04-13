@@ -504,7 +504,9 @@ class WikiModule(Component):
         if 'text' in req.args:
             page.text = req.args.get('text')
         elif 'template' in req.args:
-            template = self.PAGE_TEMPLATES_PREFIX + req.args.get('template')
+            template = req.args.get('template')
+            template = template[1:] if template.startswith('/') \
+                                    else self.PAGE_TEMPLATES_PREFIX + template
             template_page = WikiPage(self.env, template)
             if template_page and template_page.exists and \
                     'WIKI_VIEW' in req.perm(template_page.resource):

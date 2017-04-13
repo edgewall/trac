@@ -66,6 +66,19 @@ class WikiModuleTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
 
+    def _insert_templates(self):
+        page = WikiPage(self.env)
+        page.name = 'PageTemplates/TheTemplate'
+        page.text = 'The template below /PageTemplates'
+        page.save('trac', 'create page')
+        page = WikiPage(self.env)
+        page.name = 'TheTemplate'
+        page.text = 'The template below /'
+        page.save('trac', 'create page')
+
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_invalid_post_request_raises_exception(self):
         req = MockRequest(self.env, method='POST', action=None)
 
@@ -76,14 +89,35 @@ class WikiModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', action=None,
                           args=dict(version='a', old_version='1'))
 
-        self.assertRaises(HTTPBadRequest,
-                          WikiModule(self.env).process_request, req)
+        with self.assertRaises(HTTPBadRequest):
+            WikiModule(self.env).process_request(req)
 
         req = MockRequest(self.env, method='GET', action=None,
                           args=dict(version='2', old_version='a'))
 
-        self.assertRaises(HTTPBadRequest,
-                          WikiModule(self.env).process_request, req)
+        with self.assertRaises(HTTPBadRequest):
+            WikiModule(self.env).process_request(req)
+
+    def test_wiki_template_relative_path(self):
+        self._insert_templates()
+        req = MockRequest(self.env, path_info='/wiki/NewPage', method='GET',
+                          args={'action': 'edit', 'page': 'NewPage',
+                                'template': 'TheTemplate'})
+
+        resp = WikiModule(self.env).process_request(req)
+
+        self.assertEqual('The template below /PageTemplates',
+                         resp[1]['page'].text)
+
+    def test_wiki_template_absolute_path(self):
+        self._insert_templates()
+        req = MockRequest(self.env, path_info='/wiki/NewPage', method='GET',
+                          args={'action': 'edit', 'page': 'NewPage',
+                                'template': '/TheTemplate'})
+
+        resp = WikiModule(self.env).process_request(req)
+
+        self.assertEqual('The template below /', resp[1]['page'].text)
 
 
 def test_suite():
