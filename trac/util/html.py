@@ -707,7 +707,7 @@ class TracHTMLSanitizer(object):
             tag = tag.localname
         if tag == 'input':
             # TODO (1.5.1) no more Attrs
-            if isinstance(attrs, Attrs):
+            if Attrs and isinstance(attrs, Attrs):
                 input_type = attrs.get('type', '').lower()
                 if input_type == 'password':
                     return False
