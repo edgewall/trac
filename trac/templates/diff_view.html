@@ -105,6 +105,7 @@
           ${authorinfo(change.author)}
           # endif
         </dd>
+        # if change.comment is not none:
         <dt class="property message">${_("Comment:")}</dt>
         <dd class="message">
           # if multi:
@@ -113,6 +114,7 @@
           ${wiki_to_html(context.child(resource), change.comment)}
           # endif
         </dd>
+        # endif
       </dl>
       <div class="diff">
         <div class="legend" id="diff-legend">

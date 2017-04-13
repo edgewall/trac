@@ -1064,7 +1064,7 @@ class TicketModule(Component):
                 ticket.get_comment_history(cnum) or []:
             history.append({
                 'version': version, 'date': date, 'author': author,
-                'comment': _("''Initial version''") if version == 0 else '',
+                'comment': None,
                 'value': comment,
                 'url': self._make_comment_url(req, ticket, cnum, version)
             })

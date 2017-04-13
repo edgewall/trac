@@ -285,10 +285,18 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.find(r"\bPreview\b")
         tc.find(r"\bSubmit changes\b")
         url = b.get_url()
+
         tc.go(url + '?version=0')
         tc.find('at +<[^>]*>*Initial Version')
         tc.find(summary)
         tc.notfind(comment)
+        tc.notfind(r'<a [^>]+>\bModify\b</a>')
+        tc.notfind(r"\bAttach file\b")
+        tc.notfind(r"\bAdd Comment\b")
+        tc.notfind(r"\bModify Ticket\b")
+        tc.notfind(r"\bPreview\b")
+        tc.notfind(r"\bSubmit changes\b")
+
         tc.go(url + '?version=1')
         tc.find('at[ \n]+<[^>]*>*Version 1')
         tc.find(summary)
@@ -299,6 +307,33 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.notfind(r"\bModify Ticket\b")
         tc.notfind(r"\bPreview\b")
         tc.notfind(r"\bSubmit changes\b")
+
+        tc.go(url + '?cnum_edit=1')
+        revised_comment = random_sentence(5)
+        tc.formvalue('trac-comment-editor', 'edited_comment', revised_comment)
+        tc.submit("Submit changes")
+
+        # View comment versions.
+        self._tester.go_to_ticket(ticketid)
+        tc.follow(r"\bprevious\b")
+        tc.url(url + re.escape(r'?cversion=0&cnum_hist=1#comment:1'))
+        tc.find(r"[^\"]%s[^\"]" % comment)
+        tc.notfind(r"[^\"]%s[^\"]" % revised_comment)
+        tc.follow(r"\bnext\b")
+        tc.notfind(r"[^\"]%s[^\"]" % comment)
+        tc.find(r"[^\"]%s[^\"]" % revised_comment)
+
+        # View comment diff.
+        self._tester.go_to_ticket(ticketid)
+        tc.follow(r"\bdiff\b")
+        tc.url(url + re.escape(r'?action=comment-diff&cnum=1&version=1'))
+        tc.notfind(r"\bComment:\b")
+
+        # View ticket comment history.
+        tc.follow(r"\bTicket Comment History\b")
+        tc.notfind(r'<th class="comment">Comment</th>')
+        tc.find(r'\bChange History for '
+                r'<a href="/ticket/\d+#comment:1">Ticket #\d+, comment 1</a>')
 
 
 class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):

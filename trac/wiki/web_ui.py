@@ -596,7 +596,7 @@ class WikiModule(Component):
                 'version': version,
                 'date': date,
                 'author': author,
-                'comment': comment
+                'comment': comment or ''
             })
         data.update({
             'history': history,

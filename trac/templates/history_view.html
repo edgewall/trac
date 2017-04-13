@@ -48,6 +48,7 @@
           # endfor
           <input type="submit" value="${_('View changes')}" />
         </div>
+        # set has_comment = history|rejectattr('comment', 'none')|list
         <table id="fieldhist" class="listing" summary="${_('Change history')}">
           <thead>
             <tr>
@@ -55,7 +56,9 @@
               <th class="version">${_("Version")}</th>
               <th class="date">${_("Date")}</th>
               <th class="author">${_("Author")}</th>
+              # if has_comment:
               <th class="comment">${_("Comment")}</th>
+              # endif
             </tr>
           </thead>
           <tbody>
@@ -73,6 +76,7 @@
               </td>
               <td class="date">${pretty_dateinfo(item.date, dateonly=True)}</td>
               <td class="author">${authorinfo(item.author)}</td>
+              # if has_comment:
               <td class="comment">
                 ${wiki_to_oneliner(context.child(resource), item.comment,
                                    shorten=true)}
@@ -84,6 +88,7 @@
                 </span>
                 # endif
               </td>
+              # endif
             </tr>
             # endfor
           </tbody>

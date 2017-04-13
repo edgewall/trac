@@ -148,19 +148,21 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
     def runTest(self):
         pagename = self._tester.create_wiki_page()
         self._tester.edit_wiki_page(pagename)
+        url = self._tester.url
         tc.follow(r"\bHistory\b")
-        tc.url(self._tester.url + r'/wiki/%s\?action=history' % pagename)
+        tc.url(url + r'/wiki/%s\?action=history' % pagename)
         version_link = ('<td class="version">[ \n]*'
                         '<a href="/wiki/%(pagename)s\?version=%%(version)s"'
                         '[ \n]*title="View this version">%%(version)s[ \n]*</a>'
                         % {'pagename': pagename})
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
+        tc.find(r'<th class="comment">Comment</th>')
         tc.formvalue('history', 'old_version', '1')
         tc.formvalue('history', 'version', '2')
         tc.submit()
         tc.url(r'%s/wiki/%s\?action=diff&version=2&old_version=1'
-               % (self._tester.url, pagename))
+               % (url, pagename))
         tc.find(r'<a href="/wiki/%s\?version=1">Version 1</a>' % pagename)
         tc.find(r'<a href="/wiki/%s\?version=2">Version 2</a>' % pagename)
         tc.find(r'<a href="/wiki/%(name)s">%(name)s</a>' % {'name': pagename})
