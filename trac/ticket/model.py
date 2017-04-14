@@ -1091,6 +1091,7 @@ class Milestone(object):
         if a milestone of that name doesn't exist yet.
         """
         self.env = env
+        self.name = self._old = None
         if name:
             if not self.cache.fetchone(name, self):
                 raise ResourceNotFound(
@@ -1140,10 +1141,15 @@ class Milestone(object):
 
         self.env.log.debug("Creating new milestone '%s'", self.name)
         with self.env.db_transaction as db:
-            db("""INSERT INTO milestone (name, due, completed, description)
-                  VALUES (%s,%s,%s,%s)
-                  """, (self.name, to_utimestamp(self.due),
-                        to_utimestamp(self.completed), self.description))
+            try:
+                db("""
+                    INSERT INTO milestone (name, due, completed, description)
+                    VALUES (%s,%s,%s,%s)
+                    """, (self.name, to_utimestamp(self.due),
+                          to_utimestamp(self.completed), self.description))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Milestone "%(name)s" already exists.', name=self.name))
             self.checkin()
             TicketSystem(self.env).reset_ticket_fields()
 
@@ -1250,9 +1256,9 @@ class Report(object):
                         WHERE id=%s
                         """, (id_as_int,)):
                     self.id = id_as_int
-                    self.title = title or u''
-                    self.description = description or u''
-                    self.query = query or u''
+                    self.title = _null_to_empty(title)
+                    self.description = _null_to_empty(description)
+                    self.query = _null_to_empty(query)
                     return
             raise ResourceNotFound(_("Report {%(num)s} does not exist.",
                                      num=id), _("Invalid Report Number"))
@@ -1280,7 +1286,8 @@ class Report(object):
             cursor = db.cursor()
             cursor.execute("""
                 INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
-                """, (self.title, self.query, self.description))
+                """, (_empty_to_null(self.title), _empty_to_null(self.query),
+                      _empty_to_null(self.description)))
             self.id = db.get_last_id(cursor, 'report')
 
     def update(self):
@@ -1293,7 +1300,8 @@ class Report(object):
         self.env.db_transaction("""
             UPDATE report SET title=%s, query=%s, description=%s
             WHERE id=%s
-            """, (self.title, self.query, self.description, self.id))
+            """, (_empty_to_null(self.title), _empty_to_null(self.query),
+                  _empty_to_null(self.description), self.id))
 
     @classmethod
     def select(cls, env, sort='id', asc=True):
@@ -1304,9 +1312,9 @@ class Report(object):
                        '' if asc else 'DESC')):
             report = cls(env)
             report.id = id
-            report.title = title
-            report.description = description
-            report.query = query
+            report.title = _null_to_empty(title)
+            report.description = _null_to_empty(description)
+            report.query = _null_to_empty(query)
             yield report
 
 
