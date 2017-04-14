@@ -22,6 +22,10 @@ from trac.util.presentation import classes
 from trac.util.translation import _
 
 
+class ResourceExistsError(TracError):
+    """Thrown when attempting to insert an existing resource."""
+
+
 class ResourceNotFound(TracError):
     """Thrown when a non-existent resource is requested"""
 

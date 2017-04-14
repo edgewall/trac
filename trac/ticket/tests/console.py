@@ -716,6 +716,15 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
+    def test_version_rename_error_bad_new_name(self):
+        """
+        Tests the 'version rename' command in trac-admin.  This particular
+        test tries to rename a version to a name that already exists.
+        """
+        rv, output = self.execute('version rename 1.0 2.0')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
     def test_version_time_ok(self):
         """
         Tests the 'version time' command in trac-admin.  This particular

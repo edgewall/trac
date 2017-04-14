@@ -43,7 +43,7 @@ component2     somebody
 new_component  new_user
 
 ===== test_component_add_error_already_exists =====
-IntegrityError: [...]
+ResourceExistsError: Component "component1" already exists.
 ===== test_component_rename_ok =====
 
 Name          Owner
@@ -54,7 +54,7 @@ component2    somebody
 ===== test_component_rename_error_bad_component =====
 ResourceNotFound: Component bad_component does not exist.
 ===== test_component_rename_error_bad_new_name =====
-IntegrityError: [...]
+ResourceExistsError: Component "component2" already exists.
 ===== test_component_chown_ok =====
 
 Name        Owner
@@ -136,7 +136,7 @@ task
 new_type
 
 ===== test_ticket_type_add_error_already_exists =====
-IntegrityError: [...]
+ResourceExistsError: Ticket Type value "defect" already exists
 ===== test_ticket_type_change_ok =====
 
 Possible Values
@@ -146,9 +146,9 @@ enhancement
 task
 
 ===== test_ticket_type_change_error_bad_type =====
-ResourceNotFound: ticket_type bad_type does not exist.
+ResourceNotFound: Ticket Type bad_type does not exist.
 ===== test_ticket_type_change_error_bad_new_name =====
-IntegrityError: [...]
+ResourceExistsError: Ticket Type value "task" already exists
 ===== test_ticket_type_remove_ok =====
 
 Possible Values
@@ -157,7 +157,7 @@ defect
 enhancement
 
 ===== test_ticket_type_remove_error_bad_type =====
-ResourceNotFound: ticket_type bad_type does not exist.
+ResourceNotFound: Ticket Type bad_type does not exist.
 ===== test_ticket_type_order_down_ok =====
 
 Possible Values
@@ -175,7 +175,7 @@ defect
 task
 
 ===== test_ticket_type_order_error_bad_type =====
-ResourceNotFound: ticket_type bad_type does not exist.
+ResourceNotFound: Ticket Type bad_type does not exist.
 ===== test_priority_help =====
 priority add <value>
 
@@ -240,7 +240,7 @@ p9
 p10
 
 ===== test_priority_add_error_already_exists =====
-IntegrityError: [...]
+ResourceExistsError: Priority value "blocker" already exists
 ===== test_priority_change_ok =====
 
 Possible Values
@@ -252,9 +252,9 @@ minor
 trivial
 
 ===== test_priority_change_error_bad_priority =====
-ResourceNotFound: priority bad_priority does not exist.
+ResourceNotFound: Priority bad_priority does not exist.
 ===== test_priority_change_error_bad_new_name =====
-IntegrityError: [...]
+ResourceExistsError: Priority value "minor" already exists
 ===== test_priority_remove_ok =====
 
 Possible Values
@@ -265,7 +265,7 @@ minor
 trivial
 
 ===== test_priority_remove_error_bad_priority =====
-ResourceNotFound: priority bad_priority does not exist.
+ResourceNotFound: Priority bad_priority does not exist.
 ===== test_priority_order_down_ok =====
 
 Possible Values
@@ -287,7 +287,7 @@ minor
 trivial
 
 ===== test_priority_order_error_bad_priority =====
-ResourceNotFound: priority bad_priority does not exist.
+ResourceNotFound: Priority bad_priority does not exist.
 ===== test_severity_help =====
 severity add <value>
 
@@ -321,7 +321,7 @@ Possible Values
 new_severity
 
 ===== test_severity_add_error_already_exists =====
-IntegrityError: [...]
+ResourceExistsError: Severity value "blocker" already exists
 ===== test_severity_change_ok =====
 
 Possible Values
@@ -329,16 +329,16 @@ Possible Values
 end-of-the-world
 
 ===== test_severity_change_error_bad_severity =====
-ResourceNotFound: severity bad_severity does not exist.
+ResourceNotFound: Severity bad_severity does not exist.
 ===== test_severity_change_error_bad_new_name =====
-IntegrityError: [...]
+ResourceExistsError: Severity value "major" already exists
 ===== test_severity_remove_ok =====
 
 Possible Values
 ---------------
 
 ===== test_severity_remove_error_bad_severity =====
-ResourceNotFound: severity bad_severity does not exist.
+ResourceNotFound: Severity bad_severity does not exist.
 ===== test_severity_order_down_ok =====
 
 Possible Values
@@ -354,7 +354,7 @@ bar
 foo
 
 ===== test_severity_order_error_bad_severity =====
-ResourceNotFound: severity bad_severity does not exist.
+ResourceNotFound: Severity bad_severity does not exist.
 ===== test_version_help =====
 version add <name> [time]
 
@@ -399,7 +399,7 @@ version add <name> [time]
     Add version
 
 ===== test_version_add_error_already_exists =====
-IntegrityError: [...]
+ResourceExistsError: Version "1.0" already exists.
 ===== test_version_rename_ok =====
 
 Name  Time
@@ -409,6 +409,8 @@ Name  Time
 
 ===== test_version_rename_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
+===== test_version_rename_error_bad_new_name =====
+ResourceExistsError: Version "2.0" already exists.
 ===== test_version_time_ok =====
 
 Name  Time

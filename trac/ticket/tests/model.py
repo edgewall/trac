@@ -18,7 +18,7 @@ import unittest
 from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
-from trac.resource import Resource, ResourceNotFound
+from trac.resource import Resource, ResourceExistsError, ResourceNotFound
 from trac.test import EnvironmentStub, mkdtemp
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Report, Type, Version
@@ -1258,42 +1258,289 @@ class MilestoneTestCase(unittest.TestCase):
 class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub()
+        with self.env.db_transaction as db:
+            db.executemany("""
+                INSERT INTO component (name, owner, description)
+                VALUES (%s, %s, %s)
+                """, [('component1', 'the owner', 'the description'),
+                      ('component2', None, None)])
 
     def tearDown(self):
         self.env.reset_db()
 
-    def test_exists_negative(self):
-        def get_fake_component():
-            return Component(self.env, "Shrubbery")
-        self.assertRaises(TracError, get_fake_component)
+    def _get_component_ticket_field(self):
+        for field in TicketSystem(self.env).fields:
+            if field['name'] == 'component':
+                return field
+        return None
 
-    def test_exists(self):
+    def test_init(self):
+        """Initialize existing component."""
+        component1 = Component(self.env, 'component1')
+        component2 = Component(self.env, 'component2')
+
+        self.assertTrue(component1.exists)
+        self.assertEqual('component1', component1.name)
+        self.assertEqual(component1.name, component1._old_name)
+        self.assertEqual('the owner', component1.owner)
+        self.assertEqual('the description', component1.description)
+        self.assertTrue(component2.exists)
+        self.assertEqual('component2', component2.name)
+        self.assertEqual(component2.name, component2._old_name)
+        self.assertEqual('', component2.owner)
+        self.assertEqual('', component2.description)
+
+    def test_init_nonexistent_name_raises(self):
+        """ResourceNotFound raised calling initializer with
+        non-existent name.
         """
-        http://trac.edgewall.org/ticket/4247
-        """
-        for c in Component.select(self.env):
-            self.assertEqual(c.exists, True)
+        with self.assertRaises(ResourceNotFound) as cm:
+            Component(self.env, 'none')
+
+        self.assertEqual("Component none does not exist.",
+                         unicode(cm.exception))
 
     def test_repr(self):
-        self.assertEqual('<Component None>', repr(Component(self.env)))
+        """Return string representation of object."""
+        self.assertEqual("<Component None>", repr(Component(self.env)))
         self.assertEqual("<Component 'component1'>",
                          repr(Component(self.env, 'component1')))
 
-    def test_create_and_update(self):
+    def test_delete(self):
+        """Delete existing component."""
+        component1 = Component(self.env, 'component1')
+
+        component1.delete()
+
+        self.assertFalse(component1.exists)
+        self.assertIsNone(component1.name)
+        self.assertEqual([], self.env.db_query("""
+            SELECT * FROM component WHERE name='component1'
+            """))
+
+    def test_delete_resets_cached_ticket_fields(self):
+        """Deleting component resets cached ticket fields."""
+        component1 = Component(self.env, 'component1')
+
+        component1.delete()
+        component_field = self._get_component_ticket_field()
+
+        self.assertIsNotNone(component_field)
+        self.assertNotIn('component1', component_field['options'])
+
+    def test_delete_updates_tickets(self):
+        """Tickets are updated when component is deleted."""
+        ticket = Ticket(self.env)
+        ticket['component'] = 'component1'
+        ticket.insert()
+        component1 = Component(self.env, 'component1')
+
+        component1.delete()
+
+        # Skip test: FIXME #11367
+        # self.assertEqual(None, Ticket(self.env, 1)['component'])
+
+    def test_delete_nonexistent_raises(self):
+        """TracError is raised when deleting a non-existent component.
+        The component may not have been inserted, or may have already
+        been deleted.
+        """
+        component0 = Component(self.env)
+        component0.name = 'component0'
+        component1 = Component(self.env, 'component1')
+        component1.delete()
+
+        with self.assertRaises(TracError) as cm0:
+            component0.delete()
+        with self.assertRaises(TracError) as cm1:
+            component1.delete()
+
+        exc_message = "Cannot delete non-existent component."
+        self.assertEqual(exc_message, unicode(cm0.exception))
+        self.assertFalse(component0.exists)
+        self.assertEqual(exc_message, unicode(cm1.exception))
+        self.assertFalse(component1.exists)
+
+    def test_insert(self):
+        """Insert a new component."""
         component = Component(self.env)
-        component.name = 'Test'
+        component.name = 'component3'
+        component.insert()
+        component_field = self._get_component_ticket_field()
+
+        self.assertEqual(component.name, component._old_name)
+        self.assertEqual([('component3', None, None)], self.env.db_query("""
+            SELECT name, owner, description FROM component
+            WHERE name='component3'"""))
+        self.assertIsNotNone(component_field)
+        self.assertIn('component3', component_field['options'])
+
+    def test_insert_whitespace_removed(self):
+        """Whitespace is stripped from text fields when inserting component.
+        """
+        component = Component(self.env)
+        component.name = ' component3 '
+        component.owner = ' '
+        component.description = ' '
         component.insert()
 
-        self.assertEqual([('Test', None, None)], self.env.db_query("""
+        self.assertEqual([('component3', None, ' ')], self.env.db_query("""
             SELECT name, owner, description FROM component
-            WHERE name='Test'"""))
+            WHERE name='component3'"""))
 
-        # Use the same model object to update the component
-        component.owner = 'joe'
+    def test_insert_invalid_name_raises(self):
+        """TracError is raised when inserting component with empty name.
+        """
+        component1 = Component(self.env)
+        component1.name = None
+        component2 = Component(self.env)
+        component2.name = ''
+        component3 = Component(self.env)
+        component3.name = ' '
+
+        with self.assertRaises(TracError) as cm1:
+            component1.insert()
+        with self.assertRaises(TracError) as cm2:
+            component2.insert()
+        with self.assertRaises(TracError) as cm3:
+            component3.insert()
+
+        exc_message = "Invalid component name."
+        self.assertEqual(exc_message, unicode(cm1.exception))
+        self.assertEqual(exc_message, unicode(cm2.exception))
+        self.assertEqual(exc_message, unicode(cm3.exception))
+
+    def test_insert_existing_raises(self):
+        """ResourceExistsError is raised when `insert`ing an existing
+        component.
+        """
+        component = Component(self.env)
+        component.name = 'component1'
+
+        with self.assertRaises(ResourceExistsError) as cm:
+            component.insert()
+
+        self.assertEqual('Component "component1" already exists.',
+                         unicode(cm.exception))
+
+    def test_insert_existing_renamed_raises(self):
+        """ResourceExistsError is raised when `insert`ing existing renamed
+        component.
+        """
+        component = Component(self.env, 'component1')
+        component.name = 'component3'
+
+        with self.assertRaises(ResourceExistsError) as cm:
+            component.insert()
+
+        self.assertEqual('Component "component3" already exists.',
+                         unicode(cm.exception))
+
+    def test_update(self):
+        """Update existing component."""
+        component = Component(self.env, 'component1')
+        component.owner = 'the new owner'
+        component.description = 'the new description'
         component.update()
-        self.assertEqual([('Test', 'joe', None)], self.env.db_query(
-            "SELECT name, owner, description FROM component WHERE name='Test'"))
+
+        self.assertEqual([('component1', 'the new owner',
+                           'the new description')], self.env.db_query("""
+            SELECT name, owner, description FROM component
+            WHERE name='component1'"""))
+
+    def test_update_nonexistent_raises(self):
+        """TracError is raised when updating a non-existent component.
+        """
+        component = Component(self.env)
+        component.name = 'component3'
+
+        self.assertFalse(component.exists)
+        self.assertRaises(TracError, component.update)
+
+    def test_update_invalid_name_raises(self):
+        """TracError is raised when `update`ing component with empty name.
+        """
+        component1 = Component(self.env)
+        component1.name = None
+        component2 = Component(self.env)
+        component2.name = ''
+        component3 = Component(self.env)
+        component3.name = ' '
+
+        self.assertRaises(TracError, component1.update)
+        self.assertRaises(TracError, component2.update)
+        self.assertRaises(TracError, component3.update)
+
+    def test_update_empty_strings_to_null(self):
+        """Empty strings are converted to NULL."""
+        component = Component(self.env, 'component1')
+        component.name = 'component1'
+        component.owner = ''
+        component.description = ''
+        component.update()
+
+        self.assertEqual([('component1', None, None)], self.env.db_query("""
+            SELECT name, owner, description FROM component
+            WHERE name='component1'"""))
+
+    def test_update_whitespace_removed(self):
+        """Whitespace is stripped from text fields when updating component.
+        """
+        component = Component(self.env, 'component1')
+        component.name = ' component1 '
+        component.owner = ' owner '
+        component.description = ' text '
+        component.update()
+
+        self.assertEqual([('component1', 'owner', ' text ')],
+                         self.env.db_query("""
+                SELECT name, owner, description FROM component
+                WHERE name='component1'"""))
+
+    def test_rename(self):
+        """Rename a component."""
+        ticket = Ticket(self.env)
+        ticket['component'] = 'component1'
+        ticket.insert()
+        component = Component(self.env, 'component1')
+        component.name = 'component3'
+        component.update()
+        component_field = self._get_component_ticket_field()
+
+        self.assertEqual([('component3', 'the owner', 'the description')],
+                         self.env.db_query("""
+            SELECT name, owner, description FROM component
+            WHERE name='component3'"""))
+        self.assertEqual(component.name, component._old_name)
+        self.assertTrue(Component(self.env, 'component3').exists)
+        self.assertRaises(ResourceNotFound, Component, self.env, 'component1')
+        self.assertIsNotNone(component_field)
+        self.assertIn('component3', component_field['options'])
+        self.assertEqual('component3', Ticket(self.env, 1)['component'])
+
+    def test_rename_new_name_exists_raises(self):
+        """TracError is raised when renamed component exists."""
+        component = Component(self.env, 'component1')
+        component.name = 'component2'
+
+        self.assertRaises(ResourceExistsError, component.update)
+
+    def test_select(self):
+        components = []
+        for c in Component.select(self.env):
+            components.append(c)
+
+        self.assertEqual(2, len(components))
+        self.assertTrue(components[0].exists)
+        self.assertEqual('component1', components[0].name)
+        self.assertEqual('the owner', components[0].owner)
+        self.assertEqual('the description', components[0].description)
+        self.assertTrue(components[1].exists)
+        self.assertEqual('component2', components[1].name)
+        self.assertEqual('', components[1].owner)
+        self.assertEqual('', components[1].description)
+
 
 
 class ReportTestCase(unittest.TestCase):

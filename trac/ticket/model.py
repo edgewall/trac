@@ -23,13 +23,13 @@ from trac import core
 from trac.attachment import Attachment
 from trac.cache import cached
 from trac.core import TracError
-from trac.resource import Resource, ResourceNotFound
+from trac.resource import Resource, ResourceExistsError, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import as_int, embedded_numbers
 from trac.util.datefmt import (datetime_now, from_utimestamp, parse_date,
                                to_utimestamp, utc, utcmax)
 from trac.util.text import empty
-from trac.util.translation import _
+from trac.util.translation import _, N_, gettext
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version']
@@ -67,6 +67,25 @@ def _datetime_to_db_str(dt, is_custom_field):
         return fmt % ts
     else:
         return ts
+
+
+def _from_timestamp(time):
+    return from_utimestamp(time) if time else None
+
+
+def _empty_to_null(value):
+    return value if value else None
+
+
+def _null_to_empty(value):
+    return value if value else empty
+
+
+def simplify_whitespace(name):
+    """Strip spaces and remove duplicate spaces within names"""
+    if name:
+        return ' '.join(name.split())
+    return name
 
 
 def sort_tickets_by_priority(env, ids):
@@ -409,7 +428,7 @@ class Ticket(object):
                 is_custom_field = field in self.custom_fields
                 values[field] = _datetime_to_db_str(value, is_custom_field)
             else:
-                values[field] = value if value else None
+                values[field] = _empty_to_null(value)
         return values
 
     def get_changelog(self, when=None):
@@ -711,23 +730,25 @@ class Ticket(object):
             return ts, author, comment
 
 
-def simplify_whitespace(name):
-    """Strip spaces and remove duplicate spaces within names"""
-    if name:
-        return ' '.join(name.split())
-    return name
-
-
 class AbstractEnum(object):
     type = None
     ticket_col = None
+    label = None
 
     exists = property(lambda self: self._old_value is not None)
 
     def __init__(self, env, name=None):
+        """Create a new `enum` instance. If `name` is specified and the
+        enum with `name` exists, the enum will be retrieved from the
+        database.
+
+        :raises ResourceNotFound: if `name` is not `None` and an enum
+                                  with `name` does not exist.
+        """
         if not self.ticket_col:
             self.ticket_col = self.type
         self.env = env
+        self.name = self._old_name = self.value = self._old_value = None
         if name:
             for value, in self.env.db_query("""
                     SELECT value FROM enum WHERE type=%s AND name=%s
@@ -737,18 +758,20 @@ class AbstractEnum(object):
                 break
             else:
                 raise ResourceNotFound(_("%(type)s %(name)s does not exist.",
-                                         type=self.type, name=name))
-        else:
-            self.value = self._old_value = None
-            self.name = self._old_name = None
+                                         type=gettext(self.label[0]),
+                                         name=name))
 
     def __repr__(self):
         return '<%s %r %r>' % (self.__class__.__name__, self.name, self.value)
 
     def delete(self):
-        """Delete the enum value.
+        """Delete the enum.
+
+        :raises TracError: if enum does not exist.
         """
-        assert self.exists, "Cannot delete non-existent %s" % self.type
+        if not self.exists:
+            raise TracError(_("Cannot delete non-existent %(type)s.",
+                              type=gettext(self.label[0])))
 
         self.env.log.info("Deleting %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
@@ -768,48 +791,63 @@ class AbstractEnum(object):
         self.name = self._old_name = None
 
     def insert(self):
-        """Add a new enum value.
+        """Add a new enum.
+
+        :raises TracError: if enum name is empty.
+        :raises ResourceExistsError: if enum with name already exists.
         """
-        assert not self.exists, "Cannot insert existing %s" % self.type
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_('Invalid %(type)s name.', type=self.type))
+        if self.exists:
+            raise ResourceExistsError(
+                _('%(type)s value "%(name)s" already exists.',
+                  type=gettext(self.label[0]), name=self.name))
+        self._check_and_coerce_fields()
 
         self.env.log.debug("Creating new %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
-            if not self.value:
-                row = db("""SELECT COALESCE(MAX(%s), 0) FROM enum
-                            WHERE type=%%s
-                            """ % db.cast('value', 'int'), (self.type,))
-                self.value = int(float(row[0][0])) + 1 if row else 0
-            db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
-               (self.type, self.name, self.value))
+            try:
+                if not self.value:
+                    row = db("""SELECT COALESCE(MAX(%s), 0) FROM enum
+                                WHERE type=%%s
+                                """ % db.cast('value', 'int'), (self.type,))
+                    self.value = int(float(row[0][0])) + 1 if row else 0
+                db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
+                   (self.type, self.name, self.value))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('%(type)s value "%(name)s" already exists',
+                      type=gettext(self.label[0]), name=self.name))
             TicketSystem(self.env).reset_ticket_fields()
-
         self._old_name = self.name
         self._old_value = self.value
 
     def update(self):
-        """Update the enum value.
+        """Update the enum.
+
+        :raises TracError: if enum does not exist or enum name is empty.
+        :raises ResourceExistsError: if renamed enum already exists.
         """
-        assert self.exists, "Cannot update non-existent %s" % self.type
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_("Invalid %(type)s name.", type=self.type))
+        if not self.exists:
+            raise TracError(_("Cannot update non-existent enum."))
+        self._check_and_coerce_fields()
 
         self.env.log.info("Updating %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
-            db("UPDATE enum SET name=%s,value=%s WHERE type=%s AND name=%s",
-               (self.name, self.value, self.type, self._old_name))
+            try:
+                db("""UPDATE enum SET name=%s,value=%s
+                      WHERE type=%s AND name=%s
+                      """, (self.name, self.value, self.type, self._old_name))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('%(type)s value "%(name)s" already exists',
+                      type=gettext(self.label[0]), name=self.name))
+            self._old_value = self.value
             if self.name != self._old_name:
                 # Update tickets
                 db("UPDATE ticket SET %s=%%s WHERE %s=%%s"
                    % (self.ticket_col, self.ticket_col),
                    (self.name, self._old_name))
+                self._old_name = self.name
                 TicketSystem(self.env).reset_ticket_fields()
-
-        self._old_name = self.name
-        self._old_value = self.value
 
     @classmethod
     def select(cls, env):
@@ -823,10 +861,17 @@ class AbstractEnum(object):
                 obj.value = obj._old_value = value
                 yield obj
 
+    def _check_and_coerce_fields(self):
+        self.name = simplify_whitespace(self.name)
+        if not self.name:
+            raise TracError(_("Invalid %(type)s name.",
+                              type=gettext(self.label[0])))
+
 
 class Type(AbstractEnum):
     type = 'ticket_type'
     ticket_col = 'type'
+    label = N_("Ticket Type"), N_("Ticket Types")
 
 
 class Status(object):
@@ -846,14 +891,17 @@ class Status(object):
 
 class Resolution(AbstractEnum):
     type = 'resolution'
+    label = N_("Resolution"), N_("Resolutions")
 
 
 class Priority(AbstractEnum):
     type = 'priority'
+    label = N_("Priority"), N_("Priorities")
 
 
 class Severity(AbstractEnum):
     type = 'severity'
+    label = N_("Severity"), N_("Severities")
 
 
 class Component(object):
@@ -861,6 +909,13 @@ class Component(object):
     exists = property(lambda self: self._old_name is not None)
 
     def __init__(self, env, name=None):
+        """Create a new `Component` instance. If `name` is specified
+        and the component with `name` exists, the component will be
+        retrieved from the database.
+
+        :raises ResourceNotFound: if `name` is not `None` and component
+                                  with `name` does not exist.
+        """
         self.env = env
         self.name = self._old_name = self.owner = self.description = None
         if name:
@@ -868,8 +923,8 @@ class Component(object):
                     SELECT owner, description FROM component WHERE name=%s
                     """, (name,)):
                 self.name = self._old_name = name
-                self.owner = owner or None
-                self.description = description or ''
+                self.owner = _null_to_empty(owner)
+                self.description = _null_to_empty(description)
                 break
             else:
                 raise ResourceNotFound(_("Component %(name)s does not exist.",
@@ -880,8 +935,11 @@ class Component(object):
 
     def delete(self):
         """Delete the component.
+
+        :raises TracError: if component does not exist.
         """
-        assert self.exists, "Cannot delete non-existent component"
+        if not self.exists:
+            raise TracError(_("Cannot delete non-existent component."))
 
         self.env.log.info("Deleting component '%s'", self.name)
         with self.env.db_transaction as db:
@@ -891,34 +949,50 @@ class Component(object):
 
     def insert(self):
         """Insert a new component.
+
+        :raises TracError: if component name is empty.
+        :raises ResourceExistsError: if component with name already exists.
         """
-        assert not self.exists, "Cannot insert existing component"
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_("Invalid component name."))
+        if self.exists:
+            raise ResourceExistsError(
+                _('Component "%(name)s" already exists.', name=self.name))
+        self._check_and_coerce_fields()
 
         self.env.log.debug("Creating new component '%s'", self.name)
         with self.env.db_transaction as db:
-            db("""INSERT INTO component (name,owner,description)
-                  VALUES (%s,%s,%s)
-                  """, (self.name, self.owner, self.description))
+            try:
+                db("""
+                        INSERT INTO component (name,owner,description)
+                        VALUES (%s,%s,%s)
+                        """, (self.name, _empty_to_null(self.owner),
+                              _empty_to_null(self.description)))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Component "%(name)s" already exists.', name=self.name))
             TicketSystem(self.env).reset_ticket_fields()
         self._old_name = self.name
 
     def update(self):
         """Update the component.
+
+        :raises TracError: if component does not exist or component name
+                           is empty.
+        :raises ResourceExistsError: if renamed component already exists.
         """
-        assert self.exists, "Cannot update non-existent component"
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_("Invalid component name."))
+        if not self.exists:
+            raise TracError(_("Cannot update non-existent component."))
+        self._check_and_coerce_fields()
 
         self.env.log.info("Updating component '%s'", self.name)
         with self.env.db_transaction as db:
-            db("""UPDATE component SET name=%s,owner=%s, description=%s
-                  WHERE name=%s
-                  """, (self.name, self.owner, self.description,
-                        self._old_name))
+            try:
+                db("""UPDATE component SET name=%s,owner=%s, description=%s
+                      WHERE name=%s
+                      """, (self.name, _empty_to_null(self.owner),
+                            _empty_to_null(self.description), self._old_name))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Component "%(name)s" already exists.', name=self.name))
             if self.name != self._old_name:
                 # Update tickets
                 db("UPDATE ticket SET component=%s WHERE component=%s",
@@ -933,9 +1007,15 @@ class Component(object):
                 """):
             component = cls(env)
             component.name = component._old_name = name
-            component.owner = owner or None
-            component.description = description or ''
+            component.owner = _null_to_empty(owner)
+            component.description = _null_to_empty(description)
             yield component
+
+    def _check_and_coerce_fields(self):
+        self.name = simplify_whitespace(self.name)
+        self.owner = simplify_whitespace(self.owner)
+        if not self.name:
+            raise TracError(_("Invalid component name."))
 
 
 class MilestoneCache(core.Component):
@@ -953,10 +1033,11 @@ class MilestoneCache(core.Component):
         for name, due, completed, description in self.env.db_query("""
                 SELECT name, due, completed, description FROM milestone
                 """):
-            milestones[name] = (name,
-                    from_utimestamp(due) if due else None,
-                    from_utimestamp(completed) if completed else None,
-                    description or '')
+            milestones[name] = (
+                name,
+                _from_timestamp(due),
+                _from_timestamp(completed),
+                description or '')
         return milestones
 
     def fetchone(self, name, milestone=None):
@@ -1241,8 +1322,8 @@ class Version(object):
                     SELECT time, description FROM version WHERE name=%s
                     """, (name,)):
                 self.name = self._old_name = name
-                self.time = from_utimestamp(time) if time else None
-                self.description = description or ''
+                self.time = _from_timestamp(time)
+                self.description = _null_to_empty(description)
                 break
             else:
                 raise ResourceNotFound(_("Version %(name)s does not exist.",
@@ -1253,8 +1334,11 @@ class Version(object):
 
     def delete(self):
         """Delete the version.
+
+        :raises TracError: if version does not exist.
         """
-        assert self.exists, "Cannot delete non-existent version"
+        if not self.exists:
+            raise TracError(_("Cannot delete non-existent version."))
 
         self.env.log.info("Deleting version '%s'", self.name)
         with self.env.db_transaction as db:
@@ -1264,33 +1348,47 @@ class Version(object):
 
     def insert(self):
         """Insert a new version.
+
+        :raises TracError: if version name is empty.
+        :raises ResourceExistsError: if version with name already exists.
         """
-        assert not self.exists, "Cannot insert existing version"
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_("Invalid version name."))
+        self._check_and_coerce_fields()
 
         self.env.log.debug("Creating new version '%s'", self.name)
         with self.env.db_transaction as db:
-            db("INSERT INTO version (name,time,description) VALUES (%s,%s,%s)",
-                (self.name, to_utimestamp(self.time), self.description))
+            try:
+                db("""
+                    INSERT INTO version (name,time,description)
+                    VALUES (%s,%s,%s)
+                    """, (self.name, to_utimestamp(self.time),
+                          _empty_to_null(self.description)))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Version "%(name)s" already exists.', name=self.name))
             TicketSystem(self.env).reset_ticket_fields()
         self._old_name = self.name
 
     def update(self):
         """Update the version.
+
+        :raises TracError: if version does not exist or version name
+                                is empty.
+        :raises ResourceExistsError: if renamed value already exists.
         """
-        assert self.exists, "Cannot update non-existent version"
-        self.name = simplify_whitespace(self.name)
-        if not self.name:
-            raise TracError(_("Invalid version name."))
+        if not self.exists:
+            raise TracError(_("Cannot update non-existent version."))
+        self._check_and_coerce_fields()
 
         self.env.log.info("Updating version '%s'", self.name)
         with self.env.db_transaction as db:
-            db("""UPDATE version
-                  SET name=%s, time=%s, description=%s WHERE name=%s
-                  """, (self.name, to_utimestamp(self.time), self.description,
-                        self._old_name))
+            try:
+                db("""UPDATE version SET name=%s, time=%s, description=%s
+                      WHERE name=%s
+                      """, (self.name, to_utimestamp(self.time),
+                            self.description, self._old_name))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Version "%(name)s" already exists.', name=self.name))
             if self.name != self._old_name:
                 # Update tickets
                 db("UPDATE ticket SET version=%s WHERE version=%s",
@@ -1306,9 +1404,14 @@ class Version(object):
                 SELECT name, time, description FROM version"""):
             version = cls(env)
             version.name = version._old_name = name
-            version.time = from_utimestamp(time) if time else None
-            version.description = description or ''
+            version.time = _from_timestamp(time)
+            version.description = _null_to_empty(description)
             versions.append(version)
         def version_order(v):
             return v.time or utcmax, embedded_numbers(v.name)
         return sorted(versions, key=version_order, reverse=True)
+
+    def _check_and_coerce_fields(self):
+        self.name = simplify_whitespace(self.name)
+        if not self.name:
+            raise TracError(_("Invalid version name."))

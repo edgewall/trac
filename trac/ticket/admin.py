@@ -84,14 +84,10 @@ class ComponentAdminPanel(TicketAdminPanel):
             comp = model.Component(self.env, component)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    comp.name = name = req.args.get('name')
+                    comp.name = req.args.get('name')
                     comp.owner = req.args.get('owner')
                     comp.description = req.args.get('description')
-                    try:
-                        comp.update()
-                    except self.env.db_exc.IntegrityError:
-                        raise TracError(_('Component "%(name)s" already '
-                                          'exists.', name=name))
+                    comp.update()
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -105,23 +101,13 @@ class ComponentAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Component
                 if req.args.get('add') and req.args.get('name'):
-                    name = req.args.get('name')
-                    try:
-                        comp = model.Component(self.env, name=name)
-                    except ResourceNotFound:
-                        comp = model.Component(self.env)
-                        comp.name = name
-                        if req.args.get('owner'):
-                            comp.owner = req.args.get('owner')
-                        comp.insert()
-                        add_notice(req, _('The component "%(name)s" has been '
-                                          'added.', name=name))
-                        req.redirect(req.href.admin(cat, page))
-                    else:
-                        if comp.name is None:
-                            raise TracError(_("Invalid component name."))
-                        raise TracError(_('Component "%(name)s" already '
-                                          'exists.', name=name))
+                    comp = model.Component(self.env)
+                    comp.name = req.args.get('name')
+                    comp.owner = req.args.get('owner')
+                    comp.insert()
+                    add_notice(req, _('The component "%(name)s" has been '
+                                      'added.', name=comp.name))
+                    req.redirect(req.href.admin(cat, page))
 
                 # Remove components
                 elif req.args.get('remove'):
@@ -464,7 +450,7 @@ class VersionAdminPanel(TicketAdminPanel):
             ver = model.Version(self.env, version)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    ver.name = name = req.args.get('name')
+                    ver.name = req.args.get('name')
                     if req.args.get('time'):
                         ver.time = user_time(req, parse_date,
                                              req.args.get('time'),
@@ -472,12 +458,7 @@ class VersionAdminPanel(TicketAdminPanel):
                     else:
                         ver.time = None  # unset
                     ver.description = req.args.get('description')
-                    try:
-                        ver.update()
-                    except self.env.db_exc.IntegrityError:
-                        raise TracError(_('Version "%(name)s" already '
-                                          'exists.', name=name))
-
+                    ver.update()
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -491,25 +472,16 @@ class VersionAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Version
                 if req.args.get('add') and req.args.get('name'):
-                    name = req.args.get('name')
-                    try:
-                        ver = model.Version(self.env, name=name)
-                    except ResourceNotFound:
-                        ver = model.Version(self.env)
-                        ver.name = name
-                        if req.args.get('time'):
-                            ver.time = user_time(req, parse_date,
-                                                 req.args.get('time'),
-                                                 hint='datetime')
-                        ver.insert()
-                        add_notice(req, _('The version "%(name)s" has been '
-                                          'added.', name=name))
-                        req.redirect(req.href.admin(cat, page))
-                    else:
-                        if ver.name is None:
-                            raise TracError(_("Invalid version name."))
-                        raise TracError(_('Version "%(name)s" already '
-                                          'exists.', name=name))
+                    ver = model.Version(self.env)
+                    ver.name = req.args.get('name')
+                    if req.args.get('time'):
+                        ver.time = user_time(req, parse_date,
+                                             req.args.get('time'),
+                                             hint='datetime')
+                    ver.insert()
+                    add_notice(req, _('The version "%(name)s" has been '
+                                      'added.', name=ver.name))
+                    req.redirect(req.href.admin(cat, page))
 
                 # Remove versions
                 elif req.args.get('remove'):
@@ -640,12 +612,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             enum = self._enum_cls(self.env, path_info)
             if req.method == 'POST':
                 if req.args.get('save'):
-                    enum.name = name = req.args.get('name')
-                    try:
-                        enum.update()
-                    except self.env.db_exc.IntegrityError:
-                        raise TracError(_('%(type)s value "%(name)s" already '
-                                          'exists', type=label[0], name=name))
+                    enum.name = req.args.get('name')
+                    enum.update()
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -657,23 +625,13 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add enum
                 if req.args.get('add') and req.args.get('name'):
-                    name = req.args.get('name')
-                    try:
-                        enum = self._enum_cls(self.env, name=name)
-                    except ResourceNotFound:
-                        enum = self._enum_cls(self.env)
-                        enum.name = name
-                        enum.insert()
-                        add_notice(req, _('The %(field)s value "%(name)s" '
-                                          'has been added.',
-                                          field=label[0], name=name))
-                        req.redirect(req.href.admin(cat, page))
-                    else:
-                        if enum.name is None:
-                            raise TracError(_("Invalid %(type)s value.",
-                                              type=label[0]))
-                        raise TracError(_('%(type)s value "%(name)s" already '
-                                          'exists', type=label[0], name=name))
+                    enum = self._enum_cls(self.env)
+                    enum.name = req.args.get('name')
+                    enum.insert()
+                    add_notice(req, _('The %(field)s value "%(name)s" '
+                                      'has been added.',
+                                      field=label[0], name=enum.name))
+                    req.redirect(req.href.admin(cat, page))
 
                 # Remove enums
                 elif req.args.get('remove'):
@@ -827,25 +785,25 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 class PriorityAdminPanel(AbstractEnumAdminPanel):
     _type = 'priority'
     _enum_cls = model.Priority
-    _label = N_("Priority"), N_("Priorities")
+    _label = model.Priority.label
 
 
 class ResolutionAdminPanel(AbstractEnumAdminPanel):
     _type = 'resolution'
     _enum_cls = model.Resolution
-    _label = N_("Resolution"), N_("Resolutions")
+    _label = model.Resolution.label
 
 
 class SeverityAdminPanel(AbstractEnumAdminPanel):
     _type = 'severity'
     _enum_cls = model.Severity
-    _label = N_("Severity"), N_("Severities")
+    _label = model.Severity.label
 
 
 class TicketTypeAdminPanel(AbstractEnumAdminPanel):
     _type = 'type'
     _enum_cls = model.Type
-    _label = N_("Ticket Type"), N_("Ticket Types")
+    _label = model.Type.label
 
     _command_type = 'ticket_type'
     _command_help = {
