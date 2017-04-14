@@ -32,7 +32,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
 from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import *
-from trac.perm import PermissionError, IPermissionPolicy
+from trac.perm import IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import content_disposition, create_zipinfo, file_or_std, \
