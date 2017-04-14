@@ -181,10 +181,10 @@ class AttachmentTestCase(unittest.TestCase):
                          attachment.path)
 
     def test_select_empty(self):
-        self.assertRaises(StopIteration,
-                          next, Attachment.select(self.env, 'ticket', 42))
-        self.assertRaises(StopIteration,
-                          next, Attachment.select(self.env, 'wiki', 'SomePage'))
+        with self.assertRaises(StopIteration):
+            next(Attachment.select(self.env, 'ticket', 42))
+        with self.assertRaises(StopIteration):
+            next(Attachment.select(self.env, 'wiki', 'SomePage'))
 
     def test_insert(self):
         attachment = Attachment(self.env, 'ticket', 42)
@@ -195,7 +195,8 @@ class AttachmentTestCase(unittest.TestCase):
         attachments = Attachment.select(self.env, 'ticket', 42)
         self.assertEqual('foo.txt', next(attachments).filename)
         self.assertEqual('bar.jpg', next(attachments).filename)
-        self.assertRaises(StopIteration, next, attachments)
+        with self.assertRaises(StopIteration):
+            next(attachments)
 
     def test_insert_unique(self):
         attachment = Attachment(self.env, 'ticket', 42)
@@ -212,8 +213,8 @@ class AttachmentTestCase(unittest.TestCase):
 
     def test_insert_outside_attachments_dir(self):
         attachment = Attachment(self.env, '../../../../../sth/private', 42)
-        self.assertRaises(TracError, attachment.insert, 'foo.txt',
-                          io.BytesIO(), 0)
+        with self.assertRaises(TracError):
+            attachment.insert('foo.txt', io.BytesIO(), 0)
 
     def test_delete(self):
         attachment1 = Attachment(self.env, 'wiki', 'SomePage')
@@ -302,7 +303,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
-        self.assertRaises(HTTPBadRequest, module.process_request, req)
+        with self.assertRaises(HTTPBadRequest):
+            module.process_request(req)
 
     def test_post_request_without_attachment_raises_exception(self):
         """TracError is raised when a POST request is submitted
@@ -314,7 +316,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
-        self.assertRaises(TracError, module.process_request, req)
+        with self.assertRaises(TracError):
+            module.process_request(req)
 
     def test_attachment_parent_realm_raises_exception(self):
         """TracError is raised when 'attachment' is the resource parent
@@ -325,7 +328,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
-        self.assertRaises(TracError, module.process_request, req)
+        with self.assertRaises(TracError):
+            module.process_request(req)
 
     def test_resource_doesnt_exist(self):
         """Non-existent resource returns False from resource_exists."""
