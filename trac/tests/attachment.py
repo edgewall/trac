@@ -74,9 +74,8 @@ class ResourceManagerStub(Component):
 class AttachmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(enable=('trac.*', TicketOnlyViewsTicket))
         self.env.path = mkdtemp()
-        self.env.enable_component(TicketOnlyViewsTicket)
         self.env.config.set('trac', 'permission_policies',
                             'TicketOnlyViewsTicket, LegacyAttachmentPolicy')
         self.env.config.set('attachment', 'max_size', 512)
