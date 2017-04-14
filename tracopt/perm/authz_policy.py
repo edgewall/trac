@@ -206,6 +206,8 @@ class AuthzPolicy(Component):
 
         all_actions = PermissionSystem(self.env).get_actions()
         for section in self.authz.sections():
+            if section == 'groups':
+                continue
             for _, actions in self.authz.items(section):
                 for action in to_list(actions):
                     if action not in all_actions:
