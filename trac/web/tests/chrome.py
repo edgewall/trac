@@ -19,7 +19,7 @@ import jinja2
 
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
-from trac.perm import PermissionSystem
+from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.test import EnvironmentStub, MockPerm, MockRequest, locale_en, \
                       mkdtemp
 from trac.tests.contentgen import random_sentence
@@ -27,6 +27,7 @@ from trac.resource import Resource
 from trac.util import create_file
 from trac.util.datefmt import pytz, timezone, utc
 from trac.util.html import Markup, tag
+from trac.web.api import IRequestHandler
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice,
     add_script, add_script_data, add_stylesheet, add_warning, web_context)
@@ -419,34 +420,51 @@ class ChromeTestCase2(unittest.TestCase):
 
 class NavigationContributorTestCase(unittest.TestCase):
 
-    def setUp(self):
+    navigation_contributors = []
+
+    @classmethod
+    def setUpClass(cls):
         class TestNavigationContributor1(Component):
             implements(INavigationContributor)
+
             def get_active_navigation_item(self, req):
                 return 'test1'
+
             def get_navigation_items(self, req):
                 yield 'mainnav', 'test1', 'Test 1'
 
         class TestNavigationContributor2(Component):
             implements(INavigationContributor)
+
             def get_active_navigation_item(self, req):
                 return 'test2'
+
             def get_navigation_items(self, req):
                 yield 'mainnav', 'test2', \
                       tag.a('Test 2', href='test2', target='blank')
 
         class TestNavigationContributor3(Component):
             implements(INavigationContributor)
+
             def get_active_navigation_item(self, req):
                 return 'test3'
+
             def get_navigation_items(self, req):
                 yield 'mainnav', 'test3', \
                       tag.a('Test 3', href='test3', target='blank')
 
-        self.nav_contributors = (TestNavigationContributor1,
-                                 TestNavigationContributor2,
-                                 TestNavigationContributor3)
-        self.env = EnvironmentStub(enable=self.nav_contributors)
+        cls.navigation_contributors = [TestNavigationContributor1,
+                                       TestNavigationContributor2,
+                                       TestNavigationContributor3]
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=self.navigation_contributors)
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for class_ in cls.navigation_contributors:
+            ComponentMeta.deregister(class_)
 
     def _get_navigation_item(self, items, name):
         for item in items:
@@ -462,7 +480,7 @@ class NavigationContributorTestCase(unittest.TestCase):
 
     def test_nav_contributor_active(self):
         req = MockRequest(self.env)
-        handler = self.nav_contributors[0](self.env)
+        handler = self.navigation_contributors[0](self.env)
         nav = Chrome(self.env).prepare_request(req, handler)['nav']
         self.assertEqual({'name': 'test1', 'label': 'Test 1', 'active': True},
                          nav['mainnav'][0])
@@ -504,58 +522,208 @@ class NavigationContributorTestCase(unittest.TestCase):
                          unicode(item['label']))
 
 
-class NavigationOrderTestCase(unittest.TestCase):
+class NavigationCustomizationTestCase(unittest.TestCase):
 
-    def setUp(self):
+    navigation_contributors = []
+
+    @classmethod
+    def setUpClass(cls):
         class TestNavigationContributor1(Component):
             implements(INavigationContributor)
+
             def get_active_navigation_item(self, req):
-                return None
+                return 'test1'
+
             def get_navigation_items(self, req):
-                yield 'metanav', 'test1', 'Test 1'
+                yield 'metanav', 'test1', \
+                      tag.a('Test 1', href=req.href.test('1'))
 
         class TestNavigationContributor2(Component):
-            implements(INavigationContributor)
-            def get_active_navigation_item(self, req):
-                return None
-            def get_navigation_items(self, req):
-                yield 'metanav', 'test2', 'Test 2'
+            implements(INavigationContributor, IPermissionRequestor)
 
-        self.env = EnvironmentStub(enable=(TestNavigationContributor1,
-                                           TestNavigationContributor2))
-        self.req = MockRequest(self.env)
-        self.chrome = Chrome(self.env)
+            def get_active_navigation_item(self, req):
+                return 'test2'
+
+            def get_permission_actions(self):
+                return ['TEST2_VIEW']
+
+            def get_navigation_items(self, req):
+                if 'TEST2_VIEW' in req.perm:
+                    yield 'metanav', 'test2', \
+                          tag.a('Test 2', href=req.href.test('2'))
+
+        class TestNavigationContributor3(Component):
+            implements(INavigationContributor, IPermissionRequestor,
+                       IRequestHandler)
+
+            def match_request(self, req):
+                return req.path_info == '/test/3'
+
+            def process_request(self, req):
+                pass
+
+            def get_permission_actions(self):
+                return ['TEST3_VIEW']
+
+            def get_active_navigation_item(self, req):
+                return 'test3'
+
+            def get_navigation_items(self, req):
+                yield 'mainnav', 'test3', \
+                      tag.a('Test 3', href=req.href.test('3'))
+
+        cls.navigation_contributors = [TestNavigationContributor1,
+                                       TestNavigationContributor2,
+                                       TestNavigationContributor3]
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=self.navigation_contributors +
+                                          ['trac.perm.*'])
+        self.env.config.set('trac', 'permission_policies',
+                            'DefaultPermissionPolicy')
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for class_ in cls.navigation_contributors:
+            ComponentMeta.deregister(class_)
 
     def test_explicit_ordering(self):
         """Ordering is explicitly specified."""
+        req = MockRequest(self.env)
         self.env.config.set('metanav', 'test1.order', 2)
         self.env.config.set('metanav', 'test2.order', 1)
-        metanav = self.req.chrome['nav']['metanav']
+        metanav = req.chrome['nav']['metanav']
         self.assertEqual('test2', metanav[0]['name'])
         self.assertEqual('test1', metanav[1]['name'])
 
-    def test_partial_explicit_ordering_1(self):
+    def test_partial_explicit_ordering(self):
         """Ordering for one item is explicitly specified."""
-        self.env.config.set('metanav', 'test1.order', 1)
-        metanav = self.req.chrome['nav']['metanav']
-        self.assertEqual('test1', metanav[0]['name'])
-        self.assertEqual('test2', metanav[1]['name'])
-
-    def test_partial_explicit_ordering_2(self):
-        """Ordering for one item is explicitly specified."""
+        req = MockRequest(self.env)
         self.env.config.set('metanav', 'test2.order', 1)
-        metanav = self.req.chrome['nav']['metanav']
+        metanav = req.chrome['nav']['metanav']
         self.assertEqual('test2', metanav[0]['name'])
         self.assertEqual('test1', metanav[1]['name'])
 
     def test_implicit_ordering(self):
         """When not specified, ordering is alphabetical."""
+        req = MockRequest(self.env)
         self.env.config.set('metanav', 'foo.order', 1)
         self.env.config.set('metanav', 'bar.order', 2)
-
-        metanav = self.req.chrome['nav']['metanav']
+        metanav = req.chrome['nav']['metanav']
         self.assertEqual('test1', metanav[0]['name'])
         self.assertEqual('test2', metanav[1]['name'])
+
+    def test_add_new_item(self):
+        """New items added to the main nav."""
+        req = MockRequest(self.env)
+        self.env.config.set('metanav', 'tracguide', 'enabled')
+        self.env.config.set('metanav', 'tracguide.href', '/wiki/TracGuide')
+        self.env.config.set('metanav', 'tracguide.label', 'Trac Guide')
+        self.env.config.set('mainnav', 'google', 'enabled')
+        self.env.config.set('mainnav', 'google.href', 'https://google.com')
+
+        items = req.chrome['nav']
+        mainnav = items['mainnav']
+
+        self.assertEqual('google', mainnav[0]['name'])
+        self.assertEqual('<a href="https://google.com">google</a>',
+                         unicode(mainnav[0]['label']))
+        self.assertEqual('tracguide', items['metanav'][2]['name'])
+        self.assertEqual('<a href="/trac.cgi/wiki/TracGuide">Trac Guide</a>',
+                         unicode(items['metanav'][2]['label']))
+
+    def test_move_metanav_to_mainnav(self):
+        """Move items between metanav and mainnav."""
+        req = MockRequest(self.env)
+        self.env.config.set('metanav', 'test1.order', 1)
+        self.env.config.set('metanav', 'test1.perm', 'TRAC_ADMIN')
+        self.env.config.set('mainnav', 'test1', 'enabled')
+        self.env.config.set('mainnav', 'test1.order', 2)
+        self.env.config.set('mainnav', 'test1.permission', 'TEST3_VIEW')
+        self.env.config.set('mainnav', 'test2.order', 1)
+        self.env.config.set('mainnav', 'test3.order', 1)
+
+        items = req.chrome['nav']
+        mainnav = items['mainnav']
+        metanav = items['metanav']
+
+        self.assertEqual(1, len(metanav))
+        self.assertEqual('test2', unicode(metanav[0]['name']))
+        self.assertEqual('<a href="/trac.cgi/test/2">Test 2</a>',
+                         unicode(metanav[0]['label']))
+        self.assertEqual(2, len(mainnav))
+        self.assertNotIn('test1', metanav)
+        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertEqual('<a href="/trac.cgi/test/3">Test 3</a>',
+                         unicode(mainnav[0]['label']))
+        self.assertFalse(mainnav[0]['active'])
+        self.assertEqual('test1', unicode(mainnav[1]['name']))
+        self.assertEqual('<a href="/trac.cgi/test/1">Test 1</a>',
+                         unicode(mainnav[1]['label']))
+
+    def test_disable_items(self):
+        """Disable navigation items."""
+        req = MockRequest(self.env)
+        self.env.config.set('metanav', 'test1', 'disabled')
+        self.env.config.set('mainnav', 'test3', 'disabled')
+        self.env.config.set('mainnav', 'test4', 'disabled')
+
+        items = req.chrome['nav']
+        mainnav = items['mainnav']
+        metanav = items['metanav']
+
+        self.assertEqual(1, len(metanav))
+        self.assertEqual('test2', unicode(metanav[0]['name']))
+        self.assertEqual([], mainnav)
+
+    def test_permission_attribute(self):
+        """The `permission` attribute controls visibility of the item."""
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'TEST2_VIEW')
+        ps.grant_permission('user1', 'TEST3_VIEW')
+        self.env.config.set('mainnav', 'test2', 'enabled')
+        self.env.config.set('mainnav', 'test3.permission', 'TEST3_VIEW')
+        self.env.config.set('mainnav', 'test4', 'enabled')
+        self.env.config.set('mainnav', 'test4.permission', 'TEST4_VIEW')
+
+        req = MockRequest(self.env, authname='user1')
+        items = req.chrome['nav']
+        mainnav = items['mainnav']
+        self.assertEqual(2, len(mainnav))
+        self.assertIn('test2', mainnav[0]['name'])
+        self.assertIn('test3', mainnav[1]['name'])
+
+        req = MockRequest(self.env, authname='user2')
+        items = req.chrome['nav']
+        mainnav = items['mainnav']
+        self.assertEqual([], mainnav)
+
+    def test_active_highlighting(self):
+        """The navigation item matching the path is highlighted as active.
+        """
+        self.env.config.set('mainnav', 'test4', 'enabled')
+        self.env.config.set('mainnav', 'test4.href', '/test/3/1')
+        chrome = Chrome(self.env)
+        handler = self.navigation_contributors[2](self.env)
+
+        req = MockRequest(self.env, path_info='/test/3')
+        items = chrome.prepare_request(req, handler)['nav']
+        mainnav = items['mainnav']
+        self.assertEqual(2, len(mainnav))
+        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertTrue(mainnav[0]['active'])
+        self.assertEqual('test4', unicode(mainnav[1]['name']))
+        self.assertFalse(mainnav[1]['active'])
+
+        req = MockRequest(self.env, path_info='/test/3/1')
+        items = chrome.prepare_request(req, handler)['nav']
+        mainnav = items['mainnav']
+        self.assertEqual(2, len(mainnav))
+        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertFalse(mainnav[0]['active'])
+        self.assertEqual('test4', unicode(mainnav[1]['name']))
+        self.assertTrue(mainnav[1]['active'])
 
 
 class FormatAuthorTestCase(unittest.TestCase):
@@ -909,7 +1077,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ChromeTestCase))
     suite.addTest(unittest.makeSuite(ChromeTestCase2))
     suite.addTest(unittest.makeSuite(NavigationContributorTestCase))
-    suite.addTest(unittest.makeSuite(NavigationOrderTestCase))
+    suite.addTest(unittest.makeSuite(NavigationCustomizationTestCase))
     suite.addTest(unittest.makeSuite(FormatAuthorTestCase))
     suite.addTest(unittest.makeSuite(AuthorInfoTestCase))
     suite.addTest(unittest.makeSuite(ChromeTemplateRenderingTestCase))

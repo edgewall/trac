@@ -154,6 +154,21 @@ class ComponentMeta(type):
             compmgr.components[cls] = self
         return self
 
+    @classmethod
+    def deregister(cls, component):
+        """Remove a component from the registry."""
+        try:
+            cls._components.remove(component)
+        except ValueError:
+            pass
+        for class_ in component.__mro__:
+            for interface in class_.__dict__.get('_implements', ()):
+                implementers = cls._registry.get(interface)
+                try:
+                    implementers.remove(class_)
+                except ValueError:
+                    pass
+
 
 class Component(object):
     """Base class for components.

@@ -21,11 +21,31 @@ from trac.versioncontrol.admin import RepositoryAdminPanel
 
 class RepositoryAdminPanelTestCase(unittest.TestCase):
 
+    RepositoryConnector = None
+
+    @classmethod
+    def setUpClass(cls):
+        class RepositoryConnector(Component):
+            implements(IRepositoryConnector)
+
+            def get_supported_types(self):
+                yield 'RepositoryConnector', 1
+
+            def get_repository(self, repos_type, repos_dir, params):
+                pass
+
+        cls.RepositoryConnector = RepositoryConnector
+
     def setUp(self):
         self.env = EnvironmentStub(enable=('trac.versioncontrol.admin.*',))
 
     def tearDown(self):
         self.env.reset_db()
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        ComponentMeta.deregister(cls.RepositoryConnector)
 
     def test_panel_not_exists_when_no_repository_connectors(self):
         """Repositories admin panel is not present when there are
@@ -41,16 +61,7 @@ class RepositoryAdminPanelTestCase(unittest.TestCase):
         """Repositories admin panel is present when there are
         repository connectors enabled.
         """
-        class RepositoryConnector(Component):
-            implements(IRepositoryConnector)
-
-            def get_supported_types(self):
-                yield 'RepositoryConnector', 1
-
-            def get_repository(self, repos_type, repos_dir, params):
-                pass
-
-        self.env.enable_component(RepositoryConnector)
+        self.env.enable_component(self.RepositoryConnector)
         req = MockRequest(self.env)
         rap = RepositoryAdminPanel(self.env)
         panels = [panel for panel in rap.get_admin_panels(req)]

@@ -23,7 +23,6 @@ other forms of web content are also using facilities provided here.
 """
 
 import datetime
-from functools import partial
 import itertools
 import io
 import operator
@@ -31,6 +30,7 @@ import os.path
 import pkg_resources
 import pprint
 import re
+from functools import partial
 
 # Legacy Genshi support
 from trac.util.html import genshi
@@ -822,61 +822,7 @@ class Chrome(Component):
         chrome['logo'] = self.get_logo_data(req.href, req.abs_href)
 
         # Navigation links
-        allitems = {}
-        active = None
-        for contributor in self.navigation_contributors:
-            try:
-                for category, name, text in \
-                        contributor.get_navigation_items(req) or []:
-                    category_section = self.config[category]
-                    if category_section.getbool(name, True):
-                        # the navigation item is enabled (this is the default)
-                        item = text if isinstance(text, Element) and \
-                                       text.tag == u'a' \
-                                    else None
-                        label = category_section.get(name + '.label')
-                        href = category_section.get(name + '.href')
-                        if href and href.startswith('/'):
-                            href = req.href + href
-                        if item:
-                            if label:
-                                item.children[0] = label
-                            if href:
-                                item = item(href=href)
-                        else:
-                            if href or label:
-                                item = tag.a(label or text, href=href)
-                            else:
-                                item = text
-                        allitems.setdefault(category, {})[name] = item
-                if contributor is handler:
-                    active = contributor.get_active_navigation_item(req)
-            except Exception as e:
-                name = contributor.__class__.__name__
-                if isinstance(e, TracError):
-                    self.log.warning("Error with navigation contributor %s",
-                                     name)
-                else:
-                    self.log.error("Error with navigation contributor %s: %s",
-                                   name, exception_to_unicode(e))
-                add_warning(req, _("Error with navigation contributor "
-                                   '"%(name)s"', name=name))
-
-        nav = {}
-        for category, navitems in allitems.items():
-            sect = self.config[category]
-            order = {name: sect.getfloat(name + '.order', float('inf'))
-                     for name in navitems}
-            nav[category] = []
-            for name, label in navitems.items():
-                nav[category].append({
-                    'name': name,
-                    'label': label,
-                    'active': name == active
-                })
-            nav[category].sort(key=lambda e: (order[e['name']], e['name']))
-
-        chrome['nav'] = nav
+        chrome['nav'] = self.get_navigation_items(req, handler)
 
         # Default theme file
         chrome['theme'] = 'theme.html'
@@ -929,6 +875,92 @@ class Chrome(Component):
         else:
             logo = {'link': self.logo_link, 'alt': self.logo_alt}
         return logo
+
+    def get_navigation_items(self, req, handler):
+
+        def get_item_attributes(category, name, text):
+            section = self.config[category]
+            href = section.get(name + '.href')
+            label = section.get(name + '.label')
+            if href and href.startswith('/'):
+                href = req.href + href
+            if isinstance(text, Element) and text.tag == u'a':
+                link = text
+                if label:
+                    link.children[0] = label
+                if href:
+                    link = link(href=href)
+            else:
+                if href or label:
+                    link = tag.a(label or text or name, href=href)
+                else:
+                    link = text
+            return {
+                'enabled': section.getbool(name, True),
+                'order': section.getfloat(name + '.order', float('inf')),
+                'label': label,
+                'href': href,
+                'link': link,
+                'perm': section.get(name + '.permission')
+            }
+
+        all_items = {}
+        active = None
+        for contributor in self.navigation_contributors:
+            try:
+                for category, name, text in \
+                        contributor.get_navigation_items(req) or []:
+                    all_items.setdefault(category, {})[name] = \
+                        get_item_attributes(category, name, text)
+                if contributor is handler:
+                    active = contributor.get_active_navigation_item(req)
+            except Exception as e:
+                name = contributor.__class__.__name__
+                if isinstance(e, TracError):
+                    self.log.warning("Error with navigation contributor %s",
+                                     name)
+                else:
+                    self.log.error("Error with navigation contributor %s: %s",
+                                   name, exception_to_unicode(e))
+                add_warning(req, _("Error with navigation contributor "
+                                   '"%(name)s"', name=name))
+
+        # Extra navigation items.
+        categories = ('mainnav', 'metanav')
+        for category, other_category in zip(categories, reversed(categories)):
+            section = self.config[category]
+            for name in section:
+                if '.' not in name and \
+                        name not in all_items.get(category, []):
+                    text = None
+                    # Allow items to be moved between categories.
+                    if other_category in all_items and \
+                            name in all_items[other_category]:
+                        all_items[category][name] = \
+                            all_items[other_category][name]
+                        del all_items[other_category][name]
+                        text = all_items[category][name].get('link')
+                    attributes = get_item_attributes(category, name, text)
+                    all_items.setdefault(category, {})[name] = attributes
+                    if attributes['href'] and \
+                            attributes['href'] == req.href(req.path_info):
+                        active = name
+
+        nav_items = {}
+        for category, category_items in all_items.iteritems():
+            nav_items.setdefault(category, [])
+            for name, attributes in \
+                    sorted(category_items.iteritems(),
+                           key=lambda (name, attr): (attr['order'], name)):
+                if attributes['enabled'] and attributes['link'] and \
+                        (not attributes['perm'] or
+                         attributes['perm'] in req.perm):
+                    nav_items[category].append({
+                        'name': name,
+                        'label': attributes['link'],
+                        'active': name == active
+                    })
+        return nav_items
 
     def get_interface_customization_files(self):
         """Returns a dictionary containing the lists of files present in the
