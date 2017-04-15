@@ -322,9 +322,9 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.follow(r"\bnext\b")
         tc.notfind(r"[^\"]%s[^\"]" % comment)
         tc.find(r"[^\"]%s[^\"]" % revised_comment)
+        tc.url(url + re.escape(r'?cversion=1&cnum_hist=1#comment:1'))
 
         # View comment diff.
-        self._tester.go_to_ticket(ticketid)
         tc.follow(r"\bdiff\b")
         tc.url(url + re.escape(r'?action=comment-diff&cnum=1&version=1'))
         tc.notfind(r"\bComment:\b")
