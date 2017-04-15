@@ -61,21 +61,29 @@ def _reloader_thread(modification_callback, loop_callback):
         time.sleep(_SLEEP_TIME)
 
 def _restart_with_reloader():
-    while True:
-        if os.path.isfile(sys.argv[0]):
-            args = sys.argv if os.access(sys.argv[0], os.X_OK) \
-                   else [sys.executable] + sys.argv
-        elif sys.platform == 'win32' and \
-                os.access(sys.argv[0] + '.exe', os.X_OK):
-            args = [sys.argv[0] + '.exe'] + sys.argv[1:]
-        else:
-            args = [sys.executable] + sys.argv
-        path = args[0]
-        if sys.platform == 'win32':
-            args = ['"%s"' % arg for arg in args]
-        new_environ = os.environ.copy()
-        new_environ['RUN_MAIN'] = 'true'
+    is_win32 = sys.platform == 'win32'
+    if is_win32:
+        can_exec = lambda path: os.path.isfile(path) and \
+                                os.path.normpath(path).endswith('.exe')
+    else:
+        can_exec = lambda path: os.access(path, os.X_OK)
 
+    if os.path.isfile(sys.argv[0]):
+        args = sys.argv if can_exec(sys.argv[0]) else \
+               [sys.executable] + sys.argv
+    elif is_win32 and can_exec(sys.argv[0] + '.exe'):
+        args = [sys.argv[0] + '.exe'] + sys.argv[1:]
+    elif os.path.isfile(sys.argv[0] + '-script.py'):
+        args = [sys.executable, sys.argv[0] + '-script.py'] + sys.argv[1:]
+    else:
+        args = [sys.executable] + sys.argv
+    path = args[0]
+    if is_win32:
+        args = ['"%s"' % arg for arg in args]
+    new_environ = os.environ.copy()
+    new_environ['RUN_MAIN'] = 'true'
+
+    while True:
         # This call reinvokes ourself and goes into the other branch of main as
         # a new process.
         exit_code = os.spawnve(os.P_WAIT, path, args, new_environ)
