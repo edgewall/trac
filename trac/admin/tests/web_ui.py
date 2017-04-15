@@ -14,41 +14,167 @@
 import unittest
 
 import trac.tests.compat
-from trac.admin.web_ui import PluginAdminPanel
-from trac.core import Component
+from trac.admin.web_ui import AdminModule, PluginAdminPanel
+from trac.core import Component, TracError
 from trac.test import EnvironmentStub, MockRequest
+from trac.web.api import RequestDone
 
 
 class PluginAdminPanelTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.req = MockRequest(self.env)
-
-    def tearDown(self):
-        self.env.reset_db()
 
     def test_abstract_component_not_visible(self):
         class AbstractComponent(Component):
             abstract = True
+
         class NotAbstractComponent(Component):
             abstract = False
 
+        req = MockRequest(self.env)
         panel = PluginAdminPanel(self.env)
-        data = panel.render_admin_panel(self.req, 'general', 'plugin', None)[1]
+        data = panel.render_admin_panel(req, 'general', 'plugin', None)[1]
 
-        module = self.__class__.__module__
+        module_ = self.__class__.__module__
         components = []
         for plugin in data['plugins']:
-            if module in plugin['modules'].keys():
-                components = plugin['modules'][module]['components'].keys()
+            if module_ in plugin['modules'].keys():
+                components = plugin['modules'][module_]['components'].keys()
         self.assertNotIn('AbstractComponent', components)
         self.assertIn('NotAbstractComponent', components)
+
+
+class LoggingAdminPanelTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_invalid_log_type_raises(self):
+        """Invalid log type raises TracError."""
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST', args={'log_type': 'invalid'})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(TracError, mod.process_request, req)
+
+    def test_invalid_log_level_raises(self):
+        """Invalid log level raises TracError."""
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': 'stderr',
+                                'log_level': 'INVALID'})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(TracError, mod.process_request, req)
+
+    def test_empty_log_file_raises(self):
+        """Empty log file raises TracError."""
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': 'file',
+                                'log_level': 'DEBUG',
+                                'log_file': ''})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(TracError, mod.process_request, req)
+
+    def test_invalid_log_configuration_not_saved(self):
+        """Invalid log configuration is reverted and not saved."""
+        logging_config = self.env.config['logging']
+        log_type = logging_config.get('log_type')
+        log_file = logging_config.get('log_file')
+        log_level = logging_config.get('log_level')
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': 'file',
+                                'log_level': log_level,
+                                'log_file': '/path/to/invalid/file'})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+
+        self.assertNotEqual('file', log_type)
+        self.assertEqual(log_type, logging_config.get('log_type'))
+        self.assertEquals(log_level, logging_config.get('log_level'))
+        self.assertEquals(log_file, logging_config.get('log_file'))
+        self.assertEqual(1, len(req.chrome['warnings']))
+        self.assertIn('Changes not saved. Logger configuration error:',
+                      req.chrome['warnings'][0])
+
+    def test_change_log_type(self):
+        """Change the log type."""
+        logging_config = self.env.config['logging']
+        log_type = logging_config.get('log_type')
+        log_file = logging_config.get('log_file')
+        log_level = logging_config.get('log_level')
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': 'file',
+                                'log_level': log_level,
+                                'log_file': log_file})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+
+        self.assertNotEqual('file', log_type)
+        self.assertEqual('file', logging_config.get('log_type'))
+        self.assertEquals(log_level, logging_config.get('log_level'))
+        self.assertEquals(log_file, logging_config.get('log_file'))
+
+    def test_change_log_level(self):
+        """Change the log level."""
+        logging_config = self.env.config['logging']
+        log_type = logging_config.get('log_type')
+        log_level = logging_config.get('log_level')
+        log_file = logging_config.get('log_file')
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': log_type,
+                                'log_level': 'ERROR',
+                                'log_file': log_file})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+
+        self.assertEquals(log_type, logging_config.get('log_type'))
+        self.assertNotEqual('ERROR', log_level)
+        self.assertEqual('ERROR', logging_config.get('log_level'))
+        self.assertEquals(log_file, logging_config.get('log_file'))
+
+    def test_change_log_file(self):
+        """Change the log file."""
+        logging_config = self.env.config['logging']
+        log_type = 'file'
+        logging_config.set('log_type', log_type)
+        log_level = logging_config.get('log_level')
+        log_file = logging_config.get('log_file')
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST',
+                          args={'log_type': log_type,
+                                'log_level': log_level,
+                                'log_file': 'trac.log.1'})
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+
+        self.assertEquals(log_type, logging_config.get('log_type'))
+        self.assertEquals(log_level, logging_config.get('log_level'))
+        self.assertNotEqual('trac.log.1', log_file)
+        self.assertEqual('trac.log.1', logging_config.get('log_file'))
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(PluginAdminPanelTestCase))
+    suite.addTest(unittest.makeSuite(LoggingAdminPanelTestCase))
     return suite
 
 

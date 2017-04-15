@@ -30,7 +30,8 @@ from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.datefmt import all_timezones, pytz
 from trac.util.text import exception_to_unicode, \
                            unicode_to_base64, unicode_from_base64
-from trac.util.translation import _, Locale, get_available_locales, ngettext
+from trac.util.translation import _, Locale, get_available_locales, \
+                                  ngettext, tag_
 from trac.web.api import HTTPNotFound, IRequestHandler, \
                          is_valid_default_handler
 from trac.web.chrome import add_notice, add_stylesheet, \
@@ -280,37 +281,50 @@ class LoggingAdminPanel(Component):
                     _("Unknown log type %(type)s", type=new_type),
                     _("Invalid log type")
                 )
-            if new_type != log_type:
-                self.config.set('logging', 'log_type', new_type)
-                changed = True
-                log_type = new_type
+            new_file = req.args.get('log_file', 'trac.log')
+            if not new_file:
+                raise TracError(_("You must specify a log file"),
+                                _("Missing field"))
+            new_level = req.args.get('log_level')
+            if new_level not in LOG_LEVELS:
+                raise TracError(
+                    _("Unknown log level %(level)s", level=new_level),
+                    _("Invalid log level"))
 
-            if log_type == 'none':
-                self.config.remove('logging', 'log_level')
-                changed = True
+            # Create logger to be sure the configuration is valid.
+            try:
+                self.env.create_logger(new_type, new_file, new_level)
+            except Exception as e:
+                add_warning(req,
+                            tag_("Changes not saved. Logger configuration "
+                                 "error: %(error)s. Inspect the log for more "
+                                 "information.",
+                                 error=tag.code(exception_to_unicode(e))))
+                self.log.error("Logger configuration error: %s",
+                               exception_to_unicode(e, traceback=True))
             else:
-                new_level = req.args.get('log_level')
-                if new_level not in LOG_LEVELS:
-                    raise TracError(
-                        _("Unknown log level %(level)s", level=new_level),
-                        _("Invalid log level"))
-                if new_level != log_level:
-                    self.config.set('logging', 'log_level', new_level)
+                if new_type != log_type:
+                    self.config.set('logging', 'log_type', new_type)
                     changed = True
-                    log_level = new_level
+                    log_type = new_type
 
-            if log_type == 'file':
-                new_file = req.args.get('log_file', 'trac.log')
-                if new_file != log_file:
-                    self.config.set('logging', 'log_file', new_file)
+                if log_type == 'none':
+                    self.config.remove('logging', 'log_level')
                     changed = True
-                    log_file = new_file
-                if not log_file:
-                    raise TracError(_("You must specify a log file"),
-                                    _("Missing field"))
-            else:
-                self.config.remove('logging', 'log_file')
-                changed = True
+                else:
+                    if new_level != log_level:
+                        self.config.set('logging', 'log_level', new_level)
+                        changed = True
+                        log_level = new_level
+
+                if log_type == 'file':
+                    if new_file != log_file:
+                        self.config.set('logging', 'log_file', new_file)
+                        changed = True
+                        log_file = new_file
+                else:
+                    self.config.remove('logging', 'log_file')
+                    changed = True
 
             if changed:
                 _save_config(self.config, req, self.log),

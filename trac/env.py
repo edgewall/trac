@@ -727,17 +727,21 @@ class Environment(Component, ComponentManager):
         logfile = self.log_file
         if logtype == 'file' and not os.path.isabs(logfile):
             logfile = os.path.join(self.log_dir, logfile)
-        format = self.log_format
-        logid = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
-        if format:
-            format = format.replace('$(', '%(') \
-                           .replace('%(path)s', self.path) \
-                           .replace('%(basename)s', self.name) \
-                           .replace('%(project)s', self.project_name)
-        self.log, self._log_handler = logger_handler_factory(
-            logtype, logfile, self.log_level, logid, format=format)
+        self.log, self._log_handler = \
+            self.create_logger(self.log_type, logfile, self.log_level)
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       self.trac_version)
+
+    def create_logger(self, log_type, log_file, log_level):
+        log_id = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
+        log_format = self.log_format
+        if log_format:
+            log_format = format.replace('$(', '%(') \
+                               .replace('%(path)s', self.path) \
+                               .replace('%(basename)s', self.name) \
+                               .replace('%(project)s', self.project_name)
+        return logger_handler_factory(log_type, log_file, log_level,
+                                      log_id, format=log_format)
 
     def get_known_users(self, as_dict=False):
         """Returns information about all known users, i.e. users that
