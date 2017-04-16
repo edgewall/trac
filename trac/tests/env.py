@@ -59,8 +59,8 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 class EnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
-        self.env = Environment(env_path, create=True)
+        self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        self.env = Environment(self.env_path, create=True)
         self.env.config.set('trac', 'base_url',
                             'http://trac.edgewall.org/some/path')
         self.env.config.save()
@@ -100,6 +100,23 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertEqual(True, self.env.is_component_enabled(Environment))
         self.assertEqual(False, EnvironmentStub.required)
         self.assertEqual(None, self.env.is_component_enabled(EnvironmentStub))
+
+    def test_log_format(self):
+        """Configure the log_format and log to a file at WARNING level."""
+        self.env.config.set('logging', 'log_type', 'file')
+        self.env.config.set('logging', 'log_level', 'WARNING')
+        self.env.config.set('logging', 'log_format',
+                            'Trac[$(module)s] $(project)s: $(message)s')
+        self.env.config.save()
+        self.env.shutdown()
+        self.env = Environment(self.env_path)  # Reload environment
+
+        self.env.log.warning("The warning message")
+
+        with open(os.path.join(self.env.log_dir, self.env.log_file)) as f:
+            log = f.readlines()
+        self.assertEqual("Trac[env] My Project: The warning message\n",
+                         log[-1])
 
     def test_dumped_values_in_tracini(self):
         parser = RawConfigParser()
