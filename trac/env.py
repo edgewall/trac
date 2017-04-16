@@ -622,10 +622,10 @@ class Environment(Component, ComponentManager):
         log_id = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
         log_format = self.log_format
         if log_format:
-            log_format = format.replace('$(', '%(') \
-                               .replace('%(path)s', self.path) \
-                               .replace('%(basename)s', self.name) \
-                               .replace('%(project)s', self.project_name)
+            log_format = log_format.replace('$(', '%(') \
+                                   .replace('%(path)s', self.path) \
+                                   .replace('%(basename)s', self.name) \
+                                   .replace('%(project)s', self.project_name)
         return log.logger_handler_factory(log_type, log_file, log_level,
                                           log_id, format=log_format)
 
