@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-07 16:55-0700\n"
+"POT-Creation-Date: 2017-04-16 22:36-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -384,7 +384,7 @@ msgstr ""
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:491 trac/admin/web_ui.py:494 trac/admin/web_ui.py:498
+#: trac/admin/web_ui.py:505 trac/admin/web_ui.py:508 trac/admin/web_ui.py:512
 #: trac/attachment.py:401 trac/attachment.py:419
 msgid "No file uploaded"
 msgstr ""
@@ -623,13 +623,13 @@ msgstr ""
 msgid "The configuration file is not found at %(path)s"
 msgstr ""
 
-#: trac/env.py:911
+#: trac/env.py:915
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:941
+#: trac/env.py:945
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -637,7 +637,7 @@ msgid ""
 "Run 'trac-admin \"%(path)s\" upgrade'"
 msgstr ""
 
-#: trac/env.py:996
+#: trac/env.py:1000
 #, python-format
 msgid ""
 "Resources cannot be deployed to a target directory that is equal to or "
@@ -646,67 +646,67 @@ msgid ""
 "Please choose a different target directory and try again."
 msgstr ""
 
-#: trac/env.py:1005
+#: trac/env.py:1009
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:1023
+#: trac/env.py:1027
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:1035
+#: trac/env.py:1039
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:1040
+#: trac/env.py:1044
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:1048
+#: trac/env.py:1052
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1067
+#: trac/env.py:1071
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1077
+#: trac/env.py:1081
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1082
+#: trac/env.py:1086
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/admin/api.py:134 trac/env.py:1087
+#: trac/admin/api.py:134 trac/env.py:1091
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1090
+#: trac/env.py:1094
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1096
+#: trac/env.py:1100
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1100
+#: trac/env.py:1104
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1112
+#: trac/env.py:1116
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1123
+#: trac/env.py:1127
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -714,7 +714,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1128
+#: trac/env.py:1132
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1037,117 +1037,124 @@ msgstr ""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
 
-#: trac/admin/web_ui.py:59
+#: trac/admin/web_ui.py:60
 msgid "Admin"
 msgstr ""
 
-#: trac/admin/web_ui.py:75
+#: trac/admin/web_ui.py:76
 msgid "No administration panels available"
 msgstr ""
 
-#: trac/admin/web_ui.py:101 trac/admin/web_ui.py:105
+#: trac/admin/web_ui.py:102 trac/admin/web_ui.py:106
 msgid "Unknown administration panel"
 msgstr ""
 
-#: trac/admin/web_ui.py:153 trac/ticket/admin.py:65 trac/ticket/admin.py:95
+#: trac/admin/web_ui.py:154 trac/ticket/admin.py:65 trac/ticket/admin.py:95
 #: trac/ticket/admin.py:481 trac/ticket/admin.py:649 trac/ticket/admin.py:734
 #: trac/ticket/report.py:254 trac/ticket/roadmap.py:861
 #: trac/versioncontrol/admin.py:222
 msgid "Your changes have been saved."
 msgstr ""
 
-#: trac/admin/web_ui.py:158 trac/ticket/admin.py:69
+#: trac/admin/web_ui.py:159 trac/ticket/admin.py:69
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr ""
 
-#: trac/admin/web_ui.py:173 trac/admin/web_ui.py:251 trac/admin/web_ui.py:340
-#: trac/admin/web_ui.py:469 trac/prefs/templates/prefs_general.html:20
+#: trac/admin/web_ui.py:174 trac/admin/web_ui.py:252 trac/admin/web_ui.py:354
+#: trac/admin/web_ui.py:483 trac/prefs/templates/prefs_general.html:20
 #: trac/prefs/web_ui.py:189
 msgid "General"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:24 trac/admin/web_ui.py:173
+#: trac/admin/templates/admin_basics.html:24 trac/admin/web_ui.py:174
 msgid "Basic Settings"
 msgstr ""
 
 #: trac/admin/templates/admin_logging.html:20
-#: trac/admin/templates/admin_logging.html:33 trac/admin/web_ui.py:251
+#: trac/admin/templates/admin_logging.html:33 trac/admin/web_ui.py:252
 msgid "Logging"
 msgstr ""
 
-#: trac/admin/web_ui.py:260 trac/ticket/templates/milestone_delete.html:34
+#: trac/admin/web_ui.py:261 trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_edit_form.html:96
 msgid "None"
 msgstr ""
 
-#: trac/admin/web_ui.py:262
+#: trac/admin/web_ui.py:263
 msgid "Console"
 msgstr ""
 
-#: trac/admin/web_ui.py:264 trac/templates/attachment.html:42
+#: trac/admin/web_ui.py:265 trac/templates/attachment.html:42
 msgid "File"
 msgstr ""
 
-#: trac/admin/web_ui.py:266
+#: trac/admin/web_ui.py:267
 msgid "Syslog"
 msgstr ""
 
-#: trac/admin/web_ui.py:269
+#: trac/admin/web_ui.py:270
 msgid "Windows event log"
 msgstr ""
 
-#: trac/admin/web_ui.py:280
+#: trac/admin/web_ui.py:281
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:281
+#: trac/admin/web_ui.py:282
 msgid "Invalid log type"
 msgstr ""
 
-#: trac/admin/web_ui.py:295
+#: trac/admin/web_ui.py:286
+msgid "You must specify a log file"
+msgstr ""
+
+#: trac/admin/web_ui.py:287
+msgid "Missing field"
+msgstr ""
+
+#: trac/admin/web_ui.py:291
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:296
+#: trac/admin/web_ui.py:292
 msgid "Invalid log level"
 msgstr ""
 
-#: trac/admin/web_ui.py:309
-msgid "You must specify a log file"
-msgstr ""
-
-#: trac/admin/web_ui.py:310
-msgid "Missing field"
+#: trac/admin/web_ui.py:302
+#, python-format
+msgid ""
+"Changes not saved. Logger configuration error: %(error)s. Inspect the log"
+" for more information."
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:20
-#: trac/admin/templates/admin_perms.html:102 trac/admin/web_ui.py:340
+#: trac/admin/templates/admin_perms.html:102 trac/admin/web_ui.py:354
 msgid "Permissions"
 msgstr ""
 
-#: trac/admin/web_ui.py:356
+#: trac/admin/web_ui.py:370
 msgid "All upper-cased tokens are reserved for permission names."
 msgstr ""
 
-#: trac/admin/web_ui.py:363
+#: trac/admin/web_ui.py:377
 msgid "Unknown action"
 msgstr ""
 
-#: trac/admin/web_ui.py:367 trac/admin/web_ui.py:432
+#: trac/admin/web_ui.py:381 trac/admin/web_ui.py:446
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:372
+#: trac/admin/web_ui.py:386
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:386
+#: trac/admin/web_ui.py:400
 #, python-format
 msgid ""
 "The subject %(subject)s was not added to the group %(group)s because the "
@@ -1155,52 +1162,52 @@ msgid ""
 "don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:394
+#: trac/admin/web_ui.py:408
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:399
+#: trac/admin/web_ui.py:413
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:411
+#: trac/admin/web_ui.py:425
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr ""
 
-#: trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:439
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
 "cannot grant permissions they don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:449
+#: trac/admin/web_ui.py:463
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:20 trac/admin/web_ui.py:469
+#: trac/admin/templates/admin_plugins.html:20 trac/admin/web_ui.py:483
 msgid "Plugins"
 msgstr ""
 
-#: trac/admin/web_ui.py:501
+#: trac/admin/web_ui.py:515
 msgid "Uploaded file is not a Python source file or egg"
 msgstr ""
 
-#: trac/admin/web_ui.py:506
+#: trac/admin/web_ui.py:520
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr ""
 
-#: trac/admin/web_ui.py:575
+#: trac/admin/web_ui.py:589
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/web_ui.py:580
+#: trac/admin/web_ui.py:594
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] ""
@@ -1782,18 +1789,18 @@ msgstr ""
 msgid "Unknown hash type '%(type)s'"
 msgstr ""
 
-#: trac/notification/mail.py:487
+#: trac/notification/mail.py:485
 #, python-format
 msgid ""
 "SMTP server connection error (%(error)s). Please modify %(option1)s or "
 "%(option2)s in your configuration."
 msgstr ""
 
-#: trac/notification/mail.py:492
+#: trac/notification/mail.py:490
 msgid "TLS enabled but server does not support TLS"
 msgstr ""
 
-#: trac/notification/mail.py:544
+#: trac/notification/mail.py:542
 #, python-format
 msgid ""
 "Sendmail error (%(error)s). Please modify %(option)s in your "
@@ -3741,7 +3748,7 @@ msgid "Tickets"
 msgstr ""
 
 #: trac/ticket/web_ui.py:226 trac/ticket/web_ui.py:278
-#: trac/versioncontrol/web_ui/changeset.py:1025
+#: trac/versioncontrol/web_ui/changeset.py:1036
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr ""
@@ -5204,7 +5211,7 @@ msgstr ""
 #: trac/versioncontrol/admin.py:132 trac/versioncontrol/admin.py:201
 #: trac/versioncontrol/api.py:708 trac/versioncontrol/web_ui/browser.py:354
 #: trac/versioncontrol/web_ui/changeset.py:248
-#: trac/versioncontrol/web_ui/changeset.py:1087
+#: trac/versioncontrol/web_ui/changeset.py:1098
 #: trac/versioncontrol/web_ui/log.py:100 trac/versioncontrol/web_ui/log.py:419
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -5318,8 +5325,8 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:155
 #: trac/versioncontrol/templates/admin_repositories.html:157
 #: trac/versioncontrol/web_ui/browser.py:951
-#: trac/versioncontrol/web_ui/changeset.py:854
-#: trac/versioncontrol/web_ui/changeset.py:996
+#: trac/versioncontrol/web_ui/changeset.py:865
+#: trac/versioncontrol/web_ui/changeset.py:1007
 msgid "(default)"
 msgstr ""
 
@@ -5886,7 +5893,21 @@ msgstr ""
 msgid "moved"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:222
+#: trac/versioncontrol/templates/changeset.html:227
+#, python-format
+msgid ""
+"[1:Changeset view not shown], since the total size (%(size)s) exceeds "
+"%(max_size)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:238
+#, python-format
+msgid ""
+"[1:Changeset view not shown], since the number of files (%(files)s) "
+"exceeds %(max_files)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:247
 msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
@@ -6275,63 +6296,63 @@ msgstr ""
 msgid "Show revision %(rev)s of this file in browser"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:638
+#: trac/versioncontrol/web_ui/changeset.py:639
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:650
+#: trac/versioncontrol/web_ui/changeset.py:651
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr ""
 
 #. TRANSLATOR: 'latest' (revision)
-#: trac/versioncontrol/web_ui/changeset.py:778
+#: trac/versioncontrol/web_ui/changeset.py:789
 msgid "latest"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:781
+#: trac/versioncontrol/web_ui/changeset.py:792
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:787
+#: trac/versioncontrol/web_ui/changeset.py:798
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:860
+#: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:862
+#: trac/versioncontrol/web_ui/changeset.py:873
 msgid "Repository changesets"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1000
+#: trac/versioncontrol/web_ui/changeset.py:1011
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1002
+#: trac/versioncontrol/web_ui/changeset.py:1013
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1085
+#: trac/versioncontrol/web_ui/changeset.py:1096
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/changeset.py:1100
 #: trac/versioncontrol/web_ui/log.py:421
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1130
+#: trac/versioncontrol/web_ui/changeset.py:1141
 msgid "Changesets"
 msgstr ""
 

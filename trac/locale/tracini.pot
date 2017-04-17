@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-07 16:55-0700\n"
+"POT-Creation-Date: 2017-04-16 22:36-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -659,38 +659,38 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:271
+#: trac/notification/mail.py:269
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
 "resolvers will not be called."
 msgstr ""
 
-#: trac/notification/mail.py:280
+#: trac/notification/mail.py:278
 msgid "Default format to distribute email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:454
+#: trac/notification/mail.py:452
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:457
+#: trac/notification/mail.py:455
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:460
+#: trac/notification/mail.py:458
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:463
+#: trac/notification/mail.py:461
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:466
+#: trac/notification/mail.py:464
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:522
+#: trac/notification/mail.py:520
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
