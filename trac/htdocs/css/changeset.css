@@ -16,6 +16,7 @@
  margin-bottom: 0;
  margin-top: 0;
 }
+#content.changeset p.message { margin-left: 8.5em; }
 
 .diff ul.props {
  font-size: 90%;

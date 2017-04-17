@@ -217,6 +217,31 @@
           </dl>
         </div>
 
+        <py:if test="show_diffs is False">
+          <py:def function="pretty_max_bytes">
+            <a href="${href.wiki('TracIni') + '#changeset-max_diff_bytes-option'}"
+               py:strip="'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni'))">
+              ${pretty_size(max_diff_bytes)}
+            </a>
+          </py:def>
+          <p class="message" py:if="max_diff_bytes and diff_bytes > max_diff_bytes"
+             i18n:msg="size, max_size">
+            <strong>Changeset view not shown</strong>, <!--!
+            -->since the total size (${pretty_size(diff_bytes)}) exceeds ${pretty_max_bytes()}
+          </p>
+          <py:def function="pretty_max_files">
+            <a href="${href.wiki('TracIni') + '#changeset-max_diff_files-option'}"
+               py:strip="'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni'))">
+              ${max_diff_files}
+            </a>
+          </py:def>
+          <p class="message" py:if="max_diff_files and diff_files > max_diff_files"
+             i18n:msg="files, max_files">
+            <strong>Changeset view not shown</strong>, <!--!
+            -->since the number of files (${diff_files}) exceeds ${pretty_max_files()}
+          </p>
+        </py:if>
+
         <xi:include href="diff_div.html" py:with="no_id = False" />
 
         <div id="help" i18n:msg="">
