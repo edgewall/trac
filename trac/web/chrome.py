@@ -917,11 +917,12 @@ class Chrome(Component):
             except Exception as e:
                 name = contributor.__class__.__name__
                 if isinstance(e, TracError):
-                    self.log.warning("Error with navigation contributor %s",
-                                     name)
+                    self.log.warning("Error with navigation contributor %s: "
+                                     "%s", name, exception_to_unicode(e))
                 else:
                     self.log.error("Error with navigation contributor %s: %s",
-                                   name, exception_to_unicode(e))
+                                   name,
+                                   exception_to_unicode(e, traceback=True))
                 add_warning(req, _("Error with navigation contributor "
                                    '"%(name)s"', name=name))
 
