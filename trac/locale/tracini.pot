@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-11 21:42-0700\n"
+"POT-Creation-Date: 2017-04-16 23:26-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -234,11 +234,11 @@ msgstr ""
 #: trac/attachment.py:135
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
-"downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
-"(''since 1.0'')"
+"downloadable as a `.zip`. Set this to -1 to disable download as \n"
+"`.zip`. (''since 1.0'')"
 msgstr ""
 
-#: trac/attachment.py:140
+#: trac/attachment.py:141
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
