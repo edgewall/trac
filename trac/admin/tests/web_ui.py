@@ -136,8 +136,8 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
 
         self.assertNotEqual('file', log_type)
         self.assertEqual(log_type, logging_config.get('log_type'))
-        self.assertEquals(log_level, logging_config.get('log_level'))
-        self.assertEquals(log_file, logging_config.get('log_file'))
+        self.assertEqual(log_level, logging_config.get('log_level'))
+        self.assertEqual(log_file, logging_config.get('log_file'))
         self.assertEqual(1, len(req.chrome['warnings']))
         self.assertIn('Changes not saved. Logger configuration error:',
                       req.chrome['warnings'][0])
@@ -160,8 +160,8 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
 
         self.assertNotEqual('file', log_type)
         self.assertEqual('file', logging_config.get('log_type'))
-        self.assertEquals(log_level, logging_config.get('log_level'))
-        self.assertEquals(log_file, logging_config.get('log_file'))
+        self.assertEqual(log_level, logging_config.get('log_level'))
+        self.assertEqual(log_file, logging_config.get('log_file'))
 
     def test_change_log_level(self):
         """Change the log level."""
@@ -180,10 +180,10 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
-        self.assertEquals(log_type, logging_config.get('log_type'))
+        self.assertEqual(log_type, logging_config.get('log_type'))
         self.assertNotEqual('ERROR', log_level)
         self.assertEqual('ERROR', logging_config.get('log_level'))
-        self.assertEquals(log_file, logging_config.get('log_file'))
+        self.assertEqual(log_file, logging_config.get('log_file'))
 
     def test_change_log_file(self):
         """Change the log file."""
@@ -202,8 +202,8 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
-        self.assertEquals(log_type, logging_config.get('log_type'))
-        self.assertEquals(log_level, logging_config.get('log_level'))
+        self.assertEqual(log_type, logging_config.get('log_type'))
+        self.assertEqual(log_level, logging_config.get('log_level'))
         self.assertNotEqual('trac.log.1', log_file)
         self.assertEqual('trac.log.1', logging_config.get('log_file'))
 
