@@ -310,16 +310,16 @@ class CacheTestCase(unittest.TestCase):
         rows = self.env.db_query(
             "SELECT rev,author FROM revision ORDER BY rev")
         self.assertEqual(2, len(rows))
-        self.assertEquals(('0000000000', 'joe'), rows[0])
-        self.assertEquals(('0000000001', 'joe'), rows[1])
+        self.assertEqual(('0000000000', 'joe'), rows[0])
+        self.assertEqual(('0000000001', 'joe'), rows[1])
 
         cache.sync_changeset(u'0')  # cached
         cache.sync_changeset('1')   # cached
         rows = self.env.db_query(
             "SELECT rev,author FROM revision ORDER BY rev")
         self.assertEqual(2, len(rows))
-        self.assertEquals(('0000000000', 'joe'), rows[0])
-        self.assertEquals(('0000000001', 'joe'), rows[1])
+        self.assertEqual(('0000000000', 'joe'), rows[0])
+        self.assertEqual(('0000000001', 'joe'), rows[1])
 
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)

@@ -404,7 +404,7 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
             rev = storage.head()
             with storage.get_historian('HEAD', path) as historian:
                 hrev = storage.last_change('HEAD', path, historian)
-                self.assertEquals(rev, hrev)
+                self.assertEqual(rev, hrev)
 
         validate(paths[0], 'true')
         validate(paths[0], 'false')
