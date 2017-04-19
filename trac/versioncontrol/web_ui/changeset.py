@@ -573,26 +573,27 @@ class ChangesetModule(Component):
                 return []
 
         diff_changes = list(get_changes())
-        diff_bytes = diff_files = 0
-        if self.max_diff_bytes or self.max_diff_files:
-            for old_node, new_node, kind, change in diff_changes:
-                if change in Changeset.DIFF_CHANGES and kind == Node.FILE \
-                        and old_node.is_viewable(req.perm) \
-                        and new_node.is_viewable(req.perm):
-                    diff_files += 1
-                    diff_bytes += _estimate_changes(old_node, new_node)
-        show_diffs = (not self.max_diff_files or
-                      0 < diff_files <= self.max_diff_files) and \
-                     (not self.max_diff_bytes or
-                      diff_bytes <= self.max_diff_bytes or
-                      diff_files == 1)
-
         # XHR is used for blame support: display the changeset view without
         # the navigation and with the changes concerning the annotated file
-        annotated = False
+        diff_bytes = diff_files = 0
+        annotated = None
         if req.is_xhr:
-            show_diffs = False
+            show_diffs = None
             annotated = repos.normalize_path(req.args.get('annotate'))
+        else:
+            if self.max_diff_bytes or self.max_diff_files:
+                for old_node, new_node, kind, change in diff_changes:
+                    if change in Changeset.DIFF_CHANGES and \
+                            kind == Node.FILE and \
+                            old_node.is_viewable(req.perm) and \
+                            new_node.is_viewable(req.perm):
+                        diff_files += 1
+                        diff_bytes += _estimate_changes(old_node, new_node)
+            show_diffs = (not self.max_diff_files or
+                          0 < diff_files <= self.max_diff_files) and \
+                         (not self.max_diff_bytes or
+                          diff_bytes <= self.max_diff_bytes or
+                          diff_files == 1)
 
         has_diffs = False
         filestats = self._prepare_filestats()
@@ -654,11 +655,21 @@ class ChangesetModule(Component):
                 info = None
             changes.append(info)  # the sequence should be immutable
 
-        data.update({'has_diffs': has_diffs, 'changes': changes,
-                     'filestats': filestats, 'annotated': annotated,
-                     'files': files,
-                     'location': self._get_parent_location(files),
-                     'longcol': 'Revision', 'shortcol': 'r'})
+        data.update({
+            'has_diffs': has_diffs,
+            'show_diffs': show_diffs,
+            'diff_files': diff_files,
+            'diff_bytes': diff_bytes,
+            'max_diff_files': self.max_diff_files,
+            'max_diff_bytes': self.max_diff_bytes,
+            'changes': changes,
+            'filestats': filestats,
+            'annotated': annotated,
+            'files': files,
+            'location': self._get_parent_location(files),
+            'longcol': 'Revision',
+            'shortcol': 'r'
+        })
 
         if req.is_xhr:  # render and return the content only
             stream = Chrome(self.env).generate_fragment(
