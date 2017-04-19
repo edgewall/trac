@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-16 23:26-0700\n"
+"POT-Creation-Date: 2017-04-18 20:04-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3023,7 +3023,7 @@ msgstr ""
 msgid "Try [1:downloading] the file instead."
 msgstr ""
 
-#: trac/templates/genshi/progress_bar_grouped.html:26 trac/web/chrome.py:1078
+#: trac/templates/genshi/progress_bar_grouped.html:26 trac/web/chrome.py:1079
 msgid "(none)"
 msgstr ""
 
@@ -3993,7 +3993,7 @@ msgid "Tickets"
 msgstr ""
 
 #: trac/ticket/web_ui.py:224 trac/ticket/web_ui.py:275
-#: trac/versioncontrol/web_ui/changeset.py:1015
+#: trac/versioncontrol/web_ui/changeset.py:1026
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr ""
@@ -5252,18 +5252,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:290 trac/timeline/web_ui.py:313
-#: trac/web/chrome.py:1226
+#: trac/web/chrome.py:1227
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:311
-#: trac/web/chrome.py:1240
+#: trac/web/chrome.py:1241
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1228
+#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1229
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -5273,7 +5273,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1236
+#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1237
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -5555,7 +5555,7 @@ msgstr ""
 #: trac/versioncontrol/admin.py:200 trac/versioncontrol/api.py:708
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:246
-#: trac/versioncontrol/web_ui/changeset.py:1077
+#: trac/versioncontrol/web_ui/changeset.py:1088
 #: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -5640,8 +5640,8 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:246
 #: trac/versioncontrol/templates/admin_repositories.html:250
 #: trac/versioncontrol/web_ui/browser.py:950
-#: trac/versioncontrol/web_ui/changeset.py:844
-#: trac/versioncontrol/web_ui/changeset.py:986
+#: trac/versioncontrol/web_ui/changeset.py:855
+#: trac/versioncontrol/web_ui/changeset.py:997
 msgid "(default)"
 msgstr ""
 
@@ -6161,7 +6161,25 @@ msgstr ""
 msgid "moved"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset_content.html:311
+#: trac/versioncontrol/templates/changeset_content.html:307
+msgid "Changeset view not shown"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset_content.html:320
+#, python-format
+msgid ""
+"%(notshown)s since the total size (%(pretty_diff_bytes)s) exceeds "
+"%(pretty_max_bytes)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset_content.html:338
+#, python-format
+msgid ""
+"%(notshown)s since the number of files (%(diff_files)s) exceeds "
+"%(pretty_max_files)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset_content.html:354
 #, python-format
 msgid "%(note)s See %(page)s for help on using the changeset viewer."
 msgstr ""
@@ -6538,63 +6556,63 @@ msgstr ""
 msgid "Show revision %(rev)s of this file in browser"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:635
+#: trac/versioncontrol/web_ui/changeset.py:636
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:647
+#: trac/versioncontrol/web_ui/changeset.py:648
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr ""
 
 #. TRANSLATOR: 'latest' (revision)
-#: trac/versioncontrol/web_ui/changeset.py:768
+#: trac/versioncontrol/web_ui/changeset.py:779
 msgid "latest"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:771
+#: trac/versioncontrol/web_ui/changeset.py:782
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:777
+#: trac/versioncontrol/web_ui/changeset.py:788
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:850
+#: trac/versioncontrol/web_ui/changeset.py:861
 msgid "Changesets in all repositories"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:852
+#: trac/versioncontrol/web_ui/changeset.py:863
 msgid "Repository changesets"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:990
+#: trac/versioncontrol/web_ui/changeset.py:1001
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:992
+#: trac/versioncontrol/web_ui/changeset.py:1003
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1075
+#: trac/versioncontrol/web_ui/changeset.py:1086
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1079
+#: trac/versioncontrol/web_ui/changeset.py:1090
 #: trac/versioncontrol/web_ui/log.py:420
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1120
+#: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
 msgstr ""
 
@@ -6722,26 +6740,26 @@ msgstr ""
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:925
+#: trac/web/chrome.py:926
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:1076
+#: trac/web/chrome.py:1077
 msgid "anonymous"
 msgstr ""
 
-#: trac/web/chrome.py:1414
+#: trac/web/chrome.py:1415
 msgid ""
 "Legacy Genshi template needs the 'genshi' package to be installed. Please"
 " contact your Trac administrator."
 msgstr ""
 
-#: trac/web/chrome.py:1810
+#: trac/web/chrome.py:1811
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1811
+#: trac/web/chrome.py:1812
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
