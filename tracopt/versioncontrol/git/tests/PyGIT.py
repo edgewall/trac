@@ -17,8 +17,7 @@ import unittest
 from datetime import datetime
 
 import trac.tests.compat
-from trac.test import EnvironmentStub
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager

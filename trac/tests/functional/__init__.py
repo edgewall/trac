@@ -67,7 +67,7 @@ from datetime import datetime, timedelta
 from pkg_resources import parse_version
 
 import trac
-from trac.tests.compat import rmtree
+from trac.test import rmtree
 from trac.util.compat import close_fds
 
 # Handle missing twill so we can print a useful 'SKIP'

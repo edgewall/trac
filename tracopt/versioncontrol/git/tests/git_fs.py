@@ -13,7 +13,6 @@
 
 import os
 import sys
-import shutil
 import tempfile
 import unittest
 from cStringIO import StringIO
@@ -22,8 +21,7 @@ from subprocess import Popen, PIPE
 
 import trac.tests.compat
 from trac.core import TracError
-from trac.test import EnvironmentStub, MockRequest, locate
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, MockRequest, locate, rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
@@ -1052,7 +1050,7 @@ class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.shutdown()
-        shutil.rmtree(self.projects_base)
+        rmtree(self.projects_base)
 
     def test_project_list_path_not_found(self):
         """Warning is logged when projects_list file is not found, but

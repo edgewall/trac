@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
-import shutil
 import sys
 import tempfile
 import unittest
@@ -22,7 +21,7 @@ import trac.tests.compat
 from genshi.builder import tag
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.test import EnvironmentStub, Mock, MockPerm, rmtree
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line
@@ -526,7 +525,7 @@ class RequestSendFileTestCase(unittest.TestCase):
     def tearDown(self):
         if self.req and self.req._response:
             self.req._response.close()
-        shutil.rmtree(self.dir)
+        rmtree(self.dir)
 
     def _start_response(self, status, headers):
         self.status = status

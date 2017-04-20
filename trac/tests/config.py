@@ -14,7 +14,6 @@
 
 import contextlib
 import os
-import shutil
 import tempfile
 import time
 import unittest
@@ -24,6 +23,7 @@ from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
 from trac.test import Configuration, EnvironmentStub
+from trac.tests.compat import rmtree
 from trac.util import create_file, read_file
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.datefmt import time_now
@@ -59,7 +59,7 @@ class UnicodeParserTestCase(unittest.TestCase):
         self._read()
 
     def tearDown(self):
-        shutil.rmtree(self.tempdir)
+        rmtree(self.tempdir)
 
     def _write(self):
         with open(self.filename, 'w') as f:

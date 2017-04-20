@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import os
-import shutil
 import tempfile
 import unittest
 

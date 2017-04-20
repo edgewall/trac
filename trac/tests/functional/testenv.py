@@ -26,8 +26,7 @@ from subprocess import call, Popen, PIPE, STDOUT
 from trac.config import UnicodeConfigParser
 from trac.db.api import DatabaseManager
 from trac.env import open_environment
-from trac.test import EnvironmentStub, get_dburi
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, get_dburi, rmtree
 from trac.tests.functional import trac_source_tree
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import create_file, terminate

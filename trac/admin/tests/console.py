@@ -18,7 +18,6 @@ import difflib
 import inspect
 import os
 import re
-import shutil
 import sys
 import tempfile
 import unittest
@@ -55,6 +54,7 @@ from trac.config import ConfigSection, Option
 from trac.core import Component, ComponentMeta, implements
 from trac.env import Environment
 from trac.test import EnvironmentStub
+from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import format_date, get_date_format_hint, \
@@ -1705,7 +1705,7 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
     def tearDown(self):
         if os.path.isfile(os.path.join(self.env_path, 'VERSION')):
             self._admin.env.shutdown()
-        shutil.rmtree(self.parent_dir)
+        rmtree(self.parent_dir)
 
     def test_config_argument(self):
         """Options contained in file specified by the --config argument
@@ -1781,7 +1781,7 @@ class TracAdminDeployTestCase(TracAdminTestCaseBase):
 
     def tearDown(self):
         self.env.shutdown()  # really closes the db connections
-        shutil.rmtree(self.env.path)
+        rmtree(self.env.path)
 
     def test_deploy(self):
         """Deploy into valid target directory."""

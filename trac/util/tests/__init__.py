@@ -16,14 +16,13 @@ import os.path
 import pkg_resources
 import random
 import re
-import shutil
 import sys
 import tempfile
 import unittest
 
 import trac
-import trac.tests.compat
 from trac import util
+from trac.test import rmtree
 from trac.util.tests import concurrency, datefmt, presentation, text, \
                             translation, html
 
@@ -35,7 +34,7 @@ class AtomicFileTestCase(unittest.TestCase):
         self.path = os.path.join(self.dir, 'trac-tempfile')
 
     def tearDown(self):
-        shutil.rmtree(self.dir)
+        rmtree(self.dir)
 
     def test_non_existing(self):
         with util.AtomicFile(self.path) as f:
@@ -190,7 +189,7 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
 
     def tearDown(self):
         sys.path.remove(self.dir)
-        shutil.rmtree(self.dir)
+        rmtree(self.dir)
 
     def test_get_module_path(self):
         self.assertEqual(util.get_module_path(trac),
@@ -326,7 +325,7 @@ class FileTestCase(unittest.TestCase):
         self.data = 'Lorem\ripsum\ndolor\r\nsit\namet,\rconsectetur\r\n'
 
     def tearDown(self):
-        shutil.rmtree(self.dir)
+        rmtree(self.dir)
 
     def test_create_and_read_file(self):
         util.create_file(self.filename, self.data, 'wb')
