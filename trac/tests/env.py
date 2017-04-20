@@ -13,7 +13,6 @@
 
 from ConfigParser import RawConfigParser
 import os
-import shutil
 import unittest
 
 from trac import db_default
@@ -22,7 +21,7 @@ from trac.config import ConfigurationError
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.db.api import DatabaseManager
 from trac.env import Environment, open_environment
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, mkdtemp, rmtree
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -47,7 +46,7 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        rmtree(self.env.path)
 
     def test_database_version(self):
         """Testing env.database_version"""
@@ -63,7 +62,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        rmtree(self.env.path)
 
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""

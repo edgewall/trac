@@ -18,8 +18,7 @@ from trac.config import ConfigurationError
 from trac.db.api import DatabaseManager
 from trac.db.schema import Column, Index, Table
 from trac.env import Environment
-from trac.test import EnvironmentStub, MockRequest, get_dburi, mkdtemp
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, MockRequest, get_dburi, mkdtemp, rmtree
 from trac.util import translation
 
 

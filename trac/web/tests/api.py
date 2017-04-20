@@ -13,13 +13,12 @@
 
 import io
 import os.path
-import shutil
 import sys
 import unittest
 
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp
+from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.html import tag
@@ -584,7 +583,7 @@ class RequestSendFileTestCase(unittest.TestCase):
     def tearDown(self):
         if self.req and self.req._response:
             self.req._response.close()
-        shutil.rmtree(self.dir)
+        rmtree(self.dir)
 
     def _start_response(self, status, headers):
         self.status = status

@@ -16,8 +16,7 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from trac.test import EnvironmentStub, mkdtemp
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, mkdtemp, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager

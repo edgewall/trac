@@ -12,12 +12,12 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
-import shutil
 import unittest
 
 from trac.config import ConfigurationError
 from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock, mkdtemp
+from trac.tests.compat import rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy, parse
@@ -30,7 +30,7 @@ class AuthzParserTestCase(unittest.TestCase):
         self.authz_file = os.path.join(self.tmpdir, 'trac-authz')
 
     def tearDown(self):
-        shutil.rmtree(self.tmpdir)
+        rmtree(self.tmpdir)
 
     def test_parse_file(self):
         create_file(self.authz_file, """\

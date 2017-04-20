@@ -13,13 +13,12 @@
 
 import io
 import os
-import shutil
 import unittest
 
 from trac.attachment import Attachment
 from trac.config import BoolOption, ConfigSection, IntOption, ListOption, \
                         Option
-from trac.test import locale_en, mkdtemp
+from trac.test import locale_en, mkdtemp, rmtree
 from trac.util.datefmt import datetime_now, format_date, utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
@@ -55,7 +54,7 @@ def image_setup(tc):
     tc.env.config.set('trac', 'htdocs_location', htdocs_location)
 
 def image_teardown(tc):
-    shutil.rmtree(os.path.join(tc.env.path, 'files'))
+    rmtree(os.path.join(tc.env.path, 'files'))
     os.rmdir(tc.env.path) # there was only 'files' below tc.env.path
     tc.env.reset_db()
 
