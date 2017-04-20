@@ -16,8 +16,7 @@ import unittest
 
 from trac.config import ConfigurationError
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock, mkdtemp
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, Mock, mkdtemp, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy, parse

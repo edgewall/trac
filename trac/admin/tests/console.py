@@ -49,8 +49,7 @@ from trac.admin.test import TracAdminTestCaseBase
 from trac.config import ConfigSection, Option
 from trac.core import Component, ComponentMeta, implements
 from trac.env import Environment
-from trac.test import EnvironmentStub, mkdtemp
-from trac.tests.compat import rmtree
+from trac.test import EnvironmentStub, mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.compat import Popen, close_fds
 from trac.util.datefmt import format_date, get_date_format_hint, \
