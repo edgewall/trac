@@ -25,5 +25,10 @@ class ThreadLocal(threading.local):
         threading.local.__init__(self)
         self.__dict__.update(kwargs)
 
-def get_thread_id():
-    return threading._get_ident()
+
+try:
+    threading.get_ident  # since Python 3.3
+except AttributeError:
+    get_thread_id = threading._get_ident
+else:
+    get_thread_id = threading.get_ident

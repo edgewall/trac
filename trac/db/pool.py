@@ -19,7 +19,7 @@ import sys
 
 from trac.core import TracError
 from trac.db.util import ConnectionWrapper
-from trac.util.concurrency import threading
+from trac.util.concurrency import get_thread_id, threading
 from trac.util.datefmt import time_now
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _
@@ -70,7 +70,7 @@ class ConnectionPoolBackend(object):
         log = kwargs.get('log')
         key = unicode(kwargs)
         start = time_now()
-        tid = threading._get_ident()
+        tid = get_thread_id()
         # Get a Connection, either directly or a deferred one
         with self._available:
             # First choice: Return the same cnx already used by the thread

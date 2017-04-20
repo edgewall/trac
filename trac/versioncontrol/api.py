@@ -23,7 +23,7 @@ from trac.config import ConfigSection, Option
 from trac.core import *
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util import as_bool, native_path
-from trac.util.concurrency import threading
+from trac.util.concurrency import get_thread_id, threading
 from trac.util.datefmt import time_now, utc
 from trac.util.text import printout, to_unicode, exception_to_unicode
 from trac.util.translation import _
@@ -588,7 +588,7 @@ class RepositoryManager(Component):
         # get a Repository for the reponame (use a thread-level cache)
         with self.env.db_transaction: # prevent possible deadlock, see #4465
             with self._lock:
-                tid = threading._get_ident()
+                tid = get_thread_id()
                 if tid in self._cache:
                     repositories = self._cache[tid]
                 else:
@@ -747,7 +747,7 @@ class RepositoryManager(Component):
     def shutdown(self, tid=None):
         """Free `Repository` instances bound to a given thread identifier"""
         if tid:
-            assert tid == threading._get_ident()
+            assert tid == get_thread_id()
             with self._lock:
                 repositories = self._cache.pop(tid, {})
                 for reponame, repos in repositories.iteritems():
