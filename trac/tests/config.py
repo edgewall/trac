@@ -22,8 +22,7 @@ import trac.tests.compat
 from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
-from trac.test import Configuration, EnvironmentStub
-from trac.tests.compat import rmtree
+from trac.test import Configuration, EnvironmentStub, rmtree
 from trac.util import create_file, read_file
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.datefmt import time_now
