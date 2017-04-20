@@ -15,15 +15,13 @@ from __future__ import with_statement
 
 from ConfigParser import RawConfigParser
 import os
-import shutil
 import tempfile
 import unittest
 
-import trac.tests.compat
 from trac import db_default
 from trac.core import Component, ComponentManager, TracError, implements
 from trac.env import Environment, ISystemInfoProvider
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, rmtree
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -49,7 +47,7 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        rmtree(self.env.path)
 
     def test_get_version(self):
         """Testing env.get_version"""
@@ -67,7 +65,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
-        shutil.rmtree(self.env.path)
+        rmtree(self.env.path)
 
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""

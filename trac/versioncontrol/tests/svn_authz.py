@@ -12,12 +12,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
-import shutil
 import tempfile
 import unittest
 
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy, ParseError, \
@@ -280,7 +279,7 @@ $authenticated = r
 
     def tearDown(self):
         self.env.reset_db()
-        shutil.rmtree(self.tmpdir)
+        rmtree(self.tmpdir)
 
     def assertPathPerm(self, result, user, reponame=None, path=None):
         """Assert that `user` is granted access `result` to `path` within

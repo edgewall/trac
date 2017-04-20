@@ -18,7 +18,7 @@ from cStringIO import StringIO
 
 from trac.config import ConfigurationError
 from trac.env import Environment
-from trac.tests.compat import rmtree
+from trac.test import rmtree
 from trac.util import translation
 from trac.web.api import Request
 from trac.web.chrome import Chrome
