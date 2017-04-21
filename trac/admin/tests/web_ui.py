@@ -75,8 +75,8 @@ class PluginAdminPanelTestCase(unittest.TestCase):
         module_ = self.__class__.__module__
         components = []
         for plugin in data['plugins']:
-            if module_ in plugin['modules'].keys():
-                components = plugin['modules'][module_]['components'].keys()
+            if module_ in plugin['modules']:
+                components = plugin['modules'][module_]['components']
         self.assertNotIn('AbstractComponent', components)
         self.assertIn('NotAbstractComponent', components)
 

@@ -73,7 +73,7 @@ def parse_workflow_config(rawactions):
             actions[name]['newstate'] = newstate
         else:
             attribute = parts[1]
-            if attribute not in known_attrs.keys() or \
+            if attribute not in known_attrs or \
                     isinstance(known_attrs[attribute], str):
                 actions[name][attribute] = value
             elif isinstance(known_attrs[attribute], int):

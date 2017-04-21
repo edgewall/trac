@@ -331,7 +331,7 @@ KNOWN_MIME_TYPES = {
     'text/x-verilog':          'v',
     'text/x-vhdl':             'vhd',
 }
-for t in KNOWN_MIME_TYPES.keys():
+for t in KNOWN_MIME_TYPES:
     types = KNOWN_MIME_TYPES[t].split()
     if t.startswith('text/x-'):
         types.append(t[len('text/x-'):])

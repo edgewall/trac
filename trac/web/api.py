@@ -1023,7 +1023,7 @@ class Request(object):
                                     None, None))
 
     def _send_cookie_headers(self):
-        for name in self.outcookie.keys():
+        for name in list(self.outcookie):
             path = self.outcookie[name].get('path')
             if path:
                 path = path.replace(' ', '%20') \

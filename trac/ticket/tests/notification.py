@@ -877,7 +877,7 @@ class NotificationTestCase(unittest.TestCase):
         # ticket properties which are not expected in the banner
         xlist = ['summary', 'description', 'comment', 'time', 'changetime']
         # check banner content (field exists, msg value matches ticket value)
-        for p in [prop for prop in ticket.values.keys() if prop not in xlist]:
+        for p in [prop for prop in ticket.values if prop not in xlist]:
             self.assertIn(p, props)
             # Email addresses might be obfuscated
             if '@' in ticket[p] and '@' in props[p]:

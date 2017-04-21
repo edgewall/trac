@@ -211,7 +211,7 @@ def get_plugin_info(env, include_core=False):
             'required': getattr(c, 'required', False),
         }
     if not include_core:
-        for name in plugins.keys():
+        for name in list(plugins):
             if name.lower() == 'trac':
                 plugins.pop(name)
     return sorted(plugins.itervalues(),

@@ -265,11 +265,11 @@ class Ticket(object):
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
         field_names = [f['name'] for f in self.fields]
-        for name in [name for name in values.keys() if name in field_names]:
+        for name in [name for name in values if name in field_names]:
             self[name] = values[name]
 
         # We have to do an extra trick to catch unchecked checkboxes
-        for name in [name for name in values.keys() if name[9:] in field_names
+        for name in [name for name in values if name[9:] in field_names
                      and name.startswith('checkbox_')]:
             if name[9:] not in values:
                 self[name[9:]] = '0'
@@ -384,7 +384,7 @@ class Ticket(object):
                 cnum = '%s.%s' % (replyto, cnum)
 
             # store fields
-            for name in self._old.keys():
+            for name in self._old:
                 if name in self.custom_fields:
                     for row in db("""SELECT * FROM ticket_custom
                                      WHERE ticket=%s and name=%s

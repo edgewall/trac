@@ -340,7 +340,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         return IterableCursor(cursor, self.log)
 
     def rollback(self):
-        for cursor in self._active_cursors.keys():
+        for cursor in self._active_cursors:
             cursor.close()
         self.cnx.rollback()
 

@@ -263,7 +263,7 @@ class TicketModule(Component):
                 if 'ticket_details' in filters:
                     if fields:
                         labels = [tag.i(field_labels.get(k, k.capitalize()))
-                                  for k in fields.keys()]
+                                  for k in fields]
                         info = tagn_("%(labels)s changed",
                                      "%(labels)s changed", len(labels),
                                      labels=separated(labels, ', ')) + tag.br()
@@ -1494,7 +1494,7 @@ class TicketModule(Component):
             cname = controller.__class__.__name__
             action_changes = controller.get_ticket_changes(req, ticket,
                                                            selected_action)
-            for key in action_changes.keys():
+            for key in action_changes:
                 old = ticket[key]
                 new = action_changes[key]
                 # Check for conflicting changes between controllers

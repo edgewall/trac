@@ -239,8 +239,8 @@ class Query(object):
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
-        for col in [k for k in self.constraint_cols.keys()
-                    if k != 'id' and k in cols]:
+        for col in [k for k in self.constraint_cols
+                      if k != 'id' and k in cols]:
             constraints = self.constraint_cols[col]
             for constraint in constraints:
                 if not (len(constraint) == 1 and constraint[0]

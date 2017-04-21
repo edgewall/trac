@@ -613,7 +613,7 @@ class RepositoryManager(Component):
         """
         matches = []
         path = path.strip('/') + '/' if path else '/'
-        for reponame in self.get_all_repositories().keys():
+        for reponame in self.get_all_repositories():
             stripped_reponame = reponame.strip('/') + '/'
             if path.startswith(stripped_reponame):
                 matches.append((len(stripped_reponame), reponame))

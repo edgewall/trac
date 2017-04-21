@@ -814,7 +814,7 @@ class SubversionNode(Node):
             return
         pool = Pool(self.pool)
         entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool())
-        for item in entries.keys():
+        for item in entries:
             path = posixpath.join(self.path, _from_svn(item))
             yield SubversionNode(path, self.rev, self.repos, self.pool,
                                  self.root)
