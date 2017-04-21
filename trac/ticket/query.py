@@ -311,10 +311,9 @@ class Query(object):
             columns = get_column_names(cursor)
             fields = [self.fields.by_name(column, None) for column in columns]
 
-            column_indices = xrange(len(columns))
             for row in cursor:
                 result = {}
-                for i in column_indices:
+                for i in xrange(len(columns)):
                     name, field, val = columns[i], fields[i], row[i]
                     if name == 'reporter':
                         val = val or 'anonymous'
