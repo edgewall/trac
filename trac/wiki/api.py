@@ -316,8 +316,8 @@ class WikiSystem(Component):
 
     PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z])(?=[a-z])")
 
-    Lu = ''.join(unichr(c) for c in xrange(0, 0x10000) if unichr(c).isupper())
-    Ll = ''.join(unichr(c) for c in xrange(0, 0x10000) if unichr(c).islower())
+    Lu = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).isupper())
+    Ll = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).islower())
 
     def format_page_name(self, page, split=False):
         if split or self.split_page_names:

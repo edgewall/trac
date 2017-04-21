@@ -68,7 +68,7 @@ class PaginatorTestCase(unittest.TestCase):
 
     def test_paginate(self):
         """List of objects is paginated."""
-        items = xrange(0, 20)
+        items = xrange(20)
         paginator = presentation.Paginator(items, 1)
 
         self.assertEqual(1, paginator.page)
@@ -79,7 +79,7 @@ class PaginatorTestCase(unittest.TestCase):
 
     def test_page_out_of_range_raises_exception(self):
         """Out of range value for page raises a `TracError`."""
-        items = list(xrange(0, 20))
+        items = list(xrange(20))
 
         self.assertRaises(TracError, presentation.Paginator, items, 2)
 

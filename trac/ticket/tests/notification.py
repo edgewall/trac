@@ -358,7 +358,7 @@ class NotificationTestCase(unittest.TestCase):
             self.assertIn(mo.group('day'), days)
         self.assertIn(int(mo.group('dm')), xrange(1, 32))
         self.assertIn(mo.group('month'), months)
-        self.assertIn(int(mo.group('hour')), xrange(0, 24))
+        self.assertIn(int(mo.group('hour')), xrange(24))
         if mo.group('tz'):
             self.assertIn(mo.group('tz'), tz)
 

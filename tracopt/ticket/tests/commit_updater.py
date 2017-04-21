@@ -38,7 +38,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
 
     def _make_tickets(self, num):
         self.tickets = []
-        for i in xrange(0, num):
+        for i in xrange(num):
             ticket = Ticket(self.env)
             ticket['reporter'] = 'someone'
             ticket['summary'] = random_sentence()

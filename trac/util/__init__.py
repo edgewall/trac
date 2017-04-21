@@ -904,7 +904,7 @@ def md5crypt(password, salt, magic='$1$'):
 
     # /* Then just as many characters of the MD5(pw,salt,pw) */
     mixin = hashlib.md5(password + salt + password).digest()
-    for i in xrange(0, len(password)):
+    for i in xrange(len(password)):
         m.update(mixin[i % 16])
 
     # /* Then something really weird... */
