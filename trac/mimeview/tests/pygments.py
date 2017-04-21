@@ -14,36 +14,30 @@
 from __future__ import absolute_import
 
 import os
-from pkg_resources import parse_version
-from pprint import pformat
 import re
+import sys
 import unittest
-
-try:
-    # Note: if trac/mimeview/tests is in sys.path, then the absolute
-    #       import will try to load this pygments.py file again, which is bad.
-    import os, sys
-    dir = os.path.dirname(__file__)
-    if dir in sys.path:
-        sys.path.remove(dir)
-
-    import pygments
-    have_pygments = True
-except ImportError, e:
-    from trac.util.text import exception_to_unicode
-    print exception_to_unicode(e, True)
-    have_pygments = False
+from pkg_resources import parse_version
 
 from trac.mimeview.api import LineNumberAnnotator, Mimeview
-if have_pygments:
-    from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, MockRequest
 from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
 from trac.wiki.formatter import format_to_html
 
-
-if have_pygments:
+# Note: if trac/mimeview/tests is in sys.path, then the absolute
+#       import will try to load this pygments.py file again, which is bad.
+dir_ = os.path.dirname(__file__)
+if dir_ in sys.path:
+    sys.path.remove(dir_)
+try:
+    import pygments
+except ImportError, e:
+    pygments = None
+    from trac.util.text import exception_to_unicode
+    print exception_to_unicode(e, True)
+else:
+    from trac.mimeview.pygments import PygmentsRenderer
     pygments_version = parse_version(get_pkginfo(pygments).get('version'))
 
 
@@ -71,6 +65,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
     def _test(self, expected_id, result):
         expected = self._expected(expected_id)
         result = unicode(result).splitlines()
+        # from pprint import pformat
         # print("\nE: " + expected_id + "\n" + pformat(expected))
         # print("\nR: " + expected_id + "\n" + pformat(result))
         self.maxDiff = None
@@ -153,7 +148,8 @@ print 'this is the end of the python sample'
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_and_markups', result)
         else:
-            self._test('python_with_lineno_and_markups_pygments_2.1plus', result)
+            self._test('python_with_lineno_and_markups_pygments_2.1plus',
+                       result)
 
     def test_python_with_invalid_arguments(self):
         result = format_to_html(self.env, self.context, """\
@@ -168,7 +164,8 @@ print 'this is the end of the python sample'
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_1', result)
         else:
-            self._test('python_with_invalid_arguments_1_pygments_2.1plus', result)
+            self._test('python_with_invalid_arguments_1_pygments_2.1plus',
+                       result)
 
         result = format_to_html(self.env, self.context, """\
 {{{#!text/x-python lineno=a id=d marks=a-b
@@ -182,7 +179,8 @@ print 'this is the end of the python sample'
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_2', result)
         else:
-            self._test('python_with_invalid_arguments_2_pygments_2.1plus', result)
+            self._test('python_with_invalid_arguments_2_pygments_2.1plus',
+                       result)
 
     def test_pygments_lexer_options(self):
         self.env.config.set('pygments-lexer',
@@ -260,9 +258,10 @@ if (class_exists('MyClass')) {
         self.assertEqual('text/x-ini; charset=utf-8',
                          mimeview.get_mimetype('file.text/x-ini'))
 
+
 def test_suite():
     suite = unittest.TestSuite()
-    if have_pygments:
+    if pygments:
         suite.addTest(unittest.makeSuite(PygmentsRendererTestCase))
     else:
         print('SKIP: mimeview/tests/pygments (no pygments installed)')
