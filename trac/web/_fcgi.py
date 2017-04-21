@@ -1307,9 +1307,7 @@ if __name__ == '__main__':
               '<body>\n' \
               '<p>Hello World!</p>\n' \
               '<table border="1">'
-        names = list(environ)
-        names.sort()
-        for name in names:
+        for name in sorted(environ):
             yield '<tr><td>%s</td><td>%s</td></tr>\n' % (
                 name, cgi.escape(environ[name]))
 
