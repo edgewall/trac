@@ -23,7 +23,7 @@ history and logs, available at http://trac.edgewall.org/.
       # if not sidebyside:
       <label for="editrows">${_("Adjust edit area height:")}</label>
       <select size="1" name="editrows" id="editrows" tabindex="43">
-        # for rows in range(8, 42, 4):
+        # for rows in xrange(8, 42, 4):
         <option${{'value': rows,
                   'selected': to_unicode(rows) == edit_rows
                  }|htmlattr}>${rows}</option>
