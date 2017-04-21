@@ -236,4 +236,4 @@ class SubscriberListMacro(WikiMacroBase):
                     tag.tr(tag.td(tag.code(name)),
                            tag.td(items[name]),
                            class_='odd' if idx % 2 else 'even')
-                    for idx, name in enumerate(sorted(items.keys())))))
+                    for idx, name in enumerate(sorted(items)))))

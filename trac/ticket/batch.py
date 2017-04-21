@@ -150,7 +150,7 @@ class BatchModifyModule(Component):
                 tickets_by_action.setdefault(action, []).append(ticket)
 
         # Sort the allowed actions by the 'default' key.
-        allowed_actions = set(tickets_by_action.keys())
+        allowed_actions = set(tickets_by_action)
         workflow = ConfigurableTicketWorkflow(self.env)
         all_actions = sorted(((action['default'], name)
                               for name, action

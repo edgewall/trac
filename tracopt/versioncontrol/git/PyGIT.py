@@ -541,7 +541,7 @@ class Storage(object):
         rheads_seen = None
 
         # convert sdb either to dict or array depending on size
-        tmp = [()] * (max(new_sdb.keys()) + 1) if len(new_sdb) > 5000 else {}
+        tmp = [()] * (max(new_sdb) + 1) if len(new_sdb) > 5000 else {}
         try:
             while True:
                 k, v = new_sdb.popitem()

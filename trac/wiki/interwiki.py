@@ -61,7 +61,7 @@ class InterWikiMap(Component):
         return self.interwiki_map[ns.upper()]
 
     def keys(self):
-        return self.interwiki_map.keys()
+        return list(self.interwiki_map)
 
     # Expansion of positional arguments ($1, $2, ...) in URL and title
     def _expand(self, txt, args):
@@ -167,7 +167,7 @@ class InterWikiMap(Component):
 
     def expand_macro(self, formatter, name, content):
         interwikis = []
-        for k in sorted(self.keys()):
+        for k in sorted(self):
             prefix, url, title = self[k]
             interwikis.append({
                 'prefix': prefix, 'url': url, 'title': title,

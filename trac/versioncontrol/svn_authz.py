@@ -183,7 +183,7 @@ class AuthzSourcePolicy(Component):
                     path += '/'
 
                 # Allow access to parent directories of allowed resources
-                for spath in set(sum((authz.get(module, {}).keys()
+                for spath in set(sum((list(authz.get(module, {}))
                                       for module in modules), [])):
                     if spath.startswith(path):
                         result = check_path_0(spath)

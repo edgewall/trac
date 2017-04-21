@@ -430,7 +430,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        import timeit
 #
 #        g = Storage(path_to_repo, logging) # Need a git repository path here
-#        revs = g.get_commits().keys()
+#        revs = list(g.get_commits())
 #
 #        def shortrev_test():
 #            for i in revs:
@@ -535,7 +535,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        #p = g.head()
 #        #revs = [g.history_relative_rev(p, i) for i in xrange(10)]
 #        print_data_usage()
-#        revs = g.get_commits().keys()
+#        revs = list(g.get_commits())
 #        print_data_usage()
 #
 #        #print(len(check4loops(g.oldest_rev())))

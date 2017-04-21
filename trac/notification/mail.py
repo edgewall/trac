@@ -305,7 +305,7 @@ class EmailDistributor(Component):
             return
         self.log.debug("%s has found the following formats capable of "
                        "handling '%s' of '%s': %s", self.__class__.__name__,
-                       transport, event.realm, ', '.join(formats.keys()))
+                       transport, event.realm, ', '.join(formats))
 
         notify_sys = NotificationSystem(self.env)
         always_cc = set(notify_sys.smtp_always_cc_list)

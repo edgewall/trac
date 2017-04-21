@@ -636,7 +636,7 @@ class WorkflowMacro(WikiMacroBase):
                    for state in action['oldstates']} |
             {action['newstate'] for action in actions.itervalues()})
         action_labels = [attrs['label'] for attrs in actions.values()]
-        action_names = actions.keys()
+        action_names = list(actions)
         edges = []
         for name, action in actions.items():
             new_index = states.index(action['newstate'])

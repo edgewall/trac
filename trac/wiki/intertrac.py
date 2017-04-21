@@ -125,4 +125,4 @@ class InterTracDispatcher(Component):
         return tag.table(class_="wiki intertrac")(
             tag.tr(tag.th(tag.em(_("Prefix"))),
                    tag.th(tag.em(_("Trac Site")))),
-            [generate_prefix(p) for p in sorted(intertracs.keys())])
+            [generate_prefix(p) for p in sorted(intertracs)])

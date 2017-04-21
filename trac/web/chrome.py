@@ -1574,7 +1574,7 @@ class Chrome(Component):
         """
         template = self._load_jinja_template(filename, text)
         if domain:
-            symbols = translation.functions.keys()
+            symbols = list(translation.functions)
             domain_functions = translation.domain_functions(domain, symbols)
             data.update(dict(zip(symbols, domain_functions)))
         data = self.populate_data(req, data)

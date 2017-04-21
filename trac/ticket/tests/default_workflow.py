@@ -60,7 +60,7 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
                 resolve_action = attrs
 
         self.assertIsNotNone(resolve_action)
-        self.assertIn('set_milestone', resolve_action.keys())
+        self.assertIn('set_milestone', list(resolve_action))
         self.assertEqual('reject', resolve_action['set_milestone'])
 
     def test_owner_from_component(self):

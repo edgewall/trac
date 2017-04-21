@@ -29,7 +29,7 @@ _actionmap = {'A': Changeset.ADD, 'C': Changeset.COPY,
               'M': Changeset.MOVE}
 
 def _invert_dict(d):
-    return dict(zip(d.values(), d.keys()))
+    return dict(zip(d.values(), list(d)))
 
 _inverted_kindmap = _invert_dict(_kindmap)
 _inverted_actionmap = _invert_dict(_actionmap)

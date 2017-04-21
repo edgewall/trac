@@ -438,7 +438,7 @@ class XMLElement(Fragment):
         if self.attrib:
             # Sorting the attributes makes the unit-tests more robust
             attrs = []
-            for k in sorted(self.attrib.keys()):
+            for k in sorted(self.attrib):
                 v = self.attrib[k]
                 if v:
                     attrs.append(' %s="%s"' % (k, v))

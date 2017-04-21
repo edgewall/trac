@@ -892,7 +892,7 @@ class KnownMimeTypesMacro(WikiMacroBase):
                                   style="text-align: left"),
                            tag.td(tag.code(
                                ' '.join(sorted(mime_types[mime_type])))))
-                    for mime_type in sorted(mime_types.keys()))))
+                    for mime_type in sorted(mime_types))))
 
 
 class TracGuideTocMacro(WikiMacroBase):

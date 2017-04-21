@@ -1327,7 +1327,7 @@ Security sensitive:  0                           |          Blocking:
         self.assertEqual('My Summary', ticket['summary'])
         self.assertEqual('Some description', ticket['description'])
         valid_fieldnames = {f['name'] for f in ticket.fields}
-        current_fieldnames = set(ticket.values.keys())
+        current_fieldnames = set(ticket.values)
         self.assertEqual(set(), current_fieldnames - valid_fieldnames)
 
     def test_mime_meta_characters_in_from_header(self):

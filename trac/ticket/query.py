@@ -767,7 +767,7 @@ class Query(object):
             if 'label' in fields[name]:
                 return fields[name]['label'].lower()
             return ''
-        field_names = sorted(fields.iterkeys(), key=by_label)
+        field_names = sorted(fields, key=by_label)
 
         groups = {}
         groupsequence = []
