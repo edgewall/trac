@@ -553,8 +553,8 @@ def importData(f, env):
     # Data save
     trac.setTypeList(typeList)
     trac.setComponentList(components)
-    trac.setPriorityList(range(min(project.priorities),
-                               max(project.priorities)))
+    trac.setPriorityList(xrange(min(project.priorities),
+                                max(project.priorities)))
     trac.setVersionList({x[1] for x in project.groups})
     trac.setResolutionList(resolutions)
     trac.setMilestoneList([])

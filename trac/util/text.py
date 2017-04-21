@@ -794,7 +794,7 @@ def levenshtein_distance(lhs, rhs):
     if not lhs:
         return len(rhs)
 
-    prev = range(len(rhs) + 1)
+    prev = xrange(len(rhs) + 1)
     for lidx, lch in enumerate(lhs):
         curr = [lidx + 1]
         for ridx, rch in enumerate(rhs):

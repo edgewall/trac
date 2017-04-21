@@ -419,7 +419,7 @@ class CachedRepository(Repository):
                 components = path.lstrip('/').split('/')
                 parents = ','.join(('%s',) * len(components))
                 sql += " OR (path IN (" + parents + ") AND change_type='D'))"
-                for i in range(1, len(components) + 1):
+                for i in xrange(1, len(components) + 1):
                     args.append('/'.join(components[:i]))
             else:
                 sql %= {'aggr': aggr, 'dir': direction, 'tab': 'revision'}

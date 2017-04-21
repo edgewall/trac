@@ -513,7 +513,7 @@ class DatabaseManager(Component):
         :raises TracError: if the package or module doesn't exist.
         """
         dbver = self.get_database_version(name)
-        for i in range(dbver + 1, version + 1):
+        for i in xrange(dbver + 1, version + 1):
             module = 'db%i' % i
             try:
                 upgrades = __import__(pkg, globals(), locals(), [module])

@@ -517,7 +517,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        print("--------------")
 #
 #        p = g.head()
-#        for i in range(-5, 5):
+#        for i in xrange(-5, 5):
 #            print(i, g.history_relative_rev(p, i))
 #
 #        # check for loops
@@ -533,7 +533,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        print(len(check4loops(g.parents(g.head())[0])))
 #
 #        #p = g.head()
-#        #revs = [ g.history_relative_rev(p, i) for i in range(0,10) ]
+#        #revs = [ g.history_relative_rev(p, i) for i in xrange(0,10) ]
 #        print_data_usage()
 #        revs = g.get_commits().keys()
 #        print_data_usage()

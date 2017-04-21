@@ -311,7 +311,7 @@ class Query(object):
             columns = get_column_names(cursor)
             fields = [self.fields.by_name(column, None) for column in columns]
 
-            column_indices = range(len(columns))
+            column_indices = xrange(len(columns))
             for row in cursor:
                 result = {}
                 for i in column_indices:

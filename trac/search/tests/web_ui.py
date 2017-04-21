@@ -46,7 +46,7 @@ class SearchModuleTestCase(unittest.TestCase):
         return ticket.insert()
 
     def test_process_request_page_in_range(self):
-        for _ in range(0, 21):
+        for _ in xrange(0, 21):
             self._insert_ticket(summary="Trac")
         req = MockRequest(self.env,
                           args={'page': '3', 'q': 'Trac', 'ticket': 'on'})
@@ -58,7 +58,7 @@ class SearchModuleTestCase(unittest.TestCase):
 
     def test_process_request_page_out_of_range(self):
         """Out of range value for page defaults to page 1."""
-        for _ in range(0, 20):
+        for _ in xrange(0, 20):
             self._insert_ticket(summary="Trac")
         req = MockRequest(self.env,
                           args={'page': '3', 'q': 'Trac', 'ticket': 'on'})

@@ -944,7 +944,7 @@ class TicketModule(Component):
 
         # assume a linear sequence of change numbers, starting at 1, with gaps
         def replay_changes(values, old_values, from_version, to_version):
-            for version in range(from_version, to_version+1):
+            for version in xrange(from_version, to_version+1):
                 if version in changes:
                     for k, v in changes[version]['fields'].iteritems():
                         values[k] = v['new']

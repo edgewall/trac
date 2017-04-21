@@ -278,7 +278,7 @@ class WikiModule(Component):
         with self.env.db_transaction:
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
-                for v in range(old_version, version):
+                for v in xrange(old_version, version):
                     page.delete(v + 1)
             else:
                 # only delete that `version`, or the whole page if `None`
@@ -633,7 +633,7 @@ class WikiModule(Component):
             formatter = OneLinerFormatter(self.env, context)
             if '/' in page.name:
                 parts = page.name.split('/')
-                for i in range(len(parts) - 2, -1, -1):
+                for i in xrange(len(parts) - 2, -1, -1):
                     name = '/'.join(parts[:i] + [parts[-1]])
                     if not ws.has_page(name):
                         higher.append(ws._format_link(formatter, 'wiki',

@@ -457,7 +457,7 @@ class TicketFormatter(Component):
             cell_l.extend(vals_l)
             cell_r.extend(vals_r)
 
-        for i in range(max(len(cell_l), len(cell_r))):
+        for i in xrange(max(len(cell_l), len(cell_r))):
             if i >= len(cell_l):
                 cell_l.append(width_l * ' ')
             elif i >= len(cell_r):

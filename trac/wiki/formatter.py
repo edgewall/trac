@@ -989,7 +989,7 @@ class Formatter(object):
                 class_attr = ' class="citation"' if citation else ''
                 self.out.write(u'<blockquote%s>' % class_attr + os.linesep)
             if citation:
-                for d in range(quote_depth+1, depth+1):
+                for d in xrange(quote_depth+1, depth+1):
                     open_one_quote(d)
             else:
                 open_one_quote(depth)
@@ -1482,11 +1482,11 @@ class OutlineFormatter(Formatter):
             if depth < min_depth or depth > max_depth:
                 continue
             if depth > curr_depth: # Deeper indent
-                for i in range(curr_depth, depth):
+                for i in xrange(curr_depth, depth):
                     out.write(whitespace_indent * (2*i) + u'<ol>\n' +
                               whitespace_indent * (2*i+1) + u'<li>\n')
             elif depth < curr_depth: # Shallower indent
-                for i in range(curr_depth-1, depth-1, -1):
+                for i in xrange(curr_depth-1, depth-1, -1):
                     out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                               whitespace_indent * (2*i) + u'</ol>\n')
                 out.write(whitespace_indent * (2*depth-1) + u'</li>\n' +
@@ -1498,7 +1498,7 @@ class OutlineFormatter(Formatter):
             out.write(whitespace_indent * (2*depth) +
                       u'<a href="#%s">%s</a>\n' % (anchor, text))
         # Close out all indentation
-        for i in range(curr_depth-1, min_depth-2, -1):
+        for i in xrange(curr_depth-1, min_depth-2, -1):
             out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                       whitespace_indent * (2*i) + u'</ol>\n')
 

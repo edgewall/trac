@@ -994,7 +994,7 @@ class BlameAnnotator(object):
         chgset = self.repos.get_changeset(rev)
         chgsets = {rev: chgset}
         self.timerange = TimeRange(chgset.date)
-        for idx in range(len(self.annotations)):
+        for idx in xrange(len(self.annotations)):
             rev = self.annotations[idx]
             chgset = chgsets.get(rev)
             if not chgset:
