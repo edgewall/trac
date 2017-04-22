@@ -20,7 +20,7 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Ticket
+from trac.ticket.model import Milestone, Ticket
 from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
@@ -588,6 +588,46 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual("No permissions to add a comment.",
                          unicode(req.chrome['warnings'][0]))
 
+    def test_change_milestone_requires_milestone_view(self):
+        """Changing ticket milestone requires MILESTONE_VIEW."""
+        perm_sys = PermissionSystem(self.env)
+        self._insert_ticket(summary='the summary')
+        for name in ('milestone1', 'milestone2'):
+            m = Milestone(self.env)
+            m.name = name
+            m.insert()
+
+        def make_req(authname):
+            return MockRequest(self.env, authname=authname, method='GET',
+                               path_info='/ticket/1')
+
+        def get_milestone_field(fields):
+            for field in fields:
+                if 'milestone' == field['name']:
+                    return field
+
+        perm_sys.grant_permission('user', 'TICKET_VIEW')
+        req = make_req('user')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        milestone_field = get_milestone_field(data['fields'])
+        self.assertFalse(milestone_field['editable'])
+        self.assertEqual([], milestone_field['optgroups'][0]['options'])
+        self.assertEqual([], milestone_field['optgroups'][1]['options'])
+
+        perm_sys.grant_permission('user_w_mv', 'TICKET_VIEW')
+        perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
+        req = make_req('user_w_mv')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        milestone_field = get_milestone_field(data['fields'])
+        self.assertTrue(milestone_field['editable'])
+        self.assertEqual([], milestone_field['optgroups'][0]['options'])
+        self.assertEqual(['milestone1', 'milestone2'],
+                         milestone_field['optgroups'][1]['options'])
+
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):
     """Tests for [ticket-custom] max_size attribute."""
@@ -775,6 +815,34 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         perm_cache, resource = \
             self._test_edit_ticket_comment('anonymous', 'anonymous')
         action = 'TICKET_EDIT_COMMENT'
+
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def _test_change_milestone(self, editor):
+        milestone = Milestone(self.env)
+        milestone.name = 'milestone1'
+        milestone.insert()
+        perm_cache = PermissionCache(self.env, editor, milestone.resource)
+        return perm_cache, milestone.resource
+
+    def test_user_with_milestone_view_can_change_milestone(self):
+        """User with MILESTONE_VIEW can change the ticket milestone.
+        """
+        self.perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
+        action = 'TICKET_CHG_MILESTONE'
+        perm_cache, resource = self._test_change_milestone('user_w_mv')
+
+        self.assertIn(action, perm_cache)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_user_without_milestone_view_cannot_change_milestone(self):
+        """User without MILESTONE_VIEW cannot change the ticket milestone.
+        """
+        action = 'TICKET_CHG_MILESTONE'
+        perm_cache, resource = self._test_change_milestone('user_w_mv')
 
         self.assertNotIn(action, perm_cache)
         self.assertIsNone(self.policy.check_permission(

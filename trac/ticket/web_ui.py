@@ -1581,7 +1581,8 @@ class TicketModule(Component):
             elif name == 'milestone' and not field.get('custom'):
                 milestones = [m for m in (Milestone(self.env, opt)
                                           for opt in field['options'])
-                                if 'MILESTONE_VIEW' in req.perm(m.resource)]
+                                if 'TICKET_CHG_MILESTONE'
+                                in req.perm(m.resource)]
                 field['editable'] = milestones != []
                 groups = group_milestones(milestones, ticket.exists
                     and 'TICKET_ADMIN' in req.perm(ticket.resource))
@@ -1934,6 +1935,12 @@ class DefaultTicketPolicy(Component):
     realm = TicketSystem.realm
 
     def check_permission(self, action, username, resource, perm):
+
+        if action == 'TICKET_CHG_MILESTONE' and \
+                self._is_valid_resource(resource, 'milestone') and \
+                'MILESTONE_VIEW' in perm:
+            return True
+
         if username != 'anonymous' and \
                 action == 'TICKET_EDIT_DESCRIPTION' and \
                 self._is_valid_resource(resource, self.realm) and \
