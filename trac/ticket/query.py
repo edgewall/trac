@@ -1402,7 +1402,7 @@ class TicketQueryMacro(WikiMacroBase):
 
             add_stylesheet(req, 'common/css/roadmap.css')
 
-            def query_href(extra_args, group_value = None):
+            def query_href(extra_args, group_value=None):
                 q = query_string + ''.join('&%s=%s' % (kw, v)
                                            for kw in extra_args
                                            if kw not in ['group', 'status']
@@ -1411,6 +1411,7 @@ class TicketQueryMacro(WikiMacroBase):
                 args = {}
                 if q.group:
                     args[q.group] = group_value
+                    q.groupdesc = 0  # avoid groupdesc=1 in query string
                 q.group = extra_args.get('group')
                 if 'status' in extra_args:
                     args['status'] = extra_args['status']
@@ -1451,6 +1452,8 @@ class TicketQueryMacro(WikiMacroBase):
 
             groups = grouped_stats_data(self.env, stats_provider, tickets, by,
                                         per_group_stats_data)
+            if query.groupdesc:
+                groups.reverse()
             data = {
                 'groups': groups, 'grouped_by': by,
                 'summary': _("Ticket completion status for each %(group)s",
