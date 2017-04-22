@@ -67,7 +67,6 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     datefmt = '%X' if logtype == 'stderr' else ''
     formatter = logging.Formatter(format, datefmt)
     hdlr.setFormatter(formatter)
-    logger.addHandler(hdlr)
 
     # Remember our handler so that we can remove it later
     logger._trac_handler = hdlr

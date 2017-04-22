@@ -387,6 +387,7 @@ class EnvironmentStub(Environment):
         # -- logging
         from trac.log import logger_handler_factory
         self.log, self._log_handler = logger_handler_factory('test')
+        self.log.addHandler(self._log_handler)
 
         # -- database
         self.dburi = get_dburi()
