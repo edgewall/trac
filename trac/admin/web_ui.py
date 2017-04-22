@@ -282,8 +282,13 @@ class LoggingAdminPanel(Component):
                     _("Invalid log level"))
 
             # Create logger to be sure the configuration is valid.
+            new_file_path = new_file
+            if not os.path.isabs(new_file_path):
+                new_file_path = os.path.join(self.env.log_dir, new_file)
             try:
-                self.env.create_logger(new_type, new_file, new_level)
+                logger, handler = \
+                    self.env.create_logger(new_type, new_file_path, new_level,
+                                           self.env.log_format)
             except Exception as e:
                 add_warning(req,
                             tag_("Changes not saved. Logger configuration "
@@ -293,6 +298,7 @@ class LoggingAdminPanel(Component):
                 self.log.error("Logger configuration error: %s",
                                exception_to_unicode(e, traceback=True))
             else:
+                handler.close()
                 if new_type != log_type:
                     self.config.set('logging', 'log_type', new_type)
                     changed = True

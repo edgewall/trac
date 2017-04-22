@@ -613,14 +613,15 @@ class Environment(Component, ComponentManager):
 
     def setup_log(self):
         """Initialize the logging sub-system."""
-        self.log = self.create_logger(self.log_type, self.log_file_path,
-                                      self.log_level)
+        self.log, log_handler = \
+            self.create_logger(self.log_type, self.log_file_path,
+                               self.log_level, self.log_format)
+        self.log.addHandler(log_handler)
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
                       self.trac_version)
 
-    def create_logger(self, log_type, log_file, log_level):
+    def create_logger(self, log_type, log_file, log_level, log_format):
         log_id = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
-        log_format = self.log_format
         if log_format:
             log_format = log_format.replace('$(', '%(') \
                                    .replace('%(path)s', self.path) \

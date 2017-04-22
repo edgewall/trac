@@ -11,6 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
+import tempfile
 import unittest
 
 from trac.admin.web_ui import AdminModule, PermissionAdminPanel, \
@@ -84,7 +86,11 @@ class PluginAdminPanelTestCase(unittest.TestCase):
 class LoggingAdminPanelTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(path=tempfile.mkdtemp())
+        os.mkdir(self.env.log_dir)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
 
     def test_invalid_log_type_raises(self):
         """Invalid log type raises TracError."""
@@ -134,13 +140,13 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
+        self.assertEqual(1, len(req.chrome['warnings']))
+        self.assertIn('Changes not saved. Logger configuration error:',
+                      req.chrome['warnings'][0])
         self.assertNotEqual('file', log_type)
         self.assertEqual(log_type, logging_config.get('log_type'))
         self.assertEqual(log_level, logging_config.get('log_level'))
         self.assertEqual(log_file, logging_config.get('log_file'))
-        self.assertEqual(1, len(req.chrome['warnings']))
-        self.assertIn('Changes not saved. Logger configuration error:',
-                      req.chrome['warnings'][0])
 
     def test_change_log_type(self):
         """Change the log type."""
@@ -158,6 +164,7 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
+        self.assertEqual(0, len(req.chrome['warnings']))
         self.assertNotEqual('file', log_type)
         self.assertEqual('file', logging_config.get('log_type'))
         self.assertEqual(log_level, logging_config.get('log_level'))
@@ -180,6 +187,7 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
+        self.assertEqual(0, len(req.chrome['warnings']))
         self.assertEqual(log_type, logging_config.get('log_type'))
         self.assertNotEqual('ERROR', log_level)
         self.assertEqual('ERROR', logging_config.get('log_level'))
@@ -202,6 +210,7 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertTrue(mod.match_request(req))
         self.assertRaises(RequestDone, mod.process_request, req)
 
+        self.assertEqual(0, len(req.chrome['warnings']))
         self.assertEqual(log_type, logging_config.get('log_type'))
         self.assertEqual(log_level, logging_config.get('log_level'))
         self.assertNotEqual('trac.log.1', log_file)
