@@ -62,6 +62,8 @@ class WikiModule(Component):
         """Default height of the textarea on the wiki edit page.
         (//Since 1.1.5//)""")
 
+    START_PAGE = 'WikiStart'
+    TITLE_INDEX_PAGE = 'TitleIndex'
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
 
@@ -80,7 +82,7 @@ class WikiModule(Component):
         return 'wiki'
 
     def get_navigation_items(self, req):
-        if 'WIKI_VIEW' in req.perm(self.realm, 'WikiStart'):
+        if 'WIKI_VIEW' in req.perm(self.realm, self.START_PAGE):
             yield ('mainnav', 'wiki',
                    tag.a(_("Wiki"), href=req.href.wiki(),
                          accesskey=accesskey(req, 1)))
@@ -107,7 +109,7 @@ class WikiModule(Component):
 
     def process_request(self, req):
         action = req.args.get('action', 'view')
-        pagename = req.args.get('page', 'WikiStart')
+        pagename = req.args.get('page', self.START_PAGE)
         version = req.args.getint('version')
         old_version = req.args.getint('old_version')
 
@@ -620,7 +622,7 @@ class WikiModule(Component):
                          conversion.in_mimetype)
 
         data = self._page_data(req, page)
-        if page.name == 'WikiStart':
+        if page.name == self.START_PAGE:
             data['title'] = ''
 
         ws = WikiSystem(self.env)
@@ -722,8 +724,8 @@ class WikiModule(Component):
 
     def _wiki_ctxtnav(self, req, page):
         """Add the normal wiki ctxtnav entries."""
-        add_ctxtnav(req, _("Start Page"), req.href.wiki('WikiStart'))
-        add_ctxtnav(req, _("Index"), req.href.wiki('TitleIndex'))
+        add_ctxtnav(req, _("Start Page"), req.href.wiki(self.START_PAGE))
+        add_ctxtnav(req, _("Index"), req.href.wiki(self.TITLE_INDEX_PAGE))
         if page.exists:
             add_ctxtnav(req, _("History"), req.href.wiki(page.name,
                                                          action='history'))
