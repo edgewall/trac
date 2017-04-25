@@ -22,7 +22,7 @@ import re
 
 from trac.config import IntOption
 from trac.core import *
-from trac.db import get_column_names
+from trac.db.api import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
@@ -31,14 +31,13 @@ from trac.util import as_int, content_disposition
 from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.html import tag
 from trac.util.presentation import Paginator
-from trac.util.text import (exception_to_unicode, quote_query_string, sub_vars,
-                            sub_vars_re, to_unicode)
+from trac.util.text import (exception_to_unicode, quote_query_string,
+                            sub_vars, sub_vars_re, to_unicode)
 from trac.util.translation import _, tag_
 from trac.web.api import HTTPBadRequest, IRequestHandler, RequestDone
-from trac.web.chrome import (INavigationContributor, Chrome,
-                             add_ctxtnav, add_link, add_notice, add_script,
-                             add_stylesheet, add_warning, auth_link,
-                             web_context)
+from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
+                             add_link, add_notice, add_stylesheet,
+                             add_warning, auth_link, web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -174,7 +173,6 @@ class ReportModule(Component):
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
             data = self._render_editor(req, id, action == 'copy')
-            Chrome(self.env).add_wiki_toolbars(req)
         elif action == 'delete':
             template = 'report_delete.html'
             data = self._render_confirm_delete(req, id)
@@ -287,6 +285,7 @@ class ReportModule(Component):
 
         data['report'] = {'id': id, 'title': title,
                           'sql': query, 'description': description}
+        Chrome(self.env).add_wiki_toolbars(req)
         return data
 
     def _render_list(self, req):
@@ -550,7 +549,8 @@ class ReportModule(Component):
                 cell_group = []
                 for header in header_group:
                     value = cell_value(result[col_idx])
-                    cell = {'value': value, 'header': header, 'index': col_idx}
+                    cell = {'value': value, 'header': header,
+                            'index': col_idx}
                     col = header['col']
                     col_idx += 1
                     # Detect and create new group
@@ -669,6 +669,7 @@ class ReportModule(Component):
         self.log.debug('Report {%d} with SQL "%s"', id, sql)
         self.log.debug('Request args: %r', req.args)
 
+        rows = None
         num_items = 0
         order_by = []
         limit_offset = None
@@ -735,7 +736,7 @@ class ReportModule(Component):
                     # is there already an ORDER BY in the original sql?
                     skel = sql_skeleton(sql)
                     before, after = split_sql(sql, _order_by_re, skel)
-                    if after: # there were some other criterions, keep them
+                    if after:  # there were some other criteria, keep them
                         order_by.append(after)
                     sql = ' '.join([before, 'ORDER BY', ', '.join(order_by)])
 
@@ -817,7 +818,7 @@ class ReportModule(Component):
                 # support one level of indirection (e.g. for $USER)
                 if arg.startswith('$'):
                     arg = arg[1:]
-                    if not arg.startswith('$'): # $$ quotes for $
+                    if not arg.startswith('$'):  # $$ quotes for $
                         arg = args[arg]
             except KeyError:
                 arg = args[str(aname)] = ''
