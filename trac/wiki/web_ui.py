@@ -62,8 +62,8 @@ class WikiModule(Component):
         """Default height of the textarea on the wiki edit page.
         (//Since 1.1.5//)""")
 
-    START_PAGE = 'WikiStart'
-    TITLE_INDEX_PAGE = 'TitleIndex'
+    START_PAGE = property(lambda self: WikiSystem.START_PAGE)
+    TITLE_INDEX_PAGE = property(lambda self: WikiSystem.TITLE_INDEX_PAGE)
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
 
@@ -712,6 +712,7 @@ class WikiModule(Component):
             'text': text,
             'latest_version': latest_page.version,
             'attachments': AttachmentModule(self.env).attachment_data(context),
+            'start_page': self.START_PAGE,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
             'version': version,

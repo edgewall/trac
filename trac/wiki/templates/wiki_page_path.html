@@ -11,7 +11,7 @@
 
 <div id="pagepath" class="noprint">
 # with parts = page.name.split('/')
-<a class="pathentry first" title="${_('View WikiStart')}"
+<a class="pathentry first" title="${_('View %(path)s', path=start_page)}"
    href="${href.wiki()}">wiki:</a>{%
 for part in parts:
 %}<a href="${href.wiki(*parts[:loop.index])}"

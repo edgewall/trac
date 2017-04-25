@@ -256,6 +256,8 @@ class WikiSystem(Component):
     syntax_providers = ExtensionPoint(IWikiSyntaxProvider)
 
     realm = 'wiki'
+    START_PAGE = 'WikiStart'
+    TITLE_INDEX_PAGE = 'TitleIndex'
 
     ignore_missing_pages = BoolOption('wiki', 'ignore_missing_pages', 'false',
         """Enable/disable highlighting CamelCase links to missing pages.
@@ -403,7 +405,7 @@ class WikiSystem(Component):
             pagename, version = pagename.split('@', 1)
         if version and query:
             query = '&' + query[1:]
-        pagename = pagename.rstrip('/') or 'WikiStart'
+        pagename = pagename.rstrip('/') or self.START_PAGE
         referrer = ''
         if formatter.resource and formatter.resource.realm == self.realm:
             referrer = formatter.resource.id
