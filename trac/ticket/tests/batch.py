@@ -15,7 +15,7 @@ import unittest
 from datetime import timedelta
 
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
-                      PermissionCache, PermissionSystem
+                      PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket import default_workflow, api, web_ui
 from trac.ticket.batch import BatchModifyModule
@@ -33,11 +33,7 @@ class BatchModifyTestCase(unittest.TestCase):
             enable=[default_workflow.ConfigurableTicketWorkflow,
                     DefaultPermissionPolicy, DefaultPermissionStore,
                     api.TicketSystem, web_ui.TicketModule])
-        self.env.config.set('trac', 'permission_policies',
-                            'DefaultPermissionPolicy')
         self.req = MockRequest(self.env)
-        self.req.session = {}
-        self.req.perm = PermissionCache(self.env)
 
     def assertCommentAdded(self, ticket_id, comment):
         ticket = Ticket(self.env, int(ticket_id))
@@ -71,17 +67,17 @@ class BatchModifyTestCase(unittest.TestCase):
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
         ticket = Ticket(self.env)
+        ticket['summary'] = summary
         for k, v in kw.items():
             ticket[k] = v
         return ticket.insert()
 
-    def test_ignore_summary_reporter_and_description(self):
+    def test_ignore_summary_and_description(self):
         """These cannot be added through the UI, but if somebody tries
         to build their own POST data they will be ignored."""
         batch = BatchModifyModule(self.env)
         self.req.args = {
             'batchmod_value_summary': 'test ticket',
-            'batchmod_value_reporter': 'anonymous',
             'batchmod_value_description': 'synergize the widgets'
         }
         values = batch._get_new_ticket_values(self.req)
@@ -129,13 +125,15 @@ class BatchModifyTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='POST', path_info='/batchmodify')
         query_opened_tickets = req.href.query(status='!closed')
         query_default = req.href.query()
-        req.args = {'selected_tickets': '', 'query_href': query_opened_tickets}
+        req.args = {'selected_tickets': '',
+                    'query_href': query_opened_tickets}
         req.session['query_href'] = query_default
         req.add_redirect_listener(redirect_listener)
 
         self.assertTrue(batch.match_request(req))
         self.assertRaises(RequestDone, batch.process_request, req)
-        self.assertEqual([query_opened_tickets, False], redirect_listener_args)
+        self.assertEqual([query_opened_tickets, False],
+                         redirect_listener_args)
 
     # Assign list items
 
