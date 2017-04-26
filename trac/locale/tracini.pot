@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-18 20:04-0700\n"
+"POT-Creation-Date: 2017-04-25 20:25-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -825,7 +825,7 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/query.py:855
+#: trac/ticket/query.py:854
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -833,7 +833,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:863
+#: trac/ticket/query.py:862
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -841,19 +841,19 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:871
+#: trac/ticket/query.py:870
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default. Set to `0` to specify no limit."
 msgstr ""
 
-#: trac/ticket/report.py:118
+#: trac/ticket/report.py:117
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default. Set to `0` to specify no limit."
 msgstr ""
 
-#: trac/ticket/report.py:123
+#: trac/ticket/report.py:122
 msgid ""
 "Number of tickets displayed in the rss feeds for reports.\n"
 "Set to `0` to specify no limit."
@@ -1508,15 +1508,15 @@ msgid ""
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/wiki/api.py:260
+#: trac/wiki/api.py:262
 msgid "Enable/disable highlighting CamelCase links to missing pages."
 msgstr ""
 
-#: trac/wiki/api.py:264
+#: trac/wiki/api.py:266
 msgid "Enable/disable splitting the WikiPageNames with space characters."
 msgstr ""
 
-#: trac/wiki/api.py:268
+#: trac/wiki/api.py:270
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].\n"
@@ -1525,7 +1525,7 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/wiki/api.py:276
+#: trac/wiki/api.py:278
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`."
