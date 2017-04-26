@@ -134,7 +134,11 @@ class RequestDispatcher(Component):
 
         Options include `TimelineModule`, `RoadmapModule`,
         `BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`
-        and `WikiModule`.""")
+        and `WikiModule`.
+
+        The [/prefs/userinterface session preference] for default handler
+        take precedence, when set.
+        """)
 
     default_timezone = Option('trac', 'default_timezone', '',
         """The default timezone to use""")
