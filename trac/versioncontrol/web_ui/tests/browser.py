@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import os.path
+import posixpath
 import unittest
 import zipfile
 from datetime import datetime
@@ -49,7 +49,7 @@ class MockRepositoryConnector(Component):
         def get_node(path, rev):
             if 'missing' in path:
                 raise NoSuchNode(path, rev)
-            basename = os.path.basename(path)
+            basename = posixpath.basename(path)
             if 'file' in basename:
                 kind = Node.FILE
                 entries = ()
@@ -59,7 +59,7 @@ class MockRepositoryConnector(Component):
                     entries = ['file.txt']
                 else:
                     entries = ['dir1', 'dir2']
-                entries = [os.path.join(path, entry) for entry in entries]
+                entries = [posixpath.join(path, entry) for entry in entries]
             content = 'Contents for %s' % to_utf8(path)
             node = Mock(Node, repos, path, rev, kind,
                         created_path=path, created_rev=rev,
