@@ -47,6 +47,7 @@ def image_setup(tc):
     tc.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
     add_attachment(tc, 'wiki', 'page:fr', 'img.png')
     add_attachment(tc, 'wiki', 'page', 'img.png')
+    add_attachment(tc, 'wiki', 'page', '][img.png')
     tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
     tc.env.config.set('interwiki', 'travis',
                       'https://travis-ci.org/$1?branch=$2')
@@ -267,6 +268,18 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 <p>
 <img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img2.png&#34; attached to page" title="No image &#34;img2.png&#34; attached to page" />
+</p>
+==============================  "[" and "]" characters - 1 (#12762)
+[[Image(wiki:page:][img.png,nolink)]]
+------------------------------
+<p>
+<img src="/raw-attachment/wiki/page/%5D%5Bimg.png" alt="image in page" title="image in page" />
+</p>
+==============================  "[" and "]" characters - 2 (#12762)
+[[Image(][img.png,nolink)]]
+------------------------------
+<p>
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;][img.png&#34; attached to WikiStart" title="No image &#34;][img.png&#34; attached to WikiStart" />
 </p>
 """
 
