@@ -49,15 +49,15 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.pygments = Mimeview(self.env).renderers[0]
         self.req = MockRequest(self.env)
         self.context = web_context(self.req)
-        pygments_html = open(os.path.join(os.path.split(__file__)[0],
-                                          'pygments.data'))
         self.pygments_html = {}
         testcase = []
-        for line in pygments_html.readlines():
-            if line.startswith('#'):
-                self.pygments_html[line[1:].strip()] = testcase = []
-            else:
-                testcase.append(unicode(line.rstrip(), 'utf-8'))
+        html_file = os.path.join(os.path.dirname(__file__), 'pygments.data')
+        with open(html_file, 'rb') as f:
+            for line in f.readlines():
+                if line.startswith('#'):
+                    self.pygments_html[line[1:].strip()] = testcase = []
+                else:
+                    testcase.append(unicode(line.rstrip(), 'utf-8'))
 
     def _expected(self, expected_id):
         return self.pygments_html[expected_id]
