@@ -12,9 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from trac.core import Component, implements
-from trac.util.html import tag
-from trac.util.presentation import captioned_button
-from trac.util.translation import _
 from trac.web.api import IRequestFilter
 from trac.web.chrome import ITemplateProvider, add_script, add_script_data
 
