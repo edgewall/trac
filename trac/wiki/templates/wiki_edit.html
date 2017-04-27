@@ -222,16 +222,17 @@
           <a href="#content" title="${_('Go to the editor')}">${_("Edit")}</a>
           &uarr;
         </div>
-        # endif
-        # if not sidebyside:
         <h2>
-          # if preview_or_review and diff:
+          # if diff:
           ${_("Review Changes")}
-          # elif preview_or_review:
-          ${_("Preview")}
           # else:
-          ${_("No changes")}
+          ${_("Preview")}
           # endif
+        </h2>
+        # endif
+        # if not preview_or_review
+        <h2>
+          ${_("No changes")}
         </h2>
         # endif
         <div id="preview" class="trac-content">
