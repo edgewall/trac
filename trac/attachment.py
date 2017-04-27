@@ -17,10 +17,10 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime
+from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
-import io
 import os.path
 import posixpath
 import re
@@ -505,24 +505,35 @@ class AttachmentModule(Component):
                    (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
-
-        buf = io.BytesIO()
-        with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
-            for attachment in attachments:
-                zipinfo = create_zipinfo(attachment.filename,
-                                         mtime=attachment.date,
-                                         comment=attachment.description)
-                try:
-                    with attachment.open() as fd:
-                        zipfile.writestr(zipinfo, fd.read())
-                except ResourceNotFound:
-                    pass  # skip missing files
-
-        zip_str = buf.getvalue()
-        req.send_header("Content-Length", len(zip_str))
         req.end_headers()
-        req.write(zip_str)
-        raise RequestDone()
+
+        def write_partial(fileobj, start):
+            end = fileobj.tell()
+            fileobj.seek(start, 0)
+            remaining = end - start
+            while remaining > 0:
+                chunk = fileobj.read(min(remaining, 4096))
+                req.write(chunk)
+                remaining -= len(chunk)
+            fileobj.seek(end, 0)
+            return end
+
+        pos = 0
+        with TemporaryFile(prefix='trac-', suffix='.zip') as fileobj:
+            with ZipFile(fileobj, 'w', ZIP_DEFLATED) as zipfile:
+                for attachment in attachments:
+                    zipinfo = create_zipinfo(attachment.filename,
+                                             mtime=attachment.date,
+                                             comment=attachment.description)
+                    try:
+                        with attachment.open() as fd:
+                            zipfile.writestr(zipinfo, fd.read())
+                    except ResourceNotFound:
+                        pass  # skip missing files
+                    else:
+                        pos = write_partial(fileobj, pos)
+            write_partial(fileobj, pos)
+        raise RequestDone
 
     def _render_list(self, req, parent):
         data = {
@@ -938,7 +949,7 @@ class Attachment(object):
 
 class LegacyAttachmentPolicy(Component):
     """Default permission policy for the attachment system.
-    
+
     Authenticated users can delete attachments they added.
     """
     implements(IPermissionPolicy)

@@ -16,8 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
-import io
 from itertools import izip
+from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 
 from trac.resource import ResourceNotFound
@@ -197,34 +197,44 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
     else:
         root_name = ''
     root_len = len(root_path)
-
-    buf = io.BytesIO()
-    with ZipFile(buf, 'w', ZIP_DEFLATED) as zipfile:
-        for node in iter_nodes(root_node):
-            if node is root_node:
-                continue
-            path = node.path.strip('/')
-            assert path.startswith(root_path)
-            path = root_name + path[root_len:]
-            kwargs = {'mtime': node.last_modified}
-            data = None
-            if node.isfile:
-                data = node.get_processed_content(eol_hint='CRLF').read()
-                properties = node.get_properties()
-                # Subversion specific
-                if 'svn:special' in properties and data.startswith('link '):
-                    data = data[5:]
-                    kwargs['symlink'] = True
-                if 'svn:executable' in properties:
-                    kwargs['executable'] = True
-            elif node.isdir and path:
-                kwargs['dir'] = True
-                data = ''
-            if data is not None:
-                zipfile.writestr(create_zipinfo(path, **kwargs), data)
-
-    zip_str = buf.getvalue()
-    req.send_header("Content-Length", len(zip_str))
     req.end_headers()
-    req.write(zip_str)
+
+    def write_partial(fileobj, start):
+        end = fileobj.tell()
+        fileobj.seek(start, 0)
+        remaining = end - start
+        while remaining > 0:
+            chunk = fileobj.read(min(remaining, 4096))
+            req.write(chunk)
+            remaining -= len(chunk)
+        fileobj.seek(end, 0)
+        return end
+
+    pos = 0
+    with TemporaryFile(prefix='trac-', suffix='.zip') as fileobj:
+        with ZipFile(fileobj, 'w', ZIP_DEFLATED) as zipfile:
+            for node in iter_nodes(root_node):
+                if node is root_node:
+                    continue
+                path = node.path.strip('/')
+                assert path.startswith(root_path)
+                path = root_name + path[root_len:]
+                kwargs = {'mtime': node.last_modified}
+                data = None
+                if node.isfile:
+                    data = node.get_processed_content(eol_hint='CRLF').read()
+                    props = node.get_properties()
+                    # Subversion specific
+                    if 'svn:special' in props and data.startswith('link '):
+                        data = data[5:]
+                        kwargs['symlink'] = True
+                    if 'svn:executable' in props:
+                        kwargs['executable'] = True
+                elif node.isdir and path:
+                    kwargs['dir'] = True
+                    data = ''
+                if data is not None:
+                    zipfile.writestr(create_zipinfo(path, **kwargs), data)
+                    pos = write_partial(fileobj, pos)
+        write_partial(fileobj, pos)
     raise RequestDone
