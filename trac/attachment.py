@@ -16,8 +16,9 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from cStringIO import StringIO
 from datetime import datetime
+from tempfile import TemporaryFile
+from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
 import os.path
@@ -506,27 +507,41 @@ class AttachmentModule(Component):
                    (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
-
-        from zipfile import ZipFile, ZIP_DEFLATED
-
-        buf = StringIO()
-        zipfile = ZipFile(buf, 'w', ZIP_DEFLATED)
-        for attachment in attachments:
-            zipinfo = create_zipinfo(attachment.filename,
-                                     mtime=attachment.date,
-                                     comment=attachment.description)
-            try:
-                with attachment.open() as fd:
-                    zipfile.writestr(zipinfo, fd.read())
-            except ResourceNotFound:
-                pass # skip missing files
-        zipfile.close()
-
-        zip_str = buf.getvalue()
-        req.send_header("Content-Length", len(zip_str))
         req.end_headers()
-        req.write(zip_str)
-        raise RequestDone()
+
+        def write_partial(fileobj, start):
+            end = fileobj.tell()
+            fileobj.seek(start, 0)
+            remaining = end - start
+            while remaining > 0:
+                chunk = fileobj.read(min(remaining, 4096))
+                req.write(chunk)
+                remaining -= len(chunk)
+            fileobj.seek(end, 0)
+            return end
+
+        pos = 0
+        fileobj = TemporaryFile(prefix='trac-', suffix='.zip')
+        try:
+            zipfile = ZipFile(fileobj, 'w', ZIP_DEFLATED)
+            for attachment in attachments:
+                zipinfo = create_zipinfo(attachment.filename,
+                                         mtime=attachment.date,
+                                         comment=attachment.description)
+                try:
+                    with attachment.open() as fd:
+                        zipfile.writestr(zipinfo, fd.read())
+                except ResourceNotFound:
+                    pass  # skip missing files
+                else:
+                    pos = write_partial(fileobj, pos)
+        finally:
+            try:
+                zipfile.close()
+                write_partial(fileobj, pos)
+            finally:
+                fileobj.close()
+        raise RequestDone
 
     def _render_list(self, req, parent):
         data = {
