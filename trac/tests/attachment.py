@@ -241,8 +241,6 @@ class AttachmentModuleTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
-        with self.env.db_transaction as db:
-            db("INSERT INTO wiki (name,version) VALUES ('WikiStart',1)")
 
     def tearDown(self):
         self.env.reset_db_and_disk()
@@ -301,20 +299,22 @@ class AttachmentModuleTestCase(unittest.TestCase):
 
     def test_resource_doesnt_exist(self):
         """Non-existent resource returns False from resource_exists."""
-        r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
-        self.assertFalse(AttachmentModule(self.env).resource_exists(r))
+        parent = Resource('parent_realm', 'parent_id')
+        self.assertTrue(resource_exists(self.env, parent))
+        r = parent.child('attachment', 'file.txt')
+        self.assertFalse(resource_exists(self.env, r))
 
     def test_download_zip(self):
-        att = Attachment(self.env, 'wiki', 'WikiStart')
+        att = Attachment(self.env, 'parent_realm', 'parent_id')
         att.description = 'Blah blah'
         att.insert('foo.txt', StringIO('foo'), 3,
                    datetime.datetime(2016, 9, 23, 12, 34, 56, tzinfo=utc))
-        att = Attachment(self.env, 'wiki', 'WikiStart')
+        att = Attachment(self.env, 'parent_realm', 'parent_id')
         att.insert('bar.jpg', StringIO('bar'), 3,
                    datetime.datetime(2016, 12, 14, 23, 56, 30, tzinfo=utc))
         module = AttachmentModule(self.env)
         req = MockRequest(self.env, args={'format': 'zip'},
-                          path_info='/attachment/wiki/WikiStart/')
+                          path_info='/attachment/parent_realm/parent_id/')
 
         self.assertTrue(module.match_request(req))
         self.assertRaises(RequestDone, module.process_request, req)
