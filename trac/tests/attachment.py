@@ -13,17 +13,20 @@
 
 from __future__ import with_statement
 
+import datetime
 import os
 from StringIO import StringIO
 import tempfile
 import unittest
+import zipfile
 
 from trac.attachment import Attachment, AttachmentModule
 from trac.core import Component, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
 from trac.test import EnvironmentStub, MockRequest
-from trac.web.api import HTTPBadRequest
+from trac.util.datefmt import utc
+from trac.web.api import HTTPBadRequest, RequestDone
 
 
 hashes = {
@@ -238,6 +241,8 @@ class AttachmentModuleTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.env.path = tempfile.mkdtemp(prefix='trac-tempenv-')
+        with self.env.db_transaction as db:
+            db("INSERT INTO wiki (name,version) VALUES ('WikiStart',1)")
 
     def tearDown(self):
         self.env.reset_db_and_disk()
@@ -298,6 +303,36 @@ class AttachmentModuleTestCase(unittest.TestCase):
         """Non-existent resource returns False from resource_exists."""
         r = Resource('wiki', 'WikiStart').child('attachment', 'file.txt')
         self.assertFalse(AttachmentModule(self.env).resource_exists(r))
+
+    def test_download_zip(self):
+        att = Attachment(self.env, 'wiki', 'WikiStart')
+        att.description = 'Blah blah'
+        att.insert('foo.txt', StringIO('foo'), 3,
+                   datetime.datetime(2016, 9, 23, 12, 34, 56, tzinfo=utc))
+        att = Attachment(self.env, 'wiki', 'WikiStart')
+        att.insert('bar.jpg', StringIO('bar'), 3,
+                   datetime.datetime(2016, 12, 14, 23, 56, 30, tzinfo=utc))
+        module = AttachmentModule(self.env)
+        req = MockRequest(self.env, args={'format': 'zip'},
+                          path_info='/attachment/wiki/WikiStart/')
+
+        self.assertTrue(module.match_request(req))
+        self.assertRaises(RequestDone, module.process_request, req)
+        z = zipfile.ZipFile(req.response_sent, 'r')
+        self.assertEqual(['bar.jpg', 'foo.txt'],
+                         sorted(i.filename for i in z.infolist()))
+
+        zinfo = z.getinfo('foo.txt')
+        self.assertEqual('foo', z.read('foo.txt'))
+        self.assertEqual(3, zinfo.file_size)
+        self.assertEqual((2016, 9, 23, 12, 34, 56), zinfo.date_time)
+        self.assertEqual('Blah blah', zinfo.comment)
+
+        zinfo = z.getinfo('bar.jpg')
+        self.assertEqual('bar', z.read('bar.jpg'))
+        self.assertEqual(3, zinfo.file_size)
+        self.assertEqual((2016, 12, 14, 23, 56, 30), zinfo.date_time)
+        self.assertEqual('', zinfo.comment)
 
 
 def suite():

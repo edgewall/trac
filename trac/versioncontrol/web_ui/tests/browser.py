@@ -11,7 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import os.path
 import unittest
+import zipfile
 from datetime import datetime
 from cStringIO import StringIO
 
@@ -21,10 +23,12 @@ from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
 from trac.test import Mock, MockRequest
 from trac.util.datefmt import utc
+from trac.util.text import to_utf8
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node, NoSuchNode,
     Repository, RepositoryManager)
 from trac.versioncontrol.web_ui.browser import BrowserModule
+from trac.web.api import RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 from tracopt.perm.authz_policy import ConfigObj
 
@@ -37,21 +41,35 @@ class MockRepositoryConnector(Component):
         yield 'mock', 8
 
     def get_repository(self, repos_type, repos_dir, params):
+        t = datetime(2017, 3, 31, 12, 34, 56, tzinfo=utc)
+
         def get_changeset(rev):
-            return Mock(Changeset, repos, rev, 'message', 'author',
-                        datetime(2001, 1, 1, tzinfo=utc))
+            return Mock(Changeset, repos, rev, 'message', 'author', t)
 
         def get_node(path, rev):
             if 'missing' in path:
                 raise NoSuchNode(path, rev)
-            kind = Node.FILE if 'file' in path else Node.DIRECTORY
+            basename = os.path.basename(path)
+            if 'file' in basename:
+                kind = Node.FILE
+                entries = ()
+            else:
+                kind = Node.DIRECTORY
+                if 'dir' in basename:
+                    entries = ['file.txt']
+                else:
+                    entries = ['dir1', 'dir2']
+                entries = [os.path.join(path, entry) for entry in entries]
+            content = 'Contents for %s' % to_utf8(path)
             node = Mock(Node, repos, path, rev, kind,
                         created_path=path, created_rev=rev,
-                        get_entries=lambda: iter([]),
+                        get_entries=lambda: iter(get_node(entry, rev)
+                                                 for entry in entries),
                         get_properties=lambda: {},
-                        get_content=lambda: StringIO('content'),
-                        get_content_length=lambda: 7,
-                        get_content_type=lambda: 'application/octet-stream')
+                        get_content=lambda: StringIO(content),
+                        get_content_length=lambda: len(content),
+                        get_content_type=lambda: 'application/octet-stream',
+                        get_last_modified=lambda: t)
             return node
 
         if params['name'] == 'raise':
@@ -381,6 +399,31 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         except PermissionError, e:
             self.assertEqual('BROWSER_VIEW', e.action)
             self.assertEqual(None, e.resource)
+
+    def test_zip_archive(self):
+        req = MockRequest(self.env, path_info='/browser/trunk',
+                          args={'format': 'zip'})
+        self.assertRaises(RequestDone, self.process_request, req)
+
+        z = zipfile.ZipFile(req.response_sent, 'r')
+        self.assertEqual(['trunk/dir1/', 'trunk/dir1/file.txt',
+                          'trunk/dir2/', 'trunk/dir2/file.txt'],
+                         sorted(i.filename for i in z.infolist()))
+
+        zi = z.getinfo('trunk/dir1/')
+        self.assertEqual((040755 << 16) | 0x10, zi.external_attr)
+
+        zi = z.getinfo('trunk/dir1/file.txt')
+        self.assertEqual(0644 << 16, zi.external_attr)
+        self.assertEqual('Contents for trunk/dir1/file.txt',
+                         z.read('trunk/dir1/file.txt'))
+        self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)
+
+        zi = z.getinfo('trunk/dir2/file.txt')
+        self.assertEqual(0644 << 16, zi.external_attr)
+        self.assertEqual('Contents for trunk/dir2/file.txt',
+                         z.read('trunk/dir2/file.txt'))
+        self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)
 
 
 def suite():
