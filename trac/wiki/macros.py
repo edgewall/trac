@@ -613,7 +613,7 @@ class ImageMacro(WikiMacroBase):
         if self._quoted_re.match(filespec):
             filespec = filespec.strip('\'"')
         # parse filespec argument to get realm and id if contained.
-        parts = [i.strip('''['"]''')
+        parts = [i.strip('\'"')
                  for i in self._split_filespec_re.split(filespec)[1::2]]
         realm = parts[0] if parts else None
         url = raw_url = desc = None
