@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-25 20:25-0700\n"
+"POT-Creation-Date: 2017-04-27 17:42-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1473,20 +1473,23 @@ msgid ""
 "\n"
 "Options include `TimelineModule`, `RoadmapModule`,\n"
 "`BrowserModule`, `QueryModule`, `ReportModule`, `TicketModule`\n"
-"and `WikiModule`."
+"and `WikiModule`.\n"
+"\n"
+"The [/prefs/userinterface session preference] for default handler\n"
+"take precedence, when set."
 msgstr ""
 
-#: trac/web/main.py:139
+#: trac/web/main.py:143
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:142
+#: trac/web/main.py:146
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:148
+#: trac/web/main.py:152
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1494,7 +1497,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:155
+#: trac/web/main.py:159
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1502,7 +1505,7 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:162
+#: trac/web/main.py:166
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
