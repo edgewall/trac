@@ -32,7 +32,7 @@ if dir_ in sys.path:
     sys.path.remove(dir_)
 try:
     import pygments
-except ImportError, e:
+except ImportError as e:
     pygments = None
     from trac.util.text import exception_to_unicode
     print exception_to_unicode(e, True)
