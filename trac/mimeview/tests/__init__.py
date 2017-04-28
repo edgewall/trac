@@ -13,8 +13,8 @@
 
 import unittest
 
+from trac.mimeview.tests import api, patch, pygments, rst
 from trac.mimeview.tests.functional import functionalSuite
-from trac.mimeview.tests import api, patch, pygments
 
 
 def test_suite():
@@ -22,6 +22,7 @@ def test_suite():
     suite.addTest(api.test_suite())
     suite.addTest(patch.test_suite())
     suite.addTest(pygments.test_suite())
+    suite.addTest(rst.test_suite())
     return suite
 
 

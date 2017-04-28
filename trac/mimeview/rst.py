@@ -30,6 +30,7 @@ try:
     from docutils.core import publish_parts
     from docutils.parsers import rst
     from docutils.readers import standalone
+    from docutils.writers import html4css1
     from docutils import __version__
     has_docutils = True
 except ImportError:
@@ -244,9 +245,13 @@ class ReStructuredTextRenderer(Component):
 
     def render(self, context, mimetype, content, filename=None, rev=None):
         # Minimize visual impact of errors
-        from docutils.writers import html4css1
         class TracHTMLTranslator(html4css1.HTMLTranslator):
-            """Specialized translator with unobtrusive error reporting"""
+            """Specialized translator with unobtrusive error reporting
+            and some extra security features"""
+            def __init__(self, *args, **kwargs):
+                self._render_unsafe_content = wikisys.render_unsafe_content
+                self._safe_schemes = set(wikisys.safe_schemes)
+                html4css1.HTMLTranslator.__init__(self, *args, **kwargs)
             def visit_system_message(self, node):
                 paragraph = node.children.pop(0)
                 message = escape(paragraph.astext()) if paragraph else ''
@@ -257,11 +262,25 @@ class ReStructuredTextRenderer(Component):
                                      (backref, message)
                                      for backref in backrefs)))
                 else:
-                    span = ('<span class="system-message" title="%s">?</span>' %
-                            message)
+                    span = ('<span class="system-message" title="%s">?</span>'
+                            % message)
                 self.body.append(span)
             def depart_system_message(self, node):
                 pass
+            def visit_reference(self, node):
+                if self._is_safe_uri(node.get('refuri')):
+                    html4css1.HTMLTranslator.visit_reference(self, node)
+            def depart_reference(self, node):
+                if self._is_safe_uri(node.get('refuri')):
+                    html4css1.HTMLTranslator.depart_reference(self, node)
+            def _is_safe_uri(self, uri):
+                if self._render_unsafe_content or not uri:
+                    return True
+                else:
+                    pos = uri.find(':')
+                    return pos < 0 or uri[0:pos] in self._safe_schemes
+
+        wikisys = WikiSystem(self.env)
         writer = html4css1.Writer()
         writer.translator_class = TracHTMLTranslator
 
