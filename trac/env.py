@@ -916,38 +916,37 @@ class EnvironmentAdmin(Component):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
                               dest=path_to_unicode(dest)))
 
+        printout(_("Hotcopying %(src)s to %(dst)s ...",
+                   src=path_to_unicode(self.env.path),
+                   dst=path_to_unicode(dest)))
+        db_str = self.env.config.get('trac', 'database')
+        prefix, db_path = db_str.split(':', 1)
+        skip = []
+
+        if prefix == 'sqlite':
+            db_path = os.path.join(self.env.path, os.path.normpath(db_path))
+            # don't copy the journal (also, this would fail on Windows)
+            skip = [db_path + '-journal', db_path + '-stmtjrnl',
+                    db_path + '-shm', db_path + '-wal']
+            if no_db:
+                skip.append(db_path)
+
         # Bogus statement to lock the database while copying files
         with self.env.db_transaction as db:
             db("UPDATE system SET name=NULL WHERE name IS NULL")
-
-            printout(_("Hotcopying %(src)s to %(dst)s ...",
-                       src=path_to_unicode(self.env.path),
-                       dst=path_to_unicode(dest)))
-            db_str = self.env.config.get('trac', 'database')
-            prefix, db_path = db_str.split(':', 1)
-            skip = []
-
-            if prefix == 'sqlite':
-                db_path = os.path.join(self.env.path,
-                                       os.path.normpath(db_path))
-                # don't copy the journal (also, this would fail on Windows)
-                skip = [db_path + '-journal', db_path + '-stmtjrnl',
-                        db_path + '-shm', db_path + '-wal']
-                if no_db:
-                    skip.append(db_path)
-
             try:
                 copytree(self.env.path, dest, symlinks=1, skip=skip)
-                retval = 0
             except shutil.Error as e:
                 retval = 1
                 printerr(_("The following errors happened while copying "
                            "the environment:"))
-                for (src, dst, err) in e.args[0]:
+                for src, dst, err in e.args[0]:
                     if src in err:
                         printerr('  %s' % err)
                     else:
                         printerr("  %s: '%s'" % (err, path_to_unicode(src)))
+            else:
+                retval = 0
 
             # db backup for non-sqlite
             if prefix != 'sqlite' and not no_db:
