@@ -27,15 +27,15 @@ class PatchRendererTestCase(unittest.TestCase):
         req = MockRequest(env)
         self.context = web_context(req)
         self.patch = Mimeview(env).renderers[0]
-        patch_html = open(os.path.join(os.path.split(__file__)[0],
-                                       'patch.data'))
+        html_file = os.path.join(os.path.dirname(__file__), 'patch.data')
         self.patch_html = {}
         testcase = []
-        for line in patch_html.readlines():
-            if line.startswith('#'):
-                self.patch_html[line[1:].strip()] = testcase = []
-            else:
-                testcase.append(line.rstrip())
+        with open(html_file, 'rb') as f:
+            for line in f.readlines():
+                if line.startswith('#'):
+                    self.patch_html[line[1:].strip()] = testcase = []
+                else:
+                    testcase.append(line.rstrip())
 
     def _expected(self, expected_id):
         return self.patch_html[expected_id]
