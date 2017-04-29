@@ -983,6 +983,7 @@ class MilestoneModule(Component):
         chrome = Chrome(self.env)
         chrome.add_jquery_ui(req)
         chrome.add_wiki_toolbars(req)
+        chrome.add_auto_preview(req)
         add_stylesheet(req, 'common/css/roadmap.css')
         return 'milestone_edit.html', data
 

@@ -156,4 +156,19 @@
       $(this).bind('input cut paste keydown keypress blur', trigger);
     });
   };
+
+  // Callback for autoPreview that renders response and makes the container
+  // for rendered text (typically a div) visible.
+  $.fn.showOnPreview = function() {
+    var $preview = $(this);
+    return function(textarea, text, rendered) {
+      $preview.html(rendered);
+      if (text) {
+        $preview.show();
+      } else {
+        $preview.hide();
+      }
+    }
+  }
+
 })(jQuery);

@@ -1,5 +1,4 @@
-#content.admin h1 { float: left; }
-#content.admin h1, #content.admin h2 { margin-top: 0; }
+#content.admin > h1 { float: left; margin-top: 0; }
 
 /* Navigation panel */
 #tabs {
@@ -36,7 +35,7 @@
 #tabs :link, #tabs :visited { border: none; display: block }
 
 #tabcontent { padding: 0.4em 0 0.4em 2em; margin-left: 12em; min-height: 300px; }
-#tabcontent h2 { color: #333; }
+#tabcontent > h2 { color: #333; margin-top: 0; }
 
 #enumlist tbody td { vertical-align: middle; }
 

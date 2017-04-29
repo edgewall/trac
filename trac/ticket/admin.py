@@ -93,7 +93,9 @@ class ComponentAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            Chrome(self.env).add_wiki_toolbars(req)
+            chrome = Chrome(self.env)
+            chrome.add_wiki_toolbars(req)
+            chrome.add_auto_preview(req)
             data = {'view': 'detail', 'component': comp}
 
         else:
@@ -240,7 +242,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
                 elif 'cancel' in req.args:
                     req.redirect(req.href.admin(cat, page))
 
-            Chrome(self.env).add_wiki_toolbars(req)
+            chrome = Chrome(self.env)
+            chrome.add_wiki_toolbars(req)
+            chrome.add_auto_preview(req)
             data = {'view': 'detail',
                     'milestone': milestone,
                     'default_due': milestone_module.get_default_due(req)}
@@ -464,7 +468,9 @@ class VersionAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            Chrome(self.env).add_wiki_toolbars(req)
+            chrome = Chrome(self.env)
+            chrome.add_wiki_toolbars(req)
+            chrome.add_auto_preview(req)
             data = {'view': 'detail', 'version': ver}
 
         else:

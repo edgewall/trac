@@ -31,6 +31,10 @@
         $("#target").enable(this.checked);
         $("#retarget-comment").enable(this.checked);
       });
+      $("#description").autoPreview("${href.wiki_render()}", {
+          realm: "${milestone.resource.realm}",
+          id: "${milestone.resource.id}"
+        }, $("#preview").showOnPreview());
     });
   /*]]>*/</script>
   # with
@@ -145,6 +149,8 @@
                   class="wikitext trac-fullwidth trac-resizable"${
                 {'readonly': readonly}|htmlattr}>
 ${milestone.description}</textarea>
+      </div>
+      <div id="preview" class="trac-content trac-draft" style="display:none">
       </div>
     </fieldset>
     <div class="buttons">

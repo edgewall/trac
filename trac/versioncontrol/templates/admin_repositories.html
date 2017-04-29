@@ -22,6 +22,11 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#trac-reposlist").addSelectAllCheckboxes();
+      # if view == 'detail':
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "repository",  id: "${reponame}"
+          }, $("#preview").showOnPreview());
+      # endif
       });
     </script>
     # endblock head
@@ -177,6 +182,8 @@
                     rows="8" cols="78"${
                   {'readonly': readonly
                   }|htmlattr}>${info.description}</textarea>
+        </div>
+        <div id="preview" class="trac-content trac-draft" style="display:none">
         </div>
         # endwith
       </fieldset>

@@ -906,7 +906,13 @@ class Severity(AbstractEnum):
 
 class Component(object):
 
+    realm = 'component'
+
     exists = property(lambda self: self._old_name is not None)
+
+    @property
+    def resource(self):
+        return Resource(self.realm, self.name)
 
     def __init__(self, env, name=None):
         """Create a new `Component` instance. If `name` is specified
@@ -1320,7 +1326,13 @@ class Report(object):
 
 class Version(object):
 
+    realm = 'version'
+
     exists = property(lambda self: self._old_name is not None)
+
+    @property
+    def resource(self):
+        return Resource(self.realm, self.name)
 
     def __init__(self, env, name=None):
         self.env = env

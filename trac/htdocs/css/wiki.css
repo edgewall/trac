@@ -212,7 +212,6 @@ table.wiki {
 #edit + #attachments { margin-top: 1.5em }
 #delete, #rename, #save { margin-left: 3em }
 #preview {
- background: #fbfbfb url(../draft.png);
  margin: 1em 0 2em;
  overflow: auto;
 }

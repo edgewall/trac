@@ -285,7 +285,10 @@ class ReportModule(Component):
 
         data['report'] = {'id': id, 'title': title,
                           'sql': query, 'description': description}
-        Chrome(self.env).add_wiki_toolbars(req)
+
+        chrome = Chrome(self.env)
+        chrome.add_wiki_toolbars(req)
+        chrome.add_auto_preview(req)
         return data
 
     def _render_list(self, req):

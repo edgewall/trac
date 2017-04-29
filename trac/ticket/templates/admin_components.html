@@ -22,6 +22,12 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#complist").addSelectAllCheckboxes();
+      # if view == 'detail':
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "${component.resource.realm}",
+            id: "${component.resource.id}"
+          }, $("#preview").showOnPreview());
+      # endif
       });
     </script>
     # endblock head
@@ -77,6 +83,8 @@
           </label>
           <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
                     rows="8" cols="78">${component.description}</textarea>
+        </div>
+        <div id="preview" class="trac-content trac-draft" style="display:none">
         </div>
       </fieldset>
       <div class="buttons">

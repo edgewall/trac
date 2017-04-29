@@ -247,7 +247,9 @@ class RepositoryAdminPanel(Component):
                     if valid:
                         req.redirect(req.href.admin(category, page))
 
-            Chrome(self.env).add_wiki_toolbars(req)
+            chrome = Chrome(self.env)
+            chrome.add_wiki_toolbars(req)
+            chrome.add_auto_preview(req)
             data = {'view': 'detail', 'reponame': reponame}
 
         else:
