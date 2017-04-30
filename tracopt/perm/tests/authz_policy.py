@@ -36,6 +36,7 @@ administrators = éat
 
 [wiki:WikiStart]
 änon = WIKI_VIEW
+John = WIKI_VIEW
 @administrators = WIKI_VIEW
 * =
 
@@ -106,6 +107,21 @@ anonymous = MILESTONE_VIEW
         perm = self.get_perm(u'änon')
         self.assertTrue(
             self.check_permission('WIKI_VIEW', u'änon', resource, perm))
+        self.assertNotIn('WIKI_VIEW', perm)
+        self.assertIn('WIKI_VIEW', perm(resource))
+
+    def test_case_sensitive_username(self):
+        resource = Resource('wiki', 'WikiStart')
+
+        perm = self.get_perm('john')
+        self.assertFalse(
+            self.check_permission('WIKI_VIEW', 'john', resource, perm))
+        self.assertNotIn('WIKI_VIEW', perm)
+        self.assertNotIn('WIKI_VIEW', perm(resource))
+
+        perm = self.get_perm(u'John')
+        self.assertTrue(
+            self.check_permission('WIKI_VIEW', u'John', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
 

@@ -45,7 +45,7 @@ def parse(authz_file, modules):
     a dict mapping users to permissions. Only modules contained in `modules`
     are retained.
     """
-    parser = UnicodeConfigParser()
+    parser = UnicodeConfigParser(ignorecase_option=False)
     parser.read(authz_file)
 
     groups = {}
