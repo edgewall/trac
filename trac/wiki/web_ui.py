@@ -725,8 +725,10 @@ class WikiModule(Component):
 
     def _wiki_ctxtnav(self, req, page):
         """Add the normal wiki ctxtnav entries."""
-        add_ctxtnav(req, _("Start Page"), req.href.wiki(self.START_PAGE))
-        add_ctxtnav(req, _("Index"), req.href.wiki(self.TITLE_INDEX_PAGE))
+        if 'WIKI_VIEW' in req.perm('wiki', self.START_PAGE):
+            add_ctxtnav(req, _("Start Page"), req.href.wiki(self.START_PAGE))
+        if 'WIKI_VIEW' in req.perm('wiki', self.TITLE_INDEX_PAGE):
+            add_ctxtnav(req, _("Index"), req.href.wiki(self.TITLE_INDEX_PAGE))
         if page.exists:
             add_ctxtnav(req, _("History"), req.href.wiki(page.name,
                                                          action='history'))
