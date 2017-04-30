@@ -55,6 +55,8 @@ foo = rw
 ; Unicode module names
 [module:/c/résumé]
 bar = rw
+Foo = rw
+BAZ = r
 
 ; Unused module, not parsed
 [unused:/some/path]
@@ -80,7 +82,9 @@ foo = r
                     u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
                 u'/c/résumé': {
-                    'bar': True,
+                    u'bar': True,
+                    u'Foo': True,
+                    u'BAZ': True,
                 },
             },
         }, authz)
@@ -196,7 +200,7 @@ user =
 [scoped:/scope/dir1]
 joe = r
 [scoped:/scope/dir2]
-jane = r
+Jane = r
 
 # multiple entries
 [/multiple]
@@ -208,12 +212,12 @@ $authenticated =
 [/multiple/bar]
 * =
 john = r
-jane = r
+Jane = r
 $anonymous = r
 [/multiple/baz]
 $anonymous = r
 * =
-jane = r
+Jane = r
 [module:/multiple/bar]
 joe = r
 john =
@@ -364,7 +368,7 @@ joe = r
 joe = r
 denied =
 [module:/otherpath]
-jane = r
+Jane = r
 $anonymous = r
 [inactive:/not-in-this-instance]
 unknown = r
@@ -375,15 +379,15 @@ unknown = r
         self.assertRevPerm(None, 'denied')
         self.assertPathPerm(True, 'joe')
         self.assertRevPerm(True, 'joe')
-        self.assertPathPerm(True, 'jane')
-        self.assertRevPerm(True, 'jane')
+        self.assertPathPerm(True, 'Jane')
+        self.assertRevPerm(True, 'Jane')
         self.assertPathPerm(True, 'anonymous')
         self.assertRevPerm(True, 'anonymous')
 
     def test_default_permission(self):
         # By default, permissions are undecided
         self.assertPathPerm(None, 'joe', '', '/not_defined')
-        self.assertPathPerm(None, 'jane', 'repo', '/not/defined/either')
+        self.assertPathPerm(None, 'Jane', 'repo', '/not/defined/either')
 
     def test_read_write(self):
         # Allow 'r' and 'rw' entries, deny 'w' and empty entries
@@ -420,7 +424,7 @@ unknown = r
         # The * wildcard matches all users, including anonymous
         self.assertPathPerm(True, 'anonymous', '', '/wildcard')
         self.assertPathPerm(True, 'joe', '', '/wildcard')
-        self.assertPathPerm(True, 'jane', '', '/wildcard')
+        self.assertPathPerm(True, 'Jane', '', '/wildcard')
 
     def test_special_tokens(self):
         # The $anonymous token matches only anonymous users
@@ -429,7 +433,7 @@ unknown = r
         # The $authenticated token matches all authenticated users
         self.assertPathPerm(None, 'anonymous', '', '/special/authenticated')
         self.assertPathPerm(True, 'joe', '', '/special/authenticated')
-        self.assertPathPerm(True, 'jane', '', '/special/authenticated')
+        self.assertPathPerm(True, 'Jane', '', '/special/authenticated')
 
     def test_groups(self):
         # Groups are specified in a separate section and used with an @ prefix
@@ -465,9 +469,9 @@ unknown = r
         self.assertPathPerm(True, 'joe', 'scoped', '/dir1')
         self.assertPathPerm(None, 'joe', 'scoped', '/dir2')
         self.assertPathPerm(True, 'joe', 'scoped', '/')
-        self.assertPathPerm(None, 'jane', 'scoped', '/dir1')
-        self.assertPathPerm(True, 'jane', 'scoped', '/dir2')
-        self.assertPathPerm(True, 'jane', 'scoped', '/')
+        self.assertPathPerm(None, 'Jane', 'scoped', '/dir1')
+        self.assertPathPerm(True, 'Jane', 'scoped', '/dir2')
+        self.assertPathPerm(True, 'Jane', 'scoped', '/')
 
     def test_multiple_entries(self):
         self.assertPathPerm(True,  'anonymous', '',       '/multiple/foo')
@@ -476,7 +480,7 @@ unknown = r
         self.assertPathPerm(False, 'joe',       '',       '/multiple/bar')
         self.assertPathPerm(True,  'john',      '',       '/multiple/bar')
         self.assertPathPerm(True,  'anonymous', '',       '/multiple/baz')
-        self.assertPathPerm(True,  'jane',      '',       '/multiple/baz')
+        self.assertPathPerm(True,  'Jane',      '',       '/multiple/baz')
         self.assertPathPerm(False, 'joe',       '',       '/multiple/baz')
         self.assertPathPerm(True,  'anonymous', 'module', '/multiple/foo')
         self.assertPathPerm(True,  'joe',       'module', '/multiple/foo')
@@ -484,7 +488,7 @@ unknown = r
         self.assertPathPerm(True,  'joe',       'module', '/multiple/bar')
         self.assertPathPerm(False, 'john',      'module', '/multiple/bar')
         self.assertPathPerm(True,  'anonymous', 'module', '/multiple/baz')
-        self.assertPathPerm(True,  'jane',      'module', '/multiple/baz')
+        self.assertPathPerm(True,  'Jane',      'module', '/multiple/baz')
         self.assertPathPerm(False, 'joe',       'module', '/multiple/baz')
 
     def test_multiple_entries_with_module_and_parent_directory(self):
@@ -532,9 +536,9 @@ unknown = r
         self.assertRevPerm(True, 'joe', 'scoped', 123)
         self.assertRevPerm(None, 'joe', 'scoped', 456)
         self.assertRevPerm(True, 'joe', 'scoped', 789)
-        self.assertRevPerm(None, 'jane', 'scoped', 123)
-        self.assertRevPerm(True, 'jane', 'scoped', 456)
-        self.assertRevPerm(True, 'jane', 'scoped', 789)
+        self.assertRevPerm(None, 'Jane', 'scoped', 123)
+        self.assertRevPerm(True, 'Jane', 'scoped', 456)
+        self.assertRevPerm(True, 'Jane', 'scoped', 789)
         self.assertRevPerm(None, 'user', 'scoped', 123)
         self.assertRevPerm(None, 'user', 'scoped', 456)
         self.assertRevPerm(True, 'user', 'scoped', 789)

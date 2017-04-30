@@ -89,9 +89,15 @@ class UnicodeConfigParser(ConfigParser):
     # The base class `RawConfigParser` doesn't inherit from `object`
     # so we can't use `super`.
 
-    def __init__(self, **kwargs):
+    def __init__(self, ignorecase_option=True, **kwargs):
+        self._ignorecase_option = ignorecase_option
         dict_type = kwargs.pop('dict_type', None) or OrderedDict
         ConfigParser.__init__(self, dict_type=dict_type, **kwargs)
+
+    def optionxform(self, option):
+        if self._ignorecase_option:
+            option = option.lower()
+        return option
 
     def sections(self):
         return map(to_unicode, ConfigParser.sections(self))

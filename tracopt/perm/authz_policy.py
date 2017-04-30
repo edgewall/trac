@@ -180,7 +180,7 @@ class AuthzPolicy(Component):
                            exception_to_unicode(e))
             raise ConfigurationError()
 
-        self.authz = UnicodeConfigParser()
+        self.authz = UnicodeConfigParser(ignorecase_option=False)
         try:
             self.authz.read(self.authz_file)
         except ParsingError as e:
