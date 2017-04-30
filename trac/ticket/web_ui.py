@@ -116,9 +116,6 @@ class TicketModule(Component):
 
     ticket_path_re = re.compile(r'/ticket/([0-9]+)$')
 
-    def __init__(self):
-        self._warn_for_default_attr = set()
-
     @lazy
     def must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
