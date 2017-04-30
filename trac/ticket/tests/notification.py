@@ -267,7 +267,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe" <joe.user@example.com>'
         ticket['owner'] = 'Joe <joe.user@example.net>'
-        ticket['cc'] = 'Joe < joe.user@example.org >'
+        ticket['cc'] = u' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 '
         ticket['summary'] = 'Long form'
         ticket.insert()
         notify_ticket_created(self.env, ticket)

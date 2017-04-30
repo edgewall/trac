@@ -22,6 +22,7 @@ from trac.notification.api import (
 from trac.notification.mail import RecipientMatcher
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub
+from trac.ticket.model import _fixup_cc_list
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import escape
 from trac.web.session import DetachedSession
@@ -127,6 +128,7 @@ class EmailDistributorTestCase(unittest.TestCase):
                               name=u"Bäŕ's name")
             self._add_session('baz', name='Baz')
             self._add_session('qux', tz='UTC')
+            self._add_session('corge', email='corge-mail')
 
     def tearDown(self):
         self.env.reset_db()
@@ -400,6 +402,108 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual('trac@example.org', from_addr)
         self.assertEqual('"Trac" <trac@example.org>', message['From'])
         self.assertEqual(1, len(history))
+
+    def test_ignore_domains(self):
+        config = self.env.config
+        config.set('notification', 'smtp_always_cc',
+                   'cc@example.org, cc@example.net')
+        config.set('notification', 'smtp_always_bcc',
+                   'bcc@example.org, bcc@example.net')
+        config.set('notification', 'ignore_domains',
+                   'example.org, example.com')
+
+        with self.env.db_transaction:
+            self._add_subscription(sid='foo')
+            self._add_subscription(sid='bar')
+            self._add_subscription(sid='baz')
+            self._add_subscription(sid='qux')
+        self._notify_event('blah')
+
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        self.assertEqual(1, len(history))
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual(set(('baz@example.net', 'qux@example.net',
+                              'cc@example.net', 'bcc@example.net')),
+                         set(recipients))
+
+    def _test_without_domain(self, use_short_addr='disabled',
+                             smtp_default_domain=''):
+        config = self.env.config
+        config.set('notification', 'use_short_addr', use_short_addr)
+        config.set('notification', 'smtp_default_domain', smtp_default_domain)
+        config.set('notification', 'smtp_from', 'from-trac')
+        config.set('notification', 'smtp_always_cc', 'qux, cc@example.org')
+        config.set('notification', 'smtp_always_bcc', 'bcc1@example.org, bcc2')
+        config.set('notification', 'email_address_resolvers',
+                   'SessionEmailResolver')
+        with self.env.db_transaction:
+            self._add_subscription(sid='foo')
+            self._add_subscription(sid='baz')
+            self._add_subscription(sid='corge')
+        self._notify_event('blah')
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        self.assertEqual(1, len(history))
+        return history
+
+    def _assert_equal_sets(self, expected, actual):
+        expected = set(expected)
+        actual = set(actual)
+        if expected != actual:
+            self.fail('%r != %r' % ((expected - actual, actual - expected)))
+
+    def _cclist(self, cc):
+        return _fixup_cc_list(cc).split(', ')
+
+    def test_use_short_addr(self):
+        history = self._test_without_domain(use_short_addr='enabled')
+        from_addr, recipients, message = history[0]
+        self.assertEqual('from-trac', from_addr)
+        self.assertEqual('"My Project" <from-trac>', message['From'])
+        self._assert_equal_sets(['qux', 'cc@example.org', 'bcc1@example.org',
+                                 'bcc2', 'foo@example.org', 'baz',
+                                 'corge-mail'], recipients)
+        self._assert_equal_sets(['qux', 'cc@example.org'],
+                                self._cclist(message['Cc']))
+
+    def test_smtp_default_domain(self):
+        history = self._test_without_domain(smtp_default_domain='example.com')
+        from_addr, recipients, message = history[0]
+        self.assertEqual('from-trac@example.com', from_addr)
+        self.assertEqual('"My Project" <from-trac@example.com>',
+                         message['From'])
+        self._assert_equal_sets(['qux@example.com', 'cc@example.org',
+                                 'bcc1@example.org', 'bcc2@example.com',
+                                 'foo@example.org', 'baz@example.com',
+                                 'corge-mail@example.com'], recipients)
+        self._assert_equal_sets(['qux@example.com', 'cc@example.org'],
+                                self._cclist(message['Cc']))
+
+    def test_username_is_email(self):
+        config = self.env.config
+        config.set('notification', 'email_address_resolvers',
+                   'SessionEmailResolver')
+        with self.env.db_transaction:
+            self._add_session(sid='foo@example.com')
+            self._add_session(sid='bar@example.com',
+                              email='foo@bar.example.org')
+            self._add_subscription(sid='foo@example.com')
+            self._add_subscription(sid='bar@example.com')
+            self._add_subscription(sid='baz@example.com')  # no session
+        self._notify_event('blah')
+        history = self.sender.history
+        self.assertNotEqual([], history)
+        self.assertEqual(1, len(history))
+        from_addr, recipients, message = history[0]
+        self.assertEqual('trac@example.org', from_addr)
+        self.assertEqual('"My Project" <trac@example.org>', message['From'])
+        self.assertEqual(set(['foo@example.com', 'foo@bar.example.org',
+                              'baz@example.com', 'cc@example.org',
+                              'bcc@example.org']), set(recipients))
+        self._assert_equal_sets(['cc@example.org'],
+                                self._cclist(message['Cc']))
 
 
 def test_suite():

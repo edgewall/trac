@@ -167,8 +167,7 @@ def create_message_id(env, targetid, from_email, time, more=None):
 
 
 def get_from_author(env, event):
-    if event.author and env.config.getbool('notification',
-                                           'smtp_from_author'):
+    if event.author and NotificationSystem(env).smtp_from_author:
         matcher = RecipientMatcher(env)
         from_ = matcher.match_from_author(event.author)
         if from_:
@@ -177,7 +176,7 @@ def get_from_author(env, event):
 
 class RecipientMatcher(object):
 
-    nodomaddr_re = re.compile(r'[\w\d_\.\-]+')
+    nodomaddr_re = re.compile(r"^[-A-Za-z0-9!*+/=_.]+$")
 
     def __init__(self, env):
         self.env = env
@@ -186,10 +185,12 @@ class RecipientMatcher(object):
         admit_domains = self.notify_sys.admit_domains_list
         if admit_domains:
             localfmt, domainfmt = addrfmt.split('@')
-            domains = '|'.join(re.escape(x) for x in admit_domains)
-            addrfmt = r'%s@(?:(?:%s)|%s)' % (localfmt, domainfmt, domains)
-        self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
-        self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
+            domains = [domainfmt]
+            domains.extend(re.escape(x) for x in admit_domains)
+            addrfmt = r'%s@(?:%s)' % (localfmt, '|'.join(domains))
+        self.shortaddr_re = re.compile(r'(%s)$' % addrfmt, re.IGNORECASE)
+        self.longaddr_re = re.compile(r'(.*)\s+<\s*(%s)\s*>$' % addrfmt,
+                                      re.IGNORECASE)
         self.ignore_domains = set(x.lower()
                                   for x in self.notify_sys.ignore_domains_list)
         self.users = self.env.get_known_users(as_dict=True)
@@ -202,17 +203,19 @@ class RecipientMatcher(object):
     def smtp_default_domain(self):
         return self.notify_sys.smtp_default_domain
 
+    def is_email(self, address):
+        if not address:
+            return False
+        match = self.shortaddr_re.match(address)
+        if match:
+            domain = address[address.find('@') + 1:].lower()
+            if domain not in self.ignore_domains:
+                return True
+        return False
+
     def match_recipient(self, address):
         if not address or address == 'anonymous':
             return None
-
-        def is_email(address):
-            pos = address.find('@')
-            if pos == -1:
-                return False
-            if address[pos+1:].lower() in self.ignore_domains:
-                return False
-            return True
 
         if address in self.users:
             sid = address
@@ -221,26 +224,29 @@ class RecipientMatcher(object):
         else:
             sid = None
             auth = 0
+            address = address.strip()
 
-        if not is_email(address) and self.nodomaddr_re.match(address):
+        if not self.is_email(address) and self.nodomaddr_re.match(address):
             if self.use_short_addr:
                 return sid, auth, address
             if self.smtp_default_domain:
                 address = "%s@%s" % (address, self.smtp_default_domain)
-            else:
-                self.env.log.debug("Email address w/o domain: %s", address)
-                return None
+                return sid, auth, address
+            self.env.log.debug("Email address w/o domain: %s", address)
+            return None
 
-        mo = self.shortaddr_re.search(address)
+        mo = self.shortaddr_re.match(address)
         if mo:
             return sid, auth, mo.group(1)
-        mo = self.longaddr_re.search(address)
+        mo = self.longaddr_re.match(address)
         if mo:
             return sid, auth, mo.group(2)
         self.env.log.debug("Invalid email address: %s", address)
         return None
 
     def match_from_author(self, author):
+        if author:
+            author = author.strip()
         recipient = self.match_recipient(author)
         if not recipient:
             return None
@@ -251,7 +257,7 @@ class RecipientMatcher(object):
         if sid and authenticated and sid in self.users:
             from_name = self.users[sid][0]
         if not from_name:
-            mo = self.longaddr_re.search(author)
+            mo = self.longaddr_re.match(author)
             if mo:
                 from_name = mo.group(1)
         return (from_name, address) if from_name else address
@@ -307,11 +313,11 @@ class EmailDistributor(Component):
                        "handling '%s' of '%s': %s", self.__class__.__name__,
                        transport, event.realm, ', '.join(formats))
 
+        matcher = RecipientMatcher(self.env)
         notify_sys = NotificationSystem(self.env)
         always_cc = set(notify_sys.smtp_always_cc_list)
-        use_public_cc = notify_sys.use_public_cc
         addresses = {}
-        for sid, authed, addr, fmt in recipients:
+        for sid, auth, addr, fmt in recipients:
             if fmt not in formats:
                 self.log.debug("%s format %s not available for %s %s",
                                self.__class__.__name__, fmt, transport,
@@ -320,23 +326,35 @@ class EmailDistributor(Component):
 
             if sid and not addr:
                 for resolver in self.resolvers:
-                    addr = resolver.get_address_for_session(sid, authed)
+                    addr = resolver.get_address_for_session(sid, auth) or None
                     if addr:
-                        status = 'authenticated' if authed else \
-                                 'not authenticated'
-                        self.log.debug("%s found the address '%s' for '%s "
-                                       "(%s)' via %s",
-                                       self.__class__.__name__, addr, sid,
-                                       status, resolver.__class__.__name__)
+                        self.log.debug(
+                            "%s found the address '%s' for '%s [%s]' via %s",
+                            self.__class__.__name__, addr, sid, auth,
+                            resolver.__class__.__name__)
                         break
-            if addr:
+            if sid and auth and not addr:
+                addr = sid
+            if notify_sys.smtp_default_domain and \
+                    not notify_sys.use_short_addr and \
+                    addr and matcher.nodomaddr_re.match(addr):
+                addr = '%s@%s' % (addr, notify_sys.smtp_default_domain)
+            if not addr:
+                self.log.debug("%s was unable to find an address for "
+                               "'%s [%s]'", self.__class__.__name__, sid, auth)
+            elif matcher.is_email(addr) or \
+                    notify_sys.use_short_addr and \
+                    matcher.nodomaddr_re.match(addr):
                 addresses.setdefault(fmt, set()).add(addr)
-                if use_public_cc or sid and sid in always_cc:
+                if sid and auth and sid in always_cc:
+                    always_cc.discard(sid)
+                    always_cc.add(addr)
+                elif notify_sys.use_public_cc:
                     always_cc.add(addr)
             else:
-                status = 'authenticated' if authed else 'not authenticated'
-                self.log.debug("%s was unable to find an address for: %s "
-                               "(%s)", self.__class__.__name__, sid, status)
+                self.log.debug("%s was unable to use an address '%s' for '%s "
+                               "[%s]'", self.__class__.__name__, addr, sid,
+                               auth)
 
         outputs = {}
         failed = []
@@ -389,12 +407,19 @@ class EmailDistributor(Component):
         return message
 
     def _do_send(self, transport, event, message, cc_addrs, bcc_addrs):
-        config = self.config['notification']
-        smtp_from = config.get('smtp_from')
-        smtp_from_name = config.get('smtp_from_name') or self.env.project_name
-        smtp_reply_to = config.get('smtp_replyto')
+        notify_sys = NotificationSystem(self.env)
+        smtp_from = notify_sys.smtp_from
+        smtp_from_name = notify_sys.smtp_from_name or self.env.project_name
+        smtp_replyto = notify_sys.smtp_replyto
+        if not notify_sys.use_short_addr and notify_sys.smtp_default_domain:
+            if smtp_from and '@' not in smtp_from:
+                smtp_from = '%s@%s' % (smtp_from,
+                                       notify_sys.smtp_default_domain)
+            if smtp_replyto and '@' not in smtp_replyto:
+                smtp_replyto = '%s@%s' % (smtp_replyto,
+                                          notify_sys.smtp_default_domain)
 
-        headers = dict()
+        headers = {}
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software'\
                               % self.env.trac_version
         headers['X-Trac-Version'] = self.env.trac_version
@@ -425,7 +450,7 @@ class EmailDistributor(Component):
             headers['Cc'] = ', '.join(cc_addrs)
         if bcc_addrs:
             headers['Bcc'] = ', '.join(bcc_addrs)
-        headers['Reply-To'] = smtp_reply_to
+        headers['Reply-To'] = smtp_replyto
 
         for k, v in headers.iteritems():
             set_header(message, k, v, self._charset)
@@ -439,8 +464,7 @@ class EmailDistributor(Component):
             to_addrs.update(addr for name, addr in getaddresses(values)
                                  if addr)
         del message['Bcc']
-        NotificationSystem(self.env).send_email(from_addr, list(to_addrs),
-                                                message.as_string())
+        notify_sys.send_email(from_addr, list(to_addrs), message.as_string())
 
 
 class SmtpEmailSender(Component):
