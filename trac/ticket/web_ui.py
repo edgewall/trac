@@ -1401,9 +1401,10 @@ class TicketModule(Component):
                            controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
-        # Notify
+        # Notify. Use author=req.authname rather than ticket['reporter']
+        # because ticket may be created on behalf of another user (#11949).
         event = TicketChangeEvent('created', ticket, ticket['time'],
-                                  ticket['reporter'])
+                                  req.authname)
         try:
             NotificationSystem(self.env).notify(event)
         except Exception as e:
