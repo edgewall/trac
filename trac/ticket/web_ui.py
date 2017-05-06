@@ -33,13 +33,13 @@ from trac.resource import (
 )
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator
-from trac.ticket.model import Milestone, Ticket
+from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
-    datetime_now, format_date_or_datetime, from_utimestamp,
+    datetime_now, format_datetime, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
     user_time, utc
 )
@@ -1590,6 +1590,16 @@ class TicketModule(Component):
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
+            elif name == 'version' and not field.get('custom'):
+                try:
+                    version = Version(self.env, ticket[name])
+                except ResourceNotFound:
+                    pass
+                else:
+                    if version.time:
+                        dt = user_time(req, format_datetime, version.time)
+                        title = _("Released %(datetime)s", datetime=dt)
+                        field['rendered'](title=title)
             elif name == 'cc':
                 cc_changed = field_changes is not None and 'cc' in field_changes
                 if ticket.exists and \

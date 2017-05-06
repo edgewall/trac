@@ -20,7 +20,7 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Milestone, Ticket
+from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
@@ -99,6 +99,42 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual(u'<a class="trac-author-user" href="/trac.cgi/query?'
                          u'status=!closed&amp;owner=user2">User Two</a>',
                          unicode(data['owner_link']))
+
+    def test_version_release_date_displayed(self):
+        """Version release date is shown in ticket properties."""
+        v1 = Version(self.env)
+        v1.name = 'v1'
+        v1.time = datetime_now(utc) - timedelta(weeks=2)
+        v1.insert()
+        v2 = Version(self.env)
+        v2.name = 'v2'
+        v2.insert()
+        ticket = [self._insert_ticket(summary='ticket 1', version='v1'),
+                  self._insert_ticket(summary='ticket 2', version='v2'),
+                  self._insert_ticket(summary='ticket 3', version='v3')]
+
+        def version_field(data):
+            for field in data['fields']:
+                if field['name'] == 'version':
+                    return field
+
+        # Version with release data.
+        req = MockRequest(self.env, method='GET', args={'id': ticket[0].id})
+        data = self.ticket_module.process_request(req)[1]
+        self.assertIn(u'title="Released ',
+                      unicode(version_field(data)['rendered']))
+
+        # Version without release data.
+        req = MockRequest(self.env, method='GET', args={'id': ticket[1].id})
+        data = self.ticket_module.process_request(req)[1]
+        self.assertNotIn(u'title="Released ',
+                         unicode(version_field(data)['rendered']))
+
+        # Non-existent version.
+        req = MockRequest(self.env, method='GET', args={'id': ticket[2].id})
+        data = self.ticket_module.process_request(req)[1]
+        self.assertNotIn(u'title="Released ',
+                         unicode(version_field(data)['rendered']))
 
     def test_quoted_reply_author_is_obfuscated(self):
         """Reply-to author is obfuscated in a quoted reply."""
