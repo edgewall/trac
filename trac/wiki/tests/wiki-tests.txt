@@ -1253,6 +1253,13 @@ Inline  comment
 <div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(error) failed</strong><pre>error</pre></div>
 </p>
 ------------------------------
+============================== MacroError with fragment
+[[MacroErrorWithFragment(Érrör)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Macro MacroErrorWithFragment(Érrör) failed</strong><pre>The content: <code>Érrör</code></pre></div>
+</p>
+------------------------------
 ============================== Exception with utf-8 bytes
 {{{#!ValueErrorWithUtf8
 Érrör
@@ -1273,6 +1280,17 @@ Inline  comment
 <div class="system-message"><strong>Error: Processor TracErrorWithUnicode failed</strong><pre>Érrör
 </pre></div><p>
 <div class="system-message"><strong>Error: Macro TracErrorWithUnicode(érrör) failed</strong><pre>érrör</pre></div>
+</p>
+------------------------------
+============================== ProcessorError with fragment
+{{{#!ProcessorErrorWithFragment
+Érrör
+}}}
+Paragraph
+------------------------------
+<div class="system-message"><strong>Processor ProcessorErrorWithFragment failed</strong><pre>The content: <code>Érrör
+</code></pre></div><p>
+Paragraph
 </p>
 ------------------------------
 ============================================================

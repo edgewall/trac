@@ -17,7 +17,9 @@ import unittest
 from genshi.template import MarkupTemplate
 from trac.core import Component, TracError, implements
 from trac.util.html import html
+from trac.util.translation import tag_
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import MacroError, ProcessorError
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki.test import wikisyntax_test_suite
 
@@ -100,6 +102,20 @@ class TracErrorWithUnicodeMacro(WikiMacroBase):
 
     def expand_macro(self, formatter, name, content, args):
         raise TracError(unicode(content))
+
+
+class MacroErrorWithFragmentMacro(WikiMacroBase):
+
+    def expand_macro(self, formatter, name, content, args=None):
+        raise MacroError(tag_("The content: %(content)s",
+                              content=html.code(content)))
+
+
+class ProcessorErrorWithFragmentMacro(WikiMacroBase):
+
+    def expand_macro(self, formatter, name, content, args=None):
+        raise ProcessorError(tag_("The content: %(content)s",
+                                  content=html.code(content)))
 
 
 class SampleResolver(Component):
