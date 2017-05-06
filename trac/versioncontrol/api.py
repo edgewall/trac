@@ -753,6 +753,31 @@ class RepositoryManager(Component):
                 for reponame, repos in repositories.iteritems():
                     repos.close()
 
+    def read_file_by_path(self, path):
+        """Read the file specified by `path`
+
+        :param path: the repository-scoped path. The repository revision may
+                     specified by appending `@` followed by the revision,
+                     otherwise the HEAD revision is assumed.
+        :return: the file content as a unicode string. `None` is returned if
+                 the file is not found.
+
+        :since: 1.2.2
+        """
+        repos, path = self.get_repository_by_path(path)[1:]
+        if not repos:
+            return None
+        rev = None
+        if '@' in path:
+            path, rev = path.split('@', 1)
+        try:
+            node = repos.get_node(path, rev)
+        except (NoSuchChangeset, NoSuchNode):
+            return None
+        content = node.get_content()
+        if content:
+            return to_unicode(content.read())
+
     # private methods
 
     def _get_connector(self, rtype):
