@@ -52,6 +52,7 @@ def _markup_to_unicode(markup):
     else:
         return to_unicode(markup)
 
+
 def system_message(msg, text=None):
     return tag.div(tag.strong(msg), text and tag.pre(text),
                    class_="system-message")
@@ -797,7 +798,7 @@ class Formatter(object):
             return system_message(_("Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
         except Exception as e:
-            self.env.log.error('Macro %s(%s) failed:%s', name, args,
+            self.env.log.error("Macro %s(%s) failed:%s", name, args,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
@@ -1188,11 +1189,14 @@ class Formatter(object):
     def _exec_processor(self, processor, text):
         try:
             return processor.process(text)
+        except ProcessorError as e:
+            return system_message(_("Processor %(name)s failed",
+                                    name=processor.name), to_fragment(e))
         except Exception as e:
-            self.env.log.error('Processor %s failed:%s', processor.name,
+            self.env.log.error("Processor %s failed:%s", processor.name,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Processor %(name)s failed",
-                                    name=processor.name), to_unicode(e))
+                                    name=processor.name), to_fragment(e))
 
     # > quotes
 
