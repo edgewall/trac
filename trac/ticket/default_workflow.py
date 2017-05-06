@@ -29,13 +29,14 @@ from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Component as TicketComponent, Resolution
-from trac.util import get_reporter_id, sub_val, to_list
+from trac.util import exception_to_unicode, get_reporter_id, sub_val, to_list
 from trac.util.html import tag
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, cleandoc_
+from trac.versioncontrol.api import RepositoryManager
 from trac.web.chrome import Chrome, add_script, add_script_data
-from trac.wiki.formatter import system_message
-from trac.wiki.macros import WikiMacroBase
+from trac.wiki.formatter import MacroError, ProcessorError
+from trac.wiki.macros import WikiMacroBase, parse_args
 
 
 # -- Utilities for the ConfigurableTicketWorkflow
@@ -571,64 +572,96 @@ class WorkflowMacro(WikiMacroBase):
 
     This macro accepts a TracWorkflow configuration and renders the states
     and transitions as a directed graph. If no parameters are given, the
-    current ticket workflow is rendered. In WikiProcessors mode the `width`
-    and `height` arguments can be specified.
+    current ticket workflow is rendered.
 
-    (Defaults: `width = 800` and `height = 600`)
+    In [WikiProcessors WikiProcessor] mode the `width` and `height`
+    arguments can be specified (Defaults: `width = 800` and `height = 600`).
+
+    The repository-scoped path of a workflow file can be specified as either
+    a macro or !WikiProcessor `file` argument. The file revision can be
+    specified by appending `@<rev>` to the path. The `file` argument value
+    must be enclosed in single or double quotes. //(Since 1.3.2)//.
 
     Examples:
     {{{
-        [[Workflow()]]
+    [[Workflow()]]
 
-        [[Workflow(go = here -> there; return = there -> here)]]
+    [[Workflow(go = here -> there; return = there -> here)]]
 
-        {{{
-        #!Workflow width=700 height=700
-        leave = * -> *
-        leave.operations = leave_status
-        leave.default = 1
+    [[Workflow(file=/contrib/workflow/enterprise-workflow.ini@1)]]
 
-        create = <none> -> new
-        create.default = 1
+    {{{#!Workflow file="/contrib/workflow/enterprise-workflow.ini"
+    }}}
 
-        create_and_assign = <none> -> assigned
-        create_and_assign.label = assign
-        create_and_assign.permissions = TICKET_MODIFY
-        create_and_assign.operations = may_set_owner
+    {{{#!Workflow width=700 height=700
+    leave = * -> *
+    leave.operations = leave_status
+    leave.default = 1
 
-        accept = new,assigned,accepted,reopened -> accepted
-        accept.permissions = TICKET_MODIFY
-        accept.operations = set_owner_to_self
+    create = <none> -> new
+    create.default = 1
 
-        resolve = new,assigned,accepted,reopened -> closed
-        resolve.permissions = TICKET_MODIFY
-        resolve.operations = set_resolution
+    create_and_assign = <none> -> assigned
+    create_and_assign.label = assign
+    create_and_assign.permissions = TICKET_MODIFY
+    create_and_assign.operations = may_set_owner
 
-        reassign = new,assigned,accepted,reopened -> assigned
-        reassign.permissions = TICKET_MODIFY
-        reassign.operations = set_owner
+    accept = new,assigned,accepted,reopened -> accepted
+    accept.permissions = TICKET_MODIFY
+    accept.operations = set_owner_to_self
 
-        reopen = closed -> reopened
-        reopen.permissions = TICKET_CREATE
-        reopen.operations = del_resolution
-        }}}
+    resolve = new,assigned,accepted,reopened -> closed
+    resolve.permissions = TICKET_MODIFY
+    resolve.operations = set_resolution
+
+    reassign = new,assigned,accepted,reopened -> assigned
+    reassign.permissions = TICKET_MODIFY
+    reassign.operations = set_owner
+
+    reopen = closed -> reopened
+    reopen.permissions = TICKET_CREATE
+    reopen.operations = del_resolution
+    }}}
     }}}
     """)
 
-    def expand_macro(self, formatter, name, text, args):
-        if not text:
+    def expand_macro(self, formatter, name, content, args=None):
+        if content is not None:
+            content = content.strip()
+        if not args and not content:
             raw_actions = self.config.options('ticket-workflow')
         else:
-            if args is None:
-                text = '\n'.join(line.lstrip() for line in text.split(';'))
+            is_macro = args is None
+            if is_macro:
+                kwargs = parse_args(content)[1]
+                file = kwargs.get('file')
+            else:
+                file = args.get('file')
+                if not file and not content:
+                    raise ProcessorError("Invalid argument(s).")
+
+            if file:
+                print(file)
+                text = RepositoryManager(self.env).read_file_by_path(file)
+                if text is None:
+                    raise ProcessorError(
+                        tag_("The file %(file)s does not exist.",
+                             file=tag.code(file)))
+            elif is_macro:
+                text = '\n'.join(line.lstrip() for line in content.split(';'))
+            else:
+                text = content
+
             if '[ticket-workflow]' not in text:
                 text = '[ticket-workflow]\n' + text
             parser = RawConfigParser()
             try:
                 parser.readfp(io.StringIO(text))
             except ParsingError as e:
-                return system_message(_("Error parsing workflow."),
-                                      unicode(e))
+                if is_macro:
+                    raise MacroError(exception_to_unicode(e))
+                else:
+                    raise ProcessorError(exception_to_unicode(e))
             raw_actions = list(parser.items('ticket-workflow'))
         actions = parse_workflow_config(raw_actions)
         states = list(
