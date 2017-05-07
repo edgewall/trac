@@ -22,7 +22,7 @@ import pkg_resources
 import re
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption
+from trac.config import BoolOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.notification.api import NotificationSystem
@@ -37,7 +37,7 @@ from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, as_int, get_reporter_id, lazy
+from trac.util import arity, as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
     datetime_now, format_datetime, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
@@ -83,15 +83,6 @@ class TicketModule(Component):
         """Enable the display of component of tickets in the timeline.
         (''since 1.1.1'')""")
 
-    max_description_size = IntOption('ticket', 'max_description_size', 262144,
-        """Maximum allowed description size in characters.""")
-
-    max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
-        """Maximum allowed comment size in characters.""")
-
-    max_summary_size = IntOption('ticket', 'max_summary_size', 262144,
-        """Maximum allowed summary size in characters. (//since 1.0.2//)""")
-
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
         """Which formatter flavor (e.g. 'html' or 'oneliner') should be
@@ -115,6 +106,23 @@ class TicketModule(Component):
             (''since 0.12'')""")
 
     ticket_path_re = re.compile(r'/ticket/([0-9]+)$')
+
+    def __init__(self):
+        self._warn_for_moved_attr = set()
+
+    def __getattr__(self, name):
+        """Delegate access to Options which were moved to TicketSystem.
+
+        .. todo:: remove in 1.5.1
+        """
+        if name in ('max_comment_size', 'max_description_size',
+                    'max_summary_size'):
+            if name not in self._warn_for_moved_attr:
+                self.log.warning("%s option should be accessed via "
+                                 "TicketSystem component", name)
+                self._warn_for_moved_attr.add(name)
+            return getattr(TicketSystem(self.env), name)
+        raise AttributeError("TicketModule has no attribute '%s'" % name)
 
     @lazy
     def must_preserve_newlines(self):
@@ -1295,97 +1303,33 @@ class TicketModule(Component):
                                    "else since you started"))
                 valid = False
 
-        # Always require a summary
-        if not ticket['summary']:
-            add_warning(req, _("Tickets must contain a summary."))
-            valid = False
-
-        # Validate select fields for known values
-        for field in ticket.fields:
-            if 'options' not in field:
-                continue
-            name = field['name']
-            if name == 'status':
-                continue
-            if name in ticket and name in ticket._old:
-                value = ticket[name]
-                if value:
-                    if value not in field['options']:
-                        add_warning(req, _('"%(value)s" is not a valid value '
-                                           'for the %(name)s field.',
-                                           value=value, name=name))
-                        valid = False
-                elif not field.get('optional', False):
-                    add_warning(req, _("field %(name)s must be set",
-                                       name=name))
-                    valid = False
-
-        # Validate description length
-        if len(ticket['description'] or '') > self.max_description_size:
-            add_warning(req, _("Ticket description is too long (must be less "
-                               "than %(num)s characters)",
-                               num=self.max_description_size))
-            valid = False
-
-        # Validate comment length
-        edited_comment = req.args.get('edited_comment')
-        if len(comment or edited_comment or '') > self.max_comment_size:
-            add_warning(req, _("Ticket comment is too long (must be less "
-                               "than %(num)s characters)",
-                               num=self.max_comment_size))
-            valid = False
-
-        # Validate summary length
-        if len(ticket['summary'] or '') > self.max_summary_size:
-            add_warning(req, _("Ticket summary is too long (must be less "
-                               "than %(num)s characters)",
-                               num=self.max_summary_size))
-            valid = False
-
-        # Validate custom field length
-        for field in ticket.custom_fields:
-            field_attrs = ticket.fields.by_name(field)
-            max_size = field_attrs.get('max_size', 0)
-            label = field_attrs.get('label')
-            if 0 < max_size < len(ticket[field] or ''):
-                add_warning(req, _("Ticket field '%(field)s' is too long "
-                                   "(must be less than %(num)s characters)",
-                                   field=label or field, num=max_size))
-                valid = False
-
         # Validate comment id: replyto must be 'description' or a number
         replyto = req.args.get('replyto') or 0
         if replyto != 'description' and as_int(replyto, None) is None:
             # Shouldn't happen in "normal" circumstances, hence not a warning
             raise InvalidTicket(_("Invalid comment threading identifier"))
 
-        # Validate time field content
-        for field in ticket.time_fields:
-            value = ticket[field]
-            if not (field in ticket.std_fields or
-                    isinstance(value, datetime)):
-                format = ticket.fields.by_name(field).get('format')
-                try:
-                    ticket[field] = user_time(req, parse_date, value,
-                                              hint=format) \
-                                    if value else None
-                except TracError as e:
-                    # Degrade TracError to warning.
-                    add_warning(req, e)
-                    ticket[field] = value
-                    valid = False
-
-        # Custom validation rules
+        # Validate custom rules.
+        comment = comment or req.args.get('edited_comment')
         for manipulator in self.ticket_manipulators:
+            if hasattr(manipulator, 'validate_comment'):
+                for message in manipulator.validate_comment(req, comment):
+                    valid = False
+                    add_warning(req, tag_("The ticket %(field)s is invalid: "
+                                          "%(message)s",
+                                          field=tag.strong(_('comment')),
+                                          message=message))
+
             for field, message in manipulator.validate_ticket(req, ticket):
                 valid = False
                 if field:
-                    add_warning(req, tag_("The ticket field %(field)s"
-                                          " is invalid: %(message)s",
+                    add_warning(req, tag_("The ticket field %(field)s is "
+                                          "invalid: %(message)s",
                                           field=tag.strong(field),
                                           message=message))
                 else:
                     add_warning(req, message)
+
         return valid
 
     def _do_create(self, req, ticket, action):

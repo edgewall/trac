@@ -12,40 +12,24 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import unittest
-from datetime import timedelta
+from datetime import datetime, timedelta
 
+from trac.core import Component, implements
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
                       PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket import default_workflow, api, web_ui
+from trac.ticket import api, default_workflow, model, web_ui
 from trac.ticket.batch import BatchModifyModule
-from trac.ticket.model import Ticket
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import web_context
 from trac.web.session import DetachedSession
 
 
-class BatchModifyTestCase(unittest.TestCase):
+class ChangeListTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True,
-            enable=[default_workflow.ConfigurableTicketWorkflow,
-                    DefaultPermissionPolicy, DefaultPermissionStore,
-                    api.TicketSystem, web_ui.TicketModule])
-        self.req = MockRequest(self.env)
-
-    def assertCommentAdded(self, ticket_id, comment):
-        ticket = Ticket(self.env, int(ticket_id))
-        changes = ticket.get_changelog()
-        comment_change = [c for c in changes if c[2] == 'comment'][-1]
-        self.assertEqual(comment_change[2], comment)
-
-    def assertFieldChanged(self, ticket_id, field, new_value):
-        ticket = Ticket(self.env, int(ticket_id))
-        changes = ticket.get_changelog()
-        field_change = [c for c in changes if c[2] == field][-1]
-        self.assertEqual(field_change[4], new_value)
+        self.env = EnvironmentStub(default_data=True)
 
     def _change_list_test_helper(self, original, new, new2, mode):
         batch = BatchModifyModule(self.env)
@@ -66,322 +50,142 @@ class BatchModifyTestCase(unittest.TestCase):
 
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = Ticket(self.env)
+        ticket = model.Ticket(self.env)
         ticket['summary'] = summary
         for k, v in kw.items():
             ticket[k] = v
         return ticket.insert()
 
-    def test_ignore_summary_and_description(self):
-        """These cannot be added through the UI, but if somebody tries
-        to build their own POST data they will be ignored."""
-        batch = BatchModifyModule(self.env)
-        self.req.args = {
-            'batchmod_value_summary': 'test ticket',
-            'batchmod_value_description': 'synergize the widgets'
-        }
-        values = batch._get_new_ticket_values(self.req)
-        self.assertEqual(len(values), 0)
-
-    def test_add_batchmod_value_data_from_request(self):
-        batch = BatchModifyModule(self.env)
-        self.req.args = {'batchmod_value_milestone': 'milestone1'}
-        values = batch._get_new_ticket_values(self.req)
-        self.assertEqual(values['milestone'], 'milestone1')
-
-    def test_selected_tickets(self):
-        self.req.args = {'selected_tickets': '1,2,3'}
-        batch = BatchModifyModule(self.env)
-        selected_tickets = batch._get_selected_tickets(self.req)
-        self.assertEqual(selected_tickets, ['1', '2', '3'])
-
-    def test_no_selected_tickets(self):
-        """If nothing is selected, the return value is the empty list."""
-        self.req.args = {'selected_tickets': ''}
-        batch = BatchModifyModule(self.env)
-        selected_tickets = batch._get_selected_tickets(self.req)
-        self.assertEqual(selected_tickets, [])
-
-    def test_require_post_method(self):
-        batch = BatchModifyModule(self.env)
-
-        req = MockRequest(self.env, method='GET', path_info='/batchmodify')
-        req.session['query_href'] = req.href.query()
-        self.assertTrue(batch.match_request(req))
-        self.assertRaises(HTTPBadRequest, batch.process_request, req)
-
-        req = MockRequest(self.env, method='POST', path_info='/batchmodify',
-                          args={'selected_tickets': ''})
-        req.session['query_href'] = req.href.query()
-        self.assertTrue(batch.match_request(req))
-        self.assertRaises(RequestDone, batch.process_request, req)
-
-    def test_redirect_to_query_href_in_req_args(self):
-        redirect_listener_args = []
-        def redirect_listener(req, url, permanent):
-            redirect_listener_args[:] = (url, permanent)
-
-        batch = BatchModifyModule(self.env)
-        req = MockRequest(self.env, method='POST', path_info='/batchmodify')
-        query_opened_tickets = req.href.query(status='!closed')
-        query_default = req.href.query()
-        req.args = {'selected_tickets': '',
-                    'query_href': query_opened_tickets}
-        req.session['query_href'] = query_default
-        req.add_redirect_listener(redirect_listener)
-
-        self.assertTrue(batch.match_request(req))
-        self.assertRaises(RequestDone, batch.process_request, req)
-        self.assertEqual([query_opened_tickets, False],
-                         redirect_listener_args)
-
     # Assign list items
 
-    def test_change_list_replace_empty_with_single(self):
+    def test_replace_empty_with_single(self):
         """Replace empty field with single item."""
         changed = self._assign_list_test_helper('', 'alice')
         self.assertEqual(changed, 'alice')
 
-    def test_change_list_replace_empty_with_items(self):
+    def test_replace_empty_with_items(self):
         """Replace empty field with items."""
         changed = self._assign_list_test_helper('', 'alice, bob')
         self.assertEqual(changed, 'alice, bob')
 
-    def test_change_list_replace_item(self):
+    def test_replace_item(self):
         """Replace item with a different item."""
         changed = self._assign_list_test_helper('alice', 'bob')
         self.assertEqual(changed, 'bob')
 
-    def test_change_list_replace_item_with_items(self):
+    def test_replace_item_with_items(self):
         """Replace item with different items."""
         changed = self._assign_list_test_helper('alice', 'bob, carol')
         self.assertEqual(changed, 'bob, carol')
 
-    def test_change_list_replace_items_with_item(self):
+    def test_replace_items_with_item(self):
         """Replace items with a different item."""
         changed = self._assign_list_test_helper('alice, bob', 'carol')
         self.assertEqual(changed, 'carol')
 
-    def test_change_list_replace_items(self):
+    def test_replace_items(self):
         """Replace items with different items."""
         changed = self._assign_list_test_helper('alice, bob', 'carol, dave')
         self.assertEqual(changed, 'carol, dave')
 
-    def test_change_list_replace_items_partial(self):
+    def test_replace_items_partial(self):
         """Replace items with different (or not) items."""
         changed = self._assign_list_test_helper('alice, bob', 'bob, dave')
         self.assertEqual(changed, 'bob, dave')
 
-    def test_change_list_clear(self):
+    def test_clear(self):
         """Clear field."""
         changed = self._assign_list_test_helper('alice bob', '')
         self.assertEqual(changed, '')
 
     # Add / remove list items
 
-    def test_change_list_add_item(self):
+    def test_add_item(self):
         """Append additional item."""
         changed = self._add_list_test_helper('alice', 'bob')
         self.assertEqual(changed, 'alice, bob')
 
-    def test_change_list_add_items(self):
+    def test_add_items(self):
         """Append additional items."""
         changed = self._add_list_test_helper('alice, bob', 'carol, dave')
         self.assertEqual(changed, 'alice, bob, carol, dave')
 
-    def test_change_list_remove_item(self):
+    def test_remove_item(self):
         """Remove existing item."""
         changed = self._remove_list_test_helper('alice, bob', 'bob')
         self.assertEqual(changed, 'alice')
 
-    def test_change_list_remove_items(self):
+    def test_remove_items(self):
         """Remove existing items."""
         changed = self._remove_list_test_helper('alice, bob, carol',
                                                 'alice, carol')
         self.assertEqual(changed, 'bob')
 
-    def test_change_list_remove_idempotent(self):
+    def test_remove_idempotent(self):
         """Ignore missing item to be removed."""
         changed = self._remove_list_test_helper('alice', 'bob')
         self.assertEqual(changed, 'alice')
 
-    def test_change_list_remove_mixed(self):
+    def test_remove_mixed(self):
         """Ignore only missing item to be removed."""
         changed = self._remove_list_test_helper('alice, bob', 'bob, carol')
         self.assertEqual(changed, 'alice')
 
-    def test_change_list_add_remove(self):
+    def test_add_remove(self):
         """Remove existing item and append additional item."""
         changed = self._add_remove_list_test_helper('alice, bob', 'carol',
                                                     'alice')
         self.assertEqual(changed, 'bob, carol')
 
-    def test_change_list_add_no_duplicates(self):
+    def test_add_no_duplicates(self):
         """Existing items are not duplicated."""
         changed = self._add_list_test_helper('alice, bob', 'bob, carol')
         self.assertEqual(changed, 'alice, bob, carol')
 
-    def test_change_list_remove_all_duplicates(self):
+    def test_remove_all_duplicates(self):
         """Remove all duplicates."""
         changed = self._remove_list_test_helper('alice, bob, alice', 'alice')
         self.assertEqual(changed, 'bob')
 
-    # Save
 
-    def test_save_comment(self):
-        """Comments are saved to all selected tickets."""
-        first_ticket_id = self._insert_ticket('Test 1', reporter='joe')
-        second_ticket_id = self._insert_ticket('Test 2', reporter='joe')
-        selected_tickets = [first_ticket_id, second_ticket_id]
+class BatchModifyTestCase(unittest.TestCase):
 
-        batch = BatchModifyModule(self.env)
-        batch._save_ticket_changes(self.req, selected_tickets, {}, 'comment',
-                                   'leave')
+    ticket_manipulators = None
 
-        self.assertCommentAdded(first_ticket_id, 'comment')
-        self.assertCommentAdded(second_ticket_id, 'comment')
+    @classmethod
+    def setUpClass(cls):
+        class TicketValidator1(Component):
+            implements(api.ITicketManipulator)
 
-    def test_save_values(self):
-        """Changed values are saved to all tickets."""
-        first_ticket_id = self._insert_ticket('Test 1', reporter='joe',
-                                              component='foo')
-        second_ticket_id = self._insert_ticket('Test 2', reporter='joe')
-        selected_tickets = [first_ticket_id, second_ticket_id]
-        new_values = {'component': 'bar'}
+            def prepare_ticket(self, req, ticket, fields, actions):
+                pass
 
-        batch = BatchModifyModule(self.env)
-        batch._save_ticket_changes(self.req, selected_tickets, new_values, '',
-                                   'leave')
+            def validate_ticket(self, req, ticket):
+                errors = []
+                if ticket['component'] == 'component3':
+                    errors.append(('component', 'Invalid Component'))
+                return errors
 
-        self.assertFieldChanged(first_ticket_id, 'component', 'bar')
-        self.assertFieldChanged(second_ticket_id, 'component', 'bar')
+        class TicketValidator2(Component):
+            implements(api.ITicketManipulator)
 
-    def test_save_list_fields(self):
-        batch = BatchModifyModule(self.env)
-        with self.env.db_transaction:
-            ticket_ids = [
-                self._insert_ticket('Test 1', reporter='joe', keywords='foo'),
-                self._insert_ticket('Test 2', reporter='joe', keywords='baz'),
-            ]
+            def prepare_ticket(self, req, ticket, fields, actions):
+                pass
 
-        self.req.args = {'action': 'leave',
-                         'batchmod_mode_keywords': '+',  # add
-                         'batchmod_primary_keywords': 'baz new',
-                         'batchmod_secondary_keywords': '*****'}
-        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
-        self.assertFieldChanged(ticket_ids[0], 'keywords', 'foo, baz, new')
-        self.assertFieldChanged(ticket_ids[1], 'keywords', 'baz, new')
+            def validate_ticket(self, req, ticket):
+                return []
 
-        self.req.args = {'action': 'leave',
-                         'batchmod_mode_keywords': '+-',  # add / remove
-                         'batchmod_primary_keywords': 'one two three',
-                         'batchmod_secondary_keywords': 'baz missing'}
-        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
-        self.assertFieldChanged(ticket_ids[0], 'keywords',
-                                'foo, new, one, two, three')
-        self.assertFieldChanged(ticket_ids[1], 'keywords',
-                                'new, one, two, three')
+            def validate_comment(self, req, comment):
+                if 'badword' in comment:
+                    yield "Word is not allowed in comment"
 
-        self.req.args = {'action': 'leave',
-                         'batchmod_mode_keywords': '-',  # remove
-                         'batchmod_primary_keywords': 'new two',
-                         'batchmod_secondary_keywords': '*****'}
-        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
-        self.assertFieldChanged(ticket_ids[0], 'keywords', 'foo, one, three')
-        self.assertFieldChanged(ticket_ids[1], 'keywords', 'one, three')
+        cls.ticket_manipulators = [TicketValidator1, TicketValidator2]
 
-        self.req.args = {'action': 'leave',
-                         'batchmod_mode_keywords': '=',  # set
-                         'batchmod_primary_keywords': 'orange',
-                         'batchmod_secondary_keywords': '*****'}
-        batch._save_ticket_changes(self.req, ticket_ids, {}, '', 'leave')
-        self.assertFieldChanged(ticket_ids[0], 'keywords', 'orange')
-        self.assertFieldChanged(ticket_ids[1], 'keywords', 'orange')
-
-    def test_action_with_state_change(self):
-        """Actions can have change status."""
-        self.env.config.set('ticket-workflow', 'embiggen', '* -> big')
-
-        first_ticket_id = self._insert_ticket('Test 1', reporter='joe',
-                                              status='small')
-        second_ticket_id = self._insert_ticket('Test 2', reporter='joe')
-        selected_tickets = [first_ticket_id, second_ticket_id]
-
-        batch = BatchModifyModule(self.env)
-        batch._save_ticket_changes(self.req, selected_tickets, {}, '',
-                                   'embiggen')
-
-        self.assertFieldChanged(first_ticket_id, 'status', 'big')
-        self.assertFieldChanged(second_ticket_id, 'status', 'big')
-
-    def test_action_with_side_effects(self):
-        """Actions can have operations with side effects."""
-        self.env.config.set('ticket-workflow', 'buckify', '* -> *')
-        self.env.config.set('ticket-workflow', 'buckify.operations',
-                                               'set_owner')
-        self.req.args = {'action_buckify_reassign_owner': 'buck'}
-
-        first_ticket_id = self._insert_ticket('Test 1', reporter='joe',
-                                              owner='foo')
-        second_ticket_id = self._insert_ticket('Test 2', reporter='joe')
-        selected_tickets = [first_ticket_id, second_ticket_id]
-
-        batch = BatchModifyModule(self.env)
-        batch._save_ticket_changes(self.req, selected_tickets, {}, '',
-                                   'buckify')
-
-        self.assertFieldChanged(first_ticket_id, 'owner', 'buck')
-        self.assertFieldChanged(second_ticket_id, 'owner', 'buck')
-
-    def test_timeline_events(self):
-        """Regression test for #11288"""
-        tktmod = web_ui.TicketModule(self.env)
-        now = datetime_now(utc)
-        start = now - timedelta(hours=1)
-        stop = now + timedelta(hours=1)
-        events = tktmod.get_timeline_events(self.req, start, stop,
-                                            ['ticket_details'])
-        self.assertTrue(all(ev[0] != 'batchmodify' for ev in events))
-
-        prio_ids = {}
-        for i in xrange(20):
-            t = Ticket(self.env)
-            t['summary'] = 'Ticket %d' % i
-            t['priority'] = ('', 'minor', 'major', 'critical')[i % 4]
-            tktid = t.insert()
-            prio_ids.setdefault(t['priority'], []).append(tktid)
-        tktids = prio_ids['critical'] + prio_ids['major'] + \
-                 prio_ids['minor'] + prio_ids['']
-
-        new_values = {'summary': 'batch updated ticket',
-                      'owner': 'ticket11288', 'reporter': 'ticket11288'}
-        batch = BatchModifyModule(self.env)
-        batch._save_ticket_changes(self.req, tktids, new_values, '', 'leave')
-        # shuffle ticket_change records
-        with self.env.db_transaction as db:
-            rows = db('SELECT * FROM ticket_change')
-            db.execute('DELETE FROM ticket_change')
-            rows = rows[0::4] + rows[1::4] + rows[2::4] + rows[3::4]
-            db.executemany('INSERT INTO ticket_change VALUES (%s)' %
-                           ','.join(('%s',) * len(rows[0])),
-                           rows)
-
-        events = tktmod.get_timeline_events(self.req, start, stop,
-                                            ['ticket_details'])
-        events = [ev for ev in events if ev[0] == 'batchmodify']
-        self.assertEqual(1, len(events))
-        batch_ev = events[0]
-        self.assertEqual('anonymous', batch_ev[2])
-        self.assertEqual(tktids, batch_ev[3][0])
-        self.assertEqual('updated', batch_ev[3][1])
-
-        context = web_context(self.req)
-        self.assertEqual(
-            self.req.href.query(id=','.join(str(t) for t in tktids)),
-            tktmod.render_timeline_event(context, 'url', batch_ev))
-
-
-class ProcessRequestTestCase(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for manipulator in cls.ticket_manipulators:
+            ComponentMeta.deregister(manipulator)
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True, enable=[
@@ -391,6 +195,12 @@ class ProcessRequestTestCase(unittest.TestCase):
         ])
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
+        self.env.config.set('ticket-custom', 'text1', 'text')
+        self.env.config.set('ticket-custom', 'text1.max_size', 5)
+        self.env.config.set('ticket-custom', 'time1', 'time')
+        self.env.config.set('ticket-custom', 'time1.format', 'date')
+        self.env.config.set('ticket-workflow',
+                            'acknowledge', '* -> acknowledged')
         ps = PermissionSystem(self.env)
         ps.grant_permission('has_ta_&_bm', 'TICKET_ADMIN')
         ps.grant_permission('has_bm', 'TICKET_BATCH_MODIFY')
@@ -401,61 +211,526 @@ class ProcessRequestTestCase(unittest.TestCase):
         session = DetachedSession(self.env, 'has_bm')
         session.set('query_href', '')
         session.save()
+        self._insert_ticket('Ticket 1', reporter='user1',
+                            component='component1', description='the desc',
+                            keywords='foo one', status='new')
+        self._insert_ticket('Ticket 2', reporter='user1',
+                            component='component2', description='the desc',
+                            keywords='baz two', status='new')
 
     def tearDown(self):
         self.env.reset_db()
 
-    def assertFieldChanged(self, ticket_id, field, new_value):
-        ticket = Ticket(self.env, int(ticket_id))
+    def assertCommentAdded(self, ticket_id, comment):
+        ticket = model.Ticket(self.env, int(ticket_id))
+        changes = ticket.get_changelog()
+        comment_change = [c for c in changes if c[2] == 'comment'][-1]
+        self.assertEqual(comment_change[4], comment)
+
+    def assertFieldValue(self, ticket_id, field, new_value):
+        ticket = model.Ticket(self.env, int(ticket_id))
         self.assertEqual(ticket[field], new_value)
 
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = Ticket(self.env)
+        ticket = model.Ticket(self.env)
         ticket['summary'] = summary
         for k, v in kw.items():
             ticket[k] = v
         return ticket.insert()
 
+    def _insert_component(self, name):
+        component = model.Component(self.env)
+        component.name = name
+        component.insert()
+
+    def test_require_post_method(self):
+        """Request must use POST method."""
+        module = BatchModifyModule(self.env)
+        req = MockRequest(self.env, method='GET', path_info='/batchmodify')
+        req.session['query_href'] = req.href.query()
+
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(HTTPBadRequest):
+            module.process_request(req)
+
+        req = MockRequest(self.env, method='POST', path_info='/batchmodify',
+                          args={'selected_tickets': ''})
+        req.session['query_href'] = req.href.query()
+
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone):
+            module.process_request(req)
+
+    def test_redirect_to_query_href_in_req_args(self):
+        redirect_listener_args = []
+        def redirect_listener(req, url, permanent):
+            redirect_listener_args[:] = (url, permanent)
+
+        module = BatchModifyModule(self.env)
+        req = MockRequest(self.env, method='POST', path_info='/batchmodify')
+        query_opened_tickets = req.href.query(status='!closed')
+        query_default = req.href.query()
+        req.args = {'selected_tickets': '',
+                    'query_href': query_opened_tickets}
+        req.session['query_href'] = query_default
+        req.add_redirect_listener(redirect_listener)
+
+        self.assertTrue(module.match_request(req))
+        self.assertRaises(RequestDone, module.process_request, req)
+        self.assertEqual([query_opened_tickets, False],
+                         redirect_listener_args)
+
+    def test_save_comment(self):
+        """Comments are saved to all selected tickets."""
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_value_comment': 'the comment',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertCommentAdded(1, 'the comment')
+        self.assertCommentAdded(2, 'the comment')
+
+    def test_save_values(self):
+        """Changed values are saved to all tickets."""
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_value_component': 'component1',
+            'batchmod_value_comment': '',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'component', 'component1')
+        self.assertFieldValue(2, 'component', 'component1')
+
+    def test_list_fields_add(self):
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_mode_keywords': '+',
+            'batchmod_primary_keywords': 'baz new',
+            'batchmod_secondary_keywords': '*****',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'keywords', 'foo, one, baz, new')
+        self.assertFieldValue(2, 'keywords', 'baz, two, new')
+
+    def test_list_fields_addrem(self):
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_mode_keywords': '+-',
+            'batchmod_primary_keywords': 'one three four',
+            'batchmod_secondary_keywords': 'baz missing',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'keywords', 'foo, one, three, four')
+        self.assertFieldValue(2, 'keywords', 'two, one, three, four')
+
+    def test_list_fields_rem(self):
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_mode_keywords': '-',
+            'batchmod_primary_keywords': 'foo two',
+            'batchmod_secondary_keywords': '*****',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'keywords', 'one')
+        self.assertFieldValue(2, 'keywords', 'baz')
+
+    def test_list_fields_set(self):
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_mode_keywords': '=',
+            'batchmod_primary_keywords': 'orange',
+            'batchmod_secondary_keywords': '*****',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'keywords', 'orange')
+        self.assertFieldValue(2, 'keywords', 'orange')
+
+    def test_action_with_state_change(self):
+        """Actions can have change status."""
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'action': 'acknowledge',
+            'batchmod_value_comment': '',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'status', 'acknowledged')
+        self.assertFieldValue(2, 'status', 'acknowledged')
+
+    def test_action_with_side_effects(self):
+        """Actions can have operations with side effects."""
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
+            'action': 'reassign',
+            'action_reassign_reassign_owner': 'user3',
+            'batchmod_value_comment': '',
+            'selected_tickets': '1,2',
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req)
+
+        self.assertFieldValue(1, 'owner', 'user3')
+        self.assertFieldValue(2, 'owner', 'user3')
+        self.assertFieldValue(1, 'status', 'assigned')
+        self.assertFieldValue(2, 'status', 'assigned')
+
+    def test_timeline_events(self):
+        """Regression test for #11288"""
+        req1 = MockRequest(self.env)
+        tktmod = web_ui.TicketModule(self.env)
+        now = datetime_now(utc)
+        start = now - timedelta(hours=1)
+        stop = now + timedelta(hours=1)
+        events = tktmod.get_timeline_events(req1, start, stop,
+                                            ['ticket_details'])
+        self.assertTrue(all(ev[0] != 'batchmodify' for ev in events))
+
+        prio_ids = {}
+        for i in xrange(20):
+            t = model.Ticket(self.env)
+            t['summary'] = 'Ticket %d' % i
+            t['priority'] = ('', 'minor', 'major', 'critical')[i % 4]
+            tktid = t.insert()
+            prio_ids.setdefault(t['priority'], []).append(tktid)
+        tktids = prio_ids['critical'] + prio_ids['major'] + \
+                 prio_ids['minor'] + prio_ids['']
+
+        req2 = MockRequest(self.env, method='POST', authname='has_ta_&_bm',
+                          path_info='/batchmodify', args={
+            'batchmod_value_summary': 'batch updated ticket',
+            'batchmod_value_owner': 'ticket11288',
+            'batchmod_value_reporter': 'ticket11288',
+            'action': 'leave',
+            'selected_tickets': ','.join(str(t) for t in tktids),
+        })
+
+        batch = BatchModifyModule(self.env)
+        self.assertTrue(batch.match_request(req2))
+        with self.assertRaises(RequestDone):
+            batch.process_request(req2)
+
+        # shuffle ticket_change records
+        with self.env.db_transaction as db:
+            rows = db('SELECT * FROM ticket_change')
+            db.execute('DELETE FROM ticket_change')
+            rows = rows[0::4] + rows[1::4] + rows[2::4] + rows[3::4]
+            db.executemany('INSERT INTO ticket_change VALUES (%s)' %
+                           ','.join(('%s',) * len(rows[0])),
+                           rows)
+
+        events = tktmod.get_timeline_events(req1, start, stop,
+                                            ['ticket_details'])
+        events = [ev for ev in events if ev[0] == 'batchmodify']
+        self.assertEqual(1, len(events))
+        batch_ev = events[0]
+        self.assertEqual('has_ta_&_bm', batch_ev[2])
+        self.assertEqual(tktids, batch_ev[3][0])
+        self.assertEqual('updated', batch_ev[3][1])
+
+        context = web_context(req2)
+        self.assertEqual(req2.href.query(id=','.join(str(t) for t in tktids)),
+                         tktmod.render_timeline_event(context, 'url',
+                                                      batch_ev))
+
+    def test_modify_summary_and_description(self):
+        """The ticket summary and description cannot be modified."""
+        req = MockRequest(self.env, authname='has_ta_&_bm', method='POST',
+                          path_info='/batchmodify', args={
+            'batchmod_value_summary': 'the new summary',
+            'batchmod_value_description': 'the new description',
+            'batchmod_value_comment': '',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        module = BatchModifyModule(self.env)
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone):
+            module.process_request(req)
+
+        self.assertFieldValue(1, 'description', 'the desc')
+        self.assertFieldValue(1, 'summary', 'Ticket 1')
+        self.assertFieldValue(2, 'description', 'the desc')
+        self.assertFieldValue(2, 'summary', 'Ticket 2')
+
     def test_modify_reporter_with_ticket_admin(self):
         """User with TICKET_ADMIN can batch modify the reporter."""
-        self._insert_ticket('Ticket 1', reporter='user1')
-        self._insert_ticket('Ticket 2', reporter='user1')
-
         req = MockRequest(self.env, method='POST', authname='has_ta_&_bm',
-                          args={
+                          path_info='/batchmodify', args={
             'batchmod_value_reporter': 'user2',
             'batchmod_value_comment': '',
             'action': 'leave',
             'selected_tickets': '1,2',
         })
 
-        bmm = BatchModifyModule(self.env)
-        self.assertRaises(RequestDone, bmm.process_request, req)
-        self.assertFieldChanged(1, 'reporter', 'user2')
-        self.assertFieldChanged(2, 'reporter', 'user2')
+        module = BatchModifyModule(self.env)
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone):
+            module.process_request(req)
+
+        self.assertFieldValue(1, 'reporter', 'user2')
+        self.assertFieldValue(2, 'reporter', 'user2')
 
     def test_modify_reporter_without_ticket_admin(self):
         """User without TICKET_ADMIN cannot batch modify the reporter."""
-        self._insert_ticket('Ticket 1', reporter='user1')
-        self._insert_ticket('Ticket 2', reporter='user1')
-        req = MockRequest(self.env, method='POST', authname='has_bm', args={
+        req = MockRequest(self.env, method='POST', authname='has_bm',
+                          path_info='/batchmodify', args={
             'batchmod_value_reporter': 'user2',
             'batchmod_value_comment': '',
             'action': 'leave',
             'selected_tickets': '1,2',
         })
 
-        bmm = BatchModifyModule(self.env)
-        self.assertRaises(RequestDone, bmm.process_request, req)
-        self.assertFieldChanged(1, 'reporter', 'user1')
-        self.assertFieldChanged(2, 'reporter', 'user1')
+        module = BatchModifyModule(self.env)
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone):
+            module.process_request(req)
+
+        self.assertFieldValue(1, 'reporter', 'user1')
+        self.assertFieldValue(2, 'reporter', 'user1')
+
+    def test_validate_ticket_comment_size(self):
+        """The [ticket] max_comment_size value is enforced."""
+        module = BatchModifyModule(self.env)
+        self.env.config.set('ticket', 'max_comment_size', 5)
+        req1 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_comment': '12345',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+        req2 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_comment': '123456',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        self.assertTrue(module.match_request(req1))
+        with self.assertRaises(RequestDone):
+            module.process_request(req1)
+
+        self.assertEqual([], req1.chrome['warnings'])
+        self.assertCommentAdded(1, '12345')
+        self.assertCommentAdded(2, '12345')
+
+        self.assertTrue(module.match_request(req2))
+        with self.assertRaises(RequestDone):
+            module.process_request(req2)
+
+        self.assertEqual(1, len(req2.chrome['warnings']))
+        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
+                         "Must be less than or equal to 5 characters",
+                         unicode(req2.chrome['warnings'][0]))
+        self.assertEqual(1, len(model.Ticket(self.env, 1).get_changelog()))
+        self.assertEqual(1, len(model.Ticket(self.env, 2).get_changelog()))
+
+    def test_validate_select_fields(self):
+        """The select field values are validated."""
+        req = MockRequest(self.env, authname='has_bm', method='POST',
+                          path_info='/batchmodify', args={
+            'batchmod_value_component': 'component3',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        module = BatchModifyModule(self.env)
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone):
+            module.process_request(req)
+
+        self.assertEqual(1, len(req.chrome['warnings']))
+        self.assertEqual('The ticket field <strong>component</strong> is '
+                         'invalid: "component3" is not a valid value',
+                         unicode(req.chrome['warnings'][0]))
+
+    def test_validate_ticket_custom_field_max_size(self):
+        """The [ticket-custom] max_size attribute is enforced."""
+        module = BatchModifyModule(self.env)
+        req1 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_text1': '12345',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+        req2 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_text1': '123456',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        self.assertTrue(module.match_request(req1))
+        with self.assertRaises(RequestDone):
+            module.process_request(req1)
+
+        self.assertEqual([], req1.chrome['warnings'])
+        self.assertEqual('12345', model.Ticket(self.env, 1)['text1'])
+        self.assertEqual('12345', model.Ticket(self.env, 2)['text1'])
+
+        self.assertTrue(module.match_request(req2))
+        with self.assertRaises(RequestDone):
+            module.process_request(req2)
+
+        self.assertEqual(1, len(req2.chrome['warnings']))
+        self.assertEqual("The ticket field <strong>Text1</strong> is "
+                         "invalid: Must be less than or equal to 5 "
+                         "characters", unicode(req2.chrome['warnings'][0]))
+        self.assertEqual('12345', model.Ticket(self.env, 1)['text1'])
+        self.assertEqual('12345', model.Ticket(self.env, 2)['text1'])
+
+    def test_validate_time_fields(self):
+        """The time fields are validated."""
+        module = BatchModifyModule(self.env)
+        req1 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_time1': '2016-01-02T12:34:56Z',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+        req2 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_time1': 'invalid',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+        dt = datetime(2016, 1, 2, 12, 34, 56, tzinfo=utc)
+
+        self.assertTrue(module.match_request(req1))
+        with self.assertRaises(RequestDone):
+            module.process_request(req1)
+
+        self.assertEqual(dt, model.Ticket(self.env, 1)['time1'])
+        self.assertEqual(dt, model.Ticket(self.env, 2)['time1'])
+        self.assertEqual([], req1.chrome['warnings'])
+
+        self.assertTrue(module.match_request(req2))
+        with self.assertRaises(RequestDone):
+            module.process_request(req2)
+
+        self.assertEqual(1, len(req2.chrome['warnings']))
+        self.assertEqual('The ticket field <strong>Time1</strong> is '
+                         'invalid: "invalid" is an invalid date, or the date '
+                         'format is not known. Try "MMM d, y" or '
+                         '"YYYY-MM-DD" instead.',
+                         unicode(req2.chrome['warnings'][0]))
+        self.assertEqual(dt, model.Ticket(self.env, 1)['time1'])
+        self.assertEqual(dt, model.Ticket(self.env, 2)['time1'])
+
+    def test_ticket_manipulators(self):
+        """The ticket manipulators are called to valid the ticket."""
+        module = BatchModifyModule(self.env)
+        self._insert_component('component3')
+        self._insert_component('component4')
+        self.env.enable_component(self.ticket_manipulators[0])
+        self.env.enable_component(self.ticket_manipulators[1])
+        req1 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_component': 'component3',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        self.assertTrue(module.match_request(req1))
+        with self.assertRaises(RequestDone):
+            module.process_request(req1)
+
+        self.assertEqual(1, len(req1.chrome['warnings']))
+        self.assertEqual("The ticket field <strong>component</strong> is "
+                         "invalid: Invalid Component",
+                         unicode(req1.chrome['warnings'][0]))
+        self.assertFieldValue(1, 'component', 'component1')
+        self.assertFieldValue(2, 'component', 'component2')
+
+        req2 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_component': 'component4',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        self.assertTrue(module.match_request(req2))
+        with self.assertRaises(RequestDone):
+            module.process_request(req2)
+
+        self.assertEqual([], req2.chrome['warnings'])
+        self.assertFieldValue(1, 'component', 'component4')
+        self.assertFieldValue(2, 'component', 'component4')
+
+        req3 = MockRequest(self.env, authname='has_bm', method='POST',
+                           path_info='/batchmodify', args={
+            'batchmod_value_comment': 'this comment has the badword!',
+            'batchmod_value_component': 'component3',
+            'action': 'leave',
+            'selected_tickets': '1,2',
+        })
+
+        self.assertTrue(module.match_request(req3))
+        with self.assertRaises(RequestDone):
+            module.process_request(req3)
+
+        self.assertEqual(u"The ticket <strong>comment</strong> is invalid: "
+                         u"Word is not allowed in comment",
+                         unicode(req3.chrome['warnings'][0]))
+        self.assertFieldValue(1, 'component', 'component4')
+        self.assertFieldValue(2, 'component', 'component4')
 
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ChangeListTestCase))
     suite.addTest(unittest.makeSuite(BatchModifyTestCase))
-    suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
     return suite
 
 

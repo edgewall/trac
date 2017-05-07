@@ -17,17 +17,19 @@
 import contextlib
 import copy
 import re
+from datetime import datetime
 
 from trac.cache import cached
 from trac.config import (
-    BoolOption, ConfigSection, ListOption, Option, OrderedExtensionsOption
-)
+    BoolOption, ConfigSection, IntOption, ListOption, Option,
+    OrderedExtensionsOption)
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
 from trac.util import Ranges, as_int
+from trac.util.datefmt import parse_date, user_time
 from trac.util.html import tag
-from trac.util.text import shorten_line
+from trac.util.text import shorten_line, to_unicode
 from trac.util.translation import _, N_, deactivate, gettext, reactivate
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
@@ -171,6 +173,15 @@ class ITicketManipulator(Interface):
         detected. `field` can be `None` to indicate an overall problem with the
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
+    def validate_comment(self, comment):
+        """Validate ticket comment.
+
+        Must return a list of messages, one for each problem detected.
+        The return value `[]` indicates no problems.
+
+        :since: 1.3.2
+        """
+
 
 class IMilestoneChangeListener(Interface):
     """Extension point interface for components that require notification
@@ -192,7 +203,8 @@ class IMilestoneChangeListener(Interface):
 
 
 class TicketSystem(Component):
-    implements(IPermissionRequestor, IWikiSyntaxProvider, IResourceManager)
+    implements(IPermissionRequestor, IWikiSyntaxProvider, IResourceManager,
+               ITicketManipulator)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
     milestone_change_listeners = ExtensionPoint(IMilestoneChangeListener)
@@ -260,6 +272,15 @@ class TicketSystem(Component):
         'milestone, version', doc=
         """Comma-separated list of `select` fields that can have
         an empty value. (//since 1.1.2//)""")
+
+    max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
+        """Maximum allowed comment size in characters.""")
+
+    max_description_size = IntOption('ticket', 'max_description_size', 262144,
+        """Maximum allowed description size in characters.""")
+
+    max_summary_size = IntOption('ticket', 'max_summary_size', 262144,
+        """Maximum allowed summary size in characters. (//since 1.0.2//)""")
 
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r',
@@ -469,6 +490,74 @@ class TicketSystem(Component):
                     allowed_owners.append(user)
             allowed_owners.sort()
             return allowed_owners
+
+    # ITicketManipulator methods
+
+    def prepare_ticket(self, req, ticket, fields, actions):
+        pass
+
+    def validate_ticket(self, req, ticket):
+        # Validate select fields for known values.
+        for field in ticket.fields:
+            if 'options' not in field:
+                continue
+            name = field['name']
+            if name == 'status':
+                continue
+            if name in ticket and name in ticket._old:
+                value = ticket[name]
+                if value:
+                    if value not in field['options']:
+                        yield name, _('"%(value)s" is not a valid value',
+                                      value=value)
+                elif not field.get('optional', False):
+                    yield name, _("field cannot be empty")
+
+        # Validate description length.
+        if len(ticket['description'] or '') > self.max_description_size:
+            yield 'description', _("Must be less than or equal to %(num)s "
+                                   "characters",
+                                   num=self.max_description_size)
+
+        # Validate summary length.
+        if not ticket['summary']:
+            yield 'summary', _("Tickets must contain a summary.")
+        elif len(ticket['summary'] or '') > self.max_summary_size:
+            yield 'summary', _("Must be less than or equal to %(num)s "
+                               "characters", num=self.max_summary_size)
+
+        # Validate custom field length.
+        for field in ticket.custom_fields:
+            field_attrs = ticket.fields.by_name(field)
+            max_size = field_attrs.get('max_size', 0)
+            if 0 < max_size < len(ticket[field] or ''):
+                label = field_attrs.get('label')
+                yield label or field, _("Must be less than or equal to "
+                                        "%(num)s characters", num=max_size)
+
+        # Validate time field content.
+        for field in ticket.time_fields:
+            value = ticket[field]
+            if field in ticket.custom_fields and \
+                    field in ticket._old and \
+                    not isinstance(value, datetime):
+                field_attrs = ticket.fields.by_name(field)
+                format = field_attrs.get('format')
+                try:
+                    ticket[field] = user_time(req, parse_date, value,
+                                              hint=format) \
+                                    if value else None
+                except TracError as e:
+                    # Degrade TracError to warning.
+                    ticket[field] = value
+                    label = field_attrs.get('label')
+                    yield label or field, to_unicode(e)
+
+    def validate_comment(self, req, comment):
+        # Validate comment length
+        if len(comment or '') > self.max_comment_size:
+            yield _("Must be less than or equal to %(num)s characters",
+                    num=self.max_comment_size)
 
     # IPermissionRequestor methods
 

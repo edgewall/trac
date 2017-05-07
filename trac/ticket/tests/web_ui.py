@@ -67,6 +67,17 @@ class TicketModuleTestCase(unittest.TestCase):
         """Helper for inserting a ticket into the database"""
         return insert_ticket(self.env, **kw)
 
+    def test_get_moved_attributes(self):
+        """The attributes `max_comment_size`, `max_description_size` and
+        `max_summary_size` have been moved to TicketSystem but are
+        accessible on TicketModule for backward compatibility.
+        """
+        ts = TicketSystem(self.env)
+        tm = TicketModule(self.env)
+        self.assertEqual(ts.max_comment_size, tm.max_comment_size)
+        self.assertEqual(ts.max_description_size, tm.max_description_size)
+        self.assertEqual(ts.max_summary_size, tm.max_summary_size)
+
     def test_ticket_module_as_default_handler(self):
         """The New Ticket mainnav entry is active when TicketModule is the
         `default_handler` and navigating to the base url. Test for regression
@@ -310,8 +321,9 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
 
-        self.assertIn("Ticket comment is too long (must be less than 5 "
-                      "characters)", unicode(req.chrome['warnings'][0]))
+        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
+                         "Must be less than or equal to 5 characters",
+                         unicode(req.chrome['warnings'][0]))
 
     def test_preview_comment_validate_max_comment_size(self):
         """The [ticket] max_comment_size attribute is validated during
@@ -332,8 +344,9 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
 
-        self.assertIn("Ticket comment is too long (must be less than 5 "
-                      "characters)", unicode(req.chrome['warnings'][0]))
+        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
+                         "Must be less than or equal to 5 characters",
+                         unicode(req.chrome['warnings'][0]))
 
     def _test_template_data_for_time_field(self, req, value, expected, format):
         self.env.config.set('ticket-custom', 'timefield', 'time')
@@ -700,8 +713,9 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
 
         self.assertTrue(req.args['preview'])
         self.assertEqual(1, len(req.chrome['warnings']))
-        self.assertIn("Ticket field 'Text1' is too long (must be less "
-                      "than 5 characters)", req.chrome['warnings'])
+        self.assertIn("The ticket field <strong>Text1</strong> is invalid: "
+                      "Must be less than or equal to 5 characters",
+                      unicode(req.chrome['warnings'][0]))
 
     def test_ticket_custom_field_less_than_max_size(self):
         """Validation succeeds for a ticket custom field with content length

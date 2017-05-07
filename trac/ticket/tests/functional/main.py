@@ -67,8 +67,9 @@ class TestTicketMaxSummarySize(FunctionalTwillTestCaseSetup):
         short_summary = "abcdefghijklmnopqrstuvwxyz"
         long_summary = short_summary + "."
         max_summary_size = len(short_summary)
-        warning_message = r"Ticket summary is too long \(must be less " \
-                          r"than %s characters\)" % max_summary_size
+        warning_message = "The ticket field <strong>summary</strong> is " \
+                          "invalid: Must be less than or equal to %d " \
+                          "characters" % max_summary_size
         self._testenv.set_config('ticket', 'max_summary_size',
                                  str(max_summary_size))
         try:
@@ -174,10 +175,11 @@ class TicketManipulator(Component):
                          "Testing ticket manipulator")
             tc.submit('submit')
             tc.url(self._tester.url + '/newticket$')
-            tc.find("A ticket with the summary <em>Testing ticket "
-                    "manipulator</em> already exists.")
-            tc.find("The ticket field <strong>reporter</strong> is invalid:"
-                    " The ticket <strong>reporter</strong> is <em>invalid</em>.")
+            tc.find("The ticket field <strong>summary</strong> is invalid: "
+                    "Tickets must contain a summary.")
+            tc.find("The ticket field <strong>reporter</strong> is invalid: "
+                    "The ticket <strong>reporter</strong> is "
+                    "<em>invalid</em>.")
         finally:
             env.config.set('components', plugin_name + '.*', 'disabled')
             env.config.save()
