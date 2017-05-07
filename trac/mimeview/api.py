@@ -772,23 +772,33 @@ class Mimeview(Component):
                 continue  # skip non-source renderers in force_source mode
             if isinstance(content, Content):
                 content.reset()
+            ann_names = ', '.join(annotations) if annotations else \
+                       'no annotations'
+            self.log.debug('Trying to render HTML preview using %s [%s]',
+                           renderer.__class__.__name__, ann_names)
+
+            # check if we need to perform a tab expansion
+            rendered_content = content
+            if getattr(renderer, 'expand_tabs', False):
+                if expanded_content is None:
+                    content = content_to_unicode(self.env, content,
+                                                 full_mimetype)
+                    expanded_content = content.expandtabs(self.tab_width)
+                rendered_content = expanded_content
             try:
-                ann_names = ', '.join(annotations) if annotations else \
-                           'no annotations'
-                self.log.debug('Trying to render HTML preview using %s [%s]',
-                               renderer.__class__.__name__, ann_names)
-
-                # check if we need to perform a tab expansion
-                rendered_content = content
-                if getattr(renderer, 'expand_tabs', False):
-                    if expanded_content is None:
-                        content = content_to_unicode(self.env, content,
-                                                     full_mimetype)
-                        expanded_content = content.expandtabs(self.tab_width)
-                    rendered_content = expanded_content
-
                 result = renderer.render(context, full_mimetype,
                                          rendered_content, filename, url)
+            except Exception as e:
+                self.log.warning('HTML preview using %s with %r failed: %s',
+                                 renderer.__class__.__name__, context,
+                                 exception_to_unicode(e, traceback=True))
+                if context.req and not context.get_hint('disable_warnings'):
+                    from trac.web.chrome import add_warning
+                    add_warning(context.req,
+                        _("HTML preview using %(renderer)s failed (%(err)s)",
+                          renderer=renderer.__class__.__name__,
+                          err=exception_to_unicode(e)))
+            else:
                 if not result:
                     continue
 
@@ -813,17 +823,6 @@ class Mimeview(Component):
                     if isinstance(result, list):
                         result = Markup('\n').join(result)
                     return tag.div(class_='code')(tag.pre(result))
-
-            except Exception as e:
-                self.log.warning('HTML preview using %s with %r failed: %s',
-                                 renderer.__class__.__name__, context,
-                                 exception_to_unicode(e, traceback=True))
-                if context.req and not context.get_hint('disable_warnings'):
-                    from trac.web.chrome import add_warning
-                    add_warning(context.req,
-                        _("HTML preview using %(renderer)s failed (%(err)s)",
-                          renderer=renderer.__class__.__name__,
-                          err=exception_to_unicode(e)))
 
     def _render_source(self, context, lines, annotations):
         from trac.web.chrome import add_warning
