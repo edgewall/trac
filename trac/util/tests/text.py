@@ -13,16 +13,17 @@
 
 import io
 import os
+import re
 import socket
 import unittest
 
 from trac.util.text import (
-    _get_default_ambiwidth, empty, expandtabs, fix_eol, javascript_quote,
-    jinja2template, levenshtein_distance, normalize_whitespace, print_table,
-    quote_query_string, shorten_line, strip_line_ws, stripws, sub_vars,
-    text_width, to_js_string, to_unicode, to_utf8, unicode_from_base64,
-    unicode_quote, unicode_quote_plus, unicode_to_base64, unicode_unquote,
-    unicode_urlencode, wrap)
+    _get_default_ambiwidth, empty, exception_to_unicode, expandtabs, fix_eol,
+    javascript_quote, jinja2template, levenshtein_distance,
+    normalize_whitespace, print_table, quote_query_string, shorten_line,
+    strip_line_ws, stripws, sub_vars, text_width, to_js_string, to_unicode,
+    to_utf8, unicode_from_base64, unicode_quote, unicode_quote_plus,
+    unicode_to_base64, unicode_unquote, unicode_urlencode, wrap)
 
 
 class ToUnicodeTestCase(unittest.TestCase):
@@ -522,6 +523,28 @@ class DefaultAmbiwidthTestCase(unittest.TestCase):
         self.assertEqual(1, _get_default_ambiwidth())
 
 
+class ExceptionToUnicodeTestCase(unittest.TestCase):
+
+    def test_without_traceback(self):
+        try:
+            raise ValueError('test')
+        except ValueError as e:
+            self.assertEqual('ValueError: test', exception_to_unicode(e))
+
+    def test_with_traceback(self):
+        try:
+            raise ValueError('test')
+        except ValueError as e:
+            result = exception_to_unicode(e, traceback=True)
+            result = re.sub(r'\n  File "[^"]+", line [0-9]+, ',
+                            '\n  File "<file>", line <line>, ', result)
+            self.assertEqual("""
+Traceback (most recent call last):
+  File "<file>", line <line>, in test_with_traceback
+    raise ValueError('test')
+ValueError: test""", result)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase))
@@ -544,6 +567,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ShortenLineTestCase))
     if os.name != 'nt':
         suite.addTest(unittest.makeSuite(DefaultAmbiwidthTestCase))
+    suite.addTest(unittest.makeSuite(ExceptionToUnicodeTestCase))
     return suite
 
 
