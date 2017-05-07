@@ -97,7 +97,6 @@
 
 div.trac-modifiedby {
  margin: .3em .5em;
- *width: 100%; /* Workaround horizontal scrollbar on IE7 */
  color: #888;
  font-size: 80%;
  font-style: italic;
