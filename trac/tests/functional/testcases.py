@@ -17,6 +17,7 @@ import re
 import time
 import unittest
 
+from trac.core import ComponentMeta
 from trac.tests.functional import FunctionalTwillTestCaseSetup, \
                                   internal_error, tc
 from trac.util import create_file
@@ -109,7 +110,7 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
         env.config.save()
         env = self._testenv.get_trac_environment() # reloads the environment
 
-        loaded_components = env.compmgr.__metaclass__._components
+        loaded_components = ComponentMeta._components
         delete_plugins = [c for c in loaded_components
                           if 'DeleteTicketActionController' in c.__name__]
         try:
