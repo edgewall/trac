@@ -123,9 +123,6 @@ select {
  padding-bottom: .15em;
 }
 select[disabled] { background: #fdfdfd }
-input[type=button], input[type=submit], input[type=reset], button {
- *overflow: visible; /* Workaround too much margin on button in IE7 */
-}
 input[type=button], input[type=submit], input[type=reset], .trac-button {
  background: #eee;
  color: #222;
@@ -292,9 +289,6 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
  display: inline-block;
  padding: 0 .75em;
  white-space: nowrap;
- /* IE7 hack to make inline-block effective on block element */
- zoom: 1;
- *display: inline;
 }
 .nav li.last { border-right: none }
 

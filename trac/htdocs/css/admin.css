@@ -48,9 +48,6 @@ form.addnew div.field,
 form.addnew div.buttons,
 form.addnew p.help {
  display: inline-block;
- /* IE7 hack to make inline-block effective on block element */
- zoom: 1;
- *display: inline;
 }
 form.addnew div.field,
 form.addnew div.buttons {
