@@ -1749,7 +1749,6 @@ class Chrome(Component):
             # Populate data with request dependent data
             data = self.populate_data(req, data, self._get_genshi_data())
             data['chrome']['content_type'] = content_type
-            stream = None
             stream = template.generate(**data)
             # Filter through ITemplateStreamFilter plugins
             if self.stream_filters:
