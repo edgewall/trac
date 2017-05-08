@@ -884,6 +884,7 @@ No options
 ------------------------------
 """
 
+
 def tracini_setup(tc):
     tc._orig_registries = ConfigSection.registry, Option.registry
     class Foo(object):
@@ -902,8 +903,51 @@ def tracini_setup(tc):
         option_d4 = (BoolOption)('section-def', 'option4', False)
         option_d5 = (ListOption)('section-def', 'option5', [])
 
+
 def tracini_teardown(tc):
     ConfigSection.registry, Option.registry = tc._orig_registries
+
+
+INTERWIKI_MACRO_TEST_CASES = u"""
+==============================
+[[InterWiki]]
+------------------------------
+<p>
+</p><table class="wiki interwiki">\
+<tr><th><em>Prefix</em></th><th><em>Site</em></th></tr>\
+<tr><td><a href="http://wikicreole.org/wiki/RecentChanges">CreoleWiki</a></td>\
+<td><a href="http://wikicreole.org/wiki/">http://wikicreole.org/wiki/</a></td></tr>\
+<tr><td><a href="https://img.shields.io/RecentChanges">shields</a></td>\
+<td><a href="https://img.shields.io/">https://img.shields.io/</a></td></tr>\
+<tr><td><a href="http://stackoverflow.com/questions/RecentChanges">SO</a></td>\
+<td><a href="http://stackoverflow.com/questions/">Question $1 in StackOverflow</a></td></tr>\
+<tr><td><a href="https://travis-ci.org/RecentChanges?branch=">travis</a></td>\
+<td><a href="https://travis-ci.org/$1?branch=$2">Travis CI</a></td></tr>\
+</table><p>
+</p>
+------------------------------
+"""
+
+
+def interwiki_setup(tc):
+    tc.env.config.set('interwiki', 'shields', 'https://img.shields.io/')
+    tc.env.config.set('interwiki', 'travis',
+                      'https://travis-ci.org/$1?branch=$2 Travis CI')
+    page = WikiPage(tc.env)
+    page.name = 'InterMapTxt'
+    page.text = """
+The InterWikiTxt page
+----
+{{{
+SO  http://stackoverflow.com/questions/ # Question $1 in StackOverflow
+CreoleWiki   http://wikicreole.org/wiki/
+}}}
+"""
+    page.save('admin', 'created page')
+
+
+def interwiki_teardown(tc):
+    tc.env.reset_db()
 
 
 def test_suite():
@@ -941,6 +985,8 @@ def test_suite():
                                        file=__file__,
                                        setup=tracini_setup,
                                        teardown=tracini_teardown))
+    suite.addTest(formatter.test_suite(INTERWIKI_MACRO_TEST_CASES,
+                                       file=__file__, setup=interwiki_setup))
     return suite
 
 

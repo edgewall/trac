@@ -167,7 +167,7 @@ class InterWikiMap(Component):
 
     def expand_macro(self, formatter, name, content):
         interwikis = []
-        for k in sorted(self):
+        for k in sorted(self.keys()):
             prefix, url, title = self[k]
             interwikis.append({
                 'prefix': prefix, 'url': url, 'title': title,
