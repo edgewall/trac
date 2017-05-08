@@ -55,63 +55,89 @@ class TestStubRequestHandler(Component):
 
 class AuthenticateTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub(disable=['trac.web.auth.LoginModule'])
-        self.request_dispatcher = RequestDispatcher(self.env)
-        self.req = MockRequest(self.env)
-        self.env.clear_component_registry()
+    authenticators = {}
+    request_handlers = []
 
-    def tearDown(self):
-        self.env.restore_component_registry()
-
-    def test_authenticate_returns_first_successful(self):
-        class SuccessfulAuthenticator1(Component):
-            implements(IAuthenticator)
-            def authenticate(self, req):
-                return 'user1'
-        class SuccessfulAuthenticator2(Component):
-            implements(IAuthenticator)
-            def authenticate(self, req):
-                return 'user2'
-        self.assertEqual(2, len(self.request_dispatcher.authenticators))
-        self.assertIsInstance(self.request_dispatcher.authenticators[0],
-                              SuccessfulAuthenticator1)
-        self.assertIsInstance(self.request_dispatcher.authenticators[1],
-                              SuccessfulAuthenticator2)
-        self.assertEqual('user1',
-                         self.request_dispatcher.authenticate(self.req))
-
-    def test_authenticate_skips_unsuccessful(self):
+    @classmethod
+    def setUpClass(cls):
         class UnsuccessfulAuthenticator(Component):
             implements(IAuthenticator)
             def authenticate(self, req):
                 return None
-        class SuccessfulAuthenticator(Component):
-            implements(IAuthenticator)
-            def authenticate(self, req):
-                return 'user'
-        self.assertEqual(2, len(self.request_dispatcher.authenticators))
-        self.assertIsInstance(self.request_dispatcher.authenticators[0],
-                              UnsuccessfulAuthenticator)
-        self.assertIsInstance(self.request_dispatcher.authenticators[1],
-                              SuccessfulAuthenticator)
-        self.assertEqual('user',
-                         self.request_dispatcher.authenticate(self.req))
 
-    def test_authenticate_raises(self):
         class RaisingAuthenticator(Component):
             implements(IAuthenticator)
             def authenticate(self, req):
                 raise TracError("Bad attempt")
-        class SuccessfulAuthenticator(Component):
+
+        class SuccessfulAuthenticator1(Component):
             implements(IAuthenticator)
             def authenticate(self, req):
-                return 'user'
+                return 'user1'
+
+        class SuccessfulAuthenticator2(Component):
+            implements(IAuthenticator)
+            def authenticate(self, req):
+                return 'user2'
+
+        class AuthenticateRequestHandler(Component):
+            implements(IRequestHandler)
+            def __init__(self):
+                self.calls = 0
+            def match_request(self, req):
+                return bool(req.perm)
+            def process_request(self, req):
+                self.calls += 1
+                req.authname
+                req.send('')
+
+        cls.authenticators['success1'] = SuccessfulAuthenticator1
+        cls.authenticators['success2'] = SuccessfulAuthenticator2
+        cls.authenticators['unsuccess'] = UnsuccessfulAuthenticator
+        cls.authenticators['raising'] = RaisingAuthenticator
+        cls.request_handlers = [AuthenticateRequestHandler]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.authenticators.values() + cls.request_handlers:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=('trac.web.main.*',))
+        self.req = MockRequest(self.env)
+        self.request_dispatcher = RequestDispatcher(self.env)
+
+    def test_authenticate_returns_first_successful(self):
+        self.env.enable_component(self.authenticators['success1'])
+        self.env.enable_component(self.authenticators['success2'])
         self.assertEqual(2, len(self.request_dispatcher.authenticators))
         self.assertIsInstance(self.request_dispatcher.authenticators[0],
-                              RaisingAuthenticator)
+                              self.authenticators['success1'])
         self.assertIsInstance(self.request_dispatcher.authenticators[1],
-                              SuccessfulAuthenticator)
+                              self.authenticators['success2'])
+        self.assertEqual('user1',
+                         self.request_dispatcher.authenticate(self.req))
+
+    def test_authenticate_skips_unsuccessful(self):
+        self.env.enable_component(self.authenticators['unsuccess'])
+        self.env.enable_component(self.authenticators['success1'])
+        self.assertEqual(2, len(self.request_dispatcher.authenticators))
+        self.assertIsInstance(self.request_dispatcher.authenticators[0],
+                              self.authenticators['unsuccess'])
+        self.assertIsInstance(self.request_dispatcher.authenticators[1],
+                              self.authenticators['success1'])
+        self.assertEqual('user1',
+                         self.request_dispatcher.authenticate(self.req))
+
+    def test_authenticate_raises(self):
+        self.env.enable_component(self.authenticators['raising'])
+        self.env.enable_component(self.authenticators['success1'])
+        self.assertEqual(2, len(self.request_dispatcher.authenticators))
+        self.assertIsInstance(self.request_dispatcher.authenticators[0],
+                              self.authenticators['raising'])
+        self.assertIsInstance(self.request_dispatcher.authenticators[1],
+                              self.authenticators['success1'])
         self.assertEqual('anonymous',
                          self.request_dispatcher.authenticate(self.req))
         self.assertEqual(1, len(self.req.chrome['warnings']))
@@ -124,30 +150,18 @@ class AuthenticateTestCase(unittest.TestCase):
             self.fail("Expected log message not found: \"%s\"" % expected)
 
     def test_authenticate_once(self):
-        class Authenticator(Component):
-            implements(IAuthenticator)
-            def authenticate(self, req):
-                authenticated[0] += 1
-                return 'admin'
-        class AuthenticateRequestHandler(Component):
-            implements(IRequestHandler)
-            def match_request(self, req):
-                return bool(req.perm)
-            def process_request(self, req):
-                req.authname
-                req.send('')
-
+        self.env.enable_component(self.authenticators['success1'])
+        self.env.enable_component(self.request_handlers[0])
         self.env.config.set('trac', 'default_handler',
                             'AuthenticateRequestHandler')
-        authenticated = [0]
-        req = MockRequest(self.env)
-        self.request_dispatcher.set_default_callbacks(req)
+        self.request_dispatcher.set_default_callbacks(self.req)
+
+        with self.assertRaises(RequestDone):
+            self.request_dispatcher.dispatch(self.req)
 
         self.assertEqual(1, len(self.request_dispatcher.authenticators))
-        self.assertIsInstance(self.request_dispatcher.authenticators[0],
-                              Authenticator)
-        self.assertRaises(RequestDone, self.request_dispatcher.dispatch, req)
-        self.assertEqual(1, authenticated[0])
+        self.assertEqual(1, len(self.request_dispatcher.handlers))
+        self.assertEqual(1, self.request_dispatcher.handlers[0].calls)
 
 
 class DispatchRequestTestCase(unittest.TestCase):
