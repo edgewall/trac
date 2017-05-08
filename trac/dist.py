@@ -283,7 +283,6 @@ try:
         """
         if not fileobj.name:
             return []
-        filepath = fileobj.name.replace('\\', '/').rsplit('/', 1)
         out = io.StringIO()
         extractor = ScriptExtractor(out)
         extractor.feed(unicode(fileobj.read(), 'utf-8'))
