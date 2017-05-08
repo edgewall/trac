@@ -46,9 +46,9 @@ from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
                       lazy, read_file, safe_repr, translation, \
                       warn_setuptools_issue
-from trac.util.concurrency import get_thread_id, threading
+from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import format_datetime, localtz, timezone, user_time
-from trac.util.html import genshi, tag, valid_html_bytes
+from trac.util.html import tag, valid_html_bytes
 from trac.util.text import (exception_to_unicode, jinja2env, shorten_line,
                             to_unicode, to_utf8, unicode_quote)
 from trac.util.translation import _, get_negotiated_locale, has_babel, \
