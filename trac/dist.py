@@ -398,7 +398,7 @@ try:
                 if self.output_file:
                     js_files.append(self.output_file)
                 else:
-                    js_files.append(js_path(self.output_dir, locale))
+                    js_files.append(js_path(self.output_dir, self.locale))
 
             if not mo_files:
                 raise DistutilsOptionError('no compiled catalogs found')
