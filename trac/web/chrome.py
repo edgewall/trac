@@ -252,7 +252,7 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
     links = req.chrome['links']
     prev_link = next_link = None
 
-    if not any(lnk in links for lnk in ('prev', 'up', 'next')): # Short circuit
+    if not any(lnk in links for lnk in ('prev', 'up', 'next')):  # Short circuit
         return
 
     if 'prev' in links:
@@ -409,7 +409,7 @@ class Chrome(Component):
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
-    stream_filters = ExtensionPoint(ITemplateStreamFilter) # TODO (1.5.1): del
+    stream_filters = ExtensionPoint(ITemplateStreamFilter)  # TODO (1.5.1): del
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the //shared templates directory//.
@@ -1500,7 +1500,7 @@ class Chrome(Component):
         try:
             return self.generate_template_stream(template, data, text,
                                                  iterable)
-        except Exception as e:
+        except Exception:
             # restore what may be needed by the error template
             req.chrome.update({'early_links': None, 'early_scripts': None,
                                'early_script_data': None, 'links': links,
@@ -1528,7 +1528,6 @@ class Chrome(Component):
         template, data = self.prepare_template(req, filename, data, text,
                                                domain)
         return self.generate_template_stream(template, data, text)
-
 
     def render_fragment(self, req, filename, data, text=False, domain=None):
         """Produces a string from given template *filename* and input *data*,
