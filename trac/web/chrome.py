@@ -599,6 +599,7 @@ class Chrome(Component):
 
     templates = None
     jenv = None
+    jenv_text = None
 
     # A dictionary of default context data for templates
     _default_context_data = {
