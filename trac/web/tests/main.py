@@ -17,7 +17,7 @@ import unittest
 from subprocess import PIPE
 
 from trac.config import ConfigurationError
-from trac.core import Component, ComponentManager, TracError, implements
+from trac.core import Component, TracError, implements
 from trac.db.api import DatabaseManager
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
@@ -355,29 +355,62 @@ class PostProcessRequestTestCase(unittest.TestCase):
     """Test cases for handling of the optional `method` argument in
     RequestDispatcher._post_process_request."""
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.req = MockRequest(self.env)
-        self.request_dispatcher = RequestDispatcher(self.env)
-        self.compmgr = ComponentManager()
-        self.env.clear_component_registry()
+    request_filter = {}
 
-    def tearDown(self):
-        self.env.restore_component_registry()
+    @classmethod
+    def setUpClass(cls):
+        class RequestFilter4Arg(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data, metadata):
+                return template, data, metadata
+
+        class RequestFilter5Arg(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data, metadata,
+                                     method=None):
+                return template, data, metadata, method
+
+        class RequestFilter5ArgXml(Component):
+            implements(IRequestFilter)
+            def pre_process_request(self, handler):
+                return handler
+            def post_process_request(self, req, template, data,
+                                     metadata, method=None):
+                return template, data, metadata, 'xml'
+
+        cls.request_filter['4Arg'] = RequestFilter4Arg
+        cls.request_filter['5Arg'] = RequestFilter5Arg
+        cls.request_filter['5ArgXml'] = RequestFilter5ArgXml
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.request_filter.values():
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=('trac.web.main.*',))
+        self.req = MockRequest(self.env)
 
     def test_no_request_filters_request_handler_returns_method_false(self):
         """IRequestHandler doesn't return `method` and no IRequestFilters
         are registered. The `method` is set to `None`.
         """
         args = ('template.html', {}, 'text/html')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(0, len(self.request_dispatcher.filters))
+        request_dispatcher = RequestDispatcher(self.env)
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args + (None,), resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'})
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(0, len(self.request_dispatcher.filters))
+        request_dispatcher = RequestDispatcher(self.env)
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args + (None,), resp)
 
@@ -386,14 +419,15 @@ class PostProcessRequestTestCase(unittest.TestCase):
         are registered. The `method` is forwarded.
         """
         args = ('template.html', {}, 'text/html', 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(0, len(self.request_dispatcher.filters))
+        request_dispatcher = RequestDispatcher(self.env)
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(0, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(0, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
 
@@ -401,21 +435,17 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """IRequestHandler doesn't return `method` and IRequestFilter doesn't
         accept `method` as an argument. The `method` is set to `None`.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data, metadata):
-                return template, data, metadata
+        self.env.enable_component(self.request_filter['4Arg'])
+        request_dispatcher = RequestDispatcher(self.env)
         args = ('template.html', {}, 'text/html')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args + (None,), resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'})
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args + (None,), resp)
 
@@ -424,21 +454,17 @@ class PostProcessRequestTestCase(unittest.TestCase):
         the argument. The `method` argument is forwarded over IRequestFilter
         implementations that don't accept the argument.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data, metadata):
-                return template, data, metadata
+        self.env.enable_component(self.request_filter['4Arg'])
+        request_dispatcher = RequestDispatcher(self.env)
         args = ('template.html', {}, 'text/html', 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
 
@@ -446,16 +472,11 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """IRequestHandler doesn't return `method` and IRequestFilter accepts
         `method` as an argument. The `method` is set to `None`.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data,
-                                     metadata, method=None):
-                return template, data, metadata, method
+        self.env.enable_component(self.request_filter['5Arg'])
+        request_dispatcher = RequestDispatcher(self.env)
         args = ('template.html', {}, 'text/html')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + (None,), resp)
 
@@ -464,66 +485,51 @@ class PostProcessRequestTestCase(unittest.TestCase):
         the argument. The `method` argument is passed through IRequestFilter
         implementations.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data,
-                                     metadata, method=None):
-                return template, data, metadata, method
+        self.env.enable_component(self.request_filter['5Arg'])
+        request_dispatcher = RequestDispatcher(self.env)
         args = ('template.html', {}, 'text/html', 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args, resp)
 
     def test_5arg_post_process_request_request_handler_adds_method(self):
         """IRequestFilter adds `method` not returned by IRequestHandler.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data,
-                                     metadata, method=None):
-                return template, data, metadata, 'xml'
+        self.env.enable_component(self.request_filter['5ArgXml'])
         args = ('template.html', {}, 'text/html')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        request_dispatcher = RequestDispatcher(self.env)
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + ('xml',), resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'})
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + ('xml',), resp)
 
     def test_5arg_post_process_request_request_handler_modifies_method(self):
         """IRequestFilter modifies `method` returned by IRequestHandler.
         """
-        class RequestFilter(Component):
-            implements(IRequestFilter)
-            def pre_process_request(self, handler):
-                return handler
-            def post_process_request(self, req, template, data,
-                                     metadata, method=None):
-                return template, data, metadata, 'xml'
+        self.env.enable_component(self.request_filter['5ArgXml'])
         args = ('template.html', {}, 'text/html', 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        request_dispatcher = RequestDispatcher(self.env)
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + ('xml',), resp)
         # TODO (1.5.1) remove old API (genshi style)
         args = ('template.html', {}, {'content_type': 'text/html'}, 'xhtml')
-        resp = self.request_dispatcher._post_process_request(self.req, *args)
-        self.assertEqual(1, len(self.request_dispatcher.filters))
+        resp = request_dispatcher._post_process_request(self.req, *args)
+        self.assertEqual(1, len(request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + ('xml',), resp)
 
