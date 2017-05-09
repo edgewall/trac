@@ -982,9 +982,10 @@ class IntegrationTestCase(BaseTestCase):
 class ConfigurationSetDefaultsTestCase(BaseTestCase):
     """Tests for the `set_defaults` method of the `Configuration` class."""
 
-    def setUp(self):
-        super(ConfigurationSetDefaultsTestCase, self).setUp()
+    components = []
 
+    @classmethod
+    def setUpClass(cls):
         class CompA(Component):
             opt1 = Option('compa', 'opt1', 1)
             opt2 = Option('compa', 'opt2', 'a')
@@ -992,6 +993,13 @@ class ConfigurationSetDefaultsTestCase(BaseTestCase):
         class CompB(Component):
             opt3 = Option('compb', 'opt3', 2)
             opt4 = Option('compb', 'opt4', 'b')
+
+        cls.components = [CompA, CompB]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.components:
+            ComponentMeta.deregister(component)
 
     def test_component_module_no_match(self):
         """No defaults written if component doesn't match."""
