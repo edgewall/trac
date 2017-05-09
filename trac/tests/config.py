@@ -595,7 +595,7 @@ class IntegrationTestCase(BaseTestCase):
         config.set('b', u'öption0', 'y')
         config.set(u'aä', 'öption0', 'x')
         config.set('aä', 'option2', "Voilà l'été")  # UTF-8
-        config.set(u'aä', 'option1', u"Voilà l'été") # unicode
+        config.set(u'aä', 'option1', u"Voilà l'été")  # unicode
         section = config['b']
         section.set('option1', None)
         section = config[u'aä']
@@ -636,7 +636,7 @@ class IntegrationTestCase(BaseTestCase):
             self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             config.set('a', 'option2', "Voilà l'été")  # UTF-8
-            config.set('a', 'option1', u"Voilà l'été") # unicode
+            config.set('a', 'option1', u"Voilà l'été")  # unicode
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual(u"Voilà l'été", config.get('a', 'option1'))
             self.assertEqual(u"Voilà l'été", config.get('a', 'option2'))
@@ -698,14 +698,14 @@ class IntegrationTestCase(BaseTestCase):
     def test_simple_remove(self):
         self._write(['[a]', 'option = x'])
         config = self._read()
-        config.get('a', 'option') # populates the cache
+        config.get('a', 'option')  # populates the cache
         config.set(u'aä', u'öption', u'öne')
         config.remove('a', 'option')
         self.assertEqual('', config.get('a', 'option'))
         config.remove(u'aä', u'öption')
         self.assertEqual('', config.get('aä', 'öption'))
-        config.remove('a', 'option2') # shouldn't fail
-        config.remove('b', 'option2') # shouldn't fail
+        config.remove('a', 'option2')  # shouldn't fail
+        config.remove('b', 'option2')  # shouldn't fail
 
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
@@ -816,7 +816,7 @@ class IntegrationTestCase(BaseTestCase):
             config = self._read()
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual(['a', 'inherit'], config.sections())
-            config.remove('a', 'option') # Should *not* remove option in parent
+            config.remove('a', 'option')  # Should *not* remove option in parent
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
             self.assertIn('a', config)
