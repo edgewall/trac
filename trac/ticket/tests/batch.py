@@ -660,11 +660,10 @@ class BatchModifyTestCase(unittest.TestCase):
             module.process_request(req2)
 
         self.assertEqual(1, len(req2.chrome['warnings']))
-        self.assertEqual('The ticket field <strong>Time1</strong> is '
-                         'invalid: "invalid" is an invalid date, or the date '
-                         'format is not known. Try "MMM d, y" or '
-                         '"YYYY-MM-DD" instead.',
-                         unicode(req2.chrome['warnings'][0]))
+        self.assertRegexpMatches(unicode(req2.chrome['warnings'][0]),
+            'The ticket field <strong>Time1</strong> is invalid: "invalid" '
+            'is an invalid date, or the date format is not known. '
+            'Try "[^"]+" or "[^"]+" instead.')
         self.assertEqual(dt, model.Ticket(self.env, 1)['time1'])
         self.assertEqual(dt, model.Ticket(self.env, 2)['time1'])
 
