@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-04-16 22:36-0700\n"
+"POT-Creation-Date: 2017-05-10 02:07-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -227,18 +227,18 @@ msgid ""
 "are not yet supported."
 msgstr ""
 
-#: trac/attachment.py:132
+#: trac/attachment.py:133
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr ""
 
-#: trac/attachment.py:135
+#: trac/attachment.py:136
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/attachment.py:140
+#: trac/attachment.py:141
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -659,38 +659,38 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:269
+#: trac/notification/mail.py:275
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
 "resolvers will not be called."
 msgstr ""
 
-#: trac/notification/mail.py:278
+#: trac/notification/mail.py:284
 msgid "Default format to distribute email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:452
+#: trac/notification/mail.py:476
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:455
+#: trac/notification/mail.py:479
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:458
+#: trac/notification/mail.py:482
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:461
+#: trac/notification/mail.py:485
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:464
+#: trac/notification/mail.py:488
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:520
+#: trac/notification/mail.py:544
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
