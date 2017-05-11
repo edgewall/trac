@@ -151,6 +151,7 @@ if twill:
             self._testenv.start()
             self._tester = self.tester_class(baseurl)
             self.fixture = (self._testenv, self._tester)
+            self._testenv.set_config('project', 'name', 'Functional Tests')
 
         def tearDown(self):
             self._testenv.stop()
