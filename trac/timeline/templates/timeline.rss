@@ -37,9 +37,9 @@
       # with author = event.author
       #   include 'author_or_creator.rss'
       # endwith
-      <pubDate>${http_date(event.date)}</pubDate>
+      <pubDate>${http_date(event.datetime)}</pubDate>
       <link>${abs_url}</link>
-      <guid isPermaLink="false">${abs_url}/${event.dateuid}</guid>
+      <guid isPermaLink="false">${abs_url}/${event.datetime_uid}</guid>
       <description>${
       event.render('description', context)|forceescape
       }</description>

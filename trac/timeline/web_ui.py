@@ -375,7 +375,8 @@ class TimelineModule(Component):
         localized_date = truncate_datetime(localized_datetime)
         datetime_uid = to_utimestamp(localized_datetime)
         return {'kind': kind, 'author': author, 'date': localized_date,
-                'datetime': localized_datetime, 'render': render,
+                'datetime': localized_datetime, 'datetime_uid': datetime_uid,
+                'render': render,
                 'unread': lastvisit and lastvisit < datetime_uid,
                 'event': event, 'data': data, 'provider': provider}
 

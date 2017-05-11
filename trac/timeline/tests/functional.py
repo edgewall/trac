@@ -17,6 +17,8 @@ import unittest
 from trac.tests.contentgen import random_page, random_sentence, \
                                   random_unique_camel
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
+from trac.util.datefmt import http_date
+from trac.wiki import WikiPage
 
 
 class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
@@ -44,11 +46,46 @@ class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
         tc.find(pagename + '.*diff</a>\\)')
 
 
+class TestRssFormat(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test timeline in RSS format."""
+        pagename = random_unique_camel()
+        self._tester.create_wiki_page(pagename)
+        page = WikiPage(self._testenv.get_trac_environment(), pagename)
+        self._tester.go_to_timeline()
+        tc.follow("RSS Feed")
+        tc.find(r"""<\?xml version="1.0"\?>[\n]+
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Functional Tests</title>
+    <link>http://127.0.0.1:\d+/timeline</link>
+    <description>Trac Timeline</description>
+    <language>en-US</language>
+    <generator>Trac [^<]+</generator>
+    <image>
+      <title>Functional Tests</title>
+      <url>http://127.0.0.1:\d+/chrome/site/your_project_logo.png</url>
+      <link>http://127.0.0.1:\d+/timeline</link>
+    </image>
+    <item>
+      <title>%(pagename)s created</title>
+
+      <dc:creator>admin</dc:creator>
+      <pubDate>%(http_date)s</pubDate>
+      <link>http://127.0.0.1:\d+/wiki/%(pagename)s\?version=1</link>
+      <guid isPermaLink="false">http://127.0.0.1:\d+/wiki/%(pagename)s\?version=1/\d+</guid>
+      <description>[^<]+</description>
+      <category>wiki</category>
+    </item>
+""" % {'pagename': pagename, 'http_date': http_date(page.time)}, 'ms')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(RegressionTestRev5883())
+    suite.addTest(TestRssFormat())
     return suite
 
 
