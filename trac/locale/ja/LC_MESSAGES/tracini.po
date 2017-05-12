@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-03-26 07:26+0000\n"
+"POT-Creation-Date: 2017-05-11 20:18-0700\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -307,11 +307,11 @@ msgstr ""
 "最後に、[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
 "Subversion 1.5] から導入された相対 URL はまだサポートしていません。"
 
-#: trac/attachment.py:132
+#: trac/attachment.py:133
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr "添付ファイルの上限サイズを指定します (バイト単位)"
 
-#: trac/attachment.py:135
+#: trac/attachment.py:136
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
@@ -320,7 +320,7 @@ msgstr ""
 "`.zip` ダウンロードを許可する合計に対する上限サイズ (バイト単位) です。-1 を指定した場合は `.zip` "
 "でのダウンロード機能を無効にします。(''1.0 以降'')"
 
-#: trac/attachment.py:140
+#: trac/attachment.py:141
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -888,7 +888,7 @@ msgstr ""
 "有効な受信処理:\n"
 "[[SubscriberList]]"
 
-#: trac/notification/mail.py:271
+#: trac/notification/mail.py:275
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
@@ -897,31 +897,31 @@ msgstr ""
 "!IEmailAddressResolver "
 "コンポーネントを呼び出し順にカンマ区切りで指定します。メールアドレスが解決すると、それ以降のコンポーネントは呼び出されません。"
 
-#: trac/notification/mail.py:280
+#: trac/notification/mail.py:284
 msgid "Default format to distribute email notifications."
 msgstr "メール通知を配信する際に使用するデフォルトのフォーマットを指定します。"
 
-#: trac/notification/mail.py:454
+#: trac/notification/mail.py:476
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification/mail.py:457
+#: trac/notification/mail.py:479
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification/mail.py:460
+#: trac/notification/mail.py:482
 msgid "Username for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのユーザ名を指定します。"
 
-#: trac/notification/mail.py:463
+#: trac/notification/mail.py:485
 msgid "Password for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのパスワードを指定します。"
 
-#: trac/notification/mail.py:466
+#: trac/notification/mail.py:488
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。"
 
-#: trac/notification/mail.py:522
+#: trac/notification/mail.py:544
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
