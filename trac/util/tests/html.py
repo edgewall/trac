@@ -155,6 +155,25 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
                     u'XSS</div>')
         self.assertEqual('<div>XSS</div>', unicode(html | TracHTMLSanitizer()))
 
+    def test_cross_origin(self):
+        def test(expected, content):
+            html = HTML(content)
+            sanitizer = TracHTMLSanitizer(safe_schemes=['http', 'data'])
+            self.assertEqual(expected, unicode(html | sanitizer))
+
+        test(u'<div>x</div>',
+             u'<div style="background:url(http://example.org/login)">x</div>')
+        test(u'<div style="background:url(data:image/png,...)">x</div>',
+             u'<div style="background:url(data:image/png,...)">x</div>')
+        test(u'<div>x</div>',
+             u'<div style="background:url(//example.net/foo.png)">x</div>')
+        test(u'<div style="background:url(/path/to/foo.png)">safe</div>',
+             u'<div style="background:url(/path/to/foo.png)">safe</div>')
+        test(u'<div style="background:url(../../bar.png)">safe</div>',
+             u'<div style="background:url(../../bar.png)">safe</div>')
+        test(u'<div style="background:url(qux.png)">safe</div>',
+             u'<div style="background:url(qux.png)">safe</div>')
+
 
 class FindElementTestCase(unittest.TestCase):
     def test_find_element_with_tag(self):

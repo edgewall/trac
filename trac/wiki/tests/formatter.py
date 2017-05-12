@@ -175,7 +175,7 @@ class WikiTestCase(unittest.TestCase):
         env.config.set('intertrac', 'th.compat', 'false')
         # -- safe schemes
         env.config.set('wiki', 'safe_schemes',
-                       'file,ftp,http,https,svn,svn+ssh,'
+                       'data,file,ftp,http,https,svn,svn+ssh,'
                        'rfc-2396.compatible,rfc-2396+under_score')
         return env
 

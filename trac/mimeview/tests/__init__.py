@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.mimeview.tests import api, patch, pygments, rst
+from trac.mimeview.tests import api, patch, pygments, rst, txtl
 
 import unittest
 
@@ -21,6 +21,7 @@ def suite():
     suite.addTest(patch.suite())
     suite.addTest(pygments.suite())
     suite.addTest(rst.suite())
+    suite.addTest(txtl.suite())
     return suite
 
 if __name__ == '__main__':

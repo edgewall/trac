@@ -96,7 +96,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
+<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" crossorigin="anonymous" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
@@ -126,13 +126,13 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(http://www.edgewall.com/gfx/shredder_« test ».png, nolink)]]
 ------------------------------
 <p>
-<img src="http://www.edgewall.com/gfx/shredder_« test ».png" alt="http://www.edgewall.com/gfx/shredder_« test ».png" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
+<img src="http://www.edgewall.com/gfx/shredder_« test ».png" alt="http://www.edgewall.com/gfx/shredder_« test ».png" crossorigin="anonymous" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
 </p>
 ============================== http: Image, absolute, many ':'
 [[Image(http://chart.apis.google.com:80/chart?cht=p3&chd=s:hW&chs=250x100&chl=Héllo|Wôrld, title=Google & Charting, link=)]]
 ------------------------------
 <p>
-<img src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" alt="http://chart.apis.google.com:80/chart" title="Google &amp; Charting" />
+<img src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" alt="http://chart.apis.google.com:80/chart" crossorigin="anonymous" title="Google &amp; Charting" />
 </p>
 ============================== // Image, server-relative
 [[Image(//browser/« test »?format=raw, link=)]]
@@ -186,13 +186,13 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(notfound.png, nolink)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;notfound.png&#34; attached to WikiStart" title="No image &#34;notfound.png&#34; attached to WikiStart" />
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;notfound.png&#34; attached to WikiStart" crossorigin="anonymous" title="No image &#34;notfound.png&#34; attached to WikiStart" />
 </p>
 ==============================
 [[Image(img.png, margin-bottom=-1)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img.png&#34; attached to WikiStart" title="No image &#34;img.png&#34; attached to WikiStart" style="margin-bottom: 1px" crossorigin="anonymous" />
 </p>
 ==============================
 [[Image(img.png, margin-bottom=--)]]
@@ -244,7 +244,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(wiki:page:img2.png)]]
 ------------------------------
 <p>
-<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img2.png&#34; attached to page" title="No image &#34;img2.png&#34; attached to page" />
+<img src="http://assets.example.org/common/attachment.png" alt="No image &#34;img2.png&#34; attached to page" crossorigin="anonymous" title="No image &#34;img2.png&#34; attached to page" />
 </p>
 """
 

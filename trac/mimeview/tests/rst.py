@@ -70,6 +70,34 @@ class ReStructuredTextRendererTestCase(unittest.TestCase):
         self.assertIn(' href="/path/to/index.html"', result)
         self.assertIn(' href="https://example.org/"', result)
 
+    def test_cross_origin_images(self):
+        def test (directive):
+            result = self._render("""
+.. %(directive)s:: https://example.org/foo.png
+   :alt:
+.. %(directive)s:: //example.net/foo.png
+   :alt:
+.. %(directive)s:: /path/to/foo.png
+   :alt:
+.. %(directive)s:: ./foo.png
+   :alt:
+.. %(directive)s:: foo.png
+   :alt:
+.. %(directive)s:: data:image/png,foo
+   :alt:
+""" % {'directive': directive})
+            self.assertIn('<img crossorigin="anonymous" alt="" '
+                          'src="https://example.org/foo.png" />', result)
+            self.assertIn('<img crossorigin="anonymous" alt="" '
+                          'src="//example.net/foo.png" />', result)
+            self.assertIn('<img alt="" src="/path/to/foo.png" />', result)
+            self.assertIn('<img alt="" src="./foo.png" />', result)
+            self.assertIn('<img alt="" src="foo.png" />', result)
+            self.assertIn('<img alt="" src="data:image/png,foo" />', result)
+
+        test('image')
+        test('figure')
+
 
 def suite():
     suite = unittest.TestSuite()
