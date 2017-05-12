@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-05-11 21:23-0700\n"
+"POT-Creation-Date: 2017-05-11 21:25-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2774,8 +2774,7 @@ msgstr ""
 
 #: trac/templates/genshi/attachment.html:108
 #: trac/templates/genshi/list_of_attachments.html:31
-#: trac/templates/list_of_attachments.html:30 trac/util/tests/html.py:310
-#: trac/util/tests/html.py:323 trac/util/text.py:720
+#: trac/templates/list_of_attachments.html:30 trac/util/text.py:720
 #: trac/versioncontrol/templates/browser.html:274
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
@@ -7812,3 +7811,4 @@ msgstr ""
 #: trac/wiki/templates/wiki_view.html:229
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
+
