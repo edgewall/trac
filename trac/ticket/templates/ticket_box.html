@@ -90,11 +90,16 @@ Arguments:
           <py:if test="field">
             <py:choose py:with="value = ticket[field.name]">
               <py:when test="'rendered' in field">${field.rendered}</py:when>
+              <py:when test="not value"></py:when>
               <py:when test="field.type == 'text' and field.format == 'wiki'">
-                ${wiki_to_oneliner(context, value) if value else None}
+                ${wiki_to_oneliner(context, value)}
               </py:when>
               <py:when test="field.type == 'textarea' and field.format == 'wiki'">
-                ${wiki_to_html(context, value, escape_newlines=preserve_newlines) if value else None}
+                ${wiki_to_html(context, value, escape_newlines=preserve_newlines)}
+              </py:when>
+              <py:when test="field.type == 'textarea'"
+                       py:for="idx, line in enumerate(value.splitlines())">
+                <br py:if="idx" />${line}
               </py:when>
               <py:otherwise>${value}</py:otherwise>
             </py:choose>

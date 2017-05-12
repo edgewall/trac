@@ -106,10 +106,18 @@ Arguments:
                       <p class="meta"><em>(this ticket)</em></p>
                     </td>
                   </tr>
-                  <tr py:otherwise="" py:for="r in result_rows" class="fullrow">
-                    <th class="meta">${fields.get(r, {'label': r or 'none'}).label}</th>
-                    <td colspan="${num_cols - 1}" xml:space="preserve">
-                      ${wiki_to_html(ticket_context, result[r])}
+                  <tr py:otherwise="" py:for="r in result_rows" class="fullrow"
+                      py:with="colspan = num_cols - 1; field = fields.get(r); value = result[r]"
+                      py:choose="">
+                    <th class="meta">${field.label if field else (r or 'none')}</th>
+                    <td py:when="not value" colspan="${colspan}"></td>
+                    <td py:when="field.format == 'wiki'" colspan="${colspan}" xml:space="preserve">
+                      ${wiki_to_html(ticket_context, value)}
+                    </td>
+                    <td py:otherwise="" colspan="${colspan}">
+                      <py:for each="idx, line in enumerate(value.splitlines())">
+                        <br py:if="idx" />${line}
+                      </py:for>
                     </td>
                   </tr>
                 </py:choose>
