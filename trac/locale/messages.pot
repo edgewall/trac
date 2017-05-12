@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-05-10 02:07-0700\n"
+"POT-Creation-Date: 2017-05-11 20:18-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2326,8 +2326,7 @@ msgid "Delete attachment"
 msgstr ""
 
 #: trac/templates/attachment.html:110
-#: trac/templates/list_of_attachments.html:31 trac/util/tests/html.py:243
-#: trac/util/tests/html.py:256 trac/util/text.py:672
+#: trac/templates/list_of_attachments.html:31 trac/util/text.py:672
 #: trac/versioncontrol/templates/browser.html:200
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format

@@ -473,11 +473,10 @@ class IntegrationTestCase(BaseTestCase):
         config = self._read()
 
         class Foo(object):
-            # enclose in parentheses to avoid messages extraction
-            option = (ChoiceOption)('a', 'option', ['Item1', 2, '3'])
-            other = (ChoiceOption)('a', 'other', [1, 2, 3])
-            invalid = (ChoiceOption)('a', 'invalid', ['a', 'b', 'c'])
-            encoded = (ChoiceOption)('a', u'èncoded', [u'à', u'ć', u'ē'])
+            option = ChoiceOption('a', 'option', ['Item1', 2, '3'])
+            other = ChoiceOption('a', 'other', [1, 2, 3])
+            invalid = ChoiceOption('a', 'invalid', ['a', 'b', 'c'])
+            encoded = ChoiceOption('a', u'èncoded', [u'à', u'ć', u'ē'])
 
             def __init__(self):
                 self.config = config
@@ -501,12 +500,12 @@ class IntegrationTestCase(BaseTestCase):
             implements(IDummy)
 
         class Foo(Component):
-            default1 = (ExtensionOption)('a', 'default1', IDummy)
-            default2 = (ExtensionOption)('a', 'default2', IDummy, 'ImplA')
-            default3 = (ExtensionOption)('a', 'default3', IDummy, 'ImplB')
-            option = (ExtensionOption)('a', 'option', IDummy)
-            option2 = (ExtensionOption)('a', 'option', IDummy, 'ImplB')
-            invalid = (ExtensionOption)('a', 'invalid', IDummy)
+            default1 = ExtensionOption('a', 'default1', IDummy)
+            default2 = ExtensionOption('a', 'default2', IDummy, 'ImplA')
+            default3 = ExtensionOption('a', 'default3', IDummy, 'ImplB')
+            option = ExtensionOption('a', 'option', IDummy)
+            option2 = ExtensionOption('a', 'option', IDummy, 'ImplB')
+            invalid = ExtensionOption('a', 'invalid', IDummy)
 
             def __init__(self):
                 self.config = config
@@ -540,16 +539,15 @@ class IntegrationTestCase(BaseTestCase):
             implements(IDummy)
 
         class Foo(Component):
-            # enclose in parentheses to avoid messages extraction
-            default1 = (OrderedExtensionsOption)('a', 'default1', IDummy,
-                                                 include_missing=False)
-            default2 = (OrderedExtensionsOption)('a', 'default2', IDummy)
-            default3 = (OrderedExtensionsOption)('a', 'default3', IDummy,
-                                                 'ImplB, ImplC',
-                                                 include_missing=False)
-            option = (OrderedExtensionsOption)('a', 'option', IDummy,
+            default1 = OrderedExtensionsOption('a', 'default1', IDummy,
                                                include_missing=False)
-            invalid = (OrderedExtensionsOption)('a', 'invalid', IDummy)
+            default2 = OrderedExtensionsOption('a', 'default2', IDummy)
+            default3 = OrderedExtensionsOption('a', 'default3', IDummy,
+                                               'ImplB, ImplC',
+                                               include_missing=False)
+            option = OrderedExtensionsOption('a', 'option', IDummy,
+                                             include_missing=False)
+            invalid = OrderedExtensionsOption('a', 'invalid', IDummy)
 
             def __init__(self):
                 self.config = config
@@ -717,8 +715,7 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual(['a', 'b'], config.sections())
 
         class Foo(object):
-            # enclose in parentheses to avoid messages extraction
-            section_c = (ConfigSection)('c', 'Doc for c')
+            section_c = ConfigSection('c', 'Doc for c')
             option_c = Option('c', 'option', 'value')
 
         self.assertEqual(['a', 'b', 'c'], config.sections())
@@ -864,19 +861,18 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_option_with_raw_default(self):
         class Foo(object):
-            # enclose in parentheses to avoid messages extraction
-            option_none = (Option)('a', 'none', None)
-            option_blah = (Option)('a', 'blah', u'Blàh!')
-            option_true = (BoolOption)('a', 'true', True)
-            option_false = (BoolOption)('a', 'false', False)
-            option_list = (ListOption)('a', 'list', ['#cc0', 4.2, 42L, 0, None,
-                                                     True, False, None],
-                                       sep='|', keep_empty=True)
-            option_list = (ListOption)('a', 'list-seps',
-                                       ['#cc0', 4.2, 42L, 0, None, True, False,
-                                        None],
-                                       sep=(',', '|'), keep_empty=True)
-            option_choice = (ChoiceOption)('a', 'choice', [-42, 42])
+            option_none = Option('a', 'none', None)
+            option_blah = Option('a', 'blah', u'Blàh!')
+            option_true = BoolOption('a', 'true', True)
+            option_false = BoolOption('a', 'false', False)
+            option_list1 = ListOption('a', 'list', ['#cc0', 4.2, 42L, 0, None,
+                                                    True, False, None],
+                                      sep='|', keep_empty=True)
+            option_list2 = ListOption('a', 'list-seps',
+                                      ['#cc0', 4.2, 42L, 0, None, True, False,
+                                       None],
+                                      sep=(',', '|'), keep_empty=True)
+            option_choice = ChoiceOption('a', 'choice', [-42, 42])
 
         config = self._read()
         config.set_defaults()
@@ -899,16 +895,15 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_unicode_option_with_raw_default(self):
         class Foo(object):
-            # enclose in parentheses to avoid messages extraction
-            option_none = (Option)(u'résumé', u'nöné', None)
-            option_blah = (Option)(u'résumé', u'bláh', u'Blàh!')
-            option_true = (BoolOption)(u'résumé', u'trüé', True)
-            option_false = (BoolOption)(u'résumé', u'fálsé', False)
-            option_list = (ListOption)(u'résumé', u'liśt',
-                                       [u'#ccö', 4.2, 42L, 0, None, True,
+            option_none = Option(u'résumé', u'nöné', None)
+            option_blah = Option(u'résumé', u'bláh', u'Blàh!')
+            option_true = BoolOption(u'résumé', u'trüé', True)
+            option_false = BoolOption(u'résumé', u'fálsé', False)
+            option_list = ListOption(u'résumé', u'liśt',
+                                     [u'#ccö', 4.2, 42L, 0, None, True,
                                         False, None],
-                                       sep='|', keep_empty=True)
-            option_choice = (ChoiceOption)(u'résumé', u'chöicé', [-42, 42])
+                                     sep='|', keep_empty=True)
+            option_choice = ChoiceOption(u'résumé', u'chöicé', [-42, 42])
 
         config = self._read()
         config.set_defaults()
@@ -929,13 +924,12 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_option_with_non_normal_default(self):
         class Foo(object):
-            # enclose in parentheses to avoid messages extraction
-            option_int_0 = (IntOption)('a', 'int-0', 0)
-            option_float_0 = (FloatOption)('a', 'float-0', 0)
-            option_bool_1 = (BoolOption)('a', 'bool-1', '1')
-            option_bool_0 = (BoolOption)('a', 'bool-0', '0')
-            option_bool_yes = (BoolOption)('a', 'bool-yes', 'yes')
-            option_bool_no = (BoolOption)('a', 'bool-no', 'no')
+            option_int_0 = IntOption('a', 'int-0', 0)
+            option_float_0 = FloatOption('a', 'float-0', 0)
+            option_bool_1 = BoolOption('a', 'bool-1', '1')
+            option_bool_0 = BoolOption('a', 'bool-0', '0')
+            option_bool_yes = BoolOption('a', 'bool-yes', 'yes')
+            option_bool_no = BoolOption('a', 'bool-no', 'no')
 
         expected = [
             '# -*- coding: utf-8 -*-\n',
@@ -1128,11 +1122,11 @@ class OptionDocTestCase(BaseTestCase):
 
     def test_config_section(self):
         class Dummy(object):
-            section_a = (ConfigSection)('a', 'Doc for a')
-            section_b = (ConfigSection)(
+            section_a = ConfigSection('a', 'Doc for a')
+            section_b = ConfigSection(
                 'b', 'Doc for [%(page)s@%(version)d b]',
                 doc_args={'page': 'WikiStart', 'version': 42})
-            section_c = (ConfigSection)('c', '')
+            section_c = ConfigSection('c', '')
 
         self.assertEqual('Doc for a', Dummy.section_a.__doc__)
         self.assertEqual(None, Dummy.section_a.doc_args)
@@ -1151,29 +1145,29 @@ class OptionDocTestCase(BaseTestCase):
             pass
         class Dummy(Component):
             implements(IDummy)
-            opt_nodoc = (Option)('a', 'option_nodoc', 'default')
-            opt = (Option)(
+            opt_nodoc = Option('a', 'option_nodoc', 'default')
+            opt = Option(
                 'a', 'option', 'default',
                 doc='Doc for %(name)s', doc_args={'name': 'opt'})
-            bool_opt = (BoolOption)(
+            bool_opt = BoolOption(
                 'a', 'bool_opt', 'false',
                 doc='Doc for %(name)s', doc_args={'name': 'bool_opt'})
-            int_opt = (IntOption)(
+            int_opt = IntOption(
                 'a', 'int_opt', '42',
                 doc='Doc for %(name)s', doc_args={'name': 'int_opt'})
-            float_opt = (IntOption)(
+            float_opt = IntOption(
                 'a', 'float_opt', '4.2',
                 doc='Doc for %(name)s', doc_args={'name': 'float_opt'})
-            list_opt = (ListOption)(
+            list_opt = ListOption(
                 'a', 'list_opt', 'foo,bar,baz',
                 doc='Doc for %(name)s', doc_args={'name': 'list_opt'})
-            path_opt = (PathOption)(
+            path_opt = PathOption(
                 'a', 'path_opt', 'trac.ini',
                 doc='Doc for %(name)s', doc_args={'name': 'path_opt'})
-            ext_opt = (ExtensionOption)(
+            ext_opt = ExtensionOption(
                 'a', 'ext_opt', IDummy, 'Dummy',
                 doc='Doc for %(name)s', doc_args={'name': 'ext_opt'})
-            ordered_ext_opt = (OrderedExtensionsOption)(
+            ordered_ext_opt = OrderedExtensionsOption(
                 'a', 'ordered_ext_opt', IDummy, 'Dummy,Dummy',
                 doc='Doc for %(name)s', doc_args={'name': 'ordered_ext_opt'})
 
