@@ -324,11 +324,11 @@ class BasicAuthentication(PasswordFileAuthentication):
         self.hash = {}
         with open(filename) as fd:
             for line in fd:
-                line = line.strip()
+                line = line.split('#')[0].strip()
                 if not line:
                     continue
                 try:
-                    u, h = line.split(':')
+                    u, h = line.split(':')[:2]
                 except ValueError:
                     print("Warning: invalid password line in %s: %s"
                           % (filename, line), file=sys.stderr)
