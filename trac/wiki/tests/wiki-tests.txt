@@ -825,6 +825,42 @@ Paragraph
 <a>Unsafe link</a>
 ------------------------------
  […]
+============================== HTML wiki processor, cross-origin resources 1
+{{{
+#!html
+<img src="http://example.org/foo.png" />
+<img src="//example.org/foo.png" />
+<img src="/path/to/foo.png" />
+<img src="./foo.png" />
+<img src="foo.png" />
+<img src="data:image/png,foo" />
+}}}
+------------------------------
+<img src="http://example.org/foo.png" crossorigin="anonymous"/>
+<img src="//example.org/foo.png" crossorigin="anonymous"/>
+<img src="/path/to/foo.png"/>
+<img src="./foo.png"/>
+<img src="foo.png"/>
+<img src="data:image/png,foo"/>
+------------------------------
+============================== HTML wiki processor, cross-origin resources 2
+{{{
+#!html
+<span style="background-image:url(http://example.org/foo.png)">text</span>
+<span style="background-image:url(//example.org/foo.png)">text</span>
+<span style="background-image:url(/path/to/foo.png)">text</span>
+<span style="background-image:url(./foo.png)">text</span>
+<span style="background-image:url(foo.png)">text</span>
+<span style="background-image:url(data:image/png,foo)">text</span>
+}}}
+------------------------------
+<span>text</span>
+<span>text</span>
+<span style="background-image:url(/path/to/foo.png)">text</span>
+<span style="background-image:url(./foo.png)">text</span>
+<span style="background-image:url(foo.png)">text</span>
+<span style="background-image:url(data:image/png,foo)">text</span>
+------------------------------
 ============================== HTML comment wiki processor
 Before
 {{{
@@ -1002,6 +1038,27 @@ Done.
 ------------------------------
  […]
 Done.
+============================== div and Span wiki processors, cross-origin resources
+{{{
+#!div style="background-color:#c00;background-image:url(//example.org/foo.png)"
+Go ahead, [[Span(edit it freely,style=color:#333;background-image:url(/path/to/foo.png))]].
+}}}
+{{{
+#!div style="background-color:#c00;background-image:url(data:image/png,foo)"
+Go ahead, [[Span(edit it freely,style=color:#333;background-image:url(//example.org/foo.png))]].
+}}}
+Done.
+------------------------------
+<div class="wikipage" style="background-color:#c00"><p>
+Go ahead, <span style="color:#333; background-image:url(/path/to/foo.png)">edit it freely</span>.
+</p>
+</div><div class="wikipage" style="background-color:#c00; background-image:url(data:image/png,foo)"><p>
+Go ahead, <span style="color:#333">edit it freely</span>.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
 ============================================================
 
         Wiki Macros

@@ -267,6 +267,13 @@ class ReStructuredTextRenderer(Component):
                 self.body.append(span)
             def depart_system_message(self, node):
                 pass
+            def visit_image(self, node):
+                html4css1.HTMLTranslator.visit_image(self, node)
+                uri = node.attributes.get('uri')
+                if uri and (':' in uri and not uri.startswith('data:') or
+                            uri.startswith('//')):
+                    self.body[-1] = self.body[-1].replace(
+                        '<img ', '<img crossorigin="anonymous" ')
             def visit_reference(self, node):
                 if self._is_safe_uri(node.get('refuri')):
                     html4css1.HTMLTranslator.visit_reference(self, node)

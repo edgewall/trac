@@ -702,6 +702,9 @@ class ImageMacro(WikiMacroBase):
         if style:
             attr['style'] = '; '.join('%s:%s' % (k, escape(v))
                                       for k, v in style.iteritems())
+        if raw_url and (':' in raw_url and not raw_url.startswith('data:') or
+                        raw_url.startswith('//')):
+            attr['crossorigin'] = 'anonymous'  # avoid password prompt
         result = tag.img(src=raw_url, **attr)
         if link is not None:
             result = tag.a(result, href=link or url,

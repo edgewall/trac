@@ -104,7 +104,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" crossorigin="anonymous" src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
@@ -134,13 +134,13 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(http://www.edgewall.com/gfx/shredder_« test ».png, nolink)]]
 ------------------------------
 <p>
-<img alt="http://www.edgewall.com/gfx/shredder_« test ».png" src="http://www.edgewall.com/gfx/shredder_« test ».png" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
+<img alt="http://www.edgewall.com/gfx/shredder_« test ».png" crossorigin="anonymous" src="http://www.edgewall.com/gfx/shredder_« test ».png" title="http://www.edgewall.com/gfx/shredder_« test ».png" />
 </p>
 ============================== http: Image, absolute, many ':'
 [[Image(http://chart.apis.google.com:80/chart?cht=p3&chd=s:hW&chs=250x100&chl=Héllo|Wôrld, title=Google & Charting, link=)]]
 ------------------------------
 <p>
-<img alt="http://chart.apis.google.com:80/chart" src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" title="Google &amp; Charting" />
+<img alt="http://chart.apis.google.com:80/chart" crossorigin="anonymous" src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Héllo|Wôrld" title="Google &amp; Charting" />
 </p>
 ============================== // Image, server-relative
 [[Image(//browser/« test »?format=raw, link=)]]
@@ -195,26 +195,26 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(travis:edgewall/trac.svg:1.0-stable, link=trac:source:/branches/1.0-stable)]]
 ------------------------------
 <p>
-<a href="http://trac.edgewall.org/intertrac/source%3A/trunk" style="padding:0; border:none"><img alt="travis/edgewall/trac.svg in shields" src="https://img.shields.io/travis/edgewall/trac.svg" title="travis/edgewall/trac.svg in shields" /></a>
-<a href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable" style="padding:0; border:none"><img alt="edgewall/trac.svg:1.0-stable in travis" src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" title="edgewall/trac.svg:1.0-stable in travis" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/trunk" style="padding:0; border:none"><img alt="travis/edgewall/trac.svg in shields" crossorigin="anonymous" src="https://img.shields.io/travis/edgewall/trac.svg" title="travis/edgewall/trac.svg in shields" /></a>
+<a href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable" style="padding:0; border:none"><img alt="edgewall/trac.svg:1.0-stable in travis" crossorigin="anonymous" src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" title="edgewall/trac.svg:1.0-stable in travis" /></a>
 </p>
 ============================== InterWiki, nolink
 [[Image(shields:pypi/dm/trac.svg, nolink)]]
 ------------------------------
 <p>
-<img alt="pypi/dm/trac.svg in shields" src="https://img.shields.io/pypi/dm/trac.svg" title="pypi/dm/trac.svg in shields" />
+<img alt="pypi/dm/trac.svg in shields" crossorigin="anonymous" src="https://img.shields.io/pypi/dm/trac.svg" title="pypi/dm/trac.svg in shields" />
 </p>
 ============================== No attachment, nolink
 [[Image(notfound.png, nolink)]]
 ------------------------------
 <p>
-<img alt="No image &#34;notfound.png&#34; attached to WikiStart" src="http://assets.example.org/common/attachment.png" title="No image &#34;notfound.png&#34; attached to WikiStart" />
+<img alt="No image &#34;notfound.png&#34; attached to WikiStart" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" title="No image &#34;notfound.png&#34; attached to WikiStart" />
 </p>
 ============================== No attachment, correct CSS
 [[Image(img.png, margin-bottom=-1)]]
 ------------------------------
 <p>
-<img alt="No image &#34;img.png&#34; attached to WikiStart" src="http://assets.example.org/common/attachment.png" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
+<img alt="No image &#34;img.png&#34; attached to WikiStart" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
 </p>
 ============================== No attachment, invalid arg
 [[Image(img.png, margin-bottom=--)]]
@@ -266,7 +266,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(wiki:page:img2.png)]]
 ------------------------------
 <p>
-<img alt="No image &#34;img2.png&#34; attached to page" src="http://assets.example.org/common/attachment.png" title="No image &#34;img2.png&#34; attached to page" />
+<img alt="No image &#34;img2.png&#34; attached to page" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" title="No image &#34;img2.png&#34; attached to page" />
 </p>
 ==============================  "[" and "]" characters - 1 (#12762)
 [[Image(wiki:page:][img.png,nolink)]]
@@ -278,7 +278,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(][img.png,nolink)]]
 ------------------------------
 <p>
-<img alt="No image &#34;][img.png&#34; attached to WikiStart" src="http://assets.example.org/common/attachment.png" title="No image &#34;][img.png&#34; attached to WikiStart" />
+<img alt="No image &#34;][img.png&#34; attached to WikiStart" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" title="No image &#34;][img.png&#34; attached to WikiStart" />
 </p>
 """
 
