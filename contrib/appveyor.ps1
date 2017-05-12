@@ -60,6 +60,7 @@ $pipCommonPackages = @(
     'docutils',
     'pygments',
     'pytz',
+    'textile',
     'wheel'
 )
 

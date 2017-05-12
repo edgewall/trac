@@ -15,7 +15,7 @@ from HTMLParser import HTMLParser
 import re
 
 from genshi import Markup, HTML, escape, unescape
-from genshi.core import stripentities, striptags, START, END
+from genshi.core import END, QName, START, stripentities, striptags
 from genshi.builder import Element, ElementFactory, Fragment, tag
 from genshi.filters.html import HTMLSanitizer
 from genshi.input import ParseError
@@ -122,14 +122,9 @@ class TracHTMLSanitizer(HTMLSanitizer):
                 continue
             if not self.is_safe_css(prop.strip().lower(), value.strip()):
                 continue
-            is_evil = False
-            if self._EXPRESSION_SEARCH(decl):
-                is_evil = True
-            for match in self._URL_FINDITER(decl):
-                if not self.is_safe_uri(match.group(1)):
-                    is_evil = True
-                    break
-            if not is_evil:
+            if not self._EXPRESSION_SEARCH(decl) and \
+                    all(self._is_safe_origin(match.group(1))
+                            for match in self._URL_FINDITER(decl)):
                 decls.append(decl.strip())
         return decls
 
@@ -144,6 +139,10 @@ class TracHTMLSanitizer(HTMLSanitizer):
                     attrs.get('type', '').lower() == 'password'):
                     suppress = True
                 else:
+                    if tag == 'img' and \
+                            not self._is_safe_origin(attrs.get('src', '')):
+                        attrs |= [(QName('crossorigin'), 'anonymous')]
+                        data = (tag, attrs)
                     yield kind, data, pos
             elif kind is END:
                 if not suppress:
@@ -170,6 +169,15 @@ class TracHTMLSanitizer(HTMLSanitizer):
     _UNICODE_ESCAPE = re.compile(
         r"""\\([0-9a-fA-F]{1,6})\s?|\\([^\r\n\f0-9a-fA-F'"{};:()#*])""",
         re.UNICODE).sub
+
+    def _is_safe_origin(self, uri):
+        if not self.is_safe_uri(uri):
+            return False
+        if uri.startswith('data:'):
+            return True
+        if ':' in uri or uri.startswith('//'):
+            return False
+        return True  # relative-URI
 
     def _replace_unicode_escapes(self, text):
         def _repl(match):
