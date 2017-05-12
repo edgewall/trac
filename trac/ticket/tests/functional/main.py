@@ -1827,6 +1827,47 @@ class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
             self._testenv.set_config('ticket', 'default_milestone', milestone)
 
 
+class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Textarea fields with plain format preserve newlines.
+        Test for regression http://trac.edgewall.org/ticket/12801
+        """
+        env = self._testenv.get_trac_environment()
+        try:
+            env.config.set('ticket-custom', 't12801_plain', 'textarea')
+            env.config.set('ticket-custom', 't12801_plain.format', '')
+            env.config.set('ticket-custom', 't12801_wiki', 'textarea')
+            env.config.set('ticket-custom', 't12801_wiki.format', 'wiki')
+            env.config.save()
+
+            tkt = self._tester.create_ticket(
+                info={'t12801_plain': "- //plain 1//\n- ~~plain 2~~\n",
+                      't12801_wiki': "- ~~wiki 1~~\n- //wiki 2//\n"})
+            tc.find(r'<td colspan="3" headers="h_t12801_plain">\n'
+                    r'\s*- //plain 1//\n'
+                    r'\s*<br />\n'
+                    r'\s*- ~~plain 2~~\n'
+                    r'\s*</td>')
+            tc.find(r'<li><del>wiki 1</del>\s*</li>'
+                    r'<li><em>wiki 2</em>\s*</li>')
+
+            tc.go(self._tester.url +
+                  '/query?id=%s&row=t12801_plain&row=t12801_wiki' % tkt)
+            tc.find(r'<td colspan="[0-9]+">\n'
+                    r'\s*- //plain 1//\n'
+                    r'\s*<br />\n'
+                    r'\s*- ~~plain 2~~\n'
+                    r'\s*</td>')
+            tc.find(r'<li><del>wiki 1</del>\s*</li>'
+                    r'<li><em>wiki 2</em>\s*</li>')
+
+        finally:
+            for name in ('t12801_plain', 't12801_plain.format',
+                         't12801_wiki', 't12801_wiki.format'):
+                env.config.remove('ticket-custom', name)
+            env.config.save()
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -1901,6 +1942,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket11176())
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11996())
+    suite.addTest(RegressionTestTicket12801())
 
     return suite
 

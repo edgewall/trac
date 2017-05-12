@@ -139,6 +139,13 @@
           ${wiki_to_oneliner(ticket_context, value)}
           #       elif wikitextarea:
           ${wiki_to_html(ticket_context, value)}
+          #       elif header.field.type == 'textarea':
+          #         for line in (value.splitlines() if value else []):
+          #           if loop.index > 1:
+          <br />
+          #           endif
+          ${line}
+          #         endfor
           #       else:
           ${value}
           #       endif
@@ -154,11 +161,22 @@
       </tr>
       #       else:
       #         for r in row if result[r]:
+      #           set field = fields.get(r)
+      #           set value = result[r]
       <tr class="fullrow">
-        <th class="meta">${fields.get(r, {'label': r or 'none'}).label}</th>
-        ## FIXME what to do with xml:space="preserve"?
+        <th class="meta">${field.label if field else (r or 'none')}</th>
         <td colspan="${num_cols - 1}">
-          ${wiki_to_html(ticket_context, result[r])}
+          #         if field.format == 'wiki':
+          ## FIXME what to do with xml:space="preserve"?
+          ${wiki_to_html(ticket_context, value)}
+          #         else:
+          #           for line in (value.splitlines() if value else []):
+          #             if loop.index > 1:
+          <br />
+          #             endif
+          ${line}
+          #           endfor
+          #         endif
         </td>
       </tr>
       #         endfor

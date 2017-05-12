@@ -132,14 +132,21 @@
           #     set value = ticket[field.name]
           #     if 'rendered' in field:
           ${field.rendered}
+          #     elif not value:
           #     elif field.type == 'time':
           ${pretty_dateinfo(value, field.format,
-                            dateonly=field.format != 'relative') if value}
+                            dateonly=field.format != 'relative')}
           #     elif field.type == 'text' and field.format == 'wiki':
-          ${wiki_to_oneliner(context, value) if value}
+          ${wiki_to_oneliner(context, value)}
           #     elif field.type == 'textarea' and field.format == 'wiki':
-          ${wiki_to_html(context, value, escape_newlines=preserve_newlines)
-            if value}
+          ${wiki_to_html(context, value, escape_newlines=preserve_newlines)}
+          #     elif field.type == 'textarea':
+          #       for line in value.splitlines():
+          #         if loop.index > 1:
+          <br />
+          #         endif
+          ${line}
+          #       endfor
           #     else:
           ${value}
           #     endif
