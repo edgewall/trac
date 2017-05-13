@@ -30,60 +30,45 @@ from trac.ticket.api import (
 from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, utc
 
 
-class TestTicketChangeListener(core.Component):
-    implements(ITicketChangeListener)
-
-    def ticket_created(self, ticket):
-        self.action = 'created'
-        self.ticket = ticket
-        self.resource = ticket.resource
-
-    def ticket_changed(self, ticket, comment, author, old_values):
-        self.action = 'changed'
-        self.ticket = ticket
-        self.comment = comment
-        self.author = author
-        self.old_values = old_values
-
-    def ticket_deleted(self, ticket):
-        self.action = 'deleted'
-        self.ticket = ticket
-
-    # the listener has no ticket_comment_modified and ticket_change_deleted
-
-
-class TestTicketChangeListener_2(core.Component):
-    implements(ITicketChangeListener)
-
-    def ticket_created(self, ticket):
-        pass
-
-    def ticket_changed(self, ticket, comment, author, old_values):
-        pass
-
-    def ticket_deleted(self, ticket):
-        pass
-
-    def ticket_comment_modified(self, ticket, cdate, author, comment,
-                                old_comment):
-        self.action = 'comment_modified'
-        self.ticket = ticket
-        self.cdate = cdate
-        self.author = author
-        self.comment = comment
-        self.old_comment = old_comment
-
-    def ticket_change_deleted(self, ticket, cdate, changes):
-        self.action = 'change_deleted'
-        self.ticket = ticket
-        self.cdate = cdate
-        self.changes = changes
-
-
 class TicketTestCase(unittest.TestCase):
 
+    ticket_change_listeners = []
+
+    @classmethod
+    def setUpClass(cls):
+        class LegacyTicketChangeListener(core.Component):
+            """The legacy listener doesn't have the `ticket_comment_modified`
+            and `ticket_change_deleted` methods.
+            """
+            implements(ITicketChangeListener)
+
+            def ticket_created(self, ticket):
+                self.action = 'created'
+                self.ticket = ticket
+                self.resource = ticket.resource
+
+            def ticket_changed(self, ticket, comment, author, old_values):
+                self.action = 'changed'
+                self.ticket = ticket
+                self.comment = comment
+                self.author = author
+                self.old_values = old_values
+
+            def ticket_deleted(self, ticket):
+                self.action = 'deleted'
+                self.ticket = ticket
+
+        cls.ticket_change_listeners = [LegacyTicketChangeListener]
+
+    @classmethod
+    def tearDownClass(cls):
+        for listener in cls.ticket_change_listeners:
+            core.ComponentMeta.deregister(listener)
+
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub(default_data=True,
+                                   enable=['trac.ticket.*'] +
+                                           self.ticket_change_listeners)
         self.env.config.set('ticket-custom', 'foo', 'text')
         self.env.config.set('ticket-custom', 'cbon', 'checkbox')
         self.env.config.set('ticket-custom', 'cboff', 'checkbox')
@@ -477,15 +462,19 @@ class TicketTestCase(unittest.TestCase):
                          list(ticket.get_changelog()))
 
     def test_change_listener_created(self):
-        listener = TestTicketChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.change_listeners[0]
         ticket = self._create_a_ticket()
         ticket.insert()
+
+        self.assertEqual(1, len(ts.change_listeners))
         self.assertEqual('created', listener.action)
         self.assertEqual(ticket, listener.ticket)
         self.assertEqual(ticket.id, ticket.resource.id)
 
     def test_change_listener_changed(self):
-        listener = TestTicketChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.change_listeners[0]
         data = {'component': 'foo', 'milestone': 'bar'}
         tkt_id = self._insert_ticket('Hello World', reporter='john', **data)
 
@@ -496,6 +485,7 @@ class TicketTestCase(unittest.TestCase):
         comment = 'changing ticket'
         ticket.save_changes('author', comment)
 
+        self.assertEqual(1, len(ts.change_listeners))
         self.assertEqual('changed', listener.action)
         self.assertEqual(comment, listener.comment)
         self.assertEqual('author', listener.author)
@@ -503,15 +493,59 @@ class TicketTestCase(unittest.TestCase):
             self.assertEqual(value, listener.old_values[key])
 
     def test_change_listener_deleted(self):
-        listener = TestTicketChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.change_listeners[0]
         ticket = self._create_a_ticket()
         ticket.insert()
         ticket.delete()
+
+        self.assertEqual(1, len(ts.change_listeners))
         self.assertEqual('deleted', listener.action)
         self.assertEqual(ticket, listener.ticket)
 
 
 class TicketCommentTestCase(unittest.TestCase):
+
+    ticket_change_listeners = []
+
+    @classmethod
+    def setUpClass(cls):
+        class AllMethodTicketChangeListener(core.Component):
+            """Ticket change listener that implements all methods of the
+            interface.
+            """
+            implements(ITicketChangeListener)
+
+            def ticket_created(self, ticket):
+                pass
+
+            def ticket_changed(self, ticket, comment, author, old_values):
+                pass
+
+            def ticket_deleted(self, ticket):
+                pass
+
+            def ticket_comment_modified(self, ticket, cdate, author, comment,
+                                        old_comment):
+                self.action = 'comment_modified'
+                self.ticket = ticket
+                self.cdate = cdate
+                self.author = author
+                self.comment = comment
+                self.old_comment = old_comment
+
+            def ticket_change_deleted(self, ticket, cdate, changes):
+                self.action = 'change_deleted'
+                self.ticket = ticket
+                self.cdate = cdate
+                self.changes = changes
+
+        cls.ticket_change_listeners = [AllMethodTicketChangeListener]
+
+    @classmethod
+    def tearDownClass(cls):
+        for listener in cls.ticket_change_listeners:
+            core.ComponentMeta.deregister(listener)
 
     def _insert_ticket(self, summary, when, **kwargs):
         ticket = Ticket(self.env)
@@ -537,7 +571,9 @@ class TicketCommentTestCase(unittest.TestCase):
 class TicketCommentEditTestCase(TicketCommentTestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub(default_data=True,
+                                   enable=['trac.ticket.*'] +
+                                          self.ticket_change_listeners)
         self.created = datetime(2001, 1, 1, 1, 0, 0, 0, utc)
         self._insert_ticket('Test ticket', self.created,
                             owner='john', keywords='a, b, c')
@@ -698,11 +734,13 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
                              'Comment 1 (%d)' % i), history[i])
 
     def test_change_listener_comment_modified(self):
-        listener = TestTicketChangeListener_2(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.change_listeners[0]
         ticket = Ticket(self.env, self.id)
         ticket.modify_comment(cdate=self.t2, author='jack',
                               comment='New Comment 2', when=datetime_now(utc))
 
+        self.assertEqual(1, len(ts.change_listeners))
         self.assertEqual('comment_modified', listener.action)
         self.assertEqual(ticket, listener.ticket)
         self.assertEqual(self.t2, listener.cdate)
@@ -723,7 +761,9 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
 class TicketCommentDeleteTestCase(TicketCommentTestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub(default_data=True,
+                                   enable=['trac.ticket.*'] +
+                                          self.ticket_change_listeners)
         self.env.config.set('ticket-custom', 'foo', 'text')
         self.created = datetime(2001, 1, 1, 1, 0, 0, 0, utc)
         self._insert_ticket('Test ticket', self.created,
@@ -855,10 +895,12 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self.assertEqual(t, ticket['changetime'])
 
     def test_ticket_change_deleted(self):
-        listener = TestTicketChangeListener_2(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.change_listeners[0]
         ticket = Ticket(self.env, self.id)
 
         ticket.delete_change(cdate=self.t3, when=datetime_now(utc))
+        self.assertEqual(1, len(ts.change_listeners))
         self.assertEqual('change_deleted', listener.action)
         self.assertEqual(ticket, listener.ticket)
         self.assertEqual(self.t3, listener.cdate)
@@ -931,27 +973,39 @@ class EnumTestCase(unittest.TestCase):
         Type(self.env, 'foo')
 
 
-class TestMilestoneChangeListener(core.Component):
-    implements(IMilestoneChangeListener)
-
-    def milestone_created(self, milestone):
-        self.action = 'created'
-        self.milestone = milestone
-
-    def milestone_changed(self, milestone, old_values):
-        self.action = 'changed'
-        self.milestone = milestone
-        self.old_values = old_values
-
-    def milestone_deleted(self, milestone):
-        self.action = 'deleted'
-        self.milestone = milestone
-
-
 class MilestoneTestCase(unittest.TestCase):
 
+    milestone_change_listeners = []
+
+    @classmethod
+    def setUpClass(cls):
+        class TestMilestoneChangeListener(core.Component):
+            implements(IMilestoneChangeListener)
+
+            def milestone_created(self, milestone):
+                self.action = 'created'
+                self.milestone = milestone
+
+            def milestone_changed(self, milestone, old_values):
+                self.action = 'changed'
+                self.milestone = milestone
+                self.old_values = old_values
+
+            def milestone_deleted(self, milestone):
+                self.action = 'deleted'
+                self.milestone = milestone
+
+        cls.milestone_change_listeners = [TestMilestoneChangeListener]
+
+    @classmethod
+    def tearDownClass(cls):
+        for listener in cls.milestone_change_listeners:
+            core.ComponentMeta.deregister(listener)
+
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub(default_data=True,
+                                   enable=['trac.ticket.*'] +
+                                          self.milestone_change_listeners)
         self.env.path = mkdtemp()
         self.created_at = datetime(2001, 1, 1, tzinfo=utc)
         self.updated_at = self.created_at + timedelta(seconds=1)
@@ -1100,8 +1154,9 @@ class MilestoneTestCase(unittest.TestCase):
         milestone.move_tickets(None, 'user')
         milestone.delete()
         self.assertFalse(milestone.exists)
-        self.assertEqual([],
-            self.env.db_query("SELECT * FROM milestone WHERE name='Test'"))
+        self.assertEqual([], self.env.db_query("""
+            SELECT * FROM milestone WHERE name='Test'
+            """))
 
         tkt1 = Ticket(self.env, tkt1.id)
         tkt2 = Ticket(self.env, tkt2.id)
@@ -1218,14 +1273,18 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertTrue(milestones[1].exists)
 
     def test_change_listener_created(self):
-        listener = TestMilestoneChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.milestone_change_listeners[0]
         milestone = self._create_milestone(name='Milestone 1')
         milestone.insert()
+
+        self.assertEqual(1, len(ts.milestone_change_listeners))
         self.assertEqual('created', listener.action)
         self.assertEqual(milestone, listener.milestone)
 
     def test_change_listener_changed(self):
-        listener = TestMilestoneChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.milestone_change_listeners[0]
         milestone = self._create_milestone(
             name='Milestone 1',
             due=datetime(2001, 01, 01, tzinfo=utc),
@@ -1237,6 +1296,7 @@ class MilestoneTestCase(unittest.TestCase):
         milestone.description = 'The changed description'
         milestone.update()
 
+        self.assertEqual(1, len(ts.milestone_change_listeners))
         self.assertEqual('changed', listener.action)
         self.assertEqual(milestone, listener.milestone)
         self.assertEqual({'name': 'Milestone 1', 'completed': None,
@@ -1244,8 +1304,10 @@ class MilestoneTestCase(unittest.TestCase):
                          listener.old_values)
 
     def test_change_listener_deleted(self):
-        listener = TestMilestoneChangeListener(self.env)
+        ts = TicketSystem(self.env)
+        listener = ts.milestone_change_listeners[0]
         milestone = self._create_milestone(name='Milestone 1')
+        self.assertEqual(1, len(ts.milestone_change_listeners))
         milestone.insert()
         self.assertTrue(milestone.exists)
         milestone.delete()
@@ -1540,7 +1602,6 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual('component2', components[1].name)
         self.assertEqual('', components[1].owner)
         self.assertEqual('', components[1].description)
-
 
 
 class ReportTestCase(unittest.TestCase):
