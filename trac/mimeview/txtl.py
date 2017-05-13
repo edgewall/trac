@@ -18,9 +18,7 @@
 See also: https://github.com/textile/python-textile
 """
 
-from StringIO import StringIO
-from genshi.core import Stream
-from genshi.input import HTMLParser, ParseError
+from HTMLParser import HTMLParseError
 
 try:
     import textile
@@ -74,7 +72,7 @@ class TextileRenderer(Component):
             return Markup(output)
         try:
             return self._sanitizer.sanitize(output)
-        except ParseError as e:
+        except HTMLParseError as e:
             self.log.warning(e)
             line = content.splitlines()[e.lineno - 1].strip()
             return system_message(_("HTML parsing error: %(message)s",
