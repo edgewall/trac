@@ -30,13 +30,13 @@ An alternative usage is to run the tool via make, i.e. `make jinja`.
 This will run the tool on all .html files.
 """
 
+import io
 import re
 import sys
 
 from pkg_resources import parse_version as pv
 from collections import namedtuple
 from os.path import abspath, dirname, join, normpath
-from StringIO import StringIO
 
 
 # Setup XHTML validation
@@ -352,7 +352,7 @@ def check_html(filename, html_lines, html_hints, quiet):
     try:
         # lxml will try to convert the URL to unicode by itself,
         # this won't work for non-ascii URLs, so help him
-        etree.parse(StringIO(page), base_url='.') #  base_url ??
+        etree.parse(io.BytesIO(page), base_url='.') #  base_url ??
         if not quiet:
             for lineinfo in html_lines:
                 print('%5d %s' % lineinfo),

@@ -18,10 +18,10 @@
 #  - the tag builder API from genshi.builder,
 #  - the HTMLSanitizer from genshi.filters.html.
 
-from HTMLParser import HTMLParser
-from StringIO import StringIO
-import htmlentitydefs as entities
+import io
 import re
+from HTMLParser import HTMLParser
+import htmlentitydefs as entities
 
 from markupsafe import Markup, escape as escape_quotes
 
@@ -635,7 +635,7 @@ class TracHTMLSanitizer(object):
         :rtype: Markup
 
         """
-        transform = HTMLSanitization(self, StringIO())
+        transform = HTMLSanitization(self, io.StringIO())
         transform.feed(html)
         transform.close()
         return Markup(transform.out.getvalue())

@@ -12,11 +12,11 @@
 
 from __future__ import absolute_import
 
+import io
 import os
 import re
 from datetime import datetime
 from pkg_resources import resource_filename
-from StringIO import StringIO
 
 import pygments
 from pygments.formatters.html import HtmlFormatter
@@ -248,8 +248,11 @@ class PygmentsRenderer(Component):
         if context:
             lexer_options.update(context.get_hint('lexer_options', {}))
         lexer = get_lexer_by_name(lexer_name, **lexer_options)
-        out = StringIO()
-        HtmlFormatter(nowrap=True).format(lexer.get_tokens(content), out)
+        out = io.StringIO()
+        # Specify `lineseparator` to workaround exception with Pygments 2.2.0:
+        # "TypeError: unicode argument expected, got 'str'" with newline input
+        formatter = HtmlFormatter(nowrap=True, lineseparator=u'\n')
+        formatter.format(lexer.get_tokens(content), out)
         return Markup(out.getvalue())
 
     def _lexer_alias_to_name(self, alias):

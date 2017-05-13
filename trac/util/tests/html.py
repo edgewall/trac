@@ -11,8 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from StringIO import StringIO
 import doctest
+import io
 import unittest
 
 from trac.core import TracError
@@ -70,29 +70,27 @@ class FragmentTestCase(unittest.TestCase):
 
 class FormTokenInjectorTestCase(unittest.TestCase):
     def test_no_form(self):
-        html = '<div><img src="trac.png"/></div>'
-        injector = FormTokenInjector('123123', StringIO())
+        html = u'<div><img src="trac.png"/></div>'
+        injector = FormTokenInjector(u'123123', io.StringIO())
         injector.feed(html)
         injector.close()
         self.assertEqual(html, injector.out.getvalue())
 
     def test_form_get(self):
-        html = '<form method="get"><input name="age" value=""/></form>'
-        injector = FormTokenInjector('123123', StringIO())
+        html = u'<form method="get"><input name="age" value=""/></form>'
+        injector = FormTokenInjector(u'123123', io.StringIO())
         injector.feed(html)
         injector.close()
         self.assertEqual(html, injector.out.getvalue())
 
     def test_form_post(self):
-        html = '<form method="POST">%s<input name="age" value=""/></form>'
-        injector = FormTokenInjector('123123', StringIO())
-        injector.feed(html % '')
+        html = u'<form method="POST">%s<input name="age" value=""/></form>'
+        injector = FormTokenInjector(u'123123', io.StringIO())
+        injector.feed(html % u'')
         injector.close()
-        self.assertEqual(
-            html % (
-            '<input type="hidden" name="__FORM_TOKEN" value="%s"/>' %
-                injector.token),
-            injector.out.getvalue())
+        html %= (u'<input type="hidden" name="__FORM_TOKEN" value="%s"/>'
+                 % injector.token)
+        self.assertEqual(html, injector.out.getvalue())
 
 
 class TracHTMLSanitizerTestCase(unittest.TestCase):
@@ -100,102 +98,102 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         return unicode(TracHTMLSanitizer().sanitize(html))
 
     def test_input_type_password(self):
-        html = '<input type="password" />'
+        html = u'<input type="password" />'
         self.assertEqual('', self.sanitize(html))
 
     def test_empty_attribute(self):
-        html = '<option value="1236" selected>Family B</option>'
+        html = u'<option value="1236" selected>Family B</option>'
         self.assertEqual(
-            '<option selected="selected" value="1236">Family B</option>',
+            u'<option selected="selected" value="1236">Family B</option>',
             self.sanitize(html))
 
     def test_expression(self):
-        html = '<div style="top:expression(alert())">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="top:expression(alert())">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_capital_expression(self):
-        html = '<div style="top:EXPRESSION(alert())">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="top:EXPRESSION(alert())">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_expression_with_comments(self):
-        html = r'<div style="top:exp/**/ression(alert())">XSS</div>'
-        self.assertEqual('<div style="top:exp ression(alert())">XSS</div>',
+        html = ur'<div style="top:exp/**/ression(alert())">XSS</div>'
+        self.assertEqual(u'<div style="top:exp ression(alert())">XSS</div>',
                          self.sanitize(html))
-        html = r'<div style="top:exp//**/**/ression(alert())">XSS</div>'
+        html = ur'<div style="top:exp//**/**/ression(alert())">XSS</div>'
         self.assertEqual(
-            '<div style="top:exp/ **/ression(alert())">XSS</div>',
+            u'<div style="top:exp/ **/ression(alert())">XSS</div>',
             self.sanitize(html))
-        html = r'<div style="top:ex/*p*/ression(alert())">XSS</div>'
-        self.assertEqual('<div style="top:ex ression(alert())">XSS</div>',
+        html = ur'<div style="top:ex/*p*/ression(alert())">XSS</div>'
+        self.assertEqual(u'<div style="top:ex ression(alert())">XSS</div>',
                          self.sanitize(html))
 
     def test_url_with_javascript(self):
         html = (
-            '<div style="background-image:url(javascript:alert())">XSS</div>'
+            u'<div style="background-image:url(javascript:alert())">XSS</div>'
         )
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_capital_url_with_javascript(self):
         html = (
-            '<div style="background-image:URL(javascript:alert())">XSS</div>'
+            u'<div style="background-image:URL(javascript:alert())">XSS</div>'
         )
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_unicode_escapes(self):
-        html = r'<div style="top:exp\72 ess\000069 on(alert())">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = ur'<div style="top:exp\72 ess\000069 on(alert())">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
         # escaped backslash
-        html = r'<div style="top:exp\5c ression(alert())">XSS</div>'
-        self.assertEqual(r'<div style="top:exp\\ression(alert())">XSS</div>',
+        html = ur'<div style="top:exp\5c ression(alert())">XSS</div>'
+        self.assertEqual(ur'<div style="top:exp\\ression(alert())">XSS</div>',
                          self.sanitize(html))
-        html = r'<div style="top:exp\5c 72 ession(alert())">XSS</div>'
-        self.assertEqual(r'<div style="top:exp\\72 ession(alert())">XSS</div>',
+        html = ur'<div style="top:exp\5c 72 ession(alert())">XSS</div>'
+        self.assertEqual(ur'<div style="top:exp\\72 ession(alert())">XSS</div>',
                          self.sanitize(html))
         # escaped control characters
-        html = r'<div style="top:exp\000000res\1f sion(alert())">XSS</div>'
-        self.assertEqual('<div style="top:exp res sion(alert())">XSS</div>',
+        html = ur'<div style="top:exp\000000res\1f sion(alert())">XSS</div>'
+        self.assertEqual(u'<div style="top:exp res sion(alert())">XSS</div>',
                          self.sanitize(html))
 
     def test_backslash_without_hex(self):
-        html = r'<div style="top:e\xp\ression(alert())">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = r'<div style="top:e\\xp\\ression(alert())">XSS</div>'
-        self.assertEqual(r'<div style="top:e\\xp\\ression(alert())">XSS</div>',
+        html = ur'<div style="top:e\xp\ression(alert())">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = ur'<div style="top:e\\xp\\ression(alert())">XSS</div>'
+        self.assertEqual(ur'<div style="top:e\\xp\\ression(alert())">XSS</div>',
                          self.sanitize(html))
 
     def test_unsafe_props(self):
-        html = '<div style="POSITION:RELATIVE">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = '<div style="position:STATIC">safe</div>'
-        self.assertEqual('<div style="position:STATIC">safe</div>',
+        html = u'<div style="POSITION:RELATIVE">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="position:STATIC">safe</div>'
+        self.assertEqual(u'<div style="position:STATIC">safe</div>',
                          self.sanitize(html))
-        html = '<div style="behavior:url(test.htc)">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = '<div style="-ms-behavior:url(test.htc) url(#obj)">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = ("""<div style="-o-link:'javascript:alert(1)';"""
-                """-o-link-source:current">XSS</div>""")
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = """<div style="-moz-binding:url(xss.xbl)">XSS</div>"""
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="behavior:url(test.htc)">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="-ms-behavior:url(test.htc) url(#obj)">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = (u"""<div style="-o-link:'javascript:alert(1)';"""
+                u"""-o-link-source:current">XSS</div>""")
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = u"""<div style="-moz-binding:url(xss.xbl)">XSS</div>"""
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_nagative_margin(self):
-        html = '<div style="margin-top:-9999px">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = '<div style="margin:0 -9999px">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="margin-top:-9999px">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="margin:0 -9999px">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_css_hack(self):
-        html = '<div style="*position:static">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
-        html = '<div style="_margin:-10px">XSS</div>'
-        self.assertEqual('<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="*position:static">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
+        html = u'<div style="_margin:-10px">XSS</div>'
+        self.assertEqual(u'<div>XSS</div>', self.sanitize(html))
 
     def test_property_name(self):
-        html = ('<div style="display:none;border-left-color:red;'
-                'user_defined:1;-moz-user-selct:-moz-all">prop</div>')
-        self.assertEqual('<div style="display:none; border-left-color:red'
-                         '">prop</div>',
+        html = (u'<div style="display:none;border-left-color:red;'
+                u'user_defined:1;-moz-user-selct:-moz-all">prop</div>')
+        self.assertEqual(u'<div style="display:none; border-left-color:red'
+                         u'">prop</div>',
                          self.sanitize(html))
 
     def test_unicode_expression(self):
