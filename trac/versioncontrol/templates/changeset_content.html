@@ -309,7 +309,7 @@
     #   if max_diff_bytes and diff_bytes is greaterthan(max_diff_bytes):
     #     if 'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni')):
     #       set pretty_max_bytes = pretty_size(max_diff_bytes)
-    #     else
+    #     else:
     #       set pretty_max_bytes
     <a href="${href.wiki('TracIni') + '#changeset-max_diff_bytes-option'}"
        >${pretty_size(max_diff_bytes)}</a>
@@ -328,7 +328,7 @@
     #   if max_diff_files and diff_files is greaterthan(max_diff_files):
     #     if 'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni')):
     #       set pretty_max_files = max_diff_files
-    #     else
+    #     else:
     #       set pretty_max_files
     <a href="${href.wiki('TracIni') + '#changeset-max_diff_files-option'}"
        >${max_diff_files}</a>
