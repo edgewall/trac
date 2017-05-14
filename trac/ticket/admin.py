@@ -70,6 +70,10 @@ class TicketAdminPanel(Component):
                                "writable by the web server. Your changes "
                                "have not been saved."))
 
+    def _render_admin_panel(self, req, cat, page, path_info):
+        raise NotImplemented("Class inheriting from TicketAdminPanel has not "
+                             "implemented the _render_admin_panel method.")
+
 
 class ComponentAdminPanel(TicketAdminPanel):
 
@@ -341,8 +345,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             data = {'view': 'list',
                     'milestones': model.Milestone.select(self.env),
                     'query_href': query_href,
-                    'num_tickets': lambda milestone:
-                                            num_tickets.get(milestone.name, 0),
+                    'num_tickets': lambda m: num_tickets.get(m.name, 0),
                     'ticket_default': ticket_default,
                     'retarget_default': retarget_default}
 
