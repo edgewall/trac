@@ -24,6 +24,9 @@ matrix:
       env: tracdb=mysql
     - os: linux
       python: "2.7_with_system_site_packages"
+      env: tracdb= build=minimum
+    - os: linux
+      python: "2.7_with_system_site_packages"
       env: tracdb=
     - os: linux
       python: "2.7_with_system_site_packages"
@@ -43,6 +46,9 @@ matrix:
     - os: osx
       language: generic
       env: pyver=2.6 tracdb=postgres
+    - os: osx
+      language: generic
+      env: pyver=2.7 tracdb= build=minimum
     - os: osx
       language: generic
       env: pyver=2.7 tracdb=
@@ -97,10 +103,13 @@ before_install:
 install:
   - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
   - ( echo "[global]"; echo "cache-dir = $HOME/.cache/pip" ) >"$HOME/.pip/pip.conf"
-  - pip install --upgrade pip
-  - pip install Genshi==0.7 'Babel!=2.3.0,!=2.3.1' Pygments docutils textile lxml pytz twill==0.9.1
-  - if [ "$tracdb" = postgres ]; then pip install psycopg2; fi
-  - if [ "$tracdb" = mysql ]; then pip install MySQL-python; fi
+  - |
+    pip install --upgrade pip
+    requires='Genshi==0.7 lxml twill==0.9.1'
+    if [ "$build" != minimum ]; then requires="$requires Babel!=2.3.0,!=2.3.1 Pygments docutils textile pytz"; fi
+    if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
+    if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
+    pip install $requires
   - pip freeze
   - |
     set -e
@@ -112,8 +121,12 @@ install:
     esac
     echo ".uri = $tracdb_uri" >Makefile.cfg
 script:
-  - if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
-  - make Trac.egg-info compile unit-test functional-test
+  - echo "$tracdb_version"
+  - |
+    targets=Trac.egg-info
+    if [ "$build" != minimum ]; then targets="$targets compile"; fi
+    targets="$targets unit-test functional-test"
+    make $targets
 notifications:
   email:
     recipients:
