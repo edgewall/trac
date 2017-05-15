@@ -23,8 +23,8 @@ _new_default = ['DefaultWikiPolicy', 'DefaultTicketPolicy',
 
 
 def do_upgrade(env, version, cursor):
-    """Automatically append DefaultWikiPolicy and DefaultTicketPolicy 
-    if permission_policies is the default value. Otherwise, echo a message 
+    """Automatically append DefaultWikiPolicy and DefaultTicketPolicy
+    if permission_policies is the default value. Otherwise, echo a message
     about the need to manually add DefaultWikiPolicy and DefaultTicketPolicy
     to the list of permission_policies.
     """

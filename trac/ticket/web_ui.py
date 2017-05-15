@@ -1876,8 +1876,8 @@ class TicketModule(Component):
 
 class DefaultTicketPolicy(Component):
     """Default permission policy for the ticket system.
-    
-    Authenticated users with `TICKET_APPEND` can edit their own ticket 
+
+    Authenticated users with `TICKET_APPEND` can edit their own ticket
     comments. Authenticated users with `TICKET_APPEND` or
     `TICKET_CHGPROP` can edit the description of a ticket they reported.
     """

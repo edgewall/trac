@@ -962,7 +962,7 @@ class HTMLSanitization(HTMLTransform):
 
     def _handle_start(self, tag, attrs, startend):
         if self.waiting_for:
-           return
+            return
         if not self.sanitizer.is_safe_elem(tag, attrs):
             self.waiting_for = tag
             return

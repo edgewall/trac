@@ -811,7 +811,7 @@ class WikiModule(Component):
 
 class DefaultWikiPolicy(Component):
     """Default permission policy for the wiki system.
-    
+
     Wiki pages with the read-only attribute require `WIKI_ADMIN` to delete,
     modify or rename the page.
     """

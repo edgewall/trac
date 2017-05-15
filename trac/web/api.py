@@ -571,7 +571,7 @@ class Request(object):
     @lazy
     def is_authenticated(self):
         """Returns `True` if `authname` is not `anonymous`.
-        
+
         :since: 1.3.2
         """
         return self.authname and self.authname != 'anonymous'

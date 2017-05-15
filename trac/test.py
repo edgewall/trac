@@ -164,7 +164,7 @@ def MockRequest(env, **kwargs):
     :keyword method: the HTTP request method
     :keyword path_info: the request path inside the application
 
-    Additionally `cookie`, `format`, `language`, `lc_time`, `locale`, 
+    Additionally `cookie`, `format`, `language`, `lc_time`, `locale`,
     `remote_addr`, `remote_user`, `script_name`, `server_name`, `server_port`
     and `tz` can be specified as keyword arguments.
 

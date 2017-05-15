@@ -134,7 +134,7 @@ class AttachmentModule(Component):
 
     max_zip_size = IntOption('attachment', 'max_zip_size', 2097152,
         """Maximum allowed total size (in bytes) for an attachment list to be
-        downloadable as a `.zip`. Set this to -1 to disable download as 
+        downloadable as a `.zip`. Set this to -1 to disable download as
         `.zip`. (''since 1.0'')
         """)
 
@@ -1014,7 +1014,7 @@ class AttachmentAdmin(Component):
                """Attach a file to a resource
 
                The resource is identified by its realm and identifier. The
-               attachment will be named according to the base name of the 
+               attachment will be named according to the base name of the
                file.
                """,
                self._complete_add, self._do_add)

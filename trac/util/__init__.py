@@ -108,19 +108,19 @@ def native_path(path):
     """
     if path:
         if os.name == 'posix':
-           if (len(path) > 1 and path[1] == ':') or '\\' in path:
-              path = path.replace('\\', '/')
-              if path[1] == ':':
-                  path = '/' + path[0] + path[2:]
+            if (len(path) > 1 and path[1] == ':') or '\\' in path:
+                path = path.replace('\\', '/')
+                if path[1] == ':':
+                    path = '/' + path[0] + path[2:]
         elif os.name == 'nt':
-           if path[0] == '/': # abs path
-               if len(path) == 2 or len(path) > 2 and path[2] == '/':
-                   # interpret 1-letter toplevel as volume name
-                   path = path[1] + ':' + path[2:]
-               else:
-                   # assume we're talking about C:
-                   path = 'C:\\' + path[1:]
-           path = path.replace('/', '\\')
+            if path[0] == '/': # abs path
+                if len(path) == 2 or len(path) > 2 and path[2] == '/':
+                    # interpret 1-letter toplevel as volume name
+                    path = path[1] + ':' + path[2:]
+                else:
+                    # assume we're talking about C:
+                    path = 'C:\\' + path[1:]
+            path = path.replace('/', '\\')
     return path
 
 
@@ -1306,7 +1306,7 @@ def pathjoin(*args):
 
 def to_list(splittable, sep=','):
     """Split a string at `sep` and return a list without any empty items.
-    
+
     >>> to_list('1,2, 3,4 ')
     ['1', '2', '3', '4']
     >>> to_list('1;2; 3;4 ', sep=';')

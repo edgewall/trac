@@ -764,7 +764,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
 
     def test_reporter_can_edit_own_ticket_description(self):
         """Authenticated user can modify description of ticket they
-        reported. The authenticated user must have TICKET_CHGPROP or 
+        reported. The authenticated user must have TICKET_CHGPROP or
         TICKET_APPEND.
         """
         self.perm_sys.grant_permission('somebody1', 'TICKET_CHGPROP')
@@ -834,7 +834,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
             action, perm_cache.username, resource, perm_cache))
 
     def test_user_must_have_ticket_append_to_edit(self):
-        """Authenticated user must have TICKET_APPEND to edit own ticket 
+        """Authenticated user must have TICKET_APPEND to edit own ticket
         comment.
         """
         perm_cache, resource = \
