@@ -29,10 +29,19 @@ from trac.web.api import RequestDone
 from tracopt.perm.authz_policy import AuthzPolicy
 
 
+def insert_ticket(env, **kw):
+    """Helper for inserting a ticket into the database"""
+    ticket = Ticket(env)
+    for k, v in kw.items():
+        ticket[k] = v
+    ticket.insert()
+    return ticket
+
+
 class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
+        self.env = EnvironmentStub()
         config = self.env.config
         config.set('ticket-workflow', 'change_owner', 'new -> new')
         config.set('ticket-workflow', 'change_owner.operations', 'set_owner')
@@ -198,6 +207,35 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('cowner3', ticket['owner'])
+
+    def _test_get_allowed_owners(self):
+        ticket = insert_ticket(self.env, summary='Ticket 1')
+        self.env.insert_users([('user1', None, None, 1),
+                               ('user2', None, None, 1),
+                               ('user3', None, None, 1)])
+        ps = PermissionSystem(self.env)
+        for user in ('user1', 'user3'):
+            ps.grant_permission(user, 'TICKET_MODIFY')
+        self.env.config.set('ticket', 'restrict_owner', True)
+        return ticket
+
+    def test_get_allowed_owners_returns_set_owner_list(self):
+        """Users specified in `set_owner` for the action are returned."""
+        req = None
+        action = {'set_owner': ['user4', 'user5']}
+        ticket = self._test_get_allowed_owners()
+        self.assertEqual(['user4', 'user5'],
+                         self.ctlr.get_allowed_owners(req, ticket, action))
+
+    def test_get_allowed_owners_returns_user_with_ticket_modify(self):
+        """Users with TICKET_MODIFY are are returned if `set_owner` is
+        not specified for the action.
+        """
+        req = None
+        action = {}
+        ticket = self._test_get_allowed_owners()
+        self.assertEqual(['user1', 'user3'],
+                         self.ctlr.get_allowed_owners(req, ticket, action))
 
 
 class ResetActionTestCase(unittest.TestCase):

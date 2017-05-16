@@ -242,6 +242,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         formatted_current_owner = author_info(current_owner)
         exists = ticket._old.get('status', ticket['status']) is not None
 
+        ticket_system = TicketSystem(self.env)
         control = []  # default to nothing
         hints = []
         if 'reset_workflow' in operations:
@@ -250,24 +251,13 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations or 'may_set_owner' in operations:
-            if 'set_owner' in this_action:
-                owners = self._to_users(this_action['set_owner'], ticket)
-            elif self.config.getbool('ticket', 'restrict_owner'):
-                perm = PermissionSystem(self.env)
-                owners = perm.get_users_with_permission('TICKET_MODIFY')
-                owners = [user for user in owners
-                               if 'TICKET_MODIFY'
-                               in PermissionCache(self.env, user,
-                                                  ticket.resource)]
-                owners = sorted(owners)
-            else:
-                owners = None
+            owners = self.get_allowed_owners(req, ticket, this_action)
 
             if 'set_owner' in operations:
                 default_owner = author
             elif 'may_set_owner' in operations:
                 if not exists:
-                    default_owner = TicketSystem(self.env).default_owner
+                    default_owner = ticket_system.default_owner
                 else:
                     default_owner = ticket._old.get('owner',
                                                     ticket['owner'] or None)
@@ -352,7 +342,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   name=resolutions[0]))
             else:
                 selected_option = req.args.get(id,
-                        TicketSystem(self.env).default_resolution)
+                                               ticket_system.default_resolution)
                 control.append(tag_("as %(resolution)s",
                                     resolution=tag.select(
                     [tag.option(x, value=x,
@@ -517,6 +507,28 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                        status in info['oldstates']) and
                       self._has_perms_for_action(req, info, ticket.resource)]
         return actions
+
+    # Public methods
+
+    def get_allowed_owners(self, req, ticket, action):
+        """Returns users listed in the `set_owner` field of the action or
+        possessing the `TICKET_MODIFY` permission if `set_owner` is not
+        specified.
+
+        This method can be overridden in a subclasses in order to 
+        customize the list of users that populate the assign-to select 
+        box.
+    
+        :since: 1.3.2
+        """
+        if 'set_owner' in action:
+            return self._to_users(action['set_owner'], ticket)
+        elif TicketSystem(self.env).restrict_owner:
+            users = PermissionSystem(self.env)\
+                    .get_users_with_permission('TICKET_MODIFY')
+            cache = partial(PermissionCache, self.env, resource=ticket.resource)
+            return sorted(u for u in users
+                            if 'TICKET_MODIFY' in cache(username=u))
 
     # Internal methods
 
