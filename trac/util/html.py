@@ -337,7 +337,7 @@ def styles(*args, **kwargs):
 class Fragment(object):
     """A fragment represents a sequence of strings or elements."""
 
-    __slot__ = ('children')
+    __slots__ = ('children',)
 
     def __init__(self, *args):
         self.children = []
@@ -393,9 +393,7 @@ class XMLElement(Fragment):
 
     """
 
-    __slot__ = ('tag', 'attrib')
-
-    attrib = {}
+    __slots__ = ('tag', 'attrib')
 
     VOID_ELEMENTS = ()
 
@@ -404,8 +402,7 @@ class XMLElement(Fragment):
     def __init__(self, tag, *args, **kwargs):
         Fragment.__init__(self, *args)
         self.tag = unicode(tag)
-        if kwargs:
-            self.attrib = self._dict_from_kwargs(kwargs)
+        self.attrib = self._dict_from_kwargs(kwargs) if kwargs else {}
 
     def _attr_value(self, k, v):
         return v
@@ -466,7 +463,7 @@ class Element(XMLElement):
                      'source', 'track', 'wbr'}
     CLOSE_TAG = u' />'
 
-    __slot__ = ()
+    __slots__ = ()
 
     def _attr_value(self, k, v):
         return html_attribute(k, v)
