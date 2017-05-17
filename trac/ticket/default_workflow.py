@@ -187,31 +187,34 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         status = ticket._old.get('status', ticket['status'])
         exists = status is not None
 
-        ticket_perm = req.perm(ticket.resource)
+        resource = ticket.resource
         allowed_actions = []
         for action_name, action_info in self.actions.items():
             oldstates = action_info['oldstates']
             if exists and oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
-                required_perms = action_info['permissions']
-                if self._is_action_allowed(ticket_perm, required_perms):
+                if self._is_action_allowed(req, action_info, resource):
                     allowed_actions.append((action_info['default'],
                                             action_name))
         # Append special `_reset` action if status is invalid.
         if exists and status not in TicketSystem(self.env).get_all_status():
             reset = self.actions['_reset']
-            required_perms = reset['permissions']
-            if self._is_action_allowed(ticket_perm, required_perms):
+            if self._is_action_allowed(req, reset, resource):
                 allowed_actions.append((reset['default'], '_reset'))
         return allowed_actions
 
-    def _is_action_allowed(self, ticket_perm, required_perms):
-        if not required_perms:
-            return True
-        for permission in required_perms:
-            if permission in ticket_perm:
-                return True
-        return False
+    def _is_action_allowed(self, req, action, resource):
+        """Returns `True` if the workflow action is allowed for the `resource`.
+        """
+        perm_cache = req.perm(resource)
+        required_perms = action['permissions']
+        if required_perms:
+            for permission in required_perms:
+                if permission in perm_cache:
+                    break
+            else:
+                return False
+        return True
 
     def get_all_status(self):
         """Return a list of all states described by the configuration.
@@ -375,7 +378,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         this_action = self.actions[action]
 
         # Enforce permissions
-        if not self._has_perms_for_action(req, this_action, ticket.resource):
+        if not self._is_action_allowed(req, this_action, ticket.resource):
             # The user does not have any of the listed permissions, so we won't
             # do anything.
             return {}
@@ -443,17 +446,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
     def apply_action_side_effects(self, req, ticket, action):
         pass
-
-    def _has_perms_for_action(self, req, action, resource):
-        required_perms = action['permissions']
-        if required_perms:
-            for permission in required_perms:
-                if permission in req.perm(resource):
-                    break
-            else:
-                # The user does not have any of the listed permissions
-                return False
-        return True
 
     # Public methods (for other ITicketActionControllers that want to use
     #                 our config file and provide an operation for an action)
