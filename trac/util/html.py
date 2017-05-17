@@ -395,6 +395,8 @@ class XMLElement(Fragment):
 
     __slots__ = ('tag', 'attrib')
 
+    EMPTY_ATTRIB = {}
+
     VOID_ELEMENTS = ()
 
     CLOSE_TAG = u'/>'
@@ -402,7 +404,8 @@ class XMLElement(Fragment):
     def __init__(self, tag, *args, **kwargs):
         Fragment.__init__(self, *args)
         self.tag = unicode(tag)
-        self.attrib = self._dict_from_kwargs(kwargs) if kwargs else {}
+        self.attrib = self._dict_from_kwargs(kwargs) \
+                      if kwargs else self.EMPTY_ATTRIB
 
     def _attr_value(self, k, v):
         return v
