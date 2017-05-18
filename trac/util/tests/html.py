@@ -23,7 +23,9 @@ from trac.util.html import (
 )
 from trac.util.translation import gettext, tgettext
 
+
 class EscapeFragmentTestCase(unittest.TestCase):
+
     def test_escape_element(self):
         self.assertEqual(Markup(u'<b class="em&#34;ph&#34;">"1 &lt; 2"</b>'),
                          escape(tag.b('"1 < 2"', class_='em"ph"')))
@@ -38,13 +40,16 @@ class EscapeFragmentTestCase(unittest.TestCase):
                          escape(tag(tag.b('"1 < 2"', class_='em"ph"')),
                                     quotes=False))
 
+
 class FragmentTestCase(unittest.TestCase):
+
     def test_zeros(self):
         self.assertEqual(Markup(u'0<b>0</b> and <b>0</b>'),
                          Markup(tag(0, tag.b(0L), ' and ', tag.b(0.0))))
 
 
 class XMLElementTestCase(unittest.TestCase):
+
     def test_xml(self):
         self.assertEqual(Markup(u'0<a>0</a> and <b>0</b> and <c/> and'
                                 ' <d class="[\'a\', \'\', \'b\']"'
@@ -54,7 +59,9 @@ class XMLElementTestCase(unittest.TestCase):
                                     xml.d('', class_=['a', '', 'b'],
                                           more__=['a']))))
 
+
 class ElementTestCase(unittest.TestCase):
+
     def test_tag(self):
         self.assertEqual(Markup(u'0<a>0</a> and <b>0</b> and <c></c>'
                                 u' and <d class="a b" more_="[\'a\']"></d>'),
@@ -63,12 +70,9 @@ class ElementTestCase(unittest.TestCase):
                                     tag.d('', class_=['a', '', 'b'],
                                           more__=['a']))))
 
-class FragmentTestCase(unittest.TestCase):
-    def test_zeros(self):
-        self.assertEqual(Markup(u'0<b>0</b> and <b>0</b>'),
-                         Markup(tag(0, tag.b(0L), ' and ', tag.b(0.0))))
 
 class FormTokenInjectorTestCase(unittest.TestCase):
+
     def test_no_form(self):
         html = u'<div><img src="trac.png"/></div>'
         injector = FormTokenInjector(u'123123', io.StringIO())
@@ -94,6 +98,7 @@ class FormTokenInjectorTestCase(unittest.TestCase):
 
 
 class TracHTMLSanitizerTestCase(unittest.TestCase):
+
     def sanitize(self, html):
         return unicode(TracHTMLSanitizer().sanitize(html))
 
@@ -214,34 +219,34 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         )
         self.assertEqual('<div>XSS</div>', self.sanitize(html))
 
+    def test_cross_origin(self):
+        def test(expected, content):
+            html = HTML(content)
+            sanitizer = TracHTMLSanitizer(safe_schemes=['http', 'data'])
+            self.assertEqual(expected, unicode(html | sanitizer))
+
+        test(u'<div>x</div>',
+             u'<div style="background:url(http://example.org/login)">x</div>')
+        test(u'<div style="background:url(data:image/png,...)">x</div>',
+             u'<div style="background:url(data:image/png,...)">x</div>')
+        test(u'<div>x</div>',
+             u'<div style="background:url(//example.net/foo.png)">x</div>')
+        test(u'<div style="background:url(/path/to/foo.png)">safe</div>',
+             u'<div style="background:url(/path/to/foo.png)">safe</div>')
+        test(u'<div style="background:url(../../bar.png)">safe</div>',
+             u'<div style="background:url(../../bar.png)">safe</div>')
+        test(u'<div style="background:url(qux.png)">safe</div>',
+             u'<div style="background:url(qux.png)">safe</div>')
+
 
 if genshi:
     class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCase):
         def sanitize(self, html):
             return unicode(HTML(html, encoding='utf-8') | TracHTMLSanitizer())
 
-        def test_cross_origin(self):
-            def test(expected, content):
-                html = HTML(content)
-                sanitizer = TracHTMLSanitizer(safe_schemes=['http', 'data'])
-                self.assertEqual(expected, unicode(html | sanitizer))
-
-            test(u'<div>x</div>',
-                 u'<div style="background:url(http://example.org/login)">x'
-                 u'</div>')
-            test(u'<div style="background:url(data:image/png,...)">x</div>',
-                 u'<div style="background:url(data:image/png,...)">x</div>')
-            test(u'<div>x</div>',
-                 u'<div style="background:url(//example.net/foo.png)">x</div>')
-            test(u'<div style="background:url(/path/to/foo.png)">safe</div>',
-                 u'<div style="background:url(/path/to/foo.png)">safe</div>')
-            test(u'<div style="background:url(../../bar.png)">safe</div>',
-                 u'<div style="background:url(../../bar.png)">safe</div>')
-            test(u'<div style="background:url(qux.png)">safe</div>',
-                 u'<div style="background:url(qux.png)">safe</div>')
-
 
 class FindElementTestCase(unittest.TestCase):
+
     def test_find_element_with_tag(self):
         frag = tag(tag.p('Paragraph with a ',
                    tag.a('link', href='http://www.edgewall.org'),
