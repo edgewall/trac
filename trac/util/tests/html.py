@@ -99,8 +99,11 @@ class FormTokenInjectorTestCase(unittest.TestCase):
 
 class TracHTMLSanitizerTestCase(unittest.TestCase):
 
+    safe_schemes = ('http', 'data')
+
     def sanitize(self, html):
-        return unicode(TracHTMLSanitizer().sanitize(html))
+        sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes)
+        return unicode(sanitizer.sanitize(html))
 
     def test_input_type_password(self):
         html = u'<input type="password" />'
@@ -221,9 +224,7 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
 
     def test_cross_origin(self):
         def test(expected, content):
-            html = HTML(content)
-            sanitizer = TracHTMLSanitizer(safe_schemes=['http', 'data'])
-            self.assertEqual(expected, unicode(html | sanitizer))
+            self.assertEqual(expected, self.sanitize(content))
 
         test(u'<div>x</div>',
              u'<div style="background:url(http://example.org/login)">x</div>')
@@ -242,7 +243,8 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
 if genshi:
     class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCase):
         def sanitize(self, html):
-            return unicode(HTML(html, encoding='utf-8') | TracHTMLSanitizer())
+            sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes)
+            return unicode(HTML(html, encoding='utf-8') | sanitizer)
 
 
 class FindElementTestCase(unittest.TestCase):
