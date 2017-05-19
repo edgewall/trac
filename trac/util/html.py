@@ -351,7 +351,7 @@ class Fragment(object):
         return u''.join(escape(c, False) for c in self.children)
 
     def __str__(self):
-        return str(self.__unicode__())
+        return self.__unicode__().encode('utf-8')
 
     def __add__(self, other):
         return Fragment(self, other)

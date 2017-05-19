@@ -812,6 +812,11 @@ class HTTPExceptionTestCase(unittest.TestCase):
         self.assertEqual('500 Internal Server Error (<b>the message</b>)',
                          unicode(e2))
 
+    def test_fragment_with_unicode_as_argument(self):
+        e = HTTPInternalServerError(tag.b(u'thé méssägé'))
+        self.assertEqual(u'500 Internal Server Error (<b>thé méssägé</b>)',
+                         unicode(e))
+
 
 def test_suite():
     suite = unittest.TestSuite()

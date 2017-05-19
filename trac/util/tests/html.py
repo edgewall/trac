@@ -47,6 +47,14 @@ class FragmentTestCase(unittest.TestCase):
         self.assertEqual(Markup(u'0<b>0</b> and <b>0</b>'),
                          Markup(tag(0, tag.b(0L), ' and ', tag.b(0.0))))
 
+    def test_unicode(self):
+        self.assertEqual(u'<b>M</b>essäge',
+                         unicode(tag(tag.b('M'), u'essäge')))
+
+    def test_str(self):
+        self.assertEqual(b'<b>M</b>ess\xc3\xa4ge',
+                         str(tag(tag.b('M'), u'essäge')))
+
 
 class XMLElementTestCase(unittest.TestCase):
 
@@ -69,6 +77,14 @@ class ElementTestCase(unittest.TestCase):
                                     ' and ', tag.c(None), ' and ',
                                     tag.d('', class_=['a', '', 'b'],
                                           more__=['a']))))
+
+    def test_unicode(self):
+        self.assertEqual(u'<b>M<em>essäge</em></b>',
+                         unicode(tag.b('M', tag.em(u'essäge'))))
+
+    def test_str(self):
+        self.assertEqual(b'<b>M<em>ess\xc3\xa4ge</em></b>',
+                         str(tag.b('M', tag.em(u'essäge'))))
 
 
 class FormTokenInjectorTestCase(unittest.TestCase):

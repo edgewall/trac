@@ -241,9 +241,8 @@ class HTTPException(TracBaseError):
             self.detail = detail
         if args:
             self.detail = self.detail % args
-        super(HTTPException, self).__init__('%s %s (%s)' % (self.code,
-                                                            self.reason,
-                                                            self.detail))
+        arg = u'%s %s (%s)' % (self.code, self.reason, to_unicode(self.detail))
+        super(HTTPException, self).__init__(arg)
 
     @property
     def message(self):
