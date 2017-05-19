@@ -69,6 +69,11 @@
  font-size: 1.1em;
 }
 #prefs fieldset th { text-align: right }
+.ui-autocomplete {
+ max-height: 10em;
+ overflow-y: auto;
+ overflow-x: hidden;
+}
 
 h1 .numrows, h2 .numrows {
  margin-left: 1em;

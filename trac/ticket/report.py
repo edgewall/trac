@@ -36,8 +36,9 @@ from trac.util.text import (exception_to_unicode, quote_query_string,
 from trac.util.translation import _, tag_
 from trac.web.api import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
-                             add_link, add_notice, add_stylesheet,
-                             add_warning, auth_link, web_context)
+                             add_link, add_notice, add_script_data,
+                             add_stylesheet, add_warning, auth_link,
+                             web_context)
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -651,6 +652,16 @@ class ReportModule(Component):
                 pass
             if set(data['args']) - {'USER'}:
                 data['show_args_form'] = True
+                # Add values of all select-type ticket fields for autocomplete.
+                fields = TicketSystem(self.env).get_ticket_fields()
+                arg_values = {}
+                for arg in set(data['args']) - {'USER'}:
+                    attrs = fields.by_name(arg.lower())
+                    if attrs and 'options' in attrs:
+                        arg_values[attrs['name']] = attrs['options']
+                if arg_values:
+                    add_script_data(req, arg_values=arg_values)
+                    Chrome(self.env).add_jquery_ui(req)
             if missing_args:
                 add_warning(req, _(
                     'The following arguments are missing: %(args)s',

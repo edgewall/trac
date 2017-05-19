@@ -27,7 +27,17 @@ history and logs, available at http://trac.edgewall.org/.
     #   if show_args_form:
     <script type="text/javascript">
       jQuery(document).ready(function($) {
-      $("fieldset legend").enableFolding(false);
+        var reportfilters = $("#reportfilters");
+        reportfilters.find("legend").enableFolding(false);
+        reportfilters.find("input").each(function() {
+          var arg = this.name.toLowerCase();
+          if (arg in arg_values) {
+            $(this).autocomplete({
+              source: arg_values[arg],
+              minLength: 0
+            })
+          }
+        });
       });
     </script>
     #   endif
