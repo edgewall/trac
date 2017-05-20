@@ -20,13 +20,14 @@ from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import Resource, ResourceExistsError, ResourceNotFound
 from trac.test import EnvironmentStub, mkdtemp
+from trac.ticket.api import (
+    IMilestoneChangeListener, ITicketChangeListener, TicketSystem
+)
 from trac.ticket.model import (
     Ticket, Component, Milestone, Priority, Report, Type, Version
 )
 from trac.ticket.roadmap import MilestoneModule
-from trac.ticket.api import (
-    IMilestoneChangeListener, ITicketChangeListener, TicketSystem
-)
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, utc
 
 
@@ -78,13 +79,10 @@ class TicketTestCase(unittest.TestCase):
 
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = Ticket(self.env)
-        for k, v in kw.items():
-            ticket[k] = v
-        return ticket.insert()
+        ticket = insert_ticket(self.env, summary=summary, **kw)
+        return ticket.id
 
     def _create_a_ticket(self):
-        # 1. Creating ticket
         ticket = Ticket(self.env)
         ticket['reporter'] = 'santa'
         ticket['summary'] = 'Foo'
@@ -204,8 +202,7 @@ class TicketTestCase(unittest.TestCase):
     def test_change_empty_strings_stored_as_null(self):
         """Ticket fields with empty strings are NULL when changing ticket.
         """
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.populate({name: '' for name in ticket.editable_fields})
         ticket.save_changes()
 
@@ -215,11 +212,7 @@ class TicketTestCase(unittest.TestCase):
         """Whitespace is stripped from text fields.
         Test for regression of #11891.
         """
-        ticket = Ticket(self.env)
-        ticket['keywords'] = 'kw1'
-        ticket['milestone'] = 'milestone1'
-        ticket.insert()
-
+        ticket = insert_ticket(self.env, keywords='kw1', milestone='milestone1')
         ticket['keywords'] = '  kw1'
         ticket['milestone'] = 'milestone2'
         ticket.save_changes()
@@ -253,8 +246,7 @@ class TicketTestCase(unittest.TestCase):
             self.assertEqual(u'Ticket blah does not exist.', unicode(e))
 
     def test_can_save_ticket_without_explicit_comment(self):
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
 
         ticket['summary'] = 'another summary'
         ticket.save_changes('foo')
@@ -265,8 +257,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('', comment_change[4])
 
     def test_can_save_ticket_without_explicit_username(self):
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
 
         ticket['summary'] = 'another summary'
         ticket.save_changes()
@@ -275,16 +266,13 @@ class TicketTestCase(unittest.TestCase):
             self.assertIsNone(change[1])
 
     def test_comment_with_whitespace_only_is_not_saved(self):
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
 
         ticket.save_changes(comment='\n \n ')
         self.assertEqual(0, len(ticket.get_changelog()))
 
     def test_prop_whitespace_change_is_not_saved(self):
-        ticket = Ticket(self.env)
-        ticket.populate({'summary': 'ticket summary'})
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='ticket summary')
 
         ticket['summary'] = ' ticket summary '
         ticket.save_changes()
@@ -548,10 +536,8 @@ class TicketCommentTestCase(unittest.TestCase):
             core.ComponentMeta.deregister(listener)
 
     def _insert_ticket(self, summary, when, **kwargs):
-        ticket = Ticket(self.env)
-        for k, v in kwargs.iteritems():
-            ticket[k] = v
-        self.id = ticket.insert(when)
+        ticket = insert_ticket(self.env, summary=summary, when=when, **kwargs)
+        self.id = ticket.id
 
     def _modify_ticket(self, author, comment, when, replyto=None, **kwargs):
         ticket = Ticket(self.env, self.id)
@@ -1020,11 +1006,7 @@ class MilestoneTestCase(unittest.TestCase):
         return milestone
 
     def _insert_ticket(self, when=None, **kwargs):
-        ticket = Ticket(self.env)
-        for name, value in kwargs.iteritems():
-            ticket[name] = value
-        ticket.insert(when or self.created_at)
-        return ticket
+        return insert_ticket(self.env, when=when or self.created_at, **kwargs)
 
     def _update_ticket(self, ticket, author=None, comment=None, when=None,
                        **kwargs):
@@ -1393,9 +1375,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def test_delete_updates_tickets(self):
         """Tickets are updated when component is deleted."""
-        ticket = Ticket(self.env)
-        ticket['component'] = 'component1'
-        ticket.insert()
+        insert_ticket(self.env, component='component1')
         component1 = Component(self.env, 'component1')
 
         component1.delete()
@@ -1562,9 +1542,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def test_rename(self):
         """Rename a component."""
-        ticket = Ticket(self.env)
-        ticket['component'] = 'component1'
-        ticket.insert()
+        insert_ticket(self.env, component='component1')
         component = Component(self.env, 'component1')
         component.name = 'component3'
         component.update()

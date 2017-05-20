@@ -21,21 +21,13 @@ from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
+from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
 from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                timezone, to_utimestamp, user_time, utc)
 from trac.util.html import HTMLTransform
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
-
-
-def insert_ticket(env, **kw):
-    """Helper for inserting a ticket into the database"""
-    ticket = Ticket(env)
-    for k, v in kw.items():
-        ticket[k] = v
-    ticket.insert()
-    return ticket
 
 
 class TicketModuleTestCase(unittest.TestCase):
@@ -55,9 +47,7 @@ class TicketModuleTestCase(unittest.TestCase):
         """Create a ticket with `old_props` and apply properties
         in `new_props`.
         """
-        t = Ticket(self.env)
-        t.populate(old_props)
-        t.insert()
+        t = insert_ticket(self.env, **old_props)
         comment = new_props.pop('comment', None)
         t.populate(new_props)
         t.save_changes(author, comment=comment)
@@ -758,7 +748,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _create_ticket(self, reporter):
+    def _insert_ticket(self, reporter):
         return insert_ticket(self.env, reporter=reporter,
                              summary='The summary', description='The text.')
 
@@ -769,9 +759,9 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         """
         self.perm_sys.grant_permission('somebody1', 'TICKET_CHGPROP')
         self.perm_sys.grant_permission('somebody2', 'TICKET_APPEND')
-        ticket1 = self._create_ticket('somebody1')
-        ticket2 = self._create_ticket('somebody2')
-        ticket3 = self._create_ticket('somebody3')
+        ticket1 = self._insert_ticket('somebody1')
+        ticket2 = self._insert_ticket('somebody2')
+        ticket3 = self._insert_ticket('somebody3')
         action = 'TICKET_EDIT_DESCRIPTION'
 
         perm_cache = PermissionCache(self.env, 'somebody1', ticket1.resource)
@@ -793,7 +783,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         """Authenticated user cannot modify description of ticket they
         didn't report.
         """
-        ticket = self._create_ticket('somebodyelse')
+        ticket = self._insert_ticket('somebodyelse')
         perm_cache = PermissionCache(self.env, 'somebody', ticket.resource)
         action = 'TICKET_EDIT_DESCRIPTION'
 
@@ -805,7 +795,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         """Anonymous user cannot modify description of ticket they
         reported.
         """
-        ticket = self._create_ticket('anonymous')
+        ticket = self._insert_ticket('anonymous')
         perm_cache = PermissionCache(self.env, 'anonymous')
         action = 'TICKET_EDIT_DESCRIPTION'
 
@@ -815,7 +805,7 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
             action, perm_cache.username, ticket.resource, perm_cache))
 
     def _test_edit_ticket_comment(self, commenter, editor):
-        ticket = self._create_ticket(commenter)
+        ticket = self._insert_ticket(commenter)
         ticket.save_changes(commenter, comment='The comment')
         comment_resource = Resource('comment', 1, parent=ticket.resource)
         perm_cache = PermissionCache(self.env, editor, comment_resource)

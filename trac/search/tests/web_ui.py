@@ -18,6 +18,7 @@ import unittest
 from trac.search.web_ui import SearchModule
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.model import Ticket
+from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.web_ui import WikiModule
@@ -40,10 +41,7 @@ class SearchModuleTestCase(unittest.TestCase):
 
     def _insert_ticket(self, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = Ticket(self.env)
-        for k, v in kw.items():
-            ticket[k] = v
-        return ticket.insert()
+        return insert_ticket(self.env, **kw)
 
     def test_process_request_page_in_range(self):
         for _ in xrange(21):

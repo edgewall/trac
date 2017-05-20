@@ -18,6 +18,7 @@ from trac.resource import Resource
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import datetime_now, utc
 
 import unittest
@@ -36,10 +37,8 @@ class TicketSystemTestCase(unittest.TestCase):
 
     def _get_actions(self, ticket_dict):
         ts = TicketSystem(self.env)
-        ticket = Ticket(self.env)
-        ticket.populate(ticket_dict)
-        id = ticket.insert()
-        return ts.get_available_actions(self.req, Ticket(self.env, id))
+        ticket = insert_ticket(self.env, **ticket_dict)
+        return ts.get_available_actions(self.req, Ticket(self.env, ticket.id))
 
     def _get_ticket_field(self, field_name):
         fields = TicketSystem(self.env).get_ticket_fields()
@@ -271,7 +270,7 @@ class TicketSystemTestCase(unittest.TestCase):
                          updated_milestone_field['options'])
 
     def test_resource_exists_valid_resource_id(self):
-        Ticket(self.env).insert()
+        insert_ticket(self.env)
         r1 = Resource('ticket', 1)
         r2 = Resource('ticket', 2)
 

@@ -21,6 +21,7 @@ from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
 from trac.web.api import arg_list_to_args, parse_arg_list
 from trac.web.chrome import web_context
@@ -91,16 +92,16 @@ class QueryTestCase(unittest.TestCase):
         with self.env.db_transaction:
             ids = []
             for idx in xrange(self.n_tickets):
-                t = Ticket(self.env)
-                t['summary'] = 'Summary %d' % idx
-                t['owner'] = owner[idx % len(owner)]
-                t['type'] = type[idx % len(type)]
-                t['status'] = status[idx % len(status)]
-                t['priority'] = priority[idx % len(priority)]
-                t['milestone'] = milestone[idx % len(milestone)]
-                t['version'] = version[idx % len(version)]
-                t['keywords'] = keywords[idx % len(keywords)]
-                ids.append(t.insert(when=when + timedelta(days=idx * 10)))
+                t = insert_ticket(self.env, summary='Summary %d' % idx,
+                                  owner=owner[idx % len(owner)],
+                                  type=type[idx % len(type)],
+                                  status=status[idx % len(status)],
+                                  priority=priority[idx % len(priority)],
+                                  milestone=milestone[idx % len(milestone)],
+                                  version=version[idx % len(version)],
+                                  keywords=keywords[idx % len(keywords)],
+                                  when=when + timedelta(days=idx * 10))
+                ids.append(t.id)
                 t.save_changes(comment='...',
                                when=when + timedelta(days=idx * 10 + 1))
         return ids
@@ -458,11 +459,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 
     def test_constrained_by_id_and_custom_field(self):
         self.env.config.set('ticket-custom', 'foo', 'text')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe'
-        ticket['summary'] = 'Foo'
-        ticket['foo'] = 'blah'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe', summary='Foo',
+                               foo='blah')
 
         query = Query.from_string(self.env, 'id=%d-42&foo=blah' % ticket.id)
         tickets = query.execute(self.req)
@@ -489,13 +487,10 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         fields = ['col_%02d' % i for i in xrange(100)]
         for f in fields:
             self.env.config.set('ticket-custom', f, 'text')
-        with self.env.db_transaction as db:
-            ticket = Ticket(self.env)
-            ticket['reporter'] = 'joe'
-            ticket['summary'] = 'Foo'
-            for idx, f in enumerate(fields):
-                ticket[f] = '%d.%s' % (idx, f)
-            ticket.insert()
+        with self.env.db_transaction:
+            ticket = insert_ticket(self.env, reporter='joe', summary='Foo',
+                                   **{f: '%d.%s' % (idx, f)
+                                      for idx, f in enumerate(fields)})
 
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
@@ -543,12 +538,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         for f in fields:
             self.env.config.set('ticket-custom', f, 'text')
 
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe'
-        ticket['summary'] = 'Foo'
-        for idx, f in enumerate(fields):
-            ticket[f] = '%d.%s' % (idx, f)
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe', summary='Foo',
+                               **{f: '%d.%s' % (idx, f)
+                                  for idx, f in enumerate(fields)})
 
         string = 'col_00=0.col_00&order=id&col=id&col=reporter&col=summary' + \
                  ''.join('&col=' + f for f in fields)
@@ -958,11 +950,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         del tktsys.custom_fields
         with self.env.db_transaction as db:
             for value in ('foo', 'bar', 'baz', 'blah'):
-                t = Ticket(self.env)
-                t['reporter'] = 'joe'
-                t['summary'] = 'Summary "%s"' % value
-                t[name] = value
-                t.insert()
+                insert_ticket(self.env, reporter='joe',
+                              summary='Summary "%s"' % value,
+                              **{name: value})
             for name in [name]:
                 quoted[name] = db.quote(name)
         return quoted
@@ -1082,14 +1072,10 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         quoted = {}
         with self.env.db_transaction as db:
             for value in ('foo', 'bar', 'baz', 'blah'):
-                t = Ticket(self.env)
-                t['reporter'] = 'joe'
-                t['summary'] = 'Summary "%s"' % value
-                for name in columns:
-                    t[name] = '%s-%s' % (value, name)
-                for idx in xrange(ncols):
-                    t['col_%02d' % idx] = 'v'
-                t.insert()
+                attrs = {name: '%s-%s' % (value, name) for name in columns}
+                attrs.update({'col_%02d' % idx: 'v' for idx in xrange(ncols)})
+                insert_ticket(self.env, reporter='joe',
+                              summary='Summary "%s"' % value, **attrs)
             for name in columns:
                 quoted[name] = db.quote(name)
             for idx in xrange(ncols):
@@ -1234,14 +1220,11 @@ class QueryLinksTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def _insert_ticket(self, **attrs):
-        attrs.setdefault('reporter', 'joe')
-        attrs.setdefault('summary', 'Summary')
-        attrs.setdefault('status', 'new')
-        ticket = Ticket(self.env)
-        for name, value in attrs.iteritems():
-            ticket[name] = value
-        ticket.insert()
-        return ticket
+        reporter = attrs.pop('reporter', 'joe')
+        summary = attrs.pop('summary', 'Summary')
+        status = attrs.pop('status', 'new')
+        return insert_ticket(self.env, reporter=reporter, summary=summary,
+                             status=status, **attrs)
 
     def _format_link(self, query, label):
         return unicode(self.query_module._format_link(self.formatter, 'query',
@@ -1630,23 +1613,12 @@ QUERY_TEST_CASES = u"""
 
 def ticket_setup(tc):
     tc.env.config.set('ticket-custom', 'project', 'text')
-    ticket = Ticket(tc.env)
-    ticket.populate({'reporter': 'santa',
-                     'summary': 'This is the summary',
-                     'status': 'new',
-                     'project': 'xmas'})
-    ticket.insert()
-    ticket = Ticket(tc.env)
-    ticket.populate({'owner': 'elf',
-                     'summary': 'This is another summary',
-                     'status': 'assigned'})
-    ticket.insert()
-    ticket = Ticket(tc.env)
-    ticket.populate({'owner': 'santa',
-                     'summary': 'This is th third summary',
-                     'status': 'closed',
-                     'project': 'xmas'})
-    ticket.insert()
+    insert_ticket(tc.env, reporter='santa', summary='This is the summary',
+                  status='new', project='xmas')
+    insert_ticket(tc.env, owner='elf',
+                  summary='This is another summary', status='assigned')
+    insert_ticket(tc.env, owner='santa', status='closed',
+                  summary='This is th third summary', project='xmas')
 
     tc.env.config.set('milestone-groups', 'closed.status', 'closed')
     tc.env.config.set('milestone-groups', 'closed.query_args',

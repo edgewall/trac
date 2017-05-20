@@ -31,6 +31,7 @@ from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
 from trac.ticket.model import Ticket
 from trac.ticket.notification import (
     BatchTicketChangeEvent, TicketChangeEvent, TicketNotificationSystem)
+from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import datetime_now, utc
 
@@ -98,19 +99,12 @@ class RecipientTestCase(unittest.TestCase):
         smtpd.cleanup()
         self.env.reset_db()
 
-    def _create_ticket(self, props):
-        ticket = Ticket(self.env)
-        for k, v in props.iteritems():
-            ticket[k] = v
-        ticket.insert()
-        return ticket
+    def _insert_ticket(self, **props):
+        return insert_ticket(self.env, **props)
 
     def test_no_recipients(self):
         """No recipient case"""
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'anonymous'
-        ticket['summary'] = 'Foo'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='anonymous', summary='Foo')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
         sender = smtpd.get_sender()
@@ -122,9 +116,9 @@ class RecipientTestCase(unittest.TestCase):
     def _test_smtp_always_cc(self, key, sep):
         cc_list = ('joe.user@example.net', 'joe.bar@example.net')
         self.env.config.set('notification', key, sep.join(cc_list))
-        ticket = self._create_ticket({'reporter': 'joe.bar@example.org',
-                                      'owner': 'joe.user@example.net',
-                                      'summary': 'New ticket recipients'})
+        ticket = self._insert_ticket(reporter='joe.bar@example.org',
+                                     owner='joe.user@example.net',
+                                     summary='New ticket recipients')
 
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
@@ -152,12 +146,10 @@ class RecipientTestCase(unittest.TestCase):
         ticket_cc = ('joe.user@example.com', 'joe.bar@example.org')
         self.env.config.set('notification', 'smtp_always_cc',
                             ', '.join(always_cc))
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.bar@example.org'
-        ticket['owner'] = 'joe.user@example.net'
-        ticket['cc'] = ' '.join(ticket_cc)
-        ticket['summary'] = 'New ticket recipients'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe.bar@example.org',
+                               owner='joe.user@example.net',
+                               cc=' '.join(ticket_cc),
+                               summary='New ticket recipients')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
         for r in always_cc + ticket_cc + \
@@ -169,9 +161,7 @@ class RecipientTestCase(unittest.TestCase):
         always_cc = ('joe.user@example.net', 'joe.bar@example.net')
         self.env.config.set('notification', 'smtp_always_cc',
                             ', '.join(always_cc))
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='Foo')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
         for r in always_cc:
@@ -181,10 +171,8 @@ class RecipientTestCase(unittest.TestCase):
         """The `always_notify_updater` option."""
         def _test_updater(enabled):
             config_subscriber(self.env, updater=enabled)
-            ticket = Ticket(self.env)
-            ticket['reporter'] = 'joe.user@example.org'
-            ticket['summary'] = u'This is a súmmäry'
-            ticket.insert()
+            ticket = insert_ticket(self.env, reporter='joe.user@example.org',
+                                   summary=u'This is a súmmäry')
             now = datetime_now(utc)
             ticket.save_changes('joe.bar2@example.com', 'This is a change',
                                 when=now)
@@ -205,11 +193,9 @@ class RecipientTestCase(unittest.TestCase):
         """The `always_notify_owner` option."""
         def _test_reporter(enabled):
             config_subscriber(self.env, owner=enabled)
-            ticket = Ticket(self.env)
-            ticket['summary'] = 'Foo'
-            ticket['reporter'] = u'joe@example.org'
-            ticket['owner'] = u'jim@example.org'
-            ticket.insert()
+            ticket = insert_ticket(self.env, summary='Foo',
+                                   reporter=u'joe@example.org',
+                                   owner=u'jim@example.org')
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
@@ -228,10 +214,8 @@ class RecipientTestCase(unittest.TestCase):
         """Notification to reporter w/ updater option disabled (#3780)"""
         def _test_reporter(enabled):
             config_subscriber(self.env, reporter=enabled)
-            ticket = Ticket(self.env)
-            ticket['summary'] = 'Foo'
-            ticket['reporter'] = u'joe@example.org'
-            ticket.insert()
+            ticket = insert_ticket(self.env, summary='Foo',
+                                   reporter=u'joe@example.org')
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
@@ -250,12 +234,10 @@ class RecipientTestCase(unittest.TestCase):
         """Email addresses should be found only once in the recipient list."""
         self.env.config.set('notification', 'smtp_always_cc',
                             'joe.user@example.com')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user@example.com'
-        ticket['owner'] = 'joe.user@example.com'
-        ticket['cc'] = 'joe.user@example.com'
-        ticket['summary'] = 'No duplicates'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe.user@example.com',
+                               owner='joe.user@example.com',
+                               cc='joe.user@example.com',
+                               summary='No duplicates')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
         self.assertEqual(1, len(recipients))
@@ -264,12 +246,11 @@ class RecipientTestCase(unittest.TestCase):
     def test_long_forms(self):
         """Long forms of SMTP email addresses 'Display Name <address>'"""
         config_subscriber(self.env, updater=True, owner=True)
-        ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe" <joe.user@example.com>'
-        ticket['owner'] = 'Joe <joe.user@example.net>'
-        ticket['cc'] = u' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 '
-        ticket['summary'] = 'Long form'
-        ticket.insert()
+        ticket = insert_ticket(self.env,
+           reporter='"Joe" <joe.user@example.com>',
+           owner='Joe <joe.user@example.net>',
+           cc=u' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 ',
+           summary='Long form')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
         self.assertEqual(3, len(recipients))
@@ -298,23 +279,19 @@ class NotificationTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def _insert_ticket(self, **props):
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['summary'] = 'Summary'
-        for prop, value in props.iteritems():
-            ticket[prop] = value
-        ticket.insert()
-        return ticket
+        reporter = props.pop('reporter', 'joeuser')
+        summary = props.pop('summary', 'Summary')
+        return insert_ticket(self.env, reporter=reporter, summary=summary,
+                             **props)
 
     def test_structure(self):
         """Basic SMTP message structure (headers, body)"""
-        ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe User" <joe.user@example.org>'
-        ticket['owner'] = 'joe.user@example.net'
-        ticket['cc'] = 'joe.user@example.com, joe.bar@example.org, ' \
-                       'joe.bar@example.net'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env,
+                               reporter='"Joe User" <joe.user@example.org>',
+                               owner='joe.user@example.net',
+                               cc='joe.user@example.com, joe.bar@example.org, '
+                                  'joe.bar@example.net',
+                               summary='This is a summary')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -344,10 +321,9 @@ class NotificationTestCase(unittest.TestCase):
                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         tz = ['UT', 'GMT', 'EST', 'EDT', 'CST', 'CDT', 'MST', 'MDT',
               'PST', 'PDT']
-        ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe User" <joe.user@example.org>'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env,
+                               reporter='"Joe User" <joe.user@example.org>',
+                               summary='This is a summary')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -369,10 +345,9 @@ class NotificationTestCase(unittest.TestCase):
             self.env.config.set('notification', 'use_public_cc', public_cc)
             self.env.config.set('notification', 'smtp_always_bcc',
                                 'joe.foobar@example.net')
-            ticket = Ticket(self.env)
-            ticket['reporter'] = '"Joe User" <joe.user@example.org>'
-            ticket['summary'] = 'This is a summary'
-            ticket.insert()
+            ticket = insert_ticket(self.env,
+                                   reporter='"Joe User" <joe.user@example.org>',
+                                   summary='This is a summary')
             notify_ticket_created(self.env, ticket)
             message = smtpd.get_message()
             headers, body = parse_smtp_message(message)
@@ -403,10 +378,8 @@ class NotificationTestCase(unittest.TestCase):
         """Email addresses without a FQDN"""
         def _test_short_login(use_short_addr, username, address):
             config_subscriber(self.env, reporter=True)
-            ticket = Ticket(self.env)
-            ticket['reporter'] = username
-            ticket['summary'] = 'This is a summary'
-            ticket.insert()
+            ticket = insert_ticket(self.env, reporter=username,
+                                   summary='This is a summary')
             # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
@@ -446,10 +419,9 @@ class NotificationTestCase(unittest.TestCase):
         def _test_default_domain(enable):
             config_subscriber(self.env)
             self.env.config.set('notification', 'smtp_always_cc', '')
-            ticket = Ticket(self.env)
-            ticket['cc'] = 'joenodom, foo, bar, qux, joewithdom@example.com'
-            ticket['summary'] = 'This is a summary'
-            ticket.insert()
+            ticket = insert_ticket(self.env, cc='joenodom, foo, bar, qux, '
+                                                'joewithdom@example.com',
+                                   summary='This is a summary')
             # Be sure that at least one email address is valid, so that we
             # send a notification even if other addresses are not valid
             self.env.config.set('notification', 'smtp_always_cc',
@@ -487,11 +459,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.insert_users(
             [('joeuser', 'Joe User', 'user-joe@example.com'),
              ('jim@domain', 'Jim User', 'user-jim@example.com')])
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['owner'] = 'jim@domain'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joeuser', owner='jim@domain',
+                               summary='This is a summary')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -518,10 +487,8 @@ class NotificationTestCase(unittest.TestCase):
             return datetime(2016, 8, 21, 12, 34, 56, 987654, utc) + \
                    timedelta(seconds=delta)
         # Ticket creation uses the reporter
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert(when=modtime(0))
+        ticket = insert_ticket(self.env, reporter='joeuser',
+                               summary='This is a summary', when=modtime(0))
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -598,11 +565,9 @@ class NotificationTestCase(unittest.TestCase):
         self.env.insert_users(
             [('kerberos@example.com', 'No Email', ''),
              ('kerberos@example.org', 'With Email', 'kerb@example.net')])
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'kerberos@example.com'
-        ticket['owner'] = 'kerberos@example.org'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='kerberos@example.com',
+                               owner='kerberos@example.org',
+                               summary='This is a summary')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -621,12 +586,10 @@ class NotificationTestCase(unittest.TestCase):
         config_subscriber(self.env, reporter=True)
         self.env.config.set('notification', 'admit_domains',
                             'localdomain, server')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser@example.com'
-        ticket['summary'] = 'This is a summary'
-        ticket['cc'] = 'joe.user@localdomain, joe.user@unknown, ' \
-                       'joe.user@server'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joeuser@example.com',
+                               summary='This is a summary',
+                               cc='joe.user@localdomain, joe.user@unknown, '
+                                  'joe.user@server')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -646,11 +609,9 @@ class NotificationTestCase(unittest.TestCase):
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
         self.env.config.set('notification', 'mime_encoding', 'qp')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user@example.org'
-        # Forces non-ascii characters
-        ticket['summary'] = u'A_very %s súmmäry' % u' '.join(['long'] * 20)
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe.user@example.org',
+                               summary=u'A_very %s súmmäry'
+                                       % u' '.join(['long'] * 20))
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -662,40 +623,34 @@ class NotificationTestCase(unittest.TestCase):
     def test_mimebody_b64(self):
         """MIME Base64/utf-8 encoding"""
         self.env.config.set('notification', 'mime_encoding', 'base64')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a long enough summary to cause Trac ' \
-                            u'to generate a multi-line (2 lines) súmmäry'
-        ticket.insert()
+        summary = u'This is a long enough summary to cause Trac ' \
+                  u'to generate a multi-line (2 lines) súmmäry'
+        ticket = insert_ticket(self.env, reporter='joe.user@example.org',
+                               summary=summary)
         self._validate_mimebody((base64, 'base64', 'utf-8'), ticket, True)
 
     def test_mimebody_qp(self):
         """MIME QP/utf-8 encoding"""
         self.env.config.set('notification', 'mime_encoding', 'qp')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user@example.org'
-        ticket['summary'] = u'This is a long enough summary to cause Trac ' \
-                            u'to generate a multi-line (2 lines) súmmäry'
-        ticket.insert()
+        summary = u'This is a long enough summary to cause Trac ' \
+                  u'to generate a multi-line (2 lines) súmmäry'
+        ticket = insert_ticket(self.env, reporter='joe.user@example.org',
+                               summary=summary)
         self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'),
                                 ticket, True)
 
     def test_mimebody_none_7bit(self):
         """MIME None encoding resulting in 7bit"""
         self.env.config.set('notification', 'mime_encoding', 'none')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user'
-        ticket['summary'] = u'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe.user',
+                               summary=u'This is a summary')
         self._validate_mimebody((None, '7bit', 'utf-8'), ticket, True)
 
     def test_mimebody_none_8bit(self):
         """MIME None encoding resulting in 8bit"""
         self.env.config.set('notification', 'mime_encoding', 'none')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user'
-        ticket['summary'] = u'This is a summary for Jöe Usèr'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joe.user',
+                               summary=u'This is a summary for Jöe Usèr')
         self._validate_mimebody((None, '8bit', 'utf-8'), ticket, True)
 
     def _test_msgid_digest(self, hash_type):
@@ -704,10 +659,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_cc', '')
         if hash_type:
             self.env.config.set('notification', 'message_id_hash', hash_type)
-        ticket = Ticket(self.env)
-        ticket['reporter'] = u'"Jöe Usèr" <joe.user@example.org>'
-        ticket['summary'] = u'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary=u'This is a summary',
+                               reporter=u'"Jöe Usèr" <joe.user@example.org>')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -728,9 +681,7 @@ class NotificationTestCase(unittest.TestCase):
     def test_add_to_cc_list(self):
         """Members added to CC list receive notifications."""
         config_subscriber(self.env)
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='Foo')
         ticket['cc'] = 'joe.user1@example.net'
         now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Added to cc', now)
@@ -741,10 +692,8 @@ class NotificationTestCase(unittest.TestCase):
     def test_previous_cc_list(self):
         """Members removed from CC list receive notifications"""
         config_subscriber(self.env)
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Foo'
-        ticket['cc'] = 'joe.user1@example.net'
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='Foo',
+                               cc='joe.user1@example.net')
         ticket['cc'] = 'joe.user2@example.net'
         now = datetime_now(utc)
         ticket.save_changes('joe.bar@example.com', 'Removed from cc', now)
@@ -758,10 +707,8 @@ class NotificationTestCase(unittest.TestCase):
            if always_notify_owner is set to True"""
         def _test_owner(enabled):
             config_subscriber(self.env, owner=enabled)
-            ticket = Ticket(self.env)
-            ticket['summary'] = 'Foo'
-            ticket['owner'] = prev_owner = 'joe.user1@example.net'
-            ticket.insert()
+            prev_owner = 'joe.user1@example.net'
+            ticket = insert_ticket(self.env, summary='Foo', owner=prev_owner)
             ticket['owner'] = new_owner = 'joe.user2@example.net'
             now = datetime_now(utc)
             ticket.save_changes('joe.bar@example.com', 'Changed owner', now)
@@ -1318,10 +1265,8 @@ Security sensitive:  0                           |          Blocking:
         self.assertEqual(expected, '\n'.join(lines))
 
     def test_notification_does_not_alter_ticket_instance(self):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'My Summary'
-        ticket['description'] = 'Some description'
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='My Summary',
+                               description='Some description')
         notify_ticket_created(self.env, ticket)
         self.assertIsNotNone(smtpd.get_message())
         self.assertEqual('My Summary', ticket['summary'])
@@ -1335,10 +1280,8 @@ Security sensitive:  0                           |          Blocking:
 
         self.env.config.set('notification', 'smtp_from', 'trac@example.com')
         self.env.config.set('notification', 'mime_encoding', 'base64')
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['summary'] = 'This is a summary'
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joeuser',
+                               summary='This is a summary')
 
         def notify(from_name):
             self.env.config.set('notification', 'smtp_from_name', from_name)
@@ -1364,10 +1307,7 @@ Security sensitive:  0                           |          Blocking:
         self.env.config.set('notification', 'smtp_from', 'trac@example.com')
         self.env.config.set('notification', 'mime_encoding', 'base64')
         summary = u'=?utf-8?q?****?='
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['summary'] = summary
-        ticket.insert()
+        ticket = insert_ticket(self.env, reporter='joeuser', summary=summary)
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -1383,10 +1323,8 @@ Security sensitive:  0                           |          Blocking:
             self.assertEqual(str(ticket.id), headers.get('X-Trac-Ticket-ID'))
 
         when = datetime(2015, 1, 1, tzinfo=utc)
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'joeuser'
-        ticket['summary'] = 'Summary'
-        ticket.insert(when=when)
+        ticket = insert_ticket(self.env, reporter='joeuser', summary='Summary',
+                               when=when)
         notify_ticket_created(self.env, ticket)
         headers, body = parse_smtp_message(smtpd.get_message())
         validates(headers)
@@ -1534,16 +1472,13 @@ ${prefix} (${
         smtpd.cleanup()
         self.env.reset_db()
 
-    def _create_ticket(self):
-        ticket = Ticket(self.env)
-        ticket['reporter'] = 'user@domain.com'
-        ticket['summary'] = 'The summary'
-        ticket['description'] = 'The description'
-        ticket.insert()
-        return ticket
+    def _insert_ticket(self):
+        return insert_ticket(self.env, reporter='user@domain.com',
+                             summary='The summary',
+                             description='The description')
 
     def test_format_subject_new_ticket(self):
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
 
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
@@ -1552,7 +1487,7 @@ ${prefix} (${
         self.assertEqual('[TracTest] #1: The summary', headers['Subject'])
 
     def test_format_subject_ticket_change(self):
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['description'] = 'The changed description'
         ticket.save_changes(author='user@domain.com')
 
@@ -1563,7 +1498,7 @@ ${prefix} (${
         self.assertEqual('Re: [TracTest] #1: The summary', headers['Subject'])
 
     def test_format_subject_ticket_summary_changed(self):
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['summary'] = 'The changed summary'
         ticket.save_changes(author='user@domain.com')
 
@@ -1576,7 +1511,7 @@ ${prefix} (${
 
     def test_format_subject_custom_template_new_ticket(self):
         """Format subject with a custom template for a new ticket."""
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         self.env.config.set('notification', 'ticket_subject_template',
                             self.custom_template)
 
@@ -1591,7 +1526,7 @@ ${prefix} (${
         """Format subject with a custom template for a ticket with
         a changed property.
         """
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['description'] = 'The changed description'
         ticket.save_changes(author='user@domain.com')
         self.env.config.set('notification', 'ticket_subject_template',
@@ -1608,7 +1543,7 @@ ${prefix} (${
         """Format subject with a custom template for a ticket with
         a changed property and a comment.
         """
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['description'] = 'The changed description'
         ticket.save_changes(author='user@domain.com', comment='the comment')
         self.env.config.set('notification', 'ticket_subject_template',
@@ -1625,7 +1560,7 @@ ${prefix} (${
         """Format subject with a custom template for a ticket with
         changed status.
         """
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['status'] = 'accepted'
         ticket.save_changes(author='user@domain.com')
         self.env.config.set('notification', 'ticket_subject_template',
@@ -1640,7 +1575,7 @@ ${prefix} (${
 
     def test_format_subject_custom_template_closed_ticket(self):
         """Format subject with a custom template for a closed ticket."""
-        ticket = self._create_ticket()
+        ticket = self._insert_ticket()
         ticket['status'] = 'closed'
         ticket['resolution'] = 'worksforme'
         ticket.save_changes(author='user@domain.com')
@@ -1668,10 +1603,8 @@ class AttachmentNotificationTestCase(unittest.TestCase):
         self.env.reset_db_and_disk()
 
     def _insert_attachment(self, author):
-        ticket = Ticket(self.env)
-        ticket['summary'] = 'Ticket summary'
-        ticket['reporter'] = author
-        ticket.insert()
+        ticket = insert_ticket(self.env, summary='Ticket summary',
+                               reporter=author)
         attachment = Attachment(self.env, 'ticket', ticket.id)
         attachment.description = "The attachment description"
         attachment.author = author
@@ -1749,14 +1682,12 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
                     reporter = 'reporter@example.org' \
                                if idx == 1 else 'anonymous'
                     cc = 'cc1@example.org, cc2@example.org' if idx == 2 else ''
-                    ticket = Ticket(self.env)
-                    ticket['summary'] = 'Summary %s:%d' % (priority, idx)
-                    ticket['priority'] = priority
-                    ticket['owner'] = owner
-                    ticket['reporter'] = reporter
-                    ticket['cc'] = cc
                     when = datetime(2001, 7, 12, 12, 34, idx, 0, utc)
-                    self.tktids.append(ticket.insert(when=when))
+                    ticket = insert_ticket(self.env, summary='Summary %s:%d'
+                                                             % (priority, idx),
+                                           priority=priority, owner=owner,
+                                           reporter=reporter, cc=cc, when=when)
+                    self.tktids.append(ticket.id)
         self.tktids.reverse()
         config_subscriber(self.env, updater=True, reporter=True)
 

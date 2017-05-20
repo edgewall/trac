@@ -22,20 +22,12 @@ from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Component, Ticket
+from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util import create_file
 from trac.util.datefmt import to_utimestamp
 from trac.web.api import RequestDone
 from tracopt.perm.authz_policy import AuthzPolicy
-
-
-def insert_ticket(env, **kw):
-    """Helper for inserting a ticket into the database"""
-    ticket = Ticket(env)
-    for k, v in kw.items():
-        ticket[k] = v
-    ticket.insert()
-    return ticket
 
 
 class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
@@ -95,25 +87,19 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self._add_component('component3', 'cowner3')
         self._add_component('component4', 'cowner4')
 
-        ticket = Ticket(self.env)
-        ticket.populate({
-            'reporter': 'reporter1',
-            'summary': 'the summary',
-            'component': 'component3',
-            'owner': 'cowner3',
-            'status': 'new',
-        })
-        tkt_id = ticket.insert()
+        ticket = insert_ticket(self.env, reporter='reporter1',
+                               summary='the summary', component='component3',
+                               owner='cowner3', status='new')
 
         req = MockRequest(self.env, method='POST', args={
-            'id': tkt_id,
+            'id': ticket.id,
             'field_component': 'component4',
             'submit': True,
             'action': 'leave',
             'view_time': str(to_utimestamp(ticket['changetime'])),
         })
         self.assertRaises(RequestDone, self.ticket_module.process_request, req)
-        ticket = Ticket(self.env, tkt_id)
+        ticket = Ticket(self.env, ticket.id)
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('cowner4', ticket['owner'])
@@ -125,17 +111,12 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self._add_component('component3', 'cowner3')
         self._add_component('component4', 'cowner4')
 
-        ticket = Ticket(self.env)
-        ticket.populate({
-            'reporter': 'reporter1',
-            'summary': 'the summary',
-            'component': 'component3',
-            'status': 'new',
-        })
-        tkt_id = ticket.insert()
+        ticket = insert_ticket(self.env, reporter='reporter1',
+                               summary='the summary', component='component3',
+                               status='new')
 
         req = MockRequest(self.env, method='POST', args={
-            'id': tkt_id,
+            'id': ticket.id,
             'field_component': 'component4',
             'submit': True,
             'action': 'change_owner',
@@ -143,7 +124,7 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             'view_time': str(to_utimestamp(ticket['changetime'])),
         })
         self.assertRaises(RequestDone, self.ticket_module.process_request, req)
-        ticket = Ticket(self.env, tkt_id)
+        ticket = Ticket(self.env, ticket.id)
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('owner1', ticket['owner'])
@@ -155,25 +136,19 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self._add_component('component3', 'cowner3')
         self._add_component('component4', 'cowner4')
 
-        ticket = Ticket(self.env)
-        ticket.populate({
-            'reporter': 'reporter1',
-            'summary': 'the summary',
-            'component': 'component3',
-            'owner': 'owner1',
-            'status': 'new',
-        })
-        tkt_id = ticket.insert()
+        ticket = insert_ticket(self.env, reporter='reporter1',
+                               summary='the summary', component='component3',
+                               owner='owner1', status='new')
 
         req = MockRequest(self.env, method='POST', args={
-            'id': tkt_id,
+            'id': ticket.id,
             'field_component': 'component4',
             'submit': True,
             'action': 'leave',
             'view_time': str(to_utimestamp(ticket['changetime'])),
         })
         self.assertRaises(RequestDone, self.ticket_module.process_request, req)
-        ticket = Ticket(self.env, tkt_id)
+        ticket = Ticket(self.env, ticket.id)
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('owner1', ticket['owner'])
@@ -185,25 +160,19 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self._add_component('component3', 'cowner3')
         self._add_component('component4', '')
 
-        ticket = Ticket(self.env)
-        ticket.populate({
-            'reporter': 'reporter1',
-            'summary': 'the summary',
-            'component': 'component3',
-            'owner': 'cowner3',
-            'status': 'new',
-        })
-        tkt_id = ticket.insert()
+        ticket = insert_ticket(self.env, reporter='reporter1',
+                               summary='the summary', component='component3',
+                               owner='cowner3', status='new')
 
         req = MockRequest(self.env, method='POST', args={
-            'id': tkt_id,
+            'id': ticket.id,
             'field_component': 'component4',
             'submit': True,
             'action': 'leave',
             'view_time': str(to_utimestamp(ticket['changetime'])),
         })
         self.assertRaises(RequestDone, self.ticket_module.process_request, req)
-        ticket = Ticket(self.env, tkt_id)
+        ticket = Ticket(self.env, ticket.id)
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('cowner3', ticket['owner'])
@@ -246,9 +215,7 @@ class ResetActionTestCase(unittest.TestCase):
         self.ctlr = TicketSystem(self.env).action_controllers[0]
         self.req1 = MockRequest(self.env, authname='user1')
         self.req2 = MockRequest(self.env, authname='user2')
-        self.ticket = Ticket(self.env)
-        self.ticket['status'] = 'invalid'
-        self.ticket.insert()
+        self.ticket = insert_ticket(self.env, status='invalid')
 
     def tearDown(self):
         self.env.reset_db()
@@ -298,9 +265,7 @@ class SetOwnerAttributeTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.perm_sys = PermissionSystem(self.env)
         self.ctlr = TicketSystem(self.env).action_controllers[0]
-        self.ticket = Ticket(self.env)
-        self.ticket['status'] = 'new'
-        self.ticket.insert()
+        self.ticket = insert_ticket(self.env, status='new')
         with self.env.db_transaction as db:
             for user in ('user1', 'user2', 'user3', 'user4'):
                 db("INSERT INTO session VALUES (%s, %s, %s)", (user, 1, 0))
@@ -385,9 +350,7 @@ class RestrictOwnerTestCase(unittest.TestCase):
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
         self.ctlr = TicketSystem(self.env).action_controllers[0]
         self.req1 = MockRequest(self.env, authname='user1')
-        self.ticket = Ticket(self.env)
-        self.ticket['status'] = 'new'
-        self.ticket.insert()
+        self.ticket = insert_ticket(self.env, status='new')
 
     def tearDown(self):
         self.env.reset_db()

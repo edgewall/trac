@@ -19,6 +19,7 @@ from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.test import EnvironmentStub
 from trac.ticket.model import Ticket
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import get_datetime_format_hint
 
 
@@ -218,7 +219,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_remove_ok(self):
         """Ticket is successfully deleted."""
-        Ticket(self.env).insert()
+        insert_ticket(self.env)
         rv, output = self.execute('ticket remove 1')
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
@@ -231,22 +232,21 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_remove_error_ticket_id_not_an_int(self):
         """Error reported when ticket id is not an int."""
-        Ticket(self.env).insert()
+        insert_ticket(self.env)
         rv, output = self.execute('ticket remove a')
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_ticket_remove_error_invalid_ticket_id(self):
         """ResourceNotFound error reported when ticket does not exist."""
-        Ticket(self.env).insert()
+        insert_ticket(self.env)
         rv, output = self.execute('ticket remove 2')
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_ticket_comment_remove_ok(self):
         """Ticket comment is successfully deleted."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.save_changes('user1', 'the comment')
         rv, output = self.execute('ticket remove_comment 1 1')
         self.assertEqual(0, rv, output)
@@ -260,16 +260,14 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_comment_remove_error_no_comment_argument(self):
         """Error reported when comment# argument is missing."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         rv, output = self.execute('ticket remove_comment 1')
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
     def test_ticket_comment_remove_error_ticket_id_not_an_int(self):
         """ResourceNotFound error reported when comment does not exist."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.save_changes('user1', 'the comment')
         rv, output = self.execute('ticket remove_comment a 1')
         self.assertEqual(2, rv, output)
@@ -277,8 +275,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_comment_remove_error_comment_id_not_an_int(self):
         """ResourceNotFound error reported when comment does not exist."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.save_changes('user1', 'the comment')
         rv, output = self.execute('ticket remove_comment 1 a')
         self.assertEqual(2, rv, output)
@@ -286,8 +283,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_comment_remove_error_invalid_ticket_id(self):
         """ResourceNotFound error reported when ticket does not exist."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.save_changes('user1', 'the comment')
         rv, output = self.execute('ticket remove_comment 2 1')
         self.assertEqual(2, rv, output)
@@ -295,8 +291,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_ticket_comment_remove_error_invalid_comment_id(self):
         """ResourceNotFound error reported when comment does not exist."""
-        ticket = Ticket(self.env)
-        ticket.insert()
+        ticket = insert_ticket(self.env)
         ticket.save_changes('user1', 'the comment')
         rv, output = self.execute('ticket remove_comment 1 2')
         self.assertEqual(2, rv, output)

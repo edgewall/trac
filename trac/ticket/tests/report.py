@@ -23,6 +23,7 @@ from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
 from trac.ticket.report import Report, ReportModule
 from trac.test import EnvironmentStub, MockRequest
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
@@ -309,10 +310,8 @@ class ReportModuleTestCase(unittest.TestCase):
                 'SELECT * FROM ticket WHERE milestone=$M AND owner=$USER',
                 'Show tickets on $M for $USER')
             for milestone in ('milestone1', 'milestone2'):
-                ticket = Ticket(self.env)
-                ticket.populate({'status': 'new', 'summary': 'Test 1',
-                                 'owner': 'joe', 'milestone': milestone})
-                ticket.insert()
+                insert_ticket(self.env, status='new', summary='Test 1',
+                              owner='joe', milestone=milestone)
         req = MockRequest(self.env, path_info='/report/%d' % id_,
                           authname='joe', args={'M': 'milestone2'})
         self.assertTrue(self.report_module.match_request(req))
@@ -332,10 +331,8 @@ class ReportModuleTestCase(unittest.TestCase):
                 'SELECT * FROM ticket WHERE milestone=$M AND owner=$USER\r\n',
                 'Show tickets on $M for $USER')
             for milestone in ('milestone1', 'milestone2'):
-                ticket = Ticket(self.env)
-                ticket.populate({'status': 'new', 'summary': 'Test 1',
-                                 'owner': 'joe', 'milestone': milestone})
-                ticket.insert()
+                insert_ticket(self.env, status='new', summary='Test 1',
+                              owner='joe', milestone=milestone)
         req = MockRequest(self.env, path_info='/report/%d' % id_,
                           authname='joe')
         self.assertTrue(self.report_module.match_request(req))
@@ -358,12 +355,7 @@ class ExecuteReportTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def _insert_ticket(self, when=None, **kwargs):
-        ticket = Ticket(self.env)
-        for name, value in kwargs.iteritems():
-            ticket[name] = value
-        ticket['status'] = 'new'
-        ticket.insert(when=when)
-        return ticket
+        return insert_ticket(self.env, when=when, **kwargs)
 
     def _save_ticket(self, ticket, author=None, comment=None, when=None,
                      **kwargs):

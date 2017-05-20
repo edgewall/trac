@@ -20,6 +20,7 @@ from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket import api, default_workflow, model, web_ui
 from trac.ticket.batch import BatchModifyModule
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import web_context
@@ -47,14 +48,6 @@ class ChangeListTestCase(unittest.TestCase):
 
     def _assign_list_test_helper(self, original, new):
         return self._change_list_test_helper(original, new, '', '=')
-
-    def _insert_ticket(self, summary, **kw):
-        """Helper for inserting a ticket into the database"""
-        ticket = model.Ticket(self.env)
-        ticket['summary'] = summary
-        for k, v in kw.items():
-            ticket[k] = v
-        return ticket.insert()
 
     # Assign list items
 
@@ -233,11 +226,8 @@ class BatchModifyTestCase(unittest.TestCase):
 
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
-        ticket = model.Ticket(self.env)
-        ticket['summary'] = summary
-        for k, v in kw.items():
-            ticket[k] = v
-        return ticket.insert()
+        ticket = insert_ticket(self.env, summary=summary, **kw)
+        return ticket.id
 
     def _insert_component(self, name):
         component = model.Component(self.env)
@@ -438,11 +428,10 @@ class BatchModifyTestCase(unittest.TestCase):
 
         prio_ids = {}
         for i in xrange(20):
-            t = model.Ticket(self.env)
-            t['summary'] = 'Ticket %d' % i
-            t['priority'] = ('', 'minor', 'major', 'critical')[i % 4]
-            tktid = t.insert()
-            prio_ids.setdefault(t['priority'], []).append(tktid)
+            priority = ('', 'minor', 'major', 'critical')[i % 4]
+            t = insert_ticket(self.env, summary='Ticket %d' % i,
+                              priority=priority)
+            prio_ids.setdefault(t['priority'], []).append(t.id)
         tktids = prio_ids['critical'] + prio_ids['major'] + \
                  prio_ids['minor'] + prio_ids['']
 

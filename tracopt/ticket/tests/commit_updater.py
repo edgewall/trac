@@ -17,6 +17,7 @@ from datetime import datetime
 from trac.test import EnvironmentStub, Mock
 from trac.tests.contentgen import random_sentence
 from trac.ticket.model import Ticket
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import Repository, RepositoryManager
 from trac.wiki.tests import formatter
@@ -39,10 +40,8 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
     def _make_tickets(self, num):
         self.tickets = []
         for i in xrange(num):
-            ticket = Ticket(self.env)
-            ticket['reporter'] = 'someone'
-            ticket['summary'] = random_sentence()
-            ticket.insert()
+            ticket = insert_ticket(self.env, reporter='someone',
+                                   summary=random_sentence())
             self.tickets.append(ticket)
 
     def test_changeset_added(self):
@@ -109,10 +108,7 @@ This is the first comment after an edit. Refs #1, #2.
 def macro_setup(tc):
     tc.env = EnvironmentStub(enable=('trac.*',
                                      'tracopt.ticket.commit_updater.*',))
-    ticket = Ticket(tc.env)
-    ticket['summary'] = 'the summary'
-    ticket['status'] = 'new'
-    ticket.insert()
+    insert_ticket(tc.env, summary='the summary', status='new')
     def _get_repository(reponame):
         return Mock(get_changeset=_get_changeset, resource=None)
     def _get_changeset(rev=None):

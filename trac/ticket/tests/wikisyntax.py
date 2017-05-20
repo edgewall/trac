@@ -19,6 +19,7 @@ from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.ticket.roadmap import RoadmapModule
 from trac.ticket.model import Milestone, Ticket
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
                                utc)
 from trac.wiki.tests import formatter
@@ -143,12 +144,8 @@ def ticket_setup(tc):
     config = tc.env.config
     config.set('ticket-custom', 'custom1', 'text')
     config.save()
-    ticket = Ticket(tc.env)
-
-    ticket.populate({'reporter': 'santa',
-                     'summary': 'This is the summary',
-                     'status': 'new'})
-    ticket.insert()
+    insert_ticket(tc.env, reporter='santa', summary='This is the summary',
+                  status='new')
 
 def ticket_teardown(tc):
     config = tc.env.config
@@ -442,16 +439,10 @@ New tickets: <span><a class="new" href="/ticket/2" title="This is another summar
 """
 
 def query2_setup(tc):
-    ticket = Ticket(tc.env)
-    ticket.populate({'reporter': 'santa',
-                     'summary': 'This is the summary',
-                     'status': 'new'})
-    ticket.insert()
-    ticket = Ticket(tc.env)
-    ticket.populate({'reporter': 'claus',
-                     'summary': 'This is another summary',
-                     'status': 'new'})
-    ticket.insert()
+    insert_ticket(tc.env, reporter='santa', summary='This is the summary',
+                  status='new')
+    insert_ticket(tc.env, reporter='claus', summary='This is another summary',
+                  status='new')
 
 def query2_teardown(tc):
     tc.env.reset_db()
@@ -563,17 +554,13 @@ comment::ticket:
 # to fix it for now.
 
 def comment_setup(tc):
-    ticket1 = Ticket(tc.env)
-    ticket1.populate({'reporter': 'santa',
-                      'summary': 'This is the summary for ticket 1',
-                      'status': 'new'})
-    ticket1.insert()
+    ticket1 = insert_ticket(tc.env, reporter='santa',
+                            summary='This is the summary for ticket 1',
+                            status='new')
     ticket1.save_changes(comment='This is the comment for ticket 1')
-    ticket2 = Ticket(tc.env)
-    ticket2.populate({'reporter': 'claws',
-                      'summary': 'This is the summary for ticket 2',
-                      'status': 'closed'})
-    ticket2.insert()
+    ticket2 = insert_ticket(tc.env, reporter='claws',
+                            summary='This is the summary for ticket 2',
+                            status='closed')
     ticket2.save_changes(comment='This is the comment for ticket 2')
 
 def comment_teardown(tc):

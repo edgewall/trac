@@ -17,6 +17,7 @@ import unittest
 from trac.mimeview.api import Mimeview
 from trac.test import EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.model import Ticket
+from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 
 
@@ -35,25 +36,15 @@ class TicketConversionTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def _create_a_ticket(self):
-        # 1. Creating ticket
-        ticket = Ticket(self.env)
-        ticket['owner'] = ''
-        ticket['reporter'] = 'santa'
-        ticket['summary'] = 'Foo'
-        ticket['description'] = 'Bar'
-        ticket['foo'] = 'This is a custom field'
-        ticket.insert()
-        return ticket
+        return insert_ticket(self.env, owner='', reporter='santa',
+                             summary='Foo', description='Bar',
+                             foo='This is a custom field')
 
     def _create_a_ticket_with_email(self):
-        ticket = Ticket(self.env)
-        ticket['owner'] = 'joe@example.org'
-        ticket['reporter'] = 'santa@example.org'
-        ticket['cc'] = 'cc1, cc2@example.org'
-        ticket['summary'] = 'Foo'
-        ticket['description'] = 'Bar'
-        ticket.insert()
-        return ticket
+        return insert_ticket(self.env, owner='joe@example.org',
+                             reporter='santa@example.org',
+                             cc='cc1, cc2@example.org', summary='Foo',
+                             description='Bar')
 
     def test_conversions(self):
         conversions = self.mimeview.get_supported_conversions(

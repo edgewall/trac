@@ -22,6 +22,7 @@ from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
     RoadmapModule, TicketGroupStats, get_tickets_for_all_milestones,
     get_tickets_for_milestone)
+from trac.ticket.test import insert_ticket
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import web_context
@@ -95,18 +96,12 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.milestone2.name = 'Test2'
         self.milestone2.insert()
 
-        tkt1 = Ticket(self.env)
-        tkt1.populate({'summary': 'Foo', 'milestone': 'Test',
-                       'owner': 'foman', 'status': 'new'})
-        tkt1.insert()
-        tkt2 = Ticket(self.env)
-        tkt2.populate({'summary': 'Bar', 'milestone': 'Test',
-                        'status': 'closed', 'owner': 'barman'})
-        tkt2.insert()
-        tkt3 = Ticket(self.env)
-        tkt3.populate({'summary': 'Sum', 'milestone': 'Test',
-                       'owner': 'suman', 'status': 'reopened'})
-        tkt3.insert()
+        tkt1 = insert_ticket(self.env, summary='Foo', milestone='Test',
+                             owner='foman', status='new')
+        tkt2 = insert_ticket(self.env, summary='Bar', milestone='Test',
+                             status='closed', owner='barman')
+        tkt3 = insert_ticket(self.env, summary='Sum', milestone='Test',
+                             owner='suman', status='reopened')
         self.tkt1 = tkt1
         self.tkt2 = tkt2
         self.tkt3 = tkt3
