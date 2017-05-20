@@ -62,7 +62,7 @@
   ${group_heading(*groups[0]) if groups}
 
   <table class="listing tickets">
-    <thead>
+    <thead class="trac-query-heading">
       # macro column_headers()
       <tr class="trac-columns">
         # for header in headers:
@@ -84,7 +84,7 @@
     # with num_cols = len(headers) + (1 if batch_modify else 0)
     #   for groupname, results in groups:
     #     if not loop.first:
-    <tbody>
+    <tbody class="trac-query-heading">
       #     if groupname is not none:
       <tr class="trac-group">
         <th colspan="${num_cols}">
@@ -95,7 +95,7 @@
       ${column_headers()}
     </tbody>
     #     endif
-    <tbody>
+    <tbody class="trac-query-results">
       #   if not results:
       <tr class="even">
         <td colspan="${num_cols}">${_("No tickets found")}</td>
