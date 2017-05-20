@@ -12,11 +12,12 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import tempfile
 
 from trac.core import TracError
 from trac.util.compat import crypt
-from trac.test import EnvironmentStub, MockRequest
-from trac.web.auth import BasicAuthentication, LoginModule
+from trac.test import EnvironmentStub, MockRequest, rmtree
+from trac.web.auth import BasicAuthentication, DigestAuthentication, LoginModule
 
 from Cookie import SimpleCookie as Cookie
 import unittest
@@ -147,30 +148,81 @@ class LoginModuleTestCase(unittest.TestCase):
                               "WHERE cookie='123'"))
 
 
-class BasicAuthenticationTestCase(unittest.TestCase):
+class DigestAuthenticationTestCase(unittest.TestCase):
+
     def setUp(self):
-        filename = os.path.join(os.path.split(__file__)[0], 'htpasswd.txt')
-        self.auth = BasicAuthentication(filename, 'realm')
+        self.dir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.dir, 'htdigest.txt')
 
     def tearDown(self):
-        self.auth = None
+        rmtree(self.dir)
+
+    def test_extra_entries_ignored(self):
+        """Extra entries and comments are ignored."""
+        with open(self.filename, 'w') as fd:
+            fd.write("user1:trac:f21b2f8c5abd6baaeb3ffc28dce30e7c:U One #cmt\n")
+            fd.write("user2:trac:97a40f5b8d13962839f664534aa573ef:U Two \n")
+
+        auth = DigestAuthentication(self.filename, 'trac')
+        self.assertIn('user1', auth.hash)
+        self.assertIn('f21b2f8c5abd6baaeb3ffc28dce30e7c', auth.hash['user1'])
+        self.assertIn('user2', auth.hash)
+        self.assertIn('97a40f5b8d13962839f664534aa573ef', auth.hash['user2'])
+
+
+class BasicAuthenticationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.filename = os.path.join(self.dir, 'htpasswd.txt')
+
+    def tearDown(self):
+        rmtree(self.dir)
+
+    def _write_default_htpasswd(self):
+        with open(self.filename, 'w') as fd:
+            fd.write("crypt:PgjnZnmDQ8S7w\n")
+            fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/\n")
+            fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=\n")
 
     def test_crypt(self):
-        self.assertTrue(self.auth.test('crypt', 'crypt'))
-        self.assertFalse(self.auth.test('crypt', 'other'))
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('crypt', 'crypt'))
+        self.assertFalse(auth.test('crypt', 'other'))
 
     def test_md5(self):
-        self.assertTrue(self.auth.test('md5', 'md5'))
-        self.assertFalse(self.auth.test('md5', 'other'))
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('md5', 'md5'))
+        self.assertFalse(auth.test('md5', 'other'))
 
     def test_sha(self):
-        self.assertTrue(self.auth.test('sha', 'sha'))
-        self.assertFalse(self.auth.test('sha', 'other'))
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('sha', 'sha'))
+        self.assertFalse(auth.test('sha', 'other'))
+
+    def test_extra_entries_ignored(self):
+        """Extra entries and comments are ignored."""
+        with open(self.filename, 'w') as fd:
+            fd.write("crypt:PgjnZnmDQ8S7w:User One #comment\n")
+            fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/:User Two \n")
+            fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=:User Three #\n")
+
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('crypt', 'crypt'))
+        self.assertFalse(auth.test('crypt', 'other'))
+        self.assertTrue(auth.test('md5', 'md5'))
+        self.assertFalse(auth.test('md5', 'other'))
+        self.assertTrue(auth.test('sha', 'sha'))
+        self.assertFalse(auth.test('sha', 'other'))
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LoginModuleTestCase))
+    suite.addTest(unittest.makeSuite(DigestAuthenticationTestCase))
     if crypt:
         suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
     return suite
