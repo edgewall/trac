@@ -412,9 +412,10 @@
 
     // Add a new column with checkboxes for each ticket.
     // Selecting a ticket marks it for inclusion in the batch.
-    if ($("tr td.id", $table).length > 0) {
-      $("tr th.id", $table).before($('<th class="sel">'));
-      $("tr td.id", $table).each(function() {
+    var $results_cells = $(".trac-query-results tr td.id", $table);
+    if ($results_cells.length > 0) {
+      $(".trac-query-heading tr th.id", $table).before($('<th class="sel">'));
+      $results_cells.each(function() {
         var tId = $(this).text().substring(1);
         $(this).before(
           $('<td class="sel">').append(

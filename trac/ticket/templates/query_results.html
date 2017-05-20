@@ -53,11 +53,11 @@ Arguments:
   ${group_heading(*groups[0]) if groups else None}
   <table class="listing tickets"
          py:with="num_cols = len(headers) + int(batch_modify or 0)">
-    <thead py:strip="group_index">
+    <thead py:strip="group_index" class="trac-query-heading">
       ${column_headers()}
     </thead>
     <py:for each="group_index, (groupname, results) in enumerate(groups)">
-      <tbody py:if="group_index">
+      <tbody py:if="group_index" class="trac-query-heading">
         <tr py:if="groupname is not None" class="trac-group">
           <th colspan="$num_cols">
             ${group_heading(groupname, results)}
@@ -65,7 +65,7 @@ Arguments:
         </tr>
         ${column_headers()}
       </tbody>
-      <tbody>
+      <tbody class="trac-query-results">
         <tr py:if="not results" class="even">
           <td colspan="$num_cols">
             No tickets found
