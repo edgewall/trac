@@ -825,21 +825,28 @@ class ChoiceOption(Option):
     """
 
     def __init__(self, section, name, choices, doc='', doc_domain='tracini',
-                 doc_args=None):
+                 doc_args=None, case_sensitive=True):
         Option.__init__(self, section, name, to_unicode(choices[0]), doc,
                         doc_domain, doc_args)
-        self.choices = set(to_unicode(c).strip() for c in choices)
+        self.choices = list(set(to_unicode(c).strip() for c in choices))
+        self.case_sensitive = case_sensitive
 
     def accessor(self, section, name, default):
         value = section.get(name, default)
-        if value not in self.choices:
+        choices = self.choices[:]
+        if not self.case_sensitive:
+            choices = map(unicode.lower, choices)
+            value = value.lower()
+        try:
+            idx = choices.index(value)
+        except ValueError:
             raise ConfigurationError(
                     _('[%(section)s] %(entry)s: expected one of '
                       '(%(choices)s), got %(value)s',
                       section=section.name, entry=name, value=repr(value),
                       choices=', '.join('"%s"' % c
                                         for c in sorted(self.choices))))
-        return value
+        return self.choices[idx]
 
 
 class PathOption(Option):
