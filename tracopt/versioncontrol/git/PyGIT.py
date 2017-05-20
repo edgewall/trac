@@ -399,16 +399,16 @@ class Storage(object):
         control_files = ['HEAD', 'objects', 'refs']
         control_files_exist = \
             lambda p: all(map(os.path.exists, map(p, control_files)))
+        if not os.path.exists(__git_file_path()):
+            raise GitError("Path '%s' does not exist" % git_dir)
         if not control_files_exist(__git_file_path):
             __git_file_path = partial(os.path.join, git_dir, '.git')
             if os.path.exists(__git_file_path()) and \
                     control_files_exist(__git_file_path):
                 git_dir = __git_file_path()
             else:
-                self.logger.error("GIT control files missing in '%s'"
-                                  % git_dir)
-                raise GitError("GIT control files not found, maybe wrong "
-                               "directory?")
+                raise GitError("Git control files not found in '%s'" % git_dir)
+
         # at least, check that the HEAD file is readable
         head_file = os.path.join(git_dir, 'HEAD')
         try:
