@@ -426,6 +426,7 @@
           )
         );
       });
+      $(".trac-query-summary tr td.id", $table).before($('<td>'));
     }
 
     // Add a Select All checkbox at the top of the column.
