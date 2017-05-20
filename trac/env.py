@@ -184,7 +184,8 @@ class Environment(Component, ComponentManager):
                             log.LOG_TYPES + log.LOG_TYPE_ALIASES,
         """Logging facility to use.
 
-        Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""")
+        Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`).""",
+        case_sensitive=False)
 
     log_file = Option('logging', 'log_file', 'trac.log',
         """If `log_type` is `file`, this should be a path to the
@@ -197,7 +198,7 @@ class Environment(Component, ComponentManager):
         """Level of verbosity in log.
 
         Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`).
-        """)
+        """, case_sensitive=False)
 
     log_format = Option('logging', 'log_format', None,
         """Custom logging format.

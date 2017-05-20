@@ -464,7 +464,7 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual(expected, config.getlist('a', 'option', '', sep='||'))
 
     def test_read_and_choice(self):
-        self._write(['[a]', 'option = 2', 'invalid = d',
+        self._write(['[a]', 'option = 2', 'invalid = d', 'case-insensitive = b',
                      u'[û]', u'èncoded = à'])
         config = self._read()
 
@@ -473,6 +473,9 @@ class IntegrationTestCase(BaseTestCase):
             other = ChoiceOption('a', 'other', [1, 2, 3])
             invalid = ChoiceOption('a', 'invalid', ['a', 'b', 'c'])
             encoded = ChoiceOption('a', u'èncoded', [u'à', u'ć', u'ē'])
+            case_insensitive = ChoiceOption('a', 'case-insensitive',
+                                            ['A', 'B', 'C'],
+                                            case_sensitive=False)
 
             def __init__(self):
                 self.config = config
@@ -484,6 +487,7 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual(u'à', foo.encoded)
         config.set('a', u'èncoded', u'ć')
         self.assertEqual(u'ć', foo.encoded)
+        self.assertEqual('B', foo.case_insensitive)
 
     def test_read_and_getextensionoption(self):
         self._write(['[a]', 'option = ImplA', 'invalid = ImplB'])

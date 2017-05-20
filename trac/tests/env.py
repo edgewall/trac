@@ -134,6 +134,24 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertRaises(ConfigurationError, open_environment,
                           self.env.path, True)
 
+    def test_log_level_not_case_sensitive(self):
+        """[logging] log_level is not case-sensitive."""
+        self.env.config.set('logging', 'log_level', 'warning')
+        self.env.config.save()
+
+        self.assertEqual('warning',
+                         self.env.config.get('logging', 'log_level'))
+        self.assertEqual('WARNING', self.env.log_level)
+
+    def test_log_type_not_case_sensitive(self):
+        """[logging] log_type is not case-sensitive."""
+        self.env.config.set('logging', 'log_type', 'File')
+        self.env.config.save()
+
+        self.assertEqual('File',
+                         self.env.config.get('logging', 'log_type'))
+        self.assertEqual('file', self.env.log_type)
+
     def test_upgrade_environment(self):
         """EnvironmentSetupParticipants are called only if
         environment_needs_upgrade returns True for the participant.
