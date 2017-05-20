@@ -278,7 +278,7 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         """Test ticket history"""
         summary = random_sentence(5)
         ticketid = self._tester.create_ticket(summary)
-        comment = self._tester.add_comment(ticketid)
+        comment = self._tester.add_comment(ticketid, "The original comment")
         self._tester.go_to_ticket(ticketid)
         tc.find(r'<a [^>]+>\bModify\b</a>')
         tc.find(r"\bAttach file\b")
@@ -311,7 +311,7 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.notfind(r"\bSubmit changes\b")
 
         tc.go(url + '?cnum_edit=1')
-        revised_comment = random_sentence(5)
+        revised_comment = "The edited comment."
         tc.formvalue('trac-comment-editor', 'edited_comment', revised_comment)
         tc.submit("Submit changes")
 
