@@ -23,8 +23,7 @@ from trac.attachment import AttachmentModule, Attachment
 from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import IContentConverter, Mimeview
-from trac.perm import IPermissionPolicy, IPermissionRequestor, \
-                      PermissionSystem
+from trac.perm import IPermissionPolicy, IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
