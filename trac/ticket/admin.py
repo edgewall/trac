@@ -622,11 +622,15 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 if req.args.get('save'):
                     enum.name = req.args.get('name')
+                    enum.description = req.args.get('description')
                     enum.update()
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
+            chrome = Chrome(self.env)
+            chrome.add_wiki_toolbars(req)
+            chrome.add_auto_preview(req)
             data.update({'view': 'detail', 'enum': enum})
 
         else:
@@ -707,11 +711,11 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
 
+            Chrome(self.env).add_jquery_ui(req)
+            add_script(req, 'common/js/admin_enums.js')
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
                              default=default, view='list'))
 
-        Chrome(self.env).add_jquery_ui(req)
-        add_script(req, 'common/js/admin_enums.js')
         return 'admin_enums.html', data
 
     # IAdminCommandProvider methods

@@ -748,12 +748,16 @@ class AbstractEnum(object):
         if not self.ticket_col:
             self.ticket_col = self.type
         self.env = env
-        self.name = self._old_name = self.value = self._old_value = None
+        self.name = self._old_name = None
+        self.value = self._old_value = None
+        self.description = None
         if name:
-            for value, in self.env.db_query("""
-                    SELECT value FROM enum WHERE type=%s AND name=%s
+            for value, description in self.env.db_query("""
+                    SELECT value, description FROM enum 
+                    WHERE type=%s AND name=%s
                     """, (self.type, name)):
                 self.value = self._old_value = value
+                self.description = _null_to_empty(description)
                 self.name = self._old_name = name
                 break
             else:
@@ -789,6 +793,7 @@ class AbstractEnum(object):
             TicketSystem(self.env).reset_ticket_fields()
         self.value = self._old_value = None
         self.name = self._old_name = None
+        self.description = None
 
     def insert(self):
         """Add a new enum.
@@ -810,8 +815,11 @@ class AbstractEnum(object):
                                 WHERE type=%%s
                                 """ % db.cast('value', 'int'), (self.type,))
                     self.value = int(float(row[0][0])) + 1 if row else 0
-                db("INSERT INTO enum (type, name, value) VALUES (%s, %s, %s)",
-                   (self.type, self.name, self.value))
+                db("""
+                    INSERT INTO enum (type, name, value, description)
+                    VALUES (%s, %s, %s, %s)
+                    """, (self.type, self.name, self.value,
+                          _empty_to_null(self.description)))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('%(type)s value "%(name)s" already exists',
@@ -833,9 +841,11 @@ class AbstractEnum(object):
         self.env.log.info("Updating %s '%s'", self.type, self.name)
         with self.env.db_transaction as db:
             try:
-                db("""UPDATE enum SET name=%s,value=%s
+                db("""UPDATE enum SET name=%s,value=%s,description=%s
                       WHERE type=%s AND name=%s
-                      """, (self.name, self.value, self.type, self._old_name))
+                      """, (self.name, self.value,
+                            _empty_to_null(self.description), self.type,
+                            self._old_name))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('%(type)s value "%(name)s" already exists',
@@ -852,13 +862,15 @@ class AbstractEnum(object):
     @classmethod
     def select(cls, env):
         with env.db_query as db:
-            for name, value in db("""
-                    SELECT name, value FROM enum WHERE type=%s ORDER BY
+            for name, value, description in db("""
+                    SELECT name, value, description FROM enum 
+                    WHERE type=%s ORDER BY
                     """ + db.cast('value', 'int'),
                     (cls.type,)):
                 obj = cls(env)
                 obj.name = obj._old_name = name
                 obj.value = obj._old_value = value
+                obj.description = _null_to_empty(description)
                 yield obj
 
     def _check_and_coerce_fields(self):

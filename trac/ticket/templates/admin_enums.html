@@ -17,6 +17,19 @@ history and logs, available at http://trac.edgewall.org/.
       ${label_plural}
       # endblock admintitle
     </title>
+    # block head
+    ${ super() }
+    #   if view == 'detail':
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "${enum.type}",
+            id: ${to_json(enum.name)|safe}
+          }, $("#preview").showOnPreview());
+      });
+    </script>
+    #   endif
+    # endblock head
   </head>
 
   <body>
@@ -42,8 +55,20 @@ history and logs, available at http://trac.edgewall.org/.
           ${_("Modify %(label_singular)s:", label_singular=label_singular)}
         </legend>
         <div class="field">
-          <label>${_("Name:")} <input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
+          <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
         </div>
+        <div class="field description">
+          <label for="description">
+            # trans wikiformatting = jmacros.wikiformatting_link()
+
+            Description: (you may use ${wikiformatting} here)
+
+            # endtrans
+          </label>
+          <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                    rows="8" cols="78">${enum.description}</textarea>
+        </div>
+        <div id="preview" class="trac-content trac-draft" style="display:none"></div>
       </fieldset>
       <div class="buttons">
         <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>

@@ -917,46 +917,102 @@ class EnumTestCase(unittest.TestCase):
                          repr(Priority(self.env, 'major')))
 
     def test_priority_fetch(self):
-        prio = Priority(self.env, 'major')
-        self.assertEqual(prio.name, 'major')
-        self.assertEqual(prio.value, '3')
+        priority = Priority(self.env, 'major')
+        self.assertEqual('major', priority.name)
+        self.assertEqual('3', priority.value)
+        self.assertEqual('', priority.description)
 
     def test_priority_insert(self):
-        prio = Priority(self.env)
-        prio.name = 'foo'
-        prio.insert()
-        self.assertTrue(prio.exists)
+        priority = Priority(self.env)
+        priority.name = 'foo'
+        priority.description = 'the description'
+        priority.insert()
+        self.assertTrue(priority.exists)
+        self.assertEqual(1, self.env.db_query("""
+            SELECT COUNT(*) FROM enum 
+            WHERE type='priority' AND name='foo' AND value='6' 
+             AND description='the description'
+            """)[0][0])
 
     def test_priority_insert_with_value(self):
-        prio = Priority(self.env)
-        prio.name = 'bar'
-        prio.value = 100
-        prio.insert()
-        self.assertTrue(prio.exists)
+        priority = Priority(self.env)
+        priority.name = 'bar'
+        priority.value = 100
+        priority.description = 'the description'
+        priority.insert()
+        self.assertTrue(priority.exists)
+        self.assertEqual(1, self.env.db_query("""
+            SELECT COUNT(*) FROM enum 
+            WHERE type='priority' AND name='bar' AND value='100' 
+             AND description='the description'
+            """)[0][0])
+
+    def test_priority_insert_empty_description_stored_as_null(self):
+        """Empty description is stored as NULL."""
+        priority = Priority(self.env)
+        priority.name = 'baz'
+        priority.description = ''
+        priority.insert()
+        self.assertTrue(priority.exists)
+        self.assertEqual(1, self.env.db_query("""
+            SELECT COUNT(*) FROM enum 
+            WHERE type='priority' AND name='baz' AND value='6' 
+             AND description IS NULL
+            """)[0][0])
 
     def test_priority_update(self):
-        prio = Priority(self.env, 'major')
-        prio.name = 'foo'
-        prio.update()
-        Priority(self.env, 'foo')
+        priority = Priority(self.env, 'major')
+        priority.name = 'foo'
+        priority.update()
+        self.assertTrue(Priority(self.env, 'foo').exists)
         self.assertRaises(TracError, Priority, self.env, 'major')
+
+    def test_priority_update_empty_description_stored_as_null(self):
+        """Empty description is stored as NULL."""
+        priority = Priority(self.env)
+        priority.name = 'baz'
+        priority.description = 'the description'
+        priority.insert()
+        priority.description = ''
+        priority.update()
+        self.assertTrue(priority.exists)
+        self.assertEqual(1, self.env.db_query("""
+            SELECT COUNT(*) FROM enum 
+            WHERE type='priority' AND name='baz' AND value='6' 
+             AND description IS NULL
+            """)[0][0])
 
     def test_priority_delete(self):
-        prio = Priority(self.env, 'major')
-        self.assertEqual('3', prio.value)
-        prio.delete()
-        self.assertFalse(prio.exists)
-        self.assertRaises(TracError, Priority, self.env, 'major')
-        prio = Priority(self.env, 'minor')
-        self.assertEqual('3', prio.value)
+        """Delete an enum from the database."""
+        def get_count():
+            return self.env.db_query("""
+                SELECT COUNT(*) FROM enum 
+                WHERE type='priority' AND name='major' 
+                """)[0][0]
 
-    def test_ticket_type_update(self):
-        tkttype = Type(self.env, 'task')
-        self.assertEqual(tkttype.name, 'task')
-        self.assertEqual(tkttype.value, '3')
-        tkttype.name = 'foo'
-        tkttype.update()
-        Type(self.env, 'foo')
+        priority = Priority(self.env, 'major')
+        self.assertEqual('3', priority.value)
+        self.assertEqual(1, get_count())
+        self.assertTrue(priority.exists)
+        priority.delete()
+        self.assertEqual(0, get_count())
+        self.assertFalse(priority.exists)
+
+    def test_priority_delete_nonexistent_raises(self):
+        """Deleting non-existent priority raises a TracError."""
+        priority = Priority(self.env)
+        priority.name = 'foo'
+
+        with self.assertRaises(TracError):
+            priority.delete()
+
+    def test_select(self):
+        priorities = list(Priority.select(self.env))
+        names = ('blocker', 'critical', 'major', 'minor', 'trivial')
+        for i, name in enumerate(names):
+            self.assertEqual(name, priorities[i].name)
+            self.assertEqual(unicode(i + 1), priorities[i].value)
+            self.assertEqual('', priorities[i].description)
 
 
 class MilestoneTestCase(unittest.TestCase):

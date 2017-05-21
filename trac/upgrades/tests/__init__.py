@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.upgrades.tests import db31, db32, db39, db41, db42
+from trac.upgrades.tests import db31, db32, db39, db41, db42, db44
 
 
 def test_suite():
@@ -23,6 +23,7 @@ def test_suite():
     suite.addTest(db39.test_suite())
     suite.addTest(db41.test_suite())
     suite.addTest(db42.test_suite())
+    suite.addTest(db44.test_suite())
     return suite
 
 

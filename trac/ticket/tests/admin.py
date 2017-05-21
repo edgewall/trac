@@ -165,40 +165,56 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
 
 class AbstractEnumTestCase(BaseTestCase):
 
+    admin = None
     type = None
     cls = None
 
-    def _test_add(self, panel, name):
+    def _test_add(self, name):
         req = MockRequest(self.env, method='POST',
                           args={'name': name, 'add': True})
 
         self.assertRaises(ResourceNotFound, self.cls, self.env, name)
-        self.assertRaises(RequestDone, panel.render_admin_panel, req,
+        self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
         item = self.cls(self.env, name)
         self.assertEqual(name, item.name)
 
-    def _test_set_default(self, panel, name):
+    def _test_set_default(self, name):
         config_key = 'default_' + self.type
         req = MockRequest(self.env, method='POST',
                           args={'default': name, 'apply': True})
         for item in self.cls.select(self.env):
             req.args.update({'value_' + str(item.value): str(item.value)})
 
-        self.assertRaises(RequestDone, panel.render_admin_panel, req,
+        self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
-    def _test_remove_default(self, panel, name):
+    def _test_remove_default(self, name):
         config_key = 'default_' + self.type
         self.env.config.set('ticket', config_key, name)
 
         req = MockRequest(self.env, method='POST',
                           args={'sel': name, 'remove': True})
 
-        self.assertRaises(RequestDone, panel.render_admin_panel, req,
+        self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
         self.assertEqual('', self.env.config.get('ticket', config_key))
+
+    def _test_edit_description(self, name):
+        description = 'the edit'
+        req = MockRequest(self.env, method='POST',
+                          path_info='/admin/ticket/%s/%s' % (self.type, name),
+                          args={'name': name, 'description': description,
+                                'save': True})
+
+        self.assertEqual(1, len(list(self.admin.get_admin_panels(req))))
+        with self.assertRaises(RequestDone):
+            self.admin.render_admin_panel(req, 'ticket', self.type, name)
+
+        self.assertIn("Your changes have been saved",
+                      unicode(req.chrome['notices']))
+        self.assertEqual(description, self.cls(self.env, name).description)
 
 
 class PriorityAdminPanelTestCase(AbstractEnumTestCase):
@@ -206,17 +222,21 @@ class PriorityAdminPanelTestCase(AbstractEnumTestCase):
     type = 'priority'
     cls = Priority
 
+    def setUp(self):
+        super(PriorityAdminPanelTestCase, self).setUp()
+        self.admin = PriorityAdminPanel(self.env)
+
     def test_add_priority(self):
-        ap = PriorityAdminPanel(self.env)
-        self._test_add(ap, 'priority 1')
+        self._test_add('priority 1')
 
     def test_set_default_priority(self):
-        ap = PriorityAdminPanel(self.env)
-        self._test_set_default(ap, 'critical')
+        self._test_set_default('critical')
 
     def test_remove_default_priority(self):
-        ap = PriorityAdminPanel(self.env)
-        self._test_remove_default(ap, 'critical')
+        self._test_remove_default('critical')
+
+    def test_edit_description(self):
+        self._test_edit_description('critical')
 
 
 class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
@@ -224,17 +244,21 @@ class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
     type = 'resolution'
     cls = Resolution
 
+    def setUp(self):
+        super(ResolutionAdminPanelTestCase, self).setUp()
+        self.admin = ResolutionAdminPanel(self.env)
+
     def test_add_resolution(self):
-        ap = ResolutionAdminPanel(self.env)
-        self._test_add(ap, 'resolution 1')
+        self._test_add('resolution 1')
 
     def test_set_default_resolution(self):
-        ap = ResolutionAdminPanel(self.env)
-        self._test_set_default(ap, 'invalid')
+        self._test_set_default('invalid')
 
     def test_remove_default_resolution(self):
-        ap = ResolutionAdminPanel(self.env)
-        self._test_remove_default(ap, 'invalid')
+        self._test_remove_default('invalid')
+
+    def test_edit_description(self):
+        self._test_edit_description('invalid')
 
 
 class SeverityAdminPanelTestCase(AbstractEnumTestCase):
@@ -242,23 +266,29 @@ class SeverityAdminPanelTestCase(AbstractEnumTestCase):
     type = 'severity'
     cls = Severity
 
+    def setUp(self):
+        super(SeverityAdminPanelTestCase, self).setUp()
+        self.admin = SeverityAdminPanel(self.env)
+
+    def _insert_severity(self):
+        s = Severity(self.env)
+        s.name = 'severity 1'
+        s.insert()
+
     def test_add_severity(self):
-        ap = SeverityAdminPanel(self.env)
-        self._test_add(ap, 'severity 1')
+        self._test_add('severity 1')
 
     def test_set_default_severity(self):
-        s = Severity(self.env)
-        s.name = 'severity 1'
-        s.insert()
-        ap = SeverityAdminPanel(self.env)
-        self._test_set_default(ap, 'severity 1')
+        self._insert_severity()
+        self._test_set_default('severity 1')
 
     def test_remove_default_severity(self):
-        s = Severity(self.env)
-        s.name = 'severity 1'
-        s.insert()
-        ap = SeverityAdminPanel(self.env)
-        self._test_remove_default(ap, 'severity 1')
+        self._insert_severity()
+        self._test_remove_default('severity 1')
+
+    def test_edit_description(self):
+        self._insert_severity()
+        self._test_edit_description('severity 1')
 
 
 class TicketTypeAdminPanelTestCase(AbstractEnumTestCase):
@@ -266,17 +296,21 @@ class TicketTypeAdminPanelTestCase(AbstractEnumTestCase):
     type = 'type'
     cls = Type
 
+    def setUp(self):
+        super(TicketTypeAdminPanelTestCase, self).setUp()
+        self.admin = TicketTypeAdminPanel(self.env)
+
     def test_add_type(self):
-        ap = TicketTypeAdminPanel(self.env)
-        self._test_add(ap, 'improvement')
+        self._test_add('improvement')
 
     def test_set_default_type(self):
-        ap = TicketTypeAdminPanel(self.env)
-        self._test_set_default(ap, 'task')
+        self._test_set_default('task')
 
     def test_remove_default_type(self):
-        ap = TicketTypeAdminPanel(self.env)
-        self._test_remove_default(ap, 'task')
+        self._test_remove_default('task')
+
+    def test_edit_description(self):
+        self._test_edit_description('task')
 
 
 class VersionAdminPanelTestCase(BaseTestCase):

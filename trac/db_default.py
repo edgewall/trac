@@ -17,7 +17,7 @@
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 43
+db_version = 44
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -144,7 +144,8 @@ schema = [
     Table('enum', key=('type', 'name'))[
         Column('type'),
         Column('name'),
-        Column('value')],
+        Column('value'),
+        Column('description')],
     Table('component', key='name')[
         Column('name'),
         Column('owner'),
@@ -206,15 +207,14 @@ def get_reports(db):
 """,
 """\
 SELECT p.value AS __color__,
-   id AS ticket, summary, component, version, milestone, t.type AS type,
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   t.id AS ticket, t.summary, t.component, t.version, t.milestone, 
+   t.type AS type, t.owner, t.status, t.time AS created,
+   t.changetime AS _changetime, t.description AS _description,
+   t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
-  ORDER BY """ + db.cast('p.value', 'int') + """, milestone, t.type, time
+  WHERE t.status <> 'closed'
+  ORDER BY """ + db.cast('p.value', 'int') + """, t.milestone, t.type, t.time
 """),
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
@@ -227,17 +227,16 @@ for useful RSS export.
 """,
 """\
 SELECT p.value AS __color__,
-   version AS __group__,
-   id AS ticket, summary, component, version, t.type AS type,
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   t.version AS __group__,
+   t.id AS ticket, t.summary, t.component, t.version, t.type AS type,
+   t.owner, t.status, t.time AS created,
+   t.changetime AS _changetime, t.description AS _description,
+   t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
-  ORDER BY (version IS NULL),version, """ + db.cast('p.value', 'int') +
-  """, t.type, time
+  WHERE t.status <> 'closed'
+  ORDER BY (t.version IS NULL), t.version, """ + db.cast('p.value', 'int') +
+  """, t.type, t.time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets by Milestone',
@@ -251,16 +250,14 @@ for useful RSS export.
 """\
 SELECT p.value AS __color__,
    %s AS __group__,
-   id AS ticket, summary, component, version, t.type AS type,
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   t.id AS ticket, t.summary, t.component, t.version, t.type AS type,
+   t.owner, t.status, t.time AS created, t.changetime AS _changetime, 
+   t.description AS _description, t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
-  ORDER BY (milestone IS NULL),milestone, %s, t.type, time
-""" % (db.concat("'Milestone '", 'milestone'), db.cast('p.value', 'int'))),
+  WHERE t.status <> 'closed'
+  ORDER BY (t.milestone IS NULL), t.milestone, %s, t.type, t.time
+""" % (db.concat("'Milestone '", 't.milestone'), db.cast('p.value', 'int'))),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner',
 """\
@@ -268,14 +265,14 @@ List accepted tickets, group by ticket owner, sorted by priority.
 """,
 """\
 SELECT p.value AS __color__,
-   owner AS __group__,
-   id AS ticket, summary, component, milestone, t.type AS type, time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   t.owner AS __group__,
+   t.id AS ticket, t.summary, t.component, t.milestone, t.type AS type,
+   t.time AS created, t.changetime AS _changetime,
+   t.description AS _description, t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status = 'accepted'
-  ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
+  WHERE t.status = 'accepted'
+  ORDER BY t.owner, """ + db.cast('p.value', 'int') + """, t.type, t.time
 """),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner (Full Description)',
@@ -285,14 +282,14 @@ This report demonstrates the use of full-row display.
 """,
 """\
 SELECT p.value AS __color__,
-   owner AS __group__,
-   id AS ticket, summary, component, milestone, t.type AS type, time AS created,
-   description AS _description_,
-   changetime AS _changetime, reporter AS _reporter
+   t.owner AS __group__,
+   t.id AS ticket, t.summary, t.component, t.milestone, t.type AS type,
+   t.time AS created, t.description AS _description_,
+   t.changetime AS _changetime, t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status = 'accepted'
-  ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
+  WHERE t.status = 'accepted'
+  ORDER BY t.owner, """ + db.cast('p.value', 'int') + """, t.type, t.time
 """),
 #----------------------------------------------------------------------------
 ('All Tickets By Milestone  (Including closed)',
@@ -302,19 +299,18 @@ A more complex example to show how to make advanced reports.
 """\
 SELECT p.value AS __color__,
    t.milestone AS __group__,
-   (CASE status
+   (CASE t.status
       WHEN 'closed' THEN 'color: #777; background: #ddd; border-color: #ccc;'
       ELSE
-        (CASE owner WHEN $USER THEN 'font-weight: bold' END)
+        (CASE t.owner WHEN $USER THEN 'font-weight: bold' END)
     END) AS __style__,
-   id AS ticket, summary, component, status,
-   resolution,version, t.type AS type, priority, owner,
-   changetime AS modified,
-   time AS _time,reporter AS _reporter
+   t.id AS ticket, t.summary, t.component, t.status, t.resolution, t.version, 
+   t.type AS type, t.priority, t.owner, t.changetime AS modified,
+   t.time AS _time, t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'),
-        (CASE status WHEN 'closed' THEN changetime ELSE (-1) * %s END) DESC
+  ORDER BY (t.milestone IS NULL), t.milestone DESC, (t.status = 'closed'),
+        (CASE t.status WHEN 'closed' THEN t.changetime ELSE (-1) * %s END) DESC
 """ % db.cast('p.value', 'int')),
 #----------------------------------------------------------------------------
 ('My Tickets',
@@ -326,25 +322,25 @@ logged in user when executed.
 """\
 SELECT p.value AS __color__,
        (CASE
-         WHEN owner = $USER AND status = 'accepted' THEN 'Accepted'
-         WHEN owner = $USER THEN 'Owned'
-         WHEN reporter = $USER THEN 'Reported'
+         WHEN t.owner = $USER AND t.status = 'accepted' THEN 'Accepted'
+         WHEN t.owner = $USER THEN 'Owned'
+         WHEN t.reporter = $USER THEN 'Reported'
          ELSE 'Commented' END) AS __group__,
-       t.id AS ticket, summary, component, version, milestone,
-       t.type AS type, priority, t.time AS created,
-       t.changetime AS _changetime, description AS _description,
-       reporter AS _reporter
+       t.id AS ticket, t.summary, t.component, t.version, t.milestone,
+       t.type AS type, t.priority, t.time AS created,
+       t.changetime AS _changetime, t.description AS _description,
+       t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE t.status <> 'closed' AND
-        (owner = $USER OR reporter = $USER OR
+        (t.owner = $USER OR t.reporter = $USER OR
          EXISTS (SELECT * FROM ticket_change tc
                  WHERE tc.ticket = t.id AND tc.author = $USER AND
                        tc.field = 'comment'))
-  ORDER BY (COALESCE(owner, '') = $USER AND status = 'accepted') DESC,
-           COALESCE(owner, '') = $USER DESC,
-           COALESCE(reporter, '') = $USER DESC,
-           """ + db.cast('p.value', 'int') + """, milestone, t.type, t.time
+  ORDER BY (COALESCE(t.owner, '') = $USER AND t.status = 'accepted') DESC,
+           COALESCE(t.owner, '') = $USER DESC,
+           COALESCE(t.reporter, '') = $USER DESC,
+           """ + db.cast('p.value', 'int') + """, t.milestone, t.type, t.time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets, Mine first',
@@ -354,20 +350,19 @@ SELECT p.value AS __color__,
 """,
 """\
 SELECT p.value AS __color__,
-   (CASE owner
+   (CASE t.owner
      WHEN $USER THEN 'My Tickets'
      ELSE 'Active Tickets'
     END) AS __group__,
-   id AS ticket, summary, component, version, milestone, t.type AS type,
-   owner, status,
-   time AS created,
-   changetime AS _changetime, description AS _description,
-   reporter AS _reporter
+   t.id AS ticket, t.summary, t.component, t.version, t.milestone, 
+   t.type AS type, t.owner, t.status, t.time AS created,
+   t.changetime AS _changetime, t.description AS _description,
+   t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status <> 'closed'
-  ORDER BY (COALESCE(owner, '') = $USER) DESC, """
-  + db.cast('p.value', 'int') + """, milestone, t.type, time
+  WHERE t.status <> 'closed'
+  ORDER BY (COALESCE(t.owner, '') = $USER) DESC, """
+  + db.cast('p.value', 'int') + """, t.milestone, t.type, t.time
 """))
 
 
