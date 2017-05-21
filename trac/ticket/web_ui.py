@@ -37,7 +37,7 @@ from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import arity, as_bool, as_int, get_reporter_id, lazy
+from trac.util import as_bool, as_int, get_reporter_id, lazy
 from trac.util.datefmt import (
     datetime_now, format_datetime, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
