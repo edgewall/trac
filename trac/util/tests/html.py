@@ -286,6 +286,27 @@ class ToFragmentTestCase(unittest.TestCase):
         self.assertEqual('Back to <a href="http://localhost/">WikiStart</a>',
                          unicode(rv))
 
+    def _ioerror(self, filename):
+        try:
+            open(filename)
+        except IOError, e:
+            return e
+        else:
+            self.fail('IOError not raised')
+
+    def test_ioerror(self):
+        rv = to_fragment(self._ioerror('./notfound'))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual("[Errno 2] No such file or directory: './notfound'",
+                         unicode(rv))
+
+    def test_error_with_ioerror(self):
+        e = self._ioerror('./notfound')
+        rv = to_fragment(ValueError(e))
+        self.assertEqual(Fragment, type(rv))
+        self.assertEqual("[Errno 2] No such file or directory: './notfound'",
+                         unicode(rv))
+
 
 def suite():
     suite = unittest.TestSuite()
