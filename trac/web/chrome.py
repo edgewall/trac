@@ -649,6 +649,10 @@ class Chrome(Component):
         'utc': utc,
     }
 
+    def __init__(self):
+        self._warned_stream_filters = set()
+        self._warned_genshi_templates = set()
+
     # ISystemInfoProvider methods
 
     def get_system_info(self):
@@ -1729,8 +1733,10 @@ class Chrome(Component):
         def _render_genshi_template(self, req, filename, data,
                                     content_type=None, fragment=False,
                                     iterable=False, method=None):
-            self.log.warning("Rendering Genshi template '%s' (convert to "
-                             "Jinja2 before Trac 1.5.1)", filename)
+            if filename not in self._warned_genshi_templates:
+                self.log.warning("Rendering Genshi template '%s' (convert to "
+                                 "Jinja2 before Trac 1.5.1)", filename)
+                self._warned_genshi_templates.add(filename)
             if content_type is None:
                 content_type = 'text/html'
 
@@ -1895,8 +1901,10 @@ class Chrome(Component):
                                                   stream, data)
                 except GenshiStreamFilterUsed:
                     name = filter.__class__.__name__
-                    self.log.warning("Component %s relies on deprecated Genshi"
-                                     " stream filtering", name)
+                    if name not in self._warned_stream_filters:
+                        self.log.warning("Component %s relies on deprecated"
+                                         " Genshi stream filtering", name)
+                        self._warned_stream_filters.add(name)
                     return True
             return False
 
