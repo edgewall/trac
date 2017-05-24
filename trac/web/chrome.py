@@ -22,6 +22,7 @@ other forms of web content are also using facilities provided here.
 
 """
 
+from contextlib import contextmanager
 import datetime
 import itertools
 import io
@@ -392,6 +393,22 @@ def _save_messages(req, url, permanent):
     for type_ in ['warnings', 'notices']:
         for (i, message) in enumerate(req.chrome[type_]):
             req.session['chrome.%s.%d' % (type_, i)] = escape(message, False)
+
+
+@contextmanager
+def component_guard(env, req, component):
+    """Traps any runtime exception raised when working with a
+    component, logs the error and adds a warning for the user.
+
+    """
+    with env.component_guard(component):
+        try:
+            yield
+        except Exception as e:
+            add_warning(req, _("%(component)s failed with %(exc)s",
+                               component=component.__class__.__name__,
+                               exc=exception_to_unicode(e)))
+            raise
 
 
 class Chrome(Component):
@@ -908,24 +925,13 @@ class Chrome(Component):
         all_items = {}
         active = None
         for contributor in self.navigation_contributors:
-            try:
+            with component_guard(self.env, req, contributor):
                 for category, name, text in \
                         contributor.get_navigation_items(req) or []:
                     all_items.setdefault(category, {})[name] = \
                         get_item_attributes(category, name, text)
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
-            except Exception as e:
-                name = contributor.__class__.__name__
-                if isinstance(e, TracError):
-                    self.log.warning("Error with navigation contributor %s: "
-                                     "%s", name, exception_to_unicode(e))
-                else:
-                    self.log.error("Error with navigation contributor %s: %s",
-                                   name,
-                                   exception_to_unicode(e, traceback=True))
-                add_warning(req, _("Error with navigation contributor "
-                                   '"%(name)s"', name=name))
 
         # Extra navigation items.
         categories = ('mainnav', 'metanav')

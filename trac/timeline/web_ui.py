@@ -30,12 +30,13 @@ from trac.util.datefmt import (datetime_now, format_date, format_datetime,
                                pretty_timedelta, to_datetime, to_utimestamp,
                                truncate_datetime, user_time, utc)
 from trac.util.html import tag
-from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _, tag_
+from trac.util.text import to_unicode
+from trac.util.translation import _
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import (Chrome, INavigationContributor, ITemplateProvider,
-                             accesskey, add_link, add_stylesheet,
-                             add_warning, auth_link, prevnext_nav, web_context)
+                             accesskey, add_link, add_stylesheet, add_warning,
+                             auth_link, component_guard, prevnext_nav,
+                             web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import concat_path_query_fragment, \
                                 split_url_into_path_query_fragment
@@ -150,7 +151,9 @@ class TimelineModule(Component):
 
         available_filters = []
         for event_provider in self.event_providers:
-            available_filters += event_provider.get_timeline_filters(req) or []
+            with component_guard(self.env, req, event_provider):
+                available_filters += (event_provider.get_timeline_filters(req)
+                                      or [])
 
         # check the request or session for enabled filters, or use default
         filters = [f[0] for f in available_filters if f[0] in req.args]
@@ -186,7 +189,7 @@ class TimelineModule(Component):
         # gather all events for the given period of time
         events = []
         for provider in self.event_providers:
-            try:
+            with component_guard(self.env, req, provider):
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters) or []:
                     author = (event[2] or '').lower()
@@ -194,9 +197,6 @@ class TimelineModule(Component):
                         author not in exclude):
                         events.append(
                             self._event_data(req, provider, event, lastvisit))
-            except Exception as e:  # cope with a failure of that provider
-                self._provider_failure(e, req, provider, filters,
-                                       [f[0] for f in available_filters])
 
         # prepare sorted global list
         events = sorted(events, key=lambda e: e['datetime'], reverse=True)
@@ -379,35 +379,3 @@ class TimelineModule(Component):
                 'render': render,
                 'unread': lastvisit and lastvisit < datetime_uid,
                 'event': event, 'data': data, 'provider': provider}
-
-    def _provider_failure(self, exc, req, ep, current_filters, all_filters):
-        """Raise a TracError exception explaining the failure of a provider.
-
-        At the same time, the message will contain a link to the timeline
-        without the filters corresponding to the guilty event provider `ep`.
-        """
-        self.log.error("Timeline event provider failed: %s",
-                       exception_to_unicode(exc, traceback=True))
-
-        ep_kinds = {f[0]: f[1] for f in ep.get_timeline_filters(req) or []}
-        ep_filters = set(ep_kinds)
-        current_filters = set(current_filters)
-        other_filters = set(current_filters) - ep_filters
-        if not other_filters:
-            other_filters = set(all_filters) - ep_filters
-        args = [(a, req.args.get(a))
-                for a in ('from', 'format', 'max', 'daysback')]
-        href = req.href.timeline(args + [(f, 'on') for f in other_filters])
-        # TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-        other_events = tag.a(_('other kinds of events'), href=href)
-        raise TracError(tag(
-            tag.p(tag_("Event provider %(name)s failed for filters "
-                       "%(kinds)s: ",
-                       name=tag.code(ep.__class__.__name__),
-                       kinds=', '.join('"%s"' % ep_kinds[f] for f in
-                                       current_filters & ep_filters)),
-                  tag.strong(exception_to_unicode(exc)), class_='message'),
-            tag.p(tag_("You may want to see the %(other_events)s from the "
-                       "Timeline or notify your Trac administrator about the "
-                       "error (detailed information was written to the log).",
-                       other_events=other_events))))

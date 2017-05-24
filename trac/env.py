@@ -16,6 +16,7 @@
 
 """Trac Environment model and related APIs."""
 
+from contextlib import contextmanager
 import hashlib
 import os.path
 import setuptools
@@ -355,6 +356,30 @@ class Environment(Component, ComponentManager):
         self._component_rules[self._component_name(cls)] = True
         super(Environment, self).enable_component(cls)
 
+    @contextmanager
+    def component_guard(self, component, reraise=False):
+        """Traps any runtime exception raised when working with a component
+        and logs the error.
+
+        :param component: the component responsible for any error that
+                          could happen inside the context
+        :param reraise: if `True`, an error is logged but not suppressed.
+                        By default, errors are suppressed.
+
+        """
+        try:
+            yield
+        except TracError as e:
+            self.log.warning("Component %s failed with %s",
+                             component, exception_to_unicode(e))
+            if reraise:
+                raise
+        except Exception as e:
+            self.log.error("Component %s failed with %s", component,
+                           exception_to_unicode(e, traceback=True))
+            if reraise:
+                raise
+
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
         directory."""
@@ -678,10 +703,12 @@ class Environment(Component, ComponentManager):
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
         for participant in self.setup_participants:
-            if participant.environment_needs_upgrade():
-                self.log.warning("Component %s requires environment upgrade",
-                                 participant)
-                return True
+            with self.component_guard(participant, reraise=True):
+                if participant.environment_needs_upgrade():
+                    self.log.warning(
+                        "Component %s requires environment upgrade",
+                        participant)
+                    return True
         return False
 
     def upgrade(self, backup=False, backup_dest=None):
@@ -693,8 +720,9 @@ class Environment(Component, ComponentManager):
         """
         upgraders = []
         for participant in self.setup_participants:
-            if participant.environment_needs_upgrade():
-                upgraders.append(participant)
+            with self.component_guard(participant, reraise=True):
+                if participant.environment_needs_upgrade():
+                    upgraders.append(participant)
         if not upgraders:
             return
 
@@ -705,9 +733,9 @@ class Environment(Component, ComponentManager):
                 raise BackupError(e)
 
         for participant in upgraders:
-            self.log.info("%s.%s upgrading...", participant.__module__,
-                          participant.__class__.__name__)
-            participant.upgrade_environment()
+            self.log.info("upgrading %s...", participant)
+            with self.component_guard(participant, reraise=True):
+                participant.upgrade_environment()
             # Database schema may have changed, so close all connections
             dbm = DatabaseManager(self)
             if dbm.connection_uri != 'sqlite::memory:':
@@ -810,7 +838,7 @@ def open_environment(env_path=None, use_cache=False):
                 CacheManager(env).reset_metadata()
     else:
         env = Environment(env_path)
-        needs_upgrade = False
+        needs_upgrade = True
         try:
             needs_upgrade = env.needs_upgrade()
         except Exception as e:  # e.g. no database connection

@@ -175,11 +175,12 @@ class WikiPage(object):
         self.time = t
 
         for listener in WikiSystem(self.env).change_listeners:
-            if self.version == 1:
-                listener.wiki_page_added(self)
-            else:
-                listener.wiki_page_changed(self, self.version, t, comment,
-                                           author)
+            with self.env.component_guard(listener):
+                if self.version == 1:
+                    listener.wiki_page_added(self)
+                else:
+                    listener.wiki_page_changed(self, self.version, t, comment,
+                                               author)
 
         self.old_readonly = self.readonly
         self.old_text = self.text
