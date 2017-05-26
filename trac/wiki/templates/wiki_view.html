@@ -240,6 +240,14 @@
         </ul>
       </div>
       # endif
+
+      # call(note, page) jmacros.wikihelp('TracWiki'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the wiki.
+
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

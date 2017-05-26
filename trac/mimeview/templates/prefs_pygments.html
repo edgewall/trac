@@ -47,6 +47,15 @@
   <body>
     # block prefpanel
     <div class="field">
+      <label>${_("Style:")}
+        <select id="pygment_theme" name="style">
+          # for style in sorted(styles):
+          <option${{'value': style,
+                    'selected': selection == style
+                   }|htmlattr}>${style.title()}</option>
+          # endfor
+        </select>
+      </label>
       <p class="hint">
         # trans
 
@@ -55,17 +64,16 @@
 
         # endtrans
       </p>
-      <p><label>${_("Style:")}
-        <select id="pygment_theme" name="style">
-          # for style in sorted(styles):
-          <option${{'value': style,
-                    'selected': selection == style
-                   }|htmlattr}>${style.title()}</option>
-          # endfor
-        </select>
-      </label></p>
       ${_("Preview:")}
       <div class="code"><pre>${output|safe}</pre></div>
+
+      # call(note, page) jmacros.wikihelp('TracSyntaxColoring'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using syntax coloring.
+
+      #   endtrans
+      # endcall
     </div>
     # endblock prefpanel
   </body>

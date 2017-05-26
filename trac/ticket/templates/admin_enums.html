@@ -47,120 +47,130 @@ history and logs, available at http://trac.edgewall.org/.
       # endtrans
     </h2>
 
-    #   if view == 'detail':
-    <form id="edit" class="mod" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>
-          ${_("Modify %(label_singular)s:", label_singular=label_singular)}
-        </legend>
-        <div class="field">
-          <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
-        </div>
-        <div class="field description">
-          <label for="description">
-            # trans wikiformatting = jmacros.wikiformatting_link()
+    <div>
+      #   if view == 'detail':
+      <form id="edit" class="mod" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>
+            ${_("Modify %(label_singular)s:", label_singular=label_singular)}
+          </legend>
+          <div class="field">
+            <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${enum.name}" /></label>
+          </div>
+          <div class="field description">
+            <label for="description">
+              # trans wikiformatting = jmacros.wikiformatting_link()
 
-            Description: (you may use ${wikiformatting} here)
+              Description: (you may use ${wikiformatting} here)
 
-            # endtrans
-          </label>
-          <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
-                    rows="8" cols="78">${enum.description}</textarea>
-        </div>
-        <div id="preview" class="trac-content trac-draft" style="display:none"></div>
-      </fieldset>
-      <div class="buttons">
-        <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
-        <input type="submit" name="cancel" value="${_('Cancel')}"/>
-      </div>
-    </form>
-    #   else:
-
-    <form class="addnew" id="addenum" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>
-          ${_("Add %(label_singular)s:", label_singular=label_singular)}
-        </legend>
-        <div class="field">
-          <label>${_("Name:")} <input type="text" name="name" id="name"/></label>
-        </div>
+              # endtrans
+            </label>
+            <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                      rows="8" cols="78">${enum.description}</textarea>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none"></div>
+        </fieldset>
         <div class="buttons">
-          <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
+          <input type="submit" name="cancel" value="${_('Cancel')}"/>
         </div>
-      </fieldset>
-    </form>
+      </form>
+      #   else:
 
-    #     if enums:
-    <form id="enumtable" method="post" action="">
-      ${jmacros.form_token_input()}
-      <table class="listing" id="enumlist">
-        <thead>
-          <tr><th class="sel"></th>
-            <th>${_("Name")}</th><th>${_("Default")}</th><th>${_("Order")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          # for enum in enums:
-          <tr>
-            <td class="sel">
-              <input type="checkbox" class="trac-disable-determinant"
-                     name="sel" value="${enum.name}" />
-            </td>
-            <td><a href="${panel_href(enum.name)}">${enum.name}</a></td>
-            <td class="default">
-              <input type="radio" name="default"${
-                   {'value': enum.name,
-                    'checked': enum.name == default
-                   }|htmlattr}/>
-            </td>
-            <td class="default">
-              <select name="value_${enum.value}">
-                # for other in enums:
-                <option${{'selected': other.value == enum.value}|htmlattr}>${other.value}</option>
-                # endfor
-              </select>
-            </td>
-          </tr>
-          # endfor
-        </tbody>
-      </table>
-      <div class="buttons">
-        <input type="submit" name="apply" value="${_('Apply changes')}" />
-        <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
-        <input type="submit" name="clear" value="${_('Clear default')}" />
-      </div>
+      <form class="addnew" id="addenum" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>
+            ${_("Add %(label_singular)s:", label_singular=label_singular)}
+          </legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name" id="name"/></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+
+      #     if enums:
+      <form id="enumtable" method="post" action="">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="enumlist">
+          <thead>
+            <tr><th class="sel"></th>
+              <th>${_("Name")}</th><th>${_("Default")}</th><th>${_("Order")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for enum in enums:
+            <tr>
+              <td class="sel">
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${enum.name}" />
+              </td>
+              <td><a href="${panel_href(enum.name)}">${enum.name}</a></td>
+              <td class="default">
+                <input type="radio" name="default"${
+                     {'value': enum.name,
+                      'checked': enum.name == default
+                     }|htmlattr}/>
+              </td>
+              <td class="default">
+                <select name="value_${enum.value}">
+                  # for other in enums:
+                  <option${{'selected': other.value == enum.value}|htmlattr}>${other.value}</option>
+                  # endfor
+                </select>
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          <input type="submit" name="apply" value="${_('Apply changes')}" />
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
+          <input type="submit" name="clear" value="${_('Clear default')}" />
+        </div>
+        <p class="help">
+          #   trans
+
+          You can remove all items from this list to completely
+          hide this field from the user interface.
+
+          #   endtrans
+        </p>
+        #     if type == 'priority':
+        <p class="help">
+          #     trans note = jmacros.note()
+
+          ${note} The order of priorities determines the coloring of
+          entries in the ticket queries and reports.
+
+          #     endtrans
+        </p>
+        #     endif
+      </form>
+      #     else:
       <p class="help">
-        #   trans
+        #     trans
 
-        You can remove all items from this list to completely
-        hide this field from the user interface.
-
-        #   endtrans
-      </p>
-      #     if type == 'priority':
-      <p class="help">
-        #     trans note = jmacros.note()
-
-        ${note} The order of priorities determines the coloring of
-        entries in the ticket queries and reports.
+        As long as you don't add any items to the list, this field
+        will remain completely hidden from the user interface.
 
         #     endtrans
       </p>
       #     endif
-    </form>
-    #     else:
-    <p class="help">
-      #     trans
+      #   endif
 
-      As long as you don't add any items to the list, this field
-      will remain completely hidden from the user interface.
+      #   call(note, page) jmacros.wikihelp('TracTickets'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using the ticket system.
 
       #     endtrans
-    </p>
-    #     endif
-    #   endif
+      #   endcall
+    </div>
     # endblock adminpanel
 </body>
 

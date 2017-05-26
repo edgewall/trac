@@ -169,6 +169,14 @@
           <input type="submit" name="cancel" value="${_('Cancel')}" />
         </div>
       </form>
+
+      # call(note, page) jmacros.wikihelp('WikiDeletePage'):
+      #   trans note, page
+
+      ${note} See ${page} for help on deleting wiki pages.
+
+      #   endtrans
+      # endcall
     </div>
     ${ super() }
     # endblock content

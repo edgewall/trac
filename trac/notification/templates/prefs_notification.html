@@ -302,6 +302,13 @@
         </p>
       </div>
       #   endif
+      #   call(note, page) jmacros.wikihelp('TracNotification'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using notifications.
+
+      #     endtrans
+      #   endcall
     </div>
     #   endfor
     <p class="trac-noscript">

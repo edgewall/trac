@@ -39,58 +39,68 @@
     # block adminpanel
     <h2>${_("Logging")}</h2>
 
-    <form class="mod" id="modlog" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>${_("Configuration")}</legend>
-        <div class="field">
-          <label>${_("Type:")}<br />
-            <select id="log_type" name="log_type">
-              # for type in log.types:
-              <option${{'value': type.name,
-                        'selected': type.selected,
-                        'disabled': type.disabled
-                       }|htmlattr}>${type.label}</option>
-              # endfor
-            </select>
-          </label>
-        </div>
-        <div class="field">
-          <label>${_("Log level:")}<br />
-            <select id="log_level" name="log_level">
-              # for level in log.levels:
-              <option${{'selected': level==log.level}|htmlattr}>${
-                level}</option>
-              # endfor
-            </select>
-          </label>
-        </div>
-        <div class="field">
-          <label>${_("Log file:")}<br />
-            <input type="text" id="log_file" name="log_file" value="${log.file}"
-                   size="48"/>
-          </label>
-          <p class="help">
-            # set code_log
-            <code>log</code>
-            # endset
-            # set code_dir
-            <code>${log.dir}</code>
-            # endset
-            # trans code_log, code_dir
+    <div>
+      <form class="mod" id="modlog" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Configuration")}</legend>
+          <div class="field">
+            <label>${_("Type:")}<br />
+              <select id="log_type" name="log_type">
+                # for type in log.types:
+                <option${{'value': type.name,
+                          'selected': type.selected,
+                          'disabled': type.disabled
+                         }|htmlattr}>${type.label}</option>
+                # endfor
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Log level:")}<br />
+              <select id="log_level" name="log_level">
+                # for level in log.levels:
+                <option${{'selected': level==log.level}|htmlattr}>${
+                  level}</option>
+                # endfor
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Log file:")}<br />
+              <input type="text" id="log_file" name="log_file" value="${log.file}"
+                     size="48"/>
+            </label>
+            <p class="help">
+              # set code_log
+              <code>log</code>
+              # endset
+              # set code_dir
+              <code>${log.dir}</code>
+              # endset
+              # trans code_log, code_dir
 
-            If you specify a relative path, the log file will be
-            stored inside the ${code_log} directory of the project
-            environment (${code_dir}).
+              If you specify a relative path, the log file will be
+              stored inside the ${code_log} directory of the project
+              environment (${code_dir}).
 
-            # endtrans
-          </p>
+              # endtrans
+            </p>
+          </div>
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" value="${_('Apply changes')}" />
         </div>
-      </fieldset>
-      <div class="buttons">
-        <input type="submit" value="${_('Apply changes')}" />
-      </div>
-    </form>
+      </form>
+
+      # call(note, page) jmacros.wikihelp('TracLogging'):
+      #   trans note, page
+
+      ${note} See ${page} for help on configuring logging.
+
+      #   endtrans
+      # endcall
+    </div>
     # endblock adminpanel
   </body>
 

@@ -48,128 +48,138 @@
       # endtrans
     </h2>
 
-    #   if view == 'detail':
-    <form id="edit" class="mod" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>${_("Modify Version:")}</legend>
-        <div class="field">
-          <label>${_("Name:")}<br />
-            <input type="text" name="name" class="trac-autofocus" value="${version.name}" />
-          </label>
-        </div>
-        <div class="field">
-          <label>${_("Released:")}<br />
-            <input type="text" id="releaseddate" class="trac-datetimepicker"
-                   name="time" size="${len(datetime_hint) + 1}"
-                   value="${format_datetime(version.time)}"
-                   title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
-            <span class="trac-datetimehint">
-              ${_("Format: %(datehint)s", datehint=datetime_hint)}
-            </span>
-          </label>
-        </div>
-        <div class="field description">
-          <label for="description">
-            # trans wikiformatting = jmacros.wikiformatting_link()
+    <div>
+      #   if view == 'detail':
+      <form id="edit" class="mod" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Modify Version:")}</legend>
+          <div class="field">
+            <label>${_("Name:")}<br />
+              <input type="text" name="name" class="trac-autofocus" value="${version.name}" />
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Released:")}<br />
+              <input type="text" id="releaseddate" class="trac-datetimepicker"
+                     name="time" size="${len(datetime_hint) + 1}"
+                     value="${format_datetime(version.time)}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
+              <span class="trac-datetimehint">
+                ${_("Format: %(datehint)s", datehint=datetime_hint)}
+              </span>
+            </label>
+          </div>
+          <div class="field description">
+            <label for="description">
+              # trans wikiformatting = jmacros.wikiformatting_link()
 
-            Description: (you may use ${wikiformatting} here)
+              Description: (you may use ${wikiformatting} here)
 
-            # endtrans
-          </label>
-          <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
-                    rows="8" cols="78">${version.description}</textarea>
-        </div>
-        <div id="preview" class="trac-content trac-draft" style="display:none">
-        </div>
-      </fieldset>
-      <div class="buttons">
-        <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
-        <input type="submit" name="cancel" value="${_('Cancel')}"/>
-      </div>
-    </form>
-
-    #   else:
-    <form class="addnew" id="addversion" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>${_("Add Version:")}</legend>
-        <div class="field">
-          <label>${_("Name:")} <input type="text" name="name" id="name" size="22"/></label>
-        </div>
-        <div class="field">
-          <label>
-            ${_("Released:")}
-            <input type="text" id="releaseddate" class="trac-datetimepicker"
-                   name="time" size="${len(datetime_hint) + 1}"
-                   title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
-                   value="${format_datetime()}"/>
-            ## jinjacheck: "releaseddate already defined" OK
-            <span class="trac-datetimehint">
-              ${_("Format: %(datehint)s", datetime_hint=datetime_hint)}
-            </span>
-          </label>
-        </div>
+              # endtrans
+            </label>
+            <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                      rows="8" cols="78">${version.description}</textarea>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none">
+          </div>
+        </fieldset>
         <div class="buttons">
-          <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}" />
+          <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
+          <input type="submit" name="cancel" value="${_('Cancel')}"/>
         </div>
-      </fieldset>
-    </form>
+      </form>
 
-    #     if versions:
-    <form id="version_table" method="post" action="">
-      ${jmacros.form_token_input()}
-      <table class="listing" id="verlist">
-        <thead>
-          <tr><th class="sel"></th>
-            <th>${_("Name")}</th><th>${_("Released")}</th><th>${_("Default")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          # for version in versions:
-          <tr>
-            <td class="sel">
-              <input type="checkbox" class="trac-disable-determinant"
-                     name="sel" value="${version.name}"/>
-            </td>
-            <td><a href="${panel_href(version.name)}">${version.name}</a></td>
-            <td>${version.time and format_datetime(version.time)}</td>
-            <td class="default">
-              <input type="radio" name="default"${
-                   {'value': version.name,
-                    'checked': version.name == default
-                   }|htmlattr}/>
-            </td>
-          </tr>
-          # endfor
-        </tbody>
-      </table>
-      <div class="buttons">
-        <input type="submit" name="apply" value="${_('Apply changes')}" />
-        <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
-        <input type="submit" name="clear" value="${_('Clear default')}" />
-      </div>
+      #   else:
+      <form class="addnew" id="addversion" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Version:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name" id="name" size="22"/></label>
+          </div>
+          <div class="field">
+            <label>
+              ${_("Released:")}
+              <input type="text" id="releaseddate" class="trac-datetimepicker"
+                     name="time" size="${len(datetime_hint) + 1}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
+                     value="${format_datetime()}"/>
+              ## jinjacheck: "releaseddate already defined" OK
+              <span class="trac-datetimehint">
+                ${_("Format: %(datehint)s", datetime_hint=datetime_hint)}
+              </span>
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}" />
+          </div>
+        </fieldset>
+      </form>
+
+      #     if versions:
+      <form id="version_table" method="post" action="">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="verlist">
+          <thead>
+            <tr><th class="sel"></th>
+              <th>${_("Name")}</th><th>${_("Released")}</th><th>${_("Default")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for version in versions:
+            <tr>
+              <td class="sel">
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${version.name}"/>
+              </td>
+              <td><a href="${panel_href(version.name)}">${version.name}</a></td>
+              <td>${version.time and format_datetime(version.time)}</td>
+              <td class="default">
+                <input type="radio" name="default"${
+                     {'value': version.name,
+                      'checked': version.name == default
+                     }|htmlattr}/>
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          <input type="submit" name="apply" value="${_('Apply changes')}" />
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
+          <input type="submit" name="clear" value="${_('Clear default')}" />
+        </div>
+        <p class="help">
+          #   trans
+
+          You can remove all items from this list to completely
+          hide this field from the user interface.
+
+          #   endtrans
+        </p>
+      </form>
+      #     else:
       <p class="help">
-        #   trans
+        #     trans
 
-        You can remove all items from this list to completely
-        hide this field from the user interface.
+        As long as you don't add any items to the list, this field
+        will remain completely hidden from the user interface.
 
-        #   endtrans
+        #     endtrans
       </p>
-    </form>
-    #     else:
-    <p class="help">
-      #     trans
 
-      As long as you don't add any items to the list, this field
-      will remain completely hidden from the user interface.
+      #     endif
+      #   endif
+
+      #   call(note, page) jmacros.wikihelp('TracTickets'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using the ticket system.
 
       #     endtrans
-    </p>
-
-    #     endif
-    #   endif
+      #   endcall
+    </div>
     # endblock adminpanel
   </body>
 

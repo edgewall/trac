@@ -41,127 +41,137 @@
       # endif
     </h2>
 
-    #   macro owner_field(default_owner='', br_after_label=false)
-    <div class="field">
-      <label>${_("Owner:")}
-        # if br_after_label:
-        <br />
-        # endif
-        # if owners:
-        <select size="1" id="owner" name="owner">
-          # for owner in owners:
-          <option${{'selected': owner == default_owner, 'value': owner
-                   }|htmlattr}>${owner}</option>
-          # endfor
-          # if default_owner and default_owner not in owners:
-          <option selected="selected" value="${default_owner}">${default_owner}</option>
+    <div>
+      #   macro owner_field(default_owner='', br_after_label=false)
+      <div class="field">
+        <label>${_("Owner:")}
+          # if br_after_label:
+          <br />
           # endif
-        </select>
-        # else:
-        <input type="text" name="owner" value="${default_owner}" />
-        # endif
-      </label>
-    </div>
-    #   endmacro
-
-    #   if view == 'detail':
-    <form id="edit" class="mod" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>${_("Modify Component:")}</legend>
-        <div class="field">
-          <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${component.name}" /></label>
-        </div>
-        ${owner_field(component.owner, True)}
-        <div class="field description">
-          <label for="description">
-            # trans wikiformatting = jmacros.wikiformatting_link()
-
-            Description: (you may use ${wikiformatting} here)
-
-            # endtrans
-          </label>
-          <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
-                    rows="8" cols="78">${component.description}</textarea>
-        </div>
-        <div id="preview" class="trac-content trac-draft" style="display:none">
-        </div>
-      </fieldset>
-      <div class="buttons">
-        <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
-        <input type="submit" name="cancel" value="${_('Cancel')}" />
+          # if owners:
+          <select size="1" id="owner" name="owner">
+            # for owner in owners:
+            <option${{'selected': owner == default_owner, 'value': owner
+                     }|htmlattr}>${owner}</option>
+            # endfor
+            # if default_owner and default_owner not in owners:
+            <option selected="selected" value="${default_owner}">${default_owner}</option>
+            # endif
+          </select>
+          # else:
+          <input type="text" name="owner" value="${default_owner}" />
+          # endif
+        </label>
       </div>
-    </form>
-    #   else:
-    <form class="addnew" id="addcomponent" method="post" action="">
-      ${jmacros.form_token_input()}
-      <fieldset>
-        <legend>${_("Add Component:")}</legend>
-        <div class="field">
-          <label>${_("Name:")} <input type="text" name="name"/></label>
-        </div>
-        ${owner_field()}
+      #   endmacro
+
+      #   if view == 'detail':
+      <form id="edit" class="mod" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Modify Component:")}</legend>
+          <div class="field">
+            <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${component.name}" /></label>
+          </div>
+          ${owner_field(component.owner, True)}
+          <div class="field description">
+            <label for="description">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              Description: (you may use ${wikiformatting} here)
+
+              # endtrans
+            </label>
+            <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                      rows="8" cols="78">${component.description}</textarea>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none">
+          </div>
+        </fieldset>
         <div class="buttons">
-          <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
         </div>
-      </fieldset>
-    </form>
+      </form>
+      #   else:
+      <form class="addnew" id="addcomponent" method="post" action="">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Component:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name"/></label>
+          </div>
+          ${owner_field()}
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
 
-    #     if components:
-    <form  id="component_table" method="post" action="">
-      ${jmacros.form_token_input()}
-      <table class="listing" id="complist">
-        <thead>
-          <tr><th class="sel"></th>
-            <th>${_("Name")}</th><th>${_("Owner")}</th><th>${_("Default")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          # for comp in components:
-          <tr>
-            <td class="sel">
-              <input type="checkbox" class="trac-disable-determinant"
-                     name="sel" value="${comp.name}" />
-            </td>
-            <td class="name">
-              <a href="${panel_href(comp.name)}">${comp.name}</a>
-            </td>
-            <td class="owner">${comp.owner}</td>
-            <td class="default">
-              <input type="radio" name="default"${
-                   {'value': comp.name,
-                    'checked': comp.name == default
-                   }|htmlattr}/>
-            </td>
-          </tr>
-          # endfor
-        </tbody>
-      </table>
-      <div class="buttons">
-        <input type="submit" name="apply" value="${_('Apply changes')}" />
-        <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
-        <input type="submit" name="clear" value="${_('Clear default')}" />
-      </div>
+      #     if components:
+      <form  id="component_table" method="post" action="">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="complist">
+          <thead>
+            <tr><th class="sel"></th>
+              <th>${_("Name")}</th><th>${_("Owner")}</th><th>${_("Default")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for comp in components:
+            <tr>
+              <td class="sel">
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${comp.name}" />
+              </td>
+              <td class="name">
+                <a href="${panel_href(comp.name)}">${comp.name}</a>
+              </td>
+              <td class="owner">${comp.owner}</td>
+              <td class="default">
+                <input type="radio" name="default"${
+                     {'value': comp.name,
+                      'checked': comp.name == default
+                     }|htmlattr}/>
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          <input type="submit" name="apply" value="${_('Apply changes')}" />
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
+          <input type="submit" name="clear" value="${_('Clear default')}" />
+        </div>
+        <p class="help">
+          #   trans
+
+          You can remove all items from this list to completely
+          hide this field from the user interface.
+
+          #   endtrans
+        </p>
+      </form>
+      #     else:
       <p class="help">
-        #   trans
+        #     trans
 
-        You can remove all items from this list to completely
-        hide this field from the user interface.
+        As long as you don't add any items to the list, this field
+        will remain completely hidden from the user interface.
 
-        #   endtrans
+        #     endtrans
       </p>
-    </form>
-    #     else:
-    <p class="help">
-      #     trans
+      #     endif
+      #   endif
 
-      As long as you don't add any items to the list, this field
-      will remain completely hidden from the user interface.
+      #   call(note, page) jmacros.wikihelp('TracTickets'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using the ticket system.
 
       #     endtrans
-    </p>
-    #     endif
-    #   endif
+      #   endcall
+    </div>
     # endblock adminpanel
   </body>
 
