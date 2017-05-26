@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-05-25 22:17-0700\n"
+"POT-Creation-Date: 2017-05-26 15:18-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,15 +112,15 @@ msgstr ""
 #: trac/templates/attachment.html:109 trac/templates/attachment.html:130
 #: trac/templates/genshi/attachment.html:75
 #: trac/templates/genshi/attachment.html:89
-#: trac/ticket/templates/admin_components.html:92
-#: trac/ticket/templates/admin_enums.html:75
-#: trac/ticket/templates/admin_versions.html:88
+#: trac/ticket/templates/admin_components.html:93
+#: trac/ticket/templates/admin_enums.html:76
+#: trac/ticket/templates/admin_versions.html:89
 #: trac/ticket/templates/milestone_delete.html:74
 #: trac/ticket/templates/milestone_edit_form.html:165
 #: trac/ticket/templates/report_delete.html:37
 #: trac/ticket/templates/report_edit.html:118
 #: trac/ticket/templates/ticket_change.html:191
-#: trac/versioncontrol/templates/admin_repositories.html:195
+#: trac/versioncontrol/templates/admin_repositories.html:196
 #: trac/wiki/templates/wiki_delete.html:169
 #: trac/wiki/templates/wiki_edit.html:190
 #: trac/wiki/templates/wiki_edit_comment.html:58
@@ -490,12 +490,12 @@ msgstr ""
 #: trac/templates/genshi/environment_info.html:96
 #: trac/templates/genshi/error.html:173 trac/ticket/admin.py:203
 #: trac/ticket/admin.py:414 trac/ticket/admin.py:579
-#: trac/ticket/templates/admin_components.html:116
-#: trac/ticket/templates/admin_enums.html:101
-#: trac/ticket/templates/admin_milestones.html:88
-#: trac/ticket/templates/admin_versions.html:125
+#: trac/ticket/templates/admin_components.html:117
+#: trac/ticket/templates/admin_enums.html:102
+#: trac/ticket/templates/admin_milestones.html:89
+#: trac/ticket/templates/admin_versions.html:126
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:239
+#: trac/versioncontrol/templates/admin_repositories.html:240
 #: trac/versioncontrol/templates/dirlist_thead.html:17 trac/web/session.py:483
 msgid "Name"
 msgstr ""
@@ -760,7 +760,7 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:127 trac/perm.py:717
+#: trac/admin/templates/admin_perms.html:128 trac/perm.py:717
 msgid "Action"
 msgstr ""
 
@@ -1125,7 +1125,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:17
-#: trac/admin/templates/admin_perms.html:124 trac/admin/web_ui.py:350
+#: trac/admin/templates/admin_perms.html:125 trac/admin/web_ui.py:350
 msgid "Permissions"
 msgstr ""
 
@@ -1208,258 +1208,273 @@ msgstr ""
 msgid "Basics"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:29
+#: trac/admin/templates/admin_basics.html:30
 msgid "Project"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:31
-#: trac/ticket/templates/admin_components.html:73
-#: trac/ticket/templates/admin_components.html:101
-#: trac/ticket/templates/admin_enums.html:58
-#: trac/ticket/templates/admin_enums.html:87
-#: trac/ticket/templates/admin_milestones.html:59
-#: trac/ticket/templates/admin_versions.html:57
-#: trac/ticket/templates/admin_versions.html:98
+#: trac/admin/templates/admin_basics.html:32
+#: trac/ticket/templates/admin_components.html:74
+#: trac/ticket/templates/admin_components.html:102
+#: trac/ticket/templates/admin_enums.html:59
+#: trac/ticket/templates/admin_enums.html:88
+#: trac/ticket/templates/admin_milestones.html:60
+#: trac/ticket/templates/admin_versions.html:58
+#: trac/ticket/templates/admin_versions.html:99
 #: trac/ticket/templates/milestone_edit_form.html:57
-#: trac/versioncontrol/templates/admin_repositories.html:124
-#: trac/versioncontrol/templates/admin_repositories.html:205
-#: trac/versioncontrol/templates/admin_repositories.html:223
+#: trac/versioncontrol/templates/admin_repositories.html:125
+#: trac/versioncontrol/templates/admin_repositories.html:206
+#: trac/versioncontrol/templates/admin_repositories.html:224
 msgid "Name:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:36
-#: trac/versioncontrol/templates/admin_repositories.html:141
+#: trac/admin/templates/admin_basics.html:37
+#: trac/versioncontrol/templates/admin_repositories.html:142
 msgid "URL:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:41
+#: trac/admin/templates/admin_basics.html:42
 #: trac/ticket/templates/ticket.html:307
 msgid "Description:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:47
+#: trac/admin/templates/admin_basics.html:48
 #: trac/prefs/templates/prefs_userinterface.html:101
 msgid "Default handler:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:61
+#: trac/admin/templates/admin_basics.html:62
 #, python-format
 msgid "%(default_handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:71
+#: trac/admin/templates/admin_basics.html:72
 #: trac/prefs/templates/prefs_localization.html:17 trac/prefs/web_ui.py:208
 msgid "Localization"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:73
+#: trac/admin/templates/admin_basics.html:74
 msgid "Default timezone:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:75
+#: trac/admin/templates/admin_basics.html:76
 msgid "Server's local time zone"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:85
+#: trac/admin/templates/admin_basics.html:86
 msgid "Install pytz for a complete list of timezones."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:94
+#: trac/admin/templates/admin_basics.html:95
 msgid "Default language:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:96
+#: trac/admin/templates/admin_basics.html:97
 #: trac/prefs/templates/prefs_localization.html:33
 msgid "Translations are currently unavailable"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:100
-#: trac/admin/templates/admin_basics.html:130
+#: trac/admin/templates/admin_basics.html:101
+#: trac/admin/templates/admin_basics.html:131
 msgid "Browser's language"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:110
+#: trac/admin/templates/admin_basics.html:111
 #: trac/prefs/templates/prefs_localization.html:46
 msgid "Install Babel for extended language support."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:119
+#: trac/admin/templates/admin_basics.html:120
 #: trac/prefs/templates/prefs_localization.html:51
 msgid "Message catalogs have not been compiled."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:128
+#: trac/admin/templates/admin_basics.html:129
 msgid "Default date format:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:133
+#: trac/admin/templates/admin_basics.html:134
 #: trac/prefs/templates/prefs_localization.html:201
 msgid "ISO 8601 format"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:138
+#: trac/admin/templates/admin_basics.html:139
 msgid "Install Babel for localized date formats."
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:147
+#: trac/admin/templates/admin_basics.html:148
 msgid "Default time format:"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:151
+#: trac/admin/templates/admin_basics.html:152
 #: trac/prefs/templates/prefs_localization.html:225
 msgid "Relative format"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:154
+#: trac/admin/templates/admin_basics.html:155
 #: trac/prefs/templates/prefs_localization.html:228
 msgid "Absolute format"
 msgstr ""
 
-#: trac/admin/templates/admin_basics.html:160
-#: trac/admin/templates/admin_logging.html:91
-#: trac/admin/templates/admin_plugins.html:234
-#: trac/ticket/templates/admin_components.html:141
-#: trac/ticket/templates/admin_enums.html:130
-#: trac/ticket/templates/admin_milestones.html:141
-#: trac/ticket/templates/admin_versions.html:148
+#: trac/admin/templates/admin_basics.html:161
+#: trac/admin/templates/admin_logging.html:92
+#: trac/admin/templates/admin_plugins.html:235
+#: trac/ticket/templates/admin_components.html:142
+#: trac/ticket/templates/admin_enums.html:131
+#: trac/ticket/templates/admin_milestones.html:142
+#: trac/ticket/templates/admin_versions.html:149
 msgid "Apply changes"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:45
+#: trac/admin/templates/admin_basics.html:166
+#, python-format
+msgid "%(note)s See %(page)s for help on configuration options."
+msgstr ""
+
+#: trac/admin/templates/admin_logging.html:46
 #: trac/templates/environment_info.html:116
 #: trac/templates/genshi/environment_info.html:91
 msgid "Configuration"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:47
-#: trac/versioncontrol/templates/admin_repositories.html:55
+#: trac/admin/templates/admin_logging.html:48
+#: trac/versioncontrol/templates/admin_repositories.html:56
 msgid "Type:"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:59
+#: trac/admin/templates/admin_logging.html:60
 msgid "Log level:"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:69
+#: trac/admin/templates/admin_logging.html:70
 msgid "Log file:"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:80
+#: trac/admin/templates/admin_logging.html:81
 #, python-format
 msgid ""
 "If you specify a relative path, the log file will be stored inside the "
 "%(code_log)s directory of the project environment (%(code_dir)s)."
 msgstr ""
 
+#: trac/admin/templates/admin_logging.html:97
+#, python-format
+msgid "%(note)s See %(page)s for help on configuring logging."
+msgstr ""
+
 #: trac/admin/templates/admin_perms.html:39
 msgid "Manage Permissions and Groups"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:45
+#: trac/admin/templates/admin_perms.html:46
 msgid "Grant Permission:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:47
+#: trac/admin/templates/admin_perms.html:48
 msgid "Action:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:56
-#: trac/admin/templates/admin_perms.html:77
-#: trac/admin/templates/admin_perms.html:101
+#: trac/admin/templates/admin_perms.html:57
+#: trac/admin/templates/admin_perms.html:78
+#: trac/admin/templates/admin_perms.html:102
 msgid "Subject:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:59
-#: trac/admin/templates/admin_perms.html:83
-#: trac/admin/templates/admin_perms.html:107
+#: trac/admin/templates/admin_perms.html:60
+#: trac/admin/templates/admin_perms.html:84
+#: trac/admin/templates/admin_perms.html:108
 #: trac/notification/templates/prefs_notification.html:245
-#: trac/ticket/templates/admin_components.html:105
-#: trac/ticket/templates/admin_enums.html:90
-#: trac/ticket/templates/admin_milestones.html:73
-#: trac/ticket/templates/admin_versions.html:114
-#: trac/versioncontrol/templates/admin_repositories.html:212
-#: trac/versioncontrol/templates/admin_repositories.html:227
+#: trac/ticket/templates/admin_components.html:106
+#: trac/ticket/templates/admin_enums.html:91
+#: trac/ticket/templates/admin_milestones.html:74
+#: trac/ticket/templates/admin_versions.html:115
+#: trac/versioncontrol/templates/admin_repositories.html:213
+#: trac/versioncontrol/templates/admin_repositories.html:228
 msgid "Add"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:62
+#: trac/admin/templates/admin_perms.html:63
 msgid ""
 "Grant permission for an action to a subject, which can be either a user "
 "or a group."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:75
+#: trac/admin/templates/admin_perms.html:76
 msgid "Copy Permissions:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:80
+#: trac/admin/templates/admin_perms.html:81
 msgid "Target:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:86
+#: trac/admin/templates/admin_perms.html:87
 msgid ""
 "Copy all of subject's permissions to target. Subject and target can be "
 "either users or groups."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:99
+#: trac/admin/templates/admin_perms.html:100
 msgid "Add Subject to Group:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:104
+#: trac/admin/templates/admin_perms.html:105
 msgid "Group:"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:110
+#: trac/admin/templates/admin_perms.html:111
 msgid "Add a user or group to an existing permission group."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:127
-#: trac/admin/templates/admin_perms.html:168
-#: trac/admin/templates/admin_perms.html:208
+#: trac/admin/templates/admin_perms.html:128
+#: trac/admin/templates/admin_perms.html:169
+#: trac/admin/templates/admin_perms.html:209
 msgid "Subject"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:143
+#: trac/admin/templates/admin_perms.html:144
 msgid "You don't have permission to revoke this action"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:150
+#: trac/admin/templates/admin_perms.html:151
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:159
+#: trac/admin/templates/admin_perms.html:160
 msgid "No permissions"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:165
+#: trac/admin/templates/admin_perms.html:166
 msgid "Group Membership"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:168
-#: trac/admin/templates/admin_perms.html:211
+#: trac/admin/templates/admin_perms.html:169
+#: trac/admin/templates/admin_perms.html:212
 msgid "Group"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:193
+#: trac/admin/templates/admin_perms.html:194
 msgid "No group memberships"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:200
-#: trac/ticket/templates/admin_components.html:142
-#: trac/ticket/templates/admin_enums.html:131
-#: trac/ticket/templates/admin_milestones.html:143
-#: trac/ticket/templates/admin_versions.html:149
-#: trac/versioncontrol/templates/admin_repositories.html:284
+#: trac/admin/templates/admin_perms.html:201
+#: trac/ticket/templates/admin_components.html:143
+#: trac/ticket/templates/admin_enums.html:132
+#: trac/ticket/templates/admin_milestones.html:144
+#: trac/ticket/templates/admin_versions.html:150
+#: trac/versioncontrol/templates/admin_repositories.html:285
 msgid "Remove selected items"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:213
+#: trac/admin/templates/admin_perms.html:214
 #, python-format
 msgid ""
 "Note that %(subject)s or %(group)s names can't be all upper-case, as that"
 " is reserved for permission names."
+msgstr ""
+
+#: trac/admin/templates/admin_perms.html:223
+#, python-format
+msgid "%(note)s See %(page)s for help on using permissions."
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:73
@@ -1467,64 +1482,69 @@ msgstr ""
 msgid "Manage Plugins %(nb_plugins)s"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:83
+#: trac/admin/templates/admin_plugins.html:84
 msgid "Install Plugin:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:86
+#: trac/admin/templates/admin_plugins.html:87
 #: trac/versioncontrol/templates/changeset_content.html:234
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/templates/admin_plugins.html:92
+#: trac/admin/templates/admin_plugins.html:93
 msgid "Install"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:96
+#: trac/admin/templates/admin_plugins.html:97
 msgid ""
 "The web server does not have sufficient permissions to store files in the"
 " environment plugins directory."
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:103
+#: trac/admin/templates/admin_plugins.html:104
 msgid "Upload a plugin packaged as Python egg."
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:122
+#: trac/admin/templates/admin_plugins.html:123
 msgid "Uninstall"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:130
+#: trac/admin/templates/admin_plugins.html:131
 #: trac/templates/diff_view.html:100 trac/templates/genshi/diff_view.html:60
 #: trac/versioncontrol/templates/changeset_content.html:202
 msgid "Author:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:142
+#: trac/admin/templates/admin_plugins.html:143
 msgid "Home page:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:149
+#: trac/admin/templates/admin_plugins.html:150
 msgid "License:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:159 trac/ticket/admin.py:81
+#: trac/admin/templates/admin_plugins.html:160 trac/ticket/admin.py:81
 #: trac/ticket/api.py:365
 msgid "Component"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:161
+#: trac/admin/templates/admin_plugins.html:162
 msgid "Show all descriptions"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:164
+#: trac/admin/templates/admin_plugins.html:165
 msgid "Hide all descriptions"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:169
+#: trac/admin/templates/admin_plugins.html:170
 msgid "Enabled"
+msgstr ""
+
+#: trac/admin/templates/admin_plugins.html:242
+#, python-format
+msgid "%(note)s See %(page)s for help on using plugins."
 msgstr ""
 
 #: trac/db/api.py:498
@@ -1752,18 +1772,23 @@ msgstr ""
 msgid "HTML parsing error: %(message)s"
 msgstr ""
 
-#: trac/mimeview/templates/prefs_pygments.html:51
+#: trac/mimeview/templates/prefs_pygments.html:50
+msgid "Style:"
+msgstr ""
+
+#: trac/mimeview/templates/prefs_pygments.html:60
 msgid ""
 "The Pygments syntax highlighter can be used with different coloring "
 "styles."
 msgstr ""
 
-#: trac/mimeview/templates/prefs_pygments.html:58
-msgid "Style:"
-msgstr ""
-
 #: trac/mimeview/templates/prefs_pygments.html:67
 msgid "Preview:"
+msgstr ""
+
+#: trac/mimeview/templates/prefs_pygments.html:71
+#, python-format
+msgid "%(note)s See %(page)s for help on using syntax coloring."
 msgstr ""
 
 #: trac/notification/mail.py:91
@@ -1926,7 +1951,12 @@ msgid ""
 " %(never_notify)s."
 msgstr ""
 
-#: trac/notification/templates/prefs_notification.html:308
+#: trac/notification/templates/prefs_notification.html:306
+#, python-format
+msgid "%(note)s See %(page)s for help on using notifications."
+msgstr ""
+
+#: trac/notification/templates/prefs_notification.html:315
 #: trac/prefs/templates/prefs.html:75 trac/templates/genshi/prefs.html:48
 msgid "Save changes"
 msgstr ""
@@ -3062,7 +3092,7 @@ msgid "The selected components have been removed."
 msgstr ""
 
 #: trac/ticket/admin.py:203 trac/ticket/api.py:354
-#: trac/ticket/templates/admin_components.html:116
+#: trac/ticket/templates/admin_components.html:117
 msgid "Owner"
 msgstr ""
 
@@ -3088,11 +3118,11 @@ msgstr ""
 msgid "The selected milestones have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:414 trac/ticket/templates/admin_milestones.html:88
+#: trac/ticket/admin.py:414 trac/ticket/templates/admin_milestones.html:89
 msgid "Due"
 msgstr ""
 
-#: trac/ticket/admin.py:414 trac/ticket/templates/admin_milestones.html:88
+#: trac/ticket/admin.py:414 trac/ticket/templates/admin_milestones.html:89
 msgid "Completed"
 msgstr ""
 
@@ -3172,7 +3202,7 @@ msgid "Reporter"
 msgstr ""
 
 #: trac/ticket/api.py:361 trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:239
+#: trac/versioncontrol/templates/admin_repositories.html:240
 msgid "Type"
 msgstr ""
 
@@ -4026,7 +4056,7 @@ msgstr ""
 msgid "id can't be set for a new ticket request."
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:91 trac/ticket/web_ui.py:198
+#: trac/ticket/templates/admin_milestones.html:92 trac/ticket/web_ui.py:198
 msgid "Tickets"
 msgstr ""
 
@@ -4328,70 +4358,77 @@ msgstr ""
 msgid "Manage Components"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:46
+#: trac/ticket/templates/admin_components.html:47
 msgid "Owner:"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:71
+#: trac/ticket/templates/admin_components.html:72
 msgid "Modify Component:"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:78
-#: trac/ticket/templates/admin_enums.html:62
-#: trac/ticket/templates/admin_versions.html:74
+#: trac/ticket/templates/admin_components.html:79
+#: trac/ticket/templates/admin_enums.html:63
+#: trac/ticket/templates/admin_versions.html:75
 #: trac/ticket/templates/milestone_edit_form.html:142
 #: trac/ticket/templates/report_edit.html:77
-#: trac/versioncontrol/templates/admin_repositories.html:176
+#: trac/versioncontrol/templates/admin_repositories.html:177
 #, python-format
 msgid "Description: (you may use %(wikiformatting)s here)"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:91
-#: trac/ticket/templates/admin_enums.html:74
-#: trac/ticket/templates/admin_versions.html:87
+#: trac/ticket/templates/admin_components.html:92
+#: trac/ticket/templates/admin_enums.html:75
+#: trac/ticket/templates/admin_versions.html:88
 #: trac/ticket/templates/milestone_edit_form.html:160
 #: trac/ticket/templates/ticket.html:577
 #: trac/ticket/templates/ticket_change.html:188
-#: trac/versioncontrol/templates/admin_repositories.html:193
+#: trac/versioncontrol/templates/admin_repositories.html:194
 #: trac/wiki/templates/wiki_edit_comment.html:57
 #: trac/wiki/templates/wiki_edit_form.html:106
 #: trac/wiki/templates/wiki_edit_form.html:114
 msgid "Submit changes"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:99
+#: trac/ticket/templates/admin_components.html:100
 msgid "Add Component:"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:116
-#: trac/ticket/templates/admin_enums.html:101
-#: trac/ticket/templates/admin_milestones.html:89
-#: trac/ticket/templates/admin_versions.html:125
+#: trac/ticket/templates/admin_components.html:117
+#: trac/ticket/templates/admin_enums.html:102
+#: trac/ticket/templates/admin_milestones.html:90
+#: trac/ticket/templates/admin_versions.html:126
 msgid "Default"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:143
-#: trac/ticket/templates/admin_enums.html:132
-#: trac/ticket/templates/admin_versions.html:150
+#: trac/ticket/templates/admin_components.html:144
+#: trac/ticket/templates/admin_enums.html:133
+#: trac/ticket/templates/admin_versions.html:151
 msgid "Clear default"
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:146
-#: trac/ticket/templates/admin_enums.html:135
-#: trac/ticket/templates/admin_milestones.html:150
-#: trac/ticket/templates/admin_versions.html:153
+#: trac/ticket/templates/admin_components.html:147
+#: trac/ticket/templates/admin_enums.html:136
+#: trac/ticket/templates/admin_milestones.html:151
+#: trac/ticket/templates/admin_versions.html:154
 msgid ""
 "You can remove all items from this list to completely hide this field "
 "from the user interface."
 msgstr ""
 
-#: trac/ticket/templates/admin_components.html:156
-#: trac/ticket/templates/admin_enums.html:155
-#: trac/ticket/templates/admin_milestones.html:160
-#: trac/ticket/templates/admin_versions.html:163
+#: trac/ticket/templates/admin_components.html:157
+#: trac/ticket/templates/admin_enums.html:156
+#: trac/ticket/templates/admin_milestones.html:161
+#: trac/ticket/templates/admin_versions.html:164
 msgid ""
 "As long as you don't add any items to the list, this field will remain "
 "completely hidden from the user interface."
+msgstr ""
+
+#: trac/ticket/templates/admin_components.html:168
+#: trac/ticket/templates/admin_enums.html:167
+#: trac/ticket/templates/admin_versions.html:176
+#, python-format
+msgid "%(note)s See %(page)s for help on using the ticket system."
 msgstr ""
 
 #: trac/ticket/templates/admin_enums.html:43
@@ -4399,21 +4436,21 @@ msgstr ""
 msgid "Manage %(label_plural)s %(nb_enums)s"
 msgstr ""
 
-#: trac/ticket/templates/admin_enums.html:55
+#: trac/ticket/templates/admin_enums.html:56
 #, python-format
 msgid "Modify %(label_singular)s:"
 msgstr ""
 
-#: trac/ticket/templates/admin_enums.html:84
+#: trac/ticket/templates/admin_enums.html:85
 #, python-format
 msgid "Add %(label_singular)s:"
 msgstr ""
 
-#: trac/ticket/templates/admin_enums.html:101
+#: trac/ticket/templates/admin_enums.html:102
 msgid "Order"
 msgstr ""
 
-#: trac/ticket/templates/admin_enums.html:144
+#: trac/ticket/templates/admin_enums.html:145
 #, python-format
 msgid ""
 "%(note)s The order of priorities determines the coloring of entries in "
@@ -4425,20 +4462,20 @@ msgstr ""
 msgid "Manage Milestones %(nb_milestones)s"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:57
+#: trac/ticket/templates/admin_milestones.html:58
 msgid "Add Milestone:"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:63
+#: trac/ticket/templates/admin_milestones.html:64
 #: trac/ticket/templates/milestone_edit_form.html:72
 msgid "Due:"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:66
-#: trac/ticket/templates/admin_versions.html:66
-#: trac/ticket/templates/admin_versions.html:68
-#: trac/ticket/templates/admin_versions.html:105
-#: trac/ticket/templates/admin_versions.html:109
+#: trac/ticket/templates/admin_milestones.html:67
+#: trac/ticket/templates/admin_versions.html:67
+#: trac/ticket/templates/admin_versions.html:69
+#: trac/ticket/templates/admin_versions.html:106
+#: trac/ticket/templates/admin_versions.html:110
 #: trac/ticket/templates/milestone_edit_form.html:80
 #: trac/ticket/templates/milestone_edit_form.html:83
 #: trac/ticket/templates/milestone_edit_form.html:100
@@ -4447,33 +4484,38 @@ msgstr ""
 msgid "Format: %(datehint)s"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:68
+#: trac/ticket/templates/admin_milestones.html:69
 #, python-format
 msgid "Format %(datehint)s"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:89
+#: trac/ticket/templates/admin_milestones.html:90
 msgid "Default milestone for new tickets"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:90
+#: trac/ticket/templates/admin_milestones.html:91
 msgid "Default milestone for retargeting tickets"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:90
+#: trac/ticket/templates/admin_milestones.html:91
 msgid "Retarget"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:91
+#: trac/ticket/templates/admin_milestones.html:92
 msgid "Number of tickets associated with milestone"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:146
+#: trac/ticket/templates/admin_milestones.html:147
 msgid "Clear default ticket milestone and default retargeting milestone"
 msgstr ""
 
-#: trac/ticket/templates/admin_milestones.html:147
+#: trac/ticket/templates/admin_milestones.html:148
 msgid "Clear defaults"
+msgstr ""
+
+#: trac/ticket/templates/admin_milestones.html:172
+#, python-format
+msgid "%(note)s See %(page)s for help on using ticket milestones."
 msgstr ""
 
 #: trac/ticket/templates/admin_versions.html:44
@@ -4481,20 +4523,20 @@ msgstr ""
 msgid "Manage Versions %(nb_versions)s"
 msgstr ""
 
-#: trac/ticket/templates/admin_versions.html:55
+#: trac/ticket/templates/admin_versions.html:56
 msgid "Modify Version:"
 msgstr ""
 
-#: trac/ticket/templates/admin_versions.html:62
-#: trac/ticket/templates/admin_versions.html:102
+#: trac/ticket/templates/admin_versions.html:63
+#: trac/ticket/templates/admin_versions.html:103
 msgid "Released:"
 msgstr ""
 
-#: trac/ticket/templates/admin_versions.html:96
+#: trac/ticket/templates/admin_versions.html:97
 msgid "Add Version:"
 msgstr ""
 
-#: trac/ticket/templates/admin_versions.html:125
+#: trac/ticket/templates/admin_versions.html:126
 msgid "Released"
 msgstr ""
 
@@ -5502,7 +5544,7 @@ msgid "Alias"
 msgstr ""
 
 #: trac/versioncontrol/admin.py:117
-#: trac/versioncontrol/templates/admin_repositories.html:239
+#: trac/versioncontrol/templates/admin_repositories.html:240
 msgid "Directory"
 msgstr ""
 
@@ -5627,11 +5669,11 @@ msgid ""
 msgstr ""
 
 #: trac/versioncontrol/api.py:36
-#: trac/versioncontrol/templates/admin_repositories.html:64
-#: trac/versioncontrol/templates/admin_repositories.html:90
-#: trac/versioncontrol/templates/admin_repositories.html:252
-#: trac/versioncontrol/templates/admin_repositories.html:254
-#: trac/versioncontrol/templates/admin_repositories.html:258
+#: trac/versioncontrol/templates/admin_repositories.html:65
+#: trac/versioncontrol/templates/admin_repositories.html:91
+#: trac/versioncontrol/templates/admin_repositories.html:253
+#: trac/versioncontrol/templates/admin_repositories.html:255
+#: trac/versioncontrol/templates/admin_repositories.html:259
 #: trac/versioncontrol/web_ui/browser.py:950
 #: trac/versioncontrol/web_ui/changeset.py:855
 #: trac/versioncontrol/web_ui/changeset.py:997
@@ -5786,67 +5828,72 @@ msgstr ""
 msgid "Manage Repositories %(nb_repos)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:72
+#: trac/versioncontrol/templates/admin_repositories.html:73
 #, python-format
 msgid "Default: %(default_type)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:80
+#: trac/versioncontrol/templates/admin_repositories.html:81
 msgid "Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:109
+#: trac/versioncontrol/templates/admin_repositories.html:110
 msgid "Modify Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:111
+#: trac/versioncontrol/templates/admin_repositories.html:112
 msgid "View Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:115
+#: trac/versioncontrol/templates/admin_repositories.html:116
 #, python-format
 msgid ""
 "%(note)s This repository is not defined in the database and cannot be "
 "edited on this page."
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:135
-#: trac/versioncontrol/templates/admin_repositories.html:209
+#: trac/versioncontrol/templates/admin_repositories.html:136
+#: trac/versioncontrol/templates/admin_repositories.html:210
 msgid "Directory:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:152
+#: trac/versioncontrol/templates/admin_repositories.html:153
 msgid "Sync on every request"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:157
+#: trac/versioncontrol/templates/admin_repositories.html:158
 msgid "explicit synchronization"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:159
+#: trac/versioncontrol/templates/admin_repositories.html:160
 #, python-format
 msgid "Not recommended. See %(tracreposadmin)s for more info."
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:171
+#: trac/versioncontrol/templates/admin_repositories.html:172
 msgid "Hide from repository index"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:203
+#: trac/versioncontrol/templates/admin_repositories.html:204
 msgid "Add Repository:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:221
+#: trac/versioncontrol/templates/admin_repositories.html:222
 msgid "Add Alias:"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:258
+#: trac/versioncontrol/templates/admin_repositories.html:259
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/admin_repositories.html:283
+#: trac/versioncontrol/templates/admin_repositories.html:284
 msgid "Refresh"
+msgstr ""
+
+#: trac/versioncontrol/templates/admin_repositories.html:292
+#, python-format
+msgid "%(note)s See %(page)s for help on administering repositories."
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:25
@@ -7578,6 +7625,11 @@ msgstr ""
 msgid "Delete page"
 msgstr ""
 
+#: trac/wiki/templates/wiki_delete.html:174
+#, python-format
+msgid "%(note)s See %(page)s for help on deleting wiki pages."
+msgstr ""
+
 #: trac/wiki/templates/wiki_diff.html:36
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
@@ -7659,6 +7711,12 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:254
 msgid "Actions"
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit.html:269
+#: trac/wiki/templates/wiki_view.html:245
+#, python-format
+msgid "%(note)s See %(page)s for help on using the wiki."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit_comment.html:34
