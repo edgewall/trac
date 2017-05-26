@@ -805,7 +805,8 @@ class Formatter(object):
             return system_message(_("Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
         except Exception as e:
-            self.env.log.error("Macro %s(%s) failed:%s", name, args,
+            self.env.log.error("Macro %s(%s) failed for %s:%s", name,
+                               args, self.resource,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
@@ -1200,7 +1201,8 @@ class Formatter(object):
             return system_message(_("Processor %(name)s failed",
                                     name=processor.name), to_fragment(e))
         except Exception as e:
-            self.env.log.error("Processor %s failed:%s", processor.name,
+            self.env.log.error("Processor %s failed for %s:%s",
+                               processor.name, self.resource,
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Processor %(name)s failed",
                                     name=processor.name), to_fragment(e))
