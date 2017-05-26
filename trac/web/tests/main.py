@@ -12,10 +12,12 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os.path
+import re
 import sys
 import tempfile
 import unittest
 from subprocess import PIPE, Popen
+
 
 import trac.tests.compat
 from trac.config import ConfigurationError
@@ -471,6 +473,44 @@ class PostProcessRequestTestCase(unittest.TestCase):
         self.assertEqual(1, len(self.request_dispatcher.filters))
         self.assertEqual(4, len(resp))
         self.assertEqual(args[:3] + ('xml',), resp)
+
+    def test_redirect_on_permission_error(self):
+        """The post_process_request method can redirect during exception
+        handling from an exception raised in process_request.
+        """
+        class RedirectOnPermissionErrorStub(Component):
+            implements(IRequestHandler, IRequestFilter)
+
+            def match_request(self, req):
+                return re.match(r'/perm-error', req.path_info)
+
+            def process_request(self, req):
+                req.entered_process_request = True
+                raise PermissionError("No permission to view")
+
+            def pre_process_request(self, req, handler):
+                return handler
+
+            def post_process_request(self, req, template, data, content_type):
+                if (template, data, content_type) == (None, None, None):
+                    req.entered_post_process_request = True
+                    req.redirect(req.href('/redirect-target'))
+                return template, data, content_type
+
+        dispatcher = RequestDispatcher(self.env)
+        req = MockRequest(self.env, method='GET', path_info='/perm-error')
+        req.entered_process_request = False
+        req.entered_post_process_request = False
+
+        try:
+            dispatcher.dispatch(req)
+        except RequestDone:
+            pass
+        else:
+            self.fail("RequestDone not raised")
+
+        self.assertTrue(req.entered_process_request)
+        self.assertTrue(req.entered_post_process_request)
 
 
 class RequestDispatcherTestCase(unittest.TestCase):

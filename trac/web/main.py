@@ -270,7 +270,7 @@ class RequestDispatcher(Component):
             try:
                 self._post_process_request(req)
             except RequestDone:
-                pass
+                raise
             except TracError as e2:
                 self.log.warning("Exception caught while post-processing"
                                  " request: %s", exception_to_unicode(e2))
