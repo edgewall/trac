@@ -378,7 +378,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data, content_type):
                 return template, data, content_type
@@ -395,7 +395,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data, content_type):
                 return template, data, content_type
@@ -411,7 +411,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data,
                                      content_type, method=None):
@@ -429,7 +429,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data,
                                      content_type, method=None):
@@ -445,7 +445,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data,
                                      content_type, method=None):
@@ -461,7 +461,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
         """
         class RequestFilter(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data,
                                      content_type, method=None):
