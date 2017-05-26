@@ -61,7 +61,10 @@ from trac.wiki.formatter import format_to, format_to_html
 
 
 class InvalidTicket(TracError):
-    """Exception raised when a ticket fails validation."""
+    """Exception raised when a ticket fails validation.
+
+    :since 1.3.2: deprecated and will be removed in 1.5.1
+    """
     title = N_("Invalid Ticket")
 
 
@@ -1307,7 +1310,7 @@ class TicketModule(Component):
         replyto = req.args.get('replyto') or 0
         if replyto != 'description' and as_int(replyto, None) is None:
             # Shouldn't happen in "normal" circumstances, hence not a warning
-            raise InvalidTicket(_("Invalid comment threading identifier"))
+            raise TracValueError(_("Invalid comment threading identifier"))
 
         # Validate custom rules.
         comment = comment or req.args.get('edited_comment')
