@@ -33,7 +33,7 @@
       });
       $("#description").autoPreview("${href.wiki_render()}", {
           realm: "${milestone.resource.realm}",
-          id: "${milestone.resource.id}"
+          id: ${to_json(milestone.resource.id)|safe}
         }, $("#preview").showOnPreview());
     });
   /*]]>*/</script>

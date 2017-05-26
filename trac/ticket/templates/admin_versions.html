@@ -25,7 +25,7 @@
       # if view == 'detail':
         $("#description").autoPreview("${href.wiki_render()}", {
             realm: "${version.resource.realm}",
-            id: "${version.resource.id}"
+            id: ${to_json(version.resource.id)|safe}
           }, $("#preview").showOnPreview());
       # endif
       });

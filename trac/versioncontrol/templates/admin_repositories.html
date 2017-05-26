@@ -24,7 +24,8 @@
         $("#trac-reposlist").addSelectAllCheckboxes();
       # if view == 'detail':
         $("#description").autoPreview("${href.wiki_render()}", {
-            realm: "repository",  id: "${reponame}"
+            realm: "repository",
+            id: ${to_json(reponame)|safe}
           }, $("#preview").showOnPreview());
       # endif
       });

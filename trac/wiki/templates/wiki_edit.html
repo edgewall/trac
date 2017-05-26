@@ -90,7 +90,8 @@
         # endif
         # if sidebyside and not diff:
           $("#text").autoPreview("${href.wiki_render()}", {
-              realm: "${page.resource.realm}", id: "${page.resource.id}"
+              realm: "${page.resource.realm}",
+              id: ${to_json(page.resource.id)|safe}
             }, function(textarea, text, rendered) {
               var window_scroll_top = $(window).scrollTop();
               var editor_scroll_top = $("#text").scrollTop();
