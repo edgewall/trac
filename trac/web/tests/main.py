@@ -361,14 +361,14 @@ class PostProcessRequestTestCase(unittest.TestCase):
     def setUpClass(cls):
         class RequestFilter4Arg(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data, metadata):
                 return template, data, metadata
 
         class RequestFilter5Arg(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data, metadata,
                                      method=None):
@@ -376,7 +376,7 @@ class PostProcessRequestTestCase(unittest.TestCase):
 
         class RequestFilter5ArgXml(Component):
             implements(IRequestFilter)
-            def pre_process_request(self, handler):
+            def pre_process_request(self, req, handler):
                 return handler
             def post_process_request(self, req, template, data,
                                      metadata, method=None):
