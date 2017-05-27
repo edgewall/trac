@@ -57,7 +57,6 @@ $pipCommonPackages = @(
     'genshi',
     'babel!=2.3.0,!=2.3.1',
     'twill==0.9.1',
-    'configobj',
     'docutils',
     'pygments',
     'pytz',
