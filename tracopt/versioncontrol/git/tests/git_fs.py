@@ -369,7 +369,8 @@ class GitRepositoryTestCase(BaseTestCase):
 
     def test_invalid_path_raises(self):
         self.assertRaises(InvalidRepository, GitRepository, self.env,
-                          '/the/invalid/path', [], self.env.log)
+                          '/the/invalid/path', {'name': 'therepos'},
+                          self.env.log)
 
     def test_repository_instance(self):
         self._git_init()
