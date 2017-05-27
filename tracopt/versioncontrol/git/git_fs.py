@@ -493,8 +493,8 @@ class GitRepository(Repository):
         except PyGIT.GitError as e:
             log.error(exception_to_unicode(e))
             raise InvalidRepository(
-                _("%(path)s does not appear to be a Git repository.",
-                  path=path))
+                _("%(name)s does not appear to be a Git repository. See the "
+                  "log for more information.", name=params['name']))
 
         Repository.__init__(self, 'git:' + path, self.params, log)
         self._cached_git_id = str(self.id)
