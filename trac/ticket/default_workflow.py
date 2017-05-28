@@ -364,13 +364,14 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   current_owner=formatted_current_owner)
                              if current_owner else
                              _("The ticket will remain with no owner"))
-        else:
-            if ticket['status'] is None:
-                hints.append(tag_("The status will be '%(name)s'",
-                                  name=status))
-            elif status != '*':
-                hints.append(tag_("Next status will be '%(name)s'",
-                                  name=status))
+        elif not operations:
+            if status != '*':
+                if ticket['status'] is None:
+                    hints.append(tag_("The status will be '%(name)s'",
+                                      name=status))
+                else:
+                    hints.append(tag_("Next status will be '%(name)s'",
+                                      name=status))
         return (this_action['label'], tag(separated(control, ' ')),
                 tag(separated(hints, '. ', '.') if hints else ''))
 
