@@ -49,6 +49,9 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         component.owner = owner
         component.insert()
 
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
     def test_get_all_actions_custom_attribute(self):
         """Custom attribute in ticket-workflow."""
         config = self.env.config['ticket-workflow']
@@ -199,6 +202,28 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
 
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('cowner3', ticket['owner'])
+
+    def test_transition_to_star(self):
+        """Workflow hint is not be added in a workflow transition to *,
+        for example: <none> -> *
+
+        AdvancedTicketWorkflow uses the behavior for the triage operation
+        (see #12823)
+        """
+        config = self.env.config
+        config.set('ticket-workflow', 'create_and_triage', '<none> -> *')
+        config.set('ticket-workflow', 'create_and_triage.operations', 'triage')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        req = MockRequest(self.env, path_info='/newticket', method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'create_and_triage')
+
+        self.assertEqual('create and triage', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual('', unicode(hints))
 
 
 class ResetActionTestCase(unittest.TestCase):
