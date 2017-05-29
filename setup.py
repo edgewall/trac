@@ -95,7 +95,7 @@ facilities.
     extras_require = {
         'genshi': ['Genshi>=0.6'],
         'babel': ['Babel>=0.9.5'],
-        'mysql': ['MySQL-python >= 1.2.2'],
+        'mysql': ['PyMySQL'],
         'postgresql': ['psycopg2 >= 2.0'],
         'pygments': ['Pygments>=1.0'],
         'rest': ['docutils>=0.3.9'],

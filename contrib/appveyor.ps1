@@ -228,11 +228,11 @@ function Trac-Install {
         # $TRAC_TEST_DB_URI="mysql://tracuser:password@localhost/trac"
         #
 
-        # Conda provides MySQL-python support for Windows (x86 and x64)
+        # Conda provides PyMySQL support for Windows (x86 and x64)
 
-        & conda.exe install -qy mysql-python
+        & conda.exe install -qy pymysql
 
-        Add-AppveyorMessage -Message "1.1. mysql-python package installed" `
+        Add-AppveyorMessage -Message "1.1. pymysql package installed" `
           -Category Information
     }
     elseif ($usingPostgresql) {

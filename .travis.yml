@@ -87,7 +87,7 @@ install:
     requires='Jinja2 lxml twill==0.9.1'
     if [ "$build" != minimum ]; then requires="$requires Genshi==0.7 Babel!=2.3.0,!=2.3.1 Pygments docutils textile pytz"; fi
     if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
-    if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
+    if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
     pip install $requires
   - pip freeze
   - |
@@ -95,7 +95,7 @@ install:
     case "$tracdb" in
       sqlite)   tracdb_uri='sqlite:test.db' ;;
       postgres) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
-      mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
+      mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac?charset=utf8mb4' ;;
       *)        tracdb_uri= ;;
     esac
     echo ".uri = $tracdb_uri" >Makefile.cfg

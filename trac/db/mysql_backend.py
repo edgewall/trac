@@ -17,7 +17,6 @@
 import os
 import re
 import sys
-import types
 from contextlib import closing
 
 from trac.api import IEnvironmentSetupParticipant
@@ -34,17 +33,20 @@ from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
 
-try:
-    import MySQLdb
-    import MySQLdb.cursors
-except ImportError:
-    has_mysqldb = False
-    mysqldb_version = None
-else:
-    has_mysqldb = True
-    mysqldb_version = get_pkginfo(MySQLdb).get('version', MySQLdb.__version__)
+has_pymysql = False
+pymsql_version = None
 
-    class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
+try:
+    import pymysql
+except ImportError:
+    pass
+else:
+    has_pymysql = True
+
+if has_pymysql:
+    pymsql_version = get_pkginfo(pymysql).get('version', pymysql.__version__)
+
+    class MySQLUnicodeCursor(pymysql.cursors.Cursor):
         def _convert_row(self, row):
             return tuple(v.decode('utf-8') if isinstance(v, str) else v
                          for v in row)
@@ -62,6 +64,11 @@ else:
             rows = super(MySQLUnicodeCursor, self).fetchall()
             return [self._convert_row(row) for row in rows] \
                    if rows is not None else []
+
+    class MySQLSilentCursor(MySQLUnicodeCursor):
+        def _show_warnings(self, conn=None):
+            pass
+
 
 # Mapping from "abstract" SQL types to DB-specific types
 _type_map = {
@@ -95,10 +102,10 @@ class MySQLConnector(Component):
         """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
-        if has_mysqldb:
+        if has_pymysql:
             self._mysql_version = \
                 'server: (not-connected), client: "%s", thread-safe: %s' % \
-                (MySQLdb.get_client_info(), MySQLdb.thread_safe())
+                (pymysql.get_client_info(), pymysql.thread_safe())
         else:
             self._mysql_version = None
         self.error = None
@@ -106,7 +113,7 @@ class MySQLConnector(Component):
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if not has_mysqldb:
+        if not has_pymysql:
             self.error = _("Cannot load Python bindings for MySQL")
         yield ('mysql', -1 if self.error else 1)
 
@@ -116,13 +123,13 @@ class MySQLConnector(Component):
         if not self.required:
             self._mysql_version = \
                 'server: "%s", client: "%s", thread-safe: %s' \
-                % (cnx.cnx.get_server_info(), MySQLdb.get_client_info(),
-                   MySQLdb.thread_safe())
+                % (cnx.cnx.get_server_info(), pymysql.get_client_info(),
+                   pymysql.thread_safe())
             self.required = True
         return cnx
 
     def get_exceptions(self):
-        return MySQLdb
+        return pymysql
 
     def init_db(self, path, schema=None, log=None, user=None, password=None,
                 host=None, port=None, params={}):
@@ -276,9 +283,9 @@ class MySQLConnector(Component):
         return dest_file
 
     def get_system_info(self):
-        if has_mysqldb:
+        if has_pymysql:
             yield 'MySQL', self._mysql_version
-            yield 'MySQLdb', mysqldb_version
+            yield pymysql.__name__, pymsql_version
 
     # IEnvironmentSetupParticipant methods
 
@@ -372,7 +379,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             password = ''
         if port is None:
             port = 3306
-        opts = {}
+        opts = {'charset': 'utf8'}
         for name, value in params.iteritems():
             key = name.encode('utf-8')
             if name == 'read_default_group':
@@ -383,22 +390,32 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                 opts[key] = value.encode(sys.getfilesystemencoding())
             elif name in ('compress', 'named_pipe'):
                 opts[key] = as_int(value, 0)
+            elif name == 'charset':
+                value = value.lower()
+                if value in ('utf8', 'utf8mb4'):
+                    opts[key] = value
+                else:
+                    self.log.warning("Invalid connection string parameter "
+                                     "'%s=%s'", name, value)
             else:
                 self.log.warning("Invalid connection string parameter '%s'",
                                  name)
-        cnx = MySQLdb.connect(db=path, user=user, passwd=password, host=host,
-                              port=port, charset='utf8', **opts)
-        self.schema = path
-        if hasattr(cnx, 'encoders'):
-            # 'encoders' undocumented but present since 1.2.1 (r422)
-            cnx.encoders[Markup] = cnx.encoders[types.UnicodeType]
+        cnx = pymysql.connect(db=path, user=user, passwd=password, host=host,
+                              port=port, **opts)
         cursor = cnx.cursor()
         cursor.execute("SHOW VARIABLES WHERE "
                        " variable_name='character_set_database'")
         self.charset = cursor.fetchone()[1]
-        if self.charset != 'utf8':
-            cnx.query("SET NAMES %s" % self.charset)
-            cnx.store_result()
+        cursor.close()
+        if self.charset != opts['charset']:
+            cnx.close()
+            opts['charset'] = self.charset
+            cnx = pymysql.connect(db=path, user=user, passwd=password,
+                                  host=host, port=port, **opts)
+        self.schema = path
+        if hasattr(cnx, 'encoders'):
+            # 'encoders' undocumented but present since 1.2.1 (r422)
+            cnx.encoders[Markup] = cnx.encoders[unicode]
         ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
 
@@ -409,14 +426,14 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         self.cnx.ping()
         try:
             self.cnx.rollback()
-        except MySQLdb.ProgrammingError:
+        except pymysql.ProgrammingError:
             self._is_closed = True
 
     def close(self):
         if not self._is_closed:
             try:
                 self.cnx.close()
-            except MySQLdb.ProgrammingError:
+            except pymysql.ProgrammingError:
                 pass # this error would mean it's already closed.  So, ignore
             self._is_closed = True
 
@@ -431,7 +448,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         return 'concat(%s)' % ', '.join(args)
 
     def drop_column(self, table, column):
-        cursor = MySQLdb.cursors.Cursor(self.cnx)
+        cursor = pymysql.cursors.Cursor(self.cnx)
         if column in self.get_column_names(table):
             quoted_table = self.quote(table)
             cursor.execute("SHOW INDEX FROM %s" % quoted_table)
@@ -453,8 +470,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                            (quoted_table, self.quote(column)))
 
     def drop_table(self, table):
-        cursor = MySQLdb.cursors.Cursor(self.cnx)
-        cursor._defer_warnings = True  # ignore "Warning: Unknown table ..."
+        cursor = MySQLSilentCursor(self.cnx)
         cursor.execute("DROP TABLE IF EXISTS " + self.quote(table))
 
     def get_column_names(self, table):

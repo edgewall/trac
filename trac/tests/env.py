@@ -380,15 +380,15 @@ class SystemInfoTestCase(unittest.TestCase):
         if self.env.dburi.startswith('mysql'):
             self.assertRegexpMatches(get_info(info_before, 'MySQL'),
                                      r'^server: \(not-connected\), '
-                                     r'client: "\d+(\.\d+)+(-.+)?", '
-                                     r'thread-safe: 1$')
+                                     r'client: "\d+(\.\d+)+([-.].+)?", '
+                                     r'thread-safe: True$')
             self.assertRegexpMatches(get_info(info_after, 'MySQL'),
-                                     r'^server: "\d+(\.\d+)+(-.+)?", '
-                                     r'client: "\d+(\.\d+)+(-.+)?", '
-                                     r'thread-safe: 1$')
-            self.assertRegexpMatches(get_info(info_before, 'MySQLdb'),
+                                     r'^server: "\d+(\.\d+)+([-.].+)?", '
+                                     r'client: "\d+(\.\d+)+([-.].+)?", '
+                                     r'thread-safe: True$')
+            self.assertRegexpMatches(get_info(info_before, 'pymysql'),
                                      r'^\d+(\.\d+)+$')
-            self.assertRegexpMatches(get_info(info_after, 'MySQLdb'),
+            self.assertRegexpMatches(get_info(info_after, 'pymysql'),
                                      r'^\d+(\.\d+)+$')
         elif self.env.dburi.startswith('postgres'):
             self.assertRegexpMatches(get_info(info_before, 'PostgreSQL'),

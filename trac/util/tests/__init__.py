@@ -250,19 +250,17 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
             self.assertNotEqual({}, pkginfo)
             self.assertEqual(pkginfo, util.get_pkginfo(babel.core))
 
-    def test_get_pkginfo_mysqldb(self):
-        # MySQLdb's package name is "MySQL-Python"
+    def test_get_pkginfo_pymysql(self):
         try:
-            import MySQLdb
-            import MySQLdb.cursors
-            dist = pkg_resources.get_distribution('MySQL-Python')
+            import pymysql
+            dist = pkg_resources.get_distribution('pymysql')
             dist.get_metadata('top_level.txt')
         except:
             pass
         else:
-            pkginfo = util.get_pkginfo(MySQLdb)
+            pkginfo = util.get_pkginfo(pymysql)
             self.assertNotEqual({}, pkginfo)
-            self.assertEqual(pkginfo, util.get_pkginfo(MySQLdb.cursors))
+            self.assertEqual(pkginfo, util.get_pkginfo(pymysql.cursors))
 
     def test_get_pkginfo_psycopg2(self):
         # python-psycopg2 deb package doesn't provide SOURCES.txt and

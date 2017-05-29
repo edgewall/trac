@@ -217,8 +217,7 @@ import os
 import sys
 import string
 
-import MySQLdb
-import MySQLdb.cursors
+import pymysql
 from trac.attachment import Attachment
 from trac.env import Environment
 
@@ -503,9 +502,9 @@ def convert(_db, _host, _user, _password, _env, _force):
     # init Bugzilla environment
     print("Bugzilla MySQL('%s':'%s':'%s':'%s'): connecting..."
           % (_db, _host, _user, ("*" * len(_password))))
-    mysql_con = MySQLdb.connect(host=_host,
+    mysql_con = pymysql.connect(host=_host,
                 user=_user, passwd=_password, db=_db, compress=1,
-                cursorclass=MySQLdb.cursors.DictCursor,
+                cursorclass=pymysql.cursors.DictCursor,
                 charset='utf8')
     mysql_cur = mysql_con.cursor()
 

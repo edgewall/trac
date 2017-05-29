@@ -42,7 +42,7 @@ from trac.util.text import to_utf8
 #
 #     Backends::
 #       sqlite3+pysqlite2, postgres+psycopg2 python bindings,
-#       mysql+mysqldb with server v4, mysql+mysqldb with server v5
+#       mysql+pymysql with server v5
 #       (those need to test search escaping, among many other things like long
 #       paths in browser and unicode chars being allowed/translating...)
 

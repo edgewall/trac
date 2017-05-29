@@ -58,12 +58,12 @@ postgres.python = 26
 # installation; if left undefined, the 'python' command will be used
 # instead of a fully qualified pathname)
 
-# For example, if you only have the MySqlDB Python bindings available
+# For example, if you only have the PyMySQL Python bindings available
 # for your Python 2.7.4 installation, specify something like:
 # mysql.python = 27
 #
 # given that you also have:
-# python.27 = <path to my 2.7.4 install containing the MySqlDB bindings...>
+# python.27 = <path to my 2.7.4 install containing the PyMySQL bindings...>
 
 
 # ----------------------------------------------------------------------------
