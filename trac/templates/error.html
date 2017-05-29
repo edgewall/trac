@@ -183,7 +183,7 @@
         Note that the following plugins seem to be involved:
 
         #       endtrans
-        ${faulty_plugins|map('name')|join(', ')}
+        ${faulty_plugins|map(attribute='name')|join(', ')}
         #     endif
         <strong>
           ${_("Please report this issue to the plugin maintainer.")}
