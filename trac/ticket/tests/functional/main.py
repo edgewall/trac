@@ -327,7 +327,8 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.url(url + re.escape(r'?cversion=1&cnum_hist=1#comment:1'))
 
         # View comment diff.
-        tc.follow(r"\bdiff\b")
+        tc.follow(r'^/ticket/%s\?action=comment-diff&cnum=1&version=1$' %
+                  ticketid)
         tc.notfind(r"\bComment:\b")
         tc.find(r"\bChanges between\b")
         tc.url(url + re.escape(r'?action=comment-diff&cnum=1&version=1'))
