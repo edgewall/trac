@@ -21,7 +21,7 @@ environment:
     TRAC_TEST_DB_URI: sqlite:test.db
   - SVN_BRANCH: trunk
     PYTHONHOME: C:\Miniconda
-    TRAC_TEST_DB_URI: mysql://tracuser:password@localhost/trac
+    TRAC_TEST_DB_URI: mysql://tracuser:password@localhost/trac?charset=utf8mb4
   - SVN_BRANCH: trunk
     PYTHONHOME: C:\Miniconda-x64
     TRAC_TEST_DB_URI: postgres://tracuser:password@localhost/trac?schema=tractest
