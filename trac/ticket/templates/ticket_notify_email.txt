@@ -23,7 +23,7 @@ ${_('Comment:') if changes_body else
 ${change.comment}
 #   endif
 # endif
---
+${'-- '}
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
 ${project.name} <${project.url or abs_href()}>
 ${project.descr}
