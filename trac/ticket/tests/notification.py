@@ -322,6 +322,7 @@ class NotificationTestCase(unittest.TestCase):
         self.assertEqual('<073.8a48f9c2ab2dc64e820e391f8f784a04@localhost>',
                          headers['Message-ID'])
         self.assertIn('From', headers)
+        self.assertIn('\n-- \nTicket URL: <', body)
 
     def test_date(self):
         """Date format compliance (RFC822)
@@ -1702,6 +1703,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         self.assertIn('Batch modification to #3, #10, #4, #11, #5, #12, #6, '
                       '#13, #7, #14, #1, #2, #8, #9 by author@example.org:',
                       body)
+        self.assertIn('-- ', body)
         self.assertIn('Tickets URL: <http://example.org/trac.cgi/query?id=3'
                       '%2C10%2C4%2C11%2C5%2C12%2C6%2C13%2C7%2C14%2C1%2C2%2C8'
                       '%2C9>', body)
