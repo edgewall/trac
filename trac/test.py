@@ -439,6 +439,9 @@ class EnvironmentStub(Environment):
         later using the `restore_component_registry` method.
 
         :since: 1.0.11
+        :since 1.3.2: Deprecated and will be removed in 1.5.1. Create
+                      components in `setUpClass` and remove them in
+                      `tearDownClass` using `ComponentMeta.deregister`.
         """
         self._old_registry = ComponentMeta._registry
         self._old_components = ComponentMeta._components
@@ -451,6 +454,9 @@ class EnvironmentStub(Environment):
         the `clear_component_registry` method.
 
         :since: 1.0.11
+        :since 1.3.2: Deprecated and will be removed in 1.5.1. Create
+                      components in `setUpClass` and remove them in
+                      `tearDownClass` using `ComponentMeta.deregister`.
         """
         if self._old_registry is None:
             raise TracError("The clear_component_registry method must be "
