@@ -26,7 +26,7 @@ class UpgradeTestCase(unittest.TestCase):
                      (" t.description AS _description,",
                       None)]
         for query, expected in fragments:
-            self.assertEquals(expected, db44.replace_sql_fragment(query))
+            self.assertEqual(expected, db44.replace_sql_fragment(query))
 
 
 def test_suite():
