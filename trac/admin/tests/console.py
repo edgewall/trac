@@ -699,10 +699,8 @@ class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
     def setUp(self):
         self.env = EnvironmentStub(enable=['%s.UnicodeHelpCommand' %
                                            self.__module__])
-        self.env.clear_component_registry()
 
     def tearDown(self):
-        self.env.restore_component_registry()
         self.env.reset_db()
 
     def test_unicode_help(self):

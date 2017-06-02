@@ -238,10 +238,11 @@ class EnvironmentsTestCase(unittest.TestCase):
 
 class PreProcessRequestTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
-        self.env.clear_component_registry()
+    components = []
+
+    @classmethod
+    def setUpClass(cls):
+
         class DefaultHandler(Component):
             implements(IRequestHandler)
             def match_request(self, req):
@@ -249,19 +250,30 @@ class PreProcessRequestTestCase(unittest.TestCase):
             def process_request(self, req):
                 pass
 
-    def tearDown(self):
-        self.env.restore_component_registry()
-
-    def test_trac_error_raises_http_internal_server_error(self):
-        """TracError in pre_process_request is trapped and an
-        HTTPInternalServerError is raised.
-        """
         class RequestFilter(Component):
             implements(IRequestFilter)
             def pre_process_request(self, req, handler):
                 raise TracError("Raised in pre_process_request")
             def post_process_request(self, req, template, data, metadata):
                 return template, data, metadata
+
+        cls.components = [DefaultHandler, RequestFilter]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.components:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=['trac.web.*'] +
+                                          self.components)
+        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
+
+    def test_trac_error_raises_http_internal_server_error(self):
+        """TracError in pre_process_request is trapped and an
+        HTTPInternalServerError is raised.
+        """
         req = MockRequest(self.env)
 
         try:
@@ -275,10 +287,11 @@ class PreProcessRequestTestCase(unittest.TestCase):
 
 class ProcessRequestTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
-        self.env.clear_component_registry()
+    request_handlers = []
+
+    @classmethod
+    def setUpClass(cls):
+
         class DefaultHandler(Component):
             implements(IRequestHandler)
             def match_request(self, req):
@@ -286,8 +299,18 @@ class ProcessRequestTestCase(unittest.TestCase):
             def process_request(self, req):
                 raise req.exc_class("Raised in process_request")
 
-    def tearDown(self):
-        self.env.restore_component_registry()
+        cls.request_handlers = [DefaultHandler]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.request_handlers:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=['trac.web.*'] +
+                                          self.request_handlers)
+        self.env.config.set('trac', 'default_handler', 'DefaultHandler')
 
     def test_permission_error_raises_http_forbidden(self):
         """TracError in process_request is trapped and an HTTPForbidden
@@ -680,15 +703,11 @@ class RequestDispatcherTestCase(unittest.TestCase):
 class HdfdumpTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(enable=['trac.web.*'])
         self.req = MockRequest(self.env, args={'hdfdump': '1'})
-        self.env.clear_component_registry()
         self.request_dispatcher = RequestDispatcher(self.env)
         perm = self.req.perm
         self.request_dispatcher._get_perm = lambda req: perm
-
-    def tearDown(self):
-        self.env.restore_component_registry()
 
     def test_hdfdump(self):
         class HdfdumpRequestHandler(Component):

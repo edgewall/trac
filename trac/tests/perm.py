@@ -401,11 +401,11 @@ class PermissionPolicyTestCase(unittest.TestCase):
 class RecursivePolicyTestCase(unittest.TestCase):
     """Test case for policies that perform recursive permission checks."""
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
-        decisions = []
-        self.decisions = decisions
+    permission_policies = []
+    decisions = []
+
+    @classmethod
+    def setUpClass(cls):
 
         class PermissionPolicy1(Component):
 
@@ -413,6 +413,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
 
             def __init__(self):
                 self.call_count = 0
+                self.decisions = cls.decisions
 
             def check_permission(self, action, username, resource, perm):
                 self.call_count += 1
@@ -421,7 +422,7 @@ class RecursivePolicyTestCase(unittest.TestCase):
                     decision = None
                 elif action == 'ACTION_1':
                     decision = username == 'user1'
-                decisions.append(('policy1', action, decision))
+                self.decisions.append(('policy1', action, decision))
                 return decision
 
         class PermissionPolicy2(Component):
@@ -430,23 +431,32 @@ class RecursivePolicyTestCase(unittest.TestCase):
 
             def __init__(self):
                 self.call_count = 0
+                self.decisions = cls.decisions
 
             def check_permission(self, action, username, resource, perm):
                 self.call_count += 1
                 decision = None
                 if action == 'ACTION_2':
                     decision = username == 'user2'
-                decisions.append(('policy2', action, decision))
+                self.decisions.append(('policy2', action, decision))
                 return decision
 
-        self.env.enable_component(PermissionPolicy1)
-        self.env.enable_component(PermissionPolicy2)
+        cls.permission_policies = [PermissionPolicy1, PermissionPolicy2]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.permission_policies:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.__class__.decisions = []
+        self.env = EnvironmentStub(enable=self.permission_policies)
         self.env.config.set('trac', 'permission_policies',
                             'PermissionPolicy1, PermissionPolicy2')
         self.ps = perm.PermissionSystem(self.env)
 
     def tearDown(self):
-        self.env.restore_component_registry()
         self.env.reset_db()
 
     def test_user1_allowed_by_policy1(self):
