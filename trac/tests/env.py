@@ -413,10 +413,10 @@ class SystemInfoTestCase(unittest.TestCase):
 
 class SystemInfoProviderTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.clear_component_registry()
+    system_info_providers = []
 
+    @classmethod
+    def setUpClass(cls):
         class SystemInfoProvider1(Component):
             implements(ISystemInfoProvider)
 
@@ -430,11 +430,16 @@ class SystemInfoProviderTestCase(unittest.TestCase):
             def get_system_info(self):
                 yield 'pkg1', 1.0
 
-        self.env.enable_component(SystemInfoProvider1)
-        self.env.enable_component(SystemInfoProvider2)
+        cls.system_info_providers = [SystemInfoProvider1, SystemInfoProvider2]
 
-    def tearDown(self):
-        self.env.restore_component_registry()
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.system_info_providers:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=self.system_info_providers)
 
     def test_system_info_property(self):
         """The system_info property returns a list of all tuples
@@ -442,7 +447,6 @@ class SystemInfoProviderTestCase(unittest.TestCase):
         """
         system_info = self.env.system_info
         self.assertEqual(system_info, self.env.get_systeminfo())
-        self.assertEqual(2, len(system_info))
         self.assertIn(('pkg1', 1.0), system_info)
         self.assertIn(('pkg2', 2.0), system_info)
 
