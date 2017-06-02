@@ -688,7 +688,7 @@ It is also very close to the syntax for the corresponding link to that anchor:
 
 Optionally, a label can be given to the anchor:
 {{{
-[[=#point1 '''Point 1''']]
+[=#point1 '''Point 1''']
 }}}
 
 ||= Wiki Markup =||= Display =||

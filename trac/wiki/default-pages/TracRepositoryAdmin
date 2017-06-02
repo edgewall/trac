@@ -221,3 +221,5 @@ The following procedure illustrates a typical migration from a Mercurial single-
 === My trac-post-commit-hook doesn't work anymore #trac-post-commit-hook
 
 You must now use the optional components from `tracopt.ticket.commit_updater.*`, which you can activate through the Plugins panel in the Administrative part of the web interface, or by directly modifying the [TracIni#components-section "[components]"] section in the trac.ini. Be sure to use [#ExplicitSync explicit synchronization] as explained above.
+
+See [trac:CommitTicketUpdater#Troubleshooting] for more troubleshooting tips.
