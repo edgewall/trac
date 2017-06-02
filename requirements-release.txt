@@ -1,0 +1,7 @@
+# Packages needed to create a release.
+setuptools>=0.8  # Min version to ensure PEP-0440 compliant version numbers
+wheel
+babel
+setuptools_subversion
+reindent
+twine
