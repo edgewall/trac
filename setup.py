@@ -12,6 +12,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+from __future__ import with_statement
+
 import sys
 
 from setuptools import setup, find_packages
@@ -53,16 +55,16 @@ except ImportError:
     # give some context to the warnings we might get when installing Genshi
 
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
 setup(
     name = 'Trac',
     version = '1.0.14',
     description = 'Integrated SCM, wiki, issue tracker and project environment',
-    long_description = """
-Trac is a minimalistic web-based software project management and bug/issue
-tracking system. It provides an interface to the Subversion revision control
-systems, an integrated wiki, flexible issue tracking and convenient report
-facilities.
-""",
+    long_description = readme(),
     author = 'Edgewall Software',
     author_email = 'trac-dev@googlegroups.com',
     license = 'BSD',
