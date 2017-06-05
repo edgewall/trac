@@ -40,16 +40,16 @@ except ImportError:
     # give some context to the warnings we might get when installing Genshi
 
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
 setup(
     name = 'Trac',
     version = '1.2.2',
     description = 'Integrated SCM, wiki, issue tracker and project environment',
-    long_description = """
-Trac is a minimalistic web-based software project management and bug/issue
-tracking system. It provides an interface to the Subversion revision control
-systems, an integrated wiki, flexible issue tracking and convenient report
-facilities.
-""",
+    long_description = readme(),
     author = 'Edgewall Software',
     author_email = 'trac-dev@googlegroups.com',
     license = 'BSD',
