@@ -13,7 +13,7 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 import argparse
-import os
+import re
 import sys
 from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
@@ -138,6 +138,9 @@ def parse_args(all_pages):
     return args
 
 
+re_box_processor = re.compile(r'{{{#!box[^\}]+}}}\s*\r?\n?')
+
+
 def download_default_pages(names, prefix, strict):
     from httplib import HTTPSConnection
     host = 'trac.edgewall.org'
@@ -152,13 +155,15 @@ def download_default_pages(names, prefix, strict):
             response = conn.getresponse()
             content = response.read()
             if prefix and (response.status != 200 or not content) \
-               and not strict:
+                    and not strict:
                 sys.stdout.write(' %s' % name)
                 conn.request('GET', '/wiki/%s?format=txt' % name)
                 response = conn.getresponse()
                 content = response.read()
             if response.status == 200 and content:
                 with open('trac/wiki/default-pages/' + name, 'w') as f:
+                    if not strict:
+                        content = re_box_processor.sub('', content)
                     lines = content.replace('\r\n', '\n').splitlines(True)
                     f.write(''.join(line for line in lines
                                          if strict or line.strip() !=
