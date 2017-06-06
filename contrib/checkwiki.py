@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+import re
 import os
 import sys
 from pkg_resources import resource_listdir, resource_string
@@ -126,6 +127,9 @@ def parse_args():
     return parser.parse_args()
 
 
+re_box_processor = re.compile(r'{{{#!box[^\}]+}}}\s*\r?\n?')
+
+
 def download_default_pages(names, prefix):
     from httplib import HTTPSConnection
     host = 'trac.edgewall.org'
@@ -146,6 +150,7 @@ def download_default_pages(names, prefix):
             content = response.read()
         if response.status == 200 and content:
             with open('trac/wiki/default-pages/' + name, 'w') as f:
+                content = re_box_processor.sub('', content)
                 lines = content.replace('\r\n', '\n').splitlines(True)
                 f.write(''.join(line for line in lines
                                      if line.strip() != '[[TranslatedPages]]'))
