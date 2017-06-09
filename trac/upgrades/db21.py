@@ -11,9 +11,14 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from trac.ticket.default_workflow import load_workflow_config_snippet
+from trac.util.text import printout
+
 
 def do_upgrade(env, ver, cursor):
-    """Upgrade the reports to better handle the new workflow capabilities"""
+    """Upgrade the workflow."""
+
+    # Upgrade the reports to better handle the new workflow capabilities.
     with env.db_query as db:
         owner = db.concat('owner', "' *'")
     cursor.execute('SELECT id, query, description FROM report')
@@ -34,3 +39,24 @@ def do_upgrade(env, ver, cursor):
             cursor.execute("""
                 UPDATE report SET query=%s, description=%s WHERE id=%s
                 """, (q, d, report))
+
+    # Upgrade the workflow.
+    if 'ticket-workflow' not in env.config.sections():
+        load_workflow_config_snippet(env.config, 'original-workflow.ini')
+        env.config.save()
+        info_message = """
+
+==== Upgrade Notice ====
+
+The ticket Workflow is now configurable.
+
+Your environment has been upgraded, but configured to use the original
+workflow. It is recommended that you look at changing this configuration
+to use basic-workflow.
+
+Read TracWorkflow for more information
+(don't forget to 'wiki upgrade' as well)
+
+"""
+        env.log.info(info_message.replace('\n', ' ').replace('==', ''))
+        printout(info_message)

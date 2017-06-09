@@ -147,31 +147,10 @@ class ConfigurableTicketWorkflow(Component):
             self.actions = self.get_all_actions()
 
     def environment_needs_upgrade(self):
-        """The environment needs an upgrade if there is no [ticket-workflow]
-        section in the config.
-        """
-        return not list(self.config.options('ticket-workflow'))
+        pass
 
     def upgrade_environment(self):
-        """Insert a [ticket-workflow] section using the original-workflow"""
-        load_workflow_config_snippet(self.config, 'original-workflow.ini')
-        self.config.save()
-        self.actions = self.get_all_actions()
-        info_message = """
-
-==== Upgrade Notice ====
-
-The ticket Workflow is now configurable.
-
-Your environment has been upgraded, but configured to use the original
-workflow. It is recommended that you look at changing this configuration to use
-basic-workflow.
-
-Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
-
-"""
-        self.log.info(info_message.replace('\n', ' ').replace('==', ''))
-        print(info_message)
+        pass
 
     # ITicketActionController methods
 
