@@ -4,39 +4,6 @@ Upgrade Instructions
 ====================
 
 
-#. Instructions
-
-    #. 1. Bring your server off-line
-    #. 2. Update the Trac Code
-    #. 3. Upgrade the Trac Environment
-    #. 4. Update the Trac Documentation
-    #. 5. Refresh static resources
-    #. 6. Steps specific to a given Trac version
-
-        #. Upgrading from Trac 0.12 to Trac 1.0
-        #. Upgrading from Trac 0.11 to Trac 0.12
-        #. Upgrading from Trac 0.10 to Trac 0.11
-
-    #. 7. Restart the Web Server
-
-#. Known Issues
-
-    #. Customized Templates
-    #. ZipImportError
-    #. Wiki Upgrade
-    #. Trac database upgrade
-    #. Parent dir
-
-#. Related topics
-
-    #. Upgrading Python
-
-        #. Windows and Python 2.6
-
-    #. Changing Database Backend
-    #. Upgrading from older versions of Trac
-
-
 Instructions
 ------------
 

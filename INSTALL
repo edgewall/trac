@@ -23,38 +23,6 @@ read through these general instructions to get a good understanding of
 the tasks involved.
 
 
-Installation Steps
-``````````````````
-
-
-#. Dependencies
-
-    #. Mandatory Dependencies
-    #. Optional Dependencies
-
-#. Installing Trac
-
-    #. Using easy_install
-    #. Using pip
-    #. From source
-    #. Using installer
-    #. Using package manager
-    #. Advanced easy_install Options
-
-#. Creating a Project Environment
-#. Deploying Trac
-
-    #. Running the Standalone Server
-    #. Running Trac on a Web Server
-
-#. Configuring Authentication
-#. Granting admin rights to the admin user
-#. Finishing the install
-
-    #. Enable version control components
-    #. Using Trac
-
-
 Dependencies
 ------------
 
