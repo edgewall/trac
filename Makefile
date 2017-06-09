@@ -341,7 +341,7 @@ export HELP_code
 
 pylint:
 	pylint \
-	    --include-ids=y --persistent=n --comment=n --init-import=y \
+	    --persistent=n --init-import=y \
 	    --disable=E0102,E0211,E0213,E0602,E0611,E1002,E1101,E1102,E1103 \
 	    --disable=F0401 \
 	    --disable=W0102,W0141,W0142,W0201,W0212,W0221,W0223,W0231,W0232, \
