@@ -40,7 +40,7 @@ define HELP
   help-misc           several other tasks
 
   help-all            all the tasks at a glance...
-endef 
+endef
 # `
 export HELP
 
@@ -581,7 +581,7 @@ define HELP_release
  ---------------- Release tasks
 
   release             release-exe on Windows, release-src otherwise
-  release-src         generates the .tar.gz, .zip and .whl packages
+  release-src         generates the .tar.gz and .whl packages
   release-exe         generates the Windows installers (32- and 64-bits)
   release-clean       remove the packages
 
@@ -617,12 +617,11 @@ release-src: wheel sdist
 wheel:
 	@python setup.py bdist_wheel
 sdist:
-	@python setup.py sdist --formats=gztar,zip
+	@python setup.py sdist
 
-sdist+wheel = $(sdist_gztar) $(sdist_zip) $(bdist_wheel)
+sdist+wheel = $(sdist_gztar) $(bdist_wheel)
 
 sdist_gztar = dist/Trac-$(version).tar.gz
-sdist_zip = dist/Trac-$(version).zip
 bdist_wheel = dist/Trac-$(version)-py2-none-any.whl
 
 
