@@ -116,7 +116,7 @@ Upgrade Python to at least 2.5, but not 3.0.
 Trac has added functionality equivalent to the following plugins:
 
 * [https://trac-hacks.org/wiki/BatchModifyPlugin BatchModifyPlugin]
-* ​[https://trac-hacks.org/wiki/GitPlugin GitPlugin]
+* [https://trac-hacks.org/wiki/GitPlugin GitPlugin]
 * [https://trac-hacks.org/wiki/OverrideEditPlugin OverrideEditPlugin]
 
 The plugins should be removed when upgrading Trac to 1.0.
@@ -158,7 +158,7 @@ SQLite v2.x is no longer supported. If you still use a Trac database of this for
 Trac has added functionality equivalent to the following plugins:
 
 * [https://trac-hacks.org/wiki/AutoQueryPlugin AutoQueryPlugin]
-* ​[https://trac-hacks.org/wiki/AdminConsoleProviderPatch AdminConsoleProviderPatch]
+* [https://trac-hacks.org/wiki/AdminConsoleProviderPatch AdminConsoleProviderPatch]
 * [https://trac-hacks.org/wiki/AnchorMacro AnchorMacro]: see WikiFormatting#SettingAnchors
 * [https://trac-hacks.org/wiki/TicketChangePlugin TicketChangePlugin]: see [TracPermissions#TicketSystem TICKET_EDIT_COMMENT permission]
 * [https://trac-hacks.org/wiki/TicketDeletePlugin TicketDeletePlugin]: see `tracopt.ticket.deleter`

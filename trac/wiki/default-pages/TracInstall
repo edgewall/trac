@@ -214,7 +214,7 @@ A new environment is created using [TracAdmin trac-admin]:
 $ trac-admin /path/to/myproject initenv
 }}}
 
-[TracAdmin trac-admin] will prompt you for the information it needs to create the environment: the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for any of these options, just press `<Enter>` to use the default value. 
+You will be prompted for the information needed to create the environment: the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for any of these options, just press `<Enter>` to use the default value. 
 
 Using the default database connection string will always work as long as you have SQLite installed. For the other [trac:DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
 
@@ -273,7 +273,7 @@ Trac provides various options for connecting to a "real" web server:
  - [TracFastCgi FastCGI]
  - [wiki:TracModWSGI Apache with mod_wsgi] 
  - [TracModPython Apache with mod_python]
- - //[TracCgi CGI] (should not be used, as the performance is far from optimal)//
+ - [TracCgi CGI] //(should not be used, as the performance is far from optimal)//
 
 Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
 
@@ -281,7 +281,7 @@ Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if yo
 
 In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [TracAdmin trac-admin].
 
-There is, however, a bit of a chicken-and-egg problem. The [TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
+There is, however, a bit of a chicken-and-egg problem. The `trac-admin` command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
 {{{#!sh
 $ mkdir -p /usr/share/trac/projects/my-project
 $ trac-admin /usr/share/trac/projects/my-project initenv
@@ -300,7 +300,7 @@ There are two primary URL paths for static resources: `/chrome/common` and `/chr
 
 A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
 
-The resources are extracted using the [TracAdmin trac-admin]` <environment> deploy` command:
+The resources are extracted using the [TracAdmin trac-admin] `<environment> deploy` command:
 [[TracAdminHelp(deploy)]]
 
 The target `<directory>` will contain an `htdocs` directory with:
@@ -365,7 +365,7 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 </Directory>
 }}}
 
-Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [TracIni#trac-section htdocs_location] configuration setting:
 {{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/
