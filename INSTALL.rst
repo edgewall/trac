@@ -23,36 +23,6 @@ general instructions to get a good understanding of the tasks
 involved.
 
 
-Installation Steps
-``````````````````
-
-
-#. Dependencies
-
-    #. Mandatory Dependencies
-    #. Optional Dependencies
-
-#. Installing Trac
-
-    #. Using `easy_install`
-    #. Using `pip`
-    #. From source
-    #. Using installer
-    #. Using package manager
-    #. Advanced `easy_install` Options
-
-#. Creating a Project Environment
-#. Deploying Trac
-
-    #. Running the Standalone Server
-    #. Running Trac on a Web Server
-
-#. Configuring Authentication
-#. Granting admin rights to the admin user
-#. Configuring Trac
-#. Using Trac
-
-
 Dependencies
 ------------
 
@@ -727,6 +697,11 @@ from starting. To override the cache location you can set the
 `PYTHON_EGG_CACHE` environment variable. Refer to your server
 documentation for detailed instructions on how to set environment
 variables.
+
+If you setup hook scripts that call Trac, such as the Subversion post-
+commit hook script provided in the `/contrib` directory, make sure you
+define the `PYTHON_EGG_CACHE` environment variable within these
+scripts as well.
 
 
 Configuring Authentication
