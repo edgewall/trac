@@ -200,7 +200,7 @@ permission_level_2  = permission_level_1, WIKI_MODIFY, TICKET_MODIFY
 === !AuthzSourcePolicy  (mod_authz_svn-like permission policy) #AuthzSourcePolicy
 
 `AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
-More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
+More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
 {{{#!ini

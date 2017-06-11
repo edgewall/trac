@@ -6,21 +6,7 @@ Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based
 
 == Plugin discovery
 
-From the user's point of view, a plugin is either a standalone .py file or an .egg package. Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Components defined in globally-installed plugins must be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the `trac.ini` file. Components defined in the `plugins` directory of the project environment are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.
-
-== Requirements for Trac eggs #Requirements
-
-To use egg-based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version >= 0.6) installed.
-
-To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
-
-{{{#!sh
-$ python ez_setup.py
-}}}
-
-If the `ez_setup.py` script fails to install the setuptools release, you can download it from [pypi:setuptools PyPI] and install it manually.
-
-Plugins can also consist of a single `.py` file dropped directly into either the project's or the shared `plugins` directory.
+From the user's point of view, a plugin is either a standalone .py file or a package (egg or wheel). Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Components defined in globally-installed plugins must be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the `trac.ini` file. Components defined in the `plugins` directory of the project environment are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.
 
 == Installing a Trac plugin
 
@@ -38,7 +24,7 @@ $ python setup.py bdist_egg
 
 You should now have an *.egg file. Examine the output of running Python to find where this was created.
 
-Once you have the plugin archive, copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg. Then restart the web server. If you are running as a [wiki:TracStandalone "tracd" standalone server], restart tracd, ie kill the process and run again.
+Once you have the plugin archive, copy it into the `plugins` directory of the [TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg. Then restart the web server. If you are running as a [TracStandalone "tracd" standalone server], restart tracd, ie kill the process and run again.
 
 To uninstall a plugin installed this way, remove the egg from the `plugins` directory and restart the web server.
 
@@ -53,10 +39,12 @@ To uninstall a plugin installed this way, remove the egg from the `plugins` dire
 Some plugins, such as [https://trac-hacks.org/wiki/TagsPlugin TracTags], are downloadable as an `.egg` file that can be installed with `easy_install` or `pip`:
 {{{#!sh
 $ easy_install TracTags
+}}}
+{{{#!sh
 $ pip install TracTags
 }}}
 
-If `easy_install` is not on your system, see the Requirements section above to install it. Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python27\Scripts`) to their `PATH` environment variable, or use the full path to `easy_install` (for example, `C:\Python27\Scripts\easy_install.py`). See [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information.
+If `easy_install` is not on your system, see the [trac:setuptools#Installsetuptools Trac setuptools documentation].
 
 `pip` is included in Python 2.7.9. In earlier versions of Python it can be installed through the package manager of your OS (e.g. `apt-get install python-pip`) or using the [https://pip.pypa.io/en/latest/installing.html#install-pip get_pip.py]. 
 
@@ -70,16 +58,20 @@ Trac also searches for plugins installed in the shared plugins directory, see Tr
 
 ==== From source
 
-`easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
+`easy_install` and `pip` make installing from source a snap. Just give it the URL to either a repository or a tarball/zip of the source:
 {{{#!sh
 $ easy_install https://trac-hacks.org/svn/tagsplugin/trunk
 }}}
+{{{#!sh
+$ pip install svn+https://trac-hacks.org/svn/tagsplugin/trunk
+}}}
+When installing from a repository using `pip`, be sure to use the repository type in the protocol. For example, `svn+https` for Subversion and `git+https` for Git.
 
 ==== Enabling the plugin
 
-Unlike plugins installed per environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This also applies to plugins installed in the shared plugins directory, ie the path specified in the `[inherit] plugins_dir` configuration option. 
+Unlike plugins installed per environment, you'll have to explicitly enable globally installed plugins via [TracIni trac.ini]. This also applies to plugins installed in the shared plugins directory, ie the path specified in the [TracIni#inherit-plugins_dir-option "[inherit] plugins_dir"] configuration option. 
 
-This is done in the `[components]` section of the configuration file `trac.ini`. For example:
+This is done in the [TracIni#components-section "[components]"] section of the configuration file `trac.ini`. For example:
 {{{#!ini
 [components]
 tractags.* = enabled
@@ -118,11 +110,30 @@ Remove above note once #9936 is fixed.
 }}}
 }}}
 
+==== Upgrading a Plugin
+
+Normally, upgrading a plugin is simply a matter of repeating the install process. You may want to [#Uninstalling uninstall] old versions of the plugin.
+
+The `pip install` command has an `--upgrade (-U)` switch that will uninstall the old version and install the new version. The command can have some unintended side-effects though, because it will also upgrade the plugin dependencies. For example, if `Trac` is listed as a dependency of the plugin in `setup.py`, the latest version of Trac will be downloaded and installed. This may not be what you want if you are running an older version of Trac because not all your plugins are compatible with the latest version of Trac, or you simply haven't done the appropriate planning for upgrading Trac. Uninstalling and then installing the plugin can be a safer option:
+{{{#!sh
+$ pip uninstall <pluginname>
+$ pip install <pluginname>
+}}}
+
+Alternatively you can use a [https://pip.pypa.io/en/stable/user_guide/#requirements-files requirements file] and pin the versions of the packages that you don't want to implicitly upgrade. 
+
 ==== Uninstalling
+
+`pip` makes it easy to uninstall a plugin:
+{{{#!sh
+$ pip uninstall <pluginname>
+}}}
+
+The `pip uninstall` command can be used even if the plugin was installed using `easy_install` or `python setup.py install`.
 
 Neither `easy_install` nor `python setup.py` have an uninstall feature. However, it is usually trivial to remove a globally installed egg and reference:
 
- 1. Do `easy_install -m [plugin name]` to remove references from `$PYTHONLIB/site-packages/easy-install.pth` when the plugin installed by setuptools.
+ 1. Do `easy_install -m <plugin name>` to remove references from `$PYTHONLIB/site-packages/easy-install.pth` when the plugin is installed by setuptools.
  1. Delete executables from `/usr/bin`, `/usr/local/bin`, or `C:\\Python*\Scripts`. To find what executables are involved, refer to the `[console-script]` section of `setup.py`.
  1. Delete the .egg file or folder from where it's installed, usually inside `$PYTHONLIB/site-packages/`.
  1. Restart the web server.
@@ -136,51 +147,13 @@ If you are uncertain about the location of the egg file, you can try to locate i
 
 == Setting up the plugin cache
 
-Some plugins will need to be extracted by the Python egg's runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to `.python-eggs` in the home directory of the current user, which may or may not be a problem. You can, however, override the default location using the `PYTHON_EGG_CACHE` environment variable.
-
-To do this from the Apache configuration, use the `SetEnv` directive:
-{{{#!apache
-SetEnv PYTHON_EGG_CACHE /path/to/dir
-}}}
-
-This works whether you're using the [wiki:TracCgi CGI] or the [wiki:TracModPython mod_python] front-end. Put this directive next to where you set the path to the [wiki:TracEnvironment Trac environment], ie in the same `<Location>` block.
-
-For example for CGI:
-{{{#!apache
- <Location /trac>
-   SetEnv TRAC_ENV /path/to/projenv
-   SetEnv PYTHON_EGG_CACHE /path/to/dir
- </Location>
-}}}
-
-Or for mod_python:
-{{{#!apache
- <Location /trac>
-   SetHandler mod_python
-   ...
-   SetEnv PYTHON_EGG_CACHE /path/to/dir
- </Location>
-}}}
-
-'''Note''': !SetEnv requires the `mod_env` module, which needs to be activated for Apache. In this case the !SetEnv directive can also be used in the `mod_python` Location block.
-
-For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
-
-'''Note''': if you already use -initial-env to set the project directory for either a single project or parent, you will need to add an additional -initial-env directive to the !FastCgiConfig directive:
-
-{{{#!apache
-FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
-}}}
-
-=== About hook scripts
-
-If you have set up some Subversion hook scripts that call the Trac engine, such as the post-commit hook script provided in the `/contrib` directory, make sure you define the `PYTHON_EGG_CACHE` environment variable within these scripts as well.
+Some plugins will need to be extracted by the Python egg's runtime. See [wiki:TracInstall#egg-cache] for information on setting up the egg cache.
 
 == Web-based plugin administration
 
-The [trac:WebAdmin] interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
+The !WebAdmin interface offers limited support for plugin configuration to users with `TRAC_ADMIN` permission:
 
-* en/disabling installed plugins
+* enabling and disabling installed plugins
 * installing plugins by uploading them as eggs
 
 If you wish to disable the second function for security reasons, add the following to your `trac.ini` file:
@@ -222,15 +195,15 @@ Trac must be able to read the .egg file.
 
 === Check the log files
 
-Enable [wiki:TracLogging logging] and set the log level to `DEBUG`, then watch the log file for messages about loading plugins.
+Enable [TracLogging logging] and set the log level to `DEBUG`, then watch the log file for messages about loading plugins.
 
 === Verify you have the proper permissions
 
-Some plugins require you have special permissions in order to use them. [trac:WebAdmin WebAdmin], for example, requires the user to have `TRAC_ADMIN` permissions for it to show up on the navigation bar.
+Some plugins require you have special permissions in order to use them. !WebAdmin, for example, requires the user to have `TRAC_ADMIN` permissions for it to show up on the navigation bar.
 
 === Is the wrong version of the plugin loading?
 
-If you put your plugins inside plugins directories, and certainly if you have more than one project, you need to make sure that the correct version of the plugin is loading. Here are some basic rules:
+If you put your plugins inside the `plugins` directories, and certainly if you have more than one project, you need to make sure that the correct version of the plugin is loading. Here are some basic rules:
 
  * Only one version of the plugin can be loaded for each running Trac server, ie each Python process. The Python namespaces and module list will be shared, and it cannot handle duplicates. Whether a plugin is `enabled` or `disabled` makes no difference.
  * A globally installed plugin (typically `setup.py install`) will override any version in the global or project plugins directories. A plugin from the global plugins directory will be located ''before'' any project plugins directory.
@@ -239,7 +212,7 @@ If you put your plugins inside plugins directories, and certainly if you have mo
 
 === If all of the above failed
 
-Okay, so the logs don't mention plugins, the egg is readable, the Python version is correct, ''and'' the egg has been installed globally (and is enabled in trac.ini)... and it ''still'' doesn't work or give any error messages or any other indication as to why. Hop on the [trac:IrcChannel IrcChannel] and ask away!
+Okay, so the logs don't mention plugins, the egg is readable, the Python version is correct, ''and'' the egg has been installed globally (and is enabled in trac.ini)... and it ''still'' doesn't work or give any error messages or any other indication as to why. Hop on the [trac:IrcChannel IrcChannel] or [trac:MailingList] and ask away!
 
 ----
 See also TracGuide, [trac:PluginList plugin list], [trac:TracDev/ComponentArchitecture component architecture].

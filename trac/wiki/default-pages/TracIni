@@ -24,7 +24,7 @@ Note that the templates found in the `templates/` directory of the TracEnvironme
 
 == Reference for settings
 
-This is a brief reference of available configuration options, and their default settings.
+This is a reference of available configuration options, and their default settings.
 
 Documentation improvements should be discussed on the [trac:MailingList#Trac-dev trac-dev mailing list] or described in a [trac:NewTicket ticket]. Even better, [trac:TracDev/SubmittingPatches submit a patch] against the docstrings in the code.
 

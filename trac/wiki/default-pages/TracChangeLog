@@ -216,19 +216,23 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 
 === 1.0.14
 
-//(Not yet released)//
+//(June 9, 2017)//
 
-Trac 1.0.14 provides around a dozen bug fixes and minor
+Trac 1.0.14 provides more than 3 dozen bug fixes and minor
 enhancements. The following are some highlights:
 
+ - Improved Git performance ([trac:#12545], [trac:#12694]).
+ - Reduced memory usage exporting a zip file ([trac:#12765]).
  - Fixed batch modify not working for list fields
    (regression in 1.0.11) ([trac:#12585]).
  - Performance improvements to the Roadmap and Milestone 
    admin pages when there are many milestones and tickets
    ([trac:#12609]).
+ - SECURITY: Possible XSS via reStructuredText link.
+ - SECURITY: Injection of password prompt using Image
+   macro or reStructuredText image.
 
 [trac:source:/tags/trac-1.0.14 View Tag] | [trac:milestone:1.0.14 View Milestone]
-
 
 === 1.0.13
 

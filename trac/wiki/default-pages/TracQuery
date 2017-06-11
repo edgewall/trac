@@ -115,5 +115,7 @@ The date fields `created` and `modified` can be constrained by using the `=` ope
 || '''`modified=1weekago..`''' || query tickets that have been modified in the last week ||
 || '''`modified=..30daysago`''' || query tickets that have been inactive for the last 30 days ||
 
+Note that `modified` is the //last modified time//, so `modified` with a date range shows ticket that were //last modified// in that date range. If a ticket was modified in the date range, but modified again after the end date, it will not be included in the results.
+
 ----
 See also: TracTickets, TracReports, TracGuide, TicketQuery

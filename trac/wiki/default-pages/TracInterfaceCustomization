@@ -155,7 +155,7 @@ For [TracCgi CGI]:
 SetEnv TRAC_ENV_INDEX_TEMPLATE /path/to/template
 }}}
 
-For [TracStandalone], you'll need to set up the `TRAC_ENV_INDEX_TEMPLATE` environment variable in the shell used to launch tracd:
+For TracStandalone, you'll need to set up the `TRAC_ENV_INDEX_TEMPLATE` environment variable in the shell used to launch tracd:
  - Unix:
    {{{#!sh
 $ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
@@ -180,4 +180,4 @@ Trac resolves requests for a template by first looking inside the project, then 
 Trac caches templates in memory by default to improve performance. To apply a template you need to restart the web server.
 
 ----
-See also TracIni
+See also TracIni, TracNavigation

@@ -3,16 +3,16 @@
 
 Trac supports notification of ticket changes via email. 
 
-Email notification is useful to keep users up-to-date on tickets/issues of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list. For example, this is how the [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] mailing list is set up.
+Email notification is useful to keep users up-to-date on tickets of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list.
 
-Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
+Disabled by default, notification can be activated and configured in [TracIni trac.ini].
 
 == Receiving Notification Mails
 When reporting a new ticket or adding a comment, enter a valid email address or your Trac username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket, depending on how notification is configured.
 
 === How to use your username to receive notification mails
 
-To receive notification mails, you can either enter a full email address or your Trac username. To get notified with a simple username or login, you need to specify a valid email address in the ''Preferences'' page. 
+To receive notification mails, you can either enter a full email address or your Trac username. To get notified with a simple username or login, you need to specify a valid email address in your [/prefs preferences]. 
 
 Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file, see [#ConfigurationOptions Configuration Options] below. In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
 
@@ -28,7 +28,7 @@ trac.ticket.notification.TicketAttachmentNotifier = disabled
 
 == Configuring SMTP Notification
 
-'''Important:''' For TracNotification to work correctly, the `[trac] base_url` option must be set in [wiki:TracIni trac.ini]. 
+'''Important:''' The [[TracIni#trac-base_url-option|[trac] base_url]] option must be configured for links in the notification message to be correctly generated. 
 
 === Configuration Options
 These are the available options for the `[notification]` section in trac.ini:
@@ -57,11 +57,11 @@ smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
 
 === Subscriber Configuration
-The default subscriptions are configured in the `[notification-subscriber]` section in trac.ini:
+The default subscriptions are configured in the [TracIni#notification-subscriber-section "[notification-subscriber]"] section.
 
 [[TracIni(section=notification-subscriber)]]
 
-Each user can override these defaults in his ''Notifications'' preferences.
+Each user can override these defaults in their ''Notifications'' preferences.
 
 For example to unsubscribe from notifications for one's own changes and comments, the rule "Never notify: I update a ticket" should be added above other subscription rules.
 
@@ -104,49 +104,48 @@ ${prefix} #${ticket.id}: ${summary}
 }}}
 The following variables are available in the template:
 
- * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
+ * `env`: The project environment object (see [trac:source:/trunk/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `${ticket.milestone}`.
+ * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be accessed by appending the field name separated by a dot, eg `${ticket.milestone}`.
 
 === Customizing the e-mail content
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default is:
 
 {{{#!genshi
 ${ticket_body_hdr}
 ${ticket_props}
-{% choose ticket.new %}\
-{%   when True %}\
+# if ticket.new:
 ${ticket.description}
-{%   end %}\
-{%   otherwise %}\
-{%     if changes_body %}\
+# else:
+#   if changes_body:
 ${_('Changes (by %(author)s):', author=change.author)}
 
 ${changes_body}
-{%     end %}\
-{%     if changes_descr %}\
-{%       if not changes_body and not change.comment and change.author %}\
+#   endif
+#   if changes_descr:
+#     if not changes_body and not change.comment and change.author:
 ${_('Description changed by %(author)s:', author=change.author)}
-{%       end %}\
+#     endif
 ${changes_descr}
 --
-{%     end %}\
-{%     if change.comment %}\
+#   endif
+#   if change.comment:
 
-${changes_body and _('Comment:') or _('Comment (by %(author)s):', author=change.author)}
+${_('Comment:') if changes_body else
+  _('Comment (by %(author)s):', author=change.author)}
 
 ${change.comment}
-{%     end %}\
-{%   end %}\
-{% end %}\
-
--- 
+#   endif
+# endif
+--
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
 ${project.name} <${project.url or abs_href()}>
 ${project.descr}
 }}}
+
+See the [trac:CookBook/Notification/Templates cookbook] for additional template customization recipes.
 
 == Sample Email
 {{{
@@ -174,72 +173,6 @@ Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
 
-== Customizing e-mail content for MS Outlook
-
-MS Outlook normally presents plain text e-mails with a variable-width font, and as a result the ticket properties table will most certainly look like a mess in MS Outlook. This can be fixed with some customization of the [#Customizingthee-mailcontent e-mail template].
-
-Replace the following second row in the template:
-{{{
-${ticket_props}
-}}}
-
-with this (requires Python 2.6 or later):
-{{{
---------------------------------------------------------------------------
-{% with
-   pv = [(a[0].strip(), a[1].strip()) for a in [b.split(':') for b in
-         [c.strip() for c in 
-          ticket_props.replace('|', '\n').splitlines()[1:-1]] if ':' in b]];
-   sel = ['Reporter', 'Owner', 'Type', 'Status', 'Priority', 'Milestone', 
-          'Component', 'Severity', 'Resolution', 'Keywords'] %}\
-${'\n'.join('%s\t%s' % (format(p[0]+':', ' <12'), p[1]) for p in pv if p[0] in sel)}
-{% end %}\
---------------------------------------------------------------------------
-}}}
-
-The table of ticket properties is replaced with a list of a selection of the properties. A tab character separates the name and value in such a way that most people should find this more pleasing than the default table when using MS Outlook.
-{{{#!div style="margin: 1em 1.75em; border:1px dotted"
-{{{#!html
-#42: testing<br />
---------------------------------------------------------------------------<br />
-<table cellpadding=0>
-<tr><td>Reporter:</td><td>jonas@example.com</td></tr>
-<tr><td>Owner:</td><td>anonymous</td></tr>
-<tr><td>Type:</td><td>defect</td></tr>
-<tr><td>Status:</td><td>assigned</td></tr>
-<tr><td>Priority:</td><td>lowest</td></tr>
-<tr><td>Milestone:</td><td>0.9</td></tr>
-<tr><td>Component:</td><td>report system</td></tr>
-<tr><td>Severity:</td><td>major</td></tr>
-<tr><td>Resolution:</td><td> </td></tr>
-<tr><td>Keywords:</td><td> </td></tr>
-</table>
---------------------------------------------------------------------------<br />
-Changes:<br />
-<br />
-&nbsp;&nbsp;* component: &nbsp;changeset view =&gt; search system<br />
-&nbsp;&nbsp;* priority: &nbsp;low =&gt; highest<br />
-&nbsp;&nbsp;* owner: &nbsp;jonas =&gt; anonymous<br />
-&nbsp;&nbsp;* cc: &nbsp;daniel@example.com =&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;daniel@example.com, jonas@example.com<br />
-&nbsp;&nbsp;* status: &nbsp;new =&gt; assigned<br />
-<br />
-Comment:<br />
-I'm interested too!<br />
-<br />
---<br />
-Ticket URL: &lt;http://example.com/trac/ticket/42&gt;<br />
-My Project &lt;http://myproj.example.com/&gt;<br />
-}}}
-}}}
-
-**Important**: Only those ticket fields that are listed in `sel` are part of the HTML mail. If you have defined custom ticket fields which are to be part of the mail, then they have to be added to `sel`. Example:
-{{{
-   sel = ['Reporter', ..., 'Keywords', 'Custom1', 'Custom2']
-}}}
-
-However, the solution is still a workaround to an automatically HTML-formatted e-mail.
-
 == Using GMail as the SMTP relay host
 
 Use the following configuration snippet:
@@ -261,9 +194,9 @@ You should not use `smtp_port = 465`. Doing so may deadlock your ticket submissi
 
 == Troubleshooting
 
-If you cannot get the notification working, first make sure the log is activated and have a look at the log to find if an error message has been logged. See TracLogging for help about the log feature.
+If notifications are not working, inspect the [TracLogging log] for error messages.
 
-Notification errors are not reported through the web interface, so the user who submits a change or a new ticket never gets notified about a notification failure. The Trac administrator needs to look at the log to find the error trace.
+Notification errors are not always reported through the web interface, so the user who submits a change or creates a ticket may not get notified about a notification failure. The Trac administrator needs to look at the log to find the error message and traceback.
 
 === ''Permission denied'' error
 

@@ -124,6 +124,27 @@ Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the
 
 ==== Subversion
 
+===== Using `trac-svn-hook`
+
+In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script also comes with a number of safety checks and usage advice which should make it easier to set up and test. Log messages are written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
+
+There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
+
+To configure `trac-svn-hook`, follow the help in the documentation header of the script. Configuring the hook environment variables is made easier in Subversion 1.8 by using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, they can be configured through the repository `conf/hooks-env` file. Replace the [trac:source:trunk/contrib/trac-svn-hook@:65-67#L61 configuration section] with:
+{{{#!bash
+export PATH=$PYTHON_BIN:$PATH
+export LD_LIBRARY_PATH=$PYTHON_LIB:$LD_LIBRARY_PATH
+}}}
+and set the variables `TRAC_ENV`, `PYTHON_BIN` and `PYTHON_LIB` in the `hooks-env` file. Here is an example, using a Python virtual environment at `/usr/local/venv`:
+{{{#!ini
+[default]
+TRAC_ENV=/var/trac/project-1
+PYTHON_BIN=/usr/local/venv/bin
+PYTHON_LIB=/usr/local/venv/lib
+}}}
+
+===== Writing Your Own Hook Script
+
 The following examples are complete post-commit and post-revprop-change scripts for Subversion. They should be edited for the specific environment, marked executable (where applicable) and placed in the `hooks` directory of each repository. On Unix (`post-commit`):
 {{{#!sh
 #!/bin/sh
@@ -149,9 +170,7 @@ On Windows (`post-revprop-change.cmd`):
 
 The Unix variants above assume that the user running the Subversion commit has write access to the Trac environment, which is the case in the standard configuration where both the repository and Trac are served by the web server. If you access the repository through another means, for example `svn+ssh://`, you may have to run `trac-admin` with different privileges, for example by using `sudo`.
 
-Note that calling `trac-admin` in your Subversion hooks can slow down the commit and log editing operations on the client side. You might want to use the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script which starts `trac-admin` in an asynchronous way. The script also comes with a number of safety checks and usage advices which should make it easier to set up and test your hooks. There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
-
-See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups.
+See the [http://svnbook.red-bean.com/en/1.7/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups.
 
 ==== Git
 

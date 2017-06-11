@@ -378,9 +378,11 @@ Of course, you still need to make the Trac `htdocs/common` directory available t
 $ ln -s /path/to/trac/htdocs/common /var/www/static.example.org/trac-common
 }}}
 
-==== Setting up the Plugin Cache
+==== Setting up the Plugin Cache #egg-cache
 
 Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the `PYTHON_EGG_CACHE` environment variable. Refer to your server documentation for detailed instructions on how to set environment variables.
+
+If you setup hook scripts that call Trac, such as the Subversion post-commit hook script provided in the `/contrib` directory, make sure you define the `PYTHON_EGG_CACHE` environment variable within these scripts as well.
 
 == Configuring Authentication
 
