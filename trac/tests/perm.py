@@ -146,6 +146,17 @@ class PermissionErrorTestCase(unittest.TestCase):
                          "operation on WikiStart. You don't have the "
                          "required permissions.", unicode(permission_error))
 
+    def test_message_from_action_and_resource_without_id(self):
+        action = 'TIMELINE_VIEW'
+        resource = Resource('timeline')
+        permission_error = perm.PermissionError(action, resource, self.env)
+        self.assertEqual(action, permission_error.action)
+        self.assertEqual(resource, permission_error.resource)
+        self.assertEqual(self.env, permission_error.env)
+        self.assertEqual("TIMELINE_VIEW privileges are required to perform "
+                         "this operation. You don't have the required "
+                         "permissions.", unicode(permission_error))
+
 
 class PermissionSystemTestCase(unittest.TestCase):
 

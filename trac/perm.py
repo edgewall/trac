@@ -51,7 +51,7 @@ class PermissionError(StandardError, TracBaseError):
         self.resource = resource
         self.env = env
         if self.action:
-            if self.resource:
+            if self.resource and self.resource.id:
                 msg = _("%(perm)s privileges are required to perform "
                         "this operation on %(resource)s. You don't have the "
                         "required permissions.",
