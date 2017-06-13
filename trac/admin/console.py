@@ -364,7 +364,7 @@ Type:  '?' or 'help' for help on commands.
          """Create and initialize a new environment
 
          If no arguments are given, then the required parameters are requested
-         interactively.
+         interactively unless the optional argument `--config` is specified.
 
          One or more optional arguments --inherit=PATH can be used to specify
          the "[inherit] file" option at environment creation time, so that only
@@ -376,8 +376,8 @@ Type:  '?' or 'help' for help on commands.
          The optional argument --config=PATH can be used to specify a
          configuration file that is used to populate the environment
          configuration. The arguments <projectname>, <db> and any other
-         arguments passed in the invocation will override values in the
-         configuration file.
+         arguments passed in the invocation are optional, but if specified
+         will override values in the configuration file.
          """)]
 
     def do_initdb(self, line):
@@ -453,12 +453,14 @@ in order to initialize and prepare the project database.
                 initenv_error(e)
                 return 2
         arg = arg or [''] # Reset to usual empty in case we popped the only one
-        project_name = None
-        db_str = None
         repository_type = None
         repository_dir = None
-        if len(arg) == 1 and not arg[0]:
+        if len(arg) == 1 and not arg[0] and not config:
             project_name, db_str = self.get_initenv_args()
+        elif len(arg) < 2 and config:
+            project_name = db_str = None
+            if arg[0]:
+                project_name = arg[0]
         elif len(arg) == 2:
             project_name, db_str = arg
         elif len(arg) == 4:
@@ -475,10 +477,11 @@ in order to initialize and prepare the project database.
                     options.extend((section, option, value)
                                    for option, value
                                    in config.options(section))
-            options.extend([
-                ('project', 'name', project_name),
-                ('trac', 'database', db_str),
-            ])
+            if project_name is not None:
+                options.append(('project', 'name', project_name))
+            if db_str is not None:
+                options.append(('trac', 'database', db_str))
+
             def add_nav_order_options(section, default):
                 for i, name in enumerate(default, 1):
                     options.append((section, name + '.order', float(i)))
