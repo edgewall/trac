@@ -313,6 +313,18 @@ else:
                     pass
 
 
+def backup_config_file(env, suffix):
+    try:
+        backup, f = create_unique_file(env.config.filename + suffix)
+        f.close()
+        shutil.copyfile(env.config.filename, backup)
+    except IOError as e:
+        env.log.warning("Couldn't save backup of configuration file (%s)",
+                        exception_to_unicode(e))
+    else:
+        env.log.info("Saved backup of configuration file in %s", backup)
+
+
 def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=False,
                    comment=None):
     """Create a instance of `ZipInfo`.
@@ -372,6 +384,20 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
         zipinfo.comment = comment.encode('utf-8')
 
     return zipinfo
+
+
+def extract_zipfile(srcfile, destdir):
+    with zipfile.ZipFile(srcfile) as zip:
+        for entry in zip.namelist():
+            if entry.endswith('/'):  # is a directory
+                continue
+            names = entry.split('/')
+            content = zip.read(entry)
+            filename = os.path.join(destdir, *names)
+            dirname = os.path.dirname(filename)
+            if not os.path.isdir(dirname):
+                os.makedirs(dirname)
+            create_file(filename, content, 'wb')
 
 
 class NaivePopen(object):

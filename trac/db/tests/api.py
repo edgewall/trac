@@ -446,6 +446,17 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.dbm.set_database_version(db_ver, name)
         self.assertEqual(db_ver, self.dbm.get_database_version(name))
 
+    def test_get_sequence_names(self):
+        sequence_names = []
+        if self.dbm.connection_uri.startswith('postgres'):
+            for table in default_schema:
+                for column in table.columns:
+                    if column.name == 'id' and column.auto_increment:
+                        sequence_names.append(table.name)
+            sequence_names.sort()
+
+        self.assertEqual(sequence_names, self.dbm.get_sequence_names())
+
 
 class ModifyTableTestCase(unittest.TestCase):
 

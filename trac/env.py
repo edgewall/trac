@@ -22,10 +22,15 @@ import os.path
 import setuptools
 import shutil
 import sys
+import time
+from ConfigParser import RawConfigParser
+from subprocess import PIPE
+from tempfile import mkdtemp
 from urlparse import urlsplit
 
 from trac import db_default, log
-from trac.admin import AdminCommandError, IAdminCommandProvider
+from trac.admin.api import (AdminCommandError, IAdminCommandProvider,
+                            get_dir_list)
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.cache import CacheManager, cached
 from trac.config import BoolOption, ChoiceOption, ConfigSection, \
@@ -33,14 +38,16 @@ from trac.config import BoolOption, ChoiceOption, ConfigSection, \
 from trac.core import Component, ComponentManager, ExtensionPoint, \
                       TracBaseError, TracError, implements
 from trac.db.api import (DatabaseManager, QueryContextManager,
-                         TransactionContextManager)
+                         TransactionContextManager, parse_connection_uri)
+from trac.db.convert import copy_tables
 from trac.loader import load_components
-from trac.util import as_bool, copytree, create_file, get_pkginfo, \
-                      is_path_below, lazy, makedirs, read_file
+from trac.util import as_bool, backup_config_file, copytree, create_file, \
+                      get_pkginfo, is_path_below, lazy, makedirs, read_file
+from trac.util.compat import Popen, close_fds
 from trac.util.concurrency import threading
 from trac.util.datefmt import pytz
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
-                           printout
+                           printferr, printfout, printout
 from trac.util.translation import _, N_
 from trac.web.chrome import Chrome
 from trac.web.href import Href
@@ -606,6 +613,14 @@ class Environment(Component, ComponentManager):
         return self._get_path_to_dir('conf')
 
     @lazy
+    def files_dir(self):
+        """Absolute path to the files directory.
+
+        :since: 1.3.2
+        """
+        return self._get_path_to_dir('files')
+
+    @lazy
     def htdocs_dir(self):
         """Absolute path to the htdocs directory.
 
@@ -871,6 +886,27 @@ class EnvironmentAdmin(Component):
                specified.
                """,
                None, self._do_hotcopy)
+        yield ('convert_db', '<dburi> [new_env]',
+               """Convert database
+
+               Converts the database backend in the environment in which
+               the command is run (in-place), or in a new copy of the
+               environment. For an in-place conversion, the data is
+               copied to the database specified in <dburi> and the
+               [trac] database setting is changed to point to the new
+               database. The new database must be empty, which for an
+               SQLite database means the file should not exist. The data
+               in the existing database is left unmodified.
+
+               For a database conversion in a new copy of the environment,
+               the environment in which the command is executed is copied
+               and the [trac] database setting is changed in the new
+               environment. The existing environment is left unmodified.
+
+               Be sure to create a backup (see `hotcopy`) before converting
+               the database, particularly when doing an in-place conversion.
+               """,
+               self._complete_convert_db, self._do_convert_db)
         yield ('upgrade', '[--no-backup]',
                """Upgrade database to current version
 
@@ -987,6 +1023,12 @@ class EnvironmentAdmin(Component):
         printout(_("Hotcopy done."))
         return retval
 
+    def _do_convert_db(self, dburi, env_path=None):
+        if env_path:
+            return self._do_convert_db_in_new_env(dburi, env_path)
+        else:
+            return self._do_convert_db_in_place(dburi)
+
     def _do_upgrade(self, no_backup=None):
         if no_backup not in (None, '-b', '--no-backup'):
             raise AdminCommandError(_("Invalid arguments"), show_usage=True)
@@ -1010,3 +1052,112 @@ class EnvironmentAdmin(Component):
                    'You may want to upgrade the Trac documentation now by '
                    'running:\n\n  trac-admin "%(path)s" wiki upgrade',
                    path=path_to_unicode(self.env.path)))
+
+    def _complete_convert_db(self, args):
+        if len(args) == 2:
+            return get_dir_list(args[1])
+
+    def _do_convert_db_in_new_env(self, dst_dburi, env_path):
+        try:
+            os.rmdir(env_path)  # remove directory if it's empty
+        except OSError:
+            pass
+        if os.path.exists(env_path) or os.path.lexists(env_path):
+            printferr("Cannot create Trac environment: %s: File exists",
+                      env_path)
+            return 1
+
+        dst_env = self._create_env(env_path, dst_dburi)
+        dbm = DatabaseManager(self.env)
+        src_dburi = dbm.connection_uri
+        src_db = dbm.get_connection()
+        dst_db = DatabaseManager(dst_env).get_connection()
+        self._copy_tables(dst_env, src_db, dst_db, src_dburi, dst_dburi)
+        self._copy_directories(dst_env)
+
+    def _do_convert_db_in_place(self, dst_dburi):
+        dbm = DatabaseManager(self.env)
+        src_dburi = dbm.connection_uri
+        if src_dburi == dst_dburi:
+            printferr("Source database and destination database are same: %s",
+                      dst_dburi)
+            return 1
+
+        env_path = mkdtemp(prefix='convert_db-',
+                           dir=os.path.dirname(self.env.path))
+        try:
+            dst_env = self._create_env(env_path, dst_dburi)
+            src_db = dbm.get_connection()
+            dst_db = DatabaseManager(dst_env).get_connection()
+            self._copy_tables(dst_env, src_db, dst_db, src_dburi, dst_dburi)
+            del src_db
+            del dst_db
+            dst_env.shutdown()
+            dst_env = None
+            schema, params = parse_connection_uri(dst_dburi)
+            if schema == 'sqlite':
+                dbpath = os.path.join(self.env.path, params['path'])
+                dbdir = os.path.dirname(dbpath)
+                if not os.path.isdir(dbdir):
+                    os.makedirs(dbdir)
+                shutil.copy(os.path.join(env_path, params['path']), dbpath)
+        finally:
+            shutil.rmtree(env_path)
+
+        backup_config_file(self.env, '.convert_db-%d' % int(time.time()))
+        self.config.set('trac', 'database', dst_dburi)
+        self.config.save()
+
+    def _create_env(self, env_path, dburi):
+        parser = RawConfigParser()
+        parser.read(self.env.config_file_path)
+        options = dict(((section, name), value)
+                       for section in parser.sections()
+                       for name, value in parser.items(section))
+        options[('trac', 'database')] = dburi
+        options = sorted((section, name, value) for (section, name), value
+                                                in options.iteritems())
+
+        class MigrateEnvironment(Environment):
+            abstract = True
+            required = False
+
+            def is_component_enabled(self, cls):
+                name = self._component_name(cls)
+                if not any(name.startswith(mod) for mod in
+                           ('trac.', 'tracopt.')):
+                    return False
+                return Environment.is_component_enabled(self, cls)
+
+        # create an environment without plugins
+        env = MigrateEnvironment(env_path, create=True, options=options)
+        env.shutdown()
+        # copy plugins directory
+        os.rmdir(env.plugins_dir)
+        shutil.copytree(self.env.plugins_dir, env.plugins_dir)
+        # create tables for plugins to upgrade in other process
+        with Popen((sys.executable, '-m', 'trac.admin.console', env_path,
+                    'upgrade'), stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                   close_fds=close_fds) as proc:
+            stdout, stderr = proc.communicate(input='')
+        if proc.returncode != 0:
+            raise TracError("upgrade command failed (stdout %r, stderr %r)" %
+                            (stdout, stderr))
+        return Environment(env_path)
+
+    def _copy_tables(self, dst_env, src_db, dst_db, src_dburi, dst_dburi):
+        copy_tables(self.env, dst_env, src_db, dst_db, src_dburi, dst_dburi)
+
+    def _copy_directories(self, dst_env):
+        printfout("Copying directories:")
+        for src in (self.env.files_dir, self.env.htdocs_dir,
+                    self.env.templates_dir, self.env.plugins_dir):
+            name = os.path.basename(src)
+            dst = os.path.join(dst_env.path, name)
+            printfout("  %s directory... ", name, newline=False)
+            if os.path.isdir(dst):
+                shutil.rmtree(dst)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst)
+            printfout("done.")
+

@@ -334,6 +334,26 @@ def printerr(*args, **kwargs):
     console_print(sys.stderr, *args, **kwargs)
 
 
+def printfout(message, *args, **kwargs):
+    """Format `message`, do a `console.print` on `sys.stdout` and flush
+    the buffer.
+    """
+    if args:
+        message %= args
+    printout(message, **kwargs)
+    sys.stdout.flush()
+
+
+def printferr(message, *args, **kwargs):
+    """Format `message`, do a `console.print` on `sys.stderr` and flush
+    the buffer.
+    """
+    if args:
+        message %= args
+    printerr(message, **kwargs)
+    sys.stderr.flush()
+
+
 def raw_input(prompt):
     """Input one line from the console and converts it to unicode as
     appropriate.

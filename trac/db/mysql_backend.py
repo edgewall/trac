@@ -484,6 +484,9 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
 
+    def get_sequence_names(self):
+        return []
+
     def get_table_names(self):
         rows = self.execute("""
             SELECT table_name FROM information_schema.tables

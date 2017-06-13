@@ -12,16 +12,38 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from ConfigParser import RawConfigParser
+from glob import glob
+from pkg_resources import resource_filename
+from subprocess import PIPE, Popen
+import inspect
+import io
 import os
+import sys
 import unittest
 
 from trac import db_default
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
-from trac.config import ConfigurationError
+from trac.attachment import Attachment
+from trac.config import ConfigurationError, Option
 from trac.core import Component, ComponentManager, TracError, implements
-from trac.db.api import DatabaseManager
-from trac.env import Environment, open_environment
-from trac.test import EnvironmentStub, mkdtemp, rmtree
+from trac.db.api import DatabaseManager, get_column_names
+from trac.env import Environment, EnvironmentAdmin, open_environment
+from trac.test import EnvironmentStub, get_dburi, mkdtemp, rmtree
+from trac.util import create_file, extract_zipfile, hex_entropy, read_file
+from trac.util.compat import close_fds
+from trac.wiki.admin import WikiAdmin
+
+
+class DummyOut(object):
+
+    def write(self, *args, **kwargs):
+        pass
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -411,6 +433,293 @@ class SystemInfoTestCase(unittest.TestCase):
             self.fail("Unknown value for dburi %s" % self.env.dburi)
 
 
+class ConvertDatabaseTestCase(unittest.TestCase):
+
+    stdout = None
+    stderr = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.stdout = sys.stdout
+        cls.stderr = sys.stderr
+        sys.stdout = sys.stderr = DummyOut()
+
+    @classmethod
+    def tearDownClass(cls):
+        sys.stdout = cls.stdout
+        sys.stderr = cls.stderr
+
+    def setUp(self):
+        self.path = mkdtemp()
+        self.src_path = os.path.join(self.path, 'src')
+        self.dst_path = os.path.join(self.path, 'dst')
+        self.src_env = None
+        self.dst_env = None
+        self._destroy_db()
+
+    def tearDown(self):
+        if self.src_env:
+            self.src_env.shutdown()
+        if self.dst_env:
+            self.dst_env.shutdown()
+        rmtree(self.path)
+
+    def _create_env(self, path, dburi):
+        env = Environment(path, True,
+                          [('trac', 'database', dburi),
+                           ('trac', 'base_url', 'http://localhost/'),
+                           ('project', 'name', u'Pŕójéćŧ Ńáḿé')])
+        dbm = DatabaseManager(env)
+        dbm.set_database_version(21, 'initial_database_version')
+        pages_dir = resource_filename('trac.wiki', 'default-pages')
+        WikiAdmin(env).load_pages(pages_dir)
+        att = Attachment(env, 'wiki', 'WikiStart')
+        att.insert('filename.txt', io.BytesIO('test'), 4)
+        env.shutdown()
+
+    if 'destroying' in inspect.getargspec(EnvironmentStub.__init__)[0]:
+        def _destroy_db(self):
+            EnvironmentStub(path=self.path, destroying=True).destroy_db()
+    else:
+        def _destroy_db(self):
+            EnvironmentStub(path=self.path).destroy_db()
+
+    def _get_all_records(self, env):
+        def primary(row, columns):
+            if len(columns) == 1:
+                return row[columns[0]]
+            else:
+                return tuple(row[col] for col in columns)
+
+        records = {}
+        with env.db_query as db:
+            cursor = db.cursor()
+            for table in db_default.schema:
+                primary_cols = ','.join(db.quote(col) for col in table.key)
+                query = "SELECT * FROM %s ORDER BY %s" \
+                        % (db.quote(table.name), primary_cols)
+                cursor.execute(query)
+                columns = get_column_names(cursor)
+                rows = {}
+                for row in cursor:
+                    row = dict(zip(columns, row))
+                    rows[primary(row, table.key)] = row
+                records[table.name] = rows
+        return records
+
+    def _generate_module_name(self):
+        return 'trac_convert_db_' + hex_entropy(16)
+
+    def _build_egg_file(self):
+        module_name = self._generate_module_name()
+        plugin_src = os.path.join(self.path, 'plugin_src')
+        os.mkdir(plugin_src)
+        os.mkdir(os.path.join(plugin_src, module_name))
+        create_file(os.path.join(plugin_src, 'setup.py'),
+                    _setup_py % {'name': module_name})
+        create_file(os.path.join(plugin_src, module_name, '__init__.py'),
+                    _plugin_py)
+        proc = Popen((sys.executable, 'setup.py', 'bdist_egg'), cwd=plugin_src,
+                     stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+        proc.communicate(input='')
+        for f in (proc.stdin, proc.stdout, proc.stderr):
+            f.close()
+        for filename in glob(os.path.join(plugin_src, 'dist', '*-*.egg')):
+            return filename
+
+    def _convert_db(self, env, dburi, path):
+        EnvironmentAdmin(env)._do_convert_db(dburi, path)
+
+    def _convert_db_inplace(self, env, dburi):
+        self._convert_db(env, dburi, None)
+
+    def _compare_records(self, expected, actual):
+        self.assertEqual(expected.keys(), actual.keys())
+        for table in db_default.schema:
+            name = table.name
+            if name == 'report':
+                self.assertEqual(expected[name].keys(), actual[name].keys())
+            else:
+                self.assertEqual(expected[name], actual[name])
+
+    def _get_options(self, env):
+        config = env.config
+        return [(section, name, self._option_dumps(section, name, value))
+                for section in sorted(config.sections())
+                for name, value in sorted(config.options(section))
+                if (section, name) != ('trac', 'database')]
+
+    def _option_dumps(self, section, name, value):
+        try:
+            option = Option.registry[(section, name)]
+        except KeyError:
+            pass
+        else:
+            value = option.dumps(value)
+        return value
+
+    def test_convert_from_sqlite_to_env(self):
+        self._create_env(self.src_path, 'sqlite:db/trac.db')
+        dburi = get_dburi()
+        if dburi == 'sqlite::memory:':
+            dburi = 'sqlite:db/trac.db'
+
+        self.src_env = Environment(self.src_path)
+        src_options = self._get_options(self.src_env)
+        src_records = self._get_all_records(self.src_env)
+        self._convert_db(self.src_env, dburi, self.dst_path)
+        self.dst_env = Environment(self.dst_path)
+        dst_options = self._get_options(self.dst_env)
+        dst_records = self._get_all_records(self.dst_env)
+        self.assertEqual({'name': 'initial_database_version', 'value': '21'},
+                         dst_records['system']['initial_database_version'])
+        self._compare_records(src_records, dst_records)
+        self.assertEqual(src_options, dst_options)
+        att = Attachment(self.dst_env, 'wiki', 'WikiStart', 'filename.txt')
+        self.assertEqual('test', read_file(att.path))
+
+    def test_convert_from_sqlite_inplace(self):
+        self._create_env(self.src_path, 'sqlite:db/trac.db')
+        dburi = get_dburi()
+        if dburi in ('sqlite::memory:', 'sqlite:db/trac.db'):
+            dburi = 'sqlite:db/trac-convert.db'
+
+        self.src_env = Environment(self.src_path)
+        src_options = self._get_options(self.src_env)
+        src_records = self._get_all_records(self.src_env)
+        self._convert_db_inplace(self.src_env, dburi)
+        self.src_env.shutdown()
+        self.src_env = Environment(self.src_path)
+        dst_options = self._get_options(self.src_env)
+        dst_records = self._get_all_records(self.src_env)
+        self.assertEqual({'name': 'initial_database_version', 'value': '21'},
+                         dst_records['system']['initial_database_version'])
+        self._compare_records(src_records, dst_records)
+        self.assertEqual(src_options, dst_options)
+
+    def test_convert_to_sqlite_env(self):
+        dburi = get_dburi()
+        if dburi == 'sqlite::memory:':
+            dburi = 'sqlite:db/trac.db'
+        self._create_env(self.src_path, dburi)
+
+        self.src_env = Environment(self.src_path)
+        src_options = self._get_options(self.src_env)
+        src_records = self._get_all_records(self.src_env)
+        self._convert_db(self.src_env, 'sqlite:db/trac.db', self.dst_path)
+        self.dst_env = Environment(self.dst_path)
+        dst_options = self._get_options(self.dst_env)
+        dst_records = self._get_all_records(self.dst_env)
+        self.assertEqual({'name': 'initial_database_version', 'value': '21'},
+                         dst_records['system']['initial_database_version'])
+        self._compare_records(src_records, dst_records)
+        self.assertEqual(src_options, dst_options)
+        att = Attachment(self.dst_env, 'wiki', 'WikiStart', 'filename.txt')
+        self.assertEqual('test', read_file(att.path))
+
+    def test_convert_to_sqlite_inplace(self):
+        dburi = get_dburi()
+        if dburi in ('sqlite::memory:', 'sqlite:db/trac.db'):
+            dburi = 'sqlite:db/trac-convert.db'
+        self._create_env(self.src_path, dburi)
+
+        self.src_env = Environment(self.src_path)
+        src_options = self._get_options(self.src_env)
+        src_records = self._get_all_records(self.src_env)
+        self._convert_db_inplace(self.src_env, 'sqlite:db/trac.db')
+        self.src_env.shutdown()
+        self.src_env = Environment(self.src_path)
+        dst_options = self._get_options(self.src_env)
+        dst_records = self._get_all_records(self.src_env)
+        self.assertEqual({'name': 'initial_database_version', 'value': '21'},
+                         dst_records['system']['initial_database_version'])
+        self._compare_records(src_records, dst_records)
+        self.assertEqual(src_options, dst_options)
+
+    def _test_convert_with_plugin_to_sqlite_env(self):
+        self.src_env = Environment(self.src_path)
+        self.assertTrue(self.src_env.needs_upgrade())
+        self.src_env.upgrade()
+        self.assertFalse(self.src_env.needs_upgrade())
+        src_options = self._get_options(self.src_env)
+        src_records = self._get_all_records(self.src_env)
+
+        self._convert_db(self.src_env, 'sqlite:db/trac.db', self.dst_path)
+        self.dst_env = Environment(self.dst_path)
+        self.assertFalse(self.dst_env.needs_upgrade())
+        self.assertFalse(os.path.exists(os.path.join(self.dst_env.log_dir,
+                                                     'created')))
+        self.assertTrue(os.path.exists(os.path.join(self.dst_env.log_dir,
+                                                    'upgraded')))
+        dst_options = self._get_options(self.dst_env)
+        dst_records = self._get_all_records(self.dst_env)
+        self.assertEqual({'name': 'initial_database_version', 'value': '21'},
+                         dst_records['system']['initial_database_version'])
+        self._compare_records(src_records, dst_records)
+        self.assertEqual(src_options, dst_options)
+        att = Attachment(self.dst_env, 'wiki', 'WikiStart', 'filename.txt')
+        self.assertEqual('test', read_file(att.path))
+
+    def test_convert_with_plugin_py_to_sqlite_env(self):
+        dburi = get_dburi()
+        if dburi == 'sqlite::memory:':
+            dburi = 'sqlite:db/trac.db'
+        self._create_env(self.src_path, dburi)
+        plugin_name = self._generate_module_name() + '.py'
+        create_file(os.path.join(self.src_path, 'plugins', plugin_name),
+                    _plugin_py)
+        self._test_convert_with_plugin_to_sqlite_env()
+
+    def test_convert_with_plugin_egg_to_sqlite_env(self):
+        dburi = get_dburi()
+        if dburi == 'sqlite::memory:':
+            dburi = 'sqlite:db/trac.db'
+        self._create_env(self.src_path, dburi)
+        extract_zipfile(self._build_egg_file(),
+                        os.path.join(self.src_path, 'plugins',
+                                     'trac_convert_db_test.egg'))
+        self._test_convert_with_plugin_to_sqlite_env()
+
+
+_setup_py = """\
+from setuptools import setup, find_packages
+
+setup(
+    name = '%(name)s',
+    version = '0.1.0',
+    description = '',
+    license = '',
+    install_requires = ['Trac'],
+    packages = find_packages(exclude=['*.tests*']),
+    entry_points = {'trac.plugins': ['%(name)s = %(name)s']})
+"""
+
+
+_plugin_py = """\
+import os.path
+from trac.core import Component, implements
+from trac.env import IEnvironmentSetupParticipant
+from trac.util import create_file
+
+class Setup(Component):
+
+    implements(IEnvironmentSetupParticipant)
+
+    def __init__(self):
+        self._created_file = os.path.join(self.env.path, 'log', 'created')
+        self._upgraded_file = os.path.join(self.env.path, 'log', 'upgraded')
+
+    def environment_created(self):
+        create_file(self._created_file)
+
+    def environment_needs_upgrade(self):
+        return not os.path.exists(self._upgraded_file)
+
+    def upgrade_environment(self):
+        create_file(self._upgraded_file)
+"""
+
+
 class SystemInfoProviderTestCase(unittest.TestCase):
 
     system_info_providers = []
@@ -465,6 +774,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoTestCase))
+    suite.addTest(unittest.makeSuite(ConvertDatabaseTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
     return suite
 

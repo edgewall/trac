@@ -13,7 +13,7 @@
 
 import os
 
-from trac.upgrades import backup_config_file
+from trac.util import backup_config_file
 
 
 def do_upgrade(env, version, cursor):

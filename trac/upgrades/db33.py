@@ -12,7 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 from trac.ticket.default_workflow import get_workflow_config
-from trac.upgrades import backup_config_file
+from trac.util import backup_config_file
 
 new_actions = {
     'create': {

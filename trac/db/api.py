@@ -146,6 +146,11 @@ class ConnectionBase(object):
         pass
 
     @abstractmethod
+    def get_sequence_names(self):
+        """Returns a list of the sequence names."""
+        pass
+
+    @abstractmethod
     def get_table_names(self):
         """Returns a list of the table names."""
         pass
@@ -429,6 +434,14 @@ class DatabaseManager(Component):
 
     def get_exceptions(self):
         return self.get_connector()[0].get_exceptions()
+
+    def get_sequence_names(self):
+        """Returns a list of the sequence names.
+
+        :since: 1.3.2
+        """
+        with self.env.db_query as db:
+            return db.get_sequence_names()
 
     def get_table_names(self):
         """Returns a list of the table names.

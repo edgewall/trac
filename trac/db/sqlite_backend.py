@@ -217,7 +217,7 @@ class SQLiteConnector(Component):
                                  timeout=int(params.get('timeout', 10000)))
             with closing(cnx.cursor()) as cursor:
                 _set_journal_mode(cursor, params.get('journal_mode'))
-                _set_synchronous(cursor, params.get('synchronous'))
+                set_synchronous(cursor, params.get('synchronous'))
                 insert_schema(cursor, schema)
             cnx.isolation_level = 'DEFERRED'
         else:
@@ -329,7 +329,7 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
         with closing(cnx.cursor()) as cursor:
             _set_journal_mode(cursor, params.get('journal_mode'))
-            _set_synchronous(cursor, params.get('synchronous'))
+            set_synchronous(cursor, params.get('synchronous'))
         cnx.isolation_level = 'DEFERRED'
         ConnectionWrapper.__init__(self, cnx, log)
 
@@ -396,6 +396,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid
+
+    def get_sequence_names(self):
+        return []
 
     def get_table_names(self):
         rows = self.execute("""
@@ -494,7 +497,7 @@ def _set_journal_mode(cursor, value):
                           value=value, version=sqlite_version_string))
 
 
-def _set_synchronous(cursor, value):
+def set_synchronous(cursor, value):
     if not value:
         return
     if value.isdigit():

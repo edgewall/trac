@@ -11,18 +11,4 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-import shutil
-
-from trac.util import create_unique_file
-from trac.util.text import exception_to_unicode
-
-
-def backup_config_file(env, suffix):
-    try:
-        backup, f = create_unique_file(env.config.filename + suffix)
-        f.close()
-        shutil.copyfile(env.config.filename, backup)
-        env.log.info("Saved backup of configuration file in %s", backup)
-    except IOError as e:
-        env.log.warning("Couldn't save backup of configuration file (%s)",
-                        exception_to_unicode(e))
+from trac.util import backup_config_file

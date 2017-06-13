@@ -376,6 +376,16 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
                        (self.quote(self._sequence_name(table, column)),))
         return cursor.fetchone()[0]
 
+    def get_sequence_names(self):
+        seqs = [name[:-len('_id_seq')] for name, in self.execute("""
+                SELECT c.relname
+                FROM pg_class c
+                INNER JOIN pg_namespace n ON c.relnamespace = n.oid
+                WHERE n.nspname = ANY (current_schemas(false))
+                AND c.relkind='S' AND c.relname LIKE %s ESCAPE '!'
+                """, ('%!_id!_seq',))]
+        return sorted(name for name in seqs if name in self.get_table_names())
+
     def get_table_names(self):
         rows = self.execute("""
             SELECT table_name FROM information_schema.tables
