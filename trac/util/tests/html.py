@@ -19,7 +19,7 @@ from trac.core import TracError
 from trac.util import html
 from trac.util.html import (
     Element, FormTokenInjector, Fragment, HTML, Markup, TracHTMLSanitizer,
-    escape, find_element, genshi, tag, to_fragment, xml
+    escape, find_element, genshi, is_safe_origin, tag, to_fragment, xml
 )
 from trac.util.translation import gettext, tgettext
 
@@ -116,9 +116,11 @@ class FormTokenInjectorTestCase(unittest.TestCase):
 class TracHTMLSanitizerTestCase(unittest.TestCase):
 
     safe_schemes = ('http', 'data')
+    safe_origins = ('data:', 'http://example.net', 'https://example.org/')
 
     def sanitize(self, html):
-        sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes)
+        sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes,
+                                      safe_origins=self.safe_origins)
         return unicode(sanitizer.sanitize(html))
 
     def test_input_type_password(self):
@@ -244,6 +246,8 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
 
         test(u'<div>x</div>',
              u'<div style="background:url(http://example.org/login)">x</div>')
+        test(u'<div style="background:url(http://example.net/1.png)">x</div>',
+             u'<div style="background:url(http://example.net/1.png)">x</div>')
         test(u'<div style="background:url(data:image/png,...)">x</div>',
              u'<div style="background:url(data:image/png,...)">x</div>')
         test(u'<div>x</div>',
@@ -259,7 +263,8 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
 if genshi:
     class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCase):
         def sanitize(self, html):
-            sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes)
+            sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes,
+                                          safe_origins=self.safe_origins)
             return unicode(HTML(html, encoding='utf-8') | sanitizer)
 
 
@@ -274,6 +279,63 @@ class FindElementTestCase(unittest.TestCase):
         self.assertIsNotNone(find_element(frag, tag='strong'))
         self.assertIsNone(find_element(frag, tag='input'))
         self.assertIsNone(find_element(frag, tag='textarea'))
+
+
+class IsSafeOriginTestCase(unittest.TestCase):
+
+    def test_schemes(self):
+        uris = ['data:', 'https:']
+        self.assertTrue(is_safe_origin(uris, 'data:text/plain,blah'))
+        self.assertFalse(is_safe_origin(uris, 'http://127.0.0.1/'))
+        self.assertTrue(is_safe_origin(uris, 'https://127.0.0.1/'))
+        self.assertFalse(is_safe_origin(uris, 'blob:'))
+        self.assertTrue(is_safe_origin(uris, '/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'file.txt'))
+
+    def test_wild_card(self):
+        uris = ['*']
+        self.assertTrue(is_safe_origin(uris, 'data:text/plain,blah'))
+        self.assertTrue(is_safe_origin(uris, 'http://127.0.0.1/'))
+        self.assertTrue(is_safe_origin(uris, 'https://127.0.0.1/'))
+        self.assertTrue(is_safe_origin(uris, 'blob:'))
+        self.assertTrue(is_safe_origin(uris, '/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'file.txt'))
+
+    def test_hostname(self):
+        uris = ['https://example.org/', 'http://example.net']
+        self.assertFalse(is_safe_origin(uris, 'data:text/plain,blah'))
+        self.assertTrue(is_safe_origin(uris, 'https://example.org'))
+        self.assertTrue(is_safe_origin(uris, 'https://example.org/'))
+        self.assertTrue(is_safe_origin(uris, 'https://example.org/path/'))
+        self.assertTrue(is_safe_origin(uris, 'http://example.net'))
+        self.assertTrue(is_safe_origin(uris, 'http://example.net/'))
+        self.assertTrue(is_safe_origin(uris, 'http://example.net/path'))
+        self.assertFalse(is_safe_origin(uris, 'https://example.com'))
+        self.assertFalse(is_safe_origin(uris, 'blob:'))
+        self.assertTrue(is_safe_origin(uris, '/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'file.txt'))
+
+    def test_path(self):
+        uris = ['https://example.org/path/to', 'http://example.net/path/to/']
+        self.assertFalse(is_safe_origin(uris, 'https://example.org'))
+        self.assertFalse(is_safe_origin(uris, 'https://example.org/'))
+        self.assertFalse(is_safe_origin(uris, 'https://example.org/path'))
+        self.assertFalse(is_safe_origin(uris, 'https://example.org/path/'))
+        self.assertTrue(is_safe_origin(uris, 'https://example.org/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'https://example.org/path/to/'))
+        self.assertTrue(is_safe_origin(
+            uris, 'https://example.org/path/to/image.png'))
+        self.assertFalse(is_safe_origin(uris, 'http://example.net'))
+        self.assertFalse(is_safe_origin(uris, 'http://example.net/'))
+        self.assertFalse(is_safe_origin(uris, 'http://example.net/path'))
+        self.assertFalse(is_safe_origin(uris, 'http://example.net/path/'))
+        self.assertFalse(is_safe_origin(uris, 'http://example.net/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'http://example.net/path/to/'))
+        self.assertTrue(is_safe_origin(
+            uris, 'http://example.net/path/to/image.png'))
+        self.assertFalse(is_safe_origin(uris, 'blob:'))
+        self.assertTrue(is_safe_origin(uris, '/path/to'))
+        self.assertTrue(is_safe_origin(uris, 'file.txt'))
 
 
 class ToFragmentTestCase(unittest.TestCase):
@@ -409,6 +471,7 @@ def test_suite():
     if genshi:
         suite.addTest(unittest.makeSuite(TracHTMLSanitizerLegacyGenshiTestCase))
     suite.addTest(unittest.makeSuite(FindElementTestCase))
+    suite.addTest(unittest.makeSuite(IsSafeOriginTestCase))
     suite.addTest(unittest.makeSuite(ToFragmentTestCase))
     return suite
 

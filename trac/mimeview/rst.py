@@ -270,8 +270,7 @@ class ReStructuredTextRenderer(Component):
             def visit_image(self, node):
                 html4css1.HTMLTranslator.visit_image(self, node)
                 uri = node.attributes.get('uri')
-                if uri and (':' in uri and not uri.startswith('data:') or
-                            uri.startswith('//')):
+                if not wikisys.is_safe_origin(uri, context.req):
                     self.body[-1] = self.body[-1].replace(
                         '<img ', '<img crossorigin="anonymous" ')
             def visit_reference(self, node):

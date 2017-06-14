@@ -22,7 +22,7 @@ from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
 from trac.resource import IResourceManager
-from trac.util.html import tag
+from trac.util.html import is_safe_origin, tag
 from trac.util.text import unquote_label
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser
@@ -196,7 +196,6 @@ class IWikiSyntaxProvider(Interface):
         for the link.
         """
 
-
 def parse_args(args, strict=True):
     """Utility for parsing macro "content" and splitting them into arguments.
 
@@ -282,6 +281,15 @@ class WikiSystem(Component):
         external links even if `[wiki] render_unsafe_content` is `false`.
         """)
 
+    safe_origins = ListOption('wiki', 'safe_origins',
+        'data:',
+        doc="""List of URIs considered "safe cross-origin", that will be
+        rendered as `img` element without `crossorigin="anonymous"` attribute
+        or used in `url()` of inline style attribute even if
+        `[wiki] render_unsafe_content` is `false` (''since 1.0.15'').
+
+        To make any origins safe, specify "*" in the list.""")
+
     @cached
     def pages(self):
         """Return the names of all existing wiki pages."""
@@ -303,6 +311,9 @@ class WikiSystem(Component):
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
         return pagename.rstrip('/') in self.pages
+
+    def is_safe_origin(self, uri, req=None):
+        return is_safe_origin(self.safe_origins, uri, req=req)
 
     def resolve_relative_name(self, pagename, referrer):
         """Resolves a pagename relative to a referrer pagename."""

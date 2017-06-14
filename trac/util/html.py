@@ -58,8 +58,9 @@ from trac.core import TracError
 from trac.util.text import to_unicode
 
 __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
-           'find_element', 'html', 'plaintext', 'tag', 'to_fragment',
-           'stripentities', 'striptags', 'valid_html_bytes', 'unescape']
+           'find_element', 'html', 'is_safe_origin', 'plaintext', 'tag',
+           'to_fragment', 'stripentities', 'striptags', 'valid_html_bytes',
+           'unescape']
 
 
 def escape(str, quotes=True):
@@ -578,9 +579,11 @@ class TracHTMLSanitizer(object):
     URI_ATTRS = frozenset(['action', 'background', 'dynsrc', 'href', 'lowsrc',
         'src'])
 
+    SAFE_CROSS_ORIGINS = frozenset(['data:'])
+
     def __init__(self, safe_schemes=SAFE_SCHEMES, safe_css=SAFE_CSS,
                  safe_tags=SAFE_TAGS, safe_attrs=SAFE_ATTRS,
-                 uri_attrs=URI_ATTRS):
+                 uri_attrs=URI_ATTRS, safe_origins=SAFE_CROSS_ORIGINS):
         """Note: safe_schemes and safe_css have to remain the first
         parameters, for backward-compatibility purpose.
         """
@@ -594,6 +597,8 @@ class TracHTMLSanitizer(object):
         # The set of names of attributes that may contain URIs.
         self.safe_schemes = safe_schemes
         # The set of URI schemes that are considered safe.
+        self.safe_origins = safe_origins
+        # The set of URI cross origins that are considered safe.
 
     # IE6 <http://heideri.ch/jso/#80>
     _EXPRESSION_SEARCH = re.compile(
@@ -821,13 +826,8 @@ class TracHTMLSanitizer(object):
         re.UNICODE).sub
 
     def _is_safe_origin(self, uri):
-        if not self.is_safe_uri(uri):
-            return False
-        if uri.startswith('data:'):
-            return True
-        if ':' in uri or uri.startswith('//'):
-            return False
-        return True  # relative-URI
+        return (self.is_safe_uri(uri) and
+                is_safe_origin(self.safe_origins, uri))
 
     def _replace_unicode_escapes(self, text):
         def _repl(match):
@@ -1064,6 +1064,52 @@ def find_element(frag, attr=None, cls=None, tag=None):
             elt = find_element(child, attr, cls, tag)
             if elt is not None:
                 return elt
+
+
+def is_safe_origin(safe_origins, uri, req=None):
+    """Whether the given uri is a safe cross-origin."""
+    if not uri or ':' not in uri and not uri.startswith('//'):
+        return True
+    if any(safe == '*' for safe in safe_origins):
+        return True
+    if uri.startswith('//') and req:
+        uri = '%s:%s' % (req.scheme, uri)
+
+    normalize_re = re.compile(r'(?:[a-zA-Z][-a-zA-Z0-9+._]*:)?//[^/]+$')
+
+    def normalize_uri(uri):
+        if normalize_re.match(uri):
+            uri += '/'
+        return uri
+
+    uri = normalize_uri(uri)
+    for safe in safe_origins:
+        safe = normalize_uri(safe)
+        if safe == uri:
+            return True
+        if safe.endswith(':') and uri.startswith(safe):
+            return True
+        if uri.startswith(safe if safe.endswith('/') else safe + '/'):
+            return True
+    return False
+
+
+def expand_markup(stream, ctxt=None):
+    """A Genshi stream filter for expanding `genshi.Markup` events.
+
+    Note: Expansion may not be possible if the fragment is badly
+    formed, or partial.
+    """
+    for event in stream:
+        if isinstance(event[1], Markup):
+            try:
+                for subevent in HTML(event[1]):
+                    yield subevent
+            except ParseError:
+                yield event
+        else:
+            yield event
+
 
 def to_fragment(input):
     """Convert input to a `Fragment` object."""
