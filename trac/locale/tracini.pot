@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.14\n"
+"Project-Id-Version: Trac 1.0.15\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-03-22 09:56+0000\n"
+"POT-Creation-Date: 2017-06-14 03:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -167,15 +167,15 @@ msgstr ""
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:882
+#: tracopt/versioncontrol/git/git_fs.py:897
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:885
+#: tracopt/versioncontrol/git/git_fs.py:900
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:888
+#: tracopt/versioncontrol/git/git_fs.py:903
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -256,18 +256,18 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/attachment.py:444
+#: trac/attachment.py:445
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr ""
 
-#: trac/attachment.py:447
+#: trac/attachment.py:448
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/attachment.py:452
+#: trac/attachment.py:453
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -1531,6 +1531,16 @@ msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`.\n"
 "(''since 0.11.8'')"
+msgstr ""
+
+#: trac/wiki/api.py:290
+msgid ""
+"List of URIs considered \"safe cross-origin\", that will be\n"
+"rendered as `img` element without `crossorigin=\"anonymous\"` attribute\n"
+"or used in `url()` of inline style attribute even if\n"
+"`[wiki] render_unsafe_content` is `false` (''since 1.0.15'').\n"
+"\n"
+"To make any origins safe, specify \"*\" in the list."
 msgstr ""
 
 #: trac/wiki/intertrac.py:35
