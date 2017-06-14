@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-03-22 09:56+0000\n"
+"POT-Creation-Date: 2017-06-14 03:51+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -21,7 +21,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -211,7 +211,7 @@ msgid ""
 msgstr "上にある<tt>(差分)</tt>リンクを使うと、個々の親との変更内容を見ることができます。"
 
 #: tracopt/versioncontrol/git/git_fs.py:462
-#: tracopt/versioncontrol/git/git_fs.py:694
+#: tracopt/versioncontrol/git/git_fs.py:709
 msgid "Internal error"
 msgstr "内部エラー"
 
@@ -220,11 +220,11 @@ msgstr "内部エラー"
 msgid "%(path)s does not appear to be a Git repository."
 msgstr "%(path)s は Git のリポジトリではないようです。"
 
-#: tracopt/versioncontrol/git/git_fs.py:569
+#: tracopt/versioncontrol/git/git_fs.py:574
 msgid "Not supported in git_fs"
 msgstr "git_fs ではサポートしていません"
 
-#: tracopt/versioncontrol/git/git_fs.py:677
+#: tracopt/versioncontrol/git/git_fs.py:692
 #, python-format
 msgid "Internal error (got unexpected object kind '%(kind)s')"
 msgstr "内部エラー (予期しないオブジェクト '%(kind)s')"
@@ -349,129 +349,129 @@ msgstr "%(prop)s プロパティ変更"
 msgid "About Trac"
 msgstr "Trac について"
 
-#: trac/attachment.py:170
+#: trac/attachment.py:171
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "添付ファイル '%(title)s' は存在しません。"
 
-#: trac/attachment.py:172
+#: trac/attachment.py:173
 msgid "Invalid Attachment"
 msgstr "不正な添付ファイル"
 
-#: trac/attachment.py:239
+#: trac/attachment.py:240
 msgid "Could not delete attachment"
 msgstr "添付ファイルを削除できません"
 
-#: trac/attachment.py:258
+#: trac/attachment.py:259
 #, python-format
 msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr "%(realm)s:%(id)s が正しくないため添付ファイル \"%(att)s\" を移動できません"
 
-#: trac/attachment.py:263
+#: trac/attachment.py:264
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr "添付ファイル \"%(att)s\" がすでに %(realm)s:%(id)s に存在しているため、添付ファイルを移動できません。"
 
-#: trac/attachment.py:282
+#: trac/attachment.py:283
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr "添付ファイル %(name)s を移動できませんでした"
 
-#: trac/attachment.py:315
+#: trac/attachment.py:316
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "%(parent)s がないので、添付ファイルを作成できません"
 
-#: trac/attachment.py:324
+#: trac/attachment.py:325
 #, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr "%(realm)s:%(id)s が正しくないため添付ファイル \"%(att)s\" を作成できません"
 
-#: trac/attachment.py:410
+#: trac/attachment.py:411
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "添付ファイル '%(filename)s' が見つかりません"
 
-#: trac/attachment.py:493
+#: trac/attachment.py:494
 msgid "Bad request"
 msgstr "不正なリクエスト"
 
-#: trac/attachment.py:496
+#: trac/attachment.py:497
 #, python-format
 msgid "%(realm)s is not a valid parent realm"
 msgstr "%(realm)s は親として有効なレルムではありません"
 
-#: trac/attachment.py:513
+#: trac/attachment.py:514
 #, python-format
 msgid "Parent resource %(parent)s doesn't exist"
 msgstr "親リソース %(parent)s は存在しません"
 
-#: trac/attachment.py:519
+#: trac/attachment.py:520
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "%(parent)s に戻る"
 
-#: trac/attachment.py:536 trac/ticket/batch.py:57 trac/ticket/report.py:169
+#: trac/attachment.py:537 trac/ticket/batch.py:57 trac/ticket/report.py:169
 #: trac/ticket/roadmap.py:723 trac/ticket/web_ui.py:553
 #: trac/ticket/web_ui.py:558 trac/web/api.py:744 trac/wiki/web_ui.py:172
 msgid "Invalid request arguments."
 msgstr "不正なリクエストパラメータです。"
 
-#: trac/attachment.py:627
+#: trac/attachment.py:628
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "%(attachment)s を %(resource)s に添付しました"
 
-#: trac/attachment.py:682
+#: trac/attachment.py:683
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "移動できなかった添付ファイル %(id)s"
 
-#: trac/attachment.py:690
+#: trac/attachment.py:691
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "%(parent)s の添付ファイル: '%(id)s'"
 
-#: trac/attachment.py:693
+#: trac/attachment.py:694
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "%(parent)s の添付ファイル"
 
 #: trac/admin/web_ui.py:479 trac/admin/web_ui.py:482 trac/admin/web_ui.py:486
-#: trac/attachment.py:713 trac/attachment.py:740
+#: trac/attachment.py:714 trac/attachment.py:741
 msgid "No file uploaded"
 msgstr "アップロードしたファイルはありません"
 
-#: trac/attachment.py:721
+#: trac/attachment.py:722
 msgid "Can't upload empty file"
 msgstr "空のファイルはアップロードできません"
 
-#: trac/attachment.py:726
+#: trac/attachment.py:727
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "添付ファイルの上限サイズ: %(num)s バイト"
 
-#: trac/attachment.py:727
+#: trac/attachment.py:728
 msgid "Upload failed"
 msgstr "アップロード失敗"
 
-#: trac/attachment.py:755
+#: trac/attachment.py:756
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "添付ファイル情報のフィールド %(field)s が不正です: %(message)s"
 
-#: trac/attachment.py:759
+#: trac/attachment.py:760
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "添付ファイルが不正です: %(message)s"
 
-#: trac/attachment.py:763
+#: trac/attachment.py:764
 msgid "Note: File must be selected again."
 msgstr "※ もう一度ファイルを選択してください。"
 
-#: trac/attachment.py:776
+#: trac/attachment.py:777
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -482,42 +482,42 @@ msgstr ""
 "を置き換える権限がありません。置き換えることができるのは自分で添付したファイルのみです。他の人が添付したファイルを置き換えるには "
 "ATTACHMENT_DELETE 権限が必要です。"
 
-#: trac/attachment.py:807
+#: trac/attachment.py:808
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (削除)"
 
-#: trac/attachment.py:821
+#: trac/attachment.py:822
 #, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
 msgstr "添付ファイルの合計の上限サイズ: %(num)s バイト"
 
-#: trac/attachment.py:822
+#: trac/attachment.py:823
 msgid "Download failed"
 msgstr "ダウンロード失敗"
 
-#: trac/attachment.py:905 trac/versioncontrol/web_ui/browser.py:709
+#: trac/attachment.py:920 trac/versioncontrol/web_ui/browser.py:709
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr "プレーンテキスト"
 
-#: trac/attachment.py:911 trac/versioncontrol/web_ui/browser.py:715
+#: trac/attachment.py:926 trac/versioncontrol/web_ui/browser.py:715
 msgid "Original Format"
 msgstr "オリジナルフォーマット"
 
-#: trac/attachment.py:953 trac/templates/list_of_attachments.html:29
+#: trac/attachment.py:968 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:93
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download"
 msgstr "ダウンロード"
 
-#: trac/attachment.py:1047
+#: trac/attachment.py:1062
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "'%(id)s' は正しい識別子ではありません"
 
-#: trac/attachment.py:1083 trac/templates/about.html:81
+#: trac/attachment.py:1098 trac/templates/about.html:81
 #: trac/templates/about.html:124 trac/templates/error.html:179
 #: trac/ticket/admin.py:203 trac/ticket/admin.py:401 trac/ticket/admin.py:571
 #: trac/ticket/templates/admin_components.html:88
@@ -530,28 +530,28 @@ msgstr "'%(id)s' は正しい識別子ではありません"
 msgid "Name"
 msgstr "名称"
 
-#: trac/attachment.py:1083
+#: trac/attachment.py:1098
 msgid "Size"
 msgstr "サイズ"
 
-#: trac/attachment.py:1083 trac/templates/history_view.html:40
+#: trac/attachment.py:1098 trac/templates/history_view.html:40
 #: trac/ticket/templates/ticket.html:370
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr "更新者"
 
-#: trac/attachment.py:1083 trac/templates/history_view.html:39
+#: trac/attachment.py:1098 trac/templates/history_view.html:39
 msgid "Date"
 msgstr "更新日時"
 
-#: trac/attachment.py:1084 trac/templates/attachment.html:102
+#: trac/attachment.py:1099 trac/templates/attachment.html:102
 #: trac/ticket/api.py:308 trac/ticket/api.py:543
 #: trac/ticket/templates/ticket.html:399
-#: trac/ticket/templates/ticket_box.html:107
+#: trac/ticket/templates/ticket_box.html:112
 msgid "Description"
 msgstr "詳細"
 
-#: trac/attachment.py:1107 trac/wiki/admin.py:107
+#: trac/attachment.py:1122 trac/wiki/admin.py:107
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "ファイル '%(name)s' が存在しています。"
@@ -1811,10 +1811,15 @@ msgstr "シンタックスハイライト"
 msgid "Your preferences have been saved."
 msgstr "個人設定を保存しました。"
 
-#: trac/mimeview/rst.py:124 trac/mimeview/rst.py:147
+#: trac/mimeview/rst.py:125 trac/mimeview/rst.py:148
 #, python-format
 msgid "%(link)s is not a valid TracLink"
 msgstr "%(link)s は有効な TracLink ではありません。"
+
+#: trac/mimeview/txtl.py:83 trac/wiki/formatter.py:230
+#, python-format
+msgid "HTML parsing error: %(message)s"
+msgstr "HTMLパースエラー: %(message)s"
 
 #: trac/prefs/templates/prefs.html:26 trac/prefs/web_ui.py:53
 msgid "Preferences"
@@ -2174,9 +2179,9 @@ msgstr ""
 
 #: trac/templates/about.html:58
 msgid ""
-"Copyright © 2003-2016\n"
+"Copyright © 2003-2017\n"
 "        [1:Edgewall Software]"
-msgstr "Copyright © 2003-2016 [1:Edgewall Software]"
+msgstr "Copyright © 2003-2017 [1:Edgewall Software]"
 
 #: trac/templates/about.html:66
 msgid "System Information"
@@ -2295,7 +2300,7 @@ msgstr "添付ファイルの削除"
 
 #: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
-#: trac/util/tests/html.py:243 trac/util/tests/html.py:256
+#: trac/util/tests/html.py:325 trac/util/tests/html.py:338
 #: trac/util/text.py:654 trac/versioncontrol/templates/browser.html:199
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
@@ -3504,21 +3509,21 @@ msgstr[0] "%(num)dチケット: %(query)s"
 msgid "Error executing TicketQuery macro"
 msgstr "TicketQuery マクロ実行時のエラー"
 
-#: trac/ticket/query.py:1456
+#: trac/ticket/query.py:1459
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "%(group)sごとのチケット完了ステータス"
 
-#: trac/ticket/query.py:1471
+#: trac/ticket/query.py:1474
 msgid "No results"
 msgstr "一致するものがありません"
 
-#: trac/ticket/query.py:1489
+#: trac/ticket/query.py:1492
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(query)s に %(groupvalue)s %(groupname)s のチケットが該当"
 
-#: trac/ticket/query.py:1513
+#: trac/ticket/query.py:1516
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s のチケット:"
@@ -4493,7 +4498,7 @@ msgstr "チケットの表示"
 msgid "(this ticket)"
 msgstr "(このチケット)"
 
-#: trac/ticket/templates/query_results.html:122
+#: trac/ticket/templates/query_results.html:130
 msgid "(more results for this group on next page)"
 msgstr "(次のページにこのグループの続きがあります)"
 
@@ -4590,7 +4595,7 @@ msgstr "タイトル"
 
 #: trac/ticket/templates/report_list.html:99
 #: trac/ticket/templates/ticket_change.html:75
-#: trac/wiki/templates/wiki_edit.html:160
+#: trac/wiki/templates/wiki_edit.html:161
 msgid "Edit"
 msgstr "編集"
 
@@ -4770,8 +4775,8 @@ msgstr "チケットの詳細を表示"
 
 #: trac/ticket/templates/ticket.html:407
 #: trac/ticket/templates/ticket_change.html:124
-#: trac/wiki/templates/wiki_edit.html:102
-#: trac/wiki/templates/wiki_edit.html:164
+#: trac/wiki/templates/wiki_edit.html:103
+#: trac/wiki/templates/wiki_edit.html:165
 #: trac/wiki/templates/wiki_edit_form.html:75
 msgid "Preview"
 msgstr "プレビュー"
@@ -4823,17 +4828,17 @@ msgstr "報告者:"
 msgid "Owned by:"
 msgstr "担当者:"
 
-#: trac/ticket/templates/ticket_box.html:111
+#: trac/ticket/templates/ticket_box.html:116
 #, python-format
 msgid "(last modified by %(author)s)"
 msgstr "(最終更新者 %(author)s)"
 
-#: trac/ticket/templates/ticket_box.html:120
+#: trac/ticket/templates/ticket_box.html:125
 #: trac/ticket/templates/ticket_change.html:82
 msgid "Reply"
 msgstr "返信"
 
-#: trac/ticket/templates/ticket_box.html:120
+#: trac/ticket/templates/ticket_box.html:125
 msgid "Reply, quoting this description"
 msgstr "説明文を引用してコメントする"
 
@@ -4966,12 +4971,12 @@ msgstr "前の期間"
 msgid "Next Period"
 msgstr "次の期間"
 
-#: trac/timeline/web_ui.py:294 trac/web/chrome.py:951
+#: trac/timeline/web_ui.py:294 trac/web/chrome.py:952
 #, python-format
 msgid "at %(iso8601)s"
 msgstr "%(iso8601)s"
 
-#: trac/timeline/web_ui.py:298 trac/web/chrome.py:955
+#: trac/timeline/web_ui.py:298 trac/web/chrome.py:956
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "%(date)s %(time)s"
@@ -4981,7 +4986,7 @@ msgstr "%(date)s %(time)s"
 msgid "See timeline %(relativetime)s ago"
 msgstr "タイムラインで%(relativetime)s前を見る"
 
-#: trac/timeline/web_ui.py:302 trac/web/chrome.py:956 trac/web/chrome.py:958
+#: trac/timeline/web_ui.py:302 trac/web/chrome.py:957 trac/web/chrome.py:959
 #, python-format
 msgid "%(relativetime)s ago"
 msgstr "%(relativetime)s前"
@@ -5597,7 +5602,7 @@ msgid "No files found"
 msgstr "一致するものが見つかりませんでした。"
 
 #: trac/versioncontrol/templates/browser.html:138
-#: trac/wiki/templates/wiki_edit.html:150 trac/wiki/templates/wiki_view.html:45
+#: trac/wiki/templates/wiki_edit.html:151 trac/wiki/templates/wiki_view.html:45
 msgid "Revision info"
 msgstr "リビジョン情報"
 
@@ -6450,21 +6455,21 @@ msgstr "すでに %(user)s としてログイン中です。"
 msgid "Invalid chrome path %(path)s."
 msgstr "Invalid chrome path %(path)s は正しくない chrome パスです。"
 
-#: trac/web/chrome.py:818
+#: trac/web/chrome.py:819
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Navigation contributor \"%(name)s\" でエラー"
 
-#: trac/web/chrome.py:1130
+#: trac/web/chrome.py:1131
 msgid "(unknown template location)"
 msgstr "(ファイル名不明)"
 
-#: trac/web/chrome.py:1131
+#: trac/web/chrome.py:1132
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
 
-#: trac/web/chrome.py:1235 trac/web/chrome.py:1243
+#: trac/web/chrome.py:1236 trac/web/chrome.py:1244
 msgid "anonymous"
 msgstr "匿名"
 
@@ -6656,50 +6661,45 @@ msgstr "削除されたページ"
 msgid "'%(name)s' is not a directory"
 msgstr "'%(name)s' はディレクトリではありません。"
 
-#: trac/wiki/api.py:435
+#: trac/wiki/api.py:447
 msgid "no permission to view this wiki page"
 msgstr "このページを参照する権限がありません"
 
-#: trac/wiki/formatter.py:193
+#: trac/wiki/formatter.py:195
 #, python-format
 msgid "No macro or processor named '%(name)s' found"
 msgstr "'%(name)s' という名前のマクロまたはプロセッサはありません。"
 
-#: trac/wiki/formatter.py:228
-#, python-format
-msgid "HTML parsing error: %(message)s"
-msgstr "HTMLパースエラー: %(message)s"
-
-#: trac/wiki/formatter.py:232
+#: trac/wiki/formatter.py:234
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
 msgstr "エラー: htmlcomment ブロック内では文字列 \"--\" は許可していません"
 
-#: trac/wiki/formatter.py:310
+#: trac/wiki/formatter.py:312
 #, python-format
 msgid "!#%(name)s must contain at most one table"
 msgstr "!#%(name)s には2つ以上のテーブルを含められません"
 
-#: trac/wiki/formatter.py:314
+#: trac/wiki/formatter.py:316
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr "!#%(name)s には少なくとも1つテーブルのセルがないといけません"
 
-#: trac/wiki/formatter.py:359
+#: trac/wiki/formatter.py:361
 #, python-format
 msgid "Error: Failed to load processor %(name)s"
 msgstr "エラー: プロセッサ %(name)s のロードに失敗しました"
 
-#: trac/wiki/formatter.py:711 trac/wiki/interwiki.py:107
+#: trac/wiki/formatter.py:713 trac/wiki/interwiki.py:107
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(name)s の %(target)s"
 
-#: trac/wiki/formatter.py:799
+#: trac/wiki/formatter.py:802
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr "エラー: マクロ %(name)s(%(args)s) が失敗しました"
 
-#: trac/wiki/formatter.py:1192
+#: trac/wiki/formatter.py:1196
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr "エラー: プロセッサ %(name)s が失敗しました"
@@ -7027,7 +7027,7 @@ msgstr "ファイルが指定されていません"
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr "画像 \"%(id)s\" は %(parent)s に添付してありません"
 
-#: trac/wiki/macros.py:696
+#: trac/wiki/macros.py:699
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7045,20 +7045,20 @@ msgstr ""
 "\n"
 "※ このマクロは mod_python の `PythonOptimize` オプションを有効にしているとマクロのドキュメントを表示できません。"
 
-#: trac/wiki/macros.py:725
+#: trac/wiki/macros.py:728
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "エラー: マクロ %(name)s の詳細説明が取得できません"
 
-#: trac/wiki/macros.py:748
+#: trac/wiki/macros.py:751
 msgid "Aliases:"
 msgstr "エイリアス:"
 
-#: trac/wiki/macros.py:751
+#: trac/wiki/macros.py:754
 msgid "Sorry, no documentation found"
 msgstr "ドキュメントが見つかりません"
 
-#: trac/wiki/macros.py:758
+#: trac/wiki/macros.py:761
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7072,11 +7072,11 @@ msgstr ""
 "これは通常 TracIni "
 "ページで使います。引数を指定するとセクションとオプションの名前のフィルタになり、そのフィルタの内容で始まるセクションとオプションのみを出力します。"
 
-#: trac/wiki/macros.py:800
+#: trac/wiki/macros.py:803
 msgid "(no default)"
 msgstr "(デフォルトなし)"
 
-#: trac/wiki/macros.py:820
+#: trac/wiki/macros.py:823
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7087,11 +7087,11 @@ msgstr ""
 "\n"
 "引数を指定すると mime-type をフィルタリングすることができます。"
 
-#: trac/wiki/macros.py:843
+#: trac/wiki/macros.py:846
 msgid "MIME Types"
 msgstr "MIME タイプ"
 
-#: trac/wiki/macros.py:857
+#: trac/wiki/macros.py:860
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -7107,11 +7107,11 @@ msgstr ""
 "目次は Trac* と WikiFormatting ページを含んでいてカスタマイズできません。\n"
 "目次のカスタマイズには [https://trac-hacks.org/wiki/TocMacro TocMacro] を参照してください。"
 
-#: trac/wiki/macros.py:904
+#: trac/wiki/macros.py:907
 msgid "Table of Contents"
 msgstr "目次"
 
-#: trac/wiki/macros.py:918
+#: trac/wiki/macros.py:921
 #, python-format
 msgid "Invalid macro argument %(expr)s"
 msgstr "%(expr)s は不正なマクロの引数です"
@@ -7393,34 +7393,34 @@ msgstr "バージョン %(old_version)d から %(version)d を削除"
 msgid "Delete version %(version)d"
 msgstr "バージョン %(version)d を削除"
 
-#: trac/wiki/templates/wiki_edit.html:101
+#: trac/wiki/templates/wiki_edit.html:102
 msgid "See the diffs"
 msgstr "差分を見る"
 
-#: trac/wiki/templates/wiki_edit.html:101
+#: trac/wiki/templates/wiki_edit.html:102
 msgid "Review"
 msgstr "確認"
 
-#: trac/wiki/templates/wiki_edit.html:102
+#: trac/wiki/templates/wiki_edit.html:103
 msgid "See the preview"
 msgstr "プレビューを見る"
 
-#: trac/wiki/templates/wiki_edit.html:105
+#: trac/wiki/templates/wiki_edit.html:106
 #, python-format
 msgid "Editing %(name)s"
 msgstr "%(name)s の編集"
 
-#: trac/wiki/templates/wiki_edit.html:133
+#: trac/wiki/templates/wiki_edit.html:134
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr "このページは編集開始以降に誰かが更新を行っているため、保存することができません。"
 
-#: trac/wiki/templates/wiki_edit.html:140
+#: trac/wiki/templates/wiki_edit.html:141
 msgid "Someone else has modified that page since you started your edits."
 msgstr "このページは編集開始以降に誰かが更新を行っています。"
 
-#: trac/wiki/templates/wiki_edit.html:141
+#: trac/wiki/templates/wiki_edit.html:142
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "            (highlighted below as deletions)."
@@ -7428,7 +7428,7 @@ msgstr ""
 "[1:このまま保存を行うと、それらの修正を失うことになります]\n"
 "(削除になるところを以下で強調しています)。"
 
-#: trac/wiki/templates/wiki_edit.html:143
+#: trac/wiki/templates/wiki_edit.html:144
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "            own changes. [1:]\n"
@@ -7439,31 +7439,31 @@ msgid ""
 "            again."
 msgstr "表示された変更内容を確認して、両者の変更内容を手動でマージして下さい。[1:]もし何を行なっているのかよくわからない場合は[2:取り消し]ボタンを押して(変更内容はなくなります)、再度最新のバージョンを編集し直して下さい。"
 
-#: trac/wiki/templates/wiki_edit.html:151
+#: trac/wiki/templates/wiki_edit.html:152
 #, python-format
 msgid ""
 "Change information for future version %(version)s (modified by "
 "%(author)s):"
 msgstr "新しいバージョンでの更新情報: バージョン %(version)s (更新者 %(author)s):"
 
-#: trac/wiki/templates/wiki_edit.html:160
+#: trac/wiki/templates/wiki_edit.html:161
 msgid "Go to the editor"
 msgstr "編集領域に移動"
 
-#: trac/wiki/templates/wiki_edit.html:163
+#: trac/wiki/templates/wiki_edit.html:164
 #: trac/wiki/templates/wiki_edit_form.html:81
 msgid "Review Changes"
 msgstr "変更を確認"
 
-#: trac/wiki/templates/wiki_edit.html:165
+#: trac/wiki/templates/wiki_edit.html:166
 msgid "No changes"
 msgstr "変更なし"
 
-#: trac/wiki/templates/wiki_edit.html:176
+#: trac/wiki/templates/wiki_edit.html:177
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr "保存、プレビュー、確認、取り消しボタンに移動"
 
-#: trac/wiki/templates/wiki_edit.html:177
+#: trac/wiki/templates/wiki_edit.html:178
 msgid "Actions"
 msgstr "アクション"
 

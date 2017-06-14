@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-03-22 09:56+0000\n"
+"POT-Creation-Date: 2017-06-14 03:51+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -212,15 +212,15 @@ msgstr "git リポジトリ中のパスに対する文字エンコーディン�
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:882
+#: tracopt/versioncontrol/git/git_fs.py:897
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:885
+#: tracopt/versioncontrol/git/git_fs.py:900
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:888
+#: tracopt/versioncontrol/git/git_fs.py:903
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -347,11 +347,11 @@ msgstr ""
 "\n"
 "(''0.11 以降'')"
 
-#: trac/attachment.py:444
+#: trac/attachment.py:445
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr "添付ファイルの上限サイズを指定します (バイト単位)"
 
-#: trac/attachment.py:447
+#: trac/attachment.py:448
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as `.zip`.\n"
@@ -360,7 +360,7 @@ msgstr ""
 "`.zip` ダウンロードを許可する合計に対する上限サイズ (バイト単位) です。-1 を指定した場合は `.zip` "
 "でのダウンロード機能を無効にします。(''1.0 以降'')"
 
-#: trac/attachment.py:452
+#: trac/attachment.py:453
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -2040,8 +2040,23 @@ msgid ""
 "(''since 0.11.8'')"
 msgstr ""
 "「安全」とみなす URI スキームのリストを指定します。`[wiki] render_unsafe_content` が `false` "
-"の場合に、外部リンクとして表示します。\n"
+"の場合でも、外部リンクとして表示します。\n"
 "(''0.11.8 以降'')"
+
+#: trac/wiki/api.py:290
+msgid ""
+"List of URIs considered \"safe cross-origin\", that will be\n"
+"rendered as `img` element without `crossorigin=\"anonymous\"` attribute\n"
+"or used in `url()` of inline style attribute even if\n"
+"`[wiki] render_unsafe_content` is `false` (''since 1.0.15'').\n"
+"\n"
+"To make any origins safe, specify \"*\" in the list."
+msgstr ""
+"「安全なクロスオリジン」とみなす URI のリストを指定します。`[wiki] render_unsafe_content` が `false` "
+"の場合でも、`img` 要素を `crossorigin=\"anonymous\"` 属性なしで表示、またはインラインスタイル属性の "
+"`url()` で使用します。(''1.0.15 以降'')\n"
+"\n"
+"すべてのオリジンを安全とするには \"*\" を指定します。"
 
 #: trac/wiki/intertrac.py:35
 msgid ""
