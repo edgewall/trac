@@ -28,7 +28,8 @@ from trac.core import TracError
 from trac.util.text import to_unicode
 
 __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
-           'find_element', 'html', 'plaintext', 'to_fragment', 'unescape']
+           'find_element', 'html', 'is_safe_origin', 'plaintext',
+           'to_fragment', 'unescape']
 
 
 class TracHTMLSanitizer(HTMLSanitizer):
@@ -71,13 +72,16 @@ class TracHTMLSanitizer(HTMLSanitizer):
         'widows', 'width', 'word-spacing', 'z-index',
     ])
 
+    SAFE_CROSS_ORIGINS = frozenset(['data:'])
+
     def __init__(self, safe_schemes=HTMLSanitizer.SAFE_SCHEMES,
-                 safe_css=SAFE_CSS):
+                 safe_css=SAFE_CSS, safe_origins=SAFE_CROSS_ORIGINS):
         safe_attrs = HTMLSanitizer.SAFE_ATTRS | frozenset(['style'])
         safe_schemes = frozenset(safe_schemes)
         super(TracHTMLSanitizer, self).__init__(safe_attrs=safe_attrs,
                                                 safe_schemes=safe_schemes)
         self.safe_css = frozenset(safe_css)
+        self.safe_origins = frozenset(safe_origins)
 
     # IE6 <http://heideri.ch/jso/#80>
     _EXPRESSION_SEARCH = re.compile(
@@ -171,13 +175,8 @@ class TracHTMLSanitizer(HTMLSanitizer):
         re.UNICODE).sub
 
     def _is_safe_origin(self, uri):
-        if not self.is_safe_uri(uri):
-            return False
-        if uri.startswith('data:'):
-            return True
-        if ':' in uri or uri.startswith('//'):
-            return False
-        return True  # relative-URI
+        return (self.is_safe_uri(uri) and
+                is_safe_origin(self.safe_origins, uri))
 
     def _replace_unicode_escapes(self, text):
         def _repl(match):
@@ -342,6 +341,34 @@ def find_element(frag, attr=None, cls=None, tag=None):
             elt = find_element(child, attr, cls, tag)
             if elt is not None:
                 return elt
+
+
+def is_safe_origin(safe_origins, uri, req=None):
+    """Whether the given uri is a safe cross-origin."""
+    if not uri or ':' not in uri and not uri.startswith('//'):
+        return True
+    if any(safe == '*' for safe in safe_origins):
+        return True
+    if uri.startswith('//') and req:
+        uri = '%s:%s' % (req.scheme, uri)
+
+    normalize_re = re.compile(r'(?:[a-zA-Z][-a-zA-Z0-9+._]*:)?//[^/]+$')
+
+    def normalize_uri(uri):
+        if normalize_re.match(uri):
+            uri += '/'
+        return uri
+
+    uri = normalize_uri(uri)
+    for safe in safe_origins:
+        safe = normalize_uri(safe)
+        if safe == uri:
+            return True
+        if safe.endswith(':') and uri.startswith(safe):
+            return True
+        if uri.startswith(safe if safe.endswith('/') else safe + '/'):
+            return True
+    return False
 
 
 def expand_markup(stream, ctxt=None):
