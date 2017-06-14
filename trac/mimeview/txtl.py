@@ -66,7 +66,8 @@ class TextileRenderer(Component):
     @lazy
     def _sanitizer(self):
         wikisys = WikiSystem(self.env)
-        return TracHTMLSanitizer(safe_schemes=wikisys.safe_schemes)
+        return TracHTMLSanitizer(safe_schemes=wikisys.safe_schemes,
+                                 safe_origins=wikisys.safe_origins)
 
     def render(self, context, mimetype, content, filename=None, rev=None):
         output = render_textile(content)

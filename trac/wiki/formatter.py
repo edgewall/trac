@@ -161,7 +161,9 @@ class WikiProcessor(object):
                              'span': True, 'Span': True,
                              }.get(name)
 
-        self._sanitizer = TracHTMLSanitizer(formatter.wiki.safe_schemes)
+        self._sanitizer = TracHTMLSanitizer(
+            safe_schemes=formatter.wiki.safe_schemes,
+            safe_origins=formatter.wiki.safe_origins)
 
         self.processor = builtin_processors.get(name)
         if not self.processor:
