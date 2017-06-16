@@ -64,7 +64,11 @@ class VersionControlAdmin(Component):
                If synchronization gets interrupted, it can be resumed later
                using the `sync` command.
 
-               To synchronize all repositories, specify "*" as the repository.
+               <repos> must be the repository name, not the repository path.
+               Use `list` to see a list of repository names and associated
+               paths. To synchronize all repositories, specify "*" for 
+               <repos>. The default repository can be specified 
+               using "(default)".
                """,
                self._complete_repos, self._do_resync)
         yield ('repository sync', '<repos> [rev]',
