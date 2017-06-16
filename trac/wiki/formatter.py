@@ -244,7 +244,8 @@ class WikiProcessor(object):
         elt = getattr(tag, eltname)(**(self.args or {}))
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
-            sanitized_elt.attrib = self._sanitizer.sanitize_attrs(elt.attrib)
+            sanitized_elt.attrib = self._sanitizer.sanitize_attrs(eltname,
+                                                                  elt.attrib)
             elt = sanitized_elt
         elt.append(format_to(self.env, self.formatter.context, text))
         return elt

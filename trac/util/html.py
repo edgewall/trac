@@ -40,14 +40,15 @@ If Genshi is not installed, `genshi` and all related symbols will be
 try:
     import genshi
     from genshi import HTML
-    from genshi.core import Attrs, Stream, COMMENT, START, END, TEXT
+    from genshi.core import Attrs, QName, Stream, COMMENT, START, END, TEXT
     from genshi.input import ParseError
     def stream_to_unicode(stream):
         return Markup(stream.render('xhtml', encoding=None,
                                     strip_whitespace=False))
 except ImportError:
     genshi = stream_to_unicode = None
-    HTML = COMMENT = START = END = TEXT = Attrs = ParseError = Stream = None
+    HTML = COMMENT = START = END = TEXT = Attrs = QName = Stream = None
+    ParseError = None
 
 try:
     from babel.support import LazyProxy
@@ -664,8 +665,8 @@ class TracHTMLSanitizer(object):
                     if not self.is_safe_elem(tag, attrs):
                         waiting_for = tag
                         continue
-                    new_attrs = self.sanitize_attrs(dict(attrs)).iteritems()
-                    yield kind, (tag, Attrs(new_attrs)), pos
+                    new_attrs = self.sanitize_attrs(tag, dict(attrs))
+                    yield kind, (tag, Attrs(new_attrs.iteritems())), pos
 
                 elif kind is END:
                     tag = data
@@ -746,10 +747,11 @@ class TracHTMLSanitizer(object):
         chars = [char for char in uri.split(':', 1)[0] if char.isalnum()]
         return ''.join(chars).lower() in self.safe_schemes
 
-    def sanitize_attrs(self, attrs):
+    def sanitize_attrs(self, tag, attrs):
         """Remove potentially dangerous attributes and sanitize the style
         attribute .
 
+        :param tag: the tag name of the element
         :type attrs: dict corresponding to tag attributes
         :return: a dict containing only safe or sanitized attributes
         :rtype: dict
@@ -771,6 +773,12 @@ class TracHTMLSanitizer(object):
                     continue
                 value = '; '.join(decls)
             new_attrs[attr] = value
+        if tag == 'img' and 'src' in new_attrs and \
+                not self._is_safe_origin(new_attrs['src']):
+            attr = 'crossorigin'
+            if QName and isinstance(tag, QName):
+                attr = QName(attr)
+            new_attrs[attr] = 'anonymous'
         return new_attrs
 
     def sanitize_css(self, text):
@@ -967,18 +975,10 @@ class HTMLSanitization(HTMLTransform):
             self.waiting_for = tag
             return
 
-        new_attrs = self.sanitizer.sanitize_attrs(dict(attrs))
-        if tag == 'img':
-            src = new_attrs.get('src')
-            if src and (':' in src and not src.startswith('data:') or
-                        src.startswith('//')):
-                new_attrs['crossorigin'] = 'anonymous'
-        html_attrs = ' '.join(
-            '%s="%s"' % (name, escape(value))
-            for name, value in new_attrs.iteritems()
-        )
-        self.out.write('<%s%s%s>' %
-                       (tag, html_attrs and ' ' + html_attrs, startend))
+        new_attrs = self.sanitizer.sanitize_attrs(tag, dict(attrs))
+        html_attrs = ''.join(' %s="%s"' % (name, escape(value))
+                             for name, value in new_attrs.iteritems())
+        self.out.write('<%s%s%s>' % (tag, html_attrs, startend))
 
     def handle_starttag(self, tag, attrs):
         if not self.waiting_for:

@@ -244,10 +244,29 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         def test(expected, content):
             self.assertEqual(expected, self.sanitize(content))
 
+        test(u'<img src="data:image/png,...."/>',
+             u'<img src="data:image/png,...."/>')
+        test(u'<img src="http://example.org/login" crossorigin="anonymous"/>',
+             u'<img src="http://example.org/login"/>')
+        test(u'<img src="http://example.org/login" crossorigin="anonymous"/>',
+             u'<img src="http://example.org/login"'
+             u' crossorigin="use-credentials"/>')
+        test(u'<img src="http://example.net/bar.png"/>',
+             u'<img src="http://example.net/bar.png"/>')
+        test(u'<img src="http://example.net:443/qux.png"'
+             u' crossorigin="anonymous"/>',
+             u'<img src="http://example.net:443/qux.png"/>')
+        test(u'<img src="/path/foo.png"/>', u'<img src="/path/foo.png"/>')
+        test(u'<img src="../../bar.png"/>', u'<img src="../../bar.png"/>')
+        test(u'<img src="qux.png"/>', u'<img src="qux.png"/>')
+
         test(u'<div>x</div>',
              u'<div style="background:url(http://example.org/login)">x</div>')
         test(u'<div style="background:url(http://example.net/1.png)">x</div>',
              u'<div style="background:url(http://example.net/1.png)">x</div>')
+        test(u'<div>x</div>',
+             u'<div style="background:url(http://example.net:443/1.png)">'
+             u'x</div>')
         test(u'<div style="background:url(data:image/png,...)">x</div>',
              u'<div style="background:url(data:image/png,...)">x</div>')
         test(u'<div>x</div>',
