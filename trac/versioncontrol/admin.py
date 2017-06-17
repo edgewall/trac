@@ -25,6 +25,7 @@ from trac.util.text import breakable_path, normalize_whitespace, print_table, \
 from trac.util.translation import _, ngettext, tag_
 from trac.versioncontrol import DbRepositoryProvider, InvalidRepository, \
                                 NoSuchChangeset, RepositoryManager, is_default
+from trac.versioncontrol.cache import CachedRepository
 from trac.web.chrome import Chrome, add_notice, add_warning
 
 
@@ -150,6 +151,9 @@ class VersionControlAdmin(Component):
                     (repos.id,)):
                 printout(ngettext('%(num)s revision cached.',
                                   '%(num)s revisions cached.', num=cnt))
+            if not isinstance(repos, CachedRepository):
+                printout(_("%(reponame)s is not a cached repository.",
+                           reponame=repos.reponame or '(default)'))
         printout(_('Done.'))
 
     def _sync_feedback(self, rev):
