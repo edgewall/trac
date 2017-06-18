@@ -6,6 +6,14 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases
 
+=== 1.0.15
+
+//(June 16, 2017)//
+
+Trac 1.0.15 adds an option `[wiki]` `safe_origins`, for whitelisting URIs considered //safe cross-origin//.
+
+[trac:source:/tags/trac-1.0.15 View Tag] | [trac:milestone:1.0.15 View Milestone]
+
 === 1.0.14
 
 //(June 9, 2017)//
@@ -15,6 +23,11 @@ enhancements. The following are some highlights:
 
  - Improved Git performance ([trac:#12545], [trac:#12694]).
  - Reduced memory usage exporting a zip file ([trac:#12765]).
+ - Fixed batch modify not working for list fields
+   (regression in 1.0.11) ([trac:#12585]).
+ - Performance improvements to the Roadmap and Milestone 
+   admin pages when there are many milestones and tickets
+   ([trac:#12609]).
  - SECURITY: Possible XSS via reStructuredText link.
  - SECURITY: Injection of password prompt using Image
    macro or reStructuredText image.
