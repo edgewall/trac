@@ -433,11 +433,13 @@ class AttachmentModule(Component):
                 valid = False
                 if field:
                     add_warning(req,
-                        _("Attachment field %(field)s is invalid: %(message)s",
-                          field=field, message=message))
+                        tag_("Attachment field %(field)s is invalid: "
+                             "%(message)s", field=tag.strong(field),
+                             message=message))
                 else:
                     add_warning(req,
-                        _("Invalid attachment: %(message)s", message=message))
+                        tag_("Invalid attachment: %(message)s",
+                             message=message))
         if not valid:
             # Display the attach form with pre-existing data
             # NOTE: Local file path not known, file field cannot be repopulated
