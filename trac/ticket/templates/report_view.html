@@ -138,12 +138,12 @@ history and logs, available at http://trac.edgewall.org/.
       # endif
 
       # macro group_heading(value_for_group, row_group)
-      #   if value_for_group:
+      #   if value_for_group is not none:
       <h2 class="report-result">
         #   if row_group and '__grouplink__' in row_group[0]:
-        <a href="${row_group[0]['__grouplink__']}">${value_for_group}</a>
+        <a href="${row_group[0]['__grouplink__']}">${value_for_group or _("(empty)")}</a>
         #   else:
-        ${value_for_group}
+        ${value_for_group or _("(empty)")}
         #   endif
         #   set cnt = row_group|length
         <span class="numrows">
@@ -186,7 +186,7 @@ history and logs, available at http://trac.edgewall.org/.
         <tbody>
           <tr class="trac-group">
             <th colspan="100">
-              ${group_heading(value_for_group or _("(empty)"), row_group)}
+              ${group_heading(value_for_group, row_group)}
             </th>
           </tr>
           ${column_headers}
