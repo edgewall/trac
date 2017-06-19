@@ -33,14 +33,14 @@
      }|htmlattr}>
     <div class="date">
       # if ticket.exists:
-      <p>${tag_("Opened %(date)s", date=pretty_dateinfo(ticket.time))}</p>
+      <p>${tag_("Opened %(created)s", created=pretty_dateinfo(ticket.time))}</p>
       # endif
       # if closetime:
-      <p>${tag_("Closed %(date)s", date=pretty_dateinfo(closetime))}</p>
+      <p>${tag_("Closed %(closed)s", closed=pretty_dateinfo(closetime))}</p>
       # endif
       # if ticket.changetime != ticket.time and ticket.changetime != closetime:
       <p>${
-        tag_("Last modified %(date)s", date=pretty_dateinfo(ticket.changetime))
+        tag_("Last modified %(modified)s", modified=pretty_dateinfo(ticket.changetime))
         }</p>
       # endif
       # if not ticket.exists:
