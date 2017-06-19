@@ -285,6 +285,8 @@ else:
             if e.errno == errno.ENOENT:
                 with open(filename, 'ab'):
                     pass
+            else:
+                raise
 
 
 def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=False,
