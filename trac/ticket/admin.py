@@ -62,13 +62,14 @@ class TicketAdminPanel(Component):
         """
         try:
             self.config.save()
-            add_notice(req, _("Your changes have been saved."))
-        except Exception as e:
+        except EnvironmentError as e:
             self.log.error("Error writing to trac.ini: %s",
                            exception_to_unicode(e))
             add_warning(req, _("Error writing to trac.ini, make sure it is "
                                "writable by the web server. Your changes "
                                "have not been saved."))
+        else:
+            add_notice(req, _("Your changes have been saved."))
 
 
 class ComponentAdminPanel(TicketAdminPanel):
@@ -693,8 +694,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                 # Apply changes
                 elif req.args.get('apply'):
-                    changed = False
-
                     # Set default value
                     name = req.args.get('default')
                     if name and name != default:
@@ -702,17 +701,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                       self._type, name)
                         self.config.set('ticket', 'default_%s' % self._type,
                                         name)
-                        try:
-                            self.config.save()
-                            changed = True
-                        except Exception as e:
-                            self.log.error("Error writing to trac.ini: %s",
-                                           exception_to_unicode(e))
-                            add_warning(req,
-                                        _("Error writing to trac.ini, make "
-                                          "sure it is writable by the web "
-                                          "server. The default value has not "
-                                          "been saved."))
+                        self._save_config(req)
 
                     # Change enum values
                     order = dict([(str(int(key[6:])),
@@ -722,6 +711,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     values = dict([(val, True) for val in order.values()])
                     if len(order) != len(values):
                         raise TracError(_("Order numbers must be unique"))
+                    changed = False
                     with self.env.db_transaction:
                         for enum in self._enum_cls.select(self.env):
                             new_value = order[enum.value]
