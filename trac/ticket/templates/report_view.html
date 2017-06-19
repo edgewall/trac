@@ -101,8 +101,9 @@
         </tr>
       </py:def>
       <py:def function="group_heading(value_for_group, row_group)">
-        <h2 py:if="value_for_group" class="report-result">
-          <a py:strip="not row_group or '__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
+        <h2 py:if="value_for_group is not None" class="report-result">
+          <a py:strip="not row_group or '__grouplink__' not in row_group[0]"
+             href="${row_group[0]['__grouplink__']}">${value_for_group or _('(empty)')}</a>
           <span class="numrows" py:with="cnt = len(row_group)">
             (${ngettext('%(num)s match', '%(num)s matches', cnt) if cnt else _('No matches found.')})
           </span>
@@ -117,7 +118,7 @@
           <tbody py:if="groupindex">
             <tr class="trac-group">
               <th colspan="100">
-                ${group_heading(value_for_group or _('(empty)'), row_group)}
+                ${group_heading(value_for_group, row_group)}
               </th>
             </tr>
             ${column_headers()}
