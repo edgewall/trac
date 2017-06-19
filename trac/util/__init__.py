@@ -311,6 +311,8 @@ else:
             if e.errno == errno.ENOENT:
                 with open(filename, 'ab'):
                     pass
+            else:
+                raise
 
 
 def backup_config_file(env, suffix):

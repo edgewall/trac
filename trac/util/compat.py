@@ -17,6 +17,7 @@
 previous versions of Python from 2.6 onward.
 """
 
+import errno
 import math
 import os
 import subprocess
@@ -97,5 +98,8 @@ def wait_for_file_mtime_change(filename):
         while mtime == os.stat(filename).st_mtime:
             time.sleep(1e-3)
             touch_file(filename)
-    except OSError:
-        pass  # file doesn't exist (yet)
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            pass
+        else:
+            raise
