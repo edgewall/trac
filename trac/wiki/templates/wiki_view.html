@@ -91,18 +91,14 @@
             # with
             #   set href = href.wiki(page.name, action='diff',
                                      version=page.version)
-            #   set last_modification
-            #     if page.comment:
-            _('Version %(version)s by %(author)s: %(comment)s',
-              version=page.version,
-              author=format_author(page.author),
-              comment=page.comment)
-            #     else:
-            _('Version %(version)s by %(author)s',
-              version=page.version,
-              author=format_author(page.author))
-            #     endif
-            #   endset
+            #   set last_modification = (
+                  _('Version %(version)s by %(author)s: %(comment)s',
+                    version=page.version, author=format_author(page.author),
+                    comment=page.comment)
+                  if page.comment else
+                  _('Version %(version)s by %(author)s', version=page.version,
+                    author=format_author(page.author))
+                )
             #   set last_modified
             <a href="${href}" title="${last_modification}">${
               _("Last modified")}</a>
