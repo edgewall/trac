@@ -7,15 +7,72 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-02-02 15:20+0100\n"
+"POT-Creation-Date: 2017-05-26 15:18-0700\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Remy Blank <remy.blank@pobox.com>\n"
+"Language: en_US\n"
 "Language-Team: en_US <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:45
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"----\n"
+"%(description)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "(%(summary)s (cloned)"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:63
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"----\n"
+"%(description)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr ""
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -25,11 +82,11 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: trac/htdocs/js/diff.js:119
+#: trac/htdocs/js/diff.js:117
 msgid "Tabular"
 msgstr ""
 
-#: trac/htdocs/js/diff.js:125
+#: trac/htdocs/js/diff.js:123
 msgid "Unified"
 msgstr ""
 
@@ -41,29 +98,29 @@ msgstr ""
 msgid "Re-expand directory"
 msgstr ""
 
-#: trac/htdocs/js/expand_dir.js:121
+#: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr ""
 
-#: trac/htdocs/js/expand_dir.js:149
+#: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
 msgstr ""
 
-#: trac/htdocs/js/expand_dir.js:157
+#: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
 msgstr ""
 
-#: trac/htdocs/js/expand_dir.js:164
+#: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
 msgstr ""
 
-#: trac/htdocs/js/folding.js:62
+#: trac/htdocs/js/folding.js:61
 #, python-format
 msgid "Show %(title)s"
 msgstr ""
 
-#: trac/htdocs/js/folding.js:78
+#: trac/htdocs/js/folding.js:73
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr ""
@@ -76,7 +133,7 @@ msgstr ""
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr ""
 
@@ -101,128 +158,161 @@ msgid "Wk"
 msgstr ""
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr ""
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr ""
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
 msgstr ""
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr ""
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr ""
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr ""
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
 msgstr ""
 
-#: trac/htdocs/js/query.js:132
+#: trac/htdocs/js/query.js:156
 msgid "A filter already exists for that property"
 msgstr ""
 
-#: trac/htdocs/js/query.js:159
+#: trac/htdocs/js/query.js:183
 msgid "or"
 msgstr ""
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
+#: trac/htdocs/js/query.js:206 trac/htdocs/js/query.js:343
 msgid "yes"
 msgstr ""
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
+#: trac/htdocs/js/query.js:209 trac/htdocs/js/query.js:346
 msgid "no"
 msgstr ""
 
-#: trac/htdocs/js/query.js:196
+#: trac/htdocs/js/query.js:221
 msgid "between"
 msgstr ""
 
-#: trac/htdocs/js/query.js:198
+#: trac/htdocs/js/query.js:223
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/query.js:350
+#: trac/htdocs/js/query.js:379
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:360
+#: trac/htdocs/js/query.js:389
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:389
+#: trac/htdocs/js/query.js:423
 #, python-format
-msgid "Select ticket %(id)s for modification"
+msgid "Select ticket #%(id)s for modification"
 msgstr ""
 
-#: trac/htdocs/js/query.js:400
-msgid "Toggle selection of all tickets shown in this group"
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr ""
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
 msgstr ""
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr ""
 
-#: trac/htdocs/js/wikitoolbar.js:56
-msgid "Bold text: '''Example'''"
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
 msgstr ""
 
-#: trac/htdocs/js/wikitoolbar.js:59
-msgid "Italic text: ''Example''"
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
 msgstr ""
 
-#: trac/htdocs/js/wikitoolbar.js:62
-msgid "Heading: == Example =="
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
 msgstr ""
 
-#: trac/htdocs/js/wikitoolbar.js:65
-msgid "Link: [http://www.example.com/ Example]"
-msgstr ""
-
-#: trac/htdocs/js/wikitoolbar.js:68
-msgid "Code block: {{{ example }}}"
-msgstr ""
-
-#: trac/htdocs/js/wikitoolbar.js:71
-msgid "Horizontal rule: ----"
-msgstr ""
-
-#: trac/htdocs/js/wikitoolbar.js:74
-msgid "New paragraph"
-msgstr ""
-
-#: trac/htdocs/js/wikitoolbar.js:77
-msgid "Line break: [[BR]]"
-msgstr ""
-
-#: trac/htdocs/js/wikitoolbar.js:80
-msgid "Image: [[Image()]]"
-msgstr ""
-
-#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+#: trac/htdocs/js/wiki.js:73
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
 msgid "Link to this section"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:7
-msgid "Link to this diff"
-msgstr ""
-
-#: trac/wiki/templates/wiki_view.html:5
+#: trac/htdocs/js/wiki.js:75
 #, python-format
 msgid "Link to #%(id)s"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr ""
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr ""
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr ""
+
+#: trac/templates/error.html:14
+msgid "Switch to interactive view"
+msgstr ""
+
+#: trac/templates/error.html:19
+msgid "Switch to plain text view"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
 msgstr ""
 
