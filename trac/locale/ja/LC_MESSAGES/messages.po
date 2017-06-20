@@ -1429,6 +1429,11 @@ msgstr "絶対書式"
 msgid "Apply changes"
 msgstr "変更を適用"
 
+#: trac/admin/templates/admin_basics.html:166
+#, python-format
+msgid "%(note)s See %(page)s for help on configuration options."
+msgstr "%(note)s 設定について詳しくは %(page)s を参照してください。"
+
 #: trac/admin/templates/admin_logging.html:37
 #: trac/templates/environment_info.html:91
 msgid "Configuration"
@@ -1453,6 +1458,11 @@ msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr "相対パスを指定した場合は、プロジェクトの [1:log] ディレクトリに作成します ([2:%(dir)s])。"
+
+#: trac/admin/templates/admin_logging.html:97
+#, python-format
+msgid "%(note)s See %(page)s for help on configuring logging."
+msgstr "%(note)s ログの設定について詳しくは %(page)s を参照してください。"
 
 #: trac/admin/templates/admin_perms.html:36
 msgid "Manage Permissions and Groups"
@@ -1564,6 +1574,11 @@ msgstr ""
 "[1:ユーザ]や[2:グループ]には、大文字だけからなる名称は使用できません。\n"
 "大文字だけからなる名称は、権限名に予約されているためです。"
 
+#: trac/admin/templates/admin_perms.html:223
+#, python-format
+msgid "%(note)s See %(page)s for help on using permissions."
+msgstr "%(note)s 権限について詳しくは %(page)s を参照してください。"
+
 #: trac/admin/templates/admin_plugins.html:67
 msgid "Manage Plugins"
 msgstr "プラグインの管理"
@@ -1619,6 +1634,11 @@ msgstr "説明をすべて隠す"
 #: trac/admin/templates/admin_plugins.html:143
 msgid "Enabled"
 msgstr "有効"
+
+#: trac/admin/templates/admin_plugins.html:242
+#, python-format
+msgid "%(note)s See %(page)s for help on using plugins."
+msgstr "%(note)s プラグインについて詳しくは %(page)s を参照してください。"
 
 #: trac/db/api.py:396
 #, python-format
@@ -1870,6 +1890,11 @@ msgstr "%(from_)s または %(reply_to)s を設定してください。"
 msgid "SMTP Notification Error"
 msgstr "SMTP 通知処理エラー"
 
+#: trac/mimeview/templates/prefs_pygments.html:71
+#, python-format
+msgid "%(note)s See %(page)s for help on using syntax coloring."
+msgstr "%(note)s シンタックスハイライトについて詳しくは %(page)s を参照してください。"
+
 #: trac/notification/mail.py:90
 #, python-format
 msgid "Invalid email encoding setting: %(mime_encoding)s"
@@ -2012,6 +2037,11 @@ msgid ""
 "Example: The subscription rule [1:\"Notify: Any ticket changes\"] "
 "overrides the default rule [2:\"Never notify: I update a ticket\"]."
 msgstr "例: [1:「通知する: すべてのチケット更新時」]購読ルールはデフォルトルール[2:「通知しない: 自身によるチケット更新時」]を上書きします。"
+
+#: trac/notification/templates/prefs_notification.html:306
+#, python-format
+msgid "%(note)s See %(page)s for help on using notifications."
+msgstr "%(note)s 通知設定について詳しくは %(page)s を参照してください。"
 
 #: trac/notification/templates/prefs_notification.html:230
 #: trac/prefs/templates/prefs.html:48
@@ -2321,13 +2351,10 @@ msgstr "更新者 %(author)s — [1:%(date)s]"
 msgid "No matches found."
 msgstr "一致するものが見つかりませんでした。"
 
-#: trac/search/templates/search.html:81
-msgid ""
-"[1:Note:] See [2:TracSearch]\n"
-"        for help on searching."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracSearch] を参照してください。"
+#: trac/search/templates/search.html:109
+#, python-format
+msgid "%(note)s See %(page)s for help on searching."
+msgstr "%(note)s 検索について詳しくは %(page)s を参照してください。"
 
 #: trac/templates/about.html:27
 msgid "Trac: Integrated SCM & Project Management"
@@ -2867,6 +2894,10 @@ msgstr "[1:%(file)s][2:​] ([3:%(size)s]) - %(author)s が%(date)sに追加。"
 #: trac/ticket/templates/ticket.html:373
 msgid "Attachments"
 msgstr "添付ファイル"
+
+#: trac/templates/macros.html:46
+msgid "Note:"
+msgstr "※"
 
 #: trac/templates/list_of_attachments.html:46
 #: trac/templates/list_of_attachments.html:62
@@ -4381,6 +4412,13 @@ msgstr ""
 "項目を追加しない限り、このフィールドは、\n"
 "ユーザインターフェースには現れません。"
 
+#: trac/ticket/templates/admin_components.html:168
+#: trac/ticket/templates/admin_enums.html:167
+#: trac/ticket/templates/admin_versions.html:176
+#, python-format
+msgid "%(note)s See %(page)s for help on using the ticket system."
+msgstr "%(note)s チケットシステムについて詳しくは %(page)s を参照してください。"
+
 #: trac/ticket/templates/admin_enums.html:25
 #, python-format
 msgid "Manage %(label_plural)s"
@@ -4461,6 +4499,11 @@ msgstr "新規チケットと再設定に使用するデフォルトマイルス
 msgid "Clear defaults"
 msgstr "デフォルトをクリア"
 
+#: trac/ticket/templates/admin_milestones.html:172
+#, python-format
+msgid "%(note)s See %(page)s for help on using ticket milestones."
+msgstr "%(note)s マイルストーンについて詳しくは %(page)s を参照してください。"
+
 #: trac/ticket/templates/admin_versions.html:29
 msgid "Manage Versions"
 msgstr "バージョンの管理"
@@ -4494,9 +4537,10 @@ msgstr "一括更新フィールド"
 msgid "Add Field:"
 msgstr "フィールドの追加:"
 
-#: trac/ticket/templates/batch_modify.html:51
-msgid "[1:Note:] See [2:TracBatchModify] for help on using batch modify."
-msgstr "[1:※] 詳しい使い方は [2:TracBatchModify] を参照してください。"
+#: trac/ticket/templates/batch_modify.html:65
+#, python-format
+msgid "%(note)s See %(page)s for help on using batch modify."
+msgstr "%(note)s 一括更新について詳しくは %(page)s を参照してください。"
 
 #: trac/ticket/templates/batch_modify.html:58
 msgid "Change tickets"
@@ -4540,14 +4584,13 @@ msgstr "このマイルストーンに属するチケットはありません。
 msgid "Delete milestone"
 msgstr "マイルストーンを削除"
 
-#: trac/ticket/templates/milestone_delete.html:62
-msgid ""
-"[1:Note:] See\n"
-"      [2:TracRoadmap] for help on using\n"
-"      the roadmap."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracRoadmap] を参照してください。"
+#: trac/ticket/templates/milestone_delete.html:79
+#: trac/ticket/templates/milestone_edit.html:42
+#: trac/ticket/templates/milestone_view.html:127
+#: trac/ticket/templates/roadmap.html:122
+#, python-format
+msgid "%(note)s See %(page)s for help on using the roadmap."
+msgstr "%(note)s ロードマップについて詳しくは %(page)s を参照してください。"
 
 #: trac/ticket/templates/milestone_edit.html:21
 #: trac/ticket/templates/milestone_edit.html:29
@@ -4559,17 +4602,6 @@ msgstr "マイルストーン %(name)s の編集"
 #: trac/ticket/templates/milestone_edit.html:30
 msgid "New Milestone"
 msgstr "新規マイルストーン"
-
-#: trac/ticket/templates/milestone_edit.html:35
-#: trac/ticket/templates/milestone_view.html:104
-#: trac/ticket/templates/roadmap.html:90
-msgid ""
-"[1:Note:] See\n"
-"        [2:TracRoadmap] for help on using\n"
-"        the roadmap."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracRoadmap] を参照してください。"
 
 #: trac/ticket/templates/milestone_edit_form.html:46
 msgid "View Milestone:"
@@ -4711,13 +4743,10 @@ msgstr "このクエリに対応するレポート {%(id)s} を削除する"
 msgid "Delete query"
 msgstr "このクエリを削除"
 
-#: trac/ticket/templates/query.html:283
-msgid ""
-"[1:Note:] See [2:TracQuery]\n"
-"        for help on using queries."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracQuery] を参照してください。"
+#: trac/ticket/templates/query.html:399
+#, python-format
+msgid "%(note)s See %(page)s for help on using queries."
+msgstr "%(note)s カスタムクエリについて詳しくは %(page)s を参照してください。"
 
 #: trac/ticket/templates/query_results.html:34
 #, python-format
@@ -4765,14 +4794,13 @@ msgstr "このレポートを削除しますか?"
 msgid "Delete report"
 msgstr "このレポートを削除"
 
-#: trac/ticket/templates/report_delete.html:36
-#: trac/ticket/templates/report_edit.html:73
-#: trac/ticket/templates/report_list.html:126
-#: trac/ticket/templates/report_view.html:220
-msgid ""
-"[1:Note:]\n"
-"        See [2:TracReports] for help on using and creating reports."
-msgstr "[1:※] 詳しい使い方は [2:TracReports] を参照してください。"
+#: trac/ticket/templates/report_delete.html:42
+#: trac/ticket/templates/report_edit.html:123
+#: trac/ticket/templates/report_list.html:179
+#: trac/ticket/templates/report_view.html:298
+#, python-format
+msgid "%(note)s See %(page)s for help on using and creating reports."
+msgstr "%(note)s レポートの使用と作成について詳しくは %(page)s を参照してください。"
 
 #: trac/ticket/templates/report_edit.html:23
 msgid "Create New Report"
@@ -5044,12 +5072,10 @@ msgstr "プレビュー"
 msgid "Create ticket"
 msgstr "チケットの新規作成"
 
-#: trac/ticket/templates/ticket.html:398
-msgid ""
-"[1:Note:] See\n"
-"        [2:TracTickets] for help on using\n"
-"        tickets."
-msgstr "[1:※] 詳しい使い方は [2:TracTickets] を参照してください。"
+#: trac/ticket/templates/ticket.html:626
+#, python-format
+msgid "%(note)s See %(page)s for help on using tickets."
+msgstr "%(note)s チケットについて詳しくは %(page)s を参照してください。"
 
 #: trac/ticket/templates/ticket_box.html:31
 #, python-format
@@ -5295,11 +5321,10 @@ msgstr "昨日"
 msgid "[1:%(time)s] %(title)s by %(author)s"
 msgstr "[1:%(time)s] %(title)s (更新者 %(author)s)"
 
-#: trac/timeline/templates/timeline.html:69
-msgid ""
-"[1:Note:] See [2:TracTimeline]\n"
-"        for information about the timeline view."
-msgstr "[1:※] 詳しい使い方は [2:TracTimeline] を参照してください。"
+#: trac/timeline/templates/timeline.html:115
+#, python-format
+msgid "%(note)s See %(page)s for information about the timeline view."
+msgstr "%(note)s タイムラインについて詳しくは %(page)s を参照してください。"
 
 #: trac/upgrades/db28.py:72
 #, python-format
@@ -5817,6 +5842,11 @@ msgstr "%(repo)s のエイリアス"
 msgid "Refresh"
 msgstr "再読み込み"
 
+#: trac/versioncontrol/templates/admin_repositories.html:292
+#, python-format
+msgid "%(note)s See %(page)s for help on administering repositories."
+msgstr "%(note)s リポジトリ管理について詳しくは %(page)s を参照してください。"
+
 #: trac/versioncontrol/templates/browser.html:23
 #, python-format
 msgid "%(basename)s in %(dirname)s"
@@ -5940,11 +5970,10 @@ msgstr "変更箇所を見る..."
 msgid "Select paths and revs for Diff"
 msgstr "差分をとるパスとリビジョンを指定します"
 
-#: trac/versioncontrol/templates/browser.html:233
-msgid ""
-"[1:Note:] See [2:TracBrowser]\n"
-"        for help on using the repository browser."
-msgstr "[1:※] 詳しい使い方は [2:TracBrowser] を参照してください。"
+#: trac/versioncontrol/templates/browser.html:326
+#, python-format
+msgid "%(note)s See %(page)s for help on using the repository browser."
+msgstr "%(note)s リポジトリブラウザについて詳しくは %(page)s を参照してください。"
 
 #: trac/versioncontrol/templates/changeset.html:46
 #: trac/versioncontrol/templates/changeset.html:56
@@ -6154,13 +6183,10 @@ msgstr "コピー"
 msgid "moved"
 msgstr "移動"
 
-#: trac/versioncontrol/templates/changeset.html:222
-msgid ""
-"[1:Note:] See [2:TracChangeset]\n"
-"          for help on using the changeset viewer."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracChangeset] を参照してください。"
+#: trac/versioncontrol/templates/changeset_content.html:354
+#, python-format
+msgid "%(note)s See %(page)s for help on using the changeset viewer."
+msgstr "%(note)s チェンジセットについて詳しくは %(page)s を参照してください。"
 
 #: trac/versioncontrol/templates/diff_form.html:20
 #: trac/versioncontrol/templates/diff_form.html:43
@@ -6195,14 +6221,10 @@ msgstr ""
 "2つのパス指定欄では文字を入力すると合致する既存のディレクトリあるいはファイルの候補がポップアップ表示されます。\n"
 "その中から目的のものをクリックするか、カーソルキーで選択後にタブキーを押すことで選択することができます。"
 
-#: trac/versioncontrol/templates/diff_form.html:84
-msgid ""
-"[1:Note:] See\n"
-"        [2:TracChangeset]\n"
-"        for help on using the diff feature."
-msgstr ""
-"[1:※] 詳しい使い方は\n"
-"[2:TracChangeset] を参照してください。"
+#: trac/versioncontrol/templates/diff_form.html:97
+#, python-format
+msgid "%(note)s See %(page)s for help on using the diff feature."
+msgstr "%(note)s 差分機能について詳しくは %(page)s を参照してください。"
 
 #: trac/versioncontrol/templates/dir_entries.html:23
 msgid "View Directory"
@@ -6368,11 +6390,10 @@ msgstr "削除のチェンジセット [%(rev)s] を表示する"
 msgid "View changeset [%(rev)s] restricted to %(path)s"
 msgstr "%(path)s に限定してチェンジセット [%(rev)s] を表示する"
 
-#: trac/versioncontrol/templates/revisionlog.html:220
-msgid ""
-"[1:Note:] See [2:TracRevisionLog]\n"
-"        for help on using the revision log."
-msgstr "[1:※] 詳しい使い方は [2:TracRevisionLog] を参照してください。"
+#: trac/versioncontrol/templates/revisionlog.html:303
+#, python-format
+msgid "%(note)s See %(page)s for help on using the revision log."
+msgstr "%(note)s 更新履歴について詳しくは %(page)s を参照してください。"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
@@ -7720,6 +7741,11 @@ msgstr "このバージョンを削除"
 msgid "Delete page"
 msgstr "このページを削除"
 
+#: trac/wiki/templates/wiki_delete.html:174
+#, python-format
+msgid "%(note)s See %(page)s for help on deleting wiki pages."
+msgstr "%(note)s Wiki ページの削除について詳しくは %(page)s を参照してください。"
+
 #: trac/wiki/templates/wiki_diff.html:27
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
@@ -7804,6 +7830,12 @@ msgstr "保存、プレビュー、確認、取り消しボタンに移動"
 msgid "Actions"
 msgstr "アクション"
 
+#: trac/wiki/templates/wiki_edit.html:269
+#: trac/wiki/templates/wiki_view.html:245
+#, python-format
+msgid "%(note)s See %(page)s for help on using the wiki."
+msgstr "%(note)s Wiki について詳しくは %(page)s を参照してください。"
+
 #: trac/wiki/templates/wiki_edit_comment.html:16
 #, python-format
 msgid "Edit comment for version %(version)s of [1:%(name)s]"
@@ -7829,13 +7861,12 @@ msgstr "選択してプレビューボタンを押せば2カラムモード(編�
 msgid "Edit side-by-side"
 msgstr "並べて編集"
 
-#: trac/wiki/templates/wiki_edit_form.html:44
+#: trac/wiki/templates/wiki_edit_form.html:50
+#, python-format
 msgid ""
-"[1:Note:] See [2:WikiFormatting] and\n"
-"        [3:TracWiki] for help on editing wiki content."
-msgstr ""
-"[1:※] Wiki ページの編集方法については [2:WikiFormatting] および\n"
-"          [3:TracWiki] を参照して下さい。"
+"%(note)s See %(wikiformatting)s and %(page)s for help on editing wiki "
+"content."
+msgstr "%(note)s Wiki ページの編集について詳しくは %(page)s を参照してください。"
 
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "Change information"
