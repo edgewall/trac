@@ -1288,7 +1288,7 @@ def pathjoin(*args):
 
 def to_list(splittable, sep=','):
     """Split a string at `sep` and return a list without any empty items.
-    
+
     >>> to_list('1,2, 3,4 ')
     ['1', '2', '3', '4']
     >>> to_list('1;2; 3;4 ', sep=';')
