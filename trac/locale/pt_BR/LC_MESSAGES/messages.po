@@ -777,18 +777,18 @@ msgid "Error: %(msg)s"
 msgstr "Erro: %(msg)s"
 
 #: trac/admin/console.py:132
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Bem vindo ao trac-admin versão %(version)s\n"
 "Console de Administração Interativa do Trac \n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Digite:  '?' ou 'help' para ajuda nos comandos.\n"
 "        "
@@ -2195,11 +2195,12 @@ msgstr ""
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
+#, python-format
 msgid ""
-"Copyright © 2003-2013\n"
+"Copyright © %(year)s\n"
 "        [1:Edgewall Software]"
 msgstr ""
-"Copyright © 2003-2013\n"
+"Copyright © %(year)s\n"
 "        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
@@ -7574,18 +7575,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "As seguintes páginas tem um nome similar a esta, e podem estar "
 "relacionadas com ela:"
-
-#~ msgid ""
-#~ "Welcome to trac-admin %(version)s\n"
-#~ "Interactive Trac administration console.\n"
-#~ "Copyright (C) 2003-2012 Edgewall Software\n"
-#~ "\n"
-#~ "Type:  '?' or 'help' for help on commands.\n"
-#~ "        "
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Copyright © 2003-2012\n"
-#~ "        [1:Edgewall Software]"
-#~ msgstr ""
 

@@ -781,7 +781,7 @@ msgstr "Σφάλμα: %(msg)s"
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -2160,7 +2160,7 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2013\n"
+"Copyright © %(year)s\n"
 "        [1:Edgewall Software]"
 msgstr ""
 
@@ -7360,18 +7360,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Οι ακόλουθες σελίδες έχουν όνομα παρόμοιο με αυτήν και ίσως έχουν κάποια "
 "σχέση:"
-
-#~ msgid ""
-#~ "Welcome to trac-admin %(version)s\n"
-#~ "Interactive Trac administration console.\n"
-#~ "Copyright (C) 2003-2012 Edgewall Software\n"
-#~ "\n"
-#~ "Type:  '?' or 'help' for help on commands.\n"
-#~ "        "
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Copyright © 2003-2012\n"
-#~ "        [1:Edgewall Software]"
-#~ msgstr ""
 
