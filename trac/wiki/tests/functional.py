@@ -72,8 +72,8 @@ class TestWikiDelete(FunctionalTwillTestCaseSetup):
         tc.formvalue('delete', 'action', 'delete')
         tc.submit('delete_page')
         tc.find("Are you sure you want to completely delete this page?")
-        tc.find(r'Removing\s+<a href="/wiki/%s\?action=history&amp;'
-                r'version=2">all 2 versions</a>\s+of the page' % name)
+        tc.find(r'Removing all\s+<a href="/wiki/%s\?action=history&amp;'
+                r'version=2">2 versions</a>\s+of the page' % name)
         tc.notfind("The following attachments will also be deleted:")
         tc.submit('delete', 'delete-confirm')
         tc.find("The page %s has been deleted." % name)

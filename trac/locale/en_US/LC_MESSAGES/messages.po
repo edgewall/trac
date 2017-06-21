@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-21 03:23+0000\n"
+"POT-Creation-Date: 2017-06-21 07:28+0000\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language: en_US\n"
@@ -7595,8 +7595,8 @@ msgstr ""
 #: trac/wiki/templates/wiki_delete.html:136
 #, python-format
 msgid ""
-"Removing %(num_versions)s of the page, which was created %(created)s and "
-"last modified %(modified)s."
+"Removing all %(num_versions)s of the page, which was created %(created)s "
+"and last modified %(modified)s."
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:166

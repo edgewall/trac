@@ -130,12 +130,12 @@
           # else:
           #   set num_versions
           <a href="${history_href}">${
-            ngettext("%(num)d version", "all %(num)d versions", num=num_versions)
+            ngettext("%(num)d version", "%(num)d versions", num=num_versions)
             }</a>
           #   endset
           #   trans num_versions, created = first_modified, modified = last_modified
 
-          Removing ${num_versions} of the page, which was created
+          Removing all ${num_versions} of the page, which was created
           ${created} and last modified ${modified}.
 
           #   endtrans
