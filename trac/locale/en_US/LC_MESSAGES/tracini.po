@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-05-26 15:18-0700\n"
+"POT-Creation-Date: 2017-06-21 03:23+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -252,7 +252,7 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/env.py:80
+#: trac/env.py:87
 msgid ""
 "This section is used to enable or disable components\n"
 "provided by plugins, as well as by Trac itself. The component\n"
@@ -288,7 +288,7 @@ msgid ""
 "See also: TracPlugins"
 msgstr ""
 
-#: trac/env.py:115
+#: trac/env.py:122
 msgid ""
 "Path to the //shared plugins directory//.\n"
 "\n"
@@ -297,7 +297,7 @@ msgid ""
 "taking precedence."
 msgstr ""
 
-#: trac/env.py:123
+#: trac/env.py:130
 msgid ""
 "Reference URL for the Trac deployment.\n"
 "\n"
@@ -307,7 +307,7 @@ msgid ""
 "resources in notification e-mails."
 msgstr ""
 
-#: trac/env.py:131
+#: trac/env.py:138
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -320,7 +320,7 @@ msgid ""
 "as redirects are frequently used."
 msgstr ""
 
-#: trac/env.py:144
+#: trac/env.py:151
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -329,26 +329,26 @@ msgid ""
 "your Trac instance is only accessible through HTTPS."
 msgstr ""
 
-#: trac/env.py:152
+#: trac/env.py:159
 msgid "Name of the project."
 msgstr ""
 
-#: trac/env.py:155
+#: trac/env.py:162
 msgid "Short description of the project."
 msgstr ""
 
-#: trac/env.py:158
+#: trac/env.py:165
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
 
-#: trac/env.py:163
+#: trac/env.py:170
 msgid "E-Mail address of the project's administrator."
 msgstr ""
 
-#: trac/env.py:166
+#: trac/env.py:173
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -358,36 +358,36 @@ msgid ""
 "buttons."
 msgstr ""
 
-#: trac/env.py:176
+#: trac/env.py:183
 msgid "Page footer text (right-aligned)."
 msgstr ""
 
-#: trac/env.py:181
+#: trac/env.py:188
 msgid "URL of the icon of the project."
 msgstr ""
 
-#: trac/env.py:184
+#: trac/env.py:191
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
 
-#: trac/env.py:191
+#: trac/env.py:198
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
 
-#: trac/env.py:197
+#: trac/env.py:204
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`)."
 msgstr ""
 
-#: trac/env.py:204
+#: trac/env.py:211
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -423,28 +423,28 @@ msgid ""
 "access control to Trac resources."
 msgstr ""
 
-#: trac/db/api.py:255
+#: trac/db/api.py:260
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
 
-#: trac/db/api.py:260
+#: trac/db/api.py:265
 msgid "Database backup location"
 msgstr ""
 
-#: trac/db/api.py:263
+#: trac/db/api.py:268
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''."
 msgstr ""
 
-#: trac/db/api.py:267
+#: trac/db/api.py:272
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
-#: trac/db/mysql_backend.py:94
+#: trac/db/mysql_backend.py:101
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
@@ -1014,7 +1014,7 @@ msgid ""
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:173
+#: trac/versioncontrol/admin.py:181
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1512,15 +1512,15 @@ msgid ""
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/wiki/api.py:262
+#: trac/wiki/api.py:261
 msgid "Enable/disable highlighting CamelCase links to missing pages."
 msgstr ""
 
-#: trac/wiki/api.py:266
+#: trac/wiki/api.py:265
 msgid "Enable/disable splitting the WikiPageNames with space characters."
 msgstr ""
 
-#: trac/wiki/api.py:270
+#: trac/wiki/api.py:269
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].\n"
@@ -1529,10 +1529,20 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/wiki/api.py:278
+#: trac/wiki/api.py:277
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`."
+msgstr ""
+
+#: trac/wiki/api.py:284
+msgid ""
+"List of URIs considered \"safe cross-origin\", that will be\n"
+"rendered as `img` element without `crossorigin=\"anonymous\"` attribute\n"
+"or used in `url()` of inline style attribute even if\n"
+"`[wiki] render_unsafe_content` is `false` (''since 1.0.15'').\n"
+"\n"
+"To make any origins safe, specify \"*\" in the list."
 msgstr ""
 
 #: trac/wiki/intertrac.py:35
