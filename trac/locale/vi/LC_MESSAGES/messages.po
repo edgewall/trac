@@ -740,7 +740,7 @@ msgstr "Lỗi: %(msg)s"
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
@@ -2067,7 +2067,7 @@ msgstr ""
 
 #: trac/templates/about.html:46
 msgid ""
-"Copyright © 2003-2013\n"
+"Copyright © %(year)s\n"
 "        [1:Edgewall Software]"
 msgstr ""
 
