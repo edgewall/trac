@@ -1,5 +1,3 @@
-﻿.. charset=utf-8
-
 Upgrade Instructions
 ====================
 
@@ -211,7 +209,7 @@ Trac has added functionality equivalent to the following plugins:
 
 
 + `BatchModifyPlugin`_
-+ ​`GitPlugin`_
++ `GitPlugin`_
 + `OverrideEditPlugin`_
 
 
@@ -297,7 +295,7 @@ Trac has added functionality equivalent to the following plugins:
 
 
 + `AutoQueryPlugin`_
-+ ​`AdminConsoleProviderPatch`_
++ `AdminConsoleProviderPatch`_
 + `AnchorMacro`_: see `WikiFormatting#SettingAnchors`_
 + `TicketChangePlugin`_: see `TICKET_EDIT_COMMENT permission`_
 + `TicketDeletePlugin`_: see `tracopt.ticket.deleter`
