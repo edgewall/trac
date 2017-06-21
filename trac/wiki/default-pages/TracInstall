@@ -74,9 +74,8 @@ A web server is optional because Trac is shipped with a server included, see the
 
 Alternatively you can configure Trac to run in any of the following environments:
  * [http://httpd.apache.org/ Apache] with 
-   - [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and 
-     [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
-   - [http://modpython.org/ mod_python 3.5.0], see TracModPython
+  * [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
+  * [http://modpython.org/ mod_python 3.5.0], see TracModPython
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
@@ -137,12 +136,10 @@ To get a Trac installation up and running in less than 5 minutes:
 
 Assuming you want to have your entire pip installation in `/opt/user/trac`
 
- - 
  {{{#!sh
 $ pip install trac psycopg2 
 }}}
 or
- - 
  {{{#!sh
 $ pip install trac mysql-python 
 }}}
@@ -279,16 +276,20 @@ Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if yo
 
 ==== Generating the Trac cgi-bin directory #cgi-bin
 
-In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [TracAdmin trac-admin].
+Application scripts for CGI, FastCGI and mod-wsgi can be generated using the [TracAdmin trac-admin] `deploy` command:
+[[TracAdminHelp(deploy)]]
 
-There is, however, a bit of a chicken-and-egg problem. The `trac-admin` command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
+Grant the web server execution right on scripts in the `cgi-bin` directory.
+
+For example, the following yields a typical directory structure:
 {{{#!sh
-$ mkdir -p /usr/share/trac/projects/my-project
-$ trac-admin /usr/share/trac/projects/my-project initenv
-$ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-$ mv /tmp/deploy/* /usr/share/trac
+$ mkdir -p /var/trac
+$ trac-admin /var/trac/<project> initenv
+$ trac-admin /var/trac/<project> deploy /var/www
+$ ls /var/www
+cgi-bin	htdocs
+$ chmod ugo+x /var/www/cgi-bin/*
 }}}
-Don't forget to check that the web server has the execution right on scripts in the `/usr/share/trac/cgi-bin` directory.
 
 ==== Mapping Static Resources
 
@@ -298,12 +299,9 @@ Web servers such as [http://httpd.apache.org/ Apache] allow you to create //Alia
 
 There are two primary URL paths for static resources: `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible at the `/chrome/<plugin>` path.
 
-A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
+A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command (discussed in the previous section) must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
 
-The resources are extracted using the [TracAdmin trac-admin] `<environment> deploy` command:
-[[TracAdminHelp(deploy)]]
-
-The target `<directory>` will contain an `htdocs` directory with:
+The `deploy` command creates an `htdocs` directory with:
  - `common/` - the static resources of Trac
  - `site/` - a copy of the environment's `htdocs/` directory
  - `shared` - the static resources shared by multiple Trac environments, with a location defined by the `[inherit]` `htdocs_dir` option
@@ -321,7 +319,7 @@ Alias /trac/chrome/<plugin> /path/to/trac/htdocs/<plugin>
 
 Assuming the deployment has been done this way:
 {{{#!sh
-$ trac-admin /var/trac/env deploy /path/to/shared/trac
+$ trac-admin /var/trac/<project> deploy /var/www
 }}}
 
 Add the following snippet to Apache configuration, changing paths to match your deployment. The snippet must be placed ''before'' the `ScriptAlias` or `WSGIScriptAlias` directive, because those directives map all requests to the Trac application:

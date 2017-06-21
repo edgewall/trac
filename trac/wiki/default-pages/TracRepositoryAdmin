@@ -126,11 +126,11 @@ Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the
 
 ===== Using `trac-svn-hook`
 
-In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script also comes with a number of safety checks and usage advice which should make it easier to set up and test. Log messages are written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
+In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script comes with a number of safety checks and usage advice. Output is written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
 
 There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
 
-To configure `trac-svn-hook`, follow the help in the documentation header of the script. Configuring the hook environment variables is made easier in Subversion 1.8 by using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, they can be configured through the repository `conf/hooks-env` file. Replace the [trac:source:trunk/contrib/trac-svn-hook@:65-67#L61 configuration section] with:
+Follow the help in the documentation header of the script to configure `trac-svn-hook`. Configuring the hook environment variables is made easier in Subversion 1.8 by using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, they can be configured through the repository `conf/hooks-env` file. Replace the [trac:source:trunk/contrib/trac-svn-hook@:65-67#L61 configuration section] with:
 {{{#!bash
 export PATH=$PYTHON_BIN:$PATH
 export LD_LIBRARY_PATH=$PYTHON_LIB:$LD_LIBRARY_PATH
