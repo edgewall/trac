@@ -69,8 +69,15 @@
 
         # endtrans
       </p>
-      <p class="copyright">Copyright &copy; 2003-2017
+      <p class="copyright">
+        # set edgewall
         <a href="http://www.edgewall.org/">Edgewall Software</a>
+        # endset
+        # trans year = '2003-2017', edgewall
+
+        Copyright &copy; ${year} ${edgewall}
+
+        # endtrans
       </p>
 
       # include 'environment_info.html'

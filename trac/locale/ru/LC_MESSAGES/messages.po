@@ -751,18 +751,18 @@ msgid "Error: %(msg)s"
 msgstr "Ошибка: %(msg)s"
 
 #: trac/admin/console.py:132
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
 "Добро пожаловать в trac-admin %(version)s\n"
 "Интерактивная консоль администрирования Trac.\n"
-"Авторские права (c) 2003-2012 Edgewall Software\n"
+"Авторские права (c) %(year)s Edgewall Software\n"
 "\n"
 "Введите:  \"?\" или \"help\" для получения справки по командам.\n"
 "        "
@@ -2148,14 +2148,10 @@ msgstr ""
 "Пожалуйста, посетите сайт проекта с открытым кодом Trac: \n"
 "        [1:http://trac.edgewall.org/]"
 
-#: trac/templates/about.html:46
-#, fuzzy
-msgid ""
-"Copyright © 2003-2013\n"
-"        [1:Edgewall Software]"
-msgstr ""
-"Авторские права © 2003-2012\n"
-"        [1:Edgewall Software]"
+#: trac/templates/about.html:58
+#, python-format
+msgid "Copyright &copy; %(year)s %(edgewall)s"
+msgstr "Авторские права &copy; %(year)s %(edgewall)s"
 
 #: trac/templates/about.html:54
 msgid "System Information"

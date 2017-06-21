@@ -768,11 +768,17 @@ msgstr "Hiba: %(msg)s"
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
-"Copyright (C) 2003-2013 Edgewall Software\n"
+"Copyright (C) %(year)s Edgewall Software\n"
 "\n"
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
+"Üdvözöli Önt a trac-admin %(version)s\n"
+"Interaktív Trac Adminisztrációs Konzol.\n"
+"Copyright (C) %(year)s Edgewall Software\n"
+"\n"
+"Segítséget a '?' vagy 'help' beírásával kaphat.\n"
+"        "
 
 #: trac/admin/console.py:166
 #, python-format
@@ -2108,11 +2114,10 @@ msgstr ""
 "Kérjük látogassa meg a nyílt forráskódú Trac projekt honlapját:\n"
 "        [1:http://trac.edgewall.org/]"
 
-#: trac/templates/about.html:46
-msgid ""
-"Copyright © 2003-2013\n"
-"        [1:Edgewall Software]"
-msgstr ""
+#: trac/templates/about.html:58
+#, python-format
+msgid "Copyright &copy; %(year)s %(edgewall)s"
+msgstr "Copyright &copy; %(year)s %(edgewall)s"
 
 #: trac/templates/about.html:54
 msgid "System Information"
