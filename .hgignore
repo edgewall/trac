@@ -1,15 +1,17 @@
 syntax: glob
 *~
 .*.sw[op]
+*.orig
 .svn
 .git
 build
 dist
 Trac.egg-info
-*.pyc
+*.py[co]
 testenv
 testing.log
 functional-testing.log
+trac/test.db
 html
 htmlcov
 figleaf
