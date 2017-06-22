@@ -1,5 +1,6 @@
 *~
 .*.sw[op]
+*.orig
 .svn
 .hg
 build
