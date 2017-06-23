@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-14 06:25+0000\n"
+"POT-Creation-Date: 2017-06-21 03:57+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -506,7 +506,7 @@ msgstr ""
 "\n"
 "(`none`, `file`, `stderr`, `syslog`, `winlog`) のうちのどれかを指定します。"
 
-#: trac/env.py:242
+#: trac/env.py:243
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
@@ -515,7 +515,7 @@ msgstr ""
 "`log_type` が `file` の場合、ログファイルのパスを指定します。相対パスは、Trac 環境にある `log` "
 "ディレクトリから相対的に解釈します。"
 
-#: trac/env.py:248
+#: trac/env.py:249
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
@@ -525,7 +525,7 @@ msgstr ""
 "\n"
 "(`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`) のうちのどれかを指定します。"
 
-#: trac/env.py:255
+#: trac/env.py:256
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -1341,7 +1341,7 @@ msgstr ""
 "\n"
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。"
 
-#: trac/versioncontrol/admin.py:174
+#: trac/versioncontrol/admin.py:178
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -2034,6 +2034,21 @@ msgid ""
 msgstr ""
 "「安全」とみなす URI スキームのリストを指定します。`[wiki] render_unsafe_content` が `false` "
 "の場合に、外部リンクとして表示します。"
+
+#: trac/wiki/api.py:288
+msgid ""
+"List of URIs considered \"safe cross-origin\", that will be\n"
+"rendered as `img` element without `crossorigin=\"anonymous\"` attribute\n"
+"or used in `url()` of inline style attribute even if\n"
+"`[wiki] render_unsafe_content` is `false` (''since 1.0.15'').\n"
+"\n"
+"To make any origins safe, specify \"*\" in the list."
+msgstr ""
+"「安全なクロスオリジン」とみなす URI のリストを指定します。`[wiki] render_unsafe_content` が `false` "
+"の場合でも、`img` 要素を `crossorigin=\"anonymous\"` 属性なしで表示、またはインラインスタイル属性の "
+"`url()` で使用します。(''1.0.15 以降'')\n"
+"\n"
+"すべてのオリジンを安全とするには \"*\" を指定します。"
 
 #: trac/wiki/intertrac.py:37
 msgid ""
