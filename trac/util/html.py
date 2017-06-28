@@ -1019,18 +1019,6 @@ class HTMLSanitization(HTMLTransform):
             self.out.write('</' + tag + '>')
 
 
-try:
-    escape('', False)  # detect genshi:#439 on Genshi 0.6 with speedups
-except TypeError:
-    _escape = escape
-
-    def escape(text, quotes=True):
-        if text:
-            return _escape(text, quotes=quotes)
-        else:
-            return Markup(u'')
-
-
 def plaintext(text, keeplinebreaks=True):
     """Extract the text elements from (X)HTML content
 
