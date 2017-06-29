@@ -32,10 +32,8 @@ if dir_ in sys.path:
     sys.path.remove(dir_)
 try:
     import pygments
-except ImportError as e:
+except ImportError:
     pygments = None
-    from trac.util.text import exception_to_unicode
-    print exception_to_unicode(e, True)
 else:
     from trac.mimeview.pygments import PygmentsRenderer
     pygments_version = parse_version(get_pkginfo(pygments).get('version'))
