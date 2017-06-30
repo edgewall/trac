@@ -81,6 +81,12 @@
         if ($.ui) { /* is jquery-ui added? */
           $(".trac-datepicker:not([readonly])")
             .prop("autocomplete", "off").datepicker();
+          // Input current date when today is pressed.
+          var _goToToday = $.datepicker._gotoToday;
+          $.datepicker._gotoToday = function(id) {
+            _goToToday.call(this, id);
+            this._selectDate(id)
+          };
           $(".trac-datetimepicker:not([readonly])")
             .prop("autocomplete", "off").datetimepicker();
           $("#main").addClass("trac-nodatetimehint");
