@@ -272,13 +272,13 @@ class GitConnector(Component):
         """Wrap `GitRepository` in `CachedRepository`.""")
 
     shortrev_len = IntOption('git', 'shortrev_len', 7,
-        """The length at which a sha1 should be abbreviated to (must
-        be >= 4 and <= 40).
+        """The length at which a sha1 is abbreviated (must be >= 4
+        and <= 40).
         """)
 
     wiki_shortrev_len = IntOption('git', 'wikishortrev_len', 40,
-        """The minimum length of an hex-string for which
-        auto-detection as sha1 is performed (must be >= 4 and <= 40).
+        """The minimum length at which a hex-string in wiki content
+        is formatted as a changeset TracLink (must be >= 4 and <= 40).
         """)
 
     trac_user_rlookup = BoolOption('git', 'trac_user_rlookup', 'false',
