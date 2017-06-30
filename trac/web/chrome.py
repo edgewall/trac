@@ -1151,13 +1151,10 @@ class Chrome(Component):
         is_iso8601 = req.lc_time == 'iso8601'
         now = datetime_now(req.tz)
         tzoffset = now.strftime('%z')
-        if is_iso8601:
-            default_timezone = (-1 if tzoffset.startswith('-') else 1) * \
-                               (int(tzoffset[1:3]) * 60 + int(tzoffset[3:5]))
-            timezone_list = get_timezone_list_jquery_ui(now)
-        else:
-            default_timezone = None
-            timezone_list = None
+        default_timezone = (-1 if tzoffset.startswith('-') else 1) * \
+                           (int(tzoffset[1:3]) * 60 + int(tzoffset[3:5]))
+        timezone_list = get_timezone_list_jquery_ui(now) \
+                        if is_iso8601 else None
         add_script_data(req, jquery_ui={
             'month_names': get_month_names_jquery_ui(req),
             'day_names': get_day_names_jquery_ui(req),

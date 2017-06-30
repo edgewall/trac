@@ -335,29 +335,27 @@ class ChromeTestCase(unittest.TestCase):
             chrome.add_jquery_ui(req)
             data = req.chrome['script_data']['jquery_ui']
             self.assertEqual(tz_default, data['default_timezone'])
-            if tz_default is None:
-                self.assertIsNone(data['timezone_list'])
-            else:
+            if tz_label is not None:
                 self.assertIn({'value': tz_default, 'label': tz_label},
                               data['timezone_list'])
 
         verify_tzprops('iso8601', utc, 0, '+00:00')
-        verify_tzprops(locale_en, utc, None, None)
+        verify_tzprops(locale_en, utc, 0, None)
         verify_tzprops('iso8601', gmt07b, -420, '-07:00')
-        verify_tzprops(locale_en, gmt07b, None, None)
+        verify_tzprops(locale_en, gmt07b, -420, None)
         verify_tzprops('iso8601', gmt04a, 240, '+04:00')
-        verify_tzprops(locale_en, gmt04a, None, None)
+        verify_tzprops(locale_en, gmt04a, 240, None)
         if pytz:
             # must use timezones which does not use DST
             guam = timezone('Pacific/Guam')
             monrovia = timezone('Africa/Monrovia')
             panama = timezone('America/Panama')
             verify_tzprops('iso8601', guam, 600, '+10:00')
-            verify_tzprops(locale_en, guam, None, None)
+            verify_tzprops(locale_en, guam, 600, None)
             verify_tzprops('iso8601', monrovia, 0, '+00:00')
-            verify_tzprops(locale_en, monrovia, None, None)
+            verify_tzprops(locale_en, monrovia, 0, None)
             verify_tzprops('iso8601', panama, -300, '-05:00')
-            verify_tzprops(locale_en, panama, None, None)
+            verify_tzprops(locale_en, panama, -300, None)
 
     def test_cc_list(self):
         """Split delimited string to a list of email addresses."""
