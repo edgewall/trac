@@ -125,7 +125,7 @@ jobs:
         user: edgewall-org
         password:
           secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
-        server: https://test.pypi.org/legacy
+        server: https://test.pypi.org/legacy/
         os: linux
         distributions: sdist bdist_wheel
         skip_upload_docs: true
