@@ -215,14 +215,15 @@ class ConfigurableTicketWorkflow(Component):
         this_action = self.actions[action]
         status = this_action['newstate']
         operations = this_action['operations']
-        current_owner = ticket._old.get('owner', ticket['owner'])
+        ticket_owner = ticket._old.get('owner', ticket['owner'])
+        ticket_status = ticket._old.get('status', ticket['status'])
         author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req,
                               resource=ticket.resource)
         format_author = partial(Chrome(self.env).format_author, req,
                                 resource=ticket.resource)
-        formatted_current_owner = author_info(current_owner)
-        exists = ticket._old.get('status', ticket['status']) is not None
+        formatted_current_owner = author_info(ticket_owner)
+        exists = ticket_status is not None
 
         ticket_system = TicketSystem(self.env)
         control = []  # default to nothing
@@ -241,8 +242,7 @@ class ConfigurableTicketWorkflow(Component):
                 if not exists:
                     default_owner = ticket_system.default_owner
                 else:
-                    default_owner = ticket._old.get('owner',
-                                                    ticket['owner'] or None)
+                    default_owner = ticket_owner or None
                 if owners is not None and default_owner not in owners:
                     owners.insert(0, default_owner)
             else:
@@ -258,7 +258,7 @@ class ConfigurableTicketWorkflow(Component):
                     tag_("to %(owner)s",
                          owner=tag.input(type='text', id=id, name=id,
                                          value=owner)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(_("The owner will be the specified user"))
                 else:
                     hints.append(tag_("The owner will be changed from "
@@ -271,7 +271,7 @@ class ConfigurableTicketWorkflow(Component):
                 formatted_new_owner = author_info(owners[0])
                 control.append(tag_("to %(owner)s",
                                     owner=tag(formatted_new_owner, owner)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(tag_("The owner will be %(new_owner)s",
                                       new_owner=formatted_new_owner))
                 elif ticket['owner'] != owners[0]:
@@ -287,16 +287,15 @@ class ConfigurableTicketWorkflow(Component):
                      for label, value in sorted((format_author(owner), owner)
                                                 for owner in owners)],
                     id=id, name=id)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(_("The owner will be the selected user"))
                 else:
                     hints.append(tag_("The owner will be changed from "
                                       "%(current_owner)s to the selected user",
                                       current_owner=formatted_current_owner))
-        elif 'set_owner_to_self' in operations and \
-                ticket._old.get('owner', ticket['owner']) != author:
+        elif 'set_owner_to_self' in operations and ticket_owner != author:
             formatted_author = author_info(author)
-            if not exists or current_owner is None:
+            if not exists or ticket_owner is None:
                 hints.append(tag_("The owner will be %(new_owner)s",
                                   new_owner=formatted_author))
             else:
@@ -335,13 +334,11 @@ class ConfigurableTicketWorkflow(Component):
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(tag_("as %(status)s",
-                                status=ticket._old.get('status',
-                                                       ticket['status'])))
+            control.append(tag_("as %(status)s", status=ticket_status))
             if len(operations) == 1:
                 hints.append(tag_("The owner will remain %(current_owner)s",
                                   current_owner=formatted_current_owner)
-                             if current_owner else
+                             if ticket_owner else
                              _("The ticket will remain with no owner"))
         elif not operations:
             if status != '*':

@@ -291,9 +291,9 @@ class SetOwnerAttributeTestCase(unittest.TestCase):
         self.perm_sys = PermissionSystem(self.env)
         self.ctlr = TicketSystem(self.env).action_controllers[0]
         self.ticket = insert_ticket(self.env, status='new')
-        with self.env.db_transaction as db:
-            for user in ('user1', 'user2', 'user3', 'user4'):
-                db("INSERT INTO session VALUES (%s, %s, %s)", (user, 1, 0))
+        self.env.insert_users([
+            (user, None, None) for user in ('user1', 'user2', 'user3', 'user4')
+        ])
         permissions = [
             ('user1', 'TICKET_EDIT_CC'),
             ('user2', 'TICKET_EDIT_CC'),
