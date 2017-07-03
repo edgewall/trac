@@ -289,9 +289,9 @@ class SetOwnerAttributeTestCase(unittest.TestCase):
         self.ticket = Ticket(self.env)
         self.ticket['status'] = 'new'
         self.ticket.insert()
-        with self.env.db_transaction as db:
-            for user in ('user1', 'user2', 'user3', 'user4'):
-                db("INSERT INTO session VALUES (%s, %s, %s)", (user, 1, 0))
+        self.env.insert_users([
+            (user, None, None) for user in ('user1', 'user2', 'user3', 'user4')
+        ])
         permissions = [
             ('user1', 'TICKET_EDIT_CC'),
             ('user2', 'TICKET_EDIT_CC'),

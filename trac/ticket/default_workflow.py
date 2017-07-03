@@ -233,14 +233,15 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         this_action = self.actions[action]
         status = this_action['newstate']
         operations = this_action['operations']
-        current_owner = ticket._old.get('owner', ticket['owner'])
+        ticket_owner = ticket._old.get('owner', ticket['owner'])
+        ticket_status = ticket._old.get('status', ticket['status'])
         author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req,
                               resource=ticket.resource)
         format_author = partial(Chrome(self.env).format_author, req,
                                 resource=ticket.resource)
-        formatted_current_owner = author_info(current_owner)
-        exists = ticket._old.get('status', ticket['status']) is not None
+        formatted_current_owner = author_info(ticket_owner)
+        exists = ticket_status is not None
 
         control = []  # default to nothing
         hints = []
@@ -253,12 +254,12 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if 'set_owner' in this_action:
                 owners = self._to_users(this_action['set_owner'], ticket)
             elif self.config.getbool('ticket', 'restrict_owner'):
-                perm = PermissionSystem(self.env)
-                owners = perm.get_users_with_permission('TICKET_MODIFY')
+                ps = PermissionSystem(self.env)
+                owners = ps.get_users_with_permission('TICKET_MODIFY')
+                perm = partial(PermissionCache, self.env,
+                               resource=ticket.resource)
                 owners = [user for user in owners
-                               if 'TICKET_MODIFY'
-                               in PermissionCache(self.env, user,
-                                                  ticket.resource)]
+                               if 'TICKET_MODIFY' in perm(username=user)]
                 owners = sorted(owners)
             else:
                 owners = None
@@ -269,8 +270,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 if not exists:
                     default_owner = TicketSystem(self.env).default_owner
                 else:
-                    default_owner = ticket._old.get('owner',
-                                                    ticket['owner'] or None)
+                    default_owner = ticket_owner or None
                 if owners is not None and default_owner not in owners:
                     owners.insert(0, default_owner)
             else:
@@ -286,7 +286,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     tag_("to %(owner)s",
                          owner=tag.input(type='text', id=id, name=id,
                                          value=owner)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(_("The owner will be the specified user"))
                 else:
                     hints.append(tag_("The owner will be changed from "
@@ -299,7 +299,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 formatted_new_owner = author_info(owners[0])
                 control.append(tag_("to %(owner)s",
                                     owner=tag(formatted_new_owner, owner)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(tag_("The owner will be %(new_owner)s",
                                       new_owner=formatted_new_owner))
                 elif ticket['owner'] != owners[0]:
@@ -315,16 +315,15 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                      for label, value in sorted((format_author(owner), owner)
                                                 for owner in owners)],
                     id=id, name=id)))
-                if not exists or current_owner is None:
+                if not exists or ticket_owner is None:
                     hints.append(_("The owner will be the selected user"))
                 else:
                     hints.append(tag_("The owner will be changed from "
                                       "%(current_owner)s to the selected user",
                                       current_owner=formatted_current_owner))
-        elif 'set_owner_to_self' in operations and \
-                ticket._old.get('owner', ticket['owner']) != author:
+        elif 'set_owner_to_self' in operations and ticket_owner != author:
             formatted_author = author_info(author)
-            if not exists or current_owner is None:
+            if not exists or ticket_owner is None:
                 hints.append(tag_("The owner will be %(new_owner)s",
                                   new_owner=formatted_author))
             else:
@@ -363,13 +362,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(tag_("as %(status)s",
-                                status=ticket._old.get('status',
-                                                       ticket['status'])))
+            control.append(tag_("as %(status)s", status=ticket_status))
             if len(operations) == 1:
                 hints.append(tag_("The owner will remain %(current_owner)s",
                                   current_owner=formatted_current_owner)
-                             if current_owner else
+                             if ticket_owner else
                              _("The ticket will remain with no owner"))
         elif not operations:
             if status != '*':
