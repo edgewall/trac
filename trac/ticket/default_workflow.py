@@ -163,20 +163,30 @@ class ConfigurableTicketWorkflow(Component):
         # the process of being modified, we need to base our information on the
         # pre-modified state so that we don't try to do two (or more!) steps at
         # once and get really confused.
-        status = ticket._old.get('status', ticket['status'])
-        exists = status is not None
+        ticket_status = ticket._old.get('status', ticket['status'])
+        exists = ticket_status is not None
+        ticket_owner = ticket._old.get('owner', ticket['owner'])
+        author = get_reporter_id(req, 'author')
 
         resource = ticket.resource
         allowed_actions = []
         for action_name, action_info in self.actions.items():
+            operations = action_info['operations']
+            newstate = action_info['newstate']
+            # Exclude action that is effectively a No-op.
+            if len(operations) == 1 and \
+                    operations[0] == 'set_owner_to_self' and \
+                    ticket_owner == author and ticket_status == newstate:
+                continue
             oldstates = action_info['oldstates']
-            if exists and oldstates == ['*'] or status in oldstates:
+            if exists and oldstates == ['*'] or ticket_status in oldstates:
                 # This action is valid in this state.  Check permissions.
                 if self._is_action_allowed(req, action_info, resource):
                     allowed_actions.append((action_info['default'],
                                             action_name))
         # Append special `_reset` action if status is invalid.
-        if exists and status not in TicketSystem(self.env).get_all_status():
+        if exists and \
+                ticket_status not in TicketSystem(self.env).get_all_status():
             reset = self.actions['_reset']
             if self._is_action_allowed(req, reset, resource):
                 allowed_actions.append((reset['default'], '_reset'))
@@ -293,16 +303,19 @@ class ConfigurableTicketWorkflow(Component):
                     hints.append(tag_("The owner will be changed from "
                                       "%(current_owner)s to the selected user",
                                       current_owner=formatted_current_owner))
-        elif 'set_owner_to_self' in operations and ticket_owner != author:
+        elif 'set_owner_to_self' in operations:
             formatted_author = author_info(author)
             if not exists or ticket_owner is None:
                 hints.append(tag_("The owner will be %(new_owner)s",
                                   new_owner=formatted_author))
-            else:
+            elif ticket_owner != author:
                 hints.append(tag_("The owner will be changed from "
                                   "%(current_owner)s to %(new_owner)s",
                                   current_owner=formatted_current_owner,
                                   new_owner=formatted_author))
+            elif ticket_status != status:
+                hints.append(tag_("The owner will remain %(current_owner)s",
+                                  current_owner=formatted_current_owner))
         if 'set_resolution' in operations:
             if 'set_resolution' in this_action:
                 resolutions = this_action['set_resolution']

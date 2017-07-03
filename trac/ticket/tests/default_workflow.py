@@ -352,6 +352,144 @@ value="user1">user1</option><option value="user2">user2</option>\
         self.assertEqual(self.expected, str(control))
 
 
+class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.ctlr = TicketSystem(self.env).action_controllers[0]
+        self.req = MockRequest(self.env, authname='user1')
+        ps = PermissionSystem(self.env)
+        for user in ('user1', 'user2'):
+            ps.grant_permission(user, 'TICKET_MODIFY')
+        self.env.insert_users([('user1', 'User 1', None),
+                               ('user2', 'User 2', None)])
+
+    def _get_ticket_actions(self, req, ticket):
+        return [action[1] for action
+                          in self.ctlr.get_ticket_actions(req, ticket)]
+
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
+    def _insert_ticket(self, status, owner, resolution=None):
+        ticket = Ticket(self.env)
+        ticket['status'] = status
+        ticket['owner'] = owner
+        if resolution:
+            ticket['resolution'] = resolution
+        ticket.insert()
+        return ticket
+
+    def test_owner_is_other(self):
+        """Ticket owner is not auth'ed user.
+
+        The workflow action is shown when the state will be changed by
+        the action.
+        """
+        ticket = self._insert_ticket('accepted', 'user2')
+        args = self.req, ticket, 'accept'
+
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+        ticket_actions = self._get_ticket_actions(*args[0:2])
+
+        self.assertIn('accept', ticket_actions)
+        self.assertEqual(label, 'accept')
+        self.assertEqual('', unicode(control))
+        self.assertEqual('The owner will be changed from '
+                         '<span class="trac-author">User 2</span> to '
+                         '<span class="trac-author-user">User 1</span>.',
+                         unicode(hints))
+
+    def test_owner_is_self_and_state_change(self):
+        """Ticket owner is auth'ed user with state change.
+
+        The workflow action is shown when the state will be changed by the
+        action, even when the ticket owner is the authenticated user.
+        """
+        ticket = self._insert_ticket('new', 'user1')
+        args = self.req, ticket, 'accept'
+
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+        ticket_actions = self._get_ticket_actions(*args[0:2])
+
+        self.assertIn('accept', ticket_actions)
+        self.assertEqual(label, 'accept')
+        self.assertEqual('', unicode(control))
+        self.assertEqual('The owner will remain <span class="trac-author-user">'
+                         'User 1</span>.', unicode(hints))
+
+    def test_owner_is_self_and_no_state_change(self):
+        """Ticket owner is the auth'ed user and no state change.
+
+        The ticket action is not in the list of available actions
+        when the state will not be changed by the action and the ticket
+        owner is the authenticated user.
+        """
+        ticket = self._insert_ticket('accepted', 'user1')
+        args = self.req, ticket, 'accept'
+
+        ticket_actions = self._get_ticket_actions(*args[0:2])
+
+        self.assertNotIn('accept', ticket_actions)
+
+    def test_owner_is_self_state_change_and_multiple_operations(self):
+        """Ticket owner is auth'ed user, state change and multiple ops.
+
+        The set_owner_to_self workflow hint is shown when the ticket status
+        is changed by the action, even when the ticket owner is the
+        authenticated user.
+        """
+        ticket = self._insert_ticket('new', 'user1')
+        workflow = self.env.config['ticket-workflow']
+        workflow.set('resolve_as_owner', '* -> closed')
+        workflow.set('resolve_as_owner.operations',
+                     'set_owner_to_self, set_resolution')
+        workflow.set('resolve_as_owner.set_resolution', 'fixed')
+        self._reload_workflow()
+        args = self.req, ticket, 'resolve_as_owner'
+
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+        ticket_actions = self._get_ticket_actions(*args[0:2])
+
+        self.assertIn('resolve_as_owner', ticket_actions)
+        self.assertEqual(label, 'resolve as owner')
+        self.assertEqual(
+            'as fixed<input id="action_resolve_as_owner_resolve_resolution" '
+            'name="action_resolve_as_owner_resolve_resolution" type="hidden" '
+            'value="fixed" />', unicode(control))
+        self.assertEqual(
+            'The owner will remain <span class="trac-author-user">User 1'
+            '</span>. The resolution will be set to fixed.', unicode(hints))
+
+    def test_owner_is_self_no_state_change_and_multiple_operations(self):
+        """Ticket owner is auth'ed user, no state change and multiple ops.
+
+        The set_owner_to_self workflow hint is not shown when the ticket
+        state is not changed by the action and the ticket owner is the
+        authenticated user.
+        """
+        ticket = self._insert_ticket('closed', 'user1', 'fixed')
+        workflow = self.env.config['ticket-workflow']
+        workflow.set('fix_resolution', 'closed -> closed')
+        workflow.set('fix_resolution.operations',
+                     'set_owner_to_self, set_resolution')
+        workflow.set('fix_resolution.set_resolution', 'invalid')
+        self._reload_workflow()
+        args = self.req, ticket, 'fix_resolution'
+
+        label, control, hints = self.ctlr.render_ticket_action_control(*args)
+        ticket_actions = self._get_ticket_actions(*args[0:2])
+
+        self.assertIn('fix_resolution', ticket_actions)
+        self.assertEqual(label, 'fix resolution')
+        self.assertEqual(
+            'as invalid<input id="action_fix_resolution_resolve_resolution" '
+            'name="action_fix_resolution_resolve_resolution" type="hidden" '
+            'value="invalid" />', unicode(control))
+        self.assertEqual('The resolution will be set to invalid.',
+                         unicode(hints))
+
+
 class RestrictOwnerTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -437,6 +575,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
     suite.addTest(unittest.makeSuite(SetOwnerAttributeTestCase))
+    suite.addTest(unittest.makeSuite(SetOwnerToSelfAttributeTestCase))
     suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
     return suite
 
