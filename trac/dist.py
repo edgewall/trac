@@ -308,11 +308,14 @@ try:
         # TODO (1.5.1) remove genshi support
         if fileobj:
             if 'xmlns:py="http://genshi.edgewall.org/"' in fileobj.read():
-                if genshi:
-                    if text:
-                        options.update(template_class=
-                                       'genshi.template:NewTextTemplate')
-                    extractor = genshi_extractor
+                if not genshi:
+                    raise ValueError("Cannot extract messages from a legacy "
+                                     "Genshi template because Genshi is "
+                                     "not installed.")
+                if text:
+                    options.update(template_class=
+                                   'genshi.template:NewTextTemplate')
+                extractor = genshi_extractor
             else:
                 extractor = jinja2_extractor
             fileobj.seek(0)
