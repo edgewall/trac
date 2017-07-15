@@ -51,7 +51,7 @@ createCloneAction = (title) ->
   # from ticket's old values, prefill most of the fields for new ticket
   for name, oldvalue of old_values
     addField form, name, oldvalue if name not in [
-      "id", "summary", "description", "status", "resolution"
+      "id", "summary", "description", "status", "resolution", "reporter"
     ]
   form
 
@@ -69,9 +69,9 @@ addCloneFromComments = (changes) ->
         _("(part of #%(ticketid)s) %(summary)s",
           ticketid: old_values.id, summary: old_values.summary)
       addField cform, 'description',
-        _("Copied from [%(source)s]:\n----\n%(description)s",
+        _("Copied from [%(source)s]:\n> %(description)s",
           source: "ticket:#{old_values.id}#comment:#{c.cnum}",
-          description: c.comment)
+          description: c.comment.split(/\r?\n/).join('\n> '))
 
       btns.prepend cform
 
@@ -80,10 +80,11 @@ $(document).ready () ->
   # clone from description
   clone = createCloneAction _("Create a copy of this ticket")
   addField clone, 'summary',
-    _("(%(summary)s (cloned)", summary: old_values.summary)
+    _("%(summary)s (cloned)", summary: old_values.summary)
   addField clone, 'description',
-    _("Cloned from #%(id)s:\n----\n%(description)s",
-      id: old_values.id, description: old_values.description)
+    _("Cloned from #%(id)s:\n> %(description)s\n",
+      id: old_values.id,
+      description: old_values.description.split(/\r?\n/).join('\n> '))
   $('#ticket .description .searchable').before(clone)
   # clone from comment
   if old_values? and changes?
