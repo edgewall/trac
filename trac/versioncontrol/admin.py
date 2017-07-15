@@ -85,8 +85,8 @@ class VersionControlAdmin(Component):
 
     def get_reponames(self):
         rm = RepositoryManager(self.env)
-        return [reponame or '(default)' for reponame
-                in rm.get_all_repositories()]
+        return [reponame or '(default)'
+                for reponame in rm.get_all_repositories()]
 
     def _complete_repos(self, args):
         if len(args) == 1:
@@ -113,7 +113,7 @@ class VersionControlAdmin(Component):
     def _do_list(self):
         rm = RepositoryManager(self.env)
         values = []
-        for (reponame, info) in sorted(rm.get_all_repositories().iteritems()):
+        for reponame, info in sorted(rm.get_all_repositories().iteritems()):
             alias = ''
             if 'alias' in info:
                 alias = info['alias'] or '(default)'
@@ -143,8 +143,9 @@ class VersionControlAdmin(Component):
             repositories = [repos]
 
         for repos in sorted(repositories, key=lambda r: r.reponame):
+            pretty_name = repos.reponame or '(default)'
             printout(_('Resyncing repository history for %(reponame)s... ',
-                       reponame=repos.reponame or '(default)'))
+                       reponame=pretty_name))
             repos.sync(self._sync_feedback, clean=clean)
             for cnt, in self.env.db_query(
                     "SELECT count(rev) FROM revision WHERE repos=%s",
@@ -153,7 +154,7 @@ class VersionControlAdmin(Component):
                                   '%(num)s revisions cached.', num=cnt))
             if not isinstance(repos, CachedRepository):
                 printout(_("%(reponame)s is not a cached repository.",
-                           reponame=repos.reponame or '(default)'))
+                           reponame=pretty_name))
         printout(_('Done.'))
 
     def _sync_feedback(self, rev):
@@ -228,9 +229,9 @@ class RepositoryAdminPanel(Component):
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
                         name = req.args.get('name')
+                        pretty_name = name or '(default)'
                         resync = tag.code('trac-admin "%s" repository resync '
-                                          '"%s"' % (self.env.path,
-                                                    name or '(default)'))
+                                          '"%s"' % (self.env.path, pretty_name))
                         if 'dir' in changes:
                             msg = tag_('You should now run %(resync)s to '
                                        'synchronize Trac with the repository.',
@@ -241,11 +242,11 @@ class RepositoryAdminPanel(Component):
                                        'synchronize Trac with the repository.',
                                        resync=resync)
                             add_notice(req, msg)
-                        if name and name != path_info and not 'alias' in info:
+                        if name and name != path_info and 'alias' not in info:
                             cset_added = tag.code('trac-admin "%s" changeset '
                                                   'added "%s" $REV'
                                                   % (self.env.path,
-                                                     name or '(default)'))
+                                                     pretty_name))
                             msg = tag_('You will need to update your '
                                        'post-commit hook to call '
                                        '%(cset_added)s with the new '
@@ -266,6 +267,7 @@ class RepositoryAdminPanel(Component):
                 # Add a repository
                 if db_provider and req.args.get('add_repos'):
                     name = req.args.get('name')
+                    pretty_name = name or '(default)'
                     type_ = req.args.get('type')
                     # Avoid errors when copy/pasting paths
                     dir = normalize_whitespace(req.args.get('dir', ''))
@@ -276,21 +278,20 @@ class RepositoryAdminPanel(Component):
                         try:
                             db_provider.add_repository(name, dir, type_)
                         except self.env.db_exc.IntegrityError:
-                            name = name or '(default)'
                             raise TracError(_('The repository "%(name)s" '
-                                              'already exists.', name=name))
-                        name = name or '(default)'
+                                              'already exists.',
+                                              name=pretty_name))
                         add_notice(req, _('The repository "%(name)s" has been '
-                                          'added.', name=name))
+                                          'added.', name=pretty_name))
                         resync = tag.code('trac-admin "%s" repository resync '
-                                           '"%s"' % (self.env.path, name))
+                                          '"%s"' % (self.env.path, pretty_name))
                         msg = tag_('You should now run %(resync)s to '
                                    'synchronize Trac with the repository.',
                                    resync=resync)
                         add_notice(req, msg)
                         cset_added = tag.code('trac-admin "%s" changeset '
                                               'added "%s" $REV'
-                                              % (self.env.path, name))
+                                              % (self.env.path, pretty_name))
                         doc = tag.a(_("documentation"),
                                     href=req.href.wiki('TracRepositoryAdmin')
                                          + '#Synchronization')
@@ -305,16 +306,16 @@ class RepositoryAdminPanel(Component):
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
                     name = req.args.get('name')
+                    pretty_name = name or '(default)'
                     alias = req.args.get('alias')
                     if name is not None and alias is not None:
                         try:
                             db_provider.add_alias(name, alias)
                         except self.env.db_exc.IntegrityError:
                             raise TracError(_('The alias "%(name)s" already '
-                                              'exists.',
-                                              name=name or '(default)'))
+                                              'exists.', name=pretty_name))
                         add_notice(req, _('The alias "%(name)s" has been '
-                                          'added.', name=name or '(default)'))
+                                          'added.', name=pretty_name))
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('Missing arguments to add an '
                                        'alias.'))

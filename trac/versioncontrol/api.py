@@ -47,7 +47,7 @@ class InvalidConnector(TracError):
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
-    error = None # place holder for storing relevant error message
+    error = None  # place holder for storing relevant error message
 
     def get_supported_types():
         """Return the types of version control systems that are supported.
@@ -586,7 +586,7 @@ class RepositoryManager(Component):
         rtype = repoinfo.get('type') or self.default_repository_type
 
         # get a Repository for the reponame (use a thread-level cache)
-        with self.env.db_transaction: # prevent possible deadlock, see #4465
+        with self.env.db_transaction:  # prevent possible deadlock, see #4465
             with self._lock:
                 tid = get_thread_id()
                 if tid in self._cache:
@@ -665,7 +665,7 @@ class RepositoryManager(Component):
                 if repos is not None:
                     repositories.add(repos)
             except TracError:
-                pass # Skip invalid repositories
+                pass  # Skip invalid repositories
         return repositories
 
     def reload_repositories(self):
@@ -798,7 +798,7 @@ class RepositoryManager(Component):
                         self._connectors[type_] = keep
         if rtype in self._connectors:
             connector, prio = self._connectors[rtype]
-            if prio >= 0: # no error condition
+            if prio >= 0:  # no error condition
                 return connector
             else:
                 raise InvalidConnector(
@@ -1263,7 +1263,7 @@ class Changeset(object):
     MOVE = 'move'
 
     # change types which can have diff associated to them
-    DIFF_CHANGES = (EDIT, COPY, MOVE) # MERGE
+    DIFF_CHANGES = (EDIT, COPY, MOVE)  # MERGE
     OTHER_CHANGES = (ADD, DELETE)
     ALL_CHANGES = DIFF_CHANGES + OTHER_CHANGES
 
