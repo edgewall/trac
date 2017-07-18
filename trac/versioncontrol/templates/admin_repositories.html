@@ -145,6 +145,7 @@
                                           }|htmlattr}/></label>
           </div>
           # endif
+          # if 'alias' not in info:
           <div class="field">
             <label><input type="checkbox" name="sync_per_request" value="1"${
                         {'checked': info.sync_per_request,
@@ -164,6 +165,7 @@
               # endtrans
             </span>
           </div>
+          # endif
           <div class="field">
             <label><input type="checkbox" name="hidden" value="1"${
                         {'checked': info.hidden,
