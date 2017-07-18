@@ -80,7 +80,7 @@
               </div>
             </py:otherwise>
           </py:choose>
-          <div class="field">
+          <div class="field" py:if="'alias' not in info">
             <label><input type="checkbox" name="sync_per_request" value="1" checked="${info.sync_per_request or None}"
                           disabled="${not info.editable or None}" />
               Sync on every request

@@ -192,10 +192,19 @@ class RegressionTestTicket11186Alias(FunctionalTwillTestCaseSetup):
         tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % target)
         tc.submit()
         tc.find('The repository "%s" has been added.' % target)
+
+        # Add alias.
         tc.formvalue('trac-addalias', 'name', name)
         tc.formvalue('trac-addalias', 'alias', target)
         tc.submit()
         tc.find('The alias "%s" has been added.' % name)
+
+        # sync_per_request checkbox should not be shown on detail page.
+        tc.follow(name)
+        tc.notfind('<input type="checkbox" name="sync_per_request" value="1" />')
+
+        # Adding same alias again will raise a TracError.
+        tc.follow("\\bRepositories\\b")
         tc.formvalue('trac-addalias', 'name', name)
         tc.formvalue('trac-addalias', 'alias', target)
         tc.submit()
