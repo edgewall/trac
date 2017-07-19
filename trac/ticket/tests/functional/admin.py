@@ -207,12 +207,48 @@ class TestAdminMilestoneListing(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url)
         tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
                 % {'name': name1})
-        tc.find(r'<a href="/query\?group=status&amp;milestone=%(name)s">'
-                r'1</a>' % {'name': name1})
+        m1_query_link = r'<a href="/query\?group=status&amp;' \
+                        r'milestone=%(name)s">1</a>' % {'name': name1}
+        tc.find(m1_query_link)
         tc.find(r'<a href="/admin/ticket/milestones/%(name)s">%(name)s</a>'
                 % {'name': name2})
         tc.notfind(r'<a href="/query\?group=status&amp;milestone=%(name)s">'
                    r'0</a>' % {'name': name2})
+
+        apply_submit = '<input type="submit" name="apply" ' \
+                       'value="Apply changes" />'
+        clear_submit = '<input type="submit"[ \t\n]+title="Clear default ' \
+                       'ticket milestone and default retargeting milestone"' \
+                       '[ \t\n]+name="clear" value="Clear defaults" />'
+        tc.find(apply_submit)
+        tc.find(clear_submit)
+        tc.find('<input type="radio" name="ticket_default" value="%(name)s"/>'
+                % {'name': name1})
+        tc.find('<input type="radio" name="retarget_default" value="%(name)s"/>'
+                % {'name': name1})
+
+        # TICKET_ADMIN is required to change the ticket default and retarget
+        # default configuration options. TICKET_VIEW is required for the
+        # milestone tickets query link to be present.
+        try:
+            self._testenv.grant_perm('user', 'MILESTONE_ADMIN')
+            self._testenv.revoke_perm('anonymous', 'TICKET_VIEW')
+            self._tester.go_to_front()
+            self._tester.logout()
+            self._tester.login('user')
+            tc.go(milestone_url)
+            tc.notfind(apply_submit)
+            tc.notfind(clear_submit)
+            tc.find('<input type="radio" name="ticket_default" '
+                    'disabled="disabled" value="%(name)s"/>' % {'name': name1})
+            tc.find('<input type="radio" name="retarget_default" '
+                    'disabled="disabled" value="%(name)s"/>' % {'name': name1})
+            tc.notfind(m1_query_link)
+        finally:
+            self._testenv.revoke_perm('user', 'MILESTONE_ADMIN')
+            self._testenv.grant_perm('anonymous', 'TICKET_VIEW')
+            self._tester.logout()
+            self._tester.login('admin')
 
 
 class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):

@@ -13,6 +13,7 @@
 
 import unittest
 
+from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.admin import ComponentAdminPanel, MilestoneAdminPanel, \
@@ -115,26 +116,54 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         self.assertEqual(name, milestone.name)
 
     def test_set_default_milestone(self):
+        """Set default milestone."""
         name = 'milestone2'
         config_key = 'default_milestone'
-        map = MilestoneAdminPanel(self.env)
-        req = MockRequest(self.env, method='POST',
+        PermissionSystem(self.env).grant_permission('user1', 'TICKET_ADMIN')
+        req = MockRequest(self.env, authname='user1', method='POST',
                           args={'ticket_default': name, 'apply': True})
 
-        self.assertRaises(RequestDone, map.render_admin_panel, req,
-                          'ticket', 'milestone', None)
+        self.assertEqual('', self.env.config.get('ticket', config_key))
+        with self.assertRaises(RequestDone):
+            MilestoneAdminPanel(self.env).render_admin_panel(
+                req, 'ticket', 'milestone', None)
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
+    def test_set_default_milestone_requires_ticket_admin(self):
+        """Setting default milestone requires TICKET_ADMIN."""
+        PermissionSystem(self.env).grant_permission('user1', 'MILESTONE_ADMIN')
+        req = MockRequest(self.env, authname='user1', method='POST',
+                          args={'ticket_default': 'milestone1', 'apply': True})
+
+        self.assertNotIn('TICKET_ADMIN', req.perm)
+        with self.assertRaises(PermissionError):
+            MilestoneAdminPanel(self.env).render_admin_panel(
+                req, 'ticket', 'milestone', None)
+
     def test_set_default_retarget_to(self):
+        """Set default retarget milestone."""
         name = 'milestone2'
         config_key = 'default_retarget_to'
-        map = MilestoneAdminPanel(self.env)
-        req = MockRequest(self.env, method='POST',
+        PermissionSystem(self.env).grant_permission('user1', 'TICKET_ADMIN')
+        req = MockRequest(self.env, authname='user1', method='POST',
                           args={'retarget_default': name, 'apply': True})
 
-        self.assertRaises(RequestDone, map.render_admin_panel, req,
-                          'ticket', 'milestone', None)
+        self.assertEqual('', self.env.config.get('ticket', config_key))
+        with self.assertRaises(RequestDone):
+            MilestoneAdminPanel(self.env).render_admin_panel(
+                req, 'ticket', 'milestone', None)
         self.assertEqual(name, self.env.config.get('milestone', config_key))
+
+    def test_set_default_retarget_to_requires_ticket_admin(self):
+        """Setting default retarget milestone requires TICKET_ADMIN."""
+        PermissionSystem(self.env).grant_permission('user1', 'MILESTONE_ADMIN')
+        req = MockRequest(self.env, authname='user1', method='POST',
+                          args={'retarget_to': 'milestone1', 'apply': True})
+
+        self.assertNotIn('TICKET_ADMIN', req.perm)
+        with self.assertRaises(PermissionError):
+            MilestoneAdminPanel(self.env).render_admin_panel(
+                req, 'ticket', 'milestone', None)
 
     def test_remove_default_milestone(self):
         name = 'milestone2'
@@ -161,6 +190,28 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         self.assertEqual('list', data['view'])
         self.assertEqual('/trac.cgi/query?group=status&milestone=blah',
                          data['query_href']('blah'))
+
+    def test_user_with_milestone_admin_can_view(self):
+        """User with MILESTONE_ADMIN can view."""
+        PermissionSystem(self.env).grant_permission('user1', 'MILESTONE_ADMIN')
+        req = MockRequest(self.env, authname='user1')
+        rv = MilestoneAdminPanel(self.env).get_admin_panels(req)
+        self.assertEqual([('ticket', "Ticket System", 'milestones',
+                           "Milestones")], list(rv))
+
+    def test_user_with_ticket_admin_can_view(self):
+        """User with MILESTONE_VIEW and TICKET_ADMIN can view."""
+        PermissionSystem(self.env).grant_permission('user1', 'TICKET_ADMIN')
+        req = MockRequest(self.env, authname='user1')
+        rv = MilestoneAdminPanel(self.env).get_admin_panels(req)
+        self.assertEqual([('ticket', "Ticket System", 'milestones',
+                           "Milestones")], list(rv))
+
+    def test_user_without_milestone_or_ticket_admin_cannot_view(self):
+        """User without MILESTONE_ADMIN or TICKET_ADMIN cannot view."""
+        req = MockRequest(self.env, authname='user1')
+        rv = MilestoneAdminPanel(self.env).get_admin_panels(req)
+        self.assertEqual([], list(rv))
 
 
 class AbstractEnumTestCase(BaseTestCase):

@@ -35,7 +35,6 @@ class TicketAdminPanel(Component):
 
     _type = 'undefined'
     _label = N_("(Undefined)"), N_("(Undefined)")
-    _view_perms = ['TICKET_ADMIN']
 
     # i18n note: use gettext() whenever referring to the above as text labels,
     #            and don't use it whenever using them as field names (after
@@ -44,8 +43,7 @@ class TicketAdminPanel(Component):
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if all(perm in req.perm('admin', 'ticket/' + self._type)
-               for perm in self._view_perms):
+        if 'TICKET_ADMIN' in req.perm('admin', 'ticket/' + self._type):
             yield ('ticket', _('Ticket System'), self._type,
                    gettext(self._label[1]))
 
@@ -227,9 +225,15 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
     _label = N_("Milestone"), N_("Milestones")
-    _view_perms = TicketAdminPanel._view_perms + ['MILESTONE_VIEW']
 
     # TicketAdminPanel methods
+
+    def get_admin_panels(self, req):
+        perm = req.perm('admin', 'ticket/' + self._type)
+        if 'MILESTONE_ADMIN' in perm or \
+                'MILESTONE_VIEW' in perm and 'TICKET_ADMIN' in perm:
+            yield ('ticket', _('Ticket System'), self._type,
+                   gettext(self._label[1]))
 
     def _render_admin_panel(self, req, cat, page, milestone_name):
         perm_cache = req.perm('admin', 'ticket/' + self._type)
@@ -305,9 +309,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                       "removed."))
                     req.redirect(req.href.admin(cat, page))
 
-                # Set default milestone
+                # Set default ticket milestone and retarget milestone
                 elif 'apply' in req.args:
                     save = False
+                    perm_cache.require('TICKET_ADMIN')
                     name = req.args.get('ticket_default')
                     if name and name != ticket_default:
                         self.log.info("Setting default ticket "
@@ -325,8 +330,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self._save_config(req)
                         req.redirect(req.href.admin(cat, page))
 
-                # Clear default milestone
+                # Clear default ticket milestone and retarget milestone
                 elif 'clear' in req.args:
+                    perm_cache.require('TICKET_ADMIN')
                     self.log.info("Clearing default ticket milestone "
                                   "and default retarget milestone")
                     self.config.set('ticket', 'default_milestone', '')

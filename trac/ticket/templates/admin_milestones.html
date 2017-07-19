@@ -35,6 +35,8 @@
     #  set can_create = 'MILESTONE_CREATE' in perm
     #  set can_modify = 'MILESTONE_MODIFY' in perm
     #  set can_remove = 'MILESTONE_DELETE' in perm
+    #  set can_config = 'TICKET_ADMIN' in perm
+    #  set can_view_tickets = 'TICKET_VIEW' in perm
     <h2>
       # set nb_milestones
       #   if view == 'list':
@@ -117,19 +119,21 @@
               <td class="default">
                 <input type="radio" name="ticket_default"${
                      {'value': milestone.name,
-                      'checked': milestone.name == ticket_default
+                      'checked': milestone.name == ticket_default,
+                      'disabled': not can_config
                      }|htmlattr}/>
               </td>
               <td class="default">
                 <input type="radio" name="retarget_default"${
                      {'value': milestone.name,
-                      'checked': milestone.name == retarget_default
+                      'checked': milestone.name == retarget_default,
+                      'disabled': not can_config
                       }|htmlattr}/>
               </td>
                 # set ticket_count = num_tickets(milestone)
               <td class="num">
-                # if ticket_count == 0:
-                0
+                # if ticket_count == 0 or not can_view_tickets:
+                ${ticket_count}
                 # else:
                 <a href="${query_href(milestone.name)}">${ticket_count}</a>
                 # endif
@@ -139,13 +143,17 @@
           </tbody>
         </table>
         <div class="buttons">
+          # if can_config:
           <input type="submit" name="apply" value="${_('Apply changes')}" />
+          # endif
           # if can_remove:
           <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
           # endif
+          # if can_config:
           <input type="submit"
                  title="${_('Clear default ticket milestone and default retargeting milestone')}"
                  name="clear" value="${_('Clear defaults')}" />
+          # endif
         </div>
         <p class="help">
           #   trans
