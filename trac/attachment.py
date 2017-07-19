@@ -629,7 +629,10 @@ class AttachmentModule(Component):
             attachment = formatter.resource.child(self.realm, link)
         if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
             try:
-                model = Attachment(self.env, attachment)
+                Attachment(self.env, attachment)
+            except ResourceNotFound:
+                pass
+            else:
                 raw_href = get_resource_url(self.env, attachment,
                                             formatter.href, format='raw')
                 if ns.startswith('raw'):
@@ -642,8 +645,6 @@ class AttachmentModule(Component):
                                  href=href + params),
                            tag.a(u'\u200b', class_='trac-rawlink',
                                  href=raw_href + params, title=_("Download")))
-            except ResourceNotFound:
-                pass
             # FIXME: should be either:
             #
             # model = Attachment(self.env, attachment)
