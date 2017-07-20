@@ -36,7 +36,7 @@ try:
 except ImportError:
     genshi = None
 
-from distutils import log
+from distutils import log as distlog
 from distutils.cmd import Command
 from distutils.command.build import build as _build
 from distutils.errors import DistutilsOptionError
@@ -411,8 +411,8 @@ try:
 
             for idx, (locale, mo_file) in enumerate(mo_files):
                 js_file = js_files[idx]
-                log.info('generating messages javascript %r to %r',
-                         mo_file, js_file)
+                distlog.info('generating messages javascript %r to %r',
+                             mo_file, js_file)
 
                 with open(mo_file, 'rb') as infile:
                     t = Translations(infile, self.domain)
@@ -450,13 +450,13 @@ try:
 
         def run(self):
             for filename in self._get_po_files():
-                log.info('checking catalog %s', filename)
+                distlog.info('checking catalog %s', filename)
                 with open(filename) as f:
                     catalog = read_po(f, domain=self.domain)
                 for message in catalog:
                     for error in self._check_message(catalog, message):
-                        log.warning('%s:%d: %s', filename, message.lineno,
-                                    error)
+                        distlog.warn('%s:%d: %s', filename, message.lineno,
+                                     error)
 
         def _get_po_files(self):
             if self.input_file:
