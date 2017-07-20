@@ -1318,7 +1318,7 @@ class TicketModule(Component):
             if hasattr(manipulator, 'validate_comment'):
                 for message in manipulator.validate_comment(req, comment):
                     valid = False
-                    add_warning(req, tag_("The ticket %(field)s is invalid: "
+                    add_warning(req, tag_("The ticket %(comment)s is invalid: "
                                           "%(message)s",
                                           field=tag.strong(_('comment')),
                                           message=message))
