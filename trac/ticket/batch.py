@@ -183,7 +183,7 @@ class BatchModifyModule(Component):
                     valid = False
                     add_warning(req, tag_("The ticket %(comment)s is invalid: "
                                           "%(message)s",
-                                          field=tag.strong(_('comment')),
+                                          comment=tag.strong(_('comment')),
                                           message=message))
 
         tickets = []
