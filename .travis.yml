@@ -121,15 +121,27 @@ jobs:
     - stage: deploy
       script: skip
       deploy:
-        provider: pypi
-        user: edgewall-org
-        password:
-          secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
-        server: https://test.pypi.org/legacy/
-        os: linux
-        distributions: sdist bdist_wheel
-        skip_upload_docs: true
-        on:
-          repo: edgewall/trac
-          python: 2.7
-          tags: true
+        - provider: pypi
+          user: edgewall-org
+          password:
+            secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
+          server: https://test.pypi.org/legacy/
+          os: linux
+          distributions: sdist bdist_wheel
+          skip_upload_docs: true
+          on:
+            repo: edgewall/trac
+            python: 2.7
+            tags: true
+        - provider: pypi
+          user: travisci
+          password:
+            secure: cEG9N0j9rV26M698myyRBTnizC76mgy8PRyMNbWf2qxILPqkbnpYktbSy0CYlmJIb9wapgynojHhNem94Tmrj8c27c9wSNmHVu2I3o8G8yysD+aYAXeaJ9jVhPSjZRtQXN0r6wsdGeRUOTDk6Z9Es/ks/hvKfF79bea6X2Z0L0w=
+          server: https://trac.edgewall.org/pypi
+          os: linux
+          distributions: sdist bdist_wheel
+          skip_upload_docs: true
+          on:
+            repo: edgewall/trac
+            python: 2.7
+            all_branches: true
