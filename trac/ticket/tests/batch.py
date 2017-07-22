@@ -559,8 +559,8 @@ class BatchModifyTestCase(unittest.TestCase):
             module.process_request(req2)
 
         self.assertEqual(1, len(req2.chrome['warnings']))
-        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
-                         "Must be less than or equal to 5 characters",
+        self.assertEqual("The ticket comment is invalid: Must be less than or "
+                         "equal to 5 characters",
                          unicode(req2.chrome['warnings'][0]))
         self.assertEqual(1, len(model.Ticket(self.env, 1).get_changelog()))
         self.assertEqual(1, len(model.Ticket(self.env, 2).get_changelog()))
@@ -708,9 +708,8 @@ class BatchModifyTestCase(unittest.TestCase):
         with self.assertRaises(RequestDone):
             module.process_request(req3)
 
-        self.assertEqual(u"The ticket <strong>comment</strong> is invalid: "
-                         u"Word is not allowed in comment",
-                         unicode(req3.chrome['warnings'][0]))
+        self.assertEqual("The ticket comment is invalid: Word is not allowed "
+                         "in comment", unicode(req3.chrome['warnings'][0]))
         self.assertFieldValue(1, 'component', 'component4')
         self.assertFieldValue(2, 'component', 'component4')
 

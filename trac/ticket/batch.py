@@ -181,9 +181,8 @@ class BatchModifyModule(Component):
             if hasattr(manipulator, 'validate_comment'):
                 for message in manipulator.validate_comment(req, comment):
                     valid = False
-                    add_warning(req, tag_("The ticket %(comment)s is invalid: "
+                    add_warning(req, tag_("The ticket comment is invalid: "
                                           "%(message)s",
-                                          comment=tag.strong(_('comment')),
                                           message=message))
 
         tickets = []

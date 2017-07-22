@@ -311,8 +311,8 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
 
-        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
-                         "Must be less than or equal to 5 characters",
+        self.assertEqual("The ticket comment is invalid: Must be less than or "
+                         "equal to 5 characters",
                          unicode(req.chrome['warnings'][0]))
 
     def test_preview_comment_validate_max_comment_size(self):
@@ -334,8 +334,8 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
 
-        self.assertEqual("The ticket <strong>comment</strong> is invalid: "
-                         "Must be less than or equal to 5 characters",
+        self.assertEqual("The ticket comment is invalid: Must be less than or "
+                         "equal to 5 characters",
                          unicode(req.chrome['warnings'][0]))
 
     def _test_template_data_for_time_field(self, req, value, expected, format):
