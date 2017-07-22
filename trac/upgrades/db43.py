@@ -62,4 +62,4 @@ of permission_policies in the [trac] section.
         if print_upgrade_msg:
             printout(_("""\
 For more details see: http://trac.edgewall.org/wiki/TracUpgrade
-            """))
+"""))

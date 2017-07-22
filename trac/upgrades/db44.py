@@ -51,11 +51,13 @@ def do_upgrade(env, version, cursor):
                     failures.append(unicode(id_))
 
     if failures:
+        failures = ', '.join(failures)
+        # TRANSLATOR: Wrap message to 80 columns
         printout(_("""\
 Report(s) %(ids)s could not be upgraded and may need to be manually
 edited to avoid an "ambiguous column name" error. See %(url)s for more
 information.
-""", ids=', '.join(failures), url=url))
+""", ids=failures, url=url))
 
 
 pattern = r'(?<!\.)(description AS _description)((?=_)|\b)'
