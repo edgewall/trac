@@ -412,7 +412,8 @@ def s_dgettext(domain, msgid, **kwargs):
     See `s_gettext` for additional details.
 
     """
-    return dgettext(domain, ' '.join(msgid.split()), **kwargs)
+    msgid = ' '.join(msgid.split())  # avoid to extract ' '
+    return dgettext(domain, msgid, **kwargs)
 
 def s_gettext(msgid, **kwargs):
     """Retrieves translations for "squeezed" messages (in default domain).
@@ -428,7 +429,8 @@ def s_gettext(msgid, **kwargs):
     Genshi templates.
 
     """
-    return gettext(' '.join(msgid.split()), **kwargs)
+    msgid = ' '.join(msgid.split())  # avoid to extract ' '
+    return gettext(msgid, **kwargs)
 
 # TODO (1.3.2) do the same for pluralize (ngettext/dngettext_noop)
 
