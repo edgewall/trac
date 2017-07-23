@@ -22,7 +22,7 @@ from trac.db.api import DatabaseManager, get_column_names, \
 from trac.db_default import (schema as default_schema,
                              db_version as default_db_version)
 from trac.db.schema import Column, Table
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, get_dburi
 from trac.util.concurrency import ThreadLocal
 
 
@@ -553,7 +553,11 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.assertIsNotNone(self.dbm._cnx_pool)
         self.dbm.destroy_db()
         self.assertIsNone(self.dbm._cnx_pool)  # No connection pool
-        self.assertFalse(self.dbm.db_exists())
+        scheme, params = parse_connection_uri(get_dburi())
+        if scheme != 'postgres' or params.get('schema', 'public') != 'public':
+            self.assertFalse(self.dbm.db_exists())
+        else:
+            self.assertEqual([], self.dbm.get_table_names())
 
     def test_get_column_names(self):
         """Get column names for the default database."""

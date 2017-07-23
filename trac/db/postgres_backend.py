@@ -106,6 +106,7 @@ class PostgreSQLConnector(Component):
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
         self.required = True
+        params.setdefault('schema', 'public')
         return PostgreSQLConnection(path, log, user, password, host, port,
                                     params)
 
@@ -117,7 +118,7 @@ class PostgreSQLConnector(Component):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
         cursor = cnx.cursor()
-        if cnx.schema:
+        if cnx.schema and cnx.schema != 'public':
             cursor.execute('CREATE SCHEMA ' + _quote(cnx.schema))
             cursor.execute('SET search_path TO %s', (cnx.schema,))
         if schema is None:
@@ -131,7 +132,11 @@ class PostgreSQLConnector(Component):
                    port=None, params={}):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
-        cnx.execute('DROP SCHEMA %s CASCADE' % _quote(cnx.schema))
+        if cnx.schema and cnx.schema != 'public':
+            cnx.execute('DROP SCHEMA %s CASCADE' % _quote(cnx.schema))
+        else:
+            for table in cnx.get_table_names():
+                cnx.execute('DROP TABLE %s' % _quote(table))
         cnx.commit()
 
     def db_exists(self, path, log=None, user=None, password=None, host=None,
@@ -192,6 +197,7 @@ class PostgreSQLConnector(Component):
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = parse_connection_uri(db_url)
         db_params = db_prop.setdefault('params', {})
+        db_params.setdefault('schema', 'public')
         db_name = os.path.basename(db_prop['path'])
 
         args = [self.pg_dump_path, '-C', '--inserts', '-x', '-Z', '8']
@@ -203,12 +209,11 @@ class PostgreSQLConnector(Component):
             if '/' not in host:
                 args.extend(['-p', str(db_prop.get('port', '5432'))])
 
-        if 'schema' in db_params:
-            # Need quote for -n (--schema) option in PostgreSQL 8.2+
-            if re.search(r' 8\.[01]\.', self._version()):
-                args.extend(['-n', db_params['schema']])
-            else:
-                args.extend(['-n', '"%s"' % db_params['schema']])
+        # Need quote for -n (--schema) option in PostgreSQL 8.2+
+        if re.search(r' 8\.[01]\.', self._version()):
+            args.extend(['-n', db_params['schema']])
+        else:
+            args.extend(['-n', '"%s"' % db_params['schema']])
 
         dest_file += ".gz"
         args.extend(['-f', dest_file, db_name])
@@ -258,13 +263,13 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
                                               port))
 
         cnx.set_client_encoding('UNICODE')
-        self.schema = None
-        if 'schema' in params:
-            self.schema = params['schema']
+        self.schema = params.get('schema', 'public')
+        if self.schema != 'public':
             try:
                 cnx.cursor().execute('SET search_path TO %s', (self.schema,))
                 cnx.commit()
             except (DataError, ProgrammingError):
+                # probably the schema doesn't exist
                 cnx.rollback()
         ConnectionWrapper.__init__(self, cnx, log)
 
@@ -293,8 +298,8 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         if (self._version or '').startswith(('8.0.', '8.1.')):
             cursor = self.cursor()
             cursor.execute("""SELECT table_name FROM information_schema.tables
-                              WHERE table_schema=current_schema()
-                              AND table_name=%s""", (table,))
+                              WHERE table_schema=%s AND table_name=%s
+                              """, (self.schema, table))
             for row in cursor:
                 if row[0] == table:
                     self.execute("DROP TABLE " + self.quote(table))
@@ -341,8 +346,6 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
         return _quote(identifier)
 
     def reset_tables(self):
-        if not self.schema:
-            return []
         # reset sequences
         # information_schema.sequences view is available in
         # PostgreSQL 8.2+ however Trac supports PostgreSQL 8.0+, uses
