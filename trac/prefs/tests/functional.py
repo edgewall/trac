@@ -154,8 +154,8 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
 
         babel_hint = "Install Babel for extended language support."
         catalog_hint = "Message catalogs have not been compiled."
-        nonadmin_hint = r"Please contact your\s+Trac administrator\s+" \
-                        r"to enable existing translations."
+        nonadmin_hint = r'\s+'.join("Please contact your Trac administrator "
+                                    "to enable existing translations".split())
         language_select = '<select id="language" name="language">'
         disabled_language_select = \
             '<select id="language" name="language" disabled="disabled" ' \
