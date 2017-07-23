@@ -79,37 +79,25 @@
             # endtrans
           </p>
           # else:
-          <p class="hint" xml:lang="en">
+          <p class="hint">
+            ## Don't use trans here because of no available languages
             # if 'TRAC_ADMIN' in req.perm:
-            #   set babel
-            <a href="http://babel.edgewall.org">Babel</a>
-            #   endset
-            #   set trac_install
-            <a href="${href.wiki('TracInstall')}">TracInstall</a>
-            #   endset
-            #   trans babel, trac_install
-
             Trac has been localized to more than a dozen of languages
-            but in order to be able to use them, the ${babel} package
+            but in order to be able to use them, the
+            <a href="http://babel.edgewall.org">Babel</a> package
             needs to be present when installing Trac. See
-            ${trac_install} for details.
-
-            #   endtrans
+            <a href="${href.wiki('TracInstall')}">TracInstall</a>
+            for details.
             # else:
-            #   set trac_admin = _("Trac administrator")
             #   set project_admin
             #     if project.admin:
-            <a href="mailto:${project.admin}">${trac_admin}</a>
+            <a href="mailto:${project.admin}">Trac administrator</a>
             #     else:
-            ${trac_admin}
+            Trac administrator
             #     endif
             #   endset
-            #   trans project_admin
-
             Please contact your ${project_admin} to enable existing
             translations.
-
-            #   endtrans
             # endif
           </p>
           # endif
