@@ -25,8 +25,11 @@
                             desc=desc)}">${entry.name}</a>
   </td>
   <td class="size">
-    <span title="${_('%(size)s bytes', size=entry.content_length)}">${
+    # if entry.content_length is not none:
+    <span title="${ngettext('%(num)d byte', '%(num)d bytes',
+                            num=entry.content_length)}">${
       pretty_size(entry.content_length)}</span>
+    # endif
     # if entry.raw_href:
     <a href="${entry.raw_href}"
        class="${'trac-ziplink' if isdir else 'trac-rawlink'}"

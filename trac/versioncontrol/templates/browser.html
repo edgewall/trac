@@ -271,7 +271,8 @@
         <tr>
           <td colspan="2">
             <strong>${_("File size:")}</strong>
-            <span title="${_('%(size)s bytes', size=file.size)}">${
+            <span title="${ngettext('%(num)d byte', '%(num)d bytes',
+                                    num=file.size)}">${
               pretty_size(file.size)}</span>
           </td>
         </tr>

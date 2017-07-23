@@ -27,7 +27,7 @@
 #  endset
 #   with
 #     set size
-<span title="${_('%(size)s bytes', size=attachment.size)}">${
+<span title="${ngettext('%(num)d byte', '%(num)d bytes', num=attachment.size)}">${
   pretty_size(attachment.size)}</span>
 #     endset
 #     set author = authorinfo(attachment.author)

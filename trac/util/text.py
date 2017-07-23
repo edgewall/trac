@@ -736,8 +736,8 @@ def pretty_size(size, format='%.1f'):
 
     jump = 1024
     if size < jump:
-        from trac.util.translation import _
-        return _('%(size)s bytes', size=size)
+        from trac.util.translation import ngettext
+        return ngettext("%(num)d byte", "%(num)d bytes", num=size)
 
     units = ['KB', 'MB', 'GB', 'TB']
     i = 0

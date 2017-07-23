@@ -105,7 +105,8 @@
           <tr>
             <th scope="col" i18n:msg="file,size,author,date">
               File $attachment.filename, <!--!
-              --><span title="${_('%(size)s bytes', size=attachment.size)}"><!--!
+              --><span title="${ngettext('%(num)d byte', '%(num)d bytes',
+                                         num=attachment.size)}"><!--!
               -->${pretty_size(attachment.size)}</span> <!--!
               -->(added by ${authorinfo(attachment.author)}, ${pretty_dateinfo(attachment.date)})
             </th>
