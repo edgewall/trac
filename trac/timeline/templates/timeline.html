@@ -43,25 +43,13 @@
           # set authors_input
           <input type="text" size="16" name="authors" value="${authors}" />
           # endset
-          # set view_from_label
-          <label>
-            ${tag_("View changes from %(fromdate)s",
-            fromdate=fromdate_input)}
-          </label>
-          # endset
-          # set back_to_label
-          <label>
-            ${tag_("going back %(daysback)s days", daysback=daysback_input)}
-          </label>
-          # endset
-          # set by_author_label
-          <label>
-            ${tag_("by author %(authors)s", authors=authors_input)}
-          </label>
-          # endset
-          # trans view_from_label, back_to_label, by_author_label
+          # trans fromdate=fromdate_input, daysback=daysback_input, authors=authors_input
 
-          ${view_from_label} <br /> ${back_to_label} <br /> ${by_author_label}
+          <label>View changes from ${fromdate}</label>
+          <br />
+          <label>going back ${daysback} days</label>
+          <br />
+          <label>by author ${authors}</label>
 
           # endtrans
         </div>

@@ -88,19 +88,10 @@
           <input type="text" id="stop_rev" name="stop_rev"
                  value="${stop_rev}" size="5" />
           # endset
-          # set start_label
-          <label>
-            ${tag_("View log starting at %(start)s", start=input_start)}
-          </label>
-          # endset
-          # set end_label
-          <label>
-            ${tag_("back to %(end)s", end=input_end)}
-          </label>
-          # endset
-          # trans start_label, end_label
+          # trans start=input_start, end=input_end
 
-          ${start_label} and ${end_label}
+          <label>View log starting at ${start}</label>
+          <label>and back to ${end}</label>
 
           # endtrans
           <br />
