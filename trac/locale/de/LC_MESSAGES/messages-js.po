@@ -1,21 +1,22 @@
 # German translations for Trac.
-# Copyright (C) 2010 Edgewall Software
+# Copyright (C) 2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Daniel Musketa <daniel@musketa.de>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
+"Project-Id-Version: Trac 1.0\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2012-09-01 00:00+0200\n"
+"POT-Creation-Date: 2017-06-14 03:51+0000\n"
+"PO-Revision-Date: 2013-04-29 09:01+0000\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
-"Language-Team: de <LL@li.org>\n"
+"Language: de\n"
+"Language-Team: German (http://www.transifex.com/cboos/trac/language/de/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -76,7 +77,7 @@ msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr "Schließen"
 
@@ -101,34 +102,34 @@ msgid "Wk"
 msgstr "KW"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr "Zeit auswählen"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr "Zeit"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
 msgstr "Stunde"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr "Minute"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr "Sekunde"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr "Zeitzone"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
 msgstr "Jetzt"
 
@@ -140,11 +141,11 @@ msgstr "Es existiert bereits ein Filter für diese Eigenschaft"
 msgid "or"
 msgstr "oder"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:311
 msgid "yes"
 msgstr "ja"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:314
 msgid "no"
 msgstr "nein"
 
@@ -156,20 +157,20 @@ msgstr "zwischen"
 msgid "and"
 msgstr "und"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:342
 msgid " remove:"
 msgstr " entfernen:"
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:352
 msgid " add:"
 msgstr " hinzufügen:"
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr "Ticket %(id)s für Änderung auswählen"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
 msgstr "Auswahl für alle angezeigten Tickets dieser Gruppe umkehren"
 
@@ -177,39 +178,39 @@ msgstr "Auswahl für alle angezeigten Tickets dieser Gruppe umkehren"
 msgid "Link here"
 msgstr "Link hierher"
 
-#: trac/htdocs/js/wikitoolbar.js:56
+#: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: '''Example'''"
 msgstr "Fetter Text: '''Beispiel'''"
 
-#: trac/htdocs/js/wikitoolbar.js:59
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Kursiver Text: ''Beispiel''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
+#: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example =="
 msgstr "Überschrift: == Beispiel =="
 
-#: trac/htdocs/js/wikitoolbar.js:65
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "Link: [http://www.example.com/ Beispiel]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "Codeblock: {{{ beispiel }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "Horizontale Linie: ----"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "Neuer Absatz"
 
-#: trac/htdocs/js/wikitoolbar.js:77
+#: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: [[BR]]"
 msgstr "Zeilenumbuch: [[BR]]"
 
-#: trac/htdocs/js/wikitoolbar.js:80
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "Bild: [[Image()]]"
 
