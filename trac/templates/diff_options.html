@@ -17,9 +17,9 @@ Arguments:
 <label for="style">${_("View differences")}</label>
 <select id="style" name="style">
   <option ${{"selected": diff.style == 'inline'}|htmlattr}
-          value="inline">inline</option>
+          value="inline">${_("inline")}</option>
   <option ${{'selected': diff.style == 'sidebyside'}|htmlattr}
-          value="sidebyside">side by side</option>
+          value="sidebyside">${_("side by side")}</option>
 </select>
 <div class="field">
   # set input_radio
