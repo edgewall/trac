@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-26 05:17+0000\n"
+"POT-Creation-Date: 2017-07-28 03:49+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -2584,7 +2584,7 @@ msgstr "空白文字の変更"
 #: trac/templates/diff_options.html:66
 #: trac/templates/genshi/diff_options.html:61
 #: trac/ticket/templates/milestone_view.html:76
-#: trac/ticket/templates/query.html:341
+#: trac/ticket/templates/query.html:334
 #: trac/ticket/templates/report_view.html:94
 #: trac/ticket/templates/roadmap.html:44
 #: trac/timeline/templates/timeline.html:65
@@ -4911,73 +4911,65 @@ msgstr "or"
 msgid "none"
 msgstr "値なし"
 
-#: trac/ticket/templates/query.html:204
-msgid "between"
-msgstr "​"
-
-#: trac/ticket/templates/query.html:207
-msgid "and"
-msgstr "から"
-
-#: trac/ticket/templates/query.html:209
+#: trac/ticket/templates/query.html:203
 #, python-format
-msgid "%(between_label)s %(start_picker)s %(and_label)s %(end_picker)s"
-msgstr "%(between_label)s %(start_picker)s %(and_label)s %(end_picker)s"
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr "<label>%(start)s</label><label>から%(end)sの間</label>"
 
-#: trac/ticket/templates/query.html:228
+#: trac/ticket/templates/query.html:221
 msgid "And"
 msgstr "And"
 
-#: trac/ticket/templates/query.html:281
+#: trac/ticket/templates/query.html:274
 msgid "Columns"
 msgstr "カラム"
 
-#: trac/ticket/templates/query.html:296
+#: trac/ticket/templates/query.html:289
 msgid "Group results by"
 msgstr "結果のグループ化:"
 
-#: trac/ticket/templates/query.html:317
+#: trac/ticket/templates/query.html:310
 msgid "Show under each result:"
 msgstr "各検索結果の下に表示:"
 
-#: trac/ticket/templates/query.html:328
+#: trac/ticket/templates/query.html:321
 #: trac/ticket/templates/report_view.html:62
 msgid "Max items per page"
 msgstr "1ページに表示する件数"
 
-#: trac/ticket/templates/query.html:360
+#: trac/ticket/templates/query.html:353
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "このクエリに対応するレポート {%(id)s} を編集する"
 
-#: trac/ticket/templates/query.html:363
+#: trac/ticket/templates/query.html:356
 msgid "Edit query"
 msgstr "このクエリを編集"
 
-#: trac/ticket/templates/query.html:374
+#: trac/ticket/templates/query.html:367
 #: trac/ticket/templates/report_edit.html:117
 msgid "Save query"
 msgstr "このクエリを保存"
 
-#: trac/ticket/templates/query.html:376
+#: trac/ticket/templates/query.html:369
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "更新されたクエリをレポート {%(id)s} に保存する"
 
-#: trac/ticket/templates/query.html:378
+#: trac/ticket/templates/query.html:371
 msgid "Create new report from current query"
 msgstr "現在のクエリから新しいレポートを作成する"
 
-#: trac/ticket/templates/query.html:390
+#: trac/ticket/templates/query.html:383
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "このクエリに対応するレポート {%(id)s} を削除する"
 
-#: trac/ticket/templates/query.html:392
+#: trac/ticket/templates/query.html:385
 msgid "Delete query"
 msgstr "このクエリを削除"
 
-#: trac/ticket/templates/query.html:399
+#: trac/ticket/templates/query.html:392
 #, python-format
 msgid "%(note)s See %(page)s for help on using queries."
 msgstr "%(note)s カスタムクエリについて詳しくは %(page)s を参照してください。"
