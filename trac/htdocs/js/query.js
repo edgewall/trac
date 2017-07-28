@@ -10,10 +10,14 @@
     return label;
   }
 
+  function createTextHtml(name, size) {
+    return $.htmlFormat('<input type="text" name="$1" size="$2" />',
+                        name, size);
+  }
+
   // Create an <input type="text">
   function createText(name, size) {
-    return $($.htmlFormat('<input type="text" name="$1" size="$2">',
-                          name, size));
+    return $(createTextHtml(name, size));
   }
 
   // Create an <input type="checkbox">
@@ -208,20 +212,18 @@
             .append(createRadio(propertyName, "0", propertyName + "_off"))
             .append(" ").append(createLabel(_("no"), propertyName + "_off"));
         } else if (property.type == "time") {
-          var endElement = createText(propertyName + "_end", 14);
-          focusElement = createText(propertyName, 14);
+          var startElement = createTextHtml(propertyName, 14);
+          var endElement = createTextHtml(propertyName + "_end", 14);
+          td.append($.parseHTML(
+            _("<label>between %(start)s</label> <label>and %(end)s</label>",
+              {start: startElement, end: endElement})));
+          focusElement = td.find('input[name="' + propertyName + '"]');
           if (property.format == "datetime") {
-            focusElement.datetimepicker();
-            endElement.datetimepicker();
+            td.find('input').datetimepicker();
           } else if (property.format == "date" ||
                      property.format == "relative") {
-            focusElement.datepicker();
-            endElement.datepicker();
+            td.find('input').datepicker();
           }
-          td.append(createLabel(_("between"))).append(" ")
-            .append(focusElement).append(" ")
-            .append(createLabel(_("and"))).append(" ")
-            .append(endElement);
         }
         tr.append(td);
       } else {

@@ -200,16 +200,9 @@
                                  value="${end}" size="14"
                                  class="trac-${date_or_datetime}picker" />
                           #   endset
-                          #   set between_label
-                          <label>${_("between")}</label>
-                          #   endset
-                          #   set and_label
-                          <label>${_("and")}</label>
-                          #   endset
-                          #   trans between_label, and_label, start_picker, end_picker
+                          #   trans start=start_picker, end=end_picker
 
-                          ${between_label} ${start_picker}
-                          ${and_label} ${end_picker}
+                          <label>between ${start}</label> <label>and ${end}</label>
 
                           #   endtrans
                           # endif
