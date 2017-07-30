@@ -1,13 +1,13 @@
 # Japanese translations for Trac.
-# Copyright (C) 2010-2016 Edgewall Software
+# Copyright (C) 2010-2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jun Omae <jun66j5@gmail.com>, 2010-2016.
+# Jun Omae <jun66j5@gmail.com>, 2010-2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.1\n"
+"Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-28 03:49+0000\n"
+"POT-Creation-Date: 2017-07-30 03:15+0000\n"
 "PO-Revision-Date: 2010-05-25 18:45+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -302,14 +302,6 @@ msgstr "画像: [[Image()]]"
 #: trac/notification/templates/prefs_notification.html:77
 msgid "Drag rule to reorder"
 msgstr "ドラッグでこのルールの順番を変更する"
-
-#: trac/templates/error.html:14
-msgid "Switch to interactive view"
-msgstr "インタラクティブ表示に切り替える"
-
-#: trac/templates/error.html:19
-msgid "Switch to plain text view"
-msgstr "プレーンテキスト表示に切り替える"
 
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"

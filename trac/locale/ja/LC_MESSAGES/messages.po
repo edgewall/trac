@@ -1,18 +1,18 @@
 # Japanese (Japan) translations for Trac.
-# Copyright (C) 2007-2016 Edgewall Software
+# Copyright (C) 2007-2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 # Kyosuke Takayama <support@mc.neweb.ne.jp>, 2008,2009.
 # hirobe, 2008.
 # kabuchan, 2009.
 # IWAI, Masaharu <iwai@alib.jp>, 2009,2010.
-# Jun Omae <jun66j5@gmail.com>, 2010-2016.
+# Jun Omae <jun66j5@gmail.com>, 2010-2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.1\n"
+"Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-28 03:49+0000\n"
+"POT-Creation-Date: 2017-07-30 03:15+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -509,7 +509,7 @@ msgid "Invalid resource identifier '%(id)s'"
 msgstr "'%(id)s' は正しい識別子ではありません"
 
 #: trac/attachment.py:1083 trac/templates/environment_info.html:56
-#: trac/templates/environment_info.html:121 trac/templates/error.html:279
+#: trac/templates/environment_info.html:121 trac/templates/error.html:284
 #: trac/templates/genshi/environment_info.html:53
 #: trac/templates/genshi/environment_info.html:96
 #: trac/templates/genshi/error.html:173 trac/ticket/admin.py:202
@@ -1836,7 +1836,7 @@ msgstr "(%(err)s) のため、%(renderer)s を使った HTML プレビューに�
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "%(annotator)s が使えません: %(error)s"
 
-#: trac/mimeview/api.py:1054 trac/templates/error.html:257
+#: trac/mimeview/api.py:1054 trac/templates/error.html:262
 #: trac/templates/genshi/error.html:161
 msgid "Line"
 msgstr "行"
@@ -2734,7 +2734,7 @@ msgstr "共有の静的リソース"
 msgid "Section"
 msgstr "セクション"
 
-#: trac/templates/environment_info.html:122 trac/templates/error.html:280
+#: trac/templates/environment_info.html:122 trac/templates/error.html:285
 #: trac/templates/genshi/environment_info.html:97
 #: trac/templates/genshi/error.html:173
 msgid "Value"
@@ -2746,23 +2746,23 @@ msgstr "値"
 msgid "Error"
 msgstr "エラー"
 
-#: trac/templates/error.html:89 trac/templates/genshi/error.html:74
+#: trac/templates/error.html:94 trac/templates/genshi/error.html:74
 msgid "Create"
 msgstr "作成"
 
-#: trac/templates/error.html:104 trac/templates/genshi/error.html:89
+#: trac/templates/error.html:109 trac/templates/genshi/error.html:89
 msgid "Oops…"
 msgstr "エラー発生"
 
-#: trac/templates/error.html:106 trac/templates/genshi/error.html:91
+#: trac/templates/error.html:111 trac/templates/genshi/error.html:91
 msgid "Trac detected an internal error:"
 msgstr "内部エラーを検出しました。"
 
-#: trac/templates/error.html:111
+#: trac/templates/error.html:116
 msgid "Trac administrator"
 msgstr "Trac 管理者"
 
-#: trac/templates/error.html:119
+#: trac/templates/error.html:124
 #, python-format
 msgid ""
 "There was an internal error in Trac. It is recommended that you notify "
@@ -2770,64 +2770,64 @@ msgid ""
 " issue."
 msgstr "内部エラーが発生しました。このサイトの%(project_admin)sに連絡し、不具合の再現方法等を伝えることをお勧めします。"
 
-#: trac/templates/error.html:131
+#: trac/templates/error.html:136
 #, python-format
 msgid "To that end, you could %(create_a_ticket)s a ticket."
 msgstr "それには、「%(create_a_ticket)s」からチケットを作成します。"
 
-#: trac/templates/error.html:139 trac/templates/genshi/error.html:106
+#: trac/templates/error.html:144 trac/templates/genshi/error.html:106
 msgid "The action that triggered the error was:"
 msgstr "エラーを発生させた操作:"
 
-#: trac/templates/error.html:145 trac/templates/genshi/error.html:110
+#: trac/templates/error.html:150 trac/templates/genshi/error.html:110
 #: trac/templates/genshi/error.html:115
 msgid "This is probably a local installation issue."
 msgstr "おそらくインストール上の問題があります。"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:156
 #, python-format
 msgid ""
 "This is probably a local installation issue. You should "
 "%(create_a_ticket)s a ticket at the admin Trac to report the issue."
 msgstr "おそらくインストール上の問題があります。管理用の Trac に「%(create_a_ticket)s」からこの問題を報告してください。"
 
-#: trac/templates/error.html:162 trac/templates/genshi/error.html:122
+#: trac/templates/error.html:167 trac/templates/genshi/error.html:122
 msgid "Found a bug in Trac?"
 msgstr "Trac のバグを見つけましたか?"
 
-#: trac/templates/error.html:164 trac/templates/genshi/error.html:123
+#: trac/templates/error.html:169 trac/templates/genshi/error.html:123
 msgid ""
 "If you think this should work and you can reproduce the problem, you "
 "should consider creating a bug report."
 msgstr "この不具合が再現可能で動作すべきだと思う場合は、バグレポートの作成を検討してください。"
 
-#: trac/templates/error.html:175 trac/templates/genshi/error.html:126
+#: trac/templates/error.html:180 trac/templates/genshi/error.html:126
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
 msgstr "%(name)s プラグインに関係しているようです。"
 
-#: trac/templates/error.html:181 trac/templates/genshi/error.html:129
+#: trac/templates/error.html:186 trac/templates/genshi/error.html:129
 msgid "Note that the following plugins seem to be involved:"
 msgstr "次のプラグインに関係しているようです。"
 
-#: trac/templates/error.html:189 trac/templates/genshi/error.html:133
+#: trac/templates/error.html:194 trac/templates/genshi/error.html:133
 msgid "Please report this issue to the plugin maintainer."
 msgstr "プラグインのメンテナにこの問題を報告してください。"
 
-#: trac/templates/error.html:198
+#: trac/templates/error.html:203
 msgid "searching"
 msgstr "検索"
 
-#: trac/templates/error.html:201
+#: trac/templates/error.html:206
 #, python-format
 msgid "%(searching)s for similar issues"
 msgstr "似た問題の%(searching)s"
 
-#: trac/templates/error.html:205
+#: trac/templates/error.html:210
 msgid "mailing list"
 msgstr "メーリングリスト"
 
-#: trac/templates/error.html:208
+#: trac/templates/error.html:213
 #, python-format
 msgid ""
 "Before you do that, though, please first try "
@@ -2839,44 +2839,48 @@ msgstr ""
 "実際に報告を行なう前に、既に同じような問題が報告されていないか「%(searching_for_similar_issues)s」を試してください。また"
 " Trac のインストールや設定に関する質問は、チケットではなく%(mailing_list)sを確認してみてください。"
 
-#: trac/templates/error.html:221 trac/templates/genshi/error.html:144
+#: trac/templates/error.html:226 trac/templates/genshi/error.html:144
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report describing the problem and "
 "explain how to reproduce it."
 msgstr "そうでない場合は、問題の詳細と再現手順を「%(create)s」からバグレポートを作成してください。"
 
-#: trac/templates/error.html:231 trac/templates/genshi/error.html:148
+#: trac/templates/error.html:236 trac/templates/genshi/error.html:148
 msgid "Python Traceback"
 msgstr "Python トレースバック"
 
-#: trac/templates/error.html:233 trac/templates/genshi/error.html:149
+#: trac/templates/error.html:238 trac/templates/genshi/error.html:149
 msgid "Most recent call last:"
 msgstr "後方のものほど最近の呼出となります:"
 
-#: trac/templates/error.html:244
+#: trac/templates/error.html:249
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in"
 msgstr "File \"%(file)s\", line %(line)s, in"
 
-#: trac/templates/error.html:254 trac/templates/genshi/error.html:159
+#: trac/templates/error.html:259 trac/templates/genshi/error.html:159
 msgid "Code fragment:"
 msgstr "近辺のコード:"
 
-#: trac/templates/error.html:276 trac/templates/genshi/error.html:171
+#: trac/templates/error.html:281 trac/templates/genshi/error.html:171
 msgid "Local variables:"
 msgstr "ローカル変数:"
 
-#: trac/templates/error.html:301 trac/templates/genshi/error.html:185
+#: trac/templates/error.html:306 trac/templates/genshi/error.html:185
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
 msgstr "File \"%(file)s\", line %(line)s, in %(function)s"
 
-#: trac/templates/error.html:316 trac/templates/genshi/error.html:188
+#: trac/templates/error.html:321 trac/templates/genshi/error.html:188
 msgid "Switch to plain text view"
 msgstr "プレーンテキスト表示に切り替える"
 
-#: trac/templates/error.html:330
+#: trac/templates/error.html:323
+msgid "Switch to interactive view"
+msgstr "インタラクティブ表示に切り替える"
+
+#: trac/templates/error.html:338
 #, python-format
 msgid "%(trac_guide)s &mdash; The Trac User and Administration Guide"
 msgstr "%(trac_guide)s — Trac ユーザ/管理者ガイド"
