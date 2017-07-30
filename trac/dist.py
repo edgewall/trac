@@ -475,13 +475,64 @@ try:
             return sorted(files)
 
         def _check_message(self, catalog, message):
-            errors = [e for e in message.check(catalog)]
+            for e in message.check(catalog):
+                yield e
+            for e in check_markup(catalog, message):
+                yield e
             if genshi: # TODO (1.5.1) remove
                 try:
                     check_genshi_markup(catalog, message)
                 except TranslationError as e:
-                    errors.append(e)
-            return errors
+                    yield e
+
+    def check_markup(catalog, message):
+        """Verify markups in the translation."""
+        def to_array(value):
+            if not isinstance(value, (list, tuple)):
+                value = (value,)
+            return value
+        msgids = to_array(message.id)
+        msgstrs = to_array(message.string)
+        for msgid_idx, msgid in enumerate(msgids):
+            msgid_name = 'msgid' if msgid_idx == 0 else 'msgid_plural'
+            for msgstr_idx, msgstr in enumerate(msgstrs):
+                if msgid and msgstr and msgid != msgstr:
+                    msgstr_name = 'msgstr' if len(msgids) == 1 else \
+                                  'msgstr[%d]' % msgstr_idx
+                    for e in _check_markup_0(msgid, msgid_name, msgstr,
+                                             msgstr_name):
+                        yield e
+
+    def _check_markup_0(msgid, msgid_name, msgstr, msgstr_name):
+        from xml.etree import ElementTree
+
+        def count_tags(text):
+            text = '<html>\n%s\n</html>' % text.encode('utf-8')
+            counts = {}
+            for event in ElementTree.iterparse(io.BytesIO(text)):
+                tag = event[1].tag
+                counts.setdefault(tag, 0)
+                counts[tag] += 1
+            counts['html'] -= 1
+            return counts
+
+        try:
+            msgid_counts = count_tags(msgid)
+        except ElementTree.ParseError:
+            return
+        try:
+            msgstr_counts = count_tags(msgstr)
+        except ElementTree.ParseError as e:
+            yield TranslationError(e)
+            return
+
+        for tag in (set(msgid_counts) | set(msgstr_counts)):
+            msgid_count = msgid_counts.get(tag, 0)
+            msgstr_count = msgstr_counts.get(tag, 0)
+            if msgid_count != msgstr_count:
+                yield TranslationError(
+                    "mismatched '%s' tag between %s and %s (%d != %d)" %
+                    (tag, msgid_name, msgstr_name, msgid_count, msgstr_count))
 
     def write_js(fileobj, catalog, domain, locale):
         from trac.util.presentation import to_json
