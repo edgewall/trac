@@ -36,15 +36,20 @@
           return true;
         });
         $("#tbtoggle").click(function() {
-          if (this.value.indexOf("interactive") < 0) {
-            this.value = j_("Switch to interactive view");
+          var $this = $(this);
+          var plaintext = $this.children('.plaintext');
+          var interactive = $this.children('.interactive');
+          if (plaintext.is(':visible')) {
             $("#traceback ul").fadeOut("fast", function() {
               $("#traceback pre").fadeIn("fast");
+              plaintext.hide();
+              interactive.show();
             });
           } else {
-            this.value = j_("Switch to plain text view");
             $("#traceback pre").fadeOut("fast", function() {
               $("#traceback ul").fadeIn("fast");
+              plaintext.show();
+              interactive.hide();
             });
           }
           return false;
@@ -312,8 +317,11 @@
           #   endif
         </pre>
         <p style="display: none">
-          <input type="button" id="tbtoggle"
-                 value="${_('Switch to plain text view')}"/>
+          <button id="tbtoggle" class="trac-button">
+            <span class="plaintext">${_('Switch to plain text view')}</span>
+            <span class="interactive" style="display:none">${
+              _('Switch to interactive view')}</span>
+          </button>
         </p>
       </div>
       #     endif
