@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-28 03:49+0000\n"
+"POT-Creation-Date: 2017-07-30 03:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -487,7 +487,7 @@ msgid "Invalid resource identifier '%(id)s'"
 msgstr ""
 
 #: trac/attachment.py:1083 trac/templates/environment_info.html:56
-#: trac/templates/environment_info.html:121 trac/templates/error.html:279
+#: trac/templates/environment_info.html:121 trac/templates/error.html:284
 #: trac/templates/genshi/environment_info.html:53
 #: trac/templates/genshi/environment_info.html:96
 #: trac/templates/genshi/error.html:173 trac/ticket/admin.py:202
@@ -1717,7 +1717,7 @@ msgstr ""
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr ""
 
-#: trac/mimeview/api.py:1054 trac/templates/error.html:257
+#: trac/mimeview/api.py:1054 trac/templates/error.html:262
 #: trac/templates/genshi/error.html:161
 msgid "Line"
 msgstr ""
@@ -2596,7 +2596,7 @@ msgstr ""
 msgid "Section"
 msgstr ""
 
-#: trac/templates/environment_info.html:122 trac/templates/error.html:280
+#: trac/templates/environment_info.html:122 trac/templates/error.html:285
 #: trac/templates/genshi/environment_info.html:97
 #: trac/templates/genshi/error.html:173
 msgid "Value"
@@ -2608,23 +2608,23 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: trac/templates/error.html:89 trac/templates/genshi/error.html:74
+#: trac/templates/error.html:94 trac/templates/genshi/error.html:74
 msgid "Create"
 msgstr ""
 
-#: trac/templates/error.html:104 trac/templates/genshi/error.html:89
+#: trac/templates/error.html:109 trac/templates/genshi/error.html:89
 msgid "Oops…"
 msgstr ""
 
-#: trac/templates/error.html:106 trac/templates/genshi/error.html:91
+#: trac/templates/error.html:111 trac/templates/genshi/error.html:91
 msgid "Trac detected an internal error:"
 msgstr ""
 
-#: trac/templates/error.html:111
+#: trac/templates/error.html:116
 msgid "Trac administrator"
 msgstr ""
 
-#: trac/templates/error.html:119
+#: trac/templates/error.html:124
 #, python-format
 msgid ""
 "There was an internal error in Trac. It is recommended that you notify "
@@ -2632,64 +2632,64 @@ msgid ""
 " issue."
 msgstr ""
 
-#: trac/templates/error.html:131
+#: trac/templates/error.html:136
 #, python-format
 msgid "To that end, you could %(create_a_ticket)s a ticket."
 msgstr ""
 
-#: trac/templates/error.html:139 trac/templates/genshi/error.html:106
+#: trac/templates/error.html:144 trac/templates/genshi/error.html:106
 msgid "The action that triggered the error was:"
 msgstr ""
 
-#: trac/templates/error.html:145 trac/templates/genshi/error.html:110
+#: trac/templates/error.html:150 trac/templates/genshi/error.html:110
 #: trac/templates/genshi/error.html:115
 msgid "This is probably a local installation issue."
 msgstr ""
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:156
 #, python-format
 msgid ""
 "This is probably a local installation issue. You should "
 "%(create_a_ticket)s a ticket at the admin Trac to report the issue."
 msgstr ""
 
-#: trac/templates/error.html:162 trac/templates/genshi/error.html:122
+#: trac/templates/error.html:167 trac/templates/genshi/error.html:122
 msgid "Found a bug in Trac?"
 msgstr ""
 
-#: trac/templates/error.html:164 trac/templates/genshi/error.html:123
+#: trac/templates/error.html:169 trac/templates/genshi/error.html:123
 msgid ""
 "If you think this should work and you can reproduce the problem, you "
 "should consider creating a bug report."
 msgstr ""
 
-#: trac/templates/error.html:175 trac/templates/genshi/error.html:126
+#: trac/templates/error.html:180 trac/templates/genshi/error.html:126
 #, python-format
 msgid "Note that the %(name)s plugin seems to be involved."
 msgstr ""
 
-#: trac/templates/error.html:181 trac/templates/genshi/error.html:129
+#: trac/templates/error.html:186 trac/templates/genshi/error.html:129
 msgid "Note that the following plugins seem to be involved:"
 msgstr ""
 
-#: trac/templates/error.html:189 trac/templates/genshi/error.html:133
+#: trac/templates/error.html:194 trac/templates/genshi/error.html:133
 msgid "Please report this issue to the plugin maintainer."
 msgstr ""
 
-#: trac/templates/error.html:198
+#: trac/templates/error.html:203
 msgid "searching"
 msgstr ""
 
-#: trac/templates/error.html:201
+#: trac/templates/error.html:206
 #, python-format
 msgid "%(searching)s for similar issues"
 msgstr ""
 
-#: trac/templates/error.html:205
+#: trac/templates/error.html:210
 msgid "mailing list"
 msgstr ""
 
-#: trac/templates/error.html:208
+#: trac/templates/error.html:213
 #, python-format
 msgid ""
 "Before you do that, though, please first try "
@@ -2699,44 +2699,48 @@ msgid ""
 "instead of creating a ticket."
 msgstr ""
 
-#: trac/templates/error.html:221 trac/templates/genshi/error.html:144
+#: trac/templates/error.html:226 trac/templates/genshi/error.html:144
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report describing the problem and "
 "explain how to reproduce it."
 msgstr ""
 
-#: trac/templates/error.html:231 trac/templates/genshi/error.html:148
+#: trac/templates/error.html:236 trac/templates/genshi/error.html:148
 msgid "Python Traceback"
 msgstr ""
 
-#: trac/templates/error.html:233 trac/templates/genshi/error.html:149
+#: trac/templates/error.html:238 trac/templates/genshi/error.html:149
 msgid "Most recent call last:"
 msgstr ""
 
-#: trac/templates/error.html:244
+#: trac/templates/error.html:249
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in"
 msgstr ""
 
-#: trac/templates/error.html:254 trac/templates/genshi/error.html:159
+#: trac/templates/error.html:259 trac/templates/genshi/error.html:159
 msgid "Code fragment:"
 msgstr ""
 
-#: trac/templates/error.html:276 trac/templates/genshi/error.html:171
+#: trac/templates/error.html:281 trac/templates/genshi/error.html:171
 msgid "Local variables:"
 msgstr ""
 
-#: trac/templates/error.html:301 trac/templates/genshi/error.html:185
+#: trac/templates/error.html:306 trac/templates/genshi/error.html:185
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
 msgstr ""
 
-#: trac/templates/error.html:316 trac/templates/genshi/error.html:188
+#: trac/templates/error.html:321 trac/templates/genshi/error.html:188
 msgid "Switch to plain text view"
 msgstr ""
 
-#: trac/templates/error.html:330
+#: trac/templates/error.html:323
+msgid "Switch to interactive view"
+msgstr ""
+
+#: trac/templates/error.html:338
 #, python-format
 msgid "%(trac_guide)s &mdash; The Trac User and Administration Guide"
 msgstr ""
