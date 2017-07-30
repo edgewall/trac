@@ -732,7 +732,7 @@ table.wiki tbody tr.odd { background-color: #f7f7f7 }
 .wikitoolbar a#img { background-position: 0 -128px }
 
 /* Textarea resizer */
-div.trac-resizable { display: table; width: 100% }
+div.trac-resizable { display: inline-table; width: 100% }
 div.trac-resizable > div { display: table-cell }
 div.trac-resizable textarea { display: block; margin-bottom: 0 }
 div.trac-grip {
