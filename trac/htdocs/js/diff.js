@@ -25,7 +25,7 @@
     var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
     var title = "";
     if (inline)
-      title = $(ths[2]).text();
+      title = $('em', ths[2]).text();
 
     for (var i = 0; i < table.tBodies.length; i++) {
       var tBody = table.tBodies[i];
@@ -43,7 +43,7 @@
         oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
         if (tBody.className == "skipped") {
           if (inline)
-            title = $(tBody.rows[0].cells[2]).text();
+            title = $('em', tBody.rows[0].cells[2]).text();
           continue;
         }
       }
