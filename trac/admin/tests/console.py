@@ -696,27 +696,35 @@ class TracadminNoEnvTestCase(TracAdminTestCaseBase):
 
 class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
 
-    def setUp(self):
-        self.env = EnvironmentStub(enable=['%s.UnicodeHelpCommand' %
-                                           self.__module__])
+    unicode_help_command = None
 
-    def tearDown(self):
-        self.env.reset_db()
-
-    def test_unicode_help(self):
-        unicode_help = u'Hélp text with unicöde charàcters'
-
+    @classmethod
+    def setUpClass(cls):
         class UnicodeHelpCommand(Component):
             implements(IAdminCommandProvider)
+
+            unicode_help = u'Hélp text with unicöde charàcters'
+
             def get_admin_commands(self):
-                yield ('unicode-help', '', unicode_help,
+                yield ('unicode-help', '', self.unicode_help,
                        None, self._cmd)
+
             def _cmd(self):
                 pass
 
+        cls.unicode_help_command = UnicodeHelpCommand
+
+    @classmethod
+    def tearDownClass(cls):
+        ComponentMeta.deregister(cls.unicode_help_command)
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_unicode_help(self):
         macro = TracAdminHelpMacro(self.env)
         help = unicode(macro.expand_macro(None, None, 'unicode-help'))
-        self.assertIn(unicode_help, help)
+        self.assertIn(self.unicode_help_command.unicode_help, help)
 
     def test_invalid_command(self):
         macro = TracAdminHelpMacro(self.env)
