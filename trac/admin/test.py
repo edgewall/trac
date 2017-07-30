@@ -80,6 +80,8 @@ def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):
 
 class TracAdminTestCaseBase(unittest.TestCase):
 
+    expected_results_filename = 'console-tests.txt'
+
     @classmethod
     def setUpClass(cls):
         cls.environ = os.environ.copy()
@@ -94,7 +96,7 @@ class TracAdminTestCaseBase(unittest.TestCase):
     def expected_results_file(self):
         results_file = sys.modules[self.__class__.__module__].__file__
         return os.path.join(os.path.dirname(results_file),
-                            'console-tests.txt')
+                            self.expected_results_filename)
 
     @property
     def expected_results(self):

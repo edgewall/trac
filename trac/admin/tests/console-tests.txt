@@ -10,6 +10,7 @@ initenv                Create and initialize a new environment
 attachment add         Attach a file to a resource
 attachment export      Export an attachment from a resource to file or stdout
 attachment list        List attachments of a resource
+attachment move        Rename or move an attachment to another resource
 attachment remove      Remove an attachment from a resource
 changeset added        Notify trac about changesets added to a repository
 changeset modified     Notify trac about changesets modified in a repository
@@ -84,13 +85,6 @@ wiki remove            Remove wiki page
 wiki rename            Rename wiki page
 wiki replace           Replace content of wiki pages from files (DANGEROUS!)
 wiki upgrade           Upgrade default wiki pages to current version
-===== test_attachment_list_empty =====
-
-Name  Size  Author  Date  Description
--------------------------------------
-
-===== test_attachment_add_nonexistent_resource =====
-ResourceNotFound: NonExistentPage doesn't exist, can't create attachment
 ===== test_config_get =====
 Test project
 ===== test_config_set =====

@@ -186,29 +186,6 @@ class TracadminTestCase(TracAdminTestCaseBase):
     else:
         test_get_console_locale = _test_get_console_locale_without_babel
 
-    # Attachment tests
-
-    def test_attachment_list_empty(self):
-        """
-        Tests the 'attachment list' command in trac-admin, on a wiki page that
-        doesn't have any attachments.
-        """
-        # FIXME: Additional tests should be written for the other 'attachment'
-        #        commands. This requires being able to control the current
-        #        time, which in turn would require centralizing the time
-        #        provider, for example in the environment object.
-        rv, output = self.execute('attachment list wiki:WikiStart')
-        self.assertEqual(0, rv, output)
-        self.assertExpectedResult(output)
-
-    def test_attachment_add_nonexistent_resource(self):
-        """Tests the 'attachment add' command in trac-admin, on a non-existent
-        resource."""
-        rv, output = self.execute('attachment add wiki:NonExistentPage "%s"'
-                                  % __file__)
-        self.assertEqual(2, rv, output)
-        self.assertExpectedResult(output)
-
     # Config tests
 
     def test_config_get(self):

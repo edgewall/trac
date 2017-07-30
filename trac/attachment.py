@@ -60,7 +60,9 @@ class InvalidAttachment(TracError):
 
 class IAttachmentChangeListener(Interface):
     """Extension point interface for components that require
-    notification when attachments are created or deleted."""
+    notification when attachments are created, deleted, renamed
+    or reparented.
+    """
 
     def attachment_added(attachment):
         """Called when an attachment is added."""
@@ -68,8 +70,16 @@ class IAttachmentChangeListener(Interface):
     def attachment_deleted(attachment):
         """Called when an attachment is deleted."""
 
+    def attachment_moved(attachment, old_parent_realm, old_parent_id,
+                         old_filename):
+        """Called when an attachment is moved."""
+
     def attachment_reparented(attachment, old_parent_realm, old_parent_id):
-        """Called when an attachment is reparented."""
+        """Called when an attachment is reparented.
+
+        :since 1.3.2: deprecated and will be removed in 1.5.1. Use
+            `attachment_moved` instead.
+        """
 
 
 class IAttachmentManipulator(Interface):
@@ -782,52 +792,24 @@ class Attachment(object):
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_deleted(self)
 
+    def move(self, new_realm=None, new_id=None, new_filename=None):
+        """Move the attachment, changing one or more of its parent realm,
+        parent id and filename.
+
+        The new parent resource must exist.
+
+        :since: 1.3.2
+        """
+        self._move(new_realm, new_id, new_filename,
+                   new_parent_must_exist=True)
+
     def reparent(self, new_realm, new_id):
-        assert self.filename, "Cannot reparent non-existent attachment"
-        new_id = unicode(new_id)
-        new_path = self._get_path(self.env.attachments_dir, new_realm,
-                                  new_id, self.filename)
+        """Change the attachment's `parent_realm` and/or `parent_id`
 
-        # Make sure the path to the attachment is inside the environment
-        # attachments directory
-        commonprefix = os.path.commonprefix([self.env.attachments_dir,
-                                             new_path])
-        if commonprefix != self.env.attachments_dir:
-            raise TracError(_('Cannot reparent attachment "%(att)s" as '
-                              '%(realm)s:%(id)s is invalid',
-                              att=self.filename, realm=new_realm, id=new_id))
-
-        if os.path.exists(new_path):
-            raise TracError(_('Cannot reparent attachment "%(att)s" as '
-                              'it already exists in %(realm)s:%(id)s',
-                              att=self.filename, realm=new_realm, id=new_id))
-        with self.env.db_transaction as db:
-            db("""UPDATE attachment SET type=%s, id=%s
-                  WHERE type=%s AND id=%s AND filename=%s
-                  """, (new_realm, new_id, self.parent_realm, self.parent_id,
-                        self.filename))
-            dirname = os.path.dirname(new_path)
-            if not os.path.exists(dirname):
-                os.makedirs(dirname)
-            path = self.path
-            if os.path.isfile(path):
-                try:
-                    os.rename(path, new_path)
-                except OSError as e:
-                    self.env.log.error("Failed to move attachment file %s: %s",
-                                       path,
-                                       exception_to_unicode(e, traceback=True))
-                    raise TracError(_("Could not reparent attachment %(name)s",
-                                      name=self.filename))
-
-        old_realm, old_id = self.parent_realm, self.parent_id
-        self.parent_realm, self.parent_id = new_realm, new_id
-
-        self.env.log.info("Attachment reparented: %s", self.title)
-
-        for listener in AttachmentModule(self.env).change_listeners:
-            if hasattr(listener, 'attachment_reparented'):
-                listener.attachment_reparented(self, old_realm, old_id)
+        :since 1.3.2: deprecated and will be removed in 1.5.1. Use the
+            `move` method instead.
+        """
+        self._move(new_realm, new_id)
 
     def insert(self, filename, fileobj, size, t=None):
         """Create a new Attachment record and save the file content.
@@ -846,16 +828,13 @@ class Attachment(object):
                 _("%(parent)s doesn't exist, can't create attachment",
                   parent=get_resource_name(self.env, parent_resource)))
 
-        # Make sure the path to the attachment is inside the environment
-        # attachments directory
-        dir = self.path
-        commonprefix = os.path.commonprefix([self.env.attachments_dir, dir])
-        if commonprefix != self.env.attachments_dir:
+        if not self._is_valid_path(self.path):
             raise TracError(_('Cannot create attachment "%(att)s" as '
                               '%(realm)s:%(id)s is invalid',
                               att=filename, realm=self.parent_realm,
                               id=self.parent_id))
 
+        dir = self.path
         if not os.access(dir, os.F_OK):
             os.makedirs(dir)
         filename, targetfile = self._create_unique_file(dir, filename)
@@ -914,7 +893,7 @@ class Attachment(object):
         with env.db_transaction:
             for attachment in list(cls.select(env, parent_realm, parent_id)):
                 attachment_dir = os.path.dirname(attachment.path)
-                attachment.reparent(new_realm, new_id)
+                attachment._move(new_realm, new_id)
         if attachment_dir:
             try:
                 os.rmdir(attachment_dir)
@@ -932,6 +911,83 @@ class Attachment(object):
             raise ResourceNotFound(_("Attachment '%(filename)s' not found",
                                      filename=self.filename))
         return fd
+
+    def _move(self, new_realm=None, new_id=None, new_filename=None,
+              new_parent_must_exist=False):
+        """Move the attachment, changing one or more of its parent realm,
+        parent id and filename.
+
+        :since: 1.3.2
+        """
+        if not self.filename:
+            raise TracError(_("Cannot rename non-existent attachment"))
+
+        if new_realm is None:
+            new_realm = self.parent_realm
+        new_id = self.parent_id if new_id is None else unicode(new_id)
+        if new_filename is None:
+            new_filename = self.filename
+        if (new_realm, new_id, new_filename) == \
+                (self.parent_realm, self.parent_id, self.filename):
+            raise TracError(_("Attachment not modified"))
+
+        new_path = self._get_path(self.env.attachments_dir, new_realm, new_id,
+                                  new_filename)
+        new_title = '%s:%s: %s' % (new_realm, new_id, new_filename)
+
+        if new_parent_must_exist:
+            new_parent_resource = Resource(new_realm, new_id)
+            if not resource_exists(self.env, new_parent_resource):
+                raise ResourceNotFound(
+                    _("%(target)s doesn't exist, can't move attachment",
+                      target=get_resource_name(self.env, new_parent_resource)))
+        elif new_realm not in ResourceSystem(self.env).get_known_realms():
+            raise ResourceNotFound(
+                _("%(target)s doesn't exist, can't move attachment",
+                  target=new_realm))
+
+        if not self._is_valid_path(new_path):
+            raise TracError(_('Cannot move attachment "%(att)s" as "%(title)s" '
+                              'is invalid', att=self.filename, title=new_title))
+
+        if os.path.exists(new_path):
+            raise TracError(_('Cannot move attachment "%(att)s" to "%(title)s" '
+                              'as it already exists', att=self.filename,
+                              title=new_title))
+
+        with self.env.db_transaction as db:
+            db("""UPDATE attachment SET type=%s, id=%s, filename=%s
+                  WHERE type=%s AND id=%s AND filename=%s
+                  """, (new_realm, new_id, new_filename,
+                        self.parent_realm, self.parent_id, self.filename))
+            dirname = os.path.dirname(new_path)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            path = self.path
+            if os.path.isfile(path):
+                try:
+                    os.rename(path, new_path)
+                except OSError as e:
+                    self.env.log.error("Failed to move attachment file %s: %s",
+                                       path,
+                                       exception_to_unicode(e, traceback=True))
+                    raise TracError(_('Could not move attachment "%(title)s"',
+                                      title=self.title))
+
+        old_realm = self.parent_realm
+        old_id = self.parent_id
+        old_filename = self.filename
+        self.parent_realm = new_realm
+        self.parent_id = new_id
+        self.filename = new_filename
+        self.env.log.info("Attachment moved: %s", self.title)
+        reparented = old_realm != new_realm or old_id != new_id
+
+        for listener in AttachmentModule(self.env).change_listeners:
+            if hasattr(listener, 'attachment_moved'):
+                listener.attachment_moved(self, old_realm, old_id, old_filename)
+            if reparented and hasattr(listener, 'attachment_reparented'):
+                listener.attachment_reparented(self, old_realm, old_id)
 
     def _create_unique_file(self, dir, filename):
         parts = os.path.splitext(filename)
@@ -951,6 +1007,13 @@ class Attachment(object):
                 if idx > 100:
                     raise Exception('Failed to create unique name: ' + path)
                 filename = '%s.%d%s' % (parts[0], idx, parts[1])
+
+    def _is_valid_path(self, path):
+        """Return True if the path to the attachment is inside the
+        environment attachments directory.
+        """
+        commonprefix = os.path.commonprefix([self.env.attachments_dir, path])
+        return commonprefix == self.env.attachments_dir
 
 
 class LegacyAttachmentPolicy(Component):
@@ -1029,6 +1092,13 @@ class AttachmentAdmin(Component):
 
                The resource is identified by its realm and identifier.""",
                self._complete_remove, self._do_remove)
+        yield ('attachment move',
+               '<realm:id> <name> <new_realm:new_id> <new_name>',
+               """Rename or move an attachment to another resource
+
+               The resource is identified by its realm and identifier.
+               """,
+               self._complete_move, self._do_move)
         yield ('attachment export', '<realm:id> <name> [destination]',
                """Export an attachment from a resource to file or stdout
 
@@ -1039,7 +1109,8 @@ class AttachmentAdmin(Component):
 
     def get_realm_list(self):
         rs = ResourceSystem(self.env)
-        return PrefixList([each + ":" for each in rs.get_known_realms()])
+        return PrefixList([each + ":" for each in rs.get_known_realms()
+                                      if each != 'attachment'])
 
     def split_resource(self, resource):
         result = resource.split(':', 1)
@@ -1066,6 +1137,12 @@ class AttachmentAdmin(Component):
         if len(args) == 1:
             return self.get_realm_list()
         elif len(args) == 2:
+            return self.get_attachment_list(args[0])
+
+    def _complete_move(self, args):
+        if len(args) in (1, 3):
+            return self.get_realm_list()
+        elif len(args) in (2, 4):
             return self.get_attachment_list(args[0])
 
     def _complete_export(self, args):
@@ -1096,6 +1173,12 @@ class AttachmentAdmin(Component):
         realm, id_ = self.split_resource(resource)
         attachment = Attachment(self.env, realm, id_, name)
         attachment.delete()
+
+    def _do_move(self, old_resource, old_name, new_resource, new_name):
+        old_realm, old_id = self.split_resource(old_resource)
+        new_realm, new_id = self.split_resource(new_resource)
+        attachment = Attachment(self.env, old_realm, old_id, old_name)
+        attachment.move(new_realm, new_id, new_name)
 
     def _do_export(self, resource, name, destination=None):
         realm, id_ = self.split_resource(resource)

@@ -17,13 +17,16 @@ import unittest
 import zipfile
 from datetime import datetime
 
+from trac.admin.api import console_datetime_format
+from trac.admin.console import TracAdmin
+from trac.admin.test import TracAdminTestCaseBase
 from trac.attachment import Attachment, AttachmentModule, \
-                            LegacyAttachmentPolicy
-from trac.core import Component, implements, TracError
+                            IAttachmentChangeListener, LegacyAttachmentPolicy
+from trac.core import Component, ComponentMeta, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
 from trac.test import EnvironmentStub, MockRequest, mkdtemp
-from trac.util.datefmt import utc, to_utimestamp
+from trac.util.datefmt import format_datetime, to_utimestamp, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 
 
@@ -73,6 +76,64 @@ class ResourceManagerStub(Component):
 
 
 class AttachmentTestCase(unittest.TestCase):
+
+    attachment_change_listeners = []
+
+    @classmethod
+    def setUpClass(cls):
+        class AttachmentChangeListener(Component):
+            implements(IAttachmentChangeListener)
+
+            def __init__(self):
+                self.added_call_count = 0
+                self.deleted_call_count = 0
+                self.moved_call_count = 0
+                self.reparented_call_count = 0
+                self.moved_old_parent_realm = None
+                self.moved_old_parent_id = None
+                self.moved_old_filename = None
+                self.reparented_old_parent_realm = None
+                self.reparented_old_parent_id = None
+
+            def attachment_added(self, attachment):
+                self.added_call_count += 1
+
+            def attachment_deleted(self, attachment):
+                self.deleted_call_count += 1
+
+            def attachment_moved(self, attachment, old_parent_realm,
+                                 old_parent_id, old_filename):
+                self.moved_call_count += 1
+                self.moved_old_parent_realm = old_parent_realm
+                self.moved_old_parent_id = old_parent_id
+                self.moved_old_filename = old_filename
+
+            def attachment_reparented(self, attachment, old_parent_realm,
+                                      old_parent_id):
+                self.reparented_call_count += 1
+                self.reparented_old_parent_realm = old_parent_realm
+                self.reparented_old_parent_id = old_parent_id
+
+        class LegacyChangeListener(Component):
+            implements(IAttachmentChangeListener)
+
+            def __init__(self):
+                self.added_called = 0
+                self.deleted_called = 0
+
+            def attachment_added(self, attachment):
+                self.added_called += 1
+
+            def attachment_deleted(self, attachment):
+                self.deleted_called += 1
+
+        cls.attachment_change_listeners = [AttachmentChangeListener,
+                                           LegacyChangeListener]
+
+    @classmethod
+    def tearDownClass(cls):
+        for listener in cls.attachment_change_listeners:
+            ComponentMeta.deregister(listener)
 
     def setUp(self):
         self.env = EnvironmentStub(enable=('trac.*', TicketOnlyViewsTicket))
@@ -246,7 +307,99 @@ class AttachmentTestCase(unittest.TestCase):
 
         attachment.delete()
 
+    def test_rename(self):
+        """Rename an attachment."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        original_path = attachment.path
+        self.assertTrue(os.path.exists(original_path))
+        attachments = Attachment.select(self.env, 'wiki', 'SomePage')
+        self.assertEqual(1, len(list(attachments)))
+
+        attachment.move(new_filename='bar.txt')
+
+        attachments = Attachment.select(self.env, 'wiki', 'SomePage')
+        self.assertEqual(1, len(list(attachments)))
+        self.assertEqual('wiki', attachment.parent_realm)
+        self.assertEqual('SomePage', attachment.parent_id)
+        self.assertEqual('bar.txt', attachment.filename)
+        self.assertFalse(os.path.exists(original_path))
+        self.assertTrue(os.path.exists(attachment.path))
+
+    def test_move_nonexistent_attachment_raises(self):
+        """TracError is raised when moving a non-existent attachment."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+
+        with self.assertRaises(TracError) as cm:
+            attachment.move(attachment.parent_realm, attachment.parent_id,
+                            attachment.filename)
+        self.assertEqual("Cannot rename non-existent attachment",
+                         unicode(cm.exception))
+
+    def test_move_attachment_not_modified_raises(self):
+        """TracError is raised when attachment not modified on move."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+
+        with self.assertRaises(TracError) as cm:
+            attachment.move(attachment.parent_realm, attachment.parent_id,
+                            attachment.filename)
+        self.assertEqual("Attachment not modified", unicode(cm.exception))
+
+    def test_move_attachment_to_nonexistent_resource_raises(self):
+        """TracError is raised moving an attachment to nonexistent resource
+        """
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+
+        with self.assertRaises(TracError) as cm:
+            attachment.move('wiki', 'NonExistentPage')
+        self.assertEqual("NonExistentPage doesn't exist, can't move attachment",
+                         unicode(cm.exception))
+
+    def test_move_attachment_to_existing_path_raises(self):
+        """TracError is raised if target already exists"""
+        attachment1 = Attachment(self.env, 'wiki', 'SomePage')
+        attachment1.insert('foo.txt', io.BytesIO(), 0)
+        attachment2 = Attachment(self.env, 'wiki', 'SomePage')
+        attachment2.insert('bar.txt', io.BytesIO(), 0)
+
+        with self.assertRaises(TracError) as cm:
+            attachment1.move(new_filename=attachment2.filename)
+        self.assertEqual('Cannot move attachment "foo.txt" to "wiki:SomePage: '
+                         'bar.txt" as it already exists', unicode(cm.exception))
+
+    def test_attachment_change_listeners_called(self):
+        """The move method calls attachment change listeners"""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        attachment.move(new_realm='ticket', new_id=42)
+        attachment.delete()
+
+        modern_listener = self.attachment_change_listeners[0](self.env)
+        self.assertEqual(1, modern_listener.added_call_count)
+        self.assertEqual(1, modern_listener.deleted_call_count)
+        self.assertEqual(1, modern_listener.moved_call_count)
+        self.assertEqual(1, modern_listener.reparented_call_count)
+        self.assertEqual('wiki', modern_listener.moved_old_parent_realm)
+        self.assertEqual('SomePage', modern_listener.moved_old_parent_id)
+        self.assertEqual('foo.txt', modern_listener.moved_old_filename)
+        legacy_listener = self.attachment_change_listeners[0](self.env)
+        self.assertEqual(1, legacy_listener.added_call_count)
+        self.assertEqual(1, legacy_listener.deleted_call_count)
+
+    def test_attachment_reparented_not_called_on_rename(self):
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        attachment.move(new_filename='bar.txt')
+
+        modern_listener = self.attachment_change_listeners[0](self.env)
+        self.assertEqual(1, modern_listener.moved_call_count)
+        self.assertEqual(0, modern_listener.reparented_call_count)
+
     def test_reparent(self):
+        """Change the parent realm and parent id of an attachment
+        """
         attachment1 = Attachment(self.env, 'wiki', 'SomePage')
         attachment1.insert('foo.txt', io.BytesIO(), 0)
         path1 = attachment1.path
@@ -255,22 +408,56 @@ class AttachmentTestCase(unittest.TestCase):
 
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(2, len(list(attachments)))
-        attachments = Attachment.select(self.env, 'ticket', 123)
+        attachments = Attachment.select(self.env, 'ticket', 42)
         self.assertEqual(0, len(list(attachments)))
         self.assertTrue(os.path.exists(path1) and os.path.exists(attachment2.path))
 
-        attachment1.reparent('ticket', 123)
+        attachment1.move('ticket', 42)
         self.assertEqual('ticket', attachment1.parent_realm)
         self.assertEqual('ticket', attachment1.resource.parent.realm)
-        self.assertEqual('123', attachment1.parent_id)
-        self.assertEqual('123', attachment1.resource.parent.id)
+        self.assertEqual('42', attachment1.parent_id)
+        self.assertEqual('42', attachment1.resource.parent.id)
 
         attachments = Attachment.select(self.env, 'wiki', 'SomePage')
         self.assertEqual(1, len(list(attachments)))
-        attachments = Attachment.select(self.env, 'ticket', 123)
+        attachments = Attachment.select(self.env, 'ticket', 42)
         self.assertEqual(1, len(list(attachments)))
         self.assertFalse(os.path.exists(path1) and os.path.exists(attachment1.path))
         self.assertTrue(os.path.exists(attachment2.path))
+
+    def test_reparent_all_to_unknown_realm(self):
+        """TracError is raised when reparenting an attachment unknown realm
+        """
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('bar.txt', io.BytesIO(), 0)
+
+        with self.assertRaises(TracError) as cm:
+            Attachment.reparent_all(self.env, 'wiki', 'SomePage',
+                                    'unknown_realm', 'UnknownId')
+        self.assertEqual("unknown_realm doesn't exist, can't move attachment",
+                         unicode(cm.exception))
+
+    def test_reparent_all(self):
+        """Change the parent realm and parent id of multiple attachments.
+        """
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('bar.txt', io.BytesIO(), 0)
+        attachments = Attachment.select(self.env, 'wiki', 'SomePage')
+        self.assertEqual(2, len(list(attachments)))
+        attachments = Attachment.select(self.env, 'wiki', 'WikiStart')
+        self.assertEqual(0, len(list(attachments)))
+
+        Attachment.reparent_all(self.env, 'wiki', 'SomePage',
+                                'wiki', 'WikiStart')
+
+        attachments = Attachment.select(self.env, 'wiki', 'SomePage')
+        self.assertEqual(0, len(list(attachments)))
+        attachments = Attachment.select(self.env, 'wiki', 'WikiStart')
+        self.assertEqual(2, len(list(attachments)))
 
     def test_legacy_permission_on_parent(self):
         """Ensure that legacy action tests are done on parent.  As
@@ -421,11 +608,106 @@ class LegacyAttachmentPolicyTestCase(unittest.TestCase):
             action, perm_cache.username, resource, perm_cache))
 
 
+class TracAdminTestCase(TracAdminTestCaseBase):
+    """
+    Tests the output of trac-admin and is meant to be used with
+    .../trac/tests.py.
+    """
+
+    expected_results_filename = 'attachment-console-tests.txt'
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True, enable=('trac.*',),
+                                   disable=('trac.tests.*',))
+        self.env.path = mkdtemp()
+        self.admin = TracAdmin()
+        self.admin.env_set('', self.env)
+        self.datetime = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        with self.env.db_transaction as db:
+            db("INSERT INTO wiki (name,version) VALUES ('WikiStart',1)")
+            db("INSERT INTO wiki (name,version) VALUES ('SomePage',1)")
+            db("INSERT INTO ticket (id) VALUES (42)")
+            db("INSERT INTO ticket (id) VALUES (43)")
+            db("INSERT INTO attachment VALUES (%s,%s,%s,%s,%s,%s,%s)",
+               ('ticket', '43', 'foo.txt', 8, to_utimestamp(self.datetime),
+                'A comment', 'joe'))
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def test_attachment_list(self):
+        """Attachment list command."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+        rv, output = self.execute('attachment list wiki:SomePage')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, {
+            'date': format_datetime(attachment.date, console_datetime_format)
+        })
+
+    def test_attachment_list_empty(self):
+        """Attachment list command with no output."""
+        rv, output = self.execute('attachment list wiki:WikiStart')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_attachment_add_nonexistent_resource(self):
+        """Error raised when adding an attachment to a non-existent resource.
+        """
+        rv, output = self.execute('attachment add wiki:NonExistentPage "%s"'
+                                  % __file__)
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_attachment_rename(self):
+        """Rename attachment."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+
+        rv, output = self.execute('attachment move wiki:SomePage foo.txt '
+                                  'wiki:SomePage bar.txt')
+        self.assertEqual(0, rv, output)
+        self.assertEqual('', output)
+        rv, output = self.execute('attachment list wiki:SomePage')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, {
+            'date': format_datetime(attachment.date, console_datetime_format)
+        })
+
+    def test_attachment_reparent(self):
+        """Reparent attachment to another resource."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+
+        rv, output = self.execute('attachment move wiki:SomePage foo.txt '
+                                  'wiki:WikiStart foo.txt')
+        self.assertEqual(0, rv, output)
+        self.assertEqual('', output)
+        rv, output = self.execute('attachment list wiki:SomePage')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('attachment list wiki:WikiStart')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, {
+            'date': format_datetime(attachment.date, console_datetime_format)
+        })
+
+    def test_attachment_move_nonexistent_resource(self):
+        """Error raised when reparenting attachment to another resource."""
+        attachment = Attachment(self.env, 'wiki', 'SomePage')
+        attachment.insert('foo.txt', io.BytesIO(), 0)
+
+        rv, output = self.execute('attachment move wiki:SomePage foo.txt '
+                                  'wiki:NonExistentPage foo.txt')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AttachmentTestCase))
     suite.addTest(unittest.makeSuite(AttachmentModuleTestCase))
     suite.addTest(unittest.makeSuite(LegacyAttachmentPolicyTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminTestCase))
     return suite
 
 if __name__ == '__main__':
