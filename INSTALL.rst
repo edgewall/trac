@@ -26,33 +26,6 @@ general instructions to get a good understanding of the tasks
 involved.
 
 
-Installation Steps
-``````````````````
-
-
-#. Dependencies
-
-    #. Mandatory Dependencies
-    #. Optional Dependencies
-
-#. Installing Trac
-
-    #. Using `pip`
-    #. Using installer
-    #. Using package manager
-
-#. Creating a Project Environment
-#. Deploying Trac
-
-    #. Running the Standalone Server
-    #. Running Trac on a Web Server
-
-#. Configuring Authentication
-#. Granting admin rights to the admin user
-#. Configuring Trac
-#. Using Trac
-
-
 Dependencies
 ------------
 
@@ -106,15 +79,15 @@ See `​DatabaseBackend`_ for details.
 For the MySQL database
 ``````````````````````
 
-Trac works well with MySQL, provided you follow the guidelines:
+Trac works well with MySQL, provided you use the following:
 
 
 + `​MySQL`_, version 5.0 or later
-+ `​MySQLdb`_, version 1.2.2 or later
++ `​PyMySQL`_
 
 
 Given the caveats and known issues surrounding MySQL, read carefully
-the `​MySqlDb*`_ page before creating the database.
+the `​MySqlDb`_ page before creating the database.
 
 
 Optional Dependencies
@@ -272,6 +245,14 @@ URL of an archive or other download location. Here are some examples:
 ::
 
     $ pip install svn+https://svn.edgewall.org/repos/trac/branches/1.2-stable
+
+
++ Install the latest development preview (<em>not recommended for
+  production installs</em>):
+
+::
+
+    $ pip install --find-links=https://trac.edgewall.org/wiki/TracDownload Trac
 
 
 The optional dependencies can be installed from PyPI using `pip`:
@@ -437,28 +418,31 @@ connect to IIS. Other deployment scenarios are possible: `​nginx`_,
 Generating the Trac cgi-bin directory
 `````````````````````````````````````
 
-In order for Trac to function properly with FastCGI you need to have a
-`trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python
-scripts which load the appropriate Python code. They can be generated
-using the `deploy` option of `trac-admin`_.
+Application scripts for CGI, FastCGI and mod-wsgi can be generated
+using the `trac-admin`_ `deploy` command:
 
-There is, however, a bit of a chicken-and-egg problem. The `trac-
-admin`_ command requires an existing environment to function, but
-complains if the deploy directory already exists. This is a problem,
-because environments are often stored in a subdirectory of the deploy.
-The solution is to do something like this:
+::
+
+    deploy <directory>
+    
+        Extract static resources from Trac and all plugins
+    
+
+
+Grant the web server execution right on scripts in the `cgi-bin`
+directory.
+
+For example, the following yields a typical directory structure:
 
 
 ::
 
-    $ mkdir -p /usr/share/trac/projects/my-project
-    $ trac-admin /usr/share/trac/projects/my-project initenv
-    $ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-    $ mv /tmp/deploy/* /usr/share/trac
-
-
-Don't forget to check that the web server has the execution right on
-scripts in the `/usr/share/trac/cgi-bin` directory.
+    $ mkdir -p /var/trac
+    $ trac-admin /var/trac/<project> initenv
+    $ trac-admin /var/trac/<project> deploy /var/www
+    $ ls /var/www
+    cgi-bin htdocs
+    $ chmod ugo+x /var/www/cgi-bin/*
 
 
 Mapping Static Resources
@@ -481,25 +465,15 @@ and `/chrome/site`. Plugins can add their own resources, usually
 accessible at the `/chrome/<plugin>` path.
 
 A single `/chrome` alias can used if the static resources are
-extracted for all plugins. This means that the `deploy` command must
-be executed after installing or updating a plugin that provides static
-resources, or after modifying resources in the `$env/htdocs`
-directory. This is probably appropriate for most installations but may
-not be what you want if, for example, you wish to upload plugins
-through the <em>Plugins</em> administration page.
+extracted for all plugins. This means that the `deploy` command
+(discussed in the previous section) must be executed after installing
+or updating a plugin that provides static resources, or after
+modifying resources in the `$env/htdocs` directory. This is probably
+appropriate for most installations but may not be what you want if,
+for example, you wish to upload plugins through the <em>Plugins</em>
+administration page.
 
-The resources are extracted using the `trac-admin`_ ` <environment>
-deploy` command:
-
-::
-
-    deploy <directory>
-    
-        Extract static resources from Trac and all plugins
-    
-
-
-The target `<directory>` will contain an `htdocs` directory with:
+The `deploy` command creates an `htdocs` directory with:
 
 
 + `common/` - the static resources of Trac
@@ -532,7 +506,7 @@ Assuming the deployment has been done this way:
 
 ::
 
-    $ trac-admin /var/trac/env deploy /path/to/shared/trac
+    $ trac-admin /var/trac/<project> deploy /var/www
 
 
 Add the following snippet to Apache configuration, changing paths to
@@ -737,8 +711,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _mod_wsgi: https://github.com/GrahamDumpleton/mod_wsgi
 .. _ModWSGI IntegrationWithTrac: http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
 .. _MySQL: http://mysql.com/
-.. _MySqlDb*: http://trac.edgewall.org/intertrac/MySqlDb
-.. _MySQLdb: http://sf.net/projects/mysql-python
+.. _MySqlDb: http://trac.edgewall.org/intertrac/MySqlDb
 .. _nginx: http://trac.edgewall.org/intertrac/TracNginxRecipe
 .. _not supported: http://trac.edgewall.org/intertrac/ticket%3A493
 .. _permissions: http://trac.edgewall.org/wiki/TracPermissions
@@ -747,15 +720,16 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _PostgreSQL: http://www.postgresql.org/
 .. _pre-compiled SWIG bindings: http://subversion.apache.org/packages.html
 .. _project environments: http://trac.edgewall.org/wiki/TracEnvironment
-.. _psycopg2: http://pypi.python.org/pypi/psycopg2
+.. _psycopg2: https://pypi.python.org/pypi/psycopg2
 .. _Pygments: http://pygments.org
+.. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
 .. _PySqlite*: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
-.. _pysqlite: http://pypi.python.org/pypi/pysqlite
+.. _pysqlite: https://pypi.python.org/pypi/pysqlite
 .. _PySVN: http://pysvn.tigris.org/
 .. _Python: http://www.python.org/
 .. _pytz: http://pytz.sourceforge.net
 .. _Running the Standalone Server: http://trac.edgewall.org/wiki/TracInstall#RunningtheStandaloneServer
-.. _setuptools: http://pypi.python.org/pypi/setuptools
+.. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _SQLite: http://sqlite.org/
 .. _Subversion: http://subversion.apache.org/
 .. _syntax highlighting: http://trac.edgewall.org/wiki/TracSyntaxColoring
