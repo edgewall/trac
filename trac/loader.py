@@ -92,7 +92,7 @@ def load_py_files():
                 except (ImportError, VersionConflict) as e:
                     env.log.error('Skipping "%s": %s', plugin_name,
                                   exception_to_unicode(e))
-                except Exception as e:
+                except (Exception, SystemError) as e:
                     env.log.error(
                         "Failed to load plugin from %s: %s", plugin_file,
                         exception_to_unicode(e, traceback=True))
