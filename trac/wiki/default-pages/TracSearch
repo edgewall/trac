@@ -2,13 +2,13 @@
 
 Trac has built-in search functionality to search for occurrences of keywords and substrings in wiki pages, tickets and changeset properties, such as author, revision and log messages.
 
-Apart from the [search: Search module], you will also find a small search field above the navigation bar at all time. It provides convenient access to the search module from all pages.
+In addition to the [search: Search module], you will also find a small search field above the navigation bar. It provides convenient access to the search module from all pages.
 
-The search results show the most recent modifications ranked first rather than the most relevant result.
+The search results show the most recent modifications ranked first.
 
 == Quick searches
 
-For quick access to project resources, the quick-search field at the top of every page can be used to enter a [TracLinks wiki link], which will take you directly to the resource identified by that link:
+For quick access to project resources, the quick-search field at the top of every page can be used to enter a [TracLinks TracLink], which will take you directly to the resource identified by that link:
 
  * ![42] -- Opens change set 42
  * !#42 -- Opens ticket number 42
@@ -20,7 +20,7 @@ To disable the Quickjump feature for a keyword start the query with an exclamati
 
 == Search TracLinks
 
-From the Wiki, it is possible to link to a specific search, using `search:` links:
+From the Wiki, it is possible to link to a specific search using `search:` links:
  * `search:?q=crash` will search for the string "crash" 
  * `search:?q=trac+link&wiki=on` will search for "trac" and "link" in wiki pages only
 
@@ -29,4 +29,4 @@ From the Wiki, it is possible to link to a specific search, using `search:` link
 On the search page, pressing the modifier key while selecting a search filter will unselect all other search filters.
 
 ----
-See also: TracGuide, TracLinks, TracQuery
+See also: TracLinks, TracQuery

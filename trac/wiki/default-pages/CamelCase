@@ -1,17 +1,17 @@
 = !CamelCase
 
-New wiki links are automatically created when concatenating capitalized words, such that for example the word 'Camel' and the word 'Case' concatenated form a link to this CamelCase page. 
+New wiki links are automatically created when concatenating capitalized words, such that for example the words 'Camel' and 'Case' concatenated form a link to this CamelCase page. 
 
-!CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capitals are followed by a lower-case letter; hence "AlabamA" and "ABc" will not be links.
+!CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capital letters are followed by a lower-case letter; hence "AlabamA" and "ABc" will not be links.
 
 == Customizing the Wiki behavior
 
-While Trac remains faithful to the original Wiki style, it provides a number of ways to accommodate users with different preferences:
- * To prevent the creation of a new link of a camel-cased word, prefix with an exclamation mark (`!`): `!CamelCase`.
- * To ignore links to missing pages when the link is written using the CamelCase style, that word can instead be replaced by a gray link followed by a question mark. This is useful in cases when CamelCase style is used to name code artefacts like class names and there is no corresponding page for them. This option can be set in `ignore_missing_pages` in the [wiki:TracIni#wiki-section "[wiki]"] section of TracIni.
- * To automatically insert space characters between the words of a CamelCase link when rendering the link, use `split_page_names` in the [wiki:TracIni#wiki-section "[wiki]"] section of TracIni.
+While Trac remains faithful to the original Wiki style, it also provides a number of ways to accommodate users with different preferences:
+ * To prevent the creation of a link for the CamelCase word, prefix the word with an exclamation mark (`!`): `!CamelCase`.
+ * By default a CamelCase word with no corresponding Wiki page will be rendered as a gray link followed by a question mark. This is useful for example when the CamelCase style is used to name code artefacts like class names, and a Wiki page is expected to exist to document each class. The behavior can be configured through the [TracIni#wiki-ignore_missing_pages-option "[wiki] ignore_missing_pages"] option in TracIni.
+ * To automatically insert space characters between the words of a CamelCase link when rendering the link, enable [TracIni#wiki-split_page_names-option "[wiki] split_page_names"] of TracIni.
  * Creation of explicit Wiki links is also easy, see WikiPageNames for details.
- * Wiki formatting can be disabled completely in some places, for example when rendering commit log messages. See `wiki_format_messages` in the [wiki:TracIni#changeset-section "[changeset]"] section of TracIni.
+ * Wiki formatting can be disabled completely in some places, for example when rendering commit log messages. See the [TracIni#changeset-wiki_format_messages-option "[wiki] wiki_format_messages"] option in TracIni.
 
 See TracIni for more information on the available options.
 

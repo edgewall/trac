@@ -1,23 +1,23 @@
 = Trac Logging
 [[TracGuideToc]]
 
-Trac supports logging of system messages using the standard [http://docs.python.org/library/logging.html logging module] that comes with Python.
+Trac supports logging of system messages using Python's [http://docs.python.org/library/logging.html logging module].
 
-Logging is configured in the `[logging]` section in [wiki:TracIni#logging-section trac.ini].
+Logging is configured in the [TracIni#logging-section "[logging]"] section of TracIni.
 
 == Supported Logging Methods
 
-The log method is set using the `log_type` option in [wiki:TracIni#logging-section trac.ini], which takes any of the following values:
+The log method is set using the [TracIni#logging-log_type-option "[logging] log_type"] option, which accepts the following values:
 
  '''none'':: Suppress all log messages.
- '''file''':: Log messages to a file, specified with the `log_file` option in [wiki:TracIni#logging-section trac.ini]. Relative paths in `log_file` are resolved relative to the `log` directory of the environment.
- '''stderr''':: Output all log entries to console ([wiki:TracStandalone tracd] only).
- '''syslog''':: (UNIX) Send all log messages to the local syslogd via named pipe `/dev/log`. By default, syslog will write them to the file /var/log/messages.
- '''eventlog''':: (Windows) Use the system's NT Event Log for Trac logging.
+ '''file''':: Log messages to a file, specified with the [TracIni#logging-log_file-option "[logging] log_file"] option. Relative paths for `log_file` are resolved relative to the environment `log` directory.
+ '''stderr''':: Output log entries to console ([TracStandalone tracd] only).
+ '''syslog''':: (UNIX) Send log messages to the local syslogd via named pipe `/dev/log`. By default, syslog will write them to the `/var/log/messages` file.
+ '''eventlog''':: (Windows) Use the system's NT Event Log.
 
 == Log Levels
 
-The verbosity level of logged messages can be set using the `log_level` option in [wiki:TracIni#logging-section trac.ini]. The log level defines the minimum level of urgency required for a message to be logged, and those levels are:
+The verbosity level of logged messages can be set using the [TracIni#logging-log_level-option "[logging] log_level"] option. The log level defines the minimum level of urgency required for a message to be logged, and those levels are:
 
  '''CRITICAL''':: Log only the most critical (typically fatal) errors.
  '''ERROR''':: Log failures, bugs and errors. 
@@ -25,13 +25,13 @@ The verbosity level of logged messages can be set using the `log_level` option i
  '''INFO''':: Diagnostic information, log information about all processing.
  '''DEBUG''':: Trace messages, profiling, etc.
 
-Additionally, you can  enable logging of SQL statements at debug level. This is turned off by default, as it's very verbose. Set `[trac] debug_sql = yes` in TracIni to activate.
+Additionally, you can  enable logging of SQL statements at debug level. This is turned off by default, as it's very verbose. Set [TracIni#trac-debug_sql-option "[trac] debug_sql  = yes"] to activate.
 
 == Log Format
 
-The output format for log entries can be specified through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/library/logging.html#logrecord-attributes Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
- '''$(basename)s''':: The last path component of the current environment.
- '''$(path)s''':: The absolute path for the current environment.
+The output format for log entries can be specified in the [TracIni#logging-log_format-option "[logging] log_format"] option. The format is a string which can contain any of the [https://docs.python.org/2/library/logging.html#logrecord-attributes Python logging Formatter variables]. Additionally, the following Trac-specific variables can be used:
+ '''$(basename)s''':: The environment directory name.
+ '''$(path)s''':: The absolute path of the environment directory.
  '''$(project)s''':: The originating project's name.
 
 Note that variables are identified using a dollar sign (`$(...)s`) instead of percent sign (`%(...)s`).
@@ -47,4 +47,4 @@ log_format = Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
 }}}
 
 ----
-See also: TracIni, TracGuide, TracEnvironment
+See also: TracIni, TracEnvironment

@@ -178,7 +178,7 @@ If you have set up some Subversion hook scripts that call the Trac engine, such 
 
 == Web-based plugin administration
 
-The [trac:WebAdmin] interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
+The !WebAdmin interface offers limited support for plugin configuration through the web to users with `TRAC_ADMIN` permission:
 
 * en/disabling installed plugins
 * installing plugins by uploading them as eggs
@@ -226,7 +226,7 @@ Enable [wiki:TracLogging logging] and set the log level to `DEBUG`, then watch t
 
 === Verify you have the proper permissions
 
-Some plugins require you have special permissions in order to use them. [trac:WebAdmin WebAdmin], for example, requires the user to have `TRAC_ADMIN` permissions for it to show up on the navigation bar.
+Some plugins require you have special permissions in order to use them. !WebAdmin, for example, requires the user to have `TRAC_ADMIN` permissions for it to show up on the navigation bar.
 
 === Is the wrong version of the plugin loading?
 

@@ -45,6 +45,12 @@ Alternatively, you can serve multiple Trac projects in a directory by adding thi
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects
 }}}
 
+You can also specify the `PYTHON_EGG_CACHE` environment variable using a second `-initial-env` directive:
+{{{#!apache
+FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac \ 
+    -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
+}}}
+
 === Set up with `mod_fcgid`
 
 Configure `ScriptAlias` (see TracCgi for details), but call `trac.fcgi` instead of `trac.cgi`:

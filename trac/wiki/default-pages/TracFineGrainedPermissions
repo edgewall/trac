@@ -1,41 +1,47 @@
-= Fine grained permissions =
+= Fine grained permissions
 [[PageOutline(2-5, Contents, floated)]]
 [[TracGuideToc]]
 
-There is a general mechanism in place that allows custom **permission policy plugins** to grant or deny any action on any kind of Trac resource, even at the level of specific versions of such resources.
+There is a general mechanism in place that allows custom **permission policies** to grant or deny any action on any Trac resource, or even specific versions of a resource.
 
 That mechanism is `authz_policy`, which is an optional module in `tracopt.perm.authz_policy.*`, so it is installed by default. It can be activated via the //Plugins// panel in the Trac administration module.
 
-== Permission Policies ==
+== Permission Policies
 
 A great diversity of permission policies can be implemented and Trac comes with a few examples. 
 
-Which policies are currently active is determined by a configuration setting in TracIni:
+The active policies are determined by a [TracIni#trac-permission_policies-option configuration setting]:
 
 {{{#!ini
 [trac]
-permission_policies = ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = DefaultWikiPolicy,
+ DefaultTicketPolicy,
+ DefaultPermissionPolicy,
+ LegacyAttachmentPolicy
 }}}
-This lists the [#ReadonlyWikiPolicy] which controls readonly access to wiki pages, followed by the !DefaultPermissionPolicy which checks for the traditional coarse grained style permissions described in TracPermissions, and the !LegacyAttachmentPolicy which knows how to use the coarse grained permissions for checking the permissions available on attachments.
+
+* [#DefaultWikiPolicyandDefaultTicketPolicy DefaultWikiPolicy] controls readonly access to wiki pages.
+* [#DefaultWikiPolicyandDefaultTicketPolicy DefaultTicketPolicy] provides some elevated privileges in the ticket system.
+* !DefaultPermissionPolicy checks for the traditional coarse-grained permissions described in TracPermissions.
+* !LegacyAttachmentPolicy uses the coarse-grained permissions to check permissions on attachments.
 
 Among the optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
-[trac:source:branches/1.0-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
+[trac:source:branches/1.2-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
 
-Another popular permission policy [#AuthzSourcePolicy], re-implements the pre-0.12 support for checking fine-grained permissions limited to Subversion repositories in terms of the new system.
+Another permission policy [#AuthzSourcePolicy], uses the [http://svnbook.red-bean.com/nightly/en/svn.serverconfig.pathbasedauthz.html path-based authorization] defined by Subversion to enforce permissions on the version control system.
 
-See also [trac:source:branches/1.0-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
+See also [trac:source:branches/1.2-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
 
-=== !AuthzPolicy === 
-==== Configuration ====
-* Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
+=== !AuthzPolicy
+==== Configuration
+* Put a [http://swapoff.org/files/authzpolicy.conf conf] file in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section:
 {{{#!ini
 [trac]
-...
-permission_policies = AuthzPolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = AuthzPolicy, DefaultWikiPolicy, DefaultTicketPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
-  1. add a new `[authz_policy]` section:
+  1. add a new `[authz_policy]` section and point the `authz_file` option to the conf file:
 {{{#!ini
 [authz_policy]
 authz_file = /some/trac/env/conf/authzpolicy.conf
@@ -46,7 +52,7 @@ authz_file = /some/trac/env/conf/authzpolicy.conf
 tracopt.perm.authz_policy.* = enabled
 }}}
 
-==== Usage Notes ====
+==== Usage Notes
 
 Note the order in which permission policies are specified: policies are implemented in the sequence provided and therefore may override earlier policy specifications.
 
@@ -172,7 +178,7 @@ john = BROWSER_VIEW, FILE_VIEW
 
 Note: In order for Timeline to work/visible for John, we must add CHANGESET_VIEW to the above permission list.
 
-==== Missing Features ====
+==== Missing Features
 Although possible with the !DefaultPermissionPolicy handling (see Admin panel), fine-grained permissions still miss those grouping features (see [trac:ticket:9573 #9573], [trac:ticket:5648 #5648]). Patches are partially available, see authz_policy.2.patch, part of [trac:ticket:6680 #6680].
 
 You cannot do the following:
@@ -195,12 +201,10 @@ permission_level_2  = permission_level_1, WIKI_MODIFY, TICKET_MODIFY
 @team3 = permission_level_2, TICKET_CREATE
 }}}
 
-=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) === #AuthzSourcePolicy
+=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) #AuthzSourcePolicy
 
-At the time of this writing, the old granular permissions system from Trac 0.11 and before used for restricting access to the repository has been converted to a permission policy component. But from the user's point of view, this makes little if any difference.
-
-That kind of granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
-More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
+`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
+More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
 {{{#!ini
@@ -219,7 +223,7 @@ harry =
  * '''/branches/calc/bug-142''' = ''harry has read/write access, sally read only''
  * '''/branches/calc/bug-142/secret''' = ''harry has no access, sally has read access (inherited as a sub folder permission)''
 
-==== Trac Configuration ====
+==== Trac Configuration
 
 To activate granular permissions you __must__ specify the {{{authz_file}}} option in the `[svn]` section of trac.ini. If this option is set to null or not specified, the permissions will not be used.
 
@@ -253,10 +257,10 @@ As of version 0.12, make sure you have ''!AuthzSourcePolicy'' included in the pe
 
 {{{#!ini
 [trac]
-permission_policies = AuthzSourcePolicy, ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
+permission_policies = AuthzSourcePolicy, DefaultWikiPolicy, DefaultTicketPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 }}}
 
-==== Subversion Configuration ====
+==== Subversion Configuration
 
 The same access file is typically applied to the corresponding Subversion repository using an Apache directive like this:
 {{{#!apache
@@ -271,34 +275,43 @@ The same access file is typically applied to the corresponding Subversion reposi
 
 For information about how to restrict access to entire projects in a multiple project environment see [trac:wiki:TracMultipleProjectsSVNAccess].
 
-=== ReadonlyWikiPolicy
+=== !DefaultWikiPolicy and !DefaultTicketPolicy
 
-Since 1.1.2, the read-only attribute of wiki pages is enabled and enforced when `ReadonlyWikiPolicy` is in the list of active permission policies. The default for new Trac installations in 1.1.2 and later is:
+Since 1.1.2, the read-only attribute of wiki pages is enabled and enforced when `DefaultWikiPolicy` is in the list of active permission policies (`DefaultWikiPolicy` was named `ReadonlyWikiPolicy` from Trac 1.1.2 to 1.3.1). The default for new Trac installations in 1.3.2 and later is:
 {{{
 [trac]
-permission_policies = ReadonlyWikiPolicy,
+permission_policies = DefaultWikiPolicy,
+ DefaultTicketPolicy,
  DefaultPermissionPolicy,
  LegacyAttachmentPolicy
 }}}
 
-When upgrading from earlier versions of Trac, `ReadonlyWikiPolicy` will be appended to the list of `permission_policies` when upgrading the environment, provided that `permission_policies` has the default value. If any non-default `permission_polices` are active, `ReadonlyWikiPolicy` **will need to be manually added** to the list. A message will be echoed to the console when upgrading the environment, indicating if any action needs to be taken.
+`DefaultWikiPolicy` returns `False` to deny modify, delete and rename actions on wiki pages when the page has the read-only attribute set and the user does not have `WIKI_ADMIN`, regardless of `WIKI_MODIFY`, `WIKI_DELETE` and `WIKI_RENAME` permissions. It returns `None` for all other cases, which causes the next permission policy in the list to be consulted.
 
-**!ReadonlyWikiPolicy must be listed //before// !DefaultPermissionPolicy**. The latter returns `True` to allow modify, delete or rename actions when the user has the respective `WIKI_*` permission, without consideration for the read-only attribute.
+Since 1.3.2 `DefaultTicketPolicy` implements the following behaviors:
+* Authenticated user can edit their own comments.
+* Authenticated user with `TICKET_APPEND` or `TICKET_CHGPROP` can modify the description of a ticket they reported.
+* User with `MILESTONE_VIEW` can change  the ticket milestone.
 
-The `ReadonlyWikiPolicy` returns `False` to deny modify, delete and rename actions on wiki pages when the page has the read-only attribute set and the user does not have `WIKI_ADMIN`, regardless of `WIKI_MODIFY`, `WIKI_DELETE` and `WIKI_RENAME` permissions. It returns `None` for all other cases.
+The wiki- and ticket-specific behaviors are implemented in permission policies so they can be easily replaced in case other behavior is desired.
 
-When active, the [#AuthzPolicy] should therefore come before `ReadonlyWikiPolicy`, allowing it to grant or deny the actions on individual resources, which is the usual ordering for `AuthzPolicy` in the `permission_policies` list.
+When upgrading from earlier versions of Trac, `DefaultWikiPolicy, DefaultTicketPolicy` will be appended to the list of `permission_policies` when upgrading the environment, provided that `permission_policies` has the default value (`ReadonlyWikiPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy` if upgrading from Trac 1.1.2 or later). If any non-default `permission_polices` are active, `DefaultWikiPolicy, DefaultTicketPolicy` **will need to be manually added** to the list. A message will be echoed to the console when upgrading the environment, indicating if any action needs to be taken.
+
+**!DefaultWikiPolicy and !DefaultTicketPolicy must be listed //before// !DefaultPermissionPolicy**. The latter returns `True` to allow modify, delete or rename actions when the user has the respective `WIKI_*` permission, without consideration for the read-only attribute. Similarly, some of the behaviors implemented in `DefaultTicketPolicy` won't be considered if `DefaultPermissionPolicy` is executed first.
+
+When active, the [#AuthzPolicy] should therefore come before `DefaultWikiPolicy, DefaultTicketPolicy`, allowing it to grant or deny the actions on individual resources, which is the usual ordering for `AuthzPolicy` in the `permission_policies` list.
 {{{
 [trac]
 permission_policies = AuthzPolicy,
- ReadonlyWikiPolicy,
+ DefaultWikiPolicy,
+ DefaultTicketPolicy,
  DefaultPermissionPolicy,
  LegacyAttachmentPolicy
 }}}
 
-The placement of [#AuthzSourcePolicy] relative to `ReadonlyWikiPolicy` does not matter since they don't perform checks on the same realms.
+The placement of [#AuthzSourcePolicy] relative to `DefaultWikiPolicy, DefaultTicketPolicy` does not matter since they don't perform checks on the same realms.
 
-For all other permission policies, the user will need to decide the proper ordering. Generally, if the permission policy should be capable of overriding the check performed by `ReadonlyWikiPolicy`, it should come before `ReadonlyWikiPolicy` in the list. If the `ReadonlyWikiPolicy` should override the check performed by another permission policy, as is the case for `DefaultPermissionPolicy`, then `ReadonlyWikiPolicy` should come first.
+For all other permission policies, the user will need to decide the proper ordering. Generally, if the permission policy should be capable of overriding the checks performed by `DefaultWikiPolicy` or `DefaultTicketPolicy`, it should come before the policy it overrides. If `DefaultWikiPolicy` or `DefaultTicketPolicy` should override the check performed by another permission policy, as is the case for those policies relative to `DefaultPermissionPolicy`, then the overriding policy should come first.
 
 == Debugging permissions
 In trac.ini set:

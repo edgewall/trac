@@ -98,6 +98,16 @@ and any other text fields explicitly marked as supporting WikiFormatting.
 {{{#!td
 <wiki:Strange(page@!)>
 }}}
+|--------------------------------------------------------------------------------------
+|||| Quoting can be used with the full notation to allow brackets in the label. ||
+{{{#!td
+{{{
+[TracIni#logging-log_type-option "[logging] log_type"]
+}}}
+}}}
+{{{#!td
+[TracIni#logging-log_type-option "[logging] log_type"]
+}}}
 }}}
 
 TracLinks are a very simple idea, but actually allow quite a complex network of information. In practice, it's very intuitive and simple to use, and we've found the "link trail" extremely helpful to better understand what's happening in a project or why a particular change was made.
@@ -368,7 +378,12 @@ There are short forms for revision ranges as well:
 
 Finally, note that in all of the above, a revision range can be written either as `x:y` or `x-y`.
 
-In the presence of multiple repositories, the name of the repository should be specified as the first part of the path, e.g. `log:repos/branches` or `[20-40/repos]`.
+==== Multi-repository links
+
+In the presence of multiple repositories, the name of the repository should be specified as the first part of the path:
+- `log:repos/branch`
+- `[20-40/repos]`
+- `r20/repos`
 
 ----
 See also: WikiFormatting, TracWiki, WikiPageNames, InterTrac, InterWiki

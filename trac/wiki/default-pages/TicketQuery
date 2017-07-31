@@ -1,7 +1,7 @@
 = !TicketQuery Wiki Macro
 
 The !TicketQuery macro lets you display information on tickets within wiki pages.
-The query language used by the `[[TicketQuery]]` macro is described in [TracQuery#UsingtheTicketQueryMacro TracQuery] page.
+The query language used by the `[[TicketQuery]]` macro is described in [TracQuery#QueryLanguage TracQuery] page.
 
 == Usage
 
@@ -58,6 +58,30 @@ The query language used by the `[[TicketQuery]]` macro is described in [TracQuer
 ||=Number of tickets created this month: =||\
 || **[[TicketQuery(created=thismonth..,count)]]**||\
 || `[[TicketQuery(created=thismonth..,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Firefox tickets: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Opera tickets: =||\
+|| **[[TicketQuery(status=closed,keywords~=opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed tickets affecting Firefox and Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed tickets affecting Firefox or Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox|opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox|opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets that affect Firefox or are closed and affect Opera: =||\
+|| **[[TicketQuery(keywords~=firefox,or,status=closed,keywords~=opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=opera,or,keywords~=firefox,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Firefox tickets that don't affect Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox - opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox -opera,count)]]` ||
 |-----------------------------------------------------------
 ||=Last 3 modified tickets: =||\
 ||**[[TicketQuery(max=3,order=modified,desc=1,compact)]]**||\

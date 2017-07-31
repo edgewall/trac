@@ -33,7 +33,7 @@ trac.ticket.notification.TicketAttachmentNotifier = disabled
 === Configuration Options
 These are the available options for the `[notification]` section in trac.ini:
 
-[[TracIni(notification)]]
+[[TracIni(section=notification)]]
 
 === Example Configuration (SMTP)
 {{{#!ini
@@ -59,7 +59,7 @@ smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 === Subscriber Configuration
 The default subscriptions are configured in the `[notification-subscriber]` section in trac.ini:
 
-[[TracIni(notification-subscriber)]]
+[[TracIni(section=notification-subscriber)]]
 
 Each user can override these defaults in his ''Notifications'' preferences.
 

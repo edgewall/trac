@@ -115,23 +115,25 @@ Dynamic variables can also be used in the report title and description (since 1.
 == Advanced Reports: Dynamic Variables
 
 For more flexible reports, Trac supports the use of ''dynamic variables'' in report SQL statements. 
-In short, dynamic variables are ''special'' strings that are replaced by custom data before query execution.
+In short, dynamic variables are ''special'' strings that are replaced by custom data before query execution. Dynamic variables are entered through the preferences form and the values are autocompleted //(Since 1.3.2)//.
 
 === Using Variables in a Query
 
-The syntax for dynamic variables is simple, any upper case word beginning with '$' is considered a variable.
+The syntax for dynamic variables is simple, any upper case word beginning with `$` is considered a variable.
 
 Example:
 {{{#!sql
 SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
 }}}
 
-To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the leading '$':
+The value of the dynamic variable can be assigned in the report preferences form.
+
+To assign a value to `$PRIORITY` in the URL for a report, leave out the leading `$`:
 {{{
  http://trac.edgewall.org/reports/14?PRIORITY=high
 }}}
 
-To use multiple variables, separate them with an '&':
+To use multiple variables, separate them with an `&`:
 {{{
  http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}

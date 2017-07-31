@@ -22,13 +22,13 @@ $ trac-admin /path/to/myproject initenv
 
  - The user under which the web server runs will require file system write permission to the environment directory and all the files inside. Please remember to set the appropriate permissions. The same applies to the source code repository, although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
  
- - `initenv` does not create a version control repository for the specified path. If you wish to specify a default repository using optional the arguments to `initenv` you must create the repository first, otherwise you will see a message when initializing the environment: //Warning: couldn't index the default repository//.
+ - `initenv` does not create a version control repository for the specified path. If you wish to specify a default repository using the optional arguments to `initenv` you must create the repository first, otherwise you will see a message when initializing the environment: //Warning: couldn't index the default repository//.
 
  - Non-ascii environment paths are not supported.
 
- - TracPlugins located in a [TracIni#inherit-section shared plugins folder] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are not loaded during creation, and hence, if they need to create extra tables for example, you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment]. Alternatively you can avoid the need to upgrade the environment by specifying a configuration file at the time the environment is created, using the `--config` option. See TracAdmin#FullCommandReference for more information.
+ - TracPlugins located in a [TracIni#inherit-plugins_dir-option shared plugins directory] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are not enabled by default, in contrast to plugins in the environment `plugins` directory. Hence, if they need to create extra tables, for example, the tables will not be created during environment creation and you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment]. Alternatively you can avoid the need to upgrade the environment by explicitly enabling the plugin in the inherited configuration, or in a configuration file using the `--config` option. See TracAdmin#FullCommandReference for more information.
 
-{{{#!div style="border: 1pt dotted; margin: 1em"
+{{{#!div style="border: 1pt dotted; margin: 1em;"
 **Caveat:** don't confuse the //Trac environment directory// with the //source code repository directory//.
 
 This is a common beginners' mistake.
@@ -37,9 +37,13 @@ It happens that the structure for a Trac environment is loosely modeled after th
 
 == Database Connection Strings
 
-You will need to specify a database connection string at the time the environment is created. The default is SQLite, which is probably sufficient for most projects. The SQLite database file is stored in the environment directory, and can easily be [wiki:TracBackup backed up] together with the rest of the environment.
+You will need to specify a database connection string at the time the environment is created. The default is SQLite, which is sufficient for most projects. The SQLite database file is stored in the environment directory, and can easily be [wiki:TracBackup backed up] together with the rest of the environment.
 
-Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be URL encoded.
+Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be [http://meyerweb.com/eric/tools/dencoder/ URL encoded].
+{{{#!sh
+$ python -c "import urllib; print urllib.quote('password@:/123', '')"
+password%40%3A%2F123
+}}}
 
 === SQLite Connection String
 
@@ -78,7 +82,7 @@ $ createuser -U postgres -E -P tracuser
 $ createdb -U postgres -O tracuser -E UTF8 trac
 }}}
 
-When running `createuser` you will be prompted for the password for the user 'tracuser'. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a Trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command. Also note that the database should be created as UTF8. LATIN1 encoding causes errors, because of Trac's use of unicode. SQL_ASCII also seems to work.
+When running `createuser` you will be prompted for the password for the `tracuser`. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a Trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command. Also note that the database should be created as UTF8. LATIN1 encoding causes errors, because of Trac's use of unicode.
 
 Under some default configurations (Debian), run the `createuser` and `createdb` scripts as the `postgres` user:
 {{{#!sh
@@ -93,7 +97,7 @@ postgres://user:pass@server/database?schema=yourschemaname
 
 === MySQL Connection String
 
-The format of the MySQL connection string is similar to those for PostgreSQL, with the `postgres` scheme being replaced by `mysql`. For example, to connect to a MySQL database on `localhost` named `trac` for user `johndoe` with password `letmein`:
+The format of the MySQL connection string is similar to PostgreSQL, with the `postgres` scheme being replaced by `mysql`. For example, to connect to a MySQL database on `localhost` named `trac` for user `johndoe` with password `letmein`:
 {{{
 mysql://johndoe:letmein@localhost:3306/trac
 }}}
@@ -102,7 +106,7 @@ mysql://johndoe:letmein@localhost:3306/trac
 
 A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' navigation item will not be displayed.
 
-There are many different ways to connect repositories to an environment, see TracRepositoryAdmin. A single repository can be specified when the environment is created by passing the optional arguments `repository_type` and `repository_dir` to the `initenv` command.
+There are several ways to connect repositories to an environment, see TracRepositoryAdmin. A single repository can be specified when the environment is created by passing the optional arguments `repository_type` and `repository_dir` to the `initenv` command.
 
 == Directory Structure
 
@@ -113,14 +117,14 @@ An environment consists of the following files and directories:
  * `files`
   * `attachments` - Attachments to wiki pages and tickets.
  * `conf`
-  * `trac.ini` - Main configuration file. See TracIni.
+  * `trac.ini` - Main [TracIni configuration file].
  * `db`
   * `trac.db` - The SQLite database, if you are using SQLite.
- * `htdocs` - Directory containing web resources, which can be referenced in Genshi templates using `/chrome/site/...` URLs.
- * `log` - Default directory for log files, if `file` logging is enabled and a relative path is given.
+ * `htdocs` - Directory containing web resources, which can be referenced in templates using the path `/chrome/site/...`.
+ * `log` - Default directory for log files when `file` logging is enabled and a relative path is given.
  * `plugins` - Environment-specific [wiki:TracPlugins plugins].
  * `templates` - Custom Genshi environment-specific templates.
-  * `site.html` - Method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance.
+  * `site.html` - Method to [TracInterfaceCustomization#SiteAppearance customize] the site header, footer, and style.
 
 ----
-See also: TracAdmin, TracBackup, TracIni, TracGuide
+See also: TracAdmin, TracBackup, TracIni

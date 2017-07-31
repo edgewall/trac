@@ -17,7 +17,7 @@ To install Trac, the following software packages must be installed:
 
  * [http://www.python.org/ Python], version >= 2.7 and < 3.0
    (note that we dropped the support for Python 2.6 in this release)
- * [http://pypi.python.org/pypi/setuptools setuptools], version >= 0.6
+ * [https://pypi.python.org/pypi/setuptools setuptools], version >= 0.6
  * [http://jinja.pocoo.org Jinja2], version >= 2.9.3
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
@@ -30,22 +30,22 @@ You also need a database system and the corresponding python bindings. The datab
 
 You already have the SQLite database bindings bundled with the standard distribution of Python (the `sqlite3` module).
 
-Optionally, you may install a newer version of [http://pypi.python.org/pypi/pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
+Optionally, you may install a newer version of [https://pypi.python.org/pypi/pysqlite pysqlite] than the one provided by the Python distribution. See [trac:PySqlite#ThePysqlite2bindings PySqlite] for details.
 
 ==== For the PostgreSQL database #ForPostgreSQL
 
 You need to install the database and its Python bindings:
  * [http://www.postgresql.org/ PostgreSQL], version 9.1 or later
- * [http://pypi.python.org/pypi/psycopg2 psycopg2], version 2.0 or later
+ * [https://pypi.python.org/pypi/psycopg2 psycopg2], version 2.0 or later
 
 See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
 
 ==== For the MySQL database #ForMySQL
 
-Trac works well with MySQL, provided you follow the guidelines:
+Trac works well with MySQL, provided you use the following:
 
  * [http://mysql.com/ MySQL], version 5.0 or later
- * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.2 or later
+ * [https://pypi.python.org/pypi/PyMySQL PyMySQL]
 
 Given the caveats and known issues surrounding MySQL, read carefully the [trac:MySqlDb] page before creating the database.
 
@@ -143,6 +143,10 @@ $ pip install http://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 {{{#!sh
 $ pip install svn+https://svn.edgewall.org/repos/trac/branches/1.2-stable
 }}}
+* Install the latest development preview (//not recommended for production installs//):
+{{{#!sh
+$ pip install --find-links=https://trac.edgewall.org/wiki/TracDownload Trac
+}}}
 
 The optional dependencies can be installed from PyPI using `pip`:
 {{{#!sh
@@ -229,16 +233,20 @@ Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if yo
 
 ==== Generating the Trac cgi-bin directory #cgi-bin
 
-In order for Trac to function properly with FastCGI you need to have a `trac.fcgi` file and for mod_wsgi a `trac.wsgi` file. These are Python scripts which load the appropriate Python code. They can be generated using the `deploy` option of [TracAdmin trac-admin].
+Application scripts for CGI, FastCGI and mod-wsgi can be generated using the [TracAdmin trac-admin] `deploy` command:
+[[TracAdminHelp(deploy)]]
 
-There is, however, a bit of a chicken-and-egg problem. The [TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
+Grant the web server execution right on scripts in the `cgi-bin` directory.
+
+For example, the following yields a typical directory structure:
 {{{#!sh
-$ mkdir -p /usr/share/trac/projects/my-project
-$ trac-admin /usr/share/trac/projects/my-project initenv
-$ trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
-$ mv /tmp/deploy/* /usr/share/trac
+$ mkdir -p /var/trac
+$ trac-admin /var/trac/<project> initenv
+$ trac-admin /var/trac/<project> deploy /var/www
+$ ls /var/www
+cgi-bin	htdocs
+$ chmod ugo+x /var/www/cgi-bin/*
 }}}
-Don't forget to check that the web server has the execution right on scripts in the `/usr/share/trac/cgi-bin` directory.
 
 ==== Mapping Static Resources
 
@@ -248,12 +256,9 @@ Web servers such as [http://httpd.apache.org/ Apache] allow you to create //Alia
 
 There are two primary URL paths for static resources: `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible at the `/chrome/<plugin>` path.
 
-A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
+A single `/chrome` alias can used if the static resources are extracted for all plugins. This means that the `deploy` command (discussed in the previous section) must be executed after installing or updating a plugin that provides static resources, or after modifying resources in the `$env/htdocs` directory. This is probably appropriate for most installations but may not be what you want if, for example, you wish to upload plugins through the //Plugins// administration page.
 
-The resources are extracted using the [TracAdmin trac-admin]` <environment> deploy` command:
-[[TracAdminHelp(deploy)]]
-
-The target `<directory>` will contain an `htdocs` directory with:
+The `deploy` command creates an `htdocs` directory with:
  - `common/` - the static resources of Trac
  - `site/` - a copy of the environment's `htdocs/` directory
  - `shared` - the static resources shared by multiple Trac environments, with a location defined by the `[inherit]` `htdocs_dir` option
@@ -271,7 +276,7 @@ Alias /trac/chrome/<plugin> /path/to/trac/htdocs/<plugin>
 
 Assuming the deployment has been done this way:
 {{{#!sh
-$ trac-admin /var/trac/env deploy /path/to/shared/trac
+$ trac-admin /var/trac/<project> deploy /var/www
 }}}
 
 Add the following snippet to Apache configuration, changing paths to match your deployment. The snippet must be placed ''before'' the `ScriptAlias` or `WSGIScriptAlias` directive, because those directives map all requests to the Trac application:
