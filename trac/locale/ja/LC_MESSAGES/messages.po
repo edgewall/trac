@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.2\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-30 03:15+0000\n"
+"POT-Creation-Date: 2017-07-29 22:51-0700\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -340,83 +340,83 @@ msgstr "%(prop)s プロパティ変更"
 msgid "About Trac"
 msgstr "Trac について"
 
-#: trac/attachment.py:184
+#: trac/attachment.py:194
 msgid "Bad request"
 msgstr "不正なリクエスト"
 
-#: trac/attachment.py:187
+#: trac/attachment.py:197
 #, python-format
 msgid "%(realm)s is not a valid parent realm"
 msgstr "%(realm)s は親として有効なレルムではありません"
 
-#: trac/attachment.py:204
+#: trac/attachment.py:214
 #, python-format
 msgid "Parent resource %(parent)s doesn't exist"
 msgstr "親リソース %(parent)s は存在しません"
 
-#: trac/attachment.py:210
+#: trac/attachment.py:220
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "%(parent)s に戻る"
 
-#: trac/attachment.py:227 trac/ticket/batch.py:59 trac/ticket/report.py:173
+#: trac/attachment.py:237 trac/ticket/batch.py:59 trac/ticket/report.py:173
 #: trac/ticket/roadmap.py:768 trac/web/api.py:952 trac/wiki/web_ui.py:166
 msgid "Invalid request arguments."
 msgstr "不正なリクエストの引数です。"
 
-#: trac/attachment.py:318
+#: trac/attachment.py:328
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "%(attachment)s を %(resource)s に添付しました"
 
-#: trac/attachment.py:373
+#: trac/attachment.py:383
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "移動できなかった添付ファイル %(id)s"
 
-#: trac/attachment.py:381
+#: trac/attachment.py:391
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "%(parent)s の添付ファイル: '%(id)s'"
 
-#: trac/attachment.py:384
+#: trac/attachment.py:394
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "%(parent)s の添付ファイル"
 
 #: trac/admin/web_ui.py:501 trac/admin/web_ui.py:504 trac/admin/web_ui.py:508
-#: trac/attachment.py:404 trac/attachment.py:422
+#: trac/attachment.py:414 trac/attachment.py:432
 msgid "No file uploaded"
 msgstr "アップロードしたファイルはありません"
 
-#: trac/attachment.py:412
+#: trac/attachment.py:422
 msgid "Can't upload empty file"
 msgstr "空のファイルはアップロードできません"
 
-#: trac/attachment.py:418
+#: trac/attachment.py:428
 #, python-format
 msgid "Maximum attachment size: %(num)s"
 msgstr "添付ファイルの上限サイズ: %(num)s"
 
-#: trac/attachment.py:418
+#: trac/attachment.py:428
 msgid "Upload failed"
 msgstr "アップロード失敗"
 
-#: trac/attachment.py:437
+#: trac/attachment.py:447
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "添付ファイル情報のフィールド %(field)s が不正です: %(message)s"
 
-#: trac/attachment.py:441
+#: trac/attachment.py:451
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "添付ファイルが不正です: %(message)s"
 
-#: trac/attachment.py:446
+#: trac/attachment.py:456
 msgid "Note: File must be selected again."
 msgstr "※ もう一度ファイルを選択してください。"
 
-#: trac/attachment.py:458
+#: trac/attachment.py:468
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -427,30 +427,30 @@ msgstr ""
 "を置き換える権限がありません。置き換えることができるのは自分で添付したファイルのみです。他の人が添付したファイルを置き換えるには "
 "ATTACHMENT_DELETE 権限が必要です。"
 
-#: trac/attachment.py:489
+#: trac/attachment.py:499
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (削除)"
 
-#: trac/attachment.py:504
+#: trac/attachment.py:514
 #, python-format
 msgid "Maximum total attachment size: %(num)s"
 msgstr "添付ファイルの合計の上限サイズ: %(num)s"
 
-#: trac/attachment.py:505
+#: trac/attachment.py:515
 msgid "Download failed"
 msgstr "ダウンロード失敗"
 
-#: trac/attachment.py:596 trac/versioncontrol/web_ui/browser.py:707
+#: trac/attachment.py:606 trac/versioncontrol/web_ui/browser.py:707
 #: trac/wiki/web_ui.py:72
 msgid "Plain Text"
 msgstr "プレーンテキスト"
 
-#: trac/attachment.py:602 trac/versioncontrol/web_ui/browser.py:713
+#: trac/attachment.py:612 trac/versioncontrol/web_ui/browser.py:713
 msgid "Original Format"
 msgstr "オリジナルフォーマット"
 
-#: trac/attachment.py:647 trac/templates/genshi/list_of_attachments.html:29
+#: trac/attachment.py:657 trac/templates/genshi/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:26
 #: trac/ticket/templates/ticket_change.html:137
 #: trac/versioncontrol/templates/dir_entries.html:37
@@ -458,57 +458,68 @@ msgstr "オリジナルフォーマット"
 msgid "Download"
 msgstr "ダウンロード"
 
-#: trac/attachment.py:714
+#: trac/attachment.py:724
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "添付ファイル '%(title)s' は存在しません。"
 
-#: trac/attachment.py:716
+#: trac/attachment.py:726
 msgid "Invalid Attachment"
 msgstr "不正な添付ファイル"
 
-#: trac/attachment.py:778
+#: trac/attachment.py:788
 msgid "Could not delete attachment"
 msgstr "添付ファイルを削除できません"
 
-#: trac/attachment.py:796
-#, python-format
-msgid "Cannot reparent attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
-msgstr "%(realm)s:%(id)s が正しくないため添付ファイル \"%(att)s\" を移動できません"
-
-#: trac/attachment.py:801
-#, python-format
-msgid ""
-"Cannot reparent attachment \"%(att)s\" as it already exists in "
-"%(realm)s:%(id)s"
-msgstr "添付ファイル \"%(att)s\" がすでに %(realm)s:%(id)s に存在しているため、添付ファイルを移動できません。"
-
-#: trac/attachment.py:820
-#, python-format
-msgid "Could not reparent attachment %(name)s"
-msgstr "添付ファイル %(name)s を移動できませんでした"
-
-#: trac/attachment.py:847
+#: trac/attachment.py:829
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
 msgstr "%(parent)s がないので、添付ファイルを作成できません"
 
-#: trac/attachment.py:854
+#: trac/attachment.py:832
 #, python-format
 msgid "Cannot create attachment \"%(att)s\" as %(realm)s:%(id)s is invalid"
 msgstr "%(realm)s:%(id)s が正しくないため添付ファイル \"%(att)s\" を作成できません"
 
-#: trac/attachment.py:932
+#: trac/attachment.py:911
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "添付ファイル '%(filename)s' が見つかりません"
 
-#: trac/attachment.py:1047
+#: trac/attachment.py:923
+msgid "Cannot rename non-existent attachment"
+msgstr "存在しない添付ファイルでは名前を変更できません"
+
+#: trac/attachment.py:932
+msgid "Attachment not modified"
+msgstr "添付ファイルは変更されていません"
+
+#: trac/attachment.py:943 trac/attachment.py:946
+#, python-format
+msgid "%(target)s doesn't exist, can't move attachment"
+msgstr "%(target)s がないので、添付ファイルを移動できません"
+
+#: trac/attachment.py:950
+#, python-format
+msgid "Cannot move attachment \"%(att)s\" as \"%(title)s\" is invalid"
+msgstr "\"%(title)s\" が正しくないため添付ファイル \"%(att)s\" を移動できません"
+
+#: trac/attachment.py:954
+#, python-format
+msgid "Cannot move attachment \"%(att)s\" to \"%(title)s\" as it already exists"
+msgstr "すでに存在しているため、\"%(title)s\" に添付ファイル \"%(att)s\" を移動できません。"
+
+#: trac/attachment.py:974
+#, python-format
+msgid "Could not move attachment \"%(title)s\""
+msgstr "添付ファイル \"%(title)s\" を移動できませんでした"
+
+#: trac/attachment.py:1118
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "'%(id)s' は正しい識別子ではありません"
 
-#: trac/attachment.py:1083 trac/templates/environment_info.html:56
+#: trac/attachment.py:1160 trac/templates/environment_info.html:56
 #: trac/templates/environment_info.html:121 trac/templates/error.html:284
 #: trac/templates/genshi/environment_info.html:53
 #: trac/templates/genshi/environment_info.html:96
@@ -524,25 +535,25 @@ msgstr "'%(id)s' は正しい識別子ではありません"
 msgid "Name"
 msgstr "名称"
 
-#: trac/attachment.py:1083 trac/versioncontrol/templates/dirlist_thead.html:20
+#: trac/attachment.py:1160 trac/versioncontrol/templates/dirlist_thead.html:20
 msgid "Size"
 msgstr "サイズ"
 
-#: trac/attachment.py:1083 trac/templates/genshi/history_view.html:47
+#: trac/attachment.py:1160 trac/templates/genshi/history_view.html:47
 #: trac/templates/history_view.html:58
 #: trac/versioncontrol/templates/dirlist_thead.html:27
 #: trac/versioncontrol/templates/revisionlog.html:160
 msgid "Author"
 msgstr "更新者"
 
-#: trac/attachment.py:1083 trac/templates/genshi/history_view.html:46
+#: trac/attachment.py:1160 trac/templates/genshi/history_view.html:46
 #: trac/templates/history_view.html:57
 #: trac/versioncontrol/templates/dirlist_thead.html:24
 #: trac/versioncontrol/templates/revisionlog.html:159
 msgid "Date"
 msgstr "更新日時"
 
-#: trac/attachment.py:1084 trac/notification/prefs.py:234
+#: trac/attachment.py:1161 trac/notification/prefs.py:234
 #: trac/templates/attachment.html:148 trac/templates/genshi/attachment.html:104
 #: trac/ticket/api.py:358 trac/ticket/api.py:673
 #: trac/ticket/templates/ticket.html:563
@@ -550,7 +561,7 @@ msgstr "更新日時"
 msgid "Description"
 msgstr "詳細"
 
-#: trac/attachment.py:1108 trac/wiki/admin.py:102
+#: trac/attachment.py:1191 trac/wiki/admin.py:102
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "ファイル '%(name)s' が存在しています。"
