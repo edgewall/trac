@@ -284,13 +284,13 @@ label[for=comment] { float: right }
  box-sizing: border-box;
  width: 100%;
 }
-#properties { white-space: nowrap; line-height: 160%; padding: 1em }
+#properties { line-height: 160%; padding: 1em }
 #properties table.trac-properties > tbody > tr > th,
 #properties table.trac-properties > colgroup > col.th {
+ overflow: hidden;
  padding: .4em;
  text-align: right;
  vertical-align: middle;
- white-space: normal;
  width: 17%;
 }
 #properties table.trac-properties > tbody > tr > th.col2 { border-left: 1px dotted #d7d7d7 }
