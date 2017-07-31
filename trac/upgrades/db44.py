@@ -63,7 +63,7 @@ information.
 pattern = r'(?<!\.)(description AS _description)((?=_)|\b)'
 def replace_sql_fragment(query):
     """Replace SQL fragment, but try to confirm that the default reports
-    haven't been modified. The default reports have at most one 
+    haven't been modified. The default reports have at most one
     'description AS ...' fragment.
     """
     if len(re.findall(pattern, query)) == 1:

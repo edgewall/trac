@@ -497,10 +497,10 @@ class ConfigurableTicketWorkflow(Component):
         possessing the `TICKET_MODIFY` permission if `set_owner` is not
         specified.
 
-        This method can be overridden in a subclasses in order to 
-        customize the list of users that populate the assign-to select 
+        This method can be overridden in a subclasses in order to
+        customize the list of users that populate the assign-to select
         box.
-    
+
         :since: 1.3.2
         """
         if 'set_owner' in action:

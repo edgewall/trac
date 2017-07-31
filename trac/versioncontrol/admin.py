@@ -67,8 +67,8 @@ class VersionControlAdmin(Component):
 
                <repos> must be the repository name, not the repository path.
                Use `list` to see a list of repository names and associated
-               paths. To synchronize all repositories, specify "*" for 
-               <repos>. The default repository can be specified 
+               paths. To synchronize all repositories, specify "*" for
+               <repos>. The default repository can be specified
                using "(default)".
                """,
                self._complete_repos, self._do_resync)

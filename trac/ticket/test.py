@@ -15,7 +15,7 @@ from trac.ticket.model import Ticket
 
 
 def insert_ticket(env, **props):
-    """Insert a ticket to the database with properties specified in the 
+    """Insert a ticket to the database with properties specified in the
     keyword arguments. The creation time can be specified as a timestamp
     in the `when` argument.
     """

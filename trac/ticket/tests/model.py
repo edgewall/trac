@@ -929,8 +929,8 @@ class EnumTestCase(unittest.TestCase):
         priority.insert()
         self.assertTrue(priority.exists)
         self.assertEqual(1, self.env.db_query("""
-            SELECT COUNT(*) FROM enum 
-            WHERE type='priority' AND name='foo' AND value='6' 
+            SELECT COUNT(*) FROM enum
+            WHERE type='priority' AND name='foo' AND value='6'
              AND description='the description'
             """)[0][0])
 
@@ -942,8 +942,8 @@ class EnumTestCase(unittest.TestCase):
         priority.insert()
         self.assertTrue(priority.exists)
         self.assertEqual(1, self.env.db_query("""
-            SELECT COUNT(*) FROM enum 
-            WHERE type='priority' AND name='bar' AND value='100' 
+            SELECT COUNT(*) FROM enum
+            WHERE type='priority' AND name='bar' AND value='100'
              AND description='the description'
             """)[0][0])
 
@@ -955,8 +955,8 @@ class EnumTestCase(unittest.TestCase):
         priority.insert()
         self.assertTrue(priority.exists)
         self.assertEqual(1, self.env.db_query("""
-            SELECT COUNT(*) FROM enum 
-            WHERE type='priority' AND name='baz' AND value='6' 
+            SELECT COUNT(*) FROM enum
+            WHERE type='priority' AND name='baz' AND value='6'
              AND description IS NULL
             """)[0][0])
 
@@ -977,8 +977,8 @@ class EnumTestCase(unittest.TestCase):
         priority.update()
         self.assertTrue(priority.exists)
         self.assertEqual(1, self.env.db_query("""
-            SELECT COUNT(*) FROM enum 
-            WHERE type='priority' AND name='baz' AND value='6' 
+            SELECT COUNT(*) FROM enum
+            WHERE type='priority' AND name='baz' AND value='6'
              AND description IS NULL
             """)[0][0])
 
@@ -986,8 +986,8 @@ class EnumTestCase(unittest.TestCase):
         """Delete an enum from the database."""
         def get_count():
             return self.env.db_query("""
-                SELECT COUNT(*) FROM enum 
-                WHERE type='priority' AND name='major' 
+                SELECT COUNT(*) FROM enum
+                WHERE type='priority' AND name='major'
                 """)[0][0]
 
         priority = Priority(self.env, 'major')

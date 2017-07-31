@@ -753,7 +753,7 @@ class AbstractEnum(object):
         self.description = None
         if name:
             for value, description in self.env.db_query("""
-                    SELECT value, description FROM enum 
+                    SELECT value, description FROM enum
                     WHERE type=%s AND name=%s
                     """, (self.type, name)):
                 self.value = self._old_value = value
@@ -863,7 +863,7 @@ class AbstractEnum(object):
     def select(cls, env):
         with env.db_query as db:
             for name, value, description in db("""
-                    SELECT name, value, description FROM enum 
+                    SELECT name, value, description FROM enum
                     WHERE type=%s ORDER BY
                     """ + db.cast('value', 'int'),
                     (cls.type,)):

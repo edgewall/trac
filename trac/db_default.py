@@ -207,7 +207,7 @@ def get_reports(db):
 """,
 """\
 SELECT p.value AS __color__,
-   t.id AS ticket, t.summary, t.component, t.version, t.milestone, 
+   t.id AS ticket, t.summary, t.component, t.version, t.milestone,
    t.type AS type, t.owner, t.status, t.time AS created,
    t.changetime AS _changetime, t.description AS _description,
    t.reporter AS _reporter
@@ -251,7 +251,7 @@ for useful RSS export.
 SELECT p.value AS __color__,
    %s AS __group__,
    t.id AS ticket, t.summary, t.component, t.version, t.type AS type,
-   t.owner, t.status, t.time AS created, t.changetime AS _changetime, 
+   t.owner, t.status, t.time AS created, t.changetime AS _changetime,
    t.description AS _description, t.reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
@@ -304,7 +304,7 @@ SELECT p.value AS __color__,
       ELSE
         (CASE t.owner WHEN $USER THEN 'font-weight: bold' END)
     END) AS __style__,
-   t.id AS ticket, t.summary, t.component, t.status, t.resolution, t.version, 
+   t.id AS ticket, t.summary, t.component, t.status, t.resolution, t.version,
    t.type AS type, t.priority, t.owner, t.changetime AS modified,
    t.time AS _time, t.reporter AS _reporter
   FROM ticket t
@@ -354,7 +354,7 @@ SELECT p.value AS __color__,
      WHEN $USER THEN 'My Tickets'
      ELSE 'Active Tickets'
     END) AS __group__,
-   t.id AS ticket, t.summary, t.component, t.version, t.milestone, 
+   t.id AS ticket, t.summary, t.component, t.version, t.milestone,
    t.type AS type, t.owner, t.status, t.time AS created,
    t.changetime AS _changetime, t.description AS _description,
    t.reporter AS _reporter

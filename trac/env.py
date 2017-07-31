@@ -1160,4 +1160,3 @@ class EnvironmentAdmin(Component):
             if os.path.isdir(src):
                 shutil.copytree(src, dst)
             printfout("done.")
-
