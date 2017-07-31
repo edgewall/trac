@@ -90,7 +90,7 @@ Upgrade Python to 2.7, but not 3.0 or greater.
 
 ===== MySQL-python no longer supported
 
-[pypi:PyMySQL] is the supported MySQL database library, support for [pypi:MySQL-python] has been removed.
+[https://pypi.python.org/pypi/PyMySQL PyMySQL] is the supported MySQL database library, support for [https://pypi.python.org/pypi/MySQL-python MySQL-python] has been removed.
 
 ===== Obsolete Plugins
 
