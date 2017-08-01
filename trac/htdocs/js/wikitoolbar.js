@@ -9,10 +9,10 @@
     var toolbar = document.createElement("div");
     toolbar.className = "wikitoolbar";
 
-    function addButton(id, title, fn) {
+    function addButton(type, title, fn) {
       var a = document.createElement("a");
       a.href = "#";
-      a.id = id;
+      a.className = "trac-wikitoolbar-" + type;
       a.title = title;
       a.onclick = function() {
         if ($(textarea).prop("disabled") === false &&

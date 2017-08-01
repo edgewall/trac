@@ -721,15 +721,15 @@ table.wiki tbody tr.odd { background-color: #f7f7f7 }
  background-color: transparent;
  border: 1px solid #fb2;
 }
-.wikitoolbar a#em { background-position: 0 0 }
-.wikitoolbar a#strong { background-position: 0 -16px }
-.wikitoolbar a#heading { background-position: 0 -32px }
-.wikitoolbar a#link { background-position: 0 -48px }
-.wikitoolbar a#code { background-position: 0 -64px }
-.wikitoolbar a#hr { background-position: 0 -80px }
-.wikitoolbar a#np { background-position: 0 -96px }
-.wikitoolbar a#br { background-position: 0 -112px }
-.wikitoolbar a#img { background-position: 0 -128px }
+.wikitoolbar a.trac-wikitoolbar-em { background-position: 0 0 }
+.wikitoolbar a.trac-wikitoolbar-strong { background-position: 0 -16px }
+.wikitoolbar a.trac-wikitoolbar-heading { background-position: 0 -32px }
+.wikitoolbar a.trac-wikitoolbar-link { background-position: 0 -48px }
+.wikitoolbar a.trac-wikitoolbar-code { background-position: 0 -64px }
+.wikitoolbar a.trac-wikitoolbar-hr { background-position: 0 -80px }
+.wikitoolbar a.trac-wikitoolbar-np { background-position: 0 -96px }
+.wikitoolbar a.trac-wikitoolbar-br { background-position: 0 -112px }
+.wikitoolbar a.trac-wikitoolbar-img { background-position: 0 -128px }
 
 /* Textarea resizer */
 div.trac-resizable { display: inline-table; width: 100% }
