@@ -73,16 +73,17 @@
                    value="${report.title}"/>
           </div>
           <div class="field">
-            <label for="description">
-              # trans wikiformatting = jmacros.wikiformatting_link()
-
-              Description: (you may use ${wikiformatting} here)
-
-              # endtrans
-            </label>
+            <label for="description">${_("Description:")}</label>
             <textarea id="description" name="description" rows="10" cols="78"
                       class="wikitext trac-fullwidth trac-resizable">
 ${report.description}</textarea>
+            <label for="description" class="trac-textarea-hint">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              You may use ${wikiformatting} here.
+
+              # endtrans
+            </label>
           </div>
           <div id="preview" class="trac-content trac-draft" style="display:none">
           </div>
@@ -92,7 +93,11 @@ ${report.description}</textarea>
               <strong>${_("Error:")}</strong> ${error}
             </div>
             # endif
-            <label for="query">
+            <label for="query">${_("Query:")}</label>
+            <textarea id="query" name="query" rows="20" cols="78"
+                      class="trac-fullwidth trac-resizable">
+${report.sql}</textarea>
+            <label for="query" class="trac-textarea-hint">
               # set trac_query
               <a tabindex="42" href="${href.wiki('TracQuery')
                                        + '#QueryLanguage'}">TracQuery</a>
@@ -102,14 +107,11 @@ ${report.description}</textarea>
               # endset
               # trans query_prefix, trac_query
 
-              Query: (can be either SQL or, if starting with
-              ${query_prefix}, a ${trac_query} expression)
+              Can be either SQL or, if starting with ${query_prefix},
+              a ${trac_query} expression.
 
               # endtrans
             </label>
-            <textarea id="query" name="query" rows="20" cols="78"
-                      class="trac-fullwidth trac-resizable">
-${report.sql}</textarea>
           </div>
         </fieldset>
         <div class="buttons">

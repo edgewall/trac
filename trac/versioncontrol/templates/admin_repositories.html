@@ -175,17 +175,18 @@
             </label>
           </div>
           <div class="field description">
-            <label for="description">
-              # trans wikiformatting = jmacros.wikiformatting_link()
-
-              Description: (you may use ${wikiformatting} here)
-
-              # endtrans
-            </label>
+            <label for="description">${_("Description:")}</label>
             <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
                       rows="8" cols="78"${
                     {'readonly': readonly
                     }|htmlattr}>${info.description}</textarea>
+            <label for="description" class="trac-textarea-hint">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              You may use ${wikiformatting} here.
+
+              # endtrans
+            </label>
           </div>
           <div id="preview" class="trac-content trac-draft" style="display:none">
           </div>

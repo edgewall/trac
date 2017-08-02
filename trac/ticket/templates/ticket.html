@@ -307,19 +307,18 @@
                       _("Description:")}</label></th>
                   <td class="fullrow" colspan="3">
                     <fieldset>
-                      <label for="field-description"
-                             id="field-description-help">
+                      <textarea id="field-description"
+                                name="field_description"
+                                class="wikitext trac-fullwidth trac-resizable"
+                                rows="10" cols="68">${
+                        ticket.description}</textarea>
+                      <label for="field-description" class="trac-textarea-hint">
                         # trans wikiformatting = jmacros.wikiformatting_link()
 
                         You may use ${wikiformatting} here.
 
                         # endtrans
                       </label>
-                      <textarea id="field-description"
-                                name="field_description"
-                                class="wikitext trac-fullwidth trac-resizable"
-                                rows="10" cols="68">${
-                        ticket.description}</textarea>
                     </fieldset>
                   </td>
                 </tr>
@@ -519,19 +518,19 @@
                 # endif
               </div>
               # endif
-              <label for="comment">
-                # trans wikiformatting = jmacros.wikiformatting_link()
-
-                You may use ${wikiformatting} here.
-
-                # endtrans
-              </label>
               <textarea id="comment" name="comment"
                         class="${classes('wikitext', 'trac-fullwidth',
                                          'trac-resizable',
                                          'trac-autofocus' if replyto)}"
                         rows="10" cols="78">${
                 comment}</textarea>
+              <label for="comment" class="trac-textarea-hint">
+                # trans wikiformatting = jmacros.wikiformatting_link()
+
+                You may use ${wikiformatting} here.
+
+                # endtrans
+              </label>
             </fieldset>
           </div>
         </div>
