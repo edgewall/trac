@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.2\n"
+"Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-29 22:51-0700\n"
+"POT-Creation-Date: 2017-08-02 10:25-0700\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -129,15 +129,15 @@ msgstr "チケットの削除"
 #: trac/templates/attachment.html:109 trac/templates/attachment.html:130
 #: trac/templates/genshi/attachment.html:75
 #: trac/templates/genshi/attachment.html:89
-#: trac/ticket/templates/admin_components.html:93
-#: trac/ticket/templates/admin_enums.html:76
-#: trac/ticket/templates/admin_versions.html:89
+#: trac/ticket/templates/admin_components.html:94
+#: trac/ticket/templates/admin_enums.html:77
+#: trac/ticket/templates/admin_versions.html:90
 #: trac/ticket/templates/milestone_delete.html:74
-#: trac/ticket/templates/milestone_edit_form.html:165
+#: trac/ticket/templates/milestone_edit_form.html:166
 #: trac/ticket/templates/report_delete.html:37
-#: trac/ticket/templates/report_edit.html:118
+#: trac/ticket/templates/report_edit.html:120
 #: trac/ticket/templates/ticket_change.html:191
-#: trac/versioncontrol/templates/admin_repositories.html:198
+#: trac/versioncontrol/templates/admin_repositories.html:199
 #: trac/wiki/templates/wiki_delete.html:169
 #: trac/wiki/templates/wiki_edit.html:190
 #: trac/wiki/templates/wiki_edit_comment.html:58
@@ -525,12 +525,12 @@ msgstr "'%(id)s' は正しい識別子ではありません"
 #: trac/templates/genshi/environment_info.html:96
 #: trac/templates/genshi/error.html:173 trac/ticket/admin.py:202
 #: trac/ticket/admin.py:421 trac/ticket/admin.py:586
-#: trac/ticket/templates/admin_components.html:117
-#: trac/ticket/templates/admin_enums.html:102
+#: trac/ticket/templates/admin_components.html:118
+#: trac/ticket/templates/admin_enums.html:103
 #: trac/ticket/templates/admin_milestones.html:91
-#: trac/ticket/templates/admin_versions.html:126
+#: trac/ticket/templates/admin_versions.html:127
 #: trac/versioncontrol/admin.py:122
-#: trac/versioncontrol/templates/admin_repositories.html:242
+#: trac/versioncontrol/templates/admin_repositories.html:243
 #: trac/versioncontrol/templates/dirlist_thead.html:17 trac/web/session.py:483
 msgid "Name"
 msgstr "名称"
@@ -556,7 +556,7 @@ msgstr "更新日時"
 #: trac/attachment.py:1161 trac/notification/prefs.py:234
 #: trac/templates/attachment.html:148 trac/templates/genshi/attachment.html:104
 #: trac/ticket/api.py:358 trac/ticket/api.py:673
-#: trac/ticket/templates/ticket.html:563
+#: trac/ticket/templates/ticket.html:562
 #: trac/ticket/templates/ticket_box.html:162
 msgid "Description"
 msgstr "詳細"
@@ -1321,16 +1321,16 @@ msgstr "プロジェクト"
 
 #: trac/admin/templates/admin_basics.html:32
 #: trac/ticket/templates/admin_components.html:74
-#: trac/ticket/templates/admin_components.html:102
+#: trac/ticket/templates/admin_components.html:103
 #: trac/ticket/templates/admin_enums.html:59
-#: trac/ticket/templates/admin_enums.html:88
+#: trac/ticket/templates/admin_enums.html:89
 #: trac/ticket/templates/admin_milestones.html:62
 #: trac/ticket/templates/admin_versions.html:58
-#: trac/ticket/templates/admin_versions.html:99
+#: trac/ticket/templates/admin_versions.html:100
 #: trac/ticket/templates/milestone_edit_form.html:57
 #: trac/versioncontrol/templates/admin_repositories.html:125
-#: trac/versioncontrol/templates/admin_repositories.html:208
-#: trac/versioncontrol/templates/admin_repositories.html:226
+#: trac/versioncontrol/templates/admin_repositories.html:209
+#: trac/versioncontrol/templates/admin_repositories.html:227
 msgid "Name:"
 msgstr "名称:"
 
@@ -1340,7 +1340,13 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:42
+#: trac/ticket/templates/admin_components.html:78
+#: trac/ticket/templates/admin_enums.html:62
+#: trac/ticket/templates/admin_versions.html:74
+#: trac/ticket/templates/milestone_edit_form.html:141
+#: trac/ticket/templates/report_edit.html:76
 #: trac/ticket/templates/ticket.html:307
+#: trac/versioncontrol/templates/admin_repositories.html:178
 msgid "Description:"
 msgstr "詳細:"
 
@@ -1425,10 +1431,10 @@ msgstr "絶対書式"
 #: trac/admin/templates/admin_basics.html:161
 #: trac/admin/templates/admin_logging.html:92
 #: trac/admin/templates/admin_plugins.html:235
-#: trac/ticket/templates/admin_components.html:142
-#: trac/ticket/templates/admin_enums.html:131
+#: trac/ticket/templates/admin_components.html:143
+#: trac/ticket/templates/admin_enums.html:132
 #: trac/ticket/templates/admin_milestones.html:147
-#: trac/ticket/templates/admin_versions.html:149
+#: trac/ticket/templates/admin_versions.html:150
 msgid "Apply changes"
 msgstr "変更を適用"
 
@@ -1490,12 +1496,12 @@ msgstr "対象:"
 #: trac/admin/templates/admin_perms.html:84
 #: trac/admin/templates/admin_perms.html:108
 #: trac/notification/templates/prefs_notification.html:245
-#: trac/ticket/templates/admin_components.html:106
-#: trac/ticket/templates/admin_enums.html:91
+#: trac/ticket/templates/admin_components.html:107
+#: trac/ticket/templates/admin_enums.html:92
 #: trac/ticket/templates/admin_milestones.html:76
-#: trac/ticket/templates/admin_versions.html:115
-#: trac/versioncontrol/templates/admin_repositories.html:215
-#: trac/versioncontrol/templates/admin_repositories.html:230
+#: trac/ticket/templates/admin_versions.html:116
+#: trac/versioncontrol/templates/admin_repositories.html:216
+#: trac/versioncontrol/templates/admin_repositories.html:231
 msgid "Add"
 msgstr "追加"
 
@@ -1564,11 +1570,11 @@ msgid "No group memberships"
 msgstr "グループメンバなし"
 
 #: trac/admin/templates/admin_perms.html:201
-#: trac/ticket/templates/admin_components.html:143
-#: trac/ticket/templates/admin_enums.html:132
+#: trac/ticket/templates/admin_components.html:144
+#: trac/ticket/templates/admin_enums.html:133
 #: trac/ticket/templates/admin_milestones.html:150
-#: trac/ticket/templates/admin_versions.html:150
-#: trac/versioncontrol/templates/admin_repositories.html:287
+#: trac/ticket/templates/admin_versions.html:151
+#: trac/versioncontrol/templates/admin_repositories.html:288
 msgid "Remove selected items"
 msgstr "選択した項目を削除"
 
@@ -2088,8 +2094,8 @@ msgstr "保存"
 
 #: trac/prefs/templates/prefs.html:31 trac/prefs/web_ui.py:49
 #: trac/templates/attachment.html:73 trac/templates/genshi/prefs.html:26
-#: trac/ticket/templates/ticket.html:291 trac/ticket/templates/ticket.html:422
-#: trac/ticket/templates/ticket.html:510
+#: trac/ticket/templates/ticket.html:291 trac/ticket/templates/ticket.html:421
+#: trac/ticket/templates/ticket.html:509
 #: trac/wiki/templates/wiki_edit_form.html:72
 msgid "Preferences"
 msgstr "個人設定"
@@ -2477,12 +2483,12 @@ msgid "Attachment Info"
 msgstr "添付ファイル情報"
 
 #: trac/templates/attachment.html:67 trac/templates/genshi/attachment.html:49
-#: trac/ticket/templates/ticket.html:280 trac/ticket/templates/ticket.html:498
+#: trac/ticket/templates/ticket.html:280 trac/ticket/templates/ticket.html:497
 #: trac/wiki/templates/wiki_edit_form.html:64
 msgid "Your email or username:"
 msgstr "メールアドレスまたはユーザ名:"
 
-#: trac/templates/attachment.html:77 trac/ticket/templates/ticket.html:512
+#: trac/templates/attachment.html:77 trac/ticket/templates/ticket.html:511
 #, python-format
 msgid "E-mail address and name can be saved in the %(preferences)s."
 msgstr "メールアドレスと名前は%(preferences)sで保存できます。"
@@ -2961,7 +2967,7 @@ msgstr "すべての添付ファイルをダウンロード:"
 #: trac/templates/genshi/list_of_attachments.html:53
 #: trac/templates/list_of_attachments.html:60
 #: trac/templates/list_of_attachments.html:79
-#: trac/ticket/templates/ticket.html:560
+#: trac/ticket/templates/ticket.html:559
 msgid "Attachments"
 msgstr "添付ファイル"
 
@@ -3219,7 +3225,7 @@ msgid "The selected components have been removed."
 msgstr "選択したコンポーネントを削除しました。"
 
 #: trac/ticket/admin.py:202 trac/ticket/api.py:354
-#: trac/ticket/templates/admin_components.html:117
+#: trac/ticket/templates/admin_components.html:118
 msgid "Owner"
 msgstr "担当者"
 
@@ -3323,7 +3329,7 @@ msgid "Reporter"
 msgstr "報告者"
 
 #: trac/ticket/api.py:361 trac/versioncontrol/admin.py:122
-#: trac/versioncontrol/templates/admin_repositories.html:242
+#: trac/versioncontrol/templates/admin_repositories.html:243
 msgid "Type"
 msgstr "分類"
 
@@ -4589,67 +4595,68 @@ msgstr "担当者:"
 msgid "Modify Component:"
 msgstr "コンポーネントの変更:"
 
-#: trac/ticket/templates/admin_components.html:79
-#: trac/ticket/templates/admin_enums.html:63
-#: trac/ticket/templates/admin_versions.html:75
-#: trac/ticket/templates/milestone_edit_form.html:142
-#: trac/ticket/templates/report_edit.html:77
-#: trac/versioncontrol/templates/admin_repositories.html:179
+#: trac/ticket/templates/admin_components.html:82
+#: trac/ticket/templates/admin_enums.html:66
+#: trac/ticket/templates/admin_versions.html:78
+#: trac/ticket/templates/milestone_edit_form.html:147
+#: trac/ticket/templates/report_edit.html:81
+#: trac/ticket/templates/ticket.html:316 trac/ticket/templates/ticket.html:528
+#: trac/versioncontrol/templates/admin_repositories.html:184
 #, python-format
-msgid "Description: (you may use %(wikiformatting)s here)"
-msgstr "詳細: (%(wikiformatting)s が使えます)"
+msgid "You may use %(wikiformatting)s here."
+msgstr "%(wikiformatting)s が使えます。"
 
-#: trac/ticket/templates/admin_components.html:92
-#: trac/ticket/templates/admin_enums.html:75
-#: trac/ticket/templates/admin_versions.html:88
-#: trac/ticket/templates/milestone_edit_form.html:160
-#: trac/ticket/templates/ticket.html:577
+#: trac/ticket/templates/admin_components.html:93
+#: trac/ticket/templates/admin_enums.html:76
+#: trac/ticket/templates/admin_versions.html:89
+#: trac/ticket/templates/milestone_edit_form.html:161
+#: trac/ticket/templates/ticket.html:576
 #: trac/ticket/templates/ticket_change.html:188
-#: trac/versioncontrol/templates/admin_repositories.html:196
+#: trac/versioncontrol/templates/admin_repositories.html:197
 #: trac/wiki/templates/wiki_edit_comment.html:57
 #: trac/wiki/templates/wiki_edit_form.html:106
 #: trac/wiki/templates/wiki_edit_form.html:114
 msgid "Submit changes"
 msgstr "変更を送信"
 
-#: trac/ticket/templates/admin_components.html:100
+#: trac/ticket/templates/admin_components.html:101
 msgid "Add Component:"
 msgstr "コンポーネントの追加:"
 
-#: trac/ticket/templates/admin_components.html:117
-#: trac/ticket/templates/admin_enums.html:102
+#: trac/ticket/templates/admin_components.html:118
+#: trac/ticket/templates/admin_enums.html:103
 #: trac/ticket/templates/admin_milestones.html:92
-#: trac/ticket/templates/admin_versions.html:126
+#: trac/ticket/templates/admin_versions.html:127
 msgid "Default"
 msgstr "デフォルト"
 
-#: trac/ticket/templates/admin_components.html:144
-#: trac/ticket/templates/admin_enums.html:133
-#: trac/ticket/templates/admin_versions.html:151
+#: trac/ticket/templates/admin_components.html:145
+#: trac/ticket/templates/admin_enums.html:134
+#: trac/ticket/templates/admin_versions.html:152
 msgid "Clear default"
 msgstr "デフォルトをクリア"
 
-#: trac/ticket/templates/admin_components.html:147
-#: trac/ticket/templates/admin_enums.html:136
+#: trac/ticket/templates/admin_components.html:148
+#: trac/ticket/templates/admin_enums.html:137
 #: trac/ticket/templates/admin_milestones.html:159
-#: trac/ticket/templates/admin_versions.html:154
+#: trac/ticket/templates/admin_versions.html:155
 msgid ""
 "You can remove all items from this list to completely hide this field "
 "from the user interface."
 msgstr "すべての項目を削除すると、ユーザインターフェースにこのフィールドを表示しないようにできます。"
 
-#: trac/ticket/templates/admin_components.html:157
-#: trac/ticket/templates/admin_enums.html:156
+#: trac/ticket/templates/admin_components.html:158
+#: trac/ticket/templates/admin_enums.html:157
 #: trac/ticket/templates/admin_milestones.html:169
-#: trac/ticket/templates/admin_versions.html:164
+#: trac/ticket/templates/admin_versions.html:165
 msgid ""
 "As long as you don't add any items to the list, this field will remain "
 "completely hidden from the user interface."
 msgstr "項目を追加しない限り、ユーザインターフェースにこのフィールドを表示しません。"
 
-#: trac/ticket/templates/admin_components.html:168
-#: trac/ticket/templates/admin_enums.html:167
-#: trac/ticket/templates/admin_versions.html:176
+#: trac/ticket/templates/admin_components.html:169
+#: trac/ticket/templates/admin_enums.html:168
+#: trac/ticket/templates/admin_versions.html:177
 #, python-format
 msgid "%(note)s See %(page)s for help on using the ticket system."
 msgstr "%(note)s チケットシステムについて詳しくは %(page)s を参照してください。"
@@ -4664,16 +4671,16 @@ msgstr "%(label_plural)sの管理 %(nb_enums)s"
 msgid "Modify %(label_singular)s:"
 msgstr "%(label_singular)sの変更:"
 
-#: trac/ticket/templates/admin_enums.html:85
+#: trac/ticket/templates/admin_enums.html:86
 #, python-format
 msgid "Add %(label_singular)s:"
 msgstr "%(label_singular)sの追加:"
 
-#: trac/ticket/templates/admin_enums.html:102
+#: trac/ticket/templates/admin_enums.html:103
 msgid "Order"
 msgstr "順序"
 
-#: trac/ticket/templates/admin_enums.html:145
+#: trac/ticket/templates/admin_enums.html:146
 #, python-format
 msgid ""
 "%(note)s The order of priorities determines the coloring of entries in "
@@ -4697,8 +4704,8 @@ msgstr "期日:"
 #: trac/ticket/templates/admin_milestones.html:69
 #: trac/ticket/templates/admin_versions.html:67
 #: trac/ticket/templates/admin_versions.html:69
-#: trac/ticket/templates/admin_versions.html:106
-#: trac/ticket/templates/admin_versions.html:110
+#: trac/ticket/templates/admin_versions.html:107
+#: trac/ticket/templates/admin_versions.html:111
 #: trac/ticket/templates/milestone_edit_form.html:80
 #: trac/ticket/templates/milestone_edit_form.html:83
 #: trac/ticket/templates/milestone_edit_form.html:100
@@ -4751,15 +4758,15 @@ msgid "Modify Version:"
 msgstr "バージョンの変更:"
 
 #: trac/ticket/templates/admin_versions.html:63
-#: trac/ticket/templates/admin_versions.html:103
+#: trac/ticket/templates/admin_versions.html:104
 msgid "Released:"
 msgstr "リリース日時:"
 
-#: trac/ticket/templates/admin_versions.html:97
+#: trac/ticket/templates/admin_versions.html:98
 msgid "Add Version:"
 msgstr "バージョンの追加:"
 
-#: trac/ticket/templates/admin_versions.html:126
+#: trac/ticket/templates/admin_versions.html:127
 msgid "Released"
 msgstr "リリース日時"
 
@@ -4869,7 +4876,7 @@ msgstr "このマイルストーンの完了していないチケットを次の
 msgid "There are no open tickets associated with this milestone."
 msgstr "このマイルストーンに属する未解決チケットはありません。"
 
-#: trac/ticket/templates/milestone_edit_form.html:163
+#: trac/ticket/templates/milestone_edit_form.html:164
 msgid "Add milestone"
 msgstr "マイルストーンを登録"
 
@@ -4962,7 +4969,7 @@ msgid "Edit query"
 msgstr "このクエリを編集"
 
 #: trac/ticket/templates/query.html:367
-#: trac/ticket/templates/report_edit.html:117
+#: trac/ticket/templates/report_edit.html:119
 msgid "Save query"
 msgstr "このクエリを保存"
 
@@ -5043,7 +5050,7 @@ msgid "Delete report"
 msgstr "このレポートを削除"
 
 #: trac/ticket/templates/report_delete.html:42
-#: trac/ticket/templates/report_edit.html:123
+#: trac/ticket/templates/report_edit.html:125
 #: trac/ticket/templates/report_list.html:179
 #: trac/ticket/templates/report_view.html:298
 #, python-format
@@ -5087,18 +5094,22 @@ msgstr "レポートの変更:"
 msgid "Title:"
 msgstr "タイトル:"
 
-#: trac/ticket/templates/report_edit.html:92
+#: trac/ticket/templates/report_edit.html:93
 msgid "Error:"
 msgstr "エラー:"
 
-#: trac/ticket/templates/report_edit.html:103
+#: trac/ticket/templates/report_edit.html:96
+msgid "Query:"
+msgstr "クエリ:"
+
+#: trac/ticket/templates/report_edit.html:108
 #, python-format
 msgid ""
-"Query: (can be either SQL or, if starting with %(query_prefix)s, a "
-"%(trac_query)s expression)"
-msgstr "クエリ: (SQL 文または %(query_prefix)s で始まる %(trac_query)s が使えます)"
+"Can be either SQL or, if starting with %(query_prefix)s, a %(trac_query)s"
+" expression."
+msgstr "SQL 文または %(query_prefix)s で始まる %(trac_query)s が使えます。"
 
-#: trac/ticket/templates/report_edit.html:117
+#: trac/ticket/templates/report_edit.html:119
 msgid "Save report"
 msgstr "保存"
 
@@ -5278,48 +5289,43 @@ msgstr "報告者:"
 msgid "E-mail address and name can be saved in the %(preferences)s"
 msgstr "メールアドレスと名前は%(preferences)sで保存できます。"
 
-#: trac/ticket/templates/ticket.html:312 trac/ticket/templates/ticket.html:523
-#, python-format
-msgid "You may use %(wikiformatting)s here."
-msgstr "%(wikiformatting)s が使えます。"
-
-#: trac/ticket/templates/ticket.html:341 trac/ticket/templates/ticket.html:344
+#: trac/ticket/templates/ticket.html:340 trac/ticket/templates/ticket.html:343
 #: trac/ticket/templates/ticket_box.html:121
 #: trac/ticket/templates/ticket_change.html:130
 #, python-format
 msgid "%(label)s:"
 msgstr "%(label)s:"
 
-#: trac/ticket/templates/ticket.html:424
+#: trac/ticket/templates/ticket.html:423
 #, python-format
 msgid "Set your email in %(preferences_link)s"
 msgstr "%(preferences_link)sでメールアドレスを設定してください"
 
-#: trac/ticket/templates/ticket.html:431
+#: trac/ticket/templates/ticket.html:430
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "関係者に自分自身を登録または削除することができます。"
 
-#: trac/ticket/templates/ticket.html:444
+#: trac/ticket/templates/ticket.html:443
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "空白かカンマ区切りで、メールアドレスかユーザ名を設定できます。"
 
-#: trac/ticket/templates/ticket.html:486
+#: trac/ticket/templates/ticket.html:485
 msgid "Add Comment"
 msgstr "コメントの追加"
 
-#: trac/ticket/templates/ticket.html:547
+#: trac/ticket/templates/ticket.html:546
 msgid "I have files to attach to this ticket"
 msgstr "このチケットにファイルを添付します"
 
-#: trac/ticket/templates/ticket.html:559
+#: trac/ticket/templates/ticket.html:558
 msgid "Go to the list of attachments"
 msgstr "添付ファイルの一覧に移動"
 
-#: trac/ticket/templates/ticket.html:562
+#: trac/ticket/templates/ticket.html:561
 msgid "View the ticket description"
 msgstr "チケットの詳細を表示"
 
-#: trac/ticket/templates/ticket.html:574
+#: trac/ticket/templates/ticket.html:573
 #: trac/ticket/templates/ticket_change.html:186
 #: trac/wiki/templates/wiki_edit.html:118
 #: trac/wiki/templates/wiki_edit.html:230
@@ -5327,11 +5333,11 @@ msgstr "チケットの詳細を表示"
 msgid "Preview"
 msgstr "プレビュー"
 
-#: trac/ticket/templates/ticket.html:578
+#: trac/ticket/templates/ticket.html:577
 msgid "Create ticket"
 msgstr "チケットの新規作成"
 
-#: trac/ticket/templates/ticket.html:595
+#: trac/ticket/templates/ticket.html:594
 #, python-format
 msgid ""
 "This ticket has been modified since you started editing. You should "
@@ -5340,7 +5346,7 @@ msgid ""
 "nevertheless proceed and submit your changes if you wish so."
 msgstr "このチケットは編集開始以降に更新されています。上に追加されている「%(emph_other_modifications)s」と下のプレビューに表示されている「%(emph_conflicts)s」を確認してください。それでも続行する場合は変更内容を送信することもできます。"
 
-#: trac/ticket/templates/ticket.html:626
+#: trac/ticket/templates/ticket.html:625
 #, python-format
 msgid "%(note)s See %(page)s for help on using tickets."
 msgstr "%(note)s チケットについて詳しくは %(page)s を参照してください。"
@@ -5764,7 +5770,7 @@ msgid "Alias"
 msgstr "エイリアス"
 
 #: trac/versioncontrol/admin.py:122
-#: trac/versioncontrol/templates/admin_repositories.html:242
+#: trac/versioncontrol/templates/admin_repositories.html:243
 msgid "Directory"
 msgstr "ディレクトリ"
 
@@ -5897,9 +5903,9 @@ msgstr "リポジトリディレクトリは次にあげるディレクトリの
 #: trac/versioncontrol/api.py:36
 #: trac/versioncontrol/templates/admin_repositories.html:65
 #: trac/versioncontrol/templates/admin_repositories.html:91
-#: trac/versioncontrol/templates/admin_repositories.html:255
-#: trac/versioncontrol/templates/admin_repositories.html:257
-#: trac/versioncontrol/templates/admin_repositories.html:261
+#: trac/versioncontrol/templates/admin_repositories.html:256
+#: trac/versioncontrol/templates/admin_repositories.html:258
+#: trac/versioncontrol/templates/admin_repositories.html:262
 #: trac/versioncontrol/web_ui/browser.py:950
 #: trac/versioncontrol/web_ui/changeset.py:855
 #: trac/versioncontrol/web_ui/changeset.py:997
@@ -6085,7 +6091,7 @@ msgid ""
 msgstr "%(note)s このリポジトリはデータベースで設定されていないため、このページでは変更できません。"
 
 #: trac/versioncontrol/templates/admin_repositories.html:136
-#: trac/versioncontrol/templates/admin_repositories.html:212
+#: trac/versioncontrol/templates/admin_repositories.html:213
 msgid "Directory:"
 msgstr "ディレクトリ:"
 
@@ -6106,24 +6112,24 @@ msgstr "非推奨です。詳しくは%(tracreposadmin)sを参照してくださ
 msgid "Hide from repository index"
 msgstr "リポジトリ一覧に表示しない"
 
-#: trac/versioncontrol/templates/admin_repositories.html:206
+#: trac/versioncontrol/templates/admin_repositories.html:207
 msgid "Add Repository:"
 msgstr "リポジトリの追加:"
 
-#: trac/versioncontrol/templates/admin_repositories.html:224
+#: trac/versioncontrol/templates/admin_repositories.html:225
 msgid "Add Alias:"
 msgstr "エイリアスの追加:"
 
-#: trac/versioncontrol/templates/admin_repositories.html:261
+#: trac/versioncontrol/templates/admin_repositories.html:262
 #, python-format
 msgid "Alias of %(repo)s"
 msgstr "%(repo)s のエイリアス"
 
-#: trac/versioncontrol/templates/admin_repositories.html:286
+#: trac/versioncontrol/templates/admin_repositories.html:287
 msgid "Refresh"
 msgstr "再読み込み"
 
-#: trac/versioncontrol/templates/admin_repositories.html:294
+#: trac/versioncontrol/templates/admin_repositories.html:295
 #, python-format
 msgid "%(note)s See %(page)s for help on administering repositories."
 msgstr "%(note)s リポジトリ管理について詳しくは %(page)s を参照してください。"
