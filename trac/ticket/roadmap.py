@@ -42,9 +42,8 @@ from trac.ticket.model import Milestone, MilestoneCache, Ticket
 from trac.timeline.api import ITimelineEventProvider
 from trac.web.api import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, accesskey,
-                             add_link, add_notice, add_script, add_stylesheet,
-                             add_warning, auth_link, prevnext_nav,
-                             web_context)
+                             add_link, add_notice, add_stylesheet, add_warning,
+                             auth_link, prevnext_nav, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
