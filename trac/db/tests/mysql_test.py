@@ -56,24 +56,29 @@ class MySQLTableAlterationSQLTest(unittest.TestCase):
 
     def test_utf8_size(self):
         connector = MySQLConnector(self.env)
-        self.assertEqual(3, connector._utf8_size(Mock(charset='utf8')))
-        self.assertEqual(4, connector._utf8_size(Mock(charset='utf8mb4')))
+        self.assertEqual(3, connector._max_bytes(Mock(charset='utf8')))
+        self.assertEqual(4, connector._max_bytes(Mock(charset='utf8mb4')))
 
     def test_to_sql(self):
         connector = MySQLConnector(self.env)
-        tab = Table('blah', key=('col1', 'col2'))[Column('col1'),
-                                                  Column('col2'),
-                                                  Index(['col2'])]
+        tab = Table('blah', key=('col1', 'col2', 'col3', 'col4', 'col5')) \
+              [Column('col1'), Column('col2'), Column('col3'), Column('col4'),
+               Column('col5'), Column('col6'),
+               Index(['col2', 'col3', 'col4', 'col5'])]
 
-        sql = list(connector.to_sql(tab, utf8_size=3))
+        sql = list(connector.to_sql(tab, max_bytes=3))
         self.assertEqual(2, len(sql))
-        self.assertIn(' PRIMARY KEY (`col1`(166),`col2`(166))', sql[0])
-        self.assertIn(' blah_col2_idx ON blah (`col2`(255))', sql[1])
+        self.assertIn(' PRIMARY KEY (`col1`(204),`col2`(204),`col3`(204),'
+                      '`col4`(204),`col5`(204))', sql[0])
+        self.assertIn(' blah_col2_col3_col4_col5_idx ON blah (`col2`(255),'
+                      '`col3`(255),`col4`(255),`col5`(255))', sql[1])
 
-        sql = list(connector.to_sql(tab, utf8_size=4))
+        sql = list(connector.to_sql(tab, max_bytes=4))
         self.assertEqual(2, len(sql))
-        self.assertIn(' PRIMARY KEY (`col1`(125),`col2`(125))', sql[0])
-        self.assertIn(' blah_col2_idx ON blah (`col2`(191))', sql[1])
+        self.assertIn(' PRIMARY KEY (`col1`(153),`col2`(153),`col3`(153),'
+                      '`col4`(153),`col5`(153))', sql[0])
+        self.assertIn(' blah_col2_col3_col4_col5_idx ON blah (`col2`(191),'
+                      '`col3`(191),`col4`(191),`col5`(191))', sql[1])
 
 
 class MySQLConnectionTestCase(unittest.TestCase):
