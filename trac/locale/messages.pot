@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-05 16:02-0700\n"
+"POT-Creation-Date: 2017-08-05 16:07-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1042,7 +1042,7 @@ msgstr ""
 #: trac/admin/web_ui.py:143 trac/ticket/admin.py:70 trac/ticket/admin.py:94
 #: trac/ticket/admin.py:476 trac/ticket/admin.py:634 trac/ticket/admin.py:700
 #: trac/ticket/report.py:253 trac/ticket/roadmap.py:872
-#: trac/versioncontrol/admin.py:230
+#: trac/versioncontrol/admin.py:231
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -1590,7 +1590,7 @@ msgid ""
 "refer to the %(doc)s for help."
 msgstr ""
 
-#: trac/db/api.py:723 trac/versioncontrol/admin.py:295
+#: trac/db/api.py:723 trac/versioncontrol/admin.py:296
 msgid "documentation"
 msgstr ""
 
@@ -1614,7 +1614,7 @@ msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
 #: trac/db/mysql_backend.py:285 trac/db/postgres_backend.py:292
-#: trac/db/sqlite_backend.py:272
+#: trac/db/sqlite_backend.py:271
 msgid "No destination file created"
 msgstr ""
 
@@ -1675,46 +1675,46 @@ msgstr ""
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:171
+#: trac/db/sqlite_backend.py:170
 #, python-format
 msgid ""
 "SQLite version is %(version)s. Minimum required version is "
 "%(min_version)s."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:176
+#: trac/db/sqlite_backend.py:175
 #, python-format
 msgid "Need at least PySqlite %(version)s or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:208
+#: trac/db/sqlite_backend.py:207
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:300
+#: trac/db/sqlite_backend.py:299
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:310
+#: trac/db/sqlite_backend.py:309
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:487
+#: trac/db/sqlite_backend.py:486
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` cannot be used in SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:492
+#: trac/db/sqlite_backend.py:491
 #, python-format
 msgid "PRAGMA journal_mode isn't supported by SQLite %(version)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:495
+#: trac/db/sqlite_backend.py:494
 #, python-format
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr ""
@@ -2578,8 +2578,8 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:717
-#: trac/web/main.py:723
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:716
+#: trac/web/main.py:722
 msgid "N/A"
 msgstr ""
 
@@ -3046,7 +3046,7 @@ msgstr ""
 msgid "Try [1:downloading] the file instead."
 msgstr ""
 
-#: trac/templates/genshi/progress_bar_grouped.html:26 trac/web/chrome.py:1090
+#: trac/templates/genshi/progress_bar_grouped.html:26 trac/web/chrome.py:1091
 msgid "(none)"
 msgstr ""
 
@@ -5266,18 +5266,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:290 trac/timeline/web_ui.py:313
-#: trac/web/chrome.py:1235
+#: trac/web/chrome.py:1236
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:311
-#: trac/web/chrome.py:1249
+#: trac/web/chrome.py:1250
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1237
+#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1238
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -5287,7 +5287,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1245
+#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1246
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -5534,16 +5534,16 @@ msgstr ""
 msgid "Done."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:195
+#: trac/versioncontrol/admin.py:196
 msgid "Version Control"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:196
+#: trac/versioncontrol/admin.py:197
 #: trac/versioncontrol/templates/admin_repositories.html:17
 msgid "Repositories"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:209 trac/versioncontrol/api.py:708
+#: trac/versioncontrol/admin.py:210 trac/versioncontrol/api.py:707
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:246
 #: trac/versioncontrol/web_ui/changeset.py:1088
@@ -5552,38 +5552,38 @@ msgstr ""
 msgid "Repository '%(repo)s' not found"
 msgstr ""
 
-#: trac/versioncontrol/admin.py:236 trac/versioncontrol/admin.py:288
+#: trac/versioncontrol/admin.py:237 trac/versioncontrol/admin.py:289
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:241
+#: trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:250
+#: trac/versioncontrol/admin.py:251
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:275
+#: trac/versioncontrol/admin.py:276
 msgid "Missing arguments to add a repository."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:281 trac/versioncontrol/api.py:292
+#: trac/versioncontrol/admin.py:282 trac/versioncontrol/api.py:292
 #, python-format
 msgid "The repository \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:284
+#: trac/versioncontrol/admin.py:285
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:298
+#: trac/versioncontrol/admin.py:299
 #, python-format
 msgid ""
 "You should also set up a post-commit hook on the repository to call "
@@ -5591,33 +5591,33 @@ msgid ""
 "information."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:315
+#: trac/versioncontrol/admin.py:316
 #, python-format
 msgid "The alias \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:317
+#: trac/versioncontrol/admin.py:318
 #, python-format
 msgid "The alias \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:320
+#: trac/versioncontrol/admin.py:321
 msgid "Missing arguments to add an alias."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:333
+#: trac/versioncontrol/admin.py:334
 msgid "The selected repositories have been removed."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:336
+#: trac/versioncontrol/admin.py:337
 msgid "No repositories were selected."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:388
+#: trac/versioncontrol/admin.py:389
 msgid "The repository directory must be an absolute path."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:397
+#: trac/versioncontrol/admin.py:398
 #, python-format
 msgid ""
 "The repository directory must be located below one of the following "
@@ -5630,7 +5630,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:256
 #: trac/versioncontrol/templates/admin_repositories.html:258
 #: trac/versioncontrol/templates/admin_repositories.html:262
-#: trac/versioncontrol/web_ui/browser.py:950
+#: trac/versioncontrol/web_ui/browser.py:948
 #: trac/versioncontrol/web_ui/changeset.py:855
 #: trac/versioncontrol/web_ui/changeset.py:997
 msgid "(default)"
@@ -5675,14 +5675,14 @@ msgstr ""
 msgid "Cannot rename the repository \"%(repos)s\" used in aliases"
 msgstr ""
 
-#: trac/versioncontrol/api.py:378
+#: trac/versioncontrol/api.py:377
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
 
-#: trac/versioncontrol/api.py:385
+#: trac/versioncontrol/api.py:384
 #, python-format
 msgid ""
 "Failed to sync with repository \"%(name)s\": %(error)s; repository "
@@ -5690,85 +5690,85 @@ msgid ""
 " including mitigation strategies."
 msgstr ""
 
-#: trac/versioncontrol/api.py:413
+#: trac/versioncontrol/api.py:412
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:415
+#: trac/versioncontrol/api.py:414
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:425
+#: trac/versioncontrol/api.py:424
 msgid "directory"
 msgstr ""
 
-#: trac/versioncontrol/api.py:427
+#: trac/versioncontrol/api.py:426
 msgid "file"
 msgstr ""
 
-#: trac/versioncontrol/api.py:429
+#: trac/versioncontrol/api.py:428
 #, python-format
 msgid " at version %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:431
+#: trac/versioncontrol/api.py:430
 msgid "path"
 msgstr ""
 
-#: trac/versioncontrol/api.py:434
+#: trac/versioncontrol/api.py:433
 #, python-format
 msgid " in %(repo)s"
 msgstr ""
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:436
+#: trac/versioncontrol/api.py:435
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:440
+#: trac/versioncontrol/api.py:439
 msgid "Default repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:441
+#: trac/versioncontrol/api.py:440
 #, python-format
 msgid "Repository %(repo)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:807
+#: trac/versioncontrol/api.py:806
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:810
+#: trac/versioncontrol/api.py:809
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 
-#: trac/versioncontrol/api.py:818
+#: trac/versioncontrol/api.py:817
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr ""
 
-#: trac/versioncontrol/api.py:820
+#: trac/versioncontrol/api.py:819
 msgid "No such changeset"
 msgstr ""
 
-#: trac/versioncontrol/api.py:826
+#: trac/versioncontrol/api.py:825
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:828
+#: trac/versioncontrol/api.py:827
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr ""
 
-#: trac/versioncontrol/api.py:830
+#: trac/versioncontrol/api.py:829
 msgid "No such node"
 msgstr ""
 
@@ -6482,12 +6482,10 @@ msgid ""
 "    Order repositories by the given column (one of \"name\", \"date\" or\n"
 "    \"author\")\n"
 "  ''desc''::\n"
-"    When set to 1, order by descending order\n"
-"\n"
-"(''since 0.12'')"
+"    When set to 1, order by descending order"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:952
+#: trac/versioncontrol/web_ui/browser.py:950
 #, python-format
 msgid "View repository %(repo)s"
 msgstr ""
@@ -6689,36 +6687,36 @@ msgstr ""
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr ""
 
-#: trac/web/auth.py:115
+#: trac/web/auth.py:117
 #, python-format
 msgid "logged in as %(user)s"
 msgstr ""
 
-#: trac/web/auth.py:119
+#: trac/web/auth.py:121
 msgid "Logout"
 msgstr ""
 
-#: trac/web/auth.py:128
+#: trac/web/auth.py:130
 msgid "Login"
 msgstr ""
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
-#: trac/web/auth.py:161
+#: trac/web/auth.py:163
 msgid "installation documentation"
 msgstr ""
 
-#: trac/web/auth.py:162
+#: trac/web/auth.py:164
 msgid "Configuring Authentication"
 msgstr ""
 
-#: trac/web/auth.py:165
+#: trac/web/auth.py:167
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr ""
 
-#: trac/web/auth.py:173
+#: trac/web/auth.py:175
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr ""
@@ -6728,48 +6726,48 @@ msgstr ""
 msgid "%(component)s failed with %(exc)s"
 msgstr ""
 
-#: trac/web/chrome.py:751
+#: trac/web/chrome.py:752
 #, python-format
 msgid "Invalid chrome path %(path)s."
 msgstr ""
 
-#: trac/web/chrome.py:1088
+#: trac/web/chrome.py:1089
 msgid "anonymous"
 msgstr ""
 
-#: trac/web/chrome.py:1423
+#: trac/web/chrome.py:1424
 msgid ""
 "Legacy Genshi template needs the 'genshi' package to be installed. Please"
 " contact your Trac administrator."
 msgstr ""
 
-#: trac/web/chrome.py:1819
+#: trac/web/chrome.py:1820
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1820
+#: trac/web/chrome.py:1821
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/main.py:180
+#: trac/web/main.py:179
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:234
+#: trac/web/main.py:233
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:237
+#: trac/web/main.py:236
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:238
+#: trac/web/main.py:237
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:350
+#: trac/web/main.py:349
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6777,28 +6775,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:661
+#: trac/web/main.py:660
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:662
+#: trac/web/main.py:661
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:730
+#: trac/web/main.py:729
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:731
+#: trac/web/main.py:730
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:732
+#: trac/web/main.py:731
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:761
+#: trac/web/main.py:760
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
