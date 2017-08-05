@@ -136,12 +136,12 @@ class MySQLConnector(Component):
         cnx = self.get_connection(path, log, user, password, host, port,
                                   params)
         self._verify_variables(cnx)
-        utf8_size = self._utf8_size(cnx)
+        max_bytes = self._max_bytes(cnx)
         cursor = cnx.cursor()
         if schema is None:
             from trac.db_default import schema
         for table in schema:
-            for stmt in self.to_sql(table, utf8_size=utf8_size):
+            for stmt in self.to_sql(table, max_bytes=max_bytes):
                 self.log.debug(stmt)
                 cursor.execute(stmt)
         self._verify_table_status(cnx)
@@ -161,7 +161,7 @@ class MySQLConnector(Component):
                                   params)
         return bool(cnx.get_table_names())
 
-    def _utf8_size(self, cnx):
+    def _max_bytes(self, cnx):
         if cnx is None:
             connector, args = DatabaseManager(self.env).get_connector()
             with closing(connector.get_connection(**args)) as cnx:
@@ -170,16 +170,19 @@ class MySQLConnector(Component):
             charset = cnx.charset
         return 4 if charset == 'utf8mb4' else 3
 
-    def _collist(self, table, columns, utf8_size):
+    _max_key_length = 3072
+
+    def _collist(self, table, columns, max_bytes):
         """Take a list of columns and impose limits on each so that indexing
         works properly.
 
-        Some Versions of MySQL limit each index prefix to 1000 bytes total,
+        Some Versions of MySQL limit each index prefix to 3072 bytes total,
         with a max of 767 bytes per column.
         """
         cols = []
-        limit_col = 767 / utf8_size
-        limit = min(1000 / (utf8_size * len(columns)), limit_col)
+        limit_col = 767 / max_bytes
+        limit = min(self._max_key_length / (max_bytes * len(columns)),
+                    limit_col)
         for c in columns:
             name = '`%s`' % c
             table_col = filter((lambda x: x.name == c), table.columns)
@@ -193,9 +196,9 @@ class MySQLConnector(Component):
             cols.append(name)
         return ','.join(cols)
 
-    def to_sql(self, table, utf8_size=None):
-        if utf8_size is None:
-            utf8_size = self._utf8_size(None)
+    def to_sql(self, table, max_bytes=None):
+        if max_bytes is None:
+            max_bytes = self._max_bytes(None)
         sql = ['CREATE TABLE %s (' % table.name]
         coldefs = []
         for column in table.columns:
@@ -210,15 +213,15 @@ class MySQLConnector(Component):
         if len(table.key) > 0:
             coldefs.append('    PRIMARY KEY (%s)' %
                            self._collist(table, table.key,
-                                         utf8_size=utf8_size))
+                                         max_bytes=max_bytes))
         sql.append(',\n'.join(coldefs) + '\n)')
         yield '\n'.join(sql)
 
         for index in table.indices:
             unique = 'UNIQUE' if index.unique else ''
-            yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
+            yield 'CREATE %s INDEX %s_%s_idx ON %s (%s)' % (unique, table.name,
                   '_'.join(index.columns), table.name,
-                  self._collist(table, index.columns, utf8_size=utf8_size))
+                  self._collist(table, index.columns, max_bytes=max_bytes))
 
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
