@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-21 13:45+0000\n"
+"POT-Creation-Date: 2017-08-05 15:48-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1585,23 +1585,23 @@ msgstr ""
 msgid "Cannot load Python bindings for MySQL"
 msgstr ""
 
-#: trac/db/mysql_backend.py:273 trac/db/postgres_backend.py:224
-#: trac/db/postgres_backend.py:241
+#: trac/db/mysql_backend.py:276 trac/db/postgres_backend.py:229
+#: trac/db/postgres_backend.py:246
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:277
+#: trac/db/mysql_backend.py:280
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:279 trac/db/postgres_backend.py:230
+#: trac/db/mysql_backend.py:282 trac/db/postgres_backend.py:235
 #: trac/db/sqlite_backend.py:278
 msgid "No destination file created"
 msgstr ""
 
-#: trac/db/mysql_backend.py:316
+#: trac/db/mysql_backend.py:319
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1609,28 +1609,28 @@ msgid ""
 "which doesn't support transactions: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:325
+#: trac/db/mysql_backend.py:328
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:340
+#: trac/db/mysql_backend.py:343
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:346
+#: trac/db/mysql_backend.py:349
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:358
+#: trac/db/mysql_backend.py:361
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1646,7 +1646,7 @@ msgstr ""
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr ""
 
-#: trac/db/postgres_backend.py:228
+#: trac/db/postgres_backend.py:233
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
@@ -3099,101 +3099,101 @@ msgid ""
 "notifications: %(message)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:248
+#: trac/ticket/default_workflow.py:259
 msgid "from invalid state"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:249
+#: trac/ticket/default_workflow.py:260
 msgid "Current state no longer exists"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:262
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:287 trac/ticket/default_workflow.py:301
-#: trac/ticket/default_workflow.py:315
+#: trac/ticket/default_workflow.py:297 trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:325
 #, python-format
 msgid "to %(owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:290
+#: trac/ticket/default_workflow.py:300
 msgid "The owner will be the specified user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:292
+#: trac/ticket/default_workflow.py:302
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:303 trac/ticket/default_workflow.py:328
+#: trac/ticket/default_workflow.py:313 trac/ticket/default_workflow.py:337
 #, python-format
 msgid "The owner will be %(new_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:306 trac/ticket/default_workflow.py:331
+#: trac/ticket/default_workflow.py:316 trac/ticket/default_workflow.py:340
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(new_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:319
+#: trac/ticket/default_workflow.py:329
 msgid "The owner will be the selected user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:321
+#: trac/ticket/default_workflow.py:331
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:341
+#: trac/ticket/default_workflow.py:345 trac/ticket/default_workflow.py:380
+#, python-format
+msgid "The owner will remain %(current_owner)s"
+msgstr ""
+
+#: trac/ticket/default_workflow.py:353
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:349 trac/ticket/default_workflow.py:359
+#: trac/ticket/default_workflow.py:361 trac/ticket/default_workflow.py:371
 #, python-format
 msgid "as %(resolution)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:351
+#: trac/ticket/default_workflow.py:363
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:362
+#: trac/ticket/default_workflow.py:374
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:364
+#: trac/ticket/default_workflow.py:376
 msgid "The resolution will be deleted"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:367
+#: trac/ticket/default_workflow.py:378
 #, python-format
 msgid "as %(status)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:370
-#, python-format
-msgid "The owner will remain %(current_owner)s"
-msgstr ""
-
-#: trac/ticket/default_workflow.py:373
+#: trac/ticket/default_workflow.py:383
 msgid "The ticket will remain with no owner"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:377
+#: trac/ticket/default_workflow.py:387
 #, python-format
 msgid "The status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:380
+#: trac/ticket/default_workflow.py:390
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:571
+#: trac/ticket/default_workflow.py:581
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3243,11 +3243,11 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:632
+#: trac/ticket/default_workflow.py:642
 msgid "Error parsing workflow."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:666
+#: trac/ticket/default_workflow.py:676
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
