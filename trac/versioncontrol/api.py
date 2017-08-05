@@ -333,8 +333,8 @@ class RepositoryManager(Component):
         """Default repository connector type. (''since 0.10'')
 
         This is also used as the default repository type for repositories
-        defined in [[TracIni#repositories-section repositories]] or using the
-        "Repositories" admin panel. (''since 0.12'')
+        defined in the [TracIni#repositories-section repositories] section
+        or using the "Repositories" admin panel. (''since 0.12'')
         """)
 
     repository_dir = Option('trac', 'repository_dir', '',
