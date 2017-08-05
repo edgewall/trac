@@ -219,7 +219,8 @@ class NotificationSystem(Component):
         This component is used by the notification system to send emails.
         Trac currently provides `SmtpEmailSender` for connecting to an SMTP
         server, and `SendmailEmailSender` for running a `sendmail`-compatible
-        executable. (''since 0.12'')""")
+        executable.
+        """)
 
     smtp_enabled = BoolOption('notification', 'smtp_enabled', 'false',
         """Enable email notification.""")

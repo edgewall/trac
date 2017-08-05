@@ -156,7 +156,6 @@ class SQLiteConnector(Component):
     extensions = ListOption('sqlite', 'extensions',
         doc="""Paths to [https://sqlite.org/loadext.html sqlite extensions].
         The paths may be absolute or relative to the Trac environment.
-        (''since 0.12'')
         """)
 
     memory_cnx = None

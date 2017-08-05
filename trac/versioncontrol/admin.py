@@ -184,7 +184,8 @@ class RepositoryAdminPanel(Component):
         doc="""Comma-separated list of allowed prefixes for repository
         directories when adding and editing repositories in the repository
         admin panel. If the list is empty, all repository directories are
-        allowed. (''since 0.12.1'')""")
+        allowed.
+        """)
 
     # IAdminPanelProvider methods
 

@@ -144,8 +144,7 @@ class RequestDispatcher(Component):
         """The default timezone to use""")
 
     default_language = Option('trac', 'default_language', '',
-        """The preferred language to use if no user preference has
-        been set. (''since 0.12.1'')
+        """The preferred language to use if no user preference has been set.
         """)
 
     default_date_format = ChoiceOption('trac', 'default_date_format',

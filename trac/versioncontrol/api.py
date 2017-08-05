@@ -338,8 +338,7 @@ class RepositoryManager(Component):
         See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details
         about the format adopted for this section and the rest of that page for
         the other alternatives.
-
-        (''since 0.12'')""")
+        """)
 
     default_repository_type = Option('versioncontrol',
                                      'default_repository_type', 'svn',
@@ -347,7 +346,7 @@ class RepositoryManager(Component):
 
         This is used as the default repository type for repositories
         defined in the [TracIni#repositories-section repositories] section
-        or using the "Repositories" admin panel. (''since 0.12'')
+        or using the "Repositories" admin panel.
         """)
 
     def __init__(self):

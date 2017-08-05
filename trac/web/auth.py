@@ -78,12 +78,14 @@ class LoginModule(Component):
         authentication information, and therefore, after how much
         inactivity a user will have to log in again. The value
         of 0 makes the cookie expire at the end of the browsing
-        session. (''since 0.12'')""")
+        session.
+        """)
 
     auth_cookie_path = Option('trac', 'auth_cookie_path', '',
         """Path for the authentication cookie. Set this to the common
         base path of several Trac instances if you want them to share
-        the cookie.  (''since 0.12'')""")
+        the cookie.
+        """)
 
     # IAuthenticator methods
 

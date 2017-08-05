@@ -106,7 +106,7 @@ class TicketModule(Component):
             fields. The query is a URL query
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
-            (''since 0.12'')""")
+            """)
 
     ticket_path_re = re.compile(r'/ticket/([0-9]+)$')
 

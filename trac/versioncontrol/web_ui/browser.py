@@ -902,8 +902,6 @@ class BrowserModule(Component):
             "author")
           ''desc''::
             When set to 1, order by descending order
-
-        (''since 0.12'')
         """)
         return 'messages', description
 

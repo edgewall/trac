@@ -591,7 +591,7 @@ class Chrome(Component):
 
     resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
         """Make `<textarea>` fields resizable. Requires !JavaScript.
-        (''since 0.12'')""")
+        """)
 
     wiki_toolbars = BoolOption('trac', 'wiki_toolbars', 'true',
         """Add a simple toolbar on top of Wiki <textarea>s.
@@ -601,7 +601,8 @@ class Chrome(Component):
         """Inactivity timeout in seconds after which the automatic wiki preview
         triggers an update. This option can contain floating-point values. The
         lower the setting, the more requests will be made to the server. Set
-        this to 0 to disable automatic preview. (''since 0.12'')""")
+        this to 0 to disable automatic preview.
+        """)
 
     default_dateinfo_format = ChoiceOption('trac', 'default_dateinfo_format',
                                            ('relative', 'absolute'),
