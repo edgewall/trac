@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-02 10:25-0700\n"
+"POT-Creation-Date: 2017-08-05 15:54-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -341,7 +341,7 @@ msgid "Back to %(parent)s"
 msgstr ""
 
 #: trac/attachment.py:237 trac/ticket/batch.py:59 trac/ticket/report.py:173
-#: trac/ticket/roadmap.py:768 trac/web/api.py:952 trac/wiki/web_ui.py:166
+#: trac/ticket/roadmap.py:767 trac/web/api.py:952 trac/wiki/web_ui.py:166
 msgid "Invalid request arguments."
 msgstr ""
 
@@ -1041,7 +1041,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:143 trac/ticket/admin.py:70 trac/ticket/admin.py:94
 #: trac/ticket/admin.py:476 trac/ticket/admin.py:634 trac/ticket/admin.py:700
-#: trac/ticket/report.py:253 trac/ticket/roadmap.py:873
+#: trac/ticket/report.py:253 trac/ticket/roadmap.py:872
 #: trac/versioncontrol/admin.py:230
 msgid "Your changes have been saved."
 msgstr ""
@@ -1602,23 +1602,23 @@ msgstr ""
 msgid "Cannot load Python bindings for MySQL"
 msgstr ""
 
-#: trac/db/mysql_backend.py:276 trac/db/postgres_backend.py:286
+#: trac/db/mysql_backend.py:279 trac/db/postgres_backend.py:286
 #: trac/db/postgres_backend.py:323
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:280
+#: trac/db/mysql_backend.py:283
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:282 trac/db/postgres_backend.py:292
+#: trac/db/mysql_backend.py:285 trac/db/postgres_backend.py:292
 #: trac/db/sqlite_backend.py:272
 msgid "No destination file created"
 msgstr ""
 
-#: trac/db/mysql_backend.py:324
+#: trac/db/mysql_backend.py:327
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1626,28 +1626,28 @@ msgid ""
 "which doesn't support transactions: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:333
+#: trac/db/mysql_backend.py:336
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:348
+#: trac/db/mysql_backend.py:351
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:354
+#: trac/db/mysql_backend.py:357
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:366
+#: trac/db/mysql_backend.py:369
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -3089,12 +3089,12 @@ msgstr ""
 msgid "Milestone"
 msgstr ""
 
-#: trac/ticket/admin.py:227 trac/ticket/roadmap.py:1152
+#: trac/ticket/admin.py:227 trac/ticket/roadmap.py:1151
 #: trac/ticket/templates/admin_milestones.html:18
 msgid "Milestones"
 msgstr ""
 
-#: trac/ticket/admin.py:281 trac/ticket/roadmap.py:836
+#: trac/ticket/admin.py:281 trac/ticket/roadmap.py:835
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
 msgstr ""
@@ -3299,8 +3299,8 @@ msgstr ""
 msgid "The ticket field %(field)s is invalid: %(message)s"
 msgstr ""
 
-#: trac/ticket/batch.py:228 trac/ticket/roadmap.py:872
-#: trac/ticket/roadmap.py:925
+#: trac/ticket/batch.py:228 trac/ticket/roadmap.py:871
+#: trac/ticket/roadmap.py:924
 #, python-format
 msgid ""
 "The changes have been saved, but an error occurred while sending "
@@ -3879,150 +3879,150 @@ msgstr ""
 msgid "no permission to view report"
 msgstr ""
 
-#: trac/ticket/roadmap.py:245
+#: trac/ticket/roadmap.py:244
 msgid "ticket status"
 msgstr ""
 
-#: trac/ticket/roadmap.py:245
+#: trac/ticket/roadmap.py:244
 msgid "tickets"
 msgstr ""
 
-#: trac/ticket/roadmap.py:255
+#: trac/ticket/roadmap.py:254
 #, python-format
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:270
+#: trac/ticket/roadmap.py:269
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:442
+#: trac/ticket/roadmap.py:441
 msgid "Open (by due date)"
 msgstr ""
 
-#: trac/ticket/roadmap.py:443
+#: trac/ticket/roadmap.py:442
 msgid "Open (no due date)"
 msgstr ""
 
-#: trac/ticket/roadmap.py:446
+#: trac/ticket/roadmap.py:445
 msgid "Closed"
 msgstr ""
 
-#: trac/ticket/roadmap.py:470 trac/ticket/roadmap.py:600
-#: trac/ticket/roadmap.py:746 trac/ticket/templates/roadmap.html:48
+#: trac/ticket/roadmap.py:469 trac/ticket/roadmap.py:599
+#: trac/ticket/roadmap.py:745 trac/ticket/templates/roadmap.html:48
 msgid "Roadmap"
 msgstr ""
 
-#: trac/ticket/roadmap.py:520
+#: trac/ticket/roadmap.py:519
 msgid "iCalendar"
 msgstr ""
 
-#: trac/ticket/roadmap.py:613 trac/ticket/roadmap.py:1126
+#: trac/ticket/roadmap.py:612 trac/ticket/roadmap.py:1125
 #: trac/ticket/templates/milestone_view.html:17
 #: trac/ticket/templates/milestone_view.html:40
 #, python-format
 msgid "Milestone %(name)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:630
+#: trac/ticket/roadmap.py:629
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:699
+#: trac/ticket/roadmap.py:698
 msgid "Milestones completed"
 msgstr ""
 
-#: trac/ticket/roadmap.py:725
+#: trac/ticket/roadmap.py:724
 #, python-format
 msgid "Milestone %(name)s completed"
 msgstr ""
 
-#: trac/ticket/roadmap.py:817
+#: trac/ticket/roadmap.py:816
 msgid "Completion date may not be in the future"
 msgstr ""
 
-#: trac/ticket/roadmap.py:839
+#: trac/ticket/roadmap.py:838
 msgid "You must provide a name for the milestone."
 msgstr ""
 
-#: trac/ticket/roadmap.py:853
+#: trac/ticket/roadmap.py:852
 #, python-format
 msgid ""
 "The open tickets associated with milestone \"%(name)s\" have been "
 "retargeted to milestone \"%(retarget)s\"."
 msgstr ""
 
-#: trac/ticket/roadmap.py:859
+#: trac/ticket/roadmap.py:858
 msgid "Open tickets retargeted after milestone closed"
 msgstr ""
 
-#: trac/ticket/roadmap.py:876
+#: trac/ticket/roadmap.py:875
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/roadmap.py:905
+#: trac/ticket/roadmap.py:904
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
 msgstr ""
 
-#: trac/ticket/roadmap.py:908
+#: trac/ticket/roadmap.py:907
 #, python-format
 msgid ""
 "The tickets associated with milestone \"%(name)s\" have been retargeted "
 "to milestone \"%(retarget)s\"."
 msgstr ""
 
-#: trac/ticket/roadmap.py:913
+#: trac/ticket/roadmap.py:912
 msgid "Tickets retargeted after milestone deleted"
 msgstr ""
 
-#: trac/ticket/roadmap.py:980
+#: trac/ticket/roadmap.py:979
 #, python-format
 msgid "Milestone %(name)s does not exist. You can create it here."
 msgstr ""
 
-#: trac/ticket/roadmap.py:1043
+#: trac/ticket/roadmap.py:1042
 #, python-format
 msgid "Milestone \"%(name)s\""
 msgstr ""
 
-#: trac/ticket/roadmap.py:1057
+#: trac/ticket/roadmap.py:1056
 msgid "Previous Milestone"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1057
+#: trac/ticket/roadmap.py:1056
 msgid "Next Milestone"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1058
+#: trac/ticket/roadmap.py:1057
 msgid "Back to Roadmap"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1095 trac/ticket/templates/milestone_view.html:44
+#: trac/ticket/roadmap.py:1094 trac/ticket/templates/milestone_view.html:44
 #: trac/ticket/templates/roadmap.html:69
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1100
+#: trac/ticket/roadmap.py:1099
 #, python-format
 msgid "%(duration)s late (%(date)s)"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1105 trac/ticket/templates/milestone_view.html:53
+#: trac/ticket/roadmap.py:1104 trac/ticket/templates/milestone_view.html:53
 #: trac/ticket/templates/roadmap.html:81
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
 msgstr ""
 
-#: trac/ticket/roadmap.py:1108 trac/ticket/templates/milestone_view.html:57
+#: trac/ticket/roadmap.py:1107 trac/ticket/templates/milestone_view.html:57
 #: trac/ticket/templates/roadmap.html:87
 msgid "No date set"
 msgstr ""

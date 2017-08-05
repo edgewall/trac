@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-02 10:25-0700\n"
+"POT-Creation-Date: 2017-08-05 15:54-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -871,7 +871,7 @@ msgid ""
 "Set to `0` to specify no limit."
 msgstr ""
 
-#: trac/ticket/roadmap.py:147
+#: trac/ticket/roadmap.py:146
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -933,27 +933,27 @@ msgid ""
 "for example."
 msgstr ""
 
-#: trac/ticket/roadmap.py:455
+#: trac/ticket/roadmap.py:454
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:665
+#: trac/ticket/roadmap.py:664
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:672
+#: trac/ticket/roadmap.py:671
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:676
+#: trac/ticket/roadmap.py:675
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -1041,9 +1041,9 @@ msgstr ""
 msgid ""
 "Default repository connector type.\n"
 "\n"
-"This is used as the default repository type for repositories defined\n"
-"in the [[TracIni#repositories-section repositories]] section or using\n"
-"the \"Repositories\" admin panel. (''since 0.12'')"
+"This is also used as the default repository type for repositories\n"
+"defined in the [TracIni#repositories-section repositories] section\n"
+"or using the \"Repositories\" admin panel. (''since 0.12'')"
 msgstr ""
 
 #: trac/versioncontrol/svn_authz.py:105
