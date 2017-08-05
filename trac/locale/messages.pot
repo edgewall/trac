@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.15\n"
+"Project-Id-Version: Trac 1.0.16\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-14 06:24+0000\n"
+"POT-Creation-Date: 2017-08-05 15:43-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -435,21 +435,21 @@ msgstr ""
 msgid "Upload failed"
 msgstr ""
 
-#: trac/attachment.py:756
+#: trac/attachment.py:757
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:760
+#: trac/attachment.py:761
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:764
+#: trac/attachment.py:766
 msgid "Note: File must be selected again."
 msgstr ""
 
-#: trac/attachment.py:777
+#: trac/attachment.py:779
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -457,42 +457,42 @@ msgid ""
 " ATTACHMENT_DELETE permission."
 msgstr ""
 
-#: trac/attachment.py:808
+#: trac/attachment.py:810
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr ""
 
-#: trac/attachment.py:822
+#: trac/attachment.py:824
 #, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
 msgstr ""
 
-#: trac/attachment.py:823
+#: trac/attachment.py:825
 msgid "Download failed"
 msgstr ""
 
-#: trac/attachment.py:920 trac/versioncontrol/web_ui/browser.py:709
+#: trac/attachment.py:922 trac/versioncontrol/web_ui/browser.py:709
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:926 trac/versioncontrol/web_ui/browser.py:715
+#: trac/attachment.py:928 trac/versioncontrol/web_ui/browser.py:715
 msgid "Original Format"
 msgstr ""
 
-#: trac/attachment.py:968 trac/templates/list_of_attachments.html:29
+#: trac/attachment.py:970 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:93
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download"
 msgstr ""
 
-#: trac/attachment.py:1062
+#: trac/attachment.py:1064
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr ""
 
-#: trac/attachment.py:1098 trac/templates/about.html:81
+#: trac/attachment.py:1100 trac/templates/about.html:81
 #: trac/templates/about.html:124 trac/templates/error.html:179
 #: trac/ticket/admin.py:203 trac/ticket/admin.py:401 trac/ticket/admin.py:571
 #: trac/ticket/templates/admin_components.html:88
@@ -505,28 +505,28 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: trac/attachment.py:1098
+#: trac/attachment.py:1100
 msgid "Size"
 msgstr ""
 
-#: trac/attachment.py:1098 trac/templates/history_view.html:40
+#: trac/attachment.py:1100 trac/templates/history_view.html:40
 #: trac/ticket/templates/ticket.html:370
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr ""
 
-#: trac/attachment.py:1098 trac/templates/history_view.html:39
+#: trac/attachment.py:1100 trac/templates/history_view.html:39
 msgid "Date"
 msgstr ""
 
-#: trac/attachment.py:1099 trac/templates/attachment.html:102
+#: trac/attachment.py:1101 trac/templates/attachment.html:102
 #: trac/ticket/api.py:308 trac/ticket/api.py:543
 #: trac/ticket/templates/ticket.html:399
 #: trac/ticket/templates/ticket_box.html:112
 msgid "Description"
 msgstr ""
 
-#: trac/attachment.py:1122 trac/wiki/admin.py:107
+#: trac/attachment.py:1124 trac/wiki/admin.py:107
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr ""
@@ -1528,23 +1528,23 @@ msgstr ""
 msgid "Cannot load Python bindings for MySQL"
 msgstr ""
 
-#: trac/db/mysql_backend.py:251 trac/db/postgres_backend.py:190
+#: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:190
 #: trac/db/postgres_backend.py:209
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:255
+#: trac/db/mysql_backend.py:258
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:257 trac/db/postgres_backend.py:215
+#: trac/db/mysql_backend.py:260 trac/db/postgres_backend.py:215
 #: trac/db/sqlite_backend.py:257
 msgid "No destination file created"
 msgstr ""
 
-#: trac/db/mysql_backend.py:293
+#: trac/db/mysql_backend.py:296
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1552,28 +1552,28 @@ msgid ""
 "which doesn't support transactions: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:302
+#: trac/db/mysql_backend.py:305
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:317
+#: trac/db/mysql_backend.py:320
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:323
+#: trac/db/mysql_backend.py:326
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:335
+#: trac/db/mysql_backend.py:338
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -2157,7 +2157,7 @@ msgstr ""
 
 #: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
-#: trac/util/tests/html.py:325 trac/util/tests/html.py:338
+#: trac/util/tests/html.py:344 trac/util/tests/html.py:357
 #: trac/util/text.py:654 trac/versioncontrol/templates/browser.html:199
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
