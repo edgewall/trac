@@ -345,7 +345,7 @@ class RepositoryManager(Component):
                                      'default_repository_type', 'svn',
         """Default repository connector type.
 
-        This is also used as the default repository type for repositories
+        This is used as the default repository type for repositories
         defined in the [TracIni#repositories-section repositories] section
         or using the "Repositories" admin panel. (''since 0.12'')
         """)
