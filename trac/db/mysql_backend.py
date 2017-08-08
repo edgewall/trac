@@ -222,7 +222,7 @@ class MySQLConnector(Component):
         db_params = db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.mysqldump_path]
+        args = [self.mysqldump_path, '--no-defaults']
         if 'host' in db_prop:
             args.extend(['-h', db_prop['host']])
         if 'port' in db_prop:
