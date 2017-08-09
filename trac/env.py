@@ -875,17 +875,6 @@ class EnvironmentAdmin(Component):
     # IAdminCommandProvider methods
 
     def get_admin_commands(self):
-        yield ('deploy', '<directory>',
-               'Extract static resources from Trac and all plugins',
-               None, self._do_deploy)
-        yield ('hotcopy', '<backupdir> [--no-database]',
-               """Make a hot backup copy of an environment
-
-               The database is backed up to the 'db' directory of the
-               destination, unless the --no-database option is
-               specified.
-               """,
-               None, self._do_hotcopy)
         yield ('convert_db', '<dburi> [new_env]',
                """Convert database
 
@@ -907,6 +896,17 @@ class EnvironmentAdmin(Component):
                the database, particularly when doing an in-place conversion.
                """,
                self._complete_convert_db, self._do_convert_db)
+        yield ('deploy', '<directory>',
+               'Extract static resources from Trac and all plugins',
+               None, self._do_deploy)
+        yield ('hotcopy', '<backupdir> [--no-database]',
+               """Make a hot backup copy of an environment
+
+               The database is backed up to the 'db' directory of the
+               destination, unless the --no-database option is
+               specified.
+               """,
+               None, self._do_hotcopy)
         yield ('upgrade', '[--no-backup]',
                """Upgrade database to current version
 
@@ -916,6 +916,16 @@ class EnvironmentAdmin(Component):
                to specify --no-backup.
                """,
                None, self._do_upgrade)
+
+    def _do_convert_db(self, dburi, env_path=None):
+        if env_path:
+            return self._do_convert_db_in_new_env(dburi, env_path)
+        else:
+            return self._do_convert_db_in_place(dburi)
+
+    def _complete_convert_db(self, args):
+        if len(args) == 2:
+            return get_dir_list(args[1])
 
     def _do_deploy(self, dest):
         target = os.path.normpath(dest)
@@ -1023,12 +1033,6 @@ class EnvironmentAdmin(Component):
         printout(_("Hotcopy done."))
         return retval
 
-    def _do_convert_db(self, dburi, env_path=None):
-        if env_path:
-            return self._do_convert_db_in_new_env(dburi, env_path)
-        else:
-            return self._do_convert_db_in_place(dburi)
-
     def _do_upgrade(self, no_backup=None):
         if no_backup not in (None, '-b', '--no-backup'):
             raise AdminCommandError(_("Invalid arguments"), show_usage=True)
@@ -1053,9 +1057,7 @@ class EnvironmentAdmin(Component):
                    'running:\n\n  trac-admin "%(path)s" wiki upgrade',
                    path=path_to_unicode(self.env.path)))
 
-    def _complete_convert_db(self, args):
-        if len(args) == 2:
-            return get_dir_list(args[1])
+    # Internal methods
 
     def _do_convert_db_in_new_env(self, dst_dburi, env_path):
         try:
