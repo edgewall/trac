@@ -25,7 +25,9 @@ Template for generating rows corresponding to directory entries
                                 order=order if order != 'name' else None, desc=desc)}">$entry.name</a>
       </td>
       <td class="size">
-        <span title="${_('%(size)s bytes', size=entry.content_length)}">${pretty_size(entry.content_length)}</span>
+        <span py:if="entry.content_length is not None"
+              title="${_('%(size)s bytes', size=entry.content_length)}">${
+          pretty_size(entry.content_length)}</span>
         <a py:if="entry.raw_href" href="$entry.raw_href" class="${'trac-ziplink' if isdir else 'trac-rawlink'}"
            title="${_('Download as Zip archive') if isdir else _('Download')}">&#8203;</a>
       </td>

@@ -29,6 +29,7 @@ from trac.versioncontrol.api import (
     Repository, RepositoryManager)
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.web.api import RequestDone
+from trac.web.chrome import Chrome
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
 
@@ -52,6 +53,8 @@ class MockRepositoryConnector(Component):
             if 'file' in basename:
                 kind = Node.FILE
                 entries = ()
+                content = 'Contents for %s' % to_utf8(path)
+                length = len(content)
             else:
                 kind = Node.DIRECTORY
                 if 'dir' in basename:
@@ -59,14 +62,14 @@ class MockRepositoryConnector(Component):
                 else:
                     entries = ['dir1', 'dir2']
                 entries = [posixpath.join(path, entry) for entry in entries]
-            content = 'Contents for %s' % to_utf8(path)
+                content = length = None
             node = Mock(Node, repos, path, rev, kind,
                         created_path=path, created_rev=rev,
                         get_entries=lambda: iter(get_node(entry, rev)
                                                  for entry in entries),
                         get_properties=lambda: {},
-                        get_content=lambda: StringIO(content),
-                        get_content_length=lambda: len(content),
+                        get_content=lambda: content and StringIO(content),
+                        get_content_length=lambda: length,
                         get_content_type=lambda: 'application/octet-stream',
                         get_last_modified=lambda: t)
             return node
@@ -79,7 +82,8 @@ class MockRepositoryConnector(Component):
                          get_changeset=get_changeset,
                          get_node=get_node,
                          previous_rev=lambda rev, path='': None,
-                         next_rev=lambda rev, path='': None)
+                         next_rev=lambda rev, path='': None,
+                         display_rev=lambda rev: str(rev))
         return repos
 
 
@@ -423,6 +427,14 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         self.assertEqual('Contents for trunk/dir2/file.txt',
                          z.read('trunk/dir2/file.txt'))
         self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)
+
+    def test_directory_content_length_in_browser(self):
+        req = MockRequest(self.env, path_info='/browser')
+        rv = self.process_request(req)
+        rendered = Chrome(self.env).render_template(req, *rv)
+        self.assertIn('>dir1</', rendered)
+        self.assertIn('>dir2</', rendered)
+        self.assertNotIn(' title="None bytes"', rendered)
 
 
 def test_suite():
