@@ -23,19 +23,19 @@ matrix:
       python: "2.6"
       env: tracdb=mysql
     - os: linux
-      python: "2.7_with_system_site_packages"
+      python: "2.7"
       env: tracdb= build=minimum
     - os: linux
-      python: "2.7_with_system_site_packages"
+      python: "2.7"
       env: tracdb=
     - os: linux
-      python: "2.7_with_system_site_packages"
+      python: "2.7"
       env: tracdb=sqlite
     - os: linux
-      python: "2.7_with_system_site_packages"
+      python: "2.7"
       env: tracdb=postgres
     - os: linux
-      python: "2.7_with_system_site_packages"
+      python: "2.7"
       env: tracdb=mysql
     - os: osx
       language: generic
@@ -101,6 +101,18 @@ before_install:
       pip --version
     fi
 install:
+  - |
+    print_version='import sys; print("%d.%d" % sys.version_info[:2])'
+    if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
+         "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
+    then
+      print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
+      sitelib_global="$(/usr/bin/python -c "$print_sitelib")"
+      sitelib_venv="$(python -c "$print_sitelib")"
+      ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
+      ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
+      python -c 'from svn import core'
+    fi
   - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
   - ( echo "[global]"; echo "cache-dir = $HOME/.cache/pip" ) >"$HOME/.pip/pip.conf"
   - |
