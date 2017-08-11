@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.2\n"
+"Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-07-29 22:51-0700\n"
+"POT-Creation-Date: 2017-08-11 16:54+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -455,8 +455,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:156
 msgid ""
 "Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
-"The paths may be absolute or relative to the Trac environment.\n"
-"(''since 0.12'')"
+"The paths may be absolute or relative to the Trac environment."
 msgstr ""
 
 #: trac/mimeview/api.py:617
@@ -536,14 +535,14 @@ msgid ""
 "This component is used by the notification system to send emails.\n"
 "Trac currently provides `SmtpEmailSender` for connecting to an SMTP\n"
 "server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
-"executable. (''since 0.12'')"
+"executable."
 msgstr ""
 
-#: trac/notification/api.py:224
+#: trac/notification/api.py:225
 msgid "Enable email notification."
 msgstr ""
 
-#: trac/notification/api.py:227
+#: trac/notification/api.py:228
 msgid ""
 "Sender address to use in notification emails.\n"
 "\n"
@@ -551,11 +550,11 @@ msgid ""
 "Trac refuses to send notification mails."
 msgstr ""
 
-#: trac/notification/api.py:233
+#: trac/notification/api.py:234
 msgid "Sender name to use in notification emails."
 msgstr ""
 
-#: trac/notification/api.py:236
+#: trac/notification/api.py:237
 msgid ""
 "Use the author of the change as the sender in notification emails\n"
 "(e.g. reporter of a new ticket, author of a comment). If the\n"
@@ -564,7 +563,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/notification/api.py:243
+#: trac/notification/api.py:244
 msgid ""
 "Reply-To address to use in notification emails.\n"
 "\n"
@@ -572,20 +571,20 @@ msgid ""
 "Trac refuses to send notification mails."
 msgstr ""
 
-#: trac/notification/api.py:250
+#: trac/notification/api.py:251
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses can be seen by all recipients\n"
 "(Cc:)."
 msgstr ""
 
-#: trac/notification/api.py:256
+#: trac/notification/api.py:257
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses are not public (Bcc:)."
 msgstr ""
 
-#: trac/notification/api.py:261
+#: trac/notification/api.py:262
 msgid ""
 "Default host/domain to append to addresses that do not specify\n"
 "one. Fully qualified addresses are not modified. The default\n"
@@ -593,19 +592,19 @@ msgid ""
 "address cannot be found in the user settings."
 msgstr ""
 
-#: trac/notification/api.py:267
+#: trac/notification/api.py:268
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr ""
 
-#: trac/notification/api.py:271
+#: trac/notification/api.py:272
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr ""
 
-#: trac/notification/api.py:275
+#: trac/notification/api.py:276
 msgid ""
 "Specifies the MIME encoding scheme for emails.\n"
 "\n"
@@ -617,14 +616,14 @@ msgid ""
 "8-bit encoding cannot be used."
 msgstr ""
 
-#: trac/notification/api.py:286
+#: trac/notification/api.py:287
 msgid ""
 "Addresses in the To and Cc fields are visible to all recipients.\n"
 "\n"
 "If this option is disabled, recipients are put in the Bcc list."
 msgstr ""
 
-#: trac/notification/api.py:292
+#: trac/notification/api.py:293
 msgid ""
 "Permit email address without a host/domain (i.e. username only).\n"
 "\n"
@@ -633,7 +632,7 @@ msgid ""
 "use this option with a public SMTP server."
 msgstr ""
 
-#: trac/notification/api.py:300
+#: trac/notification/api.py:301
 msgid ""
 "Text to prepend to subject line of notification emails.\n"
 "\n"
@@ -642,13 +641,13 @@ msgid ""
 "will disable it."
 msgstr ""
 
-#: trac/notification/api.py:309
+#: trac/notification/api.py:310
 msgid ""
 "Hash algorithm to create unique Message-ID header.\n"
 "''(since 1.0.13)''"
 msgstr ""
 
-#: trac/notification/api.py:313
+#: trac/notification/api.py:314
 msgid ""
 "The notifications subscriptions are controlled by plugins. All\n"
 "`INotificationSubscriber` components are in charge. These components\n"
@@ -695,8 +694,7 @@ msgstr ""
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
-"The sendmail program must accept the `-i` and `-f` options.\n"
-" (''since 0.12'')"
+"The sendmail program must accept the `-i` and `-f` options."
 msgstr ""
 
 #: trac/search/web_ui.py:47
@@ -713,8 +711,7 @@ msgid ""
 "their implementation of the ISearchSource interface, in\n"
 "the `get_search_filters()` method, the first member of\n"
 "returned tuple. Once disabled, search filters can still\n"
-"be manually enabled by the user on the search page.\n"
-"(''since 0.12'')"
+"be manually enabled by the user on the search page."
 msgstr ""
 
 #: trac/ticket/api.py:214
@@ -872,7 +869,7 @@ msgid ""
 "Set to `0` to specify no limit."
 msgstr ""
 
-#: trac/ticket/roadmap.py:147
+#: trac/ticket/roadmap.py:146
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -934,27 +931,27 @@ msgid ""
 "for example."
 msgstr ""
 
-#: trac/ticket/roadmap.py:455
+#: trac/ticket/roadmap.py:454
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the roadmap views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:665
+#: trac/ticket/roadmap.py:664
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
 "in the milestone views."
 msgstr ""
 
-#: trac/ticket/roadmap.py:672
+#: trac/ticket/roadmap.py:671
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr ""
 
-#: trac/ticket/roadmap.py:676
+#: trac/ticket/roadmap.py:675
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -992,8 +989,7 @@ msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
 "string starting with `?` as used in `query:`\n"
-"[TracQuery#UsingTracLinks Trac links].\n"
-"(''since 0.12'')"
+"[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
 #: trac/timeline/web_ui.py:52
@@ -1019,7 +1015,7 @@ msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
 "admin panel. If the list is empty, all repository directories are\n"
-"allowed. (''since 0.12.1'')"
+"allowed."
 msgstr ""
 
 #: trac/versioncontrol/api.py:330
@@ -1033,18 +1029,16 @@ msgid ""
 "\n"
 "See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details\n"
 "about the format adopted for this section and the rest of that page for\n"
-"the other alternatives.\n"
-"\n"
-"(''since 0.12'')"
+"the other alternatives."
 msgstr ""
 
-#: trac/versioncontrol/api.py:344
+#: trac/versioncontrol/api.py:343
 msgid ""
 "Default repository connector type.\n"
 "\n"
-"This is used as the default repository type for repositories defined\n"
-"in the [[TracIni#repositories-section repositories]] section or using\n"
-"the \"Repositories\" admin panel. (''since 0.12'')"
+"This is used as the default repository type for repositories\n"
+"defined in the [TracIni#repositories-section repositories] section\n"
+"or using the \"Repositories\" admin panel."
 msgstr ""
 
 #: trac/versioncontrol/svn_authz.py:105
@@ -1228,14 +1222,14 @@ msgid ""
 "authentication information, and therefore, after how much\n"
 "inactivity a user will have to log in again. The value\n"
 "of 0 makes the cookie expire at the end of the browsing\n"
-"session. (''since 0.12'')"
+"session."
 msgstr ""
 
-#: trac/web/auth.py:83
+#: trac/web/auth.py:84
 msgid ""
 "Path for the authentication cookie. Set this to the common\n"
 "base path of several Trac instances if you want them to share\n"
-"the cookie.  (''since 0.12'')"
+"the cookie."
 msgstr ""
 
 #: trac/web/chrome.py:431
@@ -1430,9 +1424,7 @@ msgid ""
 msgstr ""
 
 #: trac/web/chrome.py:592
-msgid ""
-"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
-"(''since 0.12'')"
+msgid "Make `<textarea>` fields resizable. Requires !JavaScript."
 msgstr ""
 
 #: trac/web/chrome.py:596
@@ -1446,17 +1438,17 @@ msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
 "lower the setting, the more requests will be made to the server. Set\n"
-"this to 0 to disable automatic preview. (''since 0.12'')"
+"this to 0 to disable automatic preview."
 msgstr ""
 
-#: trac/web/chrome.py:607
+#: trac/web/chrome.py:608
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:612
+#: trac/web/chrome.py:613
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"
@@ -1485,12 +1477,10 @@ msgid "The default timezone to use"
 msgstr ""
 
 #: trac/web/main.py:146
-msgid ""
-"The preferred language to use if no user preference has\n"
-"been set. (''since 0.12.1'')"
+msgid "The preferred language to use if no user preference has been set."
 msgstr ""
 
-#: trac/web/main.py:152
+#: trac/web/main.py:151
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1498,7 +1488,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:159
+#: trac/web/main.py:158
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1506,7 +1496,7 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:166
+#: trac/web/main.py:165
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
