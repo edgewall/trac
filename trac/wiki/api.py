@@ -248,7 +248,7 @@ def validate_page_name(pagename):
 class WikiSystem(Component):
     """Wiki system manager."""
 
-    implements(IWikiSyntaxProvider, IResourceManager)
+    implements(IResourceManager, IWikiSyntaxProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)

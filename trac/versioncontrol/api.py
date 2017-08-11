@@ -25,7 +25,7 @@ from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util import as_bool, native_path
 from trac.util.concurrency import get_thread_id, threading
 from trac.util.datefmt import time_now, utc
-from trac.util.text import printout, to_unicode, exception_to_unicode
+from trac.util.text import exception_to_unicode, printout, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
 from trac.web.chrome import Chrome, ITemplateProvider, add_warning
