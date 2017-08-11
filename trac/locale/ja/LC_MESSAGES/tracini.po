@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-02 10:25-0700\n"
+"POT-Creation-Date: 2017-08-11 16:54+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -617,11 +617,10 @@ msgstr "Postgres データベースのバックアップに使う pg_dump の場
 #: trac/db/sqlite_backend.py:156
 msgid ""
 "Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
-"The paths may be absolute or relative to the Trac environment.\n"
-"(''since 0.12'')"
+"The paths may be absolute or relative to the Trac environment."
 msgstr ""
 "[https://sqlite.org/loadext.html SQLite 拡張]のパスを絶対パス、または Trac "
-"環境ディレクトリからの相対パスで指定します。(''0.12 以降'')"
+"環境ディレクトリからの相対パスで指定します。"
 
 #: trac/mimeview/api.py:617
 msgid "Charset to be used when in doubt."
@@ -721,19 +720,18 @@ msgid ""
 "This component is used by the notification system to send emails.\n"
 "Trac currently provides `SmtpEmailSender` for connecting to an SMTP\n"
 "server, and `SendmailEmailSender` for running a `sendmail`-compatible\n"
-"executable. (''since 0.12'')"
+"executable."
 msgstr ""
 "`IEmailSender` を実装しているコンポーネントの名前を指定します。\n"
 "\n"
 "このコンポーネントは、メール送信による通知処理で使います。Trac は今のところ SMTP サーバと接続を行う `SmtpEmailSender`"
-" と `sendmail` と互換性のあるコマンドを実行する `SendmailEmailSender` を用意しています。(''0.12 "
-"以降'')"
+" と `sendmail` と互換性のあるコマンドを実行する `SendmailEmailSender` を用意しています。"
 
-#: trac/notification/api.py:224
+#: trac/notification/api.py:225
 msgid "Enable email notification."
 msgstr "メール通知機能を有効にするかどうかを指定します。"
 
-#: trac/notification/api.py:227
+#: trac/notification/api.py:228
 msgid ""
 "Sender address to use in notification emails.\n"
 "\n"
@@ -745,11 +743,11 @@ msgstr ""
 "少なくとも、`smtp_from` か `smtp_replyto` の1つを設定しなければなりません。そうでない場合、Trac "
 "は通知メールを送りません。"
 
-#: trac/notification/api.py:233
+#: trac/notification/api.py:234
 msgid "Sender name to use in notification emails."
 msgstr "通知メールに使用する送信者名を指定します。"
 
-#: trac/notification/api.py:236
+#: trac/notification/api.py:237
 msgid ""
 "Use the author of the change as the sender in notification emails\n"
 "(e.g. reporter of a new ticket, author of a comment). If the\n"
@@ -762,7 +760,7 @@ msgstr ""
 "`smtp_from_name` を使用します。\n"
 "(''1.0 以降'')"
 
-#: trac/notification/api.py:243
+#: trac/notification/api.py:244
 msgid ""
 "Reply-To address to use in notification emails.\n"
 "\n"
@@ -774,20 +772,20 @@ msgstr ""
 "少なくとも、`smtp_from` か `smtp_replyto` の1つを設定しなければなりません。そうでない場合、Trac "
 "は通知メールを送りません。"
 
-#: trac/notification/api.py:250
+#: trac/notification/api.py:251
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses can be seen by all recipients\n"
 "(Cc:)."
 msgstr "通知を常に送信するメールアドレスをカンマ区切りで指定します。メールアドレスはすべての受信者が見ることができます (Cc:)。"
 
-#: trac/notification/api.py:256
+#: trac/notification/api.py:257
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses are not public (Bcc:)."
 msgstr "通知を常に送信するメールアドレスをカンマ区切りで指定します。メールアドレスは見えないようになります (Bcc:)。"
 
-#: trac/notification/api.py:261
+#: trac/notification/api.py:262
 msgid ""
 "Default host/domain to append to addresses that do not specify\n"
 "one. Fully qualified addresses are not modified. The default\n"
@@ -795,19 +793,19 @@ msgid ""
 "address cannot be found in the user settings."
 msgstr "ドメインがないアドレスに付加するデフォルトのホスト名/ドメイン名を指定します。省略されていないアドレスは変更しません。個人設定でメールアドレスを設定していないユーザ名/ログイン名に対して、デフォルトのドメインを付加します。"
 
-#: trac/notification/api.py:267
+#: trac/notification/api.py:268
 msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr "メールアドレスだと判定させたくないドメイン名をカンマ区切りで指定します。(Kerberos ドメイン付きのユーザ名のため)"
 
-#: trac/notification/api.py:271
+#: trac/notification/api.py:272
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr "メールアドレス (localdomain のような) として有効だと判定させたいドメイン名をカンマ区切りで指定します。"
 
-#: trac/notification/api.py:275
+#: trac/notification/api.py:276
 msgid ""
 "Specifies the MIME encoding scheme for emails.\n"
 "\n"
@@ -826,7 +824,7 @@ msgstr ""
 "`qp` または `quoted-printable` は 8-bit "
 "エンコーディングが使えないのであれば、ヨーロッパ言語の場合に一番よい設定です (base64 より小さくなります)。"
 
-#: trac/notification/api.py:286
+#: trac/notification/api.py:287
 msgid ""
 "Addresses in the To and Cc fields are visible to all recipients.\n"
 "\n"
@@ -836,7 +834,7 @@ msgstr ""
 "\n"
 "このオプションに無効を設定している場合、受信者は Bcc に列挙します。"
 
-#: trac/notification/api.py:292
+#: trac/notification/api.py:293
 msgid ""
 "Permit email address without a host/domain (i.e. username only).\n"
 "\n"
@@ -850,7 +848,7 @@ msgstr ""
 "を追加する、またはローカル配送のどちらかを行うべきです。`smtp_default_domain` も参照してください。また、公開されている "
 "SMTP サーバではこの設定は使わないようにしてください。"
 
-#: trac/notification/api.py:300
+#: trac/notification/api.py:301
 msgid ""
 "Text to prepend to subject line of notification emails.\n"
 "\n"
@@ -863,13 +861,13 @@ msgstr ""
 "設定が定義されていない場合は、プレフィックスとして `[$project_name]` を使います。\n"
 "プレフィックスが必要ない場合は、空を指定すると無効になります。"
 
-#: trac/notification/api.py:309
+#: trac/notification/api.py:310
 msgid ""
 "Hash algorithm to create unique Message-ID header.\n"
 "''(since 1.0.13)''"
 msgstr "ユニークな Message-ID ヘッダの生成に使用するハッシュアルゴリズムを指定します。''(since 1.0.13)''"
 
-#: trac/notification/api.py:313
+#: trac/notification/api.py:314
 msgid ""
 "The notifications subscriptions are controlled by plugins. All\n"
 "`INotificationSubscriber` components are in charge. These components\n"
@@ -925,12 +923,11 @@ msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用する�
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
-"The sendmail program must accept the `-i` and `-f` options.\n"
-" (''since 0.12'')"
+"The sendmail program must accept the `-i` and `-f` options."
 msgstr ""
 "sendmail 実行ファイルへのパスを指定します。\n"
 "\n"
-"sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。(''0.12 以降'')"
+"sendmail プログラムは `-i` と `-f` オプションを受け付ける必要があります。"
 
 #: trac/search/web_ui.py:47
 msgid "Minimum length of query string allowed when performing a search."
@@ -946,14 +943,12 @@ msgid ""
 "their implementation of the ISearchSource interface, in\n"
 "the `get_search_filters()` method, the first member of\n"
 "returned tuple. Once disabled, search filters can still\n"
-"be manually enabled by the user on the search page.\n"
-"(''since 0.12'')"
+"be manually enabled by the user on the search page."
 msgstr ""
 "検索ページのフィルタをデフォルトで無効にするものを指定します。クイック検索機能のフィルタにも適用します。デフォルトのコンポーネントが定義しているフィルタ名は"
 " `wiki`、`ticket`、`milestone`、`changeset` です。プラグインについては、ISearchSource "
 "インターフェイスの実装を探してください。`get_search_method()` "
-"メソッドが返すタプルの最初の要素になります。無効にしても、検索ページでユーザが手動でフィルタを有効にすることができます。\n"
-"(''0.12 以降'')"
+"メソッドが返すタプルの最初の要素になります。無効にしても、検索ページでユーザが手動でフィルタを有効にすることができます。"
 
 #: trac/ticket/api.py:214
 msgid ""
@@ -1137,7 +1132,7 @@ msgid ""
 "Set to `0` to specify no limit."
 msgstr "レポートの RSS フィードに表示するチケット数を指定します。`0` を設定すると無制限になります。"
 
-#: trac/ticket/roadmap.py:147
+#: trac/ticket/roadmap.py:146
 msgid ""
 "As the workflow for tickets is now configurable, there can\n"
 "be many ticket states, and simply displaying closed tickets\n"
@@ -1246,7 +1241,7 @@ msgstr ""
 "ルールを使って簡単に追加できます。例えば `table.progress td.<class> { background: <color> }` "
 "を [TracInterfaceCustomization#SiteAppearance site/style.css] ファイルに追加します。"
 
-#: trac/ticket/roadmap.py:455
+#: trac/ticket/roadmap.py:454
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1255,7 +1250,7 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはロードマップの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:665
+#: trac/ticket/roadmap.py:664
 msgid ""
 "Name of the component implementing `ITicketGroupStatsProvider`,\n"
 "which is used to collect statistics on groups of tickets for display\n"
@@ -1264,13 +1259,13 @@ msgstr ""
 "`ITicketGroupStatsProvider` を実装しているコンポーネントの名前を指定します。\n"
 "これはマイルストーンの表示でチケットのグループごとに集計を行うのに使います。"
 
-#: trac/ticket/roadmap.py:672
+#: trac/ticket/roadmap.py:671
 msgid ""
 "Default milestone to which tickets are retargeted when\n"
 "closing or deleting a milestone. (''since 1.1.2'')"
 msgstr "マイルストーンを完了させたときや削除したときに、チケットに再設定するデフォルトのマイルストーンを指定します。(''1.1.2 以降'')"
 
-#: trac/ticket/roadmap.py:676
+#: trac/ticket/roadmap.py:675
 msgid ""
 "Default field to use for grouping tickets in the grouped\n"
 "progress bar. (''since 1.2'')"
@@ -1313,12 +1308,10 @@ msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
 "string starting with `?` as used in `query:`\n"
-"[TracQuery#UsingTracLinks Trac links].\n"
-"(''since 0.12'')"
+"[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 "チケットの値にリンクを作成するときに使用するベースのクエリを指定します。これは `query:` "
-"[TracQuery#UsingTracLinks Trac リンク] で使う `?` で始まる URL クエリ文字列です。\n"
-"(''0.12 以降'')"
+"[TracQuery#UsingTracLinks Trac リンク] で使う `?` で始まる URL クエリ文字列です。"
 
 #: trac/timeline/web_ui.py:52
 msgid "Default number of days displayed in the Timeline, in days."
@@ -1346,11 +1339,8 @@ msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
 "admin panel. If the list is empty, all repository directories are\n"
-"allowed. (''since 0.12.1'')"
-msgstr ""
-"リポジトリ管理パネルで追加や変更の際に、リポジトリのディレクトリとして許可するプレフィックスをカンマ区切りで指定します。このリストが空の場合は、すべてのディレクトリを許可します。"
-"\n"
-"(''0.12.1 以降'')"
+"allowed."
+msgstr "リポジトリ管理パネルで追加や変更の際に、リポジトリのディレクトリとして許可するプレフィックスをカンマ区切りで指定します。このリストが空の場合は、すべてのディレクトリを許可します。"
 
 #: trac/versioncontrol/api.py:330
 msgid ""
@@ -1363,30 +1353,26 @@ msgid ""
 "\n"
 "See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details\n"
 "about the format adopted for this section and the rest of that page for\n"
-"the other alternatives.\n"
-"\n"
-"(''since 0.12'')"
+"the other alternatives."
 msgstr ""
 "リポジトリを新規登録するやり方の1つは、`trac.ini` の `[repositories]` セクションに追加することです。\n"
 "これは便利なエイリアスや一時的なリポジトリの設定、インストール時の初期段階中に特に適しています。\n"
 "\n"
 "このセクションで使用する書式の詳細については [TracRepositoryAdmin#Intrac.ini "
-"TracRepositoryAdmin] を、他の方法についてはこのページの続きを参照してください。\n"
-"\n"
-"(''0.12 以降'')"
+"TracRepositoryAdmin] を、他の方法についてはこのページの続きを参照してください。"
 
-#: trac/versioncontrol/api.py:344
+#: trac/versioncontrol/api.py:343
 msgid ""
 "Default repository connector type.\n"
 "\n"
-"This is used as the default repository type for repositories defined\n"
-"in the [[TracIni#repositories-section repositories]] section or using\n"
-"the \"Repositories\" admin panel. (''since 0.12'')"
+"This is used as the default repository type for repositories\n"
+"defined in the [TracIni#repositories-section repositories] section\n"
+"or using the \"Repositories\" admin panel."
 msgstr ""
 "デフォルトになるリポジトリの接続方法を指定します。\n"
 "\n"
 "[[TracIni#repositories-section repositories]] "
-"セクションで定義するリポジトリや「リポジトリ」管理パネルなどでも使用します。(''0.12 以降'')"
+"セクションで定義するリポジトリや「リポジトリ」管理パネルなどでも使用します。"
 
 #: trac/versioncontrol/svn_authz.py:105
 #, python-format
@@ -1607,21 +1593,18 @@ msgid ""
 "authentication information, and therefore, after how much\n"
 "inactivity a user will have to log in again. The value\n"
 "of 0 makes the cookie expire at the end of the browsing\n"
-"session. (''since 0.12'')"
+"session."
 msgstr ""
 "認証用クッキーの生存期間を秒単位で指定します。\n"
 "\n"
-"この値を使って、ブラウザは認証情報をどれくらいの間キャッシュするか、つまり、ユーザのアクセスがどれくらいない時には再度ログインする必要があるか、を決めます。0を設定するとブラウザの終了時にクッキーは期限切れになります。(''0.12"
-" 以降'')"
+"この値を使って、ブラウザは認証情報をどれくらいの間キャッシュするか、つまり、ユーザのアクセスがどれくらいない時には再度ログインする必要があるか、を決めます。0を設定するとブラウザの終了時にクッキーは期限切れになります。"
 
-#: trac/web/auth.py:83
+#: trac/web/auth.py:84
 msgid ""
 "Path for the authentication cookie. Set this to the common\n"
 "base path of several Trac instances if you want them to share\n"
-"the cookie.  (''since 0.12'')"
-msgstr ""
-"認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。(''0.12 "
-"以降'')"
+"the cookie."
+msgstr "認証用クッキーのパスを指定します。クッキーを他の Trac インスタンスと共有したい場合には、共通になるベースのパスを設定します。"
 
 #: trac/web/chrome.py:431
 msgid ""
@@ -1905,12 +1888,8 @@ msgstr ""
 " `mailto:` リンクをぼかさないようにするかを指定します。"
 
 #: trac/web/chrome.py:592
-msgid ""
-"Make `<textarea>` fields resizable. Requires !JavaScript.\n"
-"(''since 0.12'')"
-msgstr ""
-"`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。\n"
-"(''0.12 以降'')"
+msgid "Make `<textarea>` fields resizable. Requires !JavaScript."
+msgstr "`<textarea>` フィールドをリサイズできるようにするかどうかを指定します。!JavaScript が必要になります。"
 
 #: trac/web/chrome.py:596
 msgid ""
@@ -1923,13 +1902,12 @@ msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
 "lower the setting, the more requests will be made to the server. Set\n"
-"this to 0 to disable automatic preview. (''since 0.12'')"
+"this to 0 to disable automatic preview."
 msgstr ""
 "操作のないときに実行する Wiki "
-"プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。(''0.12"
-" 以降'')"
+"プレビューの自動更新の時間を秒で指定します。この設定には浮動小数点を指定できます。値を小さくするとサーバが大量のリクエストを処理することになります。0を指定すると自動プレビューを無効にします。"
 
-#: trac/web/chrome.py:607
+#: trac/web/chrome.py:608
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
@@ -1938,7 +1916,7 @@ msgstr ""
 "日付情報の書式を指定します。有効な設定は相対書式で表示する 'relative' と絶対書式で表示する 'absolute' です。(''1.0 "
 "以降'')"
 
-#: trac/web/chrome.py:612
+#: trac/web/chrome.py:613
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"
@@ -1976,12 +1954,10 @@ msgid "The default timezone to use"
 msgstr "デフォルトで使うタイムゾーンを指定します。"
 
 #: trac/web/main.py:146
-msgid ""
-"The preferred language to use if no user preference has\n"
-"been set. (''since 0.12.1'')"
-msgstr "個人設定がない場合に使う言語を指定します。(''0.12.1 以降'')"
+msgid "The preferred language to use if no user preference has been set."
+msgstr "個人設定がない場合に使う言語を指定します。"
 
-#: trac/web/main.py:152
+#: trac/web/main.py:151
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1991,7 +1967,7 @@ msgstr ""
 "日付書式を指定します。有効な設定は ISO 8601 形式になる 'iso8601' "
 "で、空のままにするとブラウザの言語設定に基づいたデフォルト日付書式となります。(''1.0 以降'')"
 
-#: trac/web/main.py:159
+#: trac/web/main.py:158
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -2002,7 +1978,7 @@ msgstr ""
 "ヘッダを送信し中身を送信しません。Apache の `mod_xsendfile` や lighttpd "
 "のように、このようなヘッダを処理できるようにする必要があります。(''1.0 以降'')"
 
-#: trac/web/main.py:166
+#: trac/web/main.py:165
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
