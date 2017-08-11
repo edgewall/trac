@@ -41,7 +41,7 @@ def do_upgrade(env, ver, cursor):
                 """, (q, d, report))
 
     # Upgrade the workflow.
-    if 'ticket-workflow' not in env.config.sections():
+    if 'ticket-workflow' not in env.config:
         load_workflow_config_snippet(env.config, 'original-workflow.ini')
         env.config.save()
         info_message = """

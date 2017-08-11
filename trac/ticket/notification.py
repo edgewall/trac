@@ -44,7 +44,7 @@ class TicketNotificationSystem(Component):
 
     def environment_created(self):
         section = 'notification-subscriber'
-        if section not in self.config.sections():
+        if section not in self.config:
             self.config.set(section, 'always_notify_cc',
                             'CarbonCopySubscriber')
             self.config.set(section, 'always_notify_updater',
