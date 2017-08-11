@@ -80,7 +80,6 @@ class EnvironmentTestCase(unittest.TestCase):
     def setUp(self):
         self.env_path = mkdtemp()
         self.env = Environment(self.env_path, create=True)
-        self.env.config.save()
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
