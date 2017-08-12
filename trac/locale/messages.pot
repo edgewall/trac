@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-05 15:58-0700\n"
+"POT-Creation-Date: 2017-08-11 18:39-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -451,7 +451,7 @@ msgstr ""
 
 #: trac/attachment.py:649 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:101
-#: trac/versioncontrol/templates/dir_entries.html:29
+#: trac/versioncontrol/templates/dir_entries.html:31
 #: trac/versioncontrol/web_ui/browser.py:862
 msgid "Download"
 msgstr ""
@@ -975,12 +975,12 @@ msgid ""
 "Warning: couldn't index the default repository.\n"
 "\n"
 "This can happen for a variety of reasons: wrong repository type,\n"
-"no appropriate third party library for this repository type,\n"
-"no actual repository at the specified repository path...\n"
+"no appropriate third party library for this repository type, \n"
+"no repository at the specified repository path...\n"
 "\n"
 "You can nevertheless start using your Trac environment, but\n"
-"you'll need to check again your trac.ini file and the [trac]\n"
-"repository_type and repository_path settings.\n"
+"you'll need to check your `.type` and `.dir` option values in \n"
+"the [repositories] section of your trac.ini file.\n"
 msgstr ""
 
 #: trac/admin/console.py:563
@@ -5965,18 +5965,18 @@ msgstr ""
 msgid "View File"
 msgstr ""
 
-#: trac/versioncontrol/templates/dir_entries.html:29
+#: trac/versioncontrol/templates/dir_entries.html:31
 #: trac/versioncontrol/templates/repository_index.html:33
 #: trac/versioncontrol/web_ui/browser.py:863
 msgid "Download as Zip archive"
 msgstr ""
 
-#: trac/versioncontrol/templates/dir_entries.html:33
+#: trac/versioncontrol/templates/dir_entries.html:35
 #: trac/versioncontrol/templates/repository_index.html:37
 msgid "View Revision Log"
 msgstr ""
 
-#: trac/versioncontrol/templates/dir_entries.html:34
+#: trac/versioncontrol/templates/dir_entries.html:36
 #: trac/versioncontrol/templates/repository_index.html:38
 msgid "View Changeset"
 msgstr ""
