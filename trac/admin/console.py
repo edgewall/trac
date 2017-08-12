@@ -522,12 +522,12 @@ in order to initialize and prepare the project database.
 Warning: couldn't index the default repository.
 
 This can happen for a variety of reasons: wrong repository type,
-no appropriate third party library for this repository type,
-no actual repository at the specified repository path...
+no appropriate third party library for this repository type, 
+no repository at the specified repository path...
 
 You can nevertheless start using your Trac environment, but
-you'll need to check again your trac.ini file and the [trac]
-repository_type and repository_path settings.
+you'll need to check your `.type` and `.dir` option values in 
+the [repositories] section of your trac.ini file.
 """))
         except Exception as e:
             initenv_error(to_unicode(e))
