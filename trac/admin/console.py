@@ -560,7 +560,7 @@ website:
 Congratulations!
 """, project_name=project_name, project_path=self.envname,
            project_dir=os.path.basename(self.envname),
-           config_path=os.path.join(self.envname, 'conf', 'trac.ini')))
+           config_path=self.__env.config_file_path))
 
     def _resync_feedback(self, rev):
         sys.stdout.write(' [%s]\r' % rev)
