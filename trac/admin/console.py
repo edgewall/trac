@@ -161,14 +161,14 @@ Type:  '?' or 'help' for help on commands.
 
     @property
     def env(self):
-        try:
-            if not self.__env:
+        if not self.__env:
+            try:
                 self._init_env()
-            return self.__env
-        except Exception as e:
-            printerr(_("Failed to open environment: %(err)s",
-                       err=exception_to_unicode(e, traceback=True)))
-            sys.exit(1)
+            except Exception as e:
+                printerr(_("Failed to open environment: %(err)s",
+                           err=exception_to_unicode(e, traceback=True)))
+                sys.exit(1)
+        return self.__env
 
     def _init_env(self):
         self.__env = env = Environment(self.envname)
