@@ -465,12 +465,7 @@ class VersionAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
-                    if req.args.get('time'):
-                        ver.time = user_time(req, parse_date,
-                                             req.args.get('time'),
-                                             hint='datetime')
-                    else:
-                        ver.time = None  # unset
+                    ver.time = self._get_user_time(req)
                     ver.description = req.args.get('description')
                     ver.update()
                     add_notice(req, _("Your changes have been saved."))
@@ -490,10 +485,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('add') and req.args.get('name'):
                     ver = model.Version(self.env)
                     ver.name = req.args.get('name')
-                    if req.args.get('time'):
-                        ver.time = user_time(req, parse_date,
-                                             req.args.get('time'),
-                                             hint='datetime')
+                    ver.time = self._get_user_time(req)
                     ver.insert()
                     add_notice(req, _('The version "%(name)s" has been '
                                       'added.', name=ver.name))
@@ -539,6 +531,12 @@ class VersionAdminPanel(TicketAdminPanel):
         data.update({'datetime_hint': get_datetime_format_hint(req.lc_time)})
 
         return 'admin_versions.html', data
+
+    @classmethod
+    def _get_user_time(cls, req):
+        time = req.args.get('time')
+        return user_time(req, parse_date, time, hint='datetime') \
+               if time else None
 
     # IAdminCommandProvider methods
 
