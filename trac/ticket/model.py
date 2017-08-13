@@ -73,7 +73,7 @@ def _from_timestamp(time):
     return from_utimestamp(time) if time else None
 
 
-def _empty_to_null(value):
+def _to_null(value):
     return value if value else None
 
 
@@ -428,7 +428,7 @@ class Ticket(object):
                 is_custom_field = field in self.custom_fields
                 values[field] = _datetime_to_db_str(value, is_custom_field)
             else:
-                values[field] = _empty_to_null(value)
+                values[field] = _to_null(value)
         return values
 
     def get_changelog(self, when=None):
@@ -819,7 +819,7 @@ class AbstractEnum(object):
                     INSERT INTO enum (type, name, value, description)
                     VALUES (%s, %s, %s, %s)
                     """, (self.type, self.name, self.value,
-                          _empty_to_null(self.description)))
+                          _to_null(self.description)))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('%(type)s value "%(name)s" already exists',
@@ -844,7 +844,7 @@ class AbstractEnum(object):
                 db("""UPDATE enum SET name=%s,value=%s,description=%s
                       WHERE type=%s AND name=%s
                       """, (self.name, self.value,
-                            _empty_to_null(self.description), self.type,
+                            _to_null(self.description), self.type,
                             self._old_name))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
@@ -982,8 +982,8 @@ class Component(object):
                 db("""
                         INSERT INTO component (name,owner,description)
                         VALUES (%s,%s,%s)
-                        """, (self.name, _empty_to_null(self.owner),
-                              _empty_to_null(self.description)))
+                        """, (self.name, _to_null(self.owner),
+                              _to_null(self.description)))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('Component "%(name)s" already exists.', name=self.name))
@@ -1006,8 +1006,8 @@ class Component(object):
             try:
                 db("""UPDATE component SET name=%s,owner=%s, description=%s
                       WHERE name=%s
-                      """, (self.name, _empty_to_null(self.owner),
-                            _empty_to_null(self.description), self._old_name))
+                      """, (self.name, _to_null(self.owner),
+                            _to_null(self.description), self._old_name))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('Component "%(name)s" already exists.', name=self.name))
@@ -1304,8 +1304,8 @@ class Report(object):
             cursor = db.cursor()
             cursor.execute("""
                 INSERT INTO report (title,query,description) VALUES (%s,%s,%s)
-                """, (_empty_to_null(self.title), _empty_to_null(self.query),
-                      _empty_to_null(self.description)))
+                """, (_to_null(self.title), _to_null(self.query),
+                      _to_null(self.description)))
             self.id = db.get_last_id(cursor, 'report')
 
     def update(self):
@@ -1318,8 +1318,8 @@ class Report(object):
         self.env.db_transaction("""
             UPDATE report SET title=%s, query=%s, description=%s
             WHERE id=%s
-            """, (_empty_to_null(self.title), _empty_to_null(self.query),
-                  _empty_to_null(self.description), self.id))
+            """, (_to_null(self.title), _to_null(self.query),
+                  _to_null(self.description), self.id))
 
     @classmethod
     def select(cls, env, sort='id', asc=True):
@@ -1393,7 +1393,7 @@ class Version(object):
                     INSERT INTO version (name,time,description)
                     VALUES (%s,%s,%s)
                     """, (self.name, to_utimestamp(self.time),
-                          _empty_to_null(self.description)))
+                          _to_null(self.description)))
             except self.env.db_exc.IntegrityError:
                 raise ResourceExistsError(
                     _('Version "%(name)s" already exists.', name=self.name))
