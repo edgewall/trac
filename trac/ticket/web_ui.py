@@ -32,8 +32,8 @@ from trac.resource import (
     get_resource_shortname
 )
 from trac.search import ISearchSource, search_to_sql, shorten_result
+from trac.ticket import model
 from trac.ticket.api import TicketSystem, ITicketManipulator
-from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -479,7 +479,7 @@ class TicketModule(Component):
 
     def _process_newticket_request(self, req):
         req.perm(self.realm).require('TICKET_CREATE')
-        ticket = Ticket(self.env)
+        ticket = model.Ticket(self.env)
 
         plain_fields = True  # support for /newticket?version=0.11 GETs
         field_reporter = 'reporter'
@@ -578,7 +578,7 @@ class TicketModule(Component):
             req.send(rendered.encode('utf-8'))
 
         req.perm(self.realm, id, version).require('TICKET_VIEW')
-        ticket = Ticket(self.env, id, version=version)
+        ticket = model.Ticket(self.env, id, version=version)
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
 
@@ -843,7 +843,7 @@ class TicketModule(Component):
             fields = {k: req.args.get(k) for k in req.args}
         # Prevent direct changes to protected fields (status and resolution are
         # set in the workflow, in get_ticket_changes())
-        for each in Ticket.protected_fields:
+        for each in model.Ticket.protected_fields:
             fields.pop(each, None)
             fields.pop('checkbox_' + each, None)    # See Ticket.populate()
         for field, value in fields.iteritems():
@@ -1523,7 +1523,7 @@ class TicketModule(Component):
                         'status', 'resolution', 'time', 'changetime'):
                 field['skip'] = True
             elif name == 'milestone' and not field.get('custom'):
-                milestones = [m for m in (Milestone(self.env, opt)
+                milestones = [m for m in (model.Milestone(self.env, opt)
                                           for opt in field['options'])
                                 if 'TICKET_CHG_MILESTONE'
                                 in req.perm(m.resource)]
@@ -1539,7 +1539,7 @@ class TicketModule(Component):
                                                          milestone, 'compact')
             elif name == 'version' and not field.get('custom'):
                 try:
-                    version = Version(self.env, ticket[name])
+                    version = model.Version(self.env, ticket[name])
                 except ResourceNotFound:
                     pass
                 else:
@@ -1899,7 +1899,7 @@ class DefaultTicketPolicy(Component):
                 action == 'TICKET_EDIT_DESCRIPTION' and \
                 self._is_valid_resource(resource, self.realm) and \
                 ('TICKET_CHGPROP' in perm or 'TICKET_APPEND' in perm):
-            ticket = Ticket(self.env, resource.id)
+            ticket = model.Ticket(self.env, resource.id)
             if username == ticket['reporter']:
                 return True
 
@@ -1908,7 +1908,7 @@ class DefaultTicketPolicy(Component):
                 self._is_valid_resource(resource, 'comment') and \
                 self._is_valid_resource(resource.parent, self.realm) and \
                 'TICKET_APPEND' in perm(resource.parent):
-            ticket = Ticket(self.env, resource.parent.id)
+            ticket = model.Ticket(self.env, resource.parent.id)
             change = ticket.get_change(resource.id)
             if change and username == change['author']:
                 return True
