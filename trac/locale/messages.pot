@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.16\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-05 15:43-0700\n"
+"POT-Creation-Date: 2017-08-12 20:43-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -626,12 +626,12 @@ msgid ""
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:958
+#: trac/admin/console.py:286 trac/env.py:958
 #, python-format
 msgid ""
-"The Trac Environment needs to be upgraded.\n"
+"The Trac Environment needs to be upgraded. Run:\n"
 "\n"
-"Run 'trac-admin \"%(path)s\" upgrade'"
+"  trac-admin \"%(path)s\" upgrade"
 msgstr ""
 
 #: trac/env.py:997
@@ -876,14 +876,6 @@ msgstr ""
 #: trac/admin/console.py:254
 #, python-format
 msgid "Completion error: %(err)s"
-msgstr ""
-
-#: trac/admin/console.py:286
-#, python-format
-msgid ""
-"The Trac Environment needs to be upgraded. Run:\n"
-"\n"
-"  trac-admin \"%(path)s\" upgrade"
 msgstr ""
 
 #: trac/admin/console.py:321
