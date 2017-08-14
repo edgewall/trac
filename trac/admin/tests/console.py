@@ -376,6 +376,30 @@ class TracadminTestCase(TracAdminTestCaseBase):
         self.assertExpectedResult(output)
         self.assertEqual('My Project', self.env.config.get('project', 'name'))
 
+    def test_config_set_complete_section(self):
+        """Tab complete on a configuration section."""
+        # Empty sections are included.
+        output = self._complete_command('config', 'set', '')
+        self.assertIn('components', output)
+        self.assertIn('project', output)
+        self.assertNotIn('foo-section', output)
+
+        # Sections not defined in registry are included.
+        self.env.config.set('foo-section', 'bar-option', '1')
+        output = self._complete_command('config', 'set', '')
+        self.assertIn('foo-section', output)
+
+    def test_config_set_complete_option(self):
+        """Tab complete on a configuration option."""
+        output = self._complete_command('config', 'set', 'project', '')
+        self.assertEqual(['admin', 'admin_trac_url', 'descr', 'footer', 'icon',
+                          'name', 'url'], sorted(output))
+
+        # Options not defined in registry are included.
+        self.env.config.set('project', 'bar-option', '1')
+        output = self._complete_command('config', 'set', 'project', '')
+        self.assertIn('bar-option', output)
+
     # Permission tests
 
     def test_permission_list_ok(self):

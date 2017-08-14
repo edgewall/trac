@@ -224,6 +224,7 @@ class ConfigurationTestCase(unittest.TestCase):
             Option(u'séction1', u'öption2', u'dēfault-valué')
             Option(u'séction1', u'öption3', u'dēfault-valué')
             Option(u'séction3', u'öption1', u'dēfault-valué')
+            ConfigSection(u'séction4', u"Séction 4")
 
     def test_get_from_config(self):
         """Value is retrieved from the config."""
@@ -261,6 +262,28 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_contains_from_default(self):
         """Contains returns `True` for section defined in an option."""
         self.assertTrue(u'séction3' in self.config)
+
+    def test_sections_with_default(self):
+        """Sections including defaults."""
+        sections = self.config.sections()
+        self.assertIn(u'séction1', sections)
+        self.assertIn(u'séction2', sections)
+        self.assertIn(u'séction3', sections)
+        self.assertNotIn(u'séction4', sections)
+
+    def test_sections_without_default(self):
+        """Sections without defaults."""
+        sections = self.config.sections(defaults=False)
+        self.assertIn(u'séction1', sections)
+        self.assertIn(u'séction2', sections)
+        self.assertNotIn(u'séction3', sections)
+        self.assertNotIn(u'séction4', sections)
+
+    def test_sections_with_empty(self):
+        """Sections including empty."""
+        sections = self.config.sections(defaults=False, empty=True)
+        self.assertNotIn(u'séction3', sections)
+        self.assertIn(u'séction4', sections)
 
     def test_remove_from_config(self):
         """Value is removed from configuration."""
