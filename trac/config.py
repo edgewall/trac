@@ -288,18 +288,23 @@ class Configuration(object):
         """Remove the specified option."""
         self[section].remove(key)
 
-    def sections(self, compmgr=None, defaults=True):
+    def sections(self, compmgr=None, defaults=True, empty=False):
         """Return a list of section names.
 
         If `compmgr` is specified, only the section names corresponding to
         options declared in components that are enabled in the given
         `ComponentManager` are returned.
+
+        :param empty: If `True`, include sections from the registry that
+            contain no options.
         """
         sections = set(self.parser.sections())
         for parent in self.parents:
             sections.update(parent.sections(compmgr, defaults=False))
         if defaults:
             sections.update(self.defaults(compmgr))
+        if empty:
+            sections.update(ConfigSection.get_registry(compmgr))
         return sorted(sections)
 
     def has_option(self, section, option, defaults=True):
@@ -954,7 +959,7 @@ class ConfigurationAdmin(Component):
 
     def _complete_config(self, args):
         if len(args) == 1:
-            return self.config.sections()
+            return self.config.sections(empty=True)
         elif len(args) == 2:
             return [name for (name, value) in self.config[args[0]].options()]
 
