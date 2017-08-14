@@ -22,7 +22,7 @@ from shlex import shlex
 import sys
 import traceback
 
-from trac import __version__ as VERSION
+from trac import __version__ as TRAC_VERSION
 from trac.admin.api import AdminCommandError, AdminCommandManager, \
                            get_console_locale
 from trac.config import Configuration
@@ -42,7 +42,6 @@ from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
 
-TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 rl_completion_suppress_append = None
 
 
@@ -650,5 +649,5 @@ def run(args=None):
 
 
 if __name__ == '__main__':
-    pkg_resources.require('Trac==%s' % VERSION)
+    pkg_resources.require('Trac==%s' % TRAC_VERSION)
     sys.exit(run())
