@@ -101,6 +101,8 @@ Alternatively you can configure Trac to run in any of the following environments
  * [http://pytz.sourceforge.net pytz] to get a complete list of time zones,
    otherwise Trac will fall back on a shorter list from 
    an internal time zone implementation.
+ * [https://pypi.python.org/pypi/passlib passlib] on Windows to decode [TracStandalone#BasicAuthorization:Usingahtpasswdpasswordfile htpasswd formats] other than `SHA-1`.
+ * [https://pypi.python.org/pypi/pyreadline pyreadline] on Windows for trac-admin [TracAdmin#InteractiveMode command completion].
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Attention**: The available versions of these dependencies are not necessarily interchangeable, so please pay attention to the version numbers. If you are having trouble getting Trac to work, please double-check all the dependencies before asking for help on the [trac:MailingList] or [trac:IrcChannel].
