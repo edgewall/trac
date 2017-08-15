@@ -570,12 +570,16 @@
                  value="${to_utimestamp(ticket['changetime'])}" />
           <input type="hidden" name="replyto"${{'value': replyto}|htmlattr}/>
           # endif
-          <input type="submit" name="preview" value="${_('Preview')}"
-                 ${accesskey("r")}/>&nbsp;
+          <input type="submit" name="preview" value="${_('Preview')}"${
+                 {'disabled': disable_submit
+                 }|htmlattr}
+                 ${accesskey("r")} />&nbsp;
           <input type="submit" name="submit"
                  value="${_('Submit changes') if ticket.exists else
                           _('Create ticket')}"
-                 class="trac-disable-on-submit" />
+                 class="trac-disable-on-submit"${
+                 {'disabled': disable_submit
+                 }|htmlattr} />
         </div>
 
         ## Preview of ticket changes
@@ -610,7 +614,7 @@
       # endif
 
       # if not ticket.exists:
-      #   with hide = not preview_mode, preview_mode = true
+      #   with hide = not preview_mode, preview_mode = preview_mode
       #     include 'ticket_box.html'
       #   endwith
       # endif

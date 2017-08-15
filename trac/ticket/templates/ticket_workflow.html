@@ -31,7 +31,7 @@ Arguments:
 #   for key, label, controls, hints in action_controls if key == action:
 <input type="hidden" name="action" value="${action}" />
 #   endfor
-# else:
+# elif action_controls:
 <fieldset id="action">
   <legend>${_("Action")}</legend>
   # for key, label, controls, hints in action_controls:

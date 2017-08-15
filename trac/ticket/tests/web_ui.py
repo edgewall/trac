@@ -53,6 +53,10 @@ class TicketModuleTestCase(unittest.TestCase):
         t.save_changes(author, comment=comment)
         return t
 
+    def _has_auto_preview(self, req):
+        return any('/trac.cgi/chrome/common/js/auto_preview.js' in s['href']
+                   for s in req.chrome['scripts'])
+
     def _insert_ticket(self, **kw):
         """Helper for inserting a ticket into the database"""
         return insert_ticket(self.env, **kw)
@@ -666,6 +670,44 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual([], milestone_field['optgroups'][0]['options'])
         self.assertEqual(['milestone1', 'milestone2'],
                          milestone_field['optgroups'][1]['options'])
+
+    def test_newticket_has_auto_preview(self):
+        """New ticket page has autopreview."""
+        req = MockRequest(self.env, method='GET', path_info='/newticket')
+
+        self.assertTrue(self.ticket_module.process_request(req))
+        self.ticket_module.process_request(req)
+
+        self.assertTrue(self._has_auto_preview(req))
+
+    def test_newticket_autopreview_disabled_when_no_workflow_actions(self):
+        """Newticket autopreview disabled when no workflow actions."""
+        config = self.env.config
+        config.remove('ticket-workflow', 'create')
+        config.remove('ticket-workflow', 'create_and_assign')
+        req = MockRequest(self.env, method='GET', path_info='/newticket')
+
+        self.assertTrue(self.ticket_module.process_request(req))
+        data = self.ticket_module.process_request(req)[1]
+
+        self.assertEqual([], data['action_controls'])
+        self.assertFalse(self._has_auto_preview(req))
+        self.assertTrue(data['disable_submit'])
+
+    def test_ticket_autopreview_disabled_when_no_workflow_actions(self):
+        """Ticket autopreview disabled when no workflow actions."""
+        config = self.env.config
+        for option in config.options('ticket-workflow'):
+            if not option[0].startswith('leave'):
+                config.remove('ticket-workflow', option[0])
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
+
+        self.assertTrue(self.ticket_module.process_request(req))
+        data = self.ticket_module.process_request(req)[1]
+
+        self.assertEqual([], data['action_controls'])
+        self.assertFalse(self._has_auto_preview(req))
+        self.assertTrue(data['disable_submit'])
 
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):

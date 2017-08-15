@@ -24,7 +24,7 @@
  - owner_link=None: rendered link for the owner field
 #}
 <div id="ticket">
-  # if not ticket.exists:
+  # if not ticket.exists and preview_mode:
   ${jmacros.warnings(chrome.warnings)}
   # endif
   <div id="ticketbox"${

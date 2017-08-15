@@ -185,7 +185,7 @@ class ConfigurableTicketWorkflow(Component):
                     allowed_actions.append((action_info['default'],
                                             action_name))
         # Append special `_reset` action if status is invalid.
-        if exists and \
+        if exists and '_reset' in self.actions and \
                 ticket_status not in TicketSystem(self.env).get_all_status():
             reset = self.actions['_reset']
             if self._is_action_allowed(req, reset, resource):
@@ -443,18 +443,22 @@ class ConfigurableTicketWorkflow(Component):
     def get_all_actions(self):
         actions = parse_workflow_config(self.ticket_workflow_section.options())
 
-        # Special action that gets enabled if the current status no longer
-        # exists, as no other action can then change its state. (#5307/#11850)
-        reset = {
-            'default': 0,
-            'label': 'reset',
-            'newstate': 'new',
-            'oldstates': [],
-            'operations': ['reset_workflow'],
-            'permissions': ['TICKET_ADMIN']
-        }
-        for key, val in reset.items():
-            actions['_reset'].setdefault(key, val)
+        has_new_state = any('new' in [a['newstate']] + a['oldstates']
+                            for a in actions.itervalues())
+        if has_new_state:
+            # Special action that gets enabled if the current status no
+            # longer exists, as no other action can then change its state.
+            # (#5307/#11850)
+            reset = {
+                'default': 0,
+                'label': 'Reset',
+                'newstate': 'new',
+                'oldstates': [],
+                'operations': ['reset_workflow'],
+                'permissions': ['TICKET_ADMIN']
+            }
+            for key, val in reset.items():
+                actions['_reset'].setdefault(key, val)
 
         for name, info in actions.iteritems():
             for val in ('<none>', '< none >'):

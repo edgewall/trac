@@ -467,6 +467,10 @@ class TicketModule(Component):
         if not selected_action and action_controls:
             selected_action = action_controls[0][0]
 
+        if not action_controls:
+            add_warning(req, tag_("There are no workflow actions defined for "
+                                  "this ticket's status."))
+
         return action_controls, selected_action
 
     def _get_action_controllers(self, req, ticket, action):
@@ -502,7 +506,7 @@ class TicketModule(Component):
             action = req.args.get('action', default_action)
             valid = True
             # Do any action on the ticket?
-            if action not in actions:
+            if action and action not in actions:
                 valid = False
                 add_warning(req, _('The action "%(name)s" is not available.',
                                    name=action))
@@ -534,6 +538,7 @@ class TicketModule(Component):
 
         action_controls, selected_action = \
             self._get_action_controls(req, ticket)
+        disable_submit = not action_controls
 
         # Preview a new ticket
         data = self._prepare_data(req, ticket)
@@ -544,6 +549,7 @@ class TicketModule(Component):
             'description_change': None,
             'action_controls': action_controls,
             'action': selected_action,
+            'disable_submit': disable_submit,
         })
 
         fields = self._prepare_fields(req, ticket)
@@ -560,7 +566,8 @@ class TicketModule(Component):
         add_stylesheet(req, 'common/css/ticket.css')
         chrome = Chrome(self.env)
         chrome.add_wiki_toolbars(req)
-        chrome.add_auto_preview(req)
+        if not disable_submit:
+            chrome.add_auto_preview(req)
         chrome.add_jquery_ui(req)
         return 'ticket.html', data
 
@@ -771,7 +778,8 @@ class TicketModule(Component):
         add_stylesheet(req, 'common/css/ticket.css')
         chrome = Chrome(self.env)
         chrome.add_wiki_toolbars(req)
-        chrome.add_auto_preview(req)
+        if not data['disable_submit']:
+            chrome.add_auto_preview(req)
         chrome.add_jquery_ui(req)
 
         # Add registered converters
@@ -1732,6 +1740,7 @@ class TicketModule(Component):
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,
             'change_preview': change_preview, 'closetime': closetime,
+            'disable_submit': len(action_controls) == 0,
         })
 
     def rendered_changelog_entries(self, req, ticket, when=None):

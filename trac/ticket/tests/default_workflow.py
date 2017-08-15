@@ -263,6 +263,26 @@ class ResetActionTestCase(unittest.TestCase):
         self.assertIn((0, '_reset'), actions2)
         self.assertEqual('new', chgs2['status'])
 
+    def test_default_reset_action_without_new_state(self):
+        """Default reset action not available when no new state."""
+        self.perm_sys.grant_permission('user2', 'TICKET_ADMIN')
+        config = self.env.config
+        # Replace 'new' state with 'untriaged'
+        config.set('ticket-workflow', 'create',
+                   '<none> -> untriaged')
+        config.set('ticket-workflow', 'accept',
+                   'untriaged,assigned,accepted,reopened -> accepted')
+        config.set('ticket-workflow', 'resolve',
+                   'untriaged,assigned,accepted,reopened -> closed')
+        config.set('ticket-workflow', 'reassign',
+                   'untriaged,assigned,accepted,reopened -> assigned')
+        self._reload_workflow()
+
+        actions = self.ctlr.get_ticket_actions(self.req2, self.ticket)
+
+        self.assertEqual(1, len(actions))
+        self.assertNotIn((0, '_reset'), actions)
+
     def test_custom_reset_action(self):
         """Custom reset action in [ticket-workflow] section."""
         config = self.env.config['ticket-workflow']
