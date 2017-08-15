@@ -63,7 +63,7 @@
             <label>${_("Released:")}<br />
               <input type="text" id="releaseddate" class="trac-datetimepicker"
                      name="time" size="${len(datetime_hint) + 1}"
-                     value="${format_datetime(version.time)}"
+                     value="${format_datetime(version.time) if version.time}"
                      title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
               <span class="trac-datetimehint">
                 ${_("Format: %(datehint)s", datehint=datetime_hint)}

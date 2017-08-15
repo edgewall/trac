@@ -863,6 +863,14 @@ class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
         tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"'
                 % name, 's')
 
+        # Empty time value is not automatically populated.
+        tc.follow(name)
+        tc.find('<input type="text" id="releaseddate"[^>]*value=""')
+        tc.submit('save', formname="edit")
+        tc.url(version_admin + '$')
+        tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"'
+                % name, 's')
+
 
 class TestAdminVersionDetailCancel(FunctionalTwillTestCaseSetup):
     def runTest(self):
