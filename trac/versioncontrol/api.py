@@ -335,7 +335,7 @@ class RepositoryManager(Component):
         short-lived repositories, or during the initial phases of an
         installation.
 
-        See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details
+        See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for details
         about the format adopted for this section and the rest of that page for
         the other alternatives.
         """)
