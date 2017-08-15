@@ -328,16 +328,16 @@ class RepositoryManager(Component):
     change_listeners = ExtensionPoint(IRepositoryChangeListener)
 
     repositories_section = ConfigSection('repositories',
-        """One of the alternatives for registering new repositories is to
-        populate the `[repositories]` section of the `trac.ini`.
+        """One of the methods for registering repositories is to
+        populate the `[repositories]` section of `trac.ini`.
 
-        This is especially suited for setting up convenience aliases,
-        short-lived repositories, or during the initial phases of an
-        installation.
+        This is especially suited for setting up aliases, using a 
+        [TracIni#GlobalConfiguration shared configuration], or specifying 
+        repositories at the time of environment creation.
 
-        See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for details
-        about the format adopted for this section and the rest of that page for
-        the other alternatives.
+        See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for
+        details on the format of this section, and look elsewhere on the 
+        page for information on other repository providers.
         """)
 
     default_repository_type = Option('versioncontrol',
