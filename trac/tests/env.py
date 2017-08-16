@@ -13,7 +13,6 @@
 
 from ConfigParser import RawConfigParser
 from glob import glob
-from pkg_resources import resource_filename
 from subprocess import PIPE, Popen
 import inspect
 import io
@@ -31,19 +30,6 @@ from trac.env import Environment, EnvironmentAdmin, open_environment
 from trac.test import EnvironmentStub, get_dburi, mkdtemp, rmtree
 from trac.util import create_file, extract_zipfile, hex_entropy, read_file
 from trac.util.compat import close_fds
-from trac.wiki.admin import WikiAdmin
-
-
-class DummyOut(object):
-
-    def write(self, *args, **kwargs):
-        pass
-
-    def flush(self):
-        pass
-
-    def isatty(self):
-        return False
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -63,8 +49,8 @@ class EnvironmentCreatedWithoutData(Environment):
 class EmptyEnvironmentTestCase(unittest.TestCase):
 
     def setUp(self):
-        env_path = mkdtemp()
-        self.env = EnvironmentCreatedWithoutData(env_path, create=True)
+        self.env_path = mkdtemp()
+        self.env = EnvironmentCreatedWithoutData(self.env_path, create=True)
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
@@ -74,8 +60,40 @@ class EmptyEnvironmentTestCase(unittest.TestCase):
         """Testing env.database_version"""
         self.assertFalse(self.env.database_version)
 
+    def test_create_nonexistent_parent_directory(self):
+        """TracError raised creating Environment at non-existent path."""
+        base_dir = os.path.join(self.env_path, 'non-existent')
+        env_path = os.path.join(base_dir, 'non-existent')
+        with self.assertRaises(TracError) as cm:
+            EnvironmentCreatedWithoutData(env_path, create=True)
+        self.assertEqual("Base directory '%s' does not exist. Please create "
+                         "it and retry." % base_dir, unicode(cm.exception))
+
+    def test_create_in_existing_environment(self):
+        """TracError raised creating Environment in existing Environment."""
+        with self.assertRaises(TracError) as cm:
+            EnvironmentCreatedWithoutData(self.env_path, create=True)
+        self.assertEqual("Directory exists and is not empty.",
+                         unicode(cm.exception))
+
 
 class EnvironmentTestCase(unittest.TestCase):
+
+    stdout = None
+    stderr = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.stdout = sys.stdout
+        cls.stderr = sys.stderr
+        cls.devnull = io.open(os.devnull, 'wb')
+        sys.stdout = sys.stderr = cls.devnull
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.devnull.close()
+        sys.stdout = cls.stdout
+        sys.stderr = cls.stderr
 
     def setUp(self):
         self.env_path = mkdtemp()
@@ -441,10 +459,12 @@ class ConvertDatabaseTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        sys.stdout = sys.stderr = DummyOut()
+        cls.devnull = io.open(os.devnull, 'wb')
+        sys.stdout = sys.stderr = cls.devnull
 
     @classmethod
     def tearDownClass(cls):
+        cls.devnull.close()
         sys.stdout = cls.stdout
         sys.stderr = cls.stderr
 
@@ -470,8 +490,6 @@ class ConvertDatabaseTestCase(unittest.TestCase):
                            ('project', 'name', u'Pŕójéćŧ Ńáḿé')])
         dbm = DatabaseManager(env)
         dbm.set_database_version(21, 'initial_database_version')
-        pages_dir = resource_filename('trac.wiki', 'default-pages')
-        WikiAdmin(env).load_pages(pages_dir)
         att = Attachment(env, 'wiki', 'WikiStart')
         att.insert('filename.txt', io.BytesIO('test'), 4)
         env.shutdown()
@@ -767,10 +785,10 @@ class SystemInfoProviderTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentUpgradeTestCase))
-    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
     suite.addTest(unittest.makeSuite(KnownUsersTestCase))
     suite.addTest(unittest.makeSuite(SystemInfoTestCase))
     suite.addTest(unittest.makeSuite(ConvertDatabaseTestCase))

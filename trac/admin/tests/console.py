@@ -14,6 +14,7 @@
 # Author: Tim Moloney <t.moloney@verizon.net>
 
 import copy
+import io
 import os
 import sys
 import unittest
@@ -863,6 +864,23 @@ the_plugin.* = enabled
 
 class TracAdminDeployTestCase(TracAdminTestCaseBase):
     """Tests for the trac-admin deploy command."""
+
+    stdout = None
+    stderr = None
+    devnull = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.stdout = sys.stdout
+        cls.stderr = sys.stderr
+        cls.devnull = io.open(os.devnull, 'wb')
+        sys.stdout = sys.stderr = cls.devnull
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.devnull.close()
+        sys.stdout = cls.stdout
+        sys.stderr = cls.stderr
 
     def setUp(self):
         self.env = Environment(path=mkdtemp(), create=True)

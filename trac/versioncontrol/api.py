@@ -656,16 +656,19 @@ class RepositoryManager(Component):
         return self._all_repositories
 
     def get_real_repositories(self):
-        """Return a set of all real repositories (i.e. excluding aliases)."""
+        """Return a sorted list of all real repositories (i.e. excluding
+        aliases).
+        """
         repositories = set()
         for reponame in self.get_all_repositories():
             try:
                 repos = self.get_repository(reponame)
-                if repos is not None:
-                    repositories.add(repos)
             except TracError:
                 pass  # Skip invalid repositories
-        return repositories
+            else:
+                if repos is not None:
+                    repositories.add(repos)
+        return sorted(repositories, key=lambda r: r.reponame)
 
     def reload_repositories(self):
         """Reload the repositories from the providers."""

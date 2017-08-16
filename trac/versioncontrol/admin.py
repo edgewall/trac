@@ -15,6 +15,7 @@ import os.path
 import sys
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
+from trac.api import IEnvironmentSetupParticipant
 from trac.config import ListOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
@@ -32,7 +33,8 @@ from trac.web.chrome import Chrome, add_notice, add_warning
 class VersionControlAdmin(Component):
     """trac-admin command provider for version control administration."""
 
-    implements(IAdminCommandProvider, IPermissionRequestor)
+    implements(IAdminCommandProvider, IEnvironmentSetupParticipant,
+               IPermissionRequestor)
 
     # IAdminCommandProvider methods
 
@@ -166,6 +168,39 @@ class VersionControlAdmin(Component):
 
     def _do_sync(self, reponame, rev=None):
         self._sync(reponame, rev, clean=False)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Index the repositories."""
+        for repos in RepositoryManager(self.env).get_real_repositories():
+            pretty_name = repos.reponame or '(default)'
+            printout(_(" Indexing '%(name)s' repository", name=pretty_name))
+            try:
+                repos.sync(self._sync_feedback)
+            except TracError:
+                printerr(_("""
+ ---------------------------------------------------------------------
+ Warning: couldn't index '%(pretty_name)s' repository.
+
+ This can happen for a variety of reasons: wrong repository type,
+ no appropriate third party library for this repository type,
+ no repository at the specified repository path...
+
+ You can nevertheless start using your Trac environment, but you'll
+ need to check your `%(name)s.type` and `%(name)s.dir` option values
+ in the [repositories] section of your trac.ini file.
+""", pretty_name=pretty_name, name=repos.reponame or ''))
+            else:
+                # Erase to end of line.
+                sys.stdout.write('\033[K')
+                sys.stdout.flush()
+
+    def environment_needs_upgrade(self):
+        pass
+
+    def upgrade_environment(self):
+        pass
 
     # IPermissionRequestor methods
 

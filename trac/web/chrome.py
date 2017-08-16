@@ -721,6 +721,13 @@ class Chrome(Component):
             write_sample_template('site_footer.html',
                                   'the end of the HTML <body> content')
 
+        # Set default values for mainnav and metanav ConfigSections.
+        def add_nav_order_options(section, default):
+            for i, name in enumerate(default, 1):
+                self.env.config.set(section, name + '.order', float(i))
+        add_nav_order_options('mainnav', default_mainnav_order)
+        add_nav_order_options('metanav', default_metanav_order)
+
     def environment_needs_upgrade(self):
         return False
 

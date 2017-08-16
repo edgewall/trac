@@ -23,7 +23,7 @@ import sys
 import time
 from subprocess import call, Popen, PIPE, STDOUT
 
-from trac.config import UnicodeConfigParser
+from trac.config import Configuration, UnicodeConfigParser
 from trac.db.api import DatabaseManager
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi, rmtree
@@ -136,8 +136,13 @@ class FunctionalTestEnvironment(object):
         self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'w')
         self.create_repo()
 
-        self._tracadmin('initenv', self.tracdir, self.dburi, self.repotype,
-                        self.repo_path_for_initenv())
+        config_file = os.path.join(self.dirname, 'config.ini')
+        config = Configuration(config_file)
+        config.set('repositories', '.dir', self.repo_path_for_initenv())
+        config.set('repositories', '.type', self.repotype)
+        config.save()
+        self._tracadmin('initenv', self.tracdir, self.dburi,
+                        '--config=%s' % config_file)
         if call([sys.executable,
                  os.path.join(self.trac_src, 'contrib', 'htpasswd.py'), "-c",
                  "-b", self.htpasswd, "admin", "admin"], close_fds=close_fds,
@@ -295,7 +300,7 @@ class FunctionalTestEnvironment(object):
 
     def repo_path_for_initenv(self):
         """Default to no repository"""
-        return "''" # needed for Python 2.3 and 2.4 on win32
+        return ''
 
     def call_in_dir(self, dir, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=self.logfile,

@@ -16,6 +16,7 @@ import pkg_resources
 import sys
 
 from trac.admin import *
+from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem, validate_page_name
@@ -30,7 +31,7 @@ from trac.util.translation import _
 class WikiAdmin(Component):
     """trac-admin command provider for wiki administration."""
 
-    implements(IAdminCommandProvider)
+    implements(IAdminCommandProvider, IEnvironmentSetupParticipant)
 
     # IAdminCommandProvider methods
 
@@ -263,3 +264,18 @@ class WikiAdmin(Component):
         self.load_pages(pkg_resources.resource_filename('trac.wiki',
                                                         'default-pages'),
                         ignore=['WikiStart'], create_only=['InterMapTxt'])
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Add default wiki pages when environment is created."""
+        printout(_(" Installing default wiki pages"))
+        pages_dir = pkg_resources.resource_filename('trac.wiki',
+                                                    'default-pages')
+        self.load_pages(pages_dir)
+
+    def environment_needs_upgrade(self):
+        pass
+
+    def upgrade_environment(self):
+        pass

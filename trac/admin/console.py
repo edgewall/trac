@@ -35,9 +35,6 @@ from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode, \
                            getpreferredencoding
 from trac.util.translation import _, ngettext, has_babel, cleandoc_
-from trac.versioncontrol.api import RepositoryManager
-from trac.web.chrome import default_mainnav_order, default_metanav_order
-from trac.wiki.admin import WikiAdmin
 from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
@@ -359,7 +356,7 @@ Type:  '?' or 'help' for help on commands.
 
     ## Initenv
     _help_initenv = [
-        ('initenv', '[<projectname> <db> [<repostype> <repospath>]]',
+        ('initenv', '[<projectname> <db>]',
          """Create and initialize a new environment
 
          If no arguments are given, then the required parameters are requested
@@ -417,16 +414,6 @@ in order to initialize and prepare the project database.
             initenv_error(_("Does an environment already exist?"))
             return 2
 
-        if os.path.exists(self.envname) and os.listdir(self.envname):
-            initenv_error(_("Directory exists and is not empty."))
-            return 2
-
-        if not os.path.exists(os.path.dirname(self.envname)):
-            initenv_error(_("Base directory '%(env)s' does not exist. Please "
-                            "create it manually and retry.",
-                            env=os.path.dirname(self.envname)))
-            return 2
-
         arg = self.arg_tokenize(line)
         inherit_paths = []
         config_file_path = None
@@ -452,8 +439,6 @@ in order to initialize and prepare the project database.
                 initenv_error(e)
                 return 2
         arg = arg or [''] # Reset to usual empty in case we popped the only one
-        repository_type = None
-        repository_dir = None
         if len(arg) == 1 and not arg[0] and not config:
             project_name, db_str = self.get_initenv_args()
         elif len(arg) < 2 and config:
@@ -462,76 +447,37 @@ in order to initialize and prepare the project database.
                 project_name = arg[0]
         elif len(arg) == 2:
             project_name, db_str = arg
-        elif len(arg) == 4:
-            project_name, db_str, repository_type, repository_dir = arg
         else:
             initenv_error('Wrong number of arguments: %d' % len(arg))
             return 2
 
+        options = []
+        if config:
+            for section in config.sections(defaults=False):
+                options.extend((section, option, value)
+                               for option, value
+                               in config.options(section))
+        if project_name is not None:
+            options.append(('project', 'name', project_name))
+        if db_str is not None:
+            options.append(('trac', 'database', db_str))
+
+        if inherit_paths:
+            options.append(('inherit', 'file',
+                            ",\n      ".join(inherit_paths)))
+
+        printout(_("Creating and Initializing Project"))
         try:
-            printout(_("Creating and Initializing Project"))
-            options = []
-            if config:
-                for section in config.sections(defaults=False):
-                    options.extend((section, option, value)
-                                   for option, value
-                                   in config.options(section))
-            if project_name is not None:
-                options.append(('project', 'name', project_name))
-            if db_str is not None:
-                options.append(('trac', 'database', db_str))
-
-            def add_nav_order_options(section, default):
-                for i, name in enumerate(default, 1):
-                    options.append((section, name + '.order', float(i)))
-            add_nav_order_options('mainnav', default_mainnav_order)
-            add_nav_order_options('metanav', default_metanav_order)
-            if repository_dir:
-                options.extend([
-                    ('repositories', '.type', repository_type),
-                    ('repositories', '.dir', repository_dir),
-                ])
-            if inherit_paths:
-                options.append(('inherit', 'file',
-                                ",\n      ".join(inherit_paths)))
-            try:
-                self.__env = Environment(self.envname, create=True,
-                                         options=options)
-            except Exception as e:
-                initenv_error(_('Failed to create environment.'))
-                printerr(e)
-                traceback.print_exc()
-                sys.exit(1)
-
-            # Add a few default wiki pages
-            printout(_(" Installing default wiki pages"))
-            pages_dir = pkg_resources.resource_filename('trac.wiki',
-                                                        'default-pages')
-            WikiAdmin(self.__env).load_pages(pages_dir)
-
-            if repository_dir:
-                try:
-                    repos = RepositoryManager(self.__env).get_repository('')
-                    if repos:
-                        printout(_(" Indexing default repository"))
-                        repos.sync(self._resync_feedback)
-                except TracError as e:
-                    printerr(_("""
----------------------------------------------------------------------
-Warning: couldn't index the default repository.
-
-This can happen for a variety of reasons: wrong repository type,
-no appropriate third party library for this repository type, 
-no repository at the specified repository path...
-
-You can nevertheless start using your Trac environment, but
-you'll need to check your `.type` and `.dir` option values in 
-the [repositories] section of your trac.ini file.
-"""))
-        except Exception as e:
-            initenv_error(to_unicode(e))
-            traceback.print_exc()
+            self.__env = Environment(self.envname, create=True,
+                                     options=options)
+        except TracError as e:
+            initenv_error(e)
             return 2
+        except Exception as e:
+            initenv_error(_('Failed to create environment.'))
+            printerr(e)
+            traceback.print_exc()
+            sys.exit(1)
 
         printout(_("""
 ---------------------------------------------------------------------
@@ -560,10 +506,6 @@ Congratulations!
 """, project_name=project_name, project_path=self.envname,
            project_dir=os.path.basename(self.envname),
            config_path=self.__env.config_file_path))
-
-    def _resync_feedback(self, rev):
-        sys.stdout.write(' [%s]\r' % rev)
-        sys.stdout.flush()
 
 
 class TracAdminHelpMacro(WikiMacroBase):

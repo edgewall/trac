@@ -11,7 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os
+import sys
 import unittest
 
 from trac.config import ConfigurationError
@@ -23,6 +25,23 @@ from trac.util import translation
 
 
 class DatabaseFileTestCase(unittest.TestCase):
+
+    stdout = None
+    stderr = None
+    devnull = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls.stdout = sys.stdout
+        cls.stderr = sys.stderr
+        cls.devnull = io.open(os.devnull, 'wb')
+        sys.stdout = sys.stderr = cls.devnull
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.devnull.close()
+        sys.stdout = cls.stdout
+        sys.stderr = cls.stderr
 
     def setUp(self):
         self.env_path = mkdtemp()

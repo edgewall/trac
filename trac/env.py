@@ -508,7 +508,19 @@ class Environment(Component, ComponentManager):
         If options contains ('inherit', 'file'), default values will
         not be loaded; they are expected to be provided by that file
         or other options.
+
+        :raises TracError: if the base directory of `path` does not exist.
+        :raises TracError: if `path` exists and is not empty.
         """
+        base_dir = os.path.dirname(self.path)
+        if not os.path.exists(base_dir):
+            raise TracError(_(
+                "Base directory '%(env)s' does not exist. Please create it "
+                "and retry.", env=base_dir))
+
+        if os.path.exists(self.path) and os.listdir(self.path):
+            raise TracError(_("Directory exists and is not empty."))
+
         # Create the directory structure
         if not os.path.exists(self.path):
             os.mkdir(self.path)
