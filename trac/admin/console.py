@@ -18,9 +18,15 @@ import cmd
 import io
 import os.path
 import pkg_resources
-from shlex import shlex
+import re
 import sys
+import textwrap
 import traceback
+from shlex import shlex
+try:
+    import readline
+except ImportError:
+    readline = None
 
 from trac import __version__ as TRAC_VERSION
 from trac.admin.api import AdminCommandError, AdminCommandManager, \
@@ -28,13 +34,12 @@ from trac.admin.api import AdminCommandError, AdminCommandManager, \
 from trac.config import Configuration
 from trac.core import TracError
 from trac.env import Environment
-from trac.ticket.model import *
 from trac.util import translation, warn_setuptools_issue
 from trac.util.html import html
-from trac.util.text import console_print, exception_to_unicode, printout, \
-                           printerr, raw_input, to_unicode, \
-                           getpreferredencoding
-from trac.util.translation import _, ngettext, has_babel, cleandoc_
+from trac.util.text import console_print, exception_to_unicode, \
+                           getpreferredencoding, printerr, printout, \
+                           raw_input, to_unicode
+from trac.util.translation import _, cleandoc_, has_babel, ngettext
 from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
@@ -69,8 +74,7 @@ class TracAdmin(cmd.Cmd):
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
-        try:
-            import readline
+        if readline:
             delims = readline.get_completer_delims()
             for c in '-/:()\\':
                 delims = delims.replace(c, '')
@@ -85,8 +89,6 @@ class TracAdmin(cmd.Cmd):
                 global rl_completion_suppress_append
                 rl_completion_suppress_append = ctypes.c_int.in_dll(lib,
                                             "rl_completion_suppress_append")
-        except Exception:
-            pass
         self.interactive = False
         if envdir:
             self.env_set(os.path.abspath(envdir))
@@ -96,15 +98,15 @@ class TracAdmin(cmd.Cmd):
 
     def onecmd(self, line):
         """`line` may be a `str` or an `unicode` object"""
-        try:
-            if isinstance(line, str):
-                if self.interactive:
-                    encoding = sys.stdin.encoding
-                else:
-                    encoding = getpreferredencoding() # sys.argv
-                line = to_unicode(line, encoding)
+        if isinstance(line, str):
             if self.interactive:
-                line = line.replace('\\', '\\\\')
+                encoding = sys.stdin.encoding
+            else:
+                encoding = getpreferredencoding()  # sys.argv
+            line = to_unicode(line, encoding)
+        if self.interactive:
+            line = line.replace('\\', '\\\\')
+        try:
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
@@ -137,9 +139,7 @@ Type:  '?' or 'help' for help on commands.
         """, version=TRAC_VERSION, year='2003-2017'))
         self.cmdloop()
 
-    ##
-    ## Environment methods
-    ##
+    # Environment methods
 
     def env_set(self, envname, env=None):
         self.envname = envname
@@ -168,16 +168,13 @@ Type:  '?' or 'help' for help on commands.
 
     def _init_env(self):
         self.__env = env = Environment(self.envname)
-        negotiated = None
-        # fixup language according to env settings
+        # fix language according to env settings
         if has_babel:
             negotiated = get_console_locale(env)
             if negotiated:
                 translation.activate(negotiated)
 
-    ##
-    ## Utility methods
-    ##
+    # Utility methods
 
     @property
     def cmd_mgr(self):
@@ -203,10 +200,8 @@ Type:  '?' or 'help' for help on commands.
 
     @staticmethod
     def split_help_text(text):
-        import re
-        paragraphs = re.split(r'(?m)(?:^[ \t]*\n){1,}', text)
-        return [re.sub(r'(?m)\s+', ' ', each.strip())
-                for each in paragraphs]
+        paragraphs = re.split(r'(?m)(?:^[ \t]*\n)+', text)
+        return [re.sub(r'(?m)\s+', ' ', each.strip()) for each in paragraphs]
 
     @classmethod
     def print_doc(cls, docs, stream=None, short=False, long=False):
@@ -217,25 +212,24 @@ Type:  '?' or 'help' for help on commands.
             return
         if short:
             max_len = max(len(doc[0]) for doc in docs)
-            for (cmd, args, doc) in docs:
+            for cmd, args, doc in docs:
                 paragraphs = cls.split_help_text(doc)
                 console_print(stream, '%s  %s' % (cmd.ljust(max_len),
                                                   paragraphs[0]))
         else:
-            import textwrap
-            for (cmd, args, doc) in docs:
+            for cmd, args, doc in docs:
                 paragraphs = cls.split_help_text(doc)
                 console_print(stream, '%s %s\n' % (cmd, args))
                 console_print(stream, '    %s\n' % paragraphs[0])
                 if (long or len(docs) == 1) and len(paragraphs) > 1:
                     for paragraph in paragraphs[1:]:
-                        console_print(stream, textwrap.fill(paragraph, 79,
-                            initial_indent='    ', subsequent_indent='    ')
-                            + '\n')
+                        console_print(stream,
+                                      textwrap.fill(paragraph, 79,
+                                                    initial_indent='    ',
+                                                    subsequent_indent='    ')
+                                      + '\n')
 
-    ##
-    ## Command dispatcher
-    ##
+    # Command dispatcher
 
     def complete_line(self, text, line, cmd_only=False):
         if rl_completion_suppress_append is not None:
@@ -243,6 +237,7 @@ Type:  '?' or 'help' for help on commands.
         args = self.arg_tokenize(line)
         if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
+        comp = []
         if self.env_check():
             try:
                 comp = self.cmd_mgr.complete_command(args, cmd_only)
@@ -252,7 +247,6 @@ Type:  '?' or 'help' for help on commands.
                            err=exception_to_unicode(e)))
                 self.env.log.error("trac-admin completion error: %s",
                                    exception_to_unicode(e, traceback=True))
-                comp = []
         if len(args) == 1:
             comp.extend(name[3:] for name in self.get_names()
                         if name.startswith('do_'))
@@ -286,11 +280,9 @@ Type:  '?' or 'help' for help on commands.
                               path=self.envname))
         return self.cmd_mgr.execute_command(*args)
 
-    ##
-    ## Available Commands
-    ##
+    # Available Commands
 
-    ## Help
+    # Help
     _help_help = [('help', '', 'Show documentation')]
 
     @classmethod
@@ -333,15 +325,13 @@ Type:  '?' or 'help' for help on commands.
             if not self.interactive:
                 print()
                 printout(_("Usage: trac-admin </path/to/projenv> "
-                           "[command [subcommand] [option ...]]\n")
-                    )
+                           "[command [subcommand] [option ...]]\n"))
                 printout(_("Invoking trac-admin without command starts "
                            "interactive mode.\n"))
             env = self.env if self.env_check() else None
             self.print_doc(self.all_docs(env), short=True)
 
-
-    ## Quit / EOF
+    # Quit / EOF
     _help_quit = [('quit', '', 'Exit the program')]
     _help_exit = _help_quit
     _help_EOF = _help_quit
@@ -350,11 +340,10 @@ Type:  '?' or 'help' for help on commands.
         print()
         sys.exit()
 
-    do_exit = do_quit # Alias
-    do_EOF = do_quit # Alias
+    do_exit = do_quit  # Alias
+    do_EOF = do_quit  # Alias
 
-
-    ## Initenv
+    # Initenv
     _help_initenv = [
         ('initenv', '[<projectname> <db>]',
          """Create and initialize a new environment
@@ -438,7 +427,7 @@ in order to initialize and prepare the project database.
             except TracError as e:
                 initenv_error(e)
                 return 2
-        arg = arg or [''] # Reset to usual empty in case we popped the only one
+        arg = arg or ['']  # Reset to usual empty in case we popped the only one
         if len(arg) == 1 and not arg[0] and not config:
             project_name, db_str = self.get_initenv_args()
         elif len(arg) < 2 and config:
@@ -510,8 +499,8 @@ Congratulations!
 
 class TracAdminHelpMacro(WikiMacroBase):
     _domain = 'messages'
-    _description = cleandoc_(
-    """Display help for trac-admin commands.
+    _description = cleandoc_("""
+    Display help for trac-admin commands.
 
     Examples:
     {{{
@@ -522,7 +511,7 @@ class TracAdminHelpMacro(WikiMacroBase):
     }}}
     """)
 
-    def expand_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content, args=None):
         if content:
             arg = content.strip().split()
             doc = getattr(TracAdmin, "_help_" + arg[0], None)
@@ -558,7 +547,7 @@ def _run(args):
     if args:
         if args[0] in ('-h', '--help', 'help'):
             return admin.onecmd(' '.join(_quote_args(['help'] + args[1:])))
-        elif args[0] in ('-v','--version'):
+        elif args[0] in ('-v', '--version'):
             printout(os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
             env_path = os.path.abspath(args[0])
