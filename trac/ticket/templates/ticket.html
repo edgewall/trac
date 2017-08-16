@@ -306,20 +306,18 @@
                   <th class="trac-textarea"><label for="field-description">${
                       _("Description:")}</label></th>
                   <td class="fullrow" colspan="3">
-                    <fieldset>
-                      <textarea id="field-description"
-                                name="field_description"
-                                class="wikitext trac-fullwidth trac-resizable"
-                                rows="10" cols="68">${
-                        ticket.description}</textarea>
-                      <label for="field-description" class="trac-textarea-hint">
-                        # trans wikiformatting = jmacros.wikiformatting_link()
+                    <textarea id="field-description"
+                              name="field_description"
+                              class="wikitext trac-fullwidth trac-resizable"
+                              rows="10" cols="68">${
+                      ticket.description}</textarea>
+                    <label for="field-description" class="trac-textarea-hint">
+                      # trans wikiformatting = jmacros.wikiformatting_link()
 
-                        You may use ${wikiformatting} here.
+                      You may use ${wikiformatting} here.
 
-                        # endtrans
-                      </label>
-                    </fieldset>
+                      # endtrans
+                    </label>
                   </td>
                 </tr>
                 # endif
