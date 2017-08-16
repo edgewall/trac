@@ -218,14 +218,12 @@
                 <tr py:if="can_edit or can_create">
                   <th class="trac-textarea"><label for="field-description">Description:</label></th>
                   <td class="fullrow" colspan="3">
-                    <fieldset>
-                      <label for="field-description" id="field-description-help" i18n:msg="">You may use <!--!
-                        --><a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
-                      </label>
-                      <textarea id="field-description" name="field_description"
-                                class="wikitext trac-fullwidth trac-resizable" rows="10" cols="68">
+                    <label for="field-description" id="field-description-help" i18n:msg="">You may use <!--!
+                      --><a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
+                    </label>
+                    <textarea id="field-description" name="field_description"
+                              class="wikitext trac-fullwidth trac-resizable" rows="10" cols="68">
 ${ticket.description}</textarea>
-                    </fieldset>
                   </td>
                 </tr>
                 <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
