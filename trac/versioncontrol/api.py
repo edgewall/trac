@@ -53,7 +53,7 @@ class IRepositoryConnector(Interface):
         """Return the types of version control systems that are supported.
 
         Yields `(repotype, priority)` pairs, where `repotype` is used to
-        match against the configured `[trac] repository_type` value in TracIni.
+        match against the repository's `type` attribute.
 
         If multiple provider match a given type, the `priority` is used to
         choose between them (highest number is highest priority).
