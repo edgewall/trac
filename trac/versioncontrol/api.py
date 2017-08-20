@@ -95,7 +95,11 @@ class IRepositoryProvider(Interface):
                             contain WikiFormatting).
 
          - `'hidden'`: if set to `'true'`, the repository is hidden
-                       from the repository index.
+                       from the repository index (default: `'false'`).
+
+         - `'sync_per_request'`: if set to `'true'`, the repository will be
+                                 synchronized on every request (default:
+                                 `'false'`).
 
          - `'url'`: the base URL for checking out the repository.
         """
