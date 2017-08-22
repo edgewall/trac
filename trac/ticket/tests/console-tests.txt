@@ -435,6 +435,14 @@ Name  Time
 
 ===== test_version_remove_error_bad_version =====
 ResourceNotFound: Version bad_version does not exist.
+===== test_backslash_use_ok =====
+
+Name  Time
+----------
+\
+2.0
+1.0
+
 ===== test_milestone_help =====
 milestone add <name> [due]
 

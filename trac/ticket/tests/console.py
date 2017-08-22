@@ -770,6 +770,15 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertEqual(2, rv, output)
         self.assertExpectedResult(output)
 
+    def test_backslash_use_ok(self):
+        if self.admin.interactive:
+            self.execute('version add \\')
+        else:
+            self.execute(r"version add '\'")
+        rv, output = self.execute('version list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
     def test_milestone_help(self):
         rv, output = self.execute('help milestone')
         self.assertEqual(0, rv, output)

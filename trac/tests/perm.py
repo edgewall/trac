@@ -14,9 +14,28 @@
 import unittest
 
 from trac import perm
-from trac.core import *
+from trac.admin.console import TracAdmin
+from trac.admin.test import TracAdminTestCaseBase
+from trac.core import Component, ComponentMeta, TracError, implements
 from trac.resource import Resource
 from trac.test import EnvironmentStub
+
+# IPermissionRequestor implementations
+import trac.about
+import trac.admin.web_ui
+import trac.perm
+import trac.search.web_ui
+import trac.ticket.api
+import trac.ticket.batch
+import trac.ticket.report
+import trac.ticket.roadmap
+import trac.timeline.web_ui
+import trac.versioncontrol.admin
+import trac.versioncontrol.web_ui.browser
+import trac.versioncontrol.web_ui.changeset
+import trac.versioncontrol.web_ui.log
+import trac.web.chrome
+import trac.wiki.web_ui
 
 
 class DefaultPermissionStoreTestCase(unittest.TestCase):
@@ -94,14 +113,27 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
             self.assertIn(res, expected)
 
 
-class TestPermissionRequestor(Component):
-    implements(perm.IPermissionRequestor)
+class BaseTestCase(unittest.TestCase):
 
-    def get_permission_actions(self):
-        return ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY',
-                ('TEST_CREATE', []),
-                ('TEST_ADMIN', ['TEST_CREATE', 'TEST_DELETE']),
-                ('TEST_ADMIN', ['TEST_MODIFY'])]
+    permission_requestors = []
+
+    @classmethod
+    def setUpClass(cls):
+        class TestPermissionRequestor(Component):
+            implements(perm.IPermissionRequestor)
+
+            def get_permission_actions(self):
+                return ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY',
+                        ('TEST_CREATE', []),
+                        ('TEST_ADMIN', ['TEST_CREATE', 'TEST_DELETE']),
+                        ('TEST_ADMIN', ['TEST_MODIFY'])]
+
+        cls.permission_requestors = [TestPermissionRequestor]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.permission_requestors:
+            ComponentMeta.deregister(component)
 
 
 class PermissionErrorTestCase(unittest.TestCase):
@@ -157,12 +189,12 @@ class PermissionErrorTestCase(unittest.TestCase):
                          "permissions.", unicode(permission_error))
 
 
-class PermissionSystemTestCase(unittest.TestCase):
+class PermissionSystemTestCase(BaseTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=[perm.PermissionSystem,
-                                           perm.DefaultPermissionStore,
-                                           TestPermissionRequestor])
+                                           perm.DefaultPermissionStore] +
+                                          self.permission_requestors)
         self.perm = perm.PermissionSystem(self.env)
 
     def tearDown(self):
@@ -198,7 +230,7 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.perm.grant_permission('jane', 'TEST_DELETE')
         self.perm.grant_permission('jane', 'TEST_MODIFY')
 
-        self.env.disable_component(TestPermissionRequestor)
+        self.env.disable_component(self.permission_requestors[0])
 
         self.assertEqual({}, self.perm.get_user_permissions('bob'))
         self.assertEqual({}, self.perm.get_user_permissions('jane'))
@@ -273,12 +305,12 @@ class PermissionSystemTestCase(unittest.TestCase):
         self.assertEqual(perms, self.perm.expand_actions(iter(['TRAC_ADMIN'])))
 
 
-class PermissionCacheTestCase(unittest.TestCase):
+class PermissionCacheTestCase(BaseTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
-                                           perm.DefaultPermissionPolicy,
-                                           TestPermissionRequestor])
+                                           perm.DefaultPermissionPolicy] +
+                                          self.permission_requestors)
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
         self.perm_system = perm.PermissionSystem(self.env)
@@ -360,13 +392,13 @@ class TestPermissionPolicy(Component):
         return result
 
 
-class PermissionPolicyTestCase(unittest.TestCase):
+class PermissionPolicyTestCase(BaseTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
                                            perm.DefaultPermissionPolicy,
-                                           TestPermissionPolicy,
-                                           TestPermissionRequestor])
+                                           TestPermissionPolicy] +
+                                          self.permission_requestors)
         self.env.config.set('trac', 'permission_policies',
                             'TestPermissionPolicy')
         self.policy = TestPermissionPolicy(self.env)
@@ -524,6 +556,231 @@ class RecursivePolicyTestCase(unittest.TestCase):
         ], self.decisions)
 
 
+class TracAdminTestCase(TracAdminTestCaseBase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.admin = TracAdmin()
+        self.admin.env_set('', self.env)
+
+    def tearDown(self):
+        self.env.reset_db()
+        self.env = None
+
+    def test_permission_list_ok(self):
+        """Tests the 'permission list' command in trac-admin."""
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_list_includes_undefined_actions(self):
+        """Undefined actions are included in the User Action table,
+        but not in the Available Actions list.
+        """
+        self.env.disable_component(trac.search.web_ui.SearchModule)
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_add_one_action_ok(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes valid arguments to add one permission and checks for
+        success.
+        """
+        self.execute('permission add test_user WIKI_VIEW')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_add_multiple_actions_ok(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes valid arguments to add multiple permissions and checks for
+        success.
+        """
+        self.execute('permission add test_user LOG_VIEW FILE_VIEW')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_add_already_exists(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a permission that already exists and checks for the
+        message. Other permissions passed are added.
+        """
+        rv, output = self.execute('permission add anonymous WIKI_CREATE '
+                                   'WIKI_VIEW WIKI_MODIFY')
+        self.assertEqual(0, rv, output)
+        rv, output2 = self.execute('permission list')
+        self.assertEqual(0, rv, output2)
+        self.assertExpectedResult(output + output2)
+
+    def test_permission_add_subject_already_in_group(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a group that the subject is already a member of and
+        checks for the message. Other permissions passed are added.
+        """
+        rv, output1 = self.execute('permission add user1 group2')
+        self.assertEqual(0, rv, output1)
+        rv, output2 = self.execute('permission add user1 group1 group2 '
+                                    'group3')
+        self.assertEqual(0, rv, output2)
+        rv, output3 = self.execute('permission list')
+        self.assertEqual(0, rv, output3)
+        self.assertExpectedResult(output2 + output3)
+
+    def test_permission_add_differs_from_action_by_casing(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test passes a permission that differs from an action by casing and
+        checks for the message. None of the permissions in the list are
+        granted.
+        """
+        rv, output = self.execute('permission add joe WIKI_CREATE '
+                                   'Trac_Admin WIKI_MODIFY')
+        self.assertEqual(2, rv, output)
+        rv, output2 = self.execute('permission list')
+        self.assertEqual(0, rv, output2)
+        self.assertExpectedResult(output + output2)
+
+    def test_permission_add_unknown_action(self):
+        """
+        Tests the 'permission add' command in trac-admin.  This particular
+        test tries granting NOT_A_PERM to a user. NOT_A_PERM does not exist
+        in the system. None of the permissions in the list are granted.
+        """
+        rv, output = self.execute('permission add joe WIKI_CREATE '
+                                   'NOT_A_PERM WIKI_MODIFY')
+        self.assertEqual(2, rv, output)
+        rv, output2 = self.execute('permission list')
+        self.assertEqual(0, rv, output2)
+        self.assertExpectedResult(output + output2)
+
+    def test_permission_remove_one_action_ok(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test passes valid arguments to remove one permission and checks for
+        success.
+        """
+        self.execute('permission remove anonymous TICKET_MODIFY')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_multiple_actions_ok(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test passes valid arguments to remove multiple permission and checks
+        for success.
+        """
+        self.execute('permission remove anonymous WIKI_CREATE WIKI_MODIFY')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_all_actions_for_user(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test removes all permissions for anonymous.
+        """
+        self.execute('permission remove anonymous *')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_action_for_all_users(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test removes the TICKET_CREATE permission from all users.
+        """
+        self.execute('permission add anonymous TICKET_CREATE')
+        self.execute('permission remove * TICKET_CREATE')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_unknown_user(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing a permission from an unknown user.
+        """
+        rv, output = self.execute('permission remove joe TICKET_VIEW')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_action_not_granted(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing TICKET_CREATE from user anonymous, who doesn't
+        have that permission.
+        """
+        rv, output = self.execute('permission remove anonymous TICKET_CREATE')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_action_granted_through_meta_permission(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing WIKI_VIEW from a user. WIKI_VIEW has been granted
+        through user anonymous."""
+        self.execute('permission add joe TICKET_VIEW')
+        rv, output = self.execute('permission remove joe WIKI_VIEW')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_unknown_action(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing NOT_A_PERM from a user. NOT_A_PERM does not exist
+        in the system."""
+        rv, output = self.execute('permission remove joe NOT_A_PERM')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_remove_unknown_action_granted(self):
+        """
+        Tests the 'permission remove' command in trac-admin.  This particular
+        test tries removing NOT_A_PERM from a user. NOT_A_PERM does not exist
+        in the system, but the user possesses the permission."""
+        self.env.db_transaction("""
+            INSERT INTO permission VALUES (%s, %s)
+        """, ('joe', 'NOT_A_PERM'))
+        rv, output = self.execute('permission remove joe NOT_A_PERM')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_export_ok(self):
+        """
+        Tests the 'permission export' command in trac-admin.  This particular
+        test exports the default permissions to stdout.
+        """
+        rv, output = self.execute('permission export')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_permission_import_ok(self):
+        """
+        Tests the 'permission import' command in trac-admin.  This particular
+        test exports additional permissions, removes them and imports them back.
+        """
+        user = u'test_user\u0250'
+        self.execute('permission add ' + user + ' WIKI_VIEW')
+        self.execute('permission add ' + user + ' TICKET_VIEW')
+        rv, output = self.execute('permission export')
+        self.execute('permission remove ' + user + ' *')
+        rv, output = self.execute('permission import', input=output)
+        self.assertEqual(0, rv, output)
+        self.assertEqual('', output)
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase))
@@ -532,6 +789,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(PermissionCacheTestCase))
     suite.addTest(unittest.makeSuite(PermissionPolicyTestCase))
     suite.addTest(unittest.makeSuite(RecursivePolicyTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminTestCase))
     return suite
 
 

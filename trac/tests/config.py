@@ -13,10 +13,13 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import contextlib
+import copy
 import os
 import time
 import unittest
 
+from trac.admin.console import TracAdmin
+from trac.admin.test import TracAdminTestCaseBase
 from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
@@ -1227,6 +1230,113 @@ class OptionDocTestCase(BaseTestCase):
         self.assertEqual('Doc for ordered_ext_opt', Dummy.ordered_ext_opt.doc)
 
 
+class TracAdminTestCase(TracAdminTestCaseBase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.admin = TracAdmin()
+        self.admin.env_set('', self.env)
+
+    def tearDown(self):
+        self.env = None
+
+    def test_config_get(self):
+        """
+        Tests the 'config get' command in trac-admin.  This particular
+        test gets the project name from the config.
+        """
+        self.env.config.set('project', 'name', 'Test project')
+        rv, output = self.execute('config get project name')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_config_set(self):
+        """
+        Tests the 'config set' command in trac-admin.  This particular
+        test sets the project name using an option value containing a space.
+        """
+        rv, output = self.execute('config set project name "Test project"')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+        self.assertEqual('Test project',
+                         self.env.config.get('project', 'name'))
+
+    def test_config_remove(self):
+        """
+        Tests the 'config remove' command in trac-admin.  This particular
+        test removes the project name from the config, therefore reverting
+        the option to the default value.
+        """
+        self.env.config.set('project', 'name', 'Test project')
+        rv, output = self.execute('config remove project name')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+        self.assertEqual('My Project', self.env.config.get('project', 'name'))
+
+    def test_config_set_complete_section(self):
+        """Tab complete on a configuration section."""
+        # Empty sections are included.
+        output = self.complete_command('config', 'set', '')
+        self.assertIn('components', output)
+        self.assertIn('project', output)
+        self.assertNotIn('foo-section', output)
+
+        # Sections not defined in registry are included.
+        self.env.config.set('foo-section', 'bar-option', '1')
+        output = self.complete_command('config', 'set', '')
+        self.assertIn('foo-section', output)
+
+    def test_config_set_complete_option(self):
+        """Tab complete on a configuration option."""
+        output = self.complete_command('config', 'set', 'project', '')
+        self.assertEqual(['admin', 'admin_trac_url', 'descr', 'footer', 'icon',
+                          'name', 'url'], sorted(output))
+
+        # Options not defined in registry are included.
+        self.env.config.set('project', 'bar-option', '1')
+        output = self.complete_command('config', 'set', 'project', '')
+        self.assertIn('bar-option', output)
+
+
+class TracAdminComponentTestCase(TracAdminTestCaseBase):
+
+    components = []
+
+    @classmethod
+    def setUpClass(cls):
+        class CompA(Component):
+            opt1 = Option('compa', 'opt1', 1)
+            opt2 = Option('compa', 'opt2', 2)
+
+        cls.components = [CompA]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.components:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.admin = TracAdmin()
+        self.admin.env_set('', self.env)
+
+    def tearDown(self):
+        self.env = None
+
+    def test_config_component_enable(self):
+        self.env.config.save()
+        initial_file = copy.deepcopy(self.env.config.parser)
+
+        rv, output = self.execute('config set components '
+                                   'trac.tests.config.* enabled')
+
+        self.assertEqual(0, rv, output)
+        self.assertFalse(initial_file.has_section('compa'))
+        self.assertIn('compa', self.env.config)
+        self.assertIn('1', self.env.config.parser.get('compa', 'opt1'))
+        self.assertIn('2', self.env.config.parser.get('compa', 'opt2'))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
@@ -1238,6 +1348,12 @@ def test_suite():
         print("SKIP: trac.tests.config.ConfigurationSetDefaultsTestCase "
               "(__name__ is not trac.tests.config)")
     suite.addTest(unittest.makeSuite(OptionDocTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    if __name__ == 'trac.tests.config':
+        suite.addTest(unittest.makeSuite(TracAdminComponentTestCase))
+    else:
+        print("SKIP: trac.tests.config.TracAdminComponentTestCase "
+              "(__name__ is not trac.tests.config)")
     return suite
 
 

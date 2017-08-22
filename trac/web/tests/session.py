@@ -15,13 +15,16 @@ import time
 from datetime import datetime
 import unittest
 
-from trac.admin.api import console_date_format
+from trac.admin.api import console_date_format, get_console_locale
+from trac.admin.console import TracAdmin
+from trac.admin.test import TracAdminTestCaseBase
+from trac.core import Component, ComponentMeta, TracError, implements
 from trac.test import EnvironmentStub, MockRequest
-from trac.util.datefmt import format_date, to_datetime
+from trac.util.datefmt import format_date, get_datetime_format_hint, \
+                              time_now, to_datetime
+from trac.web.api import IRequestHandler
 from trac.web.session import DetachedSession, PURGE_AGE, Session, \
                              SessionAdmin, SessionDict, UPDATE_INTERVAL
-from trac.core import TracError
-from trac.util.datefmt import time_now
 
 
 def _prep_session_table(env, spread_visits=False):
@@ -101,6 +104,26 @@ class SessionDictTestCase(unittest.TestCase):
 
 class SessionTestCase(unittest.TestCase):
     """Unit tests for the persistent session support."""
+
+    request_handlers = []
+
+    @classmethod
+    def setUpClass(cls):
+        class DefaultHandlerStub(Component):
+            implements(IRequestHandler)
+
+            def match_request(self, req):
+                pass
+
+            def process_request(req):
+                pass
+
+        cls.request_handlers = [DefaultHandlerStub]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.request_handlers:
+            ComponentMeta.deregister(component)
 
     def setUp(self):
         self.env = EnvironmentStub()
@@ -667,17 +690,17 @@ class SessionTestCase(unittest.TestCase):
                          get_session_attrs(self.env, 'name00'))
         self.assertIn(('name00', 'john', 'john@example.org'),
                       list(self.env.get_known_users()))
-        sess_admin._do_set('default_handler', 'name00', 'SearchModule')
+        sess_admin._do_set('default_handler', 'name00', 'DefaultHandlerStub')
         self.assertEqual({'name': 'john', 'email': 'john@example.org',
-                          'default_handler': 'SearchModule'},
+                          'default_handler': 'DefaultHandlerStub'},
                          get_session_attrs(self.env, 'name00'))
 
         sess_admin._do_set('name', 'name00', '')
         self.assertEqual({'email': 'john@example.org',
-                          'default_handler': 'SearchModule'},
+                          'default_handler': 'DefaultHandlerStub'},
                          get_session_attrs(self.env, 'name00'))
         sess_admin._do_set('email', 'name00', '')
-        self.assertEqual({'default_handler': 'SearchModule'},
+        self.assertEqual({'default_handler': 'DefaultHandlerStub'},
                          get_session_attrs(self.env, 'name00'))
         sess_admin._do_set('default_handler', 'name00', '')
         self.assertEqual({}, get_session_attrs(self.env, 'name00'))
@@ -760,10 +783,220 @@ class SessionTestCase(unittest.TestCase):
                           u'abc¹₂³xyz')  # Unicode digits
 
 
+class TracAdminTestCase(TracAdminTestCaseBase):
+
+    request_handlers = []
+
+    @classmethod
+    def setUpClass(cls):
+        class DefaultHandlerStub(Component):
+            implements(IRequestHandler)
+
+            def match_request(self, req):
+                pass
+
+            def process_request(req):
+                pass
+
+        cls.request_handlers = [DefaultHandlerStub]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.request_handlers:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.admin = TracAdmin()
+        self.admin.env_set('', self.env)
+
+    def tearDown(self):
+        self.env = None
+
+    @property
+    def datetime_format_hint(self):
+        return get_datetime_format_hint(get_console_locale(self.env))
+
+    def test_session_list_no_sessions(self):
+        rv, output = self.execute('session list authenticated')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_authenticated(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session list authenticated')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_anonymous(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session list anonymous')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_all(self):
+        _prep_session_table(self.env)
+        if self.admin.interactive:
+            rv, output = self.execute("session list *")
+        else:
+            rv, output = self.execute("session list '*'")
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_authenticated_sid(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session list name00')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_anonymous_sid(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session list name10:0')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_list_missing_sid(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session list thisdoesntexist')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_add_missing_sid(self):
+        rv, output = self.execute('session add')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_add_duplicate_sid(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session add name00')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_add_sid_all(self):
+        rv, output = self.execute('session add john John john@example.org')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list john')
+        self.assertExpectedResult(output, {
+            'today': format_date(None, console_date_format)
+        })
+
+    def test_session_add_sid(self):
+        rv, output = self.execute('session add john')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list john')
+        self.assertExpectedResult(output, {
+            'today': format_date(None, console_date_format)
+        })
+
+    def test_session_add_sid_name(self):
+        rv, output = self.execute('session add john John')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list john')
+        self.assertExpectedResult(output,  {
+            'today': format_date(None, console_date_format)
+        })
+
+    def test_session_set_attr_name(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session set name name00 JOHN')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list name00')
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_email(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session set email name00 JOHN@EXAMPLE.ORG')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list name00')
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_default_handler(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session set default_handler name00 '
+                                  'DefaultHandlerStub')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list name00')
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_default_handler_invalid(self):
+        _prep_session_table(self.env)
+        rv, output = \
+            self.execute('session set default_handler name00 InvalidModule')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_missing_attr(self):
+        rv, output = self.execute('session set')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_missing_value(self):
+        rv, output = self.execute('session set name john')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_missing_sid(self):
+        rv, output = self.execute('session set name')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_set_attr_nonexistent_sid(self):
+        rv, output = self.execute('session set name john foo')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_delete_sid(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session delete name00')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list nam00')
+        self.assertExpectedResult(output)
+
+    def test_session_delete_missing_params(self):
+        rv, output = self.execute('session delete')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+
+    def test_session_delete_anonymous(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session delete anonymous')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list *')
+        self.assertExpectedResult(output)
+
+    def test_session_delete_multiple_sids(self):
+        _prep_session_table(self.env)
+        rv, output = self.execute('session delete name00 name01 name02 '
+                                   'name03')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list *')
+        self.assertExpectedResult(output)
+
+    def test_session_purge_age(self):
+        _prep_session_table(self.env, spread_visits=True)
+        rv, output = self.execute('session purge 20100112')
+        self.assertEqual(0, rv, output)
+        rv, output = self.execute('session list *')
+        self.assertExpectedResult(output)
+
+    def test_session_purge_invalid_date(self):
+        rv, output = self.execute('session purge <purge>')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output, {
+            'hint': self.datetime_format_hint,
+            'isohint': get_datetime_format_hint('iso8601')
+        })
+
+    def test_help_session_purge(self):
+        doc = self.get_command_help('session', 'purge')
+        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SessionDictTestCase))
     suite.addTest(unittest.makeSuite(SessionTestCase))
+    suite.addTest(unittest.makeSuite(TracAdminTestCase))
     return suite
 
 
