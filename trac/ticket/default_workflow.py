@@ -24,7 +24,7 @@ from pkg_resources import resource_filename
 
 from genshi.builder import tag
 
-from trac.config import Configuration, ConfigSection
+from trac.config import ConfigSection, Configuration, ConfigurationError
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionCache, PermissionSystem
@@ -345,14 +345,20 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 hints.append(tag_("The owner will remain %(current_owner)s",
                                   current_owner=formatted_current_owner))
         if 'set_resolution' in operations:
+            resolutions = [r.name for r in Resolution.select(self.env)]
             if 'set_resolution' in this_action:
+                valid_resolutions = set(resolutions)
                 resolutions = this_action['set_resolution']
-            else:
-                resolutions = [r.name for r in Resolution.select(self.env)]
+                if any(x not in valid_resolutions for x in resolutions):
+                    raise ConfigurationError(_(
+                        "Your workflow attempts to set a resolution but uses "
+                        "undefined resolutions (configuration issue, please "
+                        "contact your Trac admin)."))
             if not resolutions:
-                raise TracError(_("Your workflow attempts to set a resolution "
-                                  "but none is defined (configuration issue, "
-                                  "please contact your Trac admin)."))
+                raise ConfigurationError(_(
+                    "Your workflow attempts to set a resolution but none is "
+                    "defined (configuration issue, please contact your Trac "
+                    "admin)."))
             id = 'action_%s_resolve_resolution' % action
             if len(resolutions) == 1:
                 resolution = tag.input(type='hidden', id=id, name=id,
