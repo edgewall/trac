@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.2\n"
+"Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-21 13:45+0000\n"
+"POT-Creation-Date: 2017-08-23 09:00+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -21,7 +21,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
 #: tracopt/ticket/clone.py:49
 #, python-format
@@ -476,7 +476,7 @@ msgstr "オリジナルフォーマット"
 
 #: trac/attachment.py:649 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:101
-#: trac/versioncontrol/templates/dir_entries.html:29
+#: trac/versioncontrol/templates/dir_entries.html:31
 #: trac/versioncontrol/web_ui/browser.py:862
 msgid "Download"
 msgstr "ダウンロード"
@@ -560,7 +560,7 @@ msgstr "更新日時"
 
 #: trac/attachment.py:1086 trac/notification/prefs.py:235
 #: trac/templates/attachment.html:106 trac/ticket/api.py:339
-#: trac/ticket/api.py:585 trac/ticket/templates/ticket.html:376
+#: trac/ticket/api.py:585 trac/ticket/templates/ticket.html:374
 #: trac/ticket/templates/ticket_box.html:115
 msgid "Description"
 msgstr "詳細"
@@ -578,31 +578,31 @@ msgstr "設定エラー"
 msgid "Look in the Trac log for more information."
 msgstr "詳細は Trac のログを参照してください。"
 
-#: trac/config.py:369
+#: trac/config.py:374
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr "'%(file)s' の読み込みエラー。読み込み可能か確認してください。"
 
-#: trac/config.py:543
+#: trac/config.py:548
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は整数を入力してください。"
 
-#: trac/config.py:560
+#: trac/config.py:565
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は浮動小数点を入力してください。"
 
-#: trac/config.py:725
+#: trac/config.py:730
 msgid "Setting attribute is not allowed."
 msgstr "属性を設定することはできません。"
 
-#: trac/config.py:848
+#: trac/config.py:853
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は %(choices)s のどれかを入力してください。"
 
-#: trac/config.py:888
+#: trac/config.py:893
 #, python-format
 msgid ""
 "Cannot find an implementation of the %(interface)s interface named "
@@ -613,7 +613,7 @@ msgstr ""
 "インターフェイスの実装を見つけられません。コンポーネントが有効になっているかチェックするか、trac.ini の %(option)s "
 "オプションを更新してください。"
 
-#: trac/config.py:928
+#: trac/config.py:933
 #, python-format
 msgid ""
 "Cannot find implementation(s) of the %(interface)s interface named "
@@ -624,7 +624,7 @@ msgstr ""
 "インターフェイスの実装を見つけられません。コンポーネントが有効になっているかチェックするか、trac.ini の %(option)s "
 "オプションを更新してください。"
 
-#: trac/config.py:968 trac/config.py:983
+#: trac/config.py:973 trac/config.py:988
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr "オプション '%(option)s' はセクション '%(section)s' に存在しません"
@@ -666,16 +666,16 @@ msgid ""
 " point to a valid Trac environment."
 msgstr "環境変数 \"TRAC_ENV\" が見つかりません。Trac ではこの変数を設定する必要があります。"
 
-#: trac/env.py:947
+#: trac/admin/console.py:288 trac/env.py:947
 #, python-format
 msgid ""
-"The Trac Environment needs to be upgraded.\n"
+"The Trac Environment needs to be upgraded. Run:\n"
 "\n"
-"Run 'trac-admin \"%(path)s\" upgrade'"
+"  trac-admin \"%(path)s\" upgrade"
 msgstr ""
-"Trac Environment をアップグレードする必要があります。\n"
+"Trac Environment をアップグレードする必要があります。以下を実行してください:\n"
 "\n"
-"'trac-admin \"%(path)s\" upgrade' を実行してください。"
+"  trac-admin \"%(path)s\" upgrade"
 
 #: trac/env.py:1002
 #, python-format
@@ -917,17 +917,6 @@ msgstr "TracEnv を開けませんでした: %(err)s"
 msgid "Completion error: %(err)s"
 msgstr "補完エラー: %(err)s"
 
-#: trac/admin/console.py:288
-#, python-format
-msgid ""
-"The Trac Environment needs to be upgraded. Run:\n"
-"\n"
-"  trac-admin \"%(path)s\" upgrade"
-msgstr ""
-"Trac Environment をアップグレードする必要があります。以下を実行してください:\n"
-"\n"
-"  trac-admin \"%(path)s\" upgrade"
-
 #: trac/admin/console.py:323
 #, python-format
 msgid ""
@@ -1048,27 +1037,26 @@ msgid ""
 "Warning: couldn't index the default repository.\n"
 "\n"
 "This can happen for a variety of reasons: wrong repository type,\n"
-"no appropriate third party library for this repository type,\n"
-"no actual repository at the specified repository path...\n"
+"no appropriate third party library for this repository type, \n"
+"no repository at the specified repository path...\n"
 "\n"
 "You can nevertheless start using your Trac environment, but\n"
-"you'll need to check again your trac.ini file and the [trac]\n"
-"repository_type and repository_path settings.\n"
+"you'll need to check your `.type` and `.dir` option values in \n"
+"the [repositories] section of your trac.ini file.\n"
 msgstr ""
 "\n"
 "---------------------------------------------------------------------\n"
 "注意: リポジトリのインデックスに失敗しました。\n"
 "\n"
-"これにはいくつかの原因が考えられます。\n"
-"リポジトリの種類が間違っている、このリポジトリのためのライブラリが用\n"
-"意されていない、指定したリポジトリのパスに実際のリポジトリがない、な\n"
-"どです。\n"
+"これにはいくつかの原因が考えられます: リポジトリの種類が間違って\n"
+"いる、このリポジトリのためのライブラリが用意されていない、指定した\n"
+"リポジトリのパスにリポジトリがない、などです。\n"
 "\n"
-"現状でも Trac を使い始める事はできますが、リポジトリブラウザを有効にす\n"
-"るには trac.ini ファイルの [trac] repository_type と repository_path\n"
-"の設定を再度確認する必要があります。\n"
+"現状でも Trac を使い始める事はできますが、trac.ini ファイルの\n"
+"[repositories] セクションにある `.type` と `.dir` オプションの値を\n"
+"確認する必要があります。\n"
 
-#: trac/admin/console.py:563
+#: trac/admin/console.py:562
 #, python-format
 msgid ""
 "\n"
@@ -1706,23 +1694,23 @@ msgstr "データベース接続文字列のドキュメント"
 msgid "Cannot load Python bindings for MySQL"
 msgstr "MySQL 向け Python バインディングをロードできません"
 
-#: trac/db/mysql_backend.py:273 trac/db/postgres_backend.py:224
-#: trac/db/postgres_backend.py:241
+#: trac/db/mysql_backend.py:276 trac/db/postgres_backend.py:229
+#: trac/db/postgres_backend.py:246
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr "%(path)s を実行できませんでした: %(msg)s"
 
-#: trac/db/mysql_backend.py:277
+#: trac/db/mysql_backend.py:280
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr "mysqldump が失敗しました: %(msg)s"
 
-#: trac/db/mysql_backend.py:279 trac/db/postgres_backend.py:230
+#: trac/db/mysql_backend.py:282 trac/db/postgres_backend.py:235
 #: trac/db/sqlite_backend.py:278
 msgid "No destination file created"
 msgstr "出力先のファイルが作成されていません"
 
-#: trac/db/mysql_backend.py:316
+#: trac/db/mysql_backend.py:319
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1733,7 +1721,7 @@ msgstr ""
 "ストレージエンジンで作成する必要があります。次のテーブルがトランザクションをサポートしないストレージエンジンで作成されています: "
 "%(tables)s"
 
-#: trac/db/mysql_backend.py:325
+#: trac/db/mysql_backend.py:328
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
@@ -1742,14 +1730,14 @@ msgstr ""
 "すべてのテーブルは照合順序として utf8_bin または utf8mb4_bin "
 "で作成されている必要があります。次のテーブルがその照合順序で作成されていません: %(tables)s"
 
-#: trac/db/mysql_backend.py:340
+#: trac/db/mysql_backend.py:343
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr "ストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:346
+#: trac/db/mysql_backend.py:349
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
@@ -1758,7 +1746,7 @@ msgstr ""
 "TEMPORARY テーブルに対するストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB "
 "または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:358
+#: trac/db/mysql_backend.py:361
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1776,7 +1764,7 @@ msgstr "%(time)d秒内にデータベースに接続できませんでした。"
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "PostgresSQL 向け Python バインディングをロードできません"
 
-#: trac/db/postgres_backend.py:228
+#: trac/db/postgres_backend.py:233
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr "pg_dump が失敗しました: %(msg)s"
@@ -2460,13 +2448,13 @@ msgid "Attachment Info"
 msgstr "添付ファイル情報"
 
 #: trac/templates/attachment.html:50 trac/ticket/templates/ticket.html:206
-#: trac/ticket/templates/ticket.html:345
+#: trac/ticket/templates/ticket.html:343
 #: trac/wiki/templates/wiki_edit_form.html:53
 msgid "Your email or username:"
 msgstr "メールアドレスまたはユーザ名:"
 
 #: trac/templates/attachment.html:54 trac/ticket/templates/ticket.html:213
-#: trac/ticket/templates/ticket.html:353
+#: trac/ticket/templates/ticket.html:351
 #: trac/wiki/templates/wiki_edit_form.html:57
 msgid "E-mail address and name can be saved in the [1:Preferences]."
 msgstr "メールアドレスと名前は[1:個人設定]で保存できます。"
@@ -2912,7 +2900,7 @@ msgstr "[1:%(file)s][2:​] ([3:%(size)s]) - %(author)s が%(date)sに追加。"
 
 #: trac/templates/list_of_attachments.html:38
 #: trac/templates/list_of_attachments.html:52
-#: trac/ticket/templates/ticket.html:375
+#: trac/ticket/templates/ticket.html:373
 msgid "Attachments"
 msgstr "添付ファイル"
 
@@ -3272,101 +3260,109 @@ msgid ""
 "notifications: %(message)s"
 msgstr "変更をは保存しましたが、通知処理中にエラーが発生しました: %(message)s"
 
-#: trac/ticket/default_workflow.py:248
+#: trac/ticket/default_workflow.py:259
 msgid "from invalid state"
 msgstr "(不正な状態から)"
 
-#: trac/ticket/default_workflow.py:249
+#: trac/ticket/default_workflow.py:260
 msgid "Current state no longer exists"
 msgstr "現在のステータスは破棄されます"
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:262
 msgid "The ticket will be disowned"
 msgstr "担当を外します"
 
-#: trac/ticket/default_workflow.py:287 trac/ticket/default_workflow.py:301
-#: trac/ticket/default_workflow.py:315
+#: trac/ticket/default_workflow.py:297 trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:325
 #, python-format
 msgid "to %(owner)s"
 msgstr "(担当 %(owner)s)"
 
-#: trac/ticket/default_workflow.py:290
+#: trac/ticket/default_workflow.py:300
 msgid "The owner will be the specified user"
 msgstr "担当者を指定したユーザに設定します"
 
-#: trac/ticket/default_workflow.py:292
+#: trac/ticket/default_workflow.py:302
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the specified user"
 msgstr "担当者を %(current_owner)s から指定したユーザに変更します"
 
-#: trac/ticket/default_workflow.py:303 trac/ticket/default_workflow.py:328
+#: trac/ticket/default_workflow.py:313 trac/ticket/default_workflow.py:337
 #, python-format
 msgid "The owner will be %(new_owner)s"
 msgstr "担当者を %(new_owner)s に設定します"
 
-#: trac/ticket/default_workflow.py:306 trac/ticket/default_workflow.py:331
+#: trac/ticket/default_workflow.py:316 trac/ticket/default_workflow.py:340
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(new_owner)s"
 msgstr "担当者を %(current_owner)s から %(new_owner)s に変更します"
 
-#: trac/ticket/default_workflow.py:319
+#: trac/ticket/default_workflow.py:329
 msgid "The owner will be the selected user"
 msgstr "担当者を選択したユーザに設定します"
 
-#: trac/ticket/default_workflow.py:321
+#: trac/ticket/default_workflow.py:331
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to the selected user"
 msgstr "担当者を %(current_owner)s から選択したユーザに変更します"
 
-#: trac/ticket/default_workflow.py:341
-msgid ""
-"Your workflow attempts to set a resolution but none is defined "
-"(configuration issue, please contact your Trac admin)."
-msgstr "ワークフローによる解決の種類が正しく設定されていません。(設定の問題なので Trac 管理者へお問い合わせください)"
-
-#: trac/ticket/default_workflow.py:349 trac/ticket/default_workflow.py:359
-#, python-format
-msgid "as %(resolution)s"
-msgstr "(解決方法 %(resolution)s)"
-
-#: trac/ticket/default_workflow.py:351
-#, python-format
-msgid "The resolution will be set to %(name)s"
-msgstr "解決方法を %(name)s に設定します"
-
-#: trac/ticket/default_workflow.py:362
-msgid "The resolution will be set"
-msgstr "解決方法を設定します"
-
-#: trac/ticket/default_workflow.py:364
-msgid "The resolution will be deleted"
-msgstr "解決方法を抹消します"
-
-#: trac/ticket/default_workflow.py:367
-#, python-format
-msgid "as %(status)s"
-msgstr "(ステータス %(status)s)"
-
-#: trac/ticket/default_workflow.py:370
+#: trac/ticket/default_workflow.py:345 trac/ticket/default_workflow.py:386
 #, python-format
 msgid "The owner will remain %(current_owner)s"
 msgstr "担当者を %(current_owner)s のままにする"
 
-#: trac/ticket/default_workflow.py:373
+#: trac/ticket/default_workflow.py:353
+msgid ""
+"Your workflow attempts to set a resolution but uses undefined resolutions"
+" (configuration issue, please contact your Trac admin)."
+msgstr ""
+"ワークフローで解決方法を設定しようとしていますが、定義していない解決方法を使用しています。(設定の問題のため Trac "
+"管理者へお問い合わせください)"
+
+#: trac/ticket/default_workflow.py:358
+msgid ""
+"Your workflow attempts to set a resolution but none is defined "
+"(configuration issue, please contact your Trac admin)."
+msgstr "ワークフローで解決方法を設定しようとしていますが、解決方法が定義されていません。(設定の問題のため Trac 管理者へお問い合わせください)"
+
+#: trac/ticket/default_workflow.py:367 trac/ticket/default_workflow.py:377
+#, python-format
+msgid "as %(resolution)s"
+msgstr "(解決方法 %(resolution)s)"
+
+#: trac/ticket/default_workflow.py:369
+#, python-format
+msgid "The resolution will be set to %(name)s"
+msgstr "解決方法を %(name)s に設定します"
+
+#: trac/ticket/default_workflow.py:380
+msgid "The resolution will be set"
+msgstr "解決方法を設定します"
+
+#: trac/ticket/default_workflow.py:382
+msgid "The resolution will be deleted"
+msgstr "解決方法を抹消します"
+
+#: trac/ticket/default_workflow.py:384
+#, python-format
+msgid "as %(status)s"
+msgstr "(ステータス %(status)s)"
+
+#: trac/ticket/default_workflow.py:389
 msgid "The ticket will remain with no owner"
 msgstr "担当者なしのままにする"
 
-#: trac/ticket/default_workflow.py:377
+#: trac/ticket/default_workflow.py:393
 #, python-format
 msgid "The status will be '%(name)s'"
 msgstr "ステータスは '%(name)s' になります"
 
-#: trac/ticket/default_workflow.py:380
+#: trac/ticket/default_workflow.py:396
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "次のステータスは '%(name)s' です"
 
-#: trac/ticket/default_workflow.py:571
+#: trac/ticket/default_workflow.py:587
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3462,11 +3458,11 @@ msgstr ""
 "    }}}\n"
 "}}}"
 
-#: trac/ticket/default_workflow.py:632
+#: trac/ticket/default_workflow.py:648
 msgid "Error parsing workflow."
 msgstr "ワークフロー解析中のエラー"
 
-#: trac/ticket/default_workflow.py:666
+#: trac/ticket/default_workflow.py:682
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "ワークフローグラフを表示するには JavaScript を有効にしてください。"
 
@@ -4375,7 +4371,7 @@ msgstr "詳細: ([1:WikiFormatting] が使えます)"
 #: trac/ticket/templates/admin_enums.html:38
 #: trac/ticket/templates/admin_versions.html:58
 #: trac/ticket/templates/milestone_edit_form.html:125
-#: trac/ticket/templates/ticket.html:385
+#: trac/ticket/templates/ticket.html:383
 #: trac/ticket/templates/ticket_change.html:139
 #: trac/versioncontrol/templates/admin_repositories.html:105
 #: trac/wiki/templates/wiki_edit_comment.html:33
@@ -5025,34 +5021,34 @@ msgstr "概要:"
 msgid "Reporter:"
 msgstr "報告者:"
 
-#: trac/ticket/templates/ticket.html:222 trac/ticket/templates/ticket.html:357
+#: trac/ticket/templates/ticket.html:221 trac/ticket/templates/ticket.html:355
 msgid "You may use [1:WikiFormatting] here."
 msgstr "[1:WikiFormatting] が使えます"
 
-#: trac/ticket/templates/ticket.html:240
+#: trac/ticket/templates/ticket.html:238
 #: trac/ticket/templates/ticket_box.html:84
 #: trac/ticket/templates/ticket_change.html:97
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:287
+#: trac/ticket/templates/ticket.html:285
 msgid "Set your email in [1:Preferences]"
 msgstr "[1:個人設定]でメールアドレスを設定してください"
 
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:289
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "関係者に自分自身を登録または削除することができます。"
 
-#: trac/ticket/templates/ticket.html:302
+#: trac/ticket/templates/ticket.html:300
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "空白かカンマ区切りで、メールアドレスかユーザ名を設定できます。"
 
-#: trac/ticket/templates/ticket.html:329
+#: trac/ticket/templates/ticket.html:327
 msgid "Add Comment"
 msgstr "コメントの追加"
 
-#: trac/ticket/templates/ticket.html:331
+#: trac/ticket/templates/ticket.html:329
 msgid ""
 "This ticket has been modified since you started editing. You should "
 "review the\n"
@@ -5062,19 +5058,19 @@ msgid ""
 " wish so."
 msgstr "このチケットは編集開始以降に更新されています。上に追加されている「[1:他の人の変更内容]」と下のプレビューに表示されている「[2:衝突内容]」を確認してください。それでも続行する場合は変更内容を送信することもできます。"
 
-#: trac/ticket/templates/ticket.html:369
+#: trac/ticket/templates/ticket.html:367
 msgid "I have files to attach to this ticket"
 msgstr "このチケットにファイルを添付します"
 
-#: trac/ticket/templates/ticket.html:375
+#: trac/ticket/templates/ticket.html:373
 msgid "Go to the list of attachments"
 msgstr "添付ファイルの一覧に移動"
 
-#: trac/ticket/templates/ticket.html:376
+#: trac/ticket/templates/ticket.html:374
 msgid "View the ticket description"
 msgstr "チケットの詳細を表示"
 
-#: trac/ticket/templates/ticket.html:384
+#: trac/ticket/templates/ticket.html:382
 #: trac/ticket/templates/ticket_change.html:137
 #: trac/wiki/templates/wiki_edit.html:103
 #: trac/wiki/templates/wiki_edit.html:165
@@ -5082,11 +5078,11 @@ msgstr "チケットの詳細を表示"
 msgid "Preview"
 msgstr "プレビュー"
 
-#: trac/ticket/templates/ticket.html:385
+#: trac/ticket/templates/ticket.html:383
 msgid "Create ticket"
 msgstr "チケットの新規作成"
 
-#: trac/ticket/templates/ticket.html:400
+#: trac/ticket/templates/ticket.html:398
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -5510,7 +5506,7 @@ msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr "複数のリポジトリのリビジョンに同期できません"
 
 #: trac/versioncontrol/admin.py:133 trac/versioncontrol/admin.py:205
-#: trac/versioncontrol/api.py:708 trac/versioncontrol/web_ui/browser.py:354
+#: trac/versioncontrol/api.py:712 trac/versioncontrol/web_ui/browser.py:354
 #: trac/versioncontrol/web_ui/changeset.py:248
 #: trac/versioncontrol/web_ui/changeset.py:1098
 #: trac/versioncontrol/web_ui/log.py:100 trac/versioncontrol/web_ui/log.py:419
@@ -5573,7 +5569,7 @@ msgstr "新しいリポジトリの名前で %(cset_added)s を呼び出すよ�
 msgid "Missing arguments to add a repository."
 msgstr "リポジトリを追加するにはパラメータが足りません。"
 
-#: trac/versioncontrol/admin.py:275 trac/versioncontrol/api.py:292
+#: trac/versioncontrol/admin.py:275 trac/versioncontrol/api.py:296
 #, python-format
 msgid "The repository \"%(name)s\" already exists."
 msgstr "リポジトリ \"%(name)s\" はすでに存在しています。"
@@ -5637,58 +5633,58 @@ msgstr "リポジトリディレクトリは次にあげるディレクトリの
 msgid "(default)"
 msgstr "(デフォルト)"
 
-#: trac/versioncontrol/api.py:200
+#: trac/versioncontrol/api.py:204
 #, python-format
 msgid "Invalid key \"%(key)s\""
 msgstr "不正なキーです: \"%(key)s\""
 
-#: trac/versioncontrol/api.py:207
+#: trac/versioncontrol/api.py:211
 #, python-format
 msgid "You should now run \"repository resync %(name)s\"."
 msgstr "\"repository resync %(name)s\" を実行してください。"
 
-#: trac/versioncontrol/api.py:210
+#: trac/versioncontrol/api.py:214
 #, python-format
 msgid "You may have to run \"repository resync %(name)s\"."
 msgstr "\"repository resync %(name)s\" を実行しなければならないかも知れません。"
 
-#: trac/versioncontrol/api.py:218 trac/versioncontrol/api.py:303
+#: trac/versioncontrol/api.py:222 trac/versioncontrol/api.py:307
 msgid "The repository directory must be absolute"
 msgstr "リポジトリディレクトリは絶対パスでなければなりません"
 
-#: trac/versioncontrol/api.py:223
+#: trac/versioncontrol/api.py:227
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
 msgstr "リポジトリ '%(type)s' はサポートしていません"
 
-#: trac/versioncontrol/api.py:242
+#: trac/versioncontrol/api.py:246
 #, python-format
 msgid "Repository \"%(repo)s\" doesn't exist"
 msgstr "リポジトリ \"%(repo)s\" は存在しません"
 
-#: trac/versioncontrol/api.py:245
+#: trac/versioncontrol/api.py:249
 #, python-format
 msgid "Cannot create an alias to the alias \"%(repo)s\""
 msgstr "エイリアス \"%(repo)s\" へのエイリアスを作成することはできません"
 
-#: trac/versioncontrol/api.py:263
+#: trac/versioncontrol/api.py:267
 #, python-format
 msgid "Cannot remove the repository \"%(repos)s\" used in aliases"
 msgstr "リポジトリ \"%(repos)s\" はエイリアスで使用中のため削除することはできません"
 
-#: trac/versioncontrol/api.py:284
+#: trac/versioncontrol/api.py:288
 #, python-format
 msgid "Cannot rename the repository \"%(repos)s\" used in aliases"
 msgstr "リポジトリ \"%(repos)s\" はエイリアスで使用中のため名前を変更することはできません"
 
-#: trac/versioncontrol/api.py:379
+#: trac/versioncontrol/api.py:383
 #, python-format
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr "リポジトリ \"%(name)s\" との同期ができません (%(error)s)。詳細は Trac のログを参照してください"
 
-#: trac/versioncontrol/api.py:386
+#: trac/versioncontrol/api.py:390
 #, python-format
 msgid ""
 "Failed to sync with repository \"%(name)s\": %(error)s; repository "
@@ -5698,59 +5694,59 @@ msgstr ""
 "リポジトリ \"%(name)s\" との同期に失敗しました: %(error)s; "
 "リポジトリのデータは最新でない可能性があります。詳細と軽減する方法については Trac のログを参照してください。"
 
-#: trac/versioncontrol/api.py:414
+#: trac/versioncontrol/api.py:418
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
 msgstr "チェンジセット %(rev)s (%(repo)s)"
 
-#: trac/versioncontrol/api.py:416
+#: trac/versioncontrol/api.py:420
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "チェンジセット %(rev)s"
 
-#: trac/versioncontrol/api.py:426
+#: trac/versioncontrol/api.py:430
 msgid "directory"
 msgstr "ディレクトリ"
 
-#: trac/versioncontrol/api.py:428
+#: trac/versioncontrol/api.py:432
 msgid "file"
 msgstr "ファイル"
 
-#: trac/versioncontrol/api.py:430
+#: trac/versioncontrol/api.py:434
 #, python-format
 msgid " at version %(rev)s"
 msgstr " バージョン %(rev)s"
 
-#: trac/versioncontrol/api.py:432
+#: trac/versioncontrol/api.py:436
 msgid "path"
 msgstr "パス"
 
-#: trac/versioncontrol/api.py:435
+#: trac/versioncontrol/api.py:439
 #, python-format
 msgid " in %(repo)s"
 msgstr " (%(repo)s)"
 
 #. TRANSLATOR: file /path/to/file.py at version 13 in reponame
-#: trac/versioncontrol/api.py:437
+#: trac/versioncontrol/api.py:441
 #, python-format
 msgid "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 msgstr "%(kind)s %(id)s%(at_version)s%(in_repo)s"
 
-#: trac/versioncontrol/api.py:441
+#: trac/versioncontrol/api.py:445
 msgid "Default repository"
 msgstr "デフォルトリポジトリ"
 
-#: trac/versioncontrol/api.py:442
+#: trac/versioncontrol/api.py:446
 #, python-format
 msgid "Repository %(repo)s"
 msgstr "リポジトリ %(repo)s"
 
-#: trac/versioncontrol/api.py:807
+#: trac/versioncontrol/api.py:811
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "サポートしていないバージョン管理システム \"%(name)s\": \"%(error)s\""
 
-#: trac/versioncontrol/api.py:810
+#: trac/versioncontrol/api.py:814
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -5759,26 +5755,26 @@ msgstr ""
 "サポートしていないバージョン管理システム \"%(name)s\": "
 "適切なコンポーネントを見つけることができません。対応するプラグインは、有効になっていますか? "
 
-#: trac/versioncontrol/api.py:818
+#: trac/versioncontrol/api.py:822
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "チェンジセット %(rev)s がリポジトリに存在しません"
 
-#: trac/versioncontrol/api.py:820
+#: trac/versioncontrol/api.py:824
 msgid "No such changeset"
 msgstr "チェンジセットが存在しません"
 
-#: trac/versioncontrol/api.py:826
+#: trac/versioncontrol/api.py:830
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "リビジョン %(rev)s に %(path)s はありません"
 
-#: trac/versioncontrol/api.py:828
+#: trac/versioncontrol/api.py:832
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: リビジョン %(rev)s に %(path)s はありません"
 
-#: trac/versioncontrol/api.py:830
+#: trac/versioncontrol/api.py:834
 msgid "No such node"
 msgstr "ノードが存在しません"
 
@@ -6274,18 +6270,18 @@ msgstr "ディレクトリの表示"
 msgid "View File"
 msgstr "ファイルの表示"
 
-#: trac/versioncontrol/templates/dir_entries.html:29
+#: trac/versioncontrol/templates/dir_entries.html:31
 #: trac/versioncontrol/templates/repository_index.html:33
 #: trac/versioncontrol/web_ui/browser.py:863
 msgid "Download as Zip archive"
 msgstr "Zip 書庫でダウンロード"
 
-#: trac/versioncontrol/templates/dir_entries.html:33
+#: trac/versioncontrol/templates/dir_entries.html:35
 #: trac/versioncontrol/templates/repository_index.html:37
 msgid "View Revision Log"
 msgstr "更新履歴の表示"
 
-#: trac/versioncontrol/templates/dir_entries.html:34
+#: trac/versioncontrol/templates/dir_entries.html:36
 #: trac/versioncontrol/templates/repository_index.html:38
 msgid "View Changeset"
 msgstr "チェンジセットの表示"
