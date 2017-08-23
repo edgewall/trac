@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.12\n"
+"Project-Id-Version: Trac 1.0.16\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-14 06:24+0000\n"
+"POT-Creation-Date: 2017-08-23 08:50+0000\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -21,7 +21,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -457,21 +457,21 @@ msgstr "添付ファイルの上限サイズ: %(num)s バイト"
 msgid "Upload failed"
 msgstr "アップロード失敗"
 
-#: trac/attachment.py:756
+#: trac/attachment.py:757
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "添付ファイル情報のフィールド %(field)s が不正です: %(message)s"
 
-#: trac/attachment.py:760
+#: trac/attachment.py:761
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "添付ファイルが不正です: %(message)s"
 
-#: trac/attachment.py:764
+#: trac/attachment.py:766
 msgid "Note: File must be selected again."
 msgstr "※ もう一度ファイルを選択してください。"
 
-#: trac/attachment.py:777
+#: trac/attachment.py:779
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -482,42 +482,42 @@ msgstr ""
 "を置き換える権限がありません。置き換えることができるのは自分で添付したファイルのみです。他の人が添付したファイルを置き換えるには "
 "ATTACHMENT_DELETE 権限が必要です。"
 
-#: trac/attachment.py:808
+#: trac/attachment.py:810
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (削除)"
 
-#: trac/attachment.py:822
+#: trac/attachment.py:824
 #, python-format
 msgid "Maximum total attachment size: %(num)s bytes"
 msgstr "添付ファイルの合計の上限サイズ: %(num)s バイト"
 
-#: trac/attachment.py:823
+#: trac/attachment.py:825
 msgid "Download failed"
 msgstr "ダウンロード失敗"
 
-#: trac/attachment.py:920 trac/versioncontrol/web_ui/browser.py:709
+#: trac/attachment.py:922 trac/versioncontrol/web_ui/browser.py:709
 #: trac/wiki/web_ui.py:73
 msgid "Plain Text"
 msgstr "プレーンテキスト"
 
-#: trac/attachment.py:926 trac/versioncontrol/web_ui/browser.py:715
+#: trac/attachment.py:928 trac/versioncontrol/web_ui/browser.py:715
 msgid "Original Format"
 msgstr "オリジナルフォーマット"
 
-#: trac/attachment.py:968 trac/templates/list_of_attachments.html:29
+#: trac/attachment.py:970 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:93
 #: trac/versioncontrol/templates/dir_entries.html:29
 #: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download"
 msgstr "ダウンロード"
 
-#: trac/attachment.py:1062
+#: trac/attachment.py:1064
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "'%(id)s' は正しい識別子ではありません"
 
-#: trac/attachment.py:1098 trac/templates/about.html:81
+#: trac/attachment.py:1100 trac/templates/about.html:81
 #: trac/templates/about.html:124 trac/templates/error.html:179
 #: trac/ticket/admin.py:203 trac/ticket/admin.py:401 trac/ticket/admin.py:571
 #: trac/ticket/templates/admin_components.html:88
@@ -530,28 +530,28 @@ msgstr "'%(id)s' は正しい識別子ではありません"
 msgid "Name"
 msgstr "名称"
 
-#: trac/attachment.py:1098
+#: trac/attachment.py:1100
 msgid "Size"
 msgstr "サイズ"
 
-#: trac/attachment.py:1098 trac/templates/history_view.html:40
+#: trac/attachment.py:1100 trac/templates/history_view.html:40
 #: trac/ticket/templates/ticket.html:370
 #: trac/versioncontrol/templates/revisionlog.html:122
 msgid "Author"
 msgstr "更新者"
 
-#: trac/attachment.py:1098 trac/templates/history_view.html:39
+#: trac/attachment.py:1100 trac/templates/history_view.html:39
 msgid "Date"
 msgstr "更新日時"
 
-#: trac/attachment.py:1099 trac/templates/attachment.html:102
+#: trac/attachment.py:1101 trac/templates/attachment.html:102
 #: trac/ticket/api.py:308 trac/ticket/api.py:543
 #: trac/ticket/templates/ticket.html:399
 #: trac/ticket/templates/ticket_box.html:112
 msgid "Description"
 msgstr "詳細"
 
-#: trac/attachment.py:1122 trac/wiki/admin.py:107
+#: trac/attachment.py:1124 trac/wiki/admin.py:107
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "ファイル '%(name)s' が存在しています。"
@@ -661,16 +661,16 @@ msgid ""
 " point to a valid Trac environment."
 msgstr "環境変数 \"TRAC_ENV\" が見つかりません。Trac ではこの変数を設定する必要があります。"
 
-#: trac/env.py:958
+#: trac/admin/console.py:286 trac/env.py:958
 #, python-format
 msgid ""
-"The Trac Environment needs to be upgraded.\n"
+"The Trac Environment needs to be upgraded. Run:\n"
 "\n"
-"Run 'trac-admin \"%(path)s\" upgrade'"
+"  trac-admin \"%(path)s\" upgrade"
 msgstr ""
-"Trac Environment をアップグレードする必要があります。\n"
+"Trac Environment をアップグレードする必要があります。以下を実行してください:\n"
 "\n"
-"'trac-admin \"%(path)s\" upgrade' を実行してください。"
+"  trac-admin \"%(path)s\" upgrade"
 
 #: trac/env.py:997
 msgid "Copying resources from:"
@@ -933,17 +933,6 @@ msgstr "TracEnv を開けませんでした: %(err)s"
 #, python-format
 msgid "Completion error: %(err)s"
 msgstr "補完エラー: %(err)s"
-
-#: trac/admin/console.py:286
-#, python-format
-msgid ""
-"The Trac Environment needs to be upgraded. Run:\n"
-"\n"
-"  trac-admin \"%(path)s\" upgrade"
-msgstr ""
-"Trac Environment をアップグレードする必要があります。以下を実行してください:\n"
-"\n"
-"  trac-admin \"%(path)s\" upgrade"
 
 #: trac/admin/console.py:321
 #, python-format
@@ -1646,23 +1635,23 @@ msgstr "データベース接続文字列のドキュメント"
 msgid "Cannot load Python bindings for MySQL"
 msgstr "MySQL 向け Python バインディングをロードできません"
 
-#: trac/db/mysql_backend.py:251 trac/db/postgres_backend.py:190
+#: trac/db/mysql_backend.py:254 trac/db/postgres_backend.py:190
 #: trac/db/postgres_backend.py:209
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr "%(path)s を実行できませんでした: %(msg)s"
 
-#: trac/db/mysql_backend.py:255
+#: trac/db/mysql_backend.py:258
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr "mysqldump が失敗しました: %(msg)s"
 
-#: trac/db/mysql_backend.py:257 trac/db/postgres_backend.py:215
+#: trac/db/mysql_backend.py:260 trac/db/postgres_backend.py:215
 #: trac/db/sqlite_backend.py:257
 msgid "No destination file created"
 msgstr "出力先のファイルが作成されていません"
 
-#: trac/db/mysql_backend.py:293
+#: trac/db/mysql_backend.py:296
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1673,7 +1662,7 @@ msgstr ""
 "ストレージエンジンで作成する必要があります。次のテーブルがトランザクションをサポートしないストレージエンジンで作成されています: "
 "%(tables)s"
 
-#: trac/db/mysql_backend.py:302
+#: trac/db/mysql_backend.py:305
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
@@ -1682,14 +1671,14 @@ msgstr ""
 "すべてのテーブルは照合順序として utf8_bin または utf8mb4_bin "
 "で作成されている必要があります。次のテーブルがその照合順序で作成されていません: %(tables)s"
 
-#: trac/db/mysql_backend.py:317
+#: trac/db/mysql_backend.py:320
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr "ストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:323
+#: trac/db/mysql_backend.py:326
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
@@ -1698,7 +1687,7 @@ msgstr ""
 "TEMPORARY テーブルに対するストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB "
 "または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:335
+#: trac/db/mysql_backend.py:338
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -2301,7 +2290,7 @@ msgstr "添付ファイルの削除"
 
 #: trac/templates/attachment.html:106
 #: trac/templates/list_of_attachments.html:30 trac/templates/macros.html:29
-#: trac/util/tests/html.py:325 trac/util/tests/html.py:338
+#: trac/util/tests/html.py:344 trac/util/tests/html.py:357
 #: trac/util/text.py:654 trac/versioncontrol/templates/browser.html:199
 #: trac/versioncontrol/templates/dir_entries.html:28
 #, python-format
@@ -3105,50 +3094,58 @@ msgstr "担当者を %(current_owner)s から選択したユーザに変更し�
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "担当者を %(current_owner)s から %(authname)s に変更します"
 
-#: trac/ticket/default_workflow.py:285
+#: trac/ticket/default_workflow.py:286
+msgid ""
+"Your workflow attempts to set a resolution but uses undefined resolutions"
+" (configuration issue, please contact your Trac admin)."
+msgstr ""
+"ワークフローで解決方法を設定しようとしていますが、定義していない解決方法を使用しています。(設定の問題のため Trac "
+"管理者へお問い合わせください)"
+
+#: trac/ticket/default_workflow.py:291
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
-msgstr "ワークフローによる解決の種類が正しく設定されていません。(設定の問題なので Trac 管理者へお問い合わせください)"
+msgstr "ワークフローで解決方法を設定しようとしていますが、解決方法が定義されていません。(設定の問題のため Trac 管理者へお問い合わせください)"
 
-#: trac/ticket/default_workflow.py:293 trac/ticket/default_workflow.py:303
+#: trac/ticket/default_workflow.py:300 trac/ticket/default_workflow.py:310
 #, python-format
 msgid "as %(resolution)s"
 msgstr "(解決方法 %(resolution)s)"
 
-#: trac/ticket/default_workflow.py:295
+#: trac/ticket/default_workflow.py:302
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "解決方法を %(name)s に設定します"
 
-#: trac/ticket/default_workflow.py:306
+#: trac/ticket/default_workflow.py:313
 msgid "The resolution will be set"
 msgstr "解決方法を設定します"
 
-#: trac/ticket/default_workflow.py:308
+#: trac/ticket/default_workflow.py:315
 msgid "The resolution will be deleted"
 msgstr "解決方法を抹消します"
 
-#: trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:318
 #, python-format
 msgid "as %(status)s"
 msgstr "(ステータス %(status)s)"
 
-#: trac/ticket/default_workflow.py:314
+#: trac/ticket/default_workflow.py:321
 #, python-format
 msgid "The owner will remain %(current_owner)s"
 msgstr "担当者を %(current_owner)s のままにする"
 
-#: trac/ticket/default_workflow.py:317
+#: trac/ticket/default_workflow.py:324
 msgid "The ticket will remain with no owner"
 msgstr "担当者なしのままにする"
 
-#: trac/ticket/default_workflow.py:320
+#: trac/ticket/default_workflow.py:327
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "次のステータスは '%(name)s' です"
 
-#: trac/ticket/default_workflow.py:433
+#: trac/ticket/default_workflow.py:440
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3228,11 +3225,11 @@ msgstr ""
 "    }}}\n"
 "}}}"
 
-#: trac/ticket/default_workflow.py:486
+#: trac/ticket/default_workflow.py:493
 msgid "Error parsing workflow."
 msgstr "ワークフロー解析中のエラー"
 
-#: trac/ticket/default_workflow.py:521
+#: trac/ticket/default_workflow.py:528
 msgid "Enable JavaScript to display the workflow graph."
 msgstr "ワークフローグラフを表示するには JavaScript を有効にしてください。"
 
@@ -6006,7 +6003,7 @@ msgid ""
 "              and back to\n"
 "              [4:]\n"
 "            ]"
-msgstr "[1:リビジョン[2:]][3:から[4:]までのログを表示]"
+msgstr "[1:リビジョンログを[2:]][3:から[4:]に遡って表示]"
 
 #: trac/versioncontrol/templates/revisionlog.html:77
 msgid ""
