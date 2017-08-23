@@ -14,11 +14,13 @@
 import unittest
 
 import trac.tests.compat
+from trac.config import ConfigurationError
 from trac.perm import PermissionCache, PermissionSystem
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockRequest
 from trac.ticket.api import TicketSystem
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.model import Ticket
+from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 
 
 class ResetActionTestCase(unittest.TestCase):
@@ -77,8 +79,60 @@ class ResetActionTestCase(unittest.TestCase):
         self.assertEqual('review', chgs2['status'])
 
 
+class SetResolutionAttributeTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        for ctlr in TicketSystem(self.env).action_controllers:
+            if isinstance(ctlr, ConfigurableTicketWorkflow):
+                self.ctlr = ctlr
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
+    def test_empty_set_resolution(self):
+        config = self.env.config['ticket-workflow']
+        config.set('resolve.set_resolution', '')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': '#12882', 'status': 'new'})
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket/%d' % ticket.id)
+        try:
+            self.ctlr.render_ticket_action_control(req, ticket, 'resolve')
+            self.fail('ConfigurationError not raised')
+        except ConfigurationError, e:
+            self.assertIn('but none is defined', unicode(e))
+
+    def test_undefined_resolutions(self):
+        config = self.env.config['ticket-workflow']
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': '#12882', 'status': 'new'})
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket/%d' % ticket.id)
+
+        config.set('resolve.set_resolution',
+                   'fixed,invalid,wontfix,,duplicate,worksforme,,,,,')
+        self._reload_workflow()
+        self.ctlr.render_ticket_action_control(req, ticket, 'resolve')
+
+        config.set('resolve.set_resolution', 'undefined,fixed')
+        self._reload_workflow()
+        try:
+            self.ctlr.render_ticket_action_control(req, ticket, 'resolve')
+            self.fail('ConfigurationError not raised')
+        except ConfigurationError, e:
+            self.assertIn('but uses undefined resolutions', unicode(e))
+
+
 def suite():
-    return unittest.makeSuite(ResetActionTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ResetActionTestCase))
+    suite.addTest(unittest.makeSuite(SetResolutionAttributeTestCase))
+    return suite
 
 
 if __name__ == '__main__':
