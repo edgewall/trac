@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-12 20:49-0700\n"
+"POT-Creation-Date: 2017-08-23 09:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -1020,7 +1020,7 @@ msgid ""
 "allowed. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:330
+#: trac/versioncontrol/api.py:334
 msgid ""
 "One of the alternatives for registering new repositories is to\n"
 "populate the `[repositories]` section of the `trac.ini`.\n"
@@ -1029,14 +1029,14 @@ msgid ""
 "short-lived repositories, or during the initial phases of an\n"
 "installation.\n"
 "\n"
-"See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details\n"
+"See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for details\n"
 "about the format adopted for this section and the rest of that page for\n"
 "the other alternatives.\n"
 "\n"
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/api.py:344
+#: trac/versioncontrol/api.py:348
 msgid ""
 "Default repository connector type.\n"
 "\n"
