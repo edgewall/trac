@@ -285,7 +285,7 @@
                     <input type="text" id="field-reporter" name="field_reporter"
                            value="${ticket.reporter}" />
                     # if not only_for_admin and ticket.reporter == 'anonymous':
-                    <p class="hint">
+                    <span class="hint">
                       # set preferences
                       <a href="${href.prefs()}" class="trac-target-new">${
                         _("Preferences")}</a>
@@ -293,10 +293,10 @@
                       # trans preferences
 
                       E-mail address and name can be saved in the
-                      ${preferences}
+                      ${preferences}.
 
                       # endtrans
-                    </p>
+                    </span>
                     # endif
                   </td>
                 </tr>
@@ -501,7 +501,7 @@
                   </tr>
                 </table>
                 # if author_id == 'anonymous':
-                <p class="hint">
+                <span class="hint">
                   # set preferences
                   <a href="${href.prefs()}" class="trac-target-new">
                     ${_("Preferences")}</a>
@@ -512,7 +512,7 @@
                   ${preferences}.
 
                   # endtrans
-                </p>
+                </span>
                 # endif
               </div>
               # endif

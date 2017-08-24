@@ -283,8 +283,13 @@ button.trac-revert div { display: none; }
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset { margin-left: 1px; margin-right: 1px }
 #trac-add-comment .author { margin-bottom: 1em; }
-#trac-add-comment table th { text-align: left; width: 22%; }
-#trac-add-comment table td { width: 78%; }
+#trac-add-comment .author span.hint {
+ display: block;
+ margin-top: 0;
+ text-align: right
+}
+#trac-add-comment table th { text-align: left; width: 30%; }
+#trac-add-comment table td { width: 70%; }
 
 #propertyform {
  clear: both;
@@ -322,8 +327,8 @@ form .field fieldset { margin-left: 1px; margin-right: 1px }
 #properties table.trac-properties > tbody > tr > td.col1 > label,
 #properties table.trac-properties > tbody > tr > td.col2 > label { float: left; margin-right: 0.5em; }
 #properties table.trac-properties > tbody > tr > td > select { max-width: 100% }
-#properties table.trac-properties > tbody > tr > td > span.hint { padding-left: 0 }
-#properties table.trac-properties > tbody > tr > td > fieldset > label.trac-textarea-hint { line-height: 100% }
+#properties table.trac-properties > tbody > tr > td > span.hint { display: block; line-height: 100%; text-align: right }
+#properties table.trac-properties > tbody > tr > td > label.trac-textarea-hint { line-height: 100%; margin-bottom: 1em }
 
 #action { line-height: 2em }
 
