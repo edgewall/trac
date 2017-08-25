@@ -497,7 +497,7 @@ class ConfigurableTicketWorkflow(Component):
                    if operation in info['operations'] and
                       ('*' in info['oldstates'] or
                        status in info['oldstates']) and
-                      self._has_perms_for_action(req, info, ticket.resource)]
+                      self._is_action_allowed(req, info, ticket.resource)]
         return actions
 
     # Public methods
