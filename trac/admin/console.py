@@ -44,23 +44,6 @@ from trac.wiki.formatter import MacroError
 from trac.wiki.macros import WikiMacroBase
 
 
-rl_completion_suppress_append = None
-
-
-def find_readline_lib():
-    """Return the name (and possibly the full path) of the readline library
-    linked to the readline module.
-    """
-    import readline
-    with open(readline.__file__, "rb") as f:
-        data = f.read()
-    import re
-    m = re.search('\0([^\0]*libreadline[^\0]*)\0', data)
-    if m:
-        return m.group(1)
-    return None
-
-
 class TracAdmin(cmd.Cmd):
     intro = ''
     doc_header = 'Trac Admin Console %(version)s\n' \
@@ -79,16 +62,6 @@ class TracAdmin(cmd.Cmd):
             for c in '-/:()\\':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
-
-            # Work around trailing space automatically inserted by libreadline
-            # until Python gets fixed, see http://bugs.python.org/issue5833
-            import ctypes
-            lib_name = find_readline_lib()
-            if lib_name is not None:
-                lib = ctypes.cdll.LoadLibrary(lib_name)
-                global rl_completion_suppress_append
-                rl_completion_suppress_append = ctypes.c_int.in_dll(lib,
-                                            "rl_completion_suppress_append")
         self.interactive = False
         if envdir:
             self.env_set(os.path.abspath(envdir))
@@ -232,8 +205,6 @@ Type:  '?' or 'help' for help on commands.
     # Command dispatcher
 
     def complete_line(self, text, line, cmd_only=False):
-        if rl_completion_suppress_append is not None:
-            rl_completion_suppress_append.value = 1
         args = self.arg_tokenize(line)
         if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
