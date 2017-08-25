@@ -552,9 +552,11 @@
 
         # if ticket.exists:
         <div class="trac-nav">
+          # if attachments.attachments or attachments.can_create:
           <a href="#attachments" id="trac-up-attachments"
              title="${_('Go to the list of attachments')}">${
             _("Attachments")}</a> &uarr;
+          # endif
           <a href="#content" id="trac-up-view"
              title="${_('View the ticket description')}">${
             _("Description")}</a> &uarr;
