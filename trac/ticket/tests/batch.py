@@ -713,6 +713,14 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertFieldValue(1, 'component', 'component4')
         self.assertFieldValue(2, 'component', 'component4')
 
+    def test_post_process_request_error_handling(self):
+        """Exception not raised in post_process_request error handling.
+        """
+        module = BatchModifyModule(self.env)
+        req = MockRequest(self.env, path_info='/query')
+        self.assertEqual((None, None, None),
+                         module.post_process_request(req, None, None, None))
+
 
 def test_suite():
     suite = unittest.TestSuite()

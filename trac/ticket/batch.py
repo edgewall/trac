@@ -88,7 +88,7 @@ class BatchModifyModule(Component):
         return handler
 
     def post_process_request(self, req, template, data, metadata):
-        if req.path_info == '/query' and \
+        if req.path_info == '/query' and data is not None and \
                 'TICKET_BATCH_MODIFY' in req.perm('ticket'):
             self.add_template_data(req, data, data['tickets'])
         return template, data, metadata
