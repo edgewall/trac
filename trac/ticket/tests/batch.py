@@ -36,9 +36,8 @@ class BatchModifyTestCase(unittest.TestCase):
                     web_ui.TicketModule])
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
-        self.req = MockRequest(self.env)
+        self.req = MockRequest(self.env, path_info='/query')
         self.req.session = {}
-        self.req.perm = PermissionCache(self.env)
 
     def assertCommentAdded(self, ticket_id, comment):
         ticket = Ticket(self.env, int(ticket_id))
@@ -383,6 +382,13 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertEqual(
             self.req.href.query(id=','.join(str(t) for t in tktids)),
             tktmod.render_timeline_event(context, 'url', batch_ev))
+
+    def test_post_process_request_error_handling(self):
+        """Exception not raised in post_process_request error handling.
+        """
+        batch = BatchModifyModule(self.env)
+        self.assertEqual((None, None, None),
+                         batch.post_process_request(self.req, None, None, None))
 
 
 def suite():
