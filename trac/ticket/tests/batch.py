@@ -14,8 +14,8 @@
 import unittest
 from datetime import timedelta
 
-from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
-                      PermissionCache, PermissionSystem
+from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore, \
+                      PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket import default_workflow, api, web_ui
 from trac.ticket.batch import BatchModifyModule
@@ -35,9 +35,8 @@ class BatchModifyTestCase(unittest.TestCase):
                     web_ui.TicketModule])
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
-        self.req = MockRequest(self.env)
-        self.req.session = {}
-        self.req.perm = PermissionCache(self.env)
+        self.req = MockRequest(self.env, authname='anonymous',
+                               path_info='/query')
 
     def assertCommentAdded(self, ticket_id, comment):
         ticket = Ticket(self.env, int(ticket_id))
@@ -452,6 +451,14 @@ class ProcessRequestTestCase(unittest.TestCase):
         self.assertRaises(RequestDone, bmm.process_request, req)
         self.assertFieldChanged(1, 'reporter', 'user1')
         self.assertFieldChanged(2, 'reporter', 'user1')
+
+    def test_post_process_request_error_handling(self):
+        """Exception not raised in post_process_request error handling.
+        """
+        req = MockRequest(self.env, path_info='/query')
+        batch = BatchModifyModule(self.env)
+        self.assertEqual((None, None, None),
+                         batch.post_process_request(req, None, None, None))
 
 
 def test_suite():
