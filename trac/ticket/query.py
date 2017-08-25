@@ -915,7 +915,7 @@ class QueryModule(Component):
 
         constraints = self._get_constraints(req)
         args = req.args
-        if not constraints and 'order' not in req.args:
+        if not constraints:
             # If no constraints are given in the URL, use the default ones.
             if req.is_authenticated:
                 qstring = self.default_query
@@ -933,13 +933,12 @@ class QueryModule(Component):
                 constraints = self._get_constraints(arg_list=arg_list)
             else:
                 query = Query.from_string(self.env, qstring)
-                args = [('order', query.order), ('group', query.group),
-                        ('col', query.cols), ('max', query.max)]
-                if query.desc:
-                    args.append(('desc', '1'))
-                if query.groupdesc:
-                    args.append(('groupdesc', '1'))
-                args = arg_list_to_args(args)
+                args.setdefault('col', query.cols)
+                args.setdefault('desc', query.desc)
+                args.setdefault('group', query.group)
+                args.setdefault('groupdesc', query.groupdesc)
+                args.setdefault('max', query.max)
+                args.setdefault('order', query.order)
                 constraints = query.constraints
 
             # Substitute $USER, or ensure no field constraints that depend
@@ -967,9 +966,9 @@ class QueryModule(Component):
         group = args.get('group')
         page = args.get('page')
         query = Query(self.env, report_id,
-                      constraints, cols, order, 'desc' in args, group,
-                      'groupdesc' in args, 'verbose' in args,
-                      rows, page, max)
+                      constraints, cols, order, as_bool(args.get('desc')),
+                      group, as_bool(args.get('groupdesc')),
+                      as_bool(args.get('verbose')), rows, page, max)
 
         if 'update' in req.args:
             # Reset session vars

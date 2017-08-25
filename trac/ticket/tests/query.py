@@ -1266,6 +1266,31 @@ class QueryLinksTestCase(unittest.TestCase):
                          {value for value, tickets in data['groups']})
         self.assertEqual(2, len(data['groups']))
 
+    def test_max_only_argument(self):
+        for _ in range(0, 4):
+            self._insert_ticket(status='new')
+        data = self._process_request('max=3')
+        self.assertEqual(3, data['query'].max)
+        self.assertEqual(3, len(data['tickets']))
+
+    def test_parameter_overrides_default_query(self):
+        self.env.config.set('query', 'default_anonymous_query',
+                            'status!=closed&order=milestone'
+                            'cols=id&cols=summary&cols=status&cols=owner&'
+                            'group=milestone&max=4&groupdesc=0&desc=1')
+
+        data = self._process_request(
+            'order=status&col=id&col=summary&col=status&col=type&'
+            'group=status&max=3&groupdesc=1&desc=0')
+
+        self.assertEqual('status', data['query'].order)
+        self.assertEqual(['id', 'summary', 'status', 'type'],
+                         data['query'].cols)
+        self.assertEqual('status', data['query'].group)
+        self.assertEqual(3, data['query'].max)
+        self.assertTrue(data['query'].groupdesc)
+        self.assertFalse(data['query'].desc)
+
 
 class TicketQueryMacroTestCase(unittest.TestCase):
 
