@@ -32,6 +32,7 @@ from SocketServer import ThreadingMixIn
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
 from trac.util.text import printerr
+from trac.util.translation import _
 from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
@@ -321,8 +322,13 @@ def main():
             httpd.serve_forever()
     elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
-            server_cls = __import__('flup.server.%s' % args.protocol,
-                                    None, None, ['']).WSGIServer
+            try:
+                server_cls = __import__('flup.server.%s' % args.protocol,
+                                        None, None, ['']).WSGIServer
+            except ImportError:
+                printerr(_("Install the flup package to use the '%(protocol)s' "
+                           "protocol", protocol=args.protocol))
+                sys.exit(1)
             flup_app = wsgi_app
             if args.unquote:
                 from trac.web.fcgi_frontend import FlupMiddleware
