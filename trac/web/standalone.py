@@ -27,7 +27,6 @@ import sys
 from SocketServer import ThreadingMixIn
 
 from trac import __version__ as VERSION
-from trac.util.translation import _
 from trac.util import autoreload, daemon
 from trac.util.text import printerr
 from trac.web.auth import BasicAuthentication, DigestAuthentication
@@ -314,8 +313,8 @@ def main():
                 server_cls = __import__('flup.server.%s' % options.protocol,
                                         None, None, ['']).WSGIServer
             except ImportError:
-                printerr(_("Install the flup package to use the '%(protocol)s' "
-                           "protocol", protocol=options.protocol))
+                printerr("Install the flup package to use the '%s' "
+                         "protocol" % options.protocol)
                 sys.exit(1)
             flup_app = wsgi_app
             if options.unquote:
