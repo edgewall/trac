@@ -999,16 +999,12 @@ class TicketModule(Component):
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
                     label = field_labels.get(k, k.capitalize())
-                    prop = {'name': label, 'field': k,
-                            'old': {'name': label, 'value': old},
-                            'new': {'name': label, 'value': new}}
                     rendered = self._render_property_diff(req, ticket, k,
                                                           old, new, tnew)
-                    if rendered:
-                        prop['diff'] = tag.li(
-                            tag_("Property %(label)s %(rendered)s",
-                                 label=tag.strong(label), rendered=rendered))
-                    props.append(prop)
+                    diff = tag.li(
+                        tag_("Property %(label)s %(rendered)s",
+                             label=tag.strong(label), rendered=rendered))
+                    props.append({'name': label, 'field': k, 'diff': diff})
         changes.append({'props': props, 'diffs': [],
                         'new': version_info(tnew),
                         'old': version_info(told)})
@@ -1764,30 +1760,60 @@ class TicketModule(Component):
     def _render_property_changes(self, req, ticket, fields, resource_new=None):
         for field, changes in fields.iteritems():
             new, old = changes['new'], changes['old']
-            rendered = self._render_property_diff(req, ticket, field, old, new,
-                                                  resource_new)
-            if rendered:
-                changes['rendered'] = rendered
-            elif ticket.fields.by_name(field, {}).get('type') == 'time':
-                format = ticket.fields.by_name(field).get('format')
-                changes['old'] = user_time(req, format_date_or_datetime,
-                                           format, old) \
-                                 if isinstance(old, datetime) else old or ''
-                changes['new'] = user_time(req, format_date_or_datetime,
-                                           format, new) \
-                                 if isinstance(new, datetime) else new or ''
+            changes['rendered'] = \
+                self._render_property_diff(req, ticket, field, old, new,
+                                           resource_new)
 
     def _render_property_diff(self, req, ticket, field, old, new,
                               resource_new=None):
-        rendered = None
-        old_list, new_list = None, None
-        render_elt = lambda x: x
-        sep = ', '
 
-        # per type special rendering of diffs
+        def render_list(elt_renderer, separator, old_list, new_list):
+            if not elt_renderer:
+                elt_renderer = lambda e: e
+            added = [elt_renderer(x) for x in new_list if x not in old_list]
+            remvd = [elt_renderer(x) for x in old_list if x not in new_list]
+            added = added and tagn_("%(items)s added", "%(items)s added",
+                                    len(added),
+                                    items=separated(added, separator))
+            remvd = remvd and tagn_("%(items)s removed", "%(items)s removed",
+                                    len(remvd),
+                                    items=separated(remvd, separator))
+            if added or remvd:
+                return tag(added, added and remvd and _("; "), remvd)
+
+        def render_default(old, new):
+            if old and new:
+                rendered = tag(tag.span(old, class_='trac-field-old'), u' → ',
+                               tag.span(new, class_='trac-field-new'))
+            elif not old and new:
+                rendered = tag(u'→ ', tag.span(new, class_='trac-field-new'))
+            else:  # old and not new
+                rendered = tag.span(old, class_='trac-field-deleted')
+            return rendered
+
+        chrome = Chrome(self.env)
+        def authorinfo(author):
+            resource = resource_new or ticket.resource
+            return chrome.authorinfo(req, author, resource=resource)
+
         field_info = ticket.fields.by_name(field, {})
         type_ = field_info.get('type')
-        if type_ == 'checkbox':
+        # per name special rendering of diffs
+        if field == 'cc':
+            old_list, new_list = self._cc_list(old), self._cc_list(new)
+            rendered = render_list(authorinfo, ' ', old_list, new_list)
+        elif field in ('reporter', 'owner'):
+            old_author = authorinfo(old)
+            new_author = authorinfo(new)
+            if old and not new:
+                rendered = tag_("%(value)s deleted", value=old_author)
+            elif new and not old:
+                rendered = tag_("set to %(value)s", value=new_author)
+            else:  # old and new:
+                rendered = tag_("changed from %(old)s to %(new)s",
+                                old=old_author, new=new_author)
+        # per type special rendering of diffs
+        elif type_ == 'checkbox':
             rendered = _("set") if new == '1' else _("unset")
         elif type_ == 'textarea':
             if not resource_new:
@@ -1801,35 +1827,18 @@ class TicketModule(Component):
         elif type_ == 'text' and field_info.get('format') == 'list':
             old_list = re.split(r'[;,\s]+', old) if old else []
             new_list = re.split(r'[;,\s]+', new) if new else []
-            sep = ' '
+            rendered = render_list(None, ' ', old_list, new_list)
+        elif type_ == 'time':
+            format_ = field_info.get('format')
+            old = user_time(req, format_date_or_datetime, format_, old) \
+                  if isinstance(old, datetime) else old or ''
+            new = user_time(req, format_date_or_datetime, format_, new) \
+                  if isinstance(new, datetime) else new or ''
+            rendered = render_default(old, new)
+        # default rendering
+        else:
+            rendered = render_default(old, new)
 
-        # per name special rendering of diffs
-        format_author = partial(Chrome(self.env).format_author, req,
-                                resource=resource_new or ticket.resource)
-        if field == 'cc':
-            old_list, new_list = self._cc_list(old), self._cc_list(new)
-            render_elt = format_author
-        if (old_list, new_list) != (None, None):
-            added = [tag.em(render_elt(x)) for x in new_list
-                     if x not in old_list]
-            remvd = [tag.em(render_elt(x)) for x in old_list
-                     if x not in new_list]
-            added = added and tagn_("%(items)s added", "%(items)s added",
-                                    len(added), items=separated(added, sep))
-            remvd = remvd and tagn_("%(items)s removed", "%(items)s removed",
-                                    len(remvd), items=separated(remvd, sep))
-            if added or remvd:
-                rendered = tag(added, added and remvd and _("; "), remvd)
-        if field in ('reporter', 'owner'):
-            old_author = format_author(old)
-            new_author = format_author(new)
-            if old and not new:
-                rendered = tag_("%(value)s deleted", value=tag.em(old_author))
-            elif new and not old:
-                rendered = tag_("set to %(value)s", value=tag.em(new_author))
-            elif old and new:
-                rendered = tag_("changed from %(old)s to %(new)s",
-                                old=tag.em(old_author), new=tag.em(new_author))
         return rendered
 
     def grouped_changelog_entries(self, ticket, when=None):

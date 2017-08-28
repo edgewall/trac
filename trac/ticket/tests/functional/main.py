@@ -633,26 +633,23 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         val = "%s %s" % (word1, word2)
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
-        tc.find('<em>%s</em> <em>%s</em> added' % (word1, word2))
+        tc.find('%s %s added' % (word1, word2))
 
         word3 = random_unique_camel()
         word4 = random_unique_camel()
         val = "%s,  %s; %s" % (word2, word3, word4)
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
-        tc.find('<em>%s</em> <em>%s</em> added; <em>%s</em> removed'
-                % (word3, word4, word1))
+        tc.find('%s %s added; %s removed' % (word3, word4, word1))
 
         tc.formvalue('propertyform', 'field-newfield', '')
         tc.submit('submit')
-        tc.find('<em>%s</em> <em>%s</em> <em>%s</em> removed'
-                % (word2, word3, word4))
+        tc.find('%s %s %s removed' % (word2, word3, word4))
 
         val = "%s %s,%s" % (word1, word2, word3)
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
-        tc.find('<em>%s</em> <em>%s</em> <em>%s</em> added'
-                % (word1, word2, word3))
+        tc.find('%s %s %s added' % (word1, word2, word3))
         query1 = 'status=!closed&amp;newfield=~%s' % word1
         query2 = 'status=!closed&amp;newfield=~%s' % word2
         query3 = 'status=!closed&amp;newfield=~%s' % word3

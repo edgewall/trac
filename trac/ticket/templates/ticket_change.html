@@ -142,16 +142,10 @@
         ${attachment_link} added
 
         #   endtrans
-        # elif 'rendered' in field:
-        ${field.rendered}
-        # elif field.old and field.new:
-        <span class="trac-field-old">${field.old}</span> →
-        <span class="trac-field-new">${field.new}</span>
-        # elif not field.old and field.new:
-        → <span class="trac-field-new">${field.new}</span>
         # else:
-        <span class="trac-field-deleted">${field.old}</span>
+        ${field.rendered}
         # endif
+
         # if preview and field.by == 'user':
         #   set old = (ticket.get_default(field_name)
                        if field.old is sameas(empty) else field.old)

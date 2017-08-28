@@ -176,13 +176,29 @@ class TicketModuleTestCase(unittest.TestCase):
         """Property diff message when ticket owner is changed."""
         t = self._create_ticket_with_change({'owner': 'owner1'},
                                             {'owner': 'owner2'})
+        PermissionSystem(self.env).grant_permission('owner1', 'TICKET_VIEW')
+
+        req = MockRequest(self.env, authname='owner1', args={'id': t.id})
+        data = self.ticket_module.process_request(req)[1]
+        field = data['changes'][0]['fields']['owner']
+
+        self.assertEqual('changed from <span class="trac-author-user">owner1'
+                         '</span> to <span class="trac-author">owner2</span>',
+                         unicode(field['rendered']))
+
+    def test_ticket_property_diff_owner_change_from_anonymous(self):
+        """Property diff message when ticket owner is changed from anonymous.
+        """
+        t = self._create_ticket_with_change({'owner': 'anonymous'},
+                                            {'owner': 'owner1'})
 
         req = MockRequest(self.env, args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
-        self.assertEqual("changed from <em>owner1</em> to <em>owner2</em>",
-                         unicode(field['rendered']))
+        self.assertEqual('changed from <span class="trac-author-anonymous">'
+                         'anonymous</span> to <span class="trac-author">'
+                         'owner1</span>', unicode(field['rendered']))
 
     def test_ticket_property_diff_owner_add(self):
         """Property diff message when ticket owner is added."""
@@ -193,7 +209,8 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
-        self.assertEqual("set to <em>owner2</em>", unicode(field['rendered']))
+        self.assertEqual('set to <span class="trac-author">owner2</span>',
+                         unicode(field['rendered']))
 
     def test_ticket_property_diff_owner_remove(self):
         """Property diff message when ticket owner is removed."""
@@ -204,19 +221,22 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
-        self.assertEqual("<em>owner1</em> deleted", unicode(field['rendered']))
+        self.assertEqual('<span class="trac-author">owner1</span> deleted',
+                         unicode(field['rendered']))
 
     def test_ticket_property_diff_reporter_change(self):
         """Property diff message when ticket reporter is changed."""
         t = self._create_ticket_with_change({'reporter': 'reporter1'},
                                             {'reporter': 'reporter2'})
+        PermissionSystem(self.env).grant_permission('reporter2', 'TICKET_VIEW')
 
-        req = MockRequest(self.env, args={'id': t.id})
+        req = MockRequest(self.env, authname='reporter2', args={'id': t.id})
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
-        self.assertEqual("changed from <em>reporter1</em> to "
-                         "<em>reporter2</em>", unicode(field['rendered']))
+        self.assertEqual('changed from <span class="trac-author">reporter1'
+                         '</span> to <span class="trac-author-user">reporter2'
+                         '</span>', unicode(field['rendered']))
 
     def test_ticket_property_diff_reporter_add(self):
         """Property diff message when ticket reporter is added."""
@@ -227,7 +247,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
-        self.assertEqual("set to <em>reporter2</em>",
+        self.assertEqual('set to <span class="trac-author">reporter2</span>',
                          unicode(field['rendered']))
 
     def test_ticket_property_diff_reporter_remove(self):
@@ -239,7 +259,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
-        self.assertEqual("<em>reporter1</em> deleted",
+        self.assertEqual('<span class="trac-author">reporter1</span> deleted',
                          unicode(field['rendered']))
 
     def _test_invalid_cnum_raises(self, action, cnum=None):
@@ -455,10 +475,13 @@ class TicketModuleTestCase(unittest.TestCase):
         dt1_text = user_time(req, format_datetime, dt1)
         dt2_text = user_time(req, format_datetime, dt2)
         self.assertEqual(2, len(changes))
-        self.assertEqual('', changes[0]['fields']['timefield']['old'])
-        self.assertEqual(dt1_text, changes[0]['fields']['timefield']['new'])
-        self.assertEqual(dt1_text, changes[1]['fields']['timefield']['old'])
-        self.assertEqual(dt2_text, changes[1]['fields']['timefield']['new'])
+        self.assertEqual(u'\u2192 <span class="trac-field-new">%s</span>'
+                         % dt1_text,
+                         unicode(changes[0]['fields']['timefield']['rendered']))
+        self.assertEqual(u'<span class="trac-field-old">%s</span> \u2192 '
+                         u'<span class="trac-field-new">%s</span>'
+                         % (dt1_text, dt2_text),
+                         unicode(changes[1]['fields']['timefield']['rendered']))
 
     def test_submit_with_time_field(self):
         self.env.config.set('ticket-custom', 'timefield', 'time')

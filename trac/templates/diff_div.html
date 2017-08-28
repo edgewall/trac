@@ -93,10 +93,10 @@ Arguments:
         #     endif
         #     set one = prop.old or prop.new
         #     set both = prop.old and prop.new
-        #     set name_attrs = one.rendered and one.rendered.name_attributes
-        #     set name = one.rendered.name if one.rendered else prop.name
         #     if one:
         <li>
+          #     set name_attrs = one.rendered and one.rendered.name_attributes
+          #     set name = one.rendered.name if one.rendered else prop.name
           #     if both:
           #       trans name = prop_name(name, name_attrs), old = render_property(prop.old), new = render_property(prop.new)
 
