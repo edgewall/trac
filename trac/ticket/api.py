@@ -260,7 +260,9 @@ class TicketSystem(Component):
         """Default keywords for newly created tickets.""")
 
     default_owner = Option('ticket', 'default_owner', '< default >',
-        """Default owner for newly created tickets.""")
+        """Default owner for newly created tickets. The component owner
+        is used when set to the value `< default >`.
+        """)
 
     default_cc = Option('ticket', 'default_cc', '',
         """Default cc: list for newly created tickets.""")
