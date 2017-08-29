@@ -365,8 +365,22 @@ class GitRepositoryTestCase(BaseTestCase):
         self._git('merge', '-m', 'Merge branch "beta" to "alpha"', 'beta')
 
     def test_invalid_path_raises(self):
-        self.assertRaises(InvalidRepository, GitRepository, self.env,
-                          '/the/invalid/path', [], self.env.log)
+        def try_init(reponame):
+            params = {'name': reponame}
+            try:
+                GitRepository(self.env, '/the/invalid/path', params,
+                              self.env.log)
+                self.fail('InvalidRepository not raised')
+            except InvalidRepository, e:
+                return e
+
+        e = try_init('')
+        self.assertEqual('"(default)" is not readable or not a Git '
+                         'repository.', unicode(e))
+
+        e = try_init('therepos')
+        self.assertEqual('"therepos" is not readable or not a Git repository.',
+                         unicode(e))
 
     def test_repository_instance(self):
         self._git_init()
