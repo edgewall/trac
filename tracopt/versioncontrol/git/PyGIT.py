@@ -395,28 +395,31 @@ class Storage(object):
             self._fs_to_unicode = self._fs_from_unicode = lambda s: s
 
         # simple sanity checking
-        __git_file_path = partial(os.path.join, git_dir)
-        control_files = ['HEAD', 'objects', 'refs']
-        control_files_exist = \
-            lambda p: all(map(os.path.exists, map(p, control_files)))
-        if not os.path.exists(__git_file_path()):
-            raise GitError("Path '%s' does not exist" % git_dir)
-        if not control_files_exist(__git_file_path):
-            __git_file_path = partial(os.path.join, git_dir, '.git')
-            if os.path.exists(__git_file_path()) and \
-                    control_files_exist(__git_file_path):
-                git_dir = __git_file_path()
+        try:
+            os.listdir(git_dir)
+        except EnvironmentError as e:
+            self._raise_not_readable(git_dir, e)
+        if not self._control_files_exist(git_dir):
+            dot_git_dir = os.path.join(git_dir, '.git')
+            try:
+                os.listdir(dot_git_dir)
+            except EnvironmentError:
+                missing = True
             else:
+                if self._control_files_exist(dot_git_dir):
+                    missing = False
+                    git_dir = dot_git_dir
+                else:
+                    missing = True
+            if missing:
                 raise GitError("Git control files not found in '%s'" % git_dir)
 
         # at least, check that the HEAD file is readable
-        head_file = os.path.join(git_dir, 'HEAD')
         try:
-            with open(head_file, 'rb'):
+            with open(os.path.join(git_dir, 'HEAD'), 'rb'):
                 pass
-        except IOError as e:
-            raise GitError("Make sure the Git repository '%s' is readable: %s"
-                           % (git_dir, to_unicode(e)))
+        except EnvironmentError, e:
+            self._raise_not_readable(git_dir, e)
 
         self.repo = GitCore(git_dir, git_bin, log, git_fs_encoding)
         self.repo_path = git_dir
@@ -1051,3 +1054,15 @@ class Storage(object):
                 new_path = self._fs_to_unicode(next_entry())
             yield (old_mode, new_mode, old_sha, new_sha, change, old_path,
                    new_path)
+
+    def _raise_not_readable(self, git_dir, e):
+        raise GitError("Make sure the Git repository '%s' is readable: %s"
+                       % (git_dir, to_unicode(e)))
+
+    def _control_files_exist(self, git_dir):
+        for name in ('HEAD', 'objects', 'refs'):
+            if not os.path.exists(os.path.join(git_dir, name)):
+                self.logger.debug("Missing Git control file '%s' in '%s'",
+                                  name, git_dir)
+                return False
+        return True
