@@ -998,7 +998,7 @@ class Formatter(object):
                 self._quote_stack.append(d)
                 self._set_tab(d)
                 class_attr = ' class="citation"' if citation else ''
-                self.out.write('<blockquote%s>' % class_attr + os.linesep)
+                self.out.write('<blockquote%s>\n' % class_attr)
             if citation:
                 for d in range(quote_depth+1, depth+1):
                     open_one_quote(d)
@@ -1008,7 +1008,7 @@ class Formatter(object):
             self.close_table()
             self.close_paragraph()
             self._quote_stack.pop()
-            self.out.write('</blockquote>' + os.linesep)
+            self.out.write('</blockquote>\n')
         quote_depth = self._get_quote_depth()
         if depth > quote_depth:
             self._set_tab(depth)
@@ -1102,7 +1102,7 @@ class Formatter(object):
             self.close_list()
             self.close_def_list()
             self.in_table = 1
-            self.out.write('<table class="wiki">' + os.linesep)
+            self.out.write('<table class="wiki">\n')
 
     def open_table_row(self, params=''):
         if not self.in_table_row:
@@ -1122,20 +1122,20 @@ class Formatter(object):
     def close_table(self):
         if self.in_table:
             self.close_table_row(force=True)
-            self.out.write('</table>' + os.linesep)
+            self.out.write('</table>\n')
             self.in_table = 0
 
     # Paragraphs
 
     def open_paragraph(self):
         if not self.paragraph_open:
-            self.out.write('<p>' + os.linesep)
+            self.out.write('<p>\n')
             self.paragraph_open = 1
 
     def close_paragraph(self):
         self.flush_tags()
         if self.paragraph_open:
-            self.out.write('</p>' + os.linesep)
+            self.out.write('</p>\n')
             self.paragraph_open = 0
 
     # Code blocks
@@ -1173,7 +1173,7 @@ class Formatter(object):
                         self.code_buf = [l[code_indent:]
                                          for l in self.code_buf]
                     self.code_buf.append('')
-                code_text = os.linesep.join(self.code_buf)
+                code_text = '\n'.join(self.code_buf)
                 processed = self._exec_processor(self.code_processor,
                                                  code_text)
                 self.out.write(_markup_to_unicode(processed))
@@ -1316,7 +1316,7 @@ class Formatter(object):
                 self.close_indentation()
                 self.close_list()
                 self.close_def_list()
-                self.out.write('<hr />' + os.linesep)
+                self.out.write('<hr />\n')
                 continue
             # Handle new paragraph
             if line == '':
@@ -1355,7 +1355,7 @@ class Formatter(object):
                 self.close_table()
             self.continue_table = 0
 
-            sep = os.linesep
+            sep = '\n'
             if not(self.in_list_item or self.in_def_list or self.in_table):
                 if len(result):
                     self.open_paragraph()
@@ -1429,15 +1429,15 @@ class OneLinerFormatter(Formatter):
                     in_code_block -= 1
                     if in_code_block == 0:
                         if processor != 'comment':
-                            buf.write(' [...]' + os.linesep)
+                            buf.write(' [...]\n')
                         processor = None
             elif in_code_block:
                 if not processor:
                     if line.startswith('#!'):
                         processor = line[2:].strip()
             else:
-                buf.write(line + os.linesep)
-        result = buf.getvalue()[:-len(os.linesep)]
+                buf.write(line + '\n')
+        result = buf.getvalue()[:-len('\n')]
 
         if shorten:
             result = shorten_line(result)
