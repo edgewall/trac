@@ -106,19 +106,10 @@ class EnvironmentTestCase(unittest.TestCase):
         self.env.shutdown() # really closes the db connections
         rmtree(self.env.path)
 
-    def test_database_version(self):
-        """Testing env.database_version and env.database_initial_version"""
-        self.assertEqual(db_default.db_version, self.env.database_version)
-        self.assertEqual(db_default.db_version, self.env.database_initial_version)
-
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""
         os.remove(self.env.config_file_path)
         self.assertRaises(TracError, Environment, self.env.path)
-
-    def test_is_component_enabled(self):
-        self.assertTrue(Environment.required)
-        self.assertTrue(self.env.is_component_enabled(Environment))
 
     def test_log_format(self):
         """Configure the log_format and log to a file at WARNING level."""
@@ -136,24 +127,6 @@ class EnvironmentTestCase(unittest.TestCase):
             log = f.readlines()
         self.assertEqual("Trac[env] My Project: The warning message\n",
                          log[-1])
-
-    def test_dumped_values_in_tracini(self):
-        parser = RawConfigParser()
-        filename = self.env.config.filename
-        self.assertEqual([filename], parser.read(filename))
-        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
-                         parser.get('revisionlog', 'graph_colors'))
-        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
-
-    def test_dumped_values_in_tracini_sample(self):
-        parser = RawConfigParser()
-        filename = self.env.config.filename + '.sample'
-        self.assertEqual([filename], parser.read(filename))
-        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
-                         parser.get('revisionlog', 'graph_colors'))
-        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
-        self.assertTrue(parser.has_option('logging', 'log_format'))
-        self.assertEqual('', parser.get('logging', 'log_format'))
 
     def test_invalid_log_level_raises_exception(self):
         self.env.config.set('logging', 'log_level', 'invalid')
@@ -173,48 +146,62 @@ class EnvironmentTestCase(unittest.TestCase):
         self.assertRaises(ConfigurationError, open_environment,
                           self.env.path, True)
 
-    def test_upgrade_environment(self):
-        """EnvironmentSetupParticipants are called only if
-        environment_needs_upgrade returns True for the participant.
-        """
 
-        class SetupParticipantA(Component):
-            implements(IEnvironmentSetupParticipant)
+class EnvironmentDataTestCase(unittest.TestCase):
+    """Tests for environment data.
 
-            called = False
+    The test cases don't modify the environment so the Environment can
+    be reused to make the tests run faster.
+    """
 
-            def environment_created(self):
-                pass
+    env = None
+    stdout = None
+    stderr = None
+    devnull = None
 
-            def environment_needs_upgrade(self):
-                return True
+    @classmethod
+    def setUpClass(cls):
+        cls.stdout = sys.stdout
+        cls.stderr = sys.stderr
+        cls.devnull = io.open(os.devnull, 'wb')
+        sys.stdout = sys.stderr = cls.devnull
+        cls.env = Environment(mkdtemp(), create=True)
 
-            def upgrade_environment(self):
-                self.called = True
+    @classmethod
+    def tearDownClass(cls):
+        cls.env.shutdown()
+        rmtree(cls.env.path)
+        cls.devnull.close()
+        sys.stdout = cls.stdout
+        sys.stderr = cls.stderr
 
-        class SetupParticipantB(Component):
-            implements(IEnvironmentSetupParticipant)
+    def test_database_version(self):
+        self.assertEqual(db_default.db_version,
+                         self.env.database_version)
+        self.assertEqual(db_default.db_version,
+                         self.env.database_initial_version)
 
-            called = False
+    def test_is_component_enabled(self):
+        self.assertTrue(Environment.required)
+        self.assertTrue(self.env.is_component_enabled(Environment))
 
-            def environment_created(self):
-                pass
+    def test_dumped_values_in_tracini(self):
+        parser = RawConfigParser()
+        filename = self.env.config.filename
+        self.assertEqual([filename], parser.read(filename))
+        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
+                         parser.get('revisionlog', 'graph_colors'))
+        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
 
-            def environment_needs_upgrade(self):
-                return False
-
-            def upgrade_environment(self):
-                self.called = True
-
-        self.env.enable_component(SetupParticipantA)
-        self.env.enable_component(SetupParticipantB)
-        participant_a = SetupParticipantA(self.env)
-        participant_b = SetupParticipantB(self.env)
-
-        self.assertTrue(self.env.needs_upgrade())
-        self.env.upgrade()
-        self.assertTrue(participant_a.called)
-        self.assertFalse(participant_b.called)
+    def test_dumped_values_in_tracini_sample(self):
+        parser = RawConfigParser()
+        filename = self.env.config.filename + '.sample'
+        self.assertEqual([filename], parser.read(filename))
+        self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
+                         parser.get('revisionlog', 'graph_colors'))
+        self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
+        self.assertTrue(parser.has_option('logging', 'log_format'))
+        self.assertEqual('', parser.get('logging', 'log_format'))
 
 
 class EnvironmentAttributesTestCase(unittest.TestCase):
@@ -323,6 +310,49 @@ class EnvironmentUpgradeTestCase(unittest.TestCase):
         self.assertTrue(self.env.upgrade())
         self.assertEqual('1', select_value('value1'))
         self.assertEqual('2', select_value('value2'))
+
+    def test_upgrade_environment(self):
+        """EnvironmentSetupParticipants are called only if
+        environment_needs_upgrade returns True for the participant.
+        """
+
+        class SetupParticipantA(Component):
+            implements(IEnvironmentSetupParticipant)
+
+            called = False
+
+            def environment_created(self):
+                pass
+
+            def environment_needs_upgrade(self):
+                return True
+
+            def upgrade_environment(self):
+                self.called = True
+
+        class SetupParticipantB(Component):
+            implements(IEnvironmentSetupParticipant)
+
+            called = False
+
+            def environment_created(self):
+                pass
+
+            def environment_needs_upgrade(self):
+                return False
+
+            def upgrade_environment(self):
+                self.called = True
+
+        self.env.enable_component(SetupParticipantA)
+        self.env.enable_component(SetupParticipantB)
+        participant_a = SetupParticipantA(self.env)
+        participant_b = SetupParticipantB(self.env)
+
+        self.assertTrue(self.env.needs_upgrade())
+        self.env.upgrade()
+        self.assertTrue(participant_a.called)
+        self.assertFalse(participant_b.called)
 
 
 class KnownUsersTestCase(unittest.TestCase):
@@ -924,6 +954,7 @@ the_plugin.* = enabled
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentDataTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentUpgradeTestCase))
