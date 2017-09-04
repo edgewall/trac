@@ -83,6 +83,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
     stdout = None
     stderr = None
+    devnull = None
 
     @classmethod
     def setUpClass(cls):
@@ -105,18 +106,15 @@ class EnvironmentTestCase(unittest.TestCase):
         self.env.shutdown() # really closes the db connections
         rmtree(self.env.path)
 
+    def test_database_version(self):
+        """Testing env.database_version and env.database_initial_version"""
+        self.assertEqual(db_default.db_version, self.env.database_version)
+        self.assertEqual(db_default.db_version, self.env.database_initial_version)
+
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""
         os.remove(self.env.config_file_path)
         self.assertRaises(TracError, Environment, self.env.path)
-
-    def test_database_version(self):
-        """Testing env.database_version"""
-        self.assertEqual(db_default.db_version, self.env.database_version)
-
-    def test_database_initial_version(self):
-        """Testing env.database_initial_version"""
-        self.assertEqual(db_default.db_version, self.env.database_initial_version)
 
     def test_is_component_enabled(self):
         self.assertTrue(Environment.required)
@@ -174,24 +172,6 @@ class EnvironmentTestCase(unittest.TestCase):
                          self.env.config.get('logging', 'log_type'))
         self.assertRaises(ConfigurationError, open_environment,
                           self.env.path, True)
-
-    def test_log_level_not_case_sensitive(self):
-        """[logging] log_level is not case-sensitive."""
-        self.env.config.set('logging', 'log_level', 'warning')
-        self.env.config.save()
-
-        self.assertEqual('warning',
-                         self.env.config.get('logging', 'log_level'))
-        self.assertEqual('WARNING', self.env.log_level)
-
-    def test_log_type_not_case_sensitive(self):
-        """[logging] log_type is not case-sensitive."""
-        self.env.config.set('logging', 'log_type', 'File')
-        self.env.config.save()
-
-        self.assertEqual('File',
-                         self.env.config.get('logging', 'log_type'))
-        self.assertEqual('file', self.env.log_type)
 
     def test_upgrade_environment(self):
         """EnvironmentSetupParticipants are called only if
@@ -277,6 +257,24 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
         log_file = os.path.join(self.env.path, 'trac.log')
         self.env.config.set('logging', 'log_file', log_file)
         self.assertEqual(log_file, self.env.log_file_path)
+
+    def test_log_level_not_case_sensitive(self):
+        """[logging] log_level is not case-sensitive."""
+        self.env.config.set('logging', 'log_level', 'warning')
+        self.env.config.save()
+
+        self.assertEqual('warning',
+                         self.env.config.get('logging', 'log_level'))
+        self.assertEqual('WARNING', self.env.log_level)
+
+    def test_log_type_not_case_sensitive(self):
+        """[logging] log_type is not case-sensitive."""
+        self.env.config.set('logging', 'log_type', 'File')
+        self.env.config.save()
+
+        self.assertEqual('File',
+                         self.env.config.get('logging', 'log_type'))
+        self.assertEqual('file', self.env.log_type)
 
 
 class EnvironmentUpgradeTestCase(unittest.TestCase):
