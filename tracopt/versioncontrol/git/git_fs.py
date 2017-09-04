@@ -99,6 +99,22 @@ class GitCachedRepository(CachedRepository):
                 return count > 0
             return False
 
+        def needs_sync():
+            max_holders = 999
+            revs = sorted(set(rev for refname, rev in repos.git.get_refs()))
+            step = max_holders - 1
+            for idx in xrange(0, len(revs), step):
+                revs_ = revs[idx:idx + step]
+                holders = ','.join(('%s',) * len(revs_))
+                args = [self.id]
+                args.extend(revs_)
+                query = """SELECT COUNT(*) FROM revision
+                           WHERE repos=%%s AND rev IN (%s)""" % holders
+                for count, in self.env.db_query(query, args):
+                    if count < len(revs_):
+                        return True
+            return False
+
         def traverse(rev, seen):
             revs = []
             merge_revs = []
@@ -120,9 +136,7 @@ class GitCachedRepository(CachedRepository):
                     revs[idx:idx] = traverse(rev, seen)
             return revs
 
-        while True:
-            repos.sync()
-            repos_youngest = repos.youngest_rev or ''
+        def sync_revs():
             updated = False
             seen = set()
 
@@ -144,16 +158,22 @@ class GitCachedRepository(CachedRepository):
                     if feedback:
                         feedback(rev)
 
-            if updated:
-                continue  # sync again
+            return updated
 
-            if meta_youngest != repos_youngest:
-                with self.env.db_transaction as db:
-                    db("""
-                        UPDATE repository SET value=%s WHERE id=%s AND name=%s
-                        """, (repos_youngest, self.id, CACHE_YOUNGEST_REV))
-                    del self.metadata
-            return
+        with self.env.db_query:
+            while True:
+                repos.sync()
+                if needs_sync() and sync_revs():
+                    continue  # sync again
+                repos_youngest = repos.youngest_rev or ''
+                if meta_youngest != repos_youngest:
+                    with self.env.db_transaction as db:
+                        db("""
+                            UPDATE repository SET value=%s
+                            WHERE id=%s AND name=%s
+                            """, (repos_youngest, self.id, CACHE_YOUNGEST_REV))
+                        del self.metadata
+                return
 
 
 class GitCachedChangeset(CachedChangeset):
