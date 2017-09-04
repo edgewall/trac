@@ -602,6 +602,11 @@ class Storage(object):
                           key=lambda (name, rev, head): (not head, name))
         return [(name, rev) for name, rev, head in branches]
 
+    def get_refs(self):
+        for refname, rev in self.rev_cache.refs_dict.iteritems():
+            if refname != 'HEAD':
+                yield refname, rev
+
     def get_commits(self):
         return self.rev_cache.rev_dict
 

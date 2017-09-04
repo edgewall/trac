@@ -1039,6 +1039,59 @@ M 100644 :1 dev%(dev)08d.txt
                                 'from': 3 + idx * 2})
         return data.getvalue()
 
+    def test_sync_many_refs(self):
+        n_refs = 1500
+        data = self._generate_data_many_refs(n_refs)
+        self._git_init(data=False, bare=True)
+        self._git_fast_import(data)
+        self._add_repository('gitrepos', bare=True)
+        repos = self._repomgr.get_repository('gitrepos')
+
+        revs = []
+        def feedback(rev):
+            revs.append(rev)
+        repos.sync(feedback)  # create cache
+        self.assertEqual(n_refs + 1, len(revs))
+
+        revs[:] = ()
+        repos.sync(feedback)  # check whether all refs are cached
+        self.assertEqual(0, len(revs))
+
+        rows = self.env.db_query("SELECT COUNT(*) FROM revision "
+                                 "WHERE repos=%s", (repos.id,))
+        self.assertEqual(n_refs + 1, rows[0][0])
+
+    def _generate_data_many_refs(self, n, timestamp=1400000000):
+        root_commit = """\
+blob
+mark :1
+data 0
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 12
+root commit
+M 100644 :1 .gitignore
+"""
+        ref_commit = """
+commit refs/heads/ref-%(ref)08d
+mark :%(mark)d
+author Joe <joe@example.com> %(timestamp)d +0000
+committer Joe <joe@example.com> %(timestamp)d +0000
+data 13
+ref-%(ref)08d
+from :2
+"""
+        data = StringIO()
+        data.write(root_commit % {'timestamp': timestamp})
+        for idx in xrange(n):
+            data.write(ref_commit % {'timestamp': timestamp + idx,
+                                     'mark': idx + 3, 'ref': idx})
+        return data.getvalue()
+
 
 class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
 
