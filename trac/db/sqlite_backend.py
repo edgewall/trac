@@ -20,7 +20,6 @@ import re
 import weakref
 from contextlib import closing
 
-from trac.api import ISystemInfoProvider
 from trac.config import ConfigurationError, ListOption
 from trac.core import Component, TracError, implements
 from trac.db.api import ConnectionBase, IDatabaseConnector
