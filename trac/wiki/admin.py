@@ -263,7 +263,8 @@ class WikiAdmin(Component):
     def _do_upgrade(self):
         self.load_pages(pkg_resources.resource_filename('trac.wiki',
                                                         'default-pages'),
-                        ignore=['WikiStart'], create_only=['InterMapTxt'])
+                        ignore=['WikiStart', 'SandBox'],
+                        create_only=['InterMapTxt'])
 
     # IEnvironmentSetupParticipant methods
 
@@ -272,7 +273,11 @@ class WikiAdmin(Component):
         printout(_(" Installing default wiki pages"))
         pages_dir = pkg_resources.resource_filename('trac.wiki',
                                                     'default-pages')
-        self.load_pages(pages_dir)
+        with self.env.db_transaction as db:
+            self.load_pages(pages_dir)
+            for page in os.listdir(pages_dir):
+                if page not in ('InterMapTxt', 'SandBox', 'WikiStart'):
+                    db("UPDATE wiki SET readonly='1' WHERE name=%s", (page,))
 
     def environment_needs_upgrade(self):
         pass

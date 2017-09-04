@@ -203,6 +203,13 @@ class EnvironmentDataTestCase(unittest.TestCase):
         self.assertTrue(parser.has_option('logging', 'log_format'))
         self.assertEqual('', parser.get('logging', 'log_format'))
 
+    def test_tracguide_is_readonly(self):
+        from trac.wiki.model import WikiPage
+        for name in ('TracGuide', 'TracInstall', 'TracUpgrade'):
+            self.assertTrue(WikiPage(self.env, name).readonly)
+        for name in ('SandBox', 'WikiStart', 'InterMapTxt'):
+            self.assertFalse(WikiPage(self.env, name).readonly)
+
 
 class EnvironmentAttributesTestCase(unittest.TestCase):
     """Tests for attributes which don't require a real environment
