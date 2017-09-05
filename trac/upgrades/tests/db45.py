@@ -15,7 +15,7 @@ import os
 import unittest
 
 from trac.config import UnicodeConfigParser
-from trac.test import EnvironmentStub, mkdtemp, rmtree
+from trac.test import EnvironmentStub, mkdtemp
 from trac.upgrades import db45
 
 
@@ -26,7 +26,7 @@ class UpgradeTestCase(unittest.TestCase):
         self.env.config.filename = os.path.join(self.env.path, 'trac.ini')
 
     def tearDown(self):
-        rmtree(self.env.path)
+        self.env.reset_db_and_disk()
 
     def _backup_file_exists(self):
         return os.path.exists(os.path.join(self.env.path, 'trac.ini.db45.bak'))
