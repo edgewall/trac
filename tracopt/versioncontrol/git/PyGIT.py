@@ -410,7 +410,7 @@ class Storage(object):
         try:
             with open(os.path.join(git_dir, 'HEAD'), 'rb'):
                 pass
-        except EnvironmentError, e:
+        except EnvironmentError as e:
             self._raise_not_readable(git_dir, e)
 
         self.repo = GitCore(git_dir, git_bin, log, git_fs_encoding)
