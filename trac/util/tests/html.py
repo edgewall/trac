@@ -371,7 +371,7 @@ class ToFragmentTestCase(unittest.TestCase):
     def _ioerror(self, filename):
         try:
             open(filename)
-        except IOError, e:
+        except IOError as e:
             return e
         else:
             self.fail('IOError not raised')
