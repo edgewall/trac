@@ -22,10 +22,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
 import os.path
-import posixpath
 import re
 import shutil
-import unicodedata
 
 from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
                        console_datetime_format, get_dir_list
@@ -36,12 +34,12 @@ from trac.perm import IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import content_disposition, create_zipinfo, file_or_std, \
-                      get_reporter_id
+                      get_reporter_id, normalize_filename
 from trac.util.datefmt import datetime_now, format_datetime, \
                               from_utimestamp, to_datetime, to_utimestamp, utc
 from trac.util.html import tag
 from trac.util.text import exception_to_unicode, path_to_unicode, \
-                           pretty_size, print_table, stripws, unicode_unquote
+                           pretty_size, print_table, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler, RequestDone
 from trac.web.chrome import (INavigationContributor, add_ctxtnav, add_link,
@@ -409,27 +407,16 @@ class AttachmentModule(Component):
         if 'cancel' in req.args:
             req.redirect(get_resource_url(self.env, parent_resource, req.href))
 
-        upload = req.args.get('attachment')
-        if not hasattr(upload, 'filename') or not upload.filename:
-            raise TracError(_("No file uploaded"))
-        if hasattr(upload.file, 'fileno'):
-            size = os.fstat(upload.file.fileno())[6]
-        else:
-            upload.file.seek(0, 2)  # seek to end of file
-            size = upload.file.tell()
-            upload.file.seek(0)
-        if size == 0:
-            raise TracError(_("Can't upload empty file"))
-
-        # Maximum attachment size (in bytes)
-        max_size = self.max_size
-        if 0 <= max_size < size:
-            raise TracError(_("Maximum attachment size: %(num)s",
-                              num=pretty_size(max_size)), _("Upload failed"))
-
-        filename = _normalized_filename(upload.filename)
+        filename, fileobj, filesize = req.args.getfile('attachment')
         if not filename:
             raise TracError(_("No file uploaded"))
+        upload_failed = _("Upload failed for %(filename)s", filename=filename)
+        if filesize == 0:
+            raise TracError(_("Can't upload empty file"), upload_failed)
+        if 0 <= self.max_size < filesize:
+            raise TracError(_("Maximum attachment size: %(num)s",
+                              num=pretty_size(self.max_size)), upload_failed)
+
         # Now the filename is known, update the attachment resource
         attachment.filename = filename
         attachment.description = req.args.get('description', '')
@@ -476,7 +463,7 @@ class AttachmentModule(Component):
                 old_attachment.delete()
             except TracError:
                 pass  # don't worry if there's nothing to replace
-        attachment.insert(filename, upload.file, size)
+        attachment.insert(filename, fileobj, filesize)
 
         req.redirect(get_resource_url(self.env, attachment.resource(id=None),
                                       req.href))
@@ -1165,7 +1152,7 @@ class AttachmentAdmin(Component):
         attachment = Attachment(self.env, realm, id_)
         attachment.author = author
         attachment.description = description
-        filename = _normalized_filename(os.path.basename(path))
+        filename = normalize_filename(os.path.basename(path))
         with open(path, 'rb') as f:
             attachment.insert(filename, f, os.path.getsize(path))
 
@@ -1193,25 +1180,5 @@ class AttachmentAdmin(Component):
             with file_or_std(destination, 'wb') as output:
                 shutil.copyfileobj(input, output)
 
-
-_control_codes_re = re.compile(
-    '[' +
-    ''.join(filter(lambda c: unicodedata.category(c) == 'Cc',
-                   map(unichr, xrange(0x10000)))) +
-    ']')
-
-def _normalized_filename(filepath):
-    # We try to normalize the filename to unicode NFC if we can.
-    # Files uploaded from OS X might be in NFD.
-    if not isinstance(filepath, unicode):
-        filepath = unicode(filepath, 'utf-8')
-    filepath = unicodedata.normalize('NFC', filepath)
-    # Replace control codes with spaces, e.g. NUL, LF, DEL, U+009F
-    filepath = _control_codes_re.sub(' ', filepath)
-    # Replace backslashes with slashes if filename is Windows full path
-    if filepath.startswith('\\') or re.match(r'[A-Za-z]:\\', filepath):
-        filepath = filepath.replace('\\', '/')
-    # We want basename to be delimited by only slashes on all platforms
-    filename = posixpath.basename(filepath)
-    filename = stripws(filename)
-    return filename
+# Compatibility for Trac 1.2. Will be removed in 1.5.1.
+_normalized_filename = normalize_filename

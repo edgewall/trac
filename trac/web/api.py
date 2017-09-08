@@ -28,7 +28,8 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracBaseError, TracError
-from trac.util import as_bool, as_int, get_last_traceback, lazy, unquote
+from trac.util import as_bool, as_int, get_last_traceback, lazy, \
+                      normalize_filename, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.html import Fragment, tag
 from trac.util.text import empty, exception_to_unicode, to_unicode
@@ -423,6 +424,29 @@ class _RequestArgs(dict):
             val = [val]
         return val
 
+    def getfile(self, name):
+        """Return a tuple of the filename, file object and file size.
+
+        :param name: the name of the request parameter
+
+        :since: 1.3.3
+        """
+        upload = self.getfirst(name)
+        return self._getfile(upload)
+
+    def getfilelist(self, name):
+        """Return a list of tuples containing the filename, file object
+        and file size.
+
+        :param name: the name of the request parameter
+
+        :since: 1.3.3
+        """
+        files = []
+        for upload in self.getlist(name):
+            files.append(self._getfile(upload))
+        return files
+
     def require(self, name):
         """Raise an `HTTPBadRequest` exception if the parameter is
         not in the request.
@@ -435,6 +459,21 @@ class _RequestArgs(dict):
             raise HTTPBadRequest(
                 tag_("Missing request argument. The %(name)s argument "
                      "must be included in the request.", name=tag.em(name)))
+
+    def _getfile(self, upload):
+        filename = fileobj = size = None
+        if hasattr(upload, 'filename'):
+            filename = normalize_filename(upload.filename)
+        if hasattr(upload, 'file'):
+            fileobj = upload.file
+            if hasattr(fileobj, 'fileno'):
+                size = os.fstat(fileobj.fileno())[6]
+            else:
+                fileobj.seek(0, 2)  # seek to end of file
+                size = fileobj.tell()
+                fileobj.seek(0)
+
+        return filename, fileobj, size
 
 
 def parse_arg_list(query_string):

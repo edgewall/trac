@@ -13,6 +13,7 @@
 
 import io
 import os
+import tempfile
 import unittest
 import zipfile
 from datetime import datetime
@@ -25,7 +26,7 @@ from trac.attachment import Attachment, AttachmentModule, \
 from trac.core import Component, ComponentMeta, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, Mock, MockRequest, mkdtemp
 from trac.util.datefmt import format_datetime, to_utimestamp, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 
@@ -495,17 +496,48 @@ class AttachmentModuleTestCase(unittest.TestCase):
             module.process_request(req)
 
     def test_post_request_without_attachment_raises_exception(self):
-        """TracError is raised when a POST request is submitted
-        without an attachment.
-        """
+        """TracError is raised for POST request with no file."""
         path_info = '/attachment/parent_realm/parent_id'
         req = MockRequest(self.env, path_info=path_info, method='POST',
                           args={'action': 'new'})
         module = AttachmentModule(self.env)
 
         self.assertTrue(module.match_request(req))
-        with self.assertRaises(TracError):
+        with self.assertRaises(TracError) as cm:
             module.process_request(req)
+        self.assertEqual("No file uploaded", unicode(cm.exception))
+
+    def test_post_request_with_empty_attachment_raises_exception(self):
+        """TracError is raised for POST request with empty file."""
+        module = AttachmentModule(self.env)
+        path_info = '/attachment/parent_realm/parent_id'
+        with tempfile.NamedTemporaryFile('rb', dir=self.env.path) as file_:
+            upload = Mock(filename=file_.name, file=file_)
+            req = MockRequest(self.env, path_info=path_info, method='POST',
+                              args={'action': 'new', 'attachment': upload})
+
+            self.assertTrue(module.match_request(req))
+            with self.assertRaises(TracError) as cm:
+                module.process_request(req)
+        self.assertEqual("Can't upload empty file", unicode(cm.exception))
+
+    def test_post_request_exceeding_max_size_raises_exception(self):
+        """TracError is raised for file exceeding max size"""
+        self.env.config.set('attachment', 'max_size', 10)
+        module = AttachmentModule(self.env)
+        path_info = '/attachment/parent_realm/parent_id'
+        with tempfile.NamedTemporaryFile('w+b', dir=self.env.path) as file_:
+            file_.write(b' ' * (module.max_size + 1))
+            file_.flush()
+            upload = Mock(filename=file_.name, file=file_)
+            req = MockRequest(self.env, path_info=path_info, method='POST',
+                              args={'action': 'new', 'attachment': upload})
+
+            self.assertTrue(module.match_request(req))
+            with self.assertRaises(TracError) as cm:
+                module.process_request(req)
+        self.assertEqual("Maximum attachment size: 10 bytes",
+                         unicode(cm.exception))
 
     def test_attachment_parent_realm_raises_exception(self):
         """TracError is raised when 'attachment' is the resource parent

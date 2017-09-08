@@ -26,6 +26,7 @@ import io
 from itertools import izip, tee
 import locale
 import os
+import posixpath
 from pkg_resources import find_distributions
 import random
 import re
@@ -34,12 +35,13 @@ import sys
 import string
 import struct
 import tempfile
+import unicodedata
 import zipfile
 from urllib import quote, unquote, urlencode
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
-from trac.util.text import exception_to_unicode, to_unicode, \
-                           getpreferredencoding
+from trac.util.text import exception_to_unicode, getpreferredencoding, \
+                           stripws, to_unicode
 
 
 def get_reporter_id(req, arg_name=None):
@@ -122,6 +124,29 @@ def native_path(path):
                     path = 'C:\\' + path[1:]
             path = path.replace('/', '\\')
     return path
+
+
+_control_codes_re = re.compile(
+    '[' +
+    ''.join(filter(lambda c: unicodedata.category(c) == 'Cc',
+                   map(unichr, xrange(0x10000)))) +
+    ']')
+
+def normalize_filename(filepath):
+    # We try to normalize the filename to unicode NFC if we can.
+    # Files from OS X might be in NFD.
+    if not isinstance(filepath, unicode):
+        filepath = unicode(filepath, 'utf-8')
+    filepath = unicodedata.normalize('NFC', filepath)
+    # Replace control codes with spaces, e.g. NUL, LF, DEL, U+009F
+    filepath = _control_codes_re.sub(' ', filepath)
+    # Replace backslashes with slashes if filename is Windows full path
+    if filepath.startswith('\\') or re.match(r'[A-Za-z]:\\', filepath):
+        filepath = filepath.replace('\\', '/')
+    # We want basename to be delimited by only slashes on all platforms
+    filename = posixpath.basename(filepath)
+    filename = stripws(filename)
+    return filename
 
 
 can_rename_open_file = False

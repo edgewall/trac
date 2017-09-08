@@ -198,6 +198,86 @@ class RequestTestCase(unittest.TestCase):
         self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3')
         self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3', 2)
 
+    def test_getfile(self):
+        file_content = 'The file content.'
+        file_name = 'thefile.txt'
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="attachment"; filename="%(file_name)s"\r\n\
+Content-Type: text/plain\r\n\
+\r\n\
+%(file_content)s\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="action"\r\n\
+\r\n\
+new\r\n\
+--%(boundary)s--\r\n\
+"""
+        boundary = '_BOUNDARY_'
+        content_type = b'multipart/form-data; boundary="%s"' % boundary
+        form_data %= {
+            'boundary': boundary,
+            'file_content': file_content,
+            'file_name': file_name,
+        }
+        environ = _make_environ(method='POST', **{
+            'wsgi.input': io.BytesIO(form_data),
+            'CONTENT_LENGTH': str(len(form_data)),
+            'CONTENT_TYPE': content_type
+        })
+        req = Request(environ, None)
+
+        file_ = req.args.getfile('attachment')
+
+        self.assertEqual(file_name, file_[0])
+        self.assertEqual(file_content, file_[1].getvalue())
+        self.assertEqual(len(file_content), file_[2])
+
+    def test_getfilelist(self):
+        file_content = 'The file0 content.', 'The file1 content.'
+        file_name = 'file0.txt', 'file1.txt'
+        form_data = """\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="attachment"; filename="%(file0_name)s"\r\n\
+Content-Type: text/plain\r\n\
+\r\n\
+%(file0_content)s\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="attachment"; filename="%(file1_name)s"\r\n\
+Content-Type: text/plain\r\n\
+\r\n\
+%(file1_content)s\r\n\
+--%(boundary)s\r\n\
+Content-Disposition: form-data; name="action"\r\n\
+\r\n\
+new\r\n\
+--%(boundary)s--\r\n\
+"""
+        boundary = '_BOUNDARY_'
+        content_type = b'multipart/form-data; boundary="%s"' % boundary
+        form_data %= {
+            'boundary': boundary,
+            'file0_content': file_content[0],
+            'file0_name': file_name[0],
+            'file1_content': file_content[1],
+            'file1_name': file_name[1],
+        }
+        environ = _make_environ(method='POST', **{
+            'wsgi.input': io.BytesIO(form_data),
+            'CONTENT_LENGTH': str(len(form_data)),
+            'CONTENT_TYPE': content_type
+        })
+        req = Request(environ, None)
+
+        file_ = req.args.getfilelist('attachment')
+
+        self.assertEqual(2, len(file_))
+        self.assertEqual(file_name[0], file_[0][0])
+        self.assertEqual(file_content[0], file_[0][1].getvalue())
+        self.assertEqual(file_name[1], file_[1][0])
+        self.assertEqual(file_content[1], file_[1][1].getvalue())
+        self.assertEqual(len(file_content[1]), file_[1][2])
+
     def test_require(self):
         qs = 'arg1=1'
         environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
