@@ -442,10 +442,7 @@ class _RequestArgs(dict):
 
         :since: 1.3.3
         """
-        files = []
-        for upload in self.getlist(name):
-            files.append(self._getfile(upload))
-        return files
+        return [self._getfile(upload) for upload in self.getlist(name)]
 
     def require(self, name):
         """Raise an `HTTPBadRequest` exception if the parameter is
