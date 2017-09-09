@@ -16,17 +16,17 @@ $ trac-admin /path/to/myproject initenv
 
 `trac-admin` will ask you for the name of the project and the [#DatabaseConnectionStrings database connection string].
 
+A base configuration can be specified using the `--inherit` or `--config` options. The `--inherit` option can be specified one or more times to utilize a [TracIni#GlobalConfiguration global configuration]. The options specified in a `--config` file will be used to override the defaults when initializing `trac.ini`. See below for an [#SourceCodeRepository example] of defining repositories in a configuration file.
+
 === Useful Tips
 
  - Place your environment's directory on a filesystem which supports sub-second timestamps, as Trac monitors the timestamp of its configuration files and changes happening on a filesystem with too coarse-grained timestamp resolution may go undetected in Trac < 1.0.2. This is also true for the location of authentication files when using TracStandalone.
 
- - The user under which the web server runs will require file system write permission to the environment directory and all the files inside. Please remember to set the appropriate permissions. The same applies to the source code repository, although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation. 
- 
- - `initenv` does not create a version control repository for the specified path. If you wish to specify a default repository using the optional arguments to `initenv` you must create the repository first, otherwise you will see a message when initializing the environment: //Warning: couldn't index the default repository//.
+ - The user under which the web server runs will require file system write permission to the environment directory and all the files inside. Please remember to set the appropriate permissions. The same applies to the source code repository, although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system; for other repository types, check the corresponding plugin's documentation.
 
  - Non-ascii environment paths are not supported.
 
- - TracPlugins located in a [TracIni#inherit-plugins_dir-option shared plugins directory] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are not enabled by default, in contrast to plugins in the environment `plugins` directory. Hence, if they need to create extra tables, for example, the tables will not be created during environment creation and you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment]. Alternatively you can avoid the need to upgrade the environment by explicitly enabling the plugin in the inherited configuration, or in a configuration file using the `--config` option. See TracAdmin#FullCommandReference for more information.
+ - TracPlugins located in a [TracIni#inherit-plugins_dir-option shared plugins directory] that is defined in an [TracIni#GlobalConfiguration inherited configuration] are not enabled by default, in contrast to plugins in the environment `plugins` directory. Hence, if they need to create extra tables, for example, the tables will not be created during environment creation and you'll need to [TracUpgrade#UpgradetheTracEnvironment upgrade the environment]. Alternatively you can avoid the need to upgrade the environment by explicitly enabling the plugin(s) in a configuration file using the `--inherit` or `--config` option. See TracAdmin#FullCommandReference for more information.
 
 {{{#!div style="border: 1pt dotted; margin: 1em;"
 **Caveat:** don't confuse the //Trac environment directory// with the //source code repository directory//.
@@ -102,11 +102,31 @@ The format of the MySQL connection string is similar to PostgreSQL, with the `po
 mysql://johndoe:letmein@localhost:3306/trac
 }}}
 
+=== Changing Database Backend
+
+The TracAdmin `convert_db` command allows migrating between SQLite, MySQL and PostgreSQL databases.
+
+[[TracAdminHelp(convert_db)]]
+
 == Source Code Repository
 
-A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' navigation item will not be displayed.
+A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' navigation item will not be displayed. There are several ways to connect repositories to an environment, see TracRepositoryAdmin.
 
-There are several ways to connect repositories to an environment, see TracRepositoryAdmin. A single repository can be specified when the environment is created by passing the optional arguments `repository_type` and `repository_dir` to the `initenv` command.
+Repositories can be defined at the time of environment creation by specifying a configuration file to the `initenv` command using the `--config` or `--inherit` options. Cached repositories will be synchronized if the repository connector(s) are enabled. Example:
+
+{{{#!sh
+$ trac-admin $ENV initenv --config=config.ini
+$ cat config.ini
+[components]
+tracopt.versioncontrol.* = enabled
+
+[repositories]
+.dir = /path/to/default/type/repos
+repos1.type = git
+repos1.dir = /path/to/git/repos
+repos2.type = svn
+repos2.dir = /path/to/svn/repos
+}}}
 
 == Directory Structure
 

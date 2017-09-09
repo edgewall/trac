@@ -12,7 +12,9 @@ When you first go to the query page, the default filter will display tickets rel
  * If not logged in but you have specified a name or email address in the preferences, then it will display all open tickets where your email (or name if email not defined) is in the CC list.
  * If not logged in and no name/email is defined in the preferences, then all open issues are displayed.
 
-Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.  Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria.
+Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.
+
+Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria. Add additional 'Or's by Clicking the 'And' Dropdown and selecting an item that you have already selected. That is, to select "Milestone is X ''Or'' Milestone is Y", Select 'Milestone', Select 'X', then click the 'And' Dropdown and select 'Milestone' a second time so that you can then select 'Y'.
 
 For text fields such as Keywords and CC the `-` operator can be used to negate a match and double quotes (//since 1.2.1//) can be used to match a phrase. For example, a //contains// match for `word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and `word4 word5`.
 

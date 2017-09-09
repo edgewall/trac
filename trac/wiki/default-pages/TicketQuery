@@ -47,6 +47,10 @@ The query language used by the `[[TicketQuery]]` macro is described in [TracQuer
 || **[[TicketQuery(status=closed,resolution=fixed,count)]]**||\
 || `[[TicketQuery(status=closed,resolution=fixed,count)]]` ||
 |-----------------------------------------------------------
+||=Number of untriaged tickets (milestone unset): =||\
+|| **[[TicketQuery(status!=closed,milestone=,count)]]**||\
+|| `[[TicketQuery(status!=closed,milestone=,count)]]` ||
+|-----------------------------------------------------------
 ||=Total number of tickets: =||\
 || **[[TicketQuery(count)]]**||\
 || `[[TicketQuery(count)]]` ||

@@ -46,11 +46,13 @@ To exit the server on Windows, be sure to use `CTRL-BREAK` -- using `CTRL-C` wil
 To install as a Windows service, get the [http://www.google.com/search?q=srvany.exe SRVANY] utility and run:
 {{{#!cmd
  C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
- reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd-script.py\" <your tracd parameters>"
+ reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd.exe\" <your tracd parameters>"
  net start tracd
 }}}
 
-'''DO NOT''' use {{{tracd.exe}}}.  Instead register {{{python.exe}}} directly with {{{tracd-script.py}}} as a parameter.  If you use {{{tracd.exe}}}, it will spawn the python process without SRVANY's knowledge.  This python process will survive a {{{net stop tracd}}}.
+{{{#!div style="border: 1pt dotted; margin: 1em;"
+**Attention:** Do not use `tracd.exe` directly.  Instead register `python.exe` directly with `tracd.exe` as a parameter.  If you use `tracd.exe`, it will spawn the python process without SRVANY's knowledge.  This python process will survive a `net stop tracd`.
+}}}
 
 If you want tracd to start automatically when you boot Windows, do:
 {{{#!cmd
@@ -64,9 +66,9 @@ Once the service is installed, it might be simpler to run the Registry Editor ra
 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\tracd\Parameters`
 
 Three (string) parameters are provided:
-||!AppDirectory ||C:\Python26\ ||
+||!AppDirectory ||C:\Python27\ ||
 ||Application ||python.exe ||
-||!AppParameters ||scripts\tracd-script.py -p 8080 ... ||
+||!AppParameters ||scripts\tracd.exe -p 8080 ... ||
 
 Note that, if the !AppDirectory is set as above, the paths of the executable ''and'' of the script name and parameter values are relative to the directory.  This makes updating Python a little simpler because the change can be limited, here, to a single point.
 (This is true for the path to the .htpasswd file, as well, despite the documentation calling out the /full/path/to/htpasswd; however, you may not wish to store that file under the Python directory.)
@@ -74,7 +76,7 @@ Note that, if the !AppDirectory is set as above, the paths of the executable ''a
 
 For Windows 7 User, srvany.exe may not be an option, so you can use [http://www.google.com/search?q=winserv.exe WINSERV] utility and run:
 {{{#!cmd
-"C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd-script.py <your tracd parameters>"
+"C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd.exe <your tracd parameters>"
 net start tracd
 }}}
 

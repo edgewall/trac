@@ -71,7 +71,7 @@ The available operations are:
 - **may_set_owner** -- Sets the owner to the selected or entered owner. Defaults to the existing owner. //(Since 1.1.2)//. 
 - **del_resolution** -- Clears the resolution field.
 - **set_resolution** -- Sets the resolution to the selected value.
- - ''actionname''`.set_resolution` may optionally be set to a comma delimited list or a single value. Example:
+ - ''actionname''`.set_resolution` may optionally be set to a comma delimited list or a single value. The resolution(s) specified in this attribute must be defined in the database. Example:
  {{{#!ini
 resolve_new = new -> closed
 resolve_new.label = resolve

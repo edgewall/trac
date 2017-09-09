@@ -4,17 +4,17 @@
 
 == Instructions
 
-Typically, there are seven steps involved in upgrading to a newer version of Trac:
+There are seven recommended steps for upgrading to a newer version of Trac:
 
 === 1. Check your plugins
 
 Check whether your plugins are compatible with the version of Trac that you are upgrading to. Obsolete plugins listed in the [#VersionSpecificSteps version specific steps] below should be uninstalled or disabled.
 
-If you are upgrading to a minor release, plugin compatibility is usually not a concern because the Trac API typically does not change, and major features are not introduced, for minor releases.
+If you are upgrading to a minor release, plugin compatibility is usually not a concern because the Trac API rarely changes, and major features are usually not introduced, for minor releases.
 
 If your plugins are installed from [https://trac-hacks.org trac-hacks.org] you can check compatibility by looking for a tag on the project page corresponding to a major release (e.g. `1.2`). If you are unsure, you'll want to contact the plugin author or ask on the [trac:MailingList MailingList].
 
-If you are running several Trac plugins it is good to test the upgrade and site functionality in a staging instance of your site before upgrading your production instance. Remember, plugin authors are responsible for Trac version compatibility and plugins can interact in unexpected ways. Your Trac instance may have a unique combination of plugins and therefore it's a good idea to do some verification testing when making any changes to your site.
+If you are running several Trac plugins it is good to test the upgrade and plugin functionality in a staging instance of your site before upgrading your production instance. Remember, plugin authors are responsible for Trac version compatibility and plugins can interact in unexpected ways. Your Trac instance may have a unique combination of plugins and therefore it's advised that you do some verification testing when making any changes to your site.
 
 === 2. Bring your server off-line
 
@@ -38,7 +38,7 @@ The upgrade command will give you the latest release of Trac. If instead you wis
 $ pip install --upgrade Trac==1.2.1
 }}}
 
-You should also upgrade dependencies so they are compliant with the [TracInstall#Dependencies required versions] and upgrade Trac plugins.
+You should also upgrade dependencies so they are compliant with the [TracInstall#Dependencies required versions].
 
 === 4. Upgrade the Trac Environment #UpgradetheTracEnvironment
 
@@ -57,12 +57,12 @@ Note that a backup of your database will be performed automatically prior to the
 
 === 5. Update the Trac Documentation === #UpdatetheTracDocumentation
 
-By default, every [TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. However, to keep the included documentation in sync with the installed version of Trac, use the following [TracAdmin trac-admin] command to upgrade the documentation:
+By default, every [TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. To keep the documentation in sync with the installed version of Trac, use the following [TracAdmin trac-admin] command to upgrade the documentation:
 {{{#!sh
 $ trac-admin /path/to/projenv wiki upgrade
 }}}
 
-Note that this procedure will leave your `WikiStart`, `TracGuide` and `SandBox` pages unaltered. Local changes to other pages that are distributed with Trac will be overwritten.
+Note that this procedure will leave your `WikiStart`, `InterMapTxt` and `SandBox` pages unaltered. Local changes to other pages that are distributed with Trac will be overwritten, however these pages are read-only by default for Environments created in Trac 1.3.3 and later.
 
 === 6. Refresh static resources
 
@@ -71,7 +71,7 @@ If you have configured your web server to serve static resources directly (acces
 $ trac-admin /path/to/env deploy /deploy/path
 }}}
 
-Before refreshing, it is recommended that you remove the directory in which your static resources are deployed. The directory location depends on the choice you made during installation. This cleanup is not mandatory, but makes it easier to troubleshoot issues later on, as your installation is uncluttered by code or templates from a previous release that is not used anymore. As usual, make a backup before deleting the directory.
+Before refreshing, it is recommended that you remove the directory in which your static resources are deployed. The directory location depends on the choice you made during installation. This cleanup is not mandatory, but makes it easier to troubleshoot issues later on, as your installation is uncluttered by unused assets from a previous release. As usual, make a backup before deleting the directory.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Note:** Some web browsers (IE, Opera) cache CSS and !JavaScript files, so you should instruct your users to manually erase the contents of their browser's cache. A forced refreshed (SHIFT + <F5>) should be sufficient.
@@ -112,15 +112,6 @@ You may want to verify that your plugins are compatible with this change.
 If you customized the Trac templates, or the site.html template, you'll need to adapt that as well.
 (TODO: expand...) See [#CustomizedTemplates]
 
-Another "template" that will probably need to be updated are the e-mail notification summaries, defined in the [[TracIni#notification-section| trac.ini, [notification] section]], for the `batch_subject_template` and `ticket_subject_template` settings.
-
-For example:
-{{{#!ini
-[notification]
-ticket_subject_template = ${prefix} #${ticket.id}: ${summary}
-}}}
-(instead of `$prefix #$ticket.id: $summary`)
-
 ===== New permission policies for Wiki and Ticket realms
 
 Since 1.3.2 there are new permission policies for the ticket and wiki systems. `DefaultTicketPolicy` allows an authenticated users with `TICKET_APPEND` or `TICKET_CHPROP` to modify the description of a ticket they reported. It also implements the pre-1.3.2 behavior of allowing users to edit their own ticket comments. [#Newpermissionspolicyforread-onlywikipages ReadonlyWikiPolicy], added in 1.1.2, is renamed to `DefaultWikiPolicy`. The new permission policies can be easily replaced with alternate implementations if the default behavior is not desired.
@@ -142,6 +133,15 @@ The ticket enums now have a //description// field. An //ambiguous column name// 
 
 Reports that display the error need to be modified to prefix the `description` column with the appropriate table name or alias. For example, if the `ticket` table is aliased as `t` (`ticket t` or `ticket AS t`), replace `description` with `t.description` if the report should use the ticket's `description` column.
 
+===== Removed `<repostype>` and `<repospath>` arguments from TracAdmin `initenv` command
+
+The TracAdmin `initenv` command allowed the default repository to be specified using the third and fourth positional arguments of `initenv`:
+{{{
+initenv [<projectname> <db> [<repostype> <repospath>]]
+}}}
+
+The arguments were an artifact of Trac < 0.12, which only supported a single repository. Trac 0.12 and later supports multiple repositories, which can be specified at the time of environment creation using the `--inherit` and `--config` arguments. See the [TracEnvironment#SourceCodeRepository initenv documentation] for details on specifying source code repositories.
+
 ==== Upgrading from Trac 1.0 to 1.2 #to1.2
 
 ===== Python 2.5 no longer supported
@@ -152,8 +152,11 @@ Upgrade Python to at least 2.6 or 2.7, but not 3.0 or greater.
 
 Trac has added functionality equivalent to the following plugins:
 * [https://trac-hacks.org/wiki/AdminEnumListPlugin AdminEnumListPlugin]
+* [https://trac-hacks.org/wiki/AttachmentNotifyPlugin AttachmentNotifyPlugin]: attachment notifications are sent in Trac 1.0.3 and later
 * [https://trac-hacks.org/wiki/DateFieldPlugin DateFieldPlugin]: see the **time** [TracTicketsCustomFields#AvailableFieldTypesandOptions custom field type]
-* [https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin GroupBasedRedirectionPlugin]: the default handler can set as a user preference.
+* [https://trac-hacks.org/wiki/FlexibleReporterNotificationPlugin FlexibleReporterNotificationPlugin]: [trac:CookBook/Notification/Subscriptions custom subscribers] can be implemented in the new extensible notification system 
+* [https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin GroupBasedRedirectionPlugin]: the default handler can set as a user preference
+* [https://trac-hacks.org/wiki/GroupingAssignToPlugin GroupingAssignToPlugin]: groups and permissions can be used in the [TracWorkflow#BasicTicketWorkflowCustomization set_owner] workflow attribute
 * [https://trac-hacks.org/wiki/LinenoMacro LinenoMacro]: see WikiProcessors#AvailableProcessors
 * [https://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin NeverNotifyUpdaterPlugin]: see [TracNotification#notification-subscriber-section notification subscribers]
 * [https://trac-hacks.org/wiki/QueryUiAssistPlugin QueryUiAssistPlugin]: see TracQuery#Filters.
@@ -187,9 +190,11 @@ Upgrade Python to at least 2.5, but not 3.0.
 
 Trac has added functionality equivalent to the following plugins:
 
+* [https://trac-hacks.org/wiki/AnchorMacro AnchorMacro]
 * [https://trac-hacks.org/wiki/BatchModifyPlugin BatchModifyPlugin]
-* ​[https://trac-hacks.org/wiki/GitPlugin GitPlugin]
+* [https://trac-hacks.org/wiki/GitPlugin GitPlugin]
 * [https://trac-hacks.org/wiki/OverrideEditPlugin OverrideEditPlugin]
+* [https://trac-hacks.org/wiki/ProgressMeterMacro ProgressMeterMacro]
 
 The plugins should be removed when upgrading Trac to 1.0.
 
@@ -223,13 +228,13 @@ For upgrades from versions older than Trac 0.10, refer first to [trac:wiki:0.10/
 
 === Customized Templates
 
-Trac supports customization of its templates by placing copies of the templates in the `<env>/templates` folder of your [TracEnvironment environment] or in a common location specified in the [[TracIni#GlobalConfiguration| [inherit] templates_dir]] configuration setting. If you choose to do so, be aware that you will need to repeat your changes manually on a copy of the new templates when you upgrade to a new release of Trac (even a minor one), as the templates will likely evolve. So keep a diff around.
+Trac supports customization of its templates by placing copies of the templates in the `<env>/templates` folder of your [TracEnvironment environment] or in a common location specified in the [[TracIni#GlobalConfiguration| [inherit] templates_dir]] configuration setting. If you choose to customize the templates, be aware that you will need to repeat your changes on a copy of the new templates when you upgrade to a new release of Trac (even a minor one), as the templates will evolve. So keep a diff around.
 
 The preferred way to perform TracInterfaceCustomization is a custom plugin doing client-side !JavaScript transformation of the generated output, as this is more robust in case of changes: we usually won't modify an element `id` or change its CSS `class`, and if we have to do so, this will be documented in the [trac:TracDev/ApiChanges] pages.
 
 === !ZipImportError
 
-Due to internal caching of zipped packages, whenever the content of the packages change on disk, the in-memory zip index will no longer match and you'll get irrecoverable !ZipImportError errors. Better anticipate and bring your server down for maintenance before upgrading.
+Due to internal caching of zipped packages, whenever the content of the packages change on disk, the in-memory zip index will no longer match and you'll get irrecoverable !ZipImportError errors. Better to anticipate and bring your server down for maintenance before upgrading.
 See [trac:#7014] for details.
 
 === Wiki Upgrade
@@ -248,11 +253,9 @@ There have been reports that attachments are not [#AttachmentsMigrated migrated]
 
 === Upgrading Python
 
-Upgrading Python to a newer version will require reinstallation of Python packages: Trac itself of course, but also [http://pypi.python.org/pypi/setuptools setuptools]. If you are using Subversion, you'll need to upgrade the [trac:TracSubversion Python bindings for SVN].
+Upgrading Python to a newer version will require reinstallation of Python packages: Trac itself of course, but also [TracInstall#Dependencies dependencies]. If you are using Subversion, you'll need to upgrade the [trac:TracSubversion Python bindings for SVN].
 
-=== Changing Database Backend
 
-The [https://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin] on [https://trac-hacks.org trac-hacks.org] has been written to assist in migrating between SQLite, MySQL and PostgreSQL databases.
 
 -----
-See also: TracGuide, TracInstall
+See also: TracGuide, TracInstall, TracEnvironment#ChangingDatabaseBackend

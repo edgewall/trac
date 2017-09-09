@@ -4,7 +4,7 @@
 == Quick start #QuickStart
 
  * Enable the repository connector(s) for the version control system(s) that you will use.
- * Add repositories through the //Repositories// admin page, using `trac-admin` or by editing the [[wiki:TracIni#repositories-section|"[repositories]"]] section of trac.ini.
+ * Add repositories through the //Repositories// admin page, using `trac-admin` or by editing the `[repositories]` section of [[wiki:TracIni#repositories-section|trac.ini]].
  * Synchronize the repositories with the cache, if using cached repositories.
  * Configure your repository hooks to synchronize the repository. Alternatively you can synchronize on every request or disable the use of cached repositories, both of which have performance drawbacks and reduced functionality, but are easier to configure.
 
@@ -26,7 +26,7 @@ tracopt.versioncontrol.git.* = enabled
 
 Trac supports multiple repositories per environment, and the repositories may be for different version control systems. Each repository must be defined in a repository configuration provider, the three supported by default are the [#ReposDatabase database store], the [#ReposTracIni trac.ini configuration file] and the [#ReposGitWeb GitWeb configuration file]. You can define your repositories through a mix of providers, but typically each repository should only be defined in a single provider. At the very least, the names used for each repository must be unique across all providers, otherwise duplicates will be discarded.
 
-It is possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking links to the old name.
+It is possible to define aliases of repositories that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking links to the old name.
 
 There are a number of attributes that can be specified for each repository, and additional attributes may be available through plugins. A repository `name` and one of the `alias` or `dir` attributes are mandatory. All others are optional.
 
@@ -76,7 +76,7 @@ Note that the default repository has an empty name, so it will need to be quoted
 === In `trac.ini` #ReposTracIni
 Repositories and repository attributes can be specified in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini]. Every attribute consists of a key structured as `{name}.{attribute}` and the corresponding value separated with an equal sign (`=`). The name of the default repository is empty.
 
-The main advantage of specifying repositories in `trac.ini` is that they can be inherited from a global configuration (see the [wiki:TracIni#GlobalConfiguration global configuration] section of TracIni). One drawback is that, due to limitations in the `ConfigParser` class used to parse `trac.ini`, the repository name is always lowercase.
+The main advantage of specifying repositories in `trac.ini` is that they can be inherited from a [wiki:TracIni#GlobalConfiguration global configuration]. Cached repositories defined in `trac.ini` at the time of [TracEnvironment#SourceCodeRepository environment initialization] will be automatically synchronized if the repository's connector is enabled. One drawback is that due to limitations in the `ConfigParser` class used to parse `trac.ini`, the repository name is always lowercase.
 
 The following example defines two Subversion repositories named `project` and `lib`, and an alias to `project` as the default repository. This is a typical use case where a Trac environment previously had a single repository (the `project` repository), and was converted to multiple repositories. The alias ensures that links predating the change continue to resolve to the `project` repository.
 {{{#!ini
@@ -98,7 +98,7 @@ Note that `name.alias = target` makes `name` an alias for the `target` repo, not
 
 === In !GitWeb #ReposGitWeb
 
-[https://git-scm.com/book/en/v2/Git-on-the-Server-GitWeb GitWeb] is a CGI script that comes with Git for web-based visualization of repositories. Trac can read the gitweb-formatted `project.lists` file. The configuration is done through the [[TracIni#gitweb-repositories-section|"[gitweb-repositories]"]] section of trac.ini
+[https://git-scm.com/book/en/v2/Git-on-the-Server-GitWeb GitWeb] is a CGI script that comes with Git for web-based visualization of repositories. Trac can read the gitweb-formatted `project.lists` file. The configuration is done through the `[gitweb-repositories]` section of [[TracIni#gitweb-repositories-section|trac.ini]].
 
 == Repository caching
 
@@ -127,7 +127,7 @@ This is the preferred method of repository synchronization. It requires adding a
 
 The `<repos>` argument can be either a repository name (use `"(default)"` for the default repository) or the path to the repository.
 
-Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the same value as was used for the web server configuration before calling `trac-admin`, if you changed it from its default location. See [wiki:TracPlugins Trac Plugins] for more information.
+Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the same value as was used for the web server configuration before calling `trac-admin`, if you changed it from its default location. See [wiki:TracPlugins#Settinguptheplugincache TracPlugins] for more information.
 
 ==== Subversion
 
@@ -181,13 +181,13 @@ See the [http://svnbook.red-bean.com/en/1.7/svn.reposadmin.create.html#svn.repos
 
 ==== Git
 
-Git hooks can be used in the same way for explicit syncing of Git repositories.
+[https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks Git hooks] can be used in the same way for explicit syncing of Git repositories.
 
 If your repository is one that only gets pushed to, add the following to the `hooks/post-receive` file in the repo:
 {{{#!sh
 #!/bin/sh
-tracenv=/path/to/env     # change with your Trac environment's path
-repos=                   # change with your repository's name
+tracenv=/path/to/env  # set to your Trac environment's path
+repos=                # set to your repository's name
 while read oldrev newrev refname; do
     if [ "$oldrev" = 0000000000000000000000000000000000000000 ]; then
         git rev-list --reverse "$newrev" --
@@ -201,11 +201,14 @@ The `repos` variable is the repository name (use `"(default)"` for the default r
 Alternatively, if your git repository is one that gets committed to directly on the machine that hosts Trac, add the following to the `hooks/post-commit` file in your Git repository:
 {{{#!sh
 #!/bin/sh
-repos=
+tracenv=/path/to/env  # set to your Trac environment's path
+repos=                # set to your repository's name
 REV=$(git rev-parse HEAD) 
-trac-admin /path/to/env changeset added "$repos" $REV
+trac-admin "$tracenv" changeset added "$repos" $REV
 }}}
 The `post-commit` hook will do nothing if you only update the repository by pushing to it.
+
+Be sure to set the hook scripts as executable.
 
 ==== Mercurial
 
@@ -230,13 +233,13 @@ If the post-commit hooks are not available, the environment can be set up for pe
 
 Note that in this case, the changeset listener extension point is not called, and therefore plugins that depend on the changeset added and modified events won't work correctly. For example, automatic changeset references cannot be used with implicit synchronization.
 
-== Automatic changeset references in tickets
+== Automatic changeset references in tickets #CommitTicketUpdater
 
 You can automatically add a reference to the changeset as a ticket comment whenever changes are committed to the repository. The description of the commit needs to contain one of the following patterns:
  * '''`Refs #123`''' - to reference this changeset in `#123` ticket
  * '''`Fixes #123`''' - to reference this changeset and close `#123` ticket with the default status ''fixed''
 
-This functionality requires installing a post-commit hook as described in [#ExplicitSync explicit synchronization], and enabling the optional commit updater components by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini], or enabling the components in the //Plugins// admin panel.
+This functionality requires installing a post-commit hook as described in [#ExplicitSync explicit synchronization], and enabling the optional commit updater components through the //Plugins// admin panel or by adding the following line to the `[components]` section of your [wiki:TracIni#components-section trac.ini]:
 {{{#!ini
 tracopt.ticket.commit_updater.* = enabled
 }}}
@@ -253,7 +256,7 @@ See [trac:CommitTicketUpdater#Troubleshooting] for more troubleshooting tips.
 === Git control files missing
 
 If your repository is not browseable and you find a message in the log that looks like:
-{{{#!logtalk
+{{{
 2017-08-08 10:49:17,339 Trac[PyGIT] ERROR: GIT control files missing in '/path/to/git-repository'
 2017-08-08 10:49:17,339 Trac[git_fs] ERROR: GitError: GIT control files not found, maybe wrong directory?
 }}}
