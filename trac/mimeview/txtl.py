@@ -83,5 +83,7 @@ class TextileRenderer(Component):
 
     def get_system_info(self):
         if has_textile:
-            version = get_pkginfo(textile).get('version', textile.__version__)
+            # textile.__version__ is available since 2.1.6
+            version = get_pkginfo(textile).get('version') or \
+                      getattr(textile, '__version__', 'n/a')
             yield 'Textile', version
