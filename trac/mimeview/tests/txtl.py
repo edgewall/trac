@@ -39,6 +39,10 @@ class TextileRendererTestCase(unittest.TestCase):
     def _parse_xml(self, source):
         return ElementTree.fromstring(source.encode('utf-8'))
 
+    def test_system_info(self):
+        for name, version in self.renderer.get_system_info():
+            self.assertEqual('Textile', name)
+
     def test_image(self):
         result = self._render(u"""\
 !https://example.org/foo.png! uníćode
