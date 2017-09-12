@@ -181,7 +181,7 @@ class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
         tc.notfind(internal_error)
 
         # TracError raised if repository already defined in trac.ini.
-        name2 = random_word()
+        name2 = random_word().lower()
         env = self._testenv.get_trac_environment()
         env.config.set('repositories', '%s.dir' % name2, '/var/svn/%s' % name2)
         env.config.save()
