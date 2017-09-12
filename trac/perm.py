@@ -177,8 +177,7 @@ class DefaultPermissionStore(Component):
     group_providers = ExtensionPoint(IPermissionGroupProvider)
 
     def get_user_permissions(self, username):
-        """Retrieve the permissions for the given user and return them in a
-        dictionary.
+        """Retrieve a list of permissions for the given user.
 
         The permissions are stored in the database as (username, action)
         records. There's simple support for groups by using lowercase names for
