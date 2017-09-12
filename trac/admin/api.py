@@ -203,7 +203,7 @@ def get_console_locale(env=None, lang=None,
     """Return negotiated locale for console by locale environments and
     [trac] default_language."""
     if has_babel:
-        from babel.core import Locale, UnknownLocaleError, parse_locale
+        from babel.core import UnknownLocaleError, parse_locale
         def normalize(value):
             if not value:
                 return None
