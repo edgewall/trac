@@ -304,6 +304,9 @@ class RepositoryAdminPanel(Component):
                 if db_provider and req.args.get('add_repos'):
                     name = req.args.get('name')
                     pretty_name = name or '(default)'
+                    if name in all_repos:
+                        raise TracError(_('The repository "%(name)s" already '
+                                          'exists.', name=pretty_name))
                     type_ = req.args.get('type')
                     # Avoid errors when copy/pasting paths
                     dir = normalize_whitespace(req.args.get('dir', ''))
@@ -311,12 +314,7 @@ class RepositoryAdminPanel(Component):
                         add_warning(req, _('Missing arguments to add a '
                                            'repository.'))
                     elif self._check_dir(req, dir):
-                        try:
-                            db_provider.add_repository(name, dir, type_)
-                        except self.env.db_exc.IntegrityError:
-                            raise TracError(_('The repository "%(name)s" '
-                                              'already exists.',
-                                              name=pretty_name))
+                        db_provider.add_repository(name, dir, type_)
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=pretty_name))
                         resync = tag.code('trac-admin "%s" repository resync '

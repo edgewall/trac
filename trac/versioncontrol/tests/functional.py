@@ -161,19 +161,33 @@ class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11186
         TracError should be raised when repository with name already exists
         """
-        self._tester.go_to_admin()
-        tc.follow("\\bRepositories\\b")
-        tc.url(self._tester.url + '/admin/versioncontrol/repository')
-        name = random_word()
-        tc.formvalue('trac-addrepos', 'name', name)
-        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
-        tc.submit()
-        # Jinja2 tc.find('The repository &#34;%s&#34; has been added.' % name)
-        tc.find('The repository "%s" has been added.' % name)
-        tc.formvalue('trac-addrepos', 'name', name)
-        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
-        tc.submit()
-        tc.find('The repository &#34;%s&#34; already exists.' % name)
+        def add_repository(name):
+            tc.formvalue('trac-addrepos', 'name', name)
+            tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
+            tc.submit()
+
+        def go_to_repository_admin():
+            self._tester.go_to_admin()
+            tc.follow("\\bRepositories\\b")
+            tc.url(self._tester.url + '/admin/versioncontrol/repository')
+
+        # TracError raised if repository already defined in database.
+        go_to_repository_admin()
+        name1 = random_word()
+        add_repository(name1)
+        tc.find('The repository "%s" has been added.' % name1)
+        add_repository(name1)
+        tc.find('The repository &#34;%s&#34; already exists.' % name1)
+        tc.notfind(internal_error)
+
+        # TracError raised if repository already defined in trac.ini.
+        name2 = random_word()
+        env = self._testenv.get_trac_environment()
+        env.config.set('repositories', '%s.dir' % name2, '/var/svn/%s' % name2)
+        env.config.save()
+        go_to_repository_admin()
+        add_repository(name2)
+        tc.find('The repository &#34;%s&#34; already exists.' % name2)
         tc.notfind(internal_error)
 
 
