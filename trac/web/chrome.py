@@ -689,7 +689,7 @@ class Chrome(Component):
     def environment_created(self):
         """Create the environment templates directory."""
         if self.env.path:
-            templates_dir = os.path.join(self.env.path, 'templates')
+            templates_dir = self.env.templates_dir
             if not os.path.exists(templates_dir):
                 os.mkdir(templates_dir)
 
