@@ -93,7 +93,12 @@ class TicketDeleter(Component):
                 ticket.delete()
                 add_notice(req, _("Ticket #%(num)s and all associated data "
                                   "removed.", num=ticket.id))
-                req.redirect(req.href())
+                redirect_to = req.href.query()
+                if 'query_tickets' in req.session:
+                    tickets = req.session['query_tickets'].split()
+                    if str(ticket.id) in tickets:
+                        redirect_to = req.session['query_href']
+                req.redirect(redirect_to)
 
             elif action == 'delete-comment':
                 cdate = from_utimestamp(long(req.args.get('cdate')))
