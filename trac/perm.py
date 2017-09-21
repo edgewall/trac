@@ -321,6 +321,7 @@ class PermissionSystem(Component):
     implements(IPermissionRequestor)
 
     requestors = ExtensionPoint(IPermissionRequestor)
+    group_providers = ExtensionPoint(IPermissionGroupProvider)
 
     store = ExtensionOption('trac', 'permission_store', IPermissionStore,
                             'DefaultPermissionStore',
@@ -461,6 +462,33 @@ class PermissionSystem(Component):
         for perm in self.store.get_user_permissions(username) or []:
             expand_meta(perm)
         return permissions
+
+    def get_user_groups(self, username):
+        """Return a sorted list of groups that `username` belongs to.
+
+        Groups are recursively expanded such that if `username` is a
+        member of `group1` and `group1` is a member of `group2`, both
+        `group1` and `group2` will be returned.
+
+        :since: 1.3.3
+        """
+        user_groups = set()
+        groups_dict = self.get_groups_dict()
+
+        def expand_members(group, members):
+            for m in members:
+                if m == username:
+                    user_groups.add(group)
+                elif m in groups_dict:
+                    expand_members(group, groups_dict[m])
+
+        for group, members in groups_dict.iteritems():
+            expand_members(group, members)
+
+        for provider in self.group_providers:
+            user_groups.update(provider.get_permission_groups(username) or [])
+
+        return sorted(user_groups)
 
     def get_all_permissions(self):
         """Return all permissions for all users.

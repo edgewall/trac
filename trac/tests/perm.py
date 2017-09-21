@@ -193,6 +193,7 @@ class PermissionSystemTestCase(BaseTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=[perm.PermissionSystem,
+                                           perm.DefaultPermissionGroupProvider,
                                            perm.DefaultPermissionStore] +
                                           self.permission_requestors)
         self.perm = perm.PermissionSystem(self.env)
@@ -296,6 +297,24 @@ class PermissionSystemTestCase(BaseTestCase):
         self.assertEqual(['TEST_ADMIN', 'TEST_CREATE', 'TEST_DELETE'],
                          users['user1'])
         self.assertEqual(['TEST_CREATE'], users['user2'])
+
+    def test_get_user_groups(self):
+        permissions = [
+            ('user1', 'group1'),
+            ('group1', 'group2'),
+            ('group2', 'group3'),
+            ('user2', 'group4'),
+            ('user1', 'group5'),
+            ('group6', 'group7'),
+        ]
+        for perm_ in permissions:
+            self.perm.grant_permission(*perm_)
+
+        self.assertEqual(['anonymous', 'authenticated', 'group1', 'group2',
+                          'group3', 'group5'],
+                         self.perm.get_user_groups('user1'))
+        self.assertEqual(['anonymous', 'authenticated', 'group4'],
+                         self.perm.get_user_groups('user2'))
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
