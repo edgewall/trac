@@ -884,8 +884,7 @@ class EnvironmentSetup(Component):
         if not os.path.isfile(filename):
             return
         config = Configuration(filename)
-        for (section, name), option in Option.get_registry().iteritems():
-            config.set(section, name, option.dumps(option.default))
+        config.set_defaults()
         try:
             config.save()
             self.log.info("Wrote sample configuration file with the new "
