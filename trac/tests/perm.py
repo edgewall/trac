@@ -306,6 +306,9 @@ class PermissionSystemTestCase(BaseTestCase):
             ('user2', 'group4'),
             ('user1', 'group5'),
             ('group6', 'group7'),
+            ('user3', 'group8'),
+            ('group8', 'group9'),  # test recursion
+            ('group9', 'group8'),
         ]
         for perm_ in permissions:
             self.perm.grant_permission(*perm_)
@@ -315,6 +318,8 @@ class PermissionSystemTestCase(BaseTestCase):
                          self.perm.get_user_groups('user1'))
         self.assertEqual(['anonymous', 'authenticated', 'group4'],
                          self.perm.get_user_groups('user2'))
+        self.assertEqual(['anonymous', 'authenticated', 'group8', 'group9'],
+                         self.perm.get_user_groups('user3'))
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)

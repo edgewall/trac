@@ -479,7 +479,7 @@ class PermissionSystem(Component):
             for m in members:
                 if m == username:
                     user_groups.add(group)
-                elif m in groups_dict:
+                elif m != group and m in groups_dict:
                     expand_members(group, groups_dict[m])
 
         for group, members in groups_dict.iteritems():
