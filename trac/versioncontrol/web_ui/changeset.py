@@ -28,7 +28,7 @@ from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.mimeview.api import Mimeview
 from trac.perm import IPermissionRequestor
-from trac.resource import Resource, ResourceNotFound
+from trac.resource import ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import as_bool, content_disposition, embedded_numbers, pathjoin
@@ -890,8 +890,6 @@ class ChangesetModule(Component):
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
-                        cset_resource = Resource(self.realm, cset.rev,
-                                                 parent=repos.resource)
                         if cset.is_viewable(req.perm):
                             repos_for_uid = [repos.reponame]
                             uid = repos.get_changeset_uid(cset.rev)
@@ -901,7 +899,7 @@ class ChangesetModule(Component):
                                     uids_seen[uid].append(repos.reponame)
                                     continue  # already viewable, just append
                                 uids_seen[uid] = repos_for_uid
-                            viewable_changesets.append((cset, cset_resource,
+                            viewable_changesets.append((cset, cset.resource,
                                                         repos_for_uid))
                     if viewable_changesets:
                         cset = viewable_changesets[-1][0]
