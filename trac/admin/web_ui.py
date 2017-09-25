@@ -422,7 +422,7 @@ class PermissionAdminPanel(Component):
 
             # Copy permissions to subject
             elif req.args.get('copy') and subject and target:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
 
                 subject_permissions = [i[1] for i in all_permissions
                                             if i[0] == subject and
