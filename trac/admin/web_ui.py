@@ -403,7 +403,7 @@ class PermissionAdminPanel(Component):
 
             # Copy permissions to subject
             elif 'copy' in req.args and subject and target:
-                req.perm.require('PERMISSION_GRANT')
+                req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
 
                 subject_permissions = perm.get_users_dict().get(subject, [])
                 if not subject_permissions:
