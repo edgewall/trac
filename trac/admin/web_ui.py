@@ -385,18 +385,12 @@ class PermissionAdminPanel(Component):
             elif 'add' in req.args and subject and group:
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
-                    if action not in all_actions:  # plugin disabled?
-                        self.log.warning("Adding %s to group %s: Permission "
-                                         "%s unavailable, skipping perm check.",
-                                         subject, group, action)
-                    else:
-                        req.perm.require(action,
-                            message=_("The subject %(subject)s was not added "
-                                      "to the group %(group)s because the "
-                                      "group has %(perm)s permission and "
-                                      "users cannot grant permissions they "
-                                      "don't possess.", subject=subject,
-                                      group=group, perm=action))
+                    req.perm.require(action,
+                        message=_("The subject %(subject)s was not added to "
+                                  "the group %(group)s because the group has "
+                                  "%(perm)s permission and users cannot grant "
+                                  "permissions they don't possess.",
+                                  subject=subject, group=group, perm=action))
                 try:
                     perm.grant_permission(subject, group)
                 except TracError as e:

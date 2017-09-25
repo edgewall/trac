@@ -18,7 +18,7 @@ import unittest
 from trac.admin.web_ui import AdminModule, PermissionAdminPanel, \
                               PluginAdminPanel
 from trac.core import Component, TracError
-from trac.perm import PermissionSystem
+from trac.perm import PermissionError, PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import RequestDone
 
@@ -56,6 +56,39 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
 
         self.assertIn("The user user1 is already in the group group1.",
                       req.chrome['warnings'])
+
+    def test_grant_permission_with_permission_grant(self):
+        """User can only grant permissions they possess."""
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'PERMISSION_GRANT')
+        ps.grant_permission('group1', 'WIKI_ADMIN')
+        req = MockRequest(self.env, method='POST', authname='user1', args={
+            'add': True, 'subject': 'user2', 'group': 'group1'})
+
+        with self.assertRaises(PermissionError) as cm:
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertEqual("The subject user2 was not added to the group group1 "
+                         "because the group has WIKI_DELETE permission and "
+                         "users cannot grant permissions they don't possess.",
+                         unicode(cm.exception))
+
+    def test_grant_undefined_permission_with_permission_grant(self):
+        """Undefined permission is granted without checking granter."""
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'PERMISSION_GRANT')
+        self.env.db_transaction("""
+            INSERT INTO permission VALUES ('group1', 'TEST_PERM')
+            """)
+        req = MockRequest(self.env, method='POST', authname='user1', args={
+            'add': True, 'subject': 'user2', 'group': 'group1'})
+
+        with self.assertRaises(RequestDone):
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertIn('TEST_PERM',
+                      ps.get_user_permissions('group1', undefined=True))
+        self.assertIn('user2', ps.get_groups_dict()['group1'])
 
 
 class PluginAdminPanelTestCase(unittest.TestCase):
