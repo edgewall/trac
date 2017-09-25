@@ -300,12 +300,12 @@ def create_file(path, data='', mode='w'):
 def create_unique_file(path):
     """Create a new file. An index is added if the path exists"""
     parts = os.path.splitext(path)
+    flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
+    if hasattr(os, 'O_BINARY'):
+        flags += os.O_BINARY
     idx = 1
     while 1:
         try:
-            flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
-            if hasattr(os, 'O_BINARY'):
-                flags += os.O_BINARY
             return path, os.fdopen(os.open(path, flags, 0666), 'w')
         except OSError as e:
             if e.errno != errno.EEXIST:
