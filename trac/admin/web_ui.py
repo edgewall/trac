@@ -386,10 +386,9 @@ class PermissionAdminPanel(Component):
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
                     if action not in all_actions:  # plugin disabled?
-                        self.env.log.warning("Adding %s to group %s: "
-                                             "Permission %s unavailable, "
-                                             "skipping perm check.",
-                                             subject, group, action)
+                        self.log.warning("Adding %s to group %s: Permission "
+                                         "%s unavailable, skipping perm check.",
+                                         subject, group, action)
                     else:
                         req.perm.require(action,
                             message=_("The subject %(subject)s was not added "
@@ -423,9 +422,9 @@ class PermissionAdminPanel(Component):
 
                 for action in subject_permissions:
                     if action not in all_actions:  # plugin disabled?
-                        self.env.log.warning("Skipped granting %s to %s: "
-                                             "permission unavailable.",
-                                             action, target)
+                        self.log.warning("Skipped granting %s to %s: "
+                                         "permission unavailable.",
+                                         action, target)
                     else:
                         if action not in req.perm:
                             add_warning(req,
