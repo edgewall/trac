@@ -90,6 +90,39 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
                       ps.get_user_permissions('group1', undefined=True))
         self.assertIn('user2', ps.get_groups_dict()['group1'])
 
+    def test_copy_permissions_to_subject(self):
+        """Copy permissions to subject.
+
+        Undefined actions are skipped.
+        """
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'WIKI_VIEW')
+        ps.grant_permission('user1', 'TICKET_VIEW')
+        self.env.db_transaction("""
+            INSERT INTO permission VALUES ('user1', 'TEST_PERM')
+            """)
+        req = MockRequest(self.env, method='POST', args={
+            'copy': True, 'subject': 'user1', 'target': 'user2'})
+
+        with self.assertRaises(RequestDone):
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertEqual(['TICKET_VIEW', 'WIKI_VIEW'],
+                          ps.get_users_dict().get('user2'))
+        self.assertEqual(2, len(req.chrome['notices']))
+        self.assertIn("The subject user2 has been granted the permission "
+                      "TICKET_VIEW.", req.chrome['notices'])
+        self.assertIn("The subject user2 has been granted the permission "
+                      "WIKI_VIEW.", req.chrome['notices'])
+        self.assertIn(("WARNING", "Skipped granting TEST_PERM to user2: "
+                                  "permission unavailable."),
+                      self.env.log_messages)
+        self.assertIn(("INFO", "Granted permission for TICKET_VIEW to user2"),
+                       self.env.log_messages)
+        self.assertIn(("INFO", "Granted permission for TICKET_VIEW to user2"),
+                       self.env.log_messages)
+
+
 
 class PluginAdminPanelTestCase(unittest.TestCase):
 

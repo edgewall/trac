@@ -405,10 +405,7 @@ class PermissionAdminPanel(Component):
             elif 'copy' in req.args and subject and target:
                 req.perm.require('PERMISSION_GRANT')
 
-                subject_permissions = [p[1] for p
-                                            in perm.get_all_permissions()
-                                            if p[0] == subject and
-                                               p[1].isupper()]
+                subject_permissions = perm.get_users_dict().get(subject, [])
                 if not subject_permissions:
                     add_warning(req, _("The subject %(subject)s does not "
                                        "have any permissions.",
