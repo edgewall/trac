@@ -389,11 +389,11 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been "
                                       "granted the permission %(action)s.",
                                       subject=subject, action=action))
-                    req.redirect(req.href.admin(cat, page))
                 else:
                     add_warning(req, _("The permission %(action)s was already "
                                        "granted to %(subject)s.",
                                        action=action, subject=subject))
+                req.redirect(req.href.admin(cat, page))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
@@ -416,11 +416,11 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been added "
                                       "to the group %(group)s.",
                                       subject=subject, group=group))
-                    req.redirect(req.href.admin(cat, page))
                 else:
                     add_warning(req, _("The subject %(subject)s was already "
                                        "added to the group %(group)s.",
                                        subject=subject, group=group))
+                req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):

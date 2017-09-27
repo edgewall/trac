@@ -320,7 +320,7 @@ class RepositoryAdminPanel(Component):
                             db_provider.remove_repository(name)
                         add_notice(req, _('The selected repositories have '
                                           'been removed.'))
-                        req.redirect(req.href.admin(category, page))
+                    req.redirect(req.href.admin(category, page))
                     add_warning(req, _('No repositories were selected.'))
 
             data = {'view': 'list'}

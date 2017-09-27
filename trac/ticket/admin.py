@@ -145,7 +145,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         self.log.info("Setting default component to %s", name)
                         self.config.set('ticket', 'default_component', name)
                         _save_config(self.config, req, self.log)
-                        req.redirect(req.href.admin(cat, page))
+                    req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
                     'components': list(model.Component.select(self.env)),
@@ -322,7 +322,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self.log.info("Setting default milestone to %s", name)
                         self.config.set('ticket', 'default_milestone', name)
                         _save_config(self.config, req, self.log)
-                        req.redirect(req.href.admin(cat, page))
+                    req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
             counts = dict(self.env.db_query("""
@@ -513,7 +513,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         self.log.info("Setting default version to %s", name)
                         self.config.set('ticket', 'default_version', name)
                         _save_config(self.config, req, self.log)
-                        req.redirect(req.href.admin(cat, page))
+                    req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
                     'versions': list(model.Version.select(self.env)),
