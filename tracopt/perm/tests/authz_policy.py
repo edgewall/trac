@@ -14,8 +14,9 @@
 import os
 import unittest
 
+from trac.core import Component, ComponentMeta, implements
 from trac.config import ConfigurationError
-from trac.perm import PermissionCache
+from trac.perm import IPermissionRequestor, PermissionCache
 from trac.resource import Resource
 from trac.test import EnvironmentStub, Mock, mkdtemp
 from trac.util import create_file
@@ -24,6 +25,23 @@ from tracopt.perm.authz_policy import AuthzPolicy
 
 
 class AuthzPolicyTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        class TestPermissionRequestor(Component):
+            implements(IPermissionRequestor)
+
+            def get_permission_actions(self):
+                perms = ['TEST_VIEW', 'TEST_CREATE', 'TEST_DELETE',
+                         'TEST_MODIFY']
+                return [('TEST_ADMIN', perms)] + perms
+
+        cls.permission_requestors = [TestPermissionRequestor]
+
+    @classmethod
+    def tearDownClass(cls):
+        for component in cls.permission_requestors:
+            ComponentMeta.deregister(component)
 
     def setUp(self):
         temp_dir = mkdtemp()
@@ -72,8 +90,10 @@ John = WIKI_VIEW
 [milestone:milestone1]
 anonymous = MILESTONE_VIEW
 """)
-        self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
-                                   path=temp_dir)
+        self.env = EnvironmentStub(enable=['trac.perm.*', AuthzPolicy] +
+                                          self.permission_requestors,
+                                   path=temp_dir,
+                                   config=[('logging', 'log_level', 'WARNING')])
         self.env.config.set('trac', 'permission_policies',
                             'AuthzPolicy, DefaultPermissionPolicy')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
@@ -204,24 +224,21 @@ anonymous = MILESTONE_VIEW
 [groups]
 administrators = éat
 [wiki:WikiStart]
-änon = UNKNOWN_VIEW, WIKI_VIEW
+änon = UNKNOWN_VIEW, TEST_CREATE, !TEST_MODIFY
 [milestone:milestone1]
-* = UNKNOWN_EDIT
+* = UNKNOWN_MODIFY, !TEST_VIEW
 """)
         authz_policy = AuthzPolicy(self.env)
         authz_policy.parse_authz()
 
-        self.assertNotIn(('WARNING', u'The action éat in the [groups] '
-                                     u'section of trac-authz-policy is not a '
-                                     u'valid action.'),
-                         self.env.log_messages)
-        self.assertIn(('WARNING', 'The action UNKNOWN_VIEW in the '
-                                  '[wiki:WikiStart] section of '
-                                  'trac-authz-policy is not a valid action.'),
+        self.assertEqual(2, len(self.env.log_messages))
+        self.assertIn(('WARNING',
+                       'The action UNKNOWN_VIEW in the [wiki:WikiStart] '
+                       'section of trac-authz-policy is not a valid action.'),
                       self.env.log_messages)
-        self.assertIn(('WARNING', 'The action UNKNOWN_EDIT in the '
-                                  '[milestone:milestone1] section of '
-                                  'trac-authz-policy is not a valid action.'),
+        self.assertIn(('WARNING',
+                       'The action UNKNOWN_MODIFY in the [milestone:milestone1] '
+                       'section of trac-authz-policy is not a valid action.'),
                       self.env.log_messages)
 
     def test_get_authz_file(self):

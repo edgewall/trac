@@ -303,7 +303,7 @@ class EnvironmentStub(Environment):
     abstract = True
 
     def __init__(self, default_data=False, enable=None, disable=None,
-                 path=None, destroying=False):
+                 path=None, destroying=False, config=None):
         """Construct a new Environment stub object.
 
         :param default_data: If True, populate the database with some
@@ -318,6 +318,8 @@ class EnvironmentStub(Environment):
         :param destroying: If True, the database will not be reset. This is
                            useful for cases when the object is being
                            constructed in order to call `destroy_db`.
+        :param config: A list of (section, key, value) configuration
+                       tuples.
         """
         if enable is not None and not isinstance(enable, (list, tuple)):
             raise TypeError('Keyword argument "enable" must be a list')
@@ -356,8 +358,25 @@ class EnvironmentStub(Environment):
             self.config.set('components', config_key, 'disabled')
         self.config.set('trac', 'permission_policies',
                         'DefaultPermissionPolicy, LegacyAttachmentPolicy')
+        for item in config or []:
+            self.config.set(*item)
 
         # -- logging
+        self.setup_log()
+
+        # -- database
+        self.dburi = get_dburi()
+        self.config.set('components', 'trac.db.*', 'enabled')
+        self.config.set('trac', 'database', self.dburi)
+
+        if not destroying:
+            self.reset_db(default_data)
+
+        self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
+
+        translation.activate(locale_en)
+
+    def setup_log(self):
         self.log = logging.getLogger('trac.test')
         level = self.log_level.upper()
         level_as_int = trac.log.LOG_LEVEL_MAP.get(level)
@@ -373,18 +392,6 @@ class EnvironmentStub(Environment):
             self.log.handlers[0].flush()  # Reset buffer.
         else:
             raise TracError("Logger has unexpected handler(s).")
-
-        # -- database
-        self.dburi = get_dburi()
-        self.config.set('components', 'trac.db.*', 'enabled')
-        self.config.set('trac', 'database', self.dburi)
-
-        if not destroying:
-            self.reset_db(default_data)
-
-        self.config.set('trac', 'base_url', 'http://example.org/trac.cgi')
-
-        translation.activate(locale_en)
 
     @property
     def log_messages(self):
