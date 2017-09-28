@@ -19,7 +19,8 @@ import time
 import urllib
 from abc import ABCMeta, abstractmethod
 
-from trac.api import ISystemInfoProvider
+from trac import db_default
+from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import BoolOption, ConfigurationError, IntOption, Option
 from trac.core import *
 from trac.db.pool import ConnectionPool
@@ -253,7 +254,7 @@ class IDatabaseConnector(Interface):
 class DatabaseManager(Component):
     """Component used to manage the `IDatabaseConnector` implementations."""
 
-    implements(ISystemInfoProvider)
+    implements(IEnvironmentSetupParticipant, ISystemInfoProvider)
 
     connectors = ExtensionPoint(IDatabaseConnector)
 
@@ -279,8 +280,7 @@ class DatabaseManager(Component):
 
     def init_db(self):
         connector, args = self.get_connector()
-        from trac.db_default import schema
-        args['schema'] = schema
+        args['schema'] = db_default.schema
         connector.init_db(**args)
 
     def destroy_db(self):
@@ -600,6 +600,18 @@ class DatabaseManager(Component):
         if self.debug_sql:
             args['log'] = self.log
         return connector, args
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """Insert default data into the database."""
+        self.insert_into_tables(db_default.get_data)
+
+    def environment_needs_upgrade(self):
+        return self.needs_upgrade(db_default.db_version)
+
+    def upgrade_environment(self):
+        self.upgrade(db_default.db_version, pkg='trac.upgrades')
 
     # ISystemInfoProvider methods
 

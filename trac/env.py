@@ -28,7 +28,7 @@ from subprocess import PIPE
 from tempfile import mkdtemp
 from urlparse import urlsplit
 
-from trac import db_default, log
+from trac import log
 from trac.admin.api import (AdminCommandError, IAdminCommandProvider,
                             get_dir_list)
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
@@ -524,9 +524,10 @@ class Environment(Component, ComponentManager):
         # Create the directory structure
         if not os.path.exists(self.path):
             os.mkdir(self.path)
-        os.mkdir(self.log_dir)
         os.mkdir(self.htdocs_dir)
+        os.mkdir(self.log_dir)
         os.mkdir(self.plugins_dir)
+        os.mkdir(self.templates_dir)
 
         # Create a few files
         create_file(os.path.join(self.path, 'VERSION'), _VERSION + '\n')
@@ -536,7 +537,6 @@ class Environment(Component, ComponentManager):
 
         # Setup the default configuration
         os.mkdir(self.conf_dir)
-        create_file(self.config_file_path + '.sample')
         config = Configuration(self.config_file_path)
         for section, name, value in options:
             config.set(section, name, value)
@@ -546,6 +546,10 @@ class Environment(Component, ComponentManager):
                    for section, option, value in options):
             self.config.set_defaults(self)
             self.config.save()
+
+        # Create the sample configuration
+        create_file(self.config_file_path + '.sample')
+        self._update_sample_config()
 
         # Create the database
         DatabaseManager(self).init_db()
@@ -767,6 +771,8 @@ class Environment(Component, ComponentManager):
             dbm = DatabaseManager(self)
             if dbm.connection_uri != 'sqlite::memory:':
                 dbm.shutdown()
+
+        self._update_sample_config()
         del self.database_version
         return True
 
@@ -783,45 +789,21 @@ class Environment(Component, ComponentManager):
                              "generated links may be incorrect")
         return Href(self.base_url)
 
-
-class EnvironmentSetup(Component):
-    """Manage automatic environment upgrades."""
-
-    required = True
-
-    implements(IEnvironmentSetupParticipant)
-
-    # IEnvironmentSetupParticipant methods
-
-    def environment_created(self):
-        """Insert default data into the database."""
-        DatabaseManager(self.env).insert_into_tables(db_default.get_data)
-        self._update_sample_config()
-
-    def environment_needs_upgrade(self):
-        return DatabaseManager(self.env).needs_upgrade(db_default.db_version)
-
-    def upgrade_environment(self):
-        DatabaseManager(self.env).upgrade(db_default.db_version,
-                                          pkg='trac.upgrades')
-        self._update_sample_config()
-
-    # Internal methods
-
     def _update_sample_config(self):
-        filename = os.path.join(self.env.config_file_path + '.sample')
+        filename = os.path.join(self.config_file_path + '.sample')
         if not os.path.isfile(filename):
             return
         config = Configuration(filename)
         config.set_defaults()
         try:
             config.save()
-            self.log.info("Wrote sample configuration file with the new "
-                          "settings and their default values: %s",
-                          filename)
         except IOError as e:
             self.log.warning("Couldn't write sample configuration file (%s)%s",
                              e, exception_to_unicode(e, traceback=True))
+        else:
+            self.log.info("Wrote sample configuration file with the new "
+                          "settings and their default values: %s",
+                          filename)
 
 
 env_cache = {}

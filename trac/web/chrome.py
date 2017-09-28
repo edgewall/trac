@@ -687,16 +687,13 @@ class Chrome(Component):
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
-        """Create the environment templates directory."""
-        if self.env.path:
-            templates_dir = self.env.templates_dir
-            if not os.path.exists(templates_dir):
-                os.mkdir(templates_dir)
+        """Add the sample templates to the environment templates dir."""
 
-            def write_sample_template(filename, kind, example=''):
-                site_path = os.path.join(templates_dir, filename + '.sample')
-                with open(site_path, 'w') as fileobj:
-                    fileobj.write("""\
+        def write_sample_template(filename, kind, example=''):
+            site_path = os.path.join(self.env.templates_dir,
+                                     filename + '.sample')
+            with open(site_path, 'w') as fileobj:
+                fileobj.write("""\
 {#  This file allows customizing the appearance of the Trac installation.
 
     Add your customizations to the %s here
@@ -710,16 +707,16 @@ class Chrome(Component):
       http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
 #}
 %s
-"""                               % (kind, filename, filename, example))
+"""                           % (kind, filename, filename, example))
 
-            write_sample_template('site_head.html',
-                                  'the end of the HTML <head>', """
+        write_sample_template('site_head.html',
+                              'the end of the HTML <head>', """
 <link rel="stylesheet" type="text/css" href="${href.chrome('site/style.css')}"/>
 """)
-            write_sample_template('site_header.html',
-                                  'the start of the HTML <body> content')
-            write_sample_template('site_footer.html',
-                                  'the end of the HTML <body> content')
+        write_sample_template('site_header.html',
+                              'the start of the HTML <body> content')
+        write_sample_template('site_footer.html',
+                              'the end of the HTML <body> content')
 
         # Set default values for mainnav and metanav ConfigSections.
         def add_nav_order_options(section, default):

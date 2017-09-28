@@ -14,7 +14,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from trac.db import Table, Column, Index
+from trac.db.schema import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
 db_version = 45
