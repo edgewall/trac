@@ -117,7 +117,6 @@ class ComponentAdminPanel(TicketAdminPanel):
                         comp.insert()
                         add_notice(req, _('The component "%(name)s" has been '
                                           'added.', name=name))
-                        req.redirect(req.href.admin(cat, page))
                     else:
                         if comp.name is None:
                             raise TracError(_("Invalid component name."))
@@ -138,7 +137,6 @@ class ComponentAdminPanel(TicketAdminPanel):
                                 self._save_config(req)
                     add_notice(req, _("The selected components have been "
                                       "removed."))
-                    req.redirect(req.href.admin(cat, page))
 
                 # Set default component
                 elif req.args.get('apply'):
@@ -147,7 +145,6 @@ class ComponentAdminPanel(TicketAdminPanel):
                         self.log.info("Setting default component to %s", name)
                         self.config.set('ticket', 'default_component', name)
                         self._save_config(req)
-                        req.redirect(req.href.admin(cat, page))
 
                 # Clear default component
                 elif req.args.get('clear'):
@@ -155,6 +152,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                     self.config.set('ticket', 'default_component', '')
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
+
+                req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
                     'components': list(model.Component.select(self.env)),
@@ -278,7 +277,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         milestone.name = name
                         MilestoneModule(self.env).save_milestone(req,
                                                                  milestone)
-                        req.redirect(req.href.admin(cat, page))
                     else:
                         add_warning(req, _('Milestone "%(name)s" already '
                                            'exists, please choose another '
@@ -309,7 +307,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self._save_config(req)
                     add_notice(req, _("The selected milestones have been "
                                       "removed."))
-                    req.redirect(req.href.admin(cat, page))
 
                 # Set default milestone
                 elif 'apply' in req.args:
@@ -329,7 +326,6 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         save = True
                     if save:
                         self._save_config(req)
-                        req.redirect(req.href.admin(cat, page))
 
                 # Clear default milestone
                 elif 'clear' in req.args:
@@ -339,6 +335,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     self.config.set('milestone', 'default_retarget_to', '')
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
+
+                req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
             num_tickets = dict(self.env.db_query("""
@@ -505,7 +503,6 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver.insert()
                         add_notice(req, _('The version "%(name)s" has been '
                                           'added.', name=name))
-                        req.redirect(req.href.admin(cat, page))
                     else:
                         if ver.name is None:
                             raise TracError(_("Invalid version name."))
@@ -525,7 +522,6 @@ class VersionAdminPanel(TicketAdminPanel):
                                 self._save_config(req)
                     add_notice(req, _("The selected versions have been "
                                       "removed."))
-                    req.redirect(req.href.admin(cat, page))
 
                 # Set default version
                 elif req.args.get('apply'):
@@ -534,7 +530,6 @@ class VersionAdminPanel(TicketAdminPanel):
                         self.log.info("Setting default version to %s", name)
                         self.config.set('ticket', 'default_version', name)
                         self._save_config(req)
-                        req.redirect(req.href.admin(cat, page))
 
                 # Clear default version
                 elif req.args.get('clear'):
@@ -542,6 +537,8 @@ class VersionAdminPanel(TicketAdminPanel):
                     self.config.set('ticket', 'default_version', '')
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
+
+                req.redirect(req.href.admin(cat, page))
 
             data = {'view': 'list',
                     'versions': list(model.Version.select(self.env)),
@@ -668,7 +665,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         add_notice(req, _('The %(field)s value "%(name)s" '
                                           'has been added.',
                                           field=label[0], name=name))
-                        req.redirect(req.href.admin(cat, page))
                     else:
                         if enum.name is None:
                             raise TracError(_("Invalid %(type)s value.",
@@ -690,7 +686,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                 self.config.save()
                     add_notice(req, _("The selected %(field)s values have "
                                       "been removed.", field=label[0]))
-                    req.redirect(req.href.admin(cat, page))
 
                 # Apply changes
                 elif req.args.get('apply'):
@@ -722,7 +717,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                     if changed:
                         add_notice(req, _("Your changes have been saved."))
-                    req.redirect(req.href.admin(cat, page))
 
                 # Clear default
                 elif req.args.get('clear'):
@@ -730,6 +724,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     self.config.set('ticket', 'default_%s' % self._type, '')
                     self._save_config(req)
                     req.redirect(req.href.admin(cat, page))
+
+                req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
                              default=default, view='list'))

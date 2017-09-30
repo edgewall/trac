@@ -387,7 +387,6 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been "
                                       "granted the permission %(action)s.",
                                       subject=subject, action=action))
-                    req.redirect(req.href.admin(cat, page))
                 else:
                     add_warning(req, _("The permission %(action)s was already "
                                        "granted to %(subject)s.",
@@ -414,7 +413,6 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been added "
                                       "to the group %(group)s.",
                                       subject=subject, group=group))
-                    req.redirect(req.href.admin(cat, page))
                 else:
                     add_warning(req, _("The subject %(subject)s was already "
                                        "added to the group %(group)s.",
@@ -468,7 +466,8 @@ class PermissionAdminPanel(Component):
                         perm.revoke_permission(subject, action)
                 add_notice(req, _("The selected permissions have been "
                                   "revoked."))
-                req.redirect(req.href.admin(cat, page))
+
+            req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
             'actions': all_actions,
