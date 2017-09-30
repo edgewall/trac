@@ -39,7 +39,8 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='POST', args={
             'add': True, 'subject': 'anonymous', 'action': 'WIKI_VIEW'})
 
-        self.panel.render_admin_panel(req, 'general', 'perm', None)
+        with self.assertRaises(RequestDone):
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
 
         self.assertIn("The user anonymous already has permission WIKI_VIEW.",
                       req.chrome['warnings'])
@@ -52,7 +53,8 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='POST', args={
             'add': True, 'subject': 'user1', 'group': 'group1'})
 
-        self.panel.render_admin_panel(req, 'general', 'perm', None)
+        with self.assertRaises(RequestDone):
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
 
         self.assertIn("The user user1 is already in the group group1.",
                       req.chrome['warnings'])

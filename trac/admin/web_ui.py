@@ -379,7 +379,6 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been "
                                       "granted the permission %(action)s.",
                                       subject=subject, action=action))
-                    req.redirect(req.href.admin(cat, page))
 
             # Add subject to group
             elif 'add' in req.args and subject and group:
@@ -399,7 +398,6 @@ class PermissionAdminPanel(Component):
                     add_notice(req, _("The subject %(subject)s has been "
                                       "added to the group %(group)s.",
                                       subject=subject, group=group))
-                    req.redirect(req.href.admin(cat, page))
 
             # Copy permissions to subject
             elif 'copy' in req.args and subject and target:
@@ -447,7 +445,8 @@ class PermissionAdminPanel(Component):
                         perm.revoke_permission(subject, action)
                 add_notice(req, _("The selected permissions have been "
                                   "revoked."))
-                req.redirect(req.href.admin(cat, page))
+
+            req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
             'actions': all_actions,

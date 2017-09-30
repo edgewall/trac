@@ -335,7 +335,6 @@ class RepositoryAdminPanel(Component):
                                    '%(doc)s for more information.',
                                    cset_added=cset_added, doc=doc)
                         add_notice(req, msg)
-                        req.redirect(req.href.admin(category, page))
 
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
@@ -350,13 +349,13 @@ class RepositoryAdminPanel(Component):
                                               'exists.', name=pretty_name))
                         add_notice(req, _('The alias "%(name)s" has been '
                                           'added.', name=pretty_name))
-                        req.redirect(req.href.admin(category, page))
-                    add_warning(req, _('Missing arguments to add an '
-                                       'alias.'))
+                    else:
+                        add_warning(req, _('Missing arguments to add an '
+                                           'alias.'))
 
                 # Refresh the list of repositories
                 elif req.args.get('refresh'):
-                    req.redirect(req.href.admin(category, page))
+                    pass
 
                 # Remove repositories
                 elif db_provider and req.args.get('remove'):
@@ -366,8 +365,10 @@ class RepositoryAdminPanel(Component):
                             db_provider.remove_repository(name)
                         add_notice(req, _('The selected repositories have '
                                           'been removed.'))
-                        req.redirect(req.href.admin(category, page))
-                    add_warning(req, _('No repositories were selected.'))
+                    else:
+                        add_warning(req, _('No repositories were selected.'))
+
+                req.redirect(req.href.admin(category, page))
 
             data = {'view': 'list'}
 
