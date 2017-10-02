@@ -100,7 +100,7 @@
     <div id="content" class="error">
       # if type == 'TracError':
       <h1>${title}</h1>
-      #   if not find_element(message, tag='p'):
+      #   if not find_element(message, tag='p') and not find_element(message, tag='div'):
       <p class="message">${message}</p>
       #   else:
       ${message}

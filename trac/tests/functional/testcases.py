@@ -57,8 +57,9 @@ class TestErrorPage(FunctionalTwillTestCaseSetup):
         env.config.save()
         create_file(os.path.join(env.plugins_dir, 'RaiseExceptionPlugin.py'),
 """\
-from trac.core import Component, implements
+from trac.core import Component, TracError, implements
 from trac.web.api import IRequestHandler
+from trac.util.html import html
 
 url = None
 
@@ -70,10 +71,24 @@ class RaiseExceptionPlugin(Component):
             return True
 
     def process_request(self, req):
-        if req.args.get('report') == 'tho':
-            global url
-            url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
-        raise Exception
+        if req.args.get('type') == 'tracerror':
+            if req.args.get('div'):
+                raise TracError(html.div("The message in a div",
+                                class_='message'))
+            elif req.args.get('p'):
+                raise TracError(html.p("The message in a p",
+                                class_='message'))
+            elif req.args.get('i'):
+                raise TracError(html("The message with ",
+                                     html.span("inline span"),
+                                     " element"))
+            else:
+                raise TracError("The plaintext message")
+        else:
+            if req.args.get('report') == 'tho':
+                global url
+                url = 'http://trac-hacks.org/wiki/HelloWorldMacro'
+            raise Exception
 
 """)
         self._testenv.restart()
@@ -90,6 +105,26 @@ class RaiseExceptionPlugin(Component):
                     'action="http://trac-hacks.org/newticket">')
             tc.find('<input type="hidden" name="component" '
                     'value="HelloWorldMacro" />')
+
+            tc.go(self._tester.url + '/raise-exception?type=tracerror&div=true')
+            tc.notfind(internal_error)
+            tc.find('<h1>Trac Error</h1>[ \t\n]+'
+                    '<div class="message">The message in a div</div>')
+
+            tc.go(self._tester.url + '/raise-exception?type=tracerror&p=true')
+            tc.notfind(internal_error)
+            tc.find('<h1>Trac Error</h1>[ \t\n]+'
+                    '<p class="message">The message in a p</p>')
+
+            tc.go(self._tester.url + '/raise-exception?type=tracerror&i=true')
+            tc.notfind(internal_error)
+            tc.find('<h1>Trac Error</h1>[ \t\n]+'
+                    '<p class="message">The message with '
+                    '<span>inline span</span> element</p>')
+
+            tc.go(self._tester.url + '/raise-exception?type=tracerror')
+            tc.find('<h1>Trac Error</h1>[ \t\n]+'
+                    '<p class="message">The plaintext message</p>')
         finally:
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 

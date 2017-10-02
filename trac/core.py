@@ -37,11 +37,14 @@ class TracError(TracBaseError):
     """Standard exception for errors in Trac."""
 
     def __init__(self, message, title=None, show_traceback=False):
-        """If message is an Element object, everything up to
-        the first <p> will be displayed in the red box, and everything
-        after will be displayed below the red box.  If title is given,
-        it will be displayed as the large header above the error
-        message.
+        """If the `message` contains a `p` or `div` element it will be
+        rendered directly. Use the `message` class on the `p` or `div`
+        element to style as a red box. Otherwise, the message should be
+        plain text or contain only inline elements and will be wrapped
+        in a `p` element and rendered in a red box.
+
+        If title is given, it will be displayed as the large header
+        above the error message.
         """
         from trac.util.translation import gettext
         super(TracError, self).__init__(message)
