@@ -26,7 +26,7 @@ from trac.config import (
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
-from trac.util import Ranges, as_int
+from trac.util import Ranges, as_bool, as_int
 from trac.util.datefmt import parse_date, user_time
 from trac.util.html import tag
 from trac.util.text import shorten_line, to_unicode
@@ -443,6 +443,8 @@ class TicketSystem(Component):
                     field['optional'] = True
                     if '' in field['options']:
                         field['options'].remove('')
+            elif field['type'] == 'checkbox':
+                field['value'] = '1' if as_bool(field['value']) else '0'
             elif field['type'] == 'text':
                 field['format'] = config.get(name + '.format', 'plain')
                 field['max_size'] = config.getint(name + '.max_size', 0)
