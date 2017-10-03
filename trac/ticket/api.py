@@ -27,7 +27,7 @@ from trac.config import (
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
-from trac.util import Ranges, as_int
+from trac.util import Ranges, as_bool, as_int
 from trac.util.text import shorten_line
 from trac.util.translation import _, N_, deactivate, gettext, reactivate
 from trac.wiki import IWikiSyntaxProvider, WikiParser
@@ -422,6 +422,8 @@ class TicketSystem(Component):
                     field['optional'] = True
                     if '' in field['options']:
                         field['options'].remove('')
+            elif field['type'] == 'checkbox':
+                field['value'] = '1' if as_bool(field['value']) else '0'
             elif field['type'] == 'text':
                 field['format'] = config.get(name + '.format', 'plain')
             elif field['type'] == 'textarea':

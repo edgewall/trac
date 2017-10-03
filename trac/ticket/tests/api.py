@@ -90,6 +90,29 @@ class TicketSystemTestCase(unittest.TestCase):
                           'format': 'wiki', 'custom': True},
                          fields[0])
 
+    def test_custom_field_checkbox(self):
+        def add_checkbox(name, value):
+            self.env.config.set('ticket-custom', name, 'checkbox')
+            self.env.config.set('ticket-custom', '%s.value' % name, value)
+
+        add_checkbox('checkbox0', 'true')
+        add_checkbox('checkbox1', 1)
+        add_checkbox('checkbox2', 'enabled')
+        add_checkbox('checkbox3', 0)
+        add_checkbox('checkbox4', 'tru')
+        add_checkbox('checkbox5', 'off')
+
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'checkbox0', 'type': 'checkbox',
+                          'label': 'Checkbox0', 'value': '1',
+                          'order': 0, 'custom': True},
+                         fields[0])
+        self.assertEqual('1', fields[1]['value'])
+        self.assertEqual('1', fields[2]['value'])
+        self.assertEqual('0', fields[3]['value'])
+        self.assertEqual('0', fields[4]['value'])
+        self.assertEqual('0', fields[5]['value'])
+
     def test_custom_field_time(self):
         self.env.config.set('ticket-custom', 'test', 'time')
         self.env.config.set('ticket-custom', 'test.label', 'Test')
