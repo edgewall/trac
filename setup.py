@@ -12,8 +12,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from __future__ import with_statement
-
 import sys
 
 from setuptools import setup, find_packages
@@ -56,8 +54,11 @@ except ImportError:
 
 
 def readme():
-    with open('README') as f:
-        return f.read()
+    # Don't use context manager (comment:21:ticket:12578)
+    f = open('README.rst')
+    content = f.read()
+    f.close()
+    return content
 
 
 setup(
