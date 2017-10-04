@@ -55,7 +55,7 @@ except ImportError:
 
 def readme():
     # Don't use context manager (comment:21:ticket:12578)
-    f = open('README.rst')
+    f = open('README')
     content = f.read()
     f.close()
     return content
