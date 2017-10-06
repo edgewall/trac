@@ -567,7 +567,6 @@ class Request(object):
         self._response = None
 
         self._outheaders = []
-        self._outcharset = None
         self.outcookie = Cookie()
 
         self.callbacks = {
@@ -701,13 +700,6 @@ class Request(object):
         `value` must either be an `unicode` string or can be converted to one
         (e.g. numbers, ...)
         """
-        lower_name = name.lower()
-        if lower_name == 'content-type':
-            ctpos = value.find('charset=')
-            if ctpos >= 0:
-                self._outcharset = value[ctpos + 8:].strip()
-        elif lower_name == 'content-length':
-            self._content_length = int(value)
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def end_headers(self):
