@@ -1866,6 +1866,13 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
+class RegressionTestTicket12919(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression http://trac.edgewall.org/ticket/12919"""
+        self._tester.create_report('#12919.', "SELECT 'blah' as keywords", '')
+        tc.find(r'<td class="fullrow keywords" colspan="100">blah\s*<hr />')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -1941,6 +1948,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket11590())
     suite.addTest(RegressionTestTicket11996())
     suite.addTest(RegressionTestTicket12801())
+    suite.addTest(RegressionTestTicket12919())
 
     return suite
 

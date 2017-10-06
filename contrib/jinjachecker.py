@@ -147,7 +147,7 @@ JINJA2_BLOCK_KEYWORDS = (
 )
 
 JINJA2_NO_COLON_KEYWORDS = (
-    'block', 'extends', 'import', 'include', 'macro', 'pluralize', 'set',
+    'block', 'do', 'extends', 'import', 'include', 'macro', 'pluralize', 'set',
     'trans', 'with'
 )
 

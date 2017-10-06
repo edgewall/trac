@@ -64,7 +64,7 @@ def jinja2env(**kwargs):
         line_comment_prefix='##',
         trim_blocks=True,
         lstrip_blocks=True,
-        extensions=['jinja2.ext.i18n', 'jinja2.ext.with_'],
+        extensions=['jinja2.ext.do', 'jinja2.ext.i18n', 'jinja2.ext.with_'],
         finalize=filterout_none,
         autoescape=autoescape_extensions,
     )
