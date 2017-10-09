@@ -256,8 +256,15 @@ class WikiModule(Component):
     def _do_edit_comment(self, req, page):
         req.perm(page.resource).require('WIKI_ADMIN')
 
+        redirect_to = req.args.get('redirect_to')
+        version = old_version = None
+        if redirect_to == 'diff':
+            version = page.version
+            old_version = version - 1
+        redirect_href = req.href.wiki(page.name, action=redirect_to,
+                                      version=version, old_version=old_version)
         if 'cancel' in req.args:
-            req.redirect(req.href.wiki(page.name, action='history'))
+            req.redirect(redirect_href)
 
         new_comment = req.args.get('new_comment')
 
@@ -265,7 +272,7 @@ class WikiModule(Component):
         add_notice(req, _("The comment of version %(version)s of the page "
                           "%(name)s has been updated.",
                           version=page.version, name=page.name))
-        req.redirect(req.href.wiki(page.name, action='history'))
+        req.redirect(redirect_href)
 
     def _do_delete(self, req, page):
         req.perm(page.resource).require('WIKI_DELETE')
@@ -483,6 +490,7 @@ class WikiModule(Component):
             'longcol': 'Version', 'shortcol': 'v',
             'changes': changes,
             'diff': diff_data,
+            'can_edit_comment': 'WIKI_ADMIN' in req.perm(page.resource),
         })
         prevnext_nav(req, _("Previous Change"), _("Next Change"),
                      _("Wiki History"))
@@ -577,6 +585,7 @@ class WikiModule(Component):
     def _render_edit_comment(self, req, page):
         req.perm(page.resource).require('WIKI_ADMIN')
         data = self._page_data(req, page, 'edit_comment')
+        data.update({'redirect_to': req.args.get('redirect_to', 'history')})
         self._wiki_ctxtnav(req, page)
         return 'wiki_edit_comment.html', data
 

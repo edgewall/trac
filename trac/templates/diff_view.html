@@ -111,6 +111,13 @@
           # if multi:
           <em class="multi">${_("(multiple changes)")}</em>
           # else:
+          #   if can_edit_comment:
+          <span class="inlinebuttons">
+            <a href="${url_of(resource, action='edit_comment',
+                       version=resource.version, redirect_to='diff')}">${
+              captioned_button("✎", _("Edit"))}</a>
+          </span>
+          #   endif
           ${wiki_to_html(context.child(resource), change.comment)}
           # endif
         </dd>

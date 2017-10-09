@@ -168,6 +168,42 @@ class TestWikiHistory(FunctionalTwillTestCaseSetup):
         tc.find(r'<a href="/wiki/%(name)s">%(name)s</a>' % {'name': pagename})
 
 
+class TestWikiEditComment(FunctionalTwillTestCaseSetup):
+    """Edit wiki page comment from diff and history."""
+    def runTest(self):
+        initial_comment = "Initial comment"
+        pagename = self._tester.create_wiki_page(comment=initial_comment)
+        url = self._tester.url
+        tc.follow(r"\bHistory\b")
+        history_url = url + r'/wiki/%s\?action=history' % pagename
+        tc.url(history_url)
+
+        # Comment edit from history page
+        tc.follow(r"\bEdit\b")
+        tc.url(url + r'/wiki/%s\?action=edit_comment&version=1' % pagename)
+        tc.find("Old comment:[ \t\n]+%s" % initial_comment)
+        first_comment_edit = "First comment edit"
+        tc.formvalue('edit-comment-form', 'new_comment', first_comment_edit)
+        tc.submit()
+        tc.url(history_url)
+        tc.find(r'<td class="comment">[ \t\n]+%s' % first_comment_edit)
+
+        # Comment edit from diff page
+        tc.formvalue('history', 'version', '1')
+        tc.submit()
+        diff_url = url + r'/wiki/%s\?action=diff&version=1' % pagename
+        tc.url(diff_url)
+        tc.find(r'<p>[ \t\n]+%s[ \t\n]+</p>' % first_comment_edit)
+        tc.follow(r"\bEdit\b")
+        tc.url(url + r'/wiki/%s\?action=edit_comment&version=1&redirect_to=diff'
+               % pagename)
+        second_comment_edit = "Second comment edit"
+        tc.formvalue('edit-comment-form', 'new_comment', second_comment_edit)
+        tc.submit()
+        tc.url(diff_url)
+        tc.find(r'<p>[ \t\n]+%s[ \t\n]+</p>' % second_comment_edit)
+
+
 class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
     """Test the wiki readonly attribute, which is enforce when
     DefaultWikiPolicy is in the list of active permission policies."""
@@ -535,6 +571,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestWikiAddAttachment())
     suite.addTest(TestWikiPageManipulator())
     suite.addTest(TestWikiHistory())
+    suite.addTest(TestWikiEditComment())
     suite.addTest(TestWikiReadonlyAttribute())
     suite.addTest(TestWikiRename())
     suite.addTest(RegressionTestTicket4812())
