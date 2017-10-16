@@ -583,31 +583,65 @@ class SessionTestCase(unittest.TestCase):
             WHERE sid='john' AND name='foo'
             """)[0][0])
 
-    def test_session_set_email(self):
-        """Setting session email invalidates known_users cache."""
-        session = DetachedSession(self.env, 'user')
-        session['email'] = 'user@domain.org'
+    def test_create_new_session(self):
+        """Setting attribute on a new session invalidates known_users cache."""
+        sid = 'user'
+        session = DetachedSession(self.env, sid)
+        session.authenticated = True
 
         self.assertEqual([], list(self.env.get_known_users()))
         session.save()
-        email = None
-        for sid, name, email in self.env.get_known_users():
-            if sid == 'user':
-                break
-        self.assertEqual(session['email'], email)
+        known_users = list(self.env.get_known_users())
+        self.assertEqual(1, len(known_users))
+        self.assertEqual(sid, known_users[0][0])
+        self.assertIsNone(known_users[0][1])
+        self.assertIsNone(known_users[0][2])
+
+    def test_create_new_anonymous_session(self):
+        """Setting attribute on a new anonymous session doesn't invalidate
+        known_users cache."""
+        sid = 'anonymous'
+        session = DetachedSession(self.env, sid)
+        session.authenticated = False
+
+        self.assertEqual([], list(self.env.get_known_users()))
+        # insert a session record without invalidating cache
+        self.env.insert_users([('user', 'Name' 'user@example.com', 1)])
+        session.save()
+        self.assertEqual([], list(self.env.get_known_users()))
+
+        self.env.invalidate_known_users_cache()
+        self.assertEqual(1, len(list(self.env.get_known_users())))
+
+    def test_session_set_email(self):
+        """Setting session email invalidates known_users cache."""
+        sid = 'user'
+        email = 'user@domain.org'
+        session = DetachedSession(self.env, sid)
+        session['email'] = email
+
+        self.assertEqual([], list(self.env.get_known_users()))
+        session.save()
+        known_users = list(self.env.get_known_users())
+        self.assertEqual(1, len(known_users))
+        self.assertEqual(sid, known_users[0][0])
+        self.assertIsNone(known_users[0][1])
+        self.assertEqual(email, known_users[0][2])
 
     def test_session_set_name(self):
         """Setting session name invalidates known_users cache."""
-        session = DetachedSession(self.env, 'user')
-        session['name'] = 'The User'
+        sid = 'user'
+        name = 'The User'
+        session = DetachedSession(self.env, sid)
+        session['name'] = name
 
         self.assertEqual([], list(self.env.get_known_users()))
         session.save()
-        name = None
-        for sid, name, email in self.env.get_known_users():
-            if sid == 'user':
-                break
-        self.assertEqual(session['name'], name)
+        known_users = list(self.env.get_known_users())
+        self.assertEqual(1, len(known_users))
+        self.assertEqual(sid, known_users[0][0])
+        self.assertEqual(name, known_users[0][1])
+        self.assertIsNone(known_users[0][2])
 
     def test_session_admin_list(self):
         auth_list, anon_list, all_list = _prep_session_table(self.env)

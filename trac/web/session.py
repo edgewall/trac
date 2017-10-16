@@ -136,14 +136,13 @@ class DetachedSession(SessionDict):
                 self._old = {}
 
     def save(self):
-        items = self.items()
-        if not self._old and not items:
-            # The session doesn't have associated data, so there's no need to
-            # persist it
-            return
-
         authenticated = int(self.authenticated)
         now = int(time_now())
+        items = self.items()
+        if not authenticated and not self._old and not items:
+            # The session for anonymous doesn't have associated data,
+            # so there's no need to persist it
+            return
 
         # We can't do the session management in one big transaction,
         # as the intertwined changes to both the session and
@@ -158,7 +157,8 @@ class DetachedSession(SessionDict):
             # do so is not critical but we nevertheless skip the
             # following steps.
 
-            if self._new:
+            new = self._new
+            if new:
                 self.last_visit = now
                 self._new = False
                 # The session might already exist even if _new is True since
@@ -172,13 +172,15 @@ class DetachedSession(SessionDict):
                     db.rollback()
                     return
 
+            if authenticated and \
+                    (new or self._old.get('name') != self.get('name') or \
+                     self._old.get('email') != self.get('email')):
+                self.env.invalidate_known_users_cache()
+
             # Remove former values for session_attribute and save the
             # new ones. The last concurrent request to do so "wins".
 
             if self._old != self:
-                if self._old.get('name') != self.get('name') or \
-                        self._old.get('email') != self.get('email'):
-                    self.env.invalidate_known_users_cache()
                 if not items and not authenticated:
                     # No need to keep around empty unauthenticated sessions
                     db("DELETE FROM session WHERE sid=%s AND authenticated=0",
