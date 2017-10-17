@@ -16,7 +16,6 @@
 
 import csv
 from datetime import datetime
-from functools import partial
 import io
 import pkg_resources
 import re
