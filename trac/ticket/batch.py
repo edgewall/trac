@@ -22,7 +22,7 @@ from trac.ticket.api import ITicketManipulator, TicketSystem
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Ticket
 from trac.ticket.notification import BatchTicketChangeEvent
-from trac.util import arity, to_list
+from trac.util import to_list
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import tag
 from trac.util.text import exception_to_unicode, to_unicode
