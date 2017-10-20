@@ -537,36 +537,13 @@ class TicketOwnerSubscriber(Component):
     implements(INotificationSubscriber)
 
     def matches(self, event):
-        if event.realm != 'ticket':
-            return
-        if event.category not in ('created', 'changed', 'attachment added',
-                                  'attachment deleted'):
-            return
-        ticket = event.target
-
-        owners = [ticket['owner']]
-
-        # Harvest previous owner
-        if 'fields' in event.changes and 'owner' in event.changes['fields']:
-            owners.append(event.changes['fields']['owner']['old'])
-
-        matcher = RecipientMatcher(self.env)
-        klass = self.__class__.__name__
-        sids = set()
-        for owner in owners:
-            recipient = matcher.match_recipient(owner)
-            if not recipient:
-                continue
-            sid, auth, addr = recipient
-
-            # Default subscription
-            for s in self.default_subscriptions():
-                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
-            if sid:
-                sids.add((sid, auth))
-
-        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
-            yield s.subscription_tuple()
+        owners = None
+        if _is_ticket_change_event(event):
+            owners = [event.target['owner']]
+            # Harvest previous owner
+            if 'fields' in event.changes and 'owner' in event.changes['fields']:
+                owners.append(event.changes['fields']['owner']['old'])
+        return _ticket_change_subscribers(self, owners)
 
     def description(self):
         return _("Ticket that I own is created or modified")
@@ -585,27 +562,10 @@ class TicketUpdaterSubscriber(Component):
     implements(INotificationSubscriber)
 
     def matches(self, event):
-        if event.realm != 'ticket':
-            return
-        if event.category not in ('created', 'changed', 'attachment added',
-                                  'attachment deleted'):
-            return
-
-        matcher = RecipientMatcher(self.env)
-        recipient = matcher.match_recipient(event.author)
-        if not recipient:
-            return
-        sid, auth, addr = recipient
-
-        # Default subscription
-        for s in self.default_subscriptions():
-            yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
-
-        if sid:
-            klass = self.__class__.__name__
-            for s in Subscription \
-                     .find_by_sids_and_class(self.env, ((sid, auth),), klass):
-                yield s.subscription_tuple()
+        updater = None
+        if _is_ticket_change_event(event):
+            updater = event.author
+        return _ticket_change_subscribers(self, updater)
 
     def description(self):
         return _("I update a ticket")
@@ -624,37 +584,14 @@ class TicketPreviousUpdatersSubscriber(Component):
     implements(INotificationSubscriber)
 
     def matches(self, event):
-        if event.realm != 'ticket':
-            return
-        if event.category not in ('created', 'changed', 'attachment added',
-                                  'attachment deleted'):
-            return
-
-        updaters = [row[0] for row in self.env.db_query("""
-            SELECT DISTINCT author FROM ticket_change
-            WHERE ticket=%s
-            """, (event.target.id, ))]
-
-        matcher = RecipientMatcher(self.env)
-        klass = self.__class__.__name__
-        sids = set()
-        for previous_updater in updaters:
-            if previous_updater == event.author:
-                continue
-
-            recipient = matcher.match_recipient(previous_updater)
-            if not recipient:
-                continue
-            sid, auth, addr = recipient
-
-            # Default subscription
-            for s in self.default_subscriptions():
-                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
-            if sid:
-                sids.add((sid, auth))
-
-        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
-            yield s.subscription_tuple()
+        updaters = None
+        if _is_ticket_change_event(event):
+            updaters = [author for author, in self.env.db_query("""
+                SELECT DISTINCT author FROM ticket_change
+                WHERE ticket=%s
+                """, (event.target.id,))
+                        if author != event.author]
+        return _ticket_change_subscribers(self, updaters)
 
     def description(self):
         return _("Ticket that I previously updated is modified")
@@ -673,29 +610,10 @@ class TicketReporterSubscriber(Component):
     implements(INotificationSubscriber)
 
     def matches(self, event):
-        if event.realm != 'ticket':
-            return
-        if event.category not in ('created', 'changed', 'attachment added',
-                                  'attachment deleted'):
-            return
-
-        ticket = event.target
-
-        matcher = RecipientMatcher(self.env)
-        recipient = matcher.match_recipient(ticket['reporter'])
-        if not recipient:
-            return
-        sid, auth, addr = recipient
-
-        # Default subscription
-        for s in self.default_subscriptions():
-            yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
-
-        if sid:
-            klass = self.__class__.__name__
-            for s in Subscription \
-                     .find_by_sids_and_class(self.env, ((sid, auth),), klass):
-                yield s.subscription_tuple()
+        reporter = None
+        if _is_ticket_change_event(event):
+            reporter = event.target['reporter']
+        return _ticket_change_subscribers(self, reporter)
 
     def description(self):
         return _("Ticket that I reported is modified")
@@ -714,38 +632,17 @@ class CarbonCopySubscriber(Component):
     implements(INotificationSubscriber)
 
     def matches(self, event):
-        if event.realm != 'ticket':
-            return
-        if event.category not in ('created', 'changed', 'attachment added',
-                                  'attachment deleted'):
-            return
+        cc_users = None
+        if _is_ticket_change_event(event):
+            # CC field is stored as comma-separated string. Parse to set.
+            chrome = Chrome(self.env)
+            to_set = lambda cc: set(chrome.cc_list(cc))
+            cc_users = to_set(event.target['cc'] or '')
 
-        # CC field is stored as comma-separated string. Parse to set.
-        chrome = Chrome(self.env)
-        to_set = lambda cc: set(chrome.cc_list(cc))
-        cc_set = to_set(event.target['cc'] or '')
-
-        # Harvest previous CC field
-        if 'fields' in event.changes and 'cc' in event.changes['fields']:
-            cc_set.update(to_set(event.changes['fields']['cc']['old']))
-
-        matcher = RecipientMatcher(self.env)
-        klass = self.__class__.__name__
-        sids = set()
-        for cc in cc_set:
-            recipient = matcher.match_recipient(cc)
-            if not recipient:
-                continue
-            sid, auth, addr = recipient
-
-            # Default subscription
-            for s in self.default_subscriptions():
-                yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
-            if sid:
-                sids.add((sid, auth))
-
-        for s in Subscription.find_by_sids_and_class(self.env, sids, klass):
-            yield s.subscription_tuple()
+            # Harvest previous CC field
+            if 'fields' in event.changes and 'cc' in event.changes['fields']:
+                cc_users.update(to_set(event.changes['fields']['cc']['old']))
+        return _ticket_change_subscribers(self, cc_users)
 
     def description(self):
         return _("Ticket that I'm listed in the CC field is modified")
@@ -792,3 +689,33 @@ class TicketAttachmentNotifier(Component):
                            "attachment %s to ticket #%s: %s",
                            attachment.filename, ticket.id,
                            exception_to_unicode(e))
+
+
+def _is_ticket_change_event(event):
+    return event.realm == 'ticket' and \
+           event.category in ('created', 'changed', 'attachment added',
+                              'attachment deleted')
+
+
+def _ticket_change_subscribers(subscriber, candidates):
+    if not candidates:
+        return
+    if not isinstance(candidates, (list, set, tuple)):
+        candidates = [candidates]
+    matcher = RecipientMatcher(subscriber.env)
+    klass = subscriber.__class__.__name__
+    sids = set()
+    for candidate in candidates:
+        recipient = matcher.match_recipient(candidate)
+        if not recipient:
+            continue
+        sid, auth, addr = recipient
+
+        # Default subscription
+        for s in subscriber.default_subscriptions():
+            yield s[0], s[1], sid, auth, addr, s[2], s[3], s[4]
+        if sid:
+            sids.add((sid, auth))
+
+    for s in Subscription.find_by_sids_and_class(subscriber.env, sids, klass):
+        yield s.subscription_tuple()
