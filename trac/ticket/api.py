@@ -85,8 +85,7 @@ class ITicketActionController(Interface):
         field this action controller knows about.
 
         This will be used to populate the query options and the like.
-        It is assumed that the initial status of a ticket is 'new' and
-        the terminal status of a ticket is 'closed'.
+        It is assumed that the terminal status of a ticket is 'closed'.
         """
 
     def render_ticket_action_control(req, ticket, action):
