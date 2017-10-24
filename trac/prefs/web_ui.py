@@ -109,7 +109,7 @@ class PreferencesModule(Component):
                 children.append((name, label, rendered))
 
         resp = chosen_provider.render_preference_panel(req, panel_id)
-        template, data = resp
+        data = resp[1]
 
         data.update(session_data)
         data.update({
