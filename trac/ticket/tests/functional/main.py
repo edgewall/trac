@@ -1391,7 +1391,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         # and confuse the tester object.)
         self._tester.create_ticket('RegressionTestTicket6048b')
         self._tester.go_to_ticket(ticket_id)
-        tc.find('delete ticket')
+        tc.find('<label for="action_delete">delete</label>')
         tc.formvalue('propertyform', 'action', 'delete')
         tc.submit('submit')
 
