@@ -12,22 +12,24 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.core import implements,Component
-from trac.ticket.api import ITicketActionController
+from trac.core import Component, implements
 from trac.perm import IPermissionRequestor
+from trac.ticket.api import ITicketActionController
+from trac.util.translation import _
 
 revision = "$Rev$"
 url = "$URL$"
 
+
 class DeleteTicketActionController(Component):
-    """Provides the admin with a way to delete a ticket.
+    """Delete ticket using a workflow action.
 
-    Illustrates how to create an action controller with side-effects.
+    Illustrates how to create an `ITicketActionController` with side-effects.
 
-    Don't forget to add `DeleteTicketActionController` to the workflow
-    option in the `[ticket]` section in TracIni.
-    If there is no other workflow option, the line will look like this:
-    {{{
+    Add `DeleteTicketActionController` to the workflow option in the
+    `[ticket]` section in TracIni. When added to the default value of
+    `workflow`, the line will look like this:
+    {{{#!ini
     workflow = ConfigurableTicketWorkflow,DeleteTicketActionController
     }}}
     """
@@ -43,22 +45,20 @@ class DeleteTicketActionController(Component):
 
     def get_ticket_actions(self, req, ticket):
         actions = []
-        if 'TICKET_DELETE' in req.perm(ticket.resource) \
-                and ticket.exists:
-            actions.append((0,'delete'))
+        if 'TICKET_DELETE' in req.perm(ticket.resource) and \
+                ticket.exists:
+            actions.append((0, 'delete'))
         return actions
 
     def get_all_status(self):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
-        return "delete ticket", '', "This ticket will be deleted."
+        return 'delete', '', _("The ticket will be deleted.")
 
     def get_ticket_changes(self, req, ticket, action):
         return {}
 
     def apply_action_side_effects(self, req, ticket, action):
-        # Be paranoid here, as this should only be called when
-        # action is delete...
         if action == 'delete':
             ticket.delete()
