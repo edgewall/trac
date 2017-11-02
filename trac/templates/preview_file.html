@@ -23,22 +23,19 @@ ${preview.rendered}
 </p>
 # elif not preview.rendered:
 <p>
-# set html_preview_not_available
-<strong>${_("HTML preview not available")}</strong>
-# endset
 #   if preview.max_file_size_reached:
 #     set size = pretty_size(preview.max_file_size)
-#     trans html_preview_not_available, size
+#     trans size
 
-      ${html_preview_not_available}, since the file size exceeds
-      ${size}.
+      <strong>HTML preview not available</strong>,
+      since the file size exceeds ${size}.
 
 #     endtrans
 #   else:
-#     trans html_preview_not_available
+#     trans
 
-      ${html_preview_not_available}, since no preview renderer could
-      handle it.
+      <strong>HTML preview not available</strong>,
+      since no preview renderer could handle it.
 
 #     endtrans
 #   endif

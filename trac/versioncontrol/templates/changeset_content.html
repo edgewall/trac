@@ -303,9 +303,6 @@
     # endif
 
     # if show_diffs is sameas false:
-    #   set notshown
-    <strong>${_("Changeset view not shown")}</strong>,
-    #   endset
     #   if max_diff_bytes and diff_bytes is greaterthan(max_diff_bytes):
     #     if 'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni')):
     #       set pretty_max_bytes = pretty_size(max_diff_bytes)
@@ -317,10 +314,10 @@
     #     endif
     #     set pretty_diff_bytes = pretty_size(diff_bytes)
     <p class="message">
-      #   trans notshown, pretty_diff_bytes, pretty_max_bytes
+      #   trans pretty_diff_bytes, pretty_max_bytes
 
-      ${notshown} since the total size (${pretty_diff_bytes})
-      exceeds ${pretty_max_bytes}
+      <strong>Changeset view not shown</strong>, since the total size
+      (${pretty_diff_bytes}) exceeds ${pretty_max_bytes}
 
       #   endtrans
     </p>
@@ -335,10 +332,10 @@
     #       endset
     #     endif
     <p class="message">
-      #   trans notshown, diff_files, pretty_max_files
+      #   trans diff_files, pretty_max_files
 
-      ${notshown} since the number of files (${diff_files})
-      exceeds ${pretty_max_files}
+      <strong>Changeset view not shown</strong>, since the number of files
+      (${diff_files}) exceeds ${pretty_max_files}
 
       #   endtrans
     </p>
