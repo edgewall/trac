@@ -61,6 +61,11 @@ class TicketModuleTestCase(unittest.TestCase):
         """Helper for inserting a ticket into the database"""
         return insert_ticket(self.env, **kw)
 
+    def _get_field_by_name(self, data, name):
+        for field in data['fields']:
+            if field['name'] == name:
+                return field
+
     def test_get_moved_attributes(self):
         """The attributes `max_comment_size`, `max_description_size` and
         `max_summary_size` have been moved to TicketSystem but are
@@ -732,6 +737,48 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertFalse(self._has_auto_preview(req))
         self.assertTrue(data['disable_submit'])
 
+    def test_new_ticket_ticket_edit_cc(self):
+        """CC field can be modified for new ticket."""
+        PermissionSystem(self.env).grant_permission('user', 'TICKET_CREATE')
+        req = MockRequest(self.env, authname='user', path_info='/newticket')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        cc_field = self._get_field_by_name(data, 'cc')
+
+        self.assertNotIn('cc_entry', cc_field)
+        self.assertNotIn('cc_action', cc_field)
+
+    def test_existing_ticket_no_ticket_edit_cc(self):
+        """User without TICKET_EDIT_CC can only add self to CC field."""
+        PermissionSystem(self.env).grant_permission('user', 'TICKET_VIEW')
+        self._insert_ticket(reporter='reporter')
+        req = MockRequest(self.env, authname='user', path_info='/ticket/1')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        cc_field = self._get_field_by_name(data, 'cc')
+
+        self.assertIn('cc_entry', cc_field)
+        self.assertEqual('user', cc_field['cc_entry'])
+        self.assertIn('cc_action', cc_field)
+        self.assertEqual('add', cc_field['cc_action'])
+
+    def test_existing_ticket_ticket_edit_cc(self):
+        """User with TICKET_EDIT_CC can modify the CC field."""
+        ps = PermissionSystem(self.env)
+        for perm in ('TICKET_EDIT_CC', 'TICKET_VIEW'):
+            ps.grant_permission('user', perm)
+        self._insert_ticket(reporter='reporter')
+        req = MockRequest(self.env, authname='user', path_info='/ticket/1')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        cc_field = self._get_field_by_name(data, 'cc')
+
+        self.assertNotIn('cc_entry', cc_field)
+        self.assertNotIn('cc_action', cc_field)
+
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):
     """Tests for [ticket-custom] max_size attribute."""
@@ -952,6 +999,23 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         self.assertNotIn(action, perm_cache)
         self.assertIsNone(self.policy.check_permission(
             action, perm_cache.username, resource, perm_cache))
+
+    def test_user_can_edit_ticket_cc_for_new_ticket(self):
+        """User without TICKET_EDIT_CC can edit CC field for new ticket."""
+        action = 'TICKET_EDIT_CC'
+        ticket1 = Ticket(self.env)
+        ticket2 = self._insert_ticket('somebody1')
+
+        perm_cache1 = PermissionCache(self.env, 'somebody1', ticket1.resource)
+        self.assertIn(action, perm_cache1)
+        self.assertTrue(self.policy.check_permission(
+            action, perm_cache1.username, ticket1.resource, perm_cache1))
+
+        # No decision for existing ticket.
+        perm_cache2 = PermissionCache(self.env, 'somebody1', ticket2.resource)
+        self.assertNotIn(action, perm_cache2)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache2.username, ticket2.resource, perm_cache2))
 
 
 def test_suite():

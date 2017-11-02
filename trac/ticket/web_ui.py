@@ -1552,8 +1552,7 @@ class TicketModule(Component):
                         field['rendered'](title=title)
             elif name == 'cc':
                 cc_changed = field_changes is not None and 'cc' in field_changes
-                if ticket.exists and \
-                        'TICKET_EDIT_CC' not in req.perm(ticket.resource):
+                if 'TICKET_EDIT_CC' not in req.perm(ticket.resource):
                     cc = ticket._old.get('cc', ticket['cc'])
                     cc_action, cc_entry, cc_list = self._toggle_cc(req, cc)
                     cc_update = 'cc_update' in req.args \
@@ -1896,9 +1895,13 @@ class TicketModule(Component):
 class DefaultTicketPolicy(Component):
     """Default permission policy for the ticket system.
 
-    Authenticated users with `TICKET_APPEND` can edit their own ticket
-    comments. Authenticated users with `TICKET_APPEND` or
-    `TICKET_CHGPROP` can edit the description of a ticket they reported.
+    * Users with `MILESTONE_VIEW` can edit the ticket milestone field.
+    * Authenticated users with `TICKET_APPEND` or `TICKET_CHGPROP` can
+      edit the description of a ticket they reported.
+    * Authenticated users with `TICKET_APPEND` can edit their own ticket
+      comments.
+    * The CC field can be edited when creating a ticket even if the
+      user doesn't have `TICKET_EDIT_CC`.
     """
 
     implements(IPermissionPolicy)
@@ -1930,5 +1933,12 @@ class DefaultTicketPolicy(Component):
             if change and username == change['author']:
                 return True
 
-    def _is_valid_resource(self, resource, expected_realm):
-        return resource and resource.realm == expected_realm and resource.id
+        if action == 'TICKET_EDIT_CC' and \
+                self._is_valid_resource(resource, 'ticket', exists=False):
+            ticket = model.Ticket(self.env, resource.id)
+            if not ticket.exists:
+                return True
+
+    def _is_valid_resource(self, resource, expected_realm, exists=True):
+        return resource and resource.realm == expected_realm and \
+               (resource.id is not None if exists else resource.id is None)
