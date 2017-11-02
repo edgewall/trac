@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-10-21 19:26-0700\n"
+"POT-Creation-Date: 2017-11-02 09:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -713,17 +713,17 @@ msgid ""
 "be manually enabled by the user on the search page."
 msgstr ""
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:213
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:218
+#: trac/ticket/api.py:217
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:224
+#: trac/ticket/api.py:223
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -735,71 +735,71 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:235
+#: trac/ticket/api.py:234
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:238
+#: trac/ticket/api.py:237
 msgid "Default type for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:241
+#: trac/ticket/api.py:240
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:244
+#: trac/ticket/api.py:243
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:247
+#: trac/ticket/api.py:246
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:250
+#: trac/ticket/api.py:249
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:253
+#: trac/ticket/api.py:252
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:256
+#: trac/ticket/api.py:255
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:259
+#: trac/ticket/api.py:258
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:262
+#: trac/ticket/api.py:261
 msgid ""
 "Default owner for newly created tickets. The component owner\n"
 "is used when set to the value `< default >`."
 msgstr ""
 
-#: trac/ticket/api.py:267
+#: trac/ticket/api.py:266
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:270
+#: trac/ticket/api.py:269
 msgid "Default resolution for resolving (closing) tickets."
 msgstr ""
 
-#: trac/ticket/api.py:273
+#: trac/ticket/api.py:272
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr ""
 
-#: trac/ticket/api.py:278
+#: trac/ticket/api.py:277
 msgid "Maximum allowed comment size in characters."
 msgstr ""
 
-#: trac/ticket/api.py:281
+#: trac/ticket/api.py:280
 msgid "Maximum allowed description size in characters."
 msgstr ""
 
-#: trac/ticket/api.py:284
+#: trac/ticket/api.py:283
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 

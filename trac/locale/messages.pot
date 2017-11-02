@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-10-21 19:26-0700\n"
+"POT-Creation-Date: 2017-11-02 09:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,7 +122,6 @@ msgstr ""
 #: trac/ticket/templates/ticket_change.html:185
 #: trac/versioncontrol/templates/admin_repositories.html:199
 #: trac/wiki/templates/wiki_delete.html:169
-#: trac/wiki/templates/wiki_edit.html:190
 #: trac/wiki/templates/wiki_edit_comment.html:59
 #: trac/wiki/templates/wiki_edit_form.html:116
 #: trac/wiki/templates/wiki_rename.html:65
@@ -532,7 +531,7 @@ msgstr ""
 
 #: trac/attachment.py:1148 trac/notification/prefs.py:234
 #: trac/templates/attachment.html:148 trac/templates/genshi/attachment.html:104
-#: trac/ticket/api.py:360 trac/ticket/api.py:677
+#: trac/ticket/api.py:359 trac/ticket/api.py:676
 #: trac/ticket/templates/ticket.html:562
 #: trac/ticket/templates/ticket_box.html:162
 msgid "Description"
@@ -1264,7 +1263,7 @@ msgid "Default date format:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:134
-#: trac/prefs/templates/prefs_localization.html:189
+#: trac/prefs/templates/prefs_localization.html:186
 msgid "ISO 8601 format"
 msgstr ""
 
@@ -1277,12 +1276,12 @@ msgid "Default time format:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:152
-#: trac/prefs/templates/prefs_localization.html:213
+#: trac/prefs/templates/prefs_localization.html:210
 msgid "Relative format"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:155
-#: trac/prefs/templates/prefs_localization.html:216
+#: trac/prefs/templates/prefs_localization.html:213
 msgid "Absolute format"
 msgstr ""
 
@@ -1397,7 +1396,6 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:128
 #: trac/admin/templates/admin_perms.html:169
-#: trac/admin/templates/admin_perms.html:209
 msgid "Subject"
 msgstr ""
 
@@ -1419,7 +1417,6 @@ msgid "Group Membership"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:169
-#: trac/admin/templates/admin_perms.html:212
 msgid "Group"
 msgstr ""
 
@@ -1436,14 +1433,13 @@ msgstr ""
 msgid "Remove selected items"
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:214
-#, python-format
+#: trac/admin/templates/admin_perms.html:208
 msgid ""
-"Note that %(subject)s or %(group)s names can't be all upper-case, as that"
-" is reserved for permission names."
+"Note that <em>Subject</em> or <em>Group</em> names can't be all upper-"
+"case, as that is reserved for permission names."
 msgstr ""
 
-#: trac/admin/templates/admin_perms.html:223
+#: trac/admin/templates/admin_perms.html:217
 #, python-format
 msgid "%(note)s See %(page)s for help on using permissions."
 msgstr ""
@@ -1497,7 +1493,7 @@ msgid "License:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:160 trac/ticket/admin.py:80
-#: trac/ticket/api.py:367
+#: trac/ticket/api.py:366
 msgid "Component"
 msgstr ""
 
@@ -1833,7 +1829,7 @@ msgid "Format:"
 msgstr ""
 
 #: trac/notification/templates/prefs_notification.html:119
-#: trac/prefs/templates/prefs_localization.html:210
+#: trac/prefs/templates/prefs_localization.html:207
 msgid "Default format"
 msgstr ""
 
@@ -2030,7 +2026,6 @@ msgid "Language:"
 msgstr ""
 
 #: trac/prefs/templates/prefs_localization.html:36
-#: trac/prefs/templates/prefs_localization.html:72
 msgid "Default language"
 msgstr ""
 
@@ -2040,73 +2035,72 @@ msgid ""
 "to use your language instead of that of the server."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:74
-#, python-format
+#: trac/prefs/templates/prefs_localization.html:71
 msgid ""
-"The %(default_language)s option uses the browser's language negotiation "
-"feature to select the appropriate language."
+"The <strong>Default language</strong> option uses the browser's language "
+"negotiation feature to select the appropriate language."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:108
+#: trac/prefs/templates/prefs_localization.html:105
 msgid "Time zone:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:110
+#: trac/prefs/templates/prefs_localization.html:107
 msgid "Default time zone"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:125
+#: trac/prefs/templates/prefs_localization.html:122
 msgid ""
 "Configuring your time zone will result in all dates and times displayed "
 "on this site to use your time zone instead of that of the server."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:142
+#: trac/prefs/templates/prefs_localization.html:139
 #, python-format
 msgid "Example: The current time is %(time)s (UTC)."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:149
+#: trac/prefs/templates/prefs_localization.html:146
 #, python-format
 msgid "In your time zone %(tz)s, this would be displayed as %(formatted)s."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:156
+#: trac/prefs/templates/prefs_localization.html:153
 #, python-format
 msgid "In the default time zone, this would be displayed as %(formatted)s."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:165
+#: trac/prefs/templates/prefs_localization.html:162
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT).<br />A positive offset is used to indicate a timezone at the "
 "east of Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:179
+#: trac/prefs/templates/prefs_localization.html:176
 msgid "Date format:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:181
+#: trac/prefs/templates/prefs_localization.html:178
 msgid "Default date format"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:185
+#: trac/prefs/templates/prefs_localization.html:182
 msgid "Your language setting"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:195
+#: trac/prefs/templates/prefs_localization.html:192
 msgid ""
 "Configuring your date format will result in formatting and parsing "
 "datetime displayed on this site to use your date format instead of that "
 "of the server."
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:208
+#: trac/prefs/templates/prefs_localization.html:205
 msgid "Time format:"
 msgstr ""
 
-#: trac/prefs/templates/prefs_localization.html:222
+#: trac/prefs/templates/prefs_localization.html:219
 msgid ""
 "Configuring your relative/absolute format will result in formatting "
 "datetime displayed on this site to use your format instead of that of the"
@@ -2486,7 +2480,7 @@ msgstr ""
 #: trac/templates/history_view.html:87
 #: trac/ticket/templates/report_list.html:140
 #: trac/ticket/templates/ticket_change.html:111
-#: trac/wiki/templates/wiki_edit.html:223
+#: trac/wiki/templates/wiki_edit.html:216
 msgid "Edit"
 msgstr ""
 
@@ -2514,7 +2508,7 @@ msgid "Removed"
 msgstr ""
 
 #: trac/templates/diff_view.html:133 trac/templates/genshi/diff_view.html:78
-#: trac/ticket/api.py:397
+#: trac/ticket/api.py:396
 #: trac/versioncontrol/templates/changeset_content.html:299
 #: trac/versioncontrol/templates/revisionlog.html:129 trac/wiki/admin.py:192
 msgid "Modified"
@@ -2536,7 +2530,7 @@ msgstr ""
 #: trac/templates/genshi/environment_info.html:53
 #: trac/templates/genshi/history_view.html:45
 #: trac/templates/history_view.html:56 trac/ticket/admin.py:453
-#: trac/ticket/api.py:368
+#: trac/ticket/api.py:367
 msgid "Version"
 msgstr ""
 
@@ -2822,25 +2816,24 @@ msgstr ""
 msgid "(The file is empty)"
 msgstr ""
 
-#: trac/templates/preview_file.html:27
-msgid "HTML preview not available"
-msgstr ""
-
-#: trac/templates/preview_file.html:31
+#: trac/templates/preview_file.html:28
 #, python-format
-msgid "%(html_preview_not_available)s, since the file size exceeds %(size)s."
+msgid ""
+"<strong>HTML preview not available</strong>, since the file size exceeds "
+"%(size)s."
 msgstr ""
 
-#: trac/templates/preview_file.html:38
-#, python-format
-msgid "%(html_preview_not_available)s, since no preview renderer could handle it."
+#: trac/templates/preview_file.html:35
+msgid ""
+"<strong>HTML preview not available</strong>, since no preview renderer "
+"could handle it."
 msgstr ""
 
-#: trac/templates/preview_file.html:46
+#: trac/templates/preview_file.html:43
 msgid "downloading"
 msgstr ""
 
-#: trac/templates/preview_file.html:48
+#: trac/templates/preview_file.html:45
 #, python-format
 msgid "Try %(downloading)s the file instead."
 msgstr ""
@@ -3045,12 +3038,12 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:200 trac/ticket/api.py:356
+#: trac/ticket/admin.py:200 trac/ticket/api.py:355
 #: trac/ticket/templates/admin_components.html:118
 msgid "Owner"
 msgstr ""
 
-#: trac/ticket/admin.py:225 trac/ticket/api.py:366
+#: trac/ticket/admin.py:225 trac/ticket/api.py:365
 msgid "Milestone"
 msgstr ""
 
@@ -3137,103 +3130,103 @@ msgstr ""
 msgid "<comment#> must be a number"
 msgstr ""
 
-#: trac/ticket/api.py:319
+#: trac/ticket/api.py:318
 msgid "Attachment"
 msgstr ""
 
-#: trac/ticket/api.py:349
+#: trac/ticket/api.py:348
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:351
+#: trac/ticket/api.py:350
 msgid "Reporter"
 msgstr ""
 
-#: trac/ticket/api.py:363 trac/versioncontrol/admin.py:124
+#: trac/ticket/api.py:362 trac/versioncontrol/admin.py:124
 #: trac/versioncontrol/templates/admin_repositories.html:243
 msgid "Type"
 msgstr ""
 
-#: trac/ticket/api.py:364
+#: trac/ticket/api.py:363
 msgid "Status"
 msgstr ""
 
-#: trac/ticket/api.py:365 trac/ticket/model.py:911
+#: trac/ticket/api.py:364 trac/ticket/model.py:911
 msgid "Priority"
 msgstr ""
 
-#: trac/ticket/api.py:369 trac/ticket/model.py:916
+#: trac/ticket/api.py:368 trac/ticket/model.py:916
 msgid "Severity"
 msgstr ""
 
-#: trac/ticket/api.py:370 trac/ticket/model.py:906
+#: trac/ticket/api.py:369 trac/ticket/model.py:906
 msgid "Resolution"
 msgstr ""
 
-#: trac/ticket/api.py:389
+#: trac/ticket/api.py:388
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:391 trac/ticket/web_ui.py:1564
+#: trac/ticket/api.py:390 trac/ticket/web_ui.py:1564
 msgid "Cc"
 msgstr ""
 
-#: trac/ticket/api.py:395
+#: trac/ticket/api.py:394
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:515
+#: trac/ticket/api.py:514
 #, python-format
 msgid "\"%(value)s\" is not a valid value"
 msgstr ""
 
-#: trac/ticket/api.py:518
+#: trac/ticket/api.py:517
 msgid "field cannot be empty"
 msgstr ""
 
-#: trac/ticket/api.py:522 trac/ticket/api.py:530 trac/ticket/api.py:539
-#: trac/ticket/api.py:563
+#: trac/ticket/api.py:521 trac/ticket/api.py:529 trac/ticket/api.py:538
+#: trac/ticket/api.py:562
 #, python-format
 msgid "Must be less than or equal to %(num)s characters"
 msgstr ""
 
-#: trac/ticket/api.py:528
+#: trac/ticket/api.py:527
 msgid "Tickets must contain a summary."
 msgstr ""
 
-#: trac/ticket/api.py:629
+#: trac/ticket/api.py:628
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr ""
 
-#: trac/ticket/api.py:658
+#: trac/ticket/api.py:657
 msgid "ticket comment does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:669
+#: trac/ticket/api.py:668
 #, python-format
 msgid "Description for #%(id)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/api.py:672
+#: trac/ticket/api.py:671
 #, python-format
 msgid "Comment %(cnum)s for #%(id)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/api.py:678
+#: trac/ticket/api.py:677
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr ""
 
-#: trac/ticket/api.py:682
+#: trac/ticket/api.py:681
 msgid "no permission to view ticket"
 msgstr ""
 
-#: trac/ticket/api.py:685
+#: trac/ticket/api.py:684
 msgid "ticket does not exist"
 msgstr ""
 
-#: trac/ticket/api.py:705
+#: trac/ticket/api.py:704
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
@@ -5017,7 +5010,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:573
 #: trac/ticket/templates/ticket_change.html:180
 #: trac/wiki/templates/wiki_edit.html:118
-#: trac/wiki/templates/wiki_edit.html:230
+#: trac/wiki/templates/wiki_edit.html:223
 #: trac/wiki/templates/wiki_edit_form.html:102
 msgid "Preview"
 msgstr ""
@@ -5877,7 +5870,7 @@ msgid "No files found"
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:185
-#: trac/wiki/templates/wiki_edit.html:205 trac/wiki/templates/wiki_view.html:59
+#: trac/wiki/templates/wiki_edit.html:198 trac/wiki/templates/wiki_view.html:59
 msgid "Revision info"
 msgstr ""
 
@@ -6116,25 +6109,21 @@ msgstr ""
 msgid "moved"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset_content.html:307
-msgid "Changeset view not shown"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset_content.html:320
+#: trac/versioncontrol/templates/changeset_content.html:317
 #, python-format
 msgid ""
-"%(notshown)s since the total size (%(pretty_diff_bytes)s) exceeds "
-"%(pretty_max_bytes)s"
+"<strong>Changeset view not shown</strong>, since the total size "
+"(%(pretty_diff_bytes)s) exceeds %(pretty_max_bytes)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset_content.html:338
+#: trac/versioncontrol/templates/changeset_content.html:335
 #, python-format
 msgid ""
-"%(notshown)s since the number of files (%(diff_files)s) exceeds "
-"%(pretty_max_files)s"
+"<strong>Changeset view not shown</strong>, since the number of files "
+"(%(diff_files)s) exceeds %(pretty_max_files)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset_content.html:354
+#: trac/versioncontrol/templates/changeset_content.html:351
 #, python-format
 msgid "%(note)s See %(page)s for help on using the changeset viewer."
 msgstr ""
@@ -7577,53 +7566,49 @@ msgstr ""
 msgid "Someone else has modified that page since you started your edits."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:179
-msgid "If you save right away, you risk to revert those changes"
+#: trac/wiki/templates/wiki_edit.html:177
+msgid ""
+"<strong>If you save right away, you risk to revert those changes</strong>"
+" (highlighted below as deletions)."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:182
-#, python-format
-msgid "%(revert_warning)s (highlighted below as deletions)."
-msgstr ""
-
-#: trac/wiki/templates/wiki_edit.html:192
-#, python-format
+#: trac/wiki/templates/wiki_edit.html:185
 msgid ""
 "Please review all those changes and manually merge them with your own "
 "changes. <br /> If you're unsure about what you're doing, please press "
-"%(cancel)s (losing your changes) and start editing the latest version of "
-"the page again."
+"<code>Cancel</code> (losing your changes) and start editing the latest "
+"version of the page again."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:208
+#: trac/wiki/templates/wiki_edit.html:201
 #, python-format
 msgid ""
 "Change information for future version %(version)s (modified by "
 "%(author)s):"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:223
+#: trac/wiki/templates/wiki_edit.html:216
 msgid "Go to the editor"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:228
+#: trac/wiki/templates/wiki_edit.html:221
 #: trac/wiki/templates/wiki_edit_form.html:111
 msgid "Review Changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:236
+#: trac/wiki/templates/wiki_edit.html:229
 msgid "No changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:253
+#: trac/wiki/templates/wiki_edit.html:246
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:254
+#: trac/wiki/templates/wiki_edit.html:247
 msgid "Actions"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:269
+#: trac/wiki/templates/wiki_edit.html:262
 #: trac/wiki/templates/wiki_view.html:241
 #, python-format
 msgid "%(note)s See %(page)s for help on using the wiki."
