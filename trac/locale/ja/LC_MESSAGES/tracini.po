@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-11 16:54+0000\n"
+"POT-Creation-Date: 2017-11-02 09:20+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.1\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -117,27 +117,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:268
+#: tracopt/versioncontrol/git/git_fs.py:288
 msgid "Enable persistent caching of commit tree."
 msgstr "コミットツリーの永続的なキャッシュを有効にするかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:271
+#: tracopt/versioncontrol/git/git_fs.py:291
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr "`GitRepository` を `CachedRepository` でラップするかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:274
+#: tracopt/versioncontrol/git/git_fs.py:294
 msgid ""
 "The length at which a sha1 is abbreviated (must be >= 4\n"
 "and <= 40)."
 msgstr "sha1 ハッシュを省略する際の長さを指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:279
+#: tracopt/versioncontrol/git/git_fs.py:299
 msgid ""
 "The minimum length at which a hex-string in wiki content\n"
 "is formatted as a changeset TracLink (must be >= 4 and <= 40)."
 msgstr "Wiki テキスト中で TracLink チェンジセットにフォーマットする16進文字列の最小長を指定します (4～40であること)。"
 
-#: tracopt/versioncontrol/git/git_fs.py:284
+#: tracopt/versioncontrol/git/git_fs.py:304
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -150,13 +150,13 @@ msgstr ""
 "\n"
 "このオプションの値を変更した後には repository resync を実行してください。"
 
-#: tracopt/versioncontrol/git/git_fs.py:293
+#: tracopt/versioncontrol/git/git_fs.py:313
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr "チェンジセットの''更新者''項目として git-author id の代わりに git-committer id を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:298
+#: tracopt/versioncontrol/git/git_fs.py:318
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
@@ -164,30 +164,30 @@ msgstr ""
 "チェンジセットの''日時''項目として git-author timestamp の代わりに git-committer timestamp "
 "を使うかどうかを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:303
+#: tracopt/versioncontrol/git/git_fs.py:323
 msgid "Define charset encoding of paths within git repositories."
 msgstr "git リポジトリ中のパスに対する文字エンコーディングを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:306
+#: tracopt/versioncontrol/git/git_fs.py:326
 msgid "Path to the git executable."
 msgstr "git 実行ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:900
+#: tracopt/versioncontrol/git/git_fs.py:920
 msgid "Path to a gitweb-formatted projects.list"
 msgstr "gitweb 形式の projects.list ファイルへのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:903
+#: tracopt/versioncontrol/git/git_fs.py:923
 msgid "Path to the base of your git projects"
 msgstr "git プロジェクトのベースディレクトリのパスを指定します。"
 
-#: tracopt/versioncontrol/git/git_fs.py:906
+#: tracopt/versioncontrol/git/git_fs.py:926
 #, python-format
 msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr "プロジェクト URL のテンプレート。`%s` はリポジトリ名に置換されます。"
 
-#: tracopt/versioncontrol/git/git_fs.py:910
+#: tracopt/versioncontrol/git/git_fs.py:930
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
@@ -307,11 +307,11 @@ msgstr ""
 "最後に、[http://subversion.apache.org/docs/release-notes/1.5.html#externals "
 "Subversion 1.5] から導入された相対 URL はまだサポートしていません。"
 
-#: trac/attachment.py:145
+#: trac/attachment.py:143
 msgid "Maximum allowed file size (in bytes) for attachments."
 msgstr "添付ファイルの上限サイズを指定します (バイト単位)"
 
-#: trac/attachment.py:148
+#: trac/attachment.py:146
 msgid ""
 "Maximum allowed total size (in bytes) for an attachment list to be\n"
 "downloadable as a `.zip`. Set this to -1 to disable download as\n"
@@ -320,7 +320,7 @@ msgstr ""
 "`.zip` ダウンロードを許可する合計に対する上限サイズ (バイト単位) です。-1 を指定した場合は `.zip` "
 "でのダウンロード機能を無効にします。(''1.0 以降'')"
 
-#: trac/attachment.py:154
+#: trac/attachment.py:152
 msgid ""
 "Whether attachments should be rendered in the browser, or\n"
 "only made downloadable.\n"
@@ -581,7 +581,7 @@ msgstr ""
 "適用する順番で `IPermissionPolicy` を実装しているコンポーネントのリストを指定します。それらのコンポーネントは Trac "
 "のソリースに対して細かい粒度のアクセス制御を行います。"
 
-#: trac/db/api.py:260
+#: trac/db/api.py:261
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
@@ -590,11 +590,11 @@ msgstr ""
 "このプロジェクトのデータベース接続[wiki:TracEnvironment#DatabaseConnectionStrings "
 "文字列]を指定します。"
 
-#: trac/db/api.py:265
+#: trac/db/api.py:266
 msgid "Database backup location"
 msgstr "データベースバックアップの場所を指定します。"
 
-#: trac/db/api.py:268
+#: trac/db/api.py:269
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''."
@@ -602,7 +602,7 @@ msgstr ""
 "データベース接続のタイムアウトを秒単位で指定します。\n"
 "''タイムアウトなし''を指定するには '0' を使います。"
 
-#: trac/db/api.py:272
+#: trac/db/api.py:273
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。"
 
@@ -614,7 +614,7 @@ msgstr "MySQL データベースのバックアップに使う mysqldump の場�
 msgid "Location of pg_dump for Postgres database backups"
 msgstr "Postgres データベースのバックアップに使う pg_dump の場所を指定します。"
 
-#: trac/db/sqlite_backend.py:156
+#: trac/db/sqlite_backend.py:155
 msgid ""
 "Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
 "The paths may be absolute or relative to the Trac environment."
@@ -950,7 +950,7 @@ msgstr ""
 "インターフェイスの実装を探してください。`get_search_method()` "
 "メソッドが返すタプルの最初の要素になります。無効にしても、検索ページでユーザが手動でフィルタを有効にすることができます。"
 
-#: trac/ticket/api.py:214
+#: trac/ticket/api.py:213
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
@@ -958,11 +958,11 @@ msgstr ""
 "このセクションでは、チケットに追加したいフィールドを定義することができます。詳細については TracTicketsCustomFields "
 "を参照してください。"
 
-#: trac/ticket/api.py:218
+#: trac/ticket/api.py:217
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr "チケットのアクションに使用するワークフローコントローラを順番に指定します。"
 
-#: trac/ticket/api.py:224
+#: trac/ticket/api.py:223
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -979,69 +979,71 @@ msgstr ""
 "\n"
 "ドロップダウンメニュー中ではメールアドレスを隠せ'''ない'''ことに注意してください。そのため、メールアドレスを保護したままにしないといけない場合には、このオプションを使用するべきではありません。"
 
-#: trac/ticket/api.py:235
+#: trac/ticket/api.py:234
 msgid "Default version for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのバージョンを指定します。"
 
-#: trac/ticket/api.py:238
+#: trac/ticket/api.py:237
 msgid "Default type for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの分類を指定します。"
 
-#: trac/ticket/api.py:241
+#: trac/ticket/api.py:240
 msgid "Default priority for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの優先度を指定します。"
 
-#: trac/ticket/api.py:244
+#: trac/ticket/api.py:243
 msgid "Default milestone for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのマイルストーンを指定します。"
 
-#: trac/ticket/api.py:247
+#: trac/ticket/api.py:246
 msgid "Default component for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのコンポーネントを指定します。"
 
-#: trac/ticket/api.py:250
+#: trac/ticket/api.py:249
 msgid "Default severity for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの重要度を指定します。"
 
-#: trac/ticket/api.py:253
+#: trac/ticket/api.py:252
 msgid "Default summary (title) for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの概要 (タイトル) を指定します。"
 
-#: trac/ticket/api.py:256
+#: trac/ticket/api.py:255
 msgid "Default description for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの詳細を指定します。"
 
-#: trac/ticket/api.py:259
+#: trac/ticket/api.py:258
 msgid "Default keywords for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのキーワードを指定します。"
 
-#: trac/ticket/api.py:262
-msgid "Default owner for newly created tickets."
-msgstr "新規登録チケットに対するデフォルトの担当者を指定します。"
+#: trac/ticket/api.py:261
+msgid ""
+"Default owner for newly created tickets. The component owner\n"
+"is used when set to the value `< default >`."
+msgstr "新規登録チケットに対するデフォルトの担当者を指定します。`< default >` を設定したときはコンポーネントの担当者を使います。"
 
-#: trac/ticket/api.py:265
+#: trac/ticket/api.py:266
 msgid "Default cc: list for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの関係者を指定します。"
 
-#: trac/ticket/api.py:268
+#: trac/ticket/api.py:269
 msgid "Default resolution for resolving (closing) tickets."
 msgstr "解決 (クローズ) になるチケットに対するデフォルトの解決方法を指定します。"
 
-#: trac/ticket/api.py:271
+#: trac/ticket/api.py:272
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr "空の値にできるようにする `select` フィールドをカンマ区切りで指定します。(//1.1.2 以降//)"
 
-#: trac/ticket/api.py:276
+#: trac/ticket/api.py:277
 msgid "Maximum allowed comment size in characters."
 msgstr "コメントの最大文字数で指定します。"
 
-#: trac/ticket/api.py:279
+#: trac/ticket/api.py:280
 msgid "Maximum allowed description size in characters."
 msgstr "チケットの詳細の最大文字数を指定します。"
 
-#: trac/ticket/api.py:282
+#: trac/ticket/api.py:283
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr "概要の最大文字数で指定します。(//1.0.2 以降//)"
 
@@ -1271,19 +1273,19 @@ msgid ""
 "progress bar. (''since 1.2'')"
 msgstr "プログレスバーでチケットをグループ化するのに使用するデフォルトのフィールドを指定します。(''1.2 以降'')"
 
-#: trac/ticket/web_ui.py:80
+#: trac/ticket/web_ui.py:79
 msgid ""
 "Enable the display of all ticket changes in the timeline, not only\n"
 "open / close operations."
 msgstr "タイムラインにチケットの登録と解決だけでなくすべてのチケットの変更を表示するかどうかを指定します。"
 
-#: trac/ticket/web_ui.py:84
+#: trac/ticket/web_ui.py:83
 msgid ""
 "Enable the display of component of tickets in the timeline.\n"
 "(''since 1.1.1'')"
 msgstr "タイムラインにチケットのコンポーネントに対する値を表示するかどうかを指定します。(''1.1.1 以降'')"
 
-#: trac/ticket/web_ui.py:89
+#: trac/ticket/web_ui.py:88
 msgid ""
 "Which formatter flavor (e.g. 'html' or 'oneliner') should be\n"
 "used when presenting the description for new tickets.\n"
@@ -1292,7 +1294,7 @@ msgstr ""
 "新規登録チケットの詳細を表示する際にどのフォーマッタを使用するかを指定します (例えば 'html' や 'oneliner')。\n"
 "'oneliner' の場合は、[timeline] abbreviated_messages の設定内容を適用します。"
 
-#: trac/ticket/web_ui.py:96
+#: trac/ticket/web_ui.py:95
 msgid ""
 "Whether Wiki formatter should respect the new lines present\n"
 "in the Wiki text.\n"
@@ -1303,7 +1305,7 @@ msgstr ""
 "'default' を設定した場合、新規作成した環境下では 'yes' となりますが、アップグレードしてきた環境では以前の挙動のまま (つまり "
 "'no') となります。"
 
-#: trac/ticket/web_ui.py:103
+#: trac/ticket/web_ui.py:102
 msgid ""
 "The base query to be used when linkifying values of ticket\n"
 "fields. The query is a URL query\n"
@@ -1334,7 +1336,7 @@ msgstr ""
 "\n"
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。"
 
-#: trac/versioncontrol/admin.py:182
+#: trac/versioncontrol/admin.py:217
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1342,26 +1344,28 @@ msgid ""
 "allowed."
 msgstr "リポジトリ管理パネルで追加や変更の際に、リポジトリのディレクトリとして許可するプレフィックスをカンマ区切りで指定します。このリストが空の場合は、すべてのディレクトリを許可します。"
 
-#: trac/versioncontrol/api.py:330
+#: trac/versioncontrol/api.py:334
 msgid ""
-"One of the alternatives for registering new repositories is to\n"
-"populate the `[repositories]` section of the `trac.ini`.\n"
+"One of the methods for registering repositories is to\n"
+"populate the `[repositories]` section of `trac.ini`.\n"
 "\n"
-"This is especially suited for setting up convenience aliases,\n"
-"short-lived repositories, or during the initial phases of an\n"
-"installation.\n"
+"This is especially suited for setting up aliases, using a \n"
+"[TracIni#GlobalConfiguration shared configuration], or specifying \n"
+"repositories at the time of environment creation.\n"
 "\n"
-"See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details\n"
-"about the format adopted for this section and the rest of that page for\n"
-"the other alternatives."
+"See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for\n"
+"details on the format of this section, and look elsewhere on the \n"
+"page for information on other repository providers."
 msgstr ""
 "リポジトリを新規登録するやり方の1つは、`trac.ini` の `[repositories]` セクションに追加することです。\n"
-"これは便利なエイリアスや一時的なリポジトリの設定、インストール時の初期段階中に特に適しています。\n"
 "\n"
-"このセクションで使用する書式の詳細については [TracRepositoryAdmin#Intrac.ini "
+"これはエイリアスの設定や[TracIni#GlobalConfiguration "
+"共通設定]の使用、プロジェクト新規作成でのリポジトリの指定に特に適しています。\n"
+"\n"
+"このセクションで使用する書式の詳細については [TracRepositoryAdmin#ReposTracIni "
 "TracRepositoryAdmin] を、他の方法についてはこのページの続きを参照してください。"
 
-#: trac/versioncontrol/api.py:343
+#: trac/versioncontrol/api.py:347
 msgid ""
 "Default repository connector type.\n"
 "\n"
