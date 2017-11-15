@@ -19,7 +19,6 @@ from trac.core import *
 from trac.notification.api import NotificationSystem
 from trac.perm import IPermissionRequestor
 from trac.ticket.api import ITicketManipulator, TicketSystem
-from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Ticket
 from trac.ticket.notification import BatchTicketChangeEvent
 from trac.util import to_list
@@ -118,30 +117,32 @@ class BatchModifyModule(Component):
                 for f in TicketSystem(self.env).get_ticket_fields()
                 if f['type'] == 'text' and f.get('format') == 'list']
 
-    def _get_action_controls(self, req, tickets):
-        action_controls = []
-        ts = TicketSystem(self.env)
-        tickets_by_action = {}
+    def _get_action_controls(self, req, ticket_data):
+        tickets = [Ticket(self.env, t['id']) for t in ticket_data]
+        action_weights = {}
+        action_tickets = {}
         for t in tickets:
-            ticket = Ticket(self.env, t['id'])
-            available_actions = ts.get_available_actions(req, ticket)
-            for action in available_actions:
-                tickets_by_action.setdefault(action, []).append(ticket)
+            for ctrl in TicketSystem(self.env).action_controllers:
+                for weight, action in ctrl.get_ticket_actions(req, t) or []:
+                    if action in action_weights:
+                        action_weights[action] = max(action_weights[action],
+                                                     weight)
+                        action_tickets[action].append(t)
+                    else:
+                        action_weights[action] = weight
+                        action_tickets[action] = [t]
 
-        # Sort the allowed actions by the 'default' key.
-        allowed_actions = set(tickets_by_action)
-        workflow = ConfigurableTicketWorkflow(self.env)
-        all_actions = sorted(((action['default'], name)
-                              for name, action
-                              in workflow.get_all_actions().iteritems()),
-                             reverse=True)
-        sorted_actions = [action[1] for action in all_actions
-                                    if action[1] in allowed_actions]
+        sorted_actions = [a for a, w
+                            in sorted(action_weights.iteritems(),
+                                      key=lambda item: (item[1], item[0]),
+                                      reverse=True)]
+
+        action_controls = []
         for action in sorted_actions:
             first_label = None
             hints = []
             widgets = []
-            ticket = tickets_by_action[action][0]
+            ticket = action_tickets[action][0]
             for controller in self._get_action_controllers(req, ticket,
                                                            action):
                 label, widget, hint = controller.render_ticket_action_control(

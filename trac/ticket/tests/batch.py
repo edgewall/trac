@@ -15,7 +15,7 @@ import unittest
 from datetime import datetime, timedelta
 
 from trac.core import Component, implements
-from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore,\
+from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore, \
                       PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket import api, default_workflow, model, web_ui
@@ -712,6 +712,64 @@ class BatchModifyTestCase(unittest.TestCase):
                          "in comment", unicode(req3.chrome['warnings'][0]))
         self.assertFieldValue(1, 'component', 'component4')
         self.assertFieldValue(2, 'component', 'component4')
+
+    def test_post_process_request_add_template_data(self):
+        """Template data added by post_process_request."""
+        self._insert_ticket("Ticket 1", status='new')
+        self._insert_ticket("Ticket 2", status='new')
+        req = MockRequest(self.env, path_info='/query')
+        req.session['query_href'] = '/query?status=!closed'
+        batch = BatchModifyModule(self.env)
+        data_in = {'tickets': [{'id': 1}, {'id': 2}]}
+
+        data_out = batch.post_process_request(req, 'query.html', data_in,
+                                              'text/html')[1]
+
+        self.assertTrue(data_out['batch_modify'])
+        self.assertEqual(['leave', 'resolve', 'reassign', 'acknowledge',
+                          'accept'],
+                         [a[0] for a in data_out['action_controls']])
+
+    def test_actions_added_by_additional_ticket_action_controllers(self):
+        """Actions added by custom ticket action controller.
+
+        Regression test for #12938.
+        """
+        class TestOperation(Component):
+            """TicketActionController that directly provides an action."""
+            implements(api.ITicketActionController)
+
+            def get_ticket_actions(self, req, ticket):
+                return [(0, 'test')]
+
+            def get_all_status(self):
+                return []
+
+            def render_ticket_action_control(self, req, ticket, action):
+                return "test", '', "This is a null action."
+
+            def get_ticket_changes(self, req, ticket, action):
+                return {}
+
+            def apply_action_side_effects(self, req, ticket, action):
+                pass
+
+        self._insert_ticket("Ticket 1", status='new')
+        self._insert_ticket("Ticket 2", status='new')
+        req = MockRequest(self.env, path_info='/query')
+        req.session['query_href'] = '/query?status=!closed'
+        batch = BatchModifyModule(self.env)
+        data_in = {'tickets': [{'id': 1}, {'id': 2}]}
+        self.env.config.set('ticket', 'workflow',
+                            'ConfigurableTicketWorkflow, TestOperation')
+        self.env.enable_component(TestOperation)
+
+        data_out = batch.post_process_request(req, 'query.html', data_in,
+                                              'text/html')[1]
+
+        self.assertEqual(['leave', 'test', 'resolve', 'reassign',
+                          'acknowledge', 'accept'],
+                         [a[0] for a in data_out['action_controls']])
 
     def test_post_process_request_error_handling(self):
         """Exception not raised in post_process_request error handling.
