@@ -15,11 +15,11 @@ from datetime import datetime, timedelta
 import io
 import unittest
 
-from trac.core import TracError
+from trac.core import Component, TracError, implements
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.api import TicketSystem
+from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
@@ -32,8 +32,40 @@ from trac.web.chrome import Chrome
 
 class TicketModuleTestCase(unittest.TestCase):
 
+    delete_ticket_operation = None
+
+    @classmethod
+    def setUpClass(cls):
+
+        class DeleteTicketOperation(Component):
+
+            implements(ITicketActionController)
+
+            def get_ticket_actions(self, req, ticket):
+                return [(0, 'delete')]
+
+            def get_all_status(self):
+                return []
+
+            def render_ticket_action_control(self, req, ticket, action):
+                return 'delete', '', _("The ticket will be deleted.")
+
+            def get_ticket_changes(self, req, ticket, action):
+                return {}
+
+            def apply_action_side_effects(self, req, ticket, action):
+                if action == 'delete':
+                    ticket.delete()
+
+        cls.delete_ticket_operation = DeleteTicketOperation
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        ComponentMeta.deregister(cls.delete_ticket_operation)
+
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(default_data=True)
         self.env.config.set('trac', 'permission_policies',
             'DefaultTicketPolicy, DefaultPermissionPolicy, '
             'LegacyAttachmentPolicy')
@@ -629,9 +661,8 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_add_comment_requires_ticket_append(self):
         """Adding a ticket comment requires TICKET_APPEND."""
         ps = PermissionSystem(self.env)
-        ps.grant_permission('user1', 'TICKET_VIEW')
+        ps.revoke_permission('authenticated', 'TICKET_MODIFY')
         ps.grant_permission('user1', 'TICKET_APPEND')
-        ps.grant_permission('user2', 'TICKET_VIEW')
         ps.grant_permission('user2', 'TICKET_CHGPROP')
         ticket = self._insert_ticket(summary='the summary')
         comment = 'the comment'
@@ -662,11 +693,9 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_change_milestone_requires_milestone_view(self):
         """Changing ticket milestone requires MILESTONE_VIEW."""
         perm_sys = PermissionSystem(self.env)
+        perm_sys.revoke_permission('anonymous', 'MILESTONE_VIEW')
+        perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
         self._insert_ticket(summary='the summary')
-        for name in ('milestone1', 'milestone2'):
-            m = Milestone(self.env)
-            m.name = name
-            m.insert()
 
         def make_req(authname):
             return MockRequest(self.env, authname=authname, method='GET',
@@ -677,7 +706,6 @@ class TicketModuleTestCase(unittest.TestCase):
                 if 'milestone' == field['name']:
                     return field
 
-        perm_sys.grant_permission('user', 'TICKET_VIEW')
         req = make_req('user')
 
         self.assertTrue(self.ticket_module.match_request(req))
@@ -687,8 +715,6 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual([], milestone_field['optgroups'][0]['options'])
         self.assertEqual([], milestone_field['optgroups'][1]['options'])
 
-        perm_sys.grant_permission('user_w_mv', 'TICKET_VIEW')
-        perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
         req = make_req('user_w_mv')
 
         self.assertTrue(self.ticket_module.match_request(req))
@@ -696,7 +722,8 @@ class TicketModuleTestCase(unittest.TestCase):
         milestone_field = get_milestone_field(data['fields'])
         self.assertTrue(milestone_field['editable'])
         self.assertEqual([], milestone_field['optgroups'][0]['options'])
-        self.assertEqual(['milestone1', 'milestone2'],
+        self.assertEqual(['milestone1', 'milestone2',
+                          'milestone3', 'milestone4'],
                          milestone_field['optgroups'][1]['options'])
 
     def test_newticket_has_auto_preview(self):
@@ -778,6 +805,29 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertNotIn('cc_entry', cc_field)
         self.assertNotIn('cc_action', cc_field)
+
+    def test_action_side_effects_applied(self):
+        self.env.config.set('ticket', 'workflow',
+                            'ConfigurableTicketWorkflow, '
+                            'DeleteTicketOperation')
+        ticket = self._insert_ticket(
+            reporter='reporter', summary='the summary', status='new')
+        change_time = Ticket(self.env, ticket.id)['changetime']
+        view_time = str(to_utimestamp(change_time))
+        req = MockRequest(
+            self.env, method='POST', path_info='/ticket/1',
+            args={'submit': True, 'action': 'delete', 'id': '1',
+                  'view_time': view_time})
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        with self.assertRaises(RequestDone):
+            self.ticket_module.process_request(req)
+
+        with self.assertRaises(ResourceNotFound) as cm:
+            Ticket(self.env, 1)
+        self.assertEqual("Ticket 1 does not exist.", unicode(cm.exception))
+        self.assertIn(('DEBUG', "Side effect for DeleteTicketOperation"),
+                      self.env.log_messages)
 
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):

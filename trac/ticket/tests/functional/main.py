@@ -1370,45 +1370,6 @@ class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
         # up in the report?
 
 
-class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6048"""
-        # Setup the DeleteTicket plugin
-        plugin = open(os.path.join(self._testenv.trac_src, 'sample-plugins',
-                                   'workflow', 'DeleteTicket.py')).read()
-        env = self._testenv.get_trac_environment()
-        plugin_path = os.path.join(env.plugins_dir, 'DeleteTicket.py')
-        open(plugin_path, 'w').write(plugin)
-        prevconfig = env.config.get('ticket', 'workflow')
-        env.config.set('ticket', 'workflow',
-                       prevconfig + ',DeleteTicketActionController')
-        env.config.save()
-        env = self._testenv.get_trac_environment()  # reload environment
-
-        # Create a ticket and delete it
-        ticket_id = self._tester.create_ticket('RegressionTestTicket6048')
-        # (Create a second ticket so that the ticket id does not get reused
-        # and confuse the tester object.)
-        self._tester.create_ticket('RegressionTestTicket6048b')
-        self._tester.go_to_ticket(ticket_id)
-        tc.find('<label for="action_delete">delete</label>')
-        tc.formvalue('propertyform', 'action', 'delete')
-        tc.submit('submit')
-
-        self._tester.go_to_ticket(ticket_id)
-        tc.find('Error: Invalid ticket number')
-        tc.find('Ticket %s does not exist.' % ticket_id)
-
-        # Remove the DeleteTicket plugin
-        env.config.set('ticket', 'workflow', prevconfig)
-        env.config.save()
-        self._testenv.get_trac_environment()  # reload environment
-        for ext in ('py', 'pyc', 'pyo'):
-            filename = os.path.join(env.plugins_dir, 'DeleteTicket.%s' % ext)
-            if os.path.exists(filename):
-                os.unlink(filename)
-
-
 class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6747"""
@@ -1929,7 +1890,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket5602())
     suite.addTest(RegressionTestTicket5687())
     suite.addTest(RegressionTestTicket5930())
-    suite.addTest(RegressionTestTicket6048())
     suite.addTest(RegressionTestTicket6747())
     suite.addTest(RegressionTestTicket6879a())
     suite.addTest(RegressionTestTicket6879b())
