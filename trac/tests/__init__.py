@@ -13,8 +13,8 @@
 
 import unittest
 
-from trac.tests import attachment, config, core, env, perm, notification, \
-                       resource, wikisyntax, functional
+from trac.tests import attachment, config, core, env, loader, perm, \
+                       notification, resource, wikisyntax, functional
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -28,6 +28,7 @@ def basicSuite():
     suite.addTest(config.test_suite())
     suite.addTest(core.test_suite())
     suite.addTest(env.test_suite())
+    suite.addTest(loader.test_suite())
     suite.addTest(notification.test_suite())
     suite.addTest(perm.test_suite())
     suite.addTest(resource.test_suite())

@@ -17,7 +17,6 @@ import re
 import time
 import unittest
 
-from trac.core import ComponentMeta
 from trac.tests.functional import FunctionalTwillTestCaseSetup, \
                                   internal_error, tc
 from trac.util import create_file
@@ -53,8 +52,6 @@ class TestErrorPage(FunctionalTwillTestCaseSetup):
     """
     def runTest(self):
         env = self._testenv.get_trac_environment()
-        env.config.set('components', 'RaiseExceptionPlugin.*', 'enabled')
-        env.config.save()
         create_file(os.path.join(env.plugins_dir, 'RaiseExceptionPlugin.py'),
 """\
 from trac.core import Component, TracError, implements
@@ -127,40 +124,6 @@ class RaiseExceptionPlugin(Component):
                     '<p class="message">The plaintext message</p>')
         finally:
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
-
-
-class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of the plugin reload fix in r6017"""
-        # Setup the DeleteTicket plugin
-        env = self._testenv.get_trac_environment()
-        plugin = open(os.path.join(self._testenv.trac_src,
-                                   'sample-plugins', 'workflow',
-                                   'DeleteTicket.py')).read()
-        plugin_path = os.path.join(env.plugins_dir, 'DeleteTicket.py')
-        open(plugin_path, 'w').write(plugin)
-        prevconfig = env.config.get('ticket', 'workflow')
-        env.config.set('ticket', 'workflow',
-                       prevconfig + ',DeleteTicketActionController')
-        env.config.save()
-        env = self._testenv.get_trac_environment() # reloads the environment
-
-        loaded_components = ComponentMeta._components
-        delete_plugins = [c for c in loaded_components
-                          if 'DeleteTicketActionController' in c.__name__]
-        try:
-            self.assertEqual(len(delete_plugins), 1,
-                             "Plugin loaded more than once.")
-
-        finally:
-            # Remove the DeleteTicket plugin
-            env.config.set('ticket', 'workflow', prevconfig)
-            env.config.save()
-            for ext in ('py', 'pyc', 'pyo'):
-                filename = os.path.join(env.plugins_dir,
-                                        'DeleteTicket.%s' % ext)
-                if os.path.exists(filename):
-                    os.unlink(filename)
 
 
 class RegressionTestTicket3833a(FunctionalTwillTestCaseSetup):
@@ -424,7 +387,6 @@ def functionalSuite(suite=None):
     suite.addTest(TestAttachmentNonexistentParent())
     suite.addTest(TestAboutPage())
     suite.addTest(TestErrorPage())
-    suite.addTest(RegressionTestRev6017())
     suite.addTest(RegressionTestTicket3833a())
     suite.addTest(RegressionTestTicket3833b())
     suite.addTest(RegressionTestTicket3833c())
