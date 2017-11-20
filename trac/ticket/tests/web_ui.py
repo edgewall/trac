@@ -32,37 +32,40 @@ from trac.web.chrome import Chrome
 
 class TicketModuleTestCase(unittest.TestCase):
 
-    delete_ticket_operation = None
+    mock_ticket_operation = None
 
     @classmethod
     def setUpClass(cls):
 
-        class DeleteTicketOperation(Component):
+        class MockTicketOperation(Component):
 
             implements(ITicketActionController)
 
+            def __init__(self):
+                self.side_effect_count = 0
+
             def get_ticket_actions(self, req, ticket):
-                return [(0, 'delete')]
+                return [(0, 'mock')]
 
             def get_all_status(self):
                 return []
 
             def render_ticket_action_control(self, req, ticket, action):
-                return 'delete', '', _("The ticket will be deleted.")
+                return 'test', '', "This is a mock operation."
 
             def get_ticket_changes(self, req, ticket, action):
                 return {}
 
             def apply_action_side_effects(self, req, ticket, action):
-                if action == 'delete':
-                    ticket.delete()
+                if action == 'mock':
+                    self.side_effect_count += 1
 
-        cls.delete_ticket_operation = DeleteTicketOperation
+        cls.mock_ticket_operation = MockTicketOperation
 
     @classmethod
     def tearDownClass(cls):
         from trac.core import ComponentMeta
-        ComponentMeta.deregister(cls.delete_ticket_operation)
+        ComponentMeta.deregister(cls.mock_ticket_operation)
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
@@ -809,24 +812,24 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_action_side_effects_applied(self):
         self.env.config.set('ticket', 'workflow',
                             'ConfigurableTicketWorkflow, '
-                            'DeleteTicketOperation')
+                            'MockTicketOperation')
         ticket = self._insert_ticket(
             reporter='reporter', summary='the summary', status='new')
         change_time = Ticket(self.env, ticket.id)['changetime']
         view_time = str(to_utimestamp(change_time))
         req = MockRequest(
             self.env, method='POST', path_info='/ticket/1',
-            args={'submit': True, 'action': 'delete', 'id': '1',
+            args={'submit': True, 'action': 'mock', 'id': '1',
                   'view_time': view_time})
+        operation = self.mock_ticket_operation(self.env)
 
+        self.assertEqual(0, operation.side_effect_count)
         self.assertTrue(self.ticket_module.match_request(req))
         with self.assertRaises(RequestDone):
             self.ticket_module.process_request(req)
 
-        with self.assertRaises(ResourceNotFound) as cm:
-            Ticket(self.env, 1)
-        self.assertEqual("Ticket 1 does not exist.", unicode(cm.exception))
-        self.assertIn(('DEBUG', "Side effect for DeleteTicketOperation"),
+        self.assertEqual(1, operation.side_effect_count)
+        self.assertIn(('DEBUG', "Side effect for MockTicketOperation"),
                       self.env.log_messages)
 
 
