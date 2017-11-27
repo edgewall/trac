@@ -500,6 +500,7 @@ class SessionAdmin(Component):
             db("""
                 DELETE FROM session_attribute
                 WHERE authenticated=0
-                      AND sid NOT IN (SELECT sid FROM session
-                                      WHERE authenticated=0)
+                      AND NOT EXISTS (SELECT * FROM session AS s
+                                      WHERE s.sid=session_attribute.sid
+                                      AND s.authenticated=0)
                 """)
