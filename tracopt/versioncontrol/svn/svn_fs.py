@@ -429,11 +429,17 @@ class SubversionRepository(Repository):
             return self.youngest_rev
         else:
             try:
-                rev = int(rev)
-                if 0 <= rev <= self.youngest_rev:
-                    return rev
-            except (ValueError, TypeError):
-                pass
+                normrev = int(rev)
+                if 0 <= normrev <= self.youngest_rev:
+                    return normrev
+                else:
+                    self.log.debug("%r cannot be normalized in %s: out of [0, "
+                                   "%r]", rev, self.reponame or '(default)',
+                                   self.youngest_rev)
+            except (ValueError, TypeError), e:
+                self.log.debug("%r cannot be normalized in %s: %s", rev,
+                               self.reponame or '(default)',
+                               exception_to_unicode(e))
             raise NoSuchChangeset(rev)
 
     def close(self):
@@ -965,6 +971,7 @@ class SubversionNode(Node):
 class SubversionChangeset(Changeset):
 
     def __init__(self, repos, rev, scope, pool=None):
+        self.log = repos.log
         self.rev = rev
         self.scope = scope
         self.fs_ptr = repos.fs_ptr
@@ -1091,7 +1098,11 @@ class SubversionChangeset(Changeset):
             yield tuple(change)
 
     def _get_prop(self, name):
-        return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool())
+        try:
+            return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool())
+        except core.SubversionException, e:
+            self.log.debug("%r of the %r cannot be retrieved", name, self.rev)
+            raise
 
 
 #

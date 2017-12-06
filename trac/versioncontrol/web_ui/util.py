@@ -44,7 +44,8 @@ def get_changes(repos, revs, log=None):
         except NoSuchChangeset:
             changeset = EmptyChangeset(repos, rev)
             if log is not None:
-                log.warning("Unable to get changeset [%s]", rev)
+                log.warning("Unable to get changeset [%s] in %s", rev,
+                            repos.reponame or '(default)')
         changes[rev] = changeset
     return changes
 

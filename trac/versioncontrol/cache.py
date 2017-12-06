@@ -484,15 +484,18 @@ class CachedChangeset(Changeset):
 
     def __init__(self, repos, rev, env):
         self.env = env
+        drev = repos.db_rev(rev)
         for _date, author, message in self.env.db_query("""
                 SELECT time, author, message FROM revision
                 WHERE repos=%s AND rev=%s
-                """, (repos.id, repos.db_rev(rev))):
+                """, (repos.id, drev)):
             date = from_utimestamp(_date)
             Changeset.__init__(self, repos, repos.rev_db(rev), message, author,
                                date)
             break
         else:
+            repos.log.debug("Missing revision record (%r, %r) in %s", repos.id,
+                            drev, repos.reponame or '(default)')
             raise NoSuchChangeset(rev)
 
     def get_changes(self):
