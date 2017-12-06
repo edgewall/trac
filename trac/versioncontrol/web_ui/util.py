@@ -44,7 +44,8 @@ def get_changes(repos, revs, log=None):
             changeset = Changeset(repos, rev, '', '',
                                   datetime(1970, 1, 1, tzinfo=utc))
             if log is not None:
-                log.warning("Unable to get changeset [%s]", rev)
+                log.warning("Unable to get changeset [%s] in %s", rev,
+                            repos.reponame or '(default)')
         changes[rev] = changeset
     return changes
 
