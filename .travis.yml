@@ -38,7 +38,6 @@ matrix:
       language: generic
       env: pyver=2.7 tracdb=postgres
 before_install:
-  - rvm get head
   - |
     set -e
     case "$tracdb" in
