@@ -9,7 +9,6 @@ cache:
     - "$HOME/.cache/pip"
     - "$HOME/venv-lib"
 before_install:
-  - rvm get head
   - |
     set -e
     case "$tracdb" in
