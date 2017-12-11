@@ -1074,6 +1074,21 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
             self.assertNotIn(' LEFT OUTER JOIN ticket_custom AS %s ON ' %
                              quoted[col], sql)
 
+    def test_invalid_id_custom_field(self):
+        self.env.config.set('ticket-custom', 'id', 'text')
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': 'test_invalid_id_custom_field',
+                         'reporter': 'anonymous', 'status': 'new',
+                         'id': 'blah'})
+        ticket.insert()
+        query = Query.from_string(
+            self.env, 'summary=test_invalid_id_custom_field&col=id')
+        tickets = query.execute(self.req)
+        self.assertEqual(ticket.id, tickets[0]['id'])
+        self.assertEqual('new', tickets[0]['status'])
+        self.assertEqual('test_invalid_id_custom_field', tickets[0]['summary'])
+        self.assertEqual(1, len(tickets))
+
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['id', 'col1'],
                      execute=lambda r: [{'id': 1,
