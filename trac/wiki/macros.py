@@ -39,15 +39,20 @@ from trac.util.translation import _, dgettext, cleandoc_, tag_
 from trac.web.chrome import chrome_resource_path
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import (
-    MacroError, OutlineFormatter, extract_link, format_to_html,
+    MacroError, OutlineFormatter, ProcessorError, extract_link, format_to_html,
     format_to_oneliner, system_message
-)
+)  # ProcessorError unused, but imported for plugin use.
 from trac.wiki.interwiki import InterWikiMap
 
 
 # TODO: should be moved in .api
 class WikiMacroBase(Component):
-    """Abstract base class for wiki macros."""
+    """Abstract base class for wiki macros and processors.
+
+    On usage error, the `MacroError` or `ProcessorError` exception should be
+    raised, to ensure proper display of the error message in the rendered
+    wiki content.
+    """
 
     implements(IWikiMacroProvider)
     abstract = True

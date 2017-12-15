@@ -112,10 +112,24 @@ def _markup_to_unicode(markup):
 
 
 class MacroError(TracError):
+    """Exception raised on incorrect macro usage.
+
+    The exception is trapped by the wiki formatter and the message is
+    rendered in a `pre` tag, wrapped in a div with class `system-message`.
+
+    :since: 1.0.11
+    """
     pass
 
 
 class ProcessorError(TracError):
+    """Exception raised on incorrect processor usage.
+
+    The exception is trapped by the wiki formatter and the message is
+    rendered in a `pre` tag, wrapped in a div with class `system-message`.
+
+    :since: 0.12
+    """
     pass
 
 
