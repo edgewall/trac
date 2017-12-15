@@ -39,9 +39,10 @@ from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
-__all__ = ['wiki_to_outline', 'Formatter', 'format_to', 'format_to_html',
-           'format_to_oneliner', 'extract_link',
-           'split_url_into_path_query_fragment', 'concat_path_query_fragment']
+__all__ = ['Formatter', 'MacroError', 'ProcessorError',
+           'concat_path_query_fragment', 'extract_link', 'format_to',
+           'format_to_html', 'format_to_oneliner',
+           'split_url_into_path_query_fragment', 'wiki_to_outline']
 
 
 def _markup_to_unicode(markup):
@@ -108,9 +109,23 @@ def concat_path_query_fragment(path, query, fragment=None):
 
 
 class MacroError(TracError):
+    """Exception raised on incorrect macro usage.
+
+    The exception is trapped by the wiki formatter and the message is
+    rendered in a `pre` tag, wrapped in a div with class `system-message`.
+
+    :since: 1.0.11
+    """
     pass
 
 class ProcessorError(TracError):
+    """Exception raised on incorrect processor usage.
+
+    The exception is trapped by the wiki formatter and the message is
+    rendered in a `pre` tag, wrapped in a div with class `system-message`.
+
+    :since: 0.12
+    """
     pass
 
 
