@@ -28,7 +28,7 @@ from trac.core import TracError
 from trac.util.text import to_unicode
 
 __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
-           'find_element', 'html', 'is_safe_origin', 'plaintext',
+           'find_element', 'html', 'is_safe_origin', 'plaintext', 'tag',
            'to_fragment', 'unescape']
 
 

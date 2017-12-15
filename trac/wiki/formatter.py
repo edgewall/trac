@@ -40,9 +40,9 @@ from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser, parse_processor_args
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
-           'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
-           'extract_link', 'split_url_into_path_query_fragment',
-           'concat_path_query_fragment']
+           'Formatter', 'MacroError', 'ProcessorError', 'format_to',
+           'format_to_html', 'format_to_oneliner', 'extract_link',
+           'split_url_into_path_query_fragment', 'concat_path_query_fragment']
 
 
 
