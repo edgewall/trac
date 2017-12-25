@@ -69,10 +69,10 @@ class GitCommandMixin(object):
                          (proc.returncode, args, kwargs, stdout, stderr))
         return proc
 
-    def _git_fast_import(self, data):
+    def _git_fast_import(self, data, **kwargs):
         if isinstance(data, unicode):
             data = data.encode('utf-8')
-        proc = self._spawn_git('fast-import', stdin=PIPE)
+        proc = self._spawn_git('fast-import', stdin=PIPE, **kwargs)
         stdout, stderr = proc.communicate(input=data)
         self._close_proc_pipes(proc)
         self.assertEqual(0, proc.returncode,
@@ -106,7 +106,9 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos_path = tempfile.mkdtemp(prefix='trac-gitrepos-')
+        self.tmpdir = tempfile.mkdtemp(prefix='trac-tempdir-')
+        self.repos_path = os.path.join(self.tmpdir, 'gitrepos')
+        os.mkdir(self.repos_path)
         if self.git_bin:
             self.env.config.set('git', 'git_bin', self.git_bin)
 
@@ -116,8 +118,8 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
         self._repomgr.reload_repositories()
         StorageFactory._clean()
         self.env.reset_db()
-        if os.path.isdir(self.repos_path):
-            rmtree(self.repos_path)
+        if os.path.isdir(self.tmpdir):
+            rmtree(self.tmpdir)
 
     @property
     def _repomgr(self):
@@ -127,23 +129,25 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
     def _dbrepoprov(self):
         return DbRepositoryProvider(self.env)
 
-    def _add_repository(self, reponame='gitrepos', bare=False):
-        path = self.repos_path \
-               if bare else os.path.join(self.repos_path, '.git')
+    def _add_repository(self, reponame='gitrepos', bare=False, path=None):
+        if path is None:
+            path = self.repos_path
+        if not bare:
+            path = os.path.join(path, '.git')
         self._dbrepoprov.add_repository(reponame, path, 'git')
 
-    def _git_init(self, data=True, bare=False):
+    def _git_init(self, data=True, bare=False, **kwargs):
         if bare:
-            self._git('init', '--bare')
+            self._git('init', '--bare', **kwargs)
         else:
-            self._git('init')
+            self._git('init', **kwargs)
         if not bare and data:
-            self._git('config', 'user.name', 'Joe')
-            self._git('config', 'user.email', 'joe@example.com')
+            self._git('config', 'user.name', 'Joe', **kwargs)
+            self._git('config', 'user.email', 'joe@example.com', **kwargs)
             create_file(os.path.join(self.repos_path, '.gitignore'))
-            self._git('add', '.gitignore')
+            self._git('add', '.gitignore', **kwargs)
             self._git_commit('-a', '-m', 'test',
-                             date=datetime(2001, 1, 29, 16, 39, 56))
+                             date=datetime(2001, 1, 29, 16, 39, 56), **kwargs)
 
 
 class SanityCheckingTestCase(BaseTestCase):
@@ -849,6 +853,92 @@ data 16
 from :3
 D :100644
 M 100644 :2 :100666
+
+reset refs/heads/master
+from :4
+"""
+
+    def test_submodule(self):
+        subrepos_path = os.path.join(self.tmpdir, 'subrepos')
+        submodule_dir = os.path.join(self.repos_path, 'sub')
+        os.mkdir(subrepos_path)
+        self._git_init(data=False, bare=True, cwd=subrepos_path)
+        self._git_fast_import(self._data_submodule, cwd=subrepos_path)
+
+        submodule_rev1 = '3e733d786b3529d750ee39edacea2f1c4daadca4'
+        self._git_init()
+        self._git('submodule', 'add', subrepos_path, 'sub')
+        self._git('checkout', submodule_rev1, cwd=submodule_dir)
+        self._git('add', '.gitmodules')
+        self._git_commit('-a', '-m', 'init submodule')
+        self._git('tag', 'v1', 'master')
+        self._add_repository('gitrepos')
+        repos = self._repomgr.get_repository('gitrepos')
+        repos.sync()
+
+        ADD = Changeset.ADD
+        EDIT = Changeset.EDIT
+        FILE = Node.FILE
+        DIRECTORY = Node.DIRECTORY
+
+        rev1 = repos.normalize_rev('v1')
+        cset1 = repos.get_changeset(rev1)
+        self.assertEqual([('.gitmodules', FILE,      ADD, None, None),
+                          ('sub',         DIRECTORY, ADD, None, None)],
+                         sorted(cset1.get_changes()))
+        node1 = repos.get_node('sub', rev1)
+        self.assertEqual(None, node1.get_content())
+        self.assertEqual(None, node1.get_content_length())
+        self.assertEqual(DIRECTORY, node1.kind)
+        self.assertEqual({'mode': '160000', 'commit': submodule_rev1},
+                         node1.get_properties())
+        self.assertEqual([], list(node1.get_entries()))
+
+        submodule_rev2 = '409058dc98500b5685c52a091cc9f44f3975113e'
+        self._git('checkout', submodule_rev2, cwd=submodule_dir)
+        self._git_commit('-a', '-m', 'change rev of the submodule')
+        self._git('tag', 'v2', 'master')
+        repos.sync()
+        rev2 = repos.normalize_rev('v2')
+        cset2 = repos.get_changeset(rev2)
+        self.assertEqual([('sub', DIRECTORY, EDIT, 'sub', rev1)],
+                         sorted(cset2.get_changes()))
+        node2 = repos.get_node('sub', rev2)
+        self.assertEqual({'mode': '160000', 'commit': submodule_rev2},
+                         node2.get_properties())
+
+    _data_submodule = """\
+blob
+mark :1
+data 0
+
+blob
+mark :2
+data 16
+...............
+
+# <= 3e733d786b3529d750ee39edacea2f1c4daadca4
+reset refs/heads/master
+commit refs/heads/master
+mark :3
+author Joe <joe@example.com> 1512643825 +0000
+committer Joe <joe@example.com> 1512643825 +0000
+data 12
+root commit
+M 100644 :1 001-001.txt
+M 100644 :2 001-002.txt
+M 100644 :2 001-003.txt
+
+# <= 409058dc98500b5685c52a091cc9f44f3975113e
+commit refs/heads/master
+mark :4
+author Joe <joe@example.com> 1512643826 +0000
+committer Joe <joe@example.com> 1512643826 +0000
+data 10
+2nd commit
+from :3
+M 100644 :1 002-001.txt
+M 100644 :2 002-002.txt
 
 reset refs/heads/master
 from :4
