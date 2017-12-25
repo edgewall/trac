@@ -805,6 +805,7 @@ class Storage(object):
 
             meta, fname = l.split('\t', 1)
             _mode, _type, _sha, _size = meta.split()
+            _mode = int(_mode, 8)
             _size = None if _size == '-' else int(_size)
             return _mode, _type, _sha, _size, self._fs_to_unicode(fname)
 
@@ -1047,6 +1048,8 @@ class Storage(object):
             values = entry[1:].split(' ')
             assert len(values) == 5
             old_mode, new_mode, old_sha, new_sha, change = values
+            old_mode = int(old_mode, 8)
+            new_mode = int(new_mode, 8)
             change = change[:1]
             old_path = self._fs_to_unicode(next_entry())
             new_path = None
