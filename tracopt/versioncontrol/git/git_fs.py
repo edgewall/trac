@@ -221,6 +221,21 @@ def _parse_user_time(s):
     return user, time
 
 
+_file_type_mask = 0170000
+
+
+def _is_dir(mode):
+    if mode is None:
+        return False
+    return (mode & _file_type_mask) in (0040000, 0160000)
+
+
+def _is_submodule(mode):
+    if mode is None:
+        return False
+    return (mode & _file_type_mask) == 0160000
+
+
 class GitConnector(Component):
 
     implements(IRepositoryConnector, ISystemInfoProvider, IWikiSyntaxProvider)
@@ -607,9 +622,6 @@ class GitRepository(Repository):
             results = self.git.ls_tree(rev, target_path, recursive=True)
             return dict((result[4], result) for result in results)
 
-        def is_dir(mode):
-            return mode.startswith('04')
-
         target_path = old_path.strip('/')
         old_tree = get_tree(old_rev)
         new_tree = get_tree(new_rev)
@@ -619,7 +631,7 @@ class GitRepository(Repository):
                 for chg in self.git.diff_tree(old_rev, new_rev, target_path):
                     mode1, mode2, obj1, obj2, action, path, path2 = chg
                     kind = Node.DIRECTORY \
-                           if is_dir(mode2) or is_dir(mode1) \
+                           if _is_dir(mode2) or _is_dir(mode1) \
                            else Node.FILE
 
                     change = GitChangeset.action_map[action]
@@ -682,6 +694,7 @@ class GitNode(Node):
         self.repos = repos
         self.fs_sha = None # points to either tree or blobs
         self.fs_perm = None
+        self.fs_type = None
         self.fs_size = None
         if rev:
             rev = repos.normalize_rev(to_unicode(rev))
@@ -700,22 +713,24 @@ class GitNode(Node):
                     ls_tree_info = ls_tree_info[0]
             if not ls_tree_info:
                 raise NoSuchNode(path, rev)
-            self.fs_perm, k, self.fs_sha, self.fs_size, fname = ls_tree_info
+            self.fs_perm, self.fs_type, self.fs_sha, self.fs_size, fname = \
+                ls_tree_info
 
             # fix-up to the last commit-rev that touched this node
             created_rev = repos.git.last_change(rev, p, historian)
 
-            if k == 'tree':
-                pass
-            elif k == 'commit':
+            if self.fs_type == 'tree':
+                kind = Node.DIRECTORY
+            elif self.fs_type == 'blob':
+                kind = Node.FILE
+            elif _is_submodule(self.fs_perm):
                 # FIXME: this is a workaround for missing git submodule
                 #        support in the plugin
-                pass
-            elif k == 'blob':
-                kind = Node.FILE
+                kind = Node.DIRECTORY
             else:
+                self.log.warning('Got unexpected object %r', ls_tree_info)
                 raise TracError(_("Internal error (got unexpected object "
-                                  "kind '%(kind)s')", kind=k))
+                                  "kind '%(kind)s')", kind=self.fs_type))
 
         self.created_path = path
         self.created_rev = created_rev
@@ -736,11 +751,15 @@ class GitNode(Node):
     def get_content(self):
         if not self.isfile:
             return None
-
         return self.repos.git.get_file(self.fs_sha)
 
     def get_properties(self):
-        return self.fs_perm and {'mode': self.fs_perm } or {}
+        if self.fs_perm is None:
+            return {}
+        props = {'mode': '%06o' % self.fs_perm}
+        if _is_submodule(self.fs_perm):
+            props['commit'] = self.fs_sha
+        return props
 
     def get_annotations(self):
         if not self.isfile:
@@ -753,6 +772,8 @@ class GitNode(Node):
         if not self.rev:  # if empty repository
             return
         if not self.isdir:
+            return
+        if _is_submodule(self.fs_perm):
             return
 
         with self.repos.git.get_historian(self.rev,
@@ -888,14 +909,15 @@ class GitChangeset(Changeset):
         # Returns the differences against the first parent
         parent = self.props.get('parent')
         parent = parent[0] if parent else None
+
         for mode1, mode2, obj1, obj2, action, path1, path2 in \
                 self.repos.git.diff_tree(parent, self.rev, find_renames=True):
             path = path2 or path1
             p_path, p_rev = path1, parent
 
             kind = Node.DIRECTORY \
-                   if mode2.startswith('04') or mode1.startswith('04') \
-                   else Node.FILE
+                   if _is_dir(mode2) or _is_dir(mode1) else \
+                   Node.FILE
 
             action = GitChangeset.action_map[action]
 
