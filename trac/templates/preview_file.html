@@ -39,12 +39,9 @@ ${preview.rendered}
 
 #     endtrans
 #   endif
-#   set downloading
-<a href="${preview.raw_href}">${_("downloading")}</a>
-#   endset
-#   trans downloading
+#   trans url = preview.raw_href
 
-    Try ${downloading} the file instead.
+    Try <a href="${url}">downloading</a> the file instead.
 
 #   endtrans
 </p>
