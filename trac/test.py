@@ -200,6 +200,9 @@ def MockRequest(env, **kwargs):
         'SERVER_NAME': kwargs.get('server_name', 'localhost'),
         'SERVER_PORT': kwargs.get('server_port', '80'),
     }
+    for key in environ:
+        if isinstance(environ[key], unicode):
+            environ[key] = environ[key].encode('utf-8')
 
     status_sent = []
     headers_sent = {}

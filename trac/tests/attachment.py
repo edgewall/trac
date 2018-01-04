@@ -17,6 +17,7 @@ import tempfile
 import unittest
 import zipfile
 from datetime import datetime
+from xml.dom import minidom
 
 from trac.admin.api import console_datetime_format
 from trac.admin.console import TracAdmin
@@ -29,6 +30,7 @@ from trac.resource import IResourceManager, Resource, resource_exists
 from trac.test import EnvironmentStub, Mock, MockRequest, mkdtemp
 from trac.util.datefmt import format_datetime, to_utimestamp, utc
 from trac.web.api import HTTPBadRequest, RequestDone
+from trac.web.chrome import Chrome
 
 
 hashes = {
@@ -66,7 +68,7 @@ class ResourceManagerStub(Component):
         yield 'parent_realm'
 
     def get_resource_url(self, resource, href, **kwargs):
-        pass
+        return href(resource.realm, resource.id, version=resource.version)
 
     def get_resource_description(self, resource, format='default',
                                  context=None, **kwargs):
@@ -476,7 +478,7 @@ class AttachmentTestCase(unittest.TestCase):
 class AttachmentModuleTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(enable=(ResourceManagerStub,))
+        self.env = EnvironmentStub(enable=('trac.*', ResourceManagerStub,))
         self.env.path = mkdtemp()
 
     def tearDown(self):
@@ -587,6 +589,42 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.assertEqual(3, zinfo.file_size)
         self.assertEqual((2016, 12, 14, 23, 56, 30), zinfo.date_time)
         self.assertEqual('', zinfo.comment)
+
+    def test_preview_valid_xhtml(self):
+        chrome = Chrome(self.env)
+        module = AttachmentModule(self.env)
+
+        def render(attachment):
+            path_info = '/attachment/%s/%s/%s' % (attachment.parent_realm,
+                                                  attachment.parent_id,
+                                                  attachment.filename)
+            req = MockRequest(self.env, path_info=path_info)
+            self.assertTrue(module.match_request(req))
+            template, data = module.process_request(req)
+            return chrome.render_template(req, template, data,
+                                          {'fragment': True})
+
+        # empty file
+        attachment = Attachment(self.env, 'parent_realm', 'parent_id')
+        attachment.insert('empty', io.BytesIO(), 0, 1)
+        result = render(attachment)
+        self.assertIn('<strong>(The file is empty)</strong>', result)
+        xml = minidom.parseString(result)
+
+        # text file
+        attachment = Attachment(self.env, 'parent_realm', 'parent_id')
+        attachment.insert('foo.txt', io.BytesIO(b'text'), 4, 1)
+        result = render(attachment)
+        self.assertIn('<tr><th id="L1"><a href="#L1">1</a></th>'
+                      '<td>text</td></tr>', result)
+        xml = minidom.parseString(result)
+
+        # preview unavailable
+        attachment = Attachment(self.env, 'parent_realm', 'parent_id')
+        attachment.insert('foo.dat', io.BytesIO(b'\x00\x00\x01\xb3'), 4, 1)
+        result = render(attachment)
+        self.assertIn('<strong>HTML preview not available</strong>', result)
+        xml = minidom.parseString(result)
 
 
 class LegacyAttachmentPolicyTestCase(unittest.TestCase):
