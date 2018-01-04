@@ -1,14 +1,14 @@
 # Translations template for Trac.
-# Copyright (C) 2017 Edgewall Software
+# Copyright (C) 2018 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-11-02 09:20+0000\n"
+"POT-Creation-Date: 2018-01-04 10:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,27 +85,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:288
+#: tracopt/versioncontrol/git/git_fs.py:303
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:291
+#: tracopt/versioncontrol/git/git_fs.py:306
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:294
+#: tracopt/versioncontrol/git/git_fs.py:309
 msgid ""
 "The length at which a sha1 is abbreviated (must be >= 4\n"
 "and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:299
+#: tracopt/versioncontrol/git/git_fs.py:314
 msgid ""
 "The minimum length at which a hex-string in wiki content\n"
 "is formatted as a changeset TracLink (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:304
+#: tracopt/versioncontrol/git/git_fs.py:319
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -115,42 +115,42 @@ msgid ""
 "option."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:313
+#: tracopt/versioncontrol/git/git_fs.py:328
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:318
+#: tracopt/versioncontrol/git/git_fs.py:333
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:323
+#: tracopt/versioncontrol/git/git_fs.py:338
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:326
+#: tracopt/versioncontrol/git/git_fs.py:341
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:920
+#: tracopt/versioncontrol/git/git_fs.py:942
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:923
+#: tracopt/versioncontrol/git/git_fs.py:945
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:926
+#: tracopt/versioncontrol/git/git_fs.py:948
 #, python-format
 msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:930
+#: tracopt/versioncontrol/git/git_fs.py:952
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."

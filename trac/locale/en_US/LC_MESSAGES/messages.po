@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-11-02 09:20+0000\n"
+"POT-Creation-Date: 2018-01-04 10:32+0000\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language: en_US\n"
@@ -139,63 +139,63 @@ msgstr ""
 msgid "Delete comment"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:338
-#: tracopt/versioncontrol/git/git_fs.py:342
+#: tracopt/versioncontrol/git/git_fs.py:353
+#: tracopt/versioncontrol/git/git_fs.py:357
 #, python-format
 msgid "%(option)s must be in the range [4..40]"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:346
+#: tracopt/versioncontrol/git/git_fs.py:361
 msgid "GIT backend not available"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:348
+#: tracopt/versioncontrol/git/git_fs.py:363
 #, python-format
 msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1824
-#: trac/wiki/macros.py:374 trac/wiki/templates/wiki_view.html:67
-#: trac/wiki/web_ui.py:785 tracopt/versioncontrol/git/git_fs.py:449
+#: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1823
+#: trac/wiki/macros.py:379 trac/wiki/templates/wiki_view.html:67
+#: trac/wiki/web_ui.py:785 tracopt/versioncontrol/git/git_fs.py:464
 msgid "diff"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:450
+#: tracopt/versioncontrol/git/git_fs.py:465
 msgid "Diff against this parent (show the changes merged from the other parents)"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:459
+#: tracopt/versioncontrol/git/git_fs.py:474
 msgid ""
 "Note: this is a <strong>merge</strong> changeset, the changes displayed "
 "below correspond to the merge itself."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:466
+#: tracopt/versioncontrol/git/git_fs.py:481
 msgid ""
 "Use the <code>(diff)</code> links above to see all the changes relative "
 "to each parent."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:482
-#: tracopt/versioncontrol/git/git_fs.py:732
+#: tracopt/versioncontrol/git/git_fs.py:497
+#: tracopt/versioncontrol/git/git_fs.py:747
 msgid "Internal error"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:517
+#: tracopt/versioncontrol/git/git_fs.py:532
 #, python-format
 msgid "\"%(name)s\" is not readable or not a Git repository."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:541
+#: tracopt/versioncontrol/git/git_fs.py:556
 msgid "Unsupported \"Show only adds and deletes\""
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:597
+#: tracopt/versioncontrol/git/git_fs.py:612
 msgid "Not supported in git_fs"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:715
+#: tracopt/versioncontrol/git/git_fs.py:730
 #, python-format
 msgid "Internal error (got unexpected object kind '%(kind)s')"
 msgstr ""
@@ -215,14 +215,14 @@ msgstr ""
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:699
+#: tracopt/versioncontrol/svn/svn_fs.py:705
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:870
+#: tracopt/versioncontrol/svn/svn_fs.py:876
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Back to %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:235 trac/ticket/batch.py:59 trac/ticket/report.py:173
+#: trac/attachment.py:235 trac/ticket/batch.py:58 trac/ticket/report.py:173
 #: trac/ticket/roadmap.py:767 trac/web/api.py:980 trac/wiki/web_ui.py:166
 msgid "Invalid request arguments."
 msgstr ""
@@ -1735,7 +1735,7 @@ msgstr ""
 msgid "%(link)s is not a valid TracLink"
 msgstr ""
 
-#: trac/mimeview/txtl.py:80 trac/wiki/formatter.py:233
+#: trac/mimeview/txtl.py:80 trac/wiki/formatter.py:248
 #, python-format
 msgid "HTML parsing error: %(message)s"
 msgstr ""
@@ -2830,13 +2830,9 @@ msgid ""
 "could handle it."
 msgstr ""
 
-#: trac/templates/preview_file.html:43
-msgid "downloading"
-msgstr ""
-
-#: trac/templates/preview_file.html:45
+#: trac/templates/preview_file.html:42
 #, python-format
-msgid "Try %(downloading)s the file instead."
+msgid "Try <a href=\"%(url)s\">downloading</a> the file instead."
 msgstr ""
 
 #: trac/templates/genshi/progress_bar.html:35
@@ -3168,7 +3164,7 @@ msgstr ""
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:390 trac/ticket/web_ui.py:1564
+#: trac/ticket/api.py:390 trac/ticket/web_ui.py:1563
 msgid "Cc"
 msgstr ""
 
@@ -3232,33 +3228,33 @@ msgstr ""
 msgid "Ticket #%(shortname)s"
 msgstr ""
 
-#: trac/ticket/batch.py:108
+#: trac/ticket/batch.py:107
 msgid "add"
 msgstr ""
 
-#: trac/ticket/batch.py:109
+#: trac/ticket/batch.py:108
 msgid "remove"
 msgstr ""
 
-#: trac/ticket/batch.py:110
+#: trac/ticket/batch.py:109
 msgid "add / remove"
 msgstr ""
 
-#: trac/ticket/batch.py:111
+#: trac/ticket/batch.py:110
 msgid "set to"
 msgstr ""
 
-#: trac/ticket/batch.py:184 trac/ticket/web_ui.py:1324
+#: trac/ticket/batch.py:185 trac/ticket/web_ui.py:1324
 #, python-format
 msgid "The ticket comment is invalid: %(message)s"
 msgstr ""
 
-#: trac/ticket/batch.py:201 trac/ticket/web_ui.py:1333
+#: trac/ticket/batch.py:202 trac/ticket/web_ui.py:1333
 #, python-format
 msgid "The ticket field %(field)s is invalid: %(message)s"
 msgstr ""
 
-#: trac/ticket/batch.py:228 trac/ticket/roadmap.py:871
+#: trac/ticket/batch.py:229 trac/ticket/roadmap.py:871
 #: trac/ticket/roadmap.py:924
 #, python-format
 msgid ""
@@ -4167,7 +4163,7 @@ msgid_plural "%(labels)s deleted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1258 trac/ticket/web_ui.py:1781
+#: trac/ticket/web_ui.py:1258 trac/ticket/web_ui.py:1780
 msgid "; "
 msgstr ""
 
@@ -4242,66 +4238,66 @@ msgstr ""
 msgid "Released %(datetime)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1562
+#: trac/ticket/web_ui.py:1561
 msgid "Add Cc"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1563
+#: trac/ticket/web_ui.py:1562
 msgid "Remove Cc"
 msgstr ""
 
-#: trac/ticket/templates/query.html:175 trac/ticket/web_ui.py:1599
+#: trac/ticket/templates/query.html:175 trac/ticket/web_ui.py:1598
 msgid "yes"
 msgstr ""
 
-#: trac/ticket/templates/query.html:183 trac/ticket/web_ui.py:1599
+#: trac/ticket/templates/query.html:183 trac/ticket/web_ui.py:1598
 msgid "no"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1776
+#: trac/ticket/web_ui.py:1775
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1779
+#: trac/ticket/web_ui.py:1778
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1808
+#: trac/ticket/web_ui.py:1807
 #, python-format
 msgid "%(value)s deleted"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1810
+#: trac/ticket/web_ui.py:1809
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1812
+#: trac/ticket/web_ui.py:1811
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1816
+#: trac/ticket/web_ui.py:1815
 msgid "set"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1816
+#: trac/ticket/web_ui.py:1815
 msgid "unset"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1819
+#: trac/ticket/web_ui.py:1818
 #: trac/versioncontrol/templates/changeset_content.html:280
 #: trac/versioncontrol/templates/revisionlog.txt:13
 msgid "modified"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1825
+#: trac/ticket/web_ui.py:1824
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr ""
@@ -6585,11 +6581,11 @@ msgid "No permission to view change log"
 msgstr ""
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
-#: trac/versioncontrol/web_ui/util.py:76
+#: trac/versioncontrol/web_ui/util.py:77
 msgid "search"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/util.py:81
+#: trac/versioncontrol/web_ui/util.py:82
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
@@ -6892,56 +6888,56 @@ msgstr ""
 msgid "no permission to view this wiki page"
 msgstr ""
 
-#: trac/wiki/formatter.py:175
+#: trac/wiki/formatter.py:190
 #, python-format
 msgid "Pre-0.11 macros with the %(method)s method are no longer supported."
 msgstr ""
 
-#: trac/wiki/formatter.py:194
+#: trac/wiki/formatter.py:209
 #, python-format
 msgid "No macro or processor named '%(name)s' found"
 msgstr ""
 
-#: trac/wiki/formatter.py:237
+#: trac/wiki/formatter.py:252
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
 msgstr ""
 
-#: trac/wiki/formatter.py:314
+#: trac/wiki/formatter.py:329
 #, python-format
 msgid "!#%(name)s must contain at most one table"
 msgstr ""
 
-#: trac/wiki/formatter.py:318
+#: trac/wiki/formatter.py:333
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr ""
 
-#: trac/wiki/formatter.py:372
+#: trac/wiki/formatter.py:387
 #, python-format
 msgid "Error: Failed to load processor %(name)s"
 msgstr ""
 
-#: trac/wiki/formatter.py:709 trac/wiki/interwiki.py:106
+#: trac/wiki/formatter.py:724 trac/wiki/interwiki.py:106
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr ""
 
-#: trac/wiki/formatter.py:801
+#: trac/wiki/formatter.py:816
 #, python-format
 msgid "Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:807
+#: trac/wiki/formatter.py:822
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1197
+#: trac/wiki/formatter.py:1212
 #, python-format
 msgid "Processor %(name)s failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1203
+#: trac/wiki/formatter.py:1218
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr ""
@@ -6982,7 +6978,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: trac/wiki/macros.py:85
+#: trac/wiki/macros.py:90
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -7020,7 +7016,7 @@ msgid ""
 "The `include` and `exclude` lists accept shell-style patterns."
 msgstr ""
 
-#: trac/wiki/macros.py:311
+#: trac/wiki/macros.py:316
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -7046,7 +7042,7 @@ msgid ""
 "e.g. `[[RecentChanges(,10,group=none)]]`."
 msgstr ""
 
-#: trac/wiki/macros.py:390
+#: trac/wiki/macros.py:395
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -7079,7 +7075,7 @@ msgid ""
 "   default). This parameter only has an effect in `inline` style."
 msgstr ""
 
-#: trac/wiki/macros.py:458
+#: trac/wiki/macros.py:463
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -7157,16 +7153,16 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:681
+#: trac/wiki/macros.py:686
 msgid "No filespec given"
 msgstr ""
 
-#: trac/wiki/macros.py:691
+#: trac/wiki/macros.py:696
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:717
+#: trac/wiki/macros.py:722
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7179,20 +7175,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:746
+#: trac/wiki/macros.py:751
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:769
+#: trac/wiki/macros.py:774
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:772
+#: trac/wiki/macros.py:777
 msgid "Sorry, no documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:779
+#: trac/wiki/macros.py:784
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7209,11 +7205,11 @@ msgid ""
 " option  :: a glob-style filtering on the option names"
 msgstr ""
 
-#: trac/wiki/macros.py:839
+#: trac/wiki/macros.py:844
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:866
+#: trac/wiki/macros.py:871
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7221,11 +7217,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:889
+#: trac/wiki/macros.py:894
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:903
+#: trac/wiki/macros.py:908
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -7236,11 +7232,11 @@ msgid ""
 "table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:950
+#: trac/wiki/macros.py:955
 msgid "Table of Contents"
 msgstr ""
 
-#: trac/wiki/macros.py:964
+#: trac/wiki/macros.py:969
 #, python-format
 msgid "Invalid macro argument %(expr)s"
 msgstr ""
