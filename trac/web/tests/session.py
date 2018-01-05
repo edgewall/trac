@@ -294,19 +294,21 @@ class SessionTestCase(unittest.TestCase):
             WHERE sid='123456' AND name='foo'
             """)[0][0])
 
-    def test_purge_anonymous_session(self):
-        """
-        Verify that old sessions get purged.
-        """
+    def _purge_anonymous_session(self):
+        now = int(time_now())
+        lifetime = 90 * 86400  # default lifetime
         with self.env.db_transaction as db:
-            db("INSERT INTO session VALUES ('123456', 0, %s)", (0,))
-            db("INSERT INTO session VALUES ('987654', 0, %s)",
-               (int(time_now() - PURGE_AGE - 3600),))
-            db("""
+            db.executemany("INSERT INTO session VALUES (%s, 0, %s)",
+                           [('123456', 0),
+                            ('987654', now - lifetime - 3600),
+                            ('876543', now - lifetime + 3600),
+                            ('765432', now - 3600)])
+            db.executemany("""
                 INSERT INTO session_attribute
-                VALUES ('987654', 0, 'foo', 'bar')
-                """)
+                VALUES (%s, 0, 'foo', 'bar')
+                """, [('987654',), ('876543',), ('765432',)])
 
+        with self.env.db_transaction as db:
             # We need to modify a different session to trigger the purging
             req = MockRequest(self.env, authname='anonymous')
             req.incookie['trac_session'] = '123456'
@@ -314,9 +316,26 @@ class SessionTestCase(unittest.TestCase):
             session['foo'] = 'bar'
             session.save()
 
-        self.assertEqual(0, self.env.db_query("""
-            SELECT COUNT(*) FROM session WHERE sid='987654' AND authenticated=0
-            """)[0][0])
+        return [row[0] for row in self.env.db_query("""
+            SELECT sid FROM session WHERE authenticated=0 ORDER BY sid
+            """)]
+
+    def test_purge_anonymous_session(self):
+        """
+        Verify that old sessions get purged.
+        """
+        sids = self._purge_anonymous_session()
+        self.assertEqual(['123456', '765432', '876543'], sids)
+
+    def test_purge_anonymous_session_with_short_lifetime(self):
+        self.env.config.set('trac', 'anonymous_session_lifetime', '1')
+        sids = self._purge_anonymous_session()
+        self.assertEqual(['123456', '765432'], sids)
+
+    def test_purge_anonymous_session_disabled(self):
+        self.env.config.set('trac', 'anonymous_session_lifetime', '0')
+        sids = self._purge_anonymous_session()
+        self.assertEqual(['123456', '765432', '876543', '987654'], sids)
 
     def test_delete_empty_session(self):
         """

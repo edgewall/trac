@@ -27,7 +27,7 @@ from trac import db_default, log
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.cache import CacheManager, cached
 from trac.config import BoolOption, ChoiceOption, ConfigSection, \
-                        Configuration, Option, PathOption
+                        Configuration, IntOption, Option, PathOption
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracBaseError, TracError
 from trac.db.api import (DatabaseManager, QueryContextManager,
@@ -200,6 +200,13 @@ class Environment(Component, ComponentManager):
         are only sent to the server on HTTPS connections. Use this if
         your Trac instance is only accessible through HTTPS.
         """)
+
+    anonymous_session_lifetime = IntOption(
+        'trac', 'anonymous_session_lifetime', '90',
+        """Lifetime of the anonymous session, in days.
+
+        Set the option to 0 to disable purging old anonymous sessions.
+        (''since 1.0.17'')""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
