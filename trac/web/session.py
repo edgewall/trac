@@ -33,7 +33,7 @@ from trac.util.datefmt import get_datetime_format_hint, format_date, \
 from trac.admin.api import IAdminCommandProvider, AdminCommandError
 
 UPDATE_INTERVAL = 3600 * 24 # Update session last_visit time stamp after 1 day
-PURGE_AGE = 3600 * 24 * 90 # Purge session after 90 days idle
+PURGE_AGE = 3600 * 24 * 90 # Expire cookie after 90 days
 COOKIE_KEY = 'trac_session'
 
 
@@ -169,7 +169,8 @@ class DetachedSession(dict):
 
         if session_saved and now - self.last_visit > UPDATE_INTERVAL:
             self.last_visit = now
-            mintime = now - PURGE_AGE
+            lifetime = self.env.anonymous_session_lifetime
+            mintime = now - lifetime * 86400 if lifetime > 0 else None
 
             with self.env.db_transaction as db:
                 # Update the session last visit time if it is over an
@@ -178,21 +179,23 @@ class DetachedSession(dict):
                 db("""UPDATE session SET last_visit=%s
                       WHERE sid=%s AND authenticated=%s
                       """, (self.last_visit, self.sid, authenticated))
-                self.env.log.debug('Purging old, expired, sessions.')
-                db("""DELETE FROM session_attribute
-                      WHERE authenticated=0 AND sid IN (
-                          SELECT sid FROM session
-                          WHERE authenticated=0 AND last_visit < %s
-                      )
-                      """, (mintime,))
+                if mintime:
+                    self.env.log.debug('Purging old, expired, sessions.')
+                    db("""DELETE FROM session_attribute
+                          WHERE authenticated=0 AND sid IN (
+                              SELECT sid FROM session
+                              WHERE authenticated=0 AND last_visit < %s
+                          )
+                          """, (mintime,))
 
             # Avoid holding locks on lot of rows on both session_attribute
             # and session tables
-            with self.env.db_transaction as db:
-                db("""
-                    DELETE FROM session
-                    WHERE authenticated=0 AND last_visit < %s
-                    """, (mintime,))
+            if mintime:
+                with self.env.db_transaction as db:
+                    db("""
+                        DELETE FROM session
+                        WHERE authenticated=0 AND last_visit < %s
+                        """, (mintime,))
 
 
 class Session(DetachedSession):
