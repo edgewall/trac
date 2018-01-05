@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-11-01 19:32+0900\n"
+"POT-Creation-Date: 2018-01-05 03:39+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -118,27 +118,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:289
+#: tracopt/versioncontrol/git/git_fs.py:304
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:292
+#: tracopt/versioncontrol/git/git_fs.py:307
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:295
+#: tracopt/versioncontrol/git/git_fs.py:310
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:300
+#: tracopt/versioncontrol/git/git_fs.py:315
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:305
+#: tracopt/versioncontrol/git/git_fs.py:320
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -148,35 +148,35 @@ msgid ""
 "option."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:314
+#: tracopt/versioncontrol/git/git_fs.py:329
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:319
+#: tracopt/versioncontrol/git/git_fs.py:334
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:324
+#: tracopt/versioncontrol/git/git_fs.py:339
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:327
+#: tracopt/versioncontrol/git/git_fs.py:342
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:917
+#: tracopt/versioncontrol/git/git_fs.py:939
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:920
+#: tracopt/versioncontrol/git/git_fs.py:942
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:923
+#: tracopt/versioncontrol/git/git_fs.py:945
 #, python-format
 msgid ""
 "Template for project URLs. %s will be replaced with the repo\n"
@@ -362,25 +362,33 @@ msgid ""
 msgstr ""
 
 #: trac/env.py:195
+msgid ""
+"Lifetime of the anonymous session, in days.\n"
+"\n"
+"Set the option to 0 to disable purging old anonymous sessions.\n"
+"(''since 1.0.17'')"
+msgstr ""
+
+#: trac/env.py:202
 msgid "Name of the project."
 msgstr ""
 
-#: trac/env.py:198
+#: trac/env.py:205
 msgid "Short description of the project."
 msgstr ""
 
-#: trac/env.py:201
+#: trac/env.py:208
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
 
-#: trac/env.py:206
+#: trac/env.py:213
 msgid "E-Mail address of the project's administrator."
 msgstr ""
 
-#: trac/env.py:209
+#: trac/env.py:216
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -390,36 +398,36 @@ msgid ""
 "buttons.  (''since 0.11.3'')"
 msgstr ""
 
-#: trac/env.py:218
+#: trac/env.py:225
 msgid "Page footer text (right-aligned)."
 msgstr ""
 
-#: trac/env.py:223
+#: trac/env.py:230
 msgid "URL of the icon of the project."
 msgstr ""
 
-#: trac/env.py:226
+#: trac/env.py:233
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
 
-#: trac/env.py:231
+#: trac/env.py:238
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
 
-#: trac/env.py:236
+#: trac/env.py:243
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`)."
 msgstr ""
 
-#: trac/env.py:241
+#: trac/env.py:248
 msgid ""
 "Custom logging format.\n"
 "\n"

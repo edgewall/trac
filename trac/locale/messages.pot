@@ -1,14 +1,14 @@
 # Translations template for Trac.
-# Copyright (C) 2017 Edgewall Software
+# Copyright (C) 2018 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.0.17\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-11-01 19:32+0900\n"
+"POT-Creation-Date: 2018-01-05 03:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,17 +152,17 @@ msgstr ""
 msgid "Delete comment"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:339
-#: tracopt/versioncontrol/git/git_fs.py:343
+#: tracopt/versioncontrol/git/git_fs.py:354
+#: tracopt/versioncontrol/git/git_fs.py:358
 #, python-format
 msgid "%(option)s must be in the range [4..40]"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:347
+#: tracopt/versioncontrol/git/git_fs.py:362
 msgid "GIT backend not available"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:349
+#: tracopt/versioncontrol/git/git_fs.py:364
 #, python-format
 msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr ""
@@ -170,41 +170,41 @@ msgstr ""
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/templates/ticket_change.html:166 trac/ticket/web_ui.py:1762
 #: trac/wiki/macros.py:363 trac/wiki/web_ui.py:767
-#: tracopt/versioncontrol/git/git_fs.py:450
+#: tracopt/versioncontrol/git/git_fs.py:465
 msgid "diff"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:451
+#: tracopt/versioncontrol/git/git_fs.py:466
 msgid "Diff against this parent (show the changes merged from the other parents)"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:460
+#: tracopt/versioncontrol/git/git_fs.py:475
 msgid ""
 "Note: this is a <strong>merge</strong> changeset, the changes displayed "
 "below correspond to the merge itself."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:467
+#: tracopt/versioncontrol/git/git_fs.py:482
 msgid ""
 "Use the <tt>(diff)</tt> links above to see all the changes relative to "
 "each parent."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:482
-#: tracopt/versioncontrol/git/git_fs.py:729
+#: tracopt/versioncontrol/git/git_fs.py:497
+#: tracopt/versioncontrol/git/git_fs.py:744
 msgid "Internal error"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:517
+#: tracopt/versioncontrol/git/git_fs.py:532
 #, python-format
 msgid "\"%(name)s\" is not readable or not a Git repository."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:594
+#: tracopt/versioncontrol/git/git_fs.py:609
 msgid "Not supported in git_fs"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:712
+#: tracopt/versioncontrol/git/git_fs.py:727
 #, python-format
 msgid "Internal error (got unexpected object kind '%(kind)s')"
 msgstr ""
@@ -224,14 +224,14 @@ msgstr ""
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:701
+#: tracopt/versioncontrol/svn/svn_fs.py:707
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: tracopt/versioncontrol/svn/svn_fs.py:872
+#: tracopt/versioncontrol/svn/svn_fs.py:878
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
@@ -501,7 +501,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:93
 #: trac/versioncontrol/admin.py:119
 #: trac/versioncontrol/templates/admin_repositories.html:137
-#: trac/web/session.py:433
+#: trac/web/session.py:436
 msgid "Name"
 msgstr ""
 
@@ -588,45 +588,45 @@ msgstr ""
 msgid "Trac Error"
 msgstr ""
 
-#: trac/env.py:218
+#: trac/env.py:225
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:396
+#: trac/env.py:403
 #, python-format
 msgid "Unknown Trac environment type '%(type)s'"
 msgstr ""
 
-#: trac/env.py:399
+#: trac/env.py:406
 #, python-format
 msgid ""
 "No Trac environment found at %(path)s\n"
 "%(e)s"
 msgstr ""
 
-#: trac/env.py:653
+#: trac/env.py:660
 #, python-format
 msgid "The configuration file is not found at %(path)s"
 msgstr ""
 
-#: trac/env.py:866
+#: trac/env.py:873
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:883
+#: trac/env.py:890
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
 
-#: trac/env.py:929
+#: trac/env.py:936
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/admin/console.py:286 trac/env.py:958
+#: trac/admin/console.py:286 trac/env.py:965
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded. Run:\n"
@@ -634,67 +634,67 @@ msgid ""
 "  trac-admin \"%(path)s\" upgrade"
 msgstr ""
 
-#: trac/env.py:997
+#: trac/env.py:1004
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:1015
+#: trac/env.py:1022
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:1027
+#: trac/env.py:1034
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:1032
+#: trac/env.py:1039
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:1041
+#: trac/env.py:1048
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1059
+#: trac/env.py:1066
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1070
+#: trac/env.py:1077
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1075
+#: trac/env.py:1082
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/admin/api.py:134 trac/env.py:1080
+#: trac/admin/api.py:134 trac/env.py:1087
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1083
+#: trac/env.py:1090
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1089
+#: trac/env.py:1096
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1093
+#: trac/env.py:1100
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1105
+#: trac/env.py:1112
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1116
+#: trac/env.py:1123
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -702,7 +702,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1121
+#: trac/env.py:1128
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -6078,11 +6078,11 @@ msgid "No permission to view change log"
 msgstr ""
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
-#: trac/versioncontrol/web_ui/util.py:77
+#: trac/versioncontrol/web_ui/util.py:78
 msgid "search"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/util.py:82
+#: trac/versioncontrol/web_ui/util.py:83
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
@@ -6242,46 +6242,46 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:233 trac/web/session.py:252
+#: trac/web/session.py:236 trac/web/session.py:255
 msgid "Session ID must be alphanumeric."
 msgstr ""
 
-#: trac/web/session.py:253 trac/web/session.py:259
+#: trac/web/session.py:256 trac/web/session.py:262
 msgid "Error renaming session"
 msgstr ""
 
-#: trac/web/session.py:256
+#: trac/web/session.py:259
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:433
+#: trac/web/session.py:436
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:433
+#: trac/web/session.py:436
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:433
+#: trac/web/session.py:436
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:434
+#: trac/web/session.py:437
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:443
+#: trac/web/session.py:446
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:455
+#: trac/web/session.py:458
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:462
+#: trac/web/session.py:465
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""
