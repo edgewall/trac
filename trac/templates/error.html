@@ -25,7 +25,7 @@
 
     #   if frames:
     <script type="text/javascript">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         $("#traceback a").click(function() {
           $("div", this.parentNode).slideToggle("fast");
           return false;
@@ -62,7 +62,7 @@
     /*]]>*/</script>
     #   endif
     <script type="text/javascript">/*<![CDATA[*/
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         $("form.newticket textarea").each(function() {
           $(this).val($(this).val()
                              .replace(/#USER_AGENT#/m, navigator.userAgent)

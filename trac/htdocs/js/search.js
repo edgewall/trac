@@ -23,7 +23,7 @@
     return this.each(function() { highlight(this) });
   };
 
-  $(document).ready(function() {
+  $(function() {
     $("p.filters").exclusiveOnClick(":checkbox, :checkbox + label");
 
     var elems = $(".searchable");

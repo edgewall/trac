@@ -1,6 +1,6 @@
 // Allow resizing <textarea> elements through a drag bar
 
-jQuery(document).ready(function($) {
+jQuery(function($) {
   $('textarea.trac-resizable').each(function() {
     var textarea = $(this);
     var offset = null;

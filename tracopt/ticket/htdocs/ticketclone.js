@@ -54,7 +54,7 @@
     return results;
   };
 
-  $(document).ready(function() {
+  $(function() {
     var c, clone;
     clone = createCloneAction(_("Create a copy of this ticket"));
     addField(clone, 'summary', _("%(summary)s (cloned)", {

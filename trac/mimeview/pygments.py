@@ -89,7 +89,7 @@ class PygmentsRenderer(Component):
   <head>
     <title>Hello, world!</title>
     <script>
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         $("h1").fadeIn("slow");
       });
     </script>

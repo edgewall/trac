@@ -14,7 +14,7 @@
    children. Likewise, when switching away from 'threaded' to a linear
    order, the changes without comments need to be hidden again.
  */
-jQuery(document).ready(function($){
+jQuery(function($){
   var comments = null;
   var order = null;
   var form = $("#prefs");

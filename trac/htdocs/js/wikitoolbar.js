@@ -88,7 +88,7 @@
   }
 
   // Add toolbar to all <textarea> elements on the page with the class 'wikitext'.
-  $(document).ready(function() {
+  $(function() {
     $("textarea.wikitext").each(function() { addWikiFormattingToolbar(this) });
   });
 

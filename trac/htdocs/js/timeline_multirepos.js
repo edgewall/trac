@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){
+jQuery(function($){
   var $cset_filter = $("input[name=changeset]");
   var $repo_list = $("input[name^=repo-]");
   var show_message = _("Show all repositories");

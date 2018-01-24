@@ -21,7 +21,7 @@ history and logs, available at http://trac.edgewall.org/.
     ${ super() }
     #   if view == 'detail':
     <script type="text/javascript">
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         $("#description").autoPreview("${href.wiki_render()}", {
             realm: "${enum.type}",
             id: ${to_json(enum.name)|safe}

@@ -52,7 +52,7 @@
     </py:for>
     <script type="text/javascript">
       jQuery("#trac-noscript").remove();
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         <py:if test="chrome.warnings or chrome.notices">
         $(".trac-close-msg").show().click(function () {
           $(this).closest(".system-message").hide();

@@ -1,4 +1,4 @@
-jQuery(document).ready(function ($) {
+jQuery(function ($) {
   var $enumtable = $('#enumtable');
   var $enumlist = $('#enumlist', $enumtable);
   var $apply_button = $('input[name="apply"]', $enumtable);

@@ -34,7 +34,7 @@
           });
         }
       })(jQuery);
-      jQuery(document).ready(function($) {
+      jQuery(function($) {
         switchStyleSheet("${selection.title()}");
         $("#pygment_theme").attr("autocomplete", "off").on('change keypress', function() {
           switchStyleSheet(this.options[this.selectedIndex].text);

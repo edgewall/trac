@@ -24,7 +24,7 @@
     })) + "\"\n         class=\"trac-delete\">\n </div>\n</form>");
   };
 
-  $(document).ready(function() {
+  $(function() {
     $('#ticket .description h3').after(deleteTicket());
     return $('#changelog div.change').each(function() {
       return $('.trac-ticket-buttons', this).prepend(deleteComment(this));

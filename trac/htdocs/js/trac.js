@@ -165,7 +165,7 @@
 
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
-    $(document).ready(function() {
+    $(function() {
       var link;
       $("link[rel=stylesheet]").each(function() {
         if (this.getAttribute("href") === href) {
@@ -202,7 +202,7 @@
       var listeners = readyListeners[href];
       listeners.push(listener);
     }
-    $(document).ready(listener);
+    $(listener);
   };
 
   $.loadScript = function(href, type, charset) {
