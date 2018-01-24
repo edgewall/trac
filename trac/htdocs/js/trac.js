@@ -148,11 +148,11 @@
     this.click(function() {
       var form = $(this).closest("form");
       if (form.hasClass("trac-submit-is-disabled")) {
-        form.bind("submit.prevent-submit", function() {
+        form.on("submit.prevent-submit", function() {
           return false;
         });
         $(window).on("unload", function() {
-          form.unbind("submit.prevent-submit");
+          form.off("submit.prevent-submit");
         });
       } else {
         form.addClass("trac-submit-is-disabled");
@@ -236,7 +236,7 @@
   $.setWarningUnsavedChanges = function(enabled, message) {
     if (enabled) {
       if (!warn_unsaved_changes) {
-        $(window).bind("beforeunload", function() {
+        $(window).on("beforeunload", function() {
           return warn_unsaved_changes;
         });
       }
@@ -244,7 +244,7 @@
         "changes will be lost if you leave this page before saving your " +
         "changes.");
     } else {
-      $(window).unbind("beforeunload");
+      $(window).off("beforeunload");
       warn_unsaved_changes = null;
     }
   };

@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 
     function endDrag(e) {
       textarea.focus();
-      $(document).unbind('mousemove', dragging).unbind('mouseup', endDrag);
+      $(document).off('mousemove', dragging).off('mouseup', endDrag);
     }
 
     var grip = $('<div class="trac-grip"/>').mousedown(beginDrag)[0];

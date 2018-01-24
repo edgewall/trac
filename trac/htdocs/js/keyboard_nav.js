@@ -86,7 +86,7 @@
   });
 
   $(function() {
-    $('a,input,select,textarea,button').bind({
+    $('a,input,select,textarea,button').on({
       focus: function() { ENABLE_KEY_NAV = false; },
       blur: function() { ENABLE_KEY_NAV = true; }
     });
