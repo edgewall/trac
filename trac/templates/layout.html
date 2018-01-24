@@ -44,9 +44,11 @@
     #     endfor
     #   endif
 
-    <style id="trac-noscript" type="text/css">
-      .trac-noscript { display: none !important }
-    </style>
+    <noscript>
+      <style type="text/css">
+        .trac-noscript { display: none !important }
+      </style>
+    </noscript>
     #   if trac_error_rendering is undefined and 'SEARCH_VIEW' in perm:
     <link type="application/opensearchdescription+xml" rel="search"
           href="${href.search('opensearch')}"
@@ -68,7 +70,6 @@
     #   endfor
 
     <script type="text/javascript">
-      jQuery("#trac-noscript").remove();
       jQuery(function($) {
         # if chrome.warnings or chrome.notices:
         $(".trac-close-msg").show().click(function () {
