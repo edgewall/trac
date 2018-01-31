@@ -548,19 +548,6 @@ class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
                 r' href="/wiki/%s\?version=1#point1">@1</a>' % pagename)
 
 
-class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11518
-        ResourceNotFound should be raised when version is invalid.
-        """
-        tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')
-        tc.find(r"<h1>Error: Bad Request</h1>")
-        tc.find(r"Invalid value for request argument <em>version</em>.")
-        tc.go(self._tester.url + '/wiki/WikiStart?version=')
-        tc.find(r"<h1>Error: Bad Request</h1>")
-        tc.find(r"Invalid value for request argument <em>version</em>.")
-
-
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -580,7 +567,6 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket10850())
     suite.addTest(RegressionTestTicket10957())
     suite.addTest(RegressionTestTicket11302())
-    suite.addTest(RegressionTestTicket11518())
     if has_docutils:
         import docutils
         if get_pkginfo(docutils):

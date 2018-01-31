@@ -109,7 +109,9 @@ class WikiModule(Component):
     def process_request(self, req):
         action = req.args.get('action', 'view')
         pagename = req.args.get('page', self.START_PAGE)
-        version = req.args.getint('version')
+        version = None
+        if req.args.get('version'):  # Allow version to be empty
+            version = req.args.getint('version')
         old_version = req.args.getint('old_version')
 
         if pagename.startswith('/') or pagename.endswith('/') or \
@@ -521,11 +523,15 @@ class WikiModule(Component):
                     'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
         elif 'version' in req.args:
-            version = req.args.getint('version')
-            old_page = WikiPage(self.env, page.name, version)
-            req.perm(page.resource).require('WIKI_VIEW')
-            page.text = old_page.text
-            comment = _("Reverted to version %(version)s.", version=version)
+            version = None
+            if req.args.get('version'):  # Allow version to be empty
+                version = req.args.as_int('version')
+            if version is not None:
+                old_page = WikiPage(self.env, page.name, version)
+                req.perm(page.resource).require('WIKI_VIEW')
+                page.text = old_page.text
+                comment = _("Reverted to version %(version)s.",
+                            version=version)
         if action in ('preview', 'diff'):
             page.readonly = 'readonly' in req.args
 

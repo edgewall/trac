@@ -89,14 +89,18 @@ class WikiModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', action=None,
                           args=dict(version='a', old_version='1'))
 
-        with self.assertRaises(HTTPBadRequest):
+        with self.assertRaises(HTTPBadRequest) as cm:
             WikiModule(self.env).process_request(req)
+        self.assertEqual("400 Bad Request (Invalid value for request argument "
+                         "<em>version</em>.)", unicode(cm.exception))
 
         req = MockRequest(self.env, method='GET', action=None,
                           args=dict(version='2', old_version='a'))
 
-        with self.assertRaises(HTTPBadRequest):
+        with self.assertRaises(HTTPBadRequest) as cm:
             WikiModule(self.env).process_request(req)
+        self.assertEqual("400 Bad Request (Invalid value for request argument "
+                         "<em>old_version</em>.)", unicode(cm.exception))
 
     def test_wiki_template_relative_path(self):
         self._insert_templates()
@@ -118,6 +122,30 @@ class WikiModuleTestCase(unittest.TestCase):
         resp = WikiModule(self.env).process_request(req)
 
         self.assertEqual('The template below /', resp[1]['page'].text)
+
+    def test_edit_action_with_empty_verion(self):
+        """Universal edit button requires request with parameters string
+        ?action=edit&version= and ?action=view&version= (#12937)
+        """
+        req = MockRequest(self.env, path_info='/wiki/NewPage', method='GET',
+                          args={'action': 'view', 'version': '',
+                                'page': 'NewPage'})
+
+        resp = WikiModule(self.env).process_request(req)
+
+        self.assertEqual('wiki_view.html', resp[0])
+        self.assertIsNone(resp[1]['version'])
+        self.assertEqual('NewPage', resp[1]['page'].name)
+
+        req = MockRequest(self.env, path_info='/wiki/NewPage', method='GET',
+                          args={'action': 'edit', 'version': '',
+                                'page': 'NewPage'})
+
+        resp = WikiModule(self.env).process_request(req)
+
+        self.assertEqual('wiki_edit.html', resp[0])
+        self.assertNotIn('version', resp[1])
+        self.assertEqual('NewPage', resp[1]['page'].name)
 
 
 def test_suite():
