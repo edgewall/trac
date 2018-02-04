@@ -38,8 +38,9 @@ matrix:
       language: generic
       env: pyver=2.7 tracdb=postgres
 before_install:
+  - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
+  - test -n "$pyver" || pyver="$(python -c "$print_version")"
   - |
-    set -e
     case "$tracdb" in
       postgres)
         if [ "$TRAVIS_OS_NAME" = osx ]; then
@@ -68,19 +69,33 @@ before_install:
         tracdb_version=
         ;;
     esac
+  - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
   - |
-    set -e
+    {
+      echo "[global]"
+      echo "cache-dir = $HOME/.cache/pip"
+      echo "[list]"
+      echo "format = legacy"
+    } >"$HOME/.pip/pip.conf"
+  - |
     if [ "$TRAVIS_OS_NAME" = osx ]; then
       test -d $HOME/venv-lib || mkdir $HOME/venv-lib
-      PYTHONPATH=$HOME/venv-lib /usr/bin/easy_install-$pyver -ZU -d $HOME/venv-lib virtualenv
-      PYTHONPATH=$HOME/venv-lib /usr/bin/python$pyver -m virtualenv $HOME/venv-$pyver
+      PYTHONPATH=$HOME/venv-lib /usr/bin/easy_install-$pyver \
+        --index-url=https://pypi.python.org/simple/ -ZU -d $HOME/venv-lib virtualenv
+      PYTHONPATH=$HOME/venv-lib /usr/bin/python$pyver -m virtualenv --no-download $HOME/venv-$pyver
       source $HOME/venv-$pyver/bin/activate
-      python --version
-      pip --version
     fi
+  - |
+    case "$pyver" in
+      2.7)
+        pip install --upgrade pip setuptools wheel
+        ;;
+    esac
+  - python --version
+  - pip --version
+  - pip list
 install:
   - |
-    print_version='import sys; print("%d.%d" % sys.version_info[:2])'
     if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
          "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
     then
@@ -91,18 +106,15 @@ install:
       ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
       python -c 'from svn import core'
     fi
-  - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
-  - ( echo "[global]"; echo "cache-dir = $HOME/.cache/pip" ) >"$HOME/.pip/pip.conf"
   - |
-    pip install --upgrade pip
     requires='Jinja2 lxml twill==0.9.1'
     if [ "$build" != minimum ]; then requires="$requires Genshi==0.7 Babel!=2.3.0,!=2.3.1 Pygments docutils textile pytz"; fi
     if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
     pip install $requires
-  - pip freeze
+    python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
+    pip list
   - |
-    set -e
     case "$tracdb" in
       sqlite)   tracdb_uri='sqlite:test.db' ;;
       postgres) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;

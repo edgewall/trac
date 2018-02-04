@@ -28,6 +28,8 @@ def _genshi_version():
 PACKAGES = [
     ("Python",            'sys.version'),
     ("Setuptools",        'setuptools.__version__'),
+    ("Pip",               'pip.__version__'),
+    ("Wheel",             'wheel.__version__'),
     ("Jinja2",            'jinja2.__version__'),
     ("Genshi",            '__main__._genshi_version()'),
     ("Babel",             'babel.__version__'),
