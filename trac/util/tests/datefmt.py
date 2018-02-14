@@ -2043,16 +2043,6 @@ class LocalTimezoneTestCase(unittest.TestCase):
             self._compare_pytz(tz, '2009-03-29T02:00')  # +1:00 (DST start)
             self._compare_pytz(tz, '2009-10-25T03:00')  # -1:00 (DST end)
 
-        def test_pytz_tokyo(self):
-            tz = datefmt.timezone('Asia/Tokyo')
-            self._tzset('Asia/Tokyo')
-            self._compare_pytz(tz, '1947-07-01T02:00')  # No DST
-            self._compare_pytz(tz, '1948-05-02T02:00')  # +1:00 (DST start)
-            self._compare_pytz(tz, '1948-09-11T02:00')  # -1:00 (DST end)
-            self._compare_pytz(tz, '1949-04-03T02:00')  # +1:00 (DST start)
-            self._compare_pytz(tz, '1949-09-10T02:00')  # -1:00 (DST end)
-            self._compare_pytz(tz, '1950-07-01T02:00')  # No DST
-
         def test_pytz_venezuela(self):
             tz = datefmt.timezone('America/Caracas')
             self._tzset('America/Caracas')
