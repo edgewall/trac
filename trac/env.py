@@ -911,7 +911,7 @@ class EnvironmentSetup(Component):
             self.log.info("Wrote sample configuration file with the new "
                           "settings and their default values: %s",
                           filename)
-        except IOError, e:
+        except EnvironmentError, e:
             self.log.warn("Couldn't write sample configuration file (%s)", e,
                           exc_info=True)
 
