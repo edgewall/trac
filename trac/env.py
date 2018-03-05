@@ -804,7 +804,7 @@ class Environment(Component, ComponentManager):
         config.set_defaults()
         try:
             config.save()
-        except IOError as e:
+        except EnvironmentError as e:
             self.log.warning("Couldn't write sample configuration file (%s)%s",
                              e, exception_to_unicode(e, traceback=True))
         else:
