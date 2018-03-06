@@ -53,8 +53,9 @@
       <div class="reports">
         # if saved_query_href:
         <div>
-          <form method="get" action="${href.report()}">
+          <form method="post" action="${href.report()}">
             <div class="inlinebuttons">
+              ${jmacros.form_token_input()}
               <input type="hidden" name="action" value="clear"/>
               <input type="submit" value="${captioned_button('x', _('Clear'))}"
                      title="${_('Forget last query')}" class="trac-delete"/>
