@@ -162,6 +162,8 @@ class Environment(Component, ComponentManager):
         the directory of the environment `plugins`, with this one
         taking precedence.
 
+        Non-absolute paths are relative to the Environment `conf`
+        directory.
         (''since 0.11'')""")
 
     base_url = Option('trac', 'base_url', '',
