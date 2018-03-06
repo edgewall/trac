@@ -311,6 +311,24 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertIsNone(data['message'])
         self.assertEqual(1, data['numrows'])
 
+    def test_clear(self):
+        req = MockRequest(self.env, method='GET', path_info='/report',
+                          args={'action': 'clear'})
+        req.session['query_href'] = req.href.query()
+        req.session['query_tickets'] = '42'
+        self.assertTrue(self.report_module.match_request(req))
+        self.assertEqual('report_list.html',
+                         self.report_module.process_request(req)[0])
+        self.assertIn('query_href', req.session)
+        self.assertIn('query_tickets', req.session)
+
+        req = MockRequest(self.env, method='POST', path_info='/report',
+                          args={'action': 'clear'})
+        self.assertTrue(self.report_module.match_request(req))
+        self.assertRaises(RequestDone, self.report_module.process_request, req)
+        self.assertNotIn('query_href', req.session)
+        self.assertNotIn('query_tickets', req.session)
+
 
 class ExecuteReportTestCase(unittest.TestCase):
 
