@@ -410,6 +410,9 @@ class Chrome(Component):
 
         Templates in that directory are loaded in addition to those in the
         environments `templates` directory, but the latter take precedence.
+
+        Non-absolute paths are relative to the Environment `conf`
+        directory.
         """)
 
     shared_htdocs_dir = PathOption('inherit', 'htdocs_dir', '',
@@ -421,6 +424,8 @@ class Chrome(Component):
         This can be useful in site.html for common interface customization
         of multiple Trac environments.
 
+        Non-absolute paths are relative to the Environment `conf`
+        directory.
         (''since 1.0'')""")
 
     auto_reload = BoolOption('trac', 'auto_reload', False,

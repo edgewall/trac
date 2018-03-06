@@ -170,6 +170,9 @@ class Environment(Component, ComponentManager):
         Plugins in that directory are loaded in addition to those in
         the directory of the environment `plugins`, with this one
         taking precedence.
+
+        Non-absolute paths are relative to the Environment `conf`
+        directory.
         """)
 
     base_url = Option('trac', 'base_url', '',
