@@ -48,7 +48,7 @@
 
       <div py:choose="" class="reports">
         <div py:if="saved_query_href">
-          <form method="get" action="${href.report()}">
+          <form method="post" action="${href.report()}">
             <div class="inlinebuttons">
 
               <input type="hidden" name="action" value="clear" />

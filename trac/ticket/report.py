@@ -165,6 +165,8 @@ class ReportModule(Component):
                 self._do_delete(req, id)
             elif action == 'edit':
                 self._do_save(req, id)
+            if action == 'clear':
+                self._do_clear(req)
             else:
                 raise HTTPBadRequest(_("Invalid request arguments."))
         elif action in ('copy', 'edit', 'new'):
@@ -178,11 +180,6 @@ class ReportModule(Component):
             template, data, content_type = self._render_list(req)
             if content_type: # i.e. alternate format
                 return template, data, content_type
-            if action == 'clear':
-                if 'query_href' in req.session:
-                    del req.session['query_href']
-                if 'query_tickets' in req.session:
-                    del req.session['query_tickets']
         else:
             template, data, content_type = self._render_view(req, id)
             if content_type: # i.e. alternate format
@@ -254,6 +251,12 @@ class ReportModule(Component):
                 """, (title, query, description, id))
             add_notice(req, _("Your changes have been saved."))
         req.redirect(req.href.report(id))
+
+    def _do_clear(self, req):
+        for name in ('query_href', 'query_tickets'):
+            if name in req.session:
+                del req.session[name]
+        req.redirect(req.href.report())
 
     def _render_confirm_delete(self, req, id):
         req.perm('report', id).require('REPORT_DELETE')
