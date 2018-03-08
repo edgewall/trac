@@ -132,25 +132,26 @@ class VersionControlAdmin(Component):
             if repos is None:
                 raise TracError(_("Repository '%(repo)s' not found",
                                   repo=reponame or '(default)'))
-            if rev is not None:
-                repos.sync_changeset(rev)
-                printout(_('%(rev)s resynced on %(reponame)s.', rev=rev,
-                           reponame=repos.reponame or '(default)'))
-                return
             repositories = [repos]
 
         for repos in sorted(repositories, key=lambda r: r.reponame):
-            printout(_('Resyncing repository history for %(reponame)s... ',
-                       reponame=repos.reponame or '(default)'))
-            repos.sync(self._sync_feedback, clean=clean)
-            for cnt, in self.env.db_query(
-                    "SELECT count(rev) FROM revision WHERE repos=%s",
-                    (repos.id,)):
-                printout(ngettext('%(num)s revision cached.',
-                                  '%(num)s revisions cached.', num=cnt))
+            pretty_name = repos.reponame or '(default)'
             if not isinstance(repos, CachedRepository):
                 printout(_("%(reponame)s is not a cached repository.",
-                           reponame=repos.reponame or '(default)'))
+                           reponame=pretty_name))
+            elif rev is not None:
+                repos.sync_changeset(rev)
+                printout(_('%(rev)s resynced on %(reponame)s.', rev=rev,
+                           reponame=pretty_name))
+            else:
+                printout(_('Resyncing repository history for %(reponame)s... ',
+                           reponame=pretty_name))
+                repos.sync(self._sync_feedback, clean=clean)
+                for cnt, in self.env.db_query(
+                        "SELECT count(rev) FROM revision WHERE repos=%s",
+                        (repos.id,)):
+                    printout(ngettext('%(num)s revision cached.',
+                                      '%(num)s revisions cached.', num=cnt))
         printout(_('Done.'))
 
     def _sync_feedback(self, rev):
