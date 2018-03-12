@@ -106,16 +106,8 @@
               <td>
                 <a href="${panel_href(milestone.name)}">${milestone.name}</a>
               </td>
-              <td>
-                # if milestone.due:
-                ${format_datetime(milestone.due)}
-                # endif
-              </td>
-              <td>
-                # if milestone.completed:
-                ${format_datetime(milestone.completed)}
-                # endif
-              </td>
+              <td>${format_datetime(milestone.due) if milestone.due}</td>
+              <td>${format_datetime(milestone.completed) if milestone.completed}</td>
               <td class="default">
                 <input type="radio" name="ticket_default"${
                      {'value': milestone.name,
