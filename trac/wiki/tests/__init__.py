@@ -18,12 +18,13 @@ import trac.wiki.api
 import trac.wiki.formatter
 import trac.wiki.parser
 from trac.wiki.tests import (
-    formatter, macros, model, web_api, web_ui, wikisyntax)
+    admin, formatter, macros, model, web_api, web_ui, wikisyntax)
 from trac.wiki.tests.functional import functionalSuite
 
 def suite():
 
     suite = unittest.TestSuite()
+    suite.addTest(admin.suite())
     suite.addTest(formatter.suite())
     suite.addTest(macros.suite())
     suite.addTest(model.suite())
