@@ -21,7 +21,7 @@ from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
 import errno
 import hashlib
-import os.path
+import os
 import re
 import shutil
 
@@ -632,12 +632,11 @@ class AttachmentModule(Component):
             else:
                 raw_href = get_resource_url(self.env, attachment,
                                             formatter.href, format='raw')
+                title = get_resource_name(self.env, attachment)
                 if ns.startswith('raw'):
                     return tag.a(label, class_='attachment',
-                                 href=raw_href + params,
-                                 title=get_resource_name(self.env, attachment))
+                                 href=raw_href + params, title=title)
                 href = get_resource_url(self.env, attachment, formatter.href)
-                title = get_resource_name(self.env, attachment)
                 return tag(tag.a(label, class_='attachment', title=title,
                                  href=href + params),
                            tag.a(u'\u200b', class_='trac-rawlink',
