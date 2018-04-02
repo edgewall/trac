@@ -60,6 +60,7 @@ that can be `read()`.
 """
 
 import io
+import mimetypes
 import re
 from collections import namedtuple
 
@@ -383,7 +384,6 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP,
     else:
         mimetype = None
         try:
-            import mimetypes
             # 2) mimetype from the suffix, using the `mimetypes` module
             mimetype = mimetypes.guess_type(filename)[0]
         except Exception:
@@ -932,7 +932,7 @@ class Mimeview(Component):
         charset = None
         if mimetype:
             charset = self.get_charset(content, mimetype)
-        if mimetype and charset and not 'charset' in mimetype:
+        if mimetype and charset and 'charset' not in mimetype:
             mimetype += '; charset=' + charset
         return mimetype
 
