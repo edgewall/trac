@@ -19,7 +19,9 @@ from trac.admin.web_ui import AdminModule, PermissionAdminPanel, \
                               PluginAdminPanel
 from trac.core import Component, TracError
 from trac.perm import PermissionError, PermissionSystem
-from trac.test import EnvironmentStub, MockRequest
+from trac.loader import load_components
+from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.util import create_file
 from trac.web.api import RequestDone
 
 
@@ -125,11 +127,13 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
                        self.env.log_messages)
 
 
-
 class PluginAdminPanelTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(path=mkdtemp())
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
 
     def test_abstract_component_not_visible(self):
         class AbstractComponent(Component):
@@ -149,6 +153,48 @@ class PluginAdminPanelTestCase(unittest.TestCase):
                 components = plugin['modules'][module_]['components']
         self.assertNotIn('AbstractComponent', components)
         self.assertIn('NotAbstractComponent', components)
+
+    def test_single_file_plugin_metadata(self):
+        """Metadata is read from single-file plugins."""
+        plugin_metadata = {
+            'author': 'Trac Hacks',
+            'author_email': 'trac-hacks@domain.com',
+            'home_page': 'https://trac-hacks.org/wiki/SingleFilePlugin',
+            'license': 'BSD',
+            'summary': 'The single-file plugin',
+            'trac': 'https://my.trac.com',
+        }
+        plugin_content = """\
+from trac.core import Component
+
+author = '%(author)s'
+author_email = '%(author_email)s'
+home_page = '%(home_page)s'
+license = '%(license)s'
+summary = '%(summary)s'
+trac = '%(trac)s'
+
+
+class SingleFilePlugin(Component):
+    pass
+""" % plugin_metadata
+
+        file_path = os.path.join(self.env.plugins_dir, 'single_file_plugin.py')
+        os.mkdir(self.env.plugins_dir)
+        create_file(file_path, plugin_content)
+        load_components(self.env, (self.env.plugins_dir,))
+
+        req = MockRequest(self.env)
+        panel = PluginAdminPanel(self.env)
+        data = panel.render_admin_panel(req, 'general', 'plugin', None)[1]
+
+        discovered_metadata = {}
+        for item in data['plugins']:
+            if item['name'] == 'single-file-plugin':
+                discovered_metadata = item['info']
+
+        for key, value in plugin_metadata.items():
+            self.assertEqual(discovered_metadata[key], plugin_metadata[key])
 
 
 class LoggingAdminPanelTestCase(unittest.TestCase):
