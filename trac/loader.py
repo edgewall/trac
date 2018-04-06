@@ -164,7 +164,7 @@ def get_plugin_info(env, include_core=False):
             if not info:
                 info = {}
                 for k in ('author', 'author_email', 'home_page', 'url',
-                          'license', 'trac'):
+                          'license', 'summary', 'trac'):
                     v = getattr(module, k, '')
                     if v and isinstance(v, basestring):
                         if k in ('home_page', 'url'):
