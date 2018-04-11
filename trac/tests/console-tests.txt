@@ -498,9 +498,11 @@ Creating scripts.
 ===== test_deploy_to_invalid_target_raises_error =====
 Error: Resources cannot be deployed to a target directory that is equal to or below the source directory [...].
 ===== test_config_argument_has_invalid_path =====
+Creating a new Trac environment at %(env_path)s
 Initenv for '%(env_path)s' failed.
 The file specified in the --config argument does not exist: %(config_file)s.
 ===== test_config_argument_has_invalid_value =====
+Creating a new Trac environment at %(env_path)s
 Initenv for '%(env_path)s' failed.
 File contains parsing errors: %(config_file)s
 	[line  3]: '[components\n'

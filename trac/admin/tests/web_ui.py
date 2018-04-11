@@ -206,6 +206,24 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db_and_disk()
 
+    def test_render_admin_panel(self):
+        """GET request for admin panel."""
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='GET')
+        mod = AdminModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+
+        self.assertEqual('none', data['log']['type'])
+        self.assertEqual(['none', 'stderr', 'file', 'syslog', 'eventlog'],
+                         [t['name'] for t in data['log']['types']])
+        self.assertEqual('DEBUG', data['log']['level'])
+        self.assertEqual(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
+                         data['log']['levels'])
+        self.assertEqual('trac.log', data['log']['file'])
+        self.assertEqual(self.env.log_dir, data['log']['dir'])
+
     def test_invalid_log_type_raises(self):
         """Invalid log type raises TracError."""
         req = MockRequest(self.env, path_info='/admin/general/logging',

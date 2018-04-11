@@ -151,9 +151,7 @@ class FunctionalTestEnvironment(object):
         self.adduser('user')
         self.adduser('joe')
         self.grant_perm('admin', 'TRAC_ADMIN')
-        # Setup Trac logging
         env = self.get_trac_environment()
-        env.config.set('logging', 'log_type', 'file')
         for component in self.get_enabled_components():
             env.config.set('components', component, 'enabled')
         env.config.save()

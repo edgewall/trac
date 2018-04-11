@@ -126,75 +126,52 @@ class RaiseExceptionPlugin(Component):
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
-class RegressionTestTicket3833a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket3833(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/3833 a"""
+        """Test for regression of http://trac.edgewall.org/ticket/3833"""
         env = self._testenv.get_trac_environment()
-        # Assume the logging is already set to debug.
-        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
-        # Seek to the end of file so we only look at new log output
-        traclogfile.seek(0, 2)
+        trac_log = os.path.join(env.log_dir, 'trac.log')
 
-        # Verify that logging is on initially
-        env.log.debug("RegressionTestTicket3833 debug1")
-        debug1 = traclogfile.read()
-        self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
-                            'Logging off when it should have been on.\n%r'
-                            % debug1)
+        def read_log_file(offset):
+            with open(trac_log) as fd:
+                fd.seek(offset)
+                return fd.read()
 
+        # Verify that file logging is enabled as info level.
+        log_size = os.path.getsize(trac_log)
+        env.log.info("RegressionTestTicket3833 info1")
+        info1 = "RegressionTestTicket3833 info1"
+        log_content = read_log_file(log_size)
+        self.assertEqual('INFO', env.config.get('logging', 'log_level'))
+        self.assertIn(info1, log_content),
 
-class RegressionTestTicket3833b(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
-        # Turn logging off, try to log something, and verify that it does
-        # not show up.
+        # Verify that info level is not logged at warning level.
+        env.config.set('logging', 'log_level', 'WARNING')
+        env.config.save()
         env = self._testenv.get_trac_environment()
-        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
-        # Seek to the end of file so we only look at new log output
-        traclogfile.seek(0, 2)
+        log_size = os.path.getsize(trac_log)
+        info2 = "RegressionTestTicket3833 info2"
+        warn2 = "RegressionTestTicket3833 warn2"
+        env.log.info(info2)
+        env.log.warning(warn2)
+        log_content = read_log_file(log_size)
+        self.assertEqual('WARNING', env.config.get('logging', 'log_level'))
+        self.assertNotIn(info2, log_content)
+        self.assertIn(warn2, log_content)
 
+        # Revert to info level logging.
         env.config.set('logging', 'log_level', 'INFO')
         env.config.save()
         env = self._testenv.get_trac_environment()
-        env.log.debug("RegressionTestTicket3833 debug2")
-        env.log.info("RegressionTestTicket3833 info2")
-        debug2 = traclogfile.read()
-        self.assertNotEqual(debug2.find("RegressionTestTicket3833 info2"), -1,
-                            'Logging at info failed.\n%r' % debug2)
-        self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1,
-                         'Logging still on when it should have been off.\n%r'
-                         % debug2)
-
-
-class RegressionTestTicket3833c(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/3833 c"""
-        # Turn logging back on, try to log something, and verify that it
-        # does show up.
-        env = self._testenv.get_trac_environment()
-        traclogfile = open(os.path.join(env.log_dir, 'trac.log'))
-        # Seek to the end of file so we only look at new log output
-        traclogfile.seek(0, 2)
-
-        env.config.set('logging', 'log_level', 'DEBUG')
-        time.sleep(2)
-        env.config.save()
-        #time.sleep(2)
-        env = self._testenv.get_trac_environment()
-        #time.sleep(2)
-        env.log.debug("RegressionTestTicket3833 debug3")
-        env.log.info("RegressionTestTicket3833 info3")
-        #time.sleep(2)
-        debug3 = traclogfile.read()
-        message = ''
-        success = debug3.find("RegressionTestTicket3833 debug3") != -1
-        if not success:
-            # Ok, the testcase failed, but we really need logging enabled.
-            env.log.debug("RegressionTestTicket3833 fixup3")
-            fixup3 = traclogfile.read()
-            message = 'Logging still off when it should have been on.\n' \
-                      '%r\n%r' % (debug3, fixup3)
-        self.assertTrue(success, message)
+        log_size = os.path.getsize(trac_log)
+        info3 = "RegressionTestTicket3833 info3"
+        warn3 = "RegressionTestTicket3833 warn3"
+        env.log.info(info3)
+        env.log.warning(warn3)
+        log_content = read_log_file(log_size)
+        self.assertEqual('INFO', env.config.get('logging', 'log_level'))
+        self.assertIn(info3, log_content)
+        self.assertIn(warn3, log_content)
 
 
 class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
@@ -387,9 +364,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAttachmentNonexistentParent())
     suite.addTest(TestAboutPage())
     suite.addTest(TestErrorPage())
-    suite.addTest(RegressionTestTicket3833a())
-    suite.addTest(RegressionTestTicket3833b())
-    suite.addTest(RegressionTestTicket3833c())
+    suite.addTest(RegressionTestTicket3833())
     suite.addTest(RegressionTestTicket5572())
     suite.addTest(RegressionTestTicket7209())
     suite.addTest(RegressionTestTicket9880())

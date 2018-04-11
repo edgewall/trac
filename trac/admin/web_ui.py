@@ -20,10 +20,10 @@ import re
 import shutil
 from functools import partial
 
+from trac import log
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info
-from trac.log import LOG_LEVELS
 from trac.perm import IPermissionRequestor, PermissionExistsError, \
                       PermissionSystem
 from trac.util.datefmt import all_timezones, pytz
@@ -276,7 +276,7 @@ class LoggingAdminPanel(Component):
                 raise TracError(_("You must specify a log file"),
                                 _("Missing field"))
             new_level = req.args.get('log_level')
-            if new_level not in LOG_LEVELS:
+            if new_level not in log.LOG_LEVELS:
                 raise TracError(
                     _("Unknown log level %(level)s", level=new_level),
                     _("Invalid log level"))
@@ -326,9 +326,14 @@ class LoggingAdminPanel(Component):
                 _save_config(self.config, req, self.log),
             req.redirect(req.href.admin(cat, page))
 
+        # Order log levels by priority value, with aliases excluded.
+        all_levels = sorted(log.LOG_LEVEL_MAP, key=log.LOG_LEVEL_MAP.get,
+                            reverse=True)
+        log_levels = [level for level in all_levels if level in log.LOG_LEVELS]
+
         data = {
             'type': log_type, 'types': log_types,
-            'level': log_level, 'levels': LOG_LEVELS,
+            'level': log_level, 'levels': log_levels,
             'file': log_file, 'dir': log_dir
         }
         return 'admin_logging.html', {'log': data}

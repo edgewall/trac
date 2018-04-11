@@ -341,8 +341,6 @@ Type:  '?' or 'help' for help on commands.
 
     def get_initenv_args(self):
         returnvals = []
-        printout(_("Creating a new Trac environment at %(envname)s",
-                   envname=self.envname))
         printout(_("""
 Trac will first ask a few questions about your environment
 in order to initialize and prepare the project database.
@@ -354,11 +352,10 @@ in order to initialize and prepare the project database.
         returnvals.append(raw_input(_("Project Name [%(default)s]> ",
                                       default=dp)).strip() or dp)
         printout(_("""
- Please specify the connection string for the database to use.
- By default, a local SQLite database is created in the environment
- directory. It is also possible to use an existing MySQL or
- PostgreSQL database (check the Trac documentation for the exact
- connection string syntax).
+ Please specify the connection string for the database. By default, 
+ a local SQLite database is created in the environment directory. 
+ It is also possible to use an existing MySQL or PostgreSQL database
+ (check the Trac documentation for the connection string syntax).
 """))
         ddb = 'sqlite:db/trac.db'
         prompt = _("Database connection string [%(default)s]> ", default=ddb)
@@ -373,6 +370,9 @@ in order to initialize and prepare the project database.
         if self.env_check():
             initenv_error(_("Does an environment already exist?"))
             return 2
+
+        printout(_("Creating a new Trac environment at %(envname)s",
+                   envname=self.envname))
 
         arg = self.arg_tokenize(line)
         inherit_paths = []
@@ -426,7 +426,6 @@ in order to initialize and prepare the project database.
             options.append(('inherit', 'file',
                             ",\n      ".join(inherit_paths)))
 
-        printout(_("Creating and Initializing Project"))
         try:
             self.__env = Environment(self.envname, create=True,
                                      options=options)
@@ -440,29 +439,25 @@ in order to initialize and prepare the project database.
             sys.exit(1)
 
         printout(_("""
----------------------------------------------------------------------
 Project environment for '%(project_name)s' created.
 
-You may now configure the environment by editing the file:
+You may configure the environment by editing the file:
 
   %(config_path)s
 
-If you'd like to take this new project environment for a test drive,
-try running the Trac standalone web server `tracd`:
+You can run the Trac standalone web server `tracd` and point
+your browser to http://localhost:8000/%(project_dir)s.
 
   tracd --port 8000 %(project_path)s
 
-Then point your browser to http://localhost:8000/%(project_dir)s.
-There you can also browse the documentation for your installed
-version of Trac, including information on further setup (such as
-deploying Trac to a real web server).
+Navigate to "Help/Guide" to browse the documentation for Trac,
+including information on further setup (such as deploying Trac 
+to a real web server).
 
-The latest documentation can also always be found on the project
+The latest documentation can also be found on the project
 website:
 
   http://trac.edgewall.org/
-
-Congratulations!
 """, project_name=project_name, project_path=self.envname,
            project_dir=os.path.basename(self.envname),
            config_path=self.__env.config_file_path))

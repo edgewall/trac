@@ -211,8 +211,7 @@ class Environment(Component, ComponentManager):
         directory of the environment.""")
 
     log_level = ChoiceOption('logging', 'log_level',
-                             tuple(reversed(log.LOG_LEVELS)) +
-                             log.LOG_LEVEL_ALIASES,
+                             log.LOG_LEVELS + log.LOG_LEVEL_ALIASES,
         """Level of verbosity in log.
 
         Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`).

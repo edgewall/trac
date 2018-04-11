@@ -19,9 +19,9 @@ import logging
 import logging.handlers
 import sys
 
-LOG_TYPES = ('none', 'stderr', 'file', 'syslog', 'eventlog')
+LOG_TYPES = ('file', 'stderr', 'syslog', 'eventlog', 'none')
 LOG_TYPE_ALIASES = ('winlog', 'nteventlog', 'unix')
-LOG_LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
+LOG_LEVELS = ('INFO', 'CRITICAL', 'ERROR', 'WARNING', 'DEBUG')
 LOG_LEVEL_ALIASES = ('WARN', 'ALL')
 
 LOG_LEVEL_MAP = {

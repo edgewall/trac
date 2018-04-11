@@ -162,9 +162,8 @@ class WikiAdmin(Component):
                 page = unicode_unquote(page.encode('utf-8'))
                 if os.path.isfile(filename):
                     if self.import_page(filename, page, create_only, replace):
-                        printout(_("  %(page)s imported from %(filename)s",
-                                   filename=path_to_unicode(filename),
-                                   page=page))
+                        self.log.info("%s imported from %s",
+                                      page, path_to_unicode(filename))
 
     def _complete_page(self, args):
         if len(args) == 1:
@@ -274,7 +273,7 @@ class WikiAdmin(Component):
 
     def environment_created(self):
         """Add default wiki pages when environment is created."""
-        printout(_(" Installing default wiki pages"))
+        self.log.info("Installing default wiki pages")
         pages_dir = pkg_resources.resource_filename('trac.wiki',
                                                     'default-pages')
         with self.env.db_transaction as db:
