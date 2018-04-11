@@ -7,6 +7,7 @@ addons:
 cache:
   directories:
     - "$HOME/.cache/pip"
+    - "$HOME/.pyenv"
     - "$HOME/venv-lib"
 before_install:
   - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
@@ -51,10 +52,14 @@ before_install:
   - |
     if [ "$TRAVIS_OS_NAME" = osx ]; then
       test -d $HOME/venv-lib || mkdir $HOME/venv-lib
-      PYTHONPATH=$HOME/venv-lib /usr/bin/easy_install-$pyver \
-        --index-url=https://pypi.python.org/simple/ -ZU -d $HOME/venv-lib virtualenv
-      PYTHONPATH=$HOME/venv-lib /usr/bin/python$pyver -m virtualenv --no-download $HOME/venv-$pyver
-      source $HOME/venv-$pyver/bin/activate
+      eval "$(pyenv init -)"
+      pyver_latest="$(pyenv install -l | grep -E "^[ ]*$pyver\.[0-9]+$" | grep -v - | tail -1 | tr -d '[:space:]')"
+      venv="$HOME/venv-$pyver_latest"
+      pyenv install --skip-existing $pyver_latest
+      pyenv shell $pyver_latest
+      pip install --upgrade virtualenv
+      python -m virtualenv $venv
+      source $venv/bin/activate
     fi
   - |
     case "$pyver" in
@@ -62,6 +67,7 @@ before_install:
         pip install --upgrade pip setuptools wheel
         ;;
     esac
+  - pyenv versions
   - python --version
   - pip --version
   - pip list
