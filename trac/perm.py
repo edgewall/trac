@@ -705,9 +705,9 @@ class PermissionAdmin(Component):
                      in PermissionSystem(self.env).get_all_permissions()}
 
     def get_user_perms(self, user):
-        return [action for (subject, action) in
-                PermissionSystem(self.env).get_all_permissions()
-                if subject == user]
+        return [action for (subject, action)
+                       in PermissionSystem(self.env).get_all_permissions()
+                       if subject == user]
 
     def _complete_list(self, args):
         if len(args) == 1:
