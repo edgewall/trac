@@ -1,22 +1,23 @@
-# German translations for Trac.
+# Translations template for Trac.
 # Copyright (C) 2017 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.2\n"
+"Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-06-21 03:57+0000\n"
-"PO-Revision-Date: 2017-07-29 00:00+0200\n"
-"Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
-"Language: de\n"
-"Language-Team: de <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2017-08-23 09:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Ryan J Ollos <ryan.j.ollos@gmail.com>, 2016\n"
+"Language-Team: German (https://www.transifex.com/cboos/teams/16191/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.5.0\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
@@ -196,8 +197,8 @@ msgstr "Mindestens ein Element muss ausgewählt werden."
 
 #: trac/htdocs/js/trac.js:243
 msgid ""
-"You have unsaved changes. Your changes will be lost if you leave this "
-"page before saving your changes."
+"You have unsaved changes. Your changes will be lost if you leave this page "
+"before saving your changes."
 msgstr ""
 "Sie haben nicht gespeicherte Änderungen. Ihre Änderungen gehen verloren, "
 "wenn Sie diese Seite verlassen, bevor Sie Ihre Änderungen speichern."
@@ -256,4 +257,3 @@ msgstr "Link zu diesem Diff"
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Link zu #%(id)s"
-

@@ -103,7 +103,7 @@ before_install:
     if [ "$TRAVIS_OS_NAME" = osx ]; then
       test -d $HOME/venv-lib || mkdir $HOME/venv-lib
       eval "$(pyenv init -)"
-      pyver_latest="$(pyenv install -l | grep -E "^[ ]*$pyver\.[0-9]+$" | grep -v - | tail -1 | tr -d '[:space:]')"
+      pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
       venv="$HOME/venv-$pyver_latest"
       pyenv install --skip-existing $pyver_latest
       pyenv shell $pyver_latest
