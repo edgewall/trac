@@ -161,7 +161,7 @@ class RequestTestCase(unittest.TestCase):
             status_sent.append(status)
             headers_sent.update(dict(headers))
         environ = self._make_environ(method='HEAD')
-        req = Request(environ, start_response,)
+        req = Request(environ, start_response)
         req.session = Mock(save=lambda: None)
         self.assertRaises(RequestDone, req.redirect,
                           'http://example.com/trac/test')
@@ -180,7 +180,7 @@ class RequestTestCase(unittest.TestCase):
                 status_sent.append(status)
                 headers_sent.update(dict(headers))
             environ = self._make_environ(method='POST', HTTP_USER_AGENT=ua)
-            req = Request(environ, start_response,)
+            req = Request(environ, start_response)
             req.session = Mock(save=lambda: None)
             self.assertRaises(RequestDone, req.redirect, url)
             self.assertEqual('303 See Other', status_sent[0])
@@ -424,6 +424,32 @@ ne\x00w\r\n\
         environ = self._make_environ(**{'QUERY_STRING': '%FF=value'})
         req = Request(environ, None)
         self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
+
+    def test_post_text_html_disables_xss(self):
+        """POST request with content-type text/html disables XSS
+        protection (#12926).
+        """
+        status_sent = []
+        headers_sent = {}
+        buf = StringIO()
+
+        def write(data):
+            buf.write(data)
+
+        def start_response(status, headers):
+            status_sent.append(status)
+            headers_sent.update(dict(headers))
+            return write
+
+        content_type = 'text/html'
+        content = "The content"
+        environ = self._make_environ(method='POST',
+                                     **{'wsgi.input': StringIO(content),
+                                        'CONTENT_LENGTH': str(len(content)),
+                                        'CONTENT_TYPE': content_type})
+        req = Request(environ, start_response)
+        self.assertRaises(RequestDone, req.send, content, content_type)
+        self.assertIn('0', headers_sent['X-XSS-Protection'])
 
 
 class RequestSendFileTestCase(unittest.TestCase):

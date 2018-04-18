@@ -339,6 +339,7 @@ class Request(object):
         self._write = None
         self._status = '200 OK'
         self._response = None
+        self._content_type = None
 
         self._outheaders = []
         self._outcharset = None
@@ -461,6 +462,7 @@ class Request(object):
         """
         lower_name = name.lower()
         if lower_name == 'content-type':
+            self._content_type = value.split(';', 1)[0]
             ctpos = value.find('charset=')
             if ctpos >= 0:
                 self._outcharset = value[ctpos + 8:].strip()
@@ -472,6 +474,9 @@ class Request(object):
         """Must be called after all headers have been sent and before the
         actual content is written.
         """
+        if self.method == 'POST' and self._content_type == 'text/html':
+            # Disable XSS protection (#12926)
+            self.send_header('X-XSS-Protection', 0)
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
 
