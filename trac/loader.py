@@ -60,6 +60,15 @@ def load_eggs(entry_point_name):
         for dist, e in errors.iteritems():
             _log_error(dist, e)
 
+        def deregister_components(entry_point):
+            """Remove components for `entry_point` from the registry."""
+            from trac.core import ComponentMeta
+            for name in entry_point.attrs:
+                for c in ComponentMeta._components:
+                    if c.__module__ == entry_point.module_name and \
+                            c.__name__ == name:
+                        ComponentMeta.deregister(c)
+
         for entry in sorted(working_set.iter_entry_points(entry_point_name),
                             key=lambda entry: entry.name):
             env.log.debug('Loading plugin "%s" from "%s"',
@@ -68,6 +77,7 @@ def load_eggs(entry_point_name):
                 entry.load(require=True)
             except Exception as e:
                 _log_error(entry, e)
+                deregister_components(entry)
             else:
                 if os.path.dirname(entry.dist.location) == auto_enable:
                     _enable_plugin(env, entry.module_name)
