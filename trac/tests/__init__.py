@@ -13,14 +13,16 @@
 
 import unittest
 
-from trac.tests import attachment, config, core, env, loader, perm, \
-                       notification, resource, wikisyntax, functional
+from trac.tests import attachment, config, core, env, loader, notification, \
+                       perm, resource, wikisyntax, functional
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(basicSuite())
     suite.addTest(functionalSuite())
     return suite
+
 
 def basicSuite():
     suite = unittest.TestSuite()
@@ -35,8 +37,10 @@ def basicSuite():
     suite.addTest(wikisyntax.test_suite())
     return suite
 
+
 def functionalSuite():
     return functional.test_suite()
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

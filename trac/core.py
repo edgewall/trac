@@ -168,7 +168,7 @@ class ComponentMeta(type):
             for interface in class_.__dict__.get('_implements', ()):
                 implementers = cls._registry.get(interface)
                 try:
-                    implementers.remove(class_)
+                    implementers.remove(component)
                 except ValueError:
                     pass
 
