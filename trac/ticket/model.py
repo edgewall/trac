@@ -1191,12 +1191,16 @@ class Milestone(object):
                                         self.realm, self.name)
 
             self.env.log.info("Updating milestone '%s'", old['name'])
-            db("""UPDATE milestone
-                  SET name=%s, due=%s, completed=%s, description=%s
-                  WHERE name=%s
-                  """, (self.name, to_utimestamp(self.due),
-                        to_utimestamp(self.completed),
-                        self.description, old['name']))
+            try:
+                db("""UPDATE milestone
+                      SET name=%s, due=%s, completed=%s, description=%s
+                      WHERE name=%s
+                      """, (self.name, to_utimestamp(self.due),
+                            to_utimestamp(self.completed),
+                            self.description, old['name']))
+            except self.env.db_exc.IntegrityError:
+                raise ResourceExistsError(
+                    _('Milestone "%(name)s" already exists.', name=self.name))
             self.checkin()
         # Fields need reset if renamed or completed/due changed
         TicketSystem(self.env).reset_ticket_fields()

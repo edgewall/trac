@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015 Edgewall Software
+# Copyright (C) 2015-2018 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -14,7 +14,7 @@
 import unittest
 
 from trac.perm import PermissionError, PermissionSystem
-from trac.resource import ResourceNotFound
+from trac.resource import ResourceExistsError, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.admin import ComponentAdminPanel, MilestoneAdminPanel, \
                               PriorityAdminPanel, ResolutionAdminPanel, \
@@ -48,6 +48,64 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         component = Component(self.env, name)
         self.assertEqual(name, component.name)
         self.assertEqual(owner, component.owner)
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' component3 ', 'owner': owner,
+                                'add': True})
+        with self.assertRaises(ResourceExistsError) as cm:
+            cap.render_admin_panel(req, 'ticket', 'component', None)
+        self.assertIn('Component "component3" already exists',
+                      unicode(cm.exception))
+
+    def test_add_component_with_spaces(self):
+        cap = ComponentAdminPanel(self.env)
+        name = 'comp on ent 4'
+        self.assertRaises(ResourceNotFound, Component, self.env, name)
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' comp \t on \t ent \t 4 ',
+                                'owner': 'user4', 'add': True})
+        self.assertRaises(RequestDone, cap.render_admin_panel, req,
+                          'ticket', 'component', None)
+        self.assertIn('The component "comp on ent 4" has been added.',
+                      req.chrome['notices'])
+        component = Component(self.env, name)
+        self.assertEqual(name, component.name)
+        with self.assertRaises(ResourceExistsError) as cm:
+            cap.render_admin_panel(req, 'ticket', 'component', None)
+        self.assertIn('Component "comp on ent 4" already exists',
+                      unicode(cm.exception))
+
+    def test_save_component(self):
+        cap = ComponentAdminPanel(self.env)
+        old_name = 'component2'
+        old_owner = 'somebody'
+        new_name = 'comp on ent 2'
+        new_owner = 'user2'
+        component = Component(self.env, old_name)
+        self.assertEqual(old_name, component.name)
+        self.assertEqual(old_owner, component.owner)
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' component1 ', 'owner': 'somebody',
+                                'save': True})
+        with self.assertRaises(ResourceExistsError) as cm:
+            cap.render_admin_panel(req, 'ticket', 'component', old_name)
+        self.assertIn('Component "component1" already exists',
+                      unicode(cm.exception))
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' comp \t on \t ent \t 2 ',
+                                'owner': new_owner, 'save': True})
+        self.assertRaises(RequestDone, cap.render_admin_panel, req,
+                          'ticket', 'component', old_name)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+
+        component = Component(self.env, new_name)
+        self.assertEqual(new_name, component.name)
+        self.assertEqual(new_owner, component.owner)
+        self.assertRaises(ResourceNotFound, cap.render_admin_panel, req,
+                          'ticket', 'component', old_name)
+        self.assertRaises(ResourceNotFound, Component, self.env, old_name)
 
     def test_remove_component(self):
         cap = ComponentAdminPanel(self.env)
@@ -86,6 +144,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
                           args={'default': name, 'apply': True})
         self.assertRaises(RequestDone, cap.render_admin_panel, req,
                           'ticket', 'component', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
     def test_remove_default_component(self):
@@ -98,6 +158,8 @@ class ComponentAdminPanelTestCase(BaseTestCase):
                           args={'sel': name, 'remove': True})
         self.assertRaises(RequestDone, cap.render_admin_panel, req,
                           'ticket', 'component', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual('', self.env.config.get('ticket', config_key))
 
 
@@ -115,6 +177,51 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         milestone = Milestone(self.env, name)
         self.assertEqual(name, milestone.name)
 
+    def test_add_milestone_with_spaces(self):
+        name = 'mile stone 5'
+        map = MilestoneAdminPanel(self.env)
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' mile \t stone \t 5 ', 'add': True})
+
+        self.assertRaises(ResourceNotFound, Milestone, self.env, name)
+        self.assertRaises(RequestDone, map.render_admin_panel, req,
+                          'ticket', 'milestone', None)
+        self.assertIn('The milestone "mile stone 5" has been added.',
+                      req.chrome['notices'])
+        milestone = Milestone(self.env, name)
+        self.assertEqual(name, milestone.name)
+
+        with self.assertRaises(ResourceExistsError) as cm:
+            map.render_admin_panel(req, 'ticket', 'milestone', None)
+        self.assertIn('Milestone "mile stone 5" already exists',
+                      unicode(cm.exception))
+
+    def test_save_milestone(self):
+        map = MilestoneAdminPanel(self.env)
+        old_name = 'milestone2'
+        new_name = 'mile stone 6'
+        milestone = Milestone(self.env, old_name)
+        self.assertEqual(old_name, milestone.name)
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' milestone1 ', 'save': True})
+        with self.assertRaises(ResourceExistsError) as cm:
+            map.render_admin_panel(req, 'ticket', 'milestone', old_name)
+        self.assertIn('Milestone "milestone1" already exists',
+                unicode(cm.exception))
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' mile \t stone \t 6 ', 'save': True})
+        self.assertRaises(RequestDone, map.render_admin_panel, req,
+                          'ticket', 'milestone', old_name)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+
+        milestone = Milestone(self.env, new_name)
+        self.assertEqual(new_name, milestone.name)
+        self.assertRaises(ResourceNotFound, map.render_admin_panel, req,
+                          'ticket', 'milestone', old_name)
+        self.assertRaises(ResourceNotFound, Milestone, self.env, old_name)
+
     def test_set_default_milestone(self):
         """Set default milestone."""
         name = 'milestone2'
@@ -127,6 +234,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(RequestDone):
             MilestoneAdminPanel(self.env).render_admin_panel(
                 req, 'ticket', 'milestone', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
     def test_set_default_milestone_requires_ticket_admin(self):
@@ -152,6 +261,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(RequestDone):
             MilestoneAdminPanel(self.env).render_admin_panel(
                 req, 'ticket', 'milestone', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(name, self.env.config.get('milestone', config_key))
 
     def test_set_default_retarget_to_requires_ticket_admin(self):
@@ -176,6 +287,8 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         self.assertRaises(RequestDone, map.render_admin_panel, req,
                           'ticket', 'milestone', None)
 
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual('', self.env.config.get('ticket',
                                                  'default_milestone'))
         self.assertEqual('', self.env.config.get('milestone',
@@ -218,17 +331,54 @@ class AbstractEnumTestCase(BaseTestCase):
 
     admin = None
     type = None
+    type_name = None
     cls = None
 
-    def _test_add(self, name):
+    def _test_add(self, name, norm_name=None):
+        if norm_name is None:
+            norm_name = name
         req = MockRequest(self.env, method='POST',
                           args={'name': name, 'add': True})
 
-        self.assertRaises(ResourceNotFound, self.cls, self.env, name)
+        self.assertRaises(ResourceNotFound, self.cls, self.env, norm_name)
         self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
-        item = self.cls(self.env, name)
-        self.assertEqual(name, item.name)
+        self.assertIn('The %s value "%s" has been added.' %
+                      (self.type_name, norm_name), req.chrome['notices'])
+        item = self.cls(self.env, norm_name)
+        self.assertEqual(norm_name, item.name)
+
+    def _test_add_non_unique(self, name, norm_name=None):
+        if norm_name is None:
+            norm_name = name
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'add': True})
+
+        with self.assertRaises(ResourceExistsError) as cm:
+            self.admin.render_admin_panel(req, 'ticket', self.type, None)
+        self.assertIn('%s value "%s" already exists' %
+                      (self.type_name, norm_name), unicode(cm.exception))
+
+    def _test_save(self, old_name, name, norm_name=None):
+        if norm_name is None:
+            norm_name = name
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'save': True})
+
+        self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
+                          'ticket', self.type, old_name)
+        item = self.cls(self.env, norm_name)
+        self.assertEqual(norm_name, item.name)
+
+    def _test_save_non_unique(self, old_name, name, norm_name=None):
+        if norm_name is None:
+            norm_name = name
+        req = MockRequest(self.env, method='POST',
+                          args={'name': name, 'save': True})
+        with self.assertRaises(ResourceExistsError) as cm:
+            self.admin.render_admin_panel(req, 'ticket', self.type, old_name)
+        self.assertIn('value "%s" already exists' % norm_name,
+                      unicode(cm.exception))
 
     def _test_set_default(self, name):
         config_key = 'default_' + self.type
@@ -239,6 +389,8 @@ class AbstractEnumTestCase(BaseTestCase):
 
         self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
     def _test_remove_default(self, name):
@@ -250,6 +402,9 @@ class AbstractEnumTestCase(BaseTestCase):
 
         self.assertRaises(RequestDone, self.admin.render_admin_panel, req,
                           'ticket', self.type, None)
+        self.assertIn('The selected %s values have been removed.' %
+                      self.type_name, req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual('', self.env.config.get('ticket', config_key))
 
     def _test_edit_description(self, name):
@@ -271,6 +426,7 @@ class AbstractEnumTestCase(BaseTestCase):
 class PriorityAdminPanelTestCase(AbstractEnumTestCase):
 
     type = 'priority'
+    type_name = 'Priority'
     cls = Priority
 
     def setUp(self):
@@ -279,6 +435,15 @@ class PriorityAdminPanelTestCase(AbstractEnumTestCase):
 
     def test_add_priority(self):
         self._test_add('priority 1')
+        self._test_add(' prio \t rity \t 2 ', 'prio rity 2')
+        self._test_add_non_unique('critical')
+        self._test_add_non_unique(' priority \t 1 ', 'priority 1')
+
+    def test_save_priority(self):
+        self._test_save('critical', 'critical!!')
+        self._test_save('critical!!', ' crit \t ical ', 'crit ical')
+        self._test_save_non_unique('crit ical', 'blocker')
+        self._test_save_non_unique('blocker', ' crit \t ical ', 'crit ical')
 
     def test_set_default_priority(self):
         self._test_set_default('critical')
@@ -293,6 +458,7 @@ class PriorityAdminPanelTestCase(AbstractEnumTestCase):
 class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
 
     type = 'resolution'
+    type_name = 'Resolution'
     cls = Resolution
 
     def setUp(self):
@@ -301,6 +467,16 @@ class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
 
     def test_add_resolution(self):
         self._test_add('resolution 1')
+        self._test_add(' resol \t ution 2 ', 'resol ution 2')
+        self._test_add_non_unique('fixed')
+        self._test_add_non_unique(' resolution \t 1 ', 'resolution 1')
+
+    def test_save_resolution(self):
+        ap = ResolutionAdminPanel(self.env)
+        self._test_save('invalid', 'invalid!!')
+        self._test_save('invalid!!', ' in \t valid ', 'in valid')
+        self._test_save_non_unique('wontfix', 'fixed')
+        self._test_save_non_unique('wontfix', ' in \t valid ', 'in valid')
 
     def test_set_default_resolution(self):
         self._test_set_default('invalid')
@@ -315,36 +491,56 @@ class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
 class SeverityAdminPanelTestCase(AbstractEnumTestCase):
 
     type = 'severity'
+    type_name = 'Severity'
     cls = Severity
 
     def setUp(self):
         super(SeverityAdminPanelTestCase, self).setUp()
         self.admin = SeverityAdminPanel(self.env)
 
-    def _insert_severity(self):
+    def test_add_severity(self):
+        self._test_add('severity 1')
+        self._test_add(' seve  rity  2 ', 'seve rity 2')
+        self._test_add_non_unique('severity 1')
+        self._test_add_non_unique(' seve \t rity \t 2 ', 'seve rity 2')
+
+    def test_save_severity(self):
+        with self.env.db_transaction:
+            self._insert_severity('severity 1')
+            self._insert_severity('severity 2')
+            self._insert_severity('severity 3')
+            self._insert_severity('severity 4')
+        self._test_save('severity 1', 'severity 42')
+        self._test_save('severity 2', ' severity \t z ', 'severity z')
+        self._test_save_non_unique('severity 3', 'severity 4')
+        self._test_save_non_unique('severity 4', ' severity \t 3 ',
+                                   'severity 3')
+
+    def _insert_severity(self, name):
         s = Severity(self.env)
-        s.name = 'severity 1'
+        s.name = name
         s.insert()
 
     def test_add_severity(self):
         self._test_add('severity 1')
 
     def test_set_default_severity(self):
-        self._insert_severity()
+        self._insert_severity('severity 1')
         self._test_set_default('severity 1')
 
     def test_remove_default_severity(self):
-        self._insert_severity()
+        self._insert_severity('severity 1')
         self._test_remove_default('severity 1')
 
     def test_edit_description(self):
-        self._insert_severity()
+        self._insert_severity('severity 1')
         self._test_edit_description('severity 1')
 
 
 class TicketTypeAdminPanelTestCase(AbstractEnumTestCase):
 
     type = 'type'
+    type_name = 'Ticket Type'
     cls = Type
 
     def setUp(self):
@@ -353,6 +549,15 @@ class TicketTypeAdminPanelTestCase(AbstractEnumTestCase):
 
     def test_add_type(self):
         self._test_add('improvement')
+        self._test_add(' new \t feature ', 'new feature')
+        self._test_add_non_unique('task')
+        self._test_add_non_unique(' new \t feature ', 'new feature')
+
+    def test_save_severity(self):
+        self._test_save('defect', 'bug')
+        self._test_save('task', ' new \t task ', 'new task')
+        self._test_save_non_unique('bug', 'enhancement')
+        self._test_save_non_unique('bug', ' new \t task ', 'new task')
 
     def test_set_default_type(self):
         self._test_set_default('task')
@@ -378,6 +583,50 @@ class VersionAdminPanelTestCase(BaseTestCase):
         version = Version(self.env, name)
         self.assertEqual(name, version.name)
 
+    def test_add_version_with_spaces(self):
+        name = '4.0 dev'
+        ap = VersionAdminPanel(self.env)
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' 4.0 \t dev ', 'add': True})
+
+        self.assertRaises(ResourceNotFound, Version, self.env, name)
+        self.assertRaises(RequestDone, ap.render_admin_panel, req,
+                          'ticket', 'version', None)
+        self.assertIn('The version "4.0 dev" has been added.',
+                      req.chrome['notices'])
+        version = Version(self.env, name)
+        self.assertEqual(name, version.name)
+
+        with self.assertRaises(ResourceExistsError) as cm:
+            ap.render_admin_panel(req, 'ticket', 'version', None)
+        self.assertIn('Version "4.0 dev" already exists',
+                      unicode(cm.exception))
+
+    def test_save_version(self):
+        ap = VersionAdminPanel(self.env)
+        old_name = '2.0'
+        new_name = '4.0 dev'
+        version = Version(self.env, old_name)
+        self.assertEqual(old_name, version.name)
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' 1.0 ', 'save': True})
+        with self.assertRaises(ResourceExistsError) as cm:
+            ap.render_admin_panel(req, 'ticket', 'version', old_name)
+        self.assertIn('Version "1.0" already exists', unicode(cm.exception))
+
+        req = MockRequest(self.env, method='POST',
+                          args={'name': ' 4.0 \t dev ', 'save': True})
+        self.assertRaises(RequestDone, ap.render_admin_panel, req,
+                          'ticket', 'version', old_name)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+
+        version = Version(self.env, new_name)
+        self.assertEqual(new_name, version.name)
+        self.assertRaises(ResourceNotFound, ap.render_admin_panel, req,
+                          'ticket', 'version', old_name)
+        self.assertRaises(ResourceNotFound, Version, self.env, old_name)
+
     def test_set_default_version(self):
         name = '1.0'
         ap = VersionAdminPanel(self.env)
@@ -387,6 +636,8 @@ class VersionAdminPanelTestCase(BaseTestCase):
 
         self.assertRaises(RequestDone, ap.render_admin_panel, req,
                           'ticket', 'version', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(name, self.env.config.get('ticket', config_key))
 
     def test_remove_default_version(self):
@@ -399,6 +650,8 @@ class VersionAdminPanelTestCase(BaseTestCase):
                           args={'sel': name, 'remove': True})
         self.assertRaises(RequestDone, ap.render_admin_panel, req,
                           'ticket', 'version', None)
+        self.assertIn('Your changes have been saved.', req.chrome['notices'])
+        self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(self.env.config.get('ticket', config_key), '')
 
 
