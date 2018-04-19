@@ -92,7 +92,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         comp.update()
                     except self.env.db_exc.IntegrityError:
                         raise TracError(_('Component "%(name)s" already '
-                                          'exists.', name=name))
+                                          'exists.', name=comp.name))
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -114,9 +114,13 @@ class ComponentAdminPanel(TicketAdminPanel):
                         comp.name = name
                         if req.args.get('owner'):
                             comp.owner = req.args.get('owner')
-                        comp.insert()
+                        try:
+                            comp.insert()
+                        except self.env.db_exc.IntegrityError:
+                            raise TracError(_('Component "%(name)s" already '
+                                              'exists.', name=comp.name))
                         add_notice(req, _('The component "%(name)s" has been '
-                                          'added.', name=name))
+                                          'added.', name=comp.name))
                     else:
                         if comp.name is None:
                             raise TracError(_("Invalid component name."))
@@ -475,7 +479,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver.update()
                     except self.env.db_exc.IntegrityError:
                         raise TracError(_('Version "%(name)s" already '
-                                          'exists.', name=name))
+                                          'exists.', name=ver.name))
 
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
@@ -500,9 +504,13 @@ class VersionAdminPanel(TicketAdminPanel):
                             ver.time = user_time(req, parse_date,
                                                  req.args.get('time'),
                                                  hint='datetime')
-                        ver.insert()
+                        try:
+                            ver.insert()
+                        except self.env.db_exc.IntegrityError:
+                            raise TracError(_('Version "%(name)s" already '
+                                              'exists.', name=ver.name))
                         add_notice(req, _('The version "%(name)s" has been '
-                                          'added.', name=name))
+                                          'added.', name=ver.name))
                     else:
                         if ver.name is None:
                             raise TracError(_("Invalid version name."))
@@ -643,7 +651,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum.update()
                     except self.env.db_exc.IntegrityError:
                         raise TracError(_('%(type)s value "%(name)s" already '
-                                          'exists', type=label[0], name=name))
+                                          'exists', type=label[0],
+                                          name=enum.name))
                     add_notice(req, _("Your changes have been saved."))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
@@ -661,10 +670,15 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     except ResourceNotFound:
                         enum = self._enum_cls(self.env)
                         enum.name = name
-                        enum.insert()
+                        try:
+                            enum.insert()
+                        except self.env.db_exc.IntegrityError:
+                            raise TracError(_('%(type)s value "%(name)s" '
+                                              'already exists', type=label[0],
+                                              name=enum.name))
                         add_notice(req, _('The %(field)s value "%(name)s" '
                                           'has been added.',
-                                          field=label[0], name=name))
+                                          field=label[0], name=enum.name))
                     else:
                         if enum.name is None:
                             raise TracError(_("Invalid %(type)s value.",

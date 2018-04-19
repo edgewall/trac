@@ -831,7 +831,12 @@ class MilestoneModule(Component):
 
         # -- actually save changes
         if milestone.exists:
-            milestone.update(author=req.authname)
+            try:
+                milestone.update(author=req.authname)
+            except self.env.db_exc.IntegrityError:
+                raise TracError(_('Milestone "%(name)s" already exists, '
+                                  'please choose another name.',
+                                  name=milestone.name))
             if completed and 'retarget' in req.args:
                 comment = req.args.get('comment', '')
                 retarget_to = req.args.get('target') or None
@@ -860,7 +865,12 @@ class MilestoneModule(Component):
                                           message=to_unicode(e)))
             add_notice(req, _("Your changes have been saved."))
         else:
-            milestone.insert()
+            try:
+                milestone.insert()
+            except self.env.db_exc.IntegrityError:
+                raise TracError(_('Milestone "%(name)s" already exists, '
+                                  'please choose another name.',
+                                  name=milestone.name))
             add_notice(req, _('The milestone "%(name)s" has been added.',
                               name=milestone.name))
 
