@@ -1221,6 +1221,57 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         self.assertEqual({'label': 'Milestone', 'type': 'text',
                           'format': 'plain'}, prop)
 
+    def test_null_time_and_changetime_with_saved_query_tickets(self):
+        with self.env.db_transaction as db:
+            n = self.n_tickets / 2
+            db("UPDATE ticket SET time=NULL WHERE id<%s", (n,))
+            db("UPDATE ticket SET changetime=NULL WHERE id>%s", (n,))
+        req = MockRequest(self.env, path_info='/query', args={'id': '!0'})
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        mod.process_request(req)
+        self.assertNotEqual('', req.session['query_tickets'])
+        mod.process_request(req)  # TypeError not raised (#12029)
+
+    def test_time_fields(self):
+        when = datetime(2017, 11, 9, 12, 56, 34, 654321, utc)
+        due = datetime(2017, 9, 18, 12, 34, 56, 876543, utc)
+        self.env.config.set('ticket-custom', 'due', 'time')
+        t1 = Ticket(self.env, 1)
+        t1['due'] = due
+        t1.save_changes(when=when)
+        t2 = Ticket(self.env, 2)
+        t2['due'] = ''  # clear the field
+        t2.save_changes(when=when + timedelta(seconds=1))
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': '1-3', 'order': 'id', 'col': 'due'})
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+        tickets = data['tickets']
+
+        t1 = tickets[0]
+        self.assertEqual('2008-07-01T12:34:56.987654+00:00',
+                         t1['time'].isoformat())
+        self.assertEqual('2017-11-09T12:56:34.654321+00:00',
+                         t1['changetime'].isoformat())
+        self.assertEqual('2017-09-18T12:34:56.876543+00:00',
+                         t1['due'].isoformat())
+
+        t2 = tickets[1]
+        self.assertEqual('2008-07-11T12:34:56.987654+00:00',
+                         t2['time'].isoformat())
+        self.assertEqual('2017-11-09T12:56:35.654321+00:00',
+                         t2['changetime'].isoformat())
+        self.assertEqual(None, t2['due'])
+
+        t3 = tickets[2]
+        self.assertEqual('2008-07-21T12:34:56.987654+00:00',
+                         t3['time'].isoformat())
+        self.assertEqual('2008-07-22T12:34:56.987654+00:00',
+                         t3['changetime'].isoformat())
+        self.assertEqual(None, t3['due'])
+
 
 class QueryLinksTestCase(unittest.TestCase):
 
