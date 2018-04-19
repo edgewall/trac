@@ -565,6 +565,7 @@ class Request(object):
         self._write = None
         self._status = '200 OK'
         self._response = None
+        self._content_type = None
 
         self._outheaders = []
         self.outcookie = Cookie()
@@ -700,12 +701,17 @@ class Request(object):
         `value` must either be an `unicode` string or can be converted to one
         (e.g. numbers, ...)
         """
+        if name.lower() == 'content-type':
+            self._content_type = value.split(';', 1)[0]
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def end_headers(self):
         """Must be called after all headers have been sent and before the
         actual content is written.
         """
+        if self.method == 'POST' and self._content_type == 'text/html':
+            # Disable XSS protection (#12926)
+            self.send_header('X-XSS-Protection', 0)
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
 
