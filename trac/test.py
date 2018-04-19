@@ -158,8 +158,8 @@ def MockRequest(env, **kwargs):
         args = arg_list_to_args(arg_list)
     else:
         args = _RequestArgs()
-        args.update({k: unicode(v)
-                     for k, v in kwargs.get('args', {}).iteritems()})
+        args.update((k, unicode(v))
+                    for k, v in kwargs.get('args', {}).iteritems())
         arg_list = [(name, value) for name in args
                                   for value in args.getlist(name)]
 
