@@ -312,11 +312,9 @@ class Query(object):
             columns = get_column_names(cursor)
             fields = [self.fields.by_name(column, None) for column in columns]
 
-            column_indices = range(len(columns))
             for row in cursor:
                 result = {}
-                for i in column_indices:
-                    name, field, val = columns[i], fields[i], row[i]
+                for name, field, val in zip(columns, fields, row):
                     if name == 'reporter':
                         val = val or 'anonymous'
                     elif name == 'id':
@@ -324,7 +322,7 @@ class Query(object):
                         if href is not None:
                             result['href'] = href.ticket(val)
                     elif name in self.time_fields:
-                        val = from_utimestamp(long(val)) if val else ''
+                        val = from_utimestamp(long(val)) if val else None
                     elif field and field['type'] == 'checkbox':
                         val = as_bool(val)
                     elif val is None:
@@ -768,12 +766,12 @@ class Query(object):
         groups = {}
         groupsequence = []
         for ticket in tickets:
-            if orig_list:
+            if orig_list and orig_time:
                 # Mark tickets added or changed since the query was first
                 # executed
-                if ticket['time'] > orig_time:
+                if ticket['time'] and ticket['time'] > orig_time:
                     ticket['added'] = True
-                elif ticket['changetime'] > orig_time:
+                elif ticket['changetime'] and ticket['changetime'] > orig_time:
                     ticket['changed'] = True
             if self.group:
                 group_key = ticket[self.group]
