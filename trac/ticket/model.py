@@ -994,7 +994,7 @@ class Component(object):
         """Update the component.
 
         :raises TracError: if component does not exist or component name
-                           is empty.
+            is empty.
         :raises ResourceExistsError: if renamed component already exists.
         """
         if not self.exists:
@@ -1152,6 +1152,9 @@ class Milestone(object):
 
     def insert(self):
         """Insert a new milestone.
+
+        :raises TracError: if milestone name is empty.
+        :raises ResourceExistsError: if milestone with name already exists.
         """
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1176,6 +1179,10 @@ class Milestone(object):
 
     def update(self, author=None):
         """Update the milestone.
+
+        :raises TracError: if milestone does not exist or milestone name
+            is empty.
+        :raises ResourceExistsError: if renamed milestone already exists.
         """
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1408,7 +1415,7 @@ class Version(object):
         """Update the version.
 
         :raises TracError: if version does not exist or version name
-                                is empty.
+            is empty.
         :raises ResourceExistsError: if renamed value already exists.
         """
         if not self.exists:
