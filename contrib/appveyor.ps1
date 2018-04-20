@@ -148,8 +148,8 @@ $name
 
 if (-not $env:APPVEYOR) {
     function Debug-Caller {
-	$caller = (Get-Variable MyInvocation -Scope 1).Value.MyCommand.Name
-	Write-Debug "$caller $args"
+        $caller = (Get-Variable MyInvocation -Scope 1).Value.MyCommand.Name
+        Write-Debug "$caller $args"
     }
     function Add-AppveyorMessage() { Debug-Caller @args }
     function Add-AppveyorTest() { Debug-Caller @args }
@@ -220,7 +220,7 @@ function Trac-Install {
     & pip.exe install $pipCommonPackages $pipPackages.$svnBranch
 
     if ($pyIsConda) {
-	& conda.exe install -qy $condaCommonPackages
+        & conda.exe install -qy $condaCommonPackages
     }
 
     if ($usingMysql) {
