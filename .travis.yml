@@ -117,6 +117,7 @@ before_install:
         pip install --upgrade pip setuptools wheel
         ;;
     esac
+  - pyenv --version
   - pyenv versions
   - python --version
   - pip --version
