@@ -26,9 +26,6 @@ The `Environment` is special in the sense it is not only a
 .. autoclass :: trac.env.Environment
    :members:
 
-.. autoclass :: EnvironmentSetup
-   :members:
-
 .. autoclass :: EnvironmentAdmin
    :members:
 
