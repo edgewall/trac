@@ -20,12 +20,6 @@ environment:
     PYTHONHOME: C:\Python27-x64
     TRAC_TEST_DB_URI: sqlite:test.db
   - SVN_BRANCH: 1.0-stable
-    PYTHONHOME: C:\Python26
-    TRAC_TEST_DB_URI: sqlite:test.db
-  - SVN_BRANCH: 1.0-stable
-    PYTHONHOME: C:\Python26-x64
-    TRAC_TEST_DB_URI:
-  - SVN_BRANCH: 1.0-stable
     PYTHONHOME: C:\Miniconda
     TRAC_TEST_DB_URI: mysql://tracuser:password@localhost/trac
   - SVN_BRANCH: 1.0-stable

@@ -148,8 +148,8 @@ $name
 
 if (-not $env:APPVEYOR) {
     function Debug-Caller {
-	$caller = (Get-Variable MyInvocation -Scope 1).Value.MyCommand.Name
-	Write-Debug "$caller $args"
+        $caller = (Get-Variable MyInvocation -Scope 1).Value.MyCommand.Name
+        Write-Debug "$caller $args"
     }
     function Add-AppveyorMessage() { Debug-Caller @args }
     function Add-AppveyorTest() { Debug-Caller @args }
@@ -202,7 +202,7 @@ function Trac-Install {
         }
     }
 
-    # Subversion support via win32svn project, for Python 2.6 and 2.7 32-bits
+    # Subversion support via win32svn project, for Python 2.7 32-bits
 
     if (-not $py64) {
         $svnBinariesZip = "$deps\$svnBaseAp.zip"
@@ -224,15 +224,6 @@ function Trac-Install {
 
     # Install packages via pip
 
-    # pip in Python 2.6 triggers the following warning:
-    # https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning
-    # use -W to avoid it
-    if ($pyVersion -eq '2.6') {
-        $ignoreWarnings = @(
-            '-W', 'ignore:A true SSLContext object is not available'
-        )
-    }
-
     function pip() {
         & python.exe $ignoreWarnings -m pip.__main__ @args
         # Note: -m pip works only in 2.7, -m pip.__main__ works in both
@@ -242,7 +233,7 @@ function Trac-Install {
     & pip install $pipCommonPackages $pipPackages.$svnBranch
 
     if ($pyIsConda) {
-	& conda.exe install -qy $condaCommonPackages
+        & conda.exe install -qy $condaCommonPackages
     }
 
     if ($usingMysql) {
