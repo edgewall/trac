@@ -174,12 +174,21 @@ def MockRequest(env, **kwargs):
     else:
         perm = PermissionCache(env, authname)
 
+    def convert(val):
+        if isinstance(val, bool):
+            return unicode(int(val))
+        elif isinstance(val, (list, tuple)):
+            return [unicode(v) for v in val]
+        else:
+            return unicode(val)
+
     if 'arg_list' in kwargs:
-        arg_list = kwargs['arg_list']
+        arg_list = [(k, convert(v)) for k, v in kwargs['arg_list']]
         args = arg_list_to_args(arg_list)
     else:
         args = _RequestArgs()
-        args.update(kwargs.get('args', {}))
+        args.update((k, convert(v))
+                    for k, v in kwargs.get('args', {}).iteritems())
         arg_list = [(name, value) for name in args
                                   for value in args.getlist(name)]
 
