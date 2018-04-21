@@ -34,7 +34,7 @@ class DeleteTicketActionController(Component):
     }}}
     """
 
-    implements(ITicketActionController, IPermissionRequestor)
+    implements(IPermissionRequestor, ITicketActionController)
 
     # IPermissionRequestor methods
 
@@ -45,8 +45,7 @@ class DeleteTicketActionController(Component):
 
     def get_ticket_actions(self, req, ticket):
         actions = []
-        if 'TICKET_DELETE' in req.perm(ticket.resource) and \
-                ticket.exists:
+        if ticket.exists and 'TICKET_DELETE' in req.perm(ticket.resource):
             actions.append((0, 'delete'))
         return actions
 
@@ -54,7 +53,7 @@ class DeleteTicketActionController(Component):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
-        return 'delete', '', _("The ticket will be deleted.")
+        return 'delete', None, _("The ticket will be deleted.")
 
     def get_ticket_changes(self, req, ticket, action):
         return {}

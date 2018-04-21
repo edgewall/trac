@@ -17,6 +17,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Milestone
+from trac.util import to_list
 from trac.util.translation import _
 from trac.web.chrome import add_warning
 
@@ -25,26 +26,24 @@ url = "$URL$"
 
 
 class MilestoneOperation(Component):
-    """Sets milestone for specific status.
+    """Sets milestone for specified resolutions.
 
-    === Example ===
-    {{{
+    Example:
+    {{{#!ini
     [ticket-workflow]
     resolve.operations = set_resolution,set_milestone
     resolve.milestone = invalid,wontfix,duplicate,worksforme -> rejected
     }}}
 
-    When setting status to `duplicate` the milestone will automatically change
-    to `rejected`.
+    When setting resolution to `duplicate` the milestone will
+    automatically change to `rejected`. If user changes milestone
+    manually when resolving the ticket, this workflow operation has
+    ''no effect''.
 
-    '''Note:''' if user has changed milestone manually, this workflow operation
-    has ''no effect''!
-
-    === Configuration ===
-    Don't forget to add `MilestoneOperation` to the workflow option
-    in `[ticket]` section. If there is no workflow option, the line will look
-    like this:
-    {{{
+    Don't forget to add `MilestoneOperation` to the `workflow` option
+    in the `[ticket]` section of TracIni. When added to the default
+    value of `workflow`, the line will look like this:
+    {{{#!ini
     [ticket]
     workflow = ConfigurableTicketWorkflow,MilestoneOperation
     }}}
@@ -53,14 +52,9 @@ class MilestoneOperation(Component):
     implements(ITicketActionController)
 
     def get_ticket_actions(self, req, ticket):
-        actions_we_handle = []
-        if req.is_authenticated and \
-                'TICKET_MODIFY' in req.perm(ticket.resource):
-            controller = ConfigurableTicketWorkflow(self.env)
-            actions_we_handle = controller.get_actions_by_operation_for_req(
-                req, ticket, 'set_milestone')
-        self.log.debug('set_milestone handles actions: %r', actions_we_handle)
-        return actions_we_handle
+        controller = ConfigurableTicketWorkflow(self.env)
+        return controller.get_actions_by_operation_for_req(req, ticket,
+                                                           'set_milestone')
 
     def get_all_status(self):
         return []
@@ -68,67 +62,51 @@ class MilestoneOperation(Component):
     def render_ticket_action_control(self, req, ticket, action):
         actions = ConfigurableTicketWorkflow(self.env).actions
         label = actions[action]['label']
-        res_ms = self.__get_resolution_milestone_dict(ticket, action)
-        resolutions = ''
-        milestone = None
-        for i, resolution in enumerate(res_ms):
-            if i > 0:
-                resolutions = "%s, '%s'" % (resolutions, resolution)
-            else:
-                resolutions = "'%s'" % resolution
-                milestone = res_ms[resolution]
         hint = None
-        if res_ms:
-            try:
-                Milestone(self.env, milestone)
-            except ResourceNotFound:
-                pass
-            else:
-                hint = _("For resolution %(resolutions)s the milestone will "
-                         "be set to '%(milestone)s'.",
-                         resolutions=resolutions, milestone=milestone)
+        old_milestone = ticket._old.get('milestone')
+        if old_milestone is None:
+            resolutions, milestone = \
+                self._get_resolutions_and_milestone(action)
+            if resolutions:
+                try:
+                    Milestone(self.env, milestone)
+                except ResourceNotFound:
+                    pass
+                else:
+                    res_hint = ', '.join("'%s'" % r for r in resolutions)
+                    hint = _("For resolution %(resolutions)s the milestone "
+                             "will be set to '%(milestone)s'.",
+                             resolutions=res_hint, milestone=milestone)
         return label, None, hint
 
     def get_ticket_changes(self, req, ticket, action):
-        if action == 'resolve' and \
-                req.args and 'action_resolve_resolve_resolution' in req.args:
-            old_milestone = ticket._old.get('milestone') or None
-            user_milestone = ticket['milestone'] or None
-            # If there's no user defined milestone, we try to set it
-            # using the defined resolution -> milestone mapping.
-            if old_milestone is None:
-                new_status = req.args['action_resolve_resolve_resolution']
-                new_milestone = self.__get_new_milestone(ticket, action,
-                                                         new_status)
-                # ... but we don't reset it to None unless it was None
-                if new_milestone is not None or user_milestone is None:
-                    try:
-                        Milestone(self.env, new_milestone)
-                    except ResourceNotFound:
-                        add_warning(req, _("Milestone %(name)s does "
-                                           "not exist.", name=new_milestone))
-                    else:
-                        self.log.info('changed milestone from %s to %s',
-                                      old_milestone, new_milestone)
-                        return {'milestone': new_milestone}
+        old_milestone = ticket._old.get('milestone')
+        if old_milestone is None:
+            new_milestone = self._get_resolutions_and_milestone(action)[1]
+            try:
+                Milestone(self.env, new_milestone)
+            except ResourceNotFound:
+                add_warning(req, _("Milestone %(name)s does not exist.",
+                                   name=new_milestone))
+            else:
+                self.log.info("Changed milestone from %s to %s",
+                              old_milestone, new_milestone)
+                return {'milestone': new_milestone}
         return {}
 
     def apply_action_side_effects(self, req, ticket, action):
         pass
 
-    def __get_new_milestone(self, ticket, action, new_status):
-        """Determines the new status"""
-        if new_status:
-            res_ms = self.__get_resolution_milestone_dict(ticket, action)
-            return res_ms.get(new_status)
-
-    def __get_resolution_milestone_dict(self, ticket, action):
-        transitions = self.config.get('ticket-workflow',
-                                      action + '.milestone').strip()
-        transition = [x.strip() for x in transitions.split('->')]
-        res_milestone = {}
-        if len(transition) == 2:
-            resolutions = [y.strip() for y in transition[0].split(',')]
-            for res in resolutions:
-                res_milestone[res] = transition[1]
-        return res_milestone
+    def _get_resolutions_and_milestone(self, action):
+        transitions = self.config.get('ticket-workflow', action + '.milestone')
+        milestone = None
+        resolutions = []
+        try:
+            transition = to_list(transitions, sep='->')
+        except ValueError:
+            pass
+        else:
+            if len(transition) == 2:
+                resolutions = to_list(transition[0])
+                milestone = transition[1]
+        return resolutions, milestone

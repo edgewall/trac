@@ -12,31 +12,40 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.core import implements,Component
+from trac.core import Component, implements
 from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Priority, Ticket
 from trac.util.html import tag
-#from trac.perm import IPermissionRequestor # (TODO)
 
 revision = "$Rev$"
 url = "$URL$"
 
+
 class VoteOperation(Component):
-    """Provides a simplistic vote feature.
+    """Provides a simple vote feature.
 
-    This is a sample action controller illustrating how to create additional
-    ''operations''.
+    This is a sample action controller illustrating how to create
+    additional ''operations''.
 
-    Don't forget to add `VoteOperation` to the workflow
-    option in the `[ticket]` section in TracIni.
-    If there is no other workflow option, the line will look like this:
-    {{{
+    Add the `vote` operation to a workflow action, for example:
+    {{{#!ini
+    vote = new -> new
+    vote.operations = vote
+    }}}
+
+    Don't forget to add `VoteOperation` to the `workflow` option
+    in the `[ticket]` section of TracIni. When added to the default
+    value of `workflow`, the line will look like this:
+    {{{#!ini
     workflow = ConfigurableTicketWorkflow,VoteOperation
     }}}
     """
 
     implements(ITicketActionController)
+
+    vote_options = ('for', 'against')
+    id_for_action = 'action_%s_vote'
 
     def get_ticket_actions(self, req, ticket):
         controller = ConfigurableTicketWorkflow(self.env)
@@ -46,30 +55,30 @@ class VoteOperation(Component):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
-        id = 'vote_%s_result' % (action, )
-        selected_value = req.args.get(id, 'for')
-        options = ['for', 'against']
-        return ("vote",
-                tag.select([tag.option(x, selected=(x == selected_value or
-                                                    None))
-                            for x in options], name=id, id=id),
+        id = self.id_for_action % action
+        selected_value = req.args.get(id, self.vote_options[0])
+        render_control = tag.select(
+            [tag.option(x, selected=(x == selected_value or None))
+             for x in self.vote_options], name=id, id=id)
+        return ("vote", render_control,
                 "Vote on the issue, raising or lowering its priority")
 
     def get_ticket_changes(self, req, ticket, action):
-        id = 'vote_%s_result' % (action, )
-        selected = req.args.get(id, 'for')
+        id = self.id_for_action % action
+        selected = req.args.get(id, self.vote_options[0])
         priorities = list(Priority.select(self.env))
-        orig_ticket = Ticket(self.env, ticket.id)
-        current_priority = int(Priority(self.env, name=
-                                        orig_ticket['priority']).value)
-        if selected == 'for':
-            # priorities are 1-based, not 0-based
-            new_value = max(1, current_priority - 1)
+        name_by_val = {int(p.value): p.name for p in priorities}
+        ticket_priority_name = ticket._old.get('priority', ticket['priority'])
+        ticket_priority = \
+            [p for p in priorities if p.name == ticket_priority_name][0]
+        if selected == self.vote_options[0]:
+            max_val = max(name_by_val)
+            new_val = min(max_val, int(ticket_priority.value) + 1)
         else:
-            maxval = max([int(p.value) for p in priorities])
-            new_value = min(maxval, current_priority + 1)
-        return {'priority': [p.name for p in priorities
-                             if int(p.value) == new_value][0]}
+            min_val = min(name_by_val)
+            new_val = max(min_val, int(ticket_priority.value) - 1)
+
+        return {'priority': name_by_val[new_val]}
 
     def apply_action_side_effects(self, req, ticket, action):
         pass

@@ -12,14 +12,18 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
+from collections import OrderedDict
+
 from trac.core import Component, implements
 from trac.perm import IPermissionRequestor
 from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
+from trac.util import to_list
 from trac.util.html import tag
 
 revision = "$Rev$"
 url = "$URL$"
+
 
 class CodeReviewActionController(Component):
     """Support for simple code reviews.
@@ -29,7 +33,8 @@ class CodeReviewActionController(Component):
     a specific state will be selected.
 
     Example (from the enterprise-review-workflow.ini):
-    {{{
+    {{{#!ini
+    request_review = in_work -> in_review
     review = in_review -> *
     review.label = review as
     review.operations = code_review
@@ -38,15 +43,16 @@ class CodeReviewActionController(Component):
       approve as noted -> post_review,
       request changes -> in_work
     }}}
+
     Don't forget to add the `CodeReviewActionController` to the workflow
-    option in the `[ticket]` section in TracIni.
-    If there is no other workflow option, the line will look like this:
-    {{{
+    option in the `[ticket]` section in TracIni. When added to the default
+    value of `workflow`, the line will look like this:
+    {{{#!ini
     workflow = ConfigurableTicketWorkflow,CodeReviewActionController
     }}}
     """
 
-    implements(ITicketActionController, IPermissionRequestor)
+    implements(IPermissionRequestor, ITicketActionController)
 
     # IPermissionRequestor methods
 
@@ -59,7 +65,7 @@ class CodeReviewActionController(Component):
         # The review action is available in those status where it has been
         # configured, for those users who have the TICKET_REVIEW permission, as
         # long as they are not the owner of the ticket (you can't review your
-        # own work!).
+        # own work).
         actions_we_handle = []
         if req.authname != ticket['owner'] and \
                     'TICKET_REVIEW' in req.perm(ticket.resource):
@@ -72,40 +78,35 @@ class CodeReviewActionController(Component):
     def get_all_status(self):
         all_status = set()
         controller = ConfigurableTicketWorkflow(self.env)
-        ouractions = controller.get_actions_by_operation('code_review')
-        for weight, action in ouractions:
-            status = [status for option, status in
-                      self._get_review_options(action)]
-            all_status.update(status)
+        for weight, action \
+                in controller.get_actions_by_operation('code_review'):
+            review_options = self._get_review_options(action)
+            all_status.update(review_options.itervalues())
         return all_status
 
     def render_ticket_action_control(self, req, ticket, action):
-        id, grade = self._get_grade(req, action)
+        id, selected = self._get_selected(req, action)
 
         review_options = self._get_review_options(action)
         actions = ConfigurableTicketWorkflow(self.env).actions
 
-        selected_value = grade or review_options[0][0]
-
         label = actions[action]['label']
         control = tag(["as: ",
-                       tag.select([tag.option(option, selected=
-                                              (option == selected_value or
-                                               None))
-                                   for option, status in review_options],
-                                  name=id, id=id)])
-        if grade:
-            new_status = self._get_new_status(req, ticket, action,
-                                              review_options)
+                       tag.select([
+                           tag.option(option,
+                                      selected=(option == selected or None))
+                           for option in review_options],
+                           name=id, id=id)])
+        if selected:
+            new_status = self._get_new_status(req, action, review_options)
             hint = "Next status will be '%s'" % new_status
         else:
             hint = "Next status will be one of " + \
-                   ', '.join("'%s'" % status
-                             for option, status in review_options)
+                   ', '.join("'%s'" % st for st in review_options.itervalues())
         return label, control, hint
 
     def get_ticket_changes(self, req, ticket, action):
-        new_status = self._get_new_status(req, ticket, action)
+        new_status = self._get_new_status(req, action)
         return {'status': new_status or 'new'}
 
     def apply_action_side_effects(self, req, ticket, action):
@@ -113,19 +114,16 @@ class CodeReviewActionController(Component):
 
     # Internal methods
 
-    def _get_grade(self, req, action):
-        id = action + '_code_review_result'
+    def _get_selected(self, req, action):
+        id = 'action_%s_code_review' % action
         return id, req.args.get(id)
 
     def _get_review_options(self, action):
-        return [[x.strip() for x in raw_option.split('->')]
-                for raw_option in self.config.getlist('ticket-workflow',
-                                                      action + '.code_review')]
+        values = self.config.getlist('ticket-workflow', action + '.code_review')
+        return OrderedDict(to_list(v, sep='->') for v in values)
 
-    def _get_new_status(self, req, ticket, action, review_options=None):
-        id, grade = self._get_grade(req, action)
+    def _get_new_status(self, req, action, review_options=None):
+        selected = self._get_selected(req, action)[1]
         if not review_options:
             review_options = self._get_review_options(action)
-        for option, status in review_options:
-            if grade == option:
-                return status
+        return review_options[selected]
