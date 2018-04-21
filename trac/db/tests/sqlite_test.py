@@ -28,8 +28,11 @@ class DatabaseFileTestCase(unittest.TestCase):
     def setUp(self):
         self.env_path = tempfile.mkdtemp(prefix='trac-tempenv-')
         self.db_path = os.path.join(self.env_path, 'db', 'trac.db')
+        self.env = None
 
     def tearDown(self):
+        if self.env:
+            self.env.shutdown()
         rmtree(self.env_path)
 
     def _create_env(self):
@@ -42,9 +45,9 @@ class DatabaseFileTestCase(unittest.TestCase):
     def test_missing_tracdb(self):
         self._create_env()
         os.remove(self.db_path)
-        env = Environment(self.env_path)
+        self.env = Environment(self.env_path)
         try:
-            self._db_query(env)
+            self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
             self.assertIn('Database "', unicode(e))
@@ -53,9 +56,9 @@ class DatabaseFileTestCase(unittest.TestCase):
     def test_no_permissions(self):
         self._create_env()
         os.chmod(self.db_path, 0444)
-        env = Environment(self.env_path)
+        self.env = Environment(self.env_path)
         try:
-            self._db_query(env)
+            self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
             self.assertIn('requires read _and_ write permissions', unicode(e))
@@ -66,11 +69,11 @@ class DatabaseFileTestCase(unittest.TestCase):
     def test_error_with_lazy_translation(self):
         self._create_env()
         os.remove(self.db_path)
-        env = Environment(self.env_path)
-        req = MockRequest(env, authname='trac_auth=1234567890')
-        translation.make_activable(lambda: req.locale, env.path)
+        self.env = Environment(self.env_path)
+        req = MockRequest(self.env, authname='trac_auth=1234567890')
+        translation.make_activable(lambda: req.locale, self.env.path)
         try:
-            self._db_query(env)
+            self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
             message = unicode(e)
