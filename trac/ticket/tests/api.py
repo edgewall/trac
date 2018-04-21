@@ -16,6 +16,7 @@ from datetime import timedelta
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource
 from trac.test import EnvironmentStub, MockRequest
+from trac.ticket import model
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.test import insert_ticket
@@ -138,6 +139,46 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual('Test one', fields[0]['label'])
         self.assertEqual('test_2', fields[1]['label'])
+
+    def _test_custom_field_with_enum(self, name, cls):
+        tktsys = TicketSystem(self.env)
+        instance = cls(self.env)
+        instance.name = '%s 42' % name
+        instance.insert()
+        self.env.config.set('ticket-custom', name, 'text')
+        field = self._get_ticket_field(name)
+        self.assertFalse(field.get('custom'))
+
+        with self.env.db_transaction:
+            instances = list(cls.select(self.env))
+            if issubclass(cls, model.AbstractEnum):
+                # delete from highest to lowest to avoid re-ordering enums
+                instances.sort(reverse=True, key=lambda v: int(v.value))
+            for instance in instances:
+                instance.delete()
+        field = self._get_ticket_field(name)
+        self.assertTrue(field.get('custom'))
+
+    def test_custom_field_type(self):
+        self._test_custom_field_with_enum('type', model.Type)
+
+    def test_custom_field_priority(self):
+        self._test_custom_field_with_enum('priority', model.Priority)
+
+    def test_custom_field_milestone(self):
+        self._test_custom_field_with_enum('milestone', Milestone)
+
+    def test_custom_field_component(self):
+        self._test_custom_field_with_enum('component', model.Component)
+
+    def test_custom_field_version(self):
+        self._test_custom_field_with_enum('version', Version)
+
+    def test_custom_field_severity(self):
+        self._test_custom_field_with_enum('severity', model.Severity)
+
+    def test_custom_field_resolution(self):
+        self._test_custom_field_with_enum('resolution', model.Resolution)
 
     def test_available_actions_full_perms(self):
         self.perm.grant_permission('anonymous', 'TICKET_CREATE')
