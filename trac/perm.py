@@ -176,9 +176,19 @@ class DefaultPermissionStore(Component):
     This component uses the `permission` table in the database to store both
     permissions and groups.
     """
-    implements(IPermissionStore)
+    implements(IPermissionGroupProvider, IPermissionStore)
 
     group_providers = ExtensionPoint(IPermissionGroupProvider)
+
+    # IPermissionGroupProvider methods
+
+    def get_permission_groups(self, username):
+        """Return a list of names of the groups that the user with the
+        specified name is a member of.
+        """
+        return sorted(self._get_actions_and_groups({username})[1])
+
+    # IPermissionStore methods
 
     def get_user_permissions(self, username):
         """Retrieve a list of permissions for the given user.
@@ -191,24 +201,9 @@ class DefaultPermissionStore(Component):
         """
         subjects = {username}
         for provider in self.group_providers:
-            subjects.update(provider.get_permission_groups(username) or [])
-
-        actions = set()
-        perms = self._all_permissions
-        while True:
-            num_users = len(subjects)
-            num_actions = len(actions)
-            for user, action in perms:
-                if user in subjects:
-                    if action.isupper() and action not in actions:
-                        actions.add(action)
-                    if not action.isupper() and action not in subjects:
-                        # action is actually the name of the permission
-                        # group here
-                        subjects.add(action)
-            if num_users == len(subjects) and num_actions == len(actions):
-                break
-        return list(actions)
+            if provider is not self:
+                subjects.update(provider.get_permission_groups(username) or [])
+        return sorted(self._get_actions_and_groups(subjects)[0])
 
     def get_users_with_permissions(self, permissions):
         """Retrieve a list of users that have any of the specified
@@ -236,11 +231,6 @@ class DefaultPermissionStore(Component):
         """
         return self._all_permissions
 
-    @cached
-    def _all_permissions(self):
-        return [(username, action) for username, action in
-                self.env.db_query("SELECT username, action FROM permission")]
-
     def grant_permission(self, username, action):
         """Grants a user the permission to perform the specified action."""
         self.env.db_transaction("INSERT INTO permission VALUES (%s, %s)",
@@ -259,6 +249,32 @@ class DefaultPermissionStore(Component):
 
         # Invalidate cached property
         del self._all_permissions
+
+    @cached
+    def _all_permissions(self):
+        return [(username, action) for username, action in
+                self.env.db_query("SELECT username, action FROM permission")]
+
+    def _get_actions_and_groups(self, subjects):
+        """Get actions and groups for `subjects`, an iterable of username
+        and groups that username is a member of.
+        """
+        actions = set()
+        groups = set()
+        perms = self._all_permissions
+        while True:
+            num_users = len(subjects)
+            num_actions = len(actions)
+            for user, action in perms:
+                if user in subjects:
+                    if action.isupper():
+                        actions.add(action)
+                    if not action.isupper():  # permission group
+                        subjects.add(action)
+                        groups.add(action)
+            if num_users == len(subjects) and num_actions == len(actions):
+                break
+        return actions, groups
 
 
 class DefaultPermissionGroupProvider(Component):
@@ -467,7 +483,7 @@ class PermissionSystem(Component):
             expand_meta(perm)
         return permissions
 
-    def get_user_groups(self, username):
+    def get_permission_groups(self, username):
         """Return a sorted list of groups that `username` belongs to.
 
         Groups are recursively expanded such that if `username` is a
@@ -477,18 +493,6 @@ class PermissionSystem(Component):
         :since: 1.3.3
         """
         user_groups = set()
-        groups_dict = self.get_groups_dict()
-
-        def expand_members(group, members):
-            for m in members:
-                if m == username:
-                    user_groups.add(group)
-                elif m != group and m in groups_dict:
-                    expand_members(group, groups_dict[m])
-
-        for group, members in groups_dict.iteritems():
-            expand_members(group, members)
-
         for provider in self.group_providers:
             user_groups.update(provider.get_permission_groups(username) or [])
 

@@ -56,7 +56,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('john', 'REPORT_ADMIN'),
              ('kate', 'TICKET_CREATE')])
         self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                         sorted(self.store.get_user_permissions('john')))
+                         self.store.get_user_permissions('john'))
         self.assertEqual(['TICKET_CREATE'],
                          self.store.get_user_permissions('kate'))
 
@@ -67,7 +67,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('dev', 'REPORT_ADMIN'),
              ('john', 'dev')])
         self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                         sorted(self.store.get_user_permissions('john')))
+                         self.store.get_user_permissions('john'))
 
     def test_nested_groups(self):
         self.env.db_transaction.executemany(
@@ -77,7 +77,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('admin', 'dev'),
              ('john', 'admin')])
         self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                         sorted(self.store.get_user_permissions('john')))
+                         self.store.get_user_permissions('john'))
 
     def test_mixed_case_group(self):
         self.env.db_transaction.executemany(
@@ -87,7 +87,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('Admin', 'Dev'),
              ('john', 'Admin')])
         self.assertEqual(['REPORT_ADMIN', 'WIKI_MODIFY'],
-                         sorted(self.store.get_user_permissions('john')))
+                         self.store.get_user_permissions('john'))
 
     def test_builtin_groups(self):
         self.env.db_transaction.executemany(
@@ -96,7 +96,7 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
              ('authenticated', 'REPORT_ADMIN'),
              ('anonymous', 'TICKET_CREATE')])
         self.assertEqual(['REPORT_ADMIN', 'TICKET_CREATE', 'WIKI_MODIFY'],
-                         sorted(self.store.get_user_permissions('john')))
+                         self.store.get_user_permissions('john'))
         self.assertEqual(['TICKET_CREATE'],
                          self.store.get_user_permissions('anonymous'))
 
@@ -111,6 +111,29 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                     ('john', 'dev')]
         for res in self.store.get_all_permissions():
             self.assertIn(res, expected)
+
+    def test_get_permission_groups(self):
+        self.env.db_transaction.executemany(
+            "INSERT INTO permission VALUES (%s,%s)",
+            [('user1', 'group1'),
+             ('group1', 'group2'),
+             ('group2', 'group3'),
+             ('user2', 'group4'),
+             ('user1', 'group5'),
+             ('group6', 'group7'),
+             ('user3', 'group8'),  # test recursion
+             ('group8', 'group9'),
+             ('group9', 'group8'),
+             ('user3', 'group11'),
+             ('group11', 'group10'),  # test recursion
+             ('group10', 'group11'),
+             ('group10', 'group10')])
+        self.assertEqual(['group1', 'group2', 'group3', 'group5'],
+                         self.store.get_permission_groups('user1'))
+        self.assertEqual(['group4'],
+                         self.store.get_permission_groups('user2'))
+        self.assertEqual(['group10', 'group11', 'group8', 'group9'],
+                         self.store.get_permission_groups('user3'))
 
 
 class BaseTestCase(unittest.TestCase):
@@ -321,7 +344,7 @@ class PermissionSystemTestCase(BaseTestCase):
                          users['user1'])
         self.assertEqual(['TEST_CREATE'], users['user2'])
 
-    def test_get_user_groups(self):
+    def test_get_permission_groups(self):
         permissions = [
             ('user1', 'group1'),
             ('group1', 'group2'),
@@ -329,20 +352,25 @@ class PermissionSystemTestCase(BaseTestCase):
             ('user2', 'group4'),
             ('user1', 'group5'),
             ('group6', 'group7'),
-            ('user3', 'group8'),
-            ('group8', 'group9'),  # test recursion
+            ('user3', 'group8'), # test recursion
+            ('group8', 'group9'),
             ('group9', 'group8'),
+            ('user3', 'group11'),
+            ('group11', 'group10'),  # test recursion
+            ('group10', 'group11'),
+            ('group10', 'group10'),
         ]
         for perm_ in permissions:
             self.perm.grant_permission(*perm_)
 
         self.assertEqual(['anonymous', 'authenticated', 'group1', 'group2',
                           'group3', 'group5'],
-                         self.perm.get_user_groups('user1'))
+                         self.perm.get_permission_groups('user1'))
         self.assertEqual(['anonymous', 'authenticated', 'group4'],
-                         self.perm.get_user_groups('user2'))
-        self.assertEqual(['anonymous', 'authenticated', 'group8', 'group9'],
-                         self.perm.get_user_groups('user3'))
+                         self.perm.get_permission_groups('user2'))
+        self.assertEqual(['anonymous', 'authenticated', 'group10', 'group11',
+                          'group8', 'group9'],
+                         self.perm.get_permission_groups('user3'))
 
     def test_expand_actions_iter_7467(self):
         # Check that expand_actions works with iterators (#7467)
