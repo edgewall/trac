@@ -215,7 +215,7 @@ class DefaultPermissionStore(Component):
             for group in permissions:
                 if group in user_perms:
                     result.add(user)
-        return list(result)
+        return sorted(result)
 
     def get_all_permissions(self):
         """Return all permissions for all users.
@@ -246,8 +246,9 @@ class DefaultPermissionStore(Component):
 
     @cached
     def _all_permissions(self):
-        return [(username, action) for username, action in
-                self.env.db_query("SELECT username, action FROM permission")]
+        return sorted(self.env.db_query("""
+                          SELECT username, action FROM permission
+                          """))
 
     def _get_actions_and_groups(self, subjects):
         """Get actions and groups for `subjects`, an iterable of username
@@ -422,7 +423,7 @@ class PermissionSystem(Component):
                     actions.add(action[0])
                 else:
                     actions.add(action)
-        return list(actions)
+        return sorted(actions)
 
     def get_groups_dict(self):
         """Get all groups as a `dict`.

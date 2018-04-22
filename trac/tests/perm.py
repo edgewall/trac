@@ -227,9 +227,9 @@ class PermissionSystemTestCase(BaseTestCase):
     def test_get_actions(self):
         tpr_perms = ['TEST_ADMIN', 'TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY']
         all_perms = tpr_perms + ['TRAC_ADMIN']
-        self.assertEqual(all_perms, sorted(self.perm.get_actions()))
+        self.assertEqual(all_perms, self.perm.get_actions())
         self.assertEqual(tpr_perms,
-                         sorted(self.perm.get_actions(skip=self.perm)))
+                         self.perm.get_actions(skip=self.perm))
 
     def test_get_actions_dict(self):
         self.assertEqual({
@@ -237,7 +237,7 @@ class PermissionSystemTestCase(BaseTestCase):
             'TEST_CREATE': [],
             'TEST_DELETE': [],
             'TEST_MODIFY': [],
-            'TRAC_ADMIN': ['TEST_CREATE', 'TEST_DELETE', 'TEST_ADMIN',
+            'TRAC_ADMIN': ['TEST_ADMIN', 'TEST_CREATE', 'TEST_DELETE',
                            'TEST_MODIFY'],
         }, self.perm.get_actions_dict())
         self.assertEqual({
