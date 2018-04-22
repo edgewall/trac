@@ -90,18 +90,12 @@ class IPermissionStore(Interface):
     """
 
     def get_user_permissions(username):
-        """Return all permissions for the user with the specified name.
-
-        The permissions are returned as a dictionary where the key is
-        the name of the permission, and the value is either `True` for
-        granted permissions or `False` for explicitly denied permissions.
+        """Return a list of permissions for the specified user.
         """
 
     def get_users_with_permissions(permissions):
-        """Retrieve a list of users that have any of the specified
+        """Return a list of users that have any of the specified
         permissions.
-
-        Users are returned as a list of usernames.
         """
 
     def get_all_permissions():
@@ -147,7 +141,7 @@ class IPermissionPolicy(Interface):
 
         :return: `True` if action is allowed, `False` if action is denied,
                  or `None` if indifferent. If `None` is returned, the next
-                 policy in the chain will be used, and so on.
+                 policy in the chain will be consulted.
 
         Note that when checking a permission on a realm resource (i.e. when
         `.id` is `None`), this usually corresponds to some preliminary check
@@ -463,7 +457,8 @@ class PermissionSystem(Component):
         The return value is a dictionary containing all the actions
         granted to the user mapped to `True`.
 
-        :param undefined: if `True`, include actions that are not defined.
+        :param undefined: if `True`, include actions that are not defined
+            in any of the `IPermissionRequestor` implementations.
 
         :since 1.3.1: added the `undefined` parameter.
         """
