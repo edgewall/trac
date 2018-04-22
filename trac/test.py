@@ -20,6 +20,7 @@
 import abc
 import doctest
 import inspect
+import numbers
 import os
 import shutil
 import sys
@@ -177,10 +178,12 @@ def MockRequest(env, **kwargs):
     def convert(val):
         if isinstance(val, bool):
             return unicode(int(val))
-        elif isinstance(val, (list, tuple)):
-            return [unicode(v) for v in val]
-        else:
+        elif isinstance(val, numbers.Number):
             return unicode(val)
+        elif isinstance(val, (list, tuple)):
+            return [convert(v) for v in val]
+        else:
+            return val
 
     if 'arg_list' in kwargs:
         arg_list = [(k, convert(v)) for k, v in kwargs['arg_list']]
