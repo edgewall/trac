@@ -354,15 +354,19 @@ class PermissionSystem(Component):
         action."""
         self.store.revoke_permission(username, action)
 
-    def get_actions_dict(self):
+    def get_actions_dict(self, skip=None):
         """Get all actions from permission requestors as a `dict`.
 
         The keys are the action names. The values are the additional actions
         granted by each action. For simple actions, this is an empty list.
         For meta actions, this is the list of actions covered by the action.
+
+        :since 1.0.17: added `skip` argument.
         """
         actions = {}
         for requestor in self.requestors:
+            if requestor is skip:
+                continue
             for action in requestor.get_permission_actions() or []:
                 if isinstance(action, tuple):
                     actions.setdefault(action[0], []).extend(action[1])
