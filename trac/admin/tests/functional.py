@@ -221,6 +221,20 @@ class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
         tc.find('%s:%s' % (somegroup, REPORT_CREATE))
 
 
+class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Remove a permissions group"""
+        self._tester.go_to_admin("Permissions")
+        tc.find('Manage Permissions')
+        somegroup = unicode_to_base64('somegroup')
+        REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
+        tc.find('%s:%s' % (somegroup, REPORT_CREATE))
+        tc.formvalue('revokeform', 'sel', '%s:%s' % (somegroup, REPORT_CREATE))
+        tc.submit()
+        tc.notfind('%s:%s' % (somegroup, REPORT_CREATE))
+        tc.notfind(somegroup)
+
+
 class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add a user to a permissions group"""
@@ -248,7 +262,7 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
             tc.submit()
             tc.find("The subject someuser was not added to the "
                     "group authenticated because the group has "
-                    "TICKET_CHGPROP permission and users cannot "
+                    "TICKET_CREATE permission and users cannot "
                     "grant permissions they don&#39;t possess.")
         finally:
             self._tester.login('admin')
@@ -269,20 +283,6 @@ class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
         tc.formvalue('revokeform', 'sel', '%s:%s' % (authenticated, somegroup))
         tc.submit()
         tc.notfind('%s:%s' % (authenticated, somegroup))
-
-
-class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Remove a permissions group"""
-        self._tester.go_to_admin("Permissions")
-        tc.find('Manage Permissions')
-        somegroup = unicode_to_base64('somegroup')
-        REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
-        tc.find('%s:%s' % (somegroup, REPORT_CREATE))
-        tc.formvalue('revokeform', 'sel', '%s:%s' % (somegroup, REPORT_CREATE))
-        tc.submit()
-        tc.notfind('%s:%s' % (somegroup, REPORT_CREATE))
-        tc.notfind(somegroup)
 
 
 class TestCopyPermissions(FunctionalTwillTestCaseSetup):
@@ -556,9 +556,9 @@ def functionalSuite(suite=None):
     suite.addTest(TestLoggingToFileNormal())
     suite.addTest(TestPermissionsAuthorization())
     suite.addTest(TestCreatePermissionGroup())
+    suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestAddUserToGroup())
     suite.addTest(TestRemoveUserFromGroup())
-    suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestCopyPermissions())
     suite.addTest(TestPluginSettings())
     suite.addTest(TestPluginsAuthorization())

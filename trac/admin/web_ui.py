@@ -388,7 +388,8 @@ class PermissionAdminPanel(Component):
             # Add subject to group
             elif 'add' in req.args and subject and group:
                 req.perm('admin', 'general/perm').require('PERMISSION_GRANT')
-                for action in perm.get_user_permissions(group):
+                for action in sorted(
+                        perm.get_user_permissions(group, expand_meta=False)):
                     req.perm.require(action,
                         message=_("The subject %(subject)s was not added to "
                                   "the group %(group)s because the group has "

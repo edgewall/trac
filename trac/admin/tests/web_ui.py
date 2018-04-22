@@ -34,6 +34,28 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def _test_invalid_user(self, subject='', action='', target='', group=''):
+        req = MockRequest(self.env, method='POST', args={
+            'add': True, 'subject': subject, 'target': target, 'group': group,
+            'action': action})
+
+        with self.assertRaises(TracError) as cm:
+            self.panel.render_admin_panel(req, 'general', 'perm', None)
+
+        self.assertEqual("All upper-cased tokens are reserved for permission "
+                         "names.", unicode(cm.exception))
+
+    def test_grant_permission_invalid_username(self):
+        self._test_invalid_user(subject='USER', action='WIKI_VIEW')
+
+    def test_add_subject_to_group_invalid_subject_or_group(self):
+        self._test_invalid_user(subject='user', group='GROUP')
+        self._test_invalid_user(subject='USER', group='group')
+
+    def test_copy_permissions_invalid_subject_or_target(self):
+        self._test_invalid_user(subject='user1', target='USER2')
+        self._test_invalid_user(subject='USER1', target='user2')
+
     def test_grant_permission_action_already_granted(self):
         """Warning is added when granting an action that has already
         been granted.
@@ -73,7 +95,7 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
             self.panel.render_admin_panel(req, 'general', 'perm', None)
 
         self.assertEqual("The subject user2 was not added to the group group1 "
-                         "because the group has WIKI_DELETE permission and "
+                         "because the group has WIKI_ADMIN permission and "
                          "users cannot grant permissions they don't possess.",
                          unicode(cm.exception))
 

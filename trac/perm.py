@@ -451,7 +451,8 @@ class PermissionSystem(Component):
         return {k: sorted(i[1] for i in list(g))
                 for k, g in groupby(perms, key=lambda p: p[0])}
 
-    def get_user_permissions(self, username=None, undefined=False):
+    def get_user_permissions(self, username=None, undefined=False,
+                             expand_meta=True):
         """Return the permissions of the specified user.
 
         The return value is a dictionary containing all the actions
@@ -459,8 +460,10 @@ class PermissionSystem(Component):
 
         :param undefined: if `True`, include actions that are not defined
             in any of the `IPermissionRequestor` implementations.
+        :param expand_meta: if `True`, expand meta permissions.
 
         :since 1.3.1: added the `undefined` parameter.
+        :since 1.3.3: added the `expand_meta` parameter.
         """
         if not username:
             # Return all permissions available in the system
@@ -468,15 +471,13 @@ class PermissionSystem(Component):
 
         # Return all permissions that the given user has
         actions = self.get_actions_dict()
-        permissions = {}
-        def expand_meta(action):
-            if action not in permissions and (undefined or action in actions):
-                permissions[action] = True
-                for a in actions.get(action, ()):
-                    expand_meta(a)
-        for perm in self.store.get_user_permissions(username) or []:
-            expand_meta(perm)
-        return permissions
+        user_permissions = self.store.get_user_permissions(username) or []
+        if expand_meta:
+            return {p: True for p in self.expand_actions(user_permissions)
+                            if undefined or p in actions}
+        else:
+            return {p: True for p in user_permissions
+                            if undefined or p in actions}
 
     def get_permission_groups(self, username):
         """Return a sorted list of groups that `username` belongs to.
@@ -543,7 +544,7 @@ class PermissionSystem(Component):
                     expand_action(a)
         for a in actions:
             expand_action(a)
-        return expanded_actions
+        return sorted(expanded_actions)
 
     def check_permission(self, action, username=None, resource=None,
                          perm=None):
