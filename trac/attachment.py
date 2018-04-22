@@ -786,8 +786,7 @@ class Attachment(object):
 
         :since: 1.3.2
         """
-        self._move(new_realm, new_id, new_filename,
-                   new_parent_must_exist=True)
+        self._move(new_realm, new_id, new_filename, new_parent_must_exist=True)
 
     def reparent(self, new_realm, new_id):
         """Change the attachment's `parent_realm` and/or `parent_id`
