@@ -158,6 +158,30 @@ class PermissionSystemTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    def test_get_actions(self):
+        tpr_perms = ['TEST_ADMIN', 'TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY']
+        all_perms = ['EMAIL_VIEW'] + tpr_perms + ['TRAC_ADMIN']
+        self.assertEqual(all_perms, sorted(self.perm.get_actions()))
+        self.assertEqual(tpr_perms,
+                         sorted(self.perm.get_actions(skip=self.perm)))
+
+    def test_get_actions_dict(self):
+        self.assertEqual({
+            'EMAIL_VIEW': [],
+            'TEST_ADMIN': ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY'],
+            'TEST_CREATE': [],
+            'TEST_DELETE': [],
+            'TEST_MODIFY': [],
+            'TRAC_ADMIN': ['TEST_CREATE', 'TEST_DELETE', 'TEST_ADMIN',
+                           'TEST_MODIFY', 'EMAIL_VIEW'],
+        }, self.perm.get_actions_dict())
+        self.assertEqual({
+            'TEST_ADMIN': ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY'],
+            'TEST_CREATE': [],
+            'TEST_DELETE': [],
+            'TEST_MODIFY': [],
+        }, self.perm.get_actions_dict(skip=self.perm))
+
     def test_all_permissions(self):
         self.assertEqual({'EMAIL_VIEW': True, 'TRAC_ADMIN': True,
                           'TEST_CREATE': True, 'TEST_DELETE': True,
