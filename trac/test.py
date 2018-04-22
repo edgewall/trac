@@ -20,7 +20,6 @@
 from __future__ import with_statement
 
 import doctest
-import numbers
 import os
 import shutil
 import sys
@@ -47,6 +46,11 @@ from trac.util import translation
 from trac.util.datefmt import utc
 from trac.web.api import _RequestArgs, Request, arg_list_to_args
 from trac.web.session import Session
+
+try:
+    from numbers import Real as number_type
+except ImportError:
+    number_type = (int, long, float)
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -157,7 +161,7 @@ def MockRequest(env, **kwargs):
     def convert(val):
         if isinstance(val, bool):
             return unicode(int(val))
-        elif isinstance(val, numbers.Number):
+        elif isinstance(val, number_type):
             return unicode(val)
         elif isinstance(val, (list, tuple)):
             return [convert(v) for v in val]
