@@ -113,6 +113,10 @@ class ConfigurableTicketWorkflow(Component):
 
         (''since 0.11'')""")
 
+    operations = ('del_owner', 'set_owner', 'set_owner_to_self',
+                  'set_resolution', 'del_resolution', 'leave_status',
+                  'reset_workflow')
+
     def __init__(self, *args, **kwargs):
         self.actions = self.get_all_actions()
         self.log.debug('Workflow actions at initialization: %s\n',
@@ -172,6 +176,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         ticket_perm = req.perm(ticket.resource)
         allowed_actions = []
         for action_name, action_info in self.actions.items():
+            operations = action_info['operations']
+            if operations and not \
+                    any(opt in self.operations for opt in operations):
+                continue  # Ignore operations not defined by this controller
             oldstates = action_info['oldstates']
             if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.

@@ -23,6 +23,26 @@ from trac.ticket.model import Ticket
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 
 
+class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_ignores_other_operations(self):
+        """Ignores operations not defined by ConfigurableTicketWorkflow.
+        """
+        self.env.config.set('ticket-workflow', 'review', 'assigned -> review')
+        self.env.config.set('ticket-workflow', 'review.operations',
+                            'CodeReview')
+        ctw = ConfigurableTicketWorkflow(self.env)
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': '#13013', 'status': 'assigned'})
+        ticket.insert()
+        req = MockRequest(self.env)
+
+        self.assertNotIn((0, 'review'), ctw.get_ticket_actions(req, ticket))
+
+
 class ResetActionTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -130,6 +150,7 @@ class SetResolutionAttributeTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
     suite.addTest(unittest.makeSuite(ResetActionTestCase))
     suite.addTest(unittest.makeSuite(SetResolutionAttributeTestCase))
     return suite
