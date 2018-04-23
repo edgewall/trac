@@ -130,6 +130,10 @@ class ConfigurableTicketWorkflow(Component):
         in the `trac.ini` file. See TracWorkflow for more details.
         """)
 
+    operations = ('del_owner', 'set_owner', 'set_owner_to_self',
+                  'may_set_owner', 'set_resolution', 'del_resolution',
+                  'leave_status', 'reset_workflow')
+
     def __init__(self):
         self.actions = self.get_all_actions()
         self.log.debug('Workflow actions at initialization: %s\n',
@@ -178,6 +182,9 @@ class ConfigurableTicketWorkflow(Component):
                     operations[0] == 'set_owner_to_self' and \
                     ticket_owner == author and ticket_status == newstate:
                 continue
+            if operations and not \
+                    any(opt in self.operations for opt in operations):
+                continue  # Ignore operations not defined by this controller
             oldstates = action_info['oldstates']
             if exists and oldstates == ['*'] or ticket_status in oldstates:
                 # This action is valid in this state.  Check permissions.

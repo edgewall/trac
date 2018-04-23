@@ -258,6 +258,20 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
                                                              'set_owner')
         self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
 
+    def test_ignores_other_operations(self):
+        """Ignores operations not defined by ConfigurableTicketWorkflow.
+        """
+        self.env.config.set('ticket-workflow', 'review', 'assigned -> review')
+        self.env.config.set('ticket-workflow', 'review.operations',
+                            'CodeReview')
+        ctw = ConfigurableTicketWorkflow(self.env)
+        ticket = Ticket(self.env)
+        ticket.populate({'summary': '#13013', 'status': 'assigned'})
+        ticket.insert()
+        req = MockRequest(self.env)
+
+        self.assertNotIn((0, 'review'), ctw.get_ticket_actions(req, ticket))
+
 
 class ResetActionTestCase(unittest.TestCase):
 
