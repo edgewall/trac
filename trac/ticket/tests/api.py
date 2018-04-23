@@ -93,6 +93,12 @@ class TicketSystemTestCase(unittest.TestCase):
                           'order': 0, 'format': 'wiki'},
                          fields[0])
 
+    def test_description_field(self):
+        field = self._get_ticket_field('description')
+        self.assertEqual({'name': 'description', 'label': 'Description',
+                          'type': 'textarea', 'format': 'wiki'},
+                          field)
+
     def test_custom_field_order(self):
         self.env.config.set('ticket-custom', 'test1', 'text')
         self.env.config.set('ticket-custom', 'test1.order', '2')
