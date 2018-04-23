@@ -1800,8 +1800,10 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             env.config.save()
 
             tkt = self._tester.create_ticket(
-                info={'t12801_plain': "- //plain 1//\n- ~~plain 2~~\n",
+                info={'description': "//**description field**//\n",
+                      't12801_plain': "- //plain 1//\n- ~~plain 2~~\n",
                       't12801_wiki': "- ~~wiki 1~~\n- //wiki 2//\n"})
+            tc.find(r'<em><strong>description field</strong></em>')
             tc.find(r'<td colspan="3" headers="h_t12801_plain">\n'
                     r'\s*- //plain 1//\n'
                     r'\s*<br />\n'
@@ -1810,8 +1812,9 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             tc.find(r'<li><del>wiki 1</del>\s*</li>'
                     r'<li><em>wiki 2</em>\s*</li>')
 
-            tc.go(self._tester.url +
-                  '/query?id=%s&row=t12801_plain&row=t12801_wiki' % tkt)
+            tc.go('%s/query?id=%s&&row=description&row=t12801_plain&'
+                  'row=t12801_wiki' % (self._tester.url, tkt))
+            tc.find(r'<em><strong>description field</strong></em>')
             tc.find(r'<td colspan="[0-9]+">\n'
                     r'\s*- //plain 1//\n'
                     r'\s*<br />\n'
