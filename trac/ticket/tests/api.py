@@ -91,6 +91,12 @@ class TicketSystemTestCase(unittest.TestCase):
                           'format': 'wiki', 'custom': True},
                          fields[0])
 
+    def test_description_field(self):
+        field = self._get_ticket_field('description')
+        self.assertEqual({'name': 'description', 'label': 'Description',
+                          'type': 'textarea', 'format': 'wiki'},
+                          field)
+
     def test_custom_field_checkbox(self):
         def add_checkbox(name, value):
             self.env.config.set('ticket-custom', name, 'checkbox')
