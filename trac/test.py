@@ -182,7 +182,7 @@ def MockRequest(env, **kwargs):
     def convert(val):
         if isinstance(val, bool):
             return unicode(int(val))
-        elif isinstance(val, numbers.Number):
+        elif isinstance(val, numbers.Real):
             return unicode(val)
         elif isinstance(val, (list, tuple)):
             return [convert(v) for v in val]
