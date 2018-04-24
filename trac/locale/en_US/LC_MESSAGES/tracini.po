@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.13\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2017-08-23 09:00+0000\n"
+"POT-Creation-Date: 2018-04-24 17:13+0000\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.0\n"
+"Generated-By: Babel 2.5.3\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -86,27 +86,27 @@ msgstr ""
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:270
+#: tracopt/versioncontrol/git/git_fs.py:305
 msgid "Enable persistent caching of commit tree."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:273
+#: tracopt/versioncontrol/git/git_fs.py:308
 msgid "Wrap `GitRepository` in `CachedRepository`."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:276
+#: tracopt/versioncontrol/git/git_fs.py:311
 msgid ""
 "The length at which a sha1 should be abbreviated to (must\n"
 "be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:281
+#: tracopt/versioncontrol/git/git_fs.py:316
 msgid ""
 "The minimum length of an hex-string for which\n"
 "auto-detection as sha1 is performed (must be >= 4 and <= 40)."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:286
+#: tracopt/versioncontrol/git/git_fs.py:321
 msgid ""
 "Enable reverse mapping of git email addresses to trac user ids.\n"
 "Performance will be reduced if there are many users and the\n"
@@ -116,42 +116,42 @@ msgid ""
 "option."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:295
+#: tracopt/versioncontrol/git/git_fs.py:330
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:300
+#: tracopt/versioncontrol/git/git_fs.py:335
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:305
+#: tracopt/versioncontrol/git/git_fs.py:340
 msgid "Define charset encoding of paths within git repositories."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:308
+#: tracopt/versioncontrol/git/git_fs.py:343
 msgid "Path to the git executable."
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:902
+#: tracopt/versioncontrol/git/git_fs.py:944
 msgid "Path to a gitweb-formatted projects.list"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:905
+#: tracopt/versioncontrol/git/git_fs.py:947
 msgid "Path to the base of your git projects"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:908
+#: tracopt/versioncontrol/git/git_fs.py:950
 #, python-format
 msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr ""
 
-#: tracopt/versioncontrol/git/git_fs.py:912
+#: tracopt/versioncontrol/git/git_fs.py:954
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
@@ -294,10 +294,13 @@ msgid ""
 "\n"
 "Plugins in that directory are loaded in addition to those in\n"
 "the directory of the environment `plugins`, with this one\n"
-"taking precedence."
+"taking precedence.\n"
+"\n"
+"Non-absolute paths are relative to the Environment `conf`\n"
+"directory."
 msgstr ""
 
-#: trac/env.py:175
+#: trac/env.py:178
 msgid ""
 "Reference URL for the Trac deployment.\n"
 "\n"
@@ -307,7 +310,7 @@ msgid ""
 "resources in notification e-mails."
 msgstr ""
 
-#: trac/env.py:183
+#: trac/env.py:186
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -320,7 +323,7 @@ msgid ""
 "as redirects are frequently used."
 msgstr ""
 
-#: trac/env.py:196
+#: trac/env.py:199
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -329,26 +332,34 @@ msgid ""
 "your Trac instance is only accessible through HTTPS."
 msgstr ""
 
-#: trac/env.py:204
+#: trac/env.py:207
+msgid ""
+"Lifetime of the anonymous session, in days.\n"
+"\n"
+"Set the option to 0 to disable purging old anonymous sessions.\n"
+"(''since 1.0.17'')"
+msgstr ""
+
+#: trac/env.py:214
 msgid "Name of the project."
 msgstr ""
 
-#: trac/env.py:207
+#: trac/env.py:217
 msgid "Short description of the project."
 msgstr ""
 
-#: trac/env.py:210
+#: trac/env.py:220
 msgid ""
 "URL of the main project web site, usually the website in\n"
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
 
-#: trac/env.py:215
+#: trac/env.py:225
 msgid "E-Mail address of the project's administrator."
 msgstr ""
 
-#: trac/env.py:218
+#: trac/env.py:228
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -358,36 +369,36 @@ msgid ""
 "buttons."
 msgstr ""
 
-#: trac/env.py:228
+#: trac/env.py:238
 msgid "Page footer text (right-aligned)."
 msgstr ""
 
-#: trac/env.py:233
+#: trac/env.py:243
 msgid "URL of the icon of the project."
 msgstr ""
 
-#: trac/env.py:236
+#: trac/env.py:246
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
 
-#: trac/env.py:243
+#: trac/env.py:253
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
 
-#: trac/env.py:249
+#: trac/env.py:259
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`)."
 msgstr ""
 
-#: trac/env.py:256
+#: trac/env.py:266
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -410,13 +421,13 @@ msgid ""
 "`($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`"
 msgstr ""
 
-#: trac/perm.py:317
+#: trac/perm.py:316
 msgid ""
 "Name of the component implementing `IPermissionStore`, which is used\n"
 "for managing user and group permissions."
 msgstr ""
 
-#: trac/perm.py:322
+#: trac/perm.py:321
 msgid ""
 "List of components implementing `IPermissionPolicy`, in the order\n"
 "in which they will be applied. These components manage fine-grained\n"
@@ -717,17 +728,17 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/ticket/api.py:203
+#: trac/ticket/api.py:202
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:207
+#: trac/ticket/api.py:206
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:213
+#: trac/ticket/api.py:212
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -739,55 +750,55 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:224
+#: trac/ticket/api.py:223
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:227
+#: trac/ticket/api.py:226
 msgid "Default type for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:230
+#: trac/ticket/api.py:229
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:233
+#: trac/ticket/api.py:232
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:236
+#: trac/ticket/api.py:235
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:239
+#: trac/ticket/api.py:238
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:242
+#: trac/ticket/api.py:241
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:245
+#: trac/ticket/api.py:244
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:248
+#: trac/ticket/api.py:247
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:251
+#: trac/ticket/api.py:250
 msgid "Default owner for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:254
+#: trac/ticket/api.py:253
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:257
+#: trac/ticket/api.py:256
 msgid "Default resolution for resolving (closing) tickets."
 msgstr ""
 
-#: trac/ticket/api.py:260
+#: trac/ticket/api.py:259
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
@@ -827,7 +838,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:849
+#: trac/ticket/query.py:847
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -835,7 +846,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:857
+#: trac/ticket/query.py:855
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -843,7 +854,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:865
+#: trac/ticket/query.py:863
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1013,7 +1024,7 @@ msgid ""
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:178
+#: trac/versioncontrol/admin.py:179
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1241,10 +1252,13 @@ msgid ""
 "Path to the //shared templates directory//.\n"
 "\n"
 "Templates in that directory are loaded in addition to those in the\n"
-"environments `templates` directory, but the latter take precedence."
+"environments `templates` directory, but the latter take precedence.\n"
+"\n"
+"Non-absolute paths are relative to the Environment `conf`\n"
+"directory."
 msgstr ""
 
-#: trac/web/chrome.py:415
+#: trac/web/chrome.py:418
 msgid ""
 "Path to the //shared htdocs directory//.\n"
 "\n"
@@ -1254,14 +1268,16 @@ msgid ""
 "This can be useful in site.html for common interface customization\n"
 "of multiple Trac environments.\n"
 "\n"
+"Non-absolute paths are relative to the Environment `conf`\n"
+"directory.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:426
+#: trac/web/chrome.py:431
 msgid "Automatically reload template files after modification."
 msgstr ""
 
-#: trac/web/chrome.py:429
+#: trac/web/chrome.py:434
 msgid ""
 "The maximum number of templates that the template loader will cache\n"
 "in memory. You may want to choose a higher value if your site uses a\n"
@@ -1269,7 +1285,7 @@ msgid ""
 "you can reduce it if you are short on memory."
 msgstr ""
 
-#: trac/web/chrome.py:435
+#: trac/web/chrome.py:440
 msgid ""
 "Base URL for serving the core static resources below\n"
 "`/chrome/common/`.\n"
@@ -1286,7 +1302,7 @@ msgid ""
 "rules will be needed in the web server."
 msgstr ""
 
-#: trac/web/chrome.py:450
+#: trac/web/chrome.py:455
 #, python-format
 msgid ""
 "Location of the jQuery !JavaScript library (version %(version)s).\n"
@@ -1301,7 +1317,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:462
+#: trac/web/chrome.py:467
 #, python-format
 msgid ""
 "Location of the jQuery UI !JavaScript library (version %(version)s).\n"
@@ -1317,7 +1333,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:474
+#: trac/web/chrome.py:479
 #, python-format
 msgid ""
 "Location of the theme to be used with the jQuery UI !JavaScript\n"
@@ -1337,7 +1353,7 @@ msgid ""
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:489
+#: trac/web/chrome.py:494
 msgid ""
 "Configures the main navigation bar,\n"
 "which by default contains //Wiki//, //Timeline//, //Roadmap//,\n"
@@ -1361,7 +1377,7 @@ msgid ""
 "See TracNavigation for more details."
 msgstr ""
 
-#: trac/web/chrome.py:511
+#: trac/web/chrome.py:516
 msgid ""
 "Configures the meta navigation\n"
 "entries, which by default are //Login//, //Logout//, //Preferences//,\n"
@@ -1378,11 +1394,11 @@ msgid ""
 "See TracNavigation for more details."
 msgstr ""
 
-#: trac/web/chrome.py:526
+#: trac/web/chrome.py:531
 msgid "URL to link to, from the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:529
+#: trac/web/chrome.py:534
 msgid ""
 "URL of the image to use as header logo.\n"
 "It can be absolute, server relative or relative.\n"
@@ -1395,55 +1411,55 @@ msgid ""
 "Only specifying `your-logo.png` is equivalent to the latter."
 msgstr ""
 
-#: trac/web/chrome.py:540
+#: trac/web/chrome.py:545
 msgid "Alternative text for the header logo."
 msgstr ""
 
-#: trac/web/chrome.py:544
+#: trac/web/chrome.py:549
 msgid "Width of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:547
+#: trac/web/chrome.py:552
 msgid "Height of the header logo image in pixels."
 msgstr ""
 
-#: trac/web/chrome.py:550
+#: trac/web/chrome.py:555
 msgid ""
 "Show email addresses instead of usernames. If false, email\n"
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
 "permission."
 msgstr ""
 
-#: trac/web/chrome.py:556
+#: trac/web/chrome.py:561
 msgid "Show full names instead of usernames. (//since 1.2//)"
 msgstr ""
 
-#: trac/web/chrome.py:559
+#: trac/web/chrome.py:564
 msgid ""
 "Never obfuscate `mailto:` links explicitly written in the wiki,\n"
 "even if `show_email_addresses` is false or the user doesn't have\n"
 "EMAIL_VIEW permission."
 msgstr ""
 
-#: trac/web/chrome.py:566
+#: trac/web/chrome.py:571
 msgid ""
 "Show IP addresses for resource edits (e.g. wiki). Since 1.0.5 this\n"
 "option is deprecated and will be removed in 1.3.1."
 msgstr ""
 
-#: trac/web/chrome.py:571
+#: trac/web/chrome.py:576
 msgid ""
 "Make `<textarea>` fields resizable. Requires !JavaScript.\n"
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:575
+#: trac/web/chrome.py:580
 msgid ""
 "Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
 msgstr ""
 
-#: trac/web/chrome.py:579
+#: trac/web/chrome.py:584
 msgid ""
 "Inactivity timeout in seconds after which the automatic wiki preview\n"
 "triggers an update. This option can contain floating-point values. The\n"
@@ -1451,14 +1467,14 @@ msgid ""
 "this to 0 to disable automatic preview. (''since 0.12'')"
 msgstr ""
 
-#: trac/web/chrome.py:586
+#: trac/web/chrome.py:591
 msgid ""
 "The date information format. Valid options are 'relative' for\n"
 "displaying relative format and 'absolute' for displaying absolute\n"
 "format. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/chrome.py:591
+#: trac/web/chrome.py:596
 msgid ""
 "If enabled, send contents as chunked encoding in HTTP/1.1.\n"
 "Otherwise, send contents with `Content-Length` header after entire of\n"
