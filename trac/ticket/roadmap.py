@@ -950,7 +950,9 @@ class MilestoneModule(Component):
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'available_groups': available_groups,
             'grouped_by': by,
-            'groups': milestone_groups
+            'groups': milestone_groups,
+            'summary': _("Shows the milestone completion status grouped by "
+                         "%(grouped_by)s", grouped_by=by),
             }
         data.update(milestone_stats_data(self.env, req, stat, milestone.name))
 

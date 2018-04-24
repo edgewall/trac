@@ -69,9 +69,7 @@
               jQuery(document).ready(function ($) { $(".noscript").attr("style", "display: none"); });
             </script>
           </legend>
-          <xi:include href="progress_bar_grouped.html" py:if="groups"
-                      py:with="summary = _('Shows the milestone completion status grouped by %(grouped_by)s',
-                                           grouped_by=grouped_by)"/>
+          <xi:include href="progress_bar_grouped.html" py:if="groups" />
         </fieldset>
       </form>
 
