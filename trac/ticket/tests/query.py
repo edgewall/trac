@@ -1287,6 +1287,49 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
                          t3['changetime'].isoformat())
         self.assertEqual(None, t3['due'])
 
+    def test_time_fields_order(self):
+        dt = datetime(2018, 4, 25, 12, 34, 56, 987654, utc)
+        self.env.config.set('ticket-custom', 'due', 'time')
+        tkt = Ticket(self.env, 2)
+        tkt['due'] = dt
+        tkt.save_changes(when=dt)
+
+        with self.env.db_query as db:
+            quoted = {'due': db.quote('due')}
+        query = Query.from_string(self.env, 'col=due&order=due')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql, """\
+SELECT t.id AS id,t.status AS status,t.priority AS priority,t.time AS time,\
+t.changetime AS changetime,priority.value AS _priority_value,\
+%(due)s.value AS %(due)s
+FROM ticket AS t
+  LEFT OUTER JOIN ticket_custom AS %(due)s ON (%(due)s.ticket=t.id AND %(due)s.name='due')
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
+ORDER BY COALESCE(%(due)s.value,'')='',%(due)s.value,t.id""" % quoted)
+
+        def process_request(req):
+            mod = QueryModule(self.env)
+            self.assertTrue(mod.match_request(req))
+            return mod.process_request(req)
+
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': '1-3', 'order': 'due'})
+        data = process_request(req)[1]
+        tickets = data['tickets']
+        self.assertEqual([2, 1, 3], [t['id'] for t in tickets])
+
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': '1-3', 'order': 'time'})
+        data = process_request(req)[1]
+        tickets = data['tickets']
+        self.assertEqual([1, 2, 3], [t['id'] for t in tickets])
+
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': '1-3', 'order': 'changetime'})
+        data = process_request(req)[1]
+        tickets = data['tickets']
+        self.assertEqual([1, 3, 2], [t['id'] for t in tickets])
+
 
 class QueryLinksTestCase(unittest.TestCase):
 

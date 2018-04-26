@@ -657,10 +657,14 @@ class Query(object):
                 # FIXME: This is a somewhat ugly hack.  Can we also have the
                 #        column type for this?  If it's an integer, we do
                 #        first one, if text, we do 'else'
-                if name == 'id' or name in self.time_fields:
-                    sql.append("COALESCE(%s,0)=0%s," % (col, desc))
+                if name in custom_fields:
+                    coalesce_arg = "''"
+                elif name == 'id' or name in self.time_fields:
+                    coalesce_arg = '0'
                 else:
-                    sql.append("COALESCE(%s,'')=''%s," % (col, desc))
+                    coalesce_arg = "''"
+                sql.append("COALESCE(%(col)s,%(arg)s)=%(arg)s%(desc)s," %
+                           {'col': col, 'arg': coalesce_arg, 'desc': desc})
                 if name in enum_columns:
                     # These values must be compared as ints, not as strings
                     sql.append(db.cast(col, 'int') + desc)
