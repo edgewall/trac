@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-04-23 13:08-0700\n"
+"POT-Creation-Date: 2018-04-25 19:00-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,7 +154,7 @@ msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1823
+#: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1827
 #: trac/wiki/macros.py:379 trac/wiki/templates/wiki_view.html:67
 #: trac/wiki/web_ui.py:791 tracopt/versioncontrol/git/git_fs.py:464
 msgid "diff"
@@ -3155,7 +3155,7 @@ msgstr ""
 msgid "Keywords"
 msgstr ""
 
-#: trac/ticket/api.py:390 trac/ticket/web_ui.py:1563
+#: trac/ticket/api.py:390 trac/ticket/web_ui.py:1567
 msgid "Cc"
 msgstr ""
 
@@ -3235,12 +3235,12 @@ msgstr ""
 msgid "set to"
 msgstr ""
 
-#: trac/ticket/batch.py:185 trac/ticket/web_ui.py:1324
+#: trac/ticket/batch.py:185 trac/ticket/web_ui.py:1328
 #, python-format
 msgid "The ticket comment is invalid: %(message)s"
 msgstr ""
 
-#: trac/ticket/batch.py:202 trac/ticket/web_ui.py:1333
+#: trac/ticket/batch.py:202 trac/ticket/web_ui.py:1337
 #, python-format
 msgid "The ticket field %(field)s is invalid: %(message)s"
 msgstr ""
@@ -4154,7 +4154,7 @@ msgid_plural "%(labels)s deleted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1258 trac/ticket/web_ui.py:1780
+#: trac/ticket/web_ui.py:1258 trac/ticket/web_ui.py:1784
 msgid "; "
 msgstr ""
 
@@ -4174,31 +4174,35 @@ msgstr ""
 msgid "No permissions to add a comment."
 msgstr ""
 
-#: trac/ticket/web_ui.py:1307
-msgid ""
-"Sorry, can not save your changes. This ticket has been modified by "
-"someone else since you started"
+#: trac/ticket/web_ui.py:1308
+msgid "This ticket has been modified since you started editing."
 msgstr ""
 
-#: trac/ticket/web_ui.py:1316
+#: trac/ticket/web_ui.py:1311
+msgid ""
+"Your changes have not been saved because this ticket has been modified "
+"since you started editing."
+msgstr ""
+
+#: trac/ticket/web_ui.py:1320
 msgid "Invalid comment threading identifier"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1365
+#: trac/ticket/web_ui.py:1369
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1370
+#: trac/ticket/web_ui.py:1374
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
 msgstr ""
 
-#: trac/ticket/web_ui.py:1376
+#: trac/ticket/web_ui.py:1380
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
@@ -4206,89 +4210,89 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1405
+#: trac/ticket/web_ui.py:1409
 msgid "change"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1411
+#: trac/ticket/web_ui.py:1415
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1453
+#: trac/ticket/web_ui.py:1457
 #, python-format
 msgid ""
 "%(controller1)s changed \"%(key)s\" to \"%(val1)s\", but %(controller2)s "
 "changed it to \"%(val2)s\"."
 msgstr ""
 
-#: trac/ticket/web_ui.py:1551
+#: trac/ticket/web_ui.py:1555
 #, python-format
 msgid "Released %(datetime)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1561
+#: trac/ticket/web_ui.py:1565
 msgid "Add Cc"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1562
+#: trac/ticket/web_ui.py:1566
 msgid "Remove Cc"
 msgstr ""
 
-#: trac/ticket/templates/query.html:175 trac/ticket/web_ui.py:1598
+#: trac/ticket/templates/query.html:175 trac/ticket/web_ui.py:1602
 msgid "yes"
 msgstr ""
 
-#: trac/ticket/templates/query.html:183 trac/ticket/web_ui.py:1598
+#: trac/ticket/templates/query.html:183 trac/ticket/web_ui.py:1602
 msgid "no"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1775
+#: trac/ticket/web_ui.py:1779
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1778
+#: trac/ticket/web_ui.py:1782
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1807
+#: trac/ticket/web_ui.py:1811
 #, python-format
 msgid "%(value)s deleted"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1809
+#: trac/ticket/web_ui.py:1813
 #, python-format
 msgid "set to %(value)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1811
+#: trac/ticket/web_ui.py:1815
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1815
+#: trac/ticket/web_ui.py:1819
 msgid "set"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1815
+#: trac/ticket/web_ui.py:1819
 msgid "unset"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1818
+#: trac/ticket/web_ui.py:1822
 #: trac/versioncontrol/templates/changeset_content.html:280
 #: trac/versioncontrol/templates/revisionlog.txt:13
 msgid "modified"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1824
+#: trac/ticket/web_ui.py:1828
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr ""
@@ -5009,14 +5013,11 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:592
 msgid ""
-"This ticket has been modified since you started editing. You should "
-"review the <em class=\"trac-new\">other modifications</em> which have "
-"been appended above, and any <em class=\"trac-conflict\">conflicts</em> "
-"shown in the preview below. You can nevertheless proceed and submit your "
-"changes if you wish so."
+"Review any <em class=\"trac-new\">modifications</em> above, and any <em "
+"class=\"trac-conflict\">conflicts</em> in the preview below."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:623
+#: trac/ticket/templates/ticket.html:620
 #, python-format
 msgid "%(note)s See %(page)s for help on using tickets."
 msgstr ""
