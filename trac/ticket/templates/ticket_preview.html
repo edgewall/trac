@@ -21,9 +21,11 @@
 #  endwith
 <div id="changelog">
   # for change in changes:
+  #   set latest = change['comment_history'] | max
+  #   set change_date = change['comment_history'][latest]['date']
   <div${{'class': [
            'change',
-           'trac-new' if change.date is greaterthan(start_time) and
+           'trac-new' if change_date is greaterthan(start_time) and
                          'attachment' not in change.fields],
            'id': 'trac-change-%d-%d' % (
                   change.cnum, to_utimestamp(change.date)) if 'cnum' in change
