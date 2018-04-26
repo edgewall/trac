@@ -1302,11 +1302,15 @@ class TicketModule(Component):
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment or force_collision_check):
-            changetime = ticket['changetime']
-            if req.args.get('view_time') != str(to_utimestamp(changetime)):
-                add_warning(req, _("Sorry, can not save your changes. "
-                                   "This ticket has been modified by someone "
-                                   "else since you started"))
+            changetime = str(to_utimestamp(ticket['changetime']))
+            if 'preview' in req.args and \
+                    req.args.get('start_time') != changetime:
+                add_warning(req, _("This ticket has been modified since you "
+                                   "started editing."))
+            elif req.args.get('view_time') != changetime:
+                add_warning(req, _("Your changes have not been saved because "
+                                   "this ticket has been modified since you "
+                                   "started editing."))
                 valid = False
 
         # Validate comment id: replyto must be 'description' or a number
