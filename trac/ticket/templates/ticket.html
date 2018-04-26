@@ -90,11 +90,13 @@
           // Apply comments order and "Show" preferences
           applyCommentsOrder(
             $('#prefs input[name="trac-comments-order"]:checked').val());
-          // Show warning
+          // Show warnings
           var new_changes = $("#changelog .trac-new");
           $("#trac-edit-warning").toggle(new_changes.length != 0);
           if (new_changes.length != 0)
             $("#changelog").parent().show().removeClass("collapsed");
+          $("#trac-preview-warning").remove();
+          $("#trac-edit-warning").before(items.filter('#trac-preview-warning'));
           // Update view time
           $("#propertyform input[name='view_time']")
             .replaceWith(items.filter("input[name='view_time']"));
@@ -587,7 +589,7 @@
         ## Preview of ticket changes
 
         # if ticket.exists and can_append:
-        ${jmacros.warnings(chrome.warnings)}
+        ${jmacros.warnings(chrome.warnings, 'trac-preview-warning', close_message=False)}
         <div id="trac-edit-warning" class="warning system-message" ${
            {'style': 'display: none;' if start_time == ticket['changetime']
              }|htmlattr}>

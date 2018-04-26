@@ -59,11 +59,13 @@
 <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
 # endmacro
 
-# macro warnings(messages)
+# macro warnings(messages, id='warning', close_message=True)
   # if messages:
-  <div id="warning" class="system-message">
-    <a class="trac-close-msg" href="#"
-       title="${_('Hide this warning')}"><span>${_("close")}</span></a>
+  <div id=${id} class="warning system-message">
+    # if close_message:
+      <a class="trac-close-msg" href="#"
+         title="${_('Hide this warning')}"><span>${_("close")}</span></a>
+    # endif
     <strong>${_("Warning:")}</strong>
     # if len(messages) == 1:
     ${messages[0]}
@@ -78,11 +80,13 @@
   # endif
 # endmacro
 
-# macro notices(messages)
+# macro notices(messages, id='notice', close_message=True)
   # if messages:
-  <div id="notice" class="system-message">
-    <a class="trac-close-msg" href="#"
-       title="${_('Hide this notice')}"><span>${_("close")}</span></a>
+  <div id=${id} class="notice system-message">
+    # if close_message:
+      <a class="trac-close-msg" href="#"
+         title="${_('Hide this notice')}"><span>${_("close")}</span></a>
+    # endif
     # if len(messages) == 1:
     ${messages[0]}
     # else:
