@@ -527,7 +527,7 @@ class TicketModule(Component):
             # Apply changes made by the workflow
             self._apply_ticket_changes(ticket, field_changes)
 
-            valid = valid and self._validate_ticket(req, ticket)
+            valid &= self._validate_ticket(req, ticket)
             if not preview and req.method == 'POST':
                 if valid:
                     # redirects on success
@@ -679,7 +679,7 @@ class TicketModule(Component):
             # information any and all problems.  But it's only valid if it
             # validates and there were no problems with the workflow side of
             # things.
-            valid = self._validate_ticket(req, ticket, not valid) and valid
+            valid &= self._validate_ticket(req, ticket, not valid)
             if 'submit' in req.args:
                 if valid:
                     # redirected if successful
