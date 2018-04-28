@@ -774,9 +774,9 @@ class Query(object):
                 # Mark tickets added or changed since the query was first
                 # executed
                 if ticket['time'] and ticket['time'] > orig_time:
-                    ticket['added'] = True
+                    ticket['_added'] = True
                 elif ticket['changetime'] and ticket['changetime'] > orig_time:
-                    ticket['changed'] = True
+                    ticket['_changed'] = True
             if self.group:
                 group_key = ticket[self.group]
                 groups.setdefault(group_key, []).append(ticket)
