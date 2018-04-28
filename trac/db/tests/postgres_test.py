@@ -321,7 +321,9 @@ def test_suite():
     suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
     suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
     if get_dburi().startswith('postgres:'):
-        suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
+        try:
+            suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
+            except pkg_reosur
     return suite
 
 

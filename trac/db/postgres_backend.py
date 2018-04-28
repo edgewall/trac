@@ -16,7 +16,6 @@
 
 import os
 import re
-from pkg_resources import DistributionNotFound
 
 from genshi import Markup
 
@@ -38,8 +37,10 @@ try:
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
 except ImportError:
-    raise DistributionNotFound('psycopg2>=2.0 or psycopg2-binary', ['Trac'])
+    has_psycopg = False
+    psycopg2_version = None
 else:
+    has_psycopg = True
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
@@ -86,6 +87,9 @@ class PostgreSQLConnector(Component):
     pg_dump_path = Option('trac', 'pg_dump_path', 'pg_dump',
         """Location of pg_dump for Postgres database backups""")
 
+    def __init__(self):
+        self.error = None
+
     # ISystemInfoProvider methods
 
     def get_system_info(self):
@@ -95,7 +99,9 @@ class PostgreSQLConnector(Component):
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        yield 'postgres', 1
+        if not has_psycopg:
+            self.error = _("Cannot load Python bindings for PostgreSQL")
+        yield 'postgres', -1 if self.error else 1
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
