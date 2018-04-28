@@ -152,24 +152,24 @@ def stripentities(text, keepxmlentities=False):
     replaced by the equivalent UTF-8 characters.
 
     >>> stripentities('1 &lt; 2')
-    Markup(u'1 < 2')
+    u'1 < 2'
     >>> stripentities('more &hellip;')
-    Markup(u'more \u2026')
+    u'more \u2026'
     >>> stripentities('&#8230;')
-    Markup(u'\u2026')
+    u'\u2026'
     >>> stripentities('&#x2026;')
-    Markup(u'\u2026')
+    u'\u2026'
     >>> stripentities(Markup(u'\u2026'))
-    Markup(u'\u2026')
+    u'\u2026'
 
     If the `keepxmlentities` parameter is provided and is a truth value, the
     core XML entities (&amp;, &apos;, &gt;, &lt; and &quot;) are left intact.
 
     >>> stripentities('1 &lt; 2 &hellip;', keepxmlentities=True)
-    Markup(u'1 &lt; 2 \u2026')
+    u'1 &lt; 2 \u2026'
 
-    :return: a `Markup` instance with entities removed
-    :rtype: `Markup`
+    :return: a `unicode` instance with entities removed
+    :rtype: `unicode`
     """
     def _replace_entity(match):
         if match.group(1): # numeric entity
@@ -190,29 +190,31 @@ def stripentities(text, keepxmlentities=False):
                     return '&amp;%s;' % ref
                 else:
                     return ref
-    return Markup(_STRIPENTITIES_RE.sub(_replace_entity, text))
+    if isinstance(text, Markup):
+        text = unicode(text)
+    return _STRIPENTITIES_RE.sub(_replace_entity, text)
 
 
 def striptags(text):
     """Return a copy of the text with any XML/HTML tags removed.
 
     >>> striptags('<span>Foo</span> bar')
-    Markup(u'Foo bar')
+    u'Foo bar'
     >>> striptags('<span class="bar">Foo</span>')
-    Markup(u'Foo')
+    u'Foo'
     >>> striptags('Foo<br />')
-    Markup(u'Foo')
+    u'Foo'
 
     HTML/XML comments are stripped, too:
 
     >>> striptags('<!-- <blub>hehe</blah> -->test')
-    Markup(u'test')
+    u'test'
 
     :param text: the string to remove tags from
-    :return: a `Markup` instance with all tags removed
-    :rtype: `Markup`
+    :return: a `unicode` instance with all tags removed
+    :rtype: `unicode`
     """
-    return Markup(Markup(text).striptags())
+    return Markup(text).striptags()
 
 
 # -- Simplified genshi.builder API
@@ -1021,6 +1023,17 @@ class HTMLSanitization(HTMLTransform):
 
 def plaintext(text, keeplinebreaks=True):
     """Extract the text elements from (X)HTML content
+
+    >>> plaintext('<b>1 &lt; 2</b>')
+    u'1 < 2'
+
+    >>> plaintext(tag('1 ', tag.b('<'), ' 2'))
+    u'1 < 2'
+
+    >>> plaintext('''<b>1
+    ... &lt;
+    ... 2</b>''', keeplinebreaks=False)
+    u'1 < 2'
 
     :param text: `unicode` or `Fragment`
     :param keeplinebreaks: optionally keep linebreaks

@@ -30,9 +30,9 @@
     # for event in events:
     <item>
       # set abs_url = event.render('url', context)
+      # set title = event.render('summary', context) or event.render('title', context)
       <title>${
-        plaintext(event.render('summary', context) or
-                  event.render('title', context), keeplinebreaks=False)
+        title if title is string else plaintext(title, keeplinebreaks=False)
       }</title>
       # with author = event.author
       #   include 'author_or_creator.rss'
