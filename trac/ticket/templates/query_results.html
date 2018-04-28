@@ -76,9 +76,9 @@ Arguments:
             <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">
 
               <tr class="${'odd' if idx % 2 else 'even'} prio${result.priority_value}${
-                ' added' if 'added' in result else ''}${
-                ' changed' if 'changed' in result else ''}${
-                ' removed' if 'removed' in result else ''}">
+                ' added' if '_added' in result else ''}${
+                ' changed' if '_changed' in result else ''}${
+                ' removed' if '_removed' in result else ''}">
                 <py:for each="idx, header in enumerate(headers)" py:choose="">
                   <py:with vars="name = header.name; value = result[name]">
                     <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket"
