@@ -19,7 +19,6 @@ import ctypes
 import os
 import re
 
-from trac.api import ISystemInfoProvider
 from trac.core import *
 from trac.config import Option
 from trac.db.api import ConnectionBase, IDatabaseConnector, \
