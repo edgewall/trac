@@ -107,9 +107,9 @@
       <tr class="${classes(
                  loop.cycle('odd', 'even'),
                  'prio' + (result._priority_value or ''),
-                 added='added' in result,
-                 changed='changed' in result,
-                 removed='removed' in result)}">
+                 added='_added' in result,
+                 changed='_changed' in result,
+                 removed='_removed' in result)}">
         #     for header in headers:
         #       set name = header.name
         #       set value = result[name]
