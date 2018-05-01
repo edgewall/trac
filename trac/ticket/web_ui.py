@@ -1919,16 +1919,16 @@ class DefaultTicketPolicy(Component):
                 'MILESTONE_VIEW' in perm:
             return True
 
-        if username != 'anonymous' and \
-                action == 'TICKET_EDIT_DESCRIPTION' and \
+        if action == 'TICKET_EDIT_DESCRIPTION' and \
+                username != 'anonymous' and \
                 self._is_valid_resource(resource, self.realm) and \
                 ('TICKET_CHGPROP' in perm or 'TICKET_APPEND' in perm):
             ticket = model.Ticket(self.env, resource.id)
             if username == ticket['reporter']:
                 return True
 
-        if username != 'anonymous' and \
-                action == 'TICKET_EDIT_COMMENT' and \
+        if action == 'TICKET_EDIT_COMMENT' and \
+                username != 'anonymous' and \
                 self._is_valid_resource(resource, 'comment') and \
                 self._is_valid_resource(resource.parent, self.realm) and \
                 'TICKET_APPEND' in perm(resource.parent):
@@ -1938,7 +1938,7 @@ class DefaultTicketPolicy(Component):
                 return True
 
         if action == 'TICKET_EDIT_CC' and \
-                self._is_valid_resource(resource, 'ticket', exists=False):
+                self._is_valid_resource(resource, self.realm, exists=False):
             ticket = model.Ticket(self.env, resource.id)
             if not ticket.exists:
                 return True
