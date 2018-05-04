@@ -51,6 +51,10 @@ before_install:
     } >"$HOME/.pip/pip.conf"
   - |
     if [ "$TRAVIS_OS_NAME" = osx ]; then
+      # Pyenv >= 1.2.4 is needed with Python 2.6
+      if [[ "$pyver" == 2.6 ]]; then
+        brew upgrade pyenv &>/dev/null
+      fi
       test -d $HOME/venv-lib || mkdir $HOME/venv-lib
       eval "$(pyenv init -)"
       pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
