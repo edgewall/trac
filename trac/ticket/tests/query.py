@@ -1263,14 +1263,14 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
                          t2['time'].isoformat())
         self.assertEqual('2017-11-09T12:56:35.654321+00:00',
                          t2['changetime'].isoformat())
-        self.assertEqual(None, t2['due'])
+        self.assertIsNone(t2['due'])
 
         t3 = tickets[2]
         self.assertEqual('2008-07-21T12:34:56.987654+00:00',
                          t3['time'].isoformat())
         self.assertEqual('2008-07-22T12:34:56.987654+00:00',
                          t3['changetime'].isoformat())
-        self.assertEqual(None, t3['due'])
+        self.assertIsNone(t3['due'])
 
     def test_time_fields_order(self):
         dt = datetime(2018, 4, 25, 12, 34, 56, 987654, utc)

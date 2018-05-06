@@ -879,8 +879,8 @@ from :4
                           ('sub',         DIRECTORY, ADD, None, None)],
                          sorted(cset1.get_changes()))
         node1 = repos.get_node('sub', rev1)
-        self.assertEqual(None, node1.get_content())
-        self.assertEqual(None, node1.get_content_length())
+        self.assertIsNone(node1.get_content())
+        self.assertIsNone(node1.get_content_length())
         self.assertEqual(DIRECTORY, node1.kind)
         self.assertEqual({'mode': '160000', 'commit': submodule_rev1},
                          node1.get_properties())
