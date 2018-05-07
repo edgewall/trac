@@ -451,6 +451,12 @@ class Request(object):
     This class provides a convenience API over WSGI.
     """
 
+    _disallowed_control_codes_re = re.compile(r'[\x00-\x08\x0a-\x1f\x7f]')
+    _reserved_headers = set(['content-type', 'content-length', 'location',
+                             'etag', 'pragma', 'cache-control', 'expires'])
+    # RFC7230 3.2 Header Fields
+    _valid_header_re = re.compile(r"[-0-9A-Za-z!#$%&'*+.^_`|~]+\Z")
+
     def __init__(self, environ, start_response):
         """Create the request wrapper.
 
@@ -610,6 +616,7 @@ class Request(object):
         if self.method == 'POST' and self._content_type == 'text/html':
             # Disable XSS protection (#12926)
             self.send_header('X-XSS-Protection', 0)
+        self._send_configurable_headers()
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
 
@@ -730,6 +737,7 @@ class Request(object):
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
+        self._send_configurable_headers()
         self._send_cookie_headers()
 
         self._write = self._start_response(self._status, self._outheaders,
@@ -844,6 +852,17 @@ class Request(object):
                 raise RequestDone
             raise
 
+    @classmethod
+    def is_valid_header(cls, name, value=None):
+        """Check whether the field name, and optionally the value, make
+        a valid HTTP header.
+        """
+        valid_name = name and name.lower() not in cls._reserved_headers and \
+                     bool(cls._valid_header_re.match(name))
+        valid_value = not cls._disallowed_control_codes_re.search(value) \
+                      if value else True
+        return valid_name & valid_value
+
     # Internal methods
 
     def _parse_arg_list(self):
@@ -951,6 +970,12 @@ class Request(object):
                 host = self.server_name
         return urlparse.urlunparse((self.scheme, host, self.base_path, None,
                                     None, None))
+
+    def _send_configurable_headers(self):
+        sent_headers = [name.lower() for name, val in self._outheaders]
+        for name, val in getattr(self, 'configurable_headers', []):
+            if name.lower() not in sent_headers:
+                self.send_header(name, val)
 
     def _send_cookie_headers(self):
         for name in self.outcookie.keys():
