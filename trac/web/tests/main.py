@@ -614,6 +614,11 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.env.insert_users([(sid, name, email, 0)])
         return sid, name, email
 
+    def _content(self):
+        yield 'line1,'
+        yield 'line2,'
+        yield 'line3\n'
+
     def test_invalid_default_date_format_raises_exception(self):
         self.env.config.set('trac', 'default_date_format', u'ĭšo8601')
 
@@ -698,6 +703,62 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertIsNone(req.session.sid)
         self.assertEqual('200 Ok', req.status_sent[0])
         self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+
+    def _test_configurable_headers(self, method):
+        # Reserved headers not allowed.
+        content_type = 'not-allowed'
+        self.env.config.set('http-headers', 'Content-Type', content_type)
+        # Control code not allowed.
+        custom1 = '\x00custom1'
+        self.env.config.set('http-headers', 'X-Custom-1', custom1)
+        # Many special characters allowed in header name.
+        custom2 = 'Custom2-!#$%&\'*+.^_`|~'
+        self.env.config.set('http-headers', custom2, 'custom2')
+        # Some special characters not allowed in header name.
+        self.env.config.set('http-headers', 'X-Custom-(3)', 'custom3')
+
+        req = MockRequest(self.env, method='POST')
+        request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher.set_default_callbacks(req)
+        self.assertRaises(RequestDone, getattr(req, method), self._content())
+
+        self.assertNotEqual('not-allowed', req.headers_sent.get('Content-Type'))
+        self.assertNotIn('x-custom-1', req.headers_sent)
+        self.assertIn(custom2.lower(), req.headers_sent)
+        self.assertNotIn('x-custom-(3)', req.headers_sent)
+        self.assertIn(('WARNING', "[http-headers] invalid headers are ignored: "
+                                  "u'content-type': u'not-allowed', "
+                                  "u'x-custom-1': u'\\x00custom1', "
+                                  "u'x-custom-(3)': u'custom3'"),
+                      self.env.log_messages)
+
+    def test_send_configurable_headers(self):
+        self._test_configurable_headers('send')
+
+    def test_send_error_configurable_headers(self):
+        self._test_configurable_headers('send_error')
+
+    def test_send_configurable_headers_no_override(self):
+        """Headers in request not overridden by configurable headers."""
+        self.env.config.set('http-headers', 'X-XSS-Protection', '1; mode=block')
+        request_dispatcher = RequestDispatcher(self.env)
+        req1 = MockRequest(self.env)
+        request_dispatcher.set_default_callbacks(req1)
+
+        self.assertRaises(RequestDone, req1.send, self._content())
+
+        self.assertNotIn('X-XSS-protection', req1.headers_sent)
+        self.assertIn('x-xss-protection', req1.headers_sent)
+        self.assertEqual('1; mode=block', req1.headers_sent['x-xss-protection'])
+
+        req2 = MockRequest(self.env, method='POST')
+        request_dispatcher.set_default_callbacks(req2)
+
+        self.assertRaises(RequestDone, req2.send, self._content())
+
+        self.assertNotIn('x-xss-protection', req2.headers_sent)
+        self.assertIn('X-XSS-Protection', req2.headers_sent)
+        self.assertEqual('0', req2.headers_sent['X-XSS-Protection'])
 
 
 class HdfdumpTestCase(unittest.TestCase):

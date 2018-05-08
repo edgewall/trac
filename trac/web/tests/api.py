@@ -674,6 +674,22 @@ ne\x00w\r\n\
             req.send(content, content_type)
         self.assertIn('0', headers_sent['X-XSS-Protection'])
 
+    def test_is_valid_header(self):
+        # Reserved headers not allowed.
+        for name in ('Content-Type', 'Content-Length', 'Location',
+                     'ETag', 'Pragma', 'Cache-Control', 'Expires'):
+            self.assertFalse(Request.is_valid_header(name))
+            self.assertFalse(Request.is_valid_header(name.lower()))
+        # Control code not allowed in header value.
+        self.assertFalse(Request.is_valid_header('X-Custom-1', '\x00custom1'))
+        self.assertFalse(Request.is_valid_header('X-Custom-1', 'cust\x0aom1'))
+        self.assertFalse(Request.is_valid_header('X-Custom-1', 'custom1\x7f'))
+        # Only a subset of special characters allowed in header name.
+        self.assertFalse(Request.is_valid_header('X-Custom-(2)', 'custom2'))
+        self.assertFalse(Request.is_valid_header('X-Custom-:2:', 'custom2'))
+        self.assertTrue(Request.is_valid_header('Aa0-!#$%&\'*+.^_`|~',
+                                                'custom2'))
+
 
 class RequestSendFileTestCase(unittest.TestCase):
 

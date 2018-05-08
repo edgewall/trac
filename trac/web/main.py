@@ -36,8 +36,9 @@ from urlparse import urlparse
 from jinja2 import FileSystemLoader
 
 from trac import __version__ as TRAC_VERSION
-from trac.config import BoolOption, ChoiceOption, ConfigurationError, \
-                        ExtensionOption, Option, OrderedExtensionsOption
+from trac.config import BoolOption, ChoiceOption, ConfigSection, \
+                        ConfigurationError, ExtensionOption, Option, \
+                        OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
 from trac.loader import get_plugin_info, match_plugins_to_frames
@@ -165,6 +166,14 @@ class RequestDispatcher(Component):
     xsendfile_header = Option('trac', 'xsendfile_header', 'X-Sendfile',
         """The header to use if `use_xsendfile` is enabled. If Nginx is used,
         set `X-Accel-Redirect`. (''since 1.0.6'')""")
+
+    configurable_headers = ConfigSection('http-headers', """
+        Headers to be added to the HTTP request. (''since 1.2.3'')
+
+        The header name must conform to RFC7230 and the following
+        reserved names are not allowed: content-type, content-length,
+        location, etag, pragma, cache-control, expires.
+        """)
 
     # Public API
 
@@ -321,6 +330,7 @@ class RequestDispatcher(Component):
             'tz': self._get_timezone,
             'use_xsendfile': self._get_use_xsendfile,
             'xsendfile_header': self._get_xsendfile_header,
+            'configurable_headers': self._get_configurable_headers,
         })
 
     @lazy
@@ -415,13 +425,11 @@ class RequestDispatcher(Component):
     def _get_use_xsendfile(self, req):
         return self.use_xsendfile
 
-    # RFC7230 3.2 Header Fields
-    _xsendfile_header_re = re.compile(r"[-0-9A-Za-z!#$%&'*+.^_`|~]+\Z")
     _warn_xsendfile_header = False
 
     def _get_xsendfile_header(self, req):
         header = self.xsendfile_header.strip()
-        if self._xsendfile_header_re.match(header):
+        if Request.is_valid_header(header):
             return to_utf8(header)
         else:
             if not self._warn_xsendfile_header:
@@ -429,6 +437,23 @@ class RequestDispatcher(Component):
                 self.log.warning("[trac] xsendfile_header is invalid: '%s'",
                                  header)
             return None
+
+    @lazy
+    def _configurable_headers(self):
+        headers = []
+        invalids = []
+        for name, val in self.configurable_headers.options():
+            if Request.is_valid_header(name, val):
+                headers.append((name, val))
+            else:
+                invalids.append((name, val))
+        if invalids:
+            self.log.warning('[http-headers] invalid headers are ignored: %s',
+                             ', '.join('%r: %r' % i for i in invalids))
+        return tuple(headers)
+
+    def _get_configurable_headers(self, req):
+        return iter(self._configurable_headers)
 
     def _pre_process_request(self, req, chosen_handler):
         for filter_ in self.filters:
