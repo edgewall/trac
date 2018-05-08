@@ -425,9 +425,8 @@ class RequestDispatcher(Component):
     def _get_use_xsendfile(self, req):
         return self.use_xsendfile
 
-    _warn_xsendfile_header = False
-
-    def _get_xsendfile_header(self, req):
+    @lazy
+    def _xsendfile_header(self):
         header = self.xsendfile_header.strip()
         if Request.is_valid_header(header):
             return to_utf8(header)
@@ -437,6 +436,9 @@ class RequestDispatcher(Component):
                 self.log.warning("[trac] xsendfile_header is invalid: '%s'",
                                  header)
             return None
+
+    def _get_xsendfile_header(self, req):
+        return self._xsendfile_header
 
     @lazy
     def _configurable_headers(self):

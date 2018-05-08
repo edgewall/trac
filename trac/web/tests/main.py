@@ -603,6 +603,9 @@ class RequestDispatcherTestCase(unittest.TestCase):
         filepath = os.path.join(self.env.templates_dir,
                                 TestStubRequestHandler.filename)
         create_file(filepath, TestStubRequestHandler.template)
+        self.filename = os.path.join(self.env.path, 'test.txt')
+        self.data = 'contents\n'
+        create_file(self.filename, self.data, 'wb')
 
     def tearDown(self):
         self.env.reset_db_and_disk()
@@ -703,6 +706,53 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertIsNone(req.session.sid)
         self.assertEqual('200 Ok', req.status_sent[0])
         self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+
+    def test_set_valid_xsendfile_header(self):
+        """Send file using xsendfile header."""
+        self.env.config.set('trac', 'use_xsendfile', True)
+        self.env.config.set('trac', 'xsendfile_header', 'X-Accel-Redirect')
+
+        req = MockRequest(self.env)
+        request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher.set_default_callbacks(req)
+
+        # File is sent using xsendfile.
+        self.assertRaises(RequestDone, req.send_file, self.filename)
+        self.assertEqual(['200 Ok'], req.status_sent)
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertEqual(self.filename, req.headers_sent['X-Accel-Redirect'])
+        self.assertNotIn('X-Sendfile', req.headers_sent)
+        self.assertIsNone(req._response)
+        self.assertEqual('', req.response_sent.getvalue())
+
+    def _test_file_not_sent_using_xsendfile_header(self, xsendfile_header):
+        req = MockRequest(self.env)
+        request_dispatcher = RequestDispatcher(self.env)
+        request_dispatcher.set_default_callbacks(req)
+
+        # File is not sent using xsendfile.
+        self.assertRaises(RequestDone, req.send_file, self.filename)
+        self.assertEqual(['200 Ok'], req.status_sent)
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertNotIn(xsendfile_header, req.headers_sent)
+        self.assertEqual('_FileWrapper', type(req._response).__name__)
+        self.assertEqual('', req.response_sent.getvalue())
+
+    def test_set_invalid_xsendfile_header(self):
+        """Not sent by xsendfile header because header is invalid."""
+        xsendfile_header = '(X-SendFile)'
+        self.env.config.set('trac', 'use_xsendfile', True)
+        self.env.config.set('trac', 'xsendfile_header', xsendfile_header)
+
+        self._test_file_not_sent_using_xsendfile_header(xsendfile_header)
+
+    def test_xsendfile_is_disabled(self):
+        """Not sent by xsendfile header because xsendfile is disabled."""
+        xsendfile_header = 'X-SendFile'
+        self.env.config.set('trac', 'use_xsendfile', False)
+        self.env.config.set('trac', 'xsendfile_header', xsendfile_header)
+
+        self._test_file_not_sent_using_xsendfile_header(xsendfile_header)
 
     def _test_configurable_headers(self, method):
         # Reserved headers not allowed.
