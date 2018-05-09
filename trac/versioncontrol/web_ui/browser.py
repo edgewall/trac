@@ -15,6 +15,8 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+from __future__ import with_statement
+
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 import re
@@ -667,78 +669,77 @@ class BrowserModule(Component):
         mimeview = Mimeview(self.env)
 
         # MIME type detection
-        content = node.get_processed_content()
-        chunk = content.read(CHUNK_SIZE)
-        mime_type = node.content_type
-        if not mime_type or mime_type == 'application/octet-stream':
-            mime_type = mimeview.get_mimetype(node.name, chunk) or \
-                        mime_type or 'text/plain'
+        with content_closing(node.get_processed_content()) as content:
+            chunk = content.read(CHUNK_SIZE)
+            mime_type = node.content_type
+            if not mime_type or mime_type == 'application/octet-stream':
+                mime_type = mimeview.get_mimetype(node.name, chunk) or \
+                            mime_type or 'text/plain'
 
-        # Eventually send the file directly
-        format = req.args.get('format')
-        if format in ('raw', 'txt'):
-            req.send_response(200)
-            req.send_header('Content-Type',
-                            'text/plain' if format == 'txt' else mime_type)
-            req.send_header('Last-Modified', http_date(node.last_modified))
-            if rev is None:
-                req.send_header('Pragma', 'no-cache')
-                req.send_header('Cache-Control', 'no-cache')
-                req.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
-            if not self.render_unsafe_content:
-                # Force browser to download files instead of rendering
-                # them, since they might contain malicious code enabling
-                # XSS attacks
-                req.send_header('Content-Disposition', 'attachment')
-            req.end_headers()
-            # Note: don't pass an iterable instance to RequestDone, instead
-            # call req.write() with each chunk here to avoid SEGVs (#11805)
-            while chunk:
-                req.write(chunk)
-                chunk = content.read(CHUNK_SIZE)
-            raise RequestDone
-        else:
-            # The changeset corresponding to the last change on `node`
-            # is more interesting than the `rev` changeset.
-            changeset = repos.get_changeset(node.created_rev)
+            # Eventually send the file directly
+            format = req.args.get('format')
+            if format in ('raw', 'txt'):
+                req.send_response(200)
+                req.send_header('Content-Type',
+                                'text/plain' if format == 'txt' else mime_type)
+                req.send_header('Last-Modified', http_date(node.last_modified))
+                if rev is None:
+                    req.send_header('Pragma', 'no-cache')
+                    req.send_header('Cache-Control', 'no-cache')
+                    req.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
+                if not self.render_unsafe_content:
+                    # Force browser to download files instead of rendering
+                    # them, since they might contain malicious code enabling
+                    # XSS attacks
+                    req.send_header('Content-Disposition', 'attachment')
+                req.end_headers()
+                # Note: don't pass an iterable instance to RequestDone, instead
+                # call req.write() with each chunk here to avoid SEGVs (#11805)
+                while chunk:
+                    req.write(chunk)
+                    chunk = content.read(CHUNK_SIZE)
+                raise RequestDone
 
-            # add ''Plain Text'' alternate link if needed
-            if not is_binary(chunk) and mime_type != 'text/plain':
-                plain_href = req.href.browser(repos.reponame or None,
-                                              node.path, rev=rev, format='txt')
-                add_link(req, 'alternate', plain_href, _('Plain Text'),
-                         'text/plain')
+        # The changeset corresponding to the last change on `node`
+        # is more interesting than the `rev` changeset.
+        changeset = repos.get_changeset(node.created_rev)
 
-            # add ''Original Format'' alternate link (always)
-            raw_href = req.href.export(rev or repos.youngest_rev,
-                                       repos.reponame or None, node.path)
-            add_link(req, 'alternate', raw_href, _('Original Format'),
-                     mime_type)
+        # add ''Plain Text'' alternate link if needed
+        if not is_binary(chunk) and mime_type != 'text/plain':
+            plain_href = req.href.browser(repos.reponame or None,
+                                          node.path, rev=rev,
+                                          format='txt')
+            add_link(req, 'alternate', plain_href, _('Plain Text'),
+                     'text/plain')
 
-            self.log.debug("Rendering preview of node %s@%s with mime-type %s",
-                           node.name, rev, mime_type)
+        # add ''Original Format'' alternate link (always)
+        raw_href = req.href.export(rev or repos.youngest_rev,
+                                   repos.reponame or None, node.path)
+        add_link(req, 'alternate', raw_href, _('Original Format'),
+                 mime_type)
 
-            content = None # the remainder of that content is not needed
+        self.log.debug("Rendering preview of node %s@%s with "
+                       "mime-type %s", node.name, rev, mime_type)
 
-            add_stylesheet(req, 'common/css/code.css')
+        add_stylesheet(req, 'common/css/code.css')
 
-            annotations = ['lineno']
-            annotate = req.args.get('annotate')
-            if annotate:
-                annotations.insert(0, annotate)
-            preview_data = mimeview.preview_data(context,
-                                                 node.get_processed_content(),
+        annotations = ['lineno']
+        annotate = req.args.get('annotate')
+        if annotate:
+            annotations.insert(0, annotate)
+        with content_closing(node.get_processed_content()) as content:
+            preview_data = mimeview.preview_data(context, content,
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,
                                                  raw_href,
                                                  annotations=annotations,
                                                  force_source=bool(annotate))
-            return {
-                'changeset': changeset,
-                'size': node.content_length,
-                'preview': preview_data,
-                'annotate': annotate,
-                }
+        return {
+            'changeset': changeset,
+            'size': node.content_length,
+            'preview': preview_data,
+            'annotate': annotate,
+            }
 
     def _get_download_href(self, href, repos, node, rev):
         """Return the URL for downloading a file, or a directory as a ZIP."""

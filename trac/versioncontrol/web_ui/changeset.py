@@ -45,7 +45,7 @@ from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule
-from trac.versioncontrol.web_ui.util import render_zip
+from trac.versioncontrol.web_ui.util import content_closing, render_zip
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import (Chrome, INavigationContributor, add_ctxtnav,
                              add_link, add_script, add_stylesheet,
@@ -549,10 +549,10 @@ class ChangesetModule(Component):
                 return None
             if mview.is_binary(new_node.content_type, new_node.path):
                 return None
-            old_content = old_node.get_content().read()
+            old_content = _read_content(old_node)
             if mview.is_binary(content=old_content):
                 return None
-            new_content = new_node.get_content().read()
+            new_content = _read_content(new_node)
             if mview.is_binary(content=new_content):
                 return None
 
@@ -719,7 +719,7 @@ class ChangesetModule(Component):
                     continue
                 if mimeview.is_binary(old_node.content_type, old_node.path):
                     continue
-                old_content = old_node.get_content().read()
+                old_content = _read_content(old_node)
                 if mimeview.is_binary(content=old_content):
                     continue
                 old_node_info = (old_node.path, old_node.rev)
@@ -730,7 +730,7 @@ class ChangesetModule(Component):
                     continue
                 if mimeview.is_binary(new_node.content_type, new_node.path):
                     continue
-                new_content = new_node.get_content().read()
+                new_content = _read_content(new_node)
                 if mimeview.is_binary(content=new_content):
                     continue
                 new_node_info = (new_node.path, new_node.rev)
@@ -1226,3 +1226,8 @@ class AnyDiffModule(Component):
 
         add_script(req, 'common/js/suggest.js')
         return 'diff_form.html', data, None
+
+
+def _read_content(node):
+    with content_closing(node.get_content()) as content:
+        return content.read()

@@ -1198,6 +1198,12 @@ class FileContentStream(object):
                                                    node._scoped_path_utf8,
                                                    self.pool()))
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, et, ev, tb):
+        self.close()
+
     def __del__(self):
         self.close()
 
