@@ -16,6 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
+from __future__ import with_statement
+
 from itertools import izip
 from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -29,8 +31,22 @@ from trac.versioncontrol.api import EmptyChangeset, NoSuchChangeset, \
                                     NoSuchNode
 from trac.web.api import RequestDone
 
-__all__ = ['get_changes', 'get_path_links', 'get_existing_node',
-           'get_allowed_node', 'make_log_graph', 'render_zip']
+__all__ = ['content_closing', 'get_changes', 'get_path_links',
+           'get_existing_node', 'get_allowed_node', 'make_log_graph',
+           'render_zip']
+
+
+class content_closing(object):
+
+    def __init__(self, content):
+        self.content = content
+
+    def __enter__(self):
+        return self.content
+
+    def __exit__(self, *exc_info):
+        if hasattr(self.content, 'close'):
+            self.content.close()
 
 
 def get_changes(repos, revs, log=None):
@@ -223,7 +239,10 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
                 kwargs = {'mtime': node.last_modified}
                 data = None
                 if node.isfile:
-                    data = node.get_processed_content(eol_hint='CRLF').read()
+                    with content_closing(
+                            node.get_processed_content(eol_hint='CRLF')) \
+                            as content:
+                        data = content.read()
                     props = node.get_properties()
                     # Subversion specific
                     if 'svn:special' in props and data.startswith('link '):
