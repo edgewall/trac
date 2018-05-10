@@ -37,7 +37,16 @@ class ISearchSource(Interface):
         being the name of the tuples returned by `get_search_events`.
 
         The events returned by this function must be tuples of the form
-        `(href, title, date, author, excerpt).`
+        `(href, title, date, author, excerpt)`. Optionally, a sixth value
+        `order` could be included:
+
+        `order` is supposed to contain a quadtuple which is to be composed of
+        * rating for pagename/filename
+        * rating for headings
+        * rating for description/content
+        * timestamp
+        Rating are evaluated in this order.
+        In each case, a higher value will signify a more relevant search result.
         """
 
 

@@ -197,6 +197,16 @@ class TicketModule(Component):
             yield ('ticket', _("Tickets"))
 
     def get_search_results(self, req, terms, filters):
+        def summary_rating(summary, query):
+            query = query.lower()
+            summary = summary.lower()
+            return summary.count(query)
+
+        def description_rating(description, query):
+            query = query.lower()
+            description = description.lower()
+            return description.count(query)
+
         if 'ticket' not in filters:
             return
         ticket_realm = Resource(self.realm)
@@ -223,6 +233,7 @@ class TicketModule(Component):
                           args + args2 + args3):
                 t = ticket_realm(id=tid)
                 if 'TICKET_VIEW' in req.perm(t):
+                    order = (summary_rating(summary, terms[0]), 0, description_rating(desc, terms[0]), ts)
                     yield (req.href.ticket(tid),
                            tag_("%(title)s: %(message)s",
                                 title=tag.span(
@@ -231,7 +242,8 @@ class TicketModule(Component):
                                 message=ticketsystem.format_summary(
                                     summary, status, resolution, type)),
                            from_utimestamp(ts), author,
-                           shorten_result(desc, terms))
+                           shorten_result(desc, terms),
+                           order)
 
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(

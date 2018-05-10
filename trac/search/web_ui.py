@@ -234,7 +234,12 @@ class SearchModule(Component):
         for source in self.search_sources:
             results.extend(source.get_search_results(req, terms, filters)
                            or [])
-        return sorted(results, key=lambda x: x[2], reverse=True)
+        # backwarts compatibility: add empty order parameter if none is included
+        results = [x if len(x) == 6 else x + (0, 0, 0, 0) for x in results]
+        # sort by order parameter
+        sortedresults = sorted(results, key=lambda x: x[5], reverse=True)
+        # remove order parameter
+        return [(href, title, date, author, excerpt) for (href, title, date, author, excerpt, order) in sortedresults]
 
     def _prepare_results(self, req, filters, results):
         page = req.args.getint('page', 1, min=1)
