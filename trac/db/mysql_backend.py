@@ -38,10 +38,9 @@ try:
     import MySQLdb
     import MySQLdb.cursors
 except ImportError:
-    has_mysqldb = False
+    MySQLdb = None
     mysqldb_version = None
 else:
-    has_mysqldb = True
     mysqldb_version = get_pkginfo(MySQLdb).get('version', MySQLdb.__version__)
 
     class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
@@ -109,9 +108,7 @@ class MySQLConnector(Component):
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if not has_mysqldb:
-            self.error = _("Cannot load Python bindings for MySQL")
-        yield ('mysql', -1 if self.error else 1)
+        yield 'mysql', 1
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
