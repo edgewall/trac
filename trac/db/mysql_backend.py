@@ -96,7 +96,6 @@ class MySQLConnector(Component):
 
     def __init__(self):
         self._mysql_version = None
-        self.error = None
 
     # ISystemInfoProvider methods
 
