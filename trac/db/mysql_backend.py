@@ -33,17 +33,12 @@ from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
 
-has_pymysql = False
-pymsql_version = None
-
 try:
     import pymysql
 except ImportError:
-    pass
+    pymysql = None
+    pymsql_version = None
 else:
-    has_pymysql = True
-
-if has_pymysql:
     pymsql_version = get_pkginfo(pymysql).get('version', pymysql.__version__)
 
     class MySQLUnicodeCursor(pymysql.cursors.Cursor):
@@ -102,20 +97,17 @@ class MySQLConnector(Component):
         """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
-        if has_pymysql:
+        if pymysql:
             self._mysql_version = \
                 'server: (not-connected), client: "%s", thread-safe: %s' % \
                 (pymysql.get_client_info(), pymysql.thread_safe())
         else:
             self._mysql_version = None
-        self.error = None
 
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if not has_pymysql:
-            self.error = _("Cannot load Python bindings for MySQL")
-        yield ('mysql', -1 if self.error else 1)
+        yield 'mysql', 1
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
@@ -286,9 +278,8 @@ class MySQLConnector(Component):
         return dest_file
 
     def get_system_info(self):
-        if has_pymysql:
-            yield 'MySQL', self._mysql_version
-            yield pymysql.__name__, pymsql_version
+        yield 'MySQL', self._mysql_version
+        yield pymysql.__name__, pymsql_version
 
     # IEnvironmentSetupParticipant methods
 

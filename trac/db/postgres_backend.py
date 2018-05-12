@@ -18,6 +18,7 @@ from ctypes.util import find_library
 import ctypes
 import os
 import re
+from pkg_resources import DistributionNotFound
 
 from trac.core import *
 from trac.config import Option
@@ -37,12 +38,8 @@ try:
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString
 except ImportError:
-    has_psycopg = False
-    psycopg = None
-    psycopg2_version = None
-    _libpq_pathname = None
+    raise DistributionNotFound('psycopg2>=2.0 or psycopg2-binary', ['Trac'])
 else:
-    has_psycopg = True
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
@@ -134,20 +131,14 @@ class PostgreSQLConnector(Component):
         """Location of pg_dump for Postgres database backups""")
 
     def __init__(self):
-        if has_psycopg:
-            self._postgresql_version = \
-                'server: (not-connected), client: %s' % \
-                _version_string(self._client_version)
-        else:
-            self._postgresql_version = None
-        self.error = None
+        self._postgresql_version = \
+            'server: (not-connected), client: %s' % \
+            _version_string(self._client_version)
 
     # IDatabaseConnector methods
 
     def get_supported_schemes(self):
-        if not has_psycopg:
-            self.error = _("Cannot load Python bindings for PostgreSQL")
-        yield 'postgres', -1 if self.error else 1
+        yield 'postgres', 1
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
@@ -292,9 +283,8 @@ class PostgreSQLConnector(Component):
         return dest_file
 
     def get_system_info(self):
-        if has_psycopg:
-            yield 'PostgreSQL', self._postgresql_version
-            yield 'psycopg2', psycopg2_version
+        yield 'PostgreSQL', self._postgresql_version
+        yield 'psycopg2', psycopg2_version
 
     @lazy
     def _client_version(self):

@@ -39,9 +39,6 @@ except ImportError:
 else:
     locale_en = Locale.parse('en_US')
 
-import trac.db.mysql_backend
-import trac.db.postgres_backend
-import trac.db.sqlite_backend
 import trac.log
 from trac.config import Configuration
 from trac.core import ComponentManager, ComponentMeta, TracError
@@ -307,8 +304,11 @@ def get_dburi():
                 not db_prop.get('params', {}).get('synchronous'):
             # Speed-up tests with SQLite database
             dburi += ('&' if '?' in dburi else '?') + 'synchronous=off'
-        return dburi
-    return 'sqlite::memory:'
+    else:
+        scheme = 'sqlite'
+        dburi = '%s::memory:' % scheme
+    __import__('trac.db.%s_backend' % scheme)
+    return dburi
 
 
 class EnvironmentStub(Environment):

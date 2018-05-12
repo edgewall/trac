@@ -11,13 +11,17 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import pkg_resources
 import re
 import unittest
 
 from trac.db.api import DatabaseManager
-from trac.db.postgres_backend import PostgreSQLConnector, assemble_pg_dsn
 from trac.db.schema import Table, Column, Index
 from trac.test import EnvironmentStub, get_dburi
+try:
+    from trac.db.postgres_backend import PostgreSQLConnector, assemble_pg_dsn
+except pkg_resources.DistributionNotFound:
+    PostgreSQLConnector = assemble_pg_dsn = None
 
 
 class PostgresTableCreationSQLTest(unittest.TestCase):
@@ -318,10 +322,11 @@ class PostgresConnectionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
-    suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
-    if get_dburi().startswith('postgres:'):
-        suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
+    if PostgreSQLConnector:
+        suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
+        suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
+        if get_dburi().startswith('postgres:'):
+            suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
     return suite
 
 

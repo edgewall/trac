@@ -102,6 +102,8 @@ setup(
         'babel': ['Babel>=0.9.5'],
         'mysql': ['PyMySQL'],
         'postgresql': ['psycopg2 >= 2.0'],
+        'psycopg2': ['psycopg2 >= 2.0'],
+        'psycopg2-binary': ['psycopg2-binary'],
         'pygments': ['Pygments>=1.0'],
         'rest': ['docutils>=0.3.9'],
         'textile': ['textile>=2.0'],
@@ -118,7 +120,7 @@ setup(
         trac.admin.web_ui = trac.admin.web_ui
         trac.attachment = trac.attachment
         trac.db.mysql = trac.db.mysql_backend[mysql]
-        trac.db.postgres = trac.db.postgres_backend[postgresql]
+        trac.db.postgres = trac.db.postgres_backend
         trac.db.sqlite = trac.db.sqlite_backend
         trac.mimeview.patch = trac.mimeview.patch
         trac.mimeview.pygments = trac.mimeview.pygments[pygments]
