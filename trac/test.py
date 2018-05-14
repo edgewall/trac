@@ -19,6 +19,7 @@
 
 import abc
 import doctest
+import importlib
 import inspect
 import io
 import logging
@@ -307,7 +308,7 @@ def get_dburi():
     else:
         scheme = 'sqlite'
         dburi = '%s::memory:' % scheme
-    __import__('trac.db.%s_backend' % scheme)
+    importlib.import_module('trac.db.%s_backend' % scheme)
     return dburi
 
 
