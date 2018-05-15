@@ -40,6 +40,10 @@ CACHE_YOUNGEST_REV = 'youngest_rev'
 CACHE_METADATA_KEYS = (CACHE_REPOSITORY_DIR, CACHE_YOUNGEST_REV)
 
 
+def _norm_reponame(repos):
+    return repos.reponame or '(default)'
+
+
 class CachedRepository(Repository):
 
     has_linear_changesets = False
@@ -126,18 +130,20 @@ class CachedRepository(Repository):
         if youngest:
             youngest = self.repos.normalize_rev(youngest)
             if not youngest:
-                self.log.debug('normalize_rev failed (youngest_rev=%r)',
-                               self.youngest_rev)
+                self.log.debug("normalize_rev failed (youngest_rev=%r, "
+                               "reponame=%s)",
+                               self.youngest_rev, _norm_reponame(self))
         else:
-            self.log.debug('cache metadata undefined (youngest_rev=%r)',
-                           self.youngest_rev)
+            self.log.debug("cache metadata undefined (youngest_rev=%r, "
+                           "reponame=%s)",
+                           self.youngest_rev, _norm_reponame(self))
             youngest = None
 
         # -- compare them and try to resync if different
         next_youngest = None
         if youngest != repos_youngest:
-            self.log.info("repos rev [%s] != cached rev [%s]",
-                          repos_youngest, youngest)
+            self.log.info("repos rev [%s] != cached rev [%s] in '%s'",
+                          repos_youngest, youngest, _norm_reponame(self))
             if youngest:
                 next_youngest = self.repos.next_rev(youngest)
             else:
@@ -174,15 +180,22 @@ class CachedRepository(Repository):
                 srev = self.db_rev(next_youngest)
 
                 with self.env.db_transaction as db:
-                    self.log.info("Trying to sync revision [%s]",
-                                  next_youngest)
+                    self.log.info("Trying to sync revision [%s] in '%s'",
+                                  next_youngest, _norm_reponame(self))
                     cset = self.repos.get_changeset(next_youngest)
                     try:
                         # steps 1. and 2.
                         self.insert_changeset(next_youngest, cset)
                     except Exception as e: # *another* 1.1. resync attempt won
-                        self.log.warning('Revision %s already cached: %r',
-                                         next_youngest, e)
+                        if isinstance(e, self.env.db_exc.IntegrityError):
+                            self.log.warning("Revision %s in '%s' already "
+                                             "cached: %r", next_youngest,
+                                             _norm_reponame(self), e)
+                        else:
+                            self.log.error("Unable to create cache records "
+                                           "for revision %s in '%s': %r",
+                                           next_youngest, _norm_reponame(self),
+                                           e)
                         # the other resync attempts is also
                         # potentially still in progress, so for our
                         # process/thread, keep ''previous'' notion of
@@ -209,7 +222,7 @@ class CachedRepository(Repository):
 
     def remove_cache(self):
         """Remove the repository cache."""
-        self.log.info("Cleaning cache")
+        self.log.info("Cleaning cache in '%s'", _norm_reponame(self))
         with self.env.db_transaction as db:
             db("DELETE FROM revision WHERE repos=%s",
                (self.id,))
@@ -242,7 +255,7 @@ class CachedRepository(Repository):
                                       "you should resynchronize the "
                                       "repository with: trac-admin $ENV "
                                       "repository resync '%(reponame)s'",
-                                      reponame=self.reponame or '(default)'))
+                                      reponame=_norm_reponame(self)))
             elif repository_dir is None: #
                 self.log.info('Storing initial "repository_dir": %s',
                               self.name)
@@ -288,7 +301,8 @@ class CachedRepository(Repository):
         # 2. now *only* one process was able to get there (i.e. there
         # *shouldn't* be any race condition here)
         for path, kind, action, bpath, brev in cset.get_changes():
-            self.log.debug("Caching node change in [%s]: %r", rev,
+            self.log.debug("Caching node change in [%s] in '%s': %r",
+                           rev, _norm_reponame(self.repos),
                            (path, kind, action, bpath, brev))
             kind = _inverted_kindmap[kind]
             action = _inverted_actionmap[action]
@@ -494,8 +508,8 @@ class CachedChangeset(Changeset):
                                date)
             break
         else:
-            repos.log.debug("Missing revision record (%r, %r) in %s", repos.id,
-                            drev, repos.reponame or '(default)')
+            repos.log.debug("Missing revision record (%r, %r) in '%s'",
+                            repos.id, drev, _norm_reponame(repos))
             raise NoSuchChangeset(rev)
 
     def get_changes(self):
