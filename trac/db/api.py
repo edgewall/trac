@@ -544,7 +544,7 @@ class DatabaseManager(Component):
                       name, dbver, version)
         return True
 
-    def upgrade(self, version, name='database_version', pkg=None):
+    def upgrade(self, version, name='database_version', pkg='trac.upgrades'):
         """Invokes `do_upgrade(env, version, cursor)` in module
         `"%s/db%i.py" % (pkg, version)`, for each required version upgrade.
 

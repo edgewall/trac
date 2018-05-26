@@ -883,8 +883,7 @@ class EnvironmentSetup(Component):
         return DatabaseManager(self.env).needs_upgrade(db_default.db_version)
 
     def upgrade_environment(self):
-        DatabaseManager(self.env).upgrade(db_default.db_version,
-                                          pkg='trac.upgrades')
+        DatabaseManager(self.env).upgrade(db_default.db_version)
         self._update_sample_config()
 
     # Internal methods
