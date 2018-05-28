@@ -614,7 +614,7 @@ def fq_class_name(obj):
     """Return the fully qualified class name of given object."""
     c = type(obj)
     m, n = c.__module__, c.__name__
-    return n if m == '__builtin__' else '%s.%s' % (m, n)
+    return n if m in ('__builtin__', 'builtins') else '%s.%s' % (m, n)
 
 
 def arity(f):

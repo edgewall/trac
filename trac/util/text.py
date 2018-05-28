@@ -18,7 +18,6 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christian Boos <cboos@edgewall.org>
 
-import __builtin__
 import locale
 import os
 import re
@@ -28,7 +27,7 @@ from unicodedata import east_asian_width
 
 import jinja2
 from six import unichr
-from six.moves import range
+from six.moves import input, range
 from six.moves.urllib.parse import quote, quote_plus, unquote
 
 CRLF = '\r\n'
@@ -361,7 +360,7 @@ def raw_input(prompt):
     appropriate.
     """
     printout(prompt, newline=False)
-    return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
+    return to_unicode(input(), sys.stdin.encoding)
 
 
 _preferredencoding = locale.getpreferredencoding()
