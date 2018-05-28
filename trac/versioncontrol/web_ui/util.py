@@ -16,8 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
-from __future__ import with_statement
-
 from itertools import izip
 from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
