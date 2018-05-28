@@ -21,7 +21,6 @@
 import io
 import re
 import sys
-import htmlentitydefs as entities
 
 from markupsafe import Markup, escape as escape_quotes
 
@@ -57,6 +56,7 @@ except ImportError:
 
 import six
 from six import unichr
+from six.moves import html_entities as entities
 from six.moves.html_parser import HTMLParser
 
 from trac.core import TracError
