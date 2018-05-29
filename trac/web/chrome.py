@@ -973,7 +973,7 @@ class Chrome(Component):
             nav_items.setdefault(category, [])
             for name, attributes in \
                     sorted(category_items.iteritems(),
-                           key=lambda (name, attr): (attr['order'], name)):
+                           key=lambda name_attr: (name_attr[1]['order'], name_attr[0])):
                 if attributes['enabled'] and attributes['link'] and \
                         (not attributes['perm'] or
                          attributes['perm'] in req.perm):
