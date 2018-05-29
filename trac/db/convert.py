@@ -100,7 +100,7 @@ def get_replace_cast(src_db, dst_db, src_dburi, dst_dburi):
         match = type_re.search(db.cast('name', type))
         return match.group(1)
 
-    type_maps = dict(filter(lambda (src, dst): src != dst.lower(),
+    type_maps = dict(filter(lambda src_dst: src_dst[0] != src_dst[1].lower(),
                             ((cast_type(src_db, t).lower(),
                               cast_type(dst_db, t))
                              for t in ('text', 'int', 'int64'))))
