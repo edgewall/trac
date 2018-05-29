@@ -19,7 +19,6 @@
 from __future__ import print_function
 
 import cgi
-import dircache
 import fnmatch
 from functools import partial
 import gc
@@ -544,7 +543,6 @@ def dispatch_request(environ, start_response):
     environ.setdefault('trac.base_url',
                        os.getenv('TRAC_BASE_URL'))
 
-
     locale.setlocale(locale.LC_ALL, environ['trac.locale'])
 
     # Determine the environment
@@ -883,14 +881,12 @@ def get_environments(environ, warn=False):
     env_parent_dir = environ.get('trac.env_parent_dir')
     if env_parent_dir:
         env_parent_dir = os.path.normpath(env_parent_dir)
-        paths = dircache.listdir(env_parent_dir)[:]
-        dircache.annotate(env_parent_dir, paths)
-
         # Filter paths that match the .tracignore patterns
         ignore_patterns = get_tracignore_patterns(env_parent_dir)
-        paths = [path[:-1] for path in paths if path[-1] == '/'
-                 and not any(fnmatch.fnmatch(path[:-1], pattern)
-                             for pattern in ignore_patterns)]
+        paths = [name for name in os.listdir(env_parent_dir)
+                      if os.path.isdir(os.path.join(env_parent_dir, name)) and
+                      not any(fnmatch.fnmatch(name, pattern)
+                              for pattern in ignore_patterns)]
         env_paths.extend(os.path.join(env_parent_dir, project)
                          for project in paths)
     envs = {}
