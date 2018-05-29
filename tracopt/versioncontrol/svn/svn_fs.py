@@ -436,7 +436,7 @@ class SubversionRepository(Repository):
                     self.log.debug("%r cannot be normalized in %s: out of [0, "
                                    "%r]", rev, self.reponame or '(default)',
                                    self.youngest_rev)
-            except (ValueError, TypeError), e:
+            except (ValueError, TypeError) as e:
                 self.log.debug("%r cannot be normalized in %s: %s", rev,
                                self.reponame or '(default)',
                                exception_to_unicode(e))
@@ -1100,7 +1100,7 @@ class SubversionChangeset(Changeset):
     def _get_prop(self, name):
         try:
             return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool())
-        except core.SubversionException, e:
+        except core.SubversionException as e:
             self.log.debug("%r of the %r cannot be retrieved", name, self.rev)
             raise
 
