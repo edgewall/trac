@@ -1020,8 +1020,8 @@ class ChangesetModule(Component):
                 labels.append(tag.span(name, class_='trac-bookmark'))
             return title if not labels else tag(title, labels)
         elif field == 'summary':
-            return _("%(title)s: %(message)s",
-                     title=title, message=shorten_line(message))
+            return tag_("%(title)s: %(message)s",
+                        title=title, message=shorten_line(message))
 
     # IWikiSyntaxProvider methods
 
