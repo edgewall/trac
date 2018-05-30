@@ -13,6 +13,7 @@
 
 import doctest
 import io
+import sys
 import unittest
 
 from trac.core import TracError
@@ -113,7 +114,7 @@ class FormTokenInjectorTestCase(unittest.TestCase):
         self.assertEqual(html, injector.out.getvalue())
 
 
-class TracHTMLSanitizerTestCase(unittest.TestCase):
+class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
 
     safe_schemes = ('http', 'data')
     safe_origins = ('data:', 'http://example.net', 'https://example.org/')
@@ -241,8 +242,7 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         self.assertEqual('<div>XSS</div>', self.sanitize(html))
 
     def test_cross_origin(self):
-        def test(expected, content):
-            self.assertEqual(expected, self.sanitize(content))
+        test = self._assert_sanitize
 
         test(u'<img src="data:image/png,...."/>',
              u'<img src="data:image/png,...."/>')
@@ -278,13 +278,85 @@ class TracHTMLSanitizerTestCase(unittest.TestCase):
         test(u'<div style="background:url(qux.png)">safe</div>',
              u'<div style="background:url(qux.png)">safe</div>')
 
+    def test_special_characters_data(self):
+        test = self._assert_sanitize
+        test(u'<p>&amp;hellip;</p>',     u'<p>&amp;hellip;</p>')
+        test(u'<p>&amp;</p>',            u'<p>&amp;</p>')
+        test(u'<p>&amp;</p>',            u'<p>&</p>')
+        test(u'<p>&amp;&lt;&gt;</p>',    u'<p>&<></p>')
+        test(u'<p>&amp;&amp;</p>',       u'<p>&amp;&amp;</p>')
+        test(u'<p>&amp;\u2026</p>',      u'<p>&amp;&hellip;</p>')
+        test(u"<p>&amp;unknown;</p>",    u'<p>&unknown;</p>')
+        test(u"<p>\U0010ffff</p>",       u'<p>&#1114111;</p>')
+        test(u"<p>\U0010ffff</p>",       u'<p>&#x10ffff;</p>')
+        test(u"<p>\U0010ffff</p>",       u'<p>&#X10FFFF;</p>')
+        test(u"<p>&amp;#1114112;</p>",   u'<p>&#1114112;</p>')
+        test(u"<p>&amp;#x110000;</p>",   u'<p>&#x110000;</p>')
+        test(u"<p>&amp;#X110000;</p>",   u'<p>&#X110000;</p>')
+        test(u"<p>&amp;#abcd;</p>",      u'<p>&#abcd;</p>')
+        test(u'<p>&amp;#%d;</p>' % (sys.maxint + 1),
+             u'<p>&#%d;</p>' % (sys.maxint + 1))
+
+    def test_special_characters_attribute(self):
+        self._assert_sanitize(u'<img title="&amp;"/>', u'<img title="&amp;"/>')
+        self._assert_sanitize(u'''<img title="&amp;&lt;&gt;&#34;'"/>''',
+                              u'''<img title="&amp;&lt;&gt;&quot;&apos;"/>''')
+        self._assert_sanitize(u'''<img title="&amp;&lt;&gt;&#34;'"/>''',
+                              u'''<img title="&#38;&#60;&#62;&#34;&#39;"/>''')
+        self._assert_sanitize(u"""<img title="&amp;&lt;&gt;'"/>""",
+                              u"""<img title="&<>'"/>""")
+        self._assert_sanitize(u'<img title="&amp;&amp;"/>',
+                              u'<img title="&amp;&amp;"/>')
+        self._assert_sanitize(u'<img title="&amp;\u2026"/>',
+                              u'<img title="&amp;&hellip;"/>')
+        self._assert_sanitize(u'<img title="&amp;hellip;"/>',
+                              u'<img title="&amp;hellip;"/>')
+        self._assert_sanitize(u'<img title="&amp;unknown;"/>',
+                              u'<img title="&unknown;"/>')
+        self._assert_sanitize(u'<img title="\U0010ffff"/>',
+                              u'<img title="&#1114111;"/>')
+        self._assert_sanitize(u'<img title="\U0010ffff"/>',
+                              u'<img title="&#x10ffff;"/>')
+        self._assert_sanitize(u'<img title="\U0010ffff"/>',
+                              u'<img title="&#X10FFFF;"/>')
+        self._assert_sanitize(u'<img title="&amp;#1114112;"/>',
+                              u'<img title="&#1114112;"/>')
+        self._assert_sanitize(u'<img title="&amp;#x110000;"/>',
+                              u'<img title="&#x110000;"/>')
+        self._assert_sanitize(u'<img title="&amp;#X110000;"/>',
+                              u'<img title="&#X110000;"/>')
+        self._assert_sanitize(u'<img title="&amp;#abcd;"/>',
+                              u'<img title="&#abcd;"/>')
+        self._assert_sanitize(u'<img title="&amp;#%d;"/>' % (sys.maxint + 1),
+                              u'<img title="&#%d;"/>' % (sys.maxint + 1))
+
+    def _assert_sanitize(self, expected, content):
+        self.assertEqual(expected, self.sanitize(content))
+
+
+class TracHTMLSanitizerTestCase(TracHTMLSanitizerTestCaseBase):
+
+    def test_special_characters_data_jinja2(self):
+        test = self._assert_sanitize
+        test(u"<p>&amp;&lt;&gt;&#34;'</p>",
+             u'<p>&amp;&lt;&gt;&quot;&apos;</p>')
+        test(u"<p>&amp;&lt;&gt;&#34;'</p>",
+             u'<p>&#38;&#60;&#62;&#34;&#39;</p>')
+
 
 if genshi:
-    class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCase):
+    class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCaseBase):
         def sanitize(self, html):
             sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes,
                                           safe_origins=self.safe_origins)
             return unicode(HTML(html, encoding='utf-8') | sanitizer)
+
+        def test_special_characters_data_genshi(self):
+            test = self._assert_sanitize
+            test(u'''<p>&amp;&lt;&gt;"'</p>''',
+                 u'<p>&amp;&lt;&gt;&quot;&apos;</p>')
+            test(u'''<p>&amp;&lt;&gt;"'</p>''',
+                 u'<p>&#38;&#60;&#62;&#34;&#39;</p>')
 
 
 class FindElementTestCase(unittest.TestCase):

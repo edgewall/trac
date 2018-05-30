@@ -20,6 +20,7 @@
 
 import io
 import re
+import sys
 from HTMLParser import HTMLParser
 import htmlentitydefs as entities
 
@@ -39,7 +40,7 @@ If Genshi is not installed, `genshi` and all related symbols will be
 
 try:
     import genshi
-    from genshi import HTML
+    import genshi.input
     from genshi.core import Attrs, QName, Stream, COMMENT, START, END, TEXT
     from genshi.input import ParseError
     def stream_to_unicode(stream):
@@ -62,6 +63,10 @@ __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
            'find_element', 'html', 'is_safe_origin', 'plaintext', 'tag',
            'to_fragment', 'stripentities', 'striptags', 'valid_html_bytes',
            'unescape']
+
+
+_name2codepoint = entities.name2codepoint.copy()
+_name2codepoint['apos'] = 39  # single quote
 
 
 def escape(str, quotes=True):
@@ -174,17 +179,17 @@ def stripentities(text, keepxmlentities=False):
     def _replace_entity(match):
         if match.group(1): # numeric entity
             ref = match.group(1)
-            if ref.startswith('x'):
+            if ref.startswith(('x', 'X')):
                 ref = int(ref[1:], 16)
             else:
                 ref = int(ref, 10)
-            return unichr(ref)
+            return _unichr(ref)
         else: # character entity
             ref = match.group(2)
             if keepxmlentities and ref in ('amp', 'apos', 'gt', 'lt', 'quot'):
                 return '&%s;' % ref
             try:
-                return unichr(entities.name2codepoint[ref])
+                return _unichr(_name2codepoint[ref])
             except KeyError:
                 if keepxmlentities:
                     return '&amp;%s;' % ref
@@ -761,7 +766,8 @@ class TracHTMLSanitizer(object):
         """
         new_attrs = {}
         for attr, value in attrs.iteritems():
-            value = stripentities(value) if value is not None else attr
+            if value is None:
+                value = attr
             if attr not in self.safe_attrs:
                 continue
             elif attr in self.uri_attrs:
@@ -844,7 +850,7 @@ class TracHTMLSanitizer(object):
             t = match.group(1)
             if t:
                 code = int(t, 16)
-                chr = unichr(code)
+                chr = _unichr(code)
                 if code <= 0x1f:
                     # replace space character because IE ignores control
                     # characters
@@ -913,33 +919,69 @@ class HTMLTransform(HTMLParser):
     def __init__(self, out):
         HTMLParser.__init__(self)
         self.out = out
+        if isinstance(out, io.TextIOBase):
+            self._convert = lambda v: v.decode('utf-8') \
+                                      if isinstance(v, bytes) else v
+        elif isinstance(out, io.IOBase):
+            self._convert = lambda v: v.encode('utf-8') \
+                                      if isinstance(v, unicode) else v
+        else:
+            self._convert = lambda v: v
 
     def handle_starttag(self, tag, attrs):
-        self.out.write(self.get_starttag_text())
+        self._write(self.get_starttag_text())
 
     def handle_startendtag(self, tag, attrs):
-        self.out.write(self.get_starttag_text())
+        self._write(self.get_starttag_text())
 
     def handle_charref(self, name):
-        self.out.write('&#%s;' % name)
+        self._handle_charref(name)
 
     def handle_entityref(self, name):
-        self.out.write('&%s;' % name)
+        self._handle_entityref(name)
 
     def handle_comment(self, data):
-        self.out.write('<!--%s-->' % data)
+        self._write('<!--%s-->' % data)
 
     def handle_decl(self, data):
-        self.out.write('<!%s>' % data)
+        self._write('<!%s>' % data)
 
     def handle_pi(self, data):
-        self.out.write('<?%s?>' % data)
+        self._write('<?%s?>' % data)
 
     def handle_data(self, data):
-        self.out.write(data)
+        self._write(data)
 
     def handle_endtag(self, tag):
-        self.out.write('</' + tag + '>')
+        self._write('</' + tag + '>')
+
+    def unescape(self, s):
+        return _html_parser_unescape(s)
+
+    _codepoint2ref = {38: '&amp;', 60: '&lt;', 62: '&gt;', 34: '&#34;'}
+
+    def _handle_charref(self, name):
+        if name.startswith(('x', 'X')):
+            codepoint = int(name[1:], 16)
+        else:
+            codepoint = int(name)
+        if 0 <= codepoint <= 0x10ffff:
+            text = self._codepoint2ref.get(codepoint) or _unichr(codepoint)
+        else:
+            text = '&amp;#%s;' % name
+        self._write(text)
+
+    def _handle_entityref(self, name):
+        try:
+            codepoint = _name2codepoint[name]
+        except KeyError:
+            text = '&amp;%s;' % name
+        else:
+            text = self._codepoint2ref.get(codepoint) or _unichr(codepoint)
+        self._write(text)
+
+    def _write(self, data):
+        self.out.write(self._convert(data))
 
 
 class FormTokenInjector(HTMLTransform):
@@ -958,8 +1000,8 @@ class FormTokenInjector(HTMLTransform):
         if tag.lower() == 'form':
             for name, value in attrs:
                 if name == 'method' and value.lower() == 'post':
-                    self.out.write('<input type="hidden" name="__FORM_TOKEN"'
-                                   ' value="%s"/>' % self.token)
+                    self._write('<input type="hidden" name="__FORM_TOKEN"'
+                                ' value="%s"/>' % self.token)
                     break
 
 class HTMLSanitization(HTMLTransform):
@@ -980,7 +1022,7 @@ class HTMLSanitization(HTMLTransform):
         new_attrs = self.sanitizer.sanitize_attrs(tag, dict(attrs))
         html_attrs = ''.join(' %s="%s"' % (name, escape(value))
                              for name, value in new_attrs.iteritems())
-        self.out.write('<%s%s%s>' % (tag, html_attrs, startend))
+        self._write('<%s%s%s>' % (tag, html_attrs, startend))
 
     def handle_starttag(self, tag, attrs):
         if not self.waiting_for:
@@ -992,33 +1034,33 @@ class HTMLSanitization(HTMLTransform):
 
     def handle_charref(self, name):
         if not self.waiting_for:
-            self.out.write('&#%s;' % name)
+            self._handle_charref(name)
 
     def handle_entityref(self, name):
         if not self.waiting_for:
-            self.out.write('&%s;' % name)
+            self._handle_entityref(name)
 
     def handle_comment(self, data):
         pass
 
     def handle_decl(self, data):
         if not self.waiting_for:
-            self.out.write('<!%s>' % data)
+            self._write('<!%s>' % data)
 
     def handle_pi(self, data):
         if not self.waiting_for:
-            self.out.write('<?%s?>' % data.replace('?>', ''))
+            self._write('<?%s?>' % data.replace('?>', ''))
 
     def handle_data(self, data):
         if not self.waiting_for:
-            self.out.write(data)
+            self._write(escape(data))
 
     def handle_endtag(self, tag):
         if self.waiting_for:
             if self.waiting_for == tag:
                 self.waiting_for = None
         else:
-            self.out.write('</' + tag + '>')
+            self._write('</' + tag + '>')
 
 
 def plaintext(text, keeplinebreaks=True):
@@ -1095,23 +1137,6 @@ def is_safe_origin(safe_origins, uri, req=None):
     return False
 
 
-def expand_markup(stream, ctxt=None):
-    """A Genshi stream filter for expanding `genshi.Markup` events.
-
-    Note: Expansion may not be possible if the fragment is badly
-    formed, or partial.
-    """
-    for event in stream:
-        if isinstance(event[1], Markup):
-            try:
-                for subevent in HTML(event[1]):
-                    yield subevent
-            except ParseError:
-                yield event
-        else:
-            yield event
-
-
 def to_fragment(input):
     """Convert input to a `Fragment` object."""
 
@@ -1133,7 +1158,99 @@ _invalid_control_chars = ''.join(chr(i) for i in xrange(32)
 def valid_html_bytes(bytes):
     return bytes.translate(_translate_nop, _invalid_control_chars)
 
+
+if sys.maxunicode > 0xffff:
+    _unichr = unichr
+else:
+    def _unichr(codepoint):  # narrow Python build
+        try:
+            return unichr(codepoint)
+        except ValueError:
+            if not (0 <= codepoint <= 0x10ffff):
+                raise
+            s = r'\U%08x' % codepoint
+            try:
+                return s.decode('unicode-escape')
+            except Exception as e:
+                raise ValueError(e)
+
+
+_reference_re = re.compile(r'&(?:#[xX][0-9a-fA-F]+|#[0-9]+|\w{1,8});')
+
+def _html_parser_unescape(s):
+    """This is to avoid an issue which HTMLParser.unescape() raises
+    ValueError or OverflowError from unichr() when character reference
+    with a large integer in the attribute.
+    """
+
+    def repl(match):
+        match = match.group(0)
+        name = match[1:-1]
+        if name.startswith(('#x', '#X')):
+            codepoint = int(name[2:], 16)
+        elif name.startswith('#'):
+            codepoint = int(name[1:])
+        else:
+            try:
+                codepoint = _name2codepoint[name]
+            except KeyError:
+                return match
+        if 0 <= codepoint <= 0x10ffff:
+            return _unichr(codepoint)
+        else:
+            return match
+
+    return _reference_re.sub(repl, s)
+
+
 if genshi:
+    class GenshiHTMLParserFixup(genshi.input.HTMLParser):
+
+        def handle_starttag(self, tag, attrib):
+            fixed_attrib = [(QName(name), name if value is None else value)
+                            for name, value in attrib]
+            self._enqueue(START, (QName(tag), Attrs(fixed_attrib)))
+            if tag in self._EMPTY_ELEMS:
+                self._enqueue(END, QName(tag))
+            else:
+                self._open_tags.append(tag)
+
+        def handle_charref(self, name):
+            if name.startswith(('x', 'X')):
+                codepoint = int(name[1:], 16)
+            else:
+                codepoint = int(name)
+            if 0 <= codepoint <= 0x10ffff:
+                text = _unichr(codepoint)
+            else:
+                text = '&#%s;' % name
+            self._enqueue(TEXT, text)
+
+        def handle_entityref(self, name):
+            text = None
+            try:
+                codepoint = _name2codepoint[name]
+            except KeyError:
+                pass
+            else:
+                if 0 <= codepoint <= 0x10ffff:
+                    text = _unichr(codepoint)
+            self._enqueue(TEXT, text or '&%s;' % name)
+
+        def unescape(self, s):
+            return _html_parser_unescape(s)
+
+
+    def HTML(text, encoding=None):
+        if isinstance(text, unicode):
+            f = io.StringIO(text)
+            encoding = None
+        else:
+            f = io.BytesIO(text)
+        parser = GenshiHTMLParserFixup(f, encoding=encoding)
+        return Stream(list(parser))
+
+
     def expand_markup(stream, ctxt=None):
         """A Genshi stream filter for expanding `genshi.Markup` events.
 
@@ -1152,3 +1269,5 @@ if genshi:
                     yield event
             else:
                 yield event
+else:
+    expand_markup = None
