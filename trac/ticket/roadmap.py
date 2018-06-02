@@ -1004,7 +1004,7 @@ class MilestoneModule(Component):
             by = self.default_group_by
         elif available_groups:
             by = available_groups[0]['name']
-        by = req.args.get('by', by)
+        by = req.args.getfirst('by', by)
 
         tickets = get_tickets_for_milestone(self.env, milestone=milestone.name,
                                             field=by)
