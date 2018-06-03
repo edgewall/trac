@@ -1049,7 +1049,7 @@ class QueryModule(Component):
                                     for (start, end) in zip(vals, ends)]
                     if k in remove_constraints:
                         idx = remove_constraints[k]
-                        if idx >= 0:
+                        if 0 <= idx < len(vals):
                             del vals[idx]
                             if not vals:
                                 continue
