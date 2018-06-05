@@ -97,12 +97,15 @@ def _quote(identifier):
 
 
 def _version_tuple(ver):
-
     if ver:
-        # Extract 9.1.23 from 90123.
-        def get_digit(version, n):
-            return version / 10 ** (2 * n) % 100
-        return get_digit(ver, 2), get_digit(ver, 1), get_digit(ver, 0)
+        major, minor = divmod(ver, 10000)
+        if major >= 10:
+            # Extract 10.4 from 100004.
+            return major, minor
+        else:
+            # Extract 9.1.23 from 90123.
+            minor, patch = divmod(minor, 100)
+            return major, minor, patch
 
 
 def _version_string(ver):
@@ -112,7 +115,6 @@ def _version_string(ver):
         return '.'.join(map(str, ver))
     else:
         return '(unknown)'
-
 
 
 class PostgreSQLConnector(Component):
@@ -145,18 +147,18 @@ class PostgreSQLConnector(Component):
         params.setdefault('schema', 'public')
         cnx = PostgreSQLConnection(path, log, user, password, host, port,
                                    params)
+        server_ver = _version_string(cnx.server_version)
+        client_ver = _version_string(self._client_version)
         if not self.required:
             if cnx.server_version < min_postgresql_version:
                 error = _(
                     "PostgreSQL version is %(version)s. Minimum required "
                     "version is %(min_version)s.",
-                    version='%d.%d.%d' % cnx.server_version,
-                    min_version='%d.%d.%d' % min_postgresql_version)
+                    version=server_ver,
+                    min_version=_version_string(min_postgresql_version))
                 raise TracError(error)
             self._postgresql_version = \
-                'server: %s, client: %s' \
-                % (_version_string(cnx.server_version),
-                   _version_string(self._client_version))
+                'server: %s, client: %s' % (server_ver, client_ver)
             self.required = True
         return cnx
 

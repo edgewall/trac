@@ -19,9 +19,10 @@ from trac.db.api import DatabaseManager
 from trac.db.schema import Table, Column, Index
 from trac.test import EnvironmentStub, get_dburi
 try:
-    from trac.db.postgres_backend import PostgreSQLConnector, assemble_pg_dsn
+    from trac.db.postgres_backend import (PostgreSQLConnector, _version_tuple,
+                                          assemble_pg_dsn)
 except pkg_resources.DistributionNotFound:
-    PostgreSQLConnector = assemble_pg_dsn = None
+    PostgreSQLConnector = _version_tuple = assemble_pg_dsn = None
 
 
 class PostgresTableCreationSQLTest(unittest.TestCase):
@@ -141,6 +142,15 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         self.assertEqual(
             ["dbname='/trac'", r"password='pa\\\'ss'", "user='user'"],
             sorted(assemble_pg_dsn('/trac', 'user', r"pa\'ss").split(' ')))
+
+    def test_version_tuple(self):
+        self.assertEqual((9, 0, 0), _version_tuple(90000))
+        self.assertEqual((9, 1, 23), _version_tuple(90123))
+        self.assertEqual((9, 98, 97), _version_tuple(99897))
+        self.assertEqual((10, 0), _version_tuple(100000))
+        self.assertEqual((10, 4), _version_tuple(100004))
+        self.assertEqual((10, 9999), _version_tuple(109999))
+        self.assertEqual((11, 0), _version_tuple(110000))
 
 
 class PostgresTableAlterationSQLTest(unittest.TestCase):
