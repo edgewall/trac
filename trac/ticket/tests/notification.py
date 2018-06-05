@@ -199,7 +199,7 @@ class RecipientTestCase(unittest.TestCase):
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
-            notify_ticket_created(self.env, ticket)
+            notify_ticket_changed(self.env, ticket)
             recipients = smtpd.get_recipients()
             if enabled:
                 self.assertEqual(1, len(recipients))
@@ -219,7 +219,7 @@ class RecipientTestCase(unittest.TestCase):
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
-            notify_ticket_created(self.env, ticket)
+            notify_ticket_changed(self.env, ticket)
             recipients = smtpd.get_recipients()
             if enabled:
                 self.assertEqual(1, len(recipients))
