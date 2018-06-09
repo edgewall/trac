@@ -30,7 +30,8 @@ from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
 from trac.ticket.notification import (
-    BatchTicketChangeEvent, TicketChangeEvent, TicketNotificationSystem)
+    BatchTicketChangeEvent, Subscription, TicketChangeEvent,
+    TicketNotificationSystem)
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import datetime_now, utc
@@ -229,6 +230,49 @@ class RecipientTestCase(unittest.TestCase):
 
         for enable in False, True:
             _test_reporter(enable)
+
+    def test_notify_new_tickets(self):
+        """Notification to NewTicketSubscribers."""
+        def _test_new_ticket():
+            ticket = Ticket(self.env)
+            ticket['reporter'] = 'user4'
+            ticket['owner'] = 'user5'
+            ticket['summary'] = 'New Ticket Subscribers'
+            ticket.insert()
+            notify_ticket_created(self.env, ticket)
+            return ticket
+
+        def _add_new_ticket_subscriber(sid, authenticated):
+            Subscription.add(self.env, {
+                'sid': sid, 'authenticated': authenticated,
+                'distributor': 'email', 'format': None, 'adverb': 'always',
+                'class': 'NewTicketSubscriber'
+            })
+
+        _test_new_ticket()
+        recipients = smtpd.get_recipients()
+        self.assertEqual(0, len(recipients))
+
+        self.env.insert_users([
+            ('user1', 'User One', 'joe@example.org', 1),
+            ('user2', 'User Two', 'bar@example.org', 1),
+            ('58bd3a', 'User Three', 'jim@example.org', 0),
+        ])
+        _add_new_ticket_subscriber('user1', 1)
+        _add_new_ticket_subscriber('58bd3a', 0)
+
+        ticket = _test_new_ticket()
+        recipients = smtpd.get_recipients()
+        self.assertEqual(2, len(recipients))
+        self.assertIn('joe@example.org', recipients)
+        self.assertIn('jim@example.org', recipients)
+
+        ticket.save_changes('user4', 'this is my comment',
+                            when=datetime_now(utc))
+        notify_ticket_changed(self.env, ticket)
+
+        recipients = smtpd.get_recipients()
+        self.assertEqual(0, len(recipients))
 
     def test_no_duplicates(self):
         """Email addresses should be found only once in the recipient list."""

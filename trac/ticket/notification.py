@@ -626,6 +626,31 @@ class TicketReporterSubscriber(Component):
         return True
 
 
+class NewTicketSubscriber(Component):
+    """Allows the users to subscribe to new tickets."""
+
+    implements(INotificationSubscriber)
+
+    # INotificationSubscriber methods
+
+    def matches(self, event):
+        if event.realm != 'ticket' or event.category != 'created':
+            return
+
+        klass = self.__class__.__name__
+        for s in Subscription.find_by_class(self.env, klass):
+            yield s.subscription_tuple()
+
+    def description(self):
+        return _("Any ticket is created")
+
+    def default_subscriptions(self):
+        return []
+
+    def requires_authentication(self):
+        return False
+
+
 class CarbonCopySubscriber(Component):
     """Carbon copy subscriber for cc ticket field."""
 
