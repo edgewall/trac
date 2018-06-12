@@ -73,9 +73,9 @@ def _make_environ(scheme='http', server_name='example.org',
     return environ
 
 
-def _make_req(environ, args={}, arg_list=(), authname='admin',
-              form_token='A' * 40, chrome=None, perm=MockPerm(),
-              tz=utc, locale=None, **kwargs):
+def _make_req(environ, authname='admin', chrome=None, form_token='A' * 40,
+              locale=None, perm=MockPerm(), tz=utc, use_xsendfile=False,
+              xsendfile_header='X-Sendfile'):
     if chrome is None:
         chrome = {
             'links': {},
@@ -85,33 +85,39 @@ def _make_req(environ, args={}, arg_list=(), authname='admin',
             'nav': ''
         }
 
-    status_sent = []
-    headers_sent = {}
-    response_sent = io.BytesIO()
+    class RequestWithSentAttrs(Request):
+        """Subclass of `Request` with "sent" attributes."""
 
-    def write(data):
-        response_sent.write(data)
+        def __init__(self, environ):
+            self.status_sent = []
+            self.headers_sent = {}
+            self._response_sent = io.BytesIO()
 
-    def start_response(status, headers, exc_info=None):
-        status_sent.append(status)
-        headers_sent.update(dict(headers))
-        return write
+            def write(data):
+                self._response_sent.write(data)
 
-    req = Request(environ, start_response)
-    req.status_sent = status_sent
-    req.headers_sent = headers_sent
-    Request.response_sent = property(lambda self: response_sent.getvalue())
-    req.args = args
-    req.arg_list = arg_list
+            def start_response(status, headers, exc_info=None):
+                self.status_sent.append(status)
+                self.headers_sent.update(dict(headers))
+                return write
+
+            super(RequestWithSentAttrs, self).__init__(environ, start_response)
+
+        @property
+        def response_sent(self):
+            return self._response_sent.getvalue()
+
+    req = RequestWithSentAttrs(environ)
+    # Setup default callbacks.
     req.authname = authname
-    req.form_token = form_token
     req.chrome = chrome
+    req.form_token = form_token
+    req.locale = locale
     req.perm = perm
     req.session = FakeSession()
     req.tz = tz
-    req.locale = locale
-    for name, value in kwargs.iteritems():
-        setattr(req, name, value)
+    req.use_xsendfile = use_xsendfile
+    req.xsendfile_header = xsendfile_header
     return req
 
 
@@ -683,12 +689,9 @@ class RequestSendFileTestCase(unittest.TestCase):
             self.req._response.close()
         rmtree(self.dir)
 
-    def _create_req(self, use_xsendfile=False, xsendfile_header='X-Sendfile',
-                    **kwargs):
-        req = _make_req(_make_environ(**kwargs))
-        req.callbacks.update({'use_xsendfile': lambda r: use_xsendfile,
-                              'xsendfile_header': lambda r: xsendfile_header})
-        self.req = req
+    def _create_req(self, use_xsendfile=False, xsendfile_header='X-Sendfile'):
+        self.req = req = _make_req(_make_environ(), use_xsendfile=use_xsendfile,
+                                   xsendfile_header=xsendfile_header)
         return req
 
     def test_send_file(self):
