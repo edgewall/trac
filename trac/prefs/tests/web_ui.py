@@ -12,12 +12,13 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
+import tempfile
 import unittest
 
 from trac.core import Component, TracValueError, implements
 from trac.prefs.api import IPreferencePanelProvider
 from trac.prefs.web_ui import PreferencesModule
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, MockRequest
 from trac.util import create_file
 from trac.util.html import Markup
 from trac.web.api import RequestDone
@@ -114,7 +115,8 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
 class PreferencesModuleTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(path=mkdtemp())
+        self.env = EnvironmentStub(
+            path=tempfile.mkdtemp(prefix='trac-tempenv-'))
         self.templates_dir = os.path.join(self.env.path, 'templates')
         os.mkdir(self.templates_dir)
 
