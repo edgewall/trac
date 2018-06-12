@@ -659,8 +659,8 @@ def _dispatch_request(req, env, env_error):
         if not env and env_error:
             raise HTTPInternalServerError(env_error)
         dispatcher = RequestDispatcher(env)
+        dispatcher.set_default_callbacks(req)
         try:
-            dispatcher.set_default_callbacks(req)
             dispatcher.dispatch(req)
         except RequestDone as req_done:
             resp = req_done.iterable
