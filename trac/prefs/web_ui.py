@@ -96,7 +96,7 @@ class PreferencesModule(Component):
         children = []
         if child_panels.get(panel_id):
             for name, label in child_panels[panel_id]:
-                resp = provider.render_preference_panel(req, name)
+                resp = providers[name].render_preference_panel(req, name)
                 ctemplate, cdata = resp[:2]
                 cdata.update(session_data)
                 if len(resp) == 2:
