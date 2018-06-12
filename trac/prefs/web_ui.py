@@ -101,7 +101,8 @@ class PreferencesModule(Component):
         children = []
         if child_panels.get(panel_id):
             for name, label in child_panels[panel_id]:
-                ctemplate, cdata = provider.render_preference_panel(req, name)
+                ctemplate, cdata = \
+                    providers[name].render_preference_panel(req, name)
                 cdata.update(session_data)
                 rendered = chrome.render_template(req, ctemplate, cdata,
                                                   fragment=True)

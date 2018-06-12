@@ -11,11 +11,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import os
 import unittest
 
-from trac.core import TracValueError
+from trac.core import Component, TracValueError, implements
+from trac.prefs.api import IPreferencePanelProvider
 from trac.prefs.web_ui import PreferencesModule
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.util import create_file
+from trac.util.html import Markup
 from trac.web.api import RequestDone
 
 
@@ -107,9 +111,73 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
             self.fail("TracValueError not raised.")
 
 
+class PreferencesModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(path=mkdtemp())
+        self.templates_dir = os.path.join(self.env.path, 'templates')
+        os.mkdir(self.templates_dir)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def test_render_child_preferences_panels(self):
+
+        class ParentPanel(Component):
+            implements(IPreferencePanelProvider)
+
+            def get_preference_panels(self, req):
+                yield 'panel1', 'Panel One'
+
+            def render_preference_panel(self, req, panel):
+                return 'prefs_panel_1.html', {}, None
+
+        child_template = '<h2>${title}</h2>'
+        child1_template_name = 'prefs_child_1.html'
+
+        class Child1Panel(Component):
+            implements(IPreferencePanelProvider)
+
+            def get_preference_panels(self, req):
+                yield 'child1', 'Child 1', 'panel1'
+
+            def render_preference_panel(self, req, panel):
+                return child1_template_name, {'title': 'Child 1'}
+
+        child2_template_name = 'prefs_child_2.html'
+
+        class Child2Panel(Component):
+            implements(IPreferencePanelProvider)
+
+            def get_preference_panels(self, req):
+                yield 'child2', 'Child 2', 'panel1'
+
+            def render_preference_panel(self, req, panel):
+                return child2_template_name, {'title': 'Child 2'}
+
+        create_file(os.path.join(self.templates_dir, child1_template_name),
+                    child_template)
+        create_file(os.path.join(self.templates_dir, child2_template_name),
+                    child_template)
+
+        req = MockRequest(self.env, path_info='/prefs/panel1')
+        mod = PreferencesModule(self.env)
+
+        self.assertTrue(mod.match_request(req))
+        resp = mod.process_request(req)
+
+        self.assertEqual('prefs_panel_1.html', resp[0])
+        self.assertEqual(2, len(resp[1]['children']))
+        self.assertEqual(('child1', 'Child 1', Markup(u'<h2>Child 1</h2>')),
+                         resp[1]['children'][0])
+        self.assertEqual(('child2', 'Child 2', Markup(u'<h2>Child 2</h2>')),
+                         resp[1]['children'][1])
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AdvancedPreferencePanelTestCase))
+    suite.addTest(unittest.makeSuite(PreferencesModuleTestCase))
     return suite
 
 if __name__ == '__main__':
