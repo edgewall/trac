@@ -18,7 +18,7 @@ import unittest
 
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, Mock, MockPerm, mkdtemp, rmtree
+from trac.test import EnvironmentStub, MockPerm, mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.html import tag
@@ -73,12 +73,34 @@ def _make_environ(scheme='http', server_name='example.org',
     return environ
 
 
-def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
-              form_token='A' * 40,
-              chrome={'links': {}, 'scripts': [], 'theme': 'theme.html',
-                      'logo': '', 'nav': ''},
-              perm=MockPerm(), tz=utc, locale=None, **kwargs):
+def _make_req(environ, args={}, arg_list=(), authname='admin',
+              form_token='A' * 40, chrome=None, perm=MockPerm(),
+              tz=utc, locale=None, **kwargs):
+    if chrome is None:
+        chrome = {
+            'links': {},
+            'scripts': [],
+            'theme': 'theme.html',
+            'logo': '',
+            'nav': ''
+        }
+
+    status_sent = []
+    headers_sent = {}
+    response_sent = io.BytesIO()
+
+    def write(data):
+        response_sent.write(data)
+
+    def start_response(status, headers, exc_info=None):
+        status_sent.append(status)
+        headers_sent.update(dict(headers))
+        return write
+
     req = Request(environ, start_response)
+    req.status_sent = status_sent
+    req.headers_sent = headers_sent
+    Request.response_sent = property(lambda self: response_sent.getvalue())
     req.args = args
     req.arg_list = arg_list
     req.authname = authname
@@ -96,19 +118,18 @@ def _make_req(environ, start_response, args={}, arg_list=(), authname='admin',
 class RequestTestCase(unittest.TestCase):
 
     def test_repr_with_path(self):
-        environ = _make_environ(**{'PATH_INFO': '/path'})
+        environ = _make_environ(PATH_INFO='/path')
         req = Request(environ, None)
         self.assertEqual(repr(req), """<Request "GET '/path'">""")
 
     def test_repr_with_path_and_query_string(self):
-        environ = _make_environ(**{'QUERY_STRING': 'A=B',
-                                   'PATH_INFO': '/path'})
+        environ = _make_environ(QUERY_STRING='A=B', PATH_INFO='/path')
         req = Request(environ, None)
         self.assertEqual(repr(req), """<Request "GET '/path?A=B'">""")
 
     def test_get(self):
         qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertEqual('0', req.args.get('arg1'))
@@ -116,7 +137,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_getfirst(self):
         qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertEqual('0', req.args.getfirst('arg1'))
@@ -124,7 +145,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_get_list(self):
         qs = 'arg1=0&arg2=1&arg1=abc&arg3=def&arg3=1'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertEqual(['0', 'abc'], req.args.getlist('arg1'))
@@ -132,7 +153,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_as_bool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertIsNone(req.args.as_bool('arg0'))
@@ -147,7 +168,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_as_int(self):
         qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertIsNone(req.args.as_int('arg0'))
@@ -165,7 +186,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_getbool(self):
         qs = 'arg1=0&arg2=1&arg3=yes&arg4=a&arg5=1&arg5=0'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertIsNone(req.args.getbool('arg0'))
@@ -174,14 +195,18 @@ class RequestTestCase(unittest.TestCase):
         self.assertFalse(req.args.getbool('arg1', True))
         self.assertTrue(req.args.getbool('arg2'))
         self.assertTrue(req.args.getbool('arg3'))
-        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg4')
-        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg4', True)
-        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg5')
-        self.assertRaises(HTTPBadRequest, req.args.getbool, 'arg5', True)
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg4')
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg4', True)
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg5')
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg5', True)
 
     def test_getint(self):
         qs = 'arg1=1&arg2=a&arg3=3&arg3=4'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
         self.assertIsNone(req.args.getint('arg0'))
@@ -193,10 +218,14 @@ class RequestTestCase(unittest.TestCase):
         self.assertEqual(0, req.args.getint('arg1', max=0))
         self.assertEqual(0, req.args.getint('arg1', None, max=0))
         self.assertEqual(0, req.args.getint('arg1', None, -1, 0))
-        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg2')
-        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg2', 2)
-        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3')
-        self.assertRaises(HTTPBadRequest, req.args.getint, 'arg3', 2)
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg2')
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg2', 2)
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg3')
+        with self.assertRaises(HTTPBadRequest):
+            req.args.getbool('arg3', 2)
 
     def test_getfile(self):
         file_content = 'The file content.'
@@ -280,10 +309,11 @@ new\r\n\
 
     def test_require(self):
         qs = 'arg1=1'
-        environ = _make_environ(method='GET', **{'QUERY_STRING': qs})
+        environ = _make_environ(method='GET', QUERY_STRING=qs)
         req = Request(environ, None)
 
-        self.assertRaises(HTTPBadRequest, req.args.require, 'arg0')
+        with self.assertRaises(HTTPBadRequest):
+            req.args.require('arg0')
         self.assertIsNone(req.args.require('arg1'))
 
     def test_is_xhr_true(self):
@@ -352,56 +382,37 @@ new\r\n\
         self.assertEqual('http://localhost/trac', req.base_url)
 
     def test_languages(self):
-        environ = _make_environ()
-        environ['HTTP_ACCEPT_LANGUAGE'] = 'en-us,en;q=0.5'
+        environ = _make_environ(HTTP_ACCEPT_LANGUAGE='en-us,en;q=0.5')
         req = Request(environ, None)
         self.assertEqual(['en-us', 'en'], req.languages)
 
     def test_redirect(self):
-        status_sent = []
-        headers_sent = {}
-        def start_response(status, headers):
-            status_sent.append(status)
-            headers_sent.update(dict(headers))
-        environ = _make_environ(method='HEAD')
-        req = Request(environ, start_response)
-        req.session = Mock(save=lambda: None)
-        self.assertRaises(RequestDone, req.redirect, '/trac/test')
-        self.assertEqual('302 Found', status_sent[0])
+        req = _make_req(_make_environ(method='HEAD'))
+        with self.assertRaises(RequestDone):
+            req.redirect('/trac/test')
+        self.assertEqual('302 Found', req.status_sent[0])
         self.assertEqual('http://example.org/trac/test',
-                         headers_sent['Location'])
+                         req.headers_sent['Location'])
 
     def test_redirect_absolute(self):
-        status_sent = []
-        headers_sent = {}
-        def start_response(status, headers):
-            status_sent.append(status)
-            headers_sent.update(dict(headers))
-        environ = _make_environ(method='HEAD')
-        req = Request(environ, start_response)
-        req.session = Mock(save=lambda: None)
-        self.assertRaises(RequestDone, req.redirect,
-                          'http://example.com/trac/test')
-        self.assertEqual('302 Found', status_sent[0])
+        req = _make_req(_make_environ(method='HEAD'))
+        with self.assertRaises(RequestDone):
+            req.redirect('http://example.com/trac/test')
+        self.assertEqual('302 Found', req.status_sent[0])
         self.assertEqual('http://example.com/trac/test',
-                         headers_sent['Location'])
+                         req.headers_sent['Location'])
 
     def test_redirect_with_post_and_hash_for_msie(self):
         url = 'http://example.com/trac/ticket/1#comment:2'
         msie303 = 'http://example.com/trac/ticket/1#__msie303:comment:2'
 
         def location(ua):
-            status_sent = []
-            headers_sent = {}
-            def start_response(status, headers):
-                status_sent.append(status)
-                headers_sent.update(dict(headers))
             environ = _make_environ(method='POST', HTTP_USER_AGENT=ua)
-            req = Request(environ, start_response)
-            req.session = Mock(save=lambda: None)
-            self.assertRaises(RequestDone, req.redirect, url)
-            self.assertEqual('303 See Other', status_sent[0])
-            return headers_sent['Location']
+            req = _make_req(environ)
+            with self.assertRaises(RequestDone):
+                req.redirect(url)
+            self.assertEqual('303 See Other', req.status_sent[0])
+            return req.headers_sent['Location']
 
         # IE 11 strict mode
         self.assertEqual(url, location(
@@ -436,58 +447,38 @@ new\r\n\
             'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'))
 
     def test_write_iterable(self):
-        buf = io.BytesIO()
-        def write(data):
-            buf.write(data)
-        def start_response(status, headers):
-            return write
-        environ = _make_environ(method='GET')
-
-        buf = io.BytesIO()
-        req = Request(environ, start_response)
+        req = _make_req(_make_environ(method='GET'))
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.write(('Foo', 'bar', 'baz'))
-        self.assertEqual('Foobarbaz', buf.getvalue())
+        self.assertEqual('Foobarbaz', req.response_sent)
 
     def test_write_unicode(self):
-        buf = io.BytesIO()
-        def write(data):
-            buf.write(data)
-        def start_response(status, headers):
-            return write
-        environ = _make_environ(method='HEAD')
-
-        req = Request(environ, start_response)
+        req = _make_req(_make_environ(method='HEAD'))
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
         req.send_header('Content-Length', 0)
         # anyway we're not supposed to send unicode, so we get a ValueError
-        self.assertRaises(ValueError, req.write, u'Föö')
-        self.assertRaises(ValueError, req.write, ('F', u'öo'))
+        with self.assertRaises(ValueError):
+            req.write(u'Föö')
+        with self.assertRaises(ValueError):
+            req.write(('F', u'öo'))
 
     def test_send_iterable(self):
-        baton = {'content': io.BytesIO(), 'status': None, 'headers': None}
-        def write(data):
-            baton['content'].write(data)
-        def start_response(status, headers):
-            baton['status'] = status
-            baton['headers'] = headers
-            return write
-        environ = _make_environ(method='GET')
-
         def iterable():
             yield 'line1,'
             yield ''
             yield 'line2,'
             yield 'line3\n'
 
-        req = Request(environ, start_response)
-        self.assertRaises(RequestDone, req.send, iterable())
-        self.assertEqual('200 Ok', baton['status'])
-        self.assertEqual([('Cache-Control', 'must-revalidate'),
-                          ('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT'),
-                          ('Content-Type', 'text/html;charset=utf-8')],
-                         baton['headers'])
-        self.assertEqual('line1,line2,line3\n', baton['content'].getvalue())
+        req = _make_req(_make_environ(method='GET'))
+        with self.assertRaises(RequestDone):
+            req.send(iterable())
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertEqual('must-revalidate', req.headers_sent['Cache-Control'])
+        self.assertEqual('Fri, 01 Jan 1999 00:00:00 GMT',
+                         req.headers_sent['Expires'])
+        self.assertEqual('text/html;charset=utf-8',
+                         req.headers_sent['Content-Type'])
+        self.assertEqual('line1,line2,line3\n', req.response_sent)
 
     def test_invalid_cookies(self):
         environ = _make_environ(HTTP_COOKIE='bad:key=value;')
@@ -525,13 +516,11 @@ new\r\n\
             self.fail("HTTPBadRequest not raised.")
 
     def test_qs_with_null_bytes_for_name(self):
-        environ = _make_environ(method='GET',
-                                **{'QUERY_STRING': 'acti\x00n=fOO'})
+        environ = _make_environ(method='GET', QUERY_STRING='acti\x00n=fOO')
         self._test_qs_with_null_bytes(environ)
 
     def test_qs_with_null_bytes_for_value(self):
-        environ = _make_environ(method='GET',
-                                **{'QUERY_STRING': 'action=f\x00O'})
+        environ = _make_environ(method='GET', QUERY_STRING='action=f\x00O')
         self._test_qs_with_null_bytes(environ)
 
     def test_post_with_unnamed_value(self):
@@ -624,8 +613,7 @@ ne\x00w\r\n\
         """Make sure req.args parsing is consistent even after the backwards
         incompatible change introduced in Python 2.6.
         """
-        environ = _make_environ(method='GET',
-                                **{'QUERY_STRING': 'action=foo'})
+        environ = _make_environ(method='GET', QUERY_STRING='action=foo')
         req = Request(environ, None)
         self.assertEqual('foo', req.args['action'])
         environ = _make_environ(method='POST', **{
@@ -638,41 +626,31 @@ ne\x00w\r\n\
         self.assertEqual('bar', req.args['action'])
 
     def test_qs_invalid_value_bytes(self):
-        environ = _make_environ(**{'QUERY_STRING': 'name=%FF'})
+        environ = _make_environ(QUERY_STRING='name=%FF')
         req = Request(environ, None)
-        self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
+        with self.assertRaises(HTTPBadRequest):
+            req.arg_list()
 
     def test_qs_invalid_name_bytes(self):
-        environ = _make_environ(**{'QUERY_STRING': '%FF=value'})
+        environ = _make_environ(QUERY_STRING='%FF=value')
         req = Request(environ, None)
-        self.assertRaises(HTTPBadRequest, lambda: req.arg_list)
+        with self.assertRaises(HTTPBadRequest):
+            req.arg_list()
 
     def test_post_text_html_disables_xss(self):
         """POST request with content-type text/html disables XSS
         protection (#12926).
         """
-        status_sent = []
-        headers_sent = {}
-        buf = io.BytesIO()
-
-        def write(data):
-            buf.write(data)
-
-        def start_response(status, headers):
-            status_sent.append(status)
-            headers_sent.update(dict(headers))
-            return write
-
         content_type = 'text/html'
         content = "The content"
         environ = _make_environ(method='POST',
                                 **{'wsgi.input': io.BytesIO(content),
                                    'CONTENT_LENGTH': str(len(content)),
                                    'CONTENT_TYPE': content_type})
-        req = Request(environ, start_response)
+        req = _make_req(environ)
         with self.assertRaises(RequestDone):
             req.send(content, content_type)
-        self.assertIn('0', headers_sent['X-XSS-Protection'])
+        self.assertIn('0', req.headers_sent['X-XSS-Protection'])
 
     def test_is_valid_header(self):
         # Reserved headers not allowed.
@@ -694,9 +672,6 @@ ne\x00w\r\n\
 class RequestSendFileTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.status = None
-        self.headers = None
-        self.response = io.BytesIO()
         self.dir = mkdtemp()
         self.filename = os.path.join(self.dir, 'test.txt')
         self.data = 'contents\n'
@@ -708,16 +683,9 @@ class RequestSendFileTestCase(unittest.TestCase):
             self.req._response.close()
         rmtree(self.dir)
 
-    def _start_response(self, status, headers):
-        self.status = status
-        self.headers = dict(headers)
-        def write(data):
-            self.response.write(data)
-        return write
-
     def _create_req(self, use_xsendfile=False, xsendfile_header='X-Sendfile',
                     **kwargs):
-        req = Request(_make_environ(**kwargs), self._start_response)
+        req = _make_req(_make_environ(**kwargs))
         req.callbacks.update({'use_xsendfile': lambda r: use_xsendfile,
                               'xsendfile_header': lambda r: xsendfile_header})
         self.req = req
@@ -725,47 +693,49 @@ class RequestSendFileTestCase(unittest.TestCase):
 
     def test_send_file(self):
         req = self._create_req()
-        self.assertRaises(RequestDone, req.send_file, self.filename,
-                          'text/plain')
-        self.assertEqual('200 Ok', self.status)
-        self.assertEqual('text/plain', self.headers['Content-Type'])
-        self.assertEqual(str(len(self.data)), self.headers['Content-Length'])
-        self.assertNotIn('X-Sendfile', self.headers)
+        with self.assertRaises(RequestDone):
+            req.send_file(self.filename, 'text/plain')
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertEqual(str(len(self.data)),
+                         req.headers_sent['Content-Length'])
+        self.assertNotIn('X-Sendfile', req.headers_sent)
         self.assertEqual(self.data, ''.join(req._response))
-        self.assertEqual('', self.response.getvalue())
+        self.assertEqual('', req.response_sent)
 
     def test_send_file_with_xsendfile(self):
         req = self._create_req(use_xsendfile=True)
-        self.assertRaises(RequestDone, req.send_file, self.filename,
-                          'text/plain')
-        self.assertEqual('200 Ok', self.status)
-        self.assertEqual('text/plain', self.headers['Content-Type'])
-        self.assertEqual(self.filename, self.headers['X-Sendfile'])
+        with self.assertRaises(RequestDone):
+            req.send_file(self.filename, 'text/plain')
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertEqual(self.filename, req.headers_sent['X-Sendfile'])
         self.assertIsNone(req._response)
-        self.assertEqual('', self.response.getvalue())
+        self.assertEqual('', req.response_sent)
 
     def test_send_file_with_xsendfile_header(self):
         req = self._create_req(use_xsendfile=True,
                                xsendfile_header='X-Accel-Redirect')
-        self.assertRaises(RequestDone, req.send_file, self.filename,
-                          'text/plain')
-        self.assertEqual('200 Ok', self.status)
-        self.assertEqual('text/plain', self.headers['Content-Type'])
-        self.assertEqual(self.filename, self.headers['X-Accel-Redirect'])
-        self.assertNotIn('X-Sendfile', self.headers)
+        with self.assertRaises(RequestDone):
+            req.send_file(self.filename, 'text/plain')
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertEqual(self.filename, req.headers_sent['X-Accel-Redirect'])
+        self.assertNotIn('X-Sendfile', req.headers_sent)
         self.assertIsNone(req._response)
-        self.assertEqual('', self.response.getvalue())
+        self.assertEqual('', req.response_sent)
 
     def test_send_file_with_xsendfile_and_empty_header(self):
         req = self._create_req(use_xsendfile=True, xsendfile_header='')
-        self.assertRaises(RequestDone, req.send_file, self.filename,
-                          'text/plain')
-        self.assertEqual('200 Ok', self.status)
-        self.assertEqual('text/plain', self.headers['Content-Type'])
-        self.assertEqual(str(len(self.data)), self.headers['Content-Length'])
-        self.assertNotIn('X-Sendfile', self.headers)
+        with self.assertRaises(RequestDone):
+            req.send_file(self.filename, 'text/plain')
+        self.assertEqual('200 Ok', req.status_sent[0])
+        self.assertEqual('text/plain', req.headers_sent['Content-Type'])
+        self.assertEqual(str(len(self.data)),
+                         req.headers_sent['Content-Length'])
+        self.assertNotIn('X-Sendfile', req.headers_sent)
         self.assertEqual(self.data, ''.join(req._response))
-        self.assertEqual('', self.response.getvalue())
+        self.assertEqual('', req.response_sent)
 
 
 class SendErrorTestCase(unittest.TestCase):
@@ -777,7 +747,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_trac_error(self):
-        content = self._send_error(error_klass=TracError)
+        content = self._send_error(error_class=TracError)
         self.assertIn('<p class="message">Oops!</p>', content)
         self.assertNotIn('<strong>Trac detected an internal error:</strong>',
                          content)
@@ -841,26 +811,17 @@ class SendErrorTestCase(unittest.TestCase):
                       content)
 
     def _send_error(self, admin_trac_url='.', perm=None,
-                    error_klass=ValueError):
+                    error_class=ValueError):
         self.env.config.set('project', 'admin_trac_url', admin_trac_url)
         self.assertEqual(admin_trac_url, self.env.project_admin_trac_url)
-
-        content = io.BytesIO()
-        result = {'status': None, 'headers': []}
-        def write(data):
-            content.write(data)
-        def start_response(status, headers, exc_info=None):
-            result['status'] = status
-            result['headers'].extend(headers)
-            return write
         environ = _make_environ()
-        req = _make_req(environ, start_response)
+        req = _make_req(environ)
         try:
-            raise error_klass('Oops!')
-        except:
+            raise error_class('Oops!')
+        except error_class:
             exc_info = sys.exc_info()
         data = {'title': 'Internal Error',
-                'type': ('internal', 'TracError')[error_klass is TracError],
+                'type': ('internal', 'TracError')[error_class is TracError],
                 'message': 'Oops!', 'traceback': None, 'frames': [],
                 'shorten_line': shorten_line,
                 'plugins': [], 'faulty_plugins': [],
@@ -869,14 +830,13 @@ class SendErrorTestCase(unittest.TestCase):
         if perm is not None:
             data['perm'] = perm
 
-        self.assertRaises(RequestDone, req.send_error, exc_info, env=self.env,
-                          data=data)
-        content = content.getvalue().decode('utf-8')
-        ## print>>sys.stderr,content.encode('utf-8')
+        with self.assertRaises(RequestDone):
+            req.send_error(exc_info, env=self.env, data=data)
+        content = req.response_sent.decode('utf-8')
         self.assertIn('<!DOCTYPE ', content)
-        self.assertEqual('500', result['status'].split()[0])
-        self.assertIn(('Content-Type', 'text/html;charset=utf-8'),
-                      result['headers'])
+        self.assertEqual('500 Internal Server Error', req.status_sent[0])
+        self.assertEqual('text/html;charset=utf-8',
+                         req.headers_sent['Content-Type'])
         return content
 
 
