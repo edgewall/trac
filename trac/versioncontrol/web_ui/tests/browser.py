@@ -409,16 +409,16 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
                          sorted(i.filename for i in z.infolist()))
 
         zi = z.getinfo('trunk/dir1/')
-        self.assertEqual((040755 << 16) | 0x10, zi.external_attr)
+        self.assertEqual((0o40755 << 16) | 0x10, zi.external_attr)
 
         zi = z.getinfo('trunk/dir1/file.txt')
-        self.assertEqual(0644 << 16, zi.external_attr)
+        self.assertEqual(0o644 << 16, zi.external_attr)
         self.assertEqual('Contents for trunk/dir1/file.txt',
                          z.read('trunk/dir1/file.txt'))
         self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)
 
         zi = z.getinfo('trunk/dir2/file.txt')
-        self.assertEqual(0644 << 16, zi.external_attr)
+        self.assertEqual(0o644 << 16, zi.external_attr)
         self.assertEqual('Contents for trunk/dir2/file.txt',
                          z.read('trunk/dir2/file.txt'))
         self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)

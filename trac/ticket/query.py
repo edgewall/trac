@@ -321,7 +321,7 @@ class Query(object):
                         if href is not None:
                             result['href'] = href.ticket(val)
                     elif name in self.time_fields:
-                        val = from_utimestamp(long(val)) if val else None
+                        val = from_utimestamp(int(val)) if val else None
                     elif field and field['type'] == 'checkbox':
                         val = as_bool(val)
                     elif val is None:

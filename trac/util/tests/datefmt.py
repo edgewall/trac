@@ -911,14 +911,12 @@ class DateFormatTestCase(unittest.TestCase):
     def test_to_datetime(self):
         expected = datetime.datetime.fromtimestamp(23, datefmt.localtz)
         self.assertEqual(datefmt.to_datetime(23), expected)
-        self.assertEqual(datefmt.to_datetime(23L), expected)
         self.assertEqual(datefmt.to_datetime(23.0), expected)
 
     def test_to_datetime_microsecond_timestamps(self):
         expected = datetime.datetime.fromtimestamp(2345.678912,
                                                    datefmt.localtz)
         self.assertEqual(datefmt.to_datetime(2345678912), expected)
-        self.assertEqual(datefmt.to_datetime(2345678912L), expected)
         self.assertEqual(datefmt.to_datetime(2345678912.0), expected)
 
     def test_to_datetime_microsecond_negative_timestamps(self):
@@ -929,7 +927,6 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(-2345678912).microsecond,
                          321088) # 1000000 - 678912
         self.assertEqual(datefmt.to_datetime(-2345678912), expected)
-        self.assertEqual(datefmt.to_datetime(-2345678912L), expected)
         self.assertEqual(datefmt.to_datetime(-2345678912.0), expected)
     if os.name == 'nt':
         del test_to_datetime_microsecond_negative_timestamps
@@ -944,12 +941,10 @@ class DateFormatTestCase(unittest.TestCase):
         tz = datefmt.timezone('GMT +1:00')
         expected = datetime.datetime(1970, 1, 1, 1, 0, 23, 0, tz)
         self.assertEqual(datefmt.to_datetime(23, tz), expected)
-        self.assertEqual(datefmt.to_datetime(23L, tz), expected)
         self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
         tz = datefmt.timezone('GMT +4:00')
         expected = datetime.datetime(1970, 1, 1, 4, 0, 23, 0, tz)
         self.assertEqual(datefmt.to_datetime(23, tz), expected)
-        self.assertEqual(datefmt.to_datetime(23L, tz), expected)
         self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
 
     def test_to_datetime_typeerror(self):
@@ -1038,7 +1033,7 @@ class UTimestampTestCase(unittest.TestCase):
     def test_sub_second(self):
         t = datetime.datetime(2001, 2, 3, 4, 5, 6, 123456, datefmt.utc)
         ts = datefmt.to_utimestamp(t)
-        self.assertEqual(981173106123456L, ts)
+        self.assertEqual(981173106123456, ts)
         self.assertEqual(t, datefmt.from_utimestamp(ts))
 
 
@@ -2064,13 +2059,13 @@ class LocalTimezoneStrTestCase(unittest.TestCase):
             def utcoffset(self, dt):
                 return self._offset
 
-        self.assertEqual("UTC+02:03", str(FixedLocalTz(02, 03)))
-        self.assertEqual("UTC+01:00", str(FixedLocalTz(01, 00)))
-        self.assertEqual("UTC+00:23", str(FixedLocalTz(00, 23)))
-        self.assertEqual("UTC+00:00", str(FixedLocalTz(00, 00)))
-        self.assertEqual("UTC-00:23", str(FixedLocalTz(-00, -23)))
-        self.assertEqual("UTC-01:00", str(FixedLocalTz(-01, -00)))
-        self.assertEqual("UTC-02:03", str(FixedLocalTz(-02, -03)))
+        self.assertEqual("UTC+02:03", str(FixedLocalTz(2, 3)))
+        self.assertEqual("UTC+01:00", str(FixedLocalTz(1, 0)))
+        self.assertEqual("UTC+00:23", str(FixedLocalTz(0, 23)))
+        self.assertEqual("UTC+00:00", str(FixedLocalTz(0, 0)))
+        self.assertEqual("UTC-00:23", str(FixedLocalTz(-0, -23)))
+        self.assertEqual("UTC-01:00", str(FixedLocalTz(-1, -0)))
+        self.assertEqual("UTC-02:03", str(FixedLocalTz(-2, -3)))
 
 
 def test_suite():

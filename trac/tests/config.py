@@ -462,9 +462,8 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_read_and_getlist_false_values(self):
         config = self._read()
-        values = [None, False, '', 'foo', u'', u'bar',
-                  0, 0L, 0.0, 0j, 42, 43.0]
-        self.assertEqual([False, 'foo', u'bar', 0, 0L, 0.0, 0j, 42, 43.0],
+        values = [None, False, '', 'foo', u'', u'bar', 0, 0.0, 0j, 42, 43.0]
+        self.assertEqual([False, 'foo', u'bar', 0, 0.0, 0j, 42, 43.0],
                          config.getlist('a', 'false', values))
         self.assertEqual(values, config.getlist('a', 'false', values,
                                                 keep_empty=True))
@@ -891,11 +890,11 @@ class IntegrationTestCase(BaseTestCase):
             option_blah = Option('a', 'blah', u'Blàh!')
             option_true = BoolOption('a', 'true', True)
             option_false = BoolOption('a', 'false', False)
-            option_list1 = ListOption('a', 'list', ['#cc0', 4.2, 42L, 0, None,
+            option_list1 = ListOption('a', 'list', ['#cc0', 4.2, 42, 0, None,
                                                     True, False, None],
                                       sep='|', keep_empty=True)
             option_list2 = ListOption('a', 'list-seps',
-                                      ['#cc0', 4.2, 42L, 0, None, True, False,
+                                      ['#cc0', 4.2, 42, 0, None, True, False,
                                        None],
                                       sep=(',', '|'), keep_empty=True)
             option_choice = ChoiceOption('a', 'choice', [-42, 42])
@@ -925,7 +924,7 @@ class IntegrationTestCase(BaseTestCase):
             option_true = BoolOption(u'résumé', u'trüé', True)
             option_false = BoolOption(u'résumé', u'fálsé', False)
             option_list = ListOption(u'résumé', u'liśt',
-                                     [u'#ccö', 4.2, 42L, 0, None, True,
+                                     [u'#ccö', 4.2, 42, 0, None, True,
                                         False, None],
                                      sep='|', keep_empty=True)
             option_choice = ChoiceOption(u'résumé', u'chöicé', [-42, 42])
