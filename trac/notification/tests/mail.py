@@ -499,9 +499,9 @@ class EmailDistributorTestCase(unittest.TestCase):
         from_addr, recipients, message = history[0]
         self.assertEqual('trac@example.org', from_addr)
         self.assertEqual('"My Project" <trac@example.org>', message['From'])
-        self.assertEqual(set(['foo@example.com', 'foo@bar.example.org',
-                              'baz@example.com', 'cc@example.org',
-                              'bcc@example.org']), set(recipients))
+        self.assertEqual({'foo@example.com', 'foo@bar.example.org',
+                          'baz@example.com', 'cc@example.org',
+                          'bcc@example.org'}, set(recipients))
         self._assert_equal_sets(['cc@example.org'],
                                 self._cclist(message['Cc']))
 

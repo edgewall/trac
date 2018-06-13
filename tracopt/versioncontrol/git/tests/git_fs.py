@@ -799,17 +799,16 @@ from :17
         FILE = Node.FILE
 
         cset = repos.get_changeset(rev1)
-        self.assertEqual(set([('0100644',     FILE, ADD, None, None),
-                              ('0100644.txt', FILE, ADD, None, None),
-                              (':100644',     FILE, ADD, None, None),
-                              (':100644.txt', FILE, ADD, None, None),
-                              ('a100644',     FILE, ADD, None, None),
-                              ('a100644.txt', FILE, ADD, None, None)
-                             ]),
+        self.assertEqual({('0100644',     FILE, ADD, None, None),
+                          ('0100644.txt', FILE, ADD, None, None),
+                          (':100644',     FILE, ADD, None, None),
+                          (':100644.txt', FILE, ADD, None, None),
+                          ('a100644',     FILE, ADD, None, None),
+                          ('a100644.txt', FILE, ADD, None, None)},
                          set(cset.get_changes()))
 
         cset = repos.get_changeset(rev2)
-        self.assertEqual(set([(':100666', FILE, MOVE, ':100644', rev1)]),
+        self.assertEqual({(':100666', FILE, MOVE, ':100644', rev1)},
                          set(cset.get_changes()))
 
     _data_colon_character_in_filename = """\

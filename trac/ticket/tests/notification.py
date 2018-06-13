@@ -442,14 +442,14 @@ class NotificationTestCase(unittest.TestCase):
             cclist = set(addr.strip() for addr in headers['Cc'].split(','))
             if use_short_addr:
                 # Msg should be delivered to the reporter
-                self.assertEqual(set([address, 'joe.bar@example.net',
-                                      'john']), cclist)
-                self.assertEqual(set([address, 'joe.bar@example.net',
-                                      'john']), recipients)
+                self.assertEqual({address, 'joe.bar@example.net', 'john'},
+                                 cclist)
+                self.assertEqual({address, 'joe.bar@example.net', 'john'},
+                                 recipients)
             else:
                 # Msg should not be delivered to the reporter
-                self.assertEqual(set(['joe.bar@example.net']), cclist)
-                self.assertEqual(set(['joe.bar@example.net']), recipients)
+                self.assertEqual({'joe.bar@example.net'}, cclist)
+                self.assertEqual({'joe.bar@example.net'}, recipients)
 
         # Validate with and without the short addr option enabled
         self.env.insert_users([('bar', 'Bar User', ''),
@@ -480,15 +480,13 @@ class NotificationTestCase(unittest.TestCase):
             self.assertIn('Cc', headers)
             cclist = set(addr.strip() for addr in headers['Cc'].split(','))
             if enable:
-                self.assertEqual(set(['joenodom@example.org',
-                                      'foo@example.org',
-                                      'bar@example.org',
-                                      'qux-mail@example.org',
-                                      'joewithdom@example.com',
-                                      'joe.bar@example.net']), cclist)
+                self.assertEqual({'joenodom@example.org', 'foo@example.org',
+                                  'bar@example.org', 'qux-mail@example.org',
+                                  'joewithdom@example.com',
+                                  'joe.bar@example.net'}, cclist)
             else:
-                self.assertEqual(set(['joewithdom@example.com',
-                                      'joe.bar@example.net']), cclist)
+                self.assertEqual({'joewithdom@example.com',
+                                  'joe.bar@example.net'}, cclist)
 
         # Validate with and without a default domain
         self.env.insert_users([('bar', 'Bar User', ''),

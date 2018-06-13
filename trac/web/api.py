@@ -553,8 +553,8 @@ class Request(object):
     """
 
     _disallowed_control_codes_re = re.compile(r'[\x00-\x08\x0a-\x1f\x7f]')
-    _reserved_headers = set(['content-type', 'content-length', 'location',
-                             'etag', 'pragma', 'cache-control', 'expires'])
+    _reserved_headers = {'content-type', 'content-length', 'location',
+                         'etag', 'pragma', 'cache-control', 'expires'}
     # RFC7230 3.2 Header Fields
     _valid_header_re = re.compile(r"[-0-9A-Za-z!#$%&'*+.^_`|~]+\Z")
 
