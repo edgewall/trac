@@ -241,6 +241,7 @@ def MockRequest(env, **kwargs):
         'tz': lambda req: kwargs.get('tz', utc),
         'use_xsendfile': False,
         'xsendfile_header': None,
+        'configurable_headers': [],
     })
 
     return req
