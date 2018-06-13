@@ -234,16 +234,13 @@ def MockRequest(env, **kwargs):
         'authname': lambda req: authname,
         'chrome': Chrome(env).prepare_request,
         'form_token': lambda req: kwargs.get('form_token', 0),
-        'languages': Request._parse_languages,
         'lc_time': lambda req: kwargs.get('lc_time', locale_en),
         'locale': lambda req: kwargs.get('locale'),
-        'incookie': Request._parse_cookies,
         'perm': lambda req: perm,
         'session': lambda req: Session(env, req),
         'tz': lambda req: kwargs.get('tz', utc),
         'use_xsendfile': False,
         'xsendfile_header': None,
-        '_inheaders': Request._parse_headers
     })
 
     return req
