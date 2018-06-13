@@ -427,13 +427,13 @@ def encode_pair(name, value):
     if nameLength < 128:
         s = chr(nameLength)
     else:
-        s = struct.pack('!L', nameLength | 0x80000000L)
+        s = struct.pack('!L', nameLength | 0x80000000)
 
     valueLength = len(value)
     if valueLength < 128:
         s += chr(valueLength)
     else:
-        s += struct.pack('!L', valueLength | 0x80000000L)
+        s += struct.pack('!L', valueLength | 0x80000000)
 
     return s + name + value
 
@@ -587,7 +587,7 @@ class Request(object):
             if e[0] != errno.EPIPE:
                 raise
 
-    def _end(self, appStatus=0L, protocolStatus=FCGI_REQUEST_COMPLETE):
+    def _end(self, appStatus=0, protocolStatus=FCGI_REQUEST_COMPLETE):
         self._conn.end_request(self, appStatus, protocolStatus)
 
     def _flush(self):
@@ -610,7 +610,7 @@ class CGIRequest(Request):
         self.stderr = sys.stderr
         self.data = io.BytesIO()
 
-    def _end(self, appStatus=0L, protocolStatus=FCGI_REQUEST_COMPLETE):
+    def _end(self, appStatus=0, protocolStatus=FCGI_REQUEST_COMPLETE):
         sys.exit(appStatus)
 
     def _flush(self):
@@ -709,7 +709,7 @@ class Connection(object):
         """
         rec.write(self._sock)
 
-    def end_request(self, req, appStatus=0L,
+    def end_request(self, req, appStatus=0,
                     protocolStatus=FCGI_REQUEST_COMPLETE, remove=True):
         """
         End a Request.
@@ -758,7 +758,7 @@ class Connection(object):
 
         if not self._multiplexed and self._requests:
             # Can't multiplex requests.
-            self.end_request(req, 0L, FCGI_CANT_MPX_CONN, remove=False)
+            self.end_request(req, 0, FCGI_CANT_MPX_CONN, remove=False)
         else:
             self._requests[inrec.requestId] = req
 
@@ -849,7 +849,7 @@ class MultiplexedConnection(Connection):
         finally:
             self._lock.release()
 
-    def end_request(self, req, appStatus=0L,
+    def end_request(self, req, appStatus=0,
                     protocolStatus=FCGI_REQUEST_COMPLETE, remove=True):
         self._lock.acquire()
         try:

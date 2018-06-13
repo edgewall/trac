@@ -48,7 +48,7 @@ class FragmentTestCase(unittest.TestCase):
 
     def test_zeros(self):
         self.assertEqual(Markup('0<b>0</b> and <b>0</b>'),
-                         Markup(tag(0, tag.b(0L), ' and ', tag.b(0.0))))
+                         Markup(tag(0, tag.b(0), ' and ', tag.b(0.0))))
 
     def test_unicode(self):
         self.assertEqual('<b>M</b>essäge',
@@ -65,7 +65,7 @@ class XMLElementTestCase(unittest.TestCase):
         self.assertEqual(Markup('0<a>0</a> and <b>0</b> and <c/> and'
                                 ' <d class="[\'a\', \'\', \'b\']"'
                                 ' more_="[\'a\']"/>'),
-                         Markup(xml(0, xml.a(0L), ' and ', xml.b(0.0),
+                         Markup(xml(0, xml.a(0), ' and ', xml.b(0.0),
                                     ' and ', xml.c(None), ' and ',
                                     xml.d('', class_=[b'a', b'', b'b'],
                                           more__=[b'a']))))
@@ -76,7 +76,7 @@ class ElementTestCase(unittest.TestCase):
     def test_tag(self):
         self.assertEqual(Markup('0<a>0</a> and <b>0</b> and <c></c>'
                                 ' and <d class="a b" more_="[\'a\']"></d>'),
-                         Markup(tag(0, tag.a(0L, href=''), b' and ', tag.b(0.0),
+                         Markup(tag(0, tag.a(0, href=''), b' and ', tag.b(0.0),
                                     ' and ', tag.c(None), ' and ',
                                     tag.d('', class_=['a', '', 'b'],
                                           more__=[b'a']))))

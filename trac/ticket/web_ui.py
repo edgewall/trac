@@ -688,7 +688,7 @@ class TicketModule(Component):
                 req.args['preview'] = True
 
             # Preview an existing ticket (after a Preview or a failed Save)
-            start_time = from_utimestamp(long(req.args.get('start_time', 0)))
+            start_time = from_utimestamp(int(req.args.get('start_time', 0)))
             data.update({
                 'action': action, 'start_time': start_time,
                 'reassign_owner': (req.args.get('reassign_choice')
@@ -1885,7 +1885,7 @@ class TicketModule(Component):
                 rev = int(field[8:])
                 comment_history.setdefault(rev, {}).update({'comment': old})
                 comment_history.setdefault(rev + 1, {}).update(
-                        {'author': author, 'date': from_utimestamp(long(new))})
+                        {'author': author, 'date': from_utimestamp(int(new))})
             elif (old or new) and old != new:
                 current['fields'][field] = {
                     'old': old, 'new': new,

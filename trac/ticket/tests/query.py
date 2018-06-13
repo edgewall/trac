@@ -714,7 +714,7 @@ FROM ticket AS t
 WHERE (((%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
-        self.assertEqual([1217548800000000L, 1220227200000000L], args)
+        self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = query.execute(self.req)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
                           '2008-08-20T12:34:56.987654+00:00',
@@ -733,7 +733,7 @@ FROM ticket AS t
 WHERE ((NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
-        self.assertEqual([1217548800000000L, 1220227200000000L], args)
+        self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = query.execute(self.req)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
                           '2008-07-11T12:34:56.987654+00:00',
@@ -756,7 +756,7 @@ FROM ticket AS t
 WHERE ((%(cast_time)s>=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
-        self.assertEqual([1217548800000000L], args)
+        self.assertEqual([1217548800000000], args)
         tickets = query.execute(self.req)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
                           '2008-08-20T12:34:56.987654+00:00',
@@ -778,7 +778,7 @@ FROM ticket AS t
 WHERE ((%(cast_time)s<%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
-        self.assertEqual([1220227200000000L], args)
+        self.assertEqual([1220227200000000], args)
         tickets = query.execute(self.req)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
                           '2008-07-11T12:34:56.987654+00:00',
@@ -801,7 +801,7 @@ FROM ticket AS t
 WHERE (((%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_changetime': cast_changetime})
-        self.assertEqual([1217548800000000L, 1220227200000000L], args)
+        self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = query.execute(self.req)
         self.assertEqual(['2008-08-01T12:34:56.987654+00:00',
                           '2008-08-11T12:34:56.987654+00:00',

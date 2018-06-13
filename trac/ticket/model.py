@@ -48,7 +48,7 @@ def _db_str_to_datetime(value):
     if value is None:
         return None
     try:
-        return from_utimestamp(long(value))
+        return from_utimestamp(int(value))
     except ValueError:
         pass
     try:
@@ -113,7 +113,7 @@ class Ticket(object):
     @staticmethod
     def id_is_valid(num):
         try:
-            return 0 < int(num) <= 1L << 31
+            return 0 < int(num) <= 1 << 31
         except (ValueError, TypeError):
             return False
 
@@ -677,12 +677,12 @@ class Ticket(object):
                           for field, author, old, new in rows)
             history = []
             for rev, author, comment, ts in rows:
-                history.append((rev, from_utimestamp(long(ts0)), author0,
+                history.append((rev, from_utimestamp(int(ts0)), author0,
                                 comment))
                 ts0, author0 = ts, author
             history.sort()
             rev = history[-1][0] + 1 if history else 0
-            history.append((rev, from_utimestamp(long(ts0)), author0,
+            history.append((rev, from_utimestamp(int(ts0)), author0,
                             last_comment))
             return history
 
