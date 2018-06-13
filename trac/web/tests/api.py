@@ -743,8 +743,12 @@ class RequestSendFileTestCase(unittest.TestCase):
 
 class SendErrorTestCase(unittest.TestCase):
 
+    use_chunked_encoding = False
+
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.config.set('trac', 'use_chunked_encoding',
+                            self.use_chunked_encoding)
 
     def tearDown(self):
         self.env.reset_db()
@@ -843,6 +847,11 @@ class SendErrorTestCase(unittest.TestCase):
         return content
 
 
+class SendErrorUseChunkedEncodingTestCase(unittest.TestCase):
+
+    use_chunked_encoding = True
+
+
 class ParseArgListTestCase(unittest.TestCase):
 
     def test_qs_str(self):
@@ -909,6 +918,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(RequestTestCase))
     suite.addTest(unittest.makeSuite(RequestSendFileTestCase))
     suite.addTest(unittest.makeSuite(SendErrorTestCase))
+    suite.addTest(unittest.makeSuite(SendErrorUseChunkedEncodingTestCase))
     suite.addTest(unittest.makeSuite(ParseArgListTestCase))
     suite.addTest(unittest.makeSuite(HTTPExceptionTestCase))
     return suite

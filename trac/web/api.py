@@ -711,7 +711,7 @@ class Request(object):
             self._content_type = value.split(';', 1)[0]
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
-    def end_headers(self):
+    def end_headers(self, exc_info=None):
         """Must be called after all headers have been sent and before the
         actual content is written.
         """
@@ -720,7 +720,8 @@ class Request(object):
             self.send_header('X-XSS-Protection', 0)
         self._send_configurable_headers()
         self._send_cookie_headers()
-        self._write = self._start_response(self._status, self._outheaders)
+        self._write = self._start_response(self._status, self._outheaders,
+                                           exc_info)
 
     def check_modified(self, datetime, extra=''):
         """Check the request "If-None-Match" header against an entity tag.
@@ -794,17 +795,7 @@ class Request(object):
         raise RequestDone
 
     def send(self, content, content_type='text/html', status=200):
-        self.send_response(status)
-        self.send_header('Cache-Control', 'must-revalidate')
-        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
-        self.send_header('Content-Type', content_type + ';charset=utf-8')
-        if isinstance(content, basestring):
-            self.send_header('Content-Length', len(content))
-        self.end_headers()
-
-        if self.method != 'HEAD':
-            self.write(content)
-        raise RequestDone
+        self._send(content, content_type, status)
 
     def send_error(self, exc_info, template='error.html',
                    content_type='text/html', status=500, env=None, data={}):
@@ -815,40 +806,27 @@ class Request(object):
                     add_stylesheet(self, 'common/css/code.css')
                     metadata = {'content_type': 'text/html'}
                     try:
-                        out = Chrome(env).render_template(self, template, data,
-                                                          metadata)
+                        content = Chrome(env).render_template(self, template,
+                                                              data, metadata)
                     except Exception:
                         # second chance rendering, in "safe" mode
                         data['trac_error_rendering'] = True
-                        out = Chrome(env).render_template(self, template, data,
-                                                          metadata)
+                        content = Chrome(env).render_template(self, template,
+                                                              data, metadata)
                 else:
                     content_type = 'text/plain'
-                    out = '%s\n\n%s: %s' % (data.get('title'),
-                                             data.get('type'),
-                                             data.get('message'))
+                    content = '%s\n\n%s: %s' % (data.get('title'),
+                                                data.get('type'),
+                                                data.get('message'))
         except Exception: # failed to render
-            out = get_last_traceback()
+            content = get_last_traceback()
             content_type = 'text/plain'
 
-        if isinstance(out, unicode):
-            out = out.encode('utf-8')
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
 
-        self.send_response(status)
         self._outheaders = []
-        self.send_header('Cache-Control', 'must-revalidate')
-        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
-        self.send_header('Content-Type', content_type + ';charset=utf-8')
-        self.send_header('Content-Length', len(out))
-        self._send_configurable_headers()
-        self._send_cookie_headers()
-
-        self._write = self._start_response(self._status, self._outheaders,
-                                           exc_info)
-
-        if self.method != 'HEAD':
-            self.write(out)
-        raise RequestDone
+        self._send(content, content_type, status, exc_info)
 
     def send_no_content(self):
         self.send_response(204)
@@ -967,6 +945,20 @@ class Request(object):
         return valid_name & valid_value
 
     # Internal methods
+
+    def _send(self, content, content_type='text/html', status=200,
+              exc_info=None):
+        self.send_response(status)
+        self.send_header('Cache-Control', 'must-revalidate')
+        self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
+        self.send_header('Content-Type', content_type + ';charset=utf-8')
+        if isinstance(content, basestring):
+            self.send_header('Content-Length', len(content))
+        self.end_headers(exc_info)
+
+        if self.method != 'HEAD':
+            self.write(content)
+        raise RequestDone
 
     def _parse_arg_list(self):
         """Parse the supplied request parameters into a list of
