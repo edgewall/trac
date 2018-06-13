@@ -239,9 +239,9 @@ def MockRequest(env, **kwargs):
         'perm': lambda req: perm,
         'session': lambda req: Session(env, req),
         'tz': lambda req: kwargs.get('tz', utc),
-        'use_xsendfile': False,
-        'xsendfile_header': None,
-        'configurable_headers': [],
+        'use_xsendfile': lambda req: False,
+        'xsendfile_header': lambda req: None,
+        'configurable_headers': lambda req: [],
     })
 
     return req
