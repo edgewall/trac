@@ -98,7 +98,11 @@ install:
       python -c 'from svn import core'
     fi
   - |
-    requires='Genshi==0.7 Babel!=2.3.0,!=2.3.1 configobj Pygments docutils textile lxml pytz twill==0.9.1 setuptools_git'
+    requires='Genshi==0.7 configobj Pygments docutils textile lxml pytz twill==0.9.1 setuptools_git'
+    case "$pyver" in
+      2.6) requires="$requires Babel<2.6.0" ;;
+      *)   requires="$requires Babel" ;;
+    esac
     if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
     pip install $requires
