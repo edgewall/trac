@@ -36,7 +36,6 @@ from trac.test import EnvironmentStub
 LF = '\n'
 CR = '\r'
 SMTP_TEST_PORT = 7000 + os.getpid() % 1000
-email_re = re.compile(r'([\w\d_\.\-])+\@(([\w\d\-])+\.)+([\w\d]{2,4})+')
 header_re = re.compile(r'^=\?(?P<charset>[\w\d\-]+)\?(?P<code>[qb])\?(?P<value>.*)\?=$')
 
 
@@ -347,15 +346,6 @@ class SMTPThreadedServer(threading.Thread):
 
     def cleanup(self):
         self.store.reset(None)
-
-
-def smtp_address(fulladdr):
-    mo = email_re.search(fulladdr)
-    if mo:
-        return mo.group(0)
-    if start >= 0:
-        return fulladdr[start+1:-1]
-    return fulladdr
 
 
 def decode_header(header):
