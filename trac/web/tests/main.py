@@ -813,14 +813,10 @@ class RequestDispatcherTestCase(unittest.TestCase):
 
 class HdfdumpTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub(enable=['trac.web.*'])
-        self.req = MockRequest(self.env, args={'hdfdump': '1'})
-        self.request_dispatcher = RequestDispatcher(self.env)
-        perm = self.req.perm
-        self.request_dispatcher._get_perm = lambda req: perm
+    handlers = []
 
-    def test_hdfdump(self):
+    @classmethod
+    def setUpClass(cls):
         class HdfdumpRequestHandler(Component):
             implements(IRequestHandler)
             def match_request(self, req):
@@ -829,6 +825,20 @@ class HdfdumpTestCase(unittest.TestCase):
                 data = {'name': 'value'}
                 return 'error.html', data
 
+        cls.components = [HdfdumpRequestHandler]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.components:
+            ComponentMeta.deregister(component)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=['trac.web.*'])
+        self.req = MockRequest(self.env, args={'hdfdump': '1'})
+        self.request_dispatcher = RequestDispatcher(self.env)
+
+    def test_hdfdump(self):
         self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch,
                           self.req)
