@@ -33,7 +33,7 @@ from trac.util.translation import _
 
 try:
     import psycopg2 as psycopg
-    import psycopg2.extensions
+    import psycopg2.extensions  # noqa
     from psycopg2 import DataError, ProgrammingError
     from psycopg2.extensions import register_type, UNICODE, \
                                     register_adapter, AsIs, QuotedString

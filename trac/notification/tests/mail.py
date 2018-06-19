@@ -19,7 +19,6 @@ from trac.notification.api import (
     IEmailAddressResolver, IEmailSender, INotificationFormatter,
     INotificationSubscriber, NotificationEvent, NotificationSystem,
 )
-from trac.notification.mail import RecipientMatcher
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub
 from trac.ticket.model import _fixup_cc_list

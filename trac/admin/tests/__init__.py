@@ -14,7 +14,6 @@
 import unittest
 
 from trac.admin.tests import console, web_ui
-from trac.admin.tests.functional import functionalSuite
 
 
 def test_suite():

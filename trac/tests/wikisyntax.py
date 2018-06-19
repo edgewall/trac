@@ -12,13 +12,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import io
-import tempfile
 import unittest
 
 from trac.attachment import Attachment
 from trac.mimeview.api import RenderingContext
 from trac.resource import Resource
-from trac.search.web_ui import SearchModule
 from trac.test import MockPerm, mkdtemp
 from trac.web.href import Href
 from trac.wiki.tests import formatter
@@ -127,8 +125,6 @@ attachment:file.txt?format=raw
 """ # "
 
 def attachment_setup(tc):
-    import trac.ticket.api
-    import trac.wiki.api
     tc.env.path = mkdtemp()
     with tc.env.db_transaction as db:
         db("INSERT INTO wiki (name,version) VALUES ('SomePage/SubPage',1)")

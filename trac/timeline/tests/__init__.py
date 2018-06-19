@@ -15,7 +15,6 @@ import unittest
 
 from trac.timeline.tests import web_ui
 from trac.timeline.tests import wikisyntax
-from trac.timeline.tests.functional import functionalSuite
 
 
 def test_suite():

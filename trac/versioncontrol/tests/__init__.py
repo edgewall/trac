@@ -15,7 +15,6 @@ import unittest
 
 from trac.versioncontrol.tests import admin, cache, console, diff, \
                                       svn_authz, api
-from trac.versioncontrol.tests.functional import functionalSuite
 
 
 def test_suite():

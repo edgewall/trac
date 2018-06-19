@@ -93,7 +93,7 @@ todo_include_todos = devel
 
 # -- PDF support via http://code.google.com/p/rst2pdf/
 try:
-    import rst2pdf
+    import rst2pdf  # noqa
     extensions.append('rst2pdf.pdfbuilder')
 except ImportError:
     pass

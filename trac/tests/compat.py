@@ -11,4 +11,4 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.test import rmtree  # for backward compatibility
+from trac.test import rmtree  # noqa: for backward compatibility

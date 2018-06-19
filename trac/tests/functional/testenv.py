@@ -24,7 +24,6 @@ import time
 from subprocess import call, Popen, PIPE, STDOUT
 
 from trac.config import Configuration, UnicodeConfigParser
-from trac.db.api import DatabaseManager
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi, rmtree
 from trac.tests.functional import trac_source_tree

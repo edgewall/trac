@@ -15,10 +15,7 @@ import unittest
 from datetime import timedelta
 
 from trac.test import locale_en
-from trac.ticket.query import QueryModule
-from trac.ticket.report import ReportModule
-from trac.ticket.roadmap import RoadmapModule
-from trac.ticket.model import Milestone, Ticket
+from trac.ticket.model import Milestone
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
                                utc)

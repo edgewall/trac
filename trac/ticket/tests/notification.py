@@ -33,7 +33,6 @@ from trac.ticket.notification import (
     BatchTicketChangeEvent, Subscription, TicketChangeEvent,
     TicketNotificationSystem)
 from trac.ticket.test import insert_ticket
-from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import datetime_now, utc
 
 MAXBODYWIDTH = 76

@@ -15,7 +15,7 @@ import unittest
 
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, MockRequest
-from trac.versioncontrol.api import DbRepositoryProvider, IRepositoryConnector
+from trac.versioncontrol.api import IRepositoryConnector
 from trac.versioncontrol.admin import RepositoryAdminPanel
 
 

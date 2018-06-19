@@ -12,8 +12,8 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 # Imports for backward compatibility
-from trac.dist import get_l10n_cmdclass, get_l10n_js_cmdclass
+from trac.dist import get_l10n_cmdclass, get_l10n_js_cmdclass  # noqa
 try:
-    from trac.dist import extract_javascript_script
+    from trac.dist import extract_javascript_script  # noqa
 except ImportError:
     pass

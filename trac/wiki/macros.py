@@ -35,7 +35,7 @@ from trac.util.text import unicode_quote, to_unicode, stripws
 from trac.util.translation import _, dgettext, cleandoc_, tag_
 from trac.web.chrome import chrome_resource_path
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
-from trac.wiki.formatter import (
+from trac.wiki.formatter import (  # noqa
     MacroError, OutlineFormatter, ProcessorError, extract_link, format_to_html,
     format_to_oneliner, system_message
 )  # ProcessorError unused, but imported for plugin use.

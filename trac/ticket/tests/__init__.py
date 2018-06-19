@@ -18,7 +18,6 @@ import trac.ticket
 from trac.ticket.tests import admin, api, console, model, query, wikisyntax, \
                               notification, conversion, report, roadmap, \
                               batch, web_ui, default_workflow
-from trac.ticket.tests.functional import functionalSuite
 
 
 def test_suite():

@@ -14,7 +14,6 @@
 import unittest
 
 from trac.prefs.tests import web_ui
-from trac.prefs.tests.functional import functionalSuite
 
 
 def test_suite():

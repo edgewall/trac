@@ -11,5 +11,5 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.db.api import *
-from trac.db.schema import *
+from trac.db.api import *  # noqa
+from trac.db.schema import *  # noqa

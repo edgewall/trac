@@ -14,7 +14,6 @@
 
 import os
 import re
-import time
 import unittest
 
 from trac.tests.functional import FunctionalTwillTestCaseSetup, \

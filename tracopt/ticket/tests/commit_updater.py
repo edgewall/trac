@@ -16,7 +16,6 @@ from datetime import datetime
 
 from trac.test import EnvironmentStub, Mock
 from trac.tests.contentgen import random_sentence
-from trac.ticket.model import Ticket
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import Repository, RepositoryManager

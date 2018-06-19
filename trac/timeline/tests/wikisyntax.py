@@ -14,7 +14,6 @@
 import time
 import unittest
 
-from trac.timeline.web_ui import TimelineModule
 from trac.wiki.tests import formatter
 
 TIMELINE_TEST_CASES = u"""

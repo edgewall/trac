@@ -19,7 +19,6 @@ import trac.wiki.formatter
 import trac.wiki.parser
 from trac.wiki.tests import (
     admin, formatter, macros, model, web_api, web_ui, wikisyntax)
-from trac.wiki.tests.functional import functionalSuite
 
 def test_suite():
 

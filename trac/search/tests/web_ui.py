@@ -17,11 +17,8 @@ import unittest
 
 from trac.search.web_ui import SearchModule
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.model import Ticket
 from trac.ticket.test import insert_ticket
-from trac.ticket.web_ui import TicketModule
 from trac.wiki.admin import WikiAdmin
-from trac.wiki.web_ui import WikiModule
 from trac.web.api import RequestDone
 
 

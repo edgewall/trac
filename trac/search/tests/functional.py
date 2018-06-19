@@ -12,7 +12,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import os
 import unittest
 
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc

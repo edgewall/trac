@@ -16,7 +16,7 @@ from __future__ import absolute_import
 
 import unittest
 try:
-    import pygments
+    import pygments  # noqa
     have_pygments = True
 except ImportError:
     have_pygments = False

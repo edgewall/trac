@@ -11,6 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.versioncontrol.web_ui.browser import *
-from trac.versioncontrol.web_ui.changeset import *
-from trac.versioncontrol.web_ui.log import *
+from trac.versioncontrol.web_ui.browser import *  # noqa
+from trac.versioncontrol.web_ui.changeset import *  # noqa
+from trac.versioncontrol.web_ui.log import *  # noqa

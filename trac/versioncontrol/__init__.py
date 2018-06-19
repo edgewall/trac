@@ -11,4 +11,4 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.versioncontrol.api import *
+from trac.versioncontrol.api import *  # noqa

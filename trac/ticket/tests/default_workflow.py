@@ -21,7 +21,6 @@ from trac.config import ConfigurationError
 from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.api import TicketSystem
-from trac.ticket.batch import BatchModifyModule
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Component, Ticket
 from trac.ticket.test import insert_ticket

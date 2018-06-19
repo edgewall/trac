@@ -203,8 +203,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
         """Test for regression of http://trac.edgewall.org/ticket/11515
         Show a notice message with new language setting after it is changed.
         """
-        from trac.util.translation import Locale, has_babel, \
-                                          get_available_locales
+        from trac.util.translation import has_babel, get_available_locales
         from pkg_resources import resource_exists, resource_filename
 
         if not has_babel:

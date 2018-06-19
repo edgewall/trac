@@ -23,8 +23,6 @@ import functools
 import hashlib
 import inspect
 import io
-from itertools import izip, tee
-import locale
 import os
 import posixpath
 from pkg_resources import find_distributions
@@ -37,7 +35,7 @@ import struct
 import tempfile
 import unicodedata
 import zipfile
-from urllib import quote, unquote, urlencode
+from urllib import quote
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \
@@ -1390,14 +1388,13 @@ def sub_val(the_list, item_to_remove, item_to_add):
 
 
 # Imports for backward compatibility (at bottom to avoid circular dependencies)
-from trac.core import TracError
-from trac.util.compat import reversed
-from trac.util.html import escape, unescape, Markup, Deuglifier
-from trac.util.text import CRLF, to_utf8, shorten_line, wrap, pretty_size
-from trac.util.datefmt import pretty_timedelta, format_datetime, \
-                              format_date, format_time, \
-                              get_date_format_hint, \
-                              get_datetime_format_hint, http_date, \
-                              parse_date
+from trac.core import TracError  # noqa
+from trac.util.compat import reversed  # noqa
+from trac.util.html import escape, unescape, Markup, Deuglifier  # noqa
+from trac.util.text import CRLF, to_utf8, shorten_line, wrap, pretty_size  # noqa
+from trac.util.datefmt import ( # noqa
+    pretty_timedelta, format_datetime, format_date, format_time,
+    get_date_format_hint, get_datetime_format_hint, http_date, parse_date,
+)
 
 __no_apidoc__ = 'compat presentation translation'

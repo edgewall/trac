@@ -15,7 +15,6 @@ import unittest
 
 from trac.db.tests import api, mysql_test, postgres_test, schema, \
                           sqlite_test, util
-from trac.db.tests.functional import functionalSuite
 
 
 def test_suite():

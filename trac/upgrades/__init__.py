@@ -11,4 +11,4 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.util import backup_config_file
+from trac.util import backup_config_file  # noqa

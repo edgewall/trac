@@ -11,6 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from trac.ticket.api import *
-from trac.ticket.default_workflow import *
-from trac.ticket.model import *
+from trac.ticket.api import *  # noqa
+from trac.ticket.default_workflow import *  # noqa
+from trac.ticket.model import *  # noqa

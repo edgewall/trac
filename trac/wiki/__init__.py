@@ -11,8 +11,8 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-from trac.wiki.api import *
-from trac.wiki.formatter import *
-from trac.wiki.intertrac import *
-from trac.wiki.model import *
-from trac.wiki.parser import *
+from trac.wiki.api import *  # noqa
+from trac.wiki.formatter import *  # noqa
+from trac.wiki.intertrac import *  # noqa
+from trac.wiki.model import *  # noqa
+from trac.wiki.parser import *  # noqa

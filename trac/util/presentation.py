@@ -21,11 +21,9 @@ from datetime import datetime
 from math import ceil
 import re
 
-from jinja2 import (Markup, Undefined, contextfilter, evalcontextfilter,
-                    escape as escape_quotes)
+from jinja2 import Markup, Undefined, contextfilter, evalcontextfilter
 from jinja2.filters import make_attrgetter
 from jinja2.utils import soft_unicode
-from jinja2._compat import iteritems
 
 from trac.core import TracError
 from .datefmt import to_utimestamp

@@ -16,7 +16,6 @@ import unittest
 
 from trac.mimeview.api import Mimeview
 from trac.test import EnvironmentStub, MockPerm, MockRequest
-from trac.ticket.model import Ticket
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 

@@ -44,7 +44,7 @@ except ImportError:
 try:
     from twill.browser import BrowserStateError as ConnectError
 except ImportError:
-    from urllib2 import URLError as ConnectError
+    from urllib2 import URLError as ConnectError  # noqa
 
 
 if twill:

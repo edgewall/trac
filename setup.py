@@ -27,7 +27,7 @@ if sys.version_info >= (3,):
 extra = {}
 
 try:
-    import babel
+    import babel  # noqa
 
     from trac.dist import get_l10n_trac_cmdclass
     extra['cmdclass'] = get_l10n_trac_cmdclass()
@@ -36,7 +36,7 @@ except ImportError:
     pass
 
 try:
-    import jinja2
+    import jinja2  # noqa
 except ImportError:
     print("Jinja2 is needed by Trac setup, pre-installing")
     # give some context to the warnings we might get when installing Jinja2

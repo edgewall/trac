@@ -16,4 +16,4 @@
 import mimetypes
 mimetypes.init()
 
-from trac.web.api import *
+from trac.web.api import *  # noqa

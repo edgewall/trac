@@ -18,12 +18,9 @@ previous versions of Python from 2.6 onward.
 """
 
 import errno
-import math
 import os
 import subprocess
 import time
-
-from trac.util.text import cleandoc
 
 # Windows doesn't have a crypt module by default.
 try:
@@ -49,10 +46,10 @@ frozenset = frozenset
 reversed = reversed
 set = set
 sorted = sorted
-from collections import OrderedDict
-from functools import partial
-from hashlib import md5, sha1
-from itertools import groupby, tee
+from collections import OrderedDict  # noqa
+from functools import partial  # noqa
+from hashlib import md5, sha1  # noqa
+from itertools import groupby, tee  # noqa
 
 
 class Popen(subprocess.Popen):

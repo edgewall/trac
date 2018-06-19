@@ -12,6 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 # Imports for backward compatibility
-from trac.notification.api import IEmailSender, NotificationSystem
-from trac.notification.mail import (EMAIL_LOOKALIKE_PATTERN, MAXHEADERLEN,
+from trac.notification.api import IEmailSender, NotificationSystem  # noqa
+from trac.notification.mail import (EMAIL_LOOKALIKE_PATTERN, MAXHEADERLEN,  # noqa
                                     SmtpEmailSender, SendmailEmailSender)

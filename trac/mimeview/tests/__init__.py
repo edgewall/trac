@@ -14,7 +14,6 @@
 import unittest
 
 from trac.mimeview.tests import api, patch, pygments, rst, txtl
-from trac.mimeview.tests.functional import functionalSuite
 
 
 def test_suite():

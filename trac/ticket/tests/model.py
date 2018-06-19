@@ -24,9 +24,8 @@ from trac.ticket.api import (
     IMilestoneChangeListener, ITicketChangeListener, TicketSystem
 )
 from trac.ticket.model import (
-    Ticket, Component, Milestone, Priority, Report, Type, Version
+    Component, Milestone, Priority, Report, Ticket, Version
 )
-from trac.ticket.roadmap import MilestoneModule
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import datetime_now, from_utimestamp, to_utimestamp, utc
 

@@ -21,7 +21,6 @@
 from HTMLParser import HTMLParseError
 import io
 import re
-import os
 
 from trac.core import *
 from trac.mimeview import *

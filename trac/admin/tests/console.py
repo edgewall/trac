@@ -26,7 +26,7 @@ import trac.ticket.admin
 import trac.versioncontrol.admin
 import trac.versioncontrol.api
 import trac.versioncontrol.web_ui
-import trac.wiki.admin
+import trac.wiki.admin  # noqa: needed when running tests in isolation.
 
 from trac.admin.api import IAdminCommandProvider, get_console_locale
 from trac.admin.console import TracAdmin, TracAdminHelpMacro

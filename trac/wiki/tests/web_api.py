@@ -13,7 +13,6 @@
 
 import unittest
 
-from trac.mimeview.patch import PatchRenderer
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import RequestDone
 from trac.wiki.web_api import WikiRenderer
