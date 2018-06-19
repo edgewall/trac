@@ -813,7 +813,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
 
 class HdfdumpTestCase(unittest.TestCase):
 
-    handlers = []
+    components = []
 
     @classmethod
     def setUpClass(cls):
