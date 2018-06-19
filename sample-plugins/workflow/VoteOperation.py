@@ -15,7 +15,7 @@
 from trac.core import Component, implements
 from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
-from trac.ticket.model import Priority, Ticket
+from trac.ticket.model import Priority
 from trac.util.html import tag
 
 revision = "$Rev$"
