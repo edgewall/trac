@@ -475,7 +475,7 @@ class TracDatabase(object):
                 fieldName = fieldName[0]['name'].lower()
             else:
                 print "WARNING: unknown bugzilla fieldid %d, \
-                                recording as unknown" % (userid)
+                                recording as unknown" % fieldid
                 fieldName = "unknown"
 
             self.fieldNameCache[fieldid] = fieldName
