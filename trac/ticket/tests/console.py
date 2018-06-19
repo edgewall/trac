@@ -433,7 +433,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         Tests adding more than 10 priority values.  This makes sure that
         ordering is preserved when adding more than 10 values.
         """
-        for i in xrange(11):
+        for i in range(11):
             self.execute('priority add p%s' % i)
         rv, output = self.execute('priority list')
         self.assertEqual(0, rv, output)

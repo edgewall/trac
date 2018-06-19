@@ -51,7 +51,10 @@ import os.path
 import re
 import weakref
 import posixpath
-from urllib import quote
+
+import six
+from six.moves import reduce
+from six.moves.urllib.parse import quote
 
 from trac.api import ISystemInfoProvider
 from trac.config import ListOption, ChoiceOption
@@ -424,7 +427,7 @@ class SubversionRepository(Repository):
         """Take any revision specification and produce a revision suitable
         for the rest of the API
         """
-        if rev is None or isinstance(rev, basestring) and \
+        if rev is None or isinstance(rev, six.string_types) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
             return self.youngest_rev
         else:

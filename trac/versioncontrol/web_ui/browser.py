@@ -19,6 +19,8 @@ import re
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 
+from six.moves import range
+
 from trac.config import BoolOption, ListOption, Option
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewAnnotator, Mimeview, is_binary
@@ -991,7 +993,7 @@ class BlameAnnotator(object):
         chgset = self.repos.get_changeset(rev)
         chgsets = {rev: chgset}
         self.timerange = TimeRange(chgset.date)
-        for idx in xrange(len(self.annotations)):
+        for idx in range(len(self.annotations)):
             rev = self.annotations[idx]
             chgset = chgsets.get(rev)
             if not chgset:

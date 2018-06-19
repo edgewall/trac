@@ -20,6 +20,8 @@ import os
 import re
 from pkg_resources import DistributionNotFound
 
+import six
+
 from trac.core import *
 from trac.config import Option
 from trac.db.api import ConnectionBase, IDatabaseConnector, \
@@ -82,7 +84,7 @@ min_postgresql_version = (9, 1, 0)
 def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
     """Quote the parameters and assemble the DSN."""
     def quote(value):
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
             value = unicode(value)
         return "'%s'" % value.replace('\\', r'\\').replace("'", r"\'")
 

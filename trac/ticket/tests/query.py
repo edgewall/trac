@@ -16,6 +16,8 @@ import difflib
 import re
 import unittest
 
+from six.moves import range
+
 from trac.mimeview.api import Mimeview
 from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
 from trac.ticket.api import TicketSystem
@@ -91,7 +93,7 @@ class QueryTestCase(unittest.TestCase):
         when = datetime(2008, 7, 1, 12, 34, 56, 987654, utc)
         with self.env.db_transaction:
             ids = []
-            for idx in xrange(self.n_tickets):
+            for idx in range(self.n_tickets):
                 t = insert_ticket(self.env, summary='Summary %d' % idx,
                                   owner=owner[idx % len(owner)],
                                   type=type[idx % len(type)],
@@ -484,7 +486,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                                                sql))
 
     def test_query_using_joins(self):
-        fields = ['col_%02d' % i for i in xrange(100)]
+        fields = ['col_%02d' % i for i in range(100)]
         for f in fields:
             self.env.config.set('ticket-custom', f, 'text')
         with self.env.db_transaction:
@@ -495,7 +497,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=resolution&group=severity&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(28)))
+                      ''.join('&col=col_%02d' % idx for idx in range(28)))
         sql, args = query.get_sql()
         self.assertEqual(['enum'] * 3 + ['ticket_custom'] * 28,
                          self._get_join_tables(sql))
@@ -505,7 +507,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=milestone&group=version&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(28)))
+                      ''.join('&col=col_%02d' % idx for idx in range(28)))
         sql, args = query.get_sql()
         self.assertEqual(['enum', 'milestone'] + ['ticket_custom'] * 28 +
                          ['version'],
@@ -516,7 +518,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=resolution&group=severity&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
+                      ''.join('&col=col_%02d' % idx for idx in range(29)))
         sql, args = query.get_sql()
         self.assertEqual(['enum'] * 3, self._get_join_tables(sql))
         tickets = query.execute(self.req)
@@ -526,7 +528,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         query = Query.from_string(
             self.env, 'col_12=12.col_12&' +
                       'order=milestone&group=version&col=id&col=summary' +
-                      ''.join('&col=col_%02d' % idx for idx in xrange(29)))
+                      ''.join('&col=col_%02d' % idx for idx in range(29)))
         sql, args = query.get_sql()
         self.assertEqual(['enum', 'milestone', 'version'],
                          self._get_join_tables(sql))
@@ -534,7 +536,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(1, len(tickets))
 
     def test_too_many_custom_fields(self):
-        fields = ['col_%02d' % i for i in xrange(100)]
+        fields = ['col_%02d' % i for i in range(100)]
         for f in fields:
             self.env.config.set('ticket-custom', f, 'text')
 
@@ -1060,7 +1062,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         columns = ('priority', 'resolution', 'type', 'milestone', 'version')
         for name in columns:
             self.env.config.set('ticket-custom', name, 'text')
-        for idx in xrange(ncols):
+        for idx in range(ncols):
             self.env.config.set('ticket-custom', 'col_%02d' % idx, 'text')
         with self.env.db_transaction as db:
             db("DELETE FROM enum")
@@ -1073,12 +1075,12 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         with self.env.db_transaction as db:
             for value in ('foo', 'bar', 'baz', 'blah'):
                 attrs = {name: '%s-%s' % (value, name) for name in columns}
-                attrs.update({'col_%02d' % idx: 'v' for idx in xrange(ncols)})
+                attrs.update({'col_%02d' % idx: 'v' for idx in range(ncols)})
                 insert_ticket(self.env, reporter='joe',
                               summary='Summary "%s"' % value, **attrs)
             for name in columns:
                 quoted[name] = db.quote(name)
-            for idx in xrange(ncols):
+            for idx in range(ncols):
                 name = 'col_%02d' % idx
                 quoted[name] = db.quote(name)
 
@@ -1091,7 +1093,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
             'version=foo-version&version=blah-version&'
             'col=id&col=summary&col=priority&col=resolution&col=type&'
             'col=milestone&col=version' +
-            (''.join('&col=col_%02d' % idx for idx in xrange(ncols))) +
+            (''.join('&col=col_%02d' % idx for idx in range(ncols))) +
             '&order=resolution')
         tickets = query.execute(self.req)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
@@ -1107,7 +1109,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
                           (col, quoted[col]), sql)
             self.assertNotIn(' LEFT OUTER JOIN ticket_custom AS %s ON ' %
                              quoted[col], sql)
-        for idx in xrange(ncols):
+        for idx in range(ncols):
             col = 'col_%02d' % idx
             self.assertIn(" (SELECT c.value FROM ticket_custom c WHERE "
                           "c.ticket=t.id AND c.name='%s') AS %s" %

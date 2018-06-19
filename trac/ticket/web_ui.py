@@ -20,6 +20,9 @@ import io
 import pkg_resources
 import re
 
+import six
+from six.moves import range
+
 from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option
 from trac.core import *
@@ -959,7 +962,7 @@ class TicketModule(Component):
 
         # assume a linear sequence of change numbers, starting at 1, with gaps
         def replay_changes(values, old_values, from_version, to_version):
-            for version in xrange(from_version, to_version+1):
+            for version in range(from_version, to_version+1):
                 if version in changes:
                     for k, v in changes[version]['fields'].iteritems():
                         values[k] = v['new']
@@ -1488,7 +1491,7 @@ class TicketModule(Component):
     def _query_link_words(self, context, name, value):
         """Splits a list of words and makes a query link to each separately"""
         from trac.ticket.query import QueryModule
-        if not (isinstance(value, basestring) and  # None or other non-splitable
+        if not (isinstance(value, six.string_types) and  # None or other non-splitable
                 self.env.is_component_enabled(QueryModule)):
             return value
         args = arg_list_to_args(parse_arg_list(self.ticketlink_query))

@@ -18,6 +18,8 @@
 
 import re
 
+from six.moves import range
+
 from trac.util.text import unicode_quote, unicode_urlencode
 
 
@@ -192,7 +194,7 @@ class Href(object):
             self._derived[name] = lambda *args, **kw: self(name, *args, **kw)
         return self._derived[name]
 
-    _printable_safe = ''.join(map(chr, xrange(0x21, 0x7f)))
+    _printable_safe = ''.join(map(chr, range(0x21, 0x7f)))
 
     def __add__(self, rhs):
         if not rhs:

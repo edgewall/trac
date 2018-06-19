@@ -18,6 +18,9 @@
 
 import re
 
+from six import unichr
+from six.moves import range
+
 from trac.cache import cached
 from trac.config import BoolOption, ListOption
 from trac.core import *
@@ -329,8 +332,8 @@ class WikiSystem(Component):
 
     PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z])(?=[a-z])")
 
-    Lu = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).isupper())
-    Ll = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).islower())
+    Lu = ''.join(unichr(c) for c in range(0x10000) if unichr(c).isupper())
+    Ll = ''.join(unichr(c) for c in range(0x10000) if unichr(c).islower())
 
     def format_page_name(self, page, split=False):
         if split or self.split_page_names:
@@ -464,7 +467,7 @@ class WikiSystem(Component):
         if len(referrer) == 1:           # Non-hierarchical referrer
             return pagename
         # Test for pages with same name, higher in the hierarchy
-        for i in xrange(len(referrer) - 1, 0, -1):
+        for i in range(len(referrer) - 1, 0, -1):
             name = '/'.join(referrer[:i]) + '/' + pagename
             if self.has_page(name):
                 return name

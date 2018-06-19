@@ -64,6 +64,8 @@ import mimetypes
 import re
 from collections import namedtuple
 
+import six
+
 from trac.config import IntOption, ListOption, Option
 from trac.core import Component, ExtensionPoint, Interface, TracError, \
                       implements
@@ -705,10 +707,10 @@ class Mimeview(Component):
             if output:
                 content, content_type = output
                 if iterable:
-                    if isinstance(content, basestring):
+                    if isinstance(content, six.string_types):
                         content = (content,)
                 else:
-                    if not isinstance(content, basestring):
+                    if not isinstance(content, six.string_types):
                         content = ''.join(content)
                 return content, content_type, conversion.extension
         raise TracError(
@@ -805,7 +807,7 @@ class Mimeview(Component):
                 if not (force_source or getattr(renderer, 'returns_source',
                                                 False)):
                     # Direct rendering of content
-                    if isinstance(result, basestring):
+                    if isinstance(result, six.string_types):
                         return Markup(to_unicode(result))
                     elif isinstance(result, Fragment):
                         return result.__html__()

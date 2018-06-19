@@ -262,7 +262,7 @@ class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
         """Test non-ticket search"""
         # Create a summary containing only unique words
         summary = ' '.join(random_word() + '_TestNonTicketSearch'
-                           for i in xrange(5))
+                           for i in range(5))
         self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
@@ -387,7 +387,7 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         """Test ticket query links"""
         count = 3
         ticket_ids = [self._tester.create_ticket('TestTicketQueryLinks%s' % i)
-                      for i in xrange(count)]
+                      for i in range(count)]
         self._tester.go_to_query()
         # We don't have the luxury of javascript, so this is a multi-step
         # process
@@ -399,7 +399,7 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         tc.submit('update')
         query_url = b.get_url()
         tc.find(r'\(%d matches\)' % count)
-        for i in xrange(count):
+        for i in range(count):
             tc.find('TestTicketQueryLinks%s' % i)
 
         tc.follow('TestTicketQueryLinks0')
@@ -473,7 +473,7 @@ class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
         count = 3
         [self._tester.create_ticket(summary='TestTicketQueryOrClause%s' % i,
                                     info={'keywords': str(i)})
-         for i in xrange(count)]
+         for i in range(count)]
         self._tester.go_to_query()
         tc.formvalue('query', '0_owner', '')
         tc.submit('rm_filter_0_owner_0')
@@ -1289,7 +1289,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         # Create a set of tickets, and assign them all to a milestone
         milestone = self._tester.create_milestone()
         ids = [self._tester.create_ticket(info={'milestone': milestone})
-               for x in xrange(5)]
+               for x in range(5)]
         # Need a ticket in each state: new, assigned, accepted, closed,
         # reopened
         # leave ids[0] as new
@@ -1727,7 +1727,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
                     r'href="/report/1">[ \n]*<em>\{1\}</em>')
             tc.find(r'<a title="View report" '
                     r'href="/report/2">[ \n]*<em>\{2\}</em>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.notfind(r'<a title="View report" '
                            r'href="/report/%(num)s">[ \n]*'
                            r'<em>\{%(num)s\}</em>' % {'num': report_num})
@@ -1740,7 +1740,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
             tc.find(r'<h1>\{2\} Active Tickets by Version[ \n]*'
                     r'(<span class="numrows">\(\d+ matches\)</span>)?'
                     r'[ \n]*</h1>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.go(self._tester.url + '/report/%d' % report_num)
                 tc.find(r'<h1>Error: Forbidden</h1>')
             # Check that permissions are enforced on the query pages
@@ -1750,7 +1750,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
             tc.go(self._tester.url + '/query?report=2')
             tc.find(r'<h1>Active Tickets by Version '
                     r'<span class="numrows">\(\d+ matches\)</span></h1>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.go(self._tester.url + '/query?report=%d' % report_num)
                 tc.find(r'<h1>Error: Forbidden</h1>')
         finally:

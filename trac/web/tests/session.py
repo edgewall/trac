@@ -40,7 +40,7 @@ def _prep_session_table(env, spread_visits=False):
     visit_delta = 86400 if spread_visits else 0
     auth_list, anon_list = [], []
     with env.db_transaction as db:
-        for x in xrange(20):
+        for x in range(20):
             sid = 'name%02d' % x
             authenticated = int(x < 10)
             last_visit = last_visit_base + (visit_delta * x)

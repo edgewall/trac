@@ -16,14 +16,15 @@
 #
 # Author: Eli Carter
 
-import io
-from ConfigParser import ParsingError, RawConfigParser
 from collections import defaultdict
 from functools import partial
 from pkg_resources import resource_filename
 
 from trac.api import IEnvironmentSetupParticipant
 from trac.config import ConfigSection, Configuration, ConfigurationError
+
+from six.moves.configparser import ParsingError, RawConfigParser
+
 from trac.core import *
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import ResourceNotFound

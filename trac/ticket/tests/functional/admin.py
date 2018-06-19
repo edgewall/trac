@@ -432,18 +432,18 @@ class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
         """Admin remove multiple milestones"""
         name = "MultiRemoveMilestone"
         count = 3
-        for i in xrange(count):
+        for i in range(count):
             self._tester.create_milestone("%s%s" % (name, i))
         milestone_url = self._tester.url + '/admin/ticket/milestones'
         tc.go(milestone_url)
         tc.url(milestone_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.find("%s%s" % (name, i))
-        for i in xrange(count):
+        for i in range(count):
             tc.formvalue('milestone_table', 'sel', "%s%s" % (name, i))
         tc.submit('remove')
         tc.url(milestone_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.notfind("%s%s" % (name, i))
 
 
@@ -610,18 +610,18 @@ class TestAdminPriorityRemoveMulti(FunctionalTwillTestCaseSetup):
         """Admin remove multiple priorities"""
         name = "MultiRemovePriority"
         count = 3
-        for i in xrange(count):
+        for i in range(count):
             self._tester.create_priority("%s%s" % (name, i))
         priority_url = self._tester.url + '/admin/ticket/priority'
         tc.go(priority_url)
         tc.url(priority_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.find("%s%s" % (name, i))
-        for i in xrange(count):
+        for i in range(count):
             tc.formvalue('enumtable', 'sel', "%s%s" % (name, i))
         tc.submit('remove')
         tc.url(priority_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.notfind("%s%s" % (name, i))
 
 
@@ -908,18 +908,18 @@ class TestAdminVersionRemoveMulti(FunctionalTwillTestCaseSetup):
         """Admin remove multiple versions"""
         name = "MultiRemoveVersion"
         count = 3
-        for i in xrange(count):
+        for i in range(count):
             self._tester.create_version("%s%s" % (name, i))
         version_url = self._tester.url + '/admin/ticket/versions'
         tc.go(version_url)
         tc.url(version_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.find("%s%s" % (name, i))
-        for i in xrange(count):
+        for i in range(count):
             tc.formvalue('version_table', 'sel', "%s%s" % (name, i))
         tc.submit('remove')
         tc.url(version_url + '$')
-        for i in xrange(count):
+        for i in range(count):
             tc.notfind("%s%s" % (name, i))
 
 

@@ -39,7 +39,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
 
     def _make_tickets(self, num):
         self.tickets = []
-        for i in xrange(num):
+        for i in range(num):
             ticket = insert_ticket(self.env, reporter='someone',
                                    summary=random_sentence())
             self.tickets.append(ticket)

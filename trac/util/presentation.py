@@ -21,6 +21,9 @@ from datetime import datetime
 from math import ceil
 import re
 
+import six
+from six.moves import range
+
 from jinja2 import (Markup, Undefined, contextfilter, evalcontextfilter,
                     escape as escape_quotes)
 from jinja2.filters import make_attrgetter
@@ -277,7 +280,7 @@ def groupattr_filter(_eval_ctx, iterable, num, attr, *args, **kwargs):
 
 def istext(text):
     """`True` for text (`unicode` and `str`), but `False` for `Markup`."""
-    return isinstance(text, basestring) and not isinstance(text, Markup)
+    return isinstance(text, six.string_type) and not isinstance(text, Markup)
 
 def prepared_paginate(items, num_items, max_per_page):
     if max_per_page == 0:
@@ -296,7 +299,7 @@ def paginate(items, page=0, max_per_page=10):
 
     The `items` parameter can be a list, tuple, or iterator:
 
-    >>> items = list(xrange(12))
+    >>> items = list(range(12))
     >>> items
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     >>> paginate(items)
@@ -311,7 +314,7 @@ def paginate(items, page=0, max_per_page=10):
     This function also works with generators:
 
     >>> def generate():
-    ...     for idx in xrange(12):
+    ...     for idx in range(12):
     ...         yield idx
     >>> paginate(generate())
     ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, 2)
@@ -321,7 +324,7 @@ def paginate(items, page=0, max_per_page=10):
     The `max_per_page` parameter can be used to set the number of items that
     should be displayed per page:
 
-    >>> items = xrange(12)
+    >>> items = range(12)
     >>> paginate(items, page=0, max_per_page=6)
     ([0, 1, 2, 3, 4, 5], 12, 2)
     >>> paginate(items, page=1, max_per_page=6)
@@ -408,7 +411,7 @@ class Paginator(object):
 
     def get_shown_pages(self, page_index_count = 11):
         if not self.has_more_pages:
-            return xrange(1, 2)
+            return range(1, 2)
 
         min_page = 1
         max_page = int(ceil(float(self.num_items) / self.max_per_page))
@@ -422,7 +425,7 @@ class Paginator(object):
         if end_page > max_page:
             end_page = max_page
 
-        return xrange(start_page, end_page + 1)
+        return range(start_page, end_page + 1)
 
     def displayed_items(self):
         from trac.util.translation import _

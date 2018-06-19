@@ -21,8 +21,6 @@
 import io
 import re
 import sys
-from HTMLParser import HTMLParser
-import htmlentitydefs as entities
 
 from markupsafe import Markup, escape as escape_quotes
 
@@ -56,8 +54,20 @@ try:
 except ImportError:
     LazyProxy = None
 
+import six
+from six import unichr
+from six.moves import html_entities as entities
+from six.moves.html_parser import HTMLParser
+
 from trac.core import TracError
 from trac.util.text import to_unicode
+
+try:
+    from HTMLParser import HTMLParseError
+except ImportError:  # Python 3.5+
+    class HTMLParseError(Exception):
+        pass
+
 
 __all__ = ['Deuglifier', 'FormTokenInjector', 'TracHTMLSanitizer', 'escape',
            'find_element', 'html', 'is_safe_origin', 'plaintext', 'tag',
@@ -368,7 +378,7 @@ class Fragment(object):
     def append(self, arg):
         global genshi
         if arg: # ignore most false values (None, False, [], (), ''), except 0!
-            if isinstance(arg, (Fragment, basestring, int, float, long)):
+            if isinstance(arg, (Fragment, float) + six.integer_types + six.string_types):
                 self.children.append(arg)
             elif genshi and isinstance(arg, Stream):
                 # legacy support for Genshi streams
@@ -643,7 +653,7 @@ class TracHTMLSanitizer(object):
         unsafe.
 
         :param html: the input HTML
-        :type: basestring
+        :type: string
         :return: the sanitized content
         :rtype: Markup
 
@@ -707,7 +717,7 @@ class TracHTMLSanitizer(object):
         inclusion in the output.
 
         :param tag: the tag name of the element
-        :type tag: QName or basestring
+        :type tag: QName or string
         :param attrs: the element attributes
         :type attrs: Attrs or list
         :return: whether the element should be considered safe
@@ -1151,8 +1161,8 @@ def to_fragment(input):
 
 
 # Mappings for removal of control characters
-_translate_nop = ''.join(chr(i) for i in xrange(256))
-_invalid_control_chars = ''.join(chr(i) for i in xrange(32)
+_translate_nop = ''.join(chr(i) for i in range(256))
+_invalid_control_chars = ''.join(chr(i) for i in range(32)
                                  if i not in [0x09, 0x0a, 0x0d])
 
 def valid_html_bytes(bytes):

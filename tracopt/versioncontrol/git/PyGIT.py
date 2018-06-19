@@ -23,6 +23,8 @@ from functools import partial
 from subprocess import PIPE
 from threading import Lock
 
+from six.moves import range
+
 from trac.core import TracBaseError
 from trac.util import terminate
 from trac.util.compat import Popen, close_fds
@@ -758,7 +760,7 @@ class Storage(object):
         # the other ones from srevs
         crevs = srevs - {rev}
 
-        for l in xrange(min_len+1, 40):
+        for l in range(min_len+1, 40):
             srev = rev[:l]
             if srev not in [ r[:l] for r in crevs ]:
                 return srev

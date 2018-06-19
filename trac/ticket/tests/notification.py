@@ -377,9 +377,9 @@ class NotificationTestCase(unittest.TestCase):
         self.assertTrue(mo)
         if mo.group('day'):
             self.assertIn(mo.group('day'), days)
-        self.assertIn(int(mo.group('dm')), xrange(1, 32))
+        self.assertIn(int(mo.group('dm')), range(1, 32))
         self.assertIn(mo.group('month'), months)
-        self.assertIn(int(mo.group('hour')), xrange(24))
+        self.assertIn(int(mo.group('hour')), range(24))
         if mo.group('tz'):
             self.assertIn(mo.group('tz'), tz)
 
@@ -1717,7 +1717,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
 
         self.tktids = []
         with self.env.db_transaction as db:
-            for n in xrange(2):
+            for n in range(2):
                 for priority in ('', 'blah', 'blocker', 'critical', 'major',
                                  'minor', 'trivial'):
                     idx = len(self.tktids)

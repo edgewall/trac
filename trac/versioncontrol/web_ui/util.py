@@ -16,9 +16,10 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@edgewall.org>
 
-from itertools import izip
 from tempfile import TemporaryFile
 from zipfile import ZipFile, ZIP_DEFLATED
+
+from six.moves import zip
 
 from trac.resource import ResourceNotFound
 from trac.util import content_disposition, create_zipinfo
@@ -159,7 +160,7 @@ def make_log_graph(repos, revs):
             next_revs[column:column + 1] = new_parents
 
             # Add edges to parents
-            for col, (r, thread) in enumerate(izip(active, active_thread)):
+            for col, (r, thread) in enumerate(zip(active, active_thread)):
                 if r in next_revs:
                     add_edge(thread, next_revs.index(r), line + 1)
                 elif r == rev:
@@ -176,7 +177,7 @@ def make_log_graph(repos, revs):
             else:
                 base = len(threads)
                 threads.extend([[0, column + 1 + i, line + 1]]
-                               for i in xrange(len(new_parents) - 1))
+                               for i in range(len(new_parents) - 1))
                 active_thread[column + 1:column + 1] = threads[base:]
 
             active = next_revs

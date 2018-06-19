@@ -11,7 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-from ConfigParser import RawConfigParser
 from glob import glob
 from subprocess import PIPE, Popen
 import inspect
@@ -19,6 +18,8 @@ import io
 import os
 import sys
 import unittest
+
+from six.moves.configparser import RawConfigParser
 
 from trac import db_default
 from trac.admin.console import TracAdmin

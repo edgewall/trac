@@ -92,10 +92,12 @@ setup(
 
     setup_requires = [
         'jinja2>=2.9.3',
+        'six>=1.9',
     ],
     install_requires = [
         'setuptools>=0.6',
         'jinja2>=2.9.3',
+        'six>=1.9',
     ],
     extras_require = {
         'genshi': ['Genshi>=0.6'],

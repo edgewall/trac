@@ -18,15 +18,18 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@edgewall.org>
 
-from HTMLParser import HTMLParseError
 import io
 import re
 import os
+
+import six
+from six.moves import range
 
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.util import arity, as_int
+from trac.util.html import HTMLParseError
 from trac.util.text import (
     exception_to_unicode, shorten_line, to_unicode, unicode_quote,
     unquote_label
@@ -506,13 +509,13 @@ class Formatter(object):
         If `close_tag` is not specified, it's an indirect tag (0.12)
         """
         tmp = ''
-        for i in xrange(len(self._open_tags) - 1, -1, -1):
+        for i in range(len(self._open_tags) - 1, -1, -1):
             tag = self._open_tags[i]
             tmp += self._get_close_tag(tag)
             if (open_tag == tag,
                     (open_tag, close_tag) == tag)[bool(close_tag)]:
                 del self._open_tags[i]
-                for j in xrange(i, len(self._open_tags)):
+                for j in range(i, len(self._open_tags)):
                     tmp += self._get_open_tag(self._open_tags[j])
                 break
         return tmp
@@ -1009,7 +1012,7 @@ class Formatter(object):
                 class_attr = ' class="citation"' if citation else ''
                 self.out.write(u'<blockquote%s>\n' % class_attr)
             if citation:
-                for d in xrange(quote_depth+1, depth+1):
+                for d in range(quote_depth+1, depth+1):
                     open_one_quote(d)
             else:
                 open_one_quote(depth)
@@ -1271,7 +1274,7 @@ class Formatter(object):
     _normalize_re = re.compile(r'[\v\f]', re.UNICODE)
 
     def reset(self, source, out=None):
-        if isinstance(source, basestring):
+        if isinstance(source, six.string_types):
             source = re.sub(self._normalize_re, ' ', source)
         self.source = source
         class NullOut(object):
@@ -1296,7 +1299,7 @@ class Formatter(object):
 
     def format(self, text, out=None, escape_newlines=False):
         text = self.reset(text, out)
-        if isinstance(text, basestring):
+        if isinstance(text, six.string_types):
             text = text.splitlines()
 
         for line in text:
@@ -1506,11 +1509,11 @@ class OutlineFormatter(Formatter):
             if depth < min_depth or depth > max_depth:
                 continue
             if depth > curr_depth: # Deeper indent
-                for i in xrange(curr_depth, depth):
+                for i in range(curr_depth, depth):
                     out.write(whitespace_indent * (2*i) + u'<ol>\n' +
                               whitespace_indent * (2*i+1) + u'<li>\n')
             elif depth < curr_depth: # Shallower indent
-                for i in xrange(curr_depth-1, depth-1, -1):
+                for i in range(curr_depth-1, depth-1, -1):
                     out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                               whitespace_indent * (2*i) + u'</ol>\n')
                 out.write(whitespace_indent * (2*depth-1) + u'</li>\n' +
@@ -1522,7 +1525,7 @@ class OutlineFormatter(Formatter):
             out.write(whitespace_indent * (2*depth) +
                       u'<a href="#%s">%s</a>\n' % (anchor, text))
         # Close out all indentation
-        for i in xrange(curr_depth-1, min_depth-2, -1):
+        for i in range(curr_depth-1, min_depth-2, -1):
             out.write(whitespace_indent * (2*i+1) + u'</li>\n' +
                       whitespace_indent * (2*i) + u'</ol>\n')
 
@@ -1559,7 +1562,7 @@ class HtmlFormatter(object):
     def __init__(self, env, context, wikidom):
         self.env = env
         self.context = context
-        if isinstance(wikidom, basestring):
+        if isinstance(wikidom, six.string_types):
             wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 
@@ -1586,7 +1589,7 @@ class InlineHtmlFormatter(object):
     def __init__(self, env, context, wikidom):
         self.env = env
         self.context = context
-        if isinstance(wikidom, basestring):
+        if isinstance(wikidom, six.string_types):
             wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 

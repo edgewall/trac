@@ -19,10 +19,11 @@ It also handles twill's absense.
 import io
 import os
 import sys
-import urllib
-import urlparse
 from os.path import abspath, dirname, join
 from pkg_resources import parse_version as pv
+
+from six.moves.urllib.parse import urljoin
+from six.moves.urllib.request import pathname2url
 
 from trac.util.text import to_unicode
 
@@ -44,7 +45,7 @@ except ImportError:
 try:
     from twill.browser import BrowserStateError as ConnectError
 except ImportError:
-    from urllib2 import URLError as ConnectError
+    from six.moves.urllib.error import URLError as ConnectError
 
 
 if twill:
@@ -160,7 +161,7 @@ if twill:
         with open(filename, 'w') as html_file:
             html_file.write(b.get_html())
 
-        return urlparse.urljoin('file:', urllib.pathname2url(filename))
+        return urljoin('file:', pathname2url(filename))
 
     # Twill isn't as helpful with errors as I'd like it to be, so we replace
     # the formvalue function.  This would be better done as a patch to Twill.

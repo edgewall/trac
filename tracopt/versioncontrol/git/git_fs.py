@@ -16,6 +16,8 @@ from datetime import datetime
 import itertools
 import os
 
+from six.moves import range
+
 from trac.api import ISystemInfoProvider
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
@@ -101,7 +103,7 @@ class GitCachedRepository(CachedRepository):
             max_holders = 999
             revs = sorted(set(rev for refname, rev in repos.git.get_refs()))
             step = max_holders - 1
-            for idx in xrange(0, len(revs), step):
+            for idx in range(0, len(revs), step):
                 revs_ = revs[idx:idx + step]
                 holders = ','.join(('%s',) * len(revs_))
                 args = [self.id]
@@ -219,19 +221,19 @@ def _parse_user_time(s):
     return user, time
 
 
-_file_type_mask = 0170000
+_file_type_mask = 0o170000
 
 
 def _is_dir(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) in (0040000, 0160000)
+    return (mode & _file_type_mask) in (0o040000, 0o160000)
 
 
 def _is_submodule(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) == 0160000
+    return (mode & _file_type_mask) == 0o160000
 
 
 class GitConnector(Component):

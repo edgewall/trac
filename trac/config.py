@@ -15,7 +15,9 @@
 import copy
 import os.path
 import re
-from ConfigParser import ConfigParser, ParsingError
+
+import six
+from six.moves.configparser import ConfigParser, ParsingError
 
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
@@ -44,7 +46,7 @@ def _getfloat(value):
 def _getlist(value, sep, keep_empty):
     if not value:
         return []
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         if isinstance(sep, (list, tuple)):
             splitted = re.split('|'.join(map(re.escape, sep)), value)
         else:

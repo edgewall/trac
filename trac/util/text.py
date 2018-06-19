@@ -18,16 +18,17 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christian Boos <cboos@edgewall.org>
 
-import __builtin__
 import locale
 import os
 import re
 import sys
 import textwrap
-from urllib import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
 import jinja2
+from six import unichr
+from six.moves import input, range
+from six.moves.urllib.parse import quote, quote_plus, unquote
 
 CRLF = '\r\n'
 
@@ -183,7 +184,7 @@ def strip_line_ws(text, leading=True, trailing=True):
 
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
-for i in list(xrange(0x20)) + [ord(c) for c in u'&<>\u2028\u2029']:
+for i in list(range(0x20)) + [ord(c) for c in u'&<>\u2028\u2029']:
     _js_quote.setdefault(unichr(i), '\\u%04x' % i)
 _js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>' + u'\u2028\u2029]')
 _js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>' + u'\u2028\u2029]')
@@ -264,7 +265,7 @@ def unicode_urlencode(params, safe=''):
     return '&'.join(l)
 
 
-_qs_quote_safe = ''.join(chr(c) for c in xrange(0x21, 0x7f))
+_qs_quote_safe = ''.join(chr(c) for c in range(0x21, 0x7f))
 
 def quote_query_string(text):
     """Quote strings for query string
@@ -359,7 +360,7 @@ def raw_input(prompt):
     appropriate.
     """
     printout(prompt, newline=False)
-    return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
+    return to_unicode(input(), sys.stdin.encoding)
 
 
 _preferredencoding = locale.getpreferredencoding()
@@ -465,7 +466,7 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
                     if len(cell) < max_lines:
                         cell += [''] * (max_lines - len(cell))
                 lines.extend([cell[idx] for cell in row]
-                             for idx in xrange(max_lines))
+                             for idx in range(max_lines))
             else:
                 lines.append(row)
         return lines
@@ -474,7 +475,7 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
 
     num_cols = len(data[0])
     col_width = [max(tw(row[idx]) for row in data)
-                 for idx in xrange(num_cols)]
+                 for idx in range(num_cols)]
 
     out.write('\n')
     for ridx, row in enumerate(data):
@@ -612,7 +613,7 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
                     cur_width += w
                 elif self.breakable_re.match(chunk):
                     left_space = width - cur_width
-                    for i in xrange(len(chunk)):
+                    for i in range(len(chunk)):
                         w = text_width(chunk[i])
                         if left_space < w:
                             break
@@ -814,7 +815,7 @@ def levenshtein_distance(lhs, rhs):
     if not lhs:
         return len(rhs)
 
-    prev = xrange(len(rhs) + 1)
+    prev = range(len(rhs) + 1)
     for lidx, lch in enumerate(lhs):
         curr = [lidx + 1]
         for ridx, rch in enumerate(rhs):

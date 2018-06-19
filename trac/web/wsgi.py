@@ -17,10 +17,10 @@
 from abc import ABCMeta, abstractmethod
 import errno
 import sys
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from SocketServer import ForkingMixIn, ThreadingMixIn
 import urllib
 
+from six.moves.socketserver import ForkingMixIn, ThreadingMixIn
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 # winsock errors
 _WSAECONNABORTED = 10053

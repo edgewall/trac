@@ -15,8 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from abc import ABCMeta
-from BaseHTTPServer import BaseHTTPRequestHandler
-from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
 from hashlib import md5
@@ -25,7 +23,11 @@ import mimetypes
 import os
 import re
 import sys
-import urlparse
+
+import six
+from six.moves.http_cookies import CookieError, BaseCookie, SimpleCookie
+from six.moves.urllib.parse import urlparse, urlunparse
+from six.moves.BaseHTTPServer import BaseHTTPRequestHandler
 
 from trac.core import Interface, TracBaseError, TracError
 from trac.util import as_bool, as_int, get_last_traceback, lazy, \
@@ -774,8 +776,8 @@ class Request(object):
         self.send_response(status)
         if not url.startswith(('http://', 'https://')):
             # Make sure the URL is absolute
-            scheme, host = urlparse.urlparse(self.base_url)[:2]
-            url = urlparse.urlunparse((scheme, host, url, None, None, None))
+            scheme, host = urlparse(self.base_url)[:2]
+            url = urlunparse((scheme, host, url, None, None, None))
 
         # Workaround #10382, IE6-IE9 bug when post and redirect with hash
         if status == 303 and '#' in url:
@@ -913,7 +915,7 @@ class Request(object):
             bufsize = 0
             buf = []
             buf_append = buf.append
-            if isinstance(data, basestring):
+            if isinstance(data, six.string_types):
                 data = [data]
             for chunk in data:
                 if isinstance(chunk, unicode):
@@ -952,7 +954,7 @@ class Request(object):
         self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        if isinstance(content, basestring):
+        if isinstance(content, six.string_types):
             self.send_header('Content-Length', len(content))
         self.end_headers(exc_info)
 
@@ -1063,8 +1065,7 @@ class Request(object):
                 host = '%s:%d' % (self.server_name, self.server_port)
             else:
                 host = self.server_name
-        return urlparse.urlunparse((self.scheme, host, self.base_path, None,
-                                    None, None))
+        return urlunparse((self.scheme, host, self.base_path, None, None, None))
 
     def _send_configurable_headers(self):
         sent_headers = [name.lower() for name, val in self._outheaders]

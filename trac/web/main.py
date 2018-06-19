@@ -30,9 +30,9 @@ from pprint import pformat, pprint
 import re
 import sys
 import traceback
-from urlparse import urlparse
 
 from jinja2 import FileSystemLoader
+from six.moves.urllib.parse import urlparse
 
 from trac import __version__ as TRAC_VERSION
 from trac.config import BoolOption, ChoiceOption, ConfigSection, \

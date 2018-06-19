@@ -14,6 +14,8 @@
 
 import unittest
 
+import six
+
 from trac.perm import PermissionSystem
 from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
 from trac.util.text import unicode_to_base64
@@ -31,7 +33,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
         self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
-        if isinstance(perms, basestring):
+        if isinstance(perms, six.string_types):
             perms = (perms, )
 
         h2 = r'<h2>[ \t\n]*%s[ \t\n]*' \

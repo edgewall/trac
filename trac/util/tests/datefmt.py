@@ -20,6 +20,9 @@ import os
 import time
 import unittest
 
+import six
+from six.moves import range
+
 from trac.core import TracError
 from trac.test import locale_en
 from trac.util import datefmt
@@ -1919,7 +1922,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
         dt_localtz = datefmt.to_datetime(dt_naive - delta * n, localtz)
         dt_tz = datefmt.to_datetime(dt_naive - delta * n, tz)
         # compare datetime instances between -3 hours and +3 hours
-        for i in xrange(n * 2 + 1):
+        for i in range(n * 2 + 1):
             self.assertEqual(dt_tz, dt_localtz)
             self.assertEqual(dt_tz.isoformat(), dt_localtz.isoformat())
             dt_localtz = datefmt.to_datetime(dt_localtz + delta, localtz)
@@ -1934,7 +1937,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
         dt_naive -= delta * n
         # compare localize and normalize with naive datetime
         # between -3 hours and +3 hours
-        for i in xrange(n * 2 + 1):
+        for i in range(n * 2 + 1):
             dt_localtz = localtz.localize(dt_naive)
             dt_tz = tz.localize(dt_naive)
             self.assertEqual(dt_tz, dt_localtz,
@@ -1954,7 +1957,7 @@ class LocalTimezoneTestCase(unittest.TestCase):
             dt_naive += delta
 
     def _compare_pytz(self, tz, value, localize=True):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             value = datefmt.parse_date(value + 'Z', datefmt.utc)
         dt_naive = value.replace(tzinfo=None)
         self._compare_pytz_arithmetic(tz, dt_naive)

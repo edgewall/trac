@@ -18,6 +18,8 @@ import sys
 from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
 
+import six
+
 from trac.loader import load_components
 from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.util.text import printout
@@ -42,7 +44,7 @@ class DefaultWikiChecker(Formatter):
     def handle_match(self, fullmatch):
         rv = self.__super.handle_match(fullmatch)
         if rv:
-            if not isinstance(rv, basestring):
+            if not isinstance(rv, six.string_types):
                 text = unicode(rv)
             else:
                 text = rv

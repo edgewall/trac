@@ -16,6 +16,9 @@
 import pkg_resources
 import re
 
+import six
+from six.moves import range
+
 from trac.util.concurrency import ThreadLocal, threading
 from trac.util.html import tag
 from trac.util.text import cleandoc
@@ -54,7 +57,7 @@ def dngettext_noop(domain, singular, plural, num, **kwargs):
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
     trans_elts = _param_re.split(trans)
-    for i in xrange(1, len(trans_elts), 2):
+    for i in range(1, len(trans_elts), 2):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
 
@@ -76,7 +79,7 @@ def add_domain(domain, env_path, locale_dir):
     pass
 
 def domain_functions(domain, *symbols):
-    if symbols and not isinstance(symbols[0], basestring):
+    if symbols and not isinstance(symbols[0], six.string_types):
         symbols = symbols[0]
     _functions = {
       'gettext': s_gettext,
@@ -277,7 +280,7 @@ try:
 
         Note: the symbols can also be given as an iterable in the 2nd argument.
         """
-        if symbols and not isinstance(symbols[0], basestring):
+        if symbols and not isinstance(symbols[0], six.string_types):
             symbols = symbols[0]
         _functions = {
           'gettext': s_dgettext,

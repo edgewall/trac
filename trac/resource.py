@@ -35,7 +35,7 @@ class IResourceManager(Interface):
     def get_resource_realms():
         """Return resource realms managed by the component.
 
-        :rtype: `basestring` generator
+        :rtype: `string` generator
         """
 
     def get_resource_url(resource, href, **kwargs):
@@ -145,7 +145,7 @@ class Resource(object):
 
         :param resource_or_realm: this can be either:
            - a `Resource`, which is then used as a base for making a copy
-           - a `basestring`, used to specify a `realm`
+           - a `string`, used to specify a `realm`
         :param id: the resource identifier
         :param version: the version or `None` for indicating the latest version
 

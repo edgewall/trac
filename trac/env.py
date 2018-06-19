@@ -23,10 +23,12 @@ import setuptools
 import shutil
 import sys
 import time
-from ConfigParser import RawConfigParser
 from subprocess import PIPE
 from tempfile import mkdtemp
-from urlparse import urlsplit
+
+import six
+from six.moves.configparser import RawConfigParser
+from six.moves.urllib.parse import urlsplit
 
 from trac import log
 from trac.admin.api import (AdminCommandError, IAdminCommandProvider,
@@ -326,7 +328,7 @@ class Environment(Component, ComponentManager):
 
     def _component_name(self, name_or_class):
         name = name_or_class
-        if not isinstance(name_or_class, basestring):
+        if not isinstance(name_or_class, six.string_types):
             name = name_or_class.__module__ + '.' + name_or_class.__name__
         return name.lower()
 

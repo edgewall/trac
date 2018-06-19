@@ -16,6 +16,9 @@
 
 import os
 
+import six
+from six.moves import range
+
 from trac.cache import cached
 from trac.core import TracError
 from trac.util.datefmt import from_utimestamp, to_utimestamp
@@ -433,7 +436,7 @@ class CachedRepository(Repository):
                 components = path.lstrip('/').split('/')
                 parents = ','.join(('%s',) * len(components))
                 sql += " OR (path IN (" + parents + ") AND change_type='D'))"
-                for i in xrange(1, len(components) + 1):
+                for i in range(1, len(components) + 1):
                     args.append('/'.join(components[:i]))
             else:
                 sql %= {'aggr': aggr, 'dir': direction, 'tab': 'revision'}
@@ -460,7 +463,7 @@ class CachedRepository(Repository):
         return self.repos.normalize_path(path)
 
     def normalize_rev(self, rev):
-        if rev is None or isinstance(rev, basestring) and \
+        if rev is None or isinstance(rev, six.string_types) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
             return self.rev_db(self.youngest_rev or 0)
         else:

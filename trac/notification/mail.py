@@ -27,6 +27,8 @@ from email.mime.text import MIMEText
 from email.utils import formatdate, parseaddr, getaddresses
 from subprocess import Popen, PIPE
 
+import six
+
 from trac.config import (BoolOption, ConfigurationError, IntOption, Option,
                          OrderedExtensionsOption)
 from trac.core import Component, ExtensionPoint, TracError, implements
@@ -116,7 +118,7 @@ def set_header(message, key, value, charset):
     email = None
     if isinstance(value, (tuple, list)):
         value, email = value
-    if not isinstance(value, basestring):
+    if not isinstance(value, six.string_types):
         value = to_unicode(value)
     header = create_header(key, value, charset)
     if email:

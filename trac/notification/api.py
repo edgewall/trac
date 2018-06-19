@@ -19,6 +19,8 @@
 from collections import defaultdict
 from operator import itemgetter
 
+import six
+
 from trac.config import (BoolOption, ConfigSection, ExtensionOption,
                          ListOption, Option)
 from trac.core import Component, Interface, ExtensionPoint
@@ -171,7 +173,7 @@ def parse_subscriber_config(rawsubscriptions):
         else:
             attribute = parts[1]
             known = known_attrs.get(attribute)
-            if known is None or isinstance(known, basestring):
+            if known is None or isinstance(known, six.string_types):
                 pass
             elif isinstance(known, int):
                 value = int(value)

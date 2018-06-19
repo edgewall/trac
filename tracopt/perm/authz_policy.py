@@ -18,9 +18,13 @@ import os
 from fnmatch import fnmatchcase
 from itertools import groupby
 
-from trac.config import ConfigurationError, ParsingError, PathOption, \
-                        UnicodeConfigParser
+import six
+
+from trac.config import ConfigurationError, PathOption, UnicodeConfigParser
 from trac.core import Component, implements
+
+from six.moves.configparser import ParsingError
+
 from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.util import to_list
 from trac.util.text import exception_to_unicode
@@ -264,7 +268,7 @@ class AuthzPolicy(Component):
                             who in self.groups_by_user.get(username, []):
                         self.log.debug("%s matched section %s for user %s",
                                        resource_key, resource_glob, username)
-                        if isinstance(permissions, basestring):
+                        if isinstance(permissions, six.string_types):
                             return [permissions]
                         else:
                             return permissions
