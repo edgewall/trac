@@ -13,13 +13,10 @@
 
 import unittest
 
-from trac.core import Component, implements
-from trac.notification.mail import EmailDistributor, AlwaysEmailSubscriber
 from trac.notification.model import Subscription
 from trac.notification.prefs import NotificationPreferences
 from trac.prefs.web_ui import PreferencesModule
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.notification import CarbonCopySubscriber, TicketFormatter
 from trac.web.api import RequestDone
 
 

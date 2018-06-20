@@ -13,7 +13,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
-import re
 import unittest
 
 from trac.core import TracError

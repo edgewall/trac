@@ -24,7 +24,7 @@ from trac.ticket.api import (
     IMilestoneChangeListener, ITicketChangeListener, TicketSystem
 )
 from trac.ticket.model import (
-    Ticket, Component, Milestone, Priority, Report, Type, Version
+    Component, Milestone, Priority, Report, Ticket, Version
 )
 from trac.ticket.roadmap import MilestoneModule
 from trac.ticket.test import insert_ticket

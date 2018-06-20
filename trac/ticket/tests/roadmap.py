@@ -17,7 +17,6 @@ from trac.core import ComponentManager
 from trac.perm import PermissionSystem
 from trac.resource import Resource, ResourceNotFound, render_resource_link
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.model import Ticket
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
     RoadmapModule, TicketGroupStats, get_tickets_for_all_milestones,

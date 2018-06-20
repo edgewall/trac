@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import io
-import tempfile
 import unittest
 
 from trac.attachment import Attachment

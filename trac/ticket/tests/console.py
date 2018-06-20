@@ -18,7 +18,6 @@ from trac.admin.api import get_console_locale
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.test import EnvironmentStub
-from trac.ticket.model import Ticket
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import get_datetime_format_hint
 

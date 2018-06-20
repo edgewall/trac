@@ -16,10 +16,8 @@ import unittest
 from datetime import datetime, timedelta
 
 import trac
-from trac.core import TracError
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
-from trac.ticket.model import Ticket
 from trac.ticket.query import QueryModule
 from trac.ticket.report import Report, ReportModule
 from trac.test import EnvironmentStub, MockRequest
