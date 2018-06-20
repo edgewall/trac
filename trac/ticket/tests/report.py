@@ -23,8 +23,14 @@ from trac.ticket.report import Report, ReportModule
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
+from trac.util.html import genshi
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
+
+if genshi:
+    from genshi.input import XML
+else:
+    XML = None
 
 
 class ReportModuleTestCase(unittest.TestCase):
@@ -359,6 +365,36 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertRaises(RequestDone, self.report_module.process_request, req)
         self.assertNotIn('query_href', req.session)
         self.assertNotIn('query_tickets', req.session)
+
+    def test_valid_html_for_report(self):
+        req = MockRequest(self.env, method='POST', path_info='/report', args={
+            'action': 'new',
+            'title': '#13046',
+            'query': "SELECT '#13046' AS foo_, 42 AS bar, 'blah' AS _baz_",
+            'description': ''})
+        self.assertTrue(self.report_module.match_request(req))
+        self.assertRaises(RequestDone, self.report_module.process_request, req)
+
+        req = MockRequest(self.env, method='GET', path_info='/report/9')
+        self.assertTrue(self.report_module.match_request(req))
+        rv = self.report_module.process_request(req)
+        rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
+                                                    {'fragment': False,
+                                                     'iterable': False})
+        self.assertRegexpMatches(rendered,
+                                 r'<tr[^>]*>\s*'
+                                 r'<td class="fullrow foo" colspan="100">'
+                                 r'\s*#13046\s*<hr />\s*</td>\s*</tr>')
+        self.assertRegexpMatches(rendered,
+                                 r'<tr[^>]*>\s*'
+                                 r'<td class="fullrow bar" colspan="100">'
+                                 r'\s*42\s*<hr />\s*</td>\s*</tr>')
+        self.assertRegexpMatches(rendered,
+                                 r'<tr[^>]*>\s*'
+                                 r'<td class="fullrow baz" colspan="100">'
+                                 r'\s*blah\s*<hr />\s*</td>\s*</tr>')
+        if genshi:
+            XML(rendered)  # validates as XML
 
 
 class ExecuteReportTestCase(unittest.TestCase):
