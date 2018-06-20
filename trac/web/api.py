@@ -25,11 +25,12 @@ import mimetypes
 import os
 import re
 import sys
+import urllib
 import urlparse
 
 from trac.core import Interface, TracBaseError, TracError
 from trac.util import as_bool, as_int, get_last_traceback, lazy, \
-                      normalize_filename, unquote
+                      normalize_filename
 from trac.util.datefmt import http_date, localtz
 from trac.util.html import Fragment, tag
 from trac.util.text import empty, exception_to_unicode, to_unicode
@@ -487,10 +488,10 @@ def parse_arg_list(query_string):
             (name, value) = nv
         else:
             (name, value) = (nv[0], empty)
-        name = unquote(name.replace('+', ' '))
+        name = urllib.unquote(name.replace('+', ' '))
         if isinstance(name, str):
             name = unicode(name, 'utf-8')
-        value = unquote(value.replace('+', ' '))
+        value = urllib.unquote(value.replace('+', ' '))
         if isinstance(value, str):
             value = unicode(value, 'utf-8')
         args.append((name, value))
