@@ -56,18 +56,10 @@ Requirements:
 """
 
 import os
-import shutil
-import signal
-import stat
-import sys
-import time
 import unittest
-from datetime import datetime, timedelta
 from pkg_resources import parse_version
 
 import trac
-from trac.test import rmtree
-from trac.util.compat import close_fds
 
 # Handle missing twill so we can print a useful 'SKIP'
 # message.  We import subprocess first to allow customizing it on Windows
@@ -75,7 +67,7 @@ from trac.util.compat import close_fds
 # is allowed to load first, its (unmodified) copy will always be loaded.
 import subprocess
 
-from trac.tests.functional.better_twill import twill, b, tc, ConnectError
+from trac.tests.functional.better_twill import b, tc, twill
 
 try:
     # This is the first indicator of whether the subversion bindings are
@@ -86,8 +78,6 @@ except ImportError:
     has_svn = False
 
 from trac.test import TestSetup, TestCaseSetup
-from trac.tests.contentgen import random_sentence, random_page, random_word, \
-    random_unique_camel
 
 internal_error = 'Trac detected an internal error:'
 
