@@ -2971,3 +2971,49 @@ C
 54<strong></strong><strong>94
 </strong></p>
 ------------------------------
+============================== Macro within block - paragraph (#13045)
+[[HelloWorld(foo)]] [[HelloWorld(bar)]]
+
+[[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+------------------------------
+<p>
+Hello World, args = foo Hello World, args = bar
+</p>
+<p>
+</p><div>Hello World, args = bar</div><p> </p><div>Hello World, args = baz</div><p>
+</p>
+------------------------------
+============================== Macro within block - list (#13045)
+start
+
+ - [[HelloWorld(foo)]] [[HelloWorld(bar)]]
+ - [[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+
+end
+------------------------------
+<p>
+start
+</p>
+<ul><li>Hello World, args = foo Hello World, args = bar
+</li><li><div>Hello World, args = bar</div> <div>Hello World, args = baz</div>
+</li></ul><p>
+end
+</p>
+------------------------------
+============================== Macro within block - table (#13045)
+|| [[HelloWorld(foo)]] || [[HelloWorld(bar)]] ||
+|| [[DivHelloWorld(bar)]] || [[DivHelloWorld(baz)]] ||
+------------------------------
+<table class="wiki">
+<tr><td> Hello World, args = foo </td><td> Hello World, args = bar
+</td></tr><tr><td> <div>Hello World, args = bar</div> </td><td> <div>Hello World, args = baz</div>
+</td></tr></table>
+------------------------------
+============================== Macro within block - definition list (#13045)
+ inline :: [[HelloWorld(foo)]] [[HelloWorld(bar)]]
+ block  :: [[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+------------------------------
+<dl class="wiki"><dt>inline</dt><dd>Hello World, args = foo Hello World, args = bar
+</dd><dt>block</dt><dd><div>Hello World, args = bar</div> <div>Hello World, args = baz</div>
+</dd></dl>
+------------------------------

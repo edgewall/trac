@@ -395,7 +395,7 @@ class WikiProcessor(object):
         else:
             return self.inline_check
 
-    def ensure_inline(self, text):
+    def ensure_inline(self, text, in_paragraph=True):
         content_for_span = None
         interrupt_paragraph = False
         if isinstance(text, Element):
@@ -421,7 +421,7 @@ class WikiProcessor(object):
                 interrupt_paragraph = True
         if content_for_span:
             text = tag.span(class_='code-block')(*content_for_span)
-        elif interrupt_paragraph:
+        elif interrupt_paragraph and in_paragraph:
             text = "</p>%s<p>" % _markup_to_unicode(text)
         return text
 
@@ -809,8 +809,11 @@ class Formatter(object):
             args = name[:-1] or '*'
         else:
             args = fullmatch.group('macroargs')
+        in_paragraph = not (getattr(self, 'in_list_item', True) or
+                            getattr(self, 'in_table', True) or
+                            getattr(self, 'in_def_list', True))
         try:
-            return macro.ensure_inline(macro.process(args))
+            return macro.ensure_inline(macro.process(args), in_paragraph)
         except MacroError as e:
             return system_message(_("Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
