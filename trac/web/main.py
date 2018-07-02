@@ -572,6 +572,9 @@ def dispatch_request(environ, start_response):
             script_name = environ.get('SCRIPT_NAME', '')
             try:
                 script_name = unicode(script_name, 'utf-8')
+            except UnicodeDecodeError:
+                errmsg = 'Invalid URL encoding (was %r)' % script_name
+            else:
                 # (as Href expects unicode parameters)
                 environ['SCRIPT_NAME'] = Href(script_name)(env_name)
                 environ['PATH_INFO'] = '/' + '/'.join(path_info)
@@ -583,8 +586,6 @@ def dispatch_request(environ, start_response):
 
                 if not env_path or not os.path.isdir(env_path):
                     errmsg = 'Environment not found'
-            except UnicodeDecodeError:
-                errmsg = 'Invalid URL encoding (was %r)' % script_name
 
             if errmsg:
                 start_response('404 Not Found',
@@ -603,6 +604,9 @@ def dispatch_request(environ, start_response):
     env = env_error = None
     try:
         env = open_environment(env_path, use_cache=not run_once)
+    except Exception as e:
+        env_error = e
+    else:
         if env.base_url_for_redirect:
             environ['trac.base_url'] = env.base_url
 
@@ -622,8 +626,6 @@ def dispatch_request(environ, start_response):
             env.webfrontend = environ.get('trac.web.frontend')
             if env.webfrontend:
                 env.webfrontend_version = environ['trac.web.version']
-    except Exception as e:
-        env_error = e
 
     req = RequestWithSession(environ, start_response)
     # fixup env.abs_href if `[trac] base_url` was not specified
