@@ -800,6 +800,16 @@ class Request(object):
 
     def send_error(self, exc_info, template='error.html',
                    content_type='text/html', status=500, env=None, data={}):
+        """Render error page.
+
+        The rendered content can also be passed to the method, when the
+        method is invoked as:
+        `send_error(exc_info, content, content_type='text/html', status=500)`
+
+        :since 1.3.3: the method that renders an error page is deprecated
+            in favor of the method that sends rendered content. The method
+            that renders an error page will be removed in 1.5.1.
+        """
         try:
             if template.endswith('.html'):
                 if env:
@@ -819,6 +829,10 @@ class Request(object):
                     content = '%s\n\n%s: %s' % (data.get('title'),
                                                 data.get('type'),
                                                 data.get('message'))
+            else:
+                # send_error(self, exc_info, content, content_type='text/html',
+                #            status=500)
+                content = template
         except Exception: # failed to render
             content = get_last_traceback()
             content_type = 'text/plain'

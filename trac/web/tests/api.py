@@ -13,7 +13,6 @@
 
 import io
 import os.path
-import sys
 import unittest
 
 from trac import perm
@@ -22,7 +21,6 @@ from trac.test import EnvironmentStub, MockPerm, mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.html import tag
-from trac.util.text import shorten_line
 from trac.web.api import HTTPBadRequest, HTTPInternalServerError, Request, \
                          RequestDone, parse_arg_list
 from trac.web.main import FakeSession
@@ -741,117 +739,6 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual('', req.response_sent)
 
 
-class SendErrorTestCase(unittest.TestCase):
-
-    use_chunked_encoding = False
-
-    def setUp(self):
-        self.env = EnvironmentStub()
-        self.env.config.set('trac', 'use_chunked_encoding',
-                            self.use_chunked_encoding)
-
-    def tearDown(self):
-        self.env.reset_db()
-
-    def test_trac_error(self):
-        content = self._send_error(error_class=TracError)
-        self.assertIn('<p class="message">Oops!</p>', content)
-        self.assertNotIn('<strong>Trac detected an internal error:</strong>',
-                         content)
-        self.assertNotIn('There was an internal error in Trac.', content)
-
-    def test_internal_error_for_non_admin(self):
-        content = self._send_error(perm={})
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>\nTo that end, you could', content)
-        self.assertNotIn('This is probably a local installation issue.',
-                         content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
-
-    def test_internal_error_with_admin_trac_for_non_admin(self):
-        content = self._send_error(perm={},
-                                   admin_trac_url='http://example.org/admin')
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>\nTo that end, you could', content)
-        self.assertIn(' action="http://example.org/admin/newticket#"', content)
-        self.assertNotIn('This is probably a local installation issue.',
-                         content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
-
-    def test_internal_error_without_admin_trac_for_non_admin(self):
-        content = self._send_error(perm={}, admin_trac_url='')
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertNotIn('<p>\nTo that end, you could', content)
-        self.assertNotIn('This is probably a local installation issue.',
-                         content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
-
-    def test_internal_error_for_admin(self):
-        content = self._send_error()
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertNotIn('a ticket at the admin Trac to report', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="http://example.org/tracker/newticket"',
-                      content)
-
-    def test_internal_error_with_admin_trac_for_admin(self):
-        content = self._send_error(admin_trac_url='http://example.org/admin')
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertIn('a ticket at the admin Trac to report', content)
-        self.assertIn(' action="http://example.org/admin/newticket#"', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="http://example.org/tracker/newticket"',
-                      content)
-
-    def test_internal_error_without_admin_trac_for_admin(self):
-        content = self._send_error(admin_trac_url='')
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertNotIn('a ticket at the admin Trac to report', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="http://example.org/tracker/newticket"',
-                      content)
-
-    def _send_error(self, admin_trac_url='.', perm=None,
-                    error_class=ValueError):
-        self.env.config.set('project', 'admin_trac_url', admin_trac_url)
-        self.assertEqual(admin_trac_url, self.env.project_admin_trac_url)
-        environ = _make_environ()
-        req = _make_req(environ)
-        try:
-            raise error_class('Oops!')
-        except error_class:
-            exc_info = sys.exc_info()
-        data = {'title': 'Internal Error',
-                'type': ('internal', 'TracError')[error_class is TracError],
-                'message': 'Oops!', 'traceback': None, 'frames': [],
-                'shorten_line': shorten_line,
-                'plugins': [], 'faulty_plugins': [],
-                'tracker': 'http://example.org/tracker', 'tracker_args': {},
-                'description': '', 'description_en': ''}
-        if perm is not None:
-            data['perm'] = perm
-
-        with self.assertRaises(RequestDone):
-            req.send_error(exc_info, env=self.env, data=data)
-        content = req.response_sent.decode('utf-8')
-        self.assertIn('<!DOCTYPE ', content)
-        self.assertEqual('500 Internal Server Error', req.status_sent[0])
-        self.assertEqual('text/html;charset=utf-8',
-                         req.headers_sent['Content-Type'])
-        return content
-
-
-class SendErrorUseChunkedEncodingTestCase(unittest.TestCase):
-
-    use_chunked_encoding = True
-
-
 class ParseArgListTestCase(unittest.TestCase):
 
     def test_qs_str(self):
@@ -917,8 +804,6 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RequestTestCase))
     suite.addTest(unittest.makeSuite(RequestSendFileTestCase))
-    suite.addTest(unittest.makeSuite(SendErrorTestCase))
-    suite.addTest(unittest.makeSuite(SendErrorUseChunkedEncodingTestCase))
     suite.addTest(unittest.makeSuite(ParseArgListTestCase))
     suite.addTest(unittest.makeSuite(HTTPExceptionTestCase))
     return suite

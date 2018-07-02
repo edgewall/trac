@@ -11,16 +11,18 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import io
 import os.path
 import re
 import sys
 import unittest
 from subprocess import PIPE
 
+import trac.env
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.db.api import DatabaseManager
-from trac.perm import PermissionError
+from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.util import create_file
@@ -29,7 +31,7 @@ from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
     HTTPNotFound, IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
 from trac.web.main import FakeSession, RequestDispatcher, Session, \
-                          get_environments
+                          dispatch_request, get_environments
 
 
 class TestStubRequestHandler(Component):
@@ -770,7 +772,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='POST')
         request_dispatcher = RequestDispatcher(self.env)
         request_dispatcher.set_default_callbacks(req)
-        self.assertRaises(RequestDone, getattr(req, method), self._content())
+        self.assertRaises(RequestDone, method, req)
 
         self.assertNotEqual('not-allowed', req.headers_sent.get('Content-Type'))
         self.assertNotIn('x-custom-1', req.headers_sent)
@@ -783,10 +785,16 @@ class RequestDispatcherTestCase(unittest.TestCase):
                       self.env.log_messages)
 
     def test_send_configurable_headers(self):
-        self._test_configurable_headers('send')
+        def send(req):
+            req.send(self._content())
+
+        self._test_configurable_headers(send)
 
     def test_send_error_configurable_headers(self):
-        self._test_configurable_headers('send_error')
+        def send_error(req):
+            req.send_error(None, self._content())
+
+        self._test_configurable_headers(send_error)
 
     def test_send_configurable_headers_no_override(self):
         """Headers in request not overridden by configurable headers."""
@@ -848,6 +856,196 @@ class HdfdumpTestCase(unittest.TestCase):
                          self.req.headers_sent['Content-Type'])
 
 
+class SendErrorTestCase(unittest.TestCase):
+
+    use_chunked_encoding = False
+
+    components = None
+    env_path = None
+
+    @classmethod
+    def setUpClass(cls):
+        class RaiseExceptionHandler(Component):
+            implements(IRequestHandler)
+
+            def match_request(self, req):
+                if req.path_info.startswith('/raise-exception'):
+                    return True
+
+            def process_request(self, req):
+                if req.args.get('type') == 'tracerror':
+                    raise TracError("The TracError message")
+                else:
+                    raise Exception("The Exception message")
+
+        cls.components = [RaiseExceptionHandler]
+        cls.env_path = os.path.join(mkdtemp(), 'env')
+        env = trac.env.Environment(path=cls.env_path, create=True)
+        PermissionSystem(env).grant_permission('admin', 'TRAC_ADMIN')
+        env.shutdown()
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for component in cls.components:
+            ComponentMeta.deregister(component)
+        if cls.env_path in trac.env.env_cache:
+            trac.env.env_cache[cls.env_path].shutdown()
+            del trac.env.env_cache[cls.env_path]
+        EnvironmentStub(path=cls.env_path, destroying=True).reset_db_and_disk()
+
+    def _make_environ(self, scheme='http', server_name='example.org',
+                      server_port=80, method='GET', script_name='/',
+                      **kwargs):
+        environ = {'wsgi.url_scheme': scheme, 'wsgi.input': io.BytesIO(),
+                   'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
+                   'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name,
+                   'trac.env_path': self.env_path, 'wsgi.run_once': False}
+        environ.update(kwargs)
+        return environ
+
+    def _make_start_response(self):
+        self.status_sent = []
+        self.headers_sent = {}
+        self.response_sent = io.BytesIO()
+
+        def start_response(status, headers, exc_info=None):
+            self.status_sent.append(status)
+            self.headers_sent.update(dict(headers))
+            return self.response_sent.write
+
+        return start_response
+
+    def _set_config(self, admin_trac_url):
+        env = trac.env.open_environment(self.env_path, use_cache=True)
+        env.config.set('trac', 'use_chunked_encoding',
+                       self.use_chunked_encoding)
+        env.config.set('project', 'admin_trac_url', admin_trac_url)
+        env.config.save()
+
+    def assert_internal_error(self, content):
+        self.assertEqual('500 Internal Server Error', self.status_sent[0])
+        self.assertEqual('text/html;charset=utf-8',
+                         self.headers_sent['Content-Type'])
+        self.assertIn('<h1>Oops\xe2\x80\xa6</h1>', content)
+
+    def test_trac_error(self):
+        self._set_config(admin_trac_url='.')
+        environ = self._make_environ(PATH_INFO='/raise-exception',
+                                     QUERY_STRING='type=tracerror')
+        dispatch_request(environ, self._make_start_response())
+
+        content = self.response_sent.getvalue()
+        self.assertEqual('500 Internal Server Error', self.status_sent[0])
+        self.assertEqual('text/html;charset=utf-8',
+                         self.headers_sent['Content-Type'])
+        self.assertIn('<h1>Trac Error</h1>', content)
+        self.assertIn('<p class="message">The TracError message</p>', content)
+        self.assertNotIn('<strong>Trac detected an internal error:</strong>',
+                         content)
+        self.assertNotIn('There was an internal error in Trac.', content)
+
+    def test_internal_error_for_non_admin(self):
+        self._set_config(admin_trac_url='.')
+        environ = self._make_environ(PATH_INFO='/raise-exception')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertIn('There was an internal error in Trac.', content)
+        self.assertIn('<p>\nTo that end, you could', content)
+        self.assertNotIn('This is probably a local installation issue.',
+                         content)
+        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+
+    def test_internal_error_with_admin_trac_url_for_non_admin(self):
+        self._set_config(admin_trac_url='http://example.org/admin')
+        environ = self._make_environ(PATH_INFO='/raise-exception')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertIn('There was an internal error in Trac.', content)
+        self.assertIn('<p>\nTo that end, you could', content)
+        self.assertIn(' action="http://example.org/admin/newticket#"', content)
+        self.assertNotIn('This is probably a local installation issue.',
+                         content)
+        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+
+    def test_internal_error_without_admin_trac_url_for_non_admin(self):
+        self._set_config(admin_trac_url='')
+        environ = self._make_environ(PATH_INFO='/raise-exception')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertIn('There was an internal error in Trac.', content)
+        self.assertNotIn('<p>\nTo that end, you could', content)
+        self.assertNotIn('This is probably a local installation issue.',
+                         content)
+        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+
+    def test_internal_error_for_admin(self):
+        self._set_config(admin_trac_url='.')
+        environ = self._make_environ(PATH_INFO='/raise-exception',
+                                     REMOTE_USER='admin')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertNotIn('There was an internal error in Trac.', content)
+        self.assertIn('This is probably a local installation issue.', content)
+        self.assertNotIn('a ticket at the admin Trac to report', content)
+        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn('<p>\nOtherwise, please', content)
+        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+                      content)
+
+    def test_internal_error_with_admin_trac_url_for_admin(self):
+        self._set_config(admin_trac_url='http://example.org/admin')
+        environ = self._make_environ(PATH_INFO='/raise-exception',
+                                     REMOTE_USER='admin')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertNotIn('There was an internal error in Trac.', content)
+        self.assertIn('This is probably a local installation issue.', content)
+        self.assertIn('a ticket at the admin Trac to report', content)
+        self.assertIn(' action="http://example.org/admin/newticket#"', content)
+        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn('<p>\nOtherwise, please', content)
+        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+                      content)
+
+    def test_internal_error_without_admin_trac_url_for_admin(self):
+        self._set_config(admin_trac_url='')
+        environ = self._make_environ(PATH_INFO='/raise-exception',
+                                     REMOTE_USER='admin')
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assert_internal_error(content)
+        self.assertNotIn('There was an internal error in Trac.', content)
+        self.assertIn('This is probably a local installation issue.', content)
+        self.assertNotIn('a ticket at the admin Trac to report', content)
+        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn('<p>\nOtherwise, please', content)
+        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+                      content)
+
+
+class SendErrorUseChunkedEncodingTestCase(unittest.TestCase):
+
+    use_chunked_encoding = True
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
@@ -858,6 +1056,8 @@ def test_suite():
     suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(RequestDispatcherTestCase))
     suite.addTest(unittest.makeSuite(HdfdumpTestCase))
+    suite.addTest(unittest.makeSuite(SendErrorTestCase))
+    suite.addTest(unittest.makeSuite(SendErrorUseChunkedEncodingTestCase))
     return suite
 
 

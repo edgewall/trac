@@ -58,7 +58,8 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, TracNotImplementedError, \
                          is_valid_default_handler
-from trac.web.chrome import Chrome, ITemplateProvider, add_notice, add_warning
+from trac.web.chrome import Chrome, ITemplateProvider, add_notice, \
+                            add_stylesheet, add_warning
 from trac.web.href import Href
 from trac.web.session import SessionDict, Session
 
@@ -625,9 +626,25 @@ def dispatch_request(environ, start_response):
         env_error = e
 
     req = RequestWithSession(environ, start_response)
+    # fixup env.abs_href if `[trac] base_url` was not specified
+    if env and not env.abs_href.base:
+        env.abs_href = req.abs_href
     translation.make_activable(lambda: req.locale, env.path if env else None)
+    resp = []
+    dispatcher = RequestDispatcher(env)
+    dispatcher.set_default_callbacks(req)
     try:
-        return _dispatch_request(req, env, env_error)
+        if not env and env_error:
+            raise HTTPInternalServerError(env_error)
+        try:
+            dispatcher.dispatch(req)
+        except RequestDone as req_done:
+            resp = req_done.iterable
+        resp = resp or req._response or []
+    except HTTPException as e:
+        _send_user_error(req, env, e)
+    except Exception:
+        send_internal_error(env, req, sys.exc_info())
     finally:
         translation.deactivate()
         if env and not run_once:
@@ -646,30 +663,39 @@ def dispatch_request(environ, start_response):
             ##    del gc.garbage[:]
             ##    env.log.warning("%d uncollectable objects found.",
             ##                    uncollectable)
+        return resp
 
 
-def _dispatch_request(req, env, env_error):
-    resp = []
+def _send_error(req, exc_info, template='error.html', content_type='text/html',
+                status=500, env=None, data={}):
+    if env:
+        add_stylesheet(req, 'common/css/code.css')
+        metadata = {'content_type': 'text/html'}
+        try:
+            content = Chrome(env).render_template(req, template,
+                                                  data, metadata)
+        except Exception:
+            # second chance rendering, in "safe" mode
+            data['trac_error_rendering'] = True
+            try:
+                content = Chrome(env).render_template(req, template,
+                                                      data, metadata)
+            except Exception:
+                content = get_last_traceback()
+                content_type = 'text/plain'
+    else:
+        content_type = 'text/plain'
+        content = '%s\n\n%s: %s' % (data.get('title'),
+                                    data.get('type'),
+                                    data.get('message'))
 
-    # fixup env.abs_href if `[trac] base_url` was not specified
-    if env and not env.abs_href.base:
-        env.abs_href = req.abs_href
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
 
     try:
-        if not env and env_error:
-            raise HTTPInternalServerError(env_error)
-        dispatcher = RequestDispatcher(env)
-        dispatcher.set_default_callbacks(req)
-        try:
-            dispatcher.dispatch(req)
-        except RequestDone as req_done:
-            resp = req_done.iterable
-        resp = resp or req._response or []
-    except HTTPException as e:
-        _send_user_error(req, env, e)
-    except Exception:
-        send_internal_error(env, req, sys.exc_info())
-    return resp
+        req.send_error(exc_info, content, content_type, status)
+    except RequestDone:
+        pass
 
 
 def _send_user_error(req, env, e):
@@ -685,10 +711,7 @@ def _send_user_error(req, env, e):
         do_so = tag.a(_("do so"), href=req.href.login())
         add_notice(req, tag_("You are currently not logged in. You may want "
                              "to %(do_so)s now.", do_so=do_so))
-    try:
-        req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
-    except RequestDone:
-        pass
+    _send_error(req, sys.exc_info(), status=e.code, env=env, data=data)
 
 
 def send_internal_error(env, req, exc_info):
@@ -801,10 +824,7 @@ User agent: `#USER_AGENT#`
             'description': description, 'description_en': description_en}
 
     Chrome(env).add_jquery_ui(req)
-    try:
-        req.send_error(exc_info, status=500, env=env, data=data)
-    except RequestDone:
-        pass
+    _send_error(req, sys.exc_info(), status=500, env=env, data=data)
 
 
 def send_project_index(environ, start_response, parent_dir=None,
@@ -826,35 +846,34 @@ def send_project_index(environ, start_response, parent_dir=None,
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
             data[key] = val
-    try:
-        href = Href(req.base_path)
-        projects = []
-        for env_name, env_path in get_environments(environ).items():
-            try:
-                env = open_environment(env_path,
-                                       use_cache=not environ['wsgi.run_once'])
-                proj = {
-                    'env': env,
-                    'name': env.project_name,
-                    'description': env.project_description,
-                    'href': href(env_name)
-                }
-            except Exception as e:
-                proj = {'name': env_name, 'description': to_unicode(e)}
-            projects.append(proj)
-        projects.sort(key=lambda proj: proj['name'].lower())
 
-        data['projects'] = projects
-
-        jenv = jinja2env(loader=FileSystemLoader(loadpaths))
-        jenv.globals.update(translation.functions)
-        tmpl = jenv.get_template(template)
-        output = valid_html_bytes(tmpl.render(**data).encode('utf-8'))
-        if template.endswith('.xml'):
-            req.send(output, 'text/xml')
+    href = Href(req.base_path)
+    projects = []
+    for env_name, env_path in get_environments(environ).items():
+        try:
+            env = open_environment(env_path,
+                                   use_cache=not environ['wsgi.run_once'])
+        except Exception as e:
+            proj = {'name': env_name, 'description': to_unicode(e)}
         else:
-            req.send(output, 'text/html')
+            proj = {
+                'env': env,
+                'name': env.project_name,
+                'description': env.project_description,
+                'href': href(env_name)
+            }
+        projects.append(proj)
+    projects.sort(key=lambda proj: proj['name'].lower())
 
+    data['projects'] = projects
+
+    jenv = jinja2env(loader=FileSystemLoader(loadpaths))
+    jenv.globals.update(translation.functions)
+    tmpl = jenv.get_template(template)
+    output = valid_html_bytes(tmpl.render(**data).encode('utf-8'))
+    content_type = 'text/xml' if template.endswith('.xml') else 'text/html'
+    try:
+        req.send(output, content_type)
     except RequestDone:
         pass
 
