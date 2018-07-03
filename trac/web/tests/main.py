@@ -1041,7 +1041,7 @@ class SendErrorTestCase(unittest.TestCase):
                       content)
 
 
-class SendErrorUseChunkedEncodingTestCase(unittest.TestCase):
+class SendErrorUseChunkedEncodingTestCase(SendErrorTestCase):
 
     use_chunked_encoding = True
 

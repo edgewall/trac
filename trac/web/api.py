@@ -811,7 +811,7 @@ class Request(object):
             that renders an error page will be removed in 1.5.1.
         """
         try:
-            if template.endswith('.html'):
+            if isinstance(template, basestring) and template.endswith('.html'):
                 if env:
                     from trac.web.chrome import Chrome, add_stylesheet
                     add_stylesheet(self, 'common/css/code.css')
