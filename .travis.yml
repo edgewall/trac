@@ -98,7 +98,7 @@ install:
       python -c 'from svn import core'
     fi
   - |
-    requires='Genshi==0.7 configobj Pygments docutils textile lxml pytz twill==0.9.1 setuptools_git'
+    requires='Genshi==0.7 configobj Pygments docutils textile lxml pytz twill==0.9.1'
     case "$pyver" in
       2.6) requires="$requires Babel<2.6.0" ;;
       *)   requires="$requires Babel" ;;
@@ -118,7 +118,8 @@ install:
     echo ".uri = $tracdb_uri" >Makefile.cfg
 script:
   - if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
-  - make Trac.egg-info compile unit-test functional-test
+  - make compile
+  - if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then make Trac.egg-info unit-test functional-test; fi
 notifications:
   email:
     recipients:
@@ -168,7 +169,6 @@ jobs:
       language: generic
       env: pyver=2.7 tracdb=postgres
     - stage: deploy
-      script: skip
       deploy:
         - provider: pypi
           user: edgewall-org
@@ -177,6 +177,7 @@ jobs:
           server: https://test.pypi.org/legacy/
           os: linux
           distributions: sdist bdist_wheel
+          skip_cleanup: true
           on:
             repo: edgewall/trac
             python: 2.7
@@ -188,6 +189,7 @@ jobs:
           server: https://trac.edgewall.org/pypi
           os: linux
           distributions: sdist bdist_wheel
+          skip_cleanup: true
           on:
             repo: edgewall/trac
             python: 2.7
