@@ -14,9 +14,7 @@
 # Author: Tim Moloney <t.moloney@verizon.net>
 
 import os
-import sys
 import unittest
-from subprocess import PIPE
 
 # IAdminCommandProvider implementations
 import trac.admin.api
@@ -33,7 +31,6 @@ from trac.admin.console import TracAdmin, TracAdminHelpMacro
 from trac.admin.test import TracAdminTestCaseBase
 from trac.core import Component, ComponentMeta, implements
 from trac.test import EnvironmentStub
-from trac.util.compat import Popen, close_fds
 from trac.util.datefmt import get_date_format_hint
 from trac.util.translation import Locale, get_available_locales, has_babel
 from trac.wiki.formatter import MacroError
@@ -52,18 +49,6 @@ class TracadminTestCase(TracAdminTestCaseBase):
 
     def tearDown(self):
         self.env = None
-
-    def test_python_with_optimizations_returns_error(self):
-        """Error is returned when a command is executed in interpreter
-        with optimizations enabled.
-        """
-        with Popen((sys.executable, '-O', '-m', 'trac.admin.console', 'help'),
-                   stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                   close_fds=close_fds) as proc:
-            stdout, stderr = proc.communicate(input='')
-        self.assertEqual(2, proc.returncode)
-        self.assertEqual("Python with optimizations is not supported.",
-                         stderr.strip())
 
     def test_help_ok(self):
         """

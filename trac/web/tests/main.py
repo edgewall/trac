@@ -14,9 +14,7 @@
 import io
 import os.path
 import re
-import sys
 import unittest
-from subprocess import PIPE
 
 import trac.env
 from trac.config import ConfigurationError
@@ -26,7 +24,6 @@ from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.util import create_file
-from trac.util.compat import Popen, close_fds
 from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
     HTTPNotFound, IRequestFilter, IRequestHandler, RequestDone)
 from trac.web.auth import IAuthenticator
@@ -165,22 +162,6 @@ class AuthenticateTestCase(unittest.TestCase):
         self.assertEqual(1, len(self.request_dispatcher.authenticators))
         self.assertEqual(1, len(self.request_dispatcher.handlers))
         self.assertEqual(1, self.request_dispatcher.handlers[0].calls)
-
-
-class DispatchRequestTestCase(unittest.TestCase):
-
-    def test_python_with_optimizations_raises_environment_error(self):
-        """EnvironmentError exception is raised when dispatching request
-        with optimizations enabled.
-        """
-        with Popen((sys.executable, '-O', '-c',
-                    'from trac.web.main import dispatch_request; '
-                    'dispatch_request({}, None)'), stdin=PIPE,
-                   stdout=PIPE, stderr=PIPE, close_fds=close_fds) as proc:
-            stdout, stderr = proc.communicate()
-        self.assertEqual(1, proc.returncode)
-        self.assertIn("EnvironmentError: Python with optimizations is not "
-                      "supported.", stderr)
 
 
 class EnvironmentsTestCase(unittest.TestCase):
@@ -1049,7 +1030,6 @@ class SendErrorUseChunkedEncodingTestCase(SendErrorTestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AuthenticateTestCase))
-    suite.addTest(unittest.makeSuite(DispatchRequestTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
     suite.addTest(unittest.makeSuite(PreProcessRequestTestCase))
     suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
