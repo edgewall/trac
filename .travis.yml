@@ -177,7 +177,6 @@ jobs:
           server: https://test.pypi.org/legacy/
           os: linux
           distributions: sdist bdist_wheel
-          skip_upload_docs: true
           on:
             repo: edgewall/trac
             python: 2.7
@@ -189,7 +188,6 @@ jobs:
           server: https://trac.edgewall.org/pypi
           os: linux
           distributions: sdist bdist_wheel
-          skip_upload_docs: true
           on:
             repo: edgewall/trac
             python: 2.7
