@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-06-20 00:18-0700\n"
+"POT-Creation-Date: 2018-07-06 09:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.5.3\n"
 
 #: tracopt/ticket/commit_updater.py:291
 msgid ""
@@ -338,7 +338,7 @@ msgid "Back to %(parent)s"
 msgstr ""
 
 #: trac/attachment.py:235 trac/ticket/batch.py:58 trac/ticket/report.py:175
-#: trac/ticket/roadmap.py:767 trac/web/api.py:998 trac/wiki/web_ui.py:168
+#: trac/ticket/roadmap.py:767 trac/web/api.py:1012 trac/wiki/web_ui.py:168
 msgid "Invalid request arguments."
 msgstr ""
 
@@ -2191,6 +2191,7 @@ msgid "Search Results"
 msgstr ""
 
 #: trac/search/templates/search.html:66
+#: trac/ticket/templates/report_view.html:134
 msgid "Results"
 msgstr ""
 
@@ -2407,7 +2408,9 @@ msgstr ""
 #: trac/templates/diff_options.html:66
 #: trac/templates/genshi/diff_options.html:61
 #: trac/ticket/templates/milestone_view.html:76
-#: trac/ticket/templates/query.html:334 trac/ticket/templates/roadmap.html:44
+#: trac/ticket/templates/query.html:334
+#: trac/ticket/templates/report_view.html:94
+#: trac/ticket/templates/roadmap.html:44
 #: trac/timeline/templates/timeline.html:65
 #: trac/versioncontrol/templates/revisionlog.html:117
 msgid "Update"
@@ -2528,8 +2531,8 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:741
-#: trac/web/main.py:747
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:766
+#: trac/web/main.py:772
 msgid "N/A"
 msgstr ""
 
@@ -4616,6 +4619,8 @@ msgstr ""
 
 #: trac/ticket/templates/query.html:54
 #: trac/ticket/templates/query_results.html:49
+#: trac/ticket/templates/report_view.html:53
+#: trac/ticket/templates/report_view.html:150
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
@@ -4668,6 +4673,7 @@ msgid "Show under each result:"
 msgstr ""
 
 #: trac/ticket/templates/query.html:321
+#: trac/ticket/templates/report_view.html:62
 msgid "Max items per page"
 msgstr ""
 
@@ -4757,12 +4763,14 @@ msgstr ""
 
 #: trac/ticket/templates/report_delete.html:36
 #: trac/ticket/templates/report_list.html:133
+#: trac/ticket/templates/report_view.html:126
 msgid "Delete report"
 msgstr ""
 
 #: trac/ticket/templates/report_delete.html:42
 #: trac/ticket/templates/report_edit.html:125
 #: trac/ticket/templates/report_list.html:180
+#: trac/ticket/templates/report_view.html:311
 #, python-format
 msgid "%(note)s See %(page)s for help on using and creating reports."
 msgstr ""
@@ -4871,10 +4879,12 @@ msgid "Delete"
 msgstr ""
 
 #: trac/ticket/templates/report_list.html:142
+#: trac/ticket/templates/report_view.html:110
 msgid "Edit report"
 msgstr ""
 
 #: trac/ticket/templates/report_list.html:147
+#: trac/ticket/templates/report_view.html:223
 msgid "View report"
 msgstr ""
 
@@ -4884,6 +4894,38 @@ msgstr ""
 
 #: trac/ticket/templates/report_list.html:173
 msgid "Create new report"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:67
+msgid "Arguments"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:68
+msgid "Report arguments"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:118
+msgid "Copy report"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:144
+#: trac/ticket/templates/report_view.html:146
+msgid "(empty)"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:151
+#: trac/ticket/templates/report_view.html:307
+msgid "No matches found."
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:230
+#: trac/ticket/templates/report_view.html:238
+#, python-format
+msgid "View %(realm)s"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:280
+msgid "View milestone"
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:34
@@ -6606,17 +6648,17 @@ msgstr ""
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:849
+#: trac/web/api.py:863
 #, python-format
 msgid "File %(path)s not found"
 msgstr ""
 
-#: trac/web/api.py:991
+#: trac/web/api.py:1005
 #, python-format
 msgid "Exception caught while reading request: %(msg)s"
 msgstr ""
 
-#: trac/web/api.py:1016
+#: trac/web/api.py:1030
 #, python-format
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr ""
@@ -6684,24 +6726,24 @@ msgstr ""
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/main.py:187
+#: trac/web/main.py:188
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:241
+#: trac/web/main.py:242
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:244
+#: trac/web/main.py:245
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:245
+#: trac/web/main.py:246
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:358
+#: trac/web/main.py:359
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6709,28 +6751,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:685
+#: trac/web/main.py:713
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:686
+#: trac/web/main.py:714
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:754
+#: trac/web/main.py:779
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:755
+#: trac/web/main.py:780
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:756
+#: trac/web/main.py:781
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:785
+#: trac/web/main.py:810
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
@@ -6906,22 +6948,22 @@ msgstr ""
 msgid "%(target)s in %(name)s"
 msgstr ""
 
-#: trac/wiki/formatter.py:815
+#: trac/wiki/formatter.py:818
 #, python-format
 msgid "Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:821
+#: trac/wiki/formatter.py:824
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1211
+#: trac/wiki/formatter.py:1214
 #, python-format
 msgid "Processor %(name)s failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1217
+#: trac/wiki/formatter.py:1220
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr ""
