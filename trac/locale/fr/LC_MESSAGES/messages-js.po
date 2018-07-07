@@ -19,9 +19,8 @@ msgstr ""
 "Generated-By: Babel 2.6.0\n"
 
 #: tracopt/ticket/htdocs/ticketclone.js:22
-#, fuzzy
 msgid "Clone"
-msgstr "Valider"
+msgstr ""
 
 #: tracopt/ticket/htdocs/ticketclone.js:34
 msgid "Create a new ticket from this comment"
@@ -71,7 +70,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
-msgstr ""
+msgstr "Tout basculer"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -218,17 +217,17 @@ msgid " add:"
 msgstr " ajouter :"
 
 #: trac/htdocs/js/query.js:425
-#, fuzzy, python-format
+#, python-format
 msgid "Select ticket #%(id)s for modification"
-msgstr "Sélectionner le ticket %(id)s pour le modifier"
+msgstr "Sélectionner le ticket #%(id)s pour le modifier"
 
 #: trac/htdocs/js/timeline_multirepos.js:4
 msgid "Show all repositories"
-msgstr ""
+msgstr "Montrer tous les dépôts"
 
 #: trac/htdocs/js/timeline_multirepos.js:5
 msgid "Hide all repositories"
-msgstr ""
+msgstr "Cacher tous les dépôts"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
@@ -236,17 +235,20 @@ msgstr "Signet"
 
 #: trac/htdocs/js/trac.js:31
 msgid "Toggle group"
-msgstr ""
+msgstr "Basculer le groupe"
 
 #: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
-msgstr ""
+msgstr "Au moins un élément doit être sélectionné"
 
 #: trac/htdocs/js/trac.js:243
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
 msgstr ""
+"Vos changements ne sont pas ne sont pas sauvegardés. Vos changements "
+"seront perdus si vous quittez cette page avant d'avoir sauvegardé vos "
+"changements."
 
 #: trac/htdocs/js/wiki.js:73
 #: trac/notification/templates/prefs_notification.html:16
@@ -260,18 +262,16 @@ msgid "Link to #%(id)s"
 msgstr "Lien vers #%(id)s"
 
 #: trac/htdocs/js/wikitoolbar.js:59
-#, fuzzy
 msgid "Bold text: **Example**"
-msgstr "Texte en gras : '''Exemple'''"
+msgstr "Texte en gras : **Exemple**"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Texte en italique : ''Exemple''"
 
 #: trac/htdocs/js/wikitoolbar.js:65
-#, fuzzy
 msgid "Heading: == Example"
-msgstr "Titre : == Exemple =="
+msgstr "Titre : == Exemple"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
@@ -290,9 +290,8 @@ msgid "New paragraph"
 msgstr "Nouveau paragraphe"
 
 #: trac/htdocs/js/wikitoolbar.js:80
-#, fuzzy
 msgid "Line break: \\\\"
-msgstr "Saut de ligne : [[BR]]"
+msgstr "Saut de ligne : \\\\"
 
 #: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
@@ -301,18 +300,9 @@ msgstr "Image : [[Image()]]"
 #: trac/notification/templates/prefs_notification.html:57
 #: trac/notification/templates/prefs_notification.html:77
 msgid "Drag rule to reorder"
-msgstr ""
+msgstr "Traîner la règle pour réordonner"
 
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
 msgstr "Lien vers cette différence"
-
-#~ msgid "between"
-#~ msgstr "entre"
-
-#~ msgid "and"
-#~ msgstr "et"
-
-#~ msgid "Toggle selection of all tickets shown in this group"
-#~ msgstr "Sélectionner tous les tickets visibles dans ce groupe"
 
