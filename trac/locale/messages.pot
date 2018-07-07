@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-06 09:44+0000\n"
+"POT-Creation-Date: 2018-07-07 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -975,11 +975,7 @@ msgstr ""
 msgid "Unknown trac-admin command \"%(command)s\""
 msgstr ""
 
-#: trac/admin/console.py:510
-msgid "Python with optimizations is not supported."
-msgstr ""
-
-#: trac/admin/console.py:524
+#: trac/admin/console.py:521
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr ""
@@ -2173,16 +2169,16 @@ msgstr ""
 msgid "Page %(page)s is out of range."
 msgstr ""
 
-#: trac/search/web_ui.py:260 trac/ticket/query.py:827 trac/ticket/report.py:468
+#: trac/search/web_ui.py:260 trac/ticket/query.py:824 trac/ticket/report.py:468
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/search/web_ui.py:273 trac/ticket/query.py:814 trac/ticket/report.py:459
+#: trac/search/web_ui.py:273 trac/ticket/query.py:811 trac/ticket/report.py:459
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:279 trac/ticket/query.py:819 trac/ticket/report.py:462
+#: trac/search/web_ui.py:279 trac/ticket/query.py:816 trac/ticket/report.py:462
 msgid "Previous Page"
 msgstr ""
 
@@ -2531,8 +2527,8 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:766
-#: trac/web/main.py:772
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:763
+#: trac/web/main.py:769
 msgid "N/A"
 msgstr ""
 
@@ -3601,81 +3597,81 @@ msgstr ""
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
 
-#: trac/ticket/query.py:584
+#: trac/ticket/query.py:581
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr ""
 
-#: trac/ticket/query.py:694 trac/ticket/query.py:701
+#: trac/ticket/query.py:691 trac/ticket/query.py:698
 msgid "contains"
 msgstr ""
 
-#: trac/ticket/query.py:695 trac/ticket/query.py:702
+#: trac/ticket/query.py:692 trac/ticket/query.py:699
 msgid "doesn't contain"
 msgstr ""
 
-#: trac/ticket/query.py:696
+#: trac/ticket/query.py:693
 msgid "begins with"
 msgstr ""
 
-#: trac/ticket/query.py:697
+#: trac/ticket/query.py:694
 msgid "ends with"
 msgstr ""
 
-#: trac/ticket/query.py:698 trac/ticket/query.py:704 trac/ticket/query.py:707
+#: trac/ticket/query.py:695 trac/ticket/query.py:701 trac/ticket/query.py:704
 msgid "is"
 msgstr ""
 
-#: trac/ticket/query.py:699 trac/ticket/query.py:705 trac/ticket/query.py:708
+#: trac/ticket/query.py:696 trac/ticket/query.py:702 trac/ticket/query.py:705
 msgid "is not"
 msgstr ""
 
-#: trac/ticket/query.py:738 trac/ticket/query.py:744
+#: trac/ticket/query.py:735 trac/ticket/query.py:741
 msgid "Ticket"
 msgstr ""
 
-#: trac/ticket/query.py:881 trac/ticket/report.py:326 trac/ticket/report.py:630
+#: trac/ticket/query.py:878 trac/ticket/report.py:326 trac/ticket/report.py:630
 #: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:231
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
 
-#: trac/ticket/query.py:883 trac/ticket/report.py:328 trac/ticket/report.py:632
+#: trac/ticket/query.py:880 trac/ticket/report.py:328 trac/ticket/report.py:632
 #: trac/ticket/web_ui.py:139
 msgid "Comma-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:885 trac/ticket/report.py:330 trac/ticket/report.py:634
+#: trac/ticket/query.py:882 trac/ticket/report.py:330 trac/ticket/report.py:634
 #: trac/ticket/web_ui.py:141
 msgid "Tab-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:906 trac/ticket/report.py:137
+#: trac/ticket/query.py:903 trac/ticket/report.py:137
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1116
+#: trac/ticket/query.py:1113
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1125 trac/ticket/report.py:197
+#: trac/ticket/query.py:1122 trac/ticket/report.py:197
 #: trac/ticket/report.py:198 trac/ticket/report.py:200
 #: trac/ticket/templates/report_list.html:17
 #: trac/ticket/templates/report_list.html:42
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1126 trac/ticket/report.py:205
+#: trac/ticket/query.py:1123 trac/ticket/report.py:205
 #: trac/ticket/templates/report_list.html:85
 msgid "New Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1236
+#: trac/ticket/query.py:1233
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1242
+#: trac/ticket/query.py:1239
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3739,28 +3735,28 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1365
+#: trac/ticket/query.py:1362
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/query.py:1447
+#: trac/ticket/query.py:1444
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr ""
 
-#: trac/ticket/query.py:1461
+#: trac/ticket/query.py:1458
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1479
+#: trac/ticket/query.py:1476
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1503
+#: trac/ticket/query.py:1500
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -6717,11 +6713,11 @@ msgid ""
 " contact your Trac administrator."
 msgstr ""
 
-#: trac/web/chrome.py:1829
+#: trac/web/chrome.py:1834
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1830
+#: trac/web/chrome.py:1835
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
@@ -6751,28 +6747,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:713
+#: trac/web/main.py:710
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:714
+#: trac/web/main.py:711
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:779
+#: trac/web/main.py:776
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:780
+#: trac/web/main.py:777
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:781
+#: trac/web/main.py:778
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:810
+#: trac/web/main.py:807
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"

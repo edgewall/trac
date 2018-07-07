@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-06 09:44+0000\n"
+"POT-Creation-Date: 2018-07-07 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -847,7 +847,7 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/query.py:857
+#: trac/ticket/query.py:854
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -855,7 +855,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:865
+#: trac/ticket/query.py:862
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -863,7 +863,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:873
+#: trac/ticket/query.py:870
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default. Set to `0` to specify no limit."
