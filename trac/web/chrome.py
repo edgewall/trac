@@ -1625,15 +1625,20 @@ class Chrome(Component):
         *text* parameter.
 
         """
+        stream = template.stream(data)
+        stream.enable_buffering(75)  # buffer_size
         if iterable or iterable is None and self.use_chunked_encoding:
-            stream = template.stream(data)
-            stream.enable_buffering(75) # buffer_size
             return self._iterable_jinja_content(stream, text)
         else:
-            bytes = template.render(data).encode('utf-8')
-            if not text:
-                bytes = valid_html_bytes(bytes)
-            return bytes
+            if text:
+                def generate():
+                    for chunk in stream:
+                        yield chunk.encode('utf-8')
+            else:
+                def generate():
+                    for chunk in stream:
+                        yield valid_html_bytes(chunk.encode('utf-8'))
+            return b''.join(generate())
 
     def render_template_string(self, template, data, text=False):
         """Renders the template as an unicode or Markup string.
