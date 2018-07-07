@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-04-24 17:13+0000\n"
+"POT-Creation-Date: 2018-07-07 16:55+0000\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language: en_US\n"
@@ -361,7 +361,7 @@ msgid "Back to %(parent)s"
 msgstr ""
 
 #: trac/attachment.py:225 trac/ticket/batch.py:56 trac/ticket/report.py:175
-#: trac/ticket/roadmap.py:757 trac/web/api.py:883 trac/wiki/web_ui.py:164
+#: trac/ticket/roadmap.py:757 trac/web/api.py:902 trac/wiki/web_ui.py:164
 msgid "Invalid request arguments."
 msgstr ""
 
@@ -439,19 +439,19 @@ msgstr ""
 msgid "Download failed"
 msgstr ""
 
-#: trac/attachment.py:601 trac/versioncontrol/web_ui/browser.py:707
+#: trac/attachment.py:601 trac/versioncontrol/web_ui/browser.py:708
 #: trac/wiki/web_ui.py:71
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:607 trac/versioncontrol/web_ui/browser.py:713
+#: trac/attachment.py:607 trac/versioncontrol/web_ui/browser.py:714
 msgid "Original Format"
 msgstr ""
 
 #: trac/attachment.py:649 trac/templates/list_of_attachments.html:29
 #: trac/ticket/templates/ticket_change.html:101
 #: trac/versioncontrol/templates/dir_entries.html:31
-#: trac/versioncontrol/web_ui/browser.py:862
+#: trac/versioncontrol/web_ui/browser.py:861
 msgid "Download"
 msgstr ""
 
@@ -624,13 +624,13 @@ msgstr ""
 msgid "The configuration file is not found at %(path)s"
 msgstr ""
 
-#: trac/env.py:926
+#: trac/env.py:925
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/admin/console.py:288 trac/env.py:956
+#: trac/admin/console.py:288 trac/env.py:955
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded. Run:\n"
@@ -638,7 +638,7 @@ msgid ""
 "  trac-admin \"%(path)s\" upgrade"
 msgstr ""
 
-#: trac/env.py:1011
+#: trac/env.py:1010
 #, python-format
 msgid ""
 "Resources cannot be deployed to a target directory that is equal to or "
@@ -647,67 +647,67 @@ msgid ""
 "Please choose a different target directory and try again."
 msgstr ""
 
-#: trac/env.py:1020
+#: trac/env.py:1019
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:1038
+#: trac/env.py:1037
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:1050
+#: trac/env.py:1049
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:1055
+#: trac/env.py:1054
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:1063
+#: trac/env.py:1062
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1082
+#: trac/env.py:1081
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1092
+#: trac/env.py:1091
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1097
+#: trac/env.py:1096
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/admin/api.py:134 trac/env.py:1102
+#: trac/admin/api.py:134 trac/env.py:1101
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1105
+#: trac/env.py:1104
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1111
+#: trac/env.py:1110
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1115
+#: trac/env.py:1114
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1127
+#: trac/env.py:1126
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 
-#: trac/env.py:1138
+#: trac/env.py:1137
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -715,7 +715,7 @@ msgid ""
 "hand."
 msgstr ""
 
-#: trac/env.py:1143
+#: trac/env.py:1142
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -1057,7 +1057,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:174 trac/admin/web_ui.py:252 trac/admin/web_ui.py:360
 #: trac/admin/web_ui.py:488 trac/prefs/templates/prefs_general.html:20
-#: trac/prefs/web_ui.py:189
+#: trac/prefs/web_ui.py:190
 msgid "General"
 msgstr ""
 
@@ -1259,7 +1259,7 @@ msgid "%(handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:62
-#: trac/prefs/templates/prefs_localization.html:20 trac/prefs/web_ui.py:223
+#: trac/prefs/templates/prefs_localization.html:20 trac/prefs/web_ui.py:224
 msgid "Localization"
 msgstr ""
 
@@ -1572,27 +1572,23 @@ msgstr ""
 msgid "Database Connection Strings documentation"
 msgstr ""
 
-#: trac/db/mysql_backend.py:113
-msgid "Cannot load Python bindings for MySQL"
-msgstr ""
-
-#: trac/db/mysql_backend.py:276 trac/db/postgres_backend.py:229
-#: trac/db/postgres_backend.py:246
+#: trac/db/mysql_backend.py:272 trac/db/postgres_backend.py:223
+#: trac/db/postgres_backend.py:240
 #, python-format
 msgid "Unable to run %(path)s: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:280
+#: trac/db/mysql_backend.py:276
 #, python-format
 msgid "mysqldump failed: %(msg)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:282 trac/db/postgres_backend.py:235
+#: trac/db/mysql_backend.py:278 trac/db/postgres_backend.py:229
 #: trac/db/sqlite_backend.py:278
 msgid "No destination file created"
 msgstr ""
 
-#: trac/db/mysql_backend.py:319
+#: trac/db/mysql_backend.py:315
 #, python-format
 msgid ""
 "All tables must be created as InnoDB or NDB storage engine to support "
@@ -1600,28 +1596,28 @@ msgid ""
 "which doesn't support transactions: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:328
+#: trac/db/mysql_backend.py:324
 #, python-format
 msgid ""
 "All tables must be created with utf8_bin or utf8mb4_bin as collation. The"
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:343
+#: trac/db/mysql_backend.py:339
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:349
+#: trac/db/mysql_backend.py:345
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:361
+#: trac/db/mysql_backend.py:357
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1633,11 +1629,7 @@ msgstr ""
 msgid "Unable to get database connection within %(time)d seconds."
 msgstr ""
 
-#: trac/db/postgres_backend.py:103
-msgid "Cannot load Python bindings for PostgreSQL"
-msgstr ""
-
-#: trac/db/postgres_backend.py:233
+#: trac/db/postgres_backend.py:227
 #, python-format
 msgid "pg_dump failed: %(msg)s"
 msgstr ""
@@ -1732,7 +1724,7 @@ msgid "Syntax Highlighting"
 msgstr ""
 
 #: trac/mimeview/pygments.py:150 trac/notification/prefs.py:69
-#: trac/prefs/web_ui.py:306
+#: trac/prefs/web_ui.py:307
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1936,19 +1928,19 @@ msgstr ""
 msgid "Unknown preference panel '%(panel)s'"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:20 trac/prefs/web_ui.py:162
+#: trac/prefs/templates/prefs_advanced.html:20 trac/prefs/web_ui.py:163
 msgid "Advanced"
 msgstr ""
 
-#: trac/prefs/web_ui.py:177
+#: trac/prefs/web_ui.py:178
 msgid "The session has been loaded."
 msgstr ""
 
-#: trac/prefs/templates/prefs_keybindings.html:20 trac/prefs/web_ui.py:206
+#: trac/prefs/templates/prefs_keybindings.html:20 trac/prefs/web_ui.py:207
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: trac/prefs/templates/prefs_userinterface.html:20 trac/prefs/web_ui.py:267
+#: trac/prefs/templates/prefs_userinterface.html:20 trac/prefs/web_ui.py:268
 msgid "User Interface"
 msgstr ""
 
@@ -2173,16 +2165,16 @@ msgstr ""
 msgid "Page %(page)s is out of range."
 msgstr ""
 
-#: trac/search/web_ui.py:249 trac/ticket/query.py:818 trac/ticket/report.py:463
+#: trac/search/web_ui.py:249 trac/ticket/query.py:819 trac/ticket/report.py:463
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/search/web_ui.py:262 trac/ticket/query.py:805 trac/ticket/report.py:454
+#: trac/search/web_ui.py:262 trac/ticket/query.py:806 trac/ticket/report.py:454
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:268 trac/ticket/query.py:810 trac/ticket/report.py:457
+#: trac/search/web_ui.py:268 trac/ticket/query.py:811 trac/ticket/report.py:457
 msgid "Previous Page"
 msgstr ""
 
@@ -2514,7 +2506,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: trac/templates/environment_info.html:61 trac/web/main.py:705
+#: trac/templates/environment_info.html:61 trac/web/main.py:729
 msgid "N/A"
 msgstr ""
 
@@ -3321,7 +3313,11 @@ msgstr ""
 msgid "Ticket that I reported is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:484
+#: trac/ticket/notification.py:460
+msgid "Any ticket is created"
+msgstr ""
+
+#: trac/ticket/notification.py:509
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr ""
 
@@ -3352,81 +3348,81 @@ msgstr ""
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
 
-#: trac/ticket/query.py:585
+#: trac/ticket/query.py:582
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr ""
 
-#: trac/ticket/query.py:691 trac/ticket/query.py:698
+#: trac/ticket/query.py:692 trac/ticket/query.py:699
 msgid "contains"
 msgstr ""
 
-#: trac/ticket/query.py:692 trac/ticket/query.py:699
+#: trac/ticket/query.py:693 trac/ticket/query.py:700
 msgid "doesn't contain"
 msgstr ""
 
-#: trac/ticket/query.py:693
+#: trac/ticket/query.py:694
 msgid "begins with"
 msgstr ""
 
-#: trac/ticket/query.py:694
+#: trac/ticket/query.py:695
 msgid "ends with"
 msgstr ""
 
-#: trac/ticket/query.py:695 trac/ticket/query.py:701 trac/ticket/query.py:704
+#: trac/ticket/query.py:696 trac/ticket/query.py:702 trac/ticket/query.py:705
 msgid "is"
 msgstr ""
 
-#: trac/ticket/query.py:696 trac/ticket/query.py:702 trac/ticket/query.py:705
+#: trac/ticket/query.py:697 trac/ticket/query.py:703 trac/ticket/query.py:706
 msgid "is not"
 msgstr ""
 
-#: trac/ticket/query.py:735 trac/ticket/query.py:741
+#: trac/ticket/query.py:736 trac/ticket/query.py:742
 msgid "Ticket"
 msgstr ""
 
-#: trac/ticket/query.py:871 trac/ticket/report.py:323 trac/ticket/report.py:621
+#: trac/ticket/query.py:872 trac/ticket/report.py:323 trac/ticket/report.py:621
 #: trac/ticket/web_ui.py:135 trac/timeline/web_ui.py:232
 #: trac/versioncontrol/web_ui/log.py:325
 msgid "RSS Feed"
 msgstr ""
 
-#: trac/ticket/query.py:873 trac/ticket/report.py:325 trac/ticket/report.py:623
+#: trac/ticket/query.py:874 trac/ticket/report.py:325 trac/ticket/report.py:623
 #: trac/ticket/web_ui.py:131
 msgid "Comma-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:875 trac/ticket/report.py:327 trac/ticket/report.py:625
+#: trac/ticket/query.py:876 trac/ticket/report.py:327 trac/ticket/report.py:625
 #: trac/ticket/web_ui.py:133
 msgid "Tab-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:899 trac/ticket/report.py:137
+#: trac/ticket/query.py:900 trac/ticket/report.py:137
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1120
+#: trac/ticket/query.py:1121
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1131 trac/ticket/report.py:198
+#: trac/ticket/query.py:1132 trac/ticket/report.py:198
 #: trac/ticket/report.py:199 trac/ticket/report.py:201
 #: trac/ticket/templates/report_list.html:20
 #: trac/ticket/templates/report_list.html:38
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1132 trac/ticket/report.py:206
+#: trac/ticket/query.py:1133 trac/ticket/report.py:206
 #: trac/ticket/templates/report_list.html:67
 msgid "New Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1255
+#: trac/ticket/query.py:1256
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1261
+#: trac/ticket/query.py:1262
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3490,28 +3486,28 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1384
+#: trac/ticket/query.py:1385
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/query.py:1467
+#: trac/ticket/query.py:1468
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr ""
 
-#: trac/ticket/query.py:1482
+#: trac/ticket/query.py:1483
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1500
+#: trac/ticket/query.py:1501
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1524
+#: trac/ticket/query.py:1525
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -5333,7 +5329,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:48
 #: trac/versioncontrol/templates/admin_repositories.html:155
 #: trac/versioncontrol/templates/admin_repositories.html:157
-#: trac/versioncontrol/web_ui/browser.py:951
+#: trac/versioncontrol/web_ui/browser.py:950
 #: trac/versioncontrol/web_ui/changeset.py:865
 #: trac/versioncontrol/web_ui/changeset.py:1005
 msgid "(default)"
@@ -5480,7 +5476,7 @@ msgstr ""
 msgid "No such node"
 msgstr ""
 
-#: trac/versioncontrol/cache.py:241
+#: trac/versioncontrol/cache.py:258
 #, python-format
 msgid ""
 "The repository directory has changed, you should resynchronize the "
@@ -5970,7 +5966,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:31
 #: trac/versioncontrol/templates/repository_index.html:33
-#: trac/versioncontrol/web_ui/browser.py:863
+#: trac/versioncontrol/web_ui/browser.py:862
 msgid "Download as Zip archive"
 msgstr ""
 
@@ -5986,7 +5982,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dirlist_thead.html:20
 #: trac/versioncontrol/templates/revisionlog.html:120
-#: trac/versioncontrol/web_ui/browser.py:871
+#: trac/versioncontrol/web_ui/browser.py:870
 msgid "Rev"
 msgstr ""
 
@@ -6220,11 +6216,11 @@ msgstr ""
 msgid "Path not available for download"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:871
+#: trac/versioncontrol/web_ui/browser.py:870
 msgid "Revision in which the line changed"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:886
+#: trac/versioncontrol/web_ui/browser.py:885
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -6248,7 +6244,7 @@ msgid ""
 "(''since 0.12'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:953
+#: trac/versioncontrol/web_ui/browser.py:952
 #, python-format
 msgid "View repository %(repo)s"
 msgstr ""
@@ -6398,11 +6394,11 @@ msgid "No permission to view change log"
 msgstr ""
 
 #. TRANSLATOR: You can 'search' in the repository history... (link)
-#: trac/versioncontrol/web_ui/util.py:78
+#: trac/versioncontrol/web_ui/util.py:92
 msgid "search"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/util.py:83
+#: trac/versioncontrol/web_ui/util.py:97
 #, python-format
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
@@ -6430,22 +6426,22 @@ msgid ""
 "request."
 msgstr ""
 
-#: trac/web/api.py:526
+#: trac/web/api.py:532
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:759
+#: trac/web/api.py:767
 #, python-format
 msgid "File %(path)s not found"
 msgstr ""
 
-#: trac/web/api.py:876
+#: trac/web/api.py:895
 #, python-format
 msgid "Exception caught while reading request: %(msg)s"
 msgstr ""
 
-#: trac/web/api.py:901
+#: trac/web/api.py:920
 #, python-format
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr ""
@@ -6507,30 +6503,30 @@ msgstr ""
 msgid "anonymous"
 msgstr ""
 
-#: trac/web/main.py:177
+#: trac/web/main.py:186
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:231
+#: trac/web/main.py:240
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:234
+#: trac/web/main.py:243
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:235
+#: trac/web/main.py:244
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:245
+#: trac/web/main.py:254
 msgid ""
 "Clearsilver templates are no longer supported, please contact your Trac "
 "administrator."
 msgstr ""
 
-#: trac/web/main.py:345
+#: trac/web/main.py:355
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6538,28 +6534,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:644
+#: trac/web/main.py:668
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:645
+#: trac/web/main.py:669
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:712
+#: trac/web/main.py:736
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:713
+#: trac/web/main.py:737
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:714
+#: trac/web/main.py:738
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:743
+#: trac/web/main.py:767
 #, python-format
 msgid ""
 "==== How to Reproduce ====\n"
@@ -6735,22 +6731,22 @@ msgstr ""
 msgid "%(target)s in %(name)s"
 msgstr ""
 
-#: trac/wiki/formatter.py:821
+#: trac/wiki/formatter.py:824
 #, python-format
 msgid "Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:827
+#: trac/wiki/formatter.py:830
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1217
+#: trac/wiki/formatter.py:1220
 #, python-format
 msgid "Processor %(name)s failed"
 msgstr ""
 
-#: trac/wiki/formatter.py:1223
+#: trac/wiki/formatter.py:1226
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr ""

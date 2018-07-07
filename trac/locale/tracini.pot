@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-04-24 17:13+0000\n"
+"POT-Creation-Date: 2018-07-07 16:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -454,11 +454,11 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
-#: trac/db/mysql_backend.py:95
+#: trac/db/mysql_backend.py:94
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
-#: trac/db/postgres_backend.py:87
+#: trac/db/postgres_backend.py:86
 msgid "Location of pg_dump for Postgres database backups"
 msgstr ""
 
@@ -837,7 +837,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:847
+#: trac/ticket/query.py:848
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -845,7 +845,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:855
+#: trac/ticket/query.py:856
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -853,7 +853,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:863
+#: trac/ticket/query.py:864
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1480,11 +1480,11 @@ msgid ""
 "the contents are rendered. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/web/main.py:127
+#: trac/web/main.py:128
 msgid "Ordered list of filters to apply to all requests."
 msgstr ""
 
-#: trac/web/main.py:131
+#: trac/web/main.py:132
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1494,17 +1494,17 @@ msgid ""
 "and `WikiModule`."
 msgstr ""
 
-#: trac/web/main.py:140
+#: trac/web/main.py:141
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:143
+#: trac/web/main.py:144
 msgid ""
 "The preferred language to use if no user preference has\n"
 "been set. (''since 0.12.1'')"
 msgstr ""
 
-#: trac/web/main.py:149
+#: trac/web/main.py:150
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1512,7 +1512,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:156
+#: trac/web/main.py:157
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1520,10 +1520,19 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:163
+#: trac/web/main.py:164
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
+msgstr ""
+
+#: trac/web/main.py:168
+msgid ""
+"Headers to be added to the HTTP request. (''since 1.2.3'')\n"
+"\n"
+"The header name must conform to RFC7230 and the following\n"
+"reserved names are not allowed: content-type, content-length,\n"
+"location, etag, pragma, cache-control, expires."
 msgstr ""
 
 #: trac/wiki/api.py:265
