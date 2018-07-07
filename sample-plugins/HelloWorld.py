@@ -14,11 +14,11 @@
 
 """Example macro."""
 
-revision = "$Rev$"
-url = "$URL$"
-
 from trac.util.translation import cleandoc_
 from trac.wiki.macros import WikiMacroBase
+
+revision = "$Rev$"
+url = "$URL$"
 
 
 class HelloWorldMacro(WikiMacroBase):

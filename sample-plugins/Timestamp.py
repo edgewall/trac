@@ -14,12 +14,12 @@
 
 """Inserts the current time (in seconds) into the wiki page."""
 
-revision = "$Rev$"
-url = "$URL$"
-
 from trac.util.datefmt import datetime_now, format_datetime, utc
 from trac.util.html import tag
 from trac.wiki.macros import WikiMacroBase
+
+revision = "$Rev$"
+url = "$URL$"
 
 
 class TimestampMacro(WikiMacroBase):
