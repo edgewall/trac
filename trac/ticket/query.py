@@ -289,8 +289,6 @@ class Query(object):
                 href=None, locale=None):
         """Retrieve the list of matching tickets.
 
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-            in version 1.1.1
         :since 1.0.17: the `tzinfo` parameter is deprecated and will be
             removed in version 1.5.1
         :since 1.0.17: the `locale` parameter is deprecated and will be
