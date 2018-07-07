@@ -424,8 +424,6 @@ class Query(object):
         """Return a (sql, params) tuple for the query."""
         if req is not None:
             authname = req.authname
-            tzinfo = req.tz
-            locale = req.locale
         self.get_columns()
         db = self.env.get_read_db()
 
@@ -441,12 +439,14 @@ class Query(object):
         if self.rows:
             add_cols('reporter', *self.rows)
         add_cols('status', 'priority', 'time', 'changetime', self.order)
-        cols.extend([c for c in self.constraint_cols if not c in cols])
+        add_cols(*list(self.constraint_cols))
 
         custom_fields = set(f['name'] for f in self.fields if f.get('custom'))
         list_fields = set(f['name'] for f in self.fields
                                     if f['type'] == 'text' and
                                        f.get('format') == 'list')
+        cols_custom = [k for k in cols if k in custom_fields]
+        use_joins = len(cols_custom) <= 1
         enum_columns = [col for col in ('resolution', 'priority', 'severity',
                                         'type')
                             if col not in custom_fields and
@@ -454,9 +454,6 @@ class Query(object):
         joined_columns = [col for col in ('milestone', 'version')
                               if col not in custom_fields and
                                  col in (self.order, self.group)]
-        # 31 is max of joins in SQLite 32-bit
-        use_joins = (len(set(cols) & custom_fields) +
-                     len(enum_columns) + len(joined_columns)) <= 31
 
         sql = []
         sql.append("SELECT " + ",".join('t.%s AS %s' % (c, c) for c in cols
@@ -466,25 +463,24 @@ class Query(object):
 
         if use_joins:
             # Use LEFT OUTER JOIN for ticket_custom table
-            sql.extend(",%s.value AS %s" % ((db.quote(k),) * 2)
-                       for k in cols if k in custom_fields)
+            sql.extend(",%(qk)s.value AS %(qk)s" % {'qk': db.quote(k)}
+                       for k in cols_custom)
             sql.append("\nFROM ticket AS t")
             sql.extend("\n  LEFT OUTER JOIN ticket_custom AS %(qk)s ON "
                        "(%(qk)s.ticket=t.id AND %(qk)s.name='%(k)s')"
-                        % {'qk': db.quote(k), 'k': k}
-                        for k in cols if k in custom_fields)
+                        % {'qk': db.quote(k), 'k': k} for k in cols_custom)
         else:
-            # Use subquery for ticket_custom table
-            sql.extend(",%s AS %s" % ((db.quote(k),) * 2)
-                       for k in cols if k in custom_fields)
-            sql.append('\nFROM (\n  SELECT ')
-            sql.append(','.join('t.%s AS %s' % (c, c)
-                                for c in cols if c not in custom_fields))
-            sql.extend(",\n  (SELECT c.value FROM ticket_custom c "
-                       "WHERE c.ticket=t.id AND c.name='%s') AS %s"
-                       % (k, db.quote(k))
-                       for k in cols if k in custom_fields)
-            sql.append("\n  FROM ticket AS t) AS t")
+            # Use MAX(CASE ... END) ... GROUP BY ... for ticket_custom table
+            sql.extend(",c.%(qk)s AS %(qk)s" % {'qk': db.quote(k)}
+                       for k in cols_custom)
+            sql.append("\nFROM ticket AS t"
+                       "\n  LEFT OUTER JOIN (SELECT\n    ticket AS id")
+            sql.extend(",\n    MAX(CASE WHEN name='%s' THEN value END) AS %s" %
+                       (k, db.quote(k)) for k in cols_custom)
+            sql.append("\n    FROM ticket_custom AS tc")
+            sql.append("\n    WHERE name IN (%s)" %
+                       ','.join("'%s'" % k for k in cols_custom))
+            sql.append("\n    GROUP BY tc.ticket) AS c ON c.id=t.id")
 
         # Join with the enum table for proper sorting
         sql.extend("\n  LEFT OUTER JOIN enum AS %(col)s ON "
@@ -511,7 +507,7 @@ class Query(object):
             elif use_joins:
                 col = db.quote(name) + '.value'
             else:
-                col = 't.' + db.quote(name)
+                col = 'c.' + db.quote(name)
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
@@ -615,7 +611,7 @@ class Query(object):
                     elif use_joins:
                         col = db.quote(k) + '.value'
                     else:
-                        col = 't.' + db.quote(k)
+                        col = 'c.' + db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
                                    % (col, 'NOT ' if neg else '',
                                       ','.join(['%s' for val in v])))
@@ -660,7 +656,7 @@ class Query(object):
             elif use_joins:
                 col = db.quote(name) + '.value'
             else:
-                col = 't.' + db.quote(name)
+                col = 'c.' + db.quote(name)
             desc = ' DESC' if desc else ''
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
