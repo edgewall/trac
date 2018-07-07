@@ -273,8 +273,12 @@ class Query(object):
               tzinfo=None, locale=None):
         """Get the number of matching tickets for the present query.
 
-        :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
+        :since 1.0: the `db` parameter is no longer needed and will be
+            removed in version 1.1.1
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
         return self._count(sql, args)
@@ -291,7 +295,11 @@ class Query(object):
         """Retrieve the list of matching tickets.
 
         :since 1.0: the `db` parameter is no longer needed and will be removed
-        in version 1.1.1
+            in version 1.1.1
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         if req is not None:
             href = req.href
@@ -359,6 +367,11 @@ class Query(object):
                      the first)
 
         Note: `get_resource_url` of a 'query' resource?
+
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         if not isinstance(href, Href):
             href = href.href # compatibility with the `req` of the 0.10 API
