@@ -270,6 +270,11 @@ class Query(object):
     def count(self, req=None, cached_ids=None, authname=None, tzinfo=None,
               locale=None):
         """Get the number of matching tickets for the present query.
+
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
         return self._count(sql, args)
@@ -284,6 +289,13 @@ class Query(object):
     def execute(self, req=None, cached_ids=None, authname=None, tzinfo=None,
                 href=None, locale=None):
         """Retrieve the list of matching tickets.
+
+        :since 1.0: the `db` parameter is no longer needed and will be removed
+            in version 1.1.1
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         if req is not None:
             href = req.href
@@ -345,6 +357,11 @@ class Query(object):
                      the first)
 
         Note: `get_resource_url` of a 'query' resource?
+
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
         """
         if format is None:
             format = self.format
