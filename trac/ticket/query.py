@@ -356,11 +356,6 @@ class Query(object):
                      the first)
 
         Note: `get_resource_url` of a 'query' resource?
-
-        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
-            removed in version 1.5.1
-        :since 1.0.17: the `locale` parameter is deprecated and will be
-            removed in version 1.5.1
         """
         if format is None:
             format = self.format
@@ -420,7 +415,13 @@ class Query(object):
 
     def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None,
                 locale=None):
-        """Return a (sql, params) tuple for the query."""
+        """Return a (sql, params) tuple for the query.
+
+        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
+            removed in version 1.5.1
+        :since 1.0.17: the `locale` parameter is deprecated and will be
+            removed in version 1.5.1
+        """
         if req is not None:
             authname = req.authname
         self.get_columns()
