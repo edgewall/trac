@@ -101,7 +101,9 @@ def main(args):
             continue
         if target_msg.string == source_msg.string:
             continue
-        if _has_msgstr(target_msg):
+        if not _has_msgstr(source_msg):
+            continue
+        if _has_msgstr(target_msg) and not _is_fuzzy(target_msg):
             continue
         if msgid not in target:
             target_msg = target_msg.clone()
