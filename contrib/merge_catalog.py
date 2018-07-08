@@ -70,13 +70,11 @@ def main(args):
                           ', '.join(domains))
     if not locales:
         raise ScriptError('No trac/locale/*/LC_MESSAGES/*.po files.')
-    with open(source_file, 'rb') as f:
-        source = read_po(f)
-        del f
-    headers = dict((name.lower(), value)
-                   for name, value in source.mime_headers)
-    preferred_locales = [headers.get(name)
-                         for name in ('language', 'language-team')]
+    source = _open_pofile(source_file)
+    preferred_locales = [value.split(None, 1)[0]
+                         for value in (source.locale and str(source.locale),
+                                       source.language_team)
+                         if value]
     locale = negotiate_locale(preferred_locales, locales)
     if not locale or locale == 'en_US':
         sys.stderr.write('No available *.po file for %s.\n' %
@@ -112,7 +110,7 @@ def main(args):
         target_msg.flags = source_msg.flags
         n += 1
     if n > 0:
-        with open(target_file, 'wb') as f:
+        with open(target_file, 'w') as f:
             write_po(f, target)
             del f
         print('Merged %d messages from %s and updated %s' % (n, source_file,
