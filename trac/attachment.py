@@ -350,8 +350,8 @@ class Attachment(object):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
 
-        :returns: a tuple containing the `filename`, `description`, `size`,
-                  `time`, `author` and `ipnr`.
+        :return: a tuple containing the `filename`, `description`, `size`,
+                 `time`, `author` and `ipnr`.
         :since 1.0: the `db` parameter is deprecated and will be removed
                     in 1.1.1
         :since 1.0.5: use of `ipnr` is deprecated and will be removed in 1.3.1
