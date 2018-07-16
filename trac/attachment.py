@@ -842,8 +842,8 @@ class Attachment(object):
         """Iterator yielding all `Attachment` instances attached to
         resource identified by `parent_realm` and `parent_id`.
 
-        :returns: a tuple containing the `filename`, `description`, `size`,
-                  `time` and `author`.
+        :return: a tuple containing the `filename`, `description`, `size`,
+                 `time` and `author`.
         """
         for row in env.db_query("""
                 SELECT filename, description, size, time, author
