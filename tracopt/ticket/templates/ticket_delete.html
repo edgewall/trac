@@ -61,7 +61,7 @@
 
       <form id="delete-confirm" action="" method="post">
         <div>
-          <input type="hidden" name="__FORM_TOKEN" value="${form_token}"/>
+          ${jmacros.form_token_input()}
           <input type="hidden" name="action" value="delete"/>
           <p>
             <strong>
@@ -112,7 +112,7 @@
 
         <form id="edit" action="" method="post">
           <div>
-            <input type="hidden" name="__FORM_TOKEN" value="${form_token}"/>
+            ${jmacros.form_token_input()}
             <input type="hidden" name="action" value="delete-comment"/>
             <input type="hidden" name="cnum" value="${cnum}"/>
             <input type="hidden" name="cdate" value="${cdate}"/>
