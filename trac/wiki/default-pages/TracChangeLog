@@ -15,7 +15,20 @@ release notes for [[trac:wiki:TracDev/ReleaseNotes/1.3#DevelopmentReleases | 1.3
 
 === 1.3.3 
 
-//(???, 2017)//
+//(July 20, 2018)//
+
+Trac 1.3.3 provides many fixes for the Jinja2
+template engine and template conversions.
+
+Additional highlights of changes since 1.3.2:
+* The TracGuide is readonly by default ([trac:#12899]).
+* The `trac-svn-hook` script can be configured using
+  SVN's hook script environment configuration ([trac:#12771]).
+* Environment log level defaults to `INFO` and log type
+  defaults to `file` so that installation issue are captured
+  in the log when running `trac-admin initenv` ([trac:#12966]).
+
+[trac:source:/tags/trac-1.3.3 View Tag] | [trac:milestone:1.3.3 View Milestone]
 
 === 1.3.2 
 
