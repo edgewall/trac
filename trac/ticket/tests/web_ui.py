@@ -261,7 +261,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['owner']
 
-        self.assertEqual('<span class="trac-author">owner1</span> deleted',
+        self.assertEqual('<span class="trac-author">owner1</span> removed',
                          unicode(field['rendered']))
 
     def test_ticket_property_diff_reporter_change(self):
@@ -299,7 +299,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['reporter']
 
-        self.assertEqual('<span class="trac-author">reporter1</span> deleted',
+        self.assertEqual('<span class="trac-author">reporter1</span> removed',
                          unicode(field['rendered']))
 
     def _test_invalid_cnum_raises(self, action, cnum=None):

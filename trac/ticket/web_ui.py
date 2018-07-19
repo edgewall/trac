@@ -1774,12 +1774,12 @@ class TicketModule(Component):
                 elt_renderer = lambda e: e
             added = [elt_renderer(x) for x in new_list if x not in old_list]
             remvd = [elt_renderer(x) for x in old_list if x not in new_list]
-            added = added and tagn_("%(items)s added", "%(items)s added",
+            added = added and tagn_("%(value)s added", "%(value)s added",
                                     len(added),
-                                    items=separated(added, separator))
-            remvd = remvd and tagn_("%(items)s removed", "%(items)s removed",
+                                    value=separated(added, separator))
+            remvd = remvd and tagn_("%(value)s removed", "%(value)s removed",
                                     len(remvd),
-                                    items=separated(remvd, separator))
+                                    value=separated(remvd, separator))
             if added or remvd:
                 return tag(added, added and remvd and _("; "), remvd)
 
@@ -1808,7 +1808,7 @@ class TicketModule(Component):
             old_author = authorinfo(old)
             new_author = authorinfo(new)
             if old and not new:
-                rendered = tag_("%(value)s deleted", value=old_author)
+                rendered = tag_("%(value)s removed", value=old_author)
             elif new and not old:
                 rendered = tag_("set to %(value)s", value=new_author)
             else:  # old and new:
