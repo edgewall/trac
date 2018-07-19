@@ -7,8 +7,8 @@ Upgrade Instructions
 Instructions
 ------------
 
-Typically, there are seven steps involved in upgrading to a newer
-version of Trac:
+There are seven recommended steps for upgrading to a newer version of
+Trac:
 
 
 1. Check your plugins
@@ -19,8 +19,8 @@ that you are upgrading to. Obsolete plugins listed in the `version
 specific steps`_ below should be uninstalled or disabled.
 
 If you are upgrading to a minor release, plugin compatibility is
-usually not a concern because the Trac API typically does not change,
-and major features are not introduced, for minor releases.
+usually not a concern because the Trac API rarely changes, and major
+features are usually not introduced, for minor releases.
 
 If your plugins are installed from `​trac-hacks.org`_ you can check
 compatibility by looking for a tag on the project page corresponding
@@ -28,12 +28,12 @@ to a major release (e.g. `1.2`). If you are unsure, you'll want to
 contact the plugin author or ask on the `​MailingList`_.
 
 If you are running several Trac plugins it is good to test the upgrade
-and site functionality in a staging instance of your site before
+and plugin functionality in a staging instance of your site before
 upgrading your production instance. Remember, plugin authors are
 responsible for Trac version compatibility and plugins can interact in
 unexpected ways. Your Trac instance may have a unique combination of
-plugins and therefore it's a good idea to do some verification testing
-when making any changes to your site.
+plugins and therefore it's advised that you do some verification
+testing when making any changes to your site.
 
 
 2. Bring your server off-line
@@ -81,7 +81,7 @@ specify the Trac version in the `pip` command.
 
 
 You should also upgrade dependencies so they are compliant with the
-`required versions`_ and upgrade Trac plugins.
+`required versions`_.
 
 
 4. Upgrade the Trac Environment
@@ -105,18 +105,22 @@ The upgrade is run using a `trac-admin`_ command:
 This command will not have any effect if the environment is already
 up-to-date.
 
+It is recommended that you set the `log_level`_ to `INFO` before
+running the upgrade. The additional information in the logs can be
+helpful in case something unexpected occurs during the upgrade.
+
 Note that a backup of your database will be performed automatically
 prior to the upgrade. The backup is saved in the location specified by
-`[trac]` `backup_dir`.
+`backup_dir`_.
 
 
 5. Update the Trac Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, every `Trac environment`_ includes a copy of the Trac
-documentation for the installed version. However, to keep the included
-documentation in sync with the installed version of Trac, use the
-following `trac-admin`_ command to upgrade the documentation:
+documentation for the installed version. To keep the documentation in
+sync with the installed version of Trac, use the following `trac-
+admin`_ command to upgrade the documentation:
 
 
 ::
@@ -124,9 +128,10 @@ following `trac-admin`_ command to upgrade the documentation:
     $ trac-admin /path/to/projenv wiki upgrade
 
 
-Note that this procedure will leave your `WikiStart`, `TracGuide` and
-`SandBox` pages unaltered. Local changes to other pages that are
-distributed with Trac will be overwritten.
+Note that this procedure will leave your `WikiStart`, `InterMapTxt`
+and `SandBox` pages unaltered. Local changes to other pages that are
+distributed with Trac will be overwritten, however these pages are
+read-only by default for Environments created in Trac 1.3.3 and later.
 
 
 6. Refresh static resources
@@ -148,9 +153,8 @@ Before refreshing, it is recommended that you remove the directory in
 which your static resources are deployed. The directory location
 depends on the choice you made during installation. This cleanup is
 not mandatory, but makes it easier to troubleshoot issues later on, as
-your installation is uncluttered by code or templates from a previous
-release that is not used anymore. As usual, make a backup before
-deleting the directory.
+your installation is uncluttered by unused assets from a previous
+release. As usual, make a backup before deleting the directory.
 
 Note: Some web browsers (IE, Opera) cache CSS and JavaScript files, so
 you should instruct your users to manually erase the contents of their
@@ -205,22 +209,6 @@ compatible with this change. (TODO: expand...)
 If you customized the Trac templates, or the site.html template,
 you'll need to adapt that as well. (TODO: expand...) See
 `#CustomizedTemplates`_
-
-Another "template" that will probably need to be updated are the
-e-mail notification summaries, defined in the ` trac.ini,
-[notification] section`_, for the `batch_subject_template` and
-`ticket_subject_template` settings.
-
-For example:
-
-
-::
-
-    [notification]
-    ticket_subject_template = ${prefix} #${ticket.id}: ${summary}
-
-
-(instead of `$prefix #$ticket.id: $summary`)
 
 
 New permission policies for Wiki and Ticket realms
@@ -277,6 +265,26 @@ example, if the `ticket` table is aliased as `t` ( `ticket t` or
 report should use the ticket's `description` column.
 
 
+Removed `<repostype>` and `<repospath>` arguments from `TracAdmin`_
+`initenv` command
++++++++++++++++++
+
+The `TracAdmin`_ `initenv` command allowed the default repository to
+be specified using the third and fourth positional arguments of
+`initenv`:
+
+::
+
+    initenv [<projectname> <db> [<repostype> <repospath>]]
+
+
+The arguments were an artifact of Trac < 0.12, which only supported a
+single repository. Trac 0.12 and later supports multiple repositories,
+which can be specified at the time of environment creation using the
+`--inherit` and `--config` arguments. See the `initenv documentation`_
+for details on specifying source code repositories.
+
+
 Upgrading from Trac 1.0 to 1.2
 ``````````````````````````````
 
@@ -294,9 +302,15 @@ Trac has added functionality equivalent to the following plugins:
 
 
 + `​AdminEnumListPlugin`_
++ `​AttachmentNotifyPlugin`_: attachment notifications are sent in
+  Trac 1.0.3 and later
 + `​DateFieldPlugin`_: see the time `custom field type`_
++ `​FlexibleReporterNotificationPlugin`_: `​custom subscribers`_ can
+  be implemented in the new extensible notification system
 + `​GroupBasedRedirectionPlugin`_: the default handler can set as a
-  user preference.
+  user preference
++ `​GroupingAssignToPlugin`_: groups and permissions can be used in
+  the `set_owner`_ workflow attribute
 + `​LinenoMacro`_: see `WikiProcessors#AvailableProcessors`_
 + `​NeverNotifyUpdaterPlugin`_: see `notification subscribers`_
 + `​QueryUiAssistPlugin`_: see `TracQuery#Filters`_.
@@ -360,9 +374,11 @@ Obsolete Plugins
 Trac has added functionality equivalent to the following plugins:
 
 
++ `​AnchorMacro`_
 + `​BatchModifyPlugin`_
-+ ​`​GitPlugin`_
++ `​GitPlugin`_
 + `​OverrideEditPlugin`_
++ `​ProgressMeterMacro`_
 
 
 The plugins should be removed when upgrading Trac to 1.0.
@@ -438,10 +454,10 @@ Customized Templates
 Trac supports customization of its templates by placing copies of the
 templates in the `<env>/templates` folder of your `environment`_ or in
 a common location specified in the ` [inherit] templates_dir`_
-configuration setting. If you choose to do so, be aware that you will
-need to repeat your changes manually on a copy of the new templates
-when you upgrade to a new release of Trac (even a minor one), as the
-templates will likely evolve. So keep a diff around.
+configuration setting. If you choose to customize the templates, be
+aware that you will need to repeat your changes on a copy of the new
+templates when you upgrade to a new release of Trac (even a minor
+one), as the templates will evolve. So keep a diff around.
 
 The preferred way to perform `TracInterfaceCustomization`_ is a custom
 plugin doing client-side JavaScript transformation of the generated
@@ -455,7 +471,7 @@ ZipImportError
 
 Due to internal caching of zipped packages, whenever the content of
 the packages change on disk, the in-memory zip index will no longer
-match and you'll get irrecoverable ZipImportError errors. Better
+match and you'll get irrecoverable ZipImportError errors. Better to
 anticipate and bring your server down for maintenance before
 upgrading. See `​#7014`_ for details.
 
@@ -491,40 +507,42 @@ Upgrading Python
 ~~~~~~~~~~~~~~~~
 
 Upgrading Python to a newer version will require reinstallation of
-Python packages: Trac itself of course, but also `​setuptools`_. If
+Python packages: Trac itself of course, but also `dependencies`_. If
 you are using Subversion, you'll need to upgrade the `​Python bindings
 for SVN`_.
 
 
-Changing Database Backend
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The `​TracMigratePlugin`_ on `​trac-hacks.org`_ has been written to
-assist in migrating between SQLite, MySQL and PostgreSQL databases.
-
-
-See also: `TracGuide`_, `TracInstall`_
+See also: `TracGuide`_, `TracInstall`_,
+`TracEnvironment#ChangingDatabaseBackend`_
 
 .. _ [inherit] templates_dir: http://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
-.. _ trac.ini, [notification] section: http://trac.edgewall.org/wiki/TracIni#notification-section
 .. _#11370: http://trac.edgewall.org/intertrac/%2311370
 .. _#7014: http://trac.edgewall.org/intertrac/%237014
 .. _#CustomizedTemplates: http://trac.edgewall.org/wiki/TracUpgrade#CustomizedTemplates
 .. _#NewWorkflowActions: http://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
 .. _AdminEnumListPlugin: https://trac-hacks.org/wiki/AdminEnumListPlugin
+.. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
+.. _AttachmentNotifyPlugin: https://trac-hacks.org/wiki/AttachmentNotifyPlugin
 .. _backup your environment: http://trac.edgewall.org/wiki/TracBackup
+.. _backup_dir: http://trac.edgewall.org/wiki/TracIni#trac-backup_dir-option
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _custom field type: http://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
+.. _custom subscribers: http://trac.edgewall.org/intertrac/CookBook/Notification/Subscriptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
+.. _dependencies: http://trac.edgewall.org/wiki/TracInstall#Dependencies
 .. _deploy command: http://trac.edgewall.org/wiki/TracInstall#MappingStaticResources
 .. _DynamicVariablesPlugin: https://trac-hacks.org/wiki/DynamicVariablesPlugin
 .. _environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _FlexibleAssignToPlugin: https://trac-hacks.org/wiki/FlexibleAssignToPlugin
+.. _FlexibleReporterNotificationPlugin: https://trac-hacks.org/wiki/FlexibleReporterNotificationPlugin
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
 .. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin
+.. _GroupingAssignToPlugin: https://trac-hacks.org/wiki/GroupingAssignToPlugin
 .. _hotcopy: http://trac.edgewall.org/wiki/TracBackup
+.. _initenv documentation: http://trac.edgewall.org/wiki/TracEnvironment#SourceCodeRepository
 .. _internal errors: http://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
 .. _LinenoMacro: https://trac-hacks.org/wiki/LinenoMacro
+.. _log_level: http://trac.edgewall.org/wiki/TracIni#logging-log_level-option
 .. _MailingList: http://trac.edgewall.org/intertrac/MailingList
 .. _migrated: http://trac.edgewall.org/wiki/TracUpgrade#AttachmentsMigrated
 .. _MySQL-python: https://pypi.python.org/pypi/MySQL-python
@@ -532,13 +550,14 @@ See also: `TracGuide`_, `TracInstall`_
 .. _NeverNotifyUpdaterPlugin: https://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
 .. _notification subscribers: http://trac.edgewall.org/wiki/TracNotification#notification-subscriber-section
 .. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
+.. _ProgressMeterMacro: https://trac-hacks.org/wiki/ProgressMeterMacro
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
 .. _PyPI: https://pypi.python.org/pypi/Trac
 .. _Python bindings for SVN: http://trac.edgewall.org/intertrac/TracSubversion
 .. _QueryUiAssistPlugin: https://trac-hacks.org/wiki/QueryUiAssistPlugin
 .. _ReadonlyWikiPolicy: http://trac.edgewall.org/wiki/TracUpgrade#Newpermissionspolicyforread-onlywikipages
 .. _required versions: http://trac.edgewall.org/wiki/TracInstall#Dependencies
-.. _setuptools: http://pypi.python.org/pypi/setuptools
+.. _set_owner: http://trac.edgewall.org/wiki/TracWorkflow#BasicTicketWorkflowCustomization
 .. _sometimes fails: http://trac.edgewall.org/wiki/TracUpgrade#AttachmentsNotMigrated
 .. _the FAQ: https://trac.edgewall.org/wiki/TracFaq#Q:Attachmentsaremissingafterupgrade
 .. _TicketCreationStatusPlugin: https://trac-hacks.org/wiki/TicketCreationStatusPlugin
@@ -548,6 +567,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracAdmin: http://trac.edgewall.org/wiki/TracAdmin
 .. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
 .. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
+.. _TracEnvironment#ChangingDatabaseBackend: http://trac.edgewall.org/wiki/TracEnvironment#ChangingDatabaseBackend
 .. _TracFineGrainedPermissions#ReadonlyWikiPolicy: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy
 .. _TracFineGrainedPermissions: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#DefaultWikiPolicyandDefaultTicketPolicy
 .. _TracGuide: http://trac.edgewall.org/wiki/TracGuide

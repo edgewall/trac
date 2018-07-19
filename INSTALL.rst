@@ -165,6 +165,9 @@ Other Python Packages
 + `​Textile`_ for rendering the `​Textile markup language`_.
 + `​pytz`_ to get a complete list of time zones, otherwise Trac will
   fall back on a shorter list from an internal time zone implementation.
++ `​passlib`_ on Windows to decode `htpasswd formats`_ other than
+  `SHA-1`.
++ `​pyreadline`_ on Windows for trac-admin `command completion`_.
 
 
 Attention : The available versions of these dependencies are not
@@ -688,6 +691,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _Babel*: http://babel.pocoo.org
 .. _Babel: http://trac.edgewall.org/wiki/TracInstall#OtherPythonPackages
 .. _CGI: http://trac.edgewall.org/wiki/TracCgi
+.. _command completion: http://trac.edgewall.org/wiki/TracAdmin#InteractiveMode
 .. _conf/trac.ini: http://trac.edgewall.org/wiki/TracIni
 .. _configuration file: http://trac.edgewall.org/wiki/TracIni
 .. _database backends: http://trac.edgewall.org/intertrac/DatabaseBackend
@@ -701,6 +705,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _getting Subversion: http://trac.edgewall.org/intertrac/TracSubversion%23GettingSubversion
 .. _Git: http://git-scm.com/
 .. _here: https://pypi.python.org/pypi?:action=browse&show=all&c=516
+.. _htpasswd formats: http://trac.edgewall.org/wiki/TracStandalone#BasicAuthorization:Usingahtpasswdpasswordfile
 .. _IIS with FastCGI: http://trac.edgewall.org/intertrac/CookBook/Installation/TracOnWindowsIisWfastcgi
 .. _Installing Trac: http://trac.edgewall.org/wiki/TracInstall#InstallingTrac
 .. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
@@ -714,6 +719,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _MySqlDb: http://trac.edgewall.org/intertrac/MySqlDb
 .. _nginx: http://trac.edgewall.org/intertrac/TracNginxRecipe
 .. _not supported: http://trac.edgewall.org/intertrac/ticket%3A493
+.. _passlib: https://pypi.python.org/pypi/passlib
 .. _permissions: http://trac.edgewall.org/wiki/TracPermissions
 .. _platform-specific instructions: http://trac.edgewall.org/intertrac/TracInstallPlatforms
 .. _PluginList#VersionControlSystems: http://trac.edgewall.org/intertrac/PluginList%23VersionControlSystems
@@ -723,6 +729,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _psycopg2: https://pypi.python.org/pypi/psycopg2
 .. _Pygments: http://pygments.org
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
+.. _pyreadline: https://pypi.python.org/pypi/pyreadline
 .. _PySqlite*: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
 .. _pysqlite: https://pypi.python.org/pypi/pysqlite
 .. _PySVN: http://pysvn.tigris.org/
