@@ -1,25 +1,25 @@
-Release Notes for Trac 1.0 'Cell' Release
+Release Notes for Trac 1.4 'Jinja2' Release
 =========================================
-September 7, 2012
+(Not yet released)
 
 Highlights
 ----------
-* Refreshed user interface
-* Git support
-* Branching structure displayed in the revision log
-* Ticket batch modification support
+* Jinja2 templating engine 
+* TracAdmin command for converting databases
+* Restyled wiki
+* Custom navigation items for main and meta navigation 
 
 Detailed User Visible Changes
 -----------------------------
 
-A detailed view of the API changes since 0.12.x can be found in
-http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.0
+A detailed view of the API changes since 1.2.x can be found in
+https://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.2
 
 Developer-visible changes
 -------------------------
 
-A detailed view of the API changes since 0.12.x can be found in
-http://trac.edgewall.org/wiki/TracDev/ApiChanges/1.0
+A detailed view of the API changes since 1.2.x can be found in
+https://trac.edgewall.org/wiki/TracDev/ApiChanges/1.2
 
 Acknowledgements
 ----------------
@@ -37,4 +37,4 @@ improvement over the last version.
 
 Please let us know. :-)
 
-/The Trac Team http://trac.edgewall.org/
+/The Trac Team https://trac.edgewall.org/
