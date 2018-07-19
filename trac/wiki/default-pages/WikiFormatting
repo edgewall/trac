@@ -579,7 +579,7 @@ If contrary to the example above, the cells in your table contain more text, it 
 
 === Complex Tables
 
-If the possibilities offered by the simple pipe-based markup ('||') for tables described above are not enough for your needs, you can create more elaborate tables by using [#Processors-example-tables WikiProcessor based tables].
+If the possibilities offered by the simple pipe-based markup (`||`) for tables described above are not enough for your needs, you can create more elaborate tables by using [#Processors-example-tables WikiProcessor based tables].
 
 == Links
 

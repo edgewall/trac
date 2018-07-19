@@ -1,20 +1,20 @@
 = Trac Ticket Queries
 [[TracGuideToc]]
 
-In addition to [wiki:TracReports reports], Trac provides support for ''custom ticket queries'', which can be used to display tickets that meet specified criteria. 
+In addition to [TracReports reports], Trac provides ''custom ticket queries'', which display tickets meeting specified criteria. 
 
-To configure and execute a custom query, switch to the ''View Tickets'' module from the navigation bar, and select the ''Custom Query'' link.
+To configure and execute a custom query, navigate to the ''View Tickets'' module from the navigation bar, and select the ''New Custom Query'' link.
 
 == Filters
 
 When you first go to the query page, the default filter will display tickets relevant to you:
- * If logged in then all open tickets, it will display open tickets assigned to you.
- * If not logged in but you have specified a name or email address in the preferences, then it will display all open tickets where your email (or name if email not defined) is in the CC list.
- * If not logged in and no name/email is defined in the preferences, then all open issues are displayed.
+ * If logged in, all open tickets assigned to you.
+ * If not logged in, but you have specified a name or email address in the preferences, all open tickets where your name or email is in the CC list.
+ * If not logged in and no name/email is defined in the preferences, then all open issues.
 
-Current filters can be removed by clicking the button to the left with the minus sign on the label. New filters are added from the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.
+Filters are removed by clicking the button to the left with the minus sign on the label. New filters are added using the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.
 
-Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria. Add additional 'Or's by Clicking the 'And' Dropdown and selecting an item that you have already selected. That is, to select "Milestone is X ''Or'' Milestone is Y", Select 'Milestone', Select 'X', then click the 'And' Dropdown and select 'Milestone' a second time so that you can then select 'Y'.
+Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria. Add additional 'Or's by Clicking the 'And' Dropdown and selecting an item that you have already selected. For example, to select "Milestone is X ''Or'' Milestone is Y", Select 'Milestone', Select 'X', then click the 'And' Dropdown, select 'Milestone' a second time and select 'Y'.
 
 For text fields such as Keywords and CC the `-` operator can be used to negate a match and double quotes (//since 1.2.1//) can be used to match a phrase. For example, a //contains// match for `word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and `word4 word5`.
 
@@ -33,7 +33,7 @@ The modifier key is platform and browser dependent. On Mac the modified key is !
 
 Clicking on one of the query results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results. When you return to the query ''any tickets which were edited'' will be displayed with italicized text. If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]], the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
+You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results. When you return to the query ''any tickets which were edited'' will be displayed with italicized text. If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]], the text will also be greyed. If '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
 
 The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
@@ -42,13 +42,13 @@ The query results can be refreshed and cleared of these status indicators by cli
 Trac allows you to save the query as a named query accessible from the reports module. To save a query ensure that you have ''Updated'' the view and then click the ''Save query'' button displayed beneath the results.
 You can also save references to queries in Wiki content, as described below.
 
-'''Note:''' one way to easily build queries like the ones below, you can build and test the queries in the Custom report module and when ready - click ''Save query''. This will build the query string for you. All you need to do is remove the extra line breaks.
+'''Note:''' one way to easily build queries like the ones below is to create and test the queries using Custom Query module. Clicking ''Save query'' will display the query string for you, all you need to do is remove the extra line breaks.
 
 '''Note:''' you must have the '''REPORT_CREATE''' permission in order to save queries to the list of default reports. The ''Save query'' button will only appear if you are logged in as a user that has been granted this permission. If your account does not have permission to create reports, you can still use the methods below to save a query.
 
-=== Using TracLinks
+== TracLinks to Queries
 
-You may want to save some queries so that you can come back to them later. You can do this by making a link to the query from any Wiki page.
+You can make a link to a query from any Wiki page using a simple [TracQuery#QueryLanguage query language] to specify the criteria.
 {{{
 [query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
 }}}
@@ -56,9 +56,7 @@ You may want to save some queries so that you can come back to them later. You c
 Which is displayed as:
   [query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
 
-This uses a very simple query language to specify the criteria, see [wiki:TracQuery#QueryLanguage Query Language].
-
-Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
+Alternatively, you can copy the query string from the browser URL box and paste it into the Wiki link, including the leading `?` character:
 {{{
 [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
 }}}
@@ -66,29 +64,9 @@ Alternatively, you can copy the query string of a query and paste that into the 
 Which is displayed as:
   [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
 
-=== Customizing the ''table'' format
-
-You can also customize the columns displayed in the table format (''format=table'') by using ''col=<field>''. You can specify multiple fields and what order they are displayed in by placing pipes (`|`) between the columns:
-{{{
-[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
-}}}
-
-This is displayed as:
-[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
-
-==== Full rows
-
-In ''table'' format you can also have full rows by using ''rows=<field>'':
-{{{
-[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
-}}}
-
-This is displayed as:
-[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
-
 == Query Language
 
-`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Filters are separated by ampersands (`&`). Each filter consists of the ticket field name, an operator and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values. To include a literal `&` or `|` in a value, escape the character with a backslash (`\`).
+The `query:` TracLinks and the [TicketQuery "[[TicketQuery]]"] macro both use a mini “query language” for specifying query filters. Filters are separated by ampersands (`&`). Each filter consists of the ticket field name, an operator and one or more values. Multiple values are separated using a pipe (`|`), meaning the filter matches any of the values. To include a literal `&` or `|` in a value, escape the character with a backslash (`\`).
 
 The available operators are:
 || '''`=`''' || the field content exactly matches one of the values ||
@@ -102,7 +80,7 @@ All of these operators can also be negated:
 || '''`!^=`''' || the field content does not start with any of the values ||
 || '''`!$=`''' || the field content does not end with any of the values ||
 
-Filters combining matches and negated matches can be constructed for text fields such as Keywords and CC when using the //contains// (`~=`) operator. The `-` operator is used to negate a match and double quotes (//since 1.2.1//) are used for whitespace-separated words in a phrase. For example, `keywords~=word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and also `word4 word5`.
+Filters combining matches and negated matches can be constructed for text fields such as Keywords and CC using the //contains// (`~=`) operator. The `-` operator is used to negate a match and double quotes (//since 1.2.1//) are used for whitespace-separated words in a phrase. For example, `keywords~=word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and also `word4 word5`.
 || '''`status=closed,keywords~=firefox`''' || query closed tickets that contain keyword `firefox` ||
 || '''`status=closed,keywords~=opera`''' || query closed tickets that contain keyword `opera` ||
 || '''`status=closed,keywords~=firefox opera`''' || query closed tickets that contain keywords `firefox` and `opera` ||

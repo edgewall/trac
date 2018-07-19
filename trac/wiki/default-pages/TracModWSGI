@@ -13,7 +13,7 @@ A robust and generic version of this file can be created using the `trac-admin <
 If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in trac.wsgi (note that this directory should contain //only// Trac environments, no other sub-directories):
 {{{#!python
 def application(environ, start_request):
-    # Add this to config when you have multiple projects
+    # Add this when you have multiple projects
     environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
     ..
 }}}
@@ -411,20 +411,6 @@ trac.db.mysql_backend.MySQLConnection.poolable = False
 Now Trac drops the connection after serving a page and the connection count on the database will be kept low.
 
 //This is not a recommended approach though. See also the notes at the bottom of the [https://code.google.com/archive/p/modwsgi/wikis/IntegrationWithTrac.wiki mod_wsgi's IntegrationWithTrac] wiki page.//
-
-=== Missing Headers and Footers
-
-If python optimizations are enabled, then headers and footers will not be rendered. An error will be raised in Trac 1.0.11 and later when optimizations are enabled.
-
-In your WSGI configuration file, the `WSGIPythonOptimize` setting must be set to `0` (`1` or `2` will not work):
-
-{{{#!apache
-    WSGIPythonOptimize 0
-}}}
-
-On Ubuntu, the WSGI mod configuration is at `/etc/apache2/mods-enabled/wsgi.conf`.
-
-The same issue is seen with `PythonOptimize On` in [TracModPython#Pagelayoutissues ModPython].
 
 === Other resources
 

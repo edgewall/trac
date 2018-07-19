@@ -53,7 +53,9 @@ $ trac-admin /path/to/projenv upgrade
 
 This command will not have any effect if the environment is already up-to-date.
 
-Note that a backup of your database will be performed automatically prior to the upgrade. The backup is saved in the location specified by `[trac]` `backup_dir`.
+It is recommended that you set the [[TracIni#logging-log_level-option|log_level]] to `INFO` before running the upgrade. The additional information in the logs can be helpful in case something unexpected occurs during the upgrade.
+
+Note that a backup of your database will be performed automatically prior to the upgrade. The backup is saved in the location specified by [[TracIni#trac-backup_dir-option|backup_dir]].
 
 === 5. Update the Trac Documentation === #UpdatetheTracDocumentation
 

@@ -108,6 +108,10 @@ The TracAdmin `convert_db` command allows migrating between SQLite, MySQL and Po
 
 [[TracAdminHelp(convert_db)]]
 
+== Deleting a Trac Environment
+
+The Trac environment can be deleted using standard filesystem utilities to delete the directory that was passed to the `initenv` command. For an environment using SQLite, this will also delete the SQLite database, which resides on-disk in the environment `db` directory. For an environment using PostgreSQL or MySQL, you will need to use the associated database utilities to delete the database.
+
 == Source Code Repository
 
 A single environment can be connected to more than one repository. However, by default Trac is not connected to any source code repository, and the ''Browse Source'' navigation item will not be displayed. There are several ways to connect repositories to an environment, see TracRepositoryAdmin.

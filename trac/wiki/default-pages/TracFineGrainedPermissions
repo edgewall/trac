@@ -4,7 +4,9 @@
 
 There is a general mechanism in place that allows custom **permission policies** to grant or deny any action on any Trac resource, or even specific versions of a resource.
 
-That mechanism is `authz_policy`, which is an optional module in `tracopt.perm.authz_policy.*`, so it is installed by default. It can be activated via the //Plugins// panel in the Trac administration module.
+That mechanism is `AuthzPolicy`, an optional component in `tracopt.perm.authz_policy.*` which is not activated by default. It can be activated via the //Plugins// panel in the Trac administration module.
+
+See TracPermissions for a more general introduction to Trac permissions and permission policies.
 
 == Permission Policies
 
@@ -21,7 +23,7 @@ permission_policies = DefaultWikiPolicy,
 }}}
 
 * [#DefaultWikiPolicyandDefaultTicketPolicy DefaultWikiPolicy] controls readonly access to wiki pages.
-* [#DefaultWikiPolicyandDefaultTicketPolicy DefaultTicketPolicy] provides some elevated privileges in the ticket system.
+* [#DefaultWikiPolicyandDefaultTicketPolicy DefaultTicketPolicy] provides elevated privileges in the ticket system for authenticated users.
 * !DefaultPermissionPolicy checks for the traditional coarse-grained permissions described in TracPermissions.
 * !LegacyAttachmentPolicy uses the coarse-grained permissions to check permissions on attachments.
 
@@ -34,9 +36,9 @@ See also [trac:source:branches/1.2-stable/sample-plugins/permissions sample-plug
 
 === !AuthzPolicy
 ==== Configuration
-* Put a [http://swapoff.org/files/authzpolicy.conf conf] file in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
+* Put an empty conf file (`authzpolicy.conf`) in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
-  1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section:
+  1. modify the [TracIni#trac-permission_policies-option permission_policies] option in the `[trac]` section:
 {{{#!ini
 [trac]
 permission_policies = AuthzPolicy, DefaultWikiPolicy, DefaultTicketPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
@@ -95,7 +97,9 @@ Example: Match the attachment `wiki:WikiStart@117/attachment:FOO.JPG@*` on WikiS
   * If a key (username) is prefixed with a `@`, it is treated as a group. 
   * If a value (permission) is prefixed with a `!`, the permission is denied rather than granted.
 
-The username will match any of 'anonymous', 'authenticated', <username> or '*', using normal Trac permission rules. || '''Note:''' Other groups which are created by user (e.g. by 'adding subjects to groups' on web interface page //Admin / Permissions//) cannot be used. See [trac:ticket:5648 #5648] for details about this missing feature. ||
+The username will match any of 'anonymous', 'authenticated', <username> or '*', using normal Trac permission rules.
+
+|| '''Note:''' Other groups which are created by user (e.g. by 'adding subjects to groups' on web interface page //Admin / Permissions//) cannot be used. See [trac:#5648] for details about this missing feature. ||
 
 For example, if the `authz_file` contains:
 {{{#!ini
@@ -179,7 +183,7 @@ john = BROWSER_VIEW, FILE_VIEW
 Note: In order for Timeline to work/visible for John, we must add CHANGESET_VIEW to the above permission list.
 
 ==== Missing Features
-Although possible with the !DefaultPermissionPolicy handling (see Admin panel), fine-grained permissions still miss those grouping features (see [trac:ticket:9573 #9573], [trac:ticket:5648 #5648]). Patches are partially available, see authz_policy.2.patch, part of [trac:ticket:6680 #6680].
+Although possible with the !DefaultPermissionPolicy handling (see Admin panel), fine-grained permissions still miss those grouping features (see [trac:#9573], [trac:#5648]). Patches are partially available, see authz_policy.2.patch, part of [trac:ticket:6680 #6680].
 
 You cannot do the following:
 {{{#!ini
@@ -201,9 +205,9 @@ permission_level_2  = permission_level_1, WIKI_MODIFY, TICKET_MODIFY
 @team3 = permission_level_2, TICKET_CREATE
 }}}
 
-=== !AuthzSourcePolicy  (mod_authz_svn-like permission policy) #AuthzSourcePolicy
+=== !AuthzSourcePolicy  (`mod_authz_svn`-like permission policy) #AuthzSourcePolicy
 
-`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
+`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's `mod_authz_svn`. 
 More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
@@ -253,7 +257,7 @@ where the svn access file, {{{/path/to/svnaccessfile}}}, contains entries such a
 
 '''Note:''' Usernames inside the Authz file __must__ be the same as those used inside trac. 
 
-As of version 0.12, make sure you have ''!AuthzSourcePolicy'' included in the permission_policies list in trac.ini, otherwise the authz permissions file will be ignored.
+Make sure you have ''!AuthzSourcePolicy'' included in the permission_policies list in trac.ini, otherwise the authz permissions file will be ignored.
 
 {{{#!ini
 [trac]
@@ -278,7 +282,7 @@ For information about how to restrict access to entire projects in a multiple pr
 === !DefaultWikiPolicy and !DefaultTicketPolicy
 
 Since 1.1.2, the read-only attribute of wiki pages is enabled and enforced when `DefaultWikiPolicy` is in the list of active permission policies (`DefaultWikiPolicy` was named `ReadonlyWikiPolicy` from Trac 1.1.2 to 1.3.1). The default for new Trac installations in 1.3.2 and later is:
-{{{
+{{{#!ini
 [trac]
 permission_policies = DefaultWikiPolicy,
  DefaultTicketPolicy,
@@ -300,7 +304,7 @@ When upgrading from earlier versions of Trac, `DefaultWikiPolicy, DefaultTicketP
 **!DefaultWikiPolicy and !DefaultTicketPolicy must be listed //before// !DefaultPermissionPolicy**. The latter returns `True` to allow modify, delete or rename actions when the user has the respective `WIKI_*` permission, without consideration for the read-only attribute. Similarly, some of the behaviors implemented in `DefaultTicketPolicy` won't be considered if `DefaultPermissionPolicy` is executed first.
 
 When active, the [#AuthzPolicy] should therefore come before `DefaultWikiPolicy, DefaultTicketPolicy`, allowing it to grant or deny the actions on individual resources, which is the usual ordering for `AuthzPolicy` in the `permission_policies` list.
-{{{
+{{{#!ini
 [trac]
 permission_policies = AuthzPolicy,
  DefaultWikiPolicy,
@@ -331,4 +335,4 @@ See the sourced documentation of the plugin for more info.
 
 ----
 See also: TracPermissions,
-[http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin TracHacks:FineGrainedPageAuthzEditorPlugin] for a simple editor plugin.
+[http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin FineGrainedPageAuthzEditorPlugin] for a simple editor.

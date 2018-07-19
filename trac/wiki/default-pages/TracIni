@@ -14,7 +14,7 @@ Configuration can be shared among environments using one or more global configur
 [inherit]
 file = /path/to/global/trac.ini
 }}}
-Multiple files can be specified using a comma-separated list.
+Multiple files can be specified using a comma-separated list. Non-absolute paths are relative to the Environment `conf` directory.
 
 Note that you can also specify a global option file when creating a new project, by adding the option `--inherit=/path/to/global/trac.ini` to [TracAdmin#initenv trac-admin]'s `initenv` command. If you specify `--inherit` but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated `conf/trac.ini` file and delete the entries that will otherwise override those in the global file.
 

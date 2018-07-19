@@ -50,7 +50,17 @@ The following attributes are supported:
 ||`url` ||\
 || The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
 
-For some version control systems, it is possible to specify not only the path to the repository in the `dir` attribute, but also a ''scope'' within the repository. Trac will then only show information related to the files and changesets below that scope. The Subversion backend for Trac supports this. For other types, check the corresponding plugin's documentation.
+=== Scoped Repository
+
+For some version control systems, it is possible to specify not only the path to the repository in the `dir` attribute, but also a ''scope'' within the repository. Trac will then only show information related to the files and changesets below that scope. The scope is specified by appending a path that is relative to the repository root. The Subversion backend for Trac supports this.
+
+For example, assume a repository at filesystem path `/var/svn/repos1` with several directories at the root of the repository: `/proj1`, `/proj2`, etc. The following configuration would scope the repository to `/proj1`:
+{{{#!ini
+proj1.dir = /var/svn/repos1/proj1
+proj1.type = svn
+}}}
+
+For other repository types, check the corresponding plugin's documentation.
 
 === In the database #ReposDatabase
 Repositories can also be specified in the database, using either the //Repositories// admin page under //Version Control//, or the `trac-admin $ENV repository` commands.
@@ -135,19 +145,17 @@ Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the
 
 In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script comes with a number of safety checks and usage advice. Output is written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
 
-There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
+There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash. The documentation header of `trac-svn-hook` contains a Cygwin configuration example.
 
-Follow the help in the documentation header of the script to configure `trac-svn-hook`. Configuring the hook environment variables is even easier in Subversion 1.8 and later using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, they can be configured through the repository `conf/hooks-env` file. Replace the [trac:source:trunk/contrib/trac-svn-hook@:65-67#L61 configuration section] with:
-{{{#!sh
-export PATH=$PYTHON_BIN:$PATH
-export LD_LIBRARY_PATH=$PYTHON_LIB:$LD_LIBRARY_PATH
-}}}
-and set the variables `TRAC_ENV`, `PYTHON_BIN` and `PYTHON_LIB` in the `hooks-env` file. Here is an example, using a Python virtual environment at `/usr/local/venv`:
+Follow the help in the documentation header of the script to configure `trac-svn-hook`. You'll need to minimally set the `TRAC_ENV` variable, and may also need to set `TRAC_PATH` and `TRAC_LD_LIBRARY_PATH` for a non-standard installation or a virtual environment.
+
+Configuring the hook environment variables is even easier in Subversion 1.8 and later using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, or exporting them from the hook that invokes `trac-svn-hook`, they can be configured through the repository `conf/hooks-env` file. 
+
+Here is an example, using a Python virtual environment at `/usr/local/venv`:
 {{{#!ini
 [default]
 TRAC_ENV=/var/trac/project-1
-PYTHON_BIN=/usr/local/venv/bin
-PYTHON_LIB=/usr/local/venv/lib
+TRAC_PATH=/usr/local/venv/bin
 }}}
 
 ===== Writing Your Own Hook Script

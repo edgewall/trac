@@ -1,13 +1,13 @@
 = !TicketQuery Wiki Macro
 
-The !TicketQuery macro lets you display information on tickets within wiki pages.
-The query language used by the `[[TicketQuery]]` macro is described in [TracQuery#QueryLanguage TracQuery] page.
+The !TicketQuery macro lets you display ticket information anywhere that accepts WikiFormatting.
+The query language used by the `[[TicketQuery]]` macro is described in the [TracQuery#QueryLanguage TracQuery] page.
 
 == Usage
 
 [[MacroList(TicketQuery)]]
 
-== Example
+== Examples
 
 ||= **Example** =||= **Result** =||= **Macro** =||
 |-----------------------------------------------------------
@@ -105,11 +105,8 @@ Details of ticket #1:
 }}}
 |-----------------------------------------------------------
 
-== Using the `[[TicketQuery]]` Macro
+=== Format: list
 
-The [trac:TicketQuery TicketQuery] macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
-
-Example:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 }}}
@@ -117,7 +114,6 @@ Example:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 
-Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language]. This also displays the link and description of a single ticket:
 {{{
 [[TicketQuery(id=123)]]
 }}}
@@ -125,7 +121,8 @@ Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter o
 This is displayed as:
   [[TicketQuery(id=123)]]
 
-A more compact representation without the ticket summaries is:
+=== Format: compact
+
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 }}}
@@ -133,7 +130,8 @@ A more compact representation without the ticket summaries is:
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 
-If you wish to receive only the number of defects that match the query, use the `count` parameter:
+=== Format: count
+
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
 }}}
@@ -141,13 +139,34 @@ If you wish to receive only the number of defects that match the query, use the 
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
 
-A graphical use of the macro is with the `format=progress` attribute:
+=== Format: progress
+
 {{{
 [[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
 }}}
 
-For example for one of the upcoming milestones, bars are shown by ticket type:
-[[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
+This is displayed as:
+  [[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
+
+=== Format: table
+
+You can choose the columns displayed in the table format (`format=table`) using `col=<field>`. You can specify multiple fields and the order they are displayed by placing pipes (`|`) between the columns:
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
+
+==== Full rows
+
+In ''table'' format you can specify full rows using `rows=<field>`:
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
 
 ----
 See also: TracQuery, TracTickets, TracReports, TracGuide

@@ -40,8 +40,8 @@ apiref http://www.edgewall.org/docs/trac-trunk/epydoc/$1.html # $1 in the Epydoc
 
 bitten   http://bitten.edgewall.org/intertrac/    # Bitten's Trac
 
-Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
-hg        http://www.selenic.com/hg/rev/$1?rev=$2          # Changeset $1 $2 in Mercurial repository
+Mercurial https://www.mercurial-scm.org/wiki/              # the wiki for the Mercurial distributed SCM
+hg        https://www.mercurial-scm.org/repo/$1/rev/$2     # Changeset $1 $2 in Mercurial repository
 hg-issue  https://www.mercurial-scm.org/bts/issue          # Issue $1 in Mercurial BTS
 
 RFC       http://tools.ietf.org/html/rfc$1          # IETF's RFC $1

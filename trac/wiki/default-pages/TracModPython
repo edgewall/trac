@@ -359,8 +359,6 @@ Alias /myproject/css "/usr/share/trac/htdocs/css"
 
 '''Note''': For the above configuration to have any effect it must be put after the configuration of your project root location, ie {{{<Location /myproject />}}}.
 
-**Note:** Do not enable python optimizations using the directive `PythonOptimize On`. When optimizations are enabled the page header/footer and documentation for macros and plugins will be hidden. An error will be raised in Trac 1.0.11 and later when optimizations are enabled.
-
 === HTTPS issues
 
 If you want to run Trac fully under https you might find that it tries to redirect to plain http. In this case just add the following line to your Apache configuration:
