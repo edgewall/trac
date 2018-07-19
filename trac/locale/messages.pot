@@ -6,16 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.3\n"
+"Project-Id-Version: Trac 1.3.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-07 16:58+0000\n"
+"POT-Creation-Date: 2018-07-19 16:31-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.3\n"
+"Generated-By: Babel 2.6.0\n"
 
 #: tracopt/ticket/commit_updater.py:291
 msgid ""
@@ -898,8 +898,8 @@ msgstr ""
 #: trac/admin/console.py:354
 msgid ""
 "\n"
-" Please specify the connection string for the database. By default, \n"
-" a local SQLite database is created in the environment directory. \n"
+" Please specify the connection string for the database. By default,\n"
+" a local SQLite database is created in the environment directory.\n"
 " It is also possible to use an existing MySQL or PostgreSQL database\n"
 " (check the Trac documentation for the connection string syntax).\n"
 msgstr ""
@@ -948,7 +948,7 @@ msgid ""
 "  tracd --port 8000 %(project_path)s\n"
 "\n"
 "Navigate to \"Help/Guide\" to browse the documentation for Trac,\n"
-"including information on further setup (such as deploying Trac \n"
+"including information on further setup (such as deploying Trac\n"
 "to a real web server).\n"
 "\n"
 "The latest documentation can also be found on the project\n"
@@ -2169,16 +2169,16 @@ msgstr ""
 msgid "Page %(page)s is out of range."
 msgstr ""
 
-#: trac/search/web_ui.py:260 trac/ticket/query.py:824 trac/ticket/report.py:468
+#: trac/search/web_ui.py:260 trac/ticket/query.py:841 trac/ticket/report.py:468
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/search/web_ui.py:273 trac/ticket/query.py:811 trac/ticket/report.py:459
+#: trac/search/web_ui.py:273 trac/ticket/query.py:828 trac/ticket/report.py:459
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:279 trac/ticket/query.py:816 trac/ticket/report.py:462
+#: trac/search/web_ui.py:279 trac/ticket/query.py:833 trac/ticket/report.py:462
 msgid "Previous Page"
 msgstr ""
 
@@ -3592,86 +3592,86 @@ msgstr ""
 msgid "Query filter requires field name"
 msgstr ""
 
-#: trac/ticket/query.py:304
+#: trac/ticket/query.py:314
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
 
-#: trac/ticket/query.py:581
+#: trac/ticket/query.py:597
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
 msgstr ""
 
-#: trac/ticket/query.py:691 trac/ticket/query.py:698
+#: trac/ticket/query.py:707 trac/ticket/query.py:714
 msgid "contains"
 msgstr ""
 
-#: trac/ticket/query.py:692 trac/ticket/query.py:699
+#: trac/ticket/query.py:708 trac/ticket/query.py:715
 msgid "doesn't contain"
 msgstr ""
 
-#: trac/ticket/query.py:693
+#: trac/ticket/query.py:709
 msgid "begins with"
 msgstr ""
 
-#: trac/ticket/query.py:694
+#: trac/ticket/query.py:710
 msgid "ends with"
 msgstr ""
 
-#: trac/ticket/query.py:695 trac/ticket/query.py:701 trac/ticket/query.py:704
+#: trac/ticket/query.py:711 trac/ticket/query.py:717 trac/ticket/query.py:720
 msgid "is"
 msgstr ""
 
-#: trac/ticket/query.py:696 trac/ticket/query.py:702 trac/ticket/query.py:705
+#: trac/ticket/query.py:712 trac/ticket/query.py:718 trac/ticket/query.py:721
 msgid "is not"
 msgstr ""
 
-#: trac/ticket/query.py:735 trac/ticket/query.py:741
+#: trac/ticket/query.py:751 trac/ticket/query.py:757
 msgid "Ticket"
 msgstr ""
 
-#: trac/ticket/query.py:878 trac/ticket/report.py:326 trac/ticket/report.py:630
+#: trac/ticket/query.py:895 trac/ticket/report.py:326 trac/ticket/report.py:630
 #: trac/ticket/web_ui.py:143 trac/timeline/web_ui.py:231
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
 
-#: trac/ticket/query.py:880 trac/ticket/report.py:328 trac/ticket/report.py:632
+#: trac/ticket/query.py:897 trac/ticket/report.py:328 trac/ticket/report.py:632
 #: trac/ticket/web_ui.py:139
 msgid "Comma-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:882 trac/ticket/report.py:330 trac/ticket/report.py:634
+#: trac/ticket/query.py:899 trac/ticket/report.py:330 trac/ticket/report.py:634
 #: trac/ticket/web_ui.py:141
 msgid "Tab-delimited Text"
 msgstr ""
 
-#: trac/ticket/query.py:903 trac/ticket/report.py:137
+#: trac/ticket/query.py:920 trac/ticket/report.py:137
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1113
+#: trac/ticket/query.py:1130
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1122 trac/ticket/report.py:197
+#: trac/ticket/query.py:1139 trac/ticket/report.py:197
 #: trac/ticket/report.py:198 trac/ticket/report.py:200
 #: trac/ticket/templates/report_list.html:17
 #: trac/ticket/templates/report_list.html:42
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1123 trac/ticket/report.py:205
+#: trac/ticket/query.py:1140 trac/ticket/report.py:205
 #: trac/ticket/templates/report_list.html:85
 msgid "New Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1233
+#: trac/ticket/query.py:1250
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1239
+#: trac/ticket/query.py:1256
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3735,28 +3735,28 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1362
+#: trac/ticket/query.py:1379
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/query.py:1444
+#: trac/ticket/query.py:1461
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr ""
 
-#: trac/ticket/query.py:1458
+#: trac/ticket/query.py:1475
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1476
+#: trac/ticket/query.py:1493
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1500
+#: trac/ticket/query.py:1517
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -4246,22 +4246,17 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:1779
 #, python-format
-msgid "%(items)s added"
-msgid_plural "%(items)s added"
+msgid "%(value)s added"
+msgid_plural "%(value)s added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/web_ui.py:1782
+#: trac/ticket/web_ui.py:1782 trac/ticket/web_ui.py:1811
 #, python-format
-msgid "%(items)s removed"
-msgid_plural "%(items)s removed"
+msgid "%(value)s removed"
+msgid_plural "%(value)s removed"
 msgstr[0] ""
 msgstr[1] ""
-
-#: trac/ticket/web_ui.py:1811
-#, python-format
-msgid "%(value)s deleted"
-msgstr ""
 
 #: trac/ticket/web_ui.py:1813
 #, python-format
