@@ -17,8 +17,8 @@ from trac.upgrades import backup_config_file
 
 
 def do_upgrade(env, version, cursor):
-    """Change [notification] ticket_subject_template and [notification] 
-    batch_subject_template to use syntax compatible with Jinja2. 
+    """Change [notification] ticket_subject_template and [notification]
+    batch_subject_template to use syntax compatible with Jinja2.
     """
 
     config = env.config

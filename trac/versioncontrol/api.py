@@ -335,12 +335,12 @@ class RepositoryManager(Component):
         """One of the methods for registering repositories is to
         populate the `[repositories]` section of `trac.ini`.
 
-        This is especially suited for setting up aliases, using a 
-        [TracIni#GlobalConfiguration shared configuration], or specifying 
+        This is especially suited for setting up aliases, using a
+        [TracIni#GlobalConfiguration shared configuration], or specifying
         repositories at the time of environment creation.
 
         See [TracRepositoryAdmin#ReposTracIni TracRepositoryAdmin] for
-        details on the format of this section, and look elsewhere on the 
+        details on the format of this section, and look elsewhere on the
         page for information on other repository providers.
         """)
 

@@ -36,7 +36,7 @@ setup(
     license = '',
     install_requires = ['Trac'],
     packages = find_packages(exclude=['*.tests*']),
-    extras_require = {'dependency': 'Dependency'}, 
+    extras_require = {'dependency': 'Dependency'},
     entry_points = {'trac.plugins': [
         'ComponentA = %(name)s:ComponentA',
         'ComponentB = %(name)s:ComponentB[dependency]'

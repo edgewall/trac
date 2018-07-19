@@ -352,8 +352,8 @@ in order to initialize and prepare the project database.
         returnvals.append(raw_input(_("Project Name [%(default)s]> ",
                                       default=dp)).strip() or dp)
         printout(_("""
- Please specify the connection string for the database. By default, 
- a local SQLite database is created in the environment directory. 
+ Please specify the connection string for the database. By default,
+ a local SQLite database is created in the environment directory.
  It is also possible to use an existing MySQL or PostgreSQL database
  (check the Trac documentation for the connection string syntax).
 """))
@@ -451,7 +451,7 @@ your browser to http://localhost:8000/%(project_dir)s.
   tracd --port 8000 %(project_path)s
 
 Navigate to "Help/Guide" to browse the documentation for Trac,
-including information on further setup (such as deploying Trac 
+including information on further setup (such as deploying Trac
 to a real web server).
 
 The latest documentation can also be found on the project
