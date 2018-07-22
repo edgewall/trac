@@ -778,7 +778,7 @@ def send_internal_error(env, req, exc_info):
             interface_files = _("''Interface customization information not "
                                  "available''\n")
         return _("""\
-==== How to Reproduce ====
+==== How to Reproduce
 
 While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.
 
@@ -791,13 +791,13 @@ Request parameters:
 
 User agent: `#USER_AGENT#`
 
-==== System Information ====
+==== System Information
 %(sys_info)s
-==== Enabled Plugins ====
+==== Enabled Plugins
 %(enabled_plugins)s
-==== Interface Customization ====
+==== Interface Customization
 %(interface_customization)s
-==== Python Traceback ====
+==== Python Traceback
 {{{
 %(traceback)s}}}""",
             method=req.method, path_info=req.path_info,

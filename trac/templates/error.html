@@ -88,8 +88,9 @@
       <input type="hidden" name="${arg}" value="${value}" />
       #   endfor
       <input type="hidden" name="summary" value="${message}" />
-      <textarea name="description" rows="3" cols="10">
-        ${description_en if url else description}</textarea>
+      <textarea name="description" rows="3" cols="10">${
+          description_en if url else description
+      }</textarea>
       <span class="inlinebuttons">
         <input type="submit" name="create" value="${_('Create')}" />
       </span>
