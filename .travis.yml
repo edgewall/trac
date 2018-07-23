@@ -98,7 +98,7 @@ before_install:
       echo "[global]"
       echo "cache-dir = $HOME/.cache/pip"
       echo "[list]"
-      echo "format = legacy"
+      echo "format = columns"
     } >"$HOME/.pip/pip.conf"
   - |
     if [ "$TRAVIS_OS_NAME" = osx ]; then
