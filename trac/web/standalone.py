@@ -26,6 +26,7 @@ import functools
 import os
 import pkg_resources
 import socket
+import ssl
 import sys
 from SocketServer import ThreadingMixIn
 
@@ -180,8 +181,10 @@ def parse_args(args=None):
     parser.add_argument('-b', '--hostname', default='',
                         help="the host name or IP address to bind to")
     parser.add_argument('--protocol', default='http',
-                        choices=('http', 'scgi', 'ajp', 'fcgi'),
+                        choices=('http', 'https', 'scgi', 'ajp', 'fcgi'),
                         help="the server protocol (default: http)")
+    parser.add_argument('--certfile', help="PEM certificate file for HTTPS")
+    parser.add_argument('--keyfile', help="PEM key file for HTTPS")
     parser.add_argument('-q', '--unquote', action='store_true',
                         help="unquote PATH_INFO (may be needed when using "
                              "the ajp protocol)")
@@ -267,10 +270,14 @@ def parse_args(args=None):
     if args.single_env and len(args.envs) > 1:
         parser.error("the --single-env (-s) option cannot be used with more "
                      "than one environment")
+    if args.protocol == 'https' and not args.certfile:
+        parser.error("the --certfile option is required when using the https "
+                     "protocol")
 
     if args.port is None:
         args.port = {
             'http': 80,
+            'https': 443,
             'scgi': 4000,
             'ajp': 8009,
             'fcgi': 8000,
@@ -296,14 +303,14 @@ def main():
         wsgi_app = BasePathMiddleware(wsgi_app, base_path)
 
     server_address = (args.hostname, args.port)
-    if args.protocol == 'http':
+    if args.protocol in ('http', 'https'):
         def serve():
             addr, port = server_address
             if not addr or addr == '0.0.0.0':
-                loc = '0.0.0.0:%s view at http://127.0.0.1:%s/%s' \
-                       % (port, port, base_path)
+                loc = '0.0.0.0:%s view at %s://127.0.0.1:%s/%s' \
+                       % (port, args.protocol, port, base_path)
             else:
-                loc = 'http://%s:%s/%s' % (addr, port, base_path)
+                loc = '%s://%s:%s/%s' % (args.protocol, addr, port, base_path)
 
             try:
                 httpd = TracHTTPServer(server_address, wsgi_app,
@@ -318,6 +325,10 @@ def main():
             print("Serving on %s" % loc)
             if args.http11:
                 print("Using HTTP/1.1 protocol version")
+            if args.protocol == 'https':
+                httpd.socket = ssl.wrap_socket(httpd.socket, server_side=True,
+                                               certfile=args.certfile,
+                                               keyfile=args.keyfile)
             httpd.serve_forever()
     elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
