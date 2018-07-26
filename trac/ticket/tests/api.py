@@ -130,6 +130,37 @@ class TicketSystemTestCase(unittest.TestCase):
                           'custom': True},
                          fields[0])
 
+    def test_custom_field_with_invalid_name(self):
+        ticket_custom = self.env.config['ticket-custom']
+        ticket_custom.set('_field1', 'text')
+        ticket_custom.set('2field', 'text')
+        ticket_custom.set('f3%^&*', 'text')
+        ticket_custom.set('field4', 'text')
+        ticket_custom.set('FiEld5', 'text')
+
+        ts = TicketSystem(self.env)
+
+        self.assertEqual(2, len(ts.custom_fields))
+        self.assertIsNotNone(ts.custom_fields.by_name('field4'))
+        self.assertIsNotNone(ts.custom_fields.by_name('field5'))
+        self.assertIsNotNone(ts.fields.by_name('field4'))
+        self.assertIsNotNone(ts.fields.by_name('field5'))
+
+    def test_custom_field_with_reserved_name(self):
+        ticket_custom = self.env.config['ticket-custom']
+        ticket_custom.set('owner', 'select')
+        ticket_custom.set('description', 'text')
+
+        ts = TicketSystem(self.env)
+
+        self.assertEqual({'name': 'owner', 'label': 'Owner', 'type': 'text'},
+                         ts.fields.by_name('owner'))
+        self.assertEqual({'name': 'description', 'label': 'Description',
+                          'type': 'textarea', 'format': 'wiki'},
+                         ts.fields.by_name('description'))
+        self.assertIsNone(ts.custom_fields.by_name('owner'))
+        self.assertIsNone(ts.custom_fields.by_name('description'))
+
     def test_custom_field_order(self):
         self.env.config.set('ticket-custom', 'test1', 'text')
         self.env.config.set('ticket-custom', 'test1.order', '2')
@@ -140,7 +171,7 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual('test1', fields[1]['name'])
 
     def test_custom_field_label(self):
-        self.env.config.set('ticket-custom', '_test_one', 'text')
+        self.env.config.set('ticket-custom', 'test_one', 'text')
         self.env.config.set('ticket-custom', 'test_two', 'text')
         self.env.config.set('ticket-custom', 'test_two.label', 'test_2')
         fields = TicketSystem(self.env).get_custom_fields()
