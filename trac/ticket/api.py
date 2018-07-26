@@ -349,14 +349,6 @@ class TicketSystem(Component):
                 self.log.warning('Duplicate field name "%s" (ignoring)',
                                  field['name'])
                 continue
-            if field['name'] in self.reserved_field_names:
-                self.log.warning('Field name "%s" is a reserved name '
-                                 '(ignoring)', field['name'])
-                continue
-            if not re.match('^[a-zA-Z][a-zA-Z0-9_]+$', field['name']):
-                self.log.warning('Invalid name for custom field: "%s" '
-                                 '(ignoring)', field['name'])
-                continue
             field['custom'] = True
             fields.append(field)
 
@@ -396,6 +388,16 @@ class TicketSystem(Component):
                 field['format'] = config.get(name + '.format', 'plain')
                 field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
+
+            if field['name'] in self.reserved_field_names:
+                self.log.warning('Field name "%s" is a reserved name '
+                                 '(ignoring)', field['name'])
+                continue
+            if not re.match('^[a-zA-Z][a-zA-Z0-9_]+$', field['name']):
+                self.log.warning('Invalid name for custom field: "%s" '
+                                 '(ignoring)', field['name'])
+                continue
+
             fields.append(field)
 
         fields.sort(lambda x, y: cmp((x['order'], x['name']),

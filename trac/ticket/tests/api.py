@@ -37,6 +37,13 @@ class TicketSystemTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
+    @staticmethod
+    def _find_field(fields_list, name):
+        for f in fields_list:
+            if f['name'] == name:
+                return f
+        return None
+
     def _get_actions(self, ticket_dict):
         ts = TicketSystem(self.env)
         ticket = Ticket(self.env)
@@ -98,6 +105,37 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual({'name': 'description', 'label': 'Description',
                           'type': 'textarea', 'format': 'wiki'},
                           field)
+
+    def test_custom_field_with_invalid_name(self):
+        ticket_custom = self.env.config['ticket-custom']
+        ticket_custom.set('_field1', 'text')
+        ticket_custom.set('2field', 'text')
+        ticket_custom.set('f3%^&*', 'text')
+        ticket_custom.set('field4', 'text')
+        ticket_custom.set('FiEld5', 'text')
+
+        ts = TicketSystem(self.env)
+
+        self.assertEqual(2, len(ts.custom_fields))
+        self.assertIsNotNone(self._find_field(ts.custom_fields, 'field4'))
+        self.assertIsNotNone(self._find_field(ts.custom_fields, 'field5'))
+        self.assertIsNotNone(self._find_field(ts.fields, 'field4'))
+        self.assertIsNotNone(self._find_field(ts.fields, 'field5'))
+
+    def test_custom_field_with_reserved_name(self):
+        ticket_custom = self.env.config['ticket-custom']
+        ticket_custom.set('owner', 'select')
+        ticket_custom.set('description', 'text')
+
+        ts = TicketSystem(self.env)
+
+        self.assertEqual({'name': 'owner', 'label': 'Owner', 'type': 'text'},
+                         self._find_field(ts.fields, 'owner'))
+        self.assertEqual({'name': 'description', 'label': 'Description',
+                          'type': 'textarea', 'format': 'wiki'},
+                         self._find_field(ts.fields, 'description'))
+        self.assertIsNone(self._find_field(ts.custom_fields, 'owner'))
+        self.assertIsNone(self._find_field(ts.custom_fields, 'description'))
 
     def test_custom_field_order(self):
         self.env.config.set('ticket-custom', 'test1', 'text')
