@@ -85,7 +85,7 @@ $(document).ready () ->
     _("Cloned from #%(id)s:\n%(description)s",
       id: old_values.id,
       description: quoteText(old_values.description))
-  $('#ticket .description .searchable').before(clone)
+  $("#ticket .description").children(".searchable, br").before(clone)
   # clone from comment
   if old_values? and changes?
     addCloneFromComments (c for c in changes when c.cnum? and

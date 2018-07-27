@@ -94,7 +94,7 @@
       id: old_values.id,
       description: quoteText(old_values.description)
     }));
-    $('#ticket .description .searchable').before(clone);
+    $("#ticket .description").children(".searchable, br").before(clone);
     // clone from comment
     if ((typeof old_values !== "undefined" && old_values !== null) && (typeof changes !== "undefined" && changes !== null)) {
       return addCloneFromComments((function() {
