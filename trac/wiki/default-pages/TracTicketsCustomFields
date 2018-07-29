@@ -14,6 +14,41 @@ The syntax of each field definition is:
 
 The example below should help to explain the syntax.
 
+=== Field Names
+A field name can only contain lowercase letters a-z, uppercase letters A-Z or digits 0-9, and must not start with a leading digit.
+
+The following field names are reserved and can not be used for custom fields:
+* cc
+* changetime
+* col
+* comment
+* component
+* desc
+* description
+* format
+* group
+* groupdesc
+* id
+* keywords
+* max
+* milestone
+* or
+* order
+* owner
+* page
+* priority
+* report
+* reporter
+* resolution
+* row
+* severity
+* status
+* summary
+* time
+* type
+* verbose
+* version
+
 === Available Field Types and Options
 
  * '''text''': A simple (one line) text field.

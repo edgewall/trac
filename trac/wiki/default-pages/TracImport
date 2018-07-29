@@ -14,7 +14,7 @@ To migrate issue tickets from other issue-tracking systems into Trac or perform 
 
 == Bugzilla
 
-[https://trac-hacks.org/wiki/BugzillaIssueTrackingPlugin BugzillaIssueTrackingPlugin]: a plugin that integrates Bugzilla issue data into Trac keeping TracLinks. Ticket data can be imported from Bugzilla using the [trac:browser:trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the `contrib/` directory of the Trac distribution.
+[https://trac-hacks.org/wiki/BugzillaIssueTrackingPlugin BugzillaIssueTrackingPlugin]: a plugin that integrates Bugzilla issue data into Trac keeping TracLinks. Ticket data can be imported from Bugzilla using the [trac:browser:branches/1.2-stable/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the `contrib/` directory of the Trac distribution.
 
 {{{#!python
 $ bugzilla2trac.py

@@ -30,7 +30,7 @@ To restore a PostgreSQL database backup, use the command:
 $ psql -U <user> -d <database> -f /path/to/postgresql.dump
 }}}
 
-The `<database>` option is the same as the [TracEnvironment#DatabaseConnectionStrings database connection string] in the [TracIni#trac-database-option "[trac] database"] option of //trac.ini//.
+The `<database>` option is the same as the [TracEnvironment#DatabaseConnectionStrings database connection string] in the [TracIni#trac-database-option "[trac] database"] option of the project's `trac.ini` file.
 
 Similarly, for MySQL:
 

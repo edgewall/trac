@@ -53,6 +53,8 @@ sqlite:db/trac.db
 }}}
 where `db/trac.db` is the path to the database file within the Trac environment.
 
+See [trac:DatabaseBackend#SQLite] for more information.
+
 === PostgreSQL Connection String
 
 The connection string for PostgreSQL is a bit more complex. For example, to connect to a PostgreSQL database named `trac` on `localhost` for user `johndoe` and password `letmein`, use:

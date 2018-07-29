@@ -13,7 +13,7 @@ A robust and generic version of this file can be created using the `trac-admin <
 If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in trac.wsgi (note that this directory should contain //only// Trac environments, no other sub-directories):
 {{{#!python
 def application(environ, start_request):
-    # Add this to config when you have multiple projects
+    # Add this when you have multiple projects
     environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
     ..
 }}}

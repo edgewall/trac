@@ -42,7 +42,9 @@ See TracIni#GlobalConfiguration.
 
 `trac-admin` starts in interactive mode when the environment path is the only argument.
 Commands can then be executed on the selected environment using the prompt, which offers tab-completion
-for non-Windows environments, and when the Python `readline` module is available. It also offers automatic repetition of the last command issued.
+when the Python `readline` module is available. It also offers automatic repetition of the last command issued.
+
+The `readline` module should be available on all Unix-compatible platforms. For Windows, support can be obtained by installing [https://pypi.python.org/pypi/pyreadline pyreadline].
 
 Once you are in interactive mode, you can also get help on specific commands or subsets of commands:
 

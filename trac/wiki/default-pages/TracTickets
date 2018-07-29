@@ -35,7 +35,7 @@ A ticket contains the following information:
 
  - The [trac:TicketTypes type], [trac:TicketComponent component], version, priority and severity fields can be managed with [wiki:TracAdmin trac-admin] or through the !WebAdmin.
 
- - Description of the builtin ''priority'' values is available at [trac:TicketTypes#Whyistheseverityfieldgone TicketTypes]
+ - Description of the builtin ''priority'' values is available at [trac:TracDev/Proposals/TicketTypes#Whyistheseverityfieldgone TicketTypes].
 
 == Changing and Commenting Tickets
 
@@ -43,7 +43,7 @@ With appropriate permissions, as already mentioned [#edit-permissions above], a 
 
 Then, annotations like changes and comments to the ticket are logged as a part of the ticket itself. When viewing a ticket, the history of changes will appear below the main ticket area.
 
-Comment editing (available since 0.12) is meant to be used to make small corrections to comments, like fixing formatting, forgotten WikiFormatting or spelling errors, not major edits. For longer edits, you should be adding a new comment instead. Editing a comment will not produce a new entry on [/timeline], while entering a new comment or other changes will do.
+Comment editing (available since Trac version 0.12) is meant to be used to make small corrections to comments, like fixing formatting, forgotten WikiFormatting or spelling errors, not major edits. For longer edits, you should be adding a new comment instead. Editing a comment will not produce a new entry on [/timeline], while entering a new comment or other changes will do.
 
 All edits (field changes, new comments, comment edits) update the "last changed" time of the ticket.
 

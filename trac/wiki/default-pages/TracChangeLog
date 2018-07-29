@@ -16,6 +16,20 @@ See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
 
 This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
 
+=== 1.2.3
+
+//(July 29, 2018)//
+
+Trac 1.2.3 provides 2 dozen minor fixes and enhancements.
+The following are some highlights:
+
+* Notification subscriber for New Tickets ([trac:#6613]).
+* Configurable HTTP headers ([trac:#12964]).
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#MaintenanceReleases | 1.2.3]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.17]] (as 1.2.3 also contains the changes in 1.0.17).
+
+[trac:source:/tags/trac-1.2.3 View Tag] | [trac:milestone:1.2.3 View Milestone]
+
 === 1.2.2
 
 //(June 21, 2017)//
@@ -230,6 +244,27 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 [trac:source:/tags/trac-1.1.1 View Tag] | [trac:milestone:1.1.1 View Milestone]
 
 == 1.0.x Releases
+
+=== 1.0.17
+
+//(July 11, 2018)//
+
+Trac 1.0.17 provides more than 3 dozen bug fixes and minor
+enhancements. The following are some highlights:
+
+ * Fixed `ERR_BLOCKED_BY_XSS_AUDITOR` during preview for 
+   certain content with Chrome browser ([trac:#12926]).
+ * Improved performance of query module when many custom
+   fields are used ([trac:#12967]).
+ * Fixed ticket description not rendered in wiki format in
+   query view ([trac:#13010]).
+ * Added submodule support for Git repository ([trac:#10603])
+
+[trac:source:/tags/trac-1.0.17 View Tag] | [trac:milestone:1.0.17 View Milestone]
+
+=== 1.0.16
+
+//Not Released//
 
 === 1.0.15
 

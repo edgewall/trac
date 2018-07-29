@@ -245,7 +245,7 @@ reopen.permissions = TICKET_CREATE
 reopen.operations = del_resolution
 }}}
 
-There are some significant caveats in this, such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state. So you will probably want to migrate to "basic" workflow; [trac:source:trunk/contrib/workflow/migrate_original_to_basic.py contrib/workflow/migrate_original_to_basic.py] may be helpful. See TracWorkflow for a detailed description of the new basic workflow.
+There are some significant caveats in this, such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state. So you will probably want to migrate to "basic" workflow; [trac:source:branches/1.2-stable/contrib/workflow/migrate_original_to_basic.py contrib/workflow/migrate_original_to_basic.py] may be helpful. See TracWorkflow for a detailed description of the new basic workflow.
 
 === 7. Restart the Web Server #RestarttheWebServer
 
@@ -257,7 +257,7 @@ If you are not running [wiki:TracCgi CGI], reload the new Trac code by restartin
 
 Trac supports customization of its Genshi templates by placing copies of the templates in the `<env>/templates` folder of your [TracEnvironment environment] or in a common location specified in the [[TracIni#GlobalConfiguration| [inherit] templates_dir]] configuration setting. If you choose to do so, be aware that you will need to repeat your changes manually on a copy of the new templates when you upgrade to a new release of Trac (even a minor one), as the templates will likely evolve. So keep a diff around.
 
-The preferred way to perform TracInterfaceCustomization is to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation, as this is more robust in case of changes: we usually won't modify element `id`s or change CSS `class`es, and if we have to do so, this will be documented in the [trac:TracDev/ApiChanges] pages.
+The preferred way to perform TracInterfaceCustomization is to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation, as this is more robust in case of changes: we usually won't modify an element `id` or change its CSS `class`, and if we have to do so, this will be documented in the [trac:TracDev/ApiChanges] pages.
 
 === !ZipImportError
 

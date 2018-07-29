@@ -104,45 +104,48 @@ ${prefix} #${ticket.id}: ${summary}
 }}}
 The following variables are available in the template:
 
- * `env`: The project environment object (see [trac:source:/trunk/trac/env.py env.py]).
+ * `env`: The project environment object (see [trac:source:branches/1.2-stable/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be accessed by appending the field name separated by a dot, eg `${ticket.milestone}`.
+ * `ticket`: The ticket model object (see [trac:source:branches/1.2-stable/trac/ticket/model.py model.py]). Individual ticket fields can be accessed by appending the field name separated by a dot, eg `${ticket.milestone}`.
 
 === Customizing the e-mail content
 
 The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default is:
 
 {{{#!genshi
-${ticket_body_hdr}
-${ticket_props}
-# if ticket.new:
-${ticket.description}
-# else:
-#   if changes_body:
+$ticket_body_hdr
+$ticket_props
+{% choose ticket.new %}\
+{%   when True %}\
+$ticket.description
+{%   end %}\
+{%   otherwise %}\
+{%     if changes_body %}\
 ${_('Changes (by %(author)s):', author=change.author)}
 
-${changes_body}
-#   endif
-#   if changes_descr:
-#     if not changes_body and not change.comment and change.author:
+$changes_body
+{%     end %}\
+{%     if changes_descr %}\
+{%       if not changes_body and not change.comment and change.author %}\
 ${_('Description changed by %(author)s:', author=change.author)}
-#     endif
-${changes_descr}
+{%       end %}\
+$changes_descr
 --
-#   endif
-#   if change.comment:
+{%     end %}\
+{%     if change.comment %}\
 
-${_('Comment:') if changes_body else
-  _('Comment (by %(author)s):', author=change.author)}
+${_('Comment:') if changes_body else _('Comment (by %(author)s):', author=change.author)}
 
-${change.comment}
-#   endif
-# endif
---
+$change.comment
+{%     end %}\
+{%   end %}\
+{% end %}\
+
+${'-- '}
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
-${project.name} <${project.url or abs_href()}>
-${project.descr}
+$project.name <${project.url or abs_href()}>
+$project.descr
 }}}
 
 See the [trac:CookBook/Notification/Templates cookbook] for additional template customization recipes.
