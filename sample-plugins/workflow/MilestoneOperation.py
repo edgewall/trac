@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2002-2013 Edgewall Software
+# Copyright (C) 2002-2018 Edgewall Software
 # Copyright (C) 2012 Franz Mayer <franz.mayer@gefasoft.de>
 # All rights reserved.
 #
