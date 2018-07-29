@@ -72,13 +72,13 @@ class RaiseExceptionPlugin(Component):
     def process_request(self, req):
         if req.args.get('type') == 'tracerror':
             if req.args.get('div'):
-                raise TracError(html.div("The message in a div", 
+                raise TracError(html.div("The message in a div",
                                 class_='message'))
             elif req.args.get('p'):
-                raise TracError(html.p("The message in a p", 
+                raise TracError(html.p("The message in a p",
                                 class_='message'))
             elif req.args.get('i'):
-                raise TracError(html("The message with ", 
+                raise TracError(html("The message with ",
                                      html.span("inline span"),
                                      " element"))
             else:
