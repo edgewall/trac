@@ -473,8 +473,8 @@ around.
 The preferred way to perform `TracInterfaceCustomization`_ is to write
 a custom plugin doing an appropriate `ITemplateStreamFilter`
 transformation, as this is more robust in case of changes: we usually
-won't modify element `id`s or change CSS `class`es, and if we have to
-do so, this will be documented in the `TracDev/ApiChanges`_ pages.
+won't modify an element `id` or change its CSS `class`, and if we have
+to do so, this will be documented in the `TracDev/ApiChanges`_ pages.
 
 
 ZipImportError
@@ -561,7 +561,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _CGI: http://trac.edgewall.org/wiki/TracCgi
 .. _ClearSilver: http://trac.edgewall.org/intertrac/ClearSilver
-.. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
+.. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Abranches/1.2-stable/contrib/workflow/migrate_original_to_basic.py
 .. _custom field type: http://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
 .. _deployed: http://trac.edgewall.org/wiki/TracInstall#cgi-bin
