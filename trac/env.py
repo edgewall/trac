@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2014 Edgewall Software
+# Copyright (C) 2003-2018 Edgewall Software
 # Copyright (C) 2003-2007 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #

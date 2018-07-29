@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007-2014 Edgewall Software
+# Copyright (C) 2007-2018 Edgewall Software
 # Copyright (C) 2007 Christian Boos <cboos@edgewall.org>
 # All rights reserved.
 #
