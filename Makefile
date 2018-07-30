@@ -656,7 +656,7 @@ else
 	@echo "Packages for Trac-$(version):"
 	@echo
 	@$(if $(packages), \
-	    python contrib/checksum.py md5:sha1 $(packages); \
+	    python contrib/checksum.py md5:sha256 $(packages) \
 	, \
 	    echo "No packages found: $(sdist+wheel) $(wininst)" \
 	)
