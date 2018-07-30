@@ -13,6 +13,7 @@
 
 import io
 import os.path
+import textwrap
 import unittest
 
 from trac import perm
@@ -529,21 +530,21 @@ new\r\n\
 
     def test_post_with_unnamed_value(self):
         boundary = '_BOUNDARY_'
-        form_data = b"""\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name="foo"\r\n\
-\r\n\
-named value\r\n\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name=""\r\n\
-\r\n\
-name is empty\r\n\
---%(boundary)s\r\n\
-Content-Disposition: form-data\r\n\
-\r\n\
-unnamed value\r\n\
---%(boundary)s--\r\n\
-"""
+        form_data = textwrap.dedent(b"""\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name="foo"\r\n\
+            \r\n\
+            named value\r\n\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name=""\r\n\
+            \r\n\
+            name is empty\r\n\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data\r\n\
+            \r\n\
+            unnamed value\r\n\
+            --%(boundary)s--\r\n\
+            """)
         form_data %= {'boundary': boundary}
         content_type = 'multipart/form-data; boundary="%s"' % boundary
         environ = _make_environ(method='POST', **{
@@ -578,39 +579,40 @@ unnamed value\r\n\
             self.fail("HTTPBadRequest not raised.")
 
     def test_post_with_null_bytes_for_filename(self):
-        form_data = """\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name="attachment"; filename="thefi\x00le.txt"\r\n\
-Content-Type: text/plain\r\n\
-\r\n\
-The file content.\r\n\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name="action"\r\n\
-\r\n\
-new\r\n\
---%(boundary)s--\r\n\
-"""
+        form_data = textwrap.dedent("""\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name="attachment"; \
+            filename="thefi\x00le.txt"\r\n\
+            Content-Type: text/plain\r\n\
+            \r\n\
+            The file content.\r\n\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name="action"\r\n\
+            \r\n\
+            new\r\n\
+            --%(boundary)s--\r\n\
+            """)
         self._test_post_with_null_bytes(form_data)
 
     def test_post_with_null_bytes_for_name(self):
-        form_data = """\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name="acti\x00n"\r\n\
-\r\n\
-new\r\n\
---%(boundary)s--\r\n\
-"""
+        form_data = textwrap.dedent("""\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name="acti\x00n"\r\n\
+            \r\n\
+            new\r\n\
+            --%(boundary)s--\r\n\
+            """)
 
         self._test_post_with_null_bytes(form_data)
 
     def test_post_with_null_bytes_for_value(self):
-        form_data = """\
---%(boundary)s\r\n\
-Content-Disposition: form-data; name="action"\r\n\
-\r\n\
-ne\x00w\r\n\
---%(boundary)s--\r\n\
-"""
+        form_data = textwrap.dedent("""\
+            --%(boundary)s\r\n\
+            Content-Disposition: form-data; name="action"\r\n\
+            \r\n\
+            ne\x00w\r\n\
+            --%(boundary)s--\r\n\
+            """)
         self._test_post_with_null_bytes(form_data)
 
     def test_qs_on_post(self):

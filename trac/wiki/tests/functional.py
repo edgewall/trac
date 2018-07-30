@@ -99,13 +99,7 @@ class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
                 'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
 
 
-class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        plugin_name = self.__class__.__name__
-        env = self._testenv.get_trac_environment()
-        env.config.set('components', plugin_name + '.*', 'enabled')
-        env.config.save()
-        create_file(os.path.join(env.plugins_dir, plugin_name + '.py'), """\
+_plugin_py = """\
 from trac.core import Component, implements
 from trac.util.html import tag
 from trac.util.translation import tag_
@@ -124,7 +118,17 @@ class WikiPageManipulator(Component):
                          " line %(number)s.", number=tag.strong('10'))
         yield field, tag_("The field %(field)s cannot be empty.",
                           field=tag.strong(field))
-""")
+"""
+
+
+class TestWikiPageManipulator(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        plugin_name = self.__class__.__name__
+        env = self._testenv.get_trac_environment()
+        env.config.set('components', plugin_name + '.*', 'enabled')
+        env.config.save()
+        create_file(os.path.join(env.plugins_dir, plugin_name + '.py'),
+                    _plugin_py)
         self._testenv.restart()
 
         try:

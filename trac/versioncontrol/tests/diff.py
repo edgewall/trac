@@ -10,6 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
+import textwrap
 
 from trac.versioncontrol import diff
 
@@ -86,26 +87,26 @@ class DiffTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, next, opcodes)
 
     def test_space_changes_2(self):
-        left = """\
-try:
-    try:
-        func()
-        commit()
-    except:
-        rollback()
-finally:
-    cleanup()
-"""
+        left = textwrap.dedent("""\
+            try:
+                try:
+                    func()
+                    commit()
+                except:
+                    rollback()
+            finally:
+                cleanup()
+            """)
         left = left.splitlines()
-        right = """\
-try:
-    func()
-    commit()
-except:
-    rollback()
-finally:
-    cleanup()
-"""
+        right = textwrap.dedent("""\
+            try:
+                func()
+                commit()
+            except:
+                rollback()
+            finally:
+                cleanup()
+            """)
         right = right.splitlines()
         opcodes = get_opcodes(left, right, ignore_space_changes=0)
         self.assertEqual(('equal', 0, 1, 0, 1), next(opcodes))

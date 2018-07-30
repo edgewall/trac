@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import cgi
 import fnmatch
+import textwrap
 from functools import partial
 import gc
 import io
@@ -777,29 +778,29 @@ def send_internal_error(env, req, exc_info):
             enabled_plugins = _("''Plugin information not available''\n")
             interface_files = _("''Interface customization information not "
                                  "available''\n")
-        return _("""\
-==== How to Reproduce
+        return _(textwrap.dedent("""\
 
-While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.
+            While doing a %(method)s operation on `%(path_info)s`, \
+            Trac issued an internal error.
 
-''(please provide additional details here)''
+            ''(please provide additional details here)''
 
-Request parameters:
-{{{
-%(req_args)s
-}}}
+            Request parameters:
+            {{{
+            %(req_args)s
+            }}}
 
-User agent: `#USER_AGENT#`
+            User agent: `#USER_AGENT#`
 
-==== System Information
-%(sys_info)s
-==== Enabled Plugins
-%(enabled_plugins)s
-==== Interface Customization
-%(interface_customization)s
-==== Python Traceback
-{{{
-%(traceback)s}}}""",
+            ==== System Information
+            %(sys_info)s
+            ==== Enabled Plugins
+            %(enabled_plugins)s
+            ==== Interface Customization
+            %(interface_customization)s
+            ==== Python Traceback
+            {{{
+            %(traceback)s}}}"""),
             method=req.method, path_info=req.path_info,
             req_args=pformat(req.args), sys_info=sys_info,
             enabled_plugins=enabled_plugins,

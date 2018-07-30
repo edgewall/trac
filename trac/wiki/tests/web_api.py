@@ -10,7 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-
+import textwrap
 import unittest
 
 from trac.mimeview.patch import PatchRenderer
@@ -26,15 +26,15 @@ class WikiRendererTestCase(unittest.TestCase):
         self.mod = WikiRenderer(self.env)
 
     def test_load_stylesheet(self):
-        text = """\
-{{{#!text/x-diff
---- a/file.txt  2014-11-13 01:16:06 +0000
-+++ b/file.txt  2014-11-13 01:16:06 +0000
-@@ -1 +1 @@
--old line
-+new line
-}}}
-"""
+        text = textwrap.dedent("""\
+            {{{#!text/x-diff
+            --- a/file.txt  2014-11-13 01:16:06 +0000
+            +++ b/file.txt  2014-11-13 01:16:06 +0000
+            @@ -1 +1 @@
+            -old line
+            +new line
+            }}}
+            """)
         req = MockRequest(self.env, method='POST', path_info='/wiki_render',
                           args={'id': 'WikiStart', 'text': text})
 

@@ -10,7 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-
+import textwrap
 import unittest
 from datetime import datetime, timedelta
 from xml.dom import minidom
@@ -94,11 +94,11 @@ class PrettyDateinfoTestCase(unittest.TestCase):
 
 class TimelinePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
 
-    authz_policy = """\
-[timeline:*]
-user1 = TIMELINE_VIEW
-user2 =
-    """
+    authz_policy = textwrap.dedent("""\
+        [timeline:*]
+        user1 = TIMELINE_VIEW
+        user2 =
+        """)
 
     def setUp(self):
         super(TimelinePermissionsTestCase, self).setUp(TimelineModule)

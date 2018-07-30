@@ -13,6 +13,7 @@
 
 import os
 import tempfile
+import textwrap
 import unittest
 
 import jinja2
@@ -734,12 +735,12 @@ class FormatAuthorTestCase(unittest.TestCase):
                             'AuthzPolicy, DefaultPermissionPolicy')
         fd, self.authz_file = tempfile.mkstemp()
         with os.fdopen(fd, 'w') as f:
-            f.write("""\
-[wiki:WikiStart]
-user2 = EMAIL_VIEW
-[wiki:TracGuide]
-user2 =
-""")
+            f.write(textwrap.dedent("""\
+                [wiki:WikiStart]
+                user2 = EMAIL_VIEW
+                [wiki:TracGuide]
+                user2 =
+                """))
         PermissionSystem(self.env).grant_permission('user1', 'EMAIL_VIEW')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 
@@ -899,12 +900,12 @@ class AuthorInfoTestCase(unittest.TestCase):
                             'AuthzPolicy, DefaultPermissionPolicy')
         fd, self.authz_file = tempfile.mkstemp()
         with os.fdopen(fd, 'w') as f:
-            f.write("""\
-[wiki:WikiStart]
-user2 = EMAIL_VIEW
-[wiki:TracGuide]
-user2 =
-""")
+            f.write(textwrap.dedent("""\
+                [wiki:WikiStart]
+                user2 = EMAIL_VIEW
+                [wiki:TracGuide]
+                user2 =
+                """))
         PermissionSystem(self.env).grant_permission('user1', 'EMAIL_VIEW')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 
@@ -1000,14 +1001,14 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
 
     filename = 'test_chrome.html'
 
-    template = """\
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>${greeting}</h1>
-  </body>
-</html>
-"""
+    template = textwrap.dedent("""\
+        <!DOCTYPE html>
+        <html>
+          <body>
+            <h1>${greeting}</h1>
+          </body>
+        </html>
+        """)
 
     def setUp(self):
         self.env = EnvironmentStub(path=mkdtemp())
@@ -1036,24 +1037,24 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         data = {'greeting': u"Hell&ö"}
         content = self.chrome.render_template_string(t, data)
         self.assertIsInstance(content, Markup)
-        self.assertEqual(u"""\
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>Hell&amp;ö</h1>
-  </body>
-</html>""", content)
+        self.assertEqual(textwrap.dedent(u"""\
+            <!DOCTYPE html>
+            <html>
+              <body>
+                <h1>Hell&amp;ö</h1>
+              </body>
+            </html>"""), content)
         content_text = self.chrome.render_template_string(t_text, data,
                                                           text=True)
         self.assertFalse(isinstance(content_text, Markup))
         self.assertIsInstance(content_text, unicode)
-        self.assertEqual(u"""\
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>Hell&ö</h1>
-  </body>
-</html>""", content_text)
+        self.assertEqual(textwrap.dedent(u"""\
+            <!DOCTYPE html>
+            <html>
+              <body>
+                <h1>Hell&ö</h1>
+              </body>
+            </html>"""), content_text)
 
     def test_render_template(self):
         data = {'greeting': u"Hell&ö"}
@@ -1061,13 +1062,13 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                                               self.filename, data,
                                               {'fragment': True})
         self.assertIsInstance(content, str)
-        self.assertEqual("""\
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>Hell&amp;ö</h1>
-  </body>
-</html>""", content)
+        self.assertEqual(textwrap.dedent("""\
+            <!DOCTYPE html>
+            <html>
+              <body>
+                <h1>Hell&amp;ö</h1>
+              </body>
+            </html>"""), content)
 
 
 def test_suite():

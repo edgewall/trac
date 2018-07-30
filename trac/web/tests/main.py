@@ -14,6 +14,7 @@
 import io
 import os.path
 import re
+import textwrap
 import unittest
 
 import trac.env
@@ -37,14 +38,14 @@ class TestStubRequestHandler(Component):
 
     filename = 'test_stub.html'
 
-    template = """\
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>${greeting}</h1>
-  </body>
-</html>
-"""
+    template = textwrap.dedent("""\
+        <!DOCTYPE html>
+        <html>
+          <body>
+            <h1>${greeting}</h1>
+          </body>
+        </html>
+        """)
 
     def match_request(self, req):
         return req.path_info == '/test-stub'

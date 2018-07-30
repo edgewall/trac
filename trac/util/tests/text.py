@@ -15,6 +15,7 @@ import io
 import os
 import re
 import socket
+import textwrap
 import unittest
 
 from trac.util.text import (
@@ -225,20 +226,20 @@ class PrintTableTestCase(unittest.TestCase):
             ('Trac 0.5',  '2004-02-23', 'Incognito'),
         )
         headers = ('Version', 'Date', 'Name')
-        expected = """\
+        expected = textwrap.dedent("""\
 
-Version     Date         Name
-----------------------------------
-Trac 0.12 | 2010-06-13 | Babel
-Trac 0.11 | 2008-06-22 | Genshi
-Trac 0.10 | 2006-09-28 | Zengia
-Trac 0.9  | 2005-10-31 | Vodun
-Trac 0.8  | 2004-11-15 | Qualia
-Trac 0.7  | 2004-05-18 | Fulci
-Trac 0.6  | 2004-03-23 | Solanum
-Trac 0.5  | 2004-02-23 | Incognito
+            Version     Date         Name
+            ----------------------------------
+            Trac 0.12 | 2010-06-13 | Babel
+            Trac 0.11 | 2008-06-22 | Genshi
+            Trac 0.10 | 2006-09-28 | Zengia
+            Trac 0.9  | 2005-10-31 | Vodun
+            Trac 0.8  | 2004-11-15 | Qualia
+            Trac 0.7  | 2004-05-18 | Fulci
+            Trac 0.6  | 2004-03-23 | Solanum
+            Trac 0.5  | 2004-02-23 | Incognito
 
-"""
+            """)
         self._validate_print_table(expected, data, headers=headers, sep=' | ',
                                    ambiwidth=1)
 
@@ -250,15 +251,15 @@ Trac 0.5  | 2004-02-23 | Incognito
             ('int',      '0',     0),
             ('float',    '0.0',   0.0),
         )
-        expected = u"""\
+        expected = textwrap.dedent(u"""\
 
-NoneType | None  |
-bool     | True  | True
-bool     | False | False
-int      | 0     | 0
-float    | 0.0   | 0.0
+            NoneType | None  |
+            bool     | True  | True
+            bool     | False | False
+            int      | 0     | 0
+            float    | 0.0   | 0.0
 
-"""
+            """)
         self._validate_print_table(expected, data, sep=' | ', ambiwidth=1)
 
     def test_ambiwidth_1(self):
@@ -267,14 +268,14 @@ float    | 0.0   | 0.0
             (u'bar@….com', 'bar@example.com'),
         )
         headers = ('Obfuscated', 'Email')
-        expected = u"""\
+        expected = textwrap.dedent(u"""\
 
-Obfuscated      Email
--------------------------------
-foo@localhost | foo@localhost
-bar@….com     | bar@example.com
+            Obfuscated      Email
+            -------------------------------
+            foo@localhost | foo@localhost
+            bar@….com     | bar@example.com
 
-"""
+            """)
         self._validate_print_table(expected, data, headers=headers, sep=' | ',
                                    ambiwidth=1)
 
@@ -284,14 +285,14 @@ bar@….com     | bar@example.com
             (u'bar@….com', 'bar@example.com'),
         )
         headers = ('Obfuscated', 'Email')
-        expected = u"""\
+        expected = textwrap.dedent(u"""\
 
-Obfuscated      Email
--------------------------------
-foo@localhost | foo@localhost
-bar@….com    | bar@example.com
+            Obfuscated      Email
+            -------------------------------
+            foo@localhost | foo@localhost
+            bar@….com    | bar@example.com
 
-"""
+            """)
         self._validate_print_table(expected, data, headers=headers, sep=' | ',
                                    ambiwidth=2)
 
@@ -302,18 +303,18 @@ bar@….com    | bar@example.com
             (43, 'alfa\r\nbravo\r\n', 'zero\r\none\r\ntwo'),
         )
         headers = ('Id', 'Column 1', 'Column 2')
-        expected = u"""\
+        expected = textwrap.dedent(u"""\
 
-Id   Column 1   Column 2
---------------------------
-41 | Trac     | Trac-Hacks
-42 | blah     | foo
-   |          | bar
-43 | alfa     | zero
-   | bravo    | one
-   |          | two
+            Id   Column 1   Column 2
+            --------------------------
+            41 | Trac     | Trac-Hacks
+            42 | blah     | foo
+               |          | bar
+            43 | alfa     | zero
+               | bravo    | one
+               |          | two
 
-"""
+            """)
         self._validate_print_table(expected, data, headers=headers, sep=' | ')
 
     def _validate_print_table(self, expected, data, **kwargs):
@@ -335,16 +336,16 @@ class WrapTestCase(unittest.TestCase):
                u'fugiat nulla pariatur. Excepteur sint occaecat ' + \
                u'cupidatat non proident, sunt in culpa qui officia ' + \
                u'deserunt mollit anim id est laborum.'
-        wrapped = u"""\
-> Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-| sed do eiusmod tempor incididunt ut labore et dolore
-| magna aliqua. Ut enim ad minim veniam, quis nostrud
-| exercitation ullamco laboris nisi ut aliquip ex ea
-| commodo consequat. Duis aute irure dolor in reprehenderit
-| in voluptate velit esse cillum dolore eu fugiat nulla
-| pariatur. Excepteur sint occaecat cupidatat non proident,
-| sunt in culpa qui officia deserunt mollit anim id est
-| laborum."""
+        wrapped = textwrap.dedent(u"""\
+            > Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+            | sed do eiusmod tempor incididunt ut labore et dolore
+            | magna aliqua. Ut enim ad minim veniam, quis nostrud
+            | exercitation ullamco laboris nisi ut aliquip ex ea
+            | commodo consequat. Duis aute irure dolor in reprehenderit
+            | in voluptate velit esse cillum dolore eu fugiat nulla
+            | pariatur. Excepteur sint occaecat cupidatat non proident,
+            | sunt in culpa qui officia deserunt mollit anim id est
+            | laborum.""")
         self.assertEqual(wrapped, wrap(text, 59, '> ', '| ', '\n'))
 
     def test_wrap_ambiwidth_double(self):
@@ -353,11 +354,11 @@ class WrapTestCase(unittest.TestCase):
                u'配布ファイルに含まれている[3:CОPYING]ファ' + \
                u'イルと同じものが[2:オンライン]で参照でき' \
                u'ます。'
-        wrapped = u"""\
-> Trac は BSD ライセンスのもとで配布されています。[1:]この
-| ライセンスの全文は、𠀋配布ファイルに含まれている
-| [3:CОPYING]ファイルと同じものが[2:オンライン]で参照でき
-| ます。"""
+        wrapped = textwrap.dedent(u"""\
+            > Trac は BSD ライセンスのもとで配布されています。[1:]この
+            | ライセンスの全文は、𠀋配布ファイルに含まれている
+            | [3:CОPYING]ファイルと同じものが[2:オンライン]で参照でき
+            | ます。""")
         self.assertEqual(wrapped, wrap(text, 59, '> ', '| ', '\n',
                                        ambiwidth=2))
 

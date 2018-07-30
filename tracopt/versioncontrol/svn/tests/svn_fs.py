@@ -13,11 +13,11 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
-
 from datetime import datetime
 import io
 import locale
 import os.path
+import textwrap
 import unittest
 
 try:
@@ -941,11 +941,11 @@ En r\xe9sum\xe9 ... \xe7a marche.
         context = _create_context(self.env)
         context = context(self.repos.get_node('branches/v1x', HEAD).resource)
         renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
-        props = {'svn:mergeinfo': u"""\
-/tête:1-20,23-26
-/branches/v3:22
-/branches/v2:16
-"""}
+        props = {'svn:mergeinfo': textwrap.dedent(u"""\
+            /tête:1-20,23-26
+            /branches/v3:22
+            /branches/v2:16
+            """)}
         result = renderer.render_property('svn:mergeinfo', 'browser',
                                           context, props)
 
@@ -981,11 +981,11 @@ En r\xe9sum\xe9 ... \xe7a marche.
         context = _create_context(self.env)
         context = context(self.repos.get_node('branches/v1x', HEAD).resource)
         renderer = svn_prop.SubversionMergePropertyRenderer(self.env)
-        props = {'svn:mergeinfo': u"""\
-/tête:19
-/branches/v3:22
-/branches/deleted:1,3-5,22
-"""}
+        props = {'svn:mergeinfo': textwrap.dedent(u"""\
+            /tête:19
+            /branches/v3:22
+            /branches/deleted:1,3-5,22
+            """)}
         result = renderer.render_property('svn:mergeinfo', 'browser',
                                           context, props)
 
@@ -1024,17 +1024,17 @@ En r\xe9sum\xe9 ... \xe7a marche.
     def test_merge_prop_diff_renderer_added(self):
         context = _create_context(self.env)
         old_context = context(self.repos.get_node(u'tête', 20).resource)
-        old_props = {'svn:mergeinfo': u"""\
-/branches/v2:1,8-9,12-15
-/branches/v1x:12
-/branches/deleted:1,3-5,22
-"""}
+        old_props = {'svn:mergeinfo': textwrap.dedent(u"""\
+            /branches/v2:1,8-9,12-15
+            /branches/v1x:12
+            /branches/deleted:1,3-5,22
+            """)}
         new_context = context(self.repos.get_node(u'tête', 21).resource)
-        new_props = {'svn:mergeinfo': u"""\
-/branches/v2:1,8-9,12-16
-/branches/v1x:12
-/branches/deleted:1,3-5,22
-"""}
+        new_props = {'svn:mergeinfo': textwrap.dedent(u"""\
+            /branches/v2:1,8-9,12-16
+            /branches/v1x:12
+            /branches/deleted:1,3-5,22
+            """)}
         options = {}
         renderer = svn_prop.SubversionMergePropertyDiffRenderer(self.env)
         result = renderer.render_property_diff(
