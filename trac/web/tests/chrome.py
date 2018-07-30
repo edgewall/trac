@@ -13,6 +13,7 @@
 
 import os
 import tempfile
+import textwrap
 import unittest
 
 import trac.tests.compat
@@ -613,12 +614,12 @@ class FormatAuthorTestCase(unittest.TestCase):
                             'AuthzPolicy, DefaultPermissionPolicy')
         fd, self.authz_file = tempfile.mkstemp()
         with os.fdopen(fd, 'w') as f:
-            f.write("""\
-[wiki:WikiStart]
-user2 = EMAIL_VIEW
-[wiki:TracGuide]
-user2 =
-""")
+            f.write(textwrap.dedent("""\
+                [wiki:WikiStart]
+                user2 = EMAIL_VIEW
+                [wiki:TracGuide]
+                user2 =
+                """))
         PermissionSystem(self.env).grant_permission('user1', 'EMAIL_VIEW')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 
@@ -776,12 +777,12 @@ class AuthorInfoTestCase(unittest.TestCase):
                             'AuthzPolicy, DefaultPermissionPolicy')
         fd, self.authz_file = tempfile.mkstemp()
         with os.fdopen(fd, 'w') as f:
-            f.write("""\
-[wiki:WikiStart]
-user2 = EMAIL_VIEW
-[wiki:TracGuide]
-user2 =
-""")
+            f.write(textwrap.dedent("""\
+                [wiki:WikiStart]
+                user2 = EMAIL_VIEW
+                [wiki:TracGuide]
+                user2 =
+                """))
         PermissionSystem(self.env).grant_permission('user1', 'EMAIL_VIEW')
         self.env.config.set('authz_policy', 'authz_file', self.authz_file)
 

@@ -15,6 +15,7 @@ from __future__ import print_function
 
 import os
 import tempfile
+import textwrap
 import unittest
 
 import trac.tests.compat
@@ -559,10 +560,10 @@ class RestrictOwnerTestCase(unittest.TestCase):
         owners list (#10833).
         """
         self.env.config.set('trac', 'show_full_names', False)
-        create_file(self.authz_file, """\
-[ticket:1]
-user4 = !TICKET_MODIFY
-""")
+        create_file(self.authz_file, textwrap.dedent("""\
+            [ticket:1]
+            user4 = !TICKET_MODIFY
+            """))
 
         ctrl = self.ctlr.render_ticket_action_control(self.req1, self.ticket,
                                                       'reassign')

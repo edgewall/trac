@@ -20,6 +20,7 @@ import os
 import re
 import sys
 import tempfile
+import textwrap
 import unittest
 from subprocess import PIPE, Popen
 from StringIO import StringIO
@@ -1735,15 +1736,15 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
         are written to trac.ini.
         """
         config_file = os.path.join(self.parent_dir, 'config.ini')
-        create_file(config_file, """\
-[the-plugin]
-option_a = 1
-option_b = 2
-[components]
-the_plugin.* = enabled
-[project]
-name = project2
-        """)
+        create_file(config_file, textwrap.dedent("""\
+            [the-plugin]
+            option_a = 1
+            option_b = 2
+            [components]
+            the_plugin.* = enabled
+            [project]
+            name = project2
+            """))
         rv, output = self._execute('initenv project1 sqlite:db/sqlite.db '
                                    '--config=%s' % config_file)
         env = Environment(self.env_path)
@@ -1778,12 +1779,12 @@ name = project2
         configuration file.
         """
         config_file = os.path.join(self.parent_dir, 'config.ini')
-        create_file(config_file, """\
-[the-plugin]
-option_a = 1
-[components
-the_plugin.* = enabled
-        """)
+        create_file(config_file, textwrap.dedent("""\
+            [the-plugin]
+            option_a = 1
+            [components
+            the_plugin.* = enabled
+            """))
         rv, output = self._execute('initenv project1 sqlite:db/sqlite.db '
                                    '--config=%s' % config_file)
 

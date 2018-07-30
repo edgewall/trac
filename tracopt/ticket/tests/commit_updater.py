@@ -10,7 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-
+import textwrap
 import unittest
 from datetime import datetime
 
@@ -51,12 +51,13 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
         chgset = Mock(repos=self.repos, rev=1, message=message, author='joe',
                       date=datetime(2001, 1, 1, 1, 1, 1, 0, utc))
         self.updater.changeset_added(self.repos, chgset)
-        self.assertEqual("""\
-In [changeset:"1/repos1" 1/repos1]:
-{{{
-#!CommitTicketReference repository="repos1" revision="1"
-This is the first comment. Refs #1.
-}}}""", self.tickets[0].get_change(cnum=1)['fields']['comment']['new'])
+        changes = self.tickets[0].get_change(cnum=1)
+        self.assertEqual(textwrap.dedent("""\
+            In [changeset:"1/repos1" 1/repos1]:
+            {{{
+            #!CommitTicketReference repository="repos1" revision="1"
+            This is the first comment. Refs #1.
+            }}}"""), changes['fields']['comment']['new'])
 
     def test_changeset_modified(self):
         self._make_tickets(2)
@@ -70,18 +71,20 @@ This is the first comment. Refs #1.
                           date=datetime(2001, 1, 2, 1, 1, 1, 0, utc))
         self.updater.changeset_added(self.repos, old_chgset)
         self.updater.changeset_modified(self.repos, new_chgset, old_chgset)
-        self.assertEqual("""\
-In [changeset:"1/repos1" 1/repos1]:
-{{{
-#!CommitTicketReference repository="repos1" revision="1"
-This is the first comment. Refs #1.
-}}}""", self.tickets[0].get_change(cnum=1)['fields']['comment']['new'])
-        self.assertEqual("""\
-In [changeset:"1/repos1" 1/repos1]:
-{{{
-#!CommitTicketReference repository="repos1" revision="1"
-This is the first comment after an edit. Refs #1, #2.
-}}}""", self.tickets[1].get_change(cnum=1)['fields']['comment']['new'])
+        changes = self.tickets[0].get_change(cnum=1)
+        self.assertEqual(textwrap.dedent("""\
+            In [changeset:"1/repos1" 1/repos1]:
+            {{{
+            #!CommitTicketReference repository="repos1" revision="1"
+            This is the first comment. Refs #1.
+            }}}"""), changes['fields']['comment']['new'])
+        changes = self.tickets[1].get_change(cnum=1)
+        self.assertEqual(textwrap.dedent("""\
+            In [changeset:"1/repos1" 1/repos1]:
+            {{{
+            #!CommitTicketReference repository="repos1" revision="1"
+            This is the first comment after an edit. Refs #1, #2.
+            }}}"""), changes['fields']['comment']['new'])
 
     def test_commands_refs(self):
         commands ={(1,): 'Refs #1', (2,): 'refs #2',

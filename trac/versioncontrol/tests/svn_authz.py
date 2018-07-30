@@ -13,6 +13,7 @@
 
 import os.path
 import tempfile
+import textwrap
 import unittest
 
 from trac.config import ConfigurationError
@@ -27,41 +28,41 @@ from trac.versioncontrol.svn_authz import AuthzSourcePolicy, ParseError, \
 class AuthzParserTestCase(unittest.TestCase):
 
     def test_parse_file(self):
-        authz = parse("""\
-[groups]
-developers = foo, bar
-users = @developers, &baz
+        authz = parse(textwrap.dedent("""\
+            [groups]
+            developers = foo, bar
+            users = @developers, &baz
 
-[aliases]
-baz = CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com
+            [aliases]
+            baz = CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com
 
-# Applies to all repositories
-[/]
-* = r
+            # Applies to all repositories
+            [/]
+            * = r
 
-[/trunk]
-@developers = rw
-&baz =
-@users = r
+            [/trunk]
+            @developers = rw
+            &baz =
+            @users = r
+            
+            [/branches]
+            bar = rw
 
-[/branches]
-bar = rw
+            ; Applies only to module
+            [module:/trunk]
+            foo = rw
+            &baz = r
 
-; Applies only to module
-[module:/trunk]
-foo = rw
-&baz = r
+            ; Unicode module names
+            [module:/c/résumé]
+            bar = rw
+            Foo = rw
+            BAZ = r
 
-; Unicode module names
-[module:/c/résumé]
-bar = rw
-Foo = rw
-BAZ = r
-
-; Unused module, not parsed
-[unused:/some/path]
-foo = r
-""", set(['', 'module']))
+            ; Unused module, not parsed
+            [unused:/some/path]
+            foo = r
+            """), set(['', 'module']))
         self.assertEqual({
             '': {
                 '/': {
@@ -90,16 +91,16 @@ foo = r
         }, authz)
 
     def test_parse_errors(self):
-        self.assertRaises(ParseError, parse, """\
-user = r
+        self.assertRaises(ParseError, parse, textwrap.dedent("""\
+            user = r
 
-[module:/trunk]
-user = r
-""", set(['', 'module']))
-        self.assertRaises(ParseError, parse, """\
-[module:/trunk]
-user
-""", set(['', 'module']))
+            [module:/trunk]
+            user = r
+            """), set(['', 'module']))
+        self.assertRaises(ParseError, parse, textwrap.dedent("""\
+            [module:/trunk]
+            user
+            """), set(['', 'module']))
 
 
 class AuthzSourcePolicyTestCase(unittest.TestCase):
@@ -107,149 +108,149 @@ class AuthzSourcePolicyTestCase(unittest.TestCase):
     def setUp(self):
         tmpdir = tempfile.mkdtemp(prefix='trac-')
         self.authz = os.path.join(tmpdir, 'trac-authz')
-        create_file(self.authz, """\
-[groups]
-group1 = user
-group2 = @group1
+        create_file(self.authz, textwrap.dedent("""\
+            [groups]
+            group1 = user
+            group2 = @group1
 
-cycle1 = @cycle2
-cycle2 = @cycle3
-cycle3 = @cycle1, user
+            cycle1 = @cycle2
+            cycle2 = @cycle3
+            cycle3 = @cycle1, user
 
-alias1 = &jekyll
-alias2 = @alias1
+            alias1 = &jekyll
+            alias2 = @alias1
 
-[aliases]
-jekyll = Mr Hyde
+            [aliases]
+            jekyll = Mr Hyde
 
-# Read / write permissions
-[/readonly]
-user = r
-[/writeonly]
-user = w
-[/readwrite]
-user = rw
-[/empty]
-user =
+            # Read / write permissions
+            [/readonly]
+            user = r
+            [/writeonly]
+            user = w
+            [/readwrite]
+            user = rw
+            [/empty]
+            user =
 
-# Trailing slashes
-[/trailing_a]
-user = r
-[/trailing_b/]
-user = r
+            # Trailing slashes
+            [/trailing_a]
+            user = r
+            [/trailing_b/]
+            user = r
 
-# Sub-paths
-[/sub/path]
-user = r
+            # Sub-paths
+            [/sub/path]
+            user = r
 
-# Module usage
-[module:/module_a]
-user = r
-[other:/module_b]
-user = r
-[/module_c]
-user = r
-[module:/module_d]
-user =
-[/module_d]
-user = r
+            # Module usage
+            [module:/module_a]
+            user = r
+            [other:/module_b]
+            user = r
+            [/module_c]
+            user = r
+            [module:/module_d]
+            user =
+            [/module_d]
+            user = r
 
-# Wildcards
-[/wildcard]
-* = r
+            # Wildcards
+            [/wildcard]
+            * = r
 
-# Special tokens
-[/special/anonymous]
-$anonymous = r
-[/special/authenticated]
-$authenticated = r
+            # Special tokens
+            [/special/anonymous]
+            $anonymous = r
+            [/special/authenticated]
+            $authenticated = r
 
-# Groups
-[/groups_a]
-@group1 = r
-[/groups_b]
-@group2 = r
-[/cyclic]
-@cycle1 = r
+            # Groups
+            [/groups_a]
+            @group1 = r
+            [/groups_b]
+            @group2 = r
+            [/cyclic]
+            @cycle1 = r
 
-# Precedence
-[module:/precedence_a]
-user =
-[/precedence_a]
-user = r
-[/precedence_b]
-user = r
-[/precedence_b/sub]
-user =
-[/precedence_b/sub/test]
-user = r
-[/precedence_c]
-user =
-@group1 = r
-[/precedence_d]
-@group1 = r
-user =
+            # Precedence
+            [module:/precedence_a]
+            user =
+            [/precedence_a]
+            user = r
+            [/precedence_b]
+            user = r
+            [/precedence_b/sub]
+            user =
+            [/precedence_b/sub/test]
+            user = r
+            [/precedence_c]
+            user =
+            @group1 = r
+            [/precedence_d]
+            @group1 = r
+            user =
 
-# Aliases
-[/aliases_a]
-&jekyll = r
-[/aliases_b]
-@alias2 = r
+            # Aliases
+            [/aliases_a]
+            &jekyll = r
+            [/aliases_b]
+            @alias2 = r
 
-# Scoped repository
-[scoped:/scope/dir1]
-joe = r
-[scoped:/scope/dir2]
-Jane = r
+            # Scoped repository
+            [scoped:/scope/dir1]
+            joe = r
+            [scoped:/scope/dir2]
+            Jane = r
 
-# multiple entries
-[/multiple]
-$authenticated = r
-[/multiple/foo]
-joe =
-$authenticated =
-* = r
-[/multiple/bar]
-* =
-john = r
-Jane = r
-$anonymous = r
-[/multiple/baz]
-$anonymous = r
-* =
-Jane = r
-[module:/multiple/bar]
-joe = r
-john =
+            # multiple entries
+            [/multiple]
+            $authenticated = r
+            [/multiple/foo]
+            joe =
+            $authenticated =
+            * = r
+            [/multiple/bar]
+            * =
+            john = r
+            Jane = r
+            $anonymous = r
+            [/multiple/baz]
+            $anonymous = r
+            * =
+            Jane = r
+            [module:/multiple/bar]
+            joe = r
+            john =
 
-# multiple entries with module and parent directory
-[/multiple/1]
-user = r
-@group1 = r
-$authenticated = r
-* = r
-[module:/multiple/1/user]
-user =
-[module:/multiple/1/group]
-@group1 =
-[module:/multiple/1/auth]
-$authenticated =
-[module:/multiple/1/star]
-* =
-[/multiple/2]
-user =
-@group1 =
-$authenticated =
-* =
-[module:/multiple/2/user]
-user = r
-[module:/multiple/2/group]
-@group1 = r
-[module:/multiple/2/auth]
-$authenticated = r
-[module:/multiple/2/star]
-* = r
-""")
+            # multiple entries with module and parent directory
+            [/multiple/1]
+            user = r
+            @group1 = r
+            $authenticated = r
+            * = r
+            [module:/multiple/1/user]
+            user =
+            [module:/multiple/1/group]
+            @group1 =
+            [module:/multiple/1/auth]
+            $authenticated =
+            [module:/multiple/1/star]
+            * =
+            [/multiple/2]
+            user =
+            @group1 =
+            $authenticated =
+            * =
+            [module:/multiple/2/user]
+            user = r
+            [module:/multiple/2/group]
+            @group1 = r
+            [module:/multiple/2/auth]
+            $authenticated = r
+            [module:/multiple/2/star]
+            * = r
+            """))
         self.env = EnvironmentStub(enable=[AuthzSourcePolicy], path=tmpdir)
         self.env.config.set('trac', 'permission_policies',
                             'AuthzSourcePolicy, DefaultPermissionPolicy')
@@ -320,10 +321,10 @@ $authenticated = r
     def test_parse_error_raises(self):
         """ConfigurationError exception is raised when exception occurs
         parsing the `[svn authz_file`."""
-        create_file(self.authz, """\
-[/somepath
-joe = r
-""")
+        create_file(self.authz, textwrap.dedent("""\
+            [/somepath
+            joe = r
+            """))
         policy = AuthzSourcePolicy(self.env)
         self.assertRaises(ConfigurationError, policy.check_permission,
                           'BROWSER_VIEW', 'user', None, None)
@@ -363,16 +364,16 @@ joe = r
         self.assertRevPerm(True, 'joe')
         # Granted if at least one fine permission is granted
         policy._mtime = 0
-        create_file(self.authz, """\
-[/somepath]
-joe = r
-denied =
-[module:/otherpath]
-Jane = r
-$anonymous = r
-[inactive:/not-in-this-instance]
-unknown = r
-""")
+        create_file(self.authz, textwrap.dedent("""\
+            [/somepath]
+            joe = r
+            denied =
+            [module:/otherpath]
+            Jane = r
+            $anonymous = r
+            [inactive:/not-in-this-instance]
+            unknown = r
+            """))
         self.assertPathPerm(None, 'unknown')
         self.assertRevPerm(None, 'unknown')
         self.assertPathPerm(None, 'denied')

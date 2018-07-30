@@ -36,6 +36,7 @@
 # ----------------------------------------------------------------------------
 
 import re
+import textwrap
 
 from genshi.builder import tag
 
@@ -207,12 +208,13 @@ class CommitTicketUpdater(Component):
         if repos.reponame:
             revstring += '/' + repos.reponame
             drev += '/' + repos.reponame
-        return """\
-In [changeset:"%s" %s]:
-{{{
-#!CommitTicketReference repository="%s" revision="%s"
-%s
-}}}""" % (revstring, drev, repos.reponame, rev, changeset.message.strip())
+        return textwrap.dedent("""\
+            In [changeset:"%s" %s]:
+            {{{
+            #!CommitTicketReference repository="%s" revision="%s"
+            %s
+            }}}""" % (revstring, drev, repos.reponame, rev,
+                      changeset.message.strip()))
 
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""

@@ -14,6 +14,7 @@
 
 import os
 import re
+import textwrap
 import time
 import unittest
 
@@ -678,20 +679,22 @@ class TestReportRealmDecoration(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Realm/id decoration in report"""
         self._tester.create_report(
-            'Realm/id decoration',
-            """\
-SELECT NULL AS _realm, NULL AS id, NULL AS _parent_realm, NULL AS _parent_id
-UNION ALL SELECT 'ticket', '42', NULL, NULL
-UNION ALL SELECT 'report', '42', NULL, NULL
-UNION ALL SELECT 'milestone', '42', NULL, NULL
-UNION ALL SELECT 'wiki', 'WikiStart', NULL, NULL
-UNION ALL SELECT 'changeset', '42/trunk', NULL, NULL
-UNION ALL SELECT 'changeset', '42/trunk', 'repository', 'repo'
-UNION ALL SELECT 'changeset', '43/tags', 'repository', ''
-UNION ALL SELECT 'attachment', 'file.ext', 'ticket', '42'
-UNION ALL SELECT 'attachment', 'file.ext', 'milestone', '42'
-UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
-""", '')
+            'Realm/id decoration', textwrap.dedent("""\
+            SELECT NULL AS _realm,
+             NULL AS id,
+             NULL AS _parent_realm,
+             NULL AS _parent_id
+            UNION ALL SELECT 'ticket', '42', NULL, NULL
+            UNION ALL SELECT 'report', '42', NULL, NULL
+            UNION ALL SELECT 'milestone', '42', NULL, NULL
+            UNION ALL SELECT 'wiki', 'WikiStart', NULL, NULL
+            UNION ALL SELECT 'changeset', '42/trunk', NULL, NULL
+            UNION ALL SELECT 'changeset', '42/trunk', 'repository', 'repo'
+            UNION ALL SELECT 'changeset', '43/tags', 'repository', ''
+            UNION ALL SELECT 'attachment', 'file.ext', 'ticket', '42'
+            UNION ALL SELECT 'attachment', 'file.ext', 'milestone', '42'
+            UNION ALL SELECT 'attachment', 'file.ext', 'wiki', 'WikiStart'
+            """), '')
         tc.find('<a title="View ticket" href="[^"]*?/ticket/42">#42</a>')
         tc.find('<a title="View report" href="[^"]*?/report/42">report:42</a>')
         tc.find('<a title="View milestone" href="[^"]*?/milestone/42">42</a>')

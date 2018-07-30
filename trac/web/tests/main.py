@@ -15,6 +15,7 @@ import os.path
 import re
 import sys
 import tempfile
+import textwrap
 import unittest
 from subprocess import PIPE, Popen
 
@@ -41,17 +42,17 @@ class TestStubRequestHandler(Component):
 
     filename = 'test_stub.html'
 
-    template = """\
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/">
-  <body>
-    <h1>${greeting}</h1>
-  </body>
-</html>
-"""
+    template = textwrap.dedent("""\
+        <!DOCTYPE html
+            PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:py="http://genshi.edgewall.org/">
+          <body>
+            <h1>${greeting}</h1>
+          </body>
+        </html>
+        """)
 
     def match_request(self, req):
         return req.path_info == '/test-stub'

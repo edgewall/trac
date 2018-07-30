@@ -14,6 +14,7 @@
 from __future__ import absolute_import
 
 import os
+import textwrap
 import unittest
 from pkg_resources import parse_version
 
@@ -71,10 +72,11 @@ class PygmentsRendererTestCase(unittest.TestCase):
         """
         Simple Python highlighting with Pygments (direct)
         """
-        result = self.pygments.render(self.context, 'text/x-python', """
-def hello():
-        return "Hello World!"
-""")
+        result = self.pygments.render(self.context, 'text/x-python',
+                                      textwrap.dedent("""
+            def hello():
+                    return "Hello World!"
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_hello', result)
@@ -85,10 +87,11 @@ def hello():
         """
         Simple Python highlighting with Pygments (through Mimeview.render)
         """
-        result = Mimeview(self.env).render(self.context, 'text/x-python', """
-def hello():
-        return "Hello World!"
-""")
+        result = Mimeview(self.env).render(self.context, 'text/x-python',
+                                           textwrap.dedent("""
+            def hello():
+                    return "Hello World!"
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_hello_mimeview', result)
@@ -96,28 +99,28 @@ def hello():
             self._test('python_hello_mimeview_pygments_2.1plus', result)
 
     def test_python_with_lineno(self):
-        result = format_to_html(self.env, self.context, """\
-{{{#!text/x-python lineno
-print 'this is a python sample'
-a = b+3
-z = "this is a string"
-print 'this is the end of the python sample'
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""\
+            {{{#!text/x-python lineno
+            print 'this is a python sample'
+            a = b+3
+            z = "this is a string"
+            print 'this is the end of the python sample'
+            }}}
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_1', result)
         else:
             self._test('python_with_lineno_1_pygments_2.1plus', result)
 
-        result = format_to_html(self.env, self.context, """\
-{{{#!text/x-python lineno=3
-print 'this is a python sample'
-a = b+3
-z = "this is a string"
-print 'this is the end of the python sample'
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""\
+            {{{#!text/x-python lineno=3
+            print 'this is a python sample'
+            a = b+3
+            z = "this is a string"
+            print 'this is the end of the python sample'
+            }}}
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_2', result)
@@ -127,14 +130,14 @@ print 'this is the end of the python sample'
     def test_python_with_lineno_and_markups(self):
         """Python highlighting with Pygments and lineno annotator
         """
-        result = format_to_html(self.env, self.context, """\
-{{{#!text/x-python lineno=3 id=b marks=4-5
-print 'this is a python sample'
-a = b+3
-z = "this is a string"
-print 'this is the end of the python sample'
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""\
+            {{{#!text/x-python lineno=3 id=b marks=4-5
+            print 'this is a python sample'
+            a = b+3
+            z = "this is a string"
+            print 'this is the end of the python sample'
+            }}}
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_and_markups', result)
@@ -142,28 +145,28 @@ print 'this is the end of the python sample'
             self._test('python_with_lineno_and_markups_pygments_2.1plus', result)
 
     def test_python_with_invalid_arguments(self):
-        result = format_to_html(self.env, self.context, """\
-{{{#!text/x-python lineno=-10
-print 'this is a python sample'
-a = b+3
-z = "this is a string"
-print 'this is the end of the python sample'
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""\
+            {{{#!text/x-python lineno=-10
+            print 'this is a python sample'
+            a = b+3
+            z = "this is a string"
+            print 'this is the end of the python sample'
+            }}}
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_1', result)
         else:
             self._test('python_with_invalid_arguments_1_pygments_2.1plus', result)
 
-        result = format_to_html(self.env, self.context, """\
-{{{#!text/x-python lineno=a id=d marks=a-b
-print 'this is a python sample'
-a = b+3
-z = "this is a string"
-print 'this is the end of the python sample'
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""\
+            {{{#!text/x-python lineno=a id=d marks=a-b
+            print 'this is a python sample'
+            a = b+3
+            z = "this is a string"
+            print 'this is the end of the python sample'
+            }}}
+            """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_2', result)
@@ -175,24 +178,24 @@ print 'this is the end of the python sample'
                             'php.startinline', True)
         self.env.config.set('pygments-lexer',
                             'php.funcnamehighlighting', False)
-        result = format_to_html(self.env, self.context, """
-{{{#!php
-if (class_exists('MyClass')) {
-    $myclass = new MyClass();
-}
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""
+            {{{#!php
+            if (class_exists('MyClass')) {
+                $myclass = new MyClass();
+            }
+            }}}
+            """))
         self.assertTrue(result)
         self._test('pygments_lexer_options', result)
 
     def test_pygments_lexer_arguments(self):
-        result = format_to_html(self.env, self.context, """
-{{{#!php startinline=True funcnamehighlighting=False
-if (class_exists('MyClass')) {
-    $myclass = new MyClass();
-}
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""
+            {{{#!php startinline=True funcnamehighlighting=False
+            if (class_exists('MyClass')) {
+                $myclass = new MyClass();
+            }
+            }}}
+            """))
         self.assertTrue(result)
         self._test('pygments_lexer_arguments', result)
 
@@ -201,13 +204,13 @@ if (class_exists('MyClass')) {
                             'php.startinline', True)
         self.env.config.set('pygments-lexer',
                             'php.funcnamehighlighting', False)
-        result = format_to_html(self.env, self.context, """
-{{{#!php funcnamehighlighting=True
-if (class_exists('MyClass')) {
-    $myclass = new MyClass();
-}
-}}}
-""")
+        result = format_to_html(self.env, self.context, textwrap.dedent("""
+            {{{#!php funcnamehighlighting=True
+            if (class_exists('MyClass')) {
+                $myclass = new MyClass();
+            }
+            }}}
+            """))
         self.assertTrue(result)
         self._test('pygments_lexer_arguments_override_options', result)
 

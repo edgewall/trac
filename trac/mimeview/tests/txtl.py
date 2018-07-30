@@ -10,7 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-
+import textwrap
 import unittest
 from xml.etree import ElementTree
 
@@ -44,13 +44,13 @@ class TextileRendererTestCase(unittest.TestCase):
             self.assertEqual('Textile', name)
 
     def test_image(self):
-        result = self._render(u"""\
-!https://example.org/foo.png! uníćode
-!//example.net/foo.png!       uníćode
-!/path/to/foo.png!            uníćode
-!foo.png!                     uníćode
-!data:image/png,foo!          uníćode
-""")
+        result = self._render(textwrap.dedent(u"""\
+            !https://example.org/foo.png! uníćode
+            !//example.net/foo.png!       uníćode
+            !/path/to/foo.png!            uníćode
+            !foo.png!                     uníćode
+            !data:image/png,foo!          uníćode
+            """))
         tree = self._parse_xml(result)
         elements = tree.findall('img')
         self.assertEqual(elements[0].get('src'), 'https://example.org/foo.png')
@@ -65,14 +65,14 @@ class TextileRendererTestCase(unittest.TestCase):
         self.assertEqual(elements[4].get('crossorigin'), None)
 
     def test_style(self):
-        result = self._render(u"""\
-*{background:url(https://example.org/foo.png)}uníćode*
-*{background:url(//example.net/foo.png)      }uníćode*
-*{background:url(/path/to/foo.png)           }uníćode*
-*{background:url(./foo.png)                  }uníćode*
-*{background:url(foo.png)                    }uníćode*
-*{background:url(data:image/png,foo)         }uníćode*
-""")
+        result = self._render(textwrap.dedent(u"""\
+            *{background:url(https://example.org/foo.png)}uníćode*
+            *{background:url(//example.net/foo.png)      }uníćode*
+            *{background:url(/path/to/foo.png)           }uníćode*
+            *{background:url(./foo.png)                  }uníćode*
+            *{background:url(foo.png)                    }uníćode*
+            *{background:url(data:image/png,foo)         }uníćode*
+            """))
         self.assertNotIn('url(https://example.org/foo.png)', result)
         self.assertNotIn('url(//example.net/foo.png)', result)
         self.assertIn('url(/path/to/foo.png)', result)
@@ -81,11 +81,11 @@ class TextileRendererTestCase(unittest.TestCase):
         self.assertIn('url(data:image/png,foo)', result)
 
     def test_html(self):
-        result = self._render(u"""\
-<a href="ftp://example.org/">unsafe</a>
-<img src="//example.org/foo.png" />
-<span style="background-image:url(http://example.org/foo.png)">unsafe</span>
-""")
+        result = self._render(textwrap.dedent(u"""\
+            <a href="ftp://example.org/">unsafe</a>
+            <img src="//example.org/foo.png" />
+            <span style="background-image:url(http://example.org/foo.png)">unsafe</span>
+            """))
         self.assertNotIn('href="ftp://', result)
         self.assertNotIn('<img src="//example.org/foo.png" />', result)
         self.assertIn('<img src="//example.org/foo.png" '

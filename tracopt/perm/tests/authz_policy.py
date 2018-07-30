@@ -13,6 +13,7 @@
 
 import os
 import tempfile
+import textwrap
 import unittest
 
 import trac.tests.compat
@@ -30,50 +31,50 @@ class AuthzPolicyTestCase(unittest.TestCase):
     def setUp(self):
         tmpdir = tempfile.mkdtemp(prefix='trac-')
         self.authz_file = os.path.join(tmpdir, 'trac-authz-policy')
-        create_file(self.authz_file, """\
-# -*- coding: utf-8 -*-
-# Unicode user names
-[groups]
-administrators = éat
+        create_file(self.authz_file, textwrap.dedent("""\
+            # -*- coding: utf-8 -*-
+            # Unicode user names
+            [groups]
+            administrators = éat
 
-[wiki:WikiStart]
-änon = WIKI_VIEW
-John = WIKI_VIEW
-@administrators = WIKI_VIEW
-* =
+            [wiki:WikiStart]
+            änon = WIKI_VIEW
+            John = WIKI_VIEW
+            @administrators = WIKI_VIEW
+            * =
 
-# Unicode page names
-[wiki:résumé]
-änon =
-@administrators = WIKI_VIEW
-* =
+            # Unicode page names
+            [wiki:résumé]
+            änon =
+            @administrators = WIKI_VIEW
+            * =
 
-# Tickets
-[ticket:43]
-änon = TICKET_VIEW
-@administrators =
-* =
+            # Tickets
+            [ticket:43]
+            änon = TICKET_VIEW
+            @administrators =
+            * =
 
-[ticket:*]
-änon =
-@administrators = TICKET_VIEW
-* =
+            [ticket:*]
+            änon =
+            @administrators = TICKET_VIEW
+            * =
 
-# Default repository
-[repository:@*]
-änon =
-@administrators = BROWSER_VIEW, FILE_VIEW
-* =
+            # Default repository
+            [repository:@*]
+            änon =
+            @administrators = BROWSER_VIEW, FILE_VIEW
+            * =
 
-# Non-default repository
-[repository:bláh@*]
-änon = BROWSER_VIEW, FILE_VIEW
-@administrators = BROWSER_VIEW, FILE_VIEW
-* =
+            # Non-default repository
+            [repository:bláh@*]
+            änon = BROWSER_VIEW, FILE_VIEW
+            @administrators = BROWSER_VIEW, FILE_VIEW
+            * =
 
-[milestone:milestone1]
-anonymous = MILESTONE_VIEW
-""")
+            [milestone:milestone1]
+            anonymous = MILESTONE_VIEW
+            """))
         self.env = EnvironmentStub(enable=['trac.*', AuthzPolicy],
                                    path=tmpdir)
         self.env.config.set('trac', 'permission_policies',
@@ -238,37 +239,37 @@ anonymous = MILESTONE_VIEW
 
     def test_parse_authz_no_settings(self):
         """Allow the file to have no settings."""
-        create_file(self.authz_file, """\
-# [wiki:WikiStart]
-# änon = WIKI_VIEW
-# * =
-""")
+        create_file(self.authz_file, textwrap.dedent("""\
+            # [wiki:WikiStart]
+            # änon = WIKI_VIEW
+            # * =
+            """))
         authz_policy = AuthzPolicy(self.env)
         authz_policy.parse_authz()
         self.assertEqual([], authz_policy.authz.sections())
 
     def test_parse_authz_malformed_raises(self):
         """ConfigurationError should be raised if the file is malformed."""
-        create_file(self.authz_file, """\
-wiki:WikiStart]
-änon = WIKI_VIEW
-* =
-""")
+        create_file(self.authz_file, textwrap.dedent("""\
+            wiki:WikiStart]
+            änon = WIKI_VIEW
+            * =
+            """))
         authz_policy = AuthzPolicy(self.env)
         self.assertRaises(ConfigurationError, authz_policy.parse_authz)
 
-#     def test_parse_authz_duplicated_sections_raises(self):
-#         """ConfigurationError should be raised if the file has duplicate
-#         sections."""
-#         create_file(self.authz_file, """\
-# [wiki:WikiStart]
-# änon = WIKI_VIEW
-#
-# [wiki:WikiStart]
-# änon = WIKI_VIEW
-# """)
-#         authz_policy = AuthzPolicy(self.env)
-#         self.assertRaises(ConfigurationError, authz_policy.parse_authz)
+    # def test_parse_authz_duplicated_sections_raises(self):
+    #     """ConfigurationError should be raised if the file has duplicate
+    #     sections."""
+    #     create_file(self.authz_file, textwrap.dedent("""\
+    #         [wiki:WikiStart]
+    #         änon = WIKI_VIEW
+    #
+    #         [wiki:WikiStart]
+    #         änon = WIKI_VIEW
+    #         """))
+    #     authz_policy = AuthzPolicy(self.env)
+    #     self.assertRaises(ConfigurationError, authz_policy.parse_authz)
 
 
 def test_suite():
