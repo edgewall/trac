@@ -42,7 +42,7 @@ from trac.db.api import (DatabaseManager, QueryContextManager,
 from trac.db.convert import copy_tables
 from trac.loader import load_components
 from trac.util import as_bool, backup_config_file, copytree, create_file, \
-                      get_pkginfo, is_path_below, lazy, makedirs, read_file
+                      get_pkginfo, is_path_below, lazy, makedirs
 from trac.util.compat import Popen, close_fds
 from trac.util.concurrency import threading
 from trac.util.datefmt import pytz
@@ -400,13 +400,15 @@ class Environment(Component, ComponentManager):
         """Verify that the provided path points to a valid Trac environment
         directory."""
         try:
-            tag = read_file(os.path.join(self.path, 'VERSION')).splitlines()[0]
-            if tag != _VERSION:
-                raise Exception(_("Unknown Trac environment type '%(type)s'",
-                                  type=tag))
+            with open(os.path.join(self.path, 'VERSION')) as f:
+                tag = f.readline().rstrip('\n')
         except Exception as e:
             raise TracError(_("No Trac environment found at %(path)s\n"
-                              "%(e)s", path=self.path, e=e))
+                              "%(e)s",
+                              path=self.path, e=exception_to_unicode(e)))
+        if tag != _VERSION:
+            raise TracError(_("Unknown Trac environment type '%(type)s'",
+                              type=tag))
 
     @lazy
     def db_exc(self):

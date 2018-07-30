@@ -32,6 +32,7 @@ from trac.env import Environment, EnvironmentAdmin, open_environment
 from trac.test import EnvironmentStub, get_dburi, mkdtemp, rmtree
 from trac.util import create_file, extract_zipfile, hex_entropy, read_file
 from trac.util.compat import close_fds
+from trac.util import create_file
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -105,6 +106,37 @@ class EnvironmentTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
         rmtree(self.env.path)
+
+    def test_invalid_version_raises_trac_error(self):
+        """TracError raised when environment version is invalid."""
+        version = 'Trac Environment Version 0'
+        create_file(os.path.join(self.env.path, 'VERSION'), version + '\n')
+
+        with self.assertRaises(TracError) as cm:
+            Environment(self.env.path)
+        self.assertEqual(
+            "Unknown Trac environment type 'Trac Environment Version 0'",
+            unicode(cm.exception))
+
+    def test_version_file_empty(self):
+        """TracError raised when environment version is empty."""
+        create_file(os.path.join(self.env.path, 'VERSION'), '')
+        with self.assertRaises(TracError) as cm:
+            Environment(self.env.path)
+        self.assertEqual("Unknown Trac environment type ''",
+                         unicode(cm.exception))
+
+    def test_version_file_not_found(self):
+        """TracError raised when environment version file not found."""
+        version_file = os.path.join(self.env.path, 'VERSION')
+        os.remove(version_file)
+        with self.assertRaises(TracError) as cm:
+            Environment(self.env.path)
+        self.assertEqual(
+            "No Trac environment found at %s\n"
+            "IOError: [Errno 2] No such file or directory: %r"
+            % (self.env.path, version_file),
+            unicode(cm.exception))
 
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""
