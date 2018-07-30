@@ -22,6 +22,7 @@ from trac.core import Component, ComponentManager, TracError, implements
 from trac.env import Environment, IEnvironmentSetupParticipant, \
                      ISystemInfoProvider, open_environment
 from trac.test import EnvironmentStub, rmtree
+from trac.util import create_file
 
 
 class EnvironmentCreatedWithoutData(Environment):
@@ -66,6 +67,50 @@ class EnvironmentTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
         rmtree(self.env.path)
+
+    def test_invalid_version_raises_trac_error(self):
+        """TracError raised when environment version is invalid."""
+        version = 'Trac Environment Version 0'
+        create_file(os.path.join(self.env.path, 'VERSION'), version + '\n')
+
+        try:
+            env = Environment(self.env.path)
+        except TracError as e:
+            self.assertEqual(
+                "Unknown Trac environment type 'Trac Environment Version 0'",
+                unicode(e))
+        else:
+            env.shutdown()
+            self.fail('TracError not raised.')
+
+    def test_version_file_empty(self):
+        """TracError raised when environment version is empty."""
+        create_file(os.path.join(self.env.path, 'VERSION'), '')
+        try:
+            env = Environment(self.env.path)
+        except TracError as e:
+            self.assertEqual(
+                "Unknown Trac environment type ''",
+                unicode(e))
+        else:
+            env.shutdown()
+            self.fail('TracError not raised.')
+
+    def test_version_file_not_found(self):
+        """TracError raised when environment version file not found."""
+        version_file = os.path.join(self.env.path, 'VERSION')
+        os.remove(version_file)
+        try:
+            env = Environment(self.env.path)
+        except TracError as e:
+            self.assertEqual(
+                "No Trac environment found at %s\n"
+                "IOError: [Errno 2] No such file or directory: %r"
+                % (self.env.path, version_file),
+                unicode(e))
+        else:
+            env.shutdown()
+            self.fail('TracError not raised.')
 
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""
