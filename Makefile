@@ -618,7 +618,7 @@ endef
 export HELP_release
 
 .PHONY: release release-src wheel dist release-exe wininst
-.PHONY: clean-release checksum upload
+.PHONY: release-clean checksum upload
 
 ifeq "$(OS)" "Windows_NT"
 release: release-exe
@@ -626,7 +626,7 @@ else # !Windows_NT
 release: release-src
 endif # Windows_NT
 
-clean-release:
+release-clean:
 ifeq "$(version)" ""
 	$(error "specify version= on the make command-line")
 else
