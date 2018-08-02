@@ -365,9 +365,15 @@ jinja:
 	$(PYTHON) contrib/jinjachecker.py $(jinjaopts) $(templates)
 
 coffeescripts ?= $(shell find trac tracopt -name \*.coffee)
+coffeescript_major_version ?= \
+    $(shell coffee -v 2> /dev/null | \
+        sed -E s'/CoffeeScript version ([0-9]+)\.[0-9]+\.[0-9]+/\1/')
 
 coffee:
-	coffee -c  $(coffeescripts)
+ifneq "$(coffeescript_major_version)" "1"
+	$(error "CoffeeScript version 1.x is required")
+endif
+	coffee -c $(coffeescripts)
 
 
 # ----------------------------------------------------------------------------
