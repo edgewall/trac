@@ -589,15 +589,17 @@ define HELP_release
   release-exe         generates the Windows installers (32- and 64-bits)
   release-clean       remove the packages
 
+  update-help         fetches latest help/guide from Edgewall
   checksum            MD5 and SHA1 checksums of packages of given version
   upload              scp the packages of given version to user@lynx:~/dist
 
   [version=...]       version number, mandatory for checksum and upload
+  [prefix=...]        wiki page prefix for update-help
 endef
 export HELP_release
 
 .PHONY: release release-src wheel dist release-exe wininst
-.PHONY: release-clean checksum upload
+.PHONY: release-clean checksum update-help upload
 
 ifeq "$(OS)" "Windows_NT"
 release: release-exe
@@ -665,6 +667,11 @@ else
 	    echo "No packages found: $(sdist+wheel) $(wininst)" \
 	)
 endif
+
+update-help:
+	@python contrib/checkwiki.py -d --prefix=$(prefix)
+	@python contrib/wiki2rst.py TracUpgrade > UPGRADE.rst
+	@python contrib/wiki2rst.py TracInstall > INSTALL.rst
 
 upload: checksum
 ifeq "$(user)" ""
