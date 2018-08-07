@@ -118,7 +118,7 @@ install:
     echo ".uri = $tracdb_uri" >Makefile.cfg
 script:
   - if [ -n "$tracdb_version" ]; then echo "$tracdb_version"; fi
-  - make compile
+  - if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then make compile; fi
   - if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then make Trac.egg-info unit-test functional-test; fi
 notifications:
   email:
