@@ -234,6 +234,8 @@ class HTTPException(TracBaseError):
 
     __metaclass__ = ABCMeta
 
+    code = None
+
     def __init__(self, detail, *args):
         """Factory for HTTPException classes."""
         if isinstance(detail, TracBaseError):
