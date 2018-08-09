@@ -634,7 +634,7 @@ def dispatch_request(environ, start_response):
     dispatcher = RequestDispatcher(env)
     dispatcher.set_default_callbacks(req)
     try:
-        if not env and env_error:
+        if env_error:
             raise HTTPInternalServerError(env_error)
         try:
             dispatcher.dispatch(req)
@@ -724,11 +724,10 @@ def send_internal_error(env, req, exc_info):
 
     frames, plugins, faulty_plugins, interface_custom = [], [], [], []
     th = 'http://trac-hacks.org'
-    has_admin = False
     try:
         has_admin = 'TRAC_ADMIN' in req.perm
     except Exception:
-        pass
+        has_admin = False
 
     tracker = default_tracker
     tracker_args = {}
