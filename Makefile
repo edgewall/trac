@@ -662,16 +662,16 @@ else
 	@echo "Packages for Trac-$(version):"
 	@echo
 	@$(if $(packages), \
-	    python contrib/checksum.py md5:sha256 $(packages) \
+	    $(PYTHON) contrib/checksum.py md5:sha256 $(packages) \
 	, \
 	    echo "No packages found: $(sdist+wheel) $(wininst)" \
 	)
 endif
 
 update-help:
-	@python contrib/checkwiki.py -d --prefix=$(prefix)
-	@python contrib/wiki2rst.py TracUpgrade > UPGRADE.rst
-	@python contrib/wiki2rst.py TracInstall > INSTALL.rst
+	@$(PYTHON) contrib/checkwiki.py -d --prefix=$(prefix)
+	@$(PYTHON) contrib/wiki2rst.py TracUpgrade > UPGRADE.rst
+	@$(PYTHON) contrib/wiki2rst.py TracInstall > INSTALL.rst
 
 upload: checksum
 ifeq "$(user)" ""
