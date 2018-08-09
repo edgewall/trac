@@ -878,11 +878,12 @@ class SendErrorTestCase(unittest.TestCase):
 
     def _make_environ(self, scheme='http', server_name='example.org',
                       server_port=80, method='GET', script_name='/',
-                      **kwargs):
+                      env_path=None, **kwargs):
         environ = {'wsgi.url_scheme': scheme, 'wsgi.input': io.BytesIO(),
                    'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
                    'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name,
-                   'trac.env_path': self.env_path, 'wsgi.run_once': False}
+                   'trac.env_path': env_path or self.env_path,
+                   'wsgi.run_once': False}
         environ.update(kwargs)
         return environ
 
@@ -1021,6 +1022,19 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertIn('<p>\nOtherwise, please', content)
         self.assertIn(' action="https://trac.edgewall.org/newticket"',
                       content)
+
+    def test_environment_not_found(self):
+        """User error reported when environment is not found."""
+        env_path = self.env_path + '$'  # Arbitrarily modified path
+        environ = self._make_environ(PATH_INFO='/', env_path=env_path)
+
+        dispatch_request(environ, self._make_start_response())
+        content = self.response_sent.getvalue()
+
+        self.assertEqual(
+            "Trac Error\n\nTracError: No Trac environment found at %s\n"
+            "IOError: [Errno 2] No such file or directory: '%s'"
+            % (env_path, os.path.join(env_path, 'VERSION')), content)
 
 
 class SendErrorUseChunkedEncodingTestCase(SendErrorTestCase):

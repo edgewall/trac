@@ -584,7 +584,8 @@ class Request(object):
             'args': lambda req: arg_list_to_args(req.arg_list),
             'languages': Request._parse_languages,
             'incookie': Request._parse_cookies,
-            '_inheaders': Request._parse_headers
+            '_inheaders': Request._parse_headers,
+            'locale': lambda req: None,  # prevent AttributeError
         }
         self.redirect_listeners = []
 

@@ -631,11 +631,11 @@ def dispatch_request(environ, start_response):
         env.abs_href = req.abs_href
     translation.make_activable(lambda: req.locale, env.path if env else None)
     resp = []
-    dispatcher = RequestDispatcher(env)
-    dispatcher.set_default_callbacks(req)
     try:
         if env_error:
             raise HTTPInternalServerError(env_error)
+        dispatcher = RequestDispatcher(env)
+        dispatcher.set_default_callbacks(req)
         try:
             dispatcher.dispatch(req)
         except RequestDone as req_done:
@@ -754,7 +754,7 @@ def send_internal_error(env, req, exc_info):
                     plugin_name = info.get('home_page', '').rstrip('/') \
                                                            .split('/')[-1]
                     tracker_args = {'component': plugin_name}
-        interface_custom = Chrome(env).get_interface_customization_files()
+            interface_custom = Chrome(env).get_interface_customization_files()
 
     def get_description(_):
         if env and has_admin:
@@ -822,7 +822,8 @@ def send_internal_error(env, req, exc_info):
             'tracker': tracker, 'tracker_args': tracker_args,
             'description': description, 'description_en': description_en}
 
-    Chrome(env).add_jquery_ui(req)
+    if env:
+        Chrome(env).add_jquery_ui(req)
     _send_error(req, sys.exc_info(), status=500, env=env, data=data)
 
 
