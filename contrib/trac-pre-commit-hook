@@ -32,10 +32,12 @@ import os
 import re
 import sys
 
-if not 'PYTHON_EGG_CACHE' in os.environ:
+from trac.env import open_environment
+
+
+if 'PYTHON_EGG_CACHE' not in os.environ:
     os.environ['PYTHON_EGG_CACHE'] = os.path.join(sys.argv[1], '.egg-cache')
 
-from trac.env import open_environment
 
 def main():
     if len(sys.argv) != 3:
@@ -47,31 +49,33 @@ def main():
     log = sys.argv[2]
 
     tickets = []
-    for tmp in re.findall('(?:close|closed|closes|fix|fixed|fixes|addresses|references|refs|re|see)'
+    for tmp in re.findall('(?:close|closed|closes|fix|fixed|fixes|addresses|'
+                          'references|refs|re|see)'
                           '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log.lower()):
         tickets += re.findall('#([0-9]+)', tmp)
 
     # At least one ticket has to be mentioned in the log message
-    if tickets == []:
+    if not tickets:
         print("At least one open ticket must be mentioned in the log "
               "message.", file=sys.stderr)
         sys.exit(1)
 
-    env = open_environment(env_path)
-    db = env.get_db_cnx()
+    env = open_environment(env_path, use_cache=True)
 
-    cursor = db.cursor()
-    cursor.execute("SELECT COUNT(id) FROM ticket WHERE "
-                   "status <> 'closed' AND id IN (%s)" % ','.join(tickets))
-    row = cursor.fetchone()
-    # At least one of the tickets mentioned in the log messages has to
-    # be open
-    if not row or row[0] < 1:
+    count = None
+    for count, in env.db_query("""
+            SELECT COUNT(id) FROM ticket
+            WHERE status <> 'closed' AND id IN (%s)
+            """ % ','.join(['%s']*len(tickets)), tickets):
+        break
+
+    if not count or count < 1:
         print("At least one open ticket must be mentioned in the log "
               "message.", file=sys.stderr)
         sys.exit(1)
     else:
         sys.exit(0)
+
 
 if __name__ == '__main__':
     main()
