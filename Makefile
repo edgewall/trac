@@ -590,6 +590,7 @@ define HELP_release
   release-clean       remove the packages
 
   update-help         fetches latest help/guide from Edgewall
+  update-copyright    update copyright year in file headers
   checksum            MD5 and SHA1 checksums of packages of given version
   upload              scp the packages of given version to user@lynx:~/dist
 
@@ -599,7 +600,7 @@ endef
 export HELP_release
 
 .PHONY: release release-src wheel dist release-exe wininst
-.PHONY: release-clean checksum update-help upload
+.PHONY: release-clean checksum update-copyright update-help upload
 
 ifeq "$(OS)" "Windows_NT"
 release: release-exe
@@ -666,6 +667,25 @@ else
 	, \
 	    echo "No packages found: $(sdist+wheel) $(wininst)" \
 	)
+endif
+
+copyright_re := "s/^($$PREFIX)(Copyright \(C\) 20[01][0-9])(-20[01][0-9])?$\
+    ( Edgewall Software)$$/\1\2-$(year)\4/g"
+
+update-copyright:
+ifeq "$(year)" ""
+	$(error "specify year= on the make command-line")
+else
+	@PREFIX="<!--!  "; find . -type f -name "*.html" \
+	    -exec sed -i '' -E $(copyright_re) {} \;
+	@PREFIX="\# "; find . -type f \
+	    \( -name "*.py" -o -name "*.ps1" -o -name "*.cgi" -o -name "*.fcgi" \) \
+	    -exec sed -i '' -E $(copyright_re) {} \;
+	@PREFIX="\# "; sed -i '' -E $(copyright_re) \
+	    contrib/trac-svn-hook contrib/trac-pre-commit-hook
+	@PREFIX=":: "; sed -i '' -E $(copyright_re) \
+	    contrib/trac-svn-post-commit-hook.cmd
+	@PREFIX=; sed -i '' -E $(copyright_re) COPYING
 endif
 
 update-help:
