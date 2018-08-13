@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2016 Edgewall Software
+# Copyright (C) 2016-2018 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
