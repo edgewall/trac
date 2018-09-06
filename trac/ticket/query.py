@@ -648,7 +648,7 @@ class Query(object):
                 sql.append(" OR ".join('(%s)' % c for c in clauses))
                 if cached_ids:
                     sql.append(" OR ")
-                    sql.append("id in (%s)" %
+                    sql.append("t.id in (%s)" %
                                (','.join(str(id) for id in cached_ids)))
 
             sql.append("\nORDER BY ")

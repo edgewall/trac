@@ -116,6 +116,14 @@ class QueryTestCase(unittest.TestCase):
                 t[name] = values[idx % len(values)]
                 t.save_changes()
 
+    def _execute_query(self, query):
+        ids = [0]
+        self.assertNotEqual(query.get_sql(self.req)[0],
+                            query.get_sql(self.req, cached_ids=ids))
+        tickets = query.execute(self.req)
+        self.assertEqual(tickets, query.execute(self.req, cached_ids=ids))
+        return tickets
+
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
         sql, args = query.get_sql()
@@ -125,7 +133,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(self.n_tickets, len(tickets))
         self.assertTrue(tickets[0]['id'] < tickets[-1]['id'])
 
@@ -138,7 +146,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0 DESC,t.id DESC""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(self.n_tickets, len(tickets))
         self.assertTrue(tickets[0]['id'] > tickets[-1]['id'])
 
@@ -151,7 +159,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(self.n_tickets, len(tickets))
 
     def test_all_ordered_by_id_from_unicode(self):
@@ -163,7 +171,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(self.n_tickets, len(tickets))
 
     def test_all_ordered_by_priority(self):
@@ -178,7 +186,7 @@ FROM ticket AS t
 ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['blocker', 'blocker', 'critical', 'major', 'minor',
                           'trivial', '', '', '', ''],
                          [t['priority'] for t in tickets])
@@ -195,7 +203,7 @@ FROM ticket AS t
 ORDER BY COALESCE(priority.value,'')='' DESC,%(cast_priority)s DESC,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', '', '', 'trivial', 'minor', 'major',
                           'critical', 'blocker', 'blocker'],
                          [t['priority'] for t in tickets])
@@ -210,7 +218,7 @@ FROM ticket AS t
   LEFT OUTER JOIN version ON (version.name=version)
 ORDER BY COALESCE(t.version,'')='',COALESCE(version.time,0)=0,version.time,t.version,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['1.0', '2.0', '0.0', '0.0', 'version1', 'version1',
                           '', '', '', ''],
                          [t['version'] for t in tickets])
@@ -225,7 +233,7 @@ FROM ticket AS t
   LEFT OUTER JOIN version ON (version.name=version)
 ORDER BY COALESCE(t.version,'')='' DESC,COALESCE(version.time,0)=0 DESC,version.time DESC,t.version DESC,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', '', '', 'version1', 'version1', '0.0', '0.0',
                           '2.0', '1.0'],
                          [t['version'] for t in tickets])
@@ -252,7 +260,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS type ON (type.type='ticket_type' AND type.name=t.type)
 ORDER BY COALESCE(type.value,'')='',%(cast_type_value)s,t.id""" % casts)
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['task', 'task', 'defect', 'defect', 'enhancement',
                           'enhancement', '', '', '', ''],
                          [t['type'] for t in tickets])
@@ -267,7 +275,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.milestone,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['milestone1', 'milestone1'],
                          [t['milestone'] for t in tickets])
 
@@ -281,7 +289,7 @@ FROM ticket AS t
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
 ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.completed,0)=0,milestone.completed,COALESCE(milestone.due,0)=0,milestone.due,t.milestone,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['milestone1', 'milestone1', 'milestone2',
                           'milestone2', '', '', '', '', '', ''],
                          [t['milestone'] for t in tickets])
@@ -296,7 +304,7 @@ FROM ticket AS t
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
 ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC,milestone.completed DESC,COALESCE(milestone.due,0)=0 DESC,milestone.due DESC,t.milestone DESC,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', '', '', '', '', 'milestone2', 'milestone2',
                           'milestone1', 'milestone1'],
                          [t['milestone'] for t in tickets])
@@ -313,7 +321,7 @@ FROM ticket AS t
 ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
           'cast_priority': cast_priority})
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['blocker', 'blocker', 'critical', 'major', 'minor',
                           'trivial', '', '', '', ''],
                          [t['priority'] for t in tickets])
@@ -328,7 +336,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.milestone,'')!=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'milestone2', '', '', 'milestone2', '', ''],
                          [t['milestone'] for t in tickets])
 
@@ -343,7 +351,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['new', 'assigned', 'reopened'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['new', 'assigned', 'reopened', 'new', 'assigned'],
                          [t['status'] for t in tickets])
 
@@ -359,7 +367,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone%'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'someone',
                           'someone_else'],
                          [t['owner'] for t in tickets])
@@ -376,7 +384,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'') NOT %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone%'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'none', '', '', 'none'],
                          [t['owner'] for t in tickets])
 
@@ -392,7 +400,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['someone%'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'someone',
                           'someone_else'],
                          [t['owner'] for t in tickets])
@@ -409,7 +417,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%someone'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone'], [t['owner'] for t in tickets])
 
     def test_constrained_by_custom_field(self):
@@ -427,7 +435,7 @@ FROM ticket AS t
 WHERE ((COALESCE(%(foo)s.value,'')=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'foo': foo})
         self.assertEqual(['something'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['something'] * 3, [t['foo'] for t in tickets])
 
     def test_grouped_by_custom_field(self):
@@ -445,7 +453,7 @@ FROM ticket AS t
 ORDER BY COALESCE(%(foo)s.value,'')='',%(foo)s.value,COALESCE(t.id,0)=0,t.id"""
         % {'foo': foo})
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['something'] * 3 + [''] * 7,
                          [t['foo'] for t in tickets])
 
@@ -466,18 +474,18 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
                                foo='blah')
 
         query = Query.from_string(self.env, 'id=%d-42&foo=blah' % ticket.id)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(1, len(tickets))
         self.assertEqual(ticket.id, tickets[0]['id'])
 
         query = Query.from_string(self.env, 'id=%d,42&foo=blah' % ticket.id)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(1, len(tickets))
         self.assertEqual(ticket.id, tickets[0]['id'])
 
         query = Query.from_string(self.env, 'id=%d,42,43-84&foo=blah' %
                                             ticket.id)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(1, len(tickets))
         self.assertEqual(ticket.id, tickets[0]['id'])
 
@@ -493,7 +501,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         string = 'col_00=0.col_00&order=id&col=id&col=reporter&col=summary' + \
                  ''.join('&col=' + f for f in fields)
         query = Query.from_string(self.env, string)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(ticket.id, tickets[0]['id'])
         self.assertEqual('joe', tickets[0]['reporter'])
         self.assertEqual('Foo', tickets[0]['summary'])
@@ -514,7 +522,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.owner,'') IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'someone',
                           'someone_else'],
                          [t['owner'] for t in tickets])
@@ -530,7 +538,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['someone', 'someone_else'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'none', '', '', 'none'],
                          [t['owner'] for t in tickets])
 
@@ -547,7 +555,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(t.owner,'') %(like)s OR COALESCE(t.owner,'') %(like)s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'someone',
                           'someone_else'],
                          [t['owner'] for t in tickets])
@@ -562,7 +570,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([''], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', '', ''], [t['owner'] for t in tickets])
 
     def test_constrained_by_an_empty_value_not(self):
@@ -575,7 +583,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'')!=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([''], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'none', 'someone',
                           'someone_else', 'none'],
                          [t['owner'] for t in tickets])
@@ -590,7 +598,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.owner,'') IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['', ''], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', '', ''], [t['owner'] for t in tickets])
 
     def test_constrained_by_empty_values_not(self):
@@ -603,7 +611,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.owner,'') NOT IN (%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['', ''], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['someone', 'someone_else', 'none', 'someone',
                           'someone_else', 'none'],
                          [t['owner'] for t in tickets])
@@ -617,7 +625,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
                           'someone', 'someone_else', 'none'],
                          [t['owner'] for t in tickets])
@@ -631,7 +639,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
                           'someone', 'someone_else', 'none'],
                          [t['owner'] for t in tickets])
@@ -645,7 +653,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'someone', 'someone_else', 'none', '', '',
                           'someone', 'someone_else', 'none'],
                          [t['owner'] for t in tickets])
@@ -663,7 +671,7 @@ WHERE (((%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
         self.assertEqual([1217548800000000, 1220227200000000], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
                           '2008-08-20T12:34:56.987654+00:00',
                           '2008-08-30T12:34:56.987654+00:00'],
@@ -682,7 +690,7 @@ WHERE ((NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
         self.assertEqual([1217548800000000, 1220227200000000], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
                           '2008-07-11T12:34:56.987654+00:00',
                           '2008-07-21T12:34:56.987654+00:00',
@@ -705,7 +713,7 @@ WHERE ((%(cast_time)s>=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
         self.assertEqual([1217548800000000], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
                           '2008-08-20T12:34:56.987654+00:00',
                           '2008-08-30T12:34:56.987654+00:00',
@@ -727,7 +735,7 @@ WHERE ((%(cast_time)s<%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_time': cast_time})
         self.assertEqual([1220227200000000], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
                           '2008-07-11T12:34:56.987654+00:00',
                           '2008-07-21T12:34:56.987654+00:00',
@@ -750,7 +758,7 @@ WHERE (((%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
           'cast_changetime': cast_changetime})
         self.assertEqual([1217548800000000, 1220227200000000], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['2008-08-01T12:34:56.987654+00:00',
                           '2008-08-11T12:34:56.987654+00:00',
                           '2008-08-21T12:34:56.987654+00:00',
@@ -770,7 +778,7 @@ FROM ticket AS t
 WHERE (((COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['foo baz'], [t['keywords'] for t in tickets])
 
     def test_constrained_by_keywords_not(self):
@@ -786,7 +794,7 @@ FROM ticket AS t
 WHERE ((NOT (COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': like})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['', '', 'foo', 'bar', 'baz', 'foo bar', 'bar baz',
                           'foo bar baz', ''],
                          [t['keywords'] for t in tickets])
@@ -817,7 +825,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.milestone,'')=%s)) OR ((COALESCE(t.version,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1', 'version1'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual([('milestone1', '0.0'),
                           ('milestone2', 'version1'),
                           ('milestone1', ''),
@@ -835,7 +843,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.status,'')=%s) AND (COALESCE(t.version,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['this=that', 'version1'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
 
     def test_special_character_escape(self):
         query = Query.from_string(self.env, r'status=here\&now|maybe\|later|back\slash',
@@ -848,7 +856,7 @@ FROM ticket AS t
 WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['here&now', 'maybe|later', 'back\\slash'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
 
     def test_repeated_constraint_field(self):
         like_query = Query.from_string(self.env, 'owner!=someone|someone_else',
@@ -859,7 +867,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         sql, args = query.get_sql()
         self.assertEqualSQL(sql, like_sql)
         self.assertEqual(args, like_args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
 
     def test_priority_value_in_custom_field(self):
         self.env.config.set('ticket-custom', 'priority_value', 'text')
@@ -882,7 +890,7 @@ FROM ticket AS t
 WHERE ((COALESCE(t.owner,'')=%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['anonymous'], args)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
 
     def _setup_no_defined_values_and_custom_field(self, name):
         quoted = {}
@@ -909,7 +917,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         quoted = self._setup_no_defined_values_and_custom_field('priority')
         query = Query.from_string(self.env, 'status!=closed&priority=foo&'
                                             'priority=blah&order=priority')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
                          [t['summary'] for t in tickets])
         sql, args = query.get_sql(req=self.req)
@@ -927,7 +935,7 @@ ORDER BY COALESCE(%(priority)s.value,'')='',%(priority)s.value,t.id""" % quoted)
         quoted = self._setup_no_defined_values_and_custom_field('resolution')
         query = Query.from_string(self.env, 'status!=closed&resolution=foo&'
                                             'resolution=blah&order=resolution')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
                          [t['summary'] for t in tickets])
         sql, args = query.get_sql(req=self.req)
@@ -947,7 +955,7 @@ ORDER BY COALESCE(%(resolution)s.value,'')='',%(resolution)s.value,t.id""" % quo
         quoted = self._setup_no_defined_values_and_custom_field('type')
         query = Query.from_string(self.env, 'status!=closed&type=foo&'
                                             'type=blah&order=type')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
                          [t['summary'] for t in tickets])
         sql, args = query.get_sql(req=self.req)
@@ -967,7 +975,7 @@ ORDER BY COALESCE(%(type)s.value,'')='',%(type)s.value,t.id""" % quoted)
         quoted = self._setup_no_defined_values_and_custom_field('milestone')
         query = Query.from_string(self.env, 'status!=closed&milestone=foo&'
                                             'milestone=blah&order=milestone')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
                          [t['summary'] for t in tickets])
         sql, args = query.get_sql(req=self.req)
@@ -987,7 +995,7 @@ ORDER BY COALESCE(%(milestone)s.value,'')='',%(milestone)s.value,t.id""" % quote
         quoted = self._setup_no_defined_values_and_custom_field('version')
         query = Query.from_string(self.env, 'status!=closed&version=foo&'
                                             'version=blah&order=version')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(['Summary "blah"', 'Summary "foo"'],
                          [t['summary'] for t in tickets])
         sql, args = query.get_sql(req=self.req)
@@ -1012,7 +1020,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
         ticket.insert()
         query = Query.from_string(
             self.env, 'summary=test_invalid_id_custom_field&col=id')
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(ticket.id, tickets[0]['id'])
         self.assertEqual('new', tickets[0]['status'])
         self.assertEqual('test_invalid_id_custom_field', tickets[0]['summary'])
@@ -1079,7 +1087,7 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 WHERE ((COALESCE(c.%(ticket)s,'') %(like)s))
 ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
-        tickets = query.execute(self.req)
+        tickets = self._execute_query(query)
         self.assertEqual(tktids, [t['id'] for t in tickets])
         self.assertEqual({'new'}, {t['status'] for t in tickets})
         self.assertEqual(['ticket-0', 'ticket-1', 'ticket-2'],
