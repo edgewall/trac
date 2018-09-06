@@ -98,7 +98,7 @@ install:
       python -c 'from svn import core'
     fi
   - |
-    requires='Genshi==0.7 configobj Pygments docutils textile lxml pytz twill==0.9.1'
+    requires='Genshi>=0.7 configobj Pygments docutils textile lxml pytz twill==0.9.1'
     case "$pyver" in
       2.6) requires="$requires Babel<2.6.0" ;;
       *)   requires="$requires Babel" ;;
