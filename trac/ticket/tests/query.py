@@ -119,11 +119,8 @@ class QueryTestCase(unittest.TestCase):
                 t.save_changes()
 
     def _execute_query(self, query):
-        ids = [0]
-        self.assertNotEqual(query.get_sql(self.req)[0],
-                            query.get_sql(self.req, cached_ids=ids))
         tickets = query.execute(self.req)
-        self.assertEqual(tickets, query.execute(self.req, cached_ids=ids))
+        self.assertEqual(tickets, query.execute(self.req, cached_ids=[0]))
         return tickets
 
     def test_all_ordered_by_id(self):
