@@ -31,7 +31,7 @@ from trac.db import get_column_names
 from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem, translation_deactivated
-from trac.ticket.model import Milestone
+from trac.ticket.model import Milestone, _datetime_to_db_str
 from trac.ticket.roadmap import group_milestones
 from trac.util import Ranges, as_bool
 from trac.util.datefmt import (datetime_now, from_utimestamp,
@@ -493,16 +493,17 @@ class Query(object):
             sql.extend("\n  LEFT OUTER JOIN %(col)s ON (%(col)s.name=%(col)s)"
                        % {'col': col} for col in joined_columns)
 
-            def get_timestamp(date):
-                if date:
+            def user_parse_date(value):
+                if value:
                     try:
-                        return to_utimestamp(user_time(req, parse_date, date))
+                        return user_time(req, parse_date, value)
                     except TracError as e:
                         errors.append(unicode(e))
                 return None
 
             def get_constraint_sql(name, value, mode, neg):
-                if name not in custom_fields:
+                is_custom_field = name in custom_fields
+                if not is_custom_field:
                     col = 't.' + name
                 elif use_joins:
                     col = db.quote(name) + '.value'
@@ -511,28 +512,38 @@ class Query(object):
                 value = value[len(mode) + neg:]
 
                 if name in self.time_fields:
+                    if not value:
+                        clause = "COALESCE({0},''){1}=%s" \
+                                 .format(col, '!' if neg else '')
+                        args = ['']
+                        return clause, args
                     if '..' in value:
                         (start, end) = [each.strip() for each in
                                         value.split('..', 1)]
                     else:
                         (start, end) = (value.strip(), '')
-                    col_cast = db.cast(col, 'int64')
-                    start = get_timestamp(start)
-                    end = get_timestamp(end)
+                    start = user_parse_date(start)
+                    end = user_parse_date(end)
+                    clause = args = None
                     if start is not None and end is not None:
-                        return ("%s(%s>=%%s AND %s<%%s)"
-                                % ('NOT ' if neg else '', col_cast, col_cast),
-                                (start, end))
+                        clause = "{0}({1}>=%s AND {1}<%s)" \
+                                 .format('NOT ' if neg else '', col)
+                        args = [start, end]
                     elif start is not None:
-                        return ("%s%s>=%%s"
-                                % ('NOT ' if neg else '', col_cast),
-                                (start, ))
+                        clause = "{0}{1}>=%s" \
+                                 .format('NOT ' if neg else '', col)
+                        args = [start]
                     elif end is not None:
-                        return ("%s%s<%%s"
-                                % ('NOT ' if neg else '', col_cast),
-                                (end, ))
+                        clause = "{0}{1}<%s" \
+                                 .format('NOT ' if neg else '', col)
+                        args = [end]
                     else:
                         return None
+                    if is_custom_field:
+                        args = [_datetime_to_db_str(arg, True) for arg in args]
+                    else:
+                        args = [to_utimestamp(arg) for arg in args]
+                    return clause, args
 
                 def split_words(splittable):
                     return [w.strip() for wl in
