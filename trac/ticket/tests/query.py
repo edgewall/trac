@@ -58,6 +58,7 @@ class QueryTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.req = MockRequest(self.env)
+        self.query_module = QueryModule(self.env)
         self.tktids = self._insert_tickets(
             owner=[None, '', 'someone', 'someone_else', 'none'],
             type=[None, '', 'enhancement', 'defect', 'task'],
@@ -120,6 +121,10 @@ class QueryTestCase(unittest.TestCase):
         tickets = query.execute(self.req)
         self.assertEqual(tickets, query.execute(self.req, cached_ids=[0]))
         return tickets
+
+    def _process_request(self, req):
+        self.assertTrue(self.query_module.match_request(req))
+        return self.query_module.process_request(req)
 
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
@@ -658,15 +663,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
     def test_constrained_by_time_range(self):
         query = Query.from_string(self.env, 'created=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
-        with self.env.db_query as db:
-            cast_time = db.cast('t.time', 'int64')
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
-WHERE (((%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': cast_time})
+WHERE (((t.time>=%s AND t.time<%s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = self._execute_query(query)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
@@ -677,15 +679,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
     def test_constrained_by_time_range_exclusion(self):
         query = Query.from_string(self.env, 'created!=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
-        with self.env.db_query as db:
-            cast_time = db.cast('t.time', 'int64')
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
-WHERE ((NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': cast_time})
+WHERE ((NOT (t.time>=%s AND t.time<%s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = self._execute_query(query)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
@@ -700,15 +699,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
     def test_constrained_by_time_range_open_right(self):
         query = Query.from_string(self.env, 'created=2008-08-01..', order='id')
         sql, args = query.get_sql(self.req)
-        with self.env.db_query as db:
-            cast_time = db.cast('t.time', 'int64')
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
-WHERE ((%(cast_time)s>=%%s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': cast_time})
+WHERE ((t.time>=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800000000], args)
         tickets = self._execute_query(query)
         self.assertEqual(['2008-08-10T12:34:56.987654+00:00',
@@ -722,15 +718,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
     def test_constrained_by_time_range_open_left(self):
         query = Query.from_string(self.env, 'created=..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
-        with self.env.db_query as db:
-            cast_time = db.cast('t.time', 'int64')
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS _priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
-WHERE ((%(cast_time)s<%%s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': cast_time})
+WHERE ((t.time<%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1220227200000000], args)
         tickets = self._execute_query(query)
         self.assertEqual(['2008-07-01T12:34:56.987654+00:00',
@@ -745,15 +738,12 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
     def test_constrained_by_time_range_modified(self):
         query = Query.from_string(self.env, 'modified=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
-        with self.env.db_query as db:
-            cast_changetime = db.cast('t.changetime', 'int64')
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS _priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
-WHERE (((%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)))
-ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_changetime': cast_changetime})
+WHERE (((t.changetime>=%s AND t.changetime<%s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800000000, 1220227200000000], args)
         tickets = self._execute_query(query)
         self.assertEqual(['2008-08-01T12:34:56.987654+00:00',
@@ -1146,9 +1136,7 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
 
     def test_properties_script_data(self):
         req = MockRequest(self.env, path_info='/query')
-        mod = QueryModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        template, data = mod.process_request(req)
+        template, data = self._process_request(req)
         prop = req.chrome['script_data']['properties']['milestone']
         self.assertEqual('select', prop['type'])
         self.assertEqual('Milestone', prop['label'])
@@ -1164,9 +1152,7 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
         self.env.db_transaction("DELETE FROM milestone")
         self.env.config.set('ticket-custom', 'milestone', 'text')
         req = MockRequest(self.env, path_info='/query')
-        mod = QueryModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        template, data = mod.process_request(req)
+        template, data = self._process_request(req)
         prop = req.chrome['script_data']['properties']['milestone']
         self.assertEqual({'label': 'Milestone', 'type': 'text',
                           'format': 'plain'}, prop)
@@ -1177,11 +1163,9 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
             db("UPDATE ticket SET time=NULL WHERE id<%s", (n,))
             db("UPDATE ticket SET changetime=NULL WHERE id>%s", (n,))
         req = MockRequest(self.env, path_info='/query', args={'id': '!0'})
-        mod = QueryModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        mod.process_request(req)
+        self._process_request(req)
         self.assertNotEqual('', req.session['query_tickets'])
-        mod.process_request(req)  # TypeError not raised (#12029)
+        self._process_request(req)  # TypeError not raised (#12029)
 
     def test_time_fields(self):
         when = datetime(2017, 11, 9, 12, 56, 34, 654321, utc)
@@ -1195,9 +1179,7 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
         t2.save_changes(when=when + timedelta(seconds=1))
         req = MockRequest(self.env, path_info='/query',
                           args={'id': '1-3', 'order': 'id', 'col': 'due'})
-        mod = QueryModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        data = mod.process_request(req)[1]
+        data = self._process_request(req)[1]
         tickets = data['tickets']
 
         t1 = tickets[0]
@@ -1242,28 +1224,98 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
 ORDER BY COALESCE(%(due)s.value,'')='',%(due)s.value,t.id""" % quoted)
 
-        def process_request(req):
-            mod = QueryModule(self.env)
-            self.assertTrue(mod.match_request(req))
-            return mod.process_request(req)
-
         req = MockRequest(self.env, path_info='/query',
                           args={'id': '1-3', 'order': 'due'})
-        data = process_request(req)[1]
+        data = self._process_request(req)[1]
         tickets = data['tickets']
         self.assertEqual([2, 1, 3], [t['id'] for t in tickets])
 
         req = MockRequest(self.env, path_info='/query',
                           args={'id': '1-3', 'order': 'time'})
-        data = process_request(req)[1]
+        data = self._process_request(req)[1]
         tickets = data['tickets']
         self.assertEqual([1, 2, 3], [t['id'] for t in tickets])
 
         req = MockRequest(self.env, path_info='/query',
                           args={'id': '1-3', 'order': 'changetime'})
-        data = process_request(req)[1]
+        data = self._process_request(req)[1]
         tickets = data['tickets']
         self.assertEqual([1, 3, 2], [t['id'] for t in tickets])
+
+    def test_time_fields_constrained_by_time_range(self):
+        self.env.config.set('ticket-custom', 'due', 'time')
+        with self.env.db_transaction as db:
+            quoted = {'due': db.quote('due')}
+            tkt = Ticket(self.env, 1)
+            tkt['due'] = ''
+            tkt.save_changes()
+            db("""INSERT INTO ticket_custom (ticket,name,value)
+                  VALUES (2,'due','blahblah')""")
+            tkt = Ticket(self.env, 3)
+            tkt['due'] = datetime(2018, 9, 13, 12, 34, 56, 987654, utc)
+            tkt.save_changes()
+            tkt = Ticket(self.env, 4)
+            tkt['due'] = datetime(2018, 9, 12, 12, 34, 56, 987654, utc)
+            tkt.save_changes()
+            tkt = Ticket(self.env, 5)
+            tkt['due'] = datetime(2018, 9, 11, 12, 34, 56, 987654, utc)
+            tkt.save_changes()
+            tkt = Ticket(self.env, 6)
+            tkt['due'] = datetime(2018, 9, 10, 12, 34, 56, 987654, utc)
+            tkt.save_changes()
+
+        query = Query.from_string(
+            self.env, 'col=due&due=2018-09-11Z..2018-09-13Z&order=id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql, """\
+SELECT t.id AS id,t.status AS status,t.priority AS priority,t.time AS time,\
+t.changetime AS changetime,priority.value AS _priority_value,\
+{due}.value AS {due}
+FROM ticket AS t
+  LEFT OUTER JOIN ticket_custom AS {due} ON ({due}.ticket=t.id AND {due}.name='due')
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
+WHERE ((({due}.value>=%s AND {due}.value<%s)))
+ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
+        self.assertEqual(['001536624000000000', '001536796800000000'], args)
+
+        req = MockRequest(self.env, path_info='/query',
+                          args={'due': '2018-09-11Z..2018-09-13Z',
+                                'order': 'id', 'desc': '1'})
+        data = self._process_request(req)[1]
+        tickets = data['tickets']
+        self.assertEqual([5, 4], [t['id'] for t in tickets])
+
+    def test_time_fields_constrained_by_empty(self):
+        self.env.config.set('ticket-custom', 'due', 'time')
+        with self.env.db_transaction as db:
+            quoted = {'due': db.quote('due')}
+            tkt = Ticket(self.env, 1)
+            tkt['due'] = ''
+            tkt.save_changes()
+            for tktid in (2, 4, 6):
+                tkt = Ticket(self.env, tktid)
+                tkt['due'] = datetime(2018, 9, 8, 12, 34, 56, 987654, utc)
+                tkt.save_changes()
+
+        query = Query.from_string(self.env, 'col=due&id=1-6&due=&order=id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql, """\
+SELECT t.id AS id,t.status AS status,t.priority AS priority,t.time AS time,\
+t.changetime AS changetime,priority.value AS _priority_value,\
+{due}.value AS {due}
+FROM ticket AS t
+  LEFT OUTER JOIN ticket_custom AS {due} ON ({due}.ticket=t.id AND {due}.name='due')
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=t.priority)
+WHERE ((t.id BETWEEN %s AND %s) AND (COALESCE({due}.value,'')=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
+        self.assertEqual([1, 6, ''], args)
+
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': '1-6', 'due': '', 'order': 'id',
+                                'desc': '1'})
+        data = self._process_request(req)[1]
+        tickets = data['tickets']
+        self.assertEqual([5, 3, 1], [t['id'] for t in tickets])
 
 
 class QueryLinksTestCase(unittest.TestCase):
