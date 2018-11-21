@@ -19,7 +19,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
-from hashlib import md5
+import hashlib
 import io
 import mimetypes
 import os
@@ -743,7 +743,7 @@ class Request(object):
         so that consecutive requests can be cached.
         """
         if isinstance(extra, list):
-            m = md5()
+            m = hashlib.sha1()
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()
