@@ -23,7 +23,11 @@ import functools
 import hashlib
 import inspect
 import io
-from itertools import izip, tee
+try:
+    from itertools import izip, tee
+except ImportError:
+    import sys
+    sys.exit("Python 3 not supported... yet! (#12130)")
 import locale
 import os
 import posixpath
