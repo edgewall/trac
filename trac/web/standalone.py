@@ -135,6 +135,10 @@ def parse_args(args=None):
                                              "Incorrect number of parameters")
             env_name, filename, realm = info
             filepath = os.path.abspath(filename)
+            if not os.path.exists(filepath):
+                raise argparse.ArgumentError(self,
+                                             "Path does not exist: '%s'"
+                                             % filename)
             auths = getattr(namespace, self.dest)
             if env_name in auths:
                 printerr("Ignoring duplicate authentication option for "
@@ -145,21 +149,33 @@ def parse_args(args=None):
 
     class _PathAction(argparse.Action):
 
+        def __init__(self, option_strings, dest, nargs=None, **kwargs):
+            self.must_exist = kwargs.pop('must_exist', False)
+            super(_PathAction, self).__init__(option_strings, dest, nargs,
+                                              **kwargs)
+
         def __call__(self, parser, namespace, values, option_string=None):
+            def to_abspath(path):
+                abspath = os.path.abspath(path)
+                if self.must_exist and not os.path.exists(abspath):
+                    raise argparse.ArgumentError(self,
+                                                 "Path does not exist: '%s'"
+                                                 % path)
+                return abspath
             if isinstance(values, list):
-                paths = [os.path.abspath(paths) for paths in values]
+                paths = [to_abspath(paths) for paths in values]
             else:
-                paths = os.path.abspath(values)
+                paths = to_abspath(values)
             setattr(namespace, self.dest, paths)
 
     parser.add_argument('--version', action='version',
                         version='%%(prog)s %s' % VERSION)
-    parser.add_argument('envs', action=_PathAction, nargs='*',
-                        help="path of the project environment(s)")
+    parser.add_argument('envs', action=_PathAction, must_exist=True,
+                        nargs='*', help="path of the project environment(s)")
 
     parser_group = parser.add_mutually_exclusive_group()
     parser_group.add_argument('-e', '--env-parent-dir', action=_PathAction,
-                              metavar='PARENTDIR',
+                              must_exist=True, metavar='PARENTDIR',
                               help="parent directory of the project "
                                    "environments")
     parser_group.add_argument('-s', '--single-env', action='store_true',
