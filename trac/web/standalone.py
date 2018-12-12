@@ -120,6 +120,12 @@ def main():
     parser = OptionParser(usage='usage: %prog [options] [projenv] ...',
                           version='%%prog %s' % VERSION)
 
+    def to_abspath(path):
+        abspath = os.path.abspath(path)
+        if not os.path.exists(abspath):
+            raise parser.error("Path does not exist: '%s'" % path)
+        return abspath
+
     auths = {}
     def _auth_callback(option, opt_str, value, parser, cls):
         info = value.split(',', 3)
@@ -132,7 +138,7 @@ def main():
             print('Ignoring duplicate authentication option for project: %s'
                   % env_name, file=sys.stderr)
         else:
-            auths[env_name] = cls(os.path.abspath(filename), realm)
+            auths[env_name] = cls(to_abspath(filename), realm)
 
     def _validate_callback(option, opt_str, value, parser, valid_values):
         if value not in valid_values:
@@ -258,10 +264,10 @@ def main():
     server_address = (options.hostname, options.port)
 
     # relative paths don't work when daemonized
-    args = [os.path.abspath(a) for a in args]
+    args = [to_abspath(a) for a in args]
     if options.env_parent_dir:
-        options.env_parent_dir = os.path.abspath(options.env_parent_dir)
-    if parser.has_option('pidfile') and options.pidfile:
+        options.env_parent_dir = to_abspath(options.env_parent_dir)
+    if parser.has_option('--pidfile') and options.pidfile:
         options.pidfile = os.path.abspath(options.pidfile)
 
     wsgi_app = TracEnvironMiddleware(dispatch_request,
