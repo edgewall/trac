@@ -1017,7 +1017,11 @@ class SubversionChangeset(Changeset):
         pool = Pool(self.pool)
         tmp = Pool(pool)
         root = fs.revision_root(self.fs_ptr, self.rev, pool())
-        editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool())
+        try:
+            editor = repos.ChangeCollector(self.fs_ptr, root, pool())
+        except AttributeError:
+            editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev,
+                                                   pool())
         e_ptr, e_baton = delta.make_editor(editor, pool())
         repos.svn_repos_replay(root, e_ptr, e_baton, pool())
 
