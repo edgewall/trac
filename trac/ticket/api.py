@@ -308,7 +308,8 @@ class TicketSystem(Component):
         fields = copy.deepcopy(self.fields)
         label = 'label' # workaround gettext extraction bug
         for f in fields:
-            f[label] = gettext(f[label])
+            if not f.get('custom'):
+                f[label] = gettext(f[label])
         return fields
 
     def reset_ticket_fields(self):
