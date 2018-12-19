@@ -108,7 +108,7 @@ class SubversionRepositoryTestSetup(TestSetup):
 
     def setUp(self):
         dumpfile = open(os.path.join(os.path.split(__file__)[0],
-                                     'svnrepos.dump'))
+                                     'svnrepos.dump'), 'rb')
 
         svn_fs._import_svn()
         core.apr_initialize()
@@ -126,6 +126,7 @@ class SubversionRepositoryTestSetup(TestSetup):
                                         repos.svn_repos_load_uuid_default, '',
                                         None, None, pool)
         finally:
+            dumpfile.close()
             if dumpstream:
                 core.svn_stream_close(dumpstream)
             core.svn_pool_destroy(pool)
