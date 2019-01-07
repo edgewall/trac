@@ -47,6 +47,7 @@ h2.section {
  padding: .2em .3em 1em .5rem; /* wiki_h_underline_padding _ _ wiki_h_left_padding */
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
   rgba(215, 215, 215, .4) .79em,
   #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
   #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
@@ -64,6 +65,7 @@ h3.section {
  padding: .2em .3em 1em .5rem; /* _ _ (wiki_h_underline_padding + wiki_h_underline_shadow) wiki_h_left_padding */
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
   rgba(215, 215, 215, .4) .8em,
   #822 .8em,  /* _ wiki_h_underline_shadow */
   #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
@@ -80,6 +82,7 @@ h2.section + *, h3.section + * {
 h2.section:target {
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
   rgba(215, 215, 215, .4) .79em,
   #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
   #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
@@ -91,6 +94,7 @@ h2.section:target {
 h3.section:target {
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
   rgba(215, 215, 215, .4) .8em,
   #822 .8em,  /* _ wiki_h_underline_shadow */
   #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
@@ -152,11 +156,24 @@ h6.section {
  padding-left: .5rem; /* wiki_h_left_padding */
 }
 
+/* Wiki page margins and padding:
+
+ |----------------------------------------------| <div class="wikipage">
+        |--------------------------------|           <div class="trac-content">
+        |++++++++++++++++++++++++++++++++|
+        |+++                           ++|           (+) = .5rem
+        |+++                           ++|
+        |+++                           ++| .wikipage .trac-content
+        |+++                           ++|               padding-left: 1.5rem
+        |+++                           ++|
+        |+h2 Section                   ++| .wikipage h2  margin-left: -1.5rem
+        |+++                           ++|               padding-left: .5rem
+*/
 .wikipage .trac-content {
  margin: .3em auto;
  padding-left: 1.5rem;  /* wikipage_content_padding_left */
 }
-.wikipage .wikipage {  /* not perfect... should also work for tickets! */
+.wikipage .trac-content .wikipage { /* not perfect... should also work for tickets! */
  margin-left: -1.5rem;
  padding-left: 1.5rem;
 }
@@ -189,7 +206,6 @@ table.wiki {
 .sidebyside > h2 { margin: .4em 0 }
 .sidebyside #preview {
  margin: 0;
- padding-left: 28px;
 }
 .sidebyside #text { overflow: hidden }
 
@@ -211,8 +227,8 @@ table.wiki {
 #edit + #info { margin-top: 1em }
 #edit + #attachments { margin-top: 1.5em }
 #delete, #rename, #save { margin-left: 3em }
-#preview {
- margin: 1em 0 2em;
+#preview .trac-content {
+ margin: 0;
  overflow: auto;
 }
 

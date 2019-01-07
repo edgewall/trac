@@ -2,7 +2,7 @@
 
 html { overflow-y: scroll }
 body {
- font-size: .9em;
+ font-size: .91em;
  background: #fff; /* body_bg */
  color: #000;
  margin: .5em;
@@ -608,14 +608,12 @@ h2 .trac-count, h3 .trac-count {
 a.trac-diff:after { content: "∆" }
 
 /* Wiki */
-/* -- .wikipage { padding-left: 18px }
-   -- not needed for the wiki view; CHECK elsewhere*/
 .wikipage h1, .wikipage h2, .wikipage h3, .wikipage h4, .wikipage h5, .wikipage h6 { 
  margin-left: -1.5rem; /* wiki_h_margin_left = -(wiki_h_left_padding + wikipage_content_padding_left) */
  margin-right: -1rem; /* wiki_h_margin_right (= -trac_content_padding_right) */
 }
 .wikipage table h1, .wikipage table h2, .wikipage table h3 {
- margin-left: -2rem;
+ margin-left: -1rem;
  margin-right: -.25rem;
 }
 div.compact > p:first-child { margin-top: 0 }

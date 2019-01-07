@@ -16,9 +16,9 @@
 
 {# Note: the wiki edit page can be presented according to several modes:
 
-  - "standard" or "side by side" edit mode (`sidebyside` is true in
+  - "standard" or "side-by-side" edit mode (`sidebyside` is true in
     the second mode) In standard mode, the edit area is on top of the
-    preview, in side by side mode there are next to each other.
+    preview, in side-by-side mode there are next to each other.
 
   - "edit" or "edit+preview" mode (`action == 'preview'` is true in
     the second mode) In edit mode, only the textarea is visible, but
@@ -77,7 +77,7 @@
               $("#text").height(text_height).css("overflow-y", "hidden");
               $("#preview").height(Math.max(16, editorHeight() - preview_pad));
             } else {
-              // expand .wikipage to its natural height and adapt #text to it
+              // expand .trac-content to its natural height and adapt #text to it
               $("#preview").height("auto");
               $("#text").height(Math.max(16, previewHeight() - editor_pad))
                 .css("overflow-y", "auto");
@@ -93,7 +93,7 @@
             }, function(textarea, text, rendered) {
               var window_scroll_top = $(window).scrollTop();
               var editor_scroll_top = $("#text").scrollTop();
-              $("#preview").html(rendered);
+              $("#preview .trac-content").html(rendered);
               autoResizeText();
               $(window).scrollTop(window_scroll_top);
               $("#text").scrollTop(editor_scroll_top);
@@ -226,7 +226,7 @@
           ${_("No changes")}
         </h2>
         # endif
-        <div id="preview" class="trac-content trac-draft">
+        <div id="preview" class="wikipage">
           # if diff:
           <div class="diff">
             # with no_id = true
@@ -234,7 +234,9 @@
             # endwith
           </div>
           # else:
-          ${wiki_to_html(context, page.text)}
+          <div class="trac-content trac-draft">
+            ${wiki_to_html(context, page.text)}
+          </div>
           # endif
         </div>
         # if not sidebyside and page.text:
