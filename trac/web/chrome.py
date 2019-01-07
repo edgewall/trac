@@ -1475,10 +1475,10 @@ class Chrome(Component):
             content_type = 'text/html'
 
         if method is None:
-            method = {'text/html': 'xhtml',
+            method = {'text/html': 'html',
                       'text/plain': 'text'}.get(content_type, 'xml')
 
-        if method == "xhtml":
+        if method == "html":
             # Retrieve post-redirect messages saved in session
             for type_ in ['warnings', 'notices']:
                 try:
@@ -1768,10 +1768,10 @@ class Chrome(Component):
                 content_type = 'text/html'
 
             if method is None:
-                method = {'text/html': 'xhtml',
+                method = {'text/html': 'html',
                           'text/plain': 'text'}.get(content_type, 'xml')
 
-            if method == "xhtml":
+            if method == "html":
                 # Retrieve post-redirect messages saved in session
                 for type_ in ['warnings', 'notices']:
                     try:
