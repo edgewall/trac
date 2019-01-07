@@ -364,7 +364,7 @@ form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
 #mainnav :link, #mainnav :visited {
  border-bottom: none;
  color: #666;
- padding: .4em 20px;  /* mainnav_v_padding */
+ padding: .5em 20px;  /* mainnav_v_padding */
 }
 
 #mainnav :link:hover, #mainnav :visited:hover {
