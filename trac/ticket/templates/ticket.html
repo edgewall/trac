@@ -354,7 +354,7 @@
                     <select id="field-${field.name}"
                              name="field_${field.name}">
                       #       if field.optional:
-                      <option></option>
+                      <option label="${_('(unset)')}"></option>
                       #       endif
                       #       for option in field.options:
                       <option${{'selected': value == option,
