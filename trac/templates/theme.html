@@ -10,7 +10,7 @@
 #}
 ## This is Trac's default theme
 <!DOCTYPE html>
-<html lang="${trac_lang}">
+<html lang="${trac_lang}"> {# jinjacheck: "attribute lang" OK #}
   <head>
     <!-- # block head (placeholder in theme.html) -->
     # block head
@@ -166,5 +166,5 @@
     <!--   end of site_footer.html -->
     <!-- # endblock body (content inherited from theme.html) -->
     # endblock body
-  </body>
+  </body> {# jinjacheck: "got (html)" OK #}
 </html>

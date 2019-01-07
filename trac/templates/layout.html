@@ -47,7 +47,7 @@
     <noscript>
       <style>
         .trac-noscript { display: none !important }
-      </style>
+      </style> {# jinjacheck: "got (style )" OK #}
     </noscript>
     #   if trac_error_rendering is undefined and 'SEARCH_VIEW' in perm:
     <link type="application/opensearchdescription+xml" rel="search"
@@ -100,6 +100,7 @@
     <!--   end of site_head.html -->
     <!-- # endblock head (content inherited from layout.html) -->
     # endblock head
+    ## jinjacheck: "got (title meta meta meta link noscript link script script script )" OK
   </head>
 
   <body>
@@ -144,7 +145,7 @@
     #   endif
     #   for script in chrome.late_scripts:
     ${script.prefix}<script>
-      jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");
+      jQuery.loadScript("${script.attrs.src}", "${script.attrs.type}");
     </script>${script.suffix}
     #   endfor
 

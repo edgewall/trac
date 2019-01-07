@@ -313,6 +313,13 @@ XHTML_DOCTYPE = '''<!DOCTYPE html \
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" \
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'''
 
+IGNORED_XHTML_ERRORS = [
+    ('Element style does not carry attribute type',
+     '<style> without "type" attribute'),
+    ('Element script does not carry attribute type',
+     '<script> without "type" attribute'),
+    ]
+
 
 def check_html(filename, html_lines, html_hints, quiet):
     """Validates the given HTML (as XHTML actually)
@@ -363,16 +370,21 @@ def check_html(filename, html_lines, html_hints, quiet):
             errors.append((entry.line, entry.column, entry.message))
         real_errors = []
         def process_error(linenum, col, msg):
-            hint_linenum = hint = None
-            while html_hints:
-                hint_linenum, hint = html_hints[0]
-                if hint_linenum >= linenum or len(html_hints) == 1:
+            hint_linenum = hint = ignored = None
+            for e, comment in IGNORED_XHTML_ERRORS:
+                if e == msg:
+                    ignored = ' (IGNORED "%s")' % comment
                     break
-                del html_hints[0]
-            if hint and hint in msg:
-                del html_hints[0]
-                ignored = ' (IGNORED "%s")' % hint
-            else:
+            if not ignored:
+                while html_hints:
+                    hint_linenum, hint = html_hints[0]
+                    if hint_linenum >= linenum or len(html_hints) == 1:
+                        break
+                    del html_hints[0]
+                if hint and hint in msg:
+                    del html_hints[0]
+                    ignored = ' (IGNORED "%s")' % hint
+            if not ignored:
                 real_errors.append(linenum)
                 ignored = ''
             print('%s:%s:%s: %s%s' % (filename, linenum, col, msg, ignored))
