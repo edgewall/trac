@@ -48,7 +48,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.scripts">
-      ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
+      ${script.prefix}<script type="${script.attrs.type}" src="${script.attrs.src}"></script>${script.suffix}
     </py:for>
     <script>
       jQuery("#trac-noscript").remove();
@@ -88,7 +88,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.late_scripts">
-      ${script.prefix}<script>jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");</script>${script.suffix}
+      ${script.prefix}<script>jQuery.loadScript("${script.attrs.src}", "${script.attrs.type}"");</script>${script.suffix}
     </py:for>
 
     <div id="altlinks" py:if="'alternate' in chrome.links">
