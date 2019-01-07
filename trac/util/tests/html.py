@@ -22,7 +22,8 @@ from trac.core import TracError
 from trac.util import html
 from trac.util.html import (
     Element, FormTokenInjector, Fragment, HTML, Markup, TracHTMLSanitizer,
-    escape, find_element, genshi, is_safe_origin, tag, to_fragment, xml
+    escape, find_element, genshi, html_attribute, is_safe_origin,
+    tag, to_fragment, xml
 )
 from trac.util.translation import gettext, tgettext
 
@@ -43,6 +44,32 @@ class EscapeFragmentTestCase(unittest.TestCase):
                          escape(tag(tag.b('"1 < 2"', class_='em"ph"')),
                                     quotes=False))
 
+class HtmlAttributeTestCase(unittest.TestCase):
+
+    def test_html_attribute_special_None(self):
+        self.assertEqual('async', html_attribute('async', True))
+        self.assertEqual(None, html_attribute('async', False))
+        self.assertEqual(None, html_attribute('async', None))
+
+    def test_html_attribute_special_no_yes(self):
+        self.assertEqual('yes', html_attribute('translate', True))
+        self.assertEqual('no', html_attribute('translate', False))
+        self.assertEqual('no', html_attribute('translate', None))
+
+    def test_html_attribute_special_off_on(self):
+        self.assertEqual('on', html_attribute('autocomplete', True))
+        self.assertEqual('off', html_attribute('autocomplete', False))
+        self.assertEqual('off', html_attribute('autocomplete', None))
+
+    def test_html_attribute_special_false_true(self):
+        self.assertEqual('true', html_attribute('spellcheck', True))
+        self.assertEqual('false', html_attribute('spellcheck', False))
+        self.assertEqual('false', html_attribute('spellcheck', None))
+
+    def test_html_attribute_normal(self):
+        self.assertEqual('https://trac.edgewall.org',
+                         html_attribute('src', 'https://trac.edgewall.org'))
+        self.assertEqual(None, html_attribute('src', None))
 
 class FragmentTestCase(unittest.TestCase):
 
@@ -556,6 +583,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(html))
     suite.addTest(unittest.makeSuite(EscapeFragmentTestCase))
+    suite.addTest(unittest.makeSuite(HtmlAttributeTestCase))
     suite.addTest(unittest.makeSuite(FragmentTestCase))
     suite.addTest(unittest.makeSuite(XMLElementTestCase))
     suite.addTest(unittest.makeSuite(ElementTestCase))

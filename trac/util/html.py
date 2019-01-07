@@ -230,7 +230,7 @@ OFF_ON = ('off', 'on')
 FALSE_TRUE = ('false', 'true')
 
 SPECIAL_HTML_ATTRS = dict(
-    async=None, autofocus=None, autoplay=None, checked=None, controls=None,
+    autofocus=None, autoplay=None, checked=None, controls=None,
     default=None, defer=None, disabled=None, formnovalidate=None, hidden=None,
     ismap=None, loop=None, multiple=None, muted=None, novalidate=None,
     open=None, readonly=None, required=None, reversed=None, scoped=None,
@@ -239,6 +239,7 @@ SPECIAL_HTML_ATTRS = dict(
     translate=NO_YES,
     autocomplete=OFF_ON,
 )
+SPECIAL_HTML_ATTRS['async'] = None
 
 def html_attribute(key, val):
     """Returns the actual value for the attribute ``key``, for the given
