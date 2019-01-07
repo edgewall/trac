@@ -33,7 +33,7 @@
  padding: 0 1em;
  margin: 1em 0;
 }
-#ticketchange.ticketdraft h3 {
+#ticketchange.ticketdraft h3.change {
  margin-top: .5em;
 }
 .preview-notice { font-weight: bold; }
@@ -104,14 +104,14 @@
 #ticketbox table.properties > tbody > tr > td { width: 30% }
 #ticketbox table.properties > tbody > tr > td p:first-child { margin-top: 0 }
 #ticketbox table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
-#ticketbox div.description h3 {
+#ticketbox div.description > h3 {
  border-bottom: 1px solid #dd9;
  color: #663;
- font-size: 100%;
+ font-size: 120%;
  font-weight: normal;
 }
 #ticketbox div.description h3 .lastmod {
- font-size: 90%;
+ font-size: 85%;
 }
 #ticketbox .inlinebuttons {
  float: right;
@@ -134,15 +134,17 @@ ul.children {
 ul.children, ul.children ul.children { list-style-image: url(../inreply.png) }
 ul.children ul, ul.children ol { list-style-image: none }
 ul.children > li.child {
- padding: .1em 0 0 .5em;
+ padding: 0 0 0 .5em;
  margin-bottom: 1.5em;
  border: 1px solid;
- border-color: #f8f8f8 #eee #e4e4e4 #ddd;
- border-top: 0;
- border-right: 0;
- border-radius: .8em;
+ border-color: #e9e9e9 #f6f6f6 #cecece #cecece;
+ border-radius: .8em 0 0 .8em;
 }
-#changelog ul.children h3 { margin-right: .4em }
+#changelog ul.children h3.change {
+ margin-left: -.5rem;
+ padding: .1em .4em 1em .5em;
+ border-radius: .8em 0 0 0;
+}
 #changelog pre.wiki, #changelog div.code { clear: right }
 #ticketchange pre.wiki, #ticketchange div.code { clear: right }
 
@@ -153,16 +155,17 @@ ul.children > li.child {
 
 
 /* Comment contents */
-#changelog h3, #ticketchange h3 {
+#changelog h3.change, #ticketchange h3.change {
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0),
+  rgba(234, 234, 234, 0.21) .3em,
   rgba(198, 198, 198, 0.21) .7em,
   #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
   rgba(255, 255, 255, 0) .8em,
-  rgba(255, 255, 255, 0) 100%
+  rgba(243, 243, 243, 0.3) 100%
  );
  padding: 0 .2em 1em; /* ticket_h_underline_padding _ (ticket_h_underline_padding + ticket_h_underline_shadow) */
- margin-bottom: .2em;
+ margin: 0 0 .2em;
  color: #655b5b;
  font-size: 100%;
  font-weight: normal;
@@ -170,6 +173,7 @@ ul.children > li.child {
 #changelog h3:target, #ticketchange h3:target {
  background: linear-gradient(to top,
   rgba(255, 255, 255, 0),
+  rgba(234, 234, 234, 0.21) .3em,
   rgba(198, 198, 198, 0.21) .7em,
   #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
   #fbffb6 .8em, /* trac_hl_color */
@@ -178,7 +182,7 @@ ul.children > li.child {
  box-shadow: none;
 }
 @media print {
- #changelog h3, #ticketchange h3 { background: none }
+ #changelog h3.change, #ticketchange h3.change { background: none }
 }
 
 
@@ -203,14 +207,19 @@ ul.children > li.child {
 #changelog .trac-lastedit {
  padding-left: 2.5em;
  margin-top: .8em;
+ margin-bottom: 1.4em;
  color: #999;
  font-size: 80%;
 }
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
+#changelog ul.children .trac-lastedit {
+ margin-bottom: .6em;
+}
+
 
 /*  - Change controls */
 .trac-change-panel {
- margin-top: -.5em; /* related to #changelog h3, #ticketchange h3 { padding-bottom: 1em } */
+ margin-top: -.5em; /* related to #changelog h3.change, #ticketchange h3.change { padding-bottom: 1em } */
 }
 .trac-ticket-buttons {
  clear: right;
@@ -264,7 +273,7 @@ div.change:after {
  border-left: .3em solid #e44;
  padding-left: .3em;
 }
-#changelog .comment, #ticketchange .comment { margin-left: .5em }
+#changelog .comment, #ticketchange .comment { margin-left: .8em }
 button.trac-revert, button.trac-revert:hover {
  margin: 0;
  padding: 0;

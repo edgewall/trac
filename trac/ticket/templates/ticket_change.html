@@ -47,9 +47,6 @@
 <h3 class="change"${{'id': 'comment:%s' % cnum if 'cnum' in change}|htmlattr}>
   <span class="threading">
     # set change_replies = replies.get(cnum, []) if 'cnum' in change else []
-    # if 'cnum' in change:
-    <span class="cnum">${commentref('comment:', cnum)}</span>
-    # endif
     # if 'replyto' in change:
     <span class="trac-in-reply-to">
       # set refs = commentref('&nbsp;'|safe, change.replyto, 'in-reply-to')
@@ -73,15 +70,18 @@
     </span>
     # endif
   </span>
+  # if 'cnum' in change:
+  <span class="cnum">${commentref('comment:', cnum)}</span>
+  # endif
   # if 'date' in change:
 
-  ${tag_("Changed %(date)s by %(author)s",
+  ${tag_("by %(author)s, %(date)s",
          date = pretty_dateinfo(change.date),
          author = authorinfo(change.author))}
 
   # else:
 
-  ${tag_("Changed by %(author)s", author = authorinfo(change.author))}
+  ${tag_("by %(author)s", author = authorinfo(change.author))}
 
   # endif
   # if preview or show_editor:
