@@ -61,7 +61,7 @@
 
 # macro warnings(messages, id='warning', close_message=True)
   # if messages:
-  <div id=${id} class="warning system-message">
+  <div id="${id}" class="warning system-message">
     # if close_message:
       <a class="trac-close-msg" href="#"
          title="${_('Hide this warning')}"><span>${_("close")}</span></a>
@@ -82,7 +82,7 @@
 
 # macro notices(messages, id='notice', close_message=True)
   # if messages:
-  <div id=${id} class="notice system-message">
+  <div id="${id}" class="notice system-message">
     # if close_message:
       <a class="trac-close-msg" href="#"
          title="${_('Hide this notice')}"><span>${_("close")}</span></a>

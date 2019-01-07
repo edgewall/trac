@@ -9,7 +9,7 @@
   history and logs, available at http://trac.edgewall.org/.
 #}
 # import 'macros.html' as jmacros with context
-  <script type="text/javascript">/*<![CDATA[*/
+  <script type="text/javascript">
     jQuery(function($) {
       function updateDueDate() {
         $("#duedate").enable($("#due").checked());
@@ -36,7 +36,7 @@
           id: ${to_json(milestone.resource.id)|safe}
         }, $("#preview").showOnPreview());
     });
-  /*]]>*/</script>
+  </script>
   # with
   <form id="edit" class="mod" method="post" action="">
     ${jmacros.form_token_input()}

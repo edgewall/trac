@@ -24,7 +24,7 @@
     ${ super() }
 
     #   if frames:
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(function($) {
         $("#traceback a").click(function() {
           $("div", this.parentNode).slideToggle("fast");
@@ -59,9 +59,9 @@
        $("#traceback pre").hide();
        $("#tbtoggle").parent().show();
       });
-    /*]]>*/</script>
+    </script>
     #   endif
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(function($) {
         $("form.newticket textarea").each(function() {
           $(this).val($(this).val()
@@ -71,7 +71,7 @@
                              .replace(/#JQUERYTP#/m, $.timepicker.version));
         });
       });
-    /*]]>*/</script>
+    </script>
     # endblock head
   </head>
 

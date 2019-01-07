@@ -39,7 +39,6 @@
           .addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
       # if ticket.exists:
-      /*<![CDATA[*/
         $("#attachments").toggleClass("collapsed");
         $("#trac-up-attachments").click(function () {
           $("#attachments").removeClass("collapsed");
@@ -116,7 +115,6 @@
           comment.toggle(comment.children().length != 0);
         }, "#changelog .trac-loading");
 
-        /*]]>*/
       # else:
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           $('#ticket').replaceWith(reply);

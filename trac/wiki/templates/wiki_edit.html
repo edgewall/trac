@@ -59,7 +59,6 @@
           $("#edit input[type=submit][name=preview]").click();
         });
         # if sidebyside:
-        /*<![CDATA[*/
           function editorHeight() {
             return $("#text").closest("fieldset").innerHeight();
           }
@@ -72,7 +71,7 @@
             $("#preview").height(0); // neutralize preview
             $("#text").height("auto"); // adapt textarea to its content
             var text_height = $("#text").prop("scrollHeight");
-            var wikipage_height = $("#preview").height(); // used to be #preview div.wikipage
+            var wikipage_height = $("#preview").height();
             if (wikipage_height > text_height) {
               // expand #text to its natural height and adapt #preview to it
               $("#text").height(text_height).css("overflow-y", "hidden");
@@ -86,7 +85,6 @@
           }
           autoResizeText();
           $(window).resize(autoResizeText);
-        /*]]>*/
         # endif
         # if sidebyside and not diff:
           $("#text").autoPreview("${href.wiki_render()}", {
@@ -95,7 +93,7 @@
             }, function(textarea, text, rendered) {
               var window_scroll_top = $(window).scrollTop();
               var editor_scroll_top = $("#text").scrollTop();
-              $("#preview").html(rendered); // used to be #preview div.wikipage
+              $("#preview").html(rendered);
               autoResizeText();
               $(window).scrollTop(window_scroll_top);
               $("#text").scrollTop(editor_scroll_top);

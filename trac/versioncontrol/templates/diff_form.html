@@ -21,7 +21,7 @@
 
     # block head
     ${ super() }
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(function($) {
         $("#anydiff input[name$='_path']").autocomplete({
           source: window.location.pathname
@@ -30,14 +30,15 @@
             return $("<li>")
               .data("ui-autocomplete-item", item.value)
               .addClass(function() {
-                return item.isdir ? "trac-autocomplete-dir" : "trac-autocomplete-file";
+                return item.isdir ? "trac-autocomplete-dir"
+                                  : "trac-autocomplete-file";
               })
               .append(item.label)
               .appendTo(ul);
           }
         })
       });
-    /*]]>*/</script>
+    </script>
     # endblock head
   </head>
 

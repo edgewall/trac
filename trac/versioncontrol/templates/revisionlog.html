@@ -25,7 +25,7 @@
     # block head
     ${ super() }
     #   if graph:
-    <script type="text/javascript">//<![CDATA[
+    <script type="text/javascript">
       jQuery(function($) {
         $('th.trac-graph, td.trac-graph').show();
         var canvas = $('<canvas>').css({width: '${graph.columns * 2}em',
@@ -37,7 +37,7 @@
           canvas = G_vmlCanvasManager.initElement(canvas);
         $.paintLogGraph(graph, canvas);
       });
-    //]]></script>
+    </script>
     #   endif
     # endblock head
   </head>

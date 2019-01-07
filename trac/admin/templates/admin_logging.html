@@ -23,7 +23,7 @@
 
     # block head
     ${ super() }
-    <script type="text/javascript">/*<![CDATA[*/
+    <script type="text/javascript">
       jQuery(function($) {
         $("#log_type").change(function() {
           var type = $(this).val();
@@ -31,7 +31,7 @@
           $("#log_file").enable(type === 'file');
         }).change();
       });
-    /*]]>*/</script>
+    </script>
     # endblock head
   </head>
 
