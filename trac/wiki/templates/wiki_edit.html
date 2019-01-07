@@ -193,8 +193,7 @@
       # endif
 
       # if action == 'preview':
-      <table id="info" summary="${_('Revision info')}"
-             ${{'class': 'trac-scroll' if not sidebyside}|htmlattr}>
+      <table id="info" ${{'class': 'trac-scroll' if not sidebyside}|htmlattr}>
         <tr><th scope="col">
             # trans version = page.version + 1, author
 
