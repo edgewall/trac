@@ -89,7 +89,8 @@ class TicketModuleTestCase(unittest.TestCase):
         return t
 
     def _has_auto_preview(self, req):
-        return any('/trac.cgi/chrome/common/js/auto_preview.js' in s['href']
+        return any('/trac.cgi/chrome/common/js/auto_preview.js'
+                   in s['attrs']['src']
                    for s in req.chrome['scripts'])
 
     def _insert_ticket(self, **kw):

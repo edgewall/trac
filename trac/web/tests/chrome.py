@@ -92,19 +92,19 @@ class ChromeTestCase(unittest.TestCase):
         add_script(req, 'plugin/js/plugin.js')
         scripts = req.chrome['scripts']
         self.assertEqual(5, len(scripts))
-        self.assertEqual('text/javascript', scripts[0]['type'])
+        self.assertNotIn('type', scripts[0]['attrs'])
         self.assertEqual('/trac.cgi/chrome/common/js/trac.js',
-                         scripts[0]['href'])
-        self.assertEqual('text/javascript', scripts[1]['type'])
+                         scripts[0]['attrs']['src'])
+        self.assertNotIn('type', scripts[1]['attrs'])
         self.assertEqual('http://example.com/trac.js',
-                         scripts[1]['href'])
-        self.assertEqual('text/javascript', scripts[2]['type'])
+                         scripts[1]['attrs']['src'])
+        self.assertNotIn('type', scripts[2]['attrs'])
         self.assertEqual('//example.com/trac.js',
-                         scripts[2]['href'])
+                         scripts[2]['attrs']['src'])
         self.assertEqual('/trac.cgi/dynamic.js',
-                         scripts[3]['href'])
+                         scripts[3]['attrs']['src'])
         self.assertEqual('/trac.cgi/chrome/plugin/js/plugin.js',
-                         scripts[4]['href'])
+                         scripts[4]['attrs']['src'])
 
     def test_add_script_data(self):
         req = MockRequest(self.env)
