@@ -36,7 +36,7 @@
     <div py:choose="mode" id="content" class="attachment">
       <py:when test="'new'">
         <h1 i18n:msg="parent">Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
-        <form id="attachment" class="mod" method="post" enctype="multipart/form-data" action="">
+        <form id="attachment" class="mod" method="post" enctype="multipart/form-data" action="#">
           <div class="field">
             <label>File<py:if test="max_size >= 0">
               <i18n:msg params="value">(size limit ${pretty_size(max_size)})</i18n:msg></py:if>:<br />
@@ -82,7 +82,7 @@
         <p><strong>Are you sure you want to delete this attachment?</strong><br />
           This is an irreversible operation.</p>
         <div class="buttons">
-          <form method="post" action="">
+          <form method="post" action="#">
             <div id="delete">
               <input type="hidden" name="action" value="delete" />
               <input type="submit" class="trac-disable-on-submit" value="${_('Delete attachment')}" />
@@ -124,7 +124,7 @@
 
         <py:if test="attachment and 'ATTACHMENT_DELETE' in perm(attachment.resource)">
           <div class="buttons">
-            <form method="get" action="">
+            <form method="get" action="#">
               <div id="delete">
                 <input type="hidden" name="action" value="delete" />
                 <input type="submit" value="${_('Delete attachment')}" />

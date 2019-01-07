@@ -55,7 +55,7 @@ history and logs, available at http://trac.edgewall.org/.
         # endif
       </h1>
 
-      <form method="get" id="trac-report-prefs" action="">
+      <form method="get" id="trac-report-prefs" action="#">
         <div id="prefs">
           <div>
             <label>
@@ -104,7 +104,7 @@ history and logs, available at http://trac.edgewall.org/.
 
       <div class="buttons">
         # if 'REPORT_MODIFY' in perm(report.resource):
-        <form action="" method="get">
+        <form action="#" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" value="${_('Edit report')}" ${accesskey("e")}/>
@@ -112,7 +112,7 @@ history and logs, available at http://trac.edgewall.org/.
         </form>
         # endif
         # if 'REPORT_CREATE' in perm(report.resource):
-        <form action="" method="get">
+        <form action="#" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
             <input type="submit" value="${_('Copy report')}" />
@@ -120,7 +120,7 @@ history and logs, available at http://trac.edgewall.org/.
         </form>
         # endif
         # if 'REPORT_DELETE' in perm(report.resource):
-        <form action="" method="get">
+        <form action="#" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="${_('Delete report')}" />

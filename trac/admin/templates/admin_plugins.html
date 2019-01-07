@@ -78,7 +78,7 @@
     </h2>
 
     <div>
-      <form id="addplug" class="addnew" method="post" enctype="multipart/form-data" action="">
+      <form id="addplug" class="addnew" method="post" enctype="multipart/form-data" action="#">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Install Plugin:")}</legend>
@@ -112,7 +112,7 @@
       </form>
 
       #   for plugin in plugins:
-      <form id="edit-plugin-${plugin.name.lower()}" method="post" action="">
+      <form id="edit-plugin-${plugin.name.lower()}" method="post" action="#">
         ${jmacros.form_token_input()}
         <div class="plugin" id="trac-plugin-${plugin.name}">
           <h3 class="foldable">${plugin.name} ${plugin.version}</h3>

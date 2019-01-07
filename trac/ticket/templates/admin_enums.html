@@ -49,7 +49,7 @@ history and logs, available at http://trac.edgewall.org/.
 
     <div>
       #   if view == 'detail':
-      <form id="edit" class="mod" method="post" action="">
+      <form id="edit" class="mod" method="post" action="#">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>
@@ -79,7 +79,7 @@ history and logs, available at http://trac.edgewall.org/.
       </form>
       #   else:
 
-      <form class="addnew" id="addenum" method="post" action="">
+      <form class="addnew" id="addenum" method="post" action="#">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>
@@ -95,7 +95,7 @@ history and logs, available at http://trac.edgewall.org/.
       </form>
 
       #     if enums:
-      <form id="enumtable" method="post" action="">
+      <form id="enumtable" method="post" action="#">
         ${jmacros.form_token_input()}
         <table class="listing" id="enumlist">
           <thead>

@@ -50,7 +50,7 @@
 
     <div>
       #   if view == 'detail':
-      <form id="edit" class="mod" method="post" action="">
+      <form id="edit" class="mod" method="post" action="#">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Modify Version:")}</legend>
@@ -92,7 +92,7 @@
       </form>
 
       #   else:
-      <form class="addnew" id="addversion" method="post" action="">
+      <form class="addnew" id="addversion" method="post" action="#">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Add Version:")}</legend>
@@ -119,7 +119,7 @@
       </form>
 
       #     if versions:
-      <form id="version_table" method="post" action="">
+      <form id="version_table" method="post" action="#">
         ${jmacros.form_token_input()}
         <table class="listing" id="verlist">
           <thead>

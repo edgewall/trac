@@ -36,7 +36,7 @@
         </li>
       </ul>
       <div id="tabcontent" py:with="has_forms = list(select('.//form'))">
-        <form id="userprefs" action="" method="post" py:strip="has_forms">
+        <form id="userprefs" action="#" method="post" py:strip="has_forms">
           ${select("*|text()")}
           <div py:for="(name, title, child) in children"
                class="prefs_child">
