@@ -64,9 +64,7 @@
     #   endif
 
     #   for script in chrome.scripts:
-    ${script.prefix
-    }<script type="${script.type}" charset="${script.charset}"
-             src="${script.href}"></script>${script.suffix}
+    ${script.prefix}<script${script.attrs|htmlattr}></script>${script.suffix}
     #   endfor
 
     <script>

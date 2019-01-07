@@ -178,15 +178,21 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     (i.e. starts with `/`), the generated link will be based off the
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
+
+    :deprecated: the `charset` attribute is deprecated for script elements,
+                 and the `ie_if` logic is as deprecated as IE itself...
+                 These parameters will be removed in Trac 1.5.1.
     """
     scriptset = req.chrome.setdefault('scriptset', set())
     if filename in scriptset:
         return False  # Already added that script
 
     href = chrome_resource_path(req, filename)
-    script = {'href': href, 'type': mimetype, 'charset': charset,
+    script = {'attrs': { 'src': href },
               'prefix': Markup('<!--[if %s]>' % ie_if) if ie_if else None,
               'suffix': Markup('<![endif]-->') if ie_if else None}
+    if mimetype != 'text/javascript' and mimetype is not None:
+        script['attrs']['type'] = mimetype
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
