@@ -1283,6 +1283,14 @@ class Chrome(Component):
             req.session.get('dateinfo', self.default_dateinfo_format) \
             if req else self.default_dateinfo_format
 
+        locale = req and req.locale
+        if locale:
+            trac_lang = locale.language
+            if locale.territory:
+                trac_lang += '-' + locale.territory
+        else:
+            trac_lang = 'en'
+
         d.update({
             'env': self.env,
             'context': web_context(req) if req else None,
@@ -1299,7 +1307,8 @@ class Chrome(Component):
             'perm': req and req.perm,
             'form_token': req and req.form_token,
             'authname': req.authname if req else '<trac>',
-            'locale': req and req.locale,
+            'locale': locale,
+            'trac_lang': trac_lang,
             'author_email': partial(self.author_email,
                                     email_map=self.get_email_map()),
             'authorinfo': partial(self.authorinfo, req),

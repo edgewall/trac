@@ -359,9 +359,10 @@ try:
                                   normalize(available_locales))
         if locale and str(locale) not in available_locales:
             # The list of get_available_locales() must include locale
-            # identifier from str(locale), but zh_* don't be included after
-            # Babel 1.0. Avoid expanding zh_* to zh_Hans_CN and zh_Hant_TW
-            # to clear "script" property of Locale instance. See #11258.
+            # identifier from str(locale), but zh_* won't be included
+            # after Babel 1.0. Avoid expanding zh_* to zh_Hans_CN and
+            # zh_Hant_TW to clear "script" property of Locale
+            # instance. See #11258.
             locale._data  # load localedata before clear script property
             locale.script = None
             assert str(locale) in available_locales
