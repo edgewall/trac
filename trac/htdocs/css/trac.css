@@ -496,16 +496,16 @@ div.trac-draft {
 }
 
 /* Help links */
-.uinohelp #help { display: none }
-#help {
+.uinohelp .trac-help { display: none }
+.trac-help {
  clear: both;
  color: #999;
  font-size: 90%;
  margin: 1em;
  text-align: right;
 }
-#help :link, #help :visited { cursor: help }
-#help hr { display: none }
+.trac-help :link, .trac-help :visited { cursor: help }
+.trac-help hr { display: none }
 
 /* Datepicker hints */
 .trac-nodatetimehint .trac-datetimehint { display: none }
@@ -1021,7 +1021,7 @@ div.system-message .trac-close-msg:hover {
 }
 
 @media print {
- #header, #altlinks, #footer, #help, #warning, #notice { display: none }
+ #header, #altlinks, #footer, .trac-help, #warning, #notice { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
  .noprint, .trac-nav, .trac-topnav,
  #attachments > div.attachments > p {
