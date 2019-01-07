@@ -948,9 +948,8 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
             if tid is not None:
                 tc.find(retarget_notice)
                 self._tester.go_to_ticket(tid)
-                tc.find('Changed[ \n]+<a .*>\d+ seconds? ago</a>'
-                        '[ \n]+by <span class="trac-author-user">'
-                        'admin</span>')
+                tc.find('by <span class="trac-author-user">admin</span>,'
+                        '[ \n]+<a .*>\d+ seconds? ago</a>')
                 if retarget_to is not None:
                     tc.find('<a class="milestone" href="/milestone/%(name)s" '
                             'title="No date set">%(name)s</a>'
@@ -1044,8 +1043,8 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find("Your changes have been saved.")
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
-        tc.find('Changed[ \n]+<a .*>\d+ seconds? ago</a>[ \n]+'
-                'by <span class="trac-author-user">admin</span>')
+        tc.find('by <span class="trac-author-user">admin</span>,'
+                '[ \n]+<a .*>\d+ seconds? ago</a>')
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': new_name})
         find_field_change(name, new_name)
@@ -1548,8 +1547,8 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.submit('remove')
         tc.go(ticket_url)
         find_field_deleted(name)
-        tc.find('Changed <a.* ago</a> by '
-                '<span class="trac-author-user">admin</span>')
+        tc.find('by <span class="trac-author-user">admin</span>,'
+                '[ \n]+<a .*>\d+ seconds? ago</a>')
         tc.notfind('</a> ago by anonymous')
 
 
