@@ -31,7 +31,7 @@
     ## jinjacheck: "attribute content" OK
     #   endfor
 
-    <!--[if IE]><script type="text/javascript">
+    <!--[if IE]><script>
         if (/^#__msie303:/.test(window.location.hash))
         window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
         </script><![endif]-->
@@ -56,7 +56,7 @@
     #   endif
 
     #   if chrome.script_data:
-    <script type="text/javascript">
+    <script>
       #   for key, value in chrome.script_data.iteritems():
       var ${key}=${to_json(value)|safe};
       #   endfor
@@ -69,7 +69,7 @@
              src="${script.href}"></script>${script.suffix}
     #   endfor
 
-    <script type="text/javascript">
+    <script>
       jQuery(function($) {
         # if chrome.warnings or chrome.notices:
         $(".trac-close-msg").show().click(function () {
@@ -131,21 +131,21 @@
 
     ------------------------------------------------------------------ #}
     #   if chrome.late_links:
-    <script type="text/javascript">
+    <script>
       #   for link in chrome.late_links.get('stylesheet', []):
       jQuery.loadStyleSheet("${link.href}", "${link.type}");
       #   endfor
     </script>
     #   endif
     #   if chrome.late_script_data:
-    <script type="text/javascript">
+    <script>
       #   for key, value in chrome.late_script_data.iteritems():
       var ${key}=${to_json(value)|safe};
       #   endfor
     </script>
     #   endif
     #   for script in chrome.late_scripts:
-    ${script.prefix}<script type="text/javascript">
+    ${script.prefix}<script>
       jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");
     </script>${script.suffix}
     #   endfor

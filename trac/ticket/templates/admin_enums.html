@@ -20,7 +20,7 @@ history and logs, available at http://trac.edgewall.org/.
     # block head
     ${ super() }
     #   if view == 'detail':
-    <script type="text/javascript">
+    <script>
       jQuery(function($) {
         $("#description").autoPreview("${href.wiki_render()}", {
             realm: "${enum.type}",

@@ -25,7 +25,7 @@
           title="${_('Edit this milestone')}"
           href="${href.milestone(milestone.name, action='edit')}" />
     #   endif
-    <script type="text/javascript">
+    <script>
       jQuery(function($) {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
         $(".foldable").enableFolding(true, true);
@@ -74,7 +74,7 @@
               # endfor
             </select>
             <input type="submit" value="${_('Update')}" class="noscript"/>
-            <script type="text/javascript">
+            <script>
               jQuery(function($) {
                 $(".noscript").attr("style", "display: none");
               });

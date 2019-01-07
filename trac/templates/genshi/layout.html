@@ -25,7 +25,7 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     </py:if>
     <meta py:for="meta in chrome.metas" py:attrs="meta"/>
-    <!--[if IE]><script type="text/javascript">
+    <!--[if IE]><script>
       if (/^#__msie303:/.test(window.location.hash))
         window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
     </script><![endif]-->
@@ -50,7 +50,7 @@
     <py:for each="script in chrome.scripts">
       ${script.prefix}<script type="${script.type}" charset="${script.charset}" src="${script.href}"></script>${script.suffix}
     </py:for>
-    <script type="text/javascript">
+    <script>
       jQuery("#trac-noscript").remove();
       jQuery(function($) {
         <py:if test="chrome.warnings or chrome.notices">
@@ -77,7 +77,7 @@
   <py:match path="body" once="true" buffer="false"><body>
     ${select('*|text()|comment()')}
 
-    <script type="text/javascript" py:if="chrome.late_links">
+    <script py:if="chrome.late_links">
       <py:for each="link in chrome.late_links.get('stylesheet', [])">
         jQuery.loadStyleSheet("${link.href}", "${link.type}");
       </py:for>
@@ -88,7 +88,7 @@
       </py:for>
     </script>
     <py:for each="script in chrome.late_scripts">
-      ${script.prefix}<script type="text/javascript">jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");</script>${script.suffix}
+      ${script.prefix}<script>jQuery.loadScript("${script.href}", "${script.type}", "${script.charset}");</script>${script.suffix}
     </py:for>
 
     <div id="altlinks" py:if="'alternate' in chrome.links">

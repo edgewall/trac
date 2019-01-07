@@ -24,7 +24,7 @@
       <py:otherwise><i18n:msg params="filename, parent">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</i18n:msg></py:otherwise>
     </title>
     <py:if test="preview">
-      <script type="text/javascript">
+      <script>
         jQuery(function($) {
           $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
         });
