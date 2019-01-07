@@ -366,10 +366,10 @@ def chrome_info_script(req, use_late=None):
         fragment.append(tag.script('\n'.join(content), type='text/javascript'))
     for script in scripts:
         fragment.append(script['prefix'])
+        attrs = script['attrs']
         fragment.append(tag.script(
-            'jQuery.loadScript(%s, %s, %s)' %
-            (to_js_string(script['href']), to_js_string(script['type']),
-             to_js_string(script['charset'])), type='text/javascript'))
+            'jQuery.loadScript(%s, %s)' % (to_js_string(attrs['src']),
+                                           to_js_string(attrs.get('type')))))
         fragment.append(script['suffix'])
 
     return fragment

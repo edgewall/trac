@@ -206,6 +206,7 @@
   };
 
   $.loadScript = function(href, type, charset) {
+    // Note: charset is no longer used (remove in 1.5.1)
     var script;
     $("head script").each(function() {
       if (this.getAttribute("src") === href) {
@@ -224,8 +225,8 @@
       script = document.createElement("script");
       script.src = href;
       script.async = false;
-      script.type = type || "text/javascript";
-      script.charset = charset || "utf-8";
+      if (type && type != "text/javascript")
+        script.type = type;
       $("head")[0].appendChild(script);
     }
   };
