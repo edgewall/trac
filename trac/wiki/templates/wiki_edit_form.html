@@ -38,13 +38,12 @@ history and logs, available at http://trac.edgewall.org/.
       <input type="checkbox" name="sidebyside" id="sidebyside" ${
            {'checked': sidebyside}|htmlattr}/>
     </div>
-    <p><textarea id="text"
+    <textarea id="text"
                  class="${classes('wikitext', 'trac-autofocus',
                                   'trac-fullwidth',
                                   'trac-resizable' if not sidebyside)}"
                  name="text" cols="80" rows="${edit_rows}">
 ${page.text}</textarea>
-    </p>
 
     # call(note, page) jmacros.wikihelp('TracWiki'):
     #   trans note, page, wikiformatting = jmacros.wikiformatting_link()
