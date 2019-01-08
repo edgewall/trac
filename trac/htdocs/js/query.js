@@ -429,6 +429,9 @@
         );
       });
       $(".trac-query-summary tr td.id", $table).before($('<td>'));
+      $("tbody tr .trac-colspan", $table).each(function () {
+        $(this).attr('colspan', $(this).attr('colspan') + 1);
+      });
     }
 
     // Add a Select All checkbox at the top of the column.

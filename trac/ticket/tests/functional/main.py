@@ -1817,7 +1817,7 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             tc.go('%s/query?id=%s&&row=description&row=t12801_plain&'
                   'row=t12801_wiki' % (self._tester.url, tkt))
             tc.find(r'<em><strong>description field</strong></em>')
-            tc.find(r'<td colspan="[0-9]+">\n'
+            tc.find(r'<td class="trac-colspan" colspan="[0-9]+">\n'
                     r'\s*- //plain 1//\n'
                     r'\s*<br />\n'
                     r'\s*- ~~plain 2~~\n'

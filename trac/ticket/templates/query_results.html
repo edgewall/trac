@@ -84,13 +84,13 @@
       ${column_headers()}
     </thead>
 
-    # with num_cols = len(headers) + (1 if batch_modify else 0)
+    # with num_cols = len(headers)
     #   for groupname, results in groups:
     #     if not loop.first:
     <tbody class="trac-query-heading">
       #     if groupname is not none:
       <tr class="trac-group">
-        <th colspan="${num_cols}">
+        <th class="trac-colspan" colspan="${num_cols}">
           ${group_heading(groupname, results)}
         </th>
       </tr>
@@ -101,7 +101,7 @@
     <tbody class="trac-query-results">
       #   if not results:
       <tr class="even">
-        <td colspan="${num_cols}">${_("No tickets found")}</td>
+        <td class="trac-colspan" colspan="${num_cols}">${_("No tickets found")}</td>
       </tr>
       #   endif
       #   for result in results:
@@ -158,7 +158,7 @@
       </tr>{# jinjacheck: "CDATA td" OK #}
       #       if ticket_context.resource in context:
       <tr class="fullrow">
-        <td colspan="${num_cols}">
+        <td class="trac-colspan" colspan="${num_cols}">
           <p class="meta"><em>${_("(this ticket)")}</em></p>
         </td>
       </tr>
@@ -168,7 +168,7 @@
       #           set value = result[r]
       <tr class="fullrow">
         <th class="meta">${field.label if field else (r or 'none')}</th>
-        <td colspan="${num_cols - 1}">
+        <td class="trac-colspan" colspan="${num_cols - 1}">
           #         if field.format == 'wiki':
           ## FIXME what to do with xml:space="preserve"?
           ${wiki_to_html(ticket_context, value)}
@@ -188,7 +188,7 @@
       #   endfor
       #   if loop.last and last_group_is_partial:
       <tr>
-        <td colspan="${num_cols}">
+        <td class="trac-colspan" colspan="${num_cols}">
           <i>${_("(more results for this group on next page)")}</i>
         </td>
       </tr>
