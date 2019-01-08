@@ -690,6 +690,7 @@ blockquote.citation {
 .citation blockquote.citation { border-color: #4b4; }
 .citation .citation blockquote.citation { border-color: #44b; }
 .citation .citation .citation blockquote.citation { border-color: #c55; }
+li blockquote.citation { margin-top: 0 }
 
 table.wiki {
  border: 1px solid #ccc;
