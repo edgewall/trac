@@ -148,7 +148,11 @@ install:
       python -c 'from svn import core'
     fi
   - |
-    requires='Genshi>=0.7 lxml twill==0.9.1'
+    requires='Genshi>=0.7 twill==0.9.1'
+    case "$pyver" in
+      2.6) requires="$requires lxml<4.3.0" ;;
+      *)   requires="$requires lxml" ;;
+    esac
     if [ "$build" != minimum ]; then
       requires="$requires Pygments docutils textile pytz"
       case "$pyver" in
