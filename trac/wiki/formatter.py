@@ -803,12 +803,12 @@ class Formatter(object):
 
     def _macro_formatter(self, match, fullmatch, macro, only_inline=False):
         name = fullmatch.group('macroname')
-        if name.lower() == 'br':
-            return '<br />'
         if name and name[-1] == '?': # Macro?() shortcut for MacroList(Macro)
             args = name[:-1] or '*'
         else:
             args = fullmatch.group('macroargs')
+        if name.lower() == 'br':
+            return self.emit_linebreak(args)
         in_paragraph = not (getattr(self, 'in_list_item', True) or
                             getattr(self, 'in_table', True) or
                             getattr(self, 'in_def_list', True))
@@ -823,6 +823,14 @@ class Formatter(object):
                                exception_to_unicode(e, traceback=True))
             return system_message(_("Error: Macro %(name)s(%(args)s) failed",
                                     name=name, args=args), to_fragment(e))
+    def emit_linebreak(self, args):
+        if args:
+            sep = ':' if ':' in args else '='
+            kv = args.split(sep, 1)
+            if kv[0] == 'clear':
+                clear = kv[-1] if kv[-1] in ['left', 'right'] else 'both'
+                return '<br style="clear: {0}" />'.format(clear)
+        return '<br />'
 
     # Headings
 

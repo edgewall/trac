@@ -1292,10 +1292,34 @@ Inline <b> Test </b> text
 ------------------------------
 Inline [[html(...)]] text
 ============================== BR macro
-Line break [[BR]] another line[[br]]last line
+Line break [[BR]] another line[[br()]]last line
 ------------------------------
 <p>
 Line break <br /> another line<br />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear:left, clear:right
+Line break [[BR(clear:left)]] another line[[br(clear:right)]]last line
+------------------------------
+<p>
+Line break <br style="clear: left" /> another line<br style="clear: right" />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear=left, clear=right
+Line break [[BR(clear=left)]] another line[[br(clear=right)]]last line
+------------------------------
+<p>
+Line break <br style="clear: left" /> another line<br style="clear: right" />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear both
+Line break [[BR(clear:both)]] another line[[br(clear)]]last line
+------------------------------
+<p>
+Line break <br style="clear: both" /> another line<br style="clear: both" />last line
 </p>
 ------------------------------
 Line break   another line last line
