@@ -220,6 +220,12 @@ h2.report-result {
 
 /* Query results table */
 
+table.tickets caption.trac-group {
+ padding: .1em .5em 1em .5em;
+ border: 1px dotted #ddd;
+ text-align: left;
+}
+table.tickets caption.trac-group h2 { margin-top: 0 }
 table.tickets tbody tr.added td { font-weight: bold }
 table.tickets tbody tr.changed td { font-style: italic }
 table.tickets tbody tr.removed td { color: #999 }

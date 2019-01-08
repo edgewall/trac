@@ -59,9 +59,12 @@
   #   endif
   # endmacro
 
-  ${group_heading(*groups[0]) if groups}
-
   <table class="listing tickets">
+    # if len(groups) > 0:
+    <caption class="trac-group">
+      ${group_heading(*groups[0])}
+    </caption>
+    # endif
     <thead class="trac-query-heading">
       # macro column_headers()
       <tr class="trac-columns">
