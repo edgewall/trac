@@ -2,7 +2,7 @@
 
 html { overflow-y: scroll }
 body {
- font-size: .91em;
+ font-size: 100%;
  background: #fff; /* body_bg */
  color: #000;
  margin: .5em;
