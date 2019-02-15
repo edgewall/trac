@@ -313,27 +313,30 @@ class StringsTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_insert_unicode(self):
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-unicode', u'ünicöde'))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-unicode', u'ünicöde'))
         self.assertEqual([(u'ünicöde',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-unicode'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-unicode'"))
 
     def test_insert_empty(self):
         from trac.util.text import empty
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-empty', empty))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-empty', empty))
         self.assertEqual([(u'',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-empty'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-empty'"))
 
     def test_insert_markup(self):
         from genshi.core import Markup
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-markup', Markup(u'<em>märkup</em>')))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-markup', Markup(u'<em>märkup</em>')))
         self.assertEqual([(u'<em>märkup</em>',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-markup'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-markup'"))
 
     def test_quote(self):
         with self.env.db_query as db:
@@ -356,26 +359,27 @@ class StringsTestCase(unittest.TestCase):
                 self.assertEqual(name, get_column_names(cursor)[0])
                 cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
                 self.assertEqual(name, get_column_names(cursor)[0])
-                cursor.executemany("UPDATE system SET value=%s WHERE "
-                                   "1=(SELECT 0 AS " + db.quote(name) + ")",
-                                   [])
-                cursor.executemany("UPDATE system SET value=%s WHERE "
-                                   "1=(SELECT 0 AS " + db.quote(name) + ")",
-                                   [('42',), ('43',)])
+                stmt = """
+                    UPDATE {0} SET value=%s WHERE 1=(SELECT 0 AS {1})
+                    """.format(db.quote('system'), db.quote(name))
+                cursor.executemany(stmt, [])
+                cursor.executemany(stmt, [('42',), ('43',)])
 
         test()
         test(True)
 
     def test_prefix_match_case_sensitive(self):
         with self.env.db_transaction as db:
-            db.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
-                           [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
-                            (u'BlähBlah',), (u'BlahBläh',)])
+            db.executemany("""
+                INSERT INTO {0} (name,value) VALUES (%s,1)
+                """.format(db.quote('system')),
+                [('blahblah',), ('BlahBlah',), ('BLAHBLAH',), (u'BlähBlah',),
+                 (u'BlahBläh',)])
 
         with self.env.db_query as db:
             names = sorted(name for name, in db(
-                "SELECT name FROM system WHERE name %s"
-                % db.prefix_match(),
+                "SELECT name FROM {0} WHERE name {1}"
+                .format(db.quote('system'), db.prefix_match()),
                 (db.prefix_match_value('Blah'),)))
         self.assertEqual('BlahBlah', names[0])
         self.assertEqual(u'BlahBläh', names[1])
@@ -384,9 +388,9 @@ class StringsTestCase(unittest.TestCase):
     def test_prefix_match_metachars(self):
         def do_query(prefix):
             with self.env.db_query as db:
-                return [name for name, in db(
-                    "SELECT name FROM system WHERE name %s "
-                    "ORDER BY name" % db.prefix_match(),
+                return [name for name, in db("""
+                    SELECT name FROM {0} WHERE name {1} ORDER BY name
+                    """.format(db.quote('system'), db.prefix_match()),
                     (db.prefix_match_value(prefix),))]
 
         values = ['foo*bar', 'foo*bar!', 'foo?bar', 'foo?bar!',
@@ -394,8 +398,10 @@ class StringsTestCase(unittest.TestCase):
                   'foo%bar', 'foo%bar!', 'foo_bar', 'foo_bar!',
                   'foo/bar', 'foo/bar!', 'fo*ob?ar[fo]ob%ar_fo/obar']
         with self.env.db_transaction as db:
-            db.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
-                           [(value,) for value in values])
+            db.executemany("""
+                INSERT INTO {0} (name,value) VALUES (%s,1)
+                """.format(db.quote('system')),
+                [(value,) for value in values])
 
         self.assertEqual(['foo*bar', 'foo*bar!'], do_query('foo*'))
         self.assertEqual(['foo?bar', 'foo?bar!'], do_query('foo?'))
@@ -549,7 +555,8 @@ class DatabaseManagerTestCase(unittest.TestCase):
 
     def test_destroy_db(self):
         """Database doesn't exist after calling destroy_db."""
-        self.env.db_query("SELECT name FROM system")
+        with self.env.db_query as db:
+            db("SELECT name FROM " + db.quote('system'))
         self.assertIsNotNone(self.dbm._cnx_pool)
         self.dbm.destroy_db()
         self.assertIsNone(self.dbm._cnx_pool)  # No connection pool

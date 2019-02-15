@@ -405,7 +405,7 @@ class DatabaseManager(Component):
                                         else data_or_callable
             for table, cols, vals in data:
                 db.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                               % (table, ','.join(cols),
+                               % (db.quote(table), ','.join(cols),
                                   ','.join(['%s'] * len(cols))), vals)
 
     def reset_tables(self):
@@ -475,9 +475,10 @@ class DatabaseManager(Component):
                      in the SYSTEM table. Defaults to `database_version`,
                      which contains the database version for Trac.
         """
-        rows = self.env.db_query("""
-                SELECT value FROM system WHERE name=%s
-                """, (name,))
+        with self.env.db_query as db:
+            rows = db("""
+                SELECT value FROM {0} WHERE name=%s
+                """.format(db.quote('system')), (name,))
         return int(rows[0][0]) if rows else False
 
     def get_exceptions(self):
@@ -512,13 +513,15 @@ class DatabaseManager(Component):
         """
         current_database_version = self.get_database_version(name)
         if current_database_version is False:
-            self.env.db_transaction("""
-                    INSERT INTO system (name, value) VALUES (%s, %s)
-                    """, (name, version))
+            with self.env.db_transaction as db:
+                db("""
+                    INSERT INTO {0} (name, value) VALUES (%s, %s)
+                    """.format(db.quote('system')), (name, version))
         else:
-            self.env.db_transaction("""
-                    UPDATE system SET value=%s WHERE name=%s
-                    """, (version, name))
+            with self.env.db_transaction as db:
+                db("""
+                    UPDATE {0} SET value=%s WHERE name=%s
+                    """.format(db.quote('system')), (version, name))
             self.log.info("Upgraded %s from %d to %d",
                           name, current_database_version, version)
 

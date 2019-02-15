@@ -245,15 +245,17 @@ class EnvironmentUpgradeTestCase(unittest.TestCase):
                 insert_value('value2', 2)
 
         def insert_value(name, value):
-            self.env.db_transaction("""
-                INSERT INTO system (name, value) VALUES (%s, %s)
-                """, (name, value))
+            with self.env.db_transaction as db:
+                db("""
+                    INSERT INTO {0} (name, value) VALUES (%s, %s)
+                    """.format(db.quote('system')), (name, value))
 
         def select_value(name):
-            for value, in self.env.db_query("""
-                    SELECT value FROM system WHERE name=%s
-                    """, (name,)):
-                return value
+            with self.env.db_query as db:
+                for value, in db("""
+                        SELECT value FROM {0} WHERE name=%s
+                        """.format(db.quote('system')), (name,)):
+                    return value
 
         self.env.enable_component(Participant1)
         self.env.enable_component(Participant2)

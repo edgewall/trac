@@ -1057,7 +1057,8 @@ class EnvironmentAdmin(Component):
 
         # Bogus statement to lock the database while copying files
         with self.env.db_transaction as db:
-            db("UPDATE system SET name=NULL WHERE name IS NULL")
+            db("UPDATE " + db.quote('system') +
+               " SET name=NULL WHERE name IS NULL")
 
             printout(_("Hotcopying %(src)s to %(dst)s ...",
                        src=path_to_unicode(self.env.path),
