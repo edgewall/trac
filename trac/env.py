@@ -648,9 +648,10 @@ class Environment(Component, ComponentManager):
                       method will be renamed to a private method in
                       release 1.3.1.
         """
-        rows = self.db_query("""
-                SELECT value FROM system WHERE name='%sdatabase_version'
-                """ % ('initial_' if initial else ''))
+        with self.db_query as db:
+            rows = db("""
+                SELECT value FROM %s WHERE name='%sdatabase_version'
+                """ % (db.quote('system'), 'initial_' if initial else ''))
         return int(rows[0][0]) if rows else False
 
     def setup_config(self):
@@ -863,8 +864,9 @@ class EnvironmentSetup(Component):
         with self.env.db_transaction as db:
             for table, cols, vals in db_default.get_data(db):
                 db.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                   % (table, ','.join(cols), ','.join(['%s' for c in cols])),
-                   vals)
+                               % (db.quote(table), ','.join(cols),
+                                  ','.join(['%s' for c in cols])),
+                               vals)
         self._update_sample_config()
 
     def environment_needs_upgrade(self, db):
@@ -882,6 +884,9 @@ class EnvironmentSetup(Component):
         upgrades/dbN.py, where 'N' is the version number (int).
         """
         cursor = db.cursor()
+        update_stmt = """
+            UPDATE %s SET value=%%s WHERE name='database_version'
+            """ % db.quote('system')
         dbver = self.env.database_version
         for i in range(dbver + 1, db_default.db_version + 1):
             name  = 'db%i' % i
@@ -892,9 +897,7 @@ class EnvironmentSetup(Component):
                 raise TracError(_("No upgrade module for version %(num)i "
                                   "(%(version)s.py)", num=i, version=name))
             script.do_upgrade(self.env, i, cursor)
-            cursor.execute("""
-                UPDATE system SET value=%s WHERE name='database_version'
-                """, (i,))
+            cursor.execute(update_stmt, (i,))
             self.log.info("Upgraded database version from %d to %d", i - 1, i)
             db.commit()
         self._update_sample_config()
@@ -1043,7 +1046,8 @@ class EnvironmentAdmin(Component):
 
         # Bogus statement to lock the database while copying files
         with self.env.db_transaction as db:
-            db("UPDATE system SET name=NULL WHERE name IS NULL")
+            db("UPDATE " + db.quote('system') +
+               " SET name=NULL WHERE name IS NULL")
 
             printout(_("Hotcopying %(src)s to %(dst)s ...",
                        src=path_to_unicode(self.env.path),

@@ -314,27 +314,30 @@ class StringsTestCase(unittest.TestCase):
         self.env.reset_db()
 
     def test_insert_unicode(self):
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-unicode', u'ünicöde'))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-unicode', u'ünicöde'))
         self.assertEqual([(u'ünicöde',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-unicode'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-unicode'"))
 
     def test_insert_empty(self):
         from trac.util.text import empty
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-empty', empty))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-empty', empty))
         self.assertEqual([(u'',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-empty'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-empty'"))
 
     def test_insert_markup(self):
         from genshi.core import Markup
-        self.env.db_transaction(
-                "INSERT INTO system (name,value) VALUES (%s,%s)",
-                ('test-markup', Markup(u'<em>märkup</em>')))
+        with self.env.db_transaction as db:
+            quoted = db.quote('system')
+            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
+               ('test-markup', Markup(u'<em>märkup</em>')))
         self.assertEqual([(u'<em>märkup</em>',)], self.env.db_query(
-            "SELECT value FROM system WHERE name='test-markup'"))
+            "SELECT value FROM " + quoted + " WHERE name='test-markup'"))
 
     def test_quote(self):
         db = self.env.get_db_cnx()
@@ -357,12 +360,10 @@ class StringsTestCase(unittest.TestCase):
             self.assertEqual(name, get_column_names(cursor)[0])
             cursor.execute('SELECT %s AS ' + db.quote(name), (42,))
             self.assertEqual(name, get_column_names(cursor)[0])
-            cursor.executemany("UPDATE system SET value=%s WHERE "
-                               "1=(SELECT 0 AS " + db.quote(name) + ")",
-                               [])
-            cursor.executemany("UPDATE system SET value=%s WHERE "
-                               "1=(SELECT 0 AS " + db.quote(name) + ")",
-                               [('42',), ('43',)])
+            stmt = "UPDATE " + db.quote('system') + " SET value=%s " + \
+                   "WHERE 1=(SELECT 0 AS " + db.quote(name) + ")"
+            cursor.executemany(stmt, [])
+            cursor.executemany(stmt, [('42',), ('43',)])
 
         test(db)
         test(db, logging=True)
@@ -371,14 +372,15 @@ class StringsTestCase(unittest.TestCase):
         @self.env.with_transaction()
         def do_insert(db):
             cursor = db.cursor()
-            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+            cursor.executemany("INSERT INTO " + db.quote('system') +
+                               " (name,value) VALUES (%s,1)",
                                [('blahblah',), ('BlahBlah',), ('BLAHBLAH',),
                                 (u'BlähBlah',), (u'BlahBläh',)])
 
         db = self.env.get_read_db()
         cursor = db.cursor()
-        cursor.execute("SELECT name FROM system WHERE name %s" %
-                       db.prefix_match(),
+        cursor.execute("SELECT name FROM " + db.quote('system') +
+                       " WHERE name " + db.prefix_match(),
                        (db.prefix_match_value('Blah'),))
         names = sorted(name for name, in cursor)
         self.assertEqual('BlahBlah', names[0])
@@ -389,8 +391,9 @@ class StringsTestCase(unittest.TestCase):
         def do_query(prefix):
             db = self.env.get_read_db()
             cursor = db.cursor()
-            cursor.execute("SELECT name FROM system WHERE name %s "
-                           "ORDER BY name" % db.prefix_match(),
+            cursor.execute("SELECT name FROM " + db.quote('system') +
+                           " WHERE name " + db.prefix_match() +
+                           " ORDER BY name",
                            (db.prefix_match_value(prefix),))
             return [name for name, in cursor]
 
@@ -401,7 +404,8 @@ class StringsTestCase(unittest.TestCase):
                       'foo%bar', 'foo%bar!', 'foo_bar', 'foo_bar!',
                       'foo/bar', 'foo/bar!', 'fo*ob?ar[fo]ob%ar_fo/obar']
             cursor = db.cursor()
-            cursor.executemany("INSERT INTO system (name,value) VALUES (%s,1)",
+            cursor.executemany("INSERT INTO " + db.quote('system') +
+                               " (name,value) VALUES (%s,1)",
                                [(value,) for value in values])
 
         self.assertEqual(['foo*bar', 'foo*bar!'], do_query('foo*'))

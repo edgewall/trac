@@ -288,7 +288,7 @@ def reset_sqlite_db(env, db_prop):
     with env.db_transaction as db:
         tables = db.get_table_names()
         for table in tables:
-            db("DELETE FROM %s" % table)
+            db("DELETE FROM %s" % db.quote(table))
         return tables
 
 
@@ -325,18 +325,25 @@ def reset_mysql_db(env, db_prop):
     dbname = os.path.basename(db_prop['path'])
     if dbname:
         with env.db_transaction as db:
-            tables = db("""SELECT table_name, auto_increment
-                           FROM information_schema.tables
-                           WHERE table_schema=%s""", (dbname,))
-            for table, auto_increment in tables:
-                if auto_increment is None or auto_increment == 1:
+            tables = db("""
+                SELECT t.table_name,
+                       EXISTS (SELECT * FROM information_schema.columns AS c
+                               WHERE c.table_schema=t.table_schema
+                               AND c.table_name=t.table_name
+                               AND extra='auto_increment')
+                FROM information_schema.tables AS t
+                WHERE t.table_schema=%s
+                """, (dbname,))
+            for table, has_autoinc in tables:
+                quoted = db.quote(table)
+                if not has_autoinc:
                     # DELETE FROM is preferred to TRUNCATE TABLE, as the
-                    # auto_increment is not used or it is 1.
-                    db("DELETE FROM %s" % table)
+                    # auto_increment is not used.
+                    db("DELETE FROM %s" % quoted)
                 else:
                     # TRUNCATE TABLE is preferred to DELETE FROM, as we
                     # need to reset the auto_increment in MySQL.
-                    db("TRUNCATE TABLE %s" % table)
+                    db("TRUNCATE TABLE %s" % quoted)
             return tables
 
 
@@ -479,10 +486,11 @@ class EnvironmentStub(Environment):
             if default_data:
                 for table, cols, vals in db_default.get_data(db):
                     db.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                                   % (table, ','.join(cols),
+                                   % (db.quote(table), ','.join(cols),
                                       ','.join(['%s'] * len(cols))), vals)
             else:
-                db("INSERT INTO system (name, value) VALUES (%s, %s)",
+                db("INSERT INTO " + db.quote('system') +
+                   " (name, value) VALUES (%s, %s)",
                    ('database_version', str(db_default.db_version)))
 
     def destroy_db(self, scheme=None, db_prop=None):
@@ -494,7 +502,7 @@ class EnvironmentStub(Environment):
                     db('DROP SCHEMA %s CASCADE' % db.quote(db.schema))
                 elif scheme == 'mysql':
                     for table in db.get_table_names():
-                        db("DROP TABLE IF EXISTS `%s`" % table)
+                        db("DROP TABLE IF EXISTS %s" % db.quote(table))
         except Exception:
             # "TracError: Database not found...",
             # psycopg2.ProgrammingError: schema "tractest" does not exist
