@@ -72,6 +72,10 @@ _type_map = {
 }
 
 
+def _quote(identifier):
+    return "`%s`" % identifier.replace('`', '``')
+
+
 class MySQLConnector(Component):
     """Database connector for MySQL version 4.1 and greater.
 
@@ -176,7 +180,7 @@ class MySQLConnector(Component):
         limit = min(self._max_key_length / (max_bytes * len(columns)),
                     limit_col)
         for c in columns:
-            name = '`%s`' % c
+            name = _quote(c)
             table_col = filter((lambda x: x.name == c), table.columns)
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
                 if table_col[0].key_size is not None:
@@ -191,7 +195,7 @@ class MySQLConnector(Component):
     def to_sql(self, table, max_bytes=None):
         if max_bytes is None:
             max_bytes = self._max_bytes(None)
-        sql = ['CREATE TABLE %s (' % table.name]
+        sql = ['CREATE TABLE %s (' % _quote(table.name)]
         coldefs = []
         for column in table.columns:
             ctype = column.type
@@ -201,7 +205,7 @@ class MySQLConnector(Component):
                 # Override the column type, as a text field cannot
                 # use auto_increment.
                 column.type = 'int'
-            coldefs.append('    `%s` %s' % (column.name, ctype))
+            coldefs.append('    %s %s' % (_quote(column.name), ctype))
         if len(table.key) > 0:
             coldefs.append('    PRIMARY KEY (%s)' %
                            self._collist(table, table.key,
@@ -211,9 +215,10 @@ class MySQLConnector(Component):
 
         for index in table.indices:
             unique = 'UNIQUE' if index.unique else ''
-            yield 'CREATE %s INDEX %s_%s_idx ON %s (%s)' % (unique, table.name,
-                  '_'.join(index.columns), table.name,
-                  self._collist(table, index.columns, max_bytes=max_bytes))
+            idxname = '%s_%s_idx' % (table.name, '_'.join(index.columns))
+            yield 'CREATE %s INDEX %s ON %s (%s)' % \
+                  (unique, _quote(idxname), _quote(table.name),
+                   self._collist(table, index.columns, max_bytes=max_bytes))
 
     def alter_column_types(self, table, columns):
         """Yield SQL statements altering the type of one or more columns of
@@ -507,19 +512,25 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             return table_names
         cursor = self.cursor()
         cursor.execute("""
-            SELECT table_name, auto_increment
-            FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
-        for table, auto_increment in cursor.fetchall():
+            SELECT t.table_name,
+                   EXISTS (SELECT * FROM information_schema.columns AS c
+                           WHERE c.table_schema=t.table_schema
+                           AND c.table_name=t.table_name
+                           AND extra='auto_increment')
+            FROM information_schema.tables AS t
+            WHERE t.table_schema=%s
+            """, (self.schema,))
+        for table, has_autoinc in cursor.fetchall():
             table_names.append(table)
-            if auto_increment is None or auto_increment == 1:
+            quoted = self.quote(table)
+            if not has_autoinc:
                 # DELETE FROM is preferred to TRUNCATE TABLE, as the
-                # auto_increment is not used or it is 1.
-                cursor.execute("DELETE FROM %s" % table)
+                # auto_increment is not used.
+                cursor.execute("DELETE FROM %s" % quoted)
             else:
                 # TRUNCATE TABLE is preferred to DELETE FROM, as we
                 # need to reset the auto_increment in MySQL.
-                cursor.execute("TRUNCATE TABLE %s" % table)
+                cursor.execute("TRUNCATE TABLE %s" % quoted)
         return table_names
 
     def prefix_match(self):
@@ -529,7 +540,8 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         return self.like_escape(prefix) + '%'
 
     def quote(self, identifier):
-        return "`%s`" % identifier.replace('`', '``')
+        """Return the quoted identifier."""
+        return _quote(identifier)
 
     def update_sequence(self, cursor, table, column='id'):
         # MySQL handles sequence updates automagically

@@ -1012,7 +1012,8 @@ class EnvironmentAdmin(Component):
 
         # Bogus statement to lock the database while copying files
         with self.env.db_transaction as db:
-            db("UPDATE system SET name=NULL WHERE name IS NULL")
+            db("UPDATE " + db.quote('system') +
+               " SET name=NULL WHERE name IS NULL")
             try:
                 copytree(self.env.path, dest, symlinks=1, skip=skip)
             except shutil.Error as e:

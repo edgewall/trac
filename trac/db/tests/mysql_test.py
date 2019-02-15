@@ -69,14 +69,14 @@ class MySQLTableAlterationSQLTest(unittest.TestCase):
         self.assertEqual(2, len(sql))
         self.assertIn(' PRIMARY KEY (`col1`(204),`col2`(204),`col3`(204),'
                       '`col4`(204),`col5`(204))', sql[0])
-        self.assertIn(' blah_col2_col3_col4_col5_idx ON blah (`col2`(255),'
+        self.assertIn(' `blah_col2_col3_col4_col5_idx` ON `blah` (`col2`(255),'
                       '`col3`(255),`col4`(255),`col5`(255))', sql[1])
 
         sql = list(connector.to_sql(tab, max_bytes=4))
         self.assertEqual(2, len(sql))
         self.assertIn(' PRIMARY KEY (`col1`(153),`col2`(153),`col3`(153),'
                       '`col4`(153),`col5`(153))', sql[0])
-        self.assertIn(' blah_col2_col3_col4_col5_idx ON blah (`col2`(191),'
+        self.assertIn(' `blah_col2_col3_col4_col5_idx` ON `blah` (`col2`(191),'
                       '`col3`(191),`col4`(191),`col5`(191))', sql[1])
 
 

@@ -58,7 +58,8 @@ class DatabaseFileTestCase(unittest.TestCase):
         env.shutdown()
 
     def _db_query(self, env):
-        env.db_query("SELECT name FROM system")
+        with env.db_query as db:
+            db("SELECT name FROM " + db.quote('system'))
 
     def test_missing_tracdb(self):
         self._create_env()
