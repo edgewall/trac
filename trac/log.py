@@ -22,7 +22,8 @@ import sys
 LOG_TYPES = ('none', 'stderr', 'file', 'syslog', 'eventlog')
 LOG_TYPE_ALIASES = ('winlog', 'nteventlog', 'unix')
 LOG_LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG')
-LOG_LEVEL_ALIASES = ('WARN', 'ALL')
+LOG_LEVEL_ALIASES_MAP = {'WARN': 'WARNING', 'ALL': 'DEBUG'}
+LOG_LEVEL_ALIASES = tuple(sorted(LOG_LEVEL_ALIASES_MAP))
 
 
 def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
