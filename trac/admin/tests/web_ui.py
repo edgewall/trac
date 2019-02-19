@@ -302,6 +302,30 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
         self.assertEqual(log_level, logging_config.get('log_level'))
         self.assertEqual(log_file, logging_config.get('log_file'))
 
+    def test_log_type_none(self):
+        """When log type is none, TracError is not raised even if log level and
+        log file in the parameters are missing.
+        """
+        logging_config = self.env.config['logging']
+        logging_config.set('log_type', 'file')
+        logging_config.set('log_level', 'WARN')
+        logging_config.set('log_file', os.devnull)
+        mod = AdminModule(self.env)
+
+        req = MockRequest(self.env, path_info='/admin/general/logging')
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+        self.assertEqual('WARNING', data['log']['level'])
+        self.assertIn('WARNING', data['log']['levels'])
+
+        req = MockRequest(self.env, path_info='/admin/general/logging',
+                          method='POST', args={'log_type': 'none'})
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+        self.assertEqual('none', logging_config.get('log_type'))
+        self.assertEqual('WARN', logging_config.get('log_level'))
+        self.assertEqual(os.devnull, logging_config.get('log_file'))
+
     def test_change_log_type(self):
         """Change the log type."""
         logging_config = self.env.config['logging']

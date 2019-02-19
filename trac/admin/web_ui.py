@@ -24,6 +24,7 @@ from trac import log
 from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.loader import get_plugin_info
+from trac.log import LOG_LEVELS, LOG_LEVEL_ALIASES, LOG_LEVEL_ALIASES_MAP
 from trac.perm import IPermissionRequestor, PermissionExistsError, \
                       PermissionSystem
 from trac.util.datefmt import all_timezones, pytz
@@ -38,6 +39,11 @@ from trac.web.chrome import Chrome, INavigationContributor, \
                             ITemplateProvider, add_notice, add_stylesheet, \
                             add_warning
 from trac.wiki.formatter import format_to_html
+
+
+_valid_log_levels = set()
+_valid_log_levels.update(log.LOG_LEVELS)
+_valid_log_levels.update(log.LOG_LEVEL_ALIASES)
 
 
 class AdminModule(Component):
@@ -271,12 +277,12 @@ class LoggingAdminPanel(Component):
                     _("Unknown log type %(type)s", type=new_type),
                     _("Invalid log type")
                 )
-            new_file = req.args.get('log_file', 'trac.log')
+            new_file = req.args.get('log_file', log_file)
             if not new_file:
                 raise TracError(_("You must specify a log file"),
                                 _("Missing field"))
-            new_level = req.args.get('log_level')
-            if new_level not in log.LOG_LEVELS:
+            new_level = req.args.get('log_level', log_level)
+            if new_level not in _valid_log_levels:
                 raise TracError(
                     _("Unknown log level %(level)s", level=new_level),
                     _("Invalid log level"))
@@ -304,23 +310,15 @@ class LoggingAdminPanel(Component):
                     changed = True
                     log_type = new_type
 
-                if log_type == 'none':
-                    self.config.remove('logging', 'log_level')
+                if new_level != log_level:
+                    self.config.set('logging', 'log_level', new_level)
                     changed = True
-                else:
-                    if new_level != log_level:
-                        self.config.set('logging', 'log_level', new_level)
-                        changed = True
-                        log_level = new_level
+                    log_level = new_level
 
-                if log_type == 'file':
-                    if new_file != log_file:
-                        self.config.set('logging', 'log_file', new_file)
-                        changed = True
-                        log_file = new_file
-                else:
-                    self.config.remove('logging', 'log_file')
+                if new_file != log_file:
+                    self.config.set('logging', 'log_file', new_file)
                     changed = True
+                    log_file = new_file
 
             if changed:
                 _save_config(self.config, req, self.log),
@@ -330,6 +328,7 @@ class LoggingAdminPanel(Component):
         all_levels = sorted(log.LOG_LEVEL_MAP, key=log.LOG_LEVEL_MAP.get,
                             reverse=True)
         log_levels = [level for level in all_levels if level in log.LOG_LEVELS]
+        log_level = LOG_LEVEL_ALIASES_MAP.get(log_level, log_level)
 
         data = {
             'type': log_type, 'types': log_types,

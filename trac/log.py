@@ -22,7 +22,9 @@ import sys
 LOG_TYPES = ('file', 'stderr', 'syslog', 'eventlog', 'none')
 LOG_TYPE_ALIASES = ('winlog', 'nteventlog', 'unix')
 LOG_LEVELS = ('INFO', 'CRITICAL', 'ERROR', 'WARNING', 'DEBUG')
-LOG_LEVEL_ALIASES = ('WARN', 'ALL')
+LOG_LEVEL_ALIASES_MAP = {'WARN': 'WARNING', 'ALL': 'DEBUG'}
+LOG_LEVEL_ALIASES = tuple(sorted(LOG_LEVEL_ALIASES_MAP))
+
 
 LOG_LEVEL_MAP = {
     'DEBUG': logging.DEBUG, 'ALL': logging.DEBUG,
