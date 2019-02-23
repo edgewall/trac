@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2013-2018 Edgewall Software
+# Copyright (C) 2013-2019 Edgewall Software
 # Copyright (C) 2013 Christian Boos <cboos@edgewall.org>
 # All rights reserved.
 #
