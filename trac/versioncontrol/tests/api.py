@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007-2018 Edgewall Software
+# Copyright (C) 2007-2019 Edgewall Software
 # Copyright (C) 2007 CommProve, Inc. <eli.carter@commprove.com>
 # All rights reserved.
 #

@@ -38,10 +38,12 @@
  color: #000;
 }
 .timeline dt em {
- border-bottom: 1px dotted #bbb;
  color: #b00;
  font-style: normal;
  text-decoration: none;
+}
+.timeline dt em.trac-parent-resource {
+ color: #000;
 }
 .timeline dt .time { color: #999; font-size: 80%; }
 .timeline dt .trac-author { color: #666; }

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2018 Edgewall Software
+# Copyright (C) 2003-2019 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -323,7 +323,8 @@ class AttachmentModule(Component):
             title = get_resource_summary(self.env, attachment.parent)
             return tag_("%(attachment)s attached to %(resource)s",
                         attachment=tag.em(os.path.basename(attachment.id)),
-                        resource=tag.em(name, title=title))
+                        resource=tag.em(name, title=title,
+                                        class_='trac-parent-resource'))
         elif field == 'description':
             return format_to(self.env, None, context.child(attachment.parent),
                              descr)
