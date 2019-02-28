@@ -665,23 +665,33 @@ else
 	)
 endif
 
-copyright_re := "s/^($$PREFIX)(Copyright \(C\) 20[01][0-9])(-20[01][0-9])?$\
+copyright_re := "s/^($$PREFIX)(Copyright \(C\) 20[0-9][0-9])(-20[0-9][0-9])?$\
     ( Edgewall Software)$$/\1\2-$(year)\4/g"
 
 update-copyright:
 ifeq "$(year)" ""
 	$(error "specify year= on the make command-line")
 else
+	$(eval SED = $(if \
+	    $(shell sed --version 2>/dev/null | grep -qF "(GNU sed)" \
+	      && echo 1), \
+	    sed --in-place= -r -e, \
+	    sed -i '' -E))
 	@PREFIX="<!--!  "; find . -type f -name "*.html" \
-	    -exec sed -i '' -E $(copyright_re) {} \;
+	    -exec $(SED) $(copyright_re) {} \;
 	@PREFIX="\# "; find . -type f \
-	    \( -name "*.py" -o -name "*.ps1" -o -name "*.cgi" -o -name "*.fcgi" \) \
-	    -exec sed -i '' -E $(copyright_re) {} \;
-	@PREFIX="\# "; sed -i '' -E $(copyright_re) \
+	    \( -name "*.py" -o -name "*.po" -o -name "*.pot" -o \
+	       -name "*.ps1" -o -name "*.cgi" -o -name "*.fcgi" \) \
+	    -exec $(SED) $(copyright_re) {} \;
+	@PREFIX="\# "; $(SED) $(copyright_re) \
 	    contrib/trac-svn-hook contrib/trac-pre-commit-hook
-	@PREFIX=":: "; sed -i '' -E $(copyright_re) \
+	@PREFIX=":: "; $(SED) $(copyright_re) \
 	    contrib/trac-svn-post-commit-hook.cmd
-	@PREFIX=; sed -i '' -E $(copyright_re) COPYING
+	@PREFIX=; $(SED) $(copyright_re) COPYING
+	@$(SED) "s/( year *= *)'(20[0-9][0-9])-20[0-9][0-9]'/\1'\2-$(year)'/" \
+	    trac/admin/console.py
+	@$(SED) "s/\\\$$\{'(20[0-9][0-9])-20[0-9][0-9]'\}/\$${'\1-$(year)'}/" \
+	    trac/templates/about.html
 endif
 
 update-help:
