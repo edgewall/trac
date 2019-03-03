@@ -935,9 +935,10 @@ class EnvironmentAdmin(Component):
         target = os.path.normpath(dest)
         chrome_target = os.path.join(target, 'htdocs')
         script_target = os.path.join(target, 'cgi-bin')
+        chrome = Chrome(self.env)
 
         # Check source and destination to avoid recursively copying files
-        for provider in Chrome(self.env).template_providers:
+        for provider in chrome.template_providers:
             paths = list(provider.get_htdocs_dirs() or [])
             if not paths:
                 continue
@@ -958,7 +959,7 @@ class EnvironmentAdmin(Component):
         makedirs(target, overwrite=True)
         makedirs(chrome_target, overwrite=True)
         printout(_("Copying resources from:"))
-        for provider in Chrome(self.env).template_providers:
+        for provider in chrome.template_providers:
             paths = list(provider.get_htdocs_dirs() or [])
             if not paths:
                 continue
@@ -979,7 +980,6 @@ class EnvironmentAdmin(Component):
         data = {'env': self.env, 'executable': sys.executable, 'repr': repr}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.' + script)
-            chrome = Chrome(self.env)
             template = chrome.load_template('deploy_trac.' + script, text=True)
             text = chrome.render_template_string(template, data, text=True)
 
