@@ -109,7 +109,7 @@ Interactive Trac administration console.
 Copyright (C) %(year)s Edgewall Software
 
 Type:  '?' or 'help' for help on commands.
-        """, version=TRAC_VERSION, year='2003-2018'))
+        """, version=TRAC_VERSION, year='2003-2019'))
         self.cmdloop()
 
     # Environment methods
