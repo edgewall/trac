@@ -396,6 +396,32 @@ class ReportModuleTestCase(unittest.TestCase):
         if genshi:
             XML(rendered)  # validates as XML
 
+    def test_timestamp_columns(self):
+        req = MockRequest(self.env, method='POST', path_info='/report', args={
+            'action': 'new',
+            'title': '#13134',
+            'query': "SELECT %d AS time, %d AS created, %d AS datetime"
+                     % ((1 * 86400 + 42) * 1000000,
+                        (2 * 86400 + 43) * 1000000,
+                        (3 * 86400 + 44) * 1000000),
+            'description': ''})
+        self.assertTrue(self.report_module.match_request(req))
+        self.assertRaises(RequestDone, self.report_module.process_request, req)
+
+        req = MockRequest(self.env, method='GET', path_info='/report/9')
+        self.assertTrue(self.report_module.match_request(req))
+        rv = self.report_module.process_request(req)
+        rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
+                                                    {'fragment': False,
+                                                     'iterable': False})
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*(12:00:42 AM|00:00:42)\s*</td>')
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*(Jan 3, 1970|01/03/70)\s*</td>')
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*(Jan 4, 1970, 12:00:44 AM|'
+            r'01/04/70 00:00:44)\s*</td>')
+
 
 class ExecuteReportTestCase(unittest.TestCase):
 
