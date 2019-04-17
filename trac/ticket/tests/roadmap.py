@@ -270,6 +270,7 @@ class RoadmapTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.config.set('ticket-custom', 'project', 'text')
         values = [
             ('Summary', 'new', 'milestone1', 'joe'),
             ('Summary', 'new', 'milestone2', 'joe'),
@@ -282,12 +283,20 @@ class RoadmapTestCase(unittest.TestCase):
             ('Summary', 'new', 'milestone1', 'blah'),
             ('Summary', 'new', 'milestone2', 'blah'),
         ]
+        custom_values = [
+            (1, 'foo'), (2, 'foo'), (3, 'foo'), (4, 'foo'), (5, 'foo'),
+            (6, 'bar'), (7, 'bar'), (8, 'baz'), (9, 'baz'), (10, 'baz'),
+        ]
         with self.env.db_transaction as db:
             cursor = db.cursor()
             cursor.executemany("""
                 INSERT INTO ticket (summary,status,milestone,owner)
                 VALUES (%s,%s,%s,%s)
                 """, values)
+            cursor.executemany("""
+                INSERT INTO ticket_custom (ticket,name,value)
+                VALUES (%s,'project',%s)
+                """, custom_values)
 
     def tearDown(self):
         self.env.reset_db()
@@ -310,6 +319,26 @@ class RoadmapTestCase(unittest.TestCase):
                          get_tickets_for_milestone(self.env,
                                                    milestone='milestone2',
                                                    field='owner'))
+        self.assertEqual(['milestone1', 'milestone2'], sorted(tickets))
+
+    def test_get_tickets_for_all_milestones_custom_field(self):
+        tickets = get_tickets_for_all_milestones(self.env, field='project')
+        milestone1 = [{'id': 9, 'status': 'new', 'project': 'baz'},
+                      {'id': 1, 'status': 'new', 'project': 'foo'},
+                      {'id': 5, 'status': 'new', 'project': 'foo'}]
+        milestone2 = [{'id': 6, 'status': 'new', 'project': 'bar'},
+                      {'id': 10, 'status': 'new', 'project': 'baz'},
+                      {'id': 2, 'status': 'new', 'project': 'foo'}]
+        self.assertEqual(milestone1, tickets['milestone1'])
+        self.assertEqual(milestone1,
+                         get_tickets_for_milestone(self.env,
+                                                   milestone='milestone1',
+                                                   field='project'))
+        self.assertEqual(milestone2, tickets['milestone2'])
+        self.assertEqual(milestone2,
+                         get_tickets_for_milestone(self.env,
+                                                   milestone='milestone2',
+                                                   field='project'))
         self.assertEqual(['milestone1', 'milestone2'], sorted(tickets))
 
 
