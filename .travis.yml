@@ -160,7 +160,7 @@ install:
         *)   requires="$requires Babel" ;;
       esac
     fi
-    if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
+    if [ "$tracdb" = postgres ]; then requires="$requires psycopg2<2.8"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
     pip install $requires
     python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
