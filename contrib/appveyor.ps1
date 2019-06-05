@@ -254,7 +254,7 @@ function Trac-Install {
         # "postgres://tracuser:password@localhost/trac?schema=tractest"
         #
 
-        & pip install psycopg2
+        & pip install psycopg2<2.8
 
         Add-AppveyorMessage -Message "1.1. psycopg2 package installed" `
           -Category Information
