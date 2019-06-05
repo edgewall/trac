@@ -845,7 +845,7 @@ class Environment(Component, ComponentManager):
     def abs_href(self):
         """The application URL"""
         if not self.base_url:
-            self.log.warn("base_url option not set in configuration, "
+            self.log.warn("[trac] base_url option not set in configuration, "
                           "generated links may be incorrect")
         return Href(self.base_url)
 
