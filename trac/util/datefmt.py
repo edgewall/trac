@@ -514,6 +514,8 @@ def get_period_names_jquery_ui(req):
     if babel and locale:
         names = get_period_names(locale=locale)
         return {period: [names[period], english_names[period]]
+                        if period in names
+                        else [english_names[period]]
                 for period in ('am', 'pm')}
     else:
         # retrieve names of am/pm from libc
