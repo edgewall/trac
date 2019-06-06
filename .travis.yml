@@ -13,28 +13,28 @@ cache:
 matrix:
   include:
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb= build=minimum
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb=
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb=sqlite
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       services: postgres
       env: tracdb=postgres
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       services: mysql
