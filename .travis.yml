@@ -15,45 +15,45 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      python: "2.6"
+      python: 2.6
       env: tracdb=
     - os: linux
       dist: trusty
-      python: "2.6"
+      python: 2.6
       env: tracdb=sqlite
     - os: linux
       dist: trusty
-      python: "2.6"
+      python: 2.6
       services: postgresql
       env: tracdb=postgres
     - os: linux
       dist: trusty
-      python: "2.6"
+      python: 2.6
       services: mysql
       env: tracdb=mysql
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb= build=minimum
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb=
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       env: tracdb=sqlite
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       services: postgres
       env: tracdb=postgres
     - os: linux
-      python: "2.7"
+      python: 2.7
       virtualenv:
         system_site_packages: true
       services: mysql
