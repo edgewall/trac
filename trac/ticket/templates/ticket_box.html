@@ -159,7 +159,7 @@
       # endwith
     </table> {# jinjacheck: "got (CDATA tr tr )" OK #}
     <div class="description">
-      <h3 id="comment:description">${_("Description")}
+      <h2 id="comment:description">${_("Description")}
         # if description_change:
         <a href="${href.ticket(ticket.id, action='diff',
                  version=description_change.cnum)}"
@@ -172,7 +172,7 @@
           # endtrans
         </a>
         # endif
-      </h3>
+      </h2>
 
       ## Quote the description (only for existing tickets)
 
@@ -186,6 +186,25 @@
         </div>
       </form>
       # endif
+
+      <script>
+        // float left elements like inlinebuttons will be presented in
+        // right-to-left order, i.e. those added before #addreply will
+        // be on the right, those added after will be on the left
+        function insertNearReplyToDescription(content, side) {
+          if (side === 'right') {
+            $("#ticket .description #addreply").before(content);
+          } else if (side === 'rightmost') {
+            $("#ticket .description > h2").after(content);
+          } else if (side === 'leftmost') {
+            $("#ticket .description").children(".searchable, br")
+              .before(content);
+          } else { // 'left'
+            $("#ticket .description #addreply").after(content);
+          }
+        }
+      </script>
+
       # if ticket.description:
       <div class="searchable">
         ${wiki_to_html(context, ticket.description,

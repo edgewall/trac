@@ -481,6 +481,10 @@ div.trac-content {
  border-radius: .4em; /* main_border_radius */
  box-shadow: .3em .3em .4em #f2f2f2; /* main_box_shadow */
 }
+div.trac-content.borderless {
+ border: none;
+ box-shadow: none;
+}
 /* Draft content */
 div.trac-draft {
  background: #fbfbfb url(../draft.png);

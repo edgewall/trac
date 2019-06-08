@@ -46,7 +46,7 @@
           source: "ticket:" + old_values.id + "#comment:" + c.cnum,
           description: quoteText(c.comment)
         }));
-        results.push(btns.prepend(cform));
+        results.push(insertNearReplyToComment(c.cnum, cform));
       } else {
         results.push(void 0);
       }
@@ -64,7 +64,7 @@
       id: old_values.id,
       description: quoteText(old_values.description)
     }));
-    $("#ticket .description").children(".searchable, br").before(clone);
+    insertNearReplyToDescription(clone);
     if ((typeof old_values !== "undefined" && old_values !== null) && (typeof changes !== "undefined" && changes !== null)) {
       return addCloneFromComments((function() {
         var i, len, results;

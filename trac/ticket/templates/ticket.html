@@ -217,6 +217,26 @@
             # include 'ticket_change.html'
           </div>
           # endfor
+
+          <script>
+            // inlinebuttons in ticket change are presented in
+            // left-to-right order, i.e. those added before
+            // #reply-to-comment-n will be on its left, those added
+            // after will be on its right
+            function insertNearReplyToComment(num, content, side) {
+              var $replyto = $("#reply-to-comment-" + num);
+              if (side === 'right') {
+                $replyto.after(content);
+              } else if (side === 'rightmost') {
+                $replyto.parent().append(content);
+              } else if (side === 'leftmost') {
+                $replyto.parent().prepend(content);
+              } else { // 'left'
+                $replyto.before(content);
+              }
+            }
+          </script>
+
         </div>
       </div>
       # endif

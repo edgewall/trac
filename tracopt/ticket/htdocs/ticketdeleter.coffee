@@ -37,11 +37,11 @@ deleteTicket = () ->
     </form>
   """
 
-deleteComment = (c) ->
+addDeleteComment = (c) ->
   # c.id == "trac-change-3-1347886395121000"
   #          0123456789012
   [cnum, cdate] = c.id.substr(12).split('-')
-  $ """
+  insertNearReplyToComment cnum, $("""
     <form action="#" method="get">
      <div class="inlinebuttons">
       <input type="hidden" name="action" value="delete-comment">
@@ -53,11 +53,10 @@ deleteComment = (c) ->
              class="trac-delete">
      </div>
     </form>
-  """
+  """), 'leftmost'
 
 
 $(document).ready () ->
   # Insert "Delete" buttons for ticket description and each comment
-  $('#ticket .description h3').after(deleteTicket())
-  $('#changelog div.change').each () ->
-    $('.trac-ticket-buttons', this).prepend deleteComment this
+  insertNearReplyToDescription deleteTicket, 'leftmost'
+  $('#changelog div.change').each () -> addDeleteComment this

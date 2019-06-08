@@ -77,6 +77,8 @@ h3.section {
 h2.section + *, h3.section + * {
  margin-top: -1em !important;
 }
+h2.section :link, .section h2 :visited,
+h3.section :link, .section h3 :visited { border-bottom: none }
 
 
 h2.section:target {
