@@ -268,8 +268,8 @@ class PostgreSQLConnection(ConnectionWrapper):
     def get_column_names(self, table):
         rows = self.execute("""
             SELECT column_name FROM information_schema.columns
-            WHERE table_schema=%s AND table_name=%s
-            """, (self.schema, table))
+            WHERE table_schema=current_schema() AND table_name=%s
+            """, (table,))
         return [row[0] for row in rows]
 
     def get_last_id(self, cursor, table, column='id'):
@@ -280,7 +280,7 @@ class PostgreSQLConnection(ConnectionWrapper):
     def get_table_names(self):
         rows = self.execute("""
             SELECT table_name FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
+            WHERE table_schema=current_schema()""")
         return [row[0] for row in rows]
 
     def like(self):
