@@ -1108,6 +1108,21 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
         prop = req.chrome['script_data']['properties']['milestone']
         self.assertEqual({'label': 'Milestone', 'type': 'text'}, prop)
 
+    def test_get_constraints_keep_req_args(self):
+        arg_list = (('0_type', 'defect'), ('0_type', 'task'),
+                    ('0_type', 'enhancement'), ('rm_filter_0_type_1', '-'),
+                    ('1_type', 'task'))
+        req = MockRequest(self.env, method='POST', path_info='/query',
+                          arg_list=arg_list)
+        orig_args = arg_list_to_args(arg_list)
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        template, data, content_type = mod.process_request(req)
+        self.assertEqual([{'type': ['defect', 'enhancement']},
+                          {'type': ['task']}],
+                         data['query'].constraints)
+        self.assertEqual(orig_args, req.args)
+
 
 class QueryLinksTestCase(unittest.TestCase):
 
