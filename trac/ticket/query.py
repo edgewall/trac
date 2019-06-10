@@ -1051,7 +1051,6 @@ class QueryModule(Component):
             add_num = None
             constraints = {}
             for k in req.args:
-                vals = req.args.getlist(k)
                 match = self.add_re.match(k)
                 if match:
                     add_num = match.group(1)
@@ -1063,6 +1062,8 @@ class QueryModule(Component):
                 clause_num = int(match.group('clause'))
                 if field not in fields:
                     continue
+                # use list() to avoid modification of a list in req.args
+                vals = list(req.args.getlist(k))
                 if vals:
                     mode = req.args.get(k + '_mode')
                     if mode:
