@@ -291,9 +291,10 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
     def drop_table(self, table):
         if (self._version or '').startswith(('8.0.', '8.1.')):
             cursor = self.cursor()
-            cursor.execute("""SELECT table_name FROM information_schema.tables
-                              WHERE table_schema=%s AND table_name=%s
-                              """, (self.schema, table))
+            cursor.execute("""
+                SELECT table_name FROM information_schema.tables
+                WHERE table_schema=current_schema() AND table_name=%s
+                """, (table,))
             for row in cursor:
                 if row[0] == table:
                     self.execute("DROP TABLE " + self.quote(table))
@@ -304,9 +305,9 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
     def get_column_names(self, table):
         rows = self.execute("""
             SELECT column_name FROM information_schema.columns
-            WHERE table_schema=%s AND table_name=%s
+            WHERE table_schema=current_schema() AND table_name=%s
             ORDER BY ordinal_position
-            """, (self.schema, table))
+            """, (table,))
         return [row[0] for row in rows]
 
     def get_last_id(self, cursor, table, column='id'):
@@ -317,7 +318,7 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
     def get_table_names(self):
         rows = self.execute("""
             SELECT table_name FROM information_schema.tables
-            WHERE table_schema=%s""", (self.schema,))
+            WHERE table_schema=current_schema()""")
         return [row[0] for row in rows]
 
     def like(self):
@@ -352,8 +353,8 @@ class PostgreSQLConnection(ConnectionBase, ConnectionWrapper):
                     quote_ident(table_schema) || '.' ||
                     quote_ident(table_name), column_name) AS sequence_name
                 FROM information_schema.columns
-                WHERE table_schema=%s) AS tab
-            WHERE sequence_name IS NOT NULL""", (self.schema,))
+                WHERE table_schema=current_schema()) AS tab
+            WHERE sequence_name IS NOT NULL""")
         for seq, in cursor.fetchall():
             cursor.execute("ALTER SEQUENCE %s RESTART WITH 1" % seq)
         # clear tables
