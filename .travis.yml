@@ -31,7 +31,7 @@ matrix:
       python: 2.7
       virtualenv:
         system_site_packages: true
-      services: postgres
+      services: postgresql
       env: tracdb=postgres
     - os: linux
       python: 2.7
