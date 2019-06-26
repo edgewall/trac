@@ -10,7 +10,6 @@ cache:
     - "$HOME/.cache/pip"
     - "$HOME/.pyenv"
     - "$HOME/venv-lib"
-    - "$HOME/Library/Caches/Homebrew"
 before_install:
   - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
   - test -n "$pyver" || pyver="$(python -c "$print_version")"
@@ -53,18 +52,6 @@ before_install:
     } >"$HOME/.pip/pip.conf"
   - |
     if [ "$TRAVIS_OS_NAME" = osx ]; then
-      # Pyenv >= 1.2.4 is needed with Python 2.6
-      if [[ "$pyver" == 2.6 ]]; then
-        # Upgrade pyenv and save formula/bottle in cache.
-        formula=$(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/pyenv.rb
-        formula_cached=$(brew --cache)/pyenv.rb
-        if [[ ! -f $formula_cached ]]; then
-          brew upgrade pyenv &>/dev/null
-          cp $formula $formula_cached
-        else
-          HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade $formula_cached
-        fi
-      fi
       test -d $HOME/venv-lib || mkdir $HOME/venv-lib
       eval "$(pyenv init -)"
       pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
