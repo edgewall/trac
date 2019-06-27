@@ -32,7 +32,7 @@ matrix:
       virtualenv:
         system_site_packages: true
       services: postgresql
-      env: tracdb=postgres
+      env: tracdb=postgresql
     - os: linux
       python: 2.7
       virtualenv:
@@ -50,13 +50,13 @@ matrix:
       env: pyver=2.7 tracdb=sqlite
     - os: osx
       language: generic
-      env: pyver=2.7 tracdb=postgres
+      env: pyver=2.7 tracdb=postgresql
 before_install:
   - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
   - test -n "$pyver" || pyver="$(python -c "$print_version")"
   - |
     case "$tracdb" in
-      postgres)
+      postgresql)
         if [ "$TRAVIS_OS_NAME" = osx ]; then
           rm -rf /usr/local/var/postgres
           pg_ctl initdb --pgdata /usr/local/var/postgres
@@ -129,7 +129,7 @@ install:
   - |
     requires='Jinja2 lxml twill==0.9.1'
     if [ "$build" != minimum ]; then requires="$requires Genshi>=0.7 Babel Pygments docutils textile pytz"; fi
-    if [ "$tracdb" = postgres ]; then requires="$requires psycopg2"; fi
+    if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
     pip install $requires
     python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
@@ -137,7 +137,7 @@ install:
   - |
     case "$tracdb" in
       sqlite)   tracdb_uri='sqlite:test.db' ;;
-      postgres) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
+      postgresql) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
       mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac?charset=utf8mb4' ;;
       *)        tracdb_uri= ;;
     esac
