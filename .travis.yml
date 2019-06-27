@@ -15,7 +15,7 @@ before_install:
   - test -n "$pyver" || pyver="$(python -c "$print_version")"
   - |
     case "$tracdb" in
-      postgres)
+      postgresql)
         if [ "$TRAVIS_OS_NAME" = osx ]; then
           rm -rf /usr/local/var/postgres
           pg_ctl initdb --pgdata /usr/local/var/postgres
@@ -91,7 +91,7 @@ install:
       2.6) requires="$requires Babel<2.6.0 lxml<4.3.0" ;;
       *)   requires="$requires Babel lxml" ;;
     esac
-    if [ "$tracdb" = postgres ]; then requires="$requires psycopg2<2.8"; fi
+    if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2<2.8"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
     pip install $requires
     python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
@@ -99,7 +99,7 @@ install:
   - |
     case "$tracdb" in
       sqlite)   tracdb_uri='sqlite:test.db' ;;
-      postgres) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
+      postgresql) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
       mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
       *)        tracdb_uri= ;;
     esac
@@ -126,7 +126,7 @@ jobs:
       dist: trusty
       python: 2.6
       services: postgresql
-      env: tracdb=postgres
+      env: tracdb=postgresql
     - os: linux
       dist: trusty
       python: 2.6
@@ -147,7 +147,7 @@ jobs:
       virtualenv:
         system_site_packages: true
       services: postgresql
-      env: tracdb=postgres
+      env: tracdb=postgresql
     - os: linux
       python: 2.7
       virtualenv:
@@ -162,7 +162,7 @@ jobs:
       env: pyver=2.6 tracdb=sqlite
     - os: osx
       language: generic
-      env: pyver=2.6 tracdb=postgres
+      env: pyver=2.6 tracdb=postgresql
     - os: osx
       language: generic
       env: pyver=2.7 tracdb=
@@ -171,7 +171,7 @@ jobs:
       env: pyver=2.7 tracdb=sqlite
     - os: osx
       language: generic
-      env: pyver=2.7 tracdb=postgres
+      env: pyver=2.7 tracdb=postgresql
     - stage: deploy
       deploy:
         - provider: pypi
