@@ -432,6 +432,8 @@ class TicketSystem(Component):
             }
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
+                if not field['options']:
+                    continue
                 if '' in field['options'] or \
                         field['name'] in self.allowed_empty_fields:
                     field['optional'] = True
