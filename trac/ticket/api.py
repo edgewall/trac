@@ -379,6 +379,8 @@ class TicketSystem(Component):
             }
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
+                if not field['options']:
+                    continue
                 if '' in field['options']:
                     field['optional'] = True
                     field['options'].remove('')
