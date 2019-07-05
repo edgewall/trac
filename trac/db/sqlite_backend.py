@@ -72,7 +72,7 @@ class PyFormatCursor(sqlite.Cursor):
 
 # EagerCursor taken from the example in pysqlite's repository:
 #
-#   http://code.google.com/p/pysqlite/source/browse/misc/eager.py
+#   https://github.com/ghaering/pysqlite/blob/master/misc/eager.py
 #
 # Only change is to subclass it from PyFormatCursor instead of
 # sqlite.Cursor.
@@ -436,8 +436,8 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         return table_names
 
     def update_sequence(self, cursor, table, column='id'):
-        # SQLite handles sequence updates automagically
-        # http://www.sqlite.org/autoinc.html
+        # SQLite handles sequence updates automatically
+        # https://www.sqlite.org/autoinc.html
         pass
 
     def _get_table_info(self, table):

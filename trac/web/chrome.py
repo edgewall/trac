@@ -525,10 +525,10 @@ class Chrome(Component):
 
     mainnav = ConfigSection('mainnav', """Configures the main navigation bar,
         which by default contains //Wiki//, //Timeline//, //Roadmap//,
-        //Browse Source//, //View Tickets//, //New Ticket//, //Search//  and
+        //Browse Source//, //View Tickets//, //New Ticket//, //Search// and
         //Admin//.
 
-        The `label`, `href`, and `order`  attributes can be specified. Entries
+        The `label`, `href`, and `order` attributes can be specified. Entries
         can be disabled by setting the value of the navigation item to
         `disabled`.
 
@@ -1081,7 +1081,7 @@ class Chrome(Component):
         If `[trac]` `show_email_addresses` is `False`, email addresses
         will be obfuscated when the user doesn't have `EMAIL_VIEW`
         (for the resource) and the optional parameter `show_email` is
-        `None`. Returns translated `anonymous` or `none`,  when the
+        `None`. Returns translated `anonymous` or `none`, when the
         author string is `anonymous` or evaluates to `False`,
         respectively.
 
@@ -1359,7 +1359,7 @@ class Chrome(Component):
            If the `text` argument is set to a string instead of a
            boolean, this corresponds to the legacy API and it will be
            assumed that you want to load a Genshi template instead of
-           a Jinja2 template.  If *text* is ``'text'`` , a
+           a Jinja2 template. If *text* is ``'text'`` , a
            `NewTextTemplate` instance will be created. If it is set to
            ``None`` or to another string value, a `MarkupTemplate`
            instance will be created and returned.
@@ -1406,8 +1406,8 @@ class Chrome(Component):
         options provided in *metadata*.
 
         The ``fragment``, ``iterable`` and ``method`` parameters are
-        deprecated and will be removed in Trac 1.5.1.  Instead, use
-        the ``metadata`` dictionary with keys with the same name.  The
+        deprecated and will be removed in Trac 1.5.1. Instead, use
+        the ``metadata`` dictionary with keys with the same name. The
         ``method`` key is itself deprecated, use ``text=True`` instead
         of ``method='text'`` to indicate that the template is a plain
         text one, with no need for HTML/XML escaping to take place.

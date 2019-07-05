@@ -65,7 +65,7 @@ from trac.web.href import Href
 from trac.web.session import SessionDict, Session
 
 #: This URL is used for semi-automatic bug reports (see
-#: `send_internal_error`).  Please modify it to point to your own
+#: `send_internal_error`). Please modify it to point to your own
 #: Trac instance if you distribute a patched version of Trac.
 default_tracker = 'https://trac.edgewall.org'
 
@@ -114,9 +114,9 @@ class RequestWithSession(Request):
 class RequestDispatcher(Component):
     """Web request dispatcher.
 
-    This component dispatches incoming requests to registered
-    handlers.  Besides, it also takes care of user authentication and
-    request pre- and post-processing.
+    This component dispatches incoming requests to registered handlers.
+    It also takes care of user authentication and request pre- and
+    post-processing.
     """
     required = True
 
@@ -406,7 +406,7 @@ class RequestDispatcher(Component):
         """Used to protect against CSRF.
 
         The 'form_token' is strong shared secret stored in a user
-        cookie.  By requiring that every POST form to contain this
+        cookie. By requiring that every POST form to contain this
         value we're able to protect against CSRF attacks. Since this
         value is only known by the user and not by an attacker.
 

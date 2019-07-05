@@ -73,7 +73,7 @@ class Environment(Component, ComponentManager):
     * project-specific templates and plugins,
     * the wiki and ticket attachments files,
     * the SQLite database file (stores tickets, wiki pages...)
-      in case the database backend is sqlite
+      in case the database backend is SQLite
 
     """
 
@@ -578,7 +578,7 @@ class Environment(Component, ComponentManager):
     def database_initial_version(self):
         """Returns the version of the database at the time of creation.
 
-        In practice, for database created before 0.11, this will
+        In practice, for a database created before 0.11, this will
         return `False` which is "older" than any db version number.
 
         :since 1.0.2:
@@ -703,7 +703,7 @@ class Environment(Component, ComponentManager):
         have logged in to this Trac environment and possibly set their
         name and email.
 
-        By default this function returns a iterator that yields one
+        By default this function returns an iterator that yields one
         tuple for every user, of the form (username, name, email),
         ordered alpha-numerically by username. When `as_dict` is `True`
         the function returns a dictionary mapping username to a
@@ -748,7 +748,7 @@ class Environment(Component, ComponentManager):
             with self.component_guard(participant, reraise=True):
                 if participant.environment_needs_upgrade():
                     self.log.warning(
-                        "Component %s requires environment upgrade",
+                        "Component %s requires an environment upgrade",
                         participant)
                     return True
         return False
@@ -1086,8 +1086,8 @@ class EnvironmentAdmin(Component):
         dbm = DatabaseManager(self.env)
         src_dburi = dbm.connection_uri
         if src_dburi == dst_dburi:
-            printferr("Source database and destination database are same: %s",
-                      dst_dburi)
+            printferr("Source database and destination database are the "
+                      "same: %s", dst_dburi)
             return 1
 
         env_path = mkdtemp(prefix='convert_db-',

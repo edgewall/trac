@@ -121,8 +121,8 @@ class TicketGroupStats(object):
                 self.done_count += interval['count']
 
         # We want the percentages to add up to 100%. To do that, we fudge one
-        # of the intervals. If we're <100%, we add to the smallest non-zero
-        # interval. If we're >100%, we subtract from the largest interval.
+        # of the intervals. If we're < 100%, we add to the smallest non-zero
+        # interval. If we're > 100%, we subtract from the largest interval.
         # The interval is adjusted to make the intervals sum to 100%.
         if self.done_count and total_percent != 100:
             fudge_amt = 100 - total_percent
@@ -166,7 +166,7 @@ class DefaultTicketGroupStatsProvider(Component):
         closed.order = 0
 
         # .query_args: optional parameters for the corresponding
-        #              query.  In this example, the changes from the
+        #              query. In this example, the changes from the
         #              default are two additional columns ('created' and
         #              'modified'), and sorting is done on 'created'.
         closed.query_args = group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
@@ -192,7 +192,7 @@ class DefaultTicketGroupStatsProvider(Component):
         }}}
 
         The definition consists in a comma-separated list of accepted
-        status.  Also, '*' means any status and could be used to
+        status. Also, '*' means any status and could be used to
         associate all remaining states to one catch-all group.
 
         The CSS class can be one of: new (yellow), open (no color) or
@@ -447,7 +447,7 @@ def group_milestones(milestones, include_completed):
 
 
 class RoadmapModule(Component):
-    """Give an overview over all the milestones."""
+    """Overview of all the milestones."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 

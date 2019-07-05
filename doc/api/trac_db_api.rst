@@ -1,5 +1,5 @@
-:mod:`trac.db.api` -- Trac DB abstraction layer
-===============================================
+:mod:`trac.db.api` -- Trac database abstraction layer
+=====================================================
 
 .. module :: trac.db.api
 

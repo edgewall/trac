@@ -69,7 +69,7 @@ def create_charset(mime_encoding):
     """Create an appropriate email charset for the given encoding.
 
     Valid options are 'base64' for Base64 encoding, 'qp' for
-    Quoted-Printable, and 'none' for no encoding, in which case mails will
+    Quoted-Printable, and 'none' for no encoding, in which case emails will
     be sent as 7bit if the content is all ASCII, or 8bit otherwise.
     """
     charset = Charset()
@@ -96,7 +96,7 @@ def create_charset(mime_encoding):
 def create_header(key, name, charset):
     """Create an appropriate email Header."""
     maxlength = MAXHEADERLEN-(len(key)+2)
-    # Do not sent ridiculous short headers
+    # Do not sent very short headers
     if maxlength < 10:
         raise TracError(_("Header length is too short"))
     # when it matches mime-encoding, encode as mime even if only
@@ -276,7 +276,7 @@ class EmailDistributor(Component):
         'SessionEmailResolver',
         include_missing=False,
         doc="""Comma separated list of email resolver components in the order
-        they will be called.  If an email address is resolved, the remaining
+        they will be called. If an email address is resolved, the remaining
         resolvers will not be called.
         """)
 
