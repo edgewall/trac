@@ -448,18 +448,17 @@ class TicketModule(Component):
         sorted_actions = TicketSystem(self.env).get_available_actions(req,
                                                                       ticket)
         for action in sorted_actions:
-            first_label = None
+            labels = []
             hints = []
             widgets = []
             for controller in self._get_action_controllers(req, ticket,
                                                            action):
                 label, widget, hint = controller.render_ticket_action_control(
                     req, ticket, action)
-                if not first_label:
-                    first_label = label
+                labels.append(label)
                 widgets.append(widget)
                 hints.append(hint)
-            action_controls.append((action, first_label, tag(widgets), hints))
+            action_controls.append((action, labels[0], tag(widgets), hints))
 
         # The default action is the first in the action_controls list.
         selected_action = req.args.get('action')
