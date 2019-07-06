@@ -116,6 +116,9 @@
  position: relative;
  bottom: 0.3em;
 }
+#ticketbox .trac-noreplybutton {
+ display: none;
+}
 
 /* Change History */
 #changelog {

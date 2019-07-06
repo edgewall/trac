@@ -176,9 +176,11 @@
 
       ## Quote the description (only for existing tickets)
 
-      # if ticket.exists and ticket.description and can_append:
+      # if ticket.exists and can_append:
       <form id="addreply" method="get" action="#comment">
-        <div class="inlinebuttons">
+        <div${{'class': {'inlinebuttons': true,
+                         'trac-noreplybutton': not ticket.description}
+              }|htmlattr}>
           <input type="hidden" name="replyto" value="description" />
           <input type="submit" name="reply"
                  value="${captioned_button('↳', _('Reply'))}"
