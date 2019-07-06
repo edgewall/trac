@@ -46,6 +46,20 @@ class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
         tc.find(pagename + '.*diff</a>\\)')
 
 
+class RegressionTestTicket12946(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Empty <dd> element should not be created when there is
+        no comment associated with an event.
+        """
+        pagename = random_unique_camel()
+        self._tester.create_wiki_page(pagename)
+        self._tester.attach_file_to_wiki(pagename, description="")
+        self._tester.go_to_timeline()
+        tc.find('<dt class="attachment unread">.*?</dt>', 's')
+        tc.notfind('<dt class="attachment unread">.*?</dt>[ \t\n]+'
+                   '<dd class="attachment">[ \t\n]*</dd>', 's')
+
+
 class TestRssFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test timeline in RSS format."""
@@ -86,6 +100,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
     suite.addTest(RegressionTestRev5883())
+    suite.addTest(RegressionTestTicket12946())
     suite.addTest(TestRssFormat())
     return suite
 

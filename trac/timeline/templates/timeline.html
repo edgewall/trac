@@ -47,7 +47,9 @@
         <dl py:for="unread, events in groupby(events, key=lambda e: lastvisit and lastvisit &lt; e.dateuid)"
             class="${'unread' if unread else None}">
           <py:for each="event in events"
-            py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">
+                  py:with="highlight = (precision and precisedate and
+                                        timedelta(0) &lt;= (event.date - precisedate) &lt; precision);
+                           rendered = event.render('description', context)">
             <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
               <a href="${event.render('url', context)}" py:choose="">
                 <py:when test="event.author"><i18n:msg params="time, title, author">
@@ -59,9 +61,7 @@
                 </py:otherwise>
               </a>
             </dt>
-            <dd class="${classes(event.kind, highlight=highlight)}">
-              ${event.render('description', context)}
-            </dd>
+            <dd py:if="rendered" class="${classes(event.kind, highlight=highlight)}">${rendered}</dd>
           </py:for>
         </dl>
       </py:for>
