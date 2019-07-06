@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import datetime
 import doctest
 import unittest
 
@@ -43,6 +44,9 @@ class ToJsonTestCase(unittest.TestCase):
         self.assertEqual('false', presentation.to_json(False))
         self.assertEqual('null', presentation.to_json(None))
         self.assertEqual('"String"', presentation.to_json('String'))
+        self.assertEqual('"2019-03-06T18:10:15Z"',
+                         presentation.to_json(
+                             datetime.datetime(2019, 3, 6, 18, 10, 15)))
         self.assertEqual(r'"a \" quote"', presentation.to_json('a " quote'))
         self.assertEqual('''"a ' single quote"''',
                          presentation.to_json("a ' single quote"))
