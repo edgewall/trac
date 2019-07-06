@@ -24,6 +24,7 @@
 }
 
 .timeline dt { background: 3px 4px no-repeat; padding: 0 }
+.timeline dt + dt { margin-top: .75em; }
 .timeline dt :link, .timeline dt :visited {
  background: 3px 3px no-repeat;
  border: none;

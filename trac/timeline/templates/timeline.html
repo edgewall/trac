@@ -91,9 +91,12 @@
             # endif
           </a>
         </dt>
+        #   set rendered = event.render('description', context)
+        #   if rendered:
         <dd class="${classes(event.kind, highlight=highlight)}">
-          ${event.render('description', context)}
+          ${rendered}
         </dd>
+        #   endif
         # endfor
       </dl>
       # endfor
