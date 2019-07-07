@@ -32,7 +32,6 @@ class CodeReviewActionController(Component):
     Example (from the enterprise-review-workflow.ini):
     {{{
     review = in_review -> *
-    review.label = review as
     review.operations = code_review
     review.code_review =
       approve -> in_QA,
