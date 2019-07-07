@@ -36,7 +36,6 @@ class CodeReviewActionController(Component):
     {{{#!ini
     request_review = in_work -> in_review
     review = in_review -> *
-    review.label = review as
     review.operations = code_review
     review.code_review =
       approve -> in_QA,
