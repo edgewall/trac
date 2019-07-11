@@ -91,6 +91,7 @@ Arguments:
                         xml:space="${'preserve' if wikitextarea else None}" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
                       <py:when test="header.field.type == 'time'">${pretty_dateinfo(value, header.field.format)}</py:when>
+                      <py:when test="header.field.type == 'checkbox'">${_("yes") if value else _("no")}</py:when>
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>
