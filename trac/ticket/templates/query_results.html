@@ -87,6 +87,8 @@ Arguments:
                         xml:space="${'preserve' if header.wikifyblock else None}" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
                       <py:when test="isinstance(value, datetime)">${pretty_dateinfo(value, dateonly=True)}</py:when>
+                      <py:when test="value is True">yes</py:when>
+                      <py:when test="value is False">no</py:when>
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>

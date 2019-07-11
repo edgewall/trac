@@ -1204,18 +1204,22 @@ class QueryModule(Component):
             chrome = Chrome(self.env)
             context = web_context(req)
             results = query.execute(req)
+            fields = dict((f['name'], f) for f in query.fields)
             for result in results:
                 ticket = Resource('ticket', result['id'])
                 if 'TICKET_VIEW' in req.perm(ticket):
                     values = []
                     for col in cols:
                         value = result[col]
+                        field = fields.get(col)
                         if col in ('cc', 'owner', 'reporter'):
                             value = chrome.format_emails(context.child(ticket),
                                                          value)
                         elif col in query.time_fields:
                             value = format_datetime(value, '%Y-%m-%d %H:%M:%S',
                                                     tzinfo=req.tz)
+                        elif field and field['type'] == 'checkbox':
+                            value = '1' if value else '0'
                         values.append(value)
                     yield writerow(values)
 
