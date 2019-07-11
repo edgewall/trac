@@ -13,6 +13,7 @@
 
 from datetime import datetime, timedelta
 import difflib
+import re
 import unittest
 
 from trac.mimeview.api import Mimeview
@@ -23,7 +24,7 @@ from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
 from trac.web.api import arg_list_to_args, parse_arg_list
-from trac.web.chrome import web_context
+from trac.web.chrome import Chrome, web_context
 from trac.wiki.formatter import LinkFormatter
 from trac.wiki.tests import formatter
 
@@ -1022,6 +1023,7 @@ ORDER BY COALESCE(%(version)s.value,'')='',%(version)s.value,t.id""" % quoted)
                                          'owner': 'joe@example.org',
                                          'milestone': 'milestone1',
                                          'custom1': 'val1'}],
+                     fields=TicketSystem(self.env).get_ticket_fields(),
                      time_fields=['time', 'changetime'])
         req = Mock(href=self.env.href, perm=MockPerm())
         content, mimetype, ext = Mimeview(self.env).convert_content(
@@ -1091,6 +1093,7 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
         query = Mock(get_columns=lambda: ['id', 'col1'],
                      execute=lambda r: [{'id': 1,
                                          'col1': 'value, needs escaped'}],
+                     fields=TicketSystem(self.env).get_ticket_fields(),
                      time_fields=['time', 'changetime'])
         req = MockRequest(self.env)
         content, mimetype, ext = Mimeview(self.env).convert_content(
@@ -1104,6 +1107,7 @@ ORDER BY COALESCE(c.%(ticket)s,'')='',c.%(ticket)s,t.id""" % quoted)
                                          'owner': 'joe@example.org',
                                          'reporter': 'foo@example.org',
                                          'cc': 'cc1@example.org, cc2'}],
+                     fields=TicketSystem(self.env).get_ticket_fields(),
                      time_fields=['time', 'changetime'])
         req = MockRequest(self.env, authname='anonymous')
         content, mimetype, ext = Mimeview(self.env).convert_content(
@@ -1331,6 +1335,47 @@ ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
                           {'type': ['task']}],
                          data['query'].constraints)
         self.assertEqual(orig_args, req.args)
+
+    def test_checkbox_field(self):
+        self.env.config.set('ticket-custom', 'blah', 'checkbox')
+        with self.env.db_transaction as db:
+            tktids = []
+            for value in ('1', '0'):
+                ticket = Ticket(self.env)
+                ticket.populate({'summary': 'test_ticket_custom_field',
+                                 'reporter': 'anonymous', 'status': 'new',
+                                 'blah': value})
+                tktids.append(ticket.insert())
+
+        id_range = '%d-%d' % (tktids[0], tktids[-1])
+        req = MockRequest(self.env, path_info='/query',
+                          args={'id': id_range, 'col': 'blah', 'order': 'id'})
+        mod = QueryModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        template, data = mod.process_request(req)
+        tickets = data['tickets']
+        self.assertEqual(tktids[0], tickets[0]['id'])
+        self.assertEqual(True, tickets[0]['blah'])
+        self.assertEqual(tktids[1], tickets[1]['id'])
+        self.assertEqual(False, tickets[1]['blah'])
+        rendered = Chrome(self.env).render_template(req, template, data,
+                                                    {'fragment': False,
+                                                     'iterable': False})
+        matches = list(re.finditer(r'<td class="blah">\s*([^<\s]*)\s*</td>',
+                                   rendered))
+        self.assertEqual('yes', matches[0].group(1))
+        self.assertEqual('no', matches[1].group(1))
+        self.assertEqual(2, len(matches))
+
+        query = Query.from_string(self.env,
+                                  u'id=%s&col=blah&order=id' % id_range)
+        csv, mimetype, ext = Mimeview(self.env).convert_content(
+            req, 'trac.ticket.Query', query, 'csv')
+        self.assertEqual('\xef\xbb\xbf'
+                         'id,Blah\r\n'
+                         '%d,1\r\n'
+                         '%d,0\r\n' % (tktids[0], tktids[1]),
+                         csv)
 
 
 class QueryLinksTestCase(unittest.TestCase):
