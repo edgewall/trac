@@ -745,12 +745,19 @@ class Environment(Component, ComponentManager):
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
         for participant in self.setup_participants:
-            with self.component_guard(participant, reraise=True):
-                if participant.environment_needs_upgrade():
-                    self.log.warning(
-                        "Component %s requires an environment upgrade",
-                        participant)
-                    return True
+            try:
+                with self.component_guard(participant, reraise=True):
+                    if participant.environment_needs_upgrade():
+                        self.log.warning(
+                            "Component %s requires an environment upgrade",
+                            participant)
+                        return True
+            except Exception as e:
+                raise TracError(_("Unable to check for upgrade of "
+                                  "%(module)s.%(name)s: %(err)s",
+                                  module=participant.__class__.__module__,
+                                  name=participant.__class__.__name__,
+                                  err=exception_to_unicode(e)))
         return False
 
     def upgrade(self, backup=False, backup_dest=None):
@@ -857,16 +864,21 @@ def open_environment(env_path=None, use_cache=False):
                 CacheManager(env).reset_metadata()
     else:
         env = Environment(env_path)
-        needs_upgrade = True
         try:
             needs_upgrade = env.needs_upgrade()
+        except TracError as e:
+            env.log.error("Exception caught while checking for upgrade: %s",
+                          exception_to_unicode(e))
+            raise
         except Exception as e:  # e.g. no database connection
             env.log.error("Exception caught while checking for upgrade: %s",
                           exception_to_unicode(e, traceback=True))
-        if needs_upgrade:
-            raise TracError(_('The Trac Environment needs to be upgraded. '
-                              'Run:\n\n  trac-admin "%(path)s" upgrade',
-                              path=env_path))
+            raise
+        else:
+            if needs_upgrade:
+                raise TracError(_('The Trac Environment needs to be upgraded. '
+                                  'Run:\n\n  trac-admin "%(path)s" upgrade',
+                                  path=env_path))
 
     return env
 
