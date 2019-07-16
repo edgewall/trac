@@ -2,7 +2,6 @@
 # Copyright (C) 2017-2019 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2\n"
