@@ -27,20 +27,69 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.ctlr = TicketSystem(self.env).action_controllers[0]
 
-    def test_ignores_other_operations(self):
-        """Ignores operations not defined by ConfigurableTicketWorkflow.
-        """
-        self.env.config.set('ticket-workflow', 'review', 'assigned -> review')
-        self.env.config.set('ticket-workflow', 'review.operations',
-                            'CodeReview')
-        ctw = ConfigurableTicketWorkflow(self.env)
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _reload_workflow(self):
+        self.ctlr.actions = self.ctlr.get_all_actions()
+
+    def test_status_change_with_operation(self):
+        """Status change with operation."""
         ticket = Ticket(self.env)
-        ticket.populate({'summary': '#13013', 'status': 'assigned'})
+        ticket['new'] = 'status1'
+        ticket['owner'] = 'user1'
         ticket.insert()
-        req = MockRequest(self.env)
+        req = MockRequest(self.env, path_info='/ticket', authname='user2',
+                          method='POST')
 
-        self.assertNotIn((0, 'review'), ctw.get_ticket_actions(req, ticket))
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket, 'accept')
+
+        self.assertEqual('accept', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual("The owner will be changed from user1 to user2. "
+                         "Next status will be 'accepted'.", unicode(hints))
+
+    def test_status_change_with_no_operation(self):
+        """Status change with no operation."""
+        config = self.env.config
+        config.set('ticket-workflow', 'change_status', 'status1 -> status2')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        ticket['status'] = 'status1'
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket', method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'change_status')
+
+        self.assertEqual('change_status', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual("Next status will be 'status2'.", unicode(hints))
+
+    def test_transition_to_star(self):
+        """Action is not rendered for transition to *
+
+        AdvancedTicketWorkflow uses the behavior for the triage operation
+        (see #12823)
+        """
+        config = self.env.config
+        config.set('ticket-workflow', 'create_and_triage', '<none> -> *')
+        config.set('ticket-workflow', 'create_and_triage.operations', 'triage')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        req = MockRequest(self.env, path_info='/newticket', method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'create_and_triage')
+
+        self.assertIsNone(label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual('', unicode(hints))
 
 
 class ResetActionTestCase(unittest.TestCase):

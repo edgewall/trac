@@ -176,10 +176,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         ticket_perm = req.perm(ticket.resource)
         allowed_actions = []
         for action_name, action_info in self.actions.items():
-            operations = action_info['operations']
-            if operations and not \
-                    any(opt in self.operations for opt in operations):
-                continue  # Ignore operations not defined by this controller
             oldstates = action_info['oldstates']
             if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
@@ -222,6 +218,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         this_action = self.actions[action]
         status = this_action['newstate']
+        label = this_action['name']
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'])
         author = get_reporter_id(req, 'author')
@@ -331,9 +328,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                              if current_owner else
                              _("The ticket will remain with no owner"))
         else:
-            if status != '*':
+            if status == '*':
+                label = None  # Control won't be created
+            else:
                 hints.append(_("Next status will be '%(name)s'", name=status))
-        return (this_action.get('name', action), tag(separated(control, ' ')),
+        return (label, tag(separated(control, ' ')),
                 '. '.join(hints) + '.' if hints else '')
 
     def get_ticket_changes(self, req, ticket, action):

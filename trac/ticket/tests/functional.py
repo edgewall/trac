@@ -2375,6 +2375,23 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
+class RegressionTestTicket13087(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Workflow controls for transition to * not created by
+        ConfigurableTicketWorkflow.
+        """
+        env = self._testenv.get_trac_environment()
+        try:
+            env.config.set('ticket-workflow', 'triage', 'new -> *')
+            env.config.save()
+
+            tkt = self._tester.create_ticket()
+            tc.notfind('<label for="action_triage">triage</label>')
+        finally:
+            env.config.remove('ticket-workflow', 'triage')
+            env.config.save()
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -2503,6 +2520,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket11930())
     suite.addTest(RegressionTestTicket11996())
     suite.addTest(RegressionTestTicket12801())
+    suite.addTest(RegressionTestTicket13087())
 
     return suite
 

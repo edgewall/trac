@@ -1666,11 +1666,14 @@ class TicketModule(Component):
                                                            action):
                 label, widget, hint = controller.render_ticket_action_control(
                     req, ticket, action)
+                if label is None:
+                    continue
                 if not first_label:
                     first_label = label
                 widgets.append(widget)
                 hints.append(hint)
-            action_controls.append((action, first_label, tag(widgets), hints))
+            if first_label:
+                action_controls.append((action, first_label, tag(widgets), hints))
 
         # The default action is the first in the action_controls list.
         if not selected_action:
