@@ -206,9 +206,60 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self.assertEqual('component4', ticket['component'])
         self.assertEqual('cowner3', ticket['owner'])
 
+    def test_status_change_with_operation(self):
+        """Status change with operation."""
+        ticket = Ticket(self.env)
+        ticket['new'] = 'status1'
+        ticket['owner'] = 'user1'
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket', authname='user2',
+                          method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket, 'accept')
+
+        self.assertEqual('accept', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual("The owner will be <span class=\"trac-author-user\">"
+                         "user2</span>. The status will be 'accepted'.",
+                         unicode(hints))
+
+    def test_status_change_with_no_operation(self):
+        """Existing ticket status change with no operation."""
+        config = self.env.config
+        config.set('ticket-workflow', 'change_status', 'status1 -> status2')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        ticket['status'] = 'status1'
+        ticket.insert()
+        req = MockRequest(self.env, path_info='/ticket', method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'change_status')
+
+        self.assertEqual('change status', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual("Next status will be 'status2'.", unicode(hints))
+
+    def test_new_ticket_status_change_with_no_operation(self):
+        """New ticket status change with no operation."""
+        config = self.env.config
+        config.set('ticket-workflow', 'change_status', '<none> -> status1')
+        self._reload_workflow()
+        ticket = Ticket(self.env)
+        req = MockRequest(self.env, path_info='/newticket', method='POST')
+
+        label, control, hints = \
+            self.ctlr.render_ticket_action_control(req, ticket,
+                                                   'change_status')
+
+        self.assertEqual('change status', label)
+        self.assertEqual('', unicode(control))
+        self.assertEqual("The status will be 'status1'.", unicode(hints))
+
     def test_transition_to_star(self):
-        """Workflow hint is not be added in a workflow transition to *,
-        for example: <none> -> *
+        """Action is not rendered for transition to *
 
         AdvancedTicketWorkflow uses the behavior for the triage operation
         (see #12823)
@@ -224,23 +275,9 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             self.ctlr.render_ticket_action_control(req, ticket,
                                                    'create_and_triage')
 
-        self.assertEqual('create and triage', label)
+        self.assertIsNone(label)
         self.assertEqual('', unicode(control))
         self.assertEqual('', unicode(hints))
-
-    def test_ignores_other_operations(self):
-        """Ignores operations not defined by ConfigurableTicketWorkflow.
-        """
-        self.env.config.set('ticket-workflow', 'review', 'assigned -> review')
-        self.env.config.set('ticket-workflow', 'review.operations',
-                            'CodeReview')
-        ctw = ConfigurableTicketWorkflow(self.env)
-        ticket = Ticket(self.env)
-        ticket.populate({'summary': '#13013', 'status': 'assigned'})
-        ticket.insert()
-        req = MockRequest(self.env)
-
-        self.assertNotIn((0, 'review'), ctw.get_ticket_actions(req, ticket))
 
 
 class ResetActionTestCase(unittest.TestCase):
@@ -412,8 +449,8 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
         self.assertEqual('', unicode(control))
         self.assertEqual('The owner will be changed from '
                          '<span class="trac-author">User 2</span> to '
-                         '<span class="trac-author-user">User 1</span>.',
-                         unicode(hints))
+                         '<span class="trac-author-user">User 1</span>. '
+                         'Next status will be \'accepted\'.', unicode(hints))
 
     def test_owner_is_self_and_state_change(self):
         """Ticket owner is auth'ed user with state change.
@@ -431,7 +468,8 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
         self.assertEqual(label, 'accept')
         self.assertEqual('', unicode(control))
         self.assertEqual('The owner will remain <span class="trac-author-user">'
-                         'User 1</span>.', unicode(hints))
+                         'User 1</span>. Next status will be \'accepted\'.',
+                         unicode(hints))
 
     def test_owner_is_self_and_no_state_change(self):
         """Ticket owner is the auth'ed user and no state change.
@@ -474,8 +512,9 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
             'id="action_resolve_as_owner_resolve_resolution"/>',
             unicode(control))
         self.assertEqual(
-            'The owner will remain <span class="trac-author-user">User 1'
-            '</span>. The resolution will be set to fixed.', unicode(hints))
+            "The owner will remain <span class=\"trac-author-user\">User 1"
+            "</span>. The resolution will be set to fixed. Next status will "
+            "be 'closed'.", unicode(hints))
 
     def test_owner_is_self_no_state_change_and_multiple_operations(self):
         """Ticket owner is auth'ed user, no state change and multiple ops.
@@ -503,8 +542,8 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
             'name="action_fix_resolution_resolve_resolution" value="invalid" '
             'id="action_fix_resolution_resolve_resolution"/>',
             unicode(control))
-        self.assertEqual('The resolution will be set to invalid.',
-                         unicode(hints))
+        self.assertEqual("The resolution will be set to invalid. "
+                         "Next status will be 'closed'.", unicode(hints))
 
 
 class RestrictOwnerTestCase(unittest.TestCase):

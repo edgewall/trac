@@ -203,9 +203,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     operations[0] == 'set_owner_to_self' and \
                     ticket_owner == author and ticket_status == newstate:
                 continue
-            if operations and not \
-                    any(opt in self.operations for opt in operations):
-                continue  # Ignore operations not defined by this controller
             oldstates = action_info['oldstates']
             if exists and oldstates == ['*'] or ticket_status in oldstates:
                 # This action is valid in this state.  Check permissions.
@@ -249,6 +246,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         this_action = self.actions[action]
         status = this_action['newstate']
+        label = this_action['label']
         operations = this_action['operations']
         ticket_owner = ticket._old.get('owner', ticket['owner'])
         ticket_status = ticket._old.get('status', ticket['status'])
@@ -327,9 +325,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 selected_owner = req.args.get(id, default_owner)
                 control.append(tag_("to %(owner)s", owner=tag.select(
-                    [tag.option(label, value=value if value is not None else '',
+                    [tag.option(text, value=value if value is not None else '',
                                 selected=(value == selected_owner or None))
-                     for label, value in sorted((format_author(owner), owner)
+                     for text, value in sorted((format_author(owner), owner)
                                                 for owner in owners)],
                     id=id, name=id)))
                 if not exists or ticket_owner is None:
@@ -394,15 +392,16 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   current_owner=formatted_current_owner)
                              if ticket_owner else
                              _("The ticket will remain with no owner"))
-        elif not operations:
-            if status != '*':
-                if ticket['status'] is None:
-                    hints.append(tag_("The status will be '%(name)s'",
-                                      name=status))
-                else:
-                    hints.append(tag_("Next status will be '%(name)s'",
-                                      name=status))
-        return (this_action['label'], tag(separated(control, ' ')),
+        else:
+            if status == '*':
+                label = None  # Control won't be created
+            elif ticket['status'] is None:  # New ticket
+                hints.append(tag_("The status will be '%(name)s'",
+                                  name=status))
+            else:
+                hints.append(tag_("Next status will be '%(name)s'",
+                                  name=status))
+        return (label, tag(separated(control, ' ')),
                 tag(separated(hints, '. ', '.') if hints else ''))
 
     def get_ticket_changes(self, req, ticket, action):
