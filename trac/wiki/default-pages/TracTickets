@@ -115,10 +115,13 @@ To create a link to the new-ticket form filled with preset values, you need to c
  * '''keywords''' — The keywords or tags.
  * '''priority''' — The priority dropdown list.
  * '''milestone''' — The milestone dropdown list.
- * '''owner''' — The person responsible for the ticket.
  * '''cc''' — The list of emails for notifying about the ticket change.
 
 Example: `[/newticket?summary=Compile%20Error&version=1.0&component=gui]`
+
+To set the ticket owner the workflow action may also need to be selected. For the [TracWorkflow#TicketCreateAction default workflow], the //create and assign// action can be selected with `action=create_and_assign` and the owner specified by assigning `action_create_and_assign_reassign_owner`. Alternatively, you could avoid needing to select the action by using the [TracWorkflow#BasicTicketWorkflowCustomization default attribute] to make //create and assign// the default action.
+
+For other custom workflow actions, determine the variable names by inspecting the `name` attribute of the //action// radio button and the //owner// input or select element.
 
 == Deleting Tickets
 

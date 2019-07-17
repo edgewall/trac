@@ -213,11 +213,9 @@ class TracadminTestCase(TracAdminTestCaseBase):
         """Error is returned when a command is executed in interpreter
         with optimizations enabled.
         """
-        env = os.environ.copy()
-        env['LC_ALL'] = env['LANG'] = 'C'  # use en_US locale messages
         proc = Popen((sys.executable, '-O', '-m', 'trac.admin.console',
                       'help'), stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                     close_fds=close_fds, env=env)
+                     close_fds=close_fds)
         stdout, stderr = proc.communicate(input='')
         for f in (proc.stdin, proc.stdout, proc.stderr):
             f.close()

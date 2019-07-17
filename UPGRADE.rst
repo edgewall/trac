@@ -555,7 +555,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _#NewWorkflowActions: http://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
 .. _AdminConsoleProviderPatch: https://trac-hacks.org/wiki/AdminConsoleProviderPatch
 .. _AdminEnumListPlugin: https://trac-hacks.org/wiki/AdminEnumListPlugin
-.. _Alagazam: http://alagazam.net/
+.. _Alagazam: https://alagazam.net/
 .. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
 .. _AutoQueryPlugin: https://trac-hacks.org/wiki/AutoQueryPlugin
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
@@ -565,7 +565,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _custom field type: http://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
 .. _deployed: http://trac.edgewall.org/wiki/TracInstall#cgi-bin
-.. _easy_install: http://pypi.python.org/pypi/setuptools
+.. _easy_install: https://pypi.org/project/setuptools
 .. _environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
 .. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin

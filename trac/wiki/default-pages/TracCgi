@@ -10,7 +10,7 @@ CGI script is the entrypoint that web-server calls when a web-request to an appl
 
 == Apache web-server configuration
 
-In [http://httpd.apache.org/ Apache] there are two ways to run Trac as CGI:
+In [https://httpd.apache.org/ Apache] there are two ways to run Trac as CGI:
 
  1. Use a `ScriptAlias` directive that maps a URL to the `trac.cgi` script (recommended)
  1. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
@@ -48,7 +48,7 @@ An alternative to `SetEnv` is editing `TRAC_ENV` or `TRAC_ENV_PARENT_DIR` in `tr
     os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/parent/dir"
 }}}
 
-If you are using the [http://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [trac:ApacheSuexec].
+If you are using the [https://httpd.apache.org/docs/suexec.html Apache suEXEC] feature please see [trac:ApacheSuexec].
 
 On some systems, you ''may'' need to edit the shebang line in the `trac.cgi` file to point to your real Python installation path. On a Windows system you may need to configure Windows to know how to execute a `.cgi` file (Explorer -> Tools -> Folder Options -> File Types -> CGI).
 
@@ -73,7 +73,7 @@ Put this directive next to where you set the path to the [TracEnvironment Trac e
 
 === Using WSGI
 
-You can run a [http://henry.precheur.org/python/how_to_serve_cgi WSGI handler] [http://pythonweb.org/projects/webmodules/doc/0.5.3/html_multipage/lib/example-webserver-web-wsgi-simple-cgi.html under CGI].  You can [wiki:TracModWSGI#Thetrac.wsgiscript write your own application function], or use the deployed trac.wsgi's application.
+You can run a [http://henry.precheur.org/python/how_to_serve_cgi WSGI handler] [https://thejimmyg.github.io/pythonweb/projects/webmodules/doc/0.5.3/html_multipage/lib/example-webserver-web-wsgi-simple-cgi.html under CGI].  You can [wiki:TracModWSGI#Thetrac.wsgiscript write your own application function], or use the deployed trac.wsgi's application.
 
 == Mapping Static Resources
 

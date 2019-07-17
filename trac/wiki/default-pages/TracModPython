@@ -147,6 +147,8 @@ The Trac mod_python handler supports a configuration option similar to Subversio
 
 When you request the `/projects` URL, you will get a listing of all subdirectories of the directory you set as `TracEnvParentDir` that look like Trac environment directories. Selecting any project in the list will bring you to the corresponding Trac environment.
 
+Directories residing in `TracEnvParentDir` that are not environment directories will display an error message on the [TracInterfaceCustomization#ProjectList project index page]. The directories can be excluded by listing them in a `.tracignore` file residing in `TracEnvParentDir`. Unix [https://docs.python.org/2/library/fnmatch.html shell-style wildcard patterns] can be used in the newline separated list of directories.
+
 If you don't want to have the subdirectory listing as your projects home page you can use a
 {{{#!apache
 <LocationMatch "/.+/">
@@ -315,7 +317,7 @@ If Trac reports something like: `Cannot get shared lock on db.lock`, then the se
 chcon -R -h -t httpd_sys_content_t PATH_TO_REPOSITORY
 }}}
 
-See also [http://subversion.apache.org/faq.html#reposperms How do I set repository permissions correctly?]
+See also [https://subversion.apache.org/faq.html#reposperms How do I set repository permissions correctly?]
 
 ==== FreeBSD issues
 
@@ -375,9 +377,9 @@ If you want to run Trac fully under https you might find that it tries to redire
 
 === Segmentation fault with php5-mhash or other php5 modules
 
-You may encounter segfaults (reported on Debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See [http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487 Debian bug report].
+You may encounter segfaults (reported on Debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See [https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487 Debian bug report].
 
-Some people also have troubles when using PHP5 compiled with its own third party libraries instead of system libraries. Check [http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault Django segmentation fault].
+Some people also have troubles when using PHP5 compiled with its own third party libraries instead of system libraries. Check [https://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault Django segmentation fault].
 
 ----
 See also: TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI], [trac:TracNginxRecipe]

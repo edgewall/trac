@@ -47,7 +47,7 @@ See also TracNavigation for a more detailed explanation of the mainnav and metan
 
 == Site Appearance #SiteAppearance
 
-Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as `site.html` inside your projects `templates/` directory (each Trac project can have their own `site.html`), eg `/path/to/env/templates/site.html`:
+Trac is using [https://genshi.edgewall.org Genshi] as the templating engine. Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as `site.html` inside your projects `templates/` directory (each Trac project can have their own `site.html`), eg `/path/to/env/templates/site.html`:
 
 {{{#!xml
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -78,8 +78,8 @@ Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Say 
 
 Notice that XSLT bears some similarities with Genshi templates. However, there are some Trac specific features, for example the `${href.chrome('site/style.css')}` attribute references `style.css` in the environment's `htdocs/` directory. In a similar fashion `${chrome.htdocs_location}` is used to specify the common `htdocs/` directory belonging to a Trac installation. That latter location can however be overriden using the [TracIni#trac-htdocs_location-option "[trac] htdocs_location"] setting.
 
-`site.html` is one file to contain all your modifications. It usually works using the `py:match` directive (element or attribute), and it allows you to modify the page as it renders. The matches hook into specific sections. See [http://groups.google.com/group/trac-users/browse_thread/thread/70487fb2c406c937/ this thread] for a detailed explanation of the above example `site.html`.
-A `site.html` can contain any number of `py:match` sections. This is all Genshi, so the [http://genshi.edgewall.org/wiki/Documentation/xml-templates.html docs on the exact syntax] can be found there.
+`site.html` is one file to contain all your modifications. It usually works using the `py:match` directive (element or attribute), and it allows you to modify the page as it renders. The matches hook into specific sections. See [https://groups.google.com/group/trac-users/browse_thread/thread/70487fb2c406c937/ this thread] for a detailed explanation of the above example `site.html`.
+A `site.html` can contain any number of `py:match` sections. This is all Genshi, so the [https://genshi.edgewall.org/wiki/Documentation/xml-templates.html docs on the exact syntax] can be found there.
 
 Example snippet of adding introduction text to the new ticket form (but not shown during preview):
 

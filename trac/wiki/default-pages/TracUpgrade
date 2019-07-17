@@ -280,11 +280,11 @@ If you use a Trac parent env configuration and one of the plugins in one child d
 
 === Upgrading Python
 
-Upgrading Python to a newer version will require reinstallation of Python packages: Trac itself of course, but also [http://pypi.python.org/pypi/setuptools easy_install], if you've been using that. If you are using Subversion, you'll also need to upgrade the Python bindings for svn.
+Upgrading Python to a newer version will require reinstallation of Python packages: Trac itself of course, but also [https://pypi.org/project/setuptools easy_install], if you've been using that. If you are using Subversion, you'll also need to upgrade the Python bindings for svn.
 
 ==== Windows and Python 2.6
 
-If you've been using !CollabNet's Subversion package, you may need to uninstall that in favor of [http://alagazam.net/ Alagazam], which has the Python bindings readily available, see [trac:TracSubversion]. That package works without tweaking.
+If you've been using !CollabNet's Subversion package, you may need to uninstall that in favor of [https://alagazam.net/ Alagazam], which has the Python bindings readily available, see [trac:TracSubversion]. That package works without tweaking.
 
 === Changing Database Backend
 

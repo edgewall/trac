@@ -145,7 +145,7 @@ _reset.default = 0
 
 Workflows can be visualized by rendering them on the wiki using the [WikiMacros#Workflow-macro Workflow macro].
 
-Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script. The script outputs `.dot` files that [http://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
+Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script. The script outputs `.dot` files that [https://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
 
 {{{#!sh
 $ cd /var/local/trac_devel/contrib/workflow/

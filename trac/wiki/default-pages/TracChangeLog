@@ -16,6 +16,16 @@ See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
 
 This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
 
+=== 1.2.4
+
+//(July 17, 2019)//
+
+Trac 1.2.4 provides a dozen minor fixes and enhancements.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#MaintenanceReleases | 1.2.4]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.18]] (as 1.2.4 also contains the changes in 1.0.18).
+
+[trac:source:/tags/trac-1.2.4 View Tag] | [trac:milestone:1.2.4 View Milestone]
+
 === 1.2.3
 
 //(July 29, 2018)//

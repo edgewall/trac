@@ -73,11 +73,11 @@ For more details on the available options, see the configuration section at the 
 == Sourceforge
 
 [https://trac-hacks.org/wiki/SfnToTracScript SfnToTracScript]: importer of !SourceForge's new backup file (originated from #Trac3521).
-Also, ticket data can be imported from Sourceforge using the [trac:browser:trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
+Also, ticket data can be imported from Sourceforge using the [trac:browser:branches/1.2-stable/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 == Other
 
-Since Trac uses a SQL database to store the data, you can also custom-import from other systems by examining the database tables. Just go into [http://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import them from your application.
+Since Trac uses a SQL database to store the data, you can also custom-import from other systems by examining the database tables. Just go into [https://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import them from your application.
 
 === Comma delimited file - CSV
 

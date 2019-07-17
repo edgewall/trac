@@ -5,7 +5,7 @@
 
 Trac uses a directory structure and a database for storing project data. The directory is referred to as the '''environment'''.
 
-Trac supports [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL] and [http://mysql.com/ MySQL] databases. With PostgreSQL and MySQL you have to create the database before running `trac-admin initenv`.
+Trac supports [https://www.sqlite.org/ SQLite], [https://www.postgresql.org/ PostgreSQL] and [https://www.mysql.com/ MySQL] databases. With PostgreSQL and MySQL you have to create the database before running `trac-admin initenv`.
 
 == Creating an Environment
 
@@ -39,7 +39,7 @@ It happens that the structure for a Trac environment is loosely modeled after th
 
 You will need to specify a database connection string at the time the environment is created. The default is SQLite, which is sufficient for most projects. The SQLite database file is stored in the environment directory, and can easily be [wiki:TracBackup backed up] together with the rest of the environment.
 
-Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be [http://meyerweb.com/eric/tools/dencoder/ URL encoded].
+Note that if the username or password of the connection string (if applicable) contains the `:`, `/` or `@` characters, they need to be [https://meyerweb.com/eric/tools/dencoder/ URL encoded].
 {{{#!sh
 $ python -c "import urllib; print urllib.quote('password@:/123', '')"
 password%40%3A%2F123
@@ -77,7 +77,7 @@ or a specific one:
 postgres://user:password@/database?host=/path/to/socket/dir
 }}}
 
-See the [http://www.postgresql.org/docs/ PostgreSQL documentation] for detailed instructions on how to administer [http://postgresql.org PostgreSQL].
+See the [https://www.postgresql.org/docs/ PostgreSQL documentation] for detailed instructions on how to administer [https://www.postgresql.org/ PostgreSQL].
 Generally, the following is sufficient to create a database user named `tracuser` and a database named `trac`:
 {{{#!sh
 $ createuser -U postgres -E -P tracuser

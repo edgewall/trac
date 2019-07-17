@@ -44,7 +44,7 @@ class AuthzParserTestCase(unittest.TestCase):
             @developers = rw
             &baz =
             @users = r
-            
+
             [/branches]
             bar = rw
 

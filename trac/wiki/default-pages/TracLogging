@@ -1,7 +1,7 @@
 = Trac Logging
 [[TracGuideToc]]
 
-Trac supports logging of system messages using Python's [http://docs.python.org/library/logging.html logging module].
+Trac supports logging of system messages using Python's [https://docs.python.org/2/library/logging.html logging module].
 
 Logging is configured in the [TracIni#logging-section "[logging]"] section of TracIni.
 

@@ -67,4 +67,4 @@ prefs.order = 3
 Note that it is still not possible to customize the '''contextual navigation bar''', ie the one usually placed below the main navigation bar.
 
 ----
-See also: TracInterfaceCustomization, and the [http://trac-hacks.org/wiki/NavAddPlugin TracHacks:NavAddPlugin] or [http://trac-hacks.org/wiki/MenusPlugin TracHacks:MenusPlugin] (still needed for adding entries)
+See also: TracInterfaceCustomization, and the [https://trac-hacks.org/wiki/NavAddPlugin TracHacks:NavAddPlugin] or [https://trac-hacks.org/wiki/MenusPlugin TracHacks:MenusPlugin] (still needed for adding entries)

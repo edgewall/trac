@@ -43,7 +43,7 @@ To exit the server on Windows, be sure to use `CTRL-BREAK` -- using `CTRL-C` wil
 == Installing as a Windows Service
 
 === Option 1
-To install as a Windows service, get the [http://www.google.com/search?q=srvany.exe SRVANY] utility and run:
+To install as a Windows service, get the [https://www.google.com/search?q=srvany.exe SRVANY] utility and run:
 {{{#!cmd
  C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
  reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd-script.py\" <your tracd parameters>"
@@ -72,7 +72,7 @@ Note that, if the !AppDirectory is set as above, the paths of the executable ''a
 (This is true for the path to the .htpasswd file, as well, despite the documentation calling out the /full/path/to/htpasswd; however, you may not wish to store that file under the Python directory.)
 }}}
 
-For Windows 7 User, srvany.exe may not be an option, so you can use [http://www.google.com/search?q=winserv.exe WINSERV] utility and run:
+For Windows 7 User, srvany.exe may not be an option, so you can use [https://www.google.com/search?q=winserv.exe WINSERV] utility and run:
 {{{#!cmd
 "C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd-script.py <your tracd parameters>"
 net start tracd
@@ -80,7 +80,7 @@ net start tracd
 
 === Option 2
 
-Use [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], available at [http://trac-hacks.org/ Trac Hacks]. Installs, removes, starts, stops, etc. your Trac service.
+Use [https://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], available at [https://trac-hacks.org/ Trac Hacks]. Installs, removes, starts, stops, etc. your Trac service.
 
 === Option 3
 
@@ -166,7 +166,7 @@ For example:
 
 === Digest authentication: Using a htdigest password file
 
-If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [http://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
+If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [https://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
 
 Note that you can start tracd without the `--auth` argument, but if you click on the ''Login'' link you will get an error.
 

@@ -5,7 +5,7 @@
 
 [http://www.fastcgi.com/ FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python] or [wiki:TracModWSGI mod_wsgi]. It is faster than external CGI interfaces which must start a new process for each request. Additionally, it is supported by a much wider variety of web servers.
 
-Note that unlike mod_python, FastCGI supports [http://httpd.apache.org/docs/suexec.html Apache SuEXEC], ie run with different permissions than the web server runs with. `mod_wsgi` supports the `WSGIDaemonProcess` with user / group parameters to achieve the same effect.
+Note that unlike mod_python, FastCGI supports [https://httpd.apache.org/docs/suexec.html Apache SuEXEC], ie run with different permissions than the web server runs with. `mod_wsgi` supports the `WSGIDaemonProcess` with user / group parameters to achieve the same effect.
 
 '''Note for Windows:''' Trac's FastCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, you may want to try [trac:TracOnWindowsIisAjp AJP]/[trac:TracOnWindowsIisAjp ISAPI].
 
@@ -67,7 +67,7 @@ DefaultInitEnv TRAC_ENV /path/to/env/trac/
 
 === Alternative environment setup
 
-A better method to specify the path to the Trac environment is to embed the path into `trac.fcgi` script itself. That doesn't require configuration of the server environment variables, works for both [trac:FastCgi] modules as well as for [http://www.lighttpd.net/ lighttpd] and CGI:
+A better method to specify the path to the Trac environment is to embed the path into `trac.fcgi` script itself. That doesn't require configuration of the server environment variables, works for both [trac:FastCgi] modules as well as for [https://www.lighttpd.net/ lighttpd] and CGI:
 {{{#!python
 import os
 os.environ['TRAC_ENV'] = "/path/to/projectenv"
@@ -105,14 +105,14 @@ If the port was not reachable, the interpreter command would be launched. Note t
 After doing this, we will just have to create a new rule managed by the SCGI handler to access Trac. It can be created in a new virtual server, trac.example.net for instance, and will only need two rules. The '''default''' one will use the SCGI handler associated to the previously created information source.
 The second rule will be there to serve the few static files needed to correctly display the Trac interface. Create it as ''Directory rule'' for ''/common'' and just set it to the ''Static files'' handler and with a ''Document root'' that points to the appropriate files: ''$TRAC_LOCAL/htdocs/'' (where $TRAC_LOCAL is a directory defined by the user or the system administrator to place local Trac resources).
 
-'''Note:''' If the tracd process fails to start up, and Cherokee displays a 503 error page, you might be missing the [http://trac.saddi.com/flup python-flup] package ([trac:#9903]). Python-flup is a dependency which provides Trac with SCGI capability. You can install it on Debian based systems with:
+'''Note:''' If the tracd process fails to start up, and Cherokee displays a 503 error page, you might be missing the [https://www.saddi.com/software/flup/ python-flup] package ([trac:#9903]). Python-flup is a dependency which provides Trac with SCGI capability. You can install it on Debian based systems with:
 {{{#!sh
 sudo apt-get install python-flup
 }}}
 
 == Lighttpd Configuration
 
-The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.lighttpd.net/ Lighttpd].
+The FastCGI front-end was developed primarily for use with alternative webservers, such as [https://www.lighttpd.net/ Lighttpd].
 
 Lighttpd is a secure, fast, compliant and very flexible web-server that has been optimized for high-performance environments. It has a very low memory footprint compared to other web servers and takes care of CPU load.
 
@@ -179,7 +179,7 @@ auth.backend               = "htpasswd"
 
 # Separated password files for each project
 # See "Conditional Configuration" in
-# http://trac.lighttpd.net/trac/file/branches/lighttpd-merge-1.4.x/doc/configuration.txt
+# https://redmine.lighttpd.net/projects/lighttpd/repository/entry/doc/configuration.txt?rev=lighttpd-1.4.28
 
 $HTTP["url"] =~ "^/first/" {
   auth.backend.htpasswd.userfile = "/path/to/projenv-first/htpasswd.htaccess"
@@ -189,7 +189,7 @@ $HTTP["url"] =~ "^/second/" {
 }
 
 # Enable auth on trac URLs, see
-# http://trac.lighttpd.net/trac/file/branches/lighttpd-merge-1.4.x/doc/authentication.txt
+# https://redmine.lighttpd.net/projects/lighttpd/repository/entry/doc/authentication.txt?rev=lighttpd-1.4.28
 
 auth.require = ("/first/login" =>
                 ("method"  => "basic",
@@ -291,7 +291,7 @@ Note about running Lighttpd with reduced permissions: If nothing else helps and 
 
 == !LiteSpeed Configuration
 
-The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.litespeedtech.com/ LiteSpeed].
+The FastCGI front-end was developed primarily for use with alternative webservers, such as [https://www.litespeedtech.com/ LiteSpeed].
 
 !LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. !LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
 
@@ -340,7 +340,7 @@ link = http://yourdomain.com/trac/     <--- link of graphic logo
 
 == Nginx Configuration
 
-[http://nginx.org/en/ Nginx] is able to communicate with FastCGI processes, but can not spawn them. So you need to start FastCGI server for Trac separately.
+[https://nginx.org/en/ Nginx] is able to communicate with FastCGI processes, but can not spawn them. So you need to start FastCGI server for Trac separately.
 
  1. Nginx configuration with basic authentication handled by Nginx - confirmed to work on 0.6.32
  {{{#!nginx

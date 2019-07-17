@@ -5,7 +5,7 @@ Processors are WikiMacros that provide alternative markup formats for the [TracW
 Wiki processors can be used in any Wiki text throughout Trac, such as:
  - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
  - rendering [#HTMLrelated Wiki markup inside a context] such as <div> or <span> blocks or within <td> or <th> table cells
- - using an alternative markup syntax, like [WikiHtml raw HTML] and [WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
+ - using an alternative markup syntax, like [WikiHtml raw HTML] and [WikiRestructuredText Restructured Text] or [https://www.booked.net/textism.html textile]
 
 == Using Processors
 
@@ -159,7 +159,7 @@ The following processors are included in the Trac distribution:
 |||| ||
 ||||= '''Other Markups''' =||
 || '''`#!rst`''' || Trac support for Restructured Text. See WikiRestructuredText. ||
-|| '''`#!textile`''' || Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference]. ||
+|| '''`#!textile`''' || Supported if [https://pypi.org/project/textile Textile] is installed. See [https://www.booked.net/textism.html a Textile reference]. ||
 |||| ||
 ||||= '''[=#CodeHighlightingSupport Code Highlighting Support]''' =||
 || '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on [http://pygments.org Pygments] for syntax coloring. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||

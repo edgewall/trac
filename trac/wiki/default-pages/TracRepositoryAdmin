@@ -216,7 +216,7 @@ trac-admin = /path/to/trac-admin
 }}}
 
 === Per-request synchronization #PerRequestSync
-If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `sync_per_request` attribute for each repository in the database and in [wiki:TracIni#trac-section trac.ini] must be set to `false`.
+If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `sync_per_request` attribute for each repository in the database and in [wiki:TracIni#trac-section trac.ini] must be set to `true`.
 
 Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
 

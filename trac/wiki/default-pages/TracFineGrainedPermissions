@@ -30,7 +30,7 @@ See also [trac:source:branches/1.2-stable/sample-plugins/permissions sample-plug
 
 === !AuthzPolicy
 ==== Configuration
-* Put a [http://swapoff.org/files/authzpolicy.conf conf] file in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
+* Put a [https://swapoff.org/files/authzpolicy.conf conf] file in a secure location on the server, not readable by users other than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
 * Update your `trac.ini`:
   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section:
 {{{#!ini
@@ -318,4 +318,4 @@ See the sourced documentation of the plugin for more info.
 
 ----
 See also: TracPermissions,
-[http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin TracHacks:FineGrainedPageAuthzEditorPlugin] for a simple editor plugin.
+[https://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin TracHacks:FineGrainedPageAuthzEditorPlugin] for a simple editor plugin.

@@ -10,13 +10,15 @@ Trac can be run on top of mod_wsgi with the help of an application script, which
 
 A robust and generic version of this file can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin. The script should be sufficient for most installations and users not wanting more information can proceed to [#Mappingrequeststothescript configuring Apache].
 
-If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in trac.wsgi (note that this directory should contain //only// Trac environments, no other sub-directories):
+If you are using Trac with multiple projects, you can specify their common parent directory in `trac.wsgi`:
 {{{#!python
 def application(environ, start_request):
     # Add this when you have multiple projects
     environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
     ..
 }}}
+
+Directories residing in `trac.env_parent_dir` that are not environment directories will display an error message on the [TracInterfaceCustomization#ProjectList project index page]. The directories can be excluded by listing them in a `.tracignore` file residing in `trac.env_parent_dir`. Unix [https://docs.python.org/2/library/fnmatch.html shell-style wildcard patterns] can be used in the newline separated list of directories.
 
 === A very basic script
 
@@ -127,7 +129,7 @@ For more information about using the mod_wsgi specific directives, see the [http
 
 == Configuring Authentication
 
-The following sections describe different methods for setting up authentication. See also [http://httpd.apache.org/docs/2.4/howto/auth.html Authentication, Authorization and Access Control] in the Apache guide.
+The following sections describe different methods for setting up authentication. See also [https://httpd.apache.org/docs/2.4/howto/auth.html Authentication, Authorization and Access Control] in the Apache guide.
 
 === Using Basic Authentication
 
@@ -271,7 +273,7 @@ See also:
 
 === Using SSPI Authentication
 
-If you are using Apache on Windows, you can use mod_auth_sspi to provide single-sign-on. Download the module from the !SourceForge [http://sourceforge.net/projects/mod-auth-sspi/ mod-auth-sspi project] and then add the following to your !VirtualHost:
+If you are using Apache on Windows, you can use mod_auth_sspi to provide single-sign-on. Download the module from the !SourceForge [https://sourceforge.net/projects/mod-auth-sspi/ mod-auth-sspi project] and then add the following to your !VirtualHost:
 {{{#!apache
 <Location /trac/login>
   AuthType SSPI
@@ -366,7 +368,7 @@ For subdomains to work you would probably also need to alter `/etc/hosts` and ad
 
 Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4 in the 2.X branch have problems with some Apache configurations that use WSGI file wrapper extension. This extension is used in Trac to serve up attachments and static media files such as style sheets. If you are affected by this problem, attachments will appear to be empty and formatting of HTML pages will appear not to work due to style sheet files not loading properly. Another frequent symptom is that binary attachment downloads are truncated. See mod_wsgi tickets [https://code.google.com/archive/p/modwsgi/issues/100 #100] and [https://code.google.com/archive/p/modwsgi/issues/132 #132].
 
-'''Note''': using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks
+'''Note''': using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [https://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks
 
 If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you will need version 3.4 or greater. See [trac:#10675] for details.
 
