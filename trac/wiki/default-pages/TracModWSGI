@@ -10,13 +10,15 @@ Trac can be run on top of mod_wsgi with the help of an application script, which
 
 A robust and generic version of this file can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin. The script should be sufficient for most installations and users not wanting more information can proceed to [#Mappingrequeststothescript configuring Apache].
 
-If you are using Trac with multiple projects, you can specify their common parent directory using the `TRAC_ENV_PARENT_DIR` in trac.wsgi (note that this directory should contain //only// Trac environments, no other sub-directories):
+If you are using Trac with multiple projects, you can specify their common parent directory in `trac.wsgi`:
 {{{#!python
 def application(environ, start_request):
     # Add this when you have multiple projects
     environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
     ..
 }}}
+
+Directories residing in `trac.env_parent_dir` that are not environment directories will display an error message on the [TracInterfaceCustomization#ProjectList project index page]. The directories can be excluded by listing them in a `.tracignore` file residing in `trac.env_parent_dir`. Unix [https://docs.python.org/2/library/fnmatch.html shell-style wildcard patterns] can be used in the newline separated list of directories.
 
 === A very basic script
 

@@ -24,9 +24,19 @@ tracopt.versioncontrol.git.* = enabled
 
 == Specifying repositories #Repositories
 
-Trac supports multiple repositories per environment, and the repositories may be for different version control systems. Each repository must be defined in a repository configuration provider, the three supported by default are the [#ReposDatabase database store], the [#ReposTracIni trac.ini configuration file] and the [#ReposGitWeb GitWeb configuration file]. You can define your repositories through a mix of providers, but typically each repository should only be defined in a single provider. At the very least, the names used for each repository must be unique across all providers, otherwise duplicates will be discarded.
+Trac supports multiple repositories per environment, and the repositories may be for different version control systems. Each repository must be defined in a repository configuration provider. Repository providers included with Trac are the [#ReposDatabase database store], the [#ReposTracIni trac.ini configuration file] and the [#ReposGitWeb GitWeb configuration file]. Additional providers are available as plugins.
+
+You can define your repositories through a mix of providers, but each repository should only be defined in a single provider. The repository names must be unique across all providers and duplicate names are discarded.
 
 It is possible to define aliases of repositories that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking links to the old name.
+
+=== Default Repository
+
+Trac's repositories are listed in the Repository Index when navigating to //Browse Source//. The default repository is displayed first, followed by the Repository Index. TracLinks without a repository name in the path specification (e.g. `[1]` rather than `[1/repos1]`) refer to the default repository. !TracLinks for repositories other than the default must include the repository name in the path specification.
+
+From the Repository Admin page, the default repository is specified by leaving the //Name// attribute empty. From the command line, the default repository is specified using the string `(default)` or `""`. In TracIni, the default repository is specified by leaving the `{name}` empty for each `{name}.{attribute}` option (e.g. `.dir = /path/to/dir`).
+
+=== Repository Attributes
 
 There are a number of attributes that can be specified for each repository, and additional attributes may be available through plugins. A repository `name` and one of the `alias` or `dir` attributes are mandatory. All others are optional.
 
@@ -116,7 +126,7 @@ Caching improves the performance browsing the repository, viewing logs and viewi
 
 Repositories that support caching are cached by default. The Subversion and Git backends support caching. The [trac:TracMercurial Mercurial plugin] does not yet support caching ([trac:#8417]). To disable caching, set the `cached` attribute to `false`.
 
-After adding a repository, the cache for that repository must be re-synchronized once with the `trac-admin $ENV repository resync` command.
+After adding a cached repository, the cache must be populated with the `trac-admin $ENV repository resync` command.
 
  `repository resync <repos>`::
    Re-synchronize Trac with a repository.
@@ -237,7 +247,7 @@ trac-admin = /path/to/trac-admin
 }}}
 
 === Per-request synchronization #PerRequestSync
-If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `sync_per_request` attribute for each repository in the database and in [wiki:TracIni#trac-section trac.ini] must be set to `false`.
+If the post-commit hooks are not available, the environment can be set up for per-request synchronization. The `sync_per_request` attribute for each repository in the database and in [wiki:TracIni#trac-section trac.ini] must be set to `true`.
 
 Note that in this case, the changeset listener extension point is not called, and therefore plugins that depend on the changeset added and modified events won't work correctly. For example, automatic changeset references cannot be used with implicit synchronization.
 

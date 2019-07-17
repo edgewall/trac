@@ -96,7 +96,7 @@ Otherwise, individual privileges can be assigned to users for the various differ
 
 == Attachment Permissions
 
-Attachment permissions are handled by `LegacyAttachmentPolicy`, and unlike the permissions discussed so far, the permissions provided by `LegacyAttachmentPolicy` are not directly granted. Rather, the ability to create, view and delete attachments is determined by the attachment's parent realm and permissions the user possess for that realm.
+Attachment permissions are handled by `LegacyAttachmentPolicy`, and unlike the permissions discussed so far, the permissions provided by `LegacyAttachmentPolicy` are not directly granted. Rather, the ability to create, view and delete attachments is determined by the attachment's parent realm and permissions the user possesses for that realm.
 
 The attachment actions are determined by the following
 permissions in the ticket, wiki and milestone realms:
@@ -119,7 +119,7 @@ An alternative configuration adds an `ATTACHMENT_ADMIN` meta-permission that gra
 ATTACHMENT_ADMIN = ATTACHMENT_CREATE, ATTACHMENT_DELETE, ATTACHMENT_VIEW
 }}}
 
-The explicit permissions can be used in concert with `LegacyAttachmentPolicy`, or `LegacyAttachmentPolicy` can be removed from `permission_policies`, in which case only users that have been explicitly granted the corresponding attachment action will be able to create, delete and view attachments.
+The explicit permissions can be used in concert with `LegacyAttachmentPolicy`, or `LegacyAttachmentPolicy` can be removed from `permission_policies`, in which case only users that have been explicitly granted the corresponding attachment actions will be able to create, delete and view attachments.
 
 == Granting Privileges
 

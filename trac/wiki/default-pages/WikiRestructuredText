@@ -8,7 +8,7 @@ Trac supports [http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.htm
 From the reStucturedText webpage:
  "reStructuredText is an easy-to-read, what-you-see-is-what-you-get plaintext markup syntax and parser system. It is useful for in-line program documentation (such as Python docstrings), for quickly creating simple web pages, and for standalone documents. reStructuredText is designed for extensibility for specific application domains."
 
-If you want a file from your Subversion repository to be displayed as reStructuredText in the Trac source browser, set `text/x-rst` as the value for the Subversion property `svn:mime-type`, or add the extension `rst` to the filename. See [trac:source:/trunk/INSTALL.rst this example].
+If you want a file from your Subversion repository to be displayed as reStructuredText in the Trac source browser, set `text/x-rst` as the value for the Subversion property `svn:mime-type`, or add the extension `rst` to the filename. See [trac:source:branches/1.2-stable/INSTALL.rst this example].
 
 The examples will only be rendered as reStructuredText if docutils is installed. If Pygments is installed but docutils is not installed, the examples will be syntax-highlighted rather than rendered as reStructuredText.
 

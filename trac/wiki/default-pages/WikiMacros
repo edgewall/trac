@@ -16,19 +16,7 @@ The macro syntax is `[[macro-name(optional-arguments)]]`.
 
 == Using Macros
 
-Macro calls are enclosed in double-square brackets `[[..]]`. Like Python functions macros can have arguments, which take the form of a comma separated list within parentheses `[[..(,)]]`.
-
-=== Getting Detailed Help
-
-The list of available macros and the full help can be obtained using the !MacroList macro, see [#AvailableMacros below].
-
-A brief list can be obtained via `[[MacroList(*)]]` or `[[?]]`.
-
-Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. `[[MacroList(MacroList)]]`, or more conveniently, by appending a question mark (`?`) to the macro's name, like in `[[MacroList?]]`.
-
-=== Example
-
-A list of the 3 most recently changed wiki pages starting with 'Trac':
+Macro calls are enclosed in double-square brackets `[[..]]`. Like Python functions macros can have arguments, which take the form of a comma separated list within parentheses `[[..(,)]]`. A common macro used is a list of the 3 most recent changes to a wiki page, or here, for example, all wiki pages starting with 'Trac':
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -39,48 +27,28 @@ A list of the 3 most recently changed wiki pages starting with 'Trac':
 {{{#!td style="padding-left: 2em;"
 [[RecentChanges(Trac,3)]]
 }}}
-|-----------------------------------
-{{{#!td
-  {{{
-  [[RecentChanges?(Trac,3)]]
-  }}}
-}}}
-{{{#!td style="padding-left: 2em;"
-[[RecentChanges?(Trac,3)]]
-}}}
-|-----------------------------------
-{{{#!td
-  {{{
-  [[?]]
-  }}}
-}}}
-{{{#!td style="padding-left: 2em"
-{{{#!html 
-<div class="trac-macrolist">
-<h3><code>[[Image]]</code></h3>Embed an image in wiki-formatted text.
 
-The first argument is the file, as in <code>[[Image(filename.png)]]</code>
-<h3><code>[[InterTrac]]</code></h3>Provide a list of known <a class="wiki" href="/wiki/InterTrac">InterTrac</a> prefixes.
-<h3><code>[[InterWiki]]</code></h3>Provide a description list for the known <a class="wiki" href="/wiki/InterWiki">InterWiki</a> prefixes.
-<h3><code>[[KnownMimeTypes]]</code></h3>List all known mime-types which can be used as <a class="wiki" href="/wiki/WikiProcessors">WikiProcessors</a>.
-</div>
-}}}
-etc.
-}}}
+=== Getting Detailed Help
+
+The list of available macros and the full help can be obtained using the !MacroList macro, see [#AvailableMacros below].
+
+A brief list can be obtained via `[[MacroList(*)]]` or `[[?]]`.
+
+Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. `[[MacroList(MacroList)]]`, or more conveniently, by appending a question mark (`?`) to the macro's name, like in `[[MacroList?]]`.
 
 == Available Macros
 
 [[MacroList]]
 
-== Macros from around the world
+== Contributed macros
 
-The [http://trac-hacks.org/ Trac Hacks] site provides a large collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you are looking for new macros, or have written one that you would like to share, please visit that site.
+The [https://trac-hacks.org/ Trac Hacks] site provides a large collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you are looking for new macros, or have written one that you would like to share, please visit that site.
 
 == Developing Custom Macros
 
-Macros, like Trac itself, are written in the [http://python.org/ Python programming language] and are a type of [TracPlugins plugin].
+Macros, like Trac itself, are written in the [https://python.org/ Python programming language] and are a type of [TracPlugins plugin].
 
-Here are 2 simple examples showing how to create a Macro. For more information about developing macros, see the [trac:TracDev development resources].
+Here are 2 simple examples showing how to create a Macro. For more information about developing macros, see the [trac:TracDev development resources] and [trac:browser:branches/1.2-stable/sample-plugins sample-plugins].
 
 === Macro without arguments
 
@@ -90,7 +58,6 @@ To test the following code, copy it to `timestamp_sample.py` in the TracEnvironm
 from trac.util.datefmt import datetime_now, format_datetime, utc
 from trac.util.html import tag
 from trac.wiki.macros import WikiMacroBase
-
 
 class TimestampMacro(WikiMacroBase):
     _description = "Inserts the current time (in seconds) into the wiki page."
@@ -107,7 +74,6 @@ To test the following code, copy it to `helloworld_sample.py` in the TracEnviron
 {{{#!python
 from trac.util.translation import cleandoc_
 from trac.wiki.macros import WikiMacroBase
-
 
 class HelloWorldMacro(WikiMacroBase):
     _description = cleandoc_(

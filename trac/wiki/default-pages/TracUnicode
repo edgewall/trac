@@ -11,7 +11,7 @@ default_charset = gbk
 
 Ensure that your [trac:DatabaseBackend database] stores its data in UTF-8, otherwise results may be unpredictable.
 
-To convert your database to UTF-8, the easiest way is to create a dump of the database, convert it into UTF-8, for example using [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv], and then re-import it.
+To convert your database to UTF-8, the easiest way is to create a dump of the database, convert it into UTF-8, for example using [https://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv], and then re-import it.
 
 == Examples
 

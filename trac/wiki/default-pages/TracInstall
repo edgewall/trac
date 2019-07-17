@@ -362,7 +362,16 @@ This user will have an //Admin// navigation item that directs to pages for admin
 
 == Configuring Trac
 
+Configuration options are documented on the TracIni page.
+
 TracRepositoryAdmin provides information on configuring version control repositories for your project.
+
+In addition to the optional version control backends, Trac provides several optional features that are disabled by default:
+* [TracFineGrainedPermissions#AuthzPolicy Fine-grained permission policy]
+* [TracPermissions#CreatingNewPrivileges Custom permissions]
+* [TracTickets#deleter Ticket deletion]
+* [TracTickets#cloner Ticket cloning]
+* [TracRepositoryAdmin#CommitTicketUpdater Ticket changeset references]
 
 == Using Trac
 

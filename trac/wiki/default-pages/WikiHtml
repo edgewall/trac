@@ -2,7 +2,7 @@
 
 Trac supports the display of HTML in any wiki context, by using the `#!html` [wiki:WikiProcessors WikiProcessor]. 
 
-However, this HTML has to be [http://en.wikipedia.org/wiki/Well-formed_element well-formed].
+However, this HTML has to be [https://en.wikipedia.org/wiki/Well-formed_element well-formed].
 In particular, you can't insert a start tag in an `#!html` block, resume normal wiki text and insert the corresponding end tag in a second `#!html` block. 
 
 For creating styled `<div>`s, `<span>`s  or even complex tables containing arbitrary Wiki text, there is a powerful alternative: `#!div`, `#!span` and `#!table`, `#!tr`, `#!td` and `#!th` blocks. Those Wiki processors are built-in and do not require additional packages to be installed.
@@ -26,7 +26,7 @@ To inform the wiki engine that a block of text should be treated as HTML, use th
 
 Note that Trac sanitizes your HTML code before displaying it. That means that potentially dangerous constructs, such as Javascript event handlers, will be removed from the output. 
 
-The filtering is done by [http://genshi.edgewall.org/ Genshi] and the output will be a well-formed fragment of HTML. This means that you cannot use two HTML blocks, one for opening a <div> and another for closing it, in order to wrap arbitrary wiki text.
+The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output will be a well-formed fragment of HTML. This means that you cannot use two HTML blocks, one for opening a <div> and another for closing it, in order to wrap arbitrary wiki text.
 
 == How to use `#!div` and `#!span` == #HowtoUseDivSpan
 
@@ -314,8 +314,8 @@ The character sequence `--` is not allowed in HTML comments, and will generate a
 
 == More Information
 
- * http://www.w3.org/ -- World Wide Web Consortium
- * http://www.w3.org/MarkUp/ -- HTML Markup Home Page
+ * https://www.w3.org/ -- World Wide Web Consortium
+ * https://www.w3.org/MarkUp/ -- HTML Markup Home Page
 
 ----
 See also:  WikiFormatting, WikiProcessors, WikiRestructuredText

@@ -657,8 +657,20 @@ pages for administering your Trac project.
 Configuring Trac
 ----------------
 
+Configuration options are documented on the `TracIni`_ page.
+
 `TracRepositoryAdmin`_ provides information on configuring version
 control repositories for your project.
+
+In addition to the optional version control backends, Trac provides
+several optional features that are disabled by default:
+
+
++ `Fine-grained permission policy`_
++ `Custom permissions`_
++ `Ticket deletion`_
++ `Ticket cloning`_
++ `Ticket changeset references`_
 
 
 Using Trac
@@ -694,6 +706,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _command completion: http://trac.edgewall.org/wiki/TracAdmin#InteractiveMode
 .. _conf/trac.ini: http://trac.edgewall.org/wiki/TracIni
 .. _configuration file: http://trac.edgewall.org/wiki/TracIni
+.. _Custom permissions: http://trac.edgewall.org/wiki/TracPermissions#CreatingNewPrivileges
 .. _database backends: http://trac.edgewall.org/intertrac/DatabaseBackend
 .. _database connection string: http://trac.edgewall.org/wiki/TracEnvironment#DatabaseConnectionStrings
 .. _DatabaseBackend: http://trac.edgewall.org/intertrac/DatabaseBackend%23Postgresql
@@ -701,6 +714,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _docutils: http://docutils.sourceforge.net
 .. _FastCGI*: http://trac.edgewall.org/wiki/TracFastCgi
 .. _FastCGI: http://www.fastcgi.com/
+.. _Fine-grained permission policy: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#AuthzPolicy
 .. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
 .. _getting Subversion: http://trac.edgewall.org/intertrac/TracSubversion%23GettingSubversion
 .. _Git: http://git-scm.com/
@@ -743,6 +757,9 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _Textile markup language: https://txstyle.org
 .. _Textile: https://pypi.python.org/pypi/textile
 .. _The Trac Team: http://trac.edgewall.org/intertrac/TracTeam
+.. _Ticket changeset references: http://trac.edgewall.org/wiki/TracRepositoryAdmin#CommitTicketUpdater
+.. _Ticket cloning: http://trac.edgewall.org/wiki/TracTickets#cloner
+.. _Ticket deletion: http://trac.edgewall.org/wiki/TracTickets#deleter
 .. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
 .. _TracAdmin: http://trac.edgewall.org/wiki/TracAdmin
@@ -753,6 +770,7 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _TracFastCgi: http://trac.edgewall.org/wiki/TracFastCgi
 .. _TracGit: http://trac.edgewall.org/intertrac/TracGit
 .. _TracGuide: http://trac.edgewall.org/wiki/TracGuide
+.. _TracIni: http://trac.edgewall.org/wiki/TracIni
 .. _TracInstallPlatforms: http://trac.edgewall.org/intertrac/TracInstallPlatforms
 .. _TracL10N: http://trac.edgewall.org/intertrac/wiki%3ATracL10N
 .. _TracModPython: http://trac.edgewall.org/wiki/TracModPython

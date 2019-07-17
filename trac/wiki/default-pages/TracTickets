@@ -107,7 +107,7 @@ To create a link to the new-ticket form filled with preset values, you need to c
 
 Example: `[/newticket?summary=Compile%20Error&version=1.0&component=gui]`
 
-== Deleting Tickets
+== Deleting Tickets #deleter
 
 Ticket delete and ticket change delete functions are enabled through an optional component. To enable the functionality edit the [TracIni#components-section "[components]"] section of TracIni:
 {{{#!ini
@@ -119,7 +119,7 @@ The //Delete// buttons appears next to the //Reply// buttons in the ticket descr
 
 Tickets and ticket changes can also be deleted using the TracAdmin `ticket remove` and `ticket remove_comment` commands.
 
-== Cloning Tickets
+== Cloning Tickets #cloner
 
 The ticket clone function is enabled through an optional component. To enable the functionality edit the [TracIni#components-section "[components]"] section of TracIni:
 {{{#!ini

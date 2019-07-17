@@ -169,4 +169,4 @@ This is displayed as:
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
 
 ----
-See also: TracQuery, TracTickets, TracReports, TracGuide
+See also: TracQuery, TracTickets, TracReports

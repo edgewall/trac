@@ -6,7 +6,7 @@ The Trac ticket system provides a configurable workflow.
 
 == The Default Ticket Workflow
 
-When a new environment is created, a default workflow is configured in your trac.ini. This workflow is the basic workflow, as specified in [trac:source:/trunk/trac/ticket/workflows/basic-workflow.ini basic-workflow.ini]:
+When a new environment is created, a default workflow is configured in your trac.ini. This workflow is the basic workflow, as specified in [trac:source:branches/1.2-stable/trac/ticket/workflows/basic-workflow.ini basic-workflow.ini]:
 
 {{{#!Workflow width=700 height=300
 leave = * -> *
@@ -40,7 +40,7 @@ reopen.operations = del_resolution
 
 == Additional Ticket Workflows
 
-There are example workflows provided in the Trac source tree, see [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections. One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However, if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
+There are example workflows provided in the Trac source tree, see [trac:source:branches/1.2-stable/contrib/workflow contrib/workflow] for `.ini` config sections. One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However, if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
 
 Here are some [trac:WorkFlow/Examples diagrams] of the above examples.
 
@@ -145,7 +145,7 @@ _reset.default = 0
 
 Workflows can be visualized by rendering them on the wiki using the [WikiMacros#Workflow-macro Workflow macro].
 
-Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script. The script outputs `.dot` files that [http://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
+Workflows can also be visualized using the `contrib/workflow/workflow_parser.py` script. The script outputs `.dot` files that [https://www.graphviz.org GraphViz] understands. The script can be used as follows (your install path may be different):
 
 {{{#!sh
 $ cd /var/local/trac_devel/contrib/workflow/
@@ -236,7 +236,7 @@ reassign_reviewing.permissions = TICKET_MODIFY
 
 == Advanced Ticket Workflow Customization
 
-If the customizations above do not meet your needs, you can extend the workflow with plugins. Plugins can provide additional operations for the workflow, like code_review, or implement side-effects for an action, such as triggering a build, that may not be merely simple state changes. Look at [trac:source:trunk/sample-plugins/workflow sample-plugins/workflow] for a few examples to get started.
+If the customizations above do not meet your needs, you can extend the workflow with plugins. Plugins can provide additional operations for the workflow, like code review, or implement side-effects for an action, such as triggering a build, that may not be merely simple state changes. Look at [trac:source:branches/1.2-stable/sample-plugins/workflow sample-plugins/workflow] for a few examples to get started.
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it. See also the [https://trac-hacks.org/wiki/AdvancedTicketWorkflowPlugin AdvancedTicketWorkflowPlugin], which provides additional operations.
 

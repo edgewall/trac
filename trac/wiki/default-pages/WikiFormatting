@@ -2,16 +2,14 @@
 
 [[TracGuideToc]]
 
-Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into a flexible and powerful whole.
+Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into a flexible and unified whole.
 
-Trac has a built-in small and powerful wiki rendering engine. This wiki engine implements a growing subset of the commands from other popular Wikis, especially [http://moinmo.in/ MoinMoin] and [trac:WikiCreole].
+Trac has a powerful wiki rendering engine that implements a subset of the commands from other popular Wikis, such as [https://moinmo.in/ MoinMoin] and [trac:WikiCreole].
 
-This page will give you an in-depth explanation of the wiki markup available anywhere WikiFormatting is allowed.
+The sections below provide an overview for the most common syntax, each link in the ''Category'' column leads you to the more detailed explanation later in this page.
 
-The sections below provide an overview for the most common syntax, each link in the ''Category'' column will lead you to the more detailed explanation later in this page.
-
-A few other wiki pages present the advanced features of the Trac wiki markup in more depth: 
- - TracLinks covers all the possible ways to refer precisely to any Trac resource or parts thereof.
+The following wiki pages present the advanced features of the Trac wiki markup in more depth: 
+ - TracLinks covers all the possible ways to refer to any Trac resource or parts thereof.
  - WikiPageNames covers the various names a wiki page can take, whether in CamelCase or not.
  - WikiMacros lists the macros available for generating dynamic content.
  - WikiProcessors and WikiHtml details how parts of the wiki text can be processed in special ways.
@@ -26,10 +24,10 @@ A few other wiki pages present the advanced features of the Trac wiki markup in 
 }}}
 || `'''bold'''`, `''italic''`, `'''''Wikipedia style'''''` || \
 || '''bold''', ''italic'', '''''Wikipedia style''''' ||
-|| {{{`monospaced (''other markup ignored'')`}}} || \
-|| `monospaced (''other markup ignored'')` ||
 || `**bold**`, `//italic//`, `**//!WikiCreole style//**` || \
 || **bold**, //italic//, **//!WikiCreole style//** ||
+|| {{{`monospaced (''other markup ignored'')`}}} || \
+|| `monospaced (''other markup ignored'')` ||
 |-----------------------------------------------------------
 ||= [#Headings Headings] =||\
 {{{#!td 
@@ -95,14 +93,14 @@ Second paragraph.
 {{{#!td
  {{{
  {{{
- multiple lines, ''no wiki''
+ multiple lines, ''no wiki'',
        white space respected
  }}}
  }}}
 }}}
 {{{#!td
  {{{
- multiple lines, ''no wiki''
+ multiple lines, ''no wiki'',
        white space respected
  }}}
 }}}
@@ -146,8 +144,8 @@ Second paragraph.
 {{{#!th rowspan=2
 [#Links Links]
 }}}
-|| `http://trac.edgewall.org` ||\
-|| http://trac.edgewall.org ||
+|| `https://trac.edgewall.org` ||\
+|| https://trac.edgewall.org ||
 || `WikiFormatting (CamelCase)` ||\
 || WikiFormatting (CamelCase) ||
 |-----------------------------------------------------------
@@ -194,8 +192,7 @@ Second paragraph.
 ||= [#Processors Processors] =||\
 {{{#!td
  {{{
- {{{
- #!div style="font-size: 80%"
+ {{{#!div style="font-size: 80%"
  Code highlighting:
    {{{#!python
    hello = lambda: "world"
@@ -204,8 +201,7 @@ Second paragraph.
  }}}
 }}}
 {{{#!td style="padding-left: 2em"
- {{{
- #!div style="font-size: 80%"
+ {{{#!div style="font-size: 80%"
  Code highlighting:
    {{{#!python 
    hello = lambda: "world"
@@ -221,11 +217,7 @@ Second paragraph.
  }}}
  }}}
 }}}
-{{{#!td style="padding-left: 2em"
- {{{#!comment
- Note to Editors: ...
- }}}
-}}}
+||  ''(comment is shown in edit mode only)''  ||
 |-----------------------------------------------------------
 ||= [#Miscellaneous Miscellaneous] =||\
 {{{#!td
@@ -284,17 +276,17 @@ The Trac wiki supports the following font styles:
 
 Notes:
  * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
- * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after !, e.g. when ending bold.
+ * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after `!`, e.g. when ending bold.
  * all the font styles marks have to be used in opening/closing pairs, 
    and they must nest properly; in particular, an `''` italic can't be paired 
    with a `//` one, and `'''` can't be paired with `**`.
 
 == Headings
 
-You can create heading by starting a line with one up to six ''equal'' characters ("=") followed by a single space and the headline text. 
+You can create a heading by starting a line with one up to six ''equal'' characters (`=`) followed by a single space and the headline text. 
 
 [=#hn]
-The headline text can be followed by the same number of "=" characters, but this is not mandatory. That is, `=== Section3 ===` is identical to `=== Section3`.
+The headline text can be followed by the same number of `=` characters, but this is not mandatory. That is, `=== Section3 ===` is identical to `=== Section3`.
 
 Finally, the heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
 
@@ -351,7 +343,6 @@ A forced line break can also be inserted, using:
 
 The wiki supports both ordered/numbered and unordered lists.
 
-Example:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -467,7 +458,7 @@ Paragraph
 
 == Discussion Citations
 
-To delineate a citation in an ongoing discussion thread, such as the ticket comment area, email-like citation marks (">", ">>", etc.) may be used.  
+To delineate a citation in an ongoing discussion thread, such as the ticket comment area, email-like citation marks (`>`, `>>`, etc.) may be used.  
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -488,7 +479,7 @@ My reply text
 == Tables
 === Simple Tables
 
-Simple tables can be created like this:
+Simple tables can be created:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -501,8 +492,8 @@ Simple tables can be created like this:
 ||Cell 4||Cell 5||Cell 6||
 }}}
 
-Cell headings can be specified by wrapping the content in a pair of '=' characters.
-Note that the '=' characters have to stick to the cell separators, like this:
+Cell headings can be specified by wrapping the content in a pair of `=` characters.
+Note that the `=` characters have to stick to the cell separators:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -517,7 +508,7 @@ Note that the '=' characters have to stick to the cell separators, like this:
 ||= 0.11 =||  0.11.6  || 0.11.7dev||
 }}}
 
-Finally, specifying an empty cell means that the next non empty cell will span the empty cells. For example:
+Finally, specifying an empty cell means that the next non empty cell will span the empty cells:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -534,7 +525,7 @@ Finally, specifying an empty cell means that the next non empty cell will span t
 |||||| 1-2-3 ||
 }}}
 
-Note that if the content of a cell "sticks" to one side of the cell and only one, then the text will be aligned on that side. Example:
+Note that if the content of a cell sticks to one side of the cell and only one, then the text will be aligned on that side:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -559,21 +550,21 @@ Note that if the content of a cell "sticks" to one side of the cell and only one
 || default ||       2.5||
 }}}
 
-If contrary to the example above, the cells in your table contain more text, it might be convenient to spread a table row over multiple lines of markup. The `\` character placed at the end of a line after a cell separator tells Trac to not start a new row for the cells on the next line.
+If contrary to the example above, the cells in your table contain more text, it might be convenient to spread a table row over multiple lines of markup. The `\` character placed at the end of a line after a cell separator tells Trac to not start a new row for the cells on the next line:
 
 ||= Wiki Markup =||
 {{{#!td
   {{{
-  || this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
-  || this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
+  || this is column 1 [https://trac.edgewall.org/newticket new ticket] || \
+  || this is column 2 [https://trac.edgewall.org/roadmap the road ahead] || \
   || that's column 3 and last one ||
   }}}
 }}}
 |-------------
 ||= Display =||
 {{{#!td style="padding: 2em;"
-|| this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
-|| this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
+|| this is column 1 [https://trac.edgewall.org/newticket new ticket] || \
+|| this is column 2 [https://trac.edgewall.org/roadmap the road ahead] || \
 || that's column 3 and last one ||
 }}}
 
@@ -583,16 +574,16 @@ If the possibilities offered by the simple pipe-based markup (`||`) for tables d
 
 == Links
 
-Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks can be disabled by prepending an exclamation mark ('!'), such as {{{!WikiPageLink}}}.
+Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks can be disabled by prepending an exclamation mark (`!`), such as `!WikiPageLink`.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
-  TitleIndex, http://www.edgewall.com/, !NotAlink
+  TitleIndex, https://www.edgewall.com/, !NotAlink
   }}}
 }}}
 {{{#!td
-TitleIndex, http://www.edgewall.com/, !NotAlink
+TitleIndex, https://www.edgewall.com/, !NotAlink
 }}}
 
 Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets. 
@@ -601,24 +592,24 @@ If the descriptive title is omitted, then the explicit prefix is discarded, unle
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
-   * [http://www.edgewall.com Edgewall Software]
+   * [https://www.edgewall.com Edgewall Software]
    * [wiki:TitleIndex Title Index] 
    * [wiki:TitleIndex] 
    * [wiki:ISO9000]
   }}}
 }}}
 {{{#!td
-   * [http://www.edgewall.com Edgewall Software]
+   * [https://www.edgewall.com Edgewall Software]
    * [wiki:TitleIndex Title Index] 
    * [wiki:TitleIndex] 
    * [wiki:ISO9000]
 }}}
 
-Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe ('|') and a title and all this inside //double// square brackets. 
+Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe (`|`) and a title and all this inside //double// square brackets. 
 
 {{{#!td
   {{{
-   * [[http://www.edgewall.com|Edgewall Software]]
+   * [[https://www.edgewall.com|Edgewall Software]]
    * [[wiki:TitleIndex|Title Index]]
      or even [[TitleIndex|Title Index]]
    * [[wiki:TitleIndex]]
@@ -627,7 +618,7 @@ Following the [trac:WikiCreole] trend, the descriptive title can also be specifi
   }}}
 }}}
 {{{#!td
-   * [[http://www.edgewall.com|Edgewall Software]]
+   * [[https://www.edgewall.com|Edgewall Software]]
    * [[wiki:TitleIndex|Title Index]]
      or even [[TitleIndex|Title Index]]
    * [[wiki:TitleIndex]]
@@ -670,13 +661,13 @@ There are many more flavors of Trac links, see TracLinks for more in-depth infor
 
 == Setting Anchors
 
-An anchor, or more correctly speaking, an [http://www.w3.org/TR/REC-html40/struct/links.html#h-12.2.1 anchor name] can be added explicitly at any place in the Wiki page, in order to uniquely identify a position in the document:
+An anchor, or more correctly speaking, an [https://www.w3.org/TR/REC-html40/struct/links.html#h-12.2.1 anchor name] can be added explicitly at any place in the Wiki page, to uniquely identify a position in the document:
 
 {{{
 [=#point1]
 }}}
 
-This syntax was chosen to match the format for explicitly naming the header id [#Headings documented above]. For example:
+This syntax was chosen to match the format for explicitly naming the header id [#Headings documented above]:
 {{{
 == Long title == #title
 }}}
@@ -714,7 +705,7 @@ For more complex anchors (eg when a custom title is wanted), you can use the Spa
 
 == Escaping Links, WikiPageNames and other Markup == #Escaping
 
-You may avoid making hyperlinks out of TracLinks by preceding an expression with a single exclamation mark ('!').
+You may avoid making hyperlinks out of TracLinks by preceding an expression with a single exclamation mark (`!`).
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -765,7 +756,7 @@ See WikiMacros for further documentation on the `[[Image()]]` macro, which has s
 
 == Macros
 
-Macros are ''custom functions'' to insert dynamic content in a page.
+Macros are ''custom functions'' that insert dynamic content in a page.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -779,7 +770,7 @@ Macros are ''custom functions'' to insert dynamic content in a page.
 
 See WikiMacros for more information, and a list of installed macros.
 
-The detailed help for a specific macro can also be obtained more directly by appending a "?" to the macro name.
+The detailed help for a specific macro can also be obtained more directly by appending a `?` to the macro name.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -806,8 +797,7 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
 |--------------------------------------------------------
 {{{#!td style="border: 0px"
   {{{
-  {{{
-  #!html
+  {{{#!html
   <h1 style="text-align: right; color: blue">
    HTML Test
   </h1>
@@ -816,8 +806,7 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
 }}}
 {{{#!td valign="top"  style="border: 0px"
 
-{{{
-#!html
+{{{#!html
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
@@ -831,8 +820,7 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
 |--------------------------------------------------------
 {{{#!td style="border: 0px"
   {{{
-  {{{
-  #!python
+  {{{#!python
   class Test:
   
       def __init__(self):
@@ -842,11 +830,9 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
   }}}
   }}}
 }}}
-{{{
-#!td valign="top"  style="border: 0px"
+{{{#!td valign="top"  style="border: 0px"
 
-{{{
-#!python
+{{{#!python
 class Test:
     def __init__(self):
         print "Hello World"
@@ -893,8 +879,7 @@ if __name__ == '__main__':
   }}}
   }}}
 }}}
-{{{
-#!td  valign="top"  style="border: 0px"
+{{{#!td  valign="top"  style="border: 0px"
 
   {{{#!th rowspan=4 align=justify
   With the `#td` and `#th` processors,
@@ -936,8 +921,7 @@ Comments can be added to the plain text. These will not be rendered and will not
 {{{#!td
   {{{
   Nothing to
-  {{{
-  #!comment
+  {{{#!comment
   Your comment for editors here
   }}}
   see.
@@ -945,8 +929,7 @@ Comments can be added to the plain text. These will not be rendered and will not
 }}}
 {{{#!td
   Nothing to
-  {{{
-  #!comment
+  {{{#!comment
   Your comment for editors here
   }}}
   see.

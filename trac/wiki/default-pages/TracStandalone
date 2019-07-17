@@ -38,6 +38,8 @@ An alternative way to serve multiple projects is to specify a parent directory i
  $ tracd -p 8080 -e /path/to
 }}}
 
+There is support for the HTTPS protocol (//Since 1.3.4//). Specify the path to the PEM certificate file and keyfile using the `--certfile` and `--keyfile` options. You can specify just the `--certfile` option if you have a [https://docs.python.org/2/library/ssl.html#combined-key-and-certificate combined key and certificate].
+
 To exit the server on Windows, be sure to use `CTRL-BREAK` -- using `CTRL-C` will leave a Python process running in the background.
 
 == Installing as a Windows Service
@@ -199,11 +201,12 @@ echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -
 
 == Reference
 
-Here's the online help, as a reminder (`tracd --help`):
+Here's the online help, as a reminder (`tracd -h` or `tracd --help`):
 {{{
 usage: tracd [-h] [--version] [-e PARENTDIR | -s]
              [-a DIGESTAUTH | --basic-auth BASICAUTH] [-p PORT] [-b HOSTNAME]
-             [--protocol {http,scgi,ajp,fcgi}] [-q] [--base-path BASE_PATH]
+             [--protocol {http,https,scgi,ajp,fcgi}] [--certfile CERTFILE]
+             [--keyfile KEYFILE] [-q] [--base-path BASE_PATH]
              [--http10 | --http11] [-r | -d] [--pidfile PIDFILE]
              [--umask MASK] [--group GROUP] [--user USER]
              [envs [envs ...]]
@@ -224,8 +227,10 @@ optional arguments:
   -p PORT, --port PORT  the port number to bind to
   -b HOSTNAME, --hostname HOSTNAME
                         the host name or IP address to bind to
-  --protocol {http,scgi,ajp,fcgi}
+  --protocol {http,https,scgi,ajp,fcgi}
                         the server protocol (default: http)
+  --certfile CERTFILE   PEM certificate file for HTTPS
+  --keyfile KEYFILE     PEM key file for HTTPS
   -q, --unquote         unquote PATH_INFO (may be needed when using the ajp
                         protocol)
   --base-path BASE_PATH

@@ -12,15 +12,15 @@ When you first go to the query page, the default filter will display tickets rel
  * If not logged in, but you have specified a name or email address in the preferences, all open tickets where your name or email is in the CC list.
  * If not logged in and no name/email is defined in the preferences, then all open issues.
 
-Filters are removed by clicking the button to the left with the minus sign on the label. New filters are added using the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right.
+New filters are added using the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right. Filters are removed by clicking the button to the left with the minus sign on the label. 
+
+After you have edited your filters, click the ''Update'' button to refresh your results.
 
 Filters with either a text box or a dropdown menu of options can be added multiple times to perform an ''Or'' on the criteria. Add additional 'Or's by Clicking the 'And' Dropdown and selecting an item that you have already selected. For example, to select "Milestone is X ''Or'' Milestone is Y", Select 'Milestone', Select 'X', then click the 'And' Dropdown, select 'Milestone' a second time and select 'Y'.
 
 For text fields such as Keywords and CC the `-` operator can be used to negate a match and double quotes (//since 1.2.1//) can be used to match a phrase. For example, a //contains// match for `word1 word2 -word3 "word4 word5"` matches tickets containing `word1` and `word2`, not `word3` and `word4 word5`.
 
-You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
-
-After you have edited your filters, click the ''Update'' button to refresh your results.
+You can use the controls just below the filters box to group the results based on a field, or display the full description for each ticket.
 
 Keyboard shortcuts are available for manipulating the //checkbox// filters:
 * Clicking on a filter row label toggles all checkboxes.
@@ -89,7 +89,7 @@ Filters combining matches and negated matches can be constructed for text fields
 || '''`status=closed,keywords~=firefox -opera`''' || query closed tickets that contain keyword `firefox`, but not `opera` ||
 || '''`status=closed,keywords~=opera -firefox`''' || query closed tickets that contain keyword `opera`, but no `firefox` ||
 
-The date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string. 
+The date fields `created` and `modified` and custom fields of type `time` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string. 
 || '''`created=2007-01-01..2008-01-01`''' || query tickets created in 2007 ||
 || '''`created=lastmonth..thismonth`''' || query tickets created during the previous month ||
 || '''`modified=1weekago..`''' || query tickets that have been modified in the last week ||
@@ -98,4 +98,4 @@ The date fields `created` and `modified` can be constrained by using the `=` ope
 Note that `modified` is the //last modified time//, so `modified` with a date range shows ticket that were //last modified// in that date range. If a ticket was modified in the date range, but modified again after the end date, it will not be included in the results.
 
 ----
-See also: TracTickets, TracReports, TracGuide, TicketQuery
+See also: TracTickets, TracReports, TicketQuery

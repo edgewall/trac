@@ -190,6 +190,13 @@ trac.admin.web_ui.PluginAdminPanel = disabled
 }}}
 This disables the whole panel, so the first function will no longer be available either.
 
+== Writing Trac Plugins
+
+You can write your own Trac plugin using the following resources:
+* [trac:TracDev Developer documentation]
+* [https://trac-hacks.org Examples on trac-hacks.org]
+* [trac:browser:branches/1.2-stable/sample-plugins sample-plugins]
+
 == Troubleshooting
 
 === Is setuptools properly installed?

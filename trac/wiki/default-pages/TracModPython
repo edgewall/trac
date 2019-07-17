@@ -147,6 +147,8 @@ The Trac mod_python handler supports a configuration option similar to Subversio
 
 When you request the `/projects` URL, you will get a listing of all subdirectories of the directory you set as `TracEnvParentDir` that look like Trac environment directories. Selecting any project in the list will bring you to the corresponding Trac environment.
 
+Directories residing in `TracEnvParentDir` that are not environment directories will display an error message on the [TracInterfaceCustomization#ProjectList project index page]. The directories can be excluded by listing them in a `.tracignore` file residing in `TracEnvParentDir`. Unix [https://docs.python.org/2/library/fnmatch.html shell-style wildcard patterns] can be used in the newline separated list of directories.
+
 If you don't want to have the subdirectory listing as your projects home page you can use a
 {{{#!apache
 <LocationMatch "/.+/">

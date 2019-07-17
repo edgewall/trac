@@ -1,11 +1,11 @@
 = Wiki Processors
 
-Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
+Processors are WikiMacros that provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
 
 Wiki processors can be used in any Wiki text throughout Trac, such as:
  - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
- - rendering [#HTMLrelated Wiki markup inside a context], like inside <div> blocks or <span> or within <td> or <th> table cells
- - using an alternative markup syntax, like [WikiHtml raw HTML] and [WikiRestructuredText Restructured Text] or [http://www.textism.com/tools/textile/ textile]
+ - rendering [#HTMLrelated Wiki markup inside a context] such as <div> or <span> blocks or within <td> or <th> table cells
+ - using an alternative markup syntax, like [WikiHtml raw HTML] and [WikiRestructuredText Restructured Text] or [https://www.booked.net/textism.html textile]
 
 == Using Processors
 
@@ -39,7 +39,7 @@ You may want to indent the content of nested blocks for increased clarity, this 
 ||= Wiki Markup =||= Display =||
 {{{#!td colspan=2 align=center style="border: none"
 
-                __Example 1__: Inserting raw HTML
+                '''Example 1''': Inserting raw HTML
 }}}
 |-----------------------------------------------------------------
 {{{#!td style="border: none"
@@ -59,7 +59,7 @@ You may want to indent the content of nested blocks for increased clarity, this 
 |-----------------------------------------------------------------
 {{{#!td colspan=2 align=center style="border: none"
 
-     __Example 2__: Highlighted Python code in a <div> block with custom style
+     '''Example 2''': Highlighted Python code in a <div> block with custom style
 }}}
 |-----------------------------------------------------------------
 {{{#!td style="border: none"
@@ -93,7 +93,7 @@ You may want to indent the content of nested blocks for increased clarity, this 
 |-----------------------------------------------------------------
 {{{#!td colspan=2 align=center style="border: none"
 
-     __Example 3__: Searching tickets from a wiki page, by keywords.
+     '''Example 3''': Searching tickets from a wiki page, by keywords.
 }}}
 |-----------------------------------------------------------------
 {{{#!td style="border: none"
@@ -159,10 +159,10 @@ The following processors are included in the Trac distribution:
 |||| ||
 ||||= '''Other Markups''' =||
 || '''`#!rst`''' || Trac support for Restructured Text. See WikiRestructuredText. ||
-|| '''`#!textile`''' || Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference]. ||
+|| '''`#!textile`''' || Supported if [https://pypi.org/project/textile Textile] is installed. See [https://www.booked.net/textism.html a Textile reference]. ||
 |||| ||
 ||||= '''[=#CodeHighlightingSupport Code Highlighting Support]''' =||
-|| '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] '''etc.''' [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on [http://pygments.org Pygments] for syntax coloring. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
+|| '''`#!c`''' [[BR]] '''`#!cpp`''' (C++) [[BR]] '''`#!python`''' [[BR]] '''`#!perl`''' [[BR]] '''`#!ruby`''' [[BR]] '''`#!php`''' [[BR]] '''`#!asp`''' [[BR]] '''`#!java`''' [[BR]] '''`#!js`''' (Javascript) [[BR]] '''`#!sql`''' [[BR]] '''`#!xml`''' (XML or HTML) [[BR]] '''`#!sh`''' (!Bourne/Bash shell) [[BR]] || Trac includes processors to provide inline syntax highlighting for source code in various languages. [[BR]] [[BR]] Trac relies on [http://pygments.org Pygments] for syntax coloring. [[BR]] [[BR]] See TracSyntaxColoring for information about which languages are supported and how to enable support for more languages. ||
 |||| ||
 
 Since 1.1.2 the default, coding highlighting and MIME-type processors support the argument `lineno` for adding line numbering to the code block. When a value is specified, as in `lineno=3`, the numbering will start at the specified value. When used in combination with the `lineno` argument, the `marks` argument is also supported for highlighting lines. A single line number, set of line numbers and range of line numbers are allowed. For example, `marks=3`, `marks=3-6`, `marks=3,5,7` and `marks=3-5,7` are all allowed. The specified values are relative to the numbered lines, so if `lineno=2` is specified to start the line numbering at 2, `marks=2` will result in the first line being highlighted.
@@ -270,7 +270,7 @@ def expand_markup(stream, ctxt=None):
 
 For more processor macros developed and/or contributed by users, visit the [https://trac-hacks.org Trac Hacks] community site.
 
-Developing processors is no different from Wiki macros. In fact, they work the same way, only the usage syntax differs. See WikiMacros#DevelopingCustomMacros for more information.
+Processors are implemented using the same interfaces as Wiki macros, only the usage syntax differs. To develop a processor, see WikiMacros#DevelopingCustomMacros.
 
 ----
 See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
