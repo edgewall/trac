@@ -1,13 +1,13 @@
 Release Notes for Trac 1.4 'Jinja2' Release
-=========================================
+===========================================
 (Not yet released)
 
 Highlights
 ----------
-* Jinja2 templating engine 
+* Jinja2 templating engine
 * TracAdmin command for converting databases
 * Restyled wiki
-* Custom navigation items for main and meta navigation 
+* Custom navigation items for main and meta navigation
 
 Detailed User Visible Changes
 -----------------------------
