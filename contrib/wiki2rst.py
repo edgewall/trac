@@ -101,7 +101,7 @@ def main():
             else:
                 printout('%s: Skipped empty page' % name)
 
-    req = Mock(href=Href('/'), abs_href=Href('http://trac.edgewall.org/'),
+    req = Mock(href=Href('/'), abs_href=Href('https://trac.edgewall.org/'),
                perm=MockPerm(), chrome={})
     for name in sys.argv[1:]:
         name = os.path.basename(name)

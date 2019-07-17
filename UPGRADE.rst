@@ -515,69 +515,69 @@ for SVN`_.
 See also: `TracGuide`_, `TracInstall`_,
 `TracEnvironment#ChangingDatabaseBackend`_
 
-.. _ [inherit] templates_dir: http://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
+.. _ [inherit] templates_dir: https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
 .. _#11370: http://trac.edgewall.org/intertrac/%2311370
 .. _#7014: http://trac.edgewall.org/intertrac/%237014
-.. _#CustomizedTemplates: http://trac.edgewall.org/wiki/TracUpgrade#CustomizedTemplates
-.. _#NewWorkflowActions: http://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
+.. _#CustomizedTemplates: https://trac.edgewall.org/wiki/TracUpgrade#CustomizedTemplates
+.. _#NewWorkflowActions: https://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
 .. _AdminEnumListPlugin: https://trac-hacks.org/wiki/AdminEnumListPlugin
 .. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
 .. _AttachmentNotifyPlugin: https://trac-hacks.org/wiki/AttachmentNotifyPlugin
-.. _backup your environment: http://trac.edgewall.org/wiki/TracBackup
-.. _backup_dir: http://trac.edgewall.org/wiki/TracIni#trac-backup_dir-option
+.. _backup your environment: https://trac.edgewall.org/wiki/TracBackup
+.. _backup_dir: https://trac.edgewall.org/wiki/TracIni#trac-backup_dir-option
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
-.. _custom field type: http://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
+.. _custom field type: https://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
 .. _custom subscribers: http://trac.edgewall.org/intertrac/CookBook/Notification/Subscriptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
-.. _dependencies: http://trac.edgewall.org/wiki/TracInstall#Dependencies
-.. _deploy command: http://trac.edgewall.org/wiki/TracInstall#MappingStaticResources
+.. _dependencies: https://trac.edgewall.org/wiki/TracInstall#Dependencies
+.. _deploy command: https://trac.edgewall.org/wiki/TracInstall#MappingStaticResources
 .. _DynamicVariablesPlugin: https://trac-hacks.org/wiki/DynamicVariablesPlugin
-.. _environment: http://trac.edgewall.org/wiki/TracEnvironment
+.. _environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _FlexibleAssignToPlugin: https://trac-hacks.org/wiki/FlexibleAssignToPlugin
 .. _FlexibleReporterNotificationPlugin: https://trac-hacks.org/wiki/FlexibleReporterNotificationPlugin
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
 .. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin
 .. _GroupingAssignToPlugin: https://trac-hacks.org/wiki/GroupingAssignToPlugin
-.. _hotcopy: http://trac.edgewall.org/wiki/TracBackup
-.. _initenv documentation: http://trac.edgewall.org/wiki/TracEnvironment#SourceCodeRepository
-.. _internal errors: http://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
+.. _hotcopy: https://trac.edgewall.org/wiki/TracBackup
+.. _initenv documentation: https://trac.edgewall.org/wiki/TracEnvironment#SourceCodeRepository
+.. _internal errors: https://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
 .. _LinenoMacro: https://trac-hacks.org/wiki/LinenoMacro
-.. _log_level: http://trac.edgewall.org/wiki/TracIni#logging-log_level-option
+.. _log_level: https://trac.edgewall.org/wiki/TracIni#logging-log_level-option
 .. _MailingList: http://trac.edgewall.org/intertrac/MailingList
-.. _migrated: http://trac.edgewall.org/wiki/TracUpgrade#AttachmentsMigrated
+.. _migrated: https://trac.edgewall.org/wiki/TracUpgrade#AttachmentsMigrated
 .. _MySQL-python: https://pypi.python.org/pypi/MySQL-python
 .. _NavAddPlugin: https://trac-hacks.org/wiki/NavAddPlugin
 .. _NeverNotifyUpdaterPlugin: https://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
-.. _notification subscribers: http://trac.edgewall.org/wiki/TracNotification#notification-subscriber-section
+.. _notification subscribers: https://trac.edgewall.org/wiki/TracNotification#notification-subscriber-section
 .. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
 .. _ProgressMeterMacro: https://trac-hacks.org/wiki/ProgressMeterMacro
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
 .. _PyPI: https://pypi.python.org/pypi/Trac
 .. _Python bindings for SVN: http://trac.edgewall.org/intertrac/TracSubversion
 .. _QueryUiAssistPlugin: https://trac-hacks.org/wiki/QueryUiAssistPlugin
-.. _ReadonlyWikiPolicy: http://trac.edgewall.org/wiki/TracUpgrade#Newpermissionspolicyforread-onlywikipages
-.. _required versions: http://trac.edgewall.org/wiki/TracInstall#Dependencies
-.. _set_owner: http://trac.edgewall.org/wiki/TracWorkflow#BasicTicketWorkflowCustomization
-.. _sometimes fails: http://trac.edgewall.org/wiki/TracUpgrade#AttachmentsNotMigrated
+.. _ReadonlyWikiPolicy: https://trac.edgewall.org/wiki/TracUpgrade#Newpermissionspolicyforread-onlywikipages
+.. _required versions: https://trac.edgewall.org/wiki/TracInstall#Dependencies
+.. _set_owner: https://trac.edgewall.org/wiki/TracWorkflow#BasicTicketWorkflowCustomization
+.. _sometimes fails: https://trac.edgewall.org/wiki/TracUpgrade#AttachmentsNotMigrated
 .. _the FAQ: https://trac.edgewall.org/wiki/TracFaq#Q:Attachmentsaremissingafterupgrade
 .. _TicketCreationStatusPlugin: https://trac-hacks.org/wiki/TicketCreationStatusPlugin
-.. _Trac environment: http://trac.edgewall.org/wiki/TracEnvironment
-.. _trac-admin: http://trac.edgewall.org/wiki/TracAdmin
+.. _Trac environment: https://trac.edgewall.org/wiki/TracEnvironment
+.. _trac-admin: https://trac.edgewall.org/wiki/TracAdmin
 .. _trac-hacks.org: https://trac-hacks.org
-.. _TracAdmin: http://trac.edgewall.org/wiki/TracAdmin
+.. _TracAdmin: https://trac.edgewall.org/wiki/TracAdmin
 .. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
 .. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
-.. _TracEnvironment#ChangingDatabaseBackend: http://trac.edgewall.org/wiki/TracEnvironment#ChangingDatabaseBackend
-.. _TracFineGrainedPermissions#ReadonlyWikiPolicy: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy
-.. _TracFineGrainedPermissions: http://trac.edgewall.org/wiki/TracFineGrainedPermissions#DefaultWikiPolicyandDefaultTicketPolicy
-.. _TracGuide: http://trac.edgewall.org/wiki/TracGuide
-.. _TracIni: http://trac.edgewall.org/wiki/TracIni
-.. _TracInstall: http://trac.edgewall.org/wiki/TracInstall
-.. _TracInterfaceCustomization: http://trac.edgewall.org/wiki/TracInterfaceCustomization
+.. _TracEnvironment#ChangingDatabaseBackend: https://trac.edgewall.org/wiki/TracEnvironment#ChangingDatabaseBackend
+.. _TracFineGrainedPermissions#ReadonlyWikiPolicy: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy
+.. _TracFineGrainedPermissions: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#DefaultWikiPolicyandDefaultTicketPolicy
+.. _TracGuide: https://trac.edgewall.org/wiki/TracGuide
+.. _TracIni: https://trac.edgewall.org/wiki/TracIni
+.. _TracInstall: https://trac.edgewall.org/wiki/TracInstall
+.. _TracInterfaceCustomization: https://trac.edgewall.org/wiki/TracInterfaceCustomization
 .. _TracMigratePlugin: https://trac-hacks.org/wiki/TracMigratePlugin
-.. _TracNavigation: http://trac.edgewall.org/wiki/TracNavigation
-.. _TracQuery#Filters: http://trac.edgewall.org/wiki/TracQuery#Filters
-.. _version specific steps: http://trac.edgewall.org/wiki/TracUpgrade#VersionSpecificSteps
+.. _TracNavigation: https://trac.edgewall.org/wiki/TracNavigation
+.. _TracQuery#Filters: https://trac.edgewall.org/wiki/TracQuery#Filters
+.. _version specific steps: https://trac.edgewall.org/wiki/TracUpgrade#VersionSpecificSteps
 .. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
 .. _wiki:0.12/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.12/TracUpgrade%23SpecificVersions
-.. _WikiProcessors#AvailableProcessors: http://trac.edgewall.org/wiki/WikiProcessors#AvailableProcessors
+.. _WikiProcessors#AvailableProcessors: https://trac.edgewall.org/wiki/WikiProcessors#AvailableProcessors
