@@ -26,7 +26,7 @@ from jinja2.filters import make_attrgetter
 from jinja2.utils import soft_unicode
 
 from trac.core import TracError
-from .datefmt import format_datetime, to_utimestamp, utc
+from .datefmt import to_utimestamp, utc
 from .html import Fragment, classes, html_attribute, styles, tag
 from .text import javascript_quote
 
@@ -467,7 +467,7 @@ class TracJSONEncoder(JSONEncoder):
         if isinstance(o, Undefined):
             return ''
         elif isinstance(o, datetime):
-            return format_datetime(o, 'iso8601', o.tzinfo or utc)
+            return to_utimestamp(o if o.tzinfo else o.replace(tzinfo=utc))
         elif isinstance(o, Fragment):
             return '"%s"' % javascript_quote(unicode(o))
         return JSONEncoder.default(self, o)

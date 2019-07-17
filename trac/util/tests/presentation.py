@@ -18,7 +18,7 @@ import unittest
 
 from trac.core import TracError
 from trac.test import Mock
-from trac.util import presentation
+from trac.util import datefmt, presentation
 
 
 class FiltersTestCase(unittest.TestCase):
@@ -44,9 +44,12 @@ class ToJsonTestCase(unittest.TestCase):
         self.assertEqual('false', presentation.to_json(False))
         self.assertEqual('null', presentation.to_json(None))
         self.assertEqual('"String"', presentation.to_json('String'))
-        self.assertEqual('"2019-03-06T18:10:15Z"',
-                         presentation.to_json(
-                             datetime.datetime(2019, 3, 6, 18, 10, 15)))
+        self.assertEqual('1551895815012345',
+                         presentation.to_json(datetime.datetime(
+                             2019, 3, 6, 18, 10, 15, 12345, datefmt.utc)))
+        self.assertEqual('1551895815012345',
+                         presentation.to_json(datetime.datetime(
+                             2019, 3, 6, 18, 10, 15, 12345)))
         self.assertEqual(r'"a \" quote"', presentation.to_json('a " quote'))
         self.assertEqual('''"a ' single quote"''',
                          presentation.to_json("a ' single quote"))
