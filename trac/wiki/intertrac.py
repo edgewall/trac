@@ -55,7 +55,7 @@ class InterTracDispatcher(Component):
 
         # -- Link to an external Trac:
         trac.title = Edgewall's Trac for Trac
-        trac.url = http://trac.edgewall.org
+        trac.url = https://trac.edgewall.org
         }}}
         """)
 
@@ -108,7 +108,7 @@ class InterTracDispatcher(Component):
                 intertracs[key] = value # alias
         if 'trac' not in intertracs:
             intertracs['trac'] = {'title': _('The Trac Project'),
-                                  'url': 'http://trac.edgewall.org'}
+                                  'url': 'https://trac.edgewall.org'}
 
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
