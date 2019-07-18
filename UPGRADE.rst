@@ -516,8 +516,8 @@ See also: `TracGuide`_, `TracInstall`_,
 `TracEnvironment#ChangingDatabaseBackend`_
 
 .. _ [inherit] templates_dir: https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
-.. _#11370: http://trac.edgewall.org/intertrac/%2311370
-.. _#7014: http://trac.edgewall.org/intertrac/%237014
+.. _#11370: https://trac.edgewall.org/intertrac/%2311370
+.. _#7014: https://trac.edgewall.org/intertrac/%237014
 .. _#CustomizedTemplates: https://trac.edgewall.org/wiki/TracUpgrade#CustomizedTemplates
 .. _#NewWorkflowActions: https://trac.edgewall.org/wiki/TracUpgrade#NewWorkflowActions
 .. _AdminEnumListPlugin: https://trac-hacks.org/wiki/AdminEnumListPlugin
@@ -527,7 +527,7 @@ See also: `TracGuide`_, `TracInstall`_,
 .. _backup_dir: https://trac.edgewall.org/wiki/TracIni#trac-backup_dir-option
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _custom field type: https://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
-.. _custom subscribers: http://trac.edgewall.org/intertrac/CookBook/Notification/Subscriptions
+.. _custom subscribers: https://trac.edgewall.org/intertrac/CookBook/Notification/Subscriptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin
 .. _dependencies: https://trac.edgewall.org/wiki/TracInstall#Dependencies
 .. _deploy command: https://trac.edgewall.org/wiki/TracInstall#MappingStaticResources
@@ -543,7 +543,7 @@ See also: `TracGuide`_, `TracInstall`_,
 .. _internal errors: https://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
 .. _LinenoMacro: https://trac-hacks.org/wiki/LinenoMacro
 .. _log_level: https://trac.edgewall.org/wiki/TracIni#logging-log_level-option
-.. _MailingList: http://trac.edgewall.org/intertrac/MailingList
+.. _MailingList: https://trac.edgewall.org/intertrac/MailingList
 .. _migrated: https://trac.edgewall.org/wiki/TracUpgrade#AttachmentsMigrated
 .. _MySQL-python: https://pypi.python.org/pypi/MySQL-python
 .. _NavAddPlugin: https://trac-hacks.org/wiki/NavAddPlugin
@@ -553,7 +553,7 @@ See also: `TracGuide`_, `TracInstall`_,
 .. _ProgressMeterMacro: https://trac-hacks.org/wiki/ProgressMeterMacro
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
 .. _PyPI: https://pypi.python.org/pypi/Trac
-.. _Python bindings for SVN: http://trac.edgewall.org/intertrac/TracSubversion
+.. _Python bindings for SVN: https://trac.edgewall.org/intertrac/TracSubversion
 .. _QueryUiAssistPlugin: https://trac-hacks.org/wiki/QueryUiAssistPlugin
 .. _ReadonlyWikiPolicy: https://trac.edgewall.org/wiki/TracUpgrade#Newpermissionspolicyforread-onlywikipages
 .. _required versions: https://trac.edgewall.org/wiki/TracInstall#Dependencies
@@ -565,8 +565,8 @@ See also: `TracGuide`_, `TracInstall`_,
 .. _trac-admin: https://trac.edgewall.org/wiki/TracAdmin
 .. _trac-hacks.org: https://trac-hacks.org
 .. _TracAdmin: https://trac.edgewall.org/wiki/TracAdmin
-.. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
-.. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
+.. _TracDev/ApiChanges: https://trac.edgewall.org/intertrac/TracDev/ApiChanges
+.. _TracDownload: https://trac.edgewall.org/intertrac/TracDownload
 .. _TracEnvironment#ChangingDatabaseBackend: https://trac.edgewall.org/wiki/TracEnvironment#ChangingDatabaseBackend
 .. _TracFineGrainedPermissions#ReadonlyWikiPolicy: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy
 .. _TracFineGrainedPermissions: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#DefaultWikiPolicyandDefaultTicketPolicy
@@ -578,6 +578,6 @@ See also: `TracGuide`_, `TracInstall`_,
 .. _TracNavigation: https://trac.edgewall.org/wiki/TracNavigation
 .. _TracQuery#Filters: https://trac.edgewall.org/wiki/TracQuery#Filters
 .. _version specific steps: https://trac.edgewall.org/wiki/TracUpgrade#VersionSpecificSteps
-.. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
-.. _wiki:0.12/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.12/TracUpgrade%23SpecificVersions
+.. _wiki:0.10/TracUpgrade#SpecificVersions: https://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _wiki:0.12/TracUpgrade#SpecificVersions: https://trac.edgewall.org/intertrac/wiki%3A0.12/TracUpgrade%23SpecificVersions
 .. _WikiProcessors#AvailableProcessors: https://trac.edgewall.org/wiki/WikiProcessors#AvailableProcessors

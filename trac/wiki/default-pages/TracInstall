@@ -1,7 +1,7 @@
 = Trac Installation Guide for 1.3
 [[TracGuideToc]]
 
-Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://jinja.pocoo.org Jinja2] templating system, though Genshi templates will still be supported until at least Trac 1.5.1.
+Trac is written in the Python programming language and needs a database, [https://sqlite.org/ SQLite], [https://www.postgresql.org/ PostgreSQL], or [https://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://jinja.pocoo.org Jinja2] templating system, though Genshi templates will still be supported until at least Trac 1.5.1.
 
 Trac can also be localized, and there is probably a translation available in your language. If you want to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version.
 
@@ -15,7 +15,7 @@ What follows are generic instructions for installing and setting up Trac. While 
 === Mandatory Dependencies
 To install Trac, the following software packages must be installed:
 
- * [http://www.python.org/ Python], version >= 2.7 and < 3.0
+ * [https://www.python.org/ Python], version >= 2.7 and < 3.0
    (note that we dropped the support for Python 2.6 in this release)
  * [https://pypi.python.org/pypi/setuptools setuptools], version >= 0.6
  * [http://jinja.pocoo.org Jinja2], version >= 2.9.3
@@ -35,7 +35,7 @@ Optionally, you may install a newer version of [https://pypi.python.org/pypi/pys
 ==== For the PostgreSQL database #ForPostgreSQL
 
 You need to install the database and its Python bindings:
- * [http://www.postgresql.org/ PostgreSQL], version 9.1 or later
+ * [https://www.postgresql.org/ PostgreSQL], version 9.1 or later
  * [https://pypi.python.org/pypi/psycopg2 psycopg2], version 2.0 or later
 
 See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
@@ -44,7 +44,7 @@ See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
 
 Trac works well with MySQL, provided you use the following:
 
- * [http://mysql.com/ MySQL], version 5.0 or later
+ * [https://mysql.com/ MySQL], version 5.0 or later
  * [https://pypi.python.org/pypi/PyMySQL PyMySQL]
 
 Given the caveats and known issues surrounding MySQL, read carefully the [trac:MySqlDb] page before creating the database.
@@ -53,9 +53,9 @@ Given the caveats and known issues surrounding MySQL, read carefully the [trac:M
 
 ==== Subversion
 
-[http://subversion.apache.org/ Subversion], 1.6.x or later and the '''''corresponding''''' Python bindings.
+[https://subversion.apache.org/ Subversion], 1.6.x or later and the '''''corresponding''''' Python bindings.
 
-There are [http://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. See [trac:TracSubversion#GettingSubversion getting Subversion] for more information.
+There are [https://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. See [trac:TracSubversion#GettingSubversion getting Subversion] for more information.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Note:**
@@ -67,7 +67,7 @@ For troubleshooting information, see the [trac:TracSubversion#Troubleshooting Tr
 
 ==== Git
 
-[http://git-scm.com/ Git] 1.5.6 or later is supported. More information is available on the [trac:TracGit] page.
+[https://git-scm.com/ Git] 1.5.6 or later is supported. More information is available on the [trac:TracGit] page.
 
 ==== Other Version Control Systems
 
@@ -77,12 +77,12 @@ Support for other version control systems is provided via third-party plugins. S
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server] section below.
 
 Alternatively you can configure Trac to run in any of the following environments:
- * [http://httpd.apache.org/ Apache] with 
+ * [https://httpd.apache.org/ Apache] with 
    - [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and 
-     [http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
+     [https://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
    - [http://modpython.org/ mod_python 3.5.0], see TracModPython
- * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
- * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
+ * a [https://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
+ * an [https://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
  * Microsoft IIS with FastCGI and a FastCGI-to-WSGI gateway (see [trac:CookBook/Installation/TracOnWindowsIisWfastcgi IIS with FastCGI])
  * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
@@ -139,7 +139,7 @@ $ pip install https://download.edgewall.org/trac/Trac-latest.zip
 }}}
 * Install the latest development version from a tar archive:
 {{{#!sh
-$ pip install http://download.edgewall.org/trac/Trac-latest-dev.tar.gz
+$ pip install https://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 }}}
 * Install the unreleased 1.2-stable from subversion:
 {{{#!sh
@@ -231,7 +231,7 @@ Trac provides various options for connecting to a "real" web server:
  - [TracModPython Apache with mod_python]
  - //[TracCgi CGI] (should not be used, as the performance is far from optimal)//
 
-Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
+Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [https://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
 
 ==== Generating the Trac cgi-bin directory #cgi-bin
 
@@ -254,7 +254,7 @@ $ chmod ugo+x /var/www/cgi-bin/*
 
 Without additional configuration, Trac will handle requests for static resources such as stylesheets and images. For anything other than a TracStandalone deployment, this is not optimal as the web server can be set up to directly serve the static resources. For CGI setup, this is '''highly undesirable''' as it causes abysmal performance.
 
-Web servers such as [http://httpd.apache.org/ Apache] allow you to create //Aliases// to resources, giving them a virtual URL that doesn't necessarily reflect their location on the file system. We can map requests for static resources directly to directories on the file system, to avoid Trac processing the requests.
+Web servers such as [https://httpd.apache.org/ Apache] allow you to create //Aliases// to resources, giving them a virtual URL that doesn't necessarily reflect their location on the file system. We can map requests for static resources directly to directories on the file system, to avoid Trac processing the requests.
 
 There are two primary URL paths for static resources: `/chrome/common` and `/chrome/site`. Plugins can add their own resources, usually accessible at the `/chrome/<plugin>` path.
 

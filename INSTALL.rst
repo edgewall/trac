@@ -240,7 +240,7 @@ URL of an archive or other download location. Here are some examples:
 
 ::
 
-    $ pip install http://download.edgewall.org/trac/Trac-latest-dev.tar.gz
+    $ pip install https://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 
 
 + Install the unreleased 1.2-stable from subversion:
@@ -695,11 +695,11 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 `TracPermissions`_
 
 .. _ [trac] htdocs_location: https://trac.edgewall.org/wiki/TracIni#trac-section
-.. _AJP*: http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
-.. _AJP: http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html
+.. _AJP*: https://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
+.. _AJP: https://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html
 .. _Apache with mod_python: https://trac.edgewall.org/wiki/TracModPython
 .. _Apache with mod_wsgi: https://trac.edgewall.org/wiki/TracModWSGI
-.. _Apache: http://httpd.apache.org/
+.. _Apache: https://httpd.apache.org/
 .. _Babel*: http://babel.pocoo.org
 .. _Babel: https://trac.edgewall.org/wiki/TracInstall#OtherPythonPackages
 .. _CGI: https://trac.edgewall.org/wiki/TracCgi
@@ -707,83 +707,83 @@ See also: `​TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _conf/trac.ini: https://trac.edgewall.org/wiki/TracIni
 .. _configuration file: https://trac.edgewall.org/wiki/TracIni
 .. _Custom permissions: https://trac.edgewall.org/wiki/TracPermissions#CreatingNewPrivileges
-.. _database backends: http://trac.edgewall.org/intertrac/DatabaseBackend
+.. _database backends: https://trac.edgewall.org/intertrac/DatabaseBackend
 .. _database connection string: https://trac.edgewall.org/wiki/TracEnvironment#DatabaseConnectionStrings
-.. _DatabaseBackend: http://trac.edgewall.org/intertrac/DatabaseBackend%23Postgresql
+.. _DatabaseBackend: https://trac.edgewall.org/intertrac/DatabaseBackend%23Postgresql
 .. _Deploying Trac: https://trac.edgewall.org/wiki/TracInstall#DeployingTrac
 .. _docutils: http://docutils.sourceforge.net
 .. _FastCGI*: https://trac.edgewall.org/wiki/TracFastCgi
-.. _FastCGI: http://www.fastcgi.com/
+.. _FastCGI: https://www.fastcgi.com/
 .. _Fine-grained permission policy: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#AuthzPolicy
 .. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
-.. _getting Subversion: http://trac.edgewall.org/intertrac/TracSubversion%23GettingSubversion
-.. _Git: http://git-scm.com/
+.. _getting Subversion: https://trac.edgewall.org/intertrac/TracSubversion%23GettingSubversion
+.. _Git: https://git-scm.com/
 .. _here: https://pypi.python.org/pypi?:action=browse&show=all&c=516
 .. _htpasswd formats: https://trac.edgewall.org/wiki/TracStandalone#BasicAuthorization:Usingahtpasswdpasswordfile
-.. _IIS with FastCGI: http://trac.edgewall.org/intertrac/CookBook/Installation/TracOnWindowsIisWfastcgi
+.. _IIS with FastCGI: https://trac.edgewall.org/intertrac/CookBook/Installation/TracOnWindowsIisWfastcgi
 .. _Installing Trac: https://trac.edgewall.org/wiki/TracInstall#InstallingTrac
-.. _IrcChannel: http://trac.edgewall.org/intertrac/IrcChannel
-.. _Isapi-wsgi: http://trac.edgewall.org/intertrac/TracOnWindowsIisIsapi
+.. _IrcChannel: https://trac.edgewall.org/intertrac/IrcChannel
+.. _Isapi-wsgi: https://trac.edgewall.org/intertrac/TracOnWindowsIisIsapi
 .. _Jinja2: http://jinja.pocoo.org
-.. _MailingList: http://trac.edgewall.org/intertrac/MailingList
+.. _MailingList: https://trac.edgewall.org/intertrac/MailingList
 .. _mod_python 3.5.0: http://modpython.org/
 .. _mod_wsgi: https://github.com/GrahamDumpleton/mod_wsgi
-.. _ModWSGI IntegrationWithTrac: http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
-.. _MySQL: http://mysql.com/
-.. _MySqlDb: http://trac.edgewall.org/intertrac/MySqlDb
-.. _nginx: http://trac.edgewall.org/intertrac/TracNginxRecipe
-.. _not supported: http://trac.edgewall.org/intertrac/ticket%3A493
+.. _ModWSGI IntegrationWithTrac: https://code.google.com/p/modwsgi/wiki/IntegrationWithTrac
+.. _MySQL: https://mysql.com/
+.. _MySqlDb: https://trac.edgewall.org/intertrac/MySqlDb
+.. _nginx: https://trac.edgewall.org/intertrac/TracNginxRecipe
+.. _not supported: https://trac.edgewall.org/intertrac/ticket%3A493
 .. _passlib: https://pypi.python.org/pypi/passlib
 .. _permissions: https://trac.edgewall.org/wiki/TracPermissions
-.. _platform-specific instructions: http://trac.edgewall.org/intertrac/TracInstallPlatforms
-.. _PluginList#VersionControlSystems: http://trac.edgewall.org/intertrac/PluginList%23VersionControlSystems
-.. _PostgreSQL: http://www.postgresql.org/
-.. _pre-compiled SWIG bindings: http://subversion.apache.org/packages.html
+.. _platform-specific instructions: https://trac.edgewall.org/intertrac/TracInstallPlatforms
+.. _PluginList#VersionControlSystems: https://trac.edgewall.org/intertrac/PluginList%23VersionControlSystems
+.. _PostgreSQL: https://www.postgresql.org/
+.. _pre-compiled SWIG bindings: https://subversion.apache.org/packages.html
 .. _project environments: https://trac.edgewall.org/wiki/TracEnvironment
 .. _psycopg2: https://pypi.python.org/pypi/psycopg2
 .. _Pygments: http://pygments.org
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
 .. _pyreadline: https://pypi.python.org/pypi/pyreadline
-.. _PySqlite*: http://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
+.. _PySqlite*: https://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
 .. _pysqlite: https://pypi.python.org/pypi/pysqlite
 .. _PySVN: http://pysvn.tigris.org/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _pytz: http://pytz.sourceforge.net
 .. _Running the Standalone Server: https://trac.edgewall.org/wiki/TracInstall#RunningtheStandaloneServer
 .. _setuptools: https://pypi.python.org/pypi/setuptools
-.. _SQLite: http://sqlite.org/
-.. _Subversion: http://subversion.apache.org/
+.. _SQLite: https://sqlite.org/
+.. _Subversion: https://subversion.apache.org/
 .. _syntax highlighting: https://trac.edgewall.org/wiki/TracSyntaxColoring
 .. _Textile markup language: https://txstyle.org
 .. _Textile: https://pypi.python.org/pypi/textile
-.. _The Trac Team: http://trac.edgewall.org/intertrac/TracTeam
+.. _The Trac Team: https://trac.edgewall.org/intertrac/TracTeam
 .. _Ticket changeset references: https://trac.edgewall.org/wiki/TracRepositoryAdmin#CommitTicketUpdater
 .. _Ticket cloning: https://trac.edgewall.org/wiki/TracTickets#cloner
 .. _Ticket deletion: https://trac.edgewall.org/wiki/TracTickets#deleter
 .. _Trac environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: https://trac.edgewall.org/wiki/TracAdmin
 .. _TracAdmin: https://trac.edgewall.org/wiki/TracAdmin
-.. _TracAuthenticationIntroduction: http://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
+.. _TracAuthenticationIntroduction: https://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
 .. _TracCgi: https://trac.edgewall.org/wiki/TracCgi
 .. _tracd: https://trac.edgewall.org/wiki/TracStandalone
-.. _TracDownload: http://trac.edgewall.org/intertrac/TracDownload
+.. _TracDownload: https://trac.edgewall.org/intertrac/TracDownload
 .. _TracFastCgi: https://trac.edgewall.org/wiki/TracFastCgi
-.. _TracGit: http://trac.edgewall.org/intertrac/TracGit
+.. _TracGit: https://trac.edgewall.org/intertrac/TracGit
 .. _TracGuide: https://trac.edgewall.org/wiki/TracGuide
 .. _TracIni: https://trac.edgewall.org/wiki/TracIni
-.. _TracInstallPlatforms: http://trac.edgewall.org/intertrac/TracInstallPlatforms
-.. _TracL10N: http://trac.edgewall.org/intertrac/wiki%3ATracL10N
+.. _TracInstallPlatforms: https://trac.edgewall.org/intertrac/TracInstallPlatforms
+.. _TracL10N: https://trac.edgewall.org/intertrac/wiki%3ATracL10N
 .. _TracModPython: https://trac.edgewall.org/wiki/TracModPython
 .. _TracModWSGI#ConfiguringAuthentication: https://trac.edgewall.org/wiki/TracModWSGI#ConfiguringAuthentication
 .. _TracModWSGI: https://trac.edgewall.org/wiki/TracModWSGI
-.. _TracOnWindowsIisAjp: http://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
+.. _TracOnWindowsIisAjp: https://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
 .. _TracPermissions: https://trac.edgewall.org/wiki/TracPermissions
 .. _TracPlugins: https://trac.edgewall.org/wiki/TracPlugins
 .. _TracRepositoryAdmin: https://trac.edgewall.org/wiki/TracRepositoryAdmin
 .. _TracStandalone#UsingAuthentication: https://trac.edgewall.org/wiki/TracStandalone#UsingAuthentication
 .. _TracStandalone: https://trac.edgewall.org/wiki/TracStandalone
-.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion%23Troubleshooting
+.. _TracSubversion: https://trac.edgewall.org/intertrac/TracSubversion%23Troubleshooting
 .. _TracUpgrade: https://trac.edgewall.org/wiki/TracUpgrade
-.. _uwsgi: http://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri
-.. _VersionControlSystem: http://trac.edgewall.org/intertrac/VersionControlSystem
+.. _uwsgi: https://projects.unbit.it/uwsgi/wiki/Example#Traconapacheinasub-uri
+.. _VersionControlSystem: https://trac.edgewall.org/intertrac/VersionControlSystem
 .. _WikiRestructuredText: https://trac.edgewall.org/wiki/WikiRestructuredText
