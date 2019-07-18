@@ -55,7 +55,7 @@ reopen.operations = del_resolution
 
 == Additional Ticket Workflows
 
-There are example workflows provided in the Trac source tree, see [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections. One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However, if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
+There are example workflows provided in the Trac source tree, see [trac:source:branches/1.0-stable/contrib/workflow contrib/workflow] for `.ini` config sections. One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However, if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
 
 Here are some [trac:WorkFlow/Examples diagrams] of the above examples.
 
@@ -171,7 +171,7 @@ pass.set_resolution = fixed
 
 === How to combine the `tracopt.ticket.commit_updater` with the testing workflow
 
-The [[trac:source:trunk/tracopt/ticket/commit_updater.py|tracopt.ticket.commit_updater]] is the optional component that [[TracRepositoryAdmin#trac-post-commit-hook|replaces the old trac-post-commit-hook]], in Trac 0.12.
+The [[trac:source:branches/1.0-stable/tracopt/ticket/commit_updater.py|tracopt.ticket.commit_updater]] is the optional component that [[TracRepositoryAdmin#trac-post-commit-hook|replaces the old trac-post-commit-hook]], in Trac 0.12.
 
 By default it reacts on some keywords found in changeset message logs like ''close'', ''fix'' etc. and performs the corresponding workflow action.
 
@@ -254,7 +254,7 @@ resolve.permissions = TICKET_MODIFY
 
 == Advanced Ticket Workflow Customization
 
-If the customizations above do not meet your needs, you can extend the workflow with plugins. Plugins can provide additional operations for the workflow, like code_review, or implement side-effects for an action, such as triggering a build, that may not be merely simple state changes. Look at [trac:source:trunk/sample-plugins/workflow sample-plugins/workflow] for a few examples to get started.
+If the customizations above do not meet your needs, you can extend the workflow with plugins. Plugins can provide additional operations for the workflow, like code_review, or implement side-effects for an action, such as triggering a build, that may not be merely simple state changes. Look at [trac:source:branches/1.0-stable/sample-plugins/workflow sample-plugins/workflow] for a few examples to get started.
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
 

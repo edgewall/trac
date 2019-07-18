@@ -508,27 +508,27 @@ For upgrades from versions older than Trac 0.10, refer first to
 See also: `TracGuide`_, `TracInstall`_
 
 .. _ [inherit] templates_dir: https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
-.. _#7014: http://trac.edgewall.org/intertrac/%237014
-.. _#7265: http://trac.edgewall.org/intertrac/%237265
-.. _#9434: http://trac.edgewall.org/intertrac/%239434
+.. _#7014: https://trac.edgewall.org/intertrac/%237014
+.. _#7265: https://trac.edgewall.org/intertrac/%237265
+.. _#9434: https://trac.edgewall.org/intertrac/%239434
 .. _AdminConsoleProviderPatch: https://trac-hacks.org/wiki/AdminConsoleProviderPatch
 .. _Alagazam: http://alagazam.net/
 .. _AnchorMacro: https://trac-hacks.org/wiki/AnchorMacro
 .. _AutoQueryPlugin: https://trac-hacks.org/wiki/AutoQueryPlugin
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
 .. _CGI: https://trac.edgewall.org/wiki/TracCgi
-.. _ClearSilver: http://trac.edgewall.org/intertrac/ClearSilver
-.. _contrib/workflow/migrate_original_to_basic.py: http://trac.edgewall.org/intertrac/source%3Atrunk/contrib/workflow/migrate_original_to_basic.py
+.. _ClearSilver: https://trac.edgewall.org/intertrac/ClearSilver
+.. _contrib/workflow/migrate_original_to_basic.py: https://trac.edgewall.org/intertrac/source%3Abranches/1.0-stable/contrib/workflow/migrate_original_to_basic.py
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 .. _environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
 .. _here: https://trac.edgewall.org/wiki/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
 .. _hotcopy: https://trac.edgewall.org/wiki/TracBackup
 .. _internal errors: https://trac.edgewall.org/wiki/TracUpgrade#ZipImportError
-.. _No changeset ??? in the repository: http://trac.edgewall.org/intertrac/%236120
+.. _No changeset ??? in the repository: https://trac.edgewall.org/intertrac/%236120
 .. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
-.. _PySqlite#UpgradingSQLitefrom2.xto3.x: http://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x
-.. _PySqlite: http://trac.edgewall.org/intertrac/PySqlite
+.. _PySqlite#UpgradingSQLitefrom2.xto3.x: https://trac.edgewall.org/intertrac/PySqlite%23UpgradingSQLitefrom2.xto3.x
+.. _PySqlite: https://trac.edgewall.org/intertrac/PySqlite
 .. _RepoRevisionSyntaxPlugin: https://trac-hacks.org/wiki/RepoRevisionSyntaxPlugin
 .. _SubversionLocationPlugin: https://trac-hacks.org/wiki/SubversionLocationPlugin
 .. _TICKET_EDIT_COMMENT permission: https://trac.edgewall.org/wiki/TracPermissions#TicketSystem
@@ -538,7 +538,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _Trac environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: https://trac.edgewall.org/wiki/TracAdmin
 .. _trac-hacks.org: https://trac-hacks.org
-.. _TracDev/ApiChanges: http://trac.edgewall.org/intertrac/TracDev/ApiChanges
+.. _TracDev/ApiChanges: https://trac.edgewall.org/intertrac/TracDev/ApiChanges
 .. _TracEnvironment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _TracGuide: https://trac.edgewall.org/wiki/TracGuide
 .. _TracIni: https://trac.edgewall.org/wiki/TracIni
@@ -550,11 +550,11 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracRepositoryAdmin#Migration: https://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration
 .. _TracRepositoryAdmin#Repositories: https://trac.edgewall.org/wiki/TracRepositoryAdmin#Repositories
 .. _TracRepositoryAdmin#Synchronization: https://trac.edgewall.org/wiki/TracRepositoryAdmin#Synchronization
-.. _TracSubversion: http://trac.edgewall.org/intertrac/TracSubversion
+.. _TracSubversion: https://trac.edgewall.org/intertrac/TracSubversion
 .. _TracWorkflow: https://trac.edgewall.org/wiki/TracWorkflow
-.. _WebAdmin: http://trac.edgewall.org/intertrac/WebAdmin
-.. _wiki:0.10/TracUpgrade#SpecificVersions: http://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
-.. _WikiCreole: http://trac.edgewall.org/intertrac/WikiCreole
+.. _WebAdmin: https://trac.edgewall.org/intertrac/WebAdmin
+.. _wiki:0.10/TracUpgrade#SpecificVersions: https://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
+.. _WikiCreole: https://trac.edgewall.org/intertrac/WikiCreole
 .. _WikiCreoleRendererPlugin: https://trac-hacks.org/wiki/WikiCreoleRendererPlugin
 .. _WikiFormatting#SettingAnchors: https://trac.edgewall.org/wiki/WikiFormatting#SettingAnchors
 .. _WikiMacros: https://trac.edgewall.org/wiki/WikiMacros

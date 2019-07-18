@@ -69,10 +69,10 @@ $prefix #$ticket.id: $summary
 
 The following variables are available in the template:
 
- * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
+ * `env`: The project environment (see [trac:source:branches/1.0-stable/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
+ * `ticket`: The ticket model object (see [trac:source:branches/1.0-stable/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
 
 === Customizing the e-mail content
 
