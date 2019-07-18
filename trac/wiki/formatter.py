@@ -695,7 +695,7 @@ class Formatter(object):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns + '.url')
         if not url and ns == 'trac':
-            url = 'http://trac.edgewall.org'
+            url = 'https://trac.edgewall.org'
         if url:
             name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
             compat = intertrac.getbool(ns + '.compat', 'false')
