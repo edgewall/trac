@@ -92,6 +92,9 @@ install:
     esac
     if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2<2.8"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
+    if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then
+        requires="$requires setuptools-git";
+    fi
     pip install $requires
     python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
     pip list
