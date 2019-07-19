@@ -9,47 +9,6 @@ cache:
     - "$HOME/.cache/pip"
     - "$HOME/.pyenv"
     - "$HOME/venv-lib"
-matrix:
-  include:
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb= build=minimum
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb=
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb=sqlite
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      services: postgresql
-      env: tracdb=postgresql
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      services: mysql
-      env: tracdb=mysql
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb= build=minimum
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=sqlite
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=postgresql
 before_install:
   - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
   - test -n "$pyver" || pyver="$(python -c "$print_version")"
@@ -116,6 +75,7 @@ before_install:
 install:
   - |
     if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
+         "$TRAVIS_BUILD_STAGE_NAME" = Test -a \
          "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
     then
       print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
@@ -130,6 +90,9 @@ install:
     if [ "$build" != minimum ]; then requires="$requires Genshi>=0.7 Babel Pygments docutils textile pytz"; fi
     if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
+    if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then
+      requires="$requires setuptools-git";
+    fi
     pip install $requires
     python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
     pip list
@@ -144,11 +107,76 @@ install:
 script:
   - echo "$tracdb_version"
   - |
-    targets=Trac.egg-info
-    if [ "$build" != minimum ]; then targets="$targets compile"; fi
-    targets="$targets unit-test functional-test"
-    make $targets
+    if [ "$build" != minimum ]; then make compile; fi
+    if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
+      make Trac.egg-info unit-test functional-test;
+    fi
 notifications:
   email:
     recipients:
       secure: lIn4a3G6ww61t3o12DS4aWwEwD6Hl2kxcsZgkxvhU2MgzviJ5j3EBV5F/BlbQmR1BqM51qgDOXoQTO+y9cvzAYBkIy/gfLqZjAl0hfZep6iGZgl1cnUW4c5i9+wkF8PzTaQm+q9gwlIQ7JVedWw9jzHBIn80tCgTcavahAzyelk=
+jobs:
+  include:
+    - os: linux
+      python: 2.7
+      virtualenv:
+        system_site_packages: true
+      env: tracdb= build=minimum
+    - os: linux
+      python: 2.7
+      virtualenv:
+        system_site_packages: true
+      env: tracdb=
+    - os: linux
+      python: 2.7
+      virtualenv:
+        system_site_packages: true
+      env: tracdb=sqlite
+    - os: linux
+      python: 2.7
+      virtualenv:
+        system_site_packages: true
+      services: postgresql
+      env: tracdb=postgresql
+    - os: linux
+      python: 2.7
+      virtualenv:
+        system_site_packages: true
+      services: mysql
+      env: tracdb=mysql
+    - os: osx
+      language: generic
+      env: pyver=2.7 tracdb= build=minimum
+    - os: osx
+      language: generic
+      env: pyver=2.7 tracdb=
+    - os: osx
+      language: generic
+      env: pyver=2.7 tracdb=sqlite
+    - os: osx
+      language: generic
+      env: pyver=2.7 tracdb=postgresql
+    - stage: deploy
+      deploy:
+        - provider: pypi
+          user: edgewall-org
+          password:
+            secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
+          server: https://test.pypi.org/legacy/
+          os: linux
+          distributions: sdist bdist_wheel
+          skip_cleanup: true
+          on:
+            repo: edgewall/trac
+            tags: true
+        - provider: pypi
+          user: travisci
+          password:
+            secure: cEG9N0j9rV26M698myyRBTnizC76mgy8PRyMNbWf2qxILPqkbnpYktbSy0CYlmJIb9wapgynojHhNem94Tmrj8c27c9wSNmHVu2I3o8G8yysD+aYAXeaJ9jVhPSjZRtQXN0r6wsdGeRUOTDk6Z9Es/ks/hvKfF79bea6X2Z0L0w=
+          server: https://trac.edgewall.org/pypi
+          os: linux
+          distributions: sdist bdist_wheel
+          skip_cleanup: true
+          on:
+            repo: edgewall/trac
+            all_branches: true
