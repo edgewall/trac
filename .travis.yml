@@ -3,217 +3,217 @@ python: 2.7
 addons:
   apt:
     packages:
-      - python-subversion
+    - python-subversion
 cache:
   directories:
-    - "$HOME/.cache/pip"
-    - "$HOME/.pyenv"
-    - "$HOME/venv-lib"
+  - "$HOME/.cache/pip"
+  - "$HOME/.pyenv"
+  - "$HOME/venv-lib"
 before_install:
-  - print_version='import sys; print("%d.%d" % sys.version_info[:2])'
-  - test -n "$pyver" || pyver="$(python -c "$print_version")"
-  - |
-    case "$tracdb" in
-      postgresql)
-        if [ "$TRAVIS_OS_NAME" = osx ]; then
-          rm -rf /usr/local/var/postgres
-          pg_ctl initdb --pgdata /usr/local/var/postgres
-          pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
-            rc=$?
-            cat /usr/local/var/postgres/postgresql.log
-            exit $rc
-          }
-          createuser -s postgres
-        fi
-        tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
-        echo "$tracdb_version"
-        psql -U postgres -e -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
-        psql -U postgres -e -c "CREATE DATABASE trac OWNER tracuser;"
-        ;;
-      mysql)
-        tracdb_version="MySQL: $(mysql -u root -sN -e 'SELECT version()')"
-        echo "$tracdb_version"
-        mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
-        mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
-        mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
-        ;;
-      *)
-        tracdb_version=
-        ;;
-    esac
-  - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
-  - |
-    {
-      echo "[global]"
-      echo "cache-dir = $HOME/.cache/pip"
-      echo "[list]"
-      echo "format = columns"
-    } >"$HOME/.pip/pip.conf"
-  - |
-    if [ "$TRAVIS_OS_NAME" = osx ]; then
-      test -d $HOME/venv-lib || mkdir $HOME/venv-lib
-      eval "$(pyenv init -)"
-      pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
-      venv="$HOME/venv-$pyver_latest"
-      pyenv install --skip-existing $pyver_latest
-      pyenv shell $pyver_latest
-      pip install --upgrade virtualenv
-      python -m virtualenv $venv
-      source $venv/bin/activate
-    fi
-  - |
-    case "$pyver" in
-      2.7)
-        pip install --upgrade pip setuptools wheel
-        ;;
-    esac
-  - pyenv --version
-  - pyenv versions
-  - python --version
-  - pip --version
-  - pip list
+- print_version='import sys; print("%d.%d" % sys.version_info[:2])'
+- test -n "$pyver" || pyver="$(python -c "$print_version")"
+- |
+  case "$tracdb" in
+    postgresql)
+      if [ "$TRAVIS_OS_NAME" = osx ]; then
+        rm -rf /usr/local/var/postgres
+        pg_ctl initdb --pgdata /usr/local/var/postgres
+        pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
+          rc=$?
+          cat /usr/local/var/postgres/postgresql.log
+          exit $rc
+        }
+        createuser -s postgres
+      fi
+      tracdb_version="PostgreSQL: $(psql -U postgres -t -c 'SELECT version()')"
+      echo "$tracdb_version"
+      psql -U postgres -e -c "CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';"
+      psql -U postgres -e -c "CREATE DATABASE trac OWNER tracuser;"
+      ;;
+    mysql)
+      tracdb_version="MySQL: $(mysql -u root -sN -e 'SELECT version()')"
+      echo "$tracdb_version"
+      mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;"
+      mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password';"
+      mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES;"
+      ;;
+    *)
+      tracdb_version=
+      ;;
+  esac
+- test -d "$HOME/.pip" || mkdir "$HOME/.pip"
+- |
+  {
+    echo "[global]"
+    echo "cache-dir = $HOME/.cache/pip"
+    echo "[list]"
+    echo "format = columns"
+  } >"$HOME/.pip/pip.conf"
+- |
+  if [ "$TRAVIS_OS_NAME" = osx ]; then
+    test -d $HOME/venv-lib || mkdir $HOME/venv-lib
+    eval "$(pyenv init -)"
+    pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
+    venv="$HOME/venv-$pyver_latest"
+    pyenv install --skip-existing $pyver_latest
+    pyenv shell $pyver_latest
+    pip install --upgrade virtualenv
+    python -m virtualenv $venv
+    source $venv/bin/activate
+  fi
+- |
+  case "$pyver" in
+    2.7)
+      pip install --upgrade pip setuptools wheel
+      ;;
+  esac
+- pyenv --version
+- pyenv versions
+- python --version
+- pip --version
+- pip list
 install:
-  - |
-    if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
-         "$TRAVIS_BUILD_STAGE_NAME" = Test -a \
-         "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
-    then
-      print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
-      sitelib_global="$(/usr/bin/python -c "$print_sitelib")"
-      sitelib_venv="$(python -c "$print_sitelib")"
-      ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
-      ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
-      python -c 'from svn import core'
-    fi
-  - |
-    requires='Genshi>=0.7 twill==0.9.1'
+- |
+  if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
+       "$TRAVIS_BUILD_STAGE_NAME" = Test -a \
+       "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
+  then
+    print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
+    sitelib_global="$(/usr/bin/python -c "$print_sitelib")"
+    sitelib_venv="$(python -c "$print_sitelib")"
+    ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
+    ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
+    python -c 'from svn import core'
+  fi
+- |
+  requires='Genshi>=0.7 twill==0.9.1'
+  case "$pyver" in
+    2.6) requires="$requires lxml<4.3.0" ;;
+    *)   requires="$requires lxml" ;;
+  esac
+  if [ "$build" != minimum ]; then
+    requires="$requires Pygments docutils textile pytz"
     case "$pyver" in
-      2.6) requires="$requires lxml<4.3.0" ;;
-      *)   requires="$requires lxml" ;;
+      2.6) requires="$requires Babel<2.6.0" ;;
+      *)   requires="$requires Babel" ;;
     esac
-    if [ "$build" != minimum ]; then
-      requires="$requires Pygments docutils textile pytz"
-      case "$pyver" in
-        2.6) requires="$requires Babel<2.6.0" ;;
-        *)   requires="$requires Babel" ;;
-      esac
-    fi
-    if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2<2.8"; fi
-    if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
-    if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then
-      requires="$requires setuptools-git";
-    fi
-    pip install $requires
-    python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
-    pip list
-  - |
-    case "$tracdb" in
-      sqlite)   tracdb_uri='sqlite:test.db' ;;
-      postgresql) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
-      mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
-      *)        tracdb_uri= ;;
-    esac
-    echo ".uri = $tracdb_uri" >Makefile.cfg
+  fi
+  if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2<2.8"; fi
+  if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
+  if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then
+    requires="$requires setuptools-git";
+  fi
+  pip install $requires
+  python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
+  pip list
+- |
+  case "$tracdb" in
+    sqlite)   tracdb_uri='sqlite:test.db' ;;
+    postgresql) tracdb_uri='postgres://tracuser:password@localhost/trac?schema=tractest' ;;
+    mysql)    tracdb_uri='mysql://tracuser:password@localhost/trac' ;;
+    *)        tracdb_uri= ;;
+  esac
+  echo ".uri = $tracdb_uri" >Makefile.cfg
 script:
-  - echo "$tracdb_version"
-  - |
-    if [ "$build" != minimum ]; then make compile; fi
-    if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
-      make Trac.egg-info unit-test functional-test;
-    fi
+- echo "$tracdb_version"
+- |
+  if [ "$build" != minimum ]; then make compile; fi
+  if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
+    make Trac.egg-info unit-test functional-test;
+  fi
 notifications:
   email:
     recipients:
       secure: lIn4a3G6ww61t3o12DS4aWwEwD6Hl2kxcsZgkxvhU2MgzviJ5j3EBV5F/BlbQmR1BqM51qgDOXoQTO+y9cvzAYBkIy/gfLqZjAl0hfZep6iGZgl1cnUW4c5i9+wkF8PzTaQm+q9gwlIQ7JVedWw9jzHBIn80tCgTcavahAzyelk=
 jobs:
   include:
-    - os: linux
-      dist: trusty
-      python: 2.6
-      env: tracdb=
-    - os: linux
-      dist: trusty
-      python: 2.6
-      env: tracdb=sqlite
-    - os: linux
-      dist: trusty
-      python: 2.6
-      services: postgresql
-      env: tracdb=postgresql
-    - os: linux
-      dist: trusty
-      python: 2.6
-      services: mysql
-      env: tracdb=mysql
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb= build=minimum
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb=
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      env: tracdb=sqlite
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      services: postgresql
-      env: tracdb=postgresql
-    - os: linux
-      python: 2.7
-      virtualenv:
-        system_site_packages: true
-      services: mysql
-      env: tracdb=mysql
-    - os: osx
-      language: generic
-      env: pyver=2.6 tracdb=
-    - os: osx
-      language: generic
-      env: pyver=2.6 tracdb=sqlite
-    - os: osx
-      language: generic
-      env: pyver=2.6 tracdb=postgresql
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb= build=minimum
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=sqlite
-    - os: osx
-      language: generic
-      env: pyver=2.7 tracdb=postgresql
-    - stage: deploy
-      deploy:
-        - provider: pypi
-          user: edgewall-org
-          password:
-            secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
-          server: https://test.pypi.org/legacy/
-          os: linux
-          distributions: sdist bdist_wheel
-          skip_cleanup: true
-          on:
-            repo: edgewall/trac
-            tags: true
-        - provider: pypi
-          user: travisci
-          password:
-            secure: cEG9N0j9rV26M698myyRBTnizC76mgy8PRyMNbWf2qxILPqkbnpYktbSy0CYlmJIb9wapgynojHhNem94Tmrj8c27c9wSNmHVu2I3o8G8yysD+aYAXeaJ9jVhPSjZRtQXN0r6wsdGeRUOTDk6Z9Es/ks/hvKfF79bea6X2Z0L0w=
-          server: https://trac.edgewall.org/pypi
-          os: linux
-          distributions: sdist bdist_wheel
-          skip_cleanup: true
-          on:
-            repo: edgewall/trac
-            all_branches: true
+  - os: linux
+    dist: trusty
+    python: 2.6
+    env: tracdb=
+  - os: linux
+    dist: trusty
+    python: 2.6
+    env: tracdb=sqlite
+  - os: linux
+    dist: trusty
+    python: 2.6
+    services: postgresql
+    env: tracdb=postgresql
+  - os: linux
+    dist: trusty
+    python: 2.6
+    services: mysql
+    env: tracdb=mysql
+  - os: linux
+    python: 2.7
+    virtualenv:
+      system_site_packages: true
+    env: tracdb= build=minimum
+  - os: linux
+    python: 2.7
+    virtualenv:
+      system_site_packages: true
+    env: tracdb=
+  - os: linux
+    python: 2.7
+    virtualenv:
+      system_site_packages: true
+    env: tracdb=sqlite
+  - os: linux
+    python: 2.7
+    virtualenv:
+      system_site_packages: true
+    services: postgresql
+    env: tracdb=postgresql
+  - os: linux
+    python: 2.7
+    virtualenv:
+      system_site_packages: true
+    services: mysql
+    env: tracdb=mysql
+  - os: osx
+    language: generic
+    env: pyver=2.6 tracdb=
+  - os: osx
+    language: generic
+    env: pyver=2.6 tracdb=sqlite
+  - os: osx
+    language: generic
+    env: pyver=2.6 tracdb=postgresql
+  - os: osx
+    language: generic
+    env: pyver=2.7 tracdb= build=minimum
+  - os: osx
+    language: generic
+    env: pyver=2.7 tracdb=
+  - os: osx
+    language: generic
+    env: pyver=2.7 tracdb=sqlite
+  - os: osx
+    language: generic
+    env: pyver=2.7 tracdb=postgresql
+  - stage: deploy
+    deploy:
+    - provider: pypi
+      user: edgewall-org
+      password:
+        secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
+      server: https://test.pypi.org/legacy/
+      os: linux
+      distributions: sdist bdist_wheel
+      skip_cleanup: true
+      on:
+        repo: edgewall/trac
+        tags: true
+    - provider: pypi
+      user: travisci
+      password:
+        secure: cEG9N0j9rV26M698myyRBTnizC76mgy8PRyMNbWf2qxILPqkbnpYktbSy0CYlmJIb9wapgynojHhNem94Tmrj8c27c9wSNmHVu2I3o8G8yysD+aYAXeaJ9jVhPSjZRtQXN0r6wsdGeRUOTDk6Z9Es/ks/hvKfF79bea6X2Z0L0w=
+      server: https://trac.edgewall.org/pypi
+      os: linux
+      distributions: sdist bdist_wheel
+      skip_cleanup: true
+      on:
+        repo: edgewall/trac
+        all_branches: true
