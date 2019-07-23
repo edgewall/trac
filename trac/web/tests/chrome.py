@@ -363,9 +363,11 @@ class ChromeTestCase(unittest.TestCase):
         chrome = Chrome(self.env)
         cc_field1 = 'user1@abc.com,user2@abc.com, user3@abc.com'
         cc_field2 = 'user1@abc.com;user2@abc.com; user3@abc.com'
+        cc_field3 = ' user1@abc.com,  user2@abc.com;user3@abc.com  '
         expected = ['user1@abc.com', 'user2@abc.com', 'user3@abc.com']
         self.assertEqual(expected, chrome.cc_list(cc_field1))
         self.assertEqual(expected, chrome.cc_list(cc_field2))
+        self.assertEqual(expected, chrome.cc_list(cc_field3))
 
     def test_cc_list_is_empty(self):
         """Empty list is returned when input is `None` or empty."""

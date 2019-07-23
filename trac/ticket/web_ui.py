@@ -16,6 +16,7 @@
 
 import csv
 from datetime import datetime
+import functools
 import io
 import pkg_resources
 import re
@@ -36,7 +37,7 @@ from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import as_bool, as_int, get_reporter_id, lazy
+from trac.util import as_bool, as_int, get_reporter_id, lazy, to_list
 from trac.util.datefmt import (
     datetime_now, format_datetime, format_date_or_datetime, from_utimestamp,
     get_date_format_hint, get_datetime_format_hint, parse_date, to_utimestamp,
@@ -1829,9 +1830,8 @@ class TicketModule(Component):
                 diff = tag.a(_("diff"), href=href)
                 rendered = tag_("modified (%(diff)s)", diff=diff)
         elif type_ == 'text' and field_info.get('format') == 'list':
-            old_list = re.split(r'[;,\s]+', old) if old else []
-            new_list = re.split(r'[;,\s]+', new) if new else []
-            rendered = render_list(None, ' ', old_list, new_list)
+            tl = functools.partial(to_list, sep='[,;\s]+')
+            rendered = render_list(None, ' ', tl(old), tl(new))
         elif type_ == 'time':
             format_ = field_info.get('format')
             old = user_time(req, format_date_or_datetime, format_, old) \

@@ -51,7 +51,7 @@ from trac.mimeview.api import RenderingContext, get_mimetype
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.util import as_bool, as_int, get_pkginfo, get_reporter_id, html, \
-                      pathjoin, presentation, translation
+                      pathjoin, presentation, to_list, translation
 from trac.util.html import (Element, Markup, escape, plaintext, tag,
                             to_fragment, valid_html_bytes)
 from trac.util.text import (exception_to_unicode, is_obfuscated,
@@ -1068,12 +1068,7 @@ class Chrome(Component):
 
     def cc_list(self, cc_field):
         """Split a CC: value in a list of addresses."""
-        ccs = []
-        for cc in re.split(r'[;,]', cc_field or ''):
-            cc = cc.strip()
-            if cc:
-                ccs.append(cc)
-        return ccs
+        return to_list(cc_field, r'[;,]')
 
     def format_author(self, req, author, resource=None, show_email=None):
         """Format a username in plain text.

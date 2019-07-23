@@ -1368,16 +1368,20 @@ def to_list(splittable, sep=','):
     ['1', '2', '3', '4']
     >>> to_list('1;2; 3;4 ', sep=';')
     ['1', '2', '3', '4']
+    >>> to_list('1,2;3 4 ', sep='[,;\s]+')
+    ['1', '2', '3', '4']
     >>> to_list('')
     []
     >>> to_list(None)
     []
     >>> to_list([])
     []
+
+    :since 1.3.6: the `sep` argument may be a regular expression
     """
     if not splittable:
         return []
-    split = [x.strip() for x in splittable.split(sep)]
+    split = [x.strip() for x in re.split(sep, splittable)]
     return [item for item in split if item]
 
 

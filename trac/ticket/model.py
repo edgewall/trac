@@ -25,7 +25,7 @@ from trac.cache import cached
 from trac.core import TracError
 from trac.resource import Resource, ResourceExistsError, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import as_int, embedded_numbers
+from trac.util import as_int, embedded_numbers, to_list
 from trac.util.datefmt import (datetime_now, from_utimestamp, parse_date,
                                to_utimestamp, utc, utcmax)
 from trac.util.text import empty
@@ -38,8 +38,8 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 def _fixup_cc_list(cc_value):
     """Fix up cc list separators and remove duplicates."""
     cclist = []
-    for cc in re.split(r'[;,\s]+', cc_value):
-        if cc and cc not in cclist:
+    for cc in to_list(cc_value, r'[;,\s]+'):
+        if cc not in cclist:
             cclist.append(cc)
     return ', '.join(cclist)
 
