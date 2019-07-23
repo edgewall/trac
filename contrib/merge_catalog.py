@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import argparse
 import os.path
 import sys
 
@@ -35,8 +36,11 @@ def _has_msgstr(message):
 
 
 def _open_pofile(filename):
-    with open(filename, 'rb') as f:
-        return read_po(f)
+    try:
+        with open(filename, 'rb') as f:
+            return read_po(f)
+    except IOError as e:
+        raise ScriptError(e)
 
 
 def _get_domains():
@@ -53,19 +57,23 @@ def _get_locales(domain):
                        if has_pofile(name))
 
 
-def main(args):
-    try:
-        domain, source_file = args
-    except:
-        raise ScriptError('Usage: %s DOMAIN POFILE' %
-                          os.path.basename(sys.argv[0]))
+def main():
+    """Merge translated strings from another PO file.
+
+    $ src=../trac-1.2-stable/trac/locale/de/LC_MESSAGES
+    $ PYTHONPATH=. contrib/%(prog)s messages $src/messages.po
+    """
     domains = _get_domains()
-    locales = _get_locales(domain)
     if not domains:
         raise ScriptError('No trac/locale/*.pot files.')
-    if domain not in domains:
-        raise ScriptError('Domain parameter should be one of %s.' %
-                          ', '.join(domains))
+    parser = argparse.ArgumentParser(usage=main.__doc__)
+    parser.add_argument('domain', choices=domains,
+                        help="Name of catalog to merge")
+    parser.add_argument('pofile', help="Path of the catalog to merge from")
+    args = parser.parse_args()
+
+    domain, source_file = args.domain, args.pofile
+    locales = _get_locales(domain)
     if not locales:
         raise ScriptError('No trac/locale/*/LC_MESSAGES/*.po files.')
     source = _open_pofile(source_file)
@@ -75,9 +83,8 @@ def main(args):
                          if value]
     locale = negotiate_locale(preferred_locales, locales)
     if not locale or locale == 'en_US':
-        sys.stderr.write('No available *.po file for %s.\n' %
-                         ', '.join(preferred_locales))
-        return 1
+        raise ScriptError('No available *.po file for %s.\n' %
+                          ', '.join(preferred_locales))
     target_file = os.path.join('trac', 'locale', locale, 'LC_MESSAGES',
                                domain + '.po')
     target = _open_pofile(target_file)
@@ -118,9 +125,10 @@ def main(args):
 
 
 if __name__ == '__main__':
+    rc = 0
     try:
-        rc = main(sys.argv[1:])
+        main()
     except ScriptError as e:
         rc = 1
         sys.stderr.write('%s\n' % e)
-    sys.exit(rc or 0)
+    sys.exit(rc)
