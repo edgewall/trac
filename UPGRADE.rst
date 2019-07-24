@@ -1,5 +1,3 @@
-﻿.. charset=utf-8
-
 Upgrade Instructions
 ====================
 
@@ -22,10 +20,10 @@ If you are upgrading to a minor release, plugin compatibility is
 usually not a concern because the Trac API rarely changes, and major
 features are usually not introduced, for minor releases.
 
-If your plugins are installed from `​trac-hacks.org`_ you can check
+If your plugins are installed from `trac-hacks.org`_ you can check
 compatibility by looking for a tag on the project page corresponding
 to a major release (e.g. `1.2`). If you are unsure, you'll want to
-contact the plugin author or ask on the `​MailingList`_.
+contact the plugin author or ask on the `MailingList`_.
 
 If you are running several Trac plugins it is good to test the upgrade
 and plugin functionality in a staging instance of your site before
@@ -53,7 +51,7 @@ beginning. You may also wish to create a full backup of your server.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The packages are available through several channels, as described in
-`​TracDownload`_. If your Trac instance was installed through an
+`TracDownload`_. If your Trac instance was installed through an
 operating system package manager or an installer on Windows, proceed
 with the standard steps that are appropriate for your operating
 system.
@@ -61,7 +59,7 @@ system.
 If you are managing your Trac installation using command line tools,
 `pip` is the preferred tool to upgrade a Trac instance because it will
 uninstall the old version. The following command will upgrade your
-Trac installation using the package published to `​PyPI`_.
+Trac installation using the package published to `PyPI`_.
 
 
 ::
@@ -158,8 +156,7 @@ release. As usual, make a backup before deleting the directory.
 
 Note: Some web browsers (IE, Opera) cache CSS and JavaScript files, so
 you should instruct your users to manually erase the contents of their
-browser's cache. A forced refreshed (SHIFT + <F5>) should be
-sufficient.
+browser's cache. A forced refreshed (SHIFT + ) should be sufficient.
 
 
 7. Steps specific to a given Trac version
@@ -179,8 +176,8 @@ Upgrade Python to 2.7, but not 3.0 or greater.
 MySQL-python no longer supported
 ++++++++++++++++++++++++++++++++
 
-`​PyMySQL`_ is the supported MySQL database library, support for
-`​MySQL-python`_ has been removed.
+`PyMySQL`_ is the supported MySQL database library, support for
+`MySQL-python`_ has been removed.
 
 
 Obsolete Plugins
@@ -189,11 +186,11 @@ Obsolete Plugins
 Trac has added functionality equivalent to the following plugins:
 
 
-+ `​DynamicVariablesPlugin`_: dynamic variables are autocompleted
-+ `​NavAddPlugin`_: see `TracNavigation`_
-+ `​FlexibleAssignToPlugin`_: subclass `ConfigurableTicketWorkflow`
-  and override `get_allowed_owners`
-+ `​TracMigratePlugin`_: Use `TracAdmin`_ `convert_db` command
++ `DynamicVariablesPlugin`_: dynamic variables are autocompleted
++ `NavAddPlugin`_: see `TracNavigation`_
++ `FlexibleAssignToPlugin`_: subclass `ConfigurableTicketWorkflow` and
+  override `get_allowed_owners`
++ `TracMigratePlugin`_: Use `TracAdmin`_ `convert_db` command
 
 
 The plugins should be removed when upgrading Trac to 1.4.
@@ -248,15 +245,15 @@ additional details on the proper ordering.
 Description field added to ticket enums
 +++++++++++++++++++++++++++++++++++++++
 
-The ticket enums now have a <em>description</em> field. An
-<em>ambiguous column name</em> error may be seen for reports that
-reference the `description` column of another table and join the
-`enum` table with that table (e.g. `ticket`, `component`). The reports
-{1}, {2}, {3}, {4}, {5}, {7}, and {8} are modified by an upgrade step
-to fix the issue, but the modification may not succeed if the default
-reports have been modified, in which case `upgrade` will output a
-message to the terminal instructing the user to modify the reports.
-User-created reports may also need to be modified.
+The ticket enums now have a *description* field. An *ambiguous column
+name* error may be seen for reports that reference the `description`
+column of another table and join the `enum` table with that table
+(e.g. `ticket`, `component`). The reports {1}, {2}, {3}, {4}, {5},
+{7}, and {8} are modified by an upgrade step to fix the issue, but the
+modification may not succeed if the default reports have been
+modified, in which case `upgrade` will output a message to the
+terminal instructing the user to modify the reports. User-created
+reports may also need to be modified.
 
 Reports that display the error need to be modified to prefix the
 `description` column with the appropriate table name or alias. For
@@ -265,9 +262,8 @@ example, if the `ticket` table is aliased as `t` ( `ticket t` or
 report should use the ticket's `description` column.
 
 
-Removed `<repostype>` and `<repospath>` arguments from `TracAdmin`_
-`initenv` command
-+++++++++++++++++
+Removed ` ` and ` ` arguments from `TracAdmin`_ `initenv` command
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The `TracAdmin`_ `initenv` command allowed the default repository to
 be specified using the third and fourth positional arguments of
@@ -275,7 +271,7 @@ be specified using the third and fourth positional arguments of
 
 ::
 
-    initenv [<projectname> <db> [<repostype> <repospath>]]
+    initenv [  [ ]]
 
 
 The arguments were an artifact of Trac < 0.12, which only supported a
@@ -301,20 +297,20 @@ Obsolete Plugins
 Trac has added functionality equivalent to the following plugins:
 
 
-+ `​AdminEnumListPlugin`_
-+ `​AttachmentNotifyPlugin`_: attachment notifications are sent in
-  Trac 1.0.3 and later
-+ `​DateFieldPlugin`_: see the time `custom field type`_
-+ `​FlexibleReporterNotificationPlugin`_: `​custom subscribers`_ can
-  be implemented in the new extensible notification system
-+ `​GroupBasedRedirectionPlugin`_: the default handler can set as a
++ `AdminEnumListPlugin`_
++ `AttachmentNotifyPlugin`_: attachment notifications are sent in Trac
+  1.0.3 and later
++ `DateFieldPlugin`_: see the time `custom field type`_
++ `FlexibleReporterNotificationPlugin`_: `custom subscribers`_ can be
+  implemented in the new extensible notification system
++ `GroupBasedRedirectionPlugin`_: the default handler can set as a
   user preference
-+ `​GroupingAssignToPlugin`_: groups and permissions can be used in
-  the `set_owner`_ workflow attribute
-+ `​LinenoMacro`_: see `WikiProcessors#AvailableProcessors`_
-+ `​NeverNotifyUpdaterPlugin`_: see `notification subscribers`_
-+ `​QueryUiAssistPlugin`_: see `TracQuery#Filters`_.
-+ `​TicketCreationStatusPlugin`_: see `#NewWorkflowActions`_
++ `GroupingAssignToPlugin`_: groups and permissions can be used in the
+  `set_owner`_ workflow attribute
++ `LinenoMacro`_: see `WikiProcessors#AvailableProcessors`_
++ `NeverNotifyUpdaterPlugin`_: see `notification subscribers`_
++ `QueryUiAssistPlugin`_: see `TracQuery#Filters`_.
++ `TicketCreationStatusPlugin`_: see `#NewWorkflowActions`_
 
 
 The plugins should be removed when upgrading Trac to 1.2.
@@ -327,9 +323,9 @@ The ticket creation step is controlled with a workflow action. The
 default workflow has `create` and `create_and_assign` actions. The
 `create` action will always be added when upgrading the database. The
 `create_and_assign` action will be added if the workflow has an
-<em>assigned</em> state. You may want to edit your workflow after
-upgrading the database to customize the actions available on the
-<em>New Ticket</em> page.
+*assigned* state. You may want to edit your workflow after upgrading
+the database to customize the actions available on the *New Ticket*
+page.
 
 
 New permissions policy for read-only wiki pages
@@ -374,11 +370,11 @@ Obsolete Plugins
 Trac has added functionality equivalent to the following plugins:
 
 
-+ `​AnchorMacro`_
-+ `​BatchModifyPlugin`_
-+ `​GitPlugin`_
-+ `​OverrideEditPlugin`_
-+ `​ProgressMeterMacro`_
++ `AnchorMacro`_
++ `BatchModifyPlugin`_
++ `GitPlugin`_
++ `OverrideEditPlugin`_
++ `ProgressMeterMacro`_
 
 
 The plugins should be removed when upgrading Trac to 1.0.
@@ -413,13 +409,13 @@ migration `sometimes fails`_, so it's extra important that you `backup
 your environment`_.
 
 In case the `attachments` directory contains some files which are
-<em>not</em> attachments, the last step of the migration to the new
-layout will not be completed: the deletion of the now unused
-`attachments` directory can't be done if there are still files and
-folders in it. You may ignore this error, but better to move them
-elsewhere and remove the `attachments` directory manually. The
-attachments themselves are now all located in your environment below
-the `files/attachments` directory.
+*not* attachments, the last step of the migration to the new layout
+will not be completed: the deletion of the now unused `attachments`
+directory can't be done if there are still files and folders in it.
+You may ignore this error, but better to move them elsewhere and
+remove the `attachments` directory manually. The attachments
+themselves are now all located in your environment below the
+`files/attachments` directory.
 
 
 Behavior of `[ticket] default_owner` changed
@@ -438,10 +434,10 @@ Upgrading from older versions of Trac
 `````````````````````````````````````
 
 For upgrades from versions older than Trac 0.12, refer first to
-`​wiki:0.12/TracUpgrade#SpecificVersions`_.
+`wiki:0.12/TracUpgrade#SpecificVersions`_.
 
 For upgrades from versions older than Trac 0.10, refer first to
-`​wiki:0.10/TracUpgrade#SpecificVersions`_.
+`wiki:0.10/TracUpgrade#SpecificVersions`_.
 
 
 Known Issues
@@ -452,8 +448,8 @@ Customized Templates
 ~~~~~~~~~~~~~~~~~~~~
 
 Trac supports customization of its templates by placing copies of the
-templates in the `<env>/templates` folder of your `environment`_ or in
-a common location specified in the ` [inherit] templates_dir`_
+templates in the ` /templates` folder of your `environment`_ or in a
+common location specified in the ` [inherit] templates_dir`_
 configuration setting. If you choose to customize the templates, be
 aware that you will need to repeat your changes on a copy of the new
 templates when you upgrade to a new release of Trac (even a minor
@@ -463,7 +459,7 @@ The preferred way to perform `TracInterfaceCustomization`_ is a custom
 plugin doing client-side JavaScript transformation of the generated
 output, as this is more robust in case of changes: we usually won't
 modify an element `id` or change its CSS `class`, and if we have to do
-so, this will be documented in the `​TracDev/ApiChanges`_ pages.
+so, this will be documented in the `TracDev/ApiChanges`_ pages.
 
 
 ZipImportError
@@ -473,7 +469,7 @@ Due to internal caching of zipped packages, whenever the content of
 the packages change on disk, the in-memory zip index will no longer
 match and you'll get irrecoverable ZipImportError errors. Better to
 anticipate and bring your server down for maintenance before
-upgrading. See `​#7014`_ for details.
+upgrading. See `#7014`_ for details.
 
 
 Wiki Upgrade
@@ -495,8 +491,8 @@ Attachments not migrated
 
 There have been reports that attachments are not `migrated`_ when
 upgrading to Trac 1.0 or later. The cause of the issue has not yet
-been found. If you encounter this issue, see `​the FAQ`_ for a
-workaround and please report your findings to `​#11370`_.
+been found. If you encounter this issue, see `the FAQ`_ for a
+workaround and please report your findings to `#11370`_.
 
 
 Related topics
@@ -508,7 +504,7 @@ Upgrading Python
 
 Upgrading Python to a newer version will require reinstallation of
 Python packages: Trac itself of course, but also `dependencies`_. If
-you are using Subversion, you'll need to upgrade the `​Python bindings
+you are using Subversion, you'll need to upgrade the `Python bindings
 for SVN`_.
 
 
