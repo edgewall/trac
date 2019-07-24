@@ -65,7 +65,7 @@ def wiki2rest(env, context, wiki):
     text = re.sub(r'\[\[TracGuideToc\]\]\r?\n?', '', text)
     text = re.sub(r'\[\[PageOutline\([^\)]*\)\]\]\r?\n?', '', text)
     html = format_to_html(env, context, text)
-    html = html.replace(u'<span class="icon">\u200b</span>', '')
+    html = html.unescape().replace(u'<span class="icon">\u200b</span>', '')
     html = re.sub(r'<em>\s*([^<]*?)\s*</em>', r'<em>\1</em>', html)
     html = '<html><body>%s</body></html>' % html
     writer = io.BytesIO()
