@@ -303,6 +303,47 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual('<span class="trac-author">reporter1</span> removed',
                          unicode(field['rendered']))
 
+    def test_ticket_property_diff_cc_separator_changed(self):
+        """No change when CC list separator changed."""
+        t = self._create_ticket_with_change({'cc': 'user1@d.org, user2@d.org'},
+                                            {'cc': 'user1@d.org; user2@d.org'})
+
+        req = MockRequest(self.env, args={'id': t.id})
+        data = self.ticket_module.process_request(req)[1]
+
+        self.assertEqual(0, len(data['changes']))
+
+    def test_ticket_property_diff_cc_duplicate_added(self):
+        """No change when CC list duplicate added."""
+        t = self._create_ticket_with_change({'cc': 'user1@d.org, user2@d.org'},
+                                            {'cc': 'user1@d.org, user2@d.org, '
+                                                   'user2@d.org'})
+
+        req = MockRequest(self.env, args={'id': t.id})
+        data = self.ticket_module.process_request(req)[1]
+
+        self.assertEqual(0, len(data['changes']))
+
+    def test_ticket_property_diff_keywords_separator_changed(self):
+        t = self._create_ticket_with_change({'keywords': 'kw1 kw2'},
+                                            {'keywords': 'kw1, kw2'})
+
+        req = MockRequest(self.env, args={'id': t.id})
+        data = self.ticket_module.process_request(req)[1]
+        field = data['changes'][0]['fields']['keywords']
+
+        self.assertEqual(u'kw1 kw2 → kw1, kw2', unicode(field['rendered']))
+
+    def test_ticket_property_diff_keywords_duplicate_added(self):
+        t = self._create_ticket_with_change({'keywords': 'kw1 kw2'},
+                                            {'keywords': 'kw1 kw2 kw2'})
+
+        req = MockRequest(self.env, args={'id': t.id})
+        data = self.ticket_module.process_request(req)[1]
+        field = data['changes'][0]['fields']['keywords']
+
+        self.assertEqual(u'kw1 kw2 → kw1 kw2 kw2', unicode(field['rendered']))
+
     def _test_invalid_cnum_raises(self, action, cnum=None):
         self._insert_ticket()
         req = MockRequest(self.env, args={'action': action, 'id': '1'})

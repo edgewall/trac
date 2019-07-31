@@ -1582,7 +1582,7 @@ class TicketModule(Component):
                     if new_cc_list == old_cc_list:
                         del field_changes['cc']
                     else:
-                        field_changes['cc']['new'] = ','.join(new_cc_list)
+                        field_changes['cc']['new'] = ', '.join(new_cc_list)
 
             # per type settings
             if type_ in ('radio', 'select'):
@@ -1772,19 +1772,23 @@ class TicketModule(Component):
     def _render_property_diff(self, req, ticket, field, old, new,
                               resource_new=None):
 
-        def render_list(elt_renderer, separator, old_list, new_list):
+        def render_list(elt_renderer, split_list, old, new):
             if not elt_renderer:
                 elt_renderer = lambda e: e
+            old_list = split_list(old)
+            new_list = split_list(new)
             added = [elt_renderer(x) for x in new_list if x not in old_list]
             remvd = [elt_renderer(x) for x in old_list if x not in new_list]
-            added = added and tagn_("%(value)s added", "%(value)s added",
-                                    len(added),
-                                    value=separated(added, separator))
-            remvd = remvd and tagn_("%(value)s removed", "%(value)s removed",
-                                    len(remvd),
-                                    value=separated(remvd, separator))
+            if added:
+                added = tagn_("%(value)s added", "%(value)s added",
+                              len(added), value=separated(added, ' '))
+            if remvd:
+                remvd = tagn_("%(value)s removed", "%(value)s removed",
+                              len(remvd), value=separated(remvd, ' '))
             if added or remvd:
                 return tag(added, added and remvd and _("; "), remvd)
+            else:
+                return tag(old, u" \u2192 ", new)
 
         def render_default(old, new):
             if old and new:
@@ -1805,8 +1809,7 @@ class TicketModule(Component):
         type_ = field_info.get('type')
         # per name special rendering of diffs
         if field == 'cc':
-            old_list, new_list = self._cc_list(old), self._cc_list(new)
-            rendered = render_list(authorinfo, ' ', old_list, new_list)
+            rendered = render_list(authorinfo, self._cc_list, old, new)
         elif field in ('reporter', 'owner'):
             old_author = authorinfo(old)
             new_author = authorinfo(new)
@@ -1831,7 +1834,7 @@ class TicketModule(Component):
                 rendered = tag_("modified (%(diff)s)", diff=diff)
         elif type_ == 'text' and field_info.get('format') == 'list':
             tl = functools.partial(to_list, sep='[,;\s]+')
-            rendered = render_list(None, ' ', tl(old), tl(new))
+            rendered = render_list(None, tl, old, new)
         elif type_ == 'time':
             format_ = field_info.get('format')
             old = user_time(req, format_date_or_datetime, format_, old) \
