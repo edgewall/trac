@@ -89,9 +89,6 @@ install:
   if [ "$build" != minimum ]; then requires="$requires Genshi>=0.7 Babel Pygments docutils textile pytz"; fi
   if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
   if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
-  if [ "$TRAVIS_BUILD_STAGE_NAME" = Deploy ]; then
-    requires="$requires setuptools-git";
-  fi
   pip install $requires
   python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
   pip list
@@ -110,6 +107,15 @@ script:
   if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
     make Trac.egg-info unit-test functional-test;
   fi
+before_deploy:
+- cat contrib/travis/edgewall_host_key >> $HOME/.ssh/known_hosts
+- keyfile=/tmp/id_rsa
+- openssl aes-256-cbc -K $encrypted_c097e63a4ddf_key -iv $encrypted_c097e63a4ddf_iv
+  -in contrib/travis/id_rsa.enc -out "$keyfile".base64 -d
+- cat "$keyfile".base64 | base64 --decode >"$keyfile"
+- chmod 0600 "$keyfile"
+- pip install setuptools-git
+- make compile release
 notifications:
   email:
     recipients:
@@ -157,25 +163,9 @@ jobs:
     env: pyver=2.7 tracdb=postgresql
   - stage: deploy
     deploy:
-    - provider: pypi
-      user: edgewall-org
-      password:
-        secure: CSOGsbyNMIGWAB5+SjuWRbGjXnqfZ8TYq9MRpAWBGhsPvAyOAcrSjbnVodxT9cxmkL8LgHzgSZUNDAubXTj17+tZ6j1HBUAIm2o2WH0n285McjDH7HxaIil4Q4P4Z0CCuGd4sFSzDq4OwSprjiYFt8Wl66z/ojbboksGZutBMn4=
-      server: https://test.pypi.org/legacy/
-      os: linux
-      distributions: sdist bdist_wheel
+    - provider: script
       skip_cleanup: true
-      on:
-        repo: edgewall/trac
-        tags: true
-    - provider: pypi
-      user: travisci
-      password:
-        secure: cEG9N0j9rV26M698myyRBTnizC76mgy8PRyMNbWf2qxILPqkbnpYktbSy0CYlmJIb9wapgynojHhNem94Tmrj8c27c9wSNmHVu2I3o8G8yysD+aYAXeaJ9jVhPSjZRtQXN0r6wsdGeRUOTDk6Z9Es/ks/hvKfF79bea6X2Z0L0w=
-      server: https://trac.edgewall.org/pypi
-      os: linux
-      distributions: sdist bdist_wheel
-      skip_cleanup: true
+      script: scp -i "$keyfile" dist/Trac-* travis@edgewall.org:/var/ftp/pub/trac/incoming
       on:
         repo: edgewall/trac
         all_branches: true
