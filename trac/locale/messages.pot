@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-01 14:50-0400\n"
+"POT-Creation-Date: 2019-08-01 15:02-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -7465,7 +7465,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:107
 #, python-format
-msgid "Modified %(last_modified)s."
+msgid "Modified %(modified)s."
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:117
