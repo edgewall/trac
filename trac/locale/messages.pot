@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-01 15:02-0400\n"
+"POT-Creation-Date: 2019-08-02 15:26-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2523,8 +2523,8 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:763
-#: trac/web/main.py:769
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:762
+#: trac/web/main.py:768
 msgid "N/A"
 msgstr ""
 
@@ -6707,24 +6707,24 @@ msgstr ""
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/main.py:189
+#: trac/web/main.py:188
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:243
+#: trac/web/main.py:242
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:246
+#: trac/web/main.py:245
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:247
+#: trac/web/main.py:246
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:360
+#: trac/web/main.py:359
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6732,25 +6732,53 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:711
+#: trac/web/main.py:710
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:712
+#: trac/web/main.py:711
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:776
+#: trac/web/main.py:775
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:777
+#: trac/web/main.py:776
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:778
+#: trac/web/main.py:777
 msgid "''Interface customization information not available''\n"
+msgstr ""
+
+#: trac/web/main.py:807
+#, python-format
+msgid ""
+"==== How to Reproduce\n"
+"\n"
+"While doing a %(method)s operation on `%(path_info)s`, Trac issued an "
+"internal error.\n"
+"\n"
+"''(please provide additional details here)''\n"
+"\n"
+"Request parameters:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"User agent: `#USER_AGENT#`\n"
+"\n"
+"==== System Information\n"
+"%(sys_info)s\n"
+"==== Enabled Plugins\n"
+"%(enabled_plugins)s\n"
+"==== Interface Customization\n"
+"%(interface_customization)s\n"
+"==== Python Traceback\n"
+"{{{\n"
+"%(traceback)s}}}"
 msgstr ""
 
 #: trac/web/session.py:276 trac/web/session.py:295
