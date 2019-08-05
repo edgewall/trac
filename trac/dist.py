@@ -66,10 +66,7 @@ class ScriptExtractor(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'script':
-            for kv in attrs:
-                if kv == ('type', 'text/javascript'):
-                    self.in_javascript = True
-                    break
+            self.in_javascript = True
 
     def handle_startendtag(self, tag, attrs):
         self.in_javascript = False
