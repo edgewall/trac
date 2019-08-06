@@ -193,6 +193,8 @@ class TicketTestCase(unittest.TestCase):
     def test_create_empty_strings_stored_as_null(self):
         """Ticket fields with empty strings are NULL when creating ticket.
         """
+        self.env.config.set('ticket-custom', 'time1', 'time')
+        self.env.config.save()
         ticket = Ticket(self.env)
         ticket.populate({name: '' for name in ticket.editable_fields})
         ticket.insert()
@@ -202,6 +204,8 @@ class TicketTestCase(unittest.TestCase):
     def test_change_empty_strings_stored_as_null(self):
         """Ticket fields with empty strings are NULL when changing ticket.
         """
+        self.env.config.set('ticket-custom', 'time1', 'time')
+        self.env.config.save()
         ticket = insert_ticket(self.env)
         ticket.populate({name: '' for name in ticket.editable_fields})
         ticket.save_changes()
