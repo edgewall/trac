@@ -59,7 +59,7 @@ def _db_str_to_datetime(value):
 
 def _datetime_to_db_str(dt, is_custom_field):
     if not dt:
-        return ''
+        return None
     ts = to_utimestamp(dt)
     if is_custom_field:
         # Padding with '0' would be easy to sort in report page for a user
