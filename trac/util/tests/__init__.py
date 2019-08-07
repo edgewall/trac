@@ -360,6 +360,25 @@ class FileTestCase(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.filename))
         self.assertEqual(0, os.path.getsize(self.filename))
 
+class UtilitiesTestCase(unittest.TestCase):
+
+    def test_as_int(self):
+        self.assertEqual(1, util.as_int('1'))
+        self.assertEqual(1, util.as_int('1', None))
+        self.assertIsNone(util.as_int('A', None))
+        self.assertEqual(2, util.as_int('A', 2))
+        self.assertEqual(2, util.as_int('1', None, min=2))
+        self.assertEqual(0, util.as_int('1', None, max=0))
+
+    def test_as_float(self):
+        self.assertEqual(1.1, util.as_float('1.1'))
+        self.assertEqual(1.1, util.as_float('1.1', None))
+        self.assertEqual(1, util.as_float('1', None))
+        self.assertIsNone(util.as_float('A', None))
+        self.assertEqual(2.2, util.as_float('A', 2.2))
+        self.assertEqual(2.2, util.as_float('1.1', None, min=2.2))
+        self.assertEqual(0.1, util.as_float('1.1', None, max=0.1))
+
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -371,6 +390,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
     suite.addTest(unittest.makeSuite(LazyTestCase))
     suite.addTest(unittest.makeSuite(FileTestCase))
+    suite.addTest(unittest.makeSuite(UtilitiesTestCase))
     suite.addTest(concurrency.test_suite())
     suite.addTest(datefmt.test_suite())
     suite.addTest(presentation.test_suite())

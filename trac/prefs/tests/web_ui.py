@@ -108,6 +108,52 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
                          unicode(cm.exception))
 
 
+class UserInterfacePreferencePanelTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _test_auto_preview_timeout(self, timeout):
+        req = MockRequest(self.env, method='POST',
+                          path_info='/prefs/userinterface',
+                          cookie='trac_session=1234567890abcdef;',
+                          args={'ui.auto_preview_timeout': timeout})
+        module = PreferencesModule(self.env)
+
+        self.assertTrue(module.match_request(req))
+        with self.assertRaises(RequestDone) as cm:
+            module.process_request(req)
+
+        self.assertEqual("Your preferences have been saved.",
+                         req.session['chrome.notices.0'])
+        return req
+
+    def test_save_auto_preview_timeout(self):
+        timeout = '3'
+        req = self._test_auto_preview_timeout(timeout)
+
+        self.assertEqual(timeout, req.session['ui.auto_preview_timeout'])
+
+    def test_auto_preview_timeout_value_invalid(self):
+        timeout = '3'
+        req = self._test_auto_preview_timeout(timeout)
+        req.session.save()
+        req = self._test_auto_preview_timeout('A')
+
+        self.assertEqual('Discarded invalid value "A" for auto preview '
+                         'timeout.', req.session['chrome.warnings.0'])
+        self.assertEqual(timeout, req.session['ui.auto_preview_timeout'])
+
+    def test_delete_auto_preview_timeout(self):
+        self._test_auto_preview_timeout('1')
+        req = self._test_auto_preview_timeout('')
+
+        self.assertNotIn('ui.auto_preview_timeout', req.session)
+
+
 class PreferencesModuleTestCase(unittest.TestCase):
 
     panel_providers = []
@@ -185,6 +231,7 @@ class PreferencesModuleTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AdvancedPreferencePanelTestCase))
+    suite.addTest(unittest.makeSuite(UserInterfacePreferencePanelTestCase))
     suite.addTest(unittest.makeSuite(PreferencesModuleTestCase))
     return suite
 

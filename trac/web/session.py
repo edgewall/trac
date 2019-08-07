@@ -24,7 +24,7 @@ from trac.admin.api import AdminCommandError, IAdminCommandProvider, \
                            console_date_format, get_console_locale
 from trac.core import Component, ExtensionPoint, TracError, TracValueError, \
                       implements
-from trac.util import as_bool, as_int, hex_entropy, lazy
+from trac.util import as_bool, as_float, as_int, hex_entropy, lazy
 from trac.util.datefmt import get_datetime_format_hint, format_date, \
                               parse_date, time_now, to_datetime, to_timestamp
 from trac.util.text import print_table
@@ -75,8 +75,8 @@ class SessionDict(dict):
         integer.
 
         :param key: the name of the session attribute
-        :keyword default: the value to return if the parameter is not
-                          specified or an exception occurs converting
+        :keyword default: the value to return if the parameter does
+                          not exist or an exception occurs converting
                           the value to an integer.
         :keyword min: lower bound to which the value is limited
         :keyword max: upper bound to which the value is limited
@@ -86,6 +86,24 @@ class SessionDict(dict):
         if key not in self:
             return default
         return as_int(self[key], default, min, max)
+
+    def as_float(self, key, default=None, min=None, max=None):
+        """Return the value as a float. Return `default` if
+        if an exception is raised while converting the value to a
+        float.
+
+        :param key: the name of the session attribute
+        :keyword default: the value to return if the parameter does
+                          not exist or an exception occurs converting
+                          the value to a float.
+        :keyword min: lower bound to which the value is limited
+        :keyword max: upper bound to which the value is limited
+
+        :since: 1.3.6
+        """
+        if key not in self:
+            return default
+        return as_float(self[key], default, min, max)
 
     def set(self, key, value, default=None):
         """Set a variable in the session, or remove it if it's equal to the

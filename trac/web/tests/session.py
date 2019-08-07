@@ -244,6 +244,23 @@ class SessionTestCase(unittest.TestCase):
         self.assertEqual(4, session.as_int('baz', 1, min=4))
         self.assertIsNone(session.as_int('bat'))
 
+    def test_as_float(self):
+        with self.env.db_transaction as db:
+            db("INSERT INTO session VALUES ('123456', 1, 0)")
+            db.executemany("""
+                INSERT INTO session_attribute VALUES (%s,%s,%s,%s)
+                """, (('123456', 1, 'foo', 'bar'), ('123456', 1, 'baz', 3.3)))
+
+        req = MockRequest(self.env, authname='123456')
+        session = Session(self.env, req)
+
+        self.assertEqual('bar', session.get('foo'))
+        self.assertEqual(2, session.as_float('foo', 2))
+        self.assertEqual(3.3, session.as_float('baz', 1))
+        self.assertEqual(2.2, session.as_float('baz', 1, max=2.2))
+        self.assertEqual(4.4, session.as_float('baz', 1, min=4.4))
+        self.assertIsNone(session.as_float('bat'))
+
     def test_as_bool(self):
         with self.env.db_transaction as db:
             db("INSERT INTO session VALUES ('123456', 1, 0)")

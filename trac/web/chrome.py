@@ -1148,7 +1148,10 @@ class Chrome(Component):
     def add_auto_preview(self, req):
         """Setup auto-preview for `<textarea>` fields."""
         add_script(req, 'common/js/auto_preview.js')
-        add_script_data(req, auto_preview_timeout=self.auto_preview_timeout,
+        auto_preview_timeout = req.session.as_float('ui.auto_preview_timeout',
+                                                    self.auto_preview_timeout,
+                                                    min=0)
+        add_script_data(req, auto_preview_timeout=auto_preview_timeout,
                         form_token=req.form_token)
 
     def add_jquery_ui(self, req):

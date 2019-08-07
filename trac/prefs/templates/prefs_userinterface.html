@@ -96,6 +96,23 @@
     </div>
 
     <div class="field">
+      <label>
+        ${_("Auto preview timeout:")}
+        <input type="text" name="ui.auto_preview_timeout" size="1"
+               value="${session.get('ui.auto_preview_timeout')}"/>
+      </label>
+      <span class="hint">seconds</span>
+      <p class="hint">
+        # trans default_auto_preview_timeout
+
+        Defaults to the site-configured value
+        (${default_auto_preview_timeout} seconds) when empty.
+        Set to 0 to disable autopreview.
+
+        # endtrans
+      </p>
+    </div>
+    <div class="field">
       # set session_default_handler = session.get('default_handler')
       # set default_handler = session_default_handler or project_default_handler
       <label for="default_handler">${_("Default handler:")}</label>

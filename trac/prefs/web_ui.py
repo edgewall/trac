@@ -19,7 +19,7 @@ import re
 
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
-from trac.util import lazy
+from trac.util import as_float, lazy
 from trac.util.datefmt import all_timezones, get_timezone, localtz
 from trac.util.html import tag
 from trac.util.translation import _, Locale, deactivate,\
@@ -27,7 +27,8 @@ from trac.util.translation import _, Locale, deactivate,\
 from trac.web.api import HTTPNotFound, IRequestHandler, \
                          is_valid_default_handler
 from trac.web.chrome import Chrome, INavigationContributor, \
-                            ITemplateProvider, add_notice, add_stylesheet
+                            ITemplateProvider, add_notice, add_stylesheet, \
+                            add_warning
 
 
 class PreferencesModule(Component):
@@ -245,9 +246,8 @@ class UserInterfacePreferencePanel(Component):
 
     _request_handlers = ExtensionPoint(IRequestHandler)
 
-    _form_fields = ('accesskeys', 'default_handler',
-                    'ui.hide_help', 'ui.use_symbols',
-                    'wiki_fullwidth')
+    _form_fields = ('accesskeys', 'default_handler','ui.auto_preview_timeout',
+                    'ui.hide_help', 'ui.use_symbols', 'wiki_fullwidth')
 
     # IPreferencePanelProvider methods
 
@@ -258,9 +258,11 @@ class UserInterfacePreferencePanel(Component):
         if req.method == 'POST':
             _do_save(req, panel, self._form_fields)
 
+        auto_preview_timeout = self.config.get('trac', 'auto_preview_timeout')
         data = {
             'project_default_handler': self._project_default_handler,
             'valid_default_handlers': self._valid_default_handlers,
+            'default_auto_preview_timeout': auto_preview_timeout,
         }
         return 'prefs_userinterface.html', data
 
@@ -281,6 +283,12 @@ def _do_save(req, panel, form_fields):
     for field in form_fields:
         val = req.args.get(field, '').strip()
         if val:
+            if field == 'ui.auto_preview_timeout':
+                fval = as_float(val, default=None)
+                if fval is None or fval < 0:
+                    add_warning(req, _("Discarded invalid value \"%(val)s\" "
+                                       "for auto preview timeout.", val=val))
+                    continue
             if field == 'tz' and 'tz' in req.session and \
                     val not in all_timezones:
                 del req.session[field]

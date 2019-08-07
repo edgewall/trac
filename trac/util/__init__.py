@@ -1315,18 +1315,34 @@ def partition(iterable, order=None):
     return [result[key] for key in order]
 
 
-def as_int(s, default, min=None, max=None):
-    """Convert s to an int and limit it to the given range, or return default
-    if unsuccessful."""
+def _as_numeric(numeric_type, s, default, min, max):
     try:
-        value = int(s)
+        value = numeric_type(s)
     except (TypeError, ValueError):
         return default
     if min is not None and value < min:
-        value = min
+        value = numeric_type(min)  # cast to ensure proper type
     if max is not None and value > max:
-        value = max
+        value = numeric_type(max)  # cast to ensure proper type
     return value
+
+
+def as_int(s, default=None, min=None, max=None):
+    """Convert s to an int and limit it to the given range, or return default
+    if unsuccessful.
+
+    :since 1.3.6: the default value of the `default` argument is `None`
+    """
+    return _as_numeric(int, s, default, min, max)
+
+
+def as_float(s, default=None, min=None, max=None):
+    """Convert s to a float and limit it to the given range, or return default
+    if unsuccessful.
+
+    :since: 1.3.6
+    """
+    return _as_numeric(float, s, default, min, max)
 
 
 def as_bool(value, default=False):
