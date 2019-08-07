@@ -21,7 +21,7 @@ for more information about this release.
 
 Otherwise, the primary source of information is the main Trac web site:
 
- <http://trac.edgewall.org/>
+ <https://trac.edgewall.org/>
 
 We hope you enjoy it,
 

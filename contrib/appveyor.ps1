@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.com/license.html.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 # ------------------------------------------------------------------
 #  This is a PowerShell script implementing the build steps used by
@@ -34,10 +34,10 @@
 # environment on AppVeyor.
 #
 # See in particular:
-#  - http://www.appveyor.com/docs/installed-software#python
-#  - http://www.appveyor.com/docs/installed-software#mingw-msys-cygwin
-#  - http://www.appveyor.com/docs/services-databases#mysql
-#  - http://www.appveyor.com/docs/services-databases#postgresql
+#  - https://www.appveyor.com/docs/installed-software#python
+#  - https://www.appveyor.com/docs/installed-software#mingw-msys-cygwin
+#  - https://www.appveyor.com/docs/services-databases#mysql
+#  - https://www.appveyor.com/docs/services-databases#postgresql
 
 $msysHome = 'C:\msys64\usr\bin'
 $deps     = 'C:\projects\dependencies'
@@ -117,7 +117,7 @@ $svnBranch = $env:SVN_BRANCH
 # ------------------------------------------------------------------
 
 # Documentation for AppVeyor API (Add-AppveyorMessage, etc.) can be
-# found at: http://www.appveyor.com/docs/build-worker-api
+# found at: https://www.appveyor.com/docs/build-worker-api
 
 function Write-Step([string]$name, [bool]$skip) {
     if ($skip) {
@@ -144,7 +144,7 @@ $name
 #
 #   . .\contrib\appveyor.ps1
 #
-# See http://trac.edgewall.org/wiki/AppVeyor for additional info.
+# See https://trac.edgewall.org/wiki/AppVeyor for additional info.
 
 if (-not $env:APPVEYOR) {
     function Debug-Caller {
