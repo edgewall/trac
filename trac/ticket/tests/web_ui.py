@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 from __future__ import with_statement
 
@@ -40,7 +40,7 @@ class TicketModuleTestCase(unittest.TestCase):
     def test_ticket_module_as_default_handler(self):
         """The New Ticket mainnav entry is active when TicketModule is the
         `default_handler` and navigating to the base url. Test for regression
-        of http://trac.edgewall.org/ticket/8791.
+        of https://trac.edgewall.org/ticket/8791.
         """
         req = MockRequest(self.env)
         chrome = Chrome(self.env).prepare_request(req, self.ticket_module)

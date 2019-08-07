@@ -11,7 +11,7 @@
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 # This script completely migrates a <= 0.8.x Trac environment to use the new
 # default ticket model introduced in Trac 0.9.

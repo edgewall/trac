@@ -11,7 +11,7 @@
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 """
 emailfilter.py -- Email tickets to Trac.
@@ -24,7 +24,7 @@ Copyright 2005, Edgewall Software
 Please note:
 
 This is only a starting point. See
- * http://trac.edgewall.org/ticket/5327 and
+ * https://trac.edgewall.org/ticket/5327 and
  * http://trac-hacks.org/intertrac/EmailtoTracScript
 for more complete and advanced examples.
 
