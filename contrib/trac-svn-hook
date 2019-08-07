@@ -7,18 +7,18 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.com/license.html.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 #
 # = trac-svn-hook =
 #
 #  Purpose:: this script is meant to be called from the Subversion hooks
 #            for notifying Trac when changesets are added or modified.
 #
-#  Scope:: The http://trac.edgewall.org/wiki/TracRepositoryAdmin page
+#  Scope:: The https://trac.edgewall.org/wiki/TracRepositoryAdmin page
 #          describes how to directly call the relevant trac-admin commands
 #          from the Subversion hooks. In most cases this should be enough,
 #          however this script should make troubleshooting easier and
@@ -139,7 +139,7 @@
 # === Virtualenv setup example ===
 #
 # Here we're using a Trac installation set up using virtualenv
-# (http://pypi.python.org/pypi/virtualenv).
+# (https://pypi.org/project/virtualenv).
 #
 # In this example, the virtualenv is located in
 # /packages/trac/branches/trac-multirepos
