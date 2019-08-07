@@ -135,7 +135,7 @@
 # === Simple virtualenv setup example ===
 #
 # Here we're using a Trac installation set up using virtualenv
-# (http://pypi.python.org/pypi/virtualenv). The virtualenv has been
+# (https://pypi.org/project/virtualenv). The virtualenv has been
 # created at /srv/venv. The TRAC_PATH environment variable must be set
 # to the directory containing the python executable.
 #
