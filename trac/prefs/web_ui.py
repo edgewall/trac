@@ -283,7 +283,7 @@ def _do_save(req, panel, form_fields):
         if val:
             if field == 'tz' and 'tz' in req.session and \
                     val not in all_timezones:
-                del req.session['tz']
+                del req.session[field]
             elif field == 'newsid':
                 req.session.change_sid(val)
             else:
