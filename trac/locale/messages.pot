@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-02 15:26-0400\n"
+"POT-Creation-Date: 2019-08-07 14:49-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -507,7 +507,7 @@ msgstr ""
 #: trac/ticket/templates/admin_versions.html:127
 #: trac/versioncontrol/admin.py:123
 #: trac/versioncontrol/templates/admin_repositories.html:243
-#: trac/versioncontrol/templates/dirlist_thead.html:17 trac/web/session.py:488
+#: trac/versioncontrol/templates/dirlist_thead.html:17 trac/web/session.py:506
 msgid "Name"
 msgstr ""
 
@@ -1011,7 +1011,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:169 trac/admin/web_ui.py:248 trac/admin/web_ui.py:354
 #: trac/admin/web_ui.py:473 trac/prefs/templates/prefs_general.html:17
-#: trac/prefs/web_ui.py:191
+#: trac/prefs/web_ui.py:192
 msgid "General"
 msgstr ""
 
@@ -1199,7 +1199,7 @@ msgid "Description:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:48
-#: trac/prefs/templates/prefs_userinterface.html:101
+#: trac/prefs/templates/prefs_userinterface.html:118
 msgid "Default handler:"
 msgstr ""
 
@@ -1209,7 +1209,7 @@ msgid "%(default_handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:72
-#: trac/prefs/templates/prefs_localization.html:17 trac/prefs/web_ui.py:208
+#: trac/prefs/templates/prefs_localization.html:17 trac/prefs/web_ui.py:209
 msgid "Localization"
 msgstr ""
 
@@ -1708,7 +1708,7 @@ msgid "Syntax Highlighting"
 msgstr ""
 
 #: trac/mimeview/pygments.py:146 trac/notification/prefs.py:68
-#: trac/prefs/web_ui.py:294
+#: trac/prefs/web_ui.py:302
 msgid "Your preferences have been saved."
 msgstr ""
 
@@ -1907,7 +1907,7 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
-#: trac/prefs/templates/prefs.html:31 trac/prefs/web_ui.py:49
+#: trac/prefs/templates/prefs.html:31 trac/prefs/web_ui.py:50
 #: trac/templates/attachment.html:73 trac/templates/genshi/prefs.html:26
 #: trac/ticket/templates/ticket.html:306 trac/ticket/templates/ticket.html:434
 #: trac/ticket/templates/ticket.html:522
@@ -1915,25 +1915,30 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: trac/prefs/web_ui.py:66
+#: trac/prefs/web_ui.py:67
 msgid "No preference panels available"
 msgstr ""
 
-#: trac/prefs/web_ui.py:89
+#: trac/prefs/web_ui.py:90
 #, python-format
 msgid "Unknown preference panel '%(panel)s'"
 msgstr ""
 
-#: trac/prefs/templates/prefs_advanced.html:17 trac/prefs/web_ui.py:164
+#: trac/prefs/templates/prefs_advanced.html:17 trac/prefs/web_ui.py:165
 msgid "Advanced"
 msgstr ""
 
-#: trac/prefs/web_ui.py:179
+#: trac/prefs/web_ui.py:180
 msgid "The session has been loaded."
 msgstr ""
 
 #: trac/prefs/templates/prefs_userinterface.html:17 trac/prefs/web_ui.py:255
 msgid "User Interface"
+msgstr ""
+
+#: trac/prefs/web_ui.py:289
+#, python-format
+msgid "Discarded invalid value \"%(val)s\" for auto preview timeout."
 msgstr ""
 
 #: trac/prefs/templates/prefs.html:19 trac/templates/genshi/prefs.html:20
@@ -2130,12 +2135,23 @@ msgid ""
 "pages."
 msgstr ""
 
-#: trac/prefs/templates/prefs_userinterface.html:104
+#: trac/prefs/templates/prefs_userinterface.html:100
+msgid "Auto preview timeout:"
+msgstr ""
+
+#: trac/prefs/templates/prefs_userinterface.html:106
+#, python-format
+msgid ""
+"Defaults to the site-configured value (%(default_auto_preview_timeout)s "
+"seconds) when empty. Set to 0 to disable autopreview."
+msgstr ""
+
+#: trac/prefs/templates/prefs_userinterface.html:121
 #, python-format
 msgid "Default (%(handler)s)"
 msgstr ""
 
-#: trac/prefs/templates/prefs_userinterface.html:117
+#: trac/prefs/templates/prefs_userinterface.html:134
 #, python-format
 msgid "%(handler)s is not a valid IRequestHandler or is not enabled."
 msgstr ""
@@ -5211,18 +5227,18 @@ msgid "Next Period"
 msgstr ""
 
 #: trac/timeline/web_ui.py:290 trac/timeline/web_ui.py:313
-#: trac/web/chrome.py:1246
+#: trac/web/chrome.py:1249
 #, python-format
 msgid "in %(relative)s"
 msgstr ""
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:311
-#: trac/web/chrome.py:1260
+#: trac/web/chrome.py:1263
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1248
+#: trac/timeline/web_ui.py:297 trac/web/chrome.py:1251
 #, python-format
 msgid "%(relative)s ago"
 msgstr ""
@@ -5232,7 +5248,7 @@ msgstr ""
 msgid "See timeline at %(absolutetime)s"
 msgstr ""
 
-#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1256
+#: trac/timeline/web_ui.py:305 trac/web/chrome.py:1259
 #, python-format
 msgid "at %(iso8601)s"
 msgstr ""
@@ -6692,17 +6708,17 @@ msgstr ""
 msgid "anonymous"
 msgstr ""
 
-#: trac/web/chrome.py:1443
+#: trac/web/chrome.py:1446
 msgid ""
 "Legacy Genshi template needs the 'genshi' package to be installed. Please"
 " contact your Trac administrator."
 msgstr ""
 
-#: trac/web/chrome.py:1844
+#: trac/web/chrome.py:1847
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1845
+#: trac/web/chrome.py:1848
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
@@ -6781,55 +6797,55 @@ msgid ""
 "%(traceback)s}}}"
 msgstr ""
 
-#: trac/web/session.py:276 trac/web/session.py:295
+#: trac/web/session.py:294 trac/web/session.py:313
 msgid "Session ID must be alphanumeric."
 msgstr ""
 
-#: trac/web/session.py:296 trac/web/session.py:302
+#: trac/web/session.py:314 trac/web/session.py:320
 msgid "Error renaming session"
 msgstr ""
 
-#: trac/web/session.py:299
+#: trac/web/session.py:317
 #, python-format
 msgid "Session '%(id)s' already exists. Please choose a different session ID."
 msgstr ""
 
-#: trac/web/session.py:488
+#: trac/web/session.py:506
 msgid "SID"
 msgstr ""
 
-#: trac/web/session.py:488
+#: trac/web/session.py:506
 msgid "Auth"
 msgstr ""
 
-#: trac/web/session.py:488
+#: trac/web/session.py:506
 msgid "Last Visit"
 msgstr ""
 
-#: trac/web/session.py:489
+#: trac/web/session.py:507
 msgid "Email"
 msgstr ""
 
-#: trac/web/session.py:489
+#: trac/web/session.py:507
 msgid "Default Handler"
 msgstr ""
 
-#: trac/web/session.py:499
+#: trac/web/session.py:517
 #, python-format
 msgid "Session '%(sid)s' already exists"
 msgstr ""
 
-#: trac/web/session.py:511
+#: trac/web/session.py:529
 #, python-format
 msgid "Invalid attribute '%(attr)s'"
 msgstr ""
 
-#: trac/web/session.py:515
+#: trac/web/session.py:533
 #, python-format
 msgid "Invalid default_handler '%(val)s'"
 msgstr ""
 
-#: trac/web/session.py:522
+#: trac/web/session.py:540
 #, python-format
 msgid "Session '%(sid)s' not found"
 msgstr ""
