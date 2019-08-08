@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import os
 import re
@@ -62,7 +62,7 @@ class TestTickets(FunctionalTwillTestCaseSetup):
 class TestTicketMaxSummarySize(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test `[ticket] max_summary_size` option.
-        http://trac.edgewall.org/ticket/11472"""
+        https://trac.edgewall.org/ticket/11472"""
         prev_max_summary_size = \
             self._testenv.get_config('ticket', 'max_summary_size')
         short_summary = "abcdefghijklmnopqrstuvwxyz"
@@ -94,7 +94,7 @@ class TestTicketAddAttachment(FunctionalTwillTestCaseSetup):
         """Add attachment to a ticket. Test that the attachment button
         reads 'Attach file' when no files have been attached, and 'Attach
         another file' when there are existing attachments.
-        Feature added in http://trac.edgewall.org/ticket/10281"""
+        Feature added in https://trac.edgewall.org/ticket/10281"""
         id = self._tester.create_ticket()
         tc.find("Attach file")
         filename = self._tester.attach_file_to_ticket(id)
@@ -319,8 +319,8 @@ class TestTicketHistoryInvalidCommentVersion(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Viewing an invalid comment version does not raise a KeyError
         or AttributeError. Regression test for
-        http://trac.edgewall.org/ticket/12060 and
-        http://trac.edgewall.org/ticket/12277.
+        https://trac.edgewall.org/ticket/12060 and
+        https://trac.edgewall.org/ticket/12277.
         """
         tkt = self._tester.create_ticket()
         self._tester.add_comment(tkt, "the comment")
@@ -489,7 +489,7 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test custom text field with `wiki` format.
         Its contents should through the wiki engine, wiki-links and all.
-        Feature added in http://trac.edgewall.org/ticket/1791
+        Feature added in https://trac.edgewall.org/ticket/1791
         """
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
@@ -531,7 +531,7 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
         """Test custom text field with `reference` format.
         Its contents are treated as a single value
         and are rendered as an auto-query link.
-        Feature added in http://trac.edgewall.org/ticket/10643
+        Feature added in https://trac.edgewall.org/ticket/10643
         """
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
@@ -554,7 +554,7 @@ class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
         """Test custom text field with `list` format.
         Its contents are treated as a space-separated list of values
         and are rendered as separate auto-query links per word.
-        Feature added in http://trac.edgewall.org/ticket/10643
+        Feature added in https://trac.edgewall.org/ticket/10643
         """
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
@@ -577,7 +577,7 @@ class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10828
+        """Test for regression of https://trac.edgewall.org/ticket/10828
         Rendered property changes should be described as lists of added and
         removed items, even in the presence of comma and semicolon separators.
         """
@@ -802,7 +802,7 @@ class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
         """Add attachment to a milestone. Test that the attachment
         button reads 'Attach file' when no files have been attached, and
         'Attach another file' when there are existing attachments.
-        Feature added in http://trac.edgewall.org/ticket/10281."""
+        Feature added in https://trac.edgewall.org/ticket/10281."""
         name = self._tester.create_milestone()
         self._tester.go_to_milestone(name)
         tc.find("Attach file")
@@ -1040,7 +1040,7 @@ class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/4447"""
+        """Test for regression of https://trac.edgewall.org/ticket/4447"""
         ticketid = self._tester.create_ticket("Hello World")
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
@@ -1057,7 +1057,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/4630 a"""
+        """Test for regression of https://trac.edgewall.org/ticket/4630 a"""
         env = self._testenv.get_trac_environment()
         env.config.set('ticket', 'restrict_owner', 'yes')
         env.config.save()
@@ -1087,7 +1087,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket4630b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/4630 b"""
+        """Test for regression of https://trac.edgewall.org/ticket/4630 b"""
         # NOTE: this must be run after RegressionTestTicket4630 (user must
         # have logged in)
         from trac.perm import PermissionSystem
@@ -1101,7 +1101,7 @@ class RegressionTestTicket4630b(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5022
+        """Test for regression of https://trac.edgewall.org/ticket/5022
         """
         summary = 'RegressionTestTicket5022'
         ticket_id = self._tester.create_ticket(summary)
@@ -1111,7 +1111,7 @@ class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5394 a
+        """Test for regression of https://trac.edgewall.org/ticket/5394 a
         Order user list alphabetically in (re)assign action
         """
         # set restrict_owner config
@@ -1149,7 +1149,7 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5394b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5394 b
+        """Test for regression of https://trac.edgewall.org/ticket/5394 b
         Order user list alphabetically on new ticket page
         """
         # Must run after RegressionTestTicket5394a
@@ -1170,7 +1170,7 @@ class RegressionTestTicket5394b(FunctionalTwillTestCaseSetup):
 # TestSetup
 class RegressionTestTicket5497prep(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5497 prep
+        """Test for regression of https://trac.edgewall.org/ticket/5497 prep
         When the component is changed, the owner should update to the
         default owner of the component.
         If component is changed and the owner is changed (reassigned action
@@ -1184,7 +1184,7 @@ class RegressionTestTicket5497prep(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5497a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5497 a
+        """Test for regression of https://trac.edgewall.org/ticket/5497 a
         Open ticket, component changed, owner not changed"""
         self._tester.create_ticket("regression test 5497a")
         tc.formvalue('propertyform', 'field-component', 'regression5497')
@@ -1194,7 +1194,7 @@ class RegressionTestTicket5497a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5497 b
+        """Test for regression of https://trac.edgewall.org/ticket/5497 b
         Open ticket, component changed, owner changed"""
         self._tester.create_ticket("regression test 5497b")
         tc.formvalue('propertyform', 'field-component', 'regression5497')
@@ -1208,7 +1208,7 @@ class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5497c(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5497 c
+        """Test for regression of https://trac.edgewall.org/ticket/5497 c
         New ticket, component changed, owner not changed"""
         self._tester.create_ticket("regression test 5497c",
                                    {'component':'regression5497'})
@@ -1217,7 +1217,7 @@ class RegressionTestTicket5497c(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5497d(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5497 d
+        """Test for regression of https://trac.edgewall.org/ticket/5497 d
         New ticket, component changed, owner changed"""
         self._tester.create_ticket("regression test 5497d",
                                    {'component': 'regression5497',
@@ -1227,7 +1227,7 @@ class RegressionTestTicket5497d(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5602"""
+        """Test for regression of https://trac.edgewall.org/ticket/5602"""
         # Create a set of tickets, and assign them all to a milestone
         milestone = self._tester.create_milestone()
         ids = [self._tester.create_ticket(info={'milestone': milestone})
@@ -1284,7 +1284,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5687"""
+        """Test for regression of https://trac.edgewall.org/ticket/5687"""
         self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
@@ -1295,7 +1295,7 @@ class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5930
+        """Test for regression of https://trac.edgewall.org/ticket/5930
         TypeError: from_string() takes exactly 3 non-keyword arguments (4
         given)
         Caused by a saved query
@@ -1314,7 +1314,7 @@ class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6048"""
+        """Test for regression of https://trac.edgewall.org/ticket/6048"""
         # Setup the DeleteTicket plugin
         plugin = open(os.path.join(self._testenv.trac_src, 'sample-plugins',
                                    'workflow', 'DeleteTicket.py')).read()
@@ -1353,7 +1353,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6747"""
+        """Test for regression of https://trac.edgewall.org/ticket/6747"""
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-workflow', 'resolve.operations',
                        'set_resolution,set_owner')
@@ -1377,7 +1377,7 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6879 a
+        """Test for regression of https://trac.edgewall.org/ticket/6879 a
 
         Make sure that previewing a close does not make the available actions
         be those for the close status.
@@ -1394,7 +1394,7 @@ class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6879 a
+        """Test for regression of https://trac.edgewall.org/ticket/6879 a
 
         Make sure that previewing a close does not make the available actions
         be those for the close status.
@@ -1411,7 +1411,7 @@ class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6912 a"""
+        """Test for regression of https://trac.edgewall.org/ticket/6912 a"""
         try:
             self._tester.create_component(name='RegressionTestTicket6912a',
                                           owner='')
@@ -1421,7 +1421,7 @@ class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/6912 b"""
+        """Test for regression of https://trac.edgewall.org/ticket/6912 b"""
         self._tester.create_component(name='RegressionTestTicket6912b',
                                       owner='admin')
         tc.follow('RegressionTestTicket6912b')
@@ -1436,7 +1436,7 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/7821 group.
+        """Test for regression of https://trac.edgewall.org/ticket/7821 group.
         """
         env = self._testenv.get_trac_environment()
         saved_default_query = env.config.get('query', 'default_query')
@@ -1481,7 +1481,7 @@ class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/7821 var"""
+        """Test for regression of https://trac.edgewall.org/ticket/7821 var"""
         env = self._testenv.get_trac_environment()
         saved_default_query = env.config.get('query', 'default_query')
         saved_restrict_owner = env.config.get('ticket', 'restrict_owner')
@@ -1512,7 +1512,7 @@ class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/8247
+        """Test for regression of https://trac.edgewall.org/ticket/8247
         Author field of ticket comment corresponding to the milestone removal
         was always 'anonymous'."""
         name = "MilestoneRemove"
@@ -1533,7 +1533,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/8816
+        """Test for regression of https://trac.edgewall.org/ticket/8816
         When creating a milestone with an already existing name, you get
         a warning. After changing the name you will find that the original
         milestone with that name is renamed instead of a new one being
@@ -1553,7 +1553,7 @@ class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/9084"""
+        """Test for regression of https://trac.edgewall.org/ticket/9084"""
         ticketid = self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
@@ -1565,7 +1565,7 @@ class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/9981"""
+        """Test for regression of https://trac.edgewall.org/ticket/9981"""
         tid1 = self._tester.create_ticket()
         self._tester.add_comment(tid1)
         tc.formvalue('propertyform', 'action', 'resolve')
@@ -1580,7 +1580,7 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10010
+        """Test for regression of https://trac.edgewall.org/ticket/10010
         Allow configuring the default retargeting option when closing or
         deleting a milestone."""
         m1 = self._tester.create_milestone()
@@ -1616,7 +1616,7 @@ class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10984
+        """Test for regression of https://trac.edgewall.org/ticket/10984
         The milestone field should be hidden from the newticket, ticket
         and query forms when the user doesn't have MILESTONE_VIEW.
         """
@@ -1649,7 +1649,7 @@ class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11028"""
+        """Test for regression of https://trac.edgewall.org/ticket/11028"""
         self._tester.go_to_roadmap()
 
         try:
@@ -1681,7 +1681,7 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11176
+        """Test for regression of https://trac.edgewall.org/ticket/11176
         Fine-grained permission checks should be enforced on the Report list
         page, the report pages and query pages."""
         self._testenv.enable_authz_permpolicy("""
@@ -1738,7 +1738,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11590(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11590"""
+        """Test for regression of https://trac.edgewall.org/ticket/11590"""
         report_id = self._tester.create_report('#11590', 'SELECT 1',
                                                '[. this report]')
         self._tester.go_to_view_tickets()
@@ -1750,7 +1750,7 @@ class RegressionTestTicket11590(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Field default value is only selected for new tickets.
-        Test for regression http://trac.edgewall.org/ticket/11996
+        Test for regression https://trac.edgewall.org/ticket/11996
         """
         milestone = self._testenv.get_config('ticket', 'default_milestone')
         self._testenv.set_config('ticket', 'default_milestone', 'milestone3')
@@ -1767,7 +1767,7 @@ class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Textarea fields with plain format preserve newlines.
-        Test for regression http://trac.edgewall.org/ticket/12801
+        Test for regression https://trac.edgewall.org/ticket/12801
         """
         env = self._testenv.get_trac_environment()
         try:

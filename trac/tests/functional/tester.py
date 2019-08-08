@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 """The :class:`FunctionalTester` object provides a higher-level interface to
 working with a Trac environment to make test cases more succinct.
@@ -226,7 +226,7 @@ class FunctionalTester(object):
         tc.submit("submit")
         # Verify we're where we're supposed to be.
         # The fragment is stripped since Python 2.7.1, see:
-        # http://trac.edgewall.org/ticket/9990#comment:18
+        # https://trac.edgewall.org/ticket/9990#comment:18
         tc.url(self.url + '/ticket/%s(?:#comment:.*)?$' % ticketid)
         return comment
 

@@ -13,16 +13,16 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 """
 Import a Bugzilla items into a Trac database.
 
-Requires:  Trac 0.9b1 from http://trac.edgewall.org/
+Requires:  Trac 0.9b1 from https://trac.edgewall.org/
            Python 2.3 from http://www.python.org/
            MySQL >= 3.23 from http://www.mysql.org/
            or PostGreSQL 8.4 from http://www.postgresql.org/
@@ -44,7 +44,7 @@ import re
 #   2.23.3 (2233), 3.04.4 (3044)
 #
 # If you run this script on a version not listed here and it is successful,
-# please file a ticket at http://trac.edgewall.org
+# please file a ticket at https://trac.edgewall.org
 #
 BZ_VERSION = 3044
 

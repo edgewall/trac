@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
@@ -392,7 +392,7 @@ class RepositoryManager(Component):
                         "Failed to sync with repository \"%s\"; You may be "
                         "able to reduce the impact of this issue by "
                         "configuring the sync_per_request option; see "
-                        "http://trac.edgewall.org/wiki/TracRepositoryAdmin"
+                        "https://trac.edgewall.org/wiki/TracRepositoryAdmin"
                         "#ExplicitSync for more detail: %s", repo_name,
                         exception_to_unicode(e, traceback=True))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",

@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import os
 import unittest
@@ -67,7 +67,7 @@ class TestWikiAddAttachment(FunctionalTwillTestCaseSetup):
         """Add attachment to a wiki page. Test that the attachment
         button reads 'Attach file' when no files have been attached, and
         'Attach another file' when there are existing attachments.
-        Feature added in http://trac.edgewall.org/ticket/10281"""
+        Feature added in https://trac.edgewall.org/ticket/10281"""
         name = self._tester.create_wiki_page()
         self._tester.go_to_wiki(name)
         tc.find("Attach file")
@@ -284,7 +284,7 @@ class TestWikiRename(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket4812(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/4812"""
+        """Test for regression of https://trac.edgewall.org/ticket/4812"""
         pagename = random_unique_camel() + '/' + random_unique_camel()
         self._tester.create_wiki_page(pagename)
         self._tester.attach_file_to_wiki(pagename)
@@ -330,7 +330,7 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket8976(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/8976
+        """Test for regression of https://trac.edgewall.org/ticket/8976
         Test fine grained permissions policy on wiki for specific page
         versions."""
         name = self._tester.create_wiki_page()
@@ -378,7 +378,7 @@ class RegressionTestTicket8976(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10274"""
+        """Test for regression of https://trac.edgewall.org/ticket/10274"""
         self._tester.go_to_wiki('WikiStart/..')
         tc.find("Invalid Wiki page name 'WikiStart/..'")
         self._tester.go_to_wiki('../WikiStart')
@@ -389,7 +389,7 @@ class RegressionTestTicket10274(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10850"""
+        """Test for regression of https://trac.edgewall.org/ticket/10850"""
         pagename = self._tester.create_wiki_page()
         # colon characters
         self._tester.attach_file_to_wiki(
@@ -420,7 +420,7 @@ class RegressionTestTicket10850(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10957"""
+        """Test for regression of https://trac.edgewall.org/ticket/10957"""
 
         self._tester.go_to_front()
         try:
@@ -487,7 +487,7 @@ class RegressionTestTicket10957(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11302"""
+        """Test for regression of https://trac.edgewall.org/ticket/11302"""
         pagename = self._tester.create_wiki_page()
         self._tester.attach_file_to_wiki(
             pagename, description="illustrates [./@1#point1]")
@@ -498,7 +498,7 @@ class RegressionTestTicket11302(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11518(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11518
+        """Test for regression of https://trac.edgewall.org/ticket/11518
         ResourceNotFound should be raised when version is invalid.
         """
         tc.go(self._tester.url + '/wiki/WikiStart?version=1abc')

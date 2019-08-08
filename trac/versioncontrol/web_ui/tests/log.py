@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 from datetime import datetime, timedelta
 import unittest
@@ -171,7 +171,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
         provider.add_repository('mock', '/', mock_repotype)
 
     def test_default_repository_not_configured(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11599."""
+        """Test for regression of https://trac.edgewall.org/ticket/11599."""
         req = MockRequest(self.env, path_info='/log/', args={'new_path': '/'})
         self.assertRaises(TracError, self.process_request, req)
 

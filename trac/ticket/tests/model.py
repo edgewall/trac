@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 from datetime import datetime, timedelta
 from StringIO import StringIO
@@ -763,7 +763,7 @@ class TicketCommentDeleteTestCase(TicketCommentTestCase):
         self.assertEqual(t, ticket.time_changed)
 
     def test_delete_last_comment_when_custom_field_gone(self):
-        """Regression test for http://trac.edgewall.org/ticket/10858"""
+        """Regression test for https://trac.edgewall.org/ticket/10858"""
         ticket = Ticket(self.env, self.id)
         self.assertEqual('a', ticket['keywords'])
         self.assertEqual('change4', ticket['foo'])
@@ -1274,7 +1274,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def test_exists(self):
         """
-        http://trac.edgewall.org/ticket/4247
+        https://trac.edgewall.org/ticket/4247
         """
         for c in Component.select(self.env):
             self.assertEqual(c.exists, True)
@@ -1423,7 +1423,7 @@ class VersionTestCase(unittest.TestCase):
 
     def test_exists(self):
         """
-        http://trac.edgewall.org/ticket/4247
+        https://trac.edgewall.org/ticket/4247
         """
         for v in Version.select(self.env):
             self.assertEqual(v.exists, True)
