@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 from ConfigParser import RawConfigParser
 from glob import glob
@@ -253,7 +253,7 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.env.config.set('trac', 'base_url',
-                            'http://trac.edgewall.org/some/path')
+                            'https://trac.edgewall.org/some/path')
 
     def test_is_component_enabled(self):
         self.assertFalse(EnvironmentStub.required)
@@ -266,7 +266,7 @@ class EnvironmentAttributesTestCase(unittest.TestCase):
 
     def test_abs_href(self):
         abs_href = self.env.abs_href
-        self.assertEqual('http://trac.edgewall.org/some/path', abs_href())
+        self.assertEqual('https://trac.edgewall.org/some/path', abs_href())
         self.assertIs(abs_href, self.env.abs_href)
 
     def test_href(self):

@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import unittest
 
@@ -288,7 +288,7 @@ class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
 class TestCopyPermissions(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Tests for the Copy Permissions functionality
-        added in http://trac.edgewall.org/ticket/11099."""
+        added in https://trac.edgewall.org/ticket/11099."""
         checkbox_value = lambda s, p: '%s:%s' % (unicode_to_base64(s),
                                                  unicode_to_base64(p))
         grant_msg = "The subject %s has been granted the permission %s\."
@@ -435,7 +435,7 @@ class TestPluginsAuthorization(AuthorizationTestCaseSetup):
 
 class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10752
+        """Test for regression of https://trac.edgewall.org/ticket/10752
         Permissions on the web admin page should be greyed out when they
         are no longer defined.
         """
@@ -459,7 +459,7 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11069
+        """Test for regression of https://trac.edgewall.org/ticket/11069
         The permissions list should only be populated with permissions that
         the user can grant."""
         self._tester.go_to_front()
@@ -485,7 +485,7 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11095(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11095
+    """Test for regression of https://trac.edgewall.org/ticket/11095
     The permission is truncated if it overflows the available space (CSS)
     and the full permission name is shown in the title on hover.
     """
@@ -496,7 +496,7 @@ class RegressionTestTicket11095(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11117
+    """Test for regression of https://trac.edgewall.org/ticket/11117
     Hint should be shown on the Basic Settings admin panel when pytz is not
     installed.
     """
@@ -511,7 +511,7 @@ class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11257
+    """Test for regression of https://trac.edgewall.org/ticket/11257
     Hints should be shown on the Basic Settings admin panel when Babel is not
     installed.
     """

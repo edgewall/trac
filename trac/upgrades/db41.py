@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 from trac.util import backup_config_file
 from trac.web.chrome import default_mainnav_order, default_metanav_order

@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import os
 import re
@@ -127,7 +127,7 @@ class RaiseExceptionPlugin(Component):
 
 class RegressionTestTicket3833(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/3833"""
+        """Test for regression of https://trac.edgewall.org/ticket/3833"""
         env = self._testenv.get_trac_environment()
         trac_log = os.path.join(env.log_dir, 'trac.log')
 
@@ -175,7 +175,7 @@ class RegressionTestTicket3833(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5572"""
+        """Test for regression of https://trac.edgewall.org/ticket/5572"""
         # TODO: this ticket (implemented in r6011) adds a new feature to
         # make the progress bar more configurable.  We need to test this
         # new configurability.
@@ -183,7 +183,7 @@ class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/7209"""
+        """Test for regression of https://trac.edgewall.org/ticket/7209"""
         ticketid = self._tester.create_ticket()
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
@@ -215,7 +215,7 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket9880(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/9880
+        """Test for regression of https://trac.edgewall.org/ticket/9880
 
         Upload of a file which the browsers associates a Content-Type
         of multipart/related (e.g. an .mht file) should succeed.
@@ -280,7 +280,7 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11434(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11434
+    """Test for regression of https://trac.edgewall.org/ticket/11434
     Defects reported to trac-hacks should use the Component defined in the
     plugin's URL.
     """
@@ -320,7 +320,7 @@ class RaiseExceptionPlugin(Component):
 
 class RegressionTestTicket11503a(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11503 a"""
+        """Test for regression of https://trac.edgewall.org/ticket/11503 a"""
         base = self._tester.url
 
         tc.go(base + '/notf%C5%91und/')
@@ -338,7 +338,7 @@ class RegressionTestTicket11503a(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11503b(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11503 b"""
+        """Test for regression of https://trac.edgewall.org/ticket/11503 b"""
         env = self._testenv.get_trac_environment()
         try:
             env.config.set('mainnav', 'wiki.href',

@@ -9,17 +9,17 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 """
 Import a Sourceforge project's tracker items into a Trac database.
 
 Requires:
-   Trac 1.0 from http://trac.edgewall.org/
+   Trac 1.0 from https://trac.edgewall.org/
    Python 2.5 from http://www.python.org/
 
 1.0 clean-up by cboos **untested**, use at your own risks and send patches

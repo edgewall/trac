@@ -6,7 +6,7 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 
 import io
 import warnings

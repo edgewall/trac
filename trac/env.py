@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
@@ -191,8 +191,8 @@ class Environment(Component, ComponentManager):
 
     project_footer = Option('project', 'footer',
                             N_('Visit the Trac open source project at<br />'
-                               '<a href="http://trac.edgewall.org/">'
-                               'http://trac.edgewall.org/</a>'),
+                               '<a href="https://trac.edgewall.org/">'
+                               'https://trac.edgewall.org/</a>'),
         """Page footer text (right-aligned).""")
 
     project_icon = Option('project', 'icon', 'common/trac.ico',
@@ -544,7 +544,7 @@ class Environment(Component, ComponentManager):
         create_file(os.path.join(self.path, 'VERSION'), _VERSION + '\n')
         create_file(os.path.join(self.path, 'README'),
                     'This directory contains a Trac environment.\n'
-                    'Visit http://trac.edgewall.org/ for more information.\n')
+                    'Visit https://trac.edgewall.org/ for more information.\n')
 
         # Setup the default configuration
         os.mkdir(self.conf_dir)

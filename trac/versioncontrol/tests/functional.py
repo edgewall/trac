@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import os
 import tempfile
@@ -140,7 +140,7 @@ class TestNewFileLog(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5819(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5819
+        """Test for regression of https://trac.edgewall.org/ticket/5819
         Events with identical dates are reversed in timeline
         """
         # Multiple events very close together
@@ -158,7 +158,7 @@ class RegressionTestTicket5819(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11186
+        """Test for regression of https://trac.edgewall.org/ticket/11186
         TracError should be raised when repository with name already exists
         """
         def add_repository(name):
@@ -193,7 +193,7 @@ class RegressionTestTicket11186(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11186Alias(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11186 alias
+        """Test for regression of https://trac.edgewall.org/ticket/11186 alias
         TracError should be raised when repository alias with name already
         exists
         """
@@ -238,7 +238,7 @@ class RegressionTestRev5877(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11194
+        """Test for regression of https://trac.edgewall.org/ticket/11194
         TracError should be raised when repository with name already exists
         """
         self._tester.go_to_admin()
@@ -274,7 +274,7 @@ class RegressionTestTicket11194(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11346(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11346
+        """Test for regression of https://trac.edgewall.org/ticket/11346
         fix for log: link with revision ranges included oldest wrongly
         showing HEAD revision
         """
@@ -291,7 +291,7 @@ class RegressionTestTicket11346(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11355
+        """Test for regression of https://trac.edgewall.org/ticket/11355
         Save with no changes should redirect back to the repository listing.
         """
         # Add a repository
@@ -322,7 +322,7 @@ class RegressionTestTicket11355(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11438(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11438
+        """Test for regression of https://trac.edgewall.org/ticket/11438
         fix for log: link with revision ranges included "head" keyword
         """
         rev = self._testenv.svn_mkdir(['ticket11438'], '')
@@ -338,7 +338,7 @@ class RegressionTestTicket11438(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11584(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11584
+        """Test for regression of https://trac.edgewall.org/ticket/11584
         don't raise NoSuchChangeset for empty repository if no "rev" parameter
         """
         repo_path = self._testenv.svnadmin_create('repo-t11584')
@@ -361,7 +361,7 @@ class RegressionTestTicket11584(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11618
+        """Test for regression of https://trac.edgewall.org/ticket/11618
         fix for malformed `readonly="True"` attribute in repository admin.
         """
         env = self._testenv.get_trac_environment()
@@ -383,7 +383,7 @@ class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11777(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11777
+        """Test for regression of https://trac.edgewall.org/ticket/11777
         fix for raw revisions in search results.
         """
         self._testenv.svn_mkdir(['ticket11777'], '')

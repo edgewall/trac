@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at https://trac.edgewall.org/.
 
 from trac.upgrades import backup_config_file
 from trac.util.text import printout
@@ -61,5 +61,5 @@ of permission_policies in the [trac] section.
             env.log.info("DefaultTicketPolicy already enabled.")
         if print_upgrade_msg:
             printout(_("""\
-For more details see: http://trac.edgewall.org/wiki/TracUpgrade
+For more details see: https://trac.edgewall.org/wiki/TracUpgrade
 """))

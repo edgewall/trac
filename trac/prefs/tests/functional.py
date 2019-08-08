@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import re
 import unittest
@@ -109,7 +109,7 @@ class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/5765
+        """Test for regression of https://trac.edgewall.org/ticket/5765
         Unable to turn off 'Enable access keys' in Preferences
         """
         self._tester.go_to_preferences("User Interface")
@@ -123,7 +123,7 @@ class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11319(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11319
+        """Test for regression of https://trac.edgewall.org/ticket/11319
         Only alphanumeric characters can be used for session key in advanced
         panel.
         """
@@ -145,7 +145,7 @@ class RegressionTestTicket11319(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11337
+        """Test for regression of https://trac.edgewall.org/ticket/11337
         The language select will be disabled if Babel is not installed and a
         hint will be shown. The text of the hint is dependent on whether the
         user has TRAC_ADMIN and the message catalogs have been compiled.
@@ -200,7 +200,7 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11515
+        """Test for regression of https://trac.edgewall.org/ticket/11515
         Show a notice message with new language setting after it is changed.
         """
         from trac.util.translation import has_babel, get_available_locales
@@ -239,7 +239,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
 
 
 class RegressionTestTicket11531(FunctionalTwillTestCaseSetup):
-    """Test for regression of http://trac.edgewall.org/ticket/11531
+    """Test for regression of https://trac.edgewall.org/ticket/11531
     PreferencesModule can be set as the default_handler."""
     def runTest(self):
         default_handler = self._testenv.get_config('trac', 'default_handler')

@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 from __future__ import absolute_import
 
@@ -227,7 +227,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
     def test_newline_content(self):
         """Regression test for newline-stripping behavior in Pygments.
 
-        http://trac.edgewall.org/ticket/7705
+        https://trac.edgewall.org/ticket/7705
         """
         result = self.pygments.render(self.context, 'text/x-python',
                                       '\n\n\n\n')

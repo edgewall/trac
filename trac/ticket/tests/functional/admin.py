@@ -6,11 +6,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import re
 import unittest
@@ -965,7 +965,7 @@ class RegressionTestRev5665(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket10772(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/10772"""
+        """Test for regression of https://trac.edgewall.org/ticket/10772"""
         def find_prop(field, value=None):
             if value and field == 'type':
                 tc.find(r'<span class="trac-%(field)s">\s*'
@@ -1038,7 +1038,7 @@ class RegressionTestTicket10772(FunctionalTwillTestCaseSetup):
 
 class RegressionTestTicket11618(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test for regression of http://trac.edgewall.org/ticket/11618
+        """Test for regression of https://trac.edgewall.org/ticket/11618
         fix for malformed `readonly="True"` attribute in milestone admin page
         """
         name = "11618Milestone"

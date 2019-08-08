@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.org/wiki/TracLicense.
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/log/.
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import os
 import tempfile
@@ -172,13 +172,13 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_add_warning_escapes_markup(self):
         """Message text is escaped. Regression test for
-        http://trac.edgewall.org/ticket/12285
+        https://trac.edgewall.org/ticket/12285
         """
         self._test_add_message_escapes_markup('warnings', add_warning)
 
     def test_add_notice_escapes_markup(self):
         """Message text is escaped. Regression test for
-        http://trac.edgewall.org/ticket/12285
+        https://trac.edgewall.org/ticket/12285
         """
         self._test_add_message_escapes_markup('notices', add_notice)
 
