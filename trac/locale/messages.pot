@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-07 14:49-0700\n"
+"POT-Creation-Date: 2019-08-07 20:48-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -601,7 +601,7 @@ msgstr ""
 #: trac/env.py:193
 msgid ""
 "Visit the Trac open source project at<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 
 #: trac/env.py:408
@@ -958,7 +958,7 @@ msgid ""
 "The latest documentation can also be found on the project\n"
 "website:\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 msgstr ""
 
 #: trac/admin/console.py:468
@@ -2870,7 +2870,7 @@ msgid ""
 msgstr ""
 
 #: trac/templates/genshi/about.html:44
-msgid "Please visit the Trac open source project: [1:http://trac.edgewall.org/]"
+msgid "Please visit the Trac open source project: [1:https://trac.edgewall.org/]"
 msgstr ""
 
 #: trac/templates/genshi/about.html:46
@@ -3145,15 +3145,15 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: trac/ticket/api.py:365 trac/ticket/model.py:911
+#: trac/ticket/api.py:365 trac/ticket/model.py:920
 msgid "Priority"
 msgstr ""
 
-#: trac/ticket/api.py:369 trac/ticket/model.py:916
+#: trac/ticket/api.py:369 trac/ticket/model.py:925
 msgid "Severity"
 msgstr ""
 
-#: trac/ticket/api.py:370 trac/ticket/model.py:906
+#: trac/ticket/api.py:370 trac/ticket/model.py:915
 msgid "Resolution"
 msgstr ""
 
@@ -3440,124 +3440,124 @@ msgstr ""
 msgid "Multi-values fields not supported yet"
 msgstr ""
 
-#: trac/ticket/model.py:765
+#: trac/ticket/model.py:774
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:778
+#: trac/ticket/model.py:787
 #, python-format
 msgid "Cannot delete non-existent %(type)s."
 msgstr ""
 
-#: trac/ticket/model.py:807
+#: trac/ticket/model.py:816
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/ticket/model.py:826 trac/ticket/model.py:852
+#: trac/ticket/model.py:835 trac/ticket/model.py:861
 #, python-format
 msgid "%(type)s value \"%(name)s\" already exists"
 msgstr ""
 
-#: trac/ticket/model.py:838
+#: trac/ticket/model.py:847
 msgid "Cannot update non-existent enum."
 msgstr ""
 
-#: trac/ticket/model.py:880
+#: trac/ticket/model.py:889
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr ""
 
-#: trac/ticket/model.py:886
+#: trac/ticket/model.py:895
 msgid "Ticket Type"
 msgstr ""
 
-#: trac/ticket/model.py:886
+#: trac/ticket/model.py:895
 msgid "Ticket Types"
 msgstr ""
 
-#: trac/ticket/model.py:906
+#: trac/ticket/model.py:915
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/model.py:911
+#: trac/ticket/model.py:920
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/model.py:916
+#: trac/ticket/model.py:925
 msgid "Severities"
 msgstr ""
 
-#: trac/ticket/model.py:948
+#: trac/ticket/model.py:957
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:960
+#: trac/ticket/model.py:969
 msgid "Cannot delete non-existent component."
 msgstr ""
 
-#: trac/ticket/model.py:976 trac/ticket/model.py:989 trac/ticket/model.py:1013
+#: trac/ticket/model.py:985 trac/ticket/model.py:998 trac/ticket/model.py:1022
 #, python-format
 msgid "Component \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/ticket/model.py:1001
+#: trac/ticket/model.py:1010
 msgid "Cannot update non-existent component."
 msgstr ""
 
-#: trac/ticket/model.py:1036
+#: trac/ticket/model.py:1045
 msgid "Invalid component name."
 msgstr ""
 
-#: trac/ticket/model.py:1116 trac/ticket/model.py:1239
+#: trac/ticket/model.py:1125 trac/ticket/model.py:1248
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:1117 trac/ticket/model.py:1161
-#: trac/ticket/model.py:1189 trac/ticket/model.py:1240
+#: trac/ticket/model.py:1126 trac/ticket/model.py:1170
+#: trac/ticket/model.py:1198 trac/ticket/model.py:1249
 msgid "Invalid milestone name."
 msgstr ""
 
-#: trac/ticket/model.py:1173 trac/ticket/model.py:1210
+#: trac/ticket/model.py:1182 trac/ticket/model.py:1219
 #, python-format
 msgid "Milestone \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/ticket/model.py:1292
+#: trac/ticket/model.py:1301
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:1293
+#: trac/ticket/model.py:1302
 msgid "Invalid Report Number"
 msgstr ""
 
-#: trac/ticket/model.py:1311 trac/ticket/model.py:1328
+#: trac/ticket/model.py:1320 trac/ticket/model.py:1337
 msgid "Query cannot be empty."
 msgstr ""
 
-#: trac/ticket/model.py:1372
+#: trac/ticket/model.py:1381
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr ""
 
-#: trac/ticket/model.py:1384
+#: trac/ticket/model.py:1393
 msgid "Cannot delete non-existent version."
 msgstr ""
 
-#: trac/ticket/model.py:1410 trac/ticket/model.py:1434
+#: trac/ticket/model.py:1419 trac/ticket/model.py:1443
 #, python-format
 msgid "Version \"%(name)s\" already exists."
 msgstr ""
 
-#: trac/ticket/model.py:1422
+#: trac/ticket/model.py:1431
 msgid "Cannot update non-existent version."
 msgstr ""
 
-#: trac/ticket/model.py:1460
+#: trac/ticket/model.py:1469
 msgid "Invalid version name."
 msgstr ""
 
@@ -5325,7 +5325,7 @@ msgid ""
 "edited to add ReadonlyWikiPolicy to the list of permission_policies in\n"
 "the [trac] section.\n"
 "\n"
-"For more details see: http://trac.edgewall.org/wiki/ReadonlyWikiPolicy\n"
+"For more details see: https://trac.edgewall.org/wiki/ReadonlyWikiPolicy\n"
 msgstr ""
 
 #. TRANSLATOR: Wrap message to 80 columns
@@ -5345,7 +5345,7 @@ msgid ""
 msgstr ""
 
 #: trac/upgrades/db43.py:63
-msgid "For more details see: http://trac.edgewall.org/wiki/TracUpgrade\n"
+msgid "For more details see: https://trac.edgewall.org/wiki/TracUpgrade\n"
 msgstr ""
 
 #. TRANSLATOR: Wrap message to 80 columns
@@ -6976,20 +6976,20 @@ msgstr ""
 msgid "Provide a list of known InterTrac prefixes."
 msgstr ""
 
-#: trac/wiki/intertrac.py:108
+#: trac/wiki/intertrac.py:107
 msgid "The Trac Project"
 msgstr ""
 
-#: trac/wiki/intertrac.py:116
+#: trac/wiki/intertrac.py:115
 #, python-format
 msgid "Alias for %(name)s"
 msgstr ""
 
-#: trac/wiki/intertrac.py:126 trac/wiki/interwiki.py:177
+#: trac/wiki/intertrac.py:125 trac/wiki/interwiki.py:177
 msgid "Prefix"
 msgstr ""
 
-#: trac/wiki/intertrac.py:127
+#: trac/wiki/intertrac.py:126
 msgid "Trac Site"
 msgstr ""
 
