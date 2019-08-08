@@ -453,6 +453,28 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual([(now, 'jane', 'comment', '1', 'Testing', True)],
                          list(ticket.get_changelog()))
 
+    def test_changelog_for_new_custom_field(self):
+        """Ticket change entry is not added for a custom field with
+        default value that is added after the ticket is created.
+        """
+        tkt_id = self._insert_ticket('Test')
+        self.env.config.set('ticket-custom', 'text1', 'text')
+        self.env.config.set('ticket-custom', 'checkbox1', 'checkbox')
+        self.env.config.set('ticket-custom', 'checkbox1.value', '1')
+        self.env.config.set('ticket-custom', 'date1', 'time')
+        self.env.config.set('ticket-custom', 'date1.value', 'Aug 5, 2019')
+        self.env.config.set('ticket-custom', 'date1.format', 'date')
+        self.env.config.save()
+        TicketSystem(self.env).reset_ticket_fields()
+        del TicketSystem(self.env).custom_fields
+
+        ticket = Ticket(self.env, tkt_id)
+        ticket.save_changes('jane', 'Change 1')
+        ticket_changes = list(ticket.get_changelog())
+
+        self.assertEqual(1, len(ticket_changes))
+        self.assertEqual('comment', ticket_changes[0][2])
+
     def test_change_listener_created(self):
         ts = TicketSystem(self.env)
         listener = ts.change_listeners[0]

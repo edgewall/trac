@@ -399,6 +399,13 @@ class Ticket(object):
                         db("""INSERT INTO ticket_custom (ticket,name,value)
                               VALUES(%s,%s,%s)
                               """, (self.id, name, db_val))
+                    # Don't add ticket change entry for custom field that
+                    # was added after ticket was created.
+                    if old_db_val is None:
+                        field = self.fields.by_name(name)
+                        default = self._custom_field_default(field)
+                        if self.values.get(name) == default:
+                            continue
                 else:
                     db("UPDATE ticket SET %s=%%s WHERE id=%%s"
                        % name, (db_val, self.id))
