@@ -385,26 +385,28 @@ class Ticket(object):
 
             # store fields
             for name in self._old:
+                db_val = db_values.get(name)
+                old_db_val = old_db_values.get(name)
                 if name in self.custom_fields:
                     for row in db("""SELECT * FROM ticket_custom
                                      WHERE ticket=%s and name=%s
                                      """, (self.id, name)):
                         db("""UPDATE ticket_custom SET value=%s
                               WHERE ticket=%s AND name=%s
-                              """, (db_values.get(name), self.id, name))
+                              """, (db_val, self.id, name))
                         break
                     else:
                         db("""INSERT INTO ticket_custom (ticket,name,value)
                               VALUES(%s,%s,%s)
-                              """, (self.id, name, db_values.get(name)))
+                              """, (self.id, name, db_val))
                 else:
                     db("UPDATE ticket SET %s=%%s WHERE id=%%s"
-                       % name, (db_values.get(name), self.id))
+                       % name, (db_val, self.id))
                 db("""INSERT INTO ticket_change
                         (ticket,time,author,field,oldvalue,newvalue)
                       VALUES (%s, %s, %s, %s, %s, %s)
                       """, (self.id, db_values['changetime'], author, name,
-                            old_db_values.get(name), db_values.get(name)))
+                            old_db_val, db_val))
 
             # always save comment, even if empty
             # (numbering support for timeline)
