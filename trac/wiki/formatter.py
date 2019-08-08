@@ -713,7 +713,7 @@ class Formatter(object):
                 title = _('%(target)s in %(name)s', target=target, name=name)
             else:
                 title = name
-            return (url, title)
+            return url, title
 
     def shorthand_intertrac_helper(self, ns, target, label, fullmatch):
         if fullmatch: # short form

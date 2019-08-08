@@ -111,15 +111,14 @@ class InterTracDispatcher(Component):
         intertracs = {}
         for key, value in self.intertrac_section.options():
             idx = key.rfind('.')
-            if idx > 0: # 0 itself doesn't help much: .xxx = ...
+            if idx > 0:  # 0 itself doesn't help much: .xxx = ...
                 prefix, attribute = key[:idx], key[idx+1:]
                 intertrac = intertracs.setdefault(prefix, {})
                 intertrac[attribute] = value
             else:
-                intertracs[key] = value # alias
-        if 'trac' not in intertracs:
-            intertracs['trac'] = {'title': _('The Trac Project'),
-                                  'url': 'https://trac.edgewall.org'}
+                intertracs[key] = value  # alias
+        intertracs.setdefault('trac', {'title': _('The Trac Project'),
+                                       'url': 'https://trac.edgewall.org'})
 
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
@@ -128,7 +127,7 @@ class InterTracDispatcher(Component):
                              tag.td(tag_("Alias for %(name)s",
                                          name=tag.strong(intertrac))))
             else:
-                url = intertrac.get('url', '')
+                url = intertrac.get('url')
                 if url:
                     title = intertrac.get('title', url)
                     yield tag.tr(tag.td(tag.a(tag.strong(prefix),
