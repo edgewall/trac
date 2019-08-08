@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-07 20:48-0700\n"
+"POT-Creation-Date: 2019-08-07 20:59-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,7 +84,7 @@ msgid "(comments: %(comments)s, attachments: %(attachments)s)"
 msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:59
-#: trac/wiki/templates/wiki_delete.html:146
+#: trac/wiki/templates/wiki_delete.html:160
 #: tracopt/ticket/templates/ticket_delete.html:82
 msgid "The following attachments will also be deleted:"
 msgstr ""
@@ -92,14 +92,14 @@ msgstr ""
 #: trac/templates/genshi/list_of_attachments.html:28
 #: trac/templates/list_of_attachments.html:23
 #: trac/ticket/templates/milestone_delete.html:64
-#: trac/wiki/templates/wiki_delete.html:151
+#: trac/wiki/templates/wiki_delete.html:165
 #: tracopt/ticket/templates/ticket_delete.html:87
 msgid "View attachment"
 msgstr ""
 
 #: trac/templates/attachment.html:121 trac/templates/genshi/attachment.html:82
 #: trac/ticket/templates/milestone_delete.html:69
-#: trac/wiki/templates/wiki_delete.html:156
+#: trac/wiki/templates/wiki_delete.html:170
 #: tracopt/ticket/templates/ticket_delete.html:92
 #: tracopt/ticket/templates/ticket_delete.html:122
 msgid "This is an irreversible operation."
@@ -121,7 +121,7 @@ msgstr ""
 #: trac/ticket/templates/report_edit.html:120
 #: trac/ticket/templates/ticket_change.html:185
 #: trac/versioncontrol/templates/admin_repositories.html:199
-#: trac/wiki/templates/wiki_delete.html:169
+#: trac/wiki/templates/wiki_delete.html:183
 #: trac/wiki/templates/wiki_edit_comment.html:59
 #: trac/wiki/templates/wiki_edit_form.html:115
 #: trac/wiki/templates/wiki_rename.html:65
@@ -7470,81 +7470,90 @@ msgstr ""
 msgid "Delete %(name)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:65
+#: trac/wiki/templates/wiki_delete.html:72
 #, python-format
-msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
+msgid "versions %(from)s to %(to)s"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:75
-#: trac/wiki/templates/wiki_delete.html:133
+#: trac/wiki/templates/wiki_delete.html:101
+#, python-format
+msgid "Are you sure you want to delete %(version)s of this page?"
+msgstr ""
+
+#: trac/wiki/templates/wiki_delete.html:84
+#: trac/wiki/templates/wiki_delete.html:147
 #, python-format
 msgid "%(num)d version"
 msgid_plural "%(num)d versions"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/wiki/templates/wiki_delete.html:78
+#: trac/wiki/templates/wiki_delete.html:87
 #, python-format
 msgid ""
 "Removing %(num_versions)s of the page, which was first modified "
 "%(first_modified)s and last modified %(last_modified)s."
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:89
-#, python-format
-msgid "Are you sure you want to delete version %(version)s of this page?"
-msgstr ""
-
 #: trac/wiki/templates/wiki_delete.html:98
-#: trac/wiki/templates/wiki_delete.html:122
-msgid "version"
-msgstr ""
-
-#: trac/wiki/templates/wiki_delete.html:100
 #, python-format
-msgid ""
-"This is the only %(version)s of the page, created %(created)s, so the "
-"page will be removed completely!"
+msgid "version %(number)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:107
+#: trac/wiki/templates/wiki_delete.html:109
+#, python-format
+msgid "Created %(created)s."
+msgstr ""
+
+#: trac/wiki/templates/wiki_delete.html:115
+msgid ""
+"This is the only version of the page, so the page will be removed "
+"completely!"
+msgstr ""
+
+#: trac/wiki/templates/wiki_delete.html:121
 #, python-format
 msgid "Modified %(modified)s."
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:117
+#: trac/wiki/templates/wiki_delete.html:131
 msgid "Are you sure you want to completely delete this page?"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:124
+#: trac/wiki/templates/wiki_delete.html:136
+msgid "version"
+msgstr ""
+
+#: trac/wiki/templates/wiki_delete.html:138
 #, python-format
 msgid ""
 "Removing the one and only %(version)s of the page, which was created "
 "%(created)s."
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:136
+#: trac/wiki/templates/wiki_delete.html:150
 #, python-format
 msgid ""
 "Removing all %(num_versions)s of the page, which was created %(created)s "
 "and last modified %(modified)s."
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:166
+#: trac/wiki/templates/wiki_delete.html:180
 msgid "Delete those versions"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:167
+#: trac/wiki/templates/wiki_delete.html:181
 #: trac/wiki/templates/wiki_view.html:199
 msgid "Delete this version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:168
+#: trac/wiki/templates/wiki_delete.html:182
 #: trac/wiki/templates/wiki_view.html:201
 msgid "Delete page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_delete.html:174
+#: trac/wiki/templates/wiki_delete.html:188
 #, python-format
 msgid "%(note)s See %(page)s for help on deleting wiki pages."
 msgstr ""
