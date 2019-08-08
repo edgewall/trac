@@ -52,7 +52,12 @@
         # endif
       </h1>
 
-      # set history_href = href.wiki(page.name, action='history', version=page.version)
+      # set history_href = href.wiki(page.name, action='history',
+                                     version=page.version)
+      # set diff_href = href.wiki(page.name, action='diff', version=new_version,
+                                  old_version=old_version+1 if what == 'multiple'
+                                                            else None)
+
       # set first_modified = pretty_dateinfo(old_date)
       # set last_modified = pretty_dateinfo(new_date)
 
@@ -62,10 +67,14 @@
         # if what == 'multiple':
         <p>
           <strong>
-            # trans from = old_version + 1, to = new_version
+            # set version
+            <a href="${diff_href}">
+              ${_("versions %(from)s to %(to)s", from=old_version+1, to=new_version)}
+            </a>
+            # endset
+            # trans version
 
-            Are you sure you want to delete versions ${from} to ${to}
-            of this page?
+            Are you sure you want to delete ${version} of this page?
 
             # endtrans
           </strong>
@@ -78,31 +87,36 @@
           # trans num_versions, first_modified, last_modified
 
           Removing ${num_versions} of the page, which was first
-          modified ${first_modified} and last modified
-          ${last_modified}.
+          modified ${first_modified} and last modified ${last_modified}.
 
           # endtrans
         </p>
         # elif what == 'single':
         <p>
           <strong>
-            # trans version = new_version
+            # set version
+            <a href="${diff_href}">${_("version %(number)s", number=new_version)}</a>
+            # endset
 
-            Are you sure you want to delete version ${version} of this page?
+            # trans version
+
+            Are you sure you want to delete ${version} of this page?
 
             # endtrans
           </strong>
           <br />
           # if num_versions == 1:
-          #   set version
-          <a href="${history_href}">${_("version")}</a>
-          #   endset
-          #   trans version, created = last_modified
+          #   trans created = last_modified
 
-          This is the only ${version} of the page, created ${created},
-          so the page will be removed completely!
+          Created ${created}.
 
           #   endtrans
+          <br />
+          #   trans
+          This is the only version of the page,
+          so the page will be removed completely!
+          #   endtrans
+
           # else:
           #   trans modified = last_modified
 
@@ -119,7 +133,7 @@
           <br />
           # if num_versions == 1:
           #   set version
-          <a href="${history_href}">${_("version")}</a>
+          <a href="${diff_href}">${_("version")}</a>
           #   endset
           #   trans version, created = last_modified
 
