@@ -165,9 +165,9 @@ class WikiTestCase(unittest.TestCase):
         # -- macros support
         env.path = ''
         # -- intertrac support
-        env.config.set('intertrac', 'trac.title', "Trac's Trac")
-        env.config.set('intertrac', 'trac.url',
-                       "http://trac.edgewall.org")
+        env.config.set('intertrac', 'genshi.title', "Genshi's Trac")
+        env.config.set('intertrac', 'genshi.url',
+                       "https://genshi.edgewall.org")
         env.config.set('intertrac', 't', 'trac')
         env.config.set('intertrac', 'th.title', "Trac Hacks")
         env.config.set('intertrac', 'th.url',

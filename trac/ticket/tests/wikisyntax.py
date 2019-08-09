@@ -94,10 +94,10 @@ trac:ticket:2041
 #trac2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>trac:ticket:2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>Trac #2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#T2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon"></span>#trac2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in The Trac Project"><span class="icon"></span>trac:ticket:2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in The Trac Project"><span class="icon"></span>Trac #2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in The Trac Project"><span class="icon"></span>#T2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in The Trac Project"><span class="icon"></span>#trac2041</a>
 </p>
 ------------------------------
 ============================== Ticket InterTrac shorthands
@@ -105,8 +105,8 @@ T:#2041
 trac:#2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon"></span>T:#2041</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon"></span>trac:#2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/%232041" title="#2041 in The Trac Project"><span class="icon"></span>T:#2041</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/%232041" title="#2041 in The Trac Project"><span class="icon"></span>trac:#2041</a>
 </p>
 ------------------------------
 ============================== ticket syntax with unicode digits
@@ -186,11 +186,11 @@ trac:report:1
 {trac 1}
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>trac:report:1</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>Trac r1</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{T1}</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac1}</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon"></span>{trac 1}</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/report%3A1" title="report:1 in The Trac Project"><span class="icon"></span>trac:report:1</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/report%3A1" title="report:1 in The Trac Project"><span class="icon"></span>Trac r1</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/report%3A1" title="report:1 in The Trac Project"><span class="icon"></span>{T1}</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/report%3A1" title="report:1 in The Trac Project"><span class="icon"></span>{trac1}</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/report%3A1" title="report:1 in The Trac Project"><span class="icon"></span>{trac 1}</a>
 </p>
 ------------------------------
 ============================== report syntax with unicode digits

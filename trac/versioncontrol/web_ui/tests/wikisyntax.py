@@ -203,8 +203,8 @@ trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>trac:changeset:2081</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>Trac r2081</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in The Trac Project"><span class="icon"></span>trac:changeset:2081</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in The Trac Project"><span class="icon"></span>Trac r2081</a>
 </p>
 ------------------------------
 ============================== Changeset InterTrac shorthands
@@ -214,10 +214,10 @@ trac:changeset:2081
 T:r2081
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[T2081]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon"></span>[trac 2081]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon"></span>[trac 2081/trunk]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/r2081" title="r2081 in Trac's Trac"><span class="icon"></span>T:r2081</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in The Trac Project"><span class="icon"></span>[T2081]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in The Trac Project"><span class="icon"></span>[trac 2081]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in The Trac Project"><span class="icon"></span>[trac 2081/trunk]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/r2081" title="r2081 in The Trac Project"><span class="icon"></span>T:r2081</a>
 </p>
 ------------------------------
 """ #"
@@ -416,9 +416,9 @@ rfc:4180 should not be a log link
 [trac 3317:3318/trunk]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[T3317:3318]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318]</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon"></span>[trac 3317:3318/trunk]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in The Trac Project"><span class="icon"></span>[T3317:3318]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in The Trac Project"><span class="icon"></span>[trac 3317:3318]</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in The Trac Project"><span class="icon"></span>[trac 3317:3318/trunk]</a>
 </p>
 ------------------------------
 ============================== Log range with unicode digits

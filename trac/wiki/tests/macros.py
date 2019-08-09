@@ -96,7 +96,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a style="padding:0; border:none" href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" crossorigin="anonymous" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
+<a style="padding:0; border:none" href="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png"><img src="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" crossorigin="anonymous" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
@@ -253,6 +253,23 @@ IMAGE_MACRO_TEST_CASES = u"""
 #       (server-relative case). Both forms are valid (at least
 #       according to the W3C XHTML validator).
 
+
+# == [[InterTrac]]
+
+def intertrac_setup(tc):
+    tc.env.config.set('intertrac', 'example', 'example2')
+    # Definition conflict with alias, but must not raise a TypeError.
+    tc.env.config.set('intertrac', 'example.url', 'http://example.org')
+
+
+INTERTRAC_MACRO_TEST_CASES = u"""\
+==============================
+[[InterTrac]]
+------------------------------
+<p>
+</p><table class="wiki intertrac"><tr><th><em>Prefix</em></th><th><em>Trac Site</em></th></tr><tr><td><strong>example</strong></td><td>Alias for <strong>example2</strong></td></tr><tr><td><a href="https://genshi.edgewall.org/timeline"><strong>genshi</strong></a></td><td><a href="https://genshi.edgewall.org">Genshi\'s Trac</a></td></tr><tr><td><strong>t</strong></td><td>Alias for <strong>trac</strong></td></tr><tr><td><a href="http://trac-hacks.org/timeline"><strong>th</strong></a></td><td><a href="http://trac-hacks.org">Trac Hacks</a></td></tr><tr><td><a href="https://trac.edgewall.org/timeline"><strong>trac</strong></a></td><td><a href="https://trac.edgewall.org">The Trac Project</a></td></tr></table><p>
+</p>
+"""
 
 
 # == [[TitleIndex]]
@@ -711,6 +728,8 @@ def suite():
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__,
                                   setup=image_setup,
                                   teardown=image_teardown))
+    suite.addTest(formatter.suite(INTERTRAC_MACRO_TEST_CASES, file=__file__,
+                                  setup=intertrac_setup))
     suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex2_setup,

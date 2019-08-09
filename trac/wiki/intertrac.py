@@ -114,7 +114,10 @@ class InterTracDispatcher(Component):
             if idx > 0:  # 0 itself doesn't help much: .xxx = ...
                 prefix, attribute = key[:idx], key[idx+1:]
                 intertrac = intertracs.setdefault(prefix, {})
-                intertrac[attribute] = value
+                try:
+                    intertrac[attribute] = value
+                except TypeError:  # alias
+                    pass
             else:
                 intertracs[key] = value  # alias
         intertracs.setdefault('trac', {'title': _('The Trac Project'),
