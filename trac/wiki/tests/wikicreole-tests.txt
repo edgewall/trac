@@ -135,7 +135,8 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 http://www.rawlink.org/, http://www.another.rawlink.org
 [[http://www.wikicreole.org/|Visit the WikiCreole website]]
 [[Weird Stuff|**Weird** //Stuff//]]
-[[Trac:WikiFamily]]
+[[trac:WikiFamily]]
+[[TRAC:WikiFamily]]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/link" rel="nofollow">link</a>
@@ -145,7 +146,8 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 <a class="ext-link" href="http://www.rawlink.org/"><span class="icon"></span>http://www.rawlink.org/</a>, <a class="ext-link" href="http://www.another.rawlink.org"><span class="icon"></span>http://www.another.rawlink.org</a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>Visit the WikiCreole website</a>
 <a class="missing wiki" href="/wiki/Weird%20Stuff" rel="nofollow">**Weird** //Stuff//</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in Trac's Trac"><span class="icon"></span>WikiFamily</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in The Trac Project"><span class="icon"></span>WikiFamily</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in The Trac Project"><span class="icon"></span>WikiFamily</a>
 </p>
 ============================================================
 

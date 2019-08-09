@@ -255,31 +255,37 @@ new_channel_name [, <strong>integer</strong> handle [, <strong>boolean</strong> 
 ============================== InterTrac for wiki
 t:wiki:InterTrac
 trac:wiki:InterTrac
+TRAC:wiki:InterTrac
 [t:wiki:InterTrac intertrac]
 [trac:wiki:InterTrac intertrac]
 [trac:wiki:JonasBorgström jonas]
+[TRAC:wiki:JonasBorgström jonas]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>t:wiki:InterTrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>trac:wiki:InterTrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3AJonasBorgstr%C3%B6m" title="wiki:JonasBorgström in Trac's Trac"><span class="icon"></span>jonas</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in The Trac Project"><span class="icon"></span>t:wiki:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in The Trac Project"><span class="icon"></span>trac:wiki:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in The Trac Project"><span class="icon"></span>TRAC:wiki:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in The Trac Project"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AInterTrac" title="wiki:InterTrac in The Trac Project"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AJonasBorgstr%C3%B6m" title="wiki:JonasBorgström in The Trac Project"><span class="icon"></span>jonas</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3AJonasBorgstr%C3%B6m" title="wiki:JonasBorgström in The Trac Project"><span class="icon"></span>jonas</a>
 </p>
 ------------------------------
 ============================== Wiki InterTrac shorthands
 t:InterTrac
 trac:InterTrac
+TRAC:InterTrac
 [t:InterTrac intertrac]
 [trac:InterTrac intertrac]
 [trac:JonasBorgström jonas]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>t:InterTrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>trac:InterTrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in Trac's Trac"><span class="icon"></span>intertrac</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/JonasBorgstr%C3%B6m" title="JonasBorgström in Trac's Trac"><span class="icon"></span>jonas</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in The Trac Project"><span class="icon"></span>t:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in The Trac Project"><span class="icon"></span>trac:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in The Trac Project"><span class="icon"></span>TRAC:InterTrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in The Trac Project"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/InterTrac" title="InterTrac in The Trac Project"><span class="icon"></span>intertrac</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/JonasBorgstr%C3%B6m" title="JonasBorgström in The Trac Project"><span class="icon"></span>jonas</a>
 </p>
 ------------------------------
 ============================== InterWiki links

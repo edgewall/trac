@@ -572,8 +572,8 @@ i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></
 <a class="text resolver" href="/stuff/Template">Template</a>
 </p>
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"></span>wiki:Pipe (computing)</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"></span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in The Trac Project"><span class="icon"></span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in The Trac Project"><span class="icon"></span>wiki:Pipe (computing)</a>
 </p>
 <p>
 <a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)

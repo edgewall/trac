@@ -104,7 +104,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(trac:source:/trunk/doc/images/bkgnd_pattern_« test ».png)]]
 ------------------------------
 <p>
-<a href="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" crossorigin="anonymous" src="http://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in Trac's Trac" /></a>
+<a href="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png" style="padding:0; border:none"><img alt="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" crossorigin="anonymous" src="https://trac.edgewall.org/intertrac/source%3A/trunk/doc/images/bkgnd_pattern_%C2%AB%20test%C2%A0%C2%BB.png%3Fformat%3Draw" title="source:/trunk/doc/images/bkgnd_pattern_« test ».png in The Trac Project" /></a>
 </p>
 ============================== source: Image, nolink
 [[Image(source:« test », nolink)]]
@@ -195,8 +195,8 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(travis:edgewall/trac.svg:1.0-stable, link=trac:source:/branches/1.0-stable)]]
 ------------------------------
 <p>
-<a href="http://trac.edgewall.org/intertrac/source%3A/trunk" style="padding:0; border:none"><img alt="travis/edgewall/trac.svg in shields" crossorigin="anonymous" src="https://img.shields.io/travis/edgewall/trac.svg" title="travis/edgewall/trac.svg in shields" /></a>
-<a href="http://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable" style="padding:0; border:none"><img alt="edgewall/trac.svg:1.0-stable in travis" crossorigin="anonymous" src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" title="edgewall/trac.svg:1.0-stable in travis" /></a>
+<a href="https://trac.edgewall.org/intertrac/source%3A/trunk" style="padding:0; border:none"><img alt="travis/edgewall/trac.svg in shields" crossorigin="anonymous" src="https://img.shields.io/travis/edgewall/trac.svg" title="travis/edgewall/trac.svg in shields" /></a>
+<a href="https://trac.edgewall.org/intertrac/source%3A/branches/1.0-stable" style="padding:0; border:none"><img alt="edgewall/trac.svg:1.0-stable in travis" crossorigin="anonymous" src="https://travis-ci.org/edgewall/trac.svg?branch=1.0-stable" title="edgewall/trac.svg:1.0-stable in travis" /></a>
 </p>
 ============================== InterWiki, nolink
 [[Image(shields:pypi/dm/trac.svg, nolink)]]
@@ -287,6 +287,23 @@ IMAGE_MACRO_TEST_CASES = u"""
 #       (server-relative case). Both forms are valid (at least
 #       according to the W3C XHTML validator).
 
+
+# == [[InterTrac]]
+
+def intertrac_setup(tc):
+    tc.env.config.set('intertrac', 'example', 'example2')
+    # Definition conflict with alias, but must not raise a TypeError.
+    tc.env.config.set('intertrac', 'example.url', 'http://example.org')
+
+
+INTERTRAC_MACRO_TEST_CASES = u"""\
+==============================
+[[InterTrac]]
+------------------------------
+<p>
+</p><table class="wiki intertrac"><tr><th><em>Prefix</em></th><th><em>Trac Site</em></th></tr><tr><td><strong>example</strong></td><td>Alias for <strong>example2</strong></td></tr><tr><td><a href="https://genshi.edgewall.org/timeline"><strong>genshi</strong></a></td><td><a href="https://genshi.edgewall.org">Genshi\'s Trac</a></td></tr><tr><td><strong>t</strong></td><td>Alias for <strong>trac</strong></td></tr><tr><td><a href="http://trac-hacks.org/timeline"><strong>th</strong></a></td><td><a href="http://trac-hacks.org">Trac Hacks</a></td></tr><tr><td><a href="https://trac.edgewall.org/timeline"><strong>trac</strong></a></td><td><a href="https://trac.edgewall.org">The Trac Project</a></td></tr></table><p>
+</p>
+"""
 
 
 # == [[TitleIndex]]
@@ -956,6 +973,9 @@ def test_suite():
                                        file=__file__,
                                        setup=image_setup,
                                        teardown=image_teardown))
+    suite.addTest(formatter.test_suite(INTERTRAC_MACRO_TEST_CASES,
+                                       file=__file__,
+                                       setup=intertrac_setup))
     suite.addTest(formatter.test_suite(TITLEINDEX1_MACRO_TEST_CASES,
                                        file=__file__))
     suite.addTest(formatter.test_suite(TITLEINDEX2_MACRO_TEST_CASES,

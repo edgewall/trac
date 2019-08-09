@@ -714,13 +714,15 @@ class Formatter(object):
     def get_intertrac_url(self, ns, target):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns + '.url')
-        if not url and ns == 'trac':
+        name = _("Trac project %(name)s", name=ns)
+        if not url and ns.lower() == 'trac':
             url = 'https://trac.edgewall.org'
+            name = _("The Trac Project")
         if url:
-            name = intertrac.get(ns + '.title', 'Trac project %s' % ns)
+            name = intertrac.get(ns + '.title', name)
             url = '%s/intertrac/%s' % (url, unicode_quote(target))
             if target:
-                title = _('%(target)s in %(name)s', target=target, name=name)
+                title = _("%(target)s in %(name)s", target=target, name=name)
             else:
                 title = name
             return url, title
