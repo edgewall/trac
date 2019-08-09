@@ -731,8 +731,6 @@ class MacroListMacro(WikiMacroBase):
     """)
 
     def expand_macro(self, formatter, name, content):
-        from trac.wiki.formatter import system_message
-
         content = content.strip() if content else ''
         name_filter = content.strip('*')
 
