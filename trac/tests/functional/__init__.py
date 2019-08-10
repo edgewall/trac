@@ -56,28 +56,26 @@ Requirements:
 """
 
 import os
+import subprocess
 import unittest
 from pkg_resources import parse_version
 
-import trac
+try:
+    from svn import core
+except ImportError:
+    has_svn = False
+else:
+    has_svn = True
 
 # Handle missing twill so we can print a useful 'SKIP'
 # message.  We import subprocess first to allow customizing it on Windows
 # to select pywin32 in favor of _subprocess for low-level calls.  If Twill
 # is allowed to load first, its (unmodified) copy will always be loaded.
-import subprocess
 
+import trac
+from trac.test import TestSetup, TestCaseSetup
 from trac.tests.functional.better_twill import b, tc, twill
 
-try:
-    # This is the first indicator of whether the subversion bindings are
-    # correctly installed.
-    from svn import core
-    has_svn = True
-except ImportError:
-    has_svn = False
-
-from trac.test import TestSetup, TestCaseSetup
 
 internal_error = 'Trac detected an internal error:'
 
