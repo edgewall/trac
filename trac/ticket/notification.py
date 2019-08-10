@@ -28,6 +28,7 @@ from trac.notification.api import (IEmailDecorator, INotificationFormatter,
 from trac.notification.mail import (RecipientMatcher, create_message_id,
                                     get_from_author, set_header)
 from trac.notification.model import Subscription
+from trac.perm import PermissionSystem
 from trac.ticket.api import translation_deactivated
 from trac.ticket.model import Ticket, sort_tickets_by_priority
 from trac.util import lazy
@@ -727,6 +728,14 @@ def _ticket_change_subscribers(subscriber, candidates):
         return
     if not isinstance(candidates, (list, set, tuple)):
         candidates = [candidates]
+
+    # Get members of permission groups
+    groups = PermissionSystem(subscriber.env).get_groups_dict()
+    for cc in set(candidates):
+        if cc in groups:
+            candidates.remove(cc)
+            candidates.update(groups[cc])
+
     matcher = RecipientMatcher(subscriber.env)
     klass = subscriber.__class__.__name__
     sids = set()

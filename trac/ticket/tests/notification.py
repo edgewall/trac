@@ -25,6 +25,7 @@ from datetime import datetime, timedelta
 
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
+from trac.perm import PermissionSystem
 from trac.test import EnvironmentStub, MockRequest, mkdtemp
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
@@ -139,6 +140,46 @@ class RecipientTestCase(unittest.TestCase):
 
     def test_smtp_always_bcc_space_separator(self):
         self._test_smtp_always_cc('smtp_always_bcc', ' ')
+
+    def test_cc_permission_group_new_ticket(self):
+        """Permission groups are resolved in CC for new ticket."""
+        config_subscriber(self.env)
+        ticket = self._insert_ticket(reporter='joe.bar@example.org',
+                                     owner='joe.user@example.net',
+                                     cc='group1, user1@example.net',
+                                     summary='CC permission group')
+        group1 = ('user2@example.net', 'user3@example.net')
+        perm = PermissionSystem(self.env)
+        for user in group1:
+            perm.grant_permission(user, 'group1')
+
+        notify_ticket_created(self.env, ticket)
+        recipients = smtpd.get_recipients()
+
+        self.assertEqual(3, len(recipients))
+        for user in group1 + ('user1@example.net',):
+            self.assertIn(user, recipients)
+
+    def test_cc_permission_group_changed_ticket(self):
+        """Permission groups are resolved in CC for ticket change."""
+        config_subscriber(self.env)
+        ticket = self._insert_ticket(reporter='joe.bar@example.org',
+                                     owner='joe.user@example.net',
+                                     cc='user1@example.net',
+                                     summary='CC permission group')
+        group1 = ('user2@example.net',)
+        perm = PermissionSystem(self.env)
+        for user in group1:
+            perm.grant_permission(user, 'group1')
+
+        ticket['cc'] += ', group1'
+        ticket.save_changes('joe.bar2@example.com', 'This is a change')
+        notify_ticket_changed(self.env, ticket)
+        recipients = smtpd.get_recipients()
+
+        self.assertEqual(2, len(recipients))
+        for user in group1 + ('user1@example.net',):
+            self.assertIn(user, recipients)
 
     def test_new_ticket_recipients(self):
         """Report and CC list should be in recipient list for new tickets."""
