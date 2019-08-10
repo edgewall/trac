@@ -21,6 +21,7 @@ import csv
 import errno
 import functools
 import hashlib
+import importlib
 import inspect
 import io
 try:
@@ -714,7 +715,7 @@ def safe__import__(module_name):
     """
     already_imported = sys.modules.copy()
     try:
-        return __import__(module_name, globals(), locals(), [])
+        return importlib.import_module(module_name)
     except Exception as e:
         for modname in sys.modules.copy():
             if modname not in already_imported:
@@ -760,8 +761,7 @@ def import_namespace(globals_dict, module_name):
     another module into the global namespace of the stub, usually for
     backward compatibility.
     """
-    __import__(module_name)
-    module = sys.modules[module_name]
+    module = importlib.import_module(module_name)
     globals_dict.update(item for item in module.__dict__.iteritems()
                         if item[0] not in _dont_import)
     globals_dict.pop('import_namespace', None)

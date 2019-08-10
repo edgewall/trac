@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import importlib
 import os
 import time
 import urllib
@@ -530,19 +531,15 @@ class DatabaseManager(Component):
         """
         dbver = self.get_database_version(name)
         for i in xrange(dbver + 1, version + 1):
-            module = 'db%i' % i
+            module = '%s.db%i' % (pkg, i)
             try:
-                upgrades = __import__(pkg, globals(), locals(), [module])
+                upgrader = importlib.import_module(module)
             except ImportError:
-                raise TracError(_("No upgrade package %(pkg)s", pkg=pkg))
-            try:
-                script = getattr(upgrades, module)
-            except AttributeError:
                 raise TracError(_("No upgrade module %(module)s.py",
                                   module=module))
             with self.env.db_transaction as db:
                 cursor = db.cursor()
-                script.do_upgrade(self.env, i, cursor)
+                upgrader.do_upgrade(self.env, i, cursor)
                 self.set_database_version(i, name)
 
     def shutdown(self, tid=None):

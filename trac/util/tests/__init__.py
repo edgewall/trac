@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import doctest
+import importlib
 import os.path
 import pkg_resources
 import random
@@ -296,7 +297,9 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
             with open(os.path.join(self.dir, modname, name), 'w') as f:
                 f.write('# -*- coding: utf-8 -*-\n')
 
-        mod = __import__(modname, {}, {}, ['bar', 'foo'])
+        mod = importlib.import_module(modname)
+        mod.bar = importlib.import_module(modname + '.bar')
+        mod.foo = importlib.import_module(modname + '.foo')
         pkginfo = util.get_pkginfo(mod)
         self.assertEqual('0.1', pkginfo['version'])
         self.assertEqual('Joe', pkginfo['author'])

@@ -22,6 +22,7 @@ See https://trac.edgewall.org/wiki/TracDev/ApiDocs
 """
 
 import fnmatch
+import importlib
 import os
 import re
 import sys
@@ -73,7 +74,7 @@ def main(argv):
 def check_api_doc(basename, verbose, only_documented, has_submodules):
     module_name = basename.replace('_', '.')
     try:
-        module = __import__(module_name, globals(), {}, ['__all__'])
+        module = importlib.import_module(module_name)
     except ImportError as e:
         print("Skipping %s (%s)" % (basename, e))
         return
@@ -97,7 +98,7 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
             value = getattr(module, symbol)
             cls = getattr(value, '__class__', None)
             keyword = 'data'
-            if cls:  # old-style class objects have no __class__ attribute
+            if cls:  # old-style class objects have not __class__ attribute
                 if cls.__name__ in ('function', 'instancemethod'):
                     keyword = 'function'
                 elif cls.__name__ == 'module':
@@ -129,7 +130,7 @@ def get_default_symbols(module, only_documented, has_submodules):
     all = []
     for symbol in public:
         try:
-            __import__(symbol)
+            importlib.import_module(symbol)
         except ImportError:
             all.append(symbol)
     # only keep symbols having a docstring
@@ -167,13 +168,14 @@ def get_imported_symbols(module, has_submodules):
         symbol_list = symbol_list.strip()
         if symbol_list == '*':
             try:
-                imported_module = __import__(mod, globals(), {}, ['__all__'])
-                symbols = set(getattr(imported_module, '__all__', None) or
-                              get_public_symbols(imported_module))
+                imported_module = importlib.import_module(mod)
             except ImportError:
                 print("Warning: 'from %s import *' couldn't be resolved"
                       % mod)
                 continue
+            else:
+                symbols = set(getattr(imported_module, '__all__', None) or
+                              get_public_symbols(imported_module))
         else:
             if symbol_list and symbol_list[0] == '(' and symbol_list[-1] == ')':
                 symbol_list = symbol_list[1:-1]

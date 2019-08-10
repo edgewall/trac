@@ -8,6 +8,7 @@
 # you should have received as part of this distribution. The terms
 # are also available at https://trac.edgewall.org/wiki/TracLicense.
 
+import importlib
 import io
 import warnings
 
@@ -72,7 +73,7 @@ def resolve_accessor(accessor):
     try:
         module, attr = accessor.rsplit('.', 1)
         version = attr.replace('()', '')
-        version = getattr(__import__(module, {}, {}, [version]), version)
+        version = getattr(importlib.import_module(module), version)
         if attr.endswith('()'):
             version = version()
         return version

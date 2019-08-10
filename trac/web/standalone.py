@@ -23,6 +23,7 @@ from __future__ import print_function
 
 import argparse
 import functools
+import importlib
 import os
 import pkg_resources
 import socket
@@ -348,9 +349,9 @@ def main():
             httpd.serve_forever()
     elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
+            module = 'flup.server.%s' % args.protocol
             try:
-                server_cls = __import__('flup.server.%s' % args.protocol,
-                                        None, None, ['']).WSGIServer
+                server_cls = importlib.import_module(module).WSGIServer
             except ImportError:
                 printerr("Install the flup package to use the '%s' "
                          "protocol" % args.protocol)
