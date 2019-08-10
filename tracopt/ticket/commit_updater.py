@@ -209,8 +209,7 @@ class CommitTicketUpdater(Component):
             drev += '/' + repos.reponame
         return textwrap.dedent("""\
             In [changeset:"%s" %s]:
-            {{{
-            #!CommitTicketReference repository="%s" revision="%s"
+            {{{#!CommitTicketReference repository="%s" revision="%s"
             %s
             }}}""") % (revstring, drev, repos.reponame, rev,
                        changeset.message.strip())

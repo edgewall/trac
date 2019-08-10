@@ -52,8 +52,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
         changes = self.tickets[0].get_change(cnum=1)
         self.assertEqual(textwrap.dedent("""\
             In [changeset:"1/repos1" 1/repos1]:
-            {{{
-            #!CommitTicketReference repository="repos1" revision="1"
+            {{{#!CommitTicketReference repository="repos1" revision="1"
             This is the first comment. Refs #1.
             }}}"""), changes['fields']['comment']['new'])
 
@@ -68,8 +67,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
         changes = self.tickets[0].get_change(cnum=1)
         self.assertEqual(textwrap.dedent("""\
             In [changeset:"1/repos1" 1/repos1]:
-            {{{
-            #!CommitTicketReference repository="repos1" revision="1"
+            {{{#!CommitTicketReference repository="repos1" revision="1"
             This is a multiline comment.
 
             It is multiline.
@@ -92,15 +90,13 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
         changes = self.tickets[0].get_change(cnum=1)
         self.assertEqual(textwrap.dedent("""\
             In [changeset:"1/repos1" 1/repos1]:
-            {{{
-            #!CommitTicketReference repository="repos1" revision="1"
+            {{{#!CommitTicketReference repository="repos1" revision="1"
             This is the first comment. Refs #1.
             }}}"""), changes['fields']['comment']['new'])
         changes = self.tickets[1].get_change(cnum=1)
         self.assertEqual(textwrap.dedent("""\
             In [changeset:"1/repos1" 1/repos1]:
-            {{{
-            #!CommitTicketReference repository="repos1" revision="1"
+            {{{#!CommitTicketReference repository="repos1" revision="1"
             This is the first comment after an edit. Refs #1, #2.
             }}}"""), changes['fields']['comment']['new'])
 
