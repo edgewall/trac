@@ -59,6 +59,26 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
             This is the first comment. Refs #1.
             }}}"""), changes['fields']['comment']['new'])
 
+    def test_changeset_added_multiline_comment(self):
+        self._make_tickets(1)
+        message = ("This is a multiline comment.\n\n"
+                   "It is multiline.\n\n"
+                   "Refs #1.")
+        chgset = Mock(repos=self.repos, rev=1, message=message, author='joe',
+                      date=datetime(2001, 1, 1, 1, 1, 1, 0, utc))
+        self.updater.changeset_added(self.repos, chgset)
+        changes = self.tickets[0].get_change(cnum=1)
+        self.assertEqual(textwrap.dedent("""\
+            In [changeset:"1/repos1" 1/repos1]:
+            {{{
+            #!CommitTicketReference repository="repos1" revision="1"
+            This is a multiline comment.
+
+            It is multiline.
+
+            Refs #1.
+            }}}"""), changes['fields']['comment']['new'])
+
     def test_changeset_modified(self):
         self._make_tickets(2)
         message = 'This is the first comment. Refs #1.'

@@ -213,8 +213,8 @@ class CommitTicketUpdater(Component):
             {{{
             #!CommitTicketReference repository="%s" revision="%s"
             %s
-            }}}""" % (revstring, drev, repos.reponame, rev,
-                      changeset.message.strip()))
+            }}}""") % (revstring, drev, repos.reponame, rev,
+                       changeset.message.strip())
 
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""
