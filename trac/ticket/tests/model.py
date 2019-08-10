@@ -375,24 +375,47 @@ class TicketTestCase(unittest.TestCase):
     def test_custom_time(self):
         # Add a custom field of type 'time'
         self.env.config.set('ticket-custom', 'due', 'time')
+        self.env.config.set('ticket-custom', 'start', 'time')
+        self.env.config.set('ticket-custom', 'start.value', '20111130T0000Z')
+        start_default = datetime(2011, 11, 30, 0, 0, 0, 0, utc)
         ticket = Ticket(self.env)
         self.assertNotIn('due', ticket.std_fields)
         self.assertIn('due', ticket.time_fields)
+        self.assertNotIn('start', ticket.std_fields)
+        self.assertIn('start', ticket.time_fields)
+
         ticket['reporter'] = 'john'
-        ticket['summary'] = 'Task1'
+        ticket['summary'] = 'Time custom field'
         tktid = ticket.insert()
         ticket = Ticket(self.env, tktid)
-        # Empty string is default value, but not a time stamp
         self.assertIsNone(ticket['due'])
+        self.assertEqual(start_default, ticket['start'])
+
         ts = datetime(2011, 11, 11, 0, 0, 0, 0, utc)
         ticket['due'] = ts
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         ticket.save_changes('joe', when=t1)
         self.assertEqual(ts, ticket['due'])
-        ticket['due'] = ''
+        self.assertEqual(2, len(ticket.get_changelog()))
+
+        ticket['due'] = None
+        ticket['start'] = None
         t2 = datetime(2001, 1, 1, 1, 1, 2, 0, utc)
         ticket.save_changes('joe', when=t2)
-        self.assertEqual('', ticket['due'])
+        self.assertIsNone(ticket['due'])
+        self.assertIsNone(ticket['start'])
+        self.assertEqual(5, len(ticket.get_changelog()))
+
+        # Check regression from #13133: ticket change log entry must be
+        # saved when time custom field changed from None to default value
+        ticket['start'] = start_default
+        t3 = datetime(2001, 1, 1, 1, 1, 3, 0, utc)
+        ticket.save_changes('user', when=t3)
+        self.assertEqual(start_default, ticket['start'])
+        changelog = list(ticket.get_changelog())
+        self.assertEqual(7, len(ticket.get_changelog()))
+        self.assertEqual((t3, 'user', 'start', '', start_default, 1),
+                         changelog[6])
 
     def test_changelog(self):
         tkt_id = self._insert_ticket('Test', reporter='joe', component='foo',
