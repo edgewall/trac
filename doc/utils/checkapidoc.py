@@ -97,13 +97,14 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
             value = getattr(module, symbol)
             cls = getattr(value, '__class__', None)
             keyword = 'data'
-            if cls.__name__ in ('function', 'instancemethod'):
-                keyword = 'function'
-            elif cls.__name__ == 'module':
-                keyword = 'module'
-            else:
-                keyword = 'class'
-            print(" * .. %14s :: %s" % ('auto' + keyword, symbol))
+            if cls:  # old-style class objects have no __class__ attribute
+                if cls.__name__ in ('function', 'instancemethod'):
+                    keyword = 'function'
+                elif cls.__name__ == 'module':
+                    keyword = 'module'
+                else:
+                    keyword = 'class'
+                print(" * .. %14s :: %s" % ('auto' + keyword, symbol))
 
 
 sphinx_doc_re = re.compile(r'''
