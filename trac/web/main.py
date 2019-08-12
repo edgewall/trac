@@ -639,11 +639,14 @@ def dispatch_request(environ, start_response):
             dispatcher.dispatch(req)
         except RequestDone as req_done:
             resp = req_done.iterable
-        resp = resp or req._response or []
     except HTTPException as e:
-        _send_user_error(req, env, e)
+        if not req.response_started:
+            _send_user_error(req, env, e)
     except Exception:
-        send_internal_error(env, req, sys.exc_info())
+        if not req.response_started:
+            send_internal_error(env, req, sys.exc_info())
+    else:
+        resp = resp or req._response or []
     finally:
         translation.deactivate()
         if env and not run_once:

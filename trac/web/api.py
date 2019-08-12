@@ -665,6 +665,10 @@ class Request(object):
             return to_unicode(user)
 
     @property
+    def response_started(self):
+        return self._write is not None
+
+    @property
     def scheme(self):
         """The scheme of the request URL"""
         return self.environ['wsgi.url_scheme']
