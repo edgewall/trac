@@ -967,6 +967,40 @@ def interwiki_teardown(tc):
     tc.env.reset_db()
 
 
+def macrolist_setup(tc):
+    pass
+
+MACROLIST_MACRO_TEST_CASES = """
+==============================
+[[MacroList(HelloWorld)]]
+------------------------------
+<p>
+</p><div class="trac-macrolist"><h3 id="HelloWorld-macro"><code>[[HelloWorld]]</code></h3><p>
+A dummy macro used by the unit test.
+</p>
+</div><p>
+</p>
+------------------------------
+==============================
+[[MacroList(NoDescription)]]
+------------------------------
+<p>
+</p><div class="trac-macrolist"><h3 id="NoDescription-macro"><code>[[NoDescription]]</code></h3><em>No documentation found</em></div><p>
+</p>
+------------------------------
+==============================
+[[MacroList(ProviderMacro)]]
+------------------------------
+<p>
+</p><div class="trac-macrolist"><h3 id="ProviderMacro1-macro"><code>[[ProviderMacro1]]</code></h3><p>
+ProviderMacro1 description
+</p>
+</div><p>
+</p>
+------------------------------
+"""
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.test_suite(IMAGE_MACRO_TEST_CASES,
@@ -1007,6 +1041,8 @@ def test_suite():
                                        teardown=tracini_teardown))
     suite.addTest(formatter.test_suite(INTERWIKI_MACRO_TEST_CASES,
                                        file=__file__, setup=interwiki_setup))
+    suite.addTest(formatter.test_suite(MACROLIST_MACRO_TEST_CASES,
+                                       file=__file__, setup=macrolist_setup))
     return suite
 
 

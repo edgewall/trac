@@ -49,6 +49,13 @@ class WikiMacroBase(Component):
     On usage error, the `MacroError` or `ProcessorError` exception should be
     raised, to ensure proper display of the error message in the rendered
     wiki content.
+
+    The `_description` attribute contains the macro help.
+
+    Set the `hide_from_macro_index` attribute to `True` to prevent
+    displaying help in the macro index (`[[MacroList]]`). If the
+    default value of `False` and the `_description` is empty,
+    "No documentation found" will be displayed.
     """
 
     implements(IWikiMacroProvider)
@@ -60,6 +67,9 @@ class WikiMacroBase(Component):
     #: A macro description
     _description = None
 
+    #: Hide from macro index
+    hide_from_macro_index = False
+
     def get_macros(self):
         """Yield the name of the macro based on the class name."""
         name = self.__class__.__name__
@@ -69,6 +79,8 @@ class WikiMacroBase(Component):
 
     def get_macro_description(self, name):
         """Return the subclass's gettext domain and macro description"""
+        if self.hide_from_macro_index:
+            return None
         domain, description = self._domain, self._description
         if description:
             return (domain, description) if domain else description
@@ -765,6 +777,8 @@ class MacroListMacro(WikiMacroBase):
                             else:
                                 descr = format_to_html(
                                     self.env, formatter.context, descr)
+                        elif descr is None:
+                            continue
                         yield descr, [name for name, descr in pairs]
 
         return tag.div(class_='trac-macrolist')(

@@ -103,6 +103,10 @@ class IWikiMacroProvider(Interface):
         .. versionchanged :: 1.0
            `get_macro_description` can return a domain to translate the
            description.
+
+        .. versionchanged :: 1.3.6
+           the macro will be hidden from the macro index (`[[MacroList]]`)
+           if `None` is returned.
         """
 
     def is_inline(content):

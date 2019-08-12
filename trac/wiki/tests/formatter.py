@@ -17,7 +17,7 @@ import unittest
 from trac.core import Component, TracError, implements
 from trac.util.html import genshi, html
 from trac.util.translation import tag_
-from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.api import IWikiMacroProvider, IWikiSyntaxProvider
 from trac.wiki.formatter import MacroError, ProcessorError
 from trac.wiki.macros import WikiMacroBase
 from trac.wiki.test import wikisyntax_test_suite
@@ -41,6 +41,42 @@ class HelloWorldMacro(WikiMacroBase):
 
     def expand_macro(self, formatter, name, content):
         return 'Hello World, args = ' + content
+
+
+class NoDescriptionMacro(WikiMacroBase):
+    # Macro with no description string
+
+    def expand_macro(self, formatter, name, content):
+        return ''
+
+
+class NoDescriptionHiddenMacro(WikiMacroBase):
+    # Macro with no description string
+    # Hidden from the macro index (MacroList)
+
+    hide_from_macro_index = True
+
+    def expand_macro(self, formatter, name, content):
+        return ''
+
+
+class IWikiMacroProviderMacros(Component):
+    # Macro for testing MacroList output
+
+    implements(IWikiMacroProvider)
+
+    def get_macros(self):
+        yield 'ProviderMacro1'
+        yield 'ProviderMacro2'
+
+    def get_macro_description(self, name):
+        if name == 'ProviderMacro1':
+            return 'ProviderMacro1 description'
+        if name == 'ProviderMacro2':
+            return None  # Will be hidden from macro index
+
+    def expand_macro(self, formatter, name, content, args=None):
+        return 'The macro is named %s' % name
 
 
 class DivHelloWorldMacro(WikiMacroBase):
