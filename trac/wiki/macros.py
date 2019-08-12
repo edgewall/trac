@@ -772,7 +772,7 @@ class MacroListMacro(WikiMacroBase):
              len(names) > 1 and tag.p(tag.strong(_("Aliases:")),
                                       [tag.code(' [[', alias, ']]')
                                        for alias in names[1:]]) or None,
-             description or tag.em(_("Sorry, no documentation found")))
+             description or tag.em(_("No documentation found")))
             for description, names in sorted(get_macro_descr(),
                                              key=lambda item: item[1][0]))
 
