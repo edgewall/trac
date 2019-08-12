@@ -412,7 +412,7 @@ class TicketTestCase(unittest.TestCase):
         t3 = datetime(2001, 1, 1, 1, 1, 3, 0, utc)
         ticket.save_changes('user', when=t3)
         self.assertEqual(start_default, ticket['start'])
-        changelog = list(ticket.get_changelog())
+        changelog = sorted(ticket.get_changelog())
         self.assertEqual(7, len(ticket.get_changelog()))
         self.assertEqual((t3, 'user', 'start', '', start_default, 1),
                          changelog[6])
