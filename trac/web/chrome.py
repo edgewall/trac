@@ -1703,6 +1703,8 @@ class Chrome(Component):
             else:
                 for chunk in stream:
                     yield valid_html_bytes(chunk.encode('utf-8'))
+        except TracBaseError:
+            raise
         except Exception as e:
             self.log.error('Jinja2 %s error while rendering %s template %s',
                            e.__class__.__name__,
