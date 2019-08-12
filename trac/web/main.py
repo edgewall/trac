@@ -567,11 +567,14 @@ def _dispatch_request(req, env, env_error):
             dispatcher.dispatch(req)
         except RequestDone, req_done:
             resp = req_done.iterable
-        resp = resp or req._response or []
     except HTTPException, e:
-        _send_user_error(req, env, e)
+        if not req.response_started:
+            _send_user_error(req, env, e)
     except Exception:
-        send_internal_error(env, req, sys.exc_info())
+        if not req.response_started:
+            send_internal_error(env, req, sys.exc_info())
+    else:
+        resp = resp or req._response or []
     return resp
 
 
