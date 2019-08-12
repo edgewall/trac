@@ -241,6 +241,7 @@ class TimelineEventProviderTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.config.set('trac', 'use_chunked_encoding', False)
 
     def tearDown(self):
         self.env.reset_db()

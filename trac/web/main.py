@@ -672,7 +672,7 @@ def _send_error(req, exc_info, template='error.html', content_type='text/html',
                 status=500, env=None, data={}):
     if env:
         add_stylesheet(req, 'common/css/code.css')
-        metadata = {'content_type': 'text/html'}
+        metadata = {'content_type': 'text/html', 'iterable': False}
         try:
             content = Chrome(env).render_template(req, template,
                                                   data, metadata)

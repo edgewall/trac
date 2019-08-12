@@ -621,7 +621,7 @@ class Chrome(Component):
         displaying relative format and 'absolute' for displaying absolute
         format. (''since 1.0'')""")
 
-    use_chunked_encoding = BoolOption('trac', 'use_chunked_encoding', 'false',
+    use_chunked_encoding = BoolOption('trac', 'use_chunked_encoding', 'true',
         """If enabled, send contents as chunked encoding in HTTP/1.1.
         Otherwise, send contents with `Content-Length` header after entire of
         the contents are rendered. (''since 1.0.6'')""")
