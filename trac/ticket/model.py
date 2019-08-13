@@ -405,7 +405,7 @@ class Ticket(object):
                 SELECT time, author, 'comment', null, description,
                   0 AS permanent
                 FROM attachment WHERE type='ticket' AND id=%s AND time=%s
-                ORDER BY time,permanent,author
+                ORDER BY time,permanent,author,field
                 """
             args = (self.id, when_ts, sid, when_ts, sid, when_ts)
         else:
@@ -420,7 +420,7 @@ class Ticket(object):
                 SELECT time, author, 'comment', null, description,
                   0 AS permanent
                 FROM attachment WHERE type='ticket' AND id=%s
-                ORDER BY time,permanent,author
+                ORDER BY time,permanent,author,field
                 """
             args = (self.id, sid, sid)
         return [(from_utimestamp(t), author, field, oldvalue or '',

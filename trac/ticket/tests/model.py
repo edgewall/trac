@@ -446,7 +446,7 @@ class TicketTestCase(unittest.TestCase):
         ticket['milestone'] = 'foo'
         now = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         ticket.save_changes('jane', 'Testing', now)
-        changelog = sorted(ticket.get_changelog())
+        changelog = ticket.get_changelog()
         self.assertEqual([(now, 'jane', 'comment', '1', 'Testing', True),
                           (now, 'jane', 'component', 'foo', 'bar', True),
                           (now, 'jane', 'milestone', 'bar', 'foo', True)],
@@ -471,7 +471,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual((t1, 'jane', 'comment', '1', 'Testing', True), log[0])
         self.assertEqual([(t2, 'mark', 'attachment', '', 'file.txt', False),
                           (t2, 'mark', 'comment', '', 'My file', False)],
-                          sorted(log[1:3]))
+                          log[1:3])
         self.assertEqual((t3, 'jim', 'comment', '2', 'Other', True), log[3])
 
     def test_subsecond_change(self):
