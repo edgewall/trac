@@ -809,8 +809,9 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertFalse(self._has_auto_preview(req))
         self.assertTrue(data['disable_submit'])
 
-    def test_new_ticket_ticket_edit_cc(self):
-        """CC field can be modified for new ticket."""
+    def test_new_ticket_without_ticket_edit_cc(self):
+        """User without TICKET_EDIT_CC can only add themselves to CC.
+        """
         PermissionSystem(self.env).grant_permission('user', 'TICKET_CREATE')
         req = MockRequest(self.env, authname='user', path_info='/newticket')
 
@@ -818,8 +819,23 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         cc_field = self._get_field_by_name(data, 'cc')
 
-        self.assertNotIn('cc_entry', cc_field)
-        self.assertNotIn('cc_action', cc_field)
+        self.assertEqual('Add Cc', cc_field['edit_label'])
+        self.assertEqual('user', cc_field['cc_entry'])
+        self.assertEqual('add', cc_field['cc_action'])
+        self.assertFalse(cc_field['cc_update'])
+
+    def test_new_ticket_with_ticket_edit_cc(self):
+        """User with TICKET_EDIT_CC can edit CC field."""
+        for p in ('TICKET_CREATE', 'TICKET_EDIT_CC'):
+            PermissionSystem(self.env).grant_permission('user', p)
+        req = MockRequest(self.env, authname='user', path_info='/newticket')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+        cc_field = self._get_field_by_name(data, 'cc')
+
+        for k in ('cc_action', 'cc_entry', 'cc_update', 'edit_label'):
+            self.assertNotIn(k, cc_field)
 
     def test_existing_ticket_no_ticket_edit_cc(self):
         """User without TICKET_EDIT_CC can only add self to CC field."""
@@ -1094,23 +1110,6 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         self.assertNotIn(action, perm_cache)
         self.assertIsNone(self.policy.check_permission(
             action, perm_cache.username, resource, perm_cache))
-
-    def test_user_can_edit_ticket_cc_for_new_ticket(self):
-        """User without TICKET_EDIT_CC can edit CC field for new ticket."""
-        action = 'TICKET_EDIT_CC'
-        ticket1 = Ticket(self.env)
-        ticket2 = self._insert_ticket('somebody1')
-
-        perm_cache1 = PermissionCache(self.env, 'somebody1', ticket1.resource)
-        self.assertIn(action, perm_cache1)
-        self.assertTrue(self.policy.check_permission(
-            action, perm_cache1.username, ticket1.resource, perm_cache1))
-
-        # No decision for existing ticket.
-        perm_cache2 = PermissionCache(self.env, 'somebody1', ticket2.resource)
-        self.assertNotIn(action, perm_cache2)
-        self.assertIsNone(self.policy.check_permission(
-            action, perm_cache2.username, ticket2.resource, perm_cache2))
 
 
 def test_suite():

@@ -1909,8 +1909,6 @@ class DefaultTicketPolicy(Component):
       edit the description of a ticket they reported.
     * Authenticated users with `TICKET_APPEND` can edit their own ticket
       comments.
-    * The CC field can be edited when creating a ticket even if the
-      user doesn't have `TICKET_EDIT_CC`.
     """
 
     implements(IPermissionPolicy)
@@ -1940,12 +1938,6 @@ class DefaultTicketPolicy(Component):
             ticket = model.Ticket(self.env, resource.parent.id)
             change = ticket.get_change(resource.id)
             if change and username == change['author']:
-                return True
-
-        if action == 'TICKET_EDIT_CC' and \
-                self._is_valid_resource(resource, self.realm, exists=False):
-            ticket = model.Ticket(self.env, resource.id)
-            if not ticket.exists:
                 return True
 
     def _is_valid_resource(self, resource, expected_realm, exists=True):
