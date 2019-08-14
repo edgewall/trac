@@ -90,7 +90,7 @@ install:
     2.6) requires="$requires Babel<2.6.0 lxml<4.3.0" ;;
     *)   requires="$requires Babel lxml" ;;
   esac
-  if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2<2.8"; fi
+  if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
   if [ "$tracdb" = mysql ]; then requires="$requires MySQL-python"; fi
   pip install $requires
   python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires
