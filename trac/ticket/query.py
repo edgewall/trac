@@ -1087,7 +1087,7 @@ class QueryModule(Component):
             if add_num is not None:
                 field = req.args.get('add_filter_' + add_num,
                                      req.args.get('add_clause_' + add_num))
-                if field:
+                if field and field in fields:
                     clause = constraints.setdefault(int(add_num), {})
                     modes = Query.get_modes().get(fields[field]['type'])
                     mode = modes[0]['value'] if modes else ''
