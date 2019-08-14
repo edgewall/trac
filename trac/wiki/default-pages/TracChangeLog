@@ -351,6 +351,21 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 
 == 1.0.x Releases
 
+=== 1.0.18
+
+//(July 18, 2019)//
+
+Trac 1.0.18 provides more than a dozen bug fixes and minor
+enhancements. The following are some highlights:
+
+ * Fixed query module regression when ordering
+   multiple columns ([trac:#13068]).
+ * Fixed regression preventing workflow status
+   changes for plugins ([trac:#13087]).
+ * Made compatible with MySQL 8.x ([trac:#13128]).
+
+[trac:source:/tags/trac-1.0.18 View Tag] | [trac:milestone:1.0.18 View Milestone]
+
 === 1.0.17
 
 //(July 11, 2018)//
