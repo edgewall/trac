@@ -156,7 +156,8 @@ release. As usual, make a backup before deleting the directory.
 
 Note: Some web browsers (IE, Opera) cache CSS and JavaScript files, so
 you should instruct your users to manually erase the contents of their
-browser's cache. A forced refreshed (SHIFT + ) should be sufficient.
+browser's cache. A forced refreshed (SHIFT + <F5>) should be
+sufficient.
 
 
 7. Steps specific to a given Trac version
@@ -262,8 +263,9 @@ example, if the `ticket` table is aliased as `t` ( `ticket t` or
 report should use the ticket's `description` column.
 
 
-Removed ` ` and ` ` arguments from `TracAdmin`_ `initenv` command
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Removed `<repostype>` and `<repospath>` arguments from `TracAdmin`_
+`initenv` command
++++++++++++++++++
 
 The `TracAdmin`_ `initenv` command allowed the default repository to
 be specified using the third and fourth positional arguments of
@@ -271,7 +273,7 @@ be specified using the third and fourth positional arguments of
 
 ::
 
-    initenv [  [ ]]
+    initenv [<projectname> <db> [<repostype> <repospath>]]
 
 
 The arguments were an artifact of Trac < 0.12, which only supported a
@@ -448,8 +450,8 @@ Customized Templates
 ~~~~~~~~~~~~~~~~~~~~
 
 Trac supports customization of its templates by placing copies of the
-templates in the ` /templates` folder of your `environment`_ or in a
-common location specified in the ` [inherit] templates_dir`_
+templates in the `<env>/templates` folder of your `environment`_ or in
+a common location specified in the ` [inherit] templates_dir`_
 configuration setting. If you choose to customize the templates, be
 aware that you will need to repeat your changes on a copy of the new
 templates when you upgrade to a new release of Trac (even a minor

@@ -299,7 +299,7 @@ A new environment is created using `trac-admin`_:
 `trac-admin`_ will prompt you for the information it needs to create
 the environment: the name of the project and the `database connection
 string`_. If you're not sure what to specify for any of these options,
-just press ` ` to use the default value.
+just press `<Enter>` to use the default value.
 
 Using the default database connection string will always work as long
 as you have SQLite installed. For the other `database backends`_ you
@@ -420,7 +420,7 @@ using the `trac-admin`_ `deploy` command:
 
 ::
 
-    deploy 
+    deploy <directory>
     
         Extract static resources from Trac and all plugins
     
@@ -435,8 +435,8 @@ For example, the following yields a typical directory structure:
 ::
 
     $ mkdir -p /var/trac
-    $ trac-admin /var/trac/ initenv
-    $ trac-admin /var/trac/ deploy /var/www
+    $ trac-admin /var/trac/<project> initenv
+    $ trac-admin /var/trac/<project> deploy /var/www
     $ ls /var/www
     cgi-bin htdocs
     $ chmod ugo+x /var/www/cgi-bin/*
@@ -459,7 +459,7 @@ processing the requests.
 
 There are two primary URL paths for static resources: `/chrome/common`
 and `/chrome/site`. Plugins can add their own resources, usually
-accessible at the `/chrome/ ` path.
+accessible at the `/chrome/<plugin>` path.
 
 A single `/chrome` alias can used if the static resources are
 extracted for all plugins. This means that the `deploy` command
@@ -478,8 +478,8 @@ The `deploy` command creates an `htdocs` directory with:
 + `shared` - the static resources shared by multiple Trac
   environments, with a location defined by the `[inherit]` `htdocs_dir`
   option
-+ ` /` - one directory for each resource directory provided by the
-  plugins enabled for this environment
++ `<plugin>/` - one directory for each resource directory provided by
+  the plugins enabled for this environment
 
 
 The example that follows will create a single `/chrome` alias. If that
@@ -492,7 +492,7 @@ create more specific aliases:
     Alias /trac/chrome/common /path/to/trac/htdocs/common
     Alias /trac/chrome/site /path/to/trac/htdocs/site
     Alias /trac/chrome/shared /path/to/trac/htdocs/shared
-    Alias /trac/chrome/ /path/to/trac/htdocs/
+    Alias /trac/chrome/<plugin> /path/to/trac/htdocs/<plugin>
 
 
 Example: Apache and `ScriptAlias`
@@ -503,7 +503,7 @@ Assuming the deployment has been done this way:
 
 ::
 
-    $ trac-admin /var/trac/ deploy /var/www
+    $ trac-admin /var/trac/<project> deploy /var/www
 
 
 Add the following snippet to Apache configuration, changing paths to
@@ -516,17 +516,17 @@ map all requests to the Trac application:
 
     Alias /trac/chrome /path/to/trac/htdocs
     
-    
+    <Directory "/path/to/www/trac/htdocs">
       # For Apache 2.2
-      
+      <IfModule !mod_authz_core.c>
         Order allow,deny
         Allow from all
-      
+      </IfModule>
       # For Apache 2.4
-      
+      <IfModule mod_authz_core.c>
         Require all granted
-      
-    
+      </IfModule>
+    </Directory>
 
 
 If using mod_python, add this too, otherwise the alias will be
@@ -535,9 +535,9 @@ ignored:
 
 ::
 
-    
+    <Location "/trac/chrome/common">
       SetHandler None
-    
+    </Location>
 
 
 Alternatively, if you wish to serve static resources directly from
@@ -552,17 +552,17 @@ names and locations to match your installation:
 
     Alias /trac/chrome/site /path/to/projectenv/htdocs
     
-    
+    <Directory "/path/to/projectenv/htdocs">
       # For Apache 2.2
-      
+      <IfModule !mod_authz_core.c>
         Order allow,deny
         Allow from all
-      
+      </IfModule>
       # For Apache 2.4
-      
+      <IfModule mod_authz_core.c>
         Require all granted
-      
-    
+      </IfModule>
+    </Directory>
 
 
 Another alternative to aliasing `/trac/chrome/common` is having Trac
