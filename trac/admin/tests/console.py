@@ -161,6 +161,9 @@ class TracAdminTestCaseBase(unittest.TestCase):
             return ''.join(difflib.unified_diff(expected_lines, output_lines,
                                                 'expected', 'actual'))
 
+        # psycopg2 2.8.x raises UniqueViolation, which inherits from
+        # IntegrityError.
+        output = re.sub('^(UniqueViolation:)', 'IntegrityError:', output)
         if '[...]' in expected_results:
             m = re.match('.*'.join(map(re.escape,
                                        expected_results.split('[...]'))) +
