@@ -48,7 +48,7 @@ __all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
            'RecipientMatcher', 'SendmailEmailSender', 'SessionEmailResolver',
            'SmtpEmailSender', 'create_charset', 'create_header',
            'create_message_id', 'create_mime_multipart', 'create_mime_text',
-           'get_from_author', 'set_header']
+           'get_message_addresses', 'get_from_author', 'set_header']
 
 
 MAXHEADERLEN = 76
@@ -93,36 +93,44 @@ def create_charset(mime_encoding):
     return charset
 
 
-def create_header(key, name, charset):
+def create_header(key, value, charset):
     """Create an appropriate email Header."""
     maxlength = MAXHEADERLEN-(len(key)+2)
     # Do not sent very short headers
     if maxlength < 10:
         raise TracError(_("Header length is too short"))
-    # when it matches mime-encoding, encode as mime even if only
-    # ascii characters
-    if not _mime_encoding_re.search(name):
-        try:
-            tmp = name.encode('ascii')
-            return Header(tmp, 'ascii', maxlinelen=maxlength)
-        except UnicodeEncodeError:
-            pass
-    return Header(name.encode(charset.output_codec), charset,
-                  maxlinelen=maxlength)
 
-
-def set_header(message, key, value, charset):
-    """Create and add or replace a header."""
     email = None
     if isinstance(value, (tuple, list)):
         value, email = value
     if not isinstance(value, basestring):
         value = to_unicode(value)
-    header = create_header(key, value, charset)
+    if not value:
+        return email
+
+    # when it matches mime-encoding, encode as mime even if only
+    # ascii characters
+    header = None
+    if not _mime_encoding_re.search(value):
+        try:
+            tmp = value.encode('ascii')
+        except UnicodeEncodeError:
+            pass
+        else:
+            header = Header(tmp, 'ascii', maxlinelen=maxlength)
+    if not header:
+        header = Header(value.encode(charset.output_codec), charset,
+                        maxlinelen=maxlength)
+    header = str(header)
     if email:
-        header = str(header).replace('\\', r'\\') \
-                            .replace('"', r'\"')
+        header = header.replace('\\', r'\\').replace('"', r'\"')
         header = '"%s" <%s>' % (header, email)
+    return header
+
+
+def set_header(message, key, value, charset):
+    """Create and add or replace a header."""
+    header = create_header(key, value, charset)
     if key in message:
         message.replace_header(key, header)
     else:
@@ -166,6 +174,10 @@ def create_message_id(env, targetid, from_email, time, more=None):
     return '<%03d.%s@%s>' % (len(source), h.hexdigest(), host)
 
 
+def get_message_addresses(message, name):
+    return getaddresses(str(header) for header in message.get_all(name, ()))
+
+
 def get_from_author(env, event):
     if event.author and NotificationSystem(env).smtp_from_author:
         matcher = RecipientMatcher(env)
@@ -188,12 +200,11 @@ class RecipientMatcher(object):
             domains = [domainfmt]
             domains.extend(re.escape(x) for x in admit_domains)
             addrfmt = r'%s@(?:%s)' % (localfmt, '|'.join(domains))
-        self.shortaddr_re = re.compile(r'(%s)$' % addrfmt, re.IGNORECASE)
+        self.shortaddr_re = re.compile(r'<?(%s)>?$' % addrfmt, re.IGNORECASE)
         self.longaddr_re = re.compile(r'(.*)\s+<\s*(%s)\s*>$' % addrfmt,
                                       re.IGNORECASE)
         self.ignore_domains = set(x.lower()
                                   for x in self.notify_sys.ignore_domains_list)
-        self.users = self.env.get_known_users(as_dict=True)
 
     @lazy
     def use_short_addr(self):
@@ -202,6 +213,10 @@ class RecipientMatcher(object):
     @lazy
     def smtp_default_domain(self):
         return self.notify_sys.smtp_default_domain
+
+    @lazy
+    def users(self):
+        return self.env.get_known_users(as_dict=True)
 
     def is_email(self, address):
         if not address:
@@ -226,7 +241,7 @@ class RecipientMatcher(object):
             auth = 0
             address = address.strip()
 
-        if not self.is_email(address) and self.nodomaddr_re.match(address):
+        if self.nodomaddr_re.match(address):
             if self.use_short_addr:
                 return sid, auth, address
             if self.smtp_default_domain:
@@ -237,12 +252,15 @@ class RecipientMatcher(object):
 
         mo = self.shortaddr_re.match(address)
         if mo:
-            return sid, auth, mo.group(1)
-        mo = self.longaddr_re.match(address)
-        if mo:
-            return sid, auth, mo.group(2)
-        self.env.log.debug("Invalid email address: %s", address)
-        return None
+            address = mo.group(1)
+        else:
+            mo = self.longaddr_re.match(address)
+            if mo:
+                address = mo.group(2)
+        if not self.is_email(address):
+            self.env.log.debug("Invalid email address: %s", address)
+            return None
+        return sid, auth, address
 
     def match_from_author(self, author):
         if author:

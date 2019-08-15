@@ -19,6 +19,7 @@ from trac.notification.api import (
     IEmailAddressResolver, IEmailSender, INotificationFormatter,
     INotificationSubscriber, NotificationEvent, NotificationSystem,
 )
+from trac.notification.mail import RecipientMatcher
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub
 from trac.ticket.model import _fixup_cc_list
@@ -505,9 +506,157 @@ class EmailDistributorTestCase(unittest.TestCase):
                                 self._cclist(message['Cc']))
 
 
+class RecipientMatcherTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.config = self.env.config
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _add_session(self, sid, values=None, **attrs):
+        session = DetachedSession(self.env, sid)
+        session['(dummy)'] = 'x'
+        if values is not None:
+            attrs.update(values)
+        for name, value in attrs.iteritems():
+            session[name] = value
+        session.save()
+
+    def test_match_recipient_empty(self):
+        matcher = RecipientMatcher(self.env)
+        self.assertEqual(None, matcher.match_recipient(None))
+        self.assertEqual(None, matcher.match_recipient(u''))
+
+    def test_match_recipient_anonymous(self):
+        matcher = RecipientMatcher(self.env)
+        self.assertEqual(None, matcher.match_recipient('anonymous'))
+
+    def test_match_recipient_address(self):
+        matcher = RecipientMatcher(self.env)
+        expected = (None, 0, 'user@example.org')
+        self.assertEqual(expected, matcher.match_recipient('user@example.org'))
+        self.assertEqual(expected,
+                         matcher.match_recipient('<user@example.org>'))
+        self.assertEqual(expected, matcher.match_recipient(
+            'Name name <user@example.org>'))
+        self.assertEqual(expected, matcher.match_recipient(
+            u'Námë ńämé <user@example.org>'))
+
+    def test_match_recipient_admit_domains(self):
+        self.config.set('notification', 'admit_domains', 'LOCALDOMAIN')
+        with self.env.db_transaction:
+            self._add_session('user1', email='user1@localhost')
+            self._add_session('user2', email='user2@localdomain')
+            self._add_session('user3', email='user3@example.org')
+            self._add_session('user4@localhost')
+            self._add_session('user5@localdomain')
+            self._add_session('user6@example.org')
+            self._add_session('user7@localhost', email='user7@example.org')
+            self._add_session('user8@localdomain', email='user8@localhost')
+            self._add_session('user9@example.org', email='user9@localdomain')
+        matcher = RecipientMatcher(self.env)
+
+        # authenticated users
+        self.assertEqual(None, matcher.match_recipient('user1'))
+        self.assertEqual(('user2', 1, 'user2@localdomain'),
+                         matcher.match_recipient('user2'))
+        self.assertEqual(('user3', 1, 'user3@example.org'),
+                         matcher.match_recipient('user3'))
+        self.assertEqual(None, matcher.match_recipient('user4@localhost'))
+        self.assertEqual(('user5@localdomain', 1, 'user5@localdomain'),
+                         matcher.match_recipient('user5@localdomain'))
+        self.assertEqual(('user6@example.org', 1, 'user6@example.org'),
+                         matcher.match_recipient('user6@example.org'))
+        self.assertEqual(('user7@localhost', 1, 'user7@example.org'),
+                         matcher.match_recipient('user7@localhost'))
+        self.assertEqual(None, matcher.match_recipient('user8@localdomain'))
+        self.assertEqual(('user9@example.org', 1, 'user9@localdomain'),
+                         matcher.match_recipient('user9@example.org'))
+        # anonymous users
+        self.assertEqual(None, matcher.match_recipient('foobar'))
+        self.assertEqual(None, matcher.match_recipient('anon@localhost'))
+        self.assertEqual((None, 0, 'anon@localdomain'),
+                         matcher.match_recipient('anon@localdomain'))
+        self.assertEqual((None, 0, 'anon@example.org'),
+                         matcher.match_recipient('anon@example.org'))
+
+    def test_match_recipient_use_short_addr(self):
+        self.config.set('notification', 'use_short_addr', 'enabled')
+        with self.env.db_transaction:
+            self._add_session('user1')
+            self._add_session('user2', email='user2-email')
+            self._add_session('user3', email='user3@example.org')
+            self._add_session('user4@example.org', email='user4')
+        matcher = RecipientMatcher(self.env)
+
+        self.assertEqual(('user1', 1, 'user1'),
+                         matcher.match_recipient('user1'))
+        self.assertEqual(('user2', 1, 'user2-email'),
+                         matcher.match_recipient('user2'))
+        self.assertEqual(('user3', 1, 'user3@example.org'),
+                         matcher.match_recipient('user3'))
+        self.assertEqual(('user4@example.org', 1, 'user4'),
+                         matcher.match_recipient('user4@example.org'))
+        self.assertEqual((None, 0, 'user9'), matcher.match_recipient('user9'))
+
+    def test_match_recipient_smtp_default_domain(self):
+        self.config.set('notification', 'smtp_default_domain',
+                        'default.example.net')
+        with self.env.db_transaction:
+            self._add_session('user1')
+            self._add_session('user2', email='user2-email')
+            self._add_session('user3', email='user3@example.org')
+            self._add_session('user4@example.org', email='user4')
+            self._add_session('user5@example.org')
+        matcher = RecipientMatcher(self.env)
+
+        self.assertEqual(('user1', 1, 'user1@default.example.net'),
+                         matcher.match_recipient('user1'))
+        self.assertEqual(('user2', 1, 'user2-email@default.example.net'),
+                         matcher.match_recipient('user2'))
+        self.assertEqual(('user3', 1, 'user3@example.org'),
+                         matcher.match_recipient('user3'))
+        self.assertEqual(('user4@example.org', 1, 'user4@default.example.net'),
+                         matcher.match_recipient('user4@example.org'))
+        self.assertEqual(('user5@example.org', 1, 'user5@example.org'),
+                         matcher.match_recipient('user5@example.org'))
+        self.assertEqual((None, 0, 'user9@default.example.net'),
+                         matcher.match_recipient('user9'))
+
+    def test_match_recipient_ignore_domains(self):
+        self.config.set('notification', 'ignore_domains',
+                        'example.net,example.com')
+        with self.env.db_transaction:
+            self._add_session('user1', email='user1@example.org')
+            self._add_session('user2', email='user2@example.com')
+            self._add_session('user3', email='user3@EXAMPLE.COM')
+            self._add_session('user4@example.org')
+            self._add_session('user5@example.com')
+            self._add_session('user6@EXAMPLE.COM')
+        matcher = RecipientMatcher(self.env)
+
+        # authenticated users
+        self.assertEqual(('user1', 1, 'user1@example.org'),
+                         matcher.match_recipient('user1'))
+        self.assertEqual(None, matcher.match_recipient('user2'))
+        self.assertEqual(None, matcher.match_recipient('user3'))
+        self.assertEqual(('user4@example.org', 1, 'user4@example.org'),
+                         matcher.match_recipient('user4@example.org'))
+        self.assertEqual(None, matcher.match_recipient('user5@example.com'))
+        self.assertEqual(None, matcher.match_recipient('user6@EXAMPLE.COM'))
+        # anonymous users
+        self.assertEqual((None, 0, 'anon@example.org'),
+                         matcher.match_recipient('anon@example.org'))
+        self.assertEqual(None, matcher.match_recipient('anon@example.com'))
+        self.assertEqual(None, matcher.match_recipient('anon@EXAMPLE.COM'))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EmailDistributorTestCase))
+    suite.addTest(unittest.makeSuite(RecipientMatcherTestCase))
     return suite
 
 

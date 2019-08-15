@@ -90,6 +90,11 @@ def config_smtp(env):
     #       for '::1' first, then only '127.0.0.1' after a 1s timeout
 
 
+def extract_recipients(header):
+    rcpts = [rcpt.strip() for rcpt in header.split(',')]
+    return [rcpt for rcpt in rcpts if rcpt]
+
+
 class RecipientTestCase(unittest.TestCase):
     """Notification test cases for email recipients."""
 
@@ -440,7 +445,7 @@ class NotificationTestCase(unittest.TestCase):
             # Msg should have a To header
             self.assertEqual('undisclosed-recipients: ;', headers['To'])
             # Extract the list of 'Cc' recipients from the message
-            cc = [rcpt.strip() for rcpt in headers['Cc'].split(',')]
+            cc = extract_recipients(headers['Cc'])
             # Extract the list of the actual SMTP recipients
             rcptlist = smtpd.get_recipients()
             # Build the list of the expected 'Cc' recipients
@@ -477,14 +482,16 @@ class NotificationTestCase(unittest.TestCase):
             recipients = set(smtpd.get_recipients())
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'To' field
-            self.assertEqual('undisclosed-recipients: ;', headers['To'])
+            if use_short_addr:
+                self.assertEqual(address, headers['To'])
+            else:
+                self.assertEqual('undisclosed-recipients: ;', headers['To'])
             # Msg should have a 'Cc' field
             self.assertIn('Cc', headers)
-            cclist = set(addr.strip() for addr in headers['Cc'].split(','))
+            cclist = set(extract_recipients(headers['Cc']))
             if use_short_addr:
                 # Msg should be delivered to the reporter
-                self.assertEqual({address, 'joe.bar@example.net', 'john'},
-                                 cclist)
+                self.assertEqual({'joe.bar@example.net', 'john'}, cclist)
                 self.assertEqual({address, 'joe.bar@example.net', 'john'},
                                  recipients)
             else:
@@ -519,7 +526,7 @@ class NotificationTestCase(unittest.TestCase):
             headers, body = parse_smtp_message(message)
             # Msg should always have a 'Cc' field
             self.assertIn('Cc', headers)
-            cclist = set(addr.strip() for addr in headers['Cc'].split(','))
+            cclist = set(extract_recipients(headers['Cc']))
             if enable:
                 self.assertEqual({'joenodom@example.org', 'foo@example.org',
                                   'bar@example.org', 'qux-mail@example.org',
@@ -548,14 +555,12 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        # Msg should always have a 'To' field
-        self.assertEqual('undisclosed-recipients: ;', headers['To'])
-        # 'Cc' list should have been resolved to the real email address
-        cclist = [addr.strip() for addr in headers['Cc'].split(',')]
-        self.assertIn('user-joe@example.com', cclist)
-        self.assertIn('user-jim@example.com', cclist)
-        self.assertNotIn('joeuser', cclist)
-        self.assertNotIn('jim@domain', cclist)
+        tolist = sorted(extract_recipients(headers['To']))
+        cclist = sorted(extract_recipients(headers['Cc']))
+        # 'To' list should have been resolved to the real email address
+        self.assertEqual(['user-jim@example.com', 'user-joe@example.com'],
+                         tolist)
+        self.assertEqual(['joe@example.com'], cclist)
 
     def test_from_author(self):
         """Using the reporter or change author as the notification sender"""
@@ -655,15 +660,16 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        # Msg should always have a 'To' field
-        self.assertEqual('undisclosed-recipients: ;', headers['To'])
-        cclist = {addr.strip() for addr in headers['Cc'].split(',')}
-        # 'Cc' list should not contain addresses with non-SMTP domains
-        self.assertNotIn('kerberos@example.com', cclist)
-        self.assertNotIn('kerberos@example.org', cclist)
+        tolist = set(extract_recipients(headers['To']))
+        cclist = set(extract_recipients(headers['Cc']))
+        # 'To' list should not contain addresses with non-SMTP domains
+        self.assertNotIn('kerberos@example.com', tolist)
+        self.assertNotIn('kerberos@example.org', tolist)
+        # 'To' list should have been resolved to the actual email address
+        self.assertEqual({'kerb@example.net'}, tolist)
         # 'Cc' list should have been resolved to the actual email address
-        self.assertEqual({'kerb@example.net', 'joe.user@example.net',
-                          'joe.bar@example.net'}, cclist)
+        self.assertEqual({'joe.bar@example.net', 'joe.user@example.net'},
+                         cclist)
 
     def test_admit_domains(self):
         """SMTP domain inclusion"""
@@ -678,17 +684,17 @@ class NotificationTestCase(unittest.TestCase):
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         # Msg should always have a 'To' field
-        self.assertEqual('undisclosed-recipients: ;', headers['To'])
+        self.assertEqual('joeuser@example.com', headers['To'])
         self.assertIn('Cc', headers)
-        cclist = [addr.strip() for addr in headers['Cc'].split(',')]
+        cclist = set(extract_recipients(headers['Cc']))
         # 'Cc' list should contain addresses with SMTP included domains
         self.assertIn('joe.user@localdomain', cclist)
         self.assertIn('joe.user@server', cclist)
         # 'Cc' list should not contain non-FQDN domains
         self.assertNotIn('joe.user@unknown', cclist)
-        self.assertEqual({'joeuser@example.com', 'joe.user@localdomain',
-                          'joe.user@server', 'joe.user@example.net',
-                          'joe.bar@example.net'}, set(cclist))
+        self.assertEqual({'joe.user@localdomain', 'joe.user@server',
+                          'joe.user@example.net', 'joe.bar@example.net'},
+                         cclist)
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
@@ -748,7 +754,8 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('joe.user@example.org', headers['Cc'])
+        self.assertEqual('joe.user@example.org', headers['To'])
+        self.assertNotIn('Cc', headers)
         return headers
 
     def test_md5_digest(self):
