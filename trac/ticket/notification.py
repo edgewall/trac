@@ -26,7 +26,8 @@ from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)
 from trac.notification.compat import NotifyEmail
-from trac.notification.mail import (RecipientMatcher, create_message_id,
+from trac.notification.mail import (RecipientMatcher, create_header,
+                                    create_message_id, get_message_addresses,
                                     get_from_author, set_header)
 from trac.notification.model import Subscription
 from trac.ticket.api import translation_deactivated
@@ -261,6 +262,32 @@ class TicketFormatter(Component):
                     url += '#comment:%d' % cnum
             set_header(message, 'X-Trac-Ticket-ID', ticket.id, charset)
             set_header(message, 'X-Trac-Ticket-URL', url, charset)
+            # When owner, reporter and updater are listed in the Cc header,
+            # move the address to To header.
+            if NotificationSystem(self.env).use_public_cc:
+                to_addrs = set()
+                matcher = RecipientMatcher(self.env)
+                for rcpt in ticket['owner'], ticket['reporter'], event.author:
+                    rcpt = matcher.match_recipient(rcpt)
+                    if not rcpt:
+                        continue
+                    addr = rcpt[2]
+                    if addr:
+                        to_addrs.add(addr)
+                if to_addrs:
+                    cc_addrs = get_message_addresses(message, 'Cc')
+                    to_addrs &= set(addr for name, addr in cc_addrs)
+                if to_addrs:
+                    cc_header = ', '.join(create_header('Cc', (name, addr),
+                                                        charset)
+                                          for name, addr in cc_addrs
+                                          if addr not in to_addrs)
+                    if cc_header:
+                        set_header(message, 'Cc', cc_header, charset)
+                    elif 'Cc' in message:
+                        del message['Cc']
+                    to_header = ', '.join(sorted(to_addrs))
+                    set_header(message, 'To', to_header, charset)
         set_header(message, 'Subject', subject, charset)
 
 
