@@ -19,7 +19,6 @@ from trac.versioncontrol.tests.functional import functionalSuite
 
 
 def test_suite():
-
     suite = unittest.TestSuite()
     suite.addTest(admin.test_suite())
     suite.addTest(cache.test_suite())

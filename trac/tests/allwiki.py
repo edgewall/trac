@@ -17,6 +17,7 @@ import trac.tests.wikisyntax
 import trac.ticket.tests.wikisyntax
 import trac.versioncontrol.web_ui.tests.wikisyntax
 import trac.web.tests.wikisyntax
+import trac.wiki.tests.macros
 import trac.wiki.tests.wikisyntax
 import trac.wiki.tests.formatter
 
