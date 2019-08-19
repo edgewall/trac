@@ -139,6 +139,18 @@
               #   endif
             </dd>
             #   endif
+            #   if 'maintainer' in plugin.info or 'maintainer_email' in plugin.info:
+            <dt>${_("Maintainer:")}</dt>
+            <dd>
+              #   if plugin.info.get('maintainer_email'):
+              <a href="mailto:${plugin.info.maintainer_email}">
+                ${plugin.info.maintainer or plugin.info.maintainer_email}
+              </a>
+              #   else:
+              ${plugin.info.maintainer or plugin.info.maintainer_email}
+              #   endif
+            </dd>
+            #   endif
             #   if plugin.info.get('home_page'):
             <dt>${_("Home page:")}</dt>
             <dd>

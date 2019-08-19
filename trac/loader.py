@@ -22,7 +22,8 @@ from pkg_resources import working_set, DistributionNotFound, \
                           VersionConflict, UnknownExtra
 import sys
 
-from trac.util import get_doc, get_module_path, get_sources, get_pkginfo
+from trac.util import get_doc, get_module_metadata, get_module_path, \
+                      get_pkginfo, get_sources
 from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['load_components']
@@ -163,19 +164,8 @@ def get_plugin_info(env, include_core=False):
                 readonly = False
             # retrieve plugin metadata
             info = get_pkginfo(dist)
-            if not info:
-                info = {}
-                for k in ('author', 'author_email', 'home_page', 'url',
-                          'license', 'summary', 'trac'):
-                    v = getattr(module, k, '')
-                    if v and isinstance(v, basestring):
-                        if k in ('home_page', 'url'):
-                            k = 'home_page'
-                            v = v.replace('$', '').replace('URL: ', '')
-                        else:
-                            v = to_unicode(v)
-                        info[k] = v
-            else:
+            version = dist.version
+            if info:
                 # Info found; set all those fields to "None" that have the
                 # value "UNKNOWN" as this is the value for fields that
                 # aren't specified in "setup.py"
@@ -186,17 +176,10 @@ def get_plugin_info(env, include_core=False):
                         # Must be encoded as unicode as otherwise Genshi
                         # may raise a "UnicodeDecodeError".
                         info[k] = to_unicode(info[k])
+            else:
+                info = get_module_metadata(module)
+                version = info['version']
 
-            # retrieve plugin version info
-            version = dist.version
-            if not version:
-                version = (getattr(module, 'version', '') or
-                           getattr(module, 'revision', ''))
-                # special handling for "$Rev$" strings
-                if version != '$Rev$':
-                    version = version.replace('$', '').replace('Rev: ', 'r')
-                else:  # keyword hasn't been expanded
-                    version = ''
             plugins[dist.project_name] = {
                 'name': dist.project_name, 'version': version,
                 'path': dist.location, 'plugin_filename': plugin_filename,

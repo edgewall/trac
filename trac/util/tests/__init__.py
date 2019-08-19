@@ -18,6 +18,7 @@ import pkg_resources
 import random
 import re
 import sys
+import textwrap
 import unittest
 
 import trac
@@ -286,6 +287,8 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
                     'Version: 0.1\n'
                     'Author: Joe\n'
                     'Author-email: joe@example.org\n'
+                    'Maintainer: Jim\n'
+                    'Maintainer-email: jim@example.org\n'
                     'Home-page: http://example.org/\n'
                     'Summary: summary.\n'
                     'Description: description.\n'
@@ -304,11 +307,66 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
         self.assertEqual('0.1', pkginfo['version'])
         self.assertEqual('Joe', pkginfo['author'])
         self.assertEqual('joe@example.org', pkginfo['author_email'])
+        self.assertEqual('Jim', pkginfo['maintainer'])
+        self.assertEqual('jim@example.org', pkginfo['maintainer_email'])
         self.assertEqual('http://example.org/', pkginfo['home_page'])
         self.assertEqual('summary.', pkginfo['summary'])
         self.assertEqual('description.', pkginfo['description'])
         self.assertEqual(pkginfo, util.get_pkginfo(mod.bar))
         self.assertEqual(pkginfo, util.get_pkginfo(mod.foo))
+
+    def _write_module(self, version, url):
+        modname = 'TestModule_' + util.hex_entropy(16)
+        modpath = os.path.join(self.dir, modname + '.py')
+        with open(modpath, 'w') as f:
+            f.write(textwrap.dedent("""\
+                # -*- coding: utf-8 -*-
+                from trac.core import Component
+
+                version = '%s'
+                author = 'Joe'
+                author_email = 'joe@example.org'
+                maintainer = 'Jim'
+                maintainer_email = 'jim@example.org'
+                home_page = '%s'
+                license = 'BSD 3-Clause'
+                summary = 'summary.'
+                trac = 'http://my.trac.com'
+
+                class TestModule(Component):
+                    pass
+                """) % (version, url))
+        return modname
+
+    def test_get_module_metadata(self):
+        version = '0.1'
+        home_page = 'http://example.org'
+        modname = self._write_module(version, home_page)
+
+        mod = importlib.import_module(modname)
+        info = util.get_module_metadata(mod)
+
+        self.assertEqual(version, info['version'])
+        self.assertEqual('Joe', info['author'])
+        self.assertEqual('joe@example.org', info['author_email'])
+        self.assertEqual('Jim', info['maintainer'])
+        self.assertEqual('jim@example.org', info['maintainer_email'])
+        self.assertEqual(home_page, info['home_page'])
+        self.assertEqual('summary.', info['summary'])
+        self.assertEqual('BSD 3-Clause', info['license'])
+        self.assertEqual('http://my.trac.com', info['trac'])
+
+    def test_get_module_metadata_keyword_expansion(self):
+        version = '10'
+        url = 'http://example.org'
+        modname = self._write_module('$Rev: %s $' % version,
+                                     '$URL: %s $' % url)
+
+        mod = importlib.import_module(modname)
+        info = util.get_module_metadata(mod)
+
+        self.assertEqual('r%s' % version, info['version'])
+        self.assertEqual(url, info['home_page'])
 
 
 class LazyClass(object):

@@ -873,8 +873,9 @@ def get_pkginfo(dist):
         else:
             return {}
 
-    attrs = ('author', 'author-email', 'license', 'home-page', 'summary',
-             'name', 'description', 'version')
+    attrs = ('author', 'author-email', 'maintainer', 'maintainer-email',
+             'license', 'home-page', 'summary', 'name', 'description',
+             'version')
     info = {}
     def normalize(attr):
         return attr.lower().replace('-', '_')
@@ -893,6 +894,32 @@ def get_pkginfo(dist):
                 metadata=metadata, dist=dist, err=to_unicode(e))
         for attr in attrs:
             info[normalize(attr)] = err
+    return info
+
+
+def get_module_metadata(module):
+    """Get a dictionary containing metadata for a module."""
+    info = {}
+    for k in ('author', 'author_email', 'maintainer',
+              'maintainer_email', 'home_page', 'url', 'license',
+              'summary', 'trac'):
+        v = getattr(module, k, '')
+        if v and isinstance(v, basestring):
+            if k in ('home_page', 'url'):
+                k = 'home_page'
+                v = v.replace('$', '').replace('URL: ', '').strip()
+            else:
+                v = to_unicode(v)
+            info[k] = v
+    # retrieve plugin version info
+    version = (getattr(module, 'version', '') or
+               getattr(module, 'revision', ''))
+    # special handling for "$Rev$" strings
+    if version != '$Rev$':
+        info['version'] = \
+            version.replace('$', '').replace('Rev: ', 'r').strip()
+    else:  # keyword hasn't been expanded
+        info['version'] = ''
     return info
 
 
