@@ -403,7 +403,7 @@ Trac provides various options for connecting to a "real" web server:
 + `FastCGI*`_
 + `Apache with mod_wsgi`_
 + `Apache with mod_python`_
-+ *`CGI`_ (should not be used, as the performance is far from
++ `CGI`_ *(should not be used, as the performance is far from
   optimal)*
 
 
@@ -685,8 +685,7 @@ users to see the full set of features.
 `The Trac Team`_
 
 
-See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
-`TracPermissions`_
+See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_
 
 .. _ [trac] htdocs_location: https://trac.edgewall.org/wiki/TracIni#trac-section
 .. _AJP*: https://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
@@ -749,7 +748,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _SQLite: https://sqlite.org/
 .. _Subversion: https://subversion.apache.org/
 .. _syntax highlighting: https://trac.edgewall.org/wiki/TracSyntaxColoring
-.. _Textile markup language: https://txstyle.org
+.. _Textile markup language: https://github.com/textile/python-textile
 .. _Textile: https://pypi.org/project/textile
 .. _The Trac Team: https://trac.edgewall.org/intertrac/TracTeam
 .. _Ticket changeset references: https://trac.edgewall.org/wiki/TracRepositoryAdmin#CommitTicketUpdater
@@ -772,7 +771,6 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _TracModWSGI#ConfiguringAuthentication: https://trac.edgewall.org/wiki/TracModWSGI#ConfiguringAuthentication
 .. _TracModWSGI: https://trac.edgewall.org/wiki/TracModWSGI
 .. _TracOnWindowsIisAjp: https://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
-.. _TracPermissions: https://trac.edgewall.org/wiki/TracPermissions
 .. _TracPlugins: https://trac.edgewall.org/wiki/TracPlugins
 .. _TracRepositoryAdmin: https://trac.edgewall.org/wiki/TracRepositoryAdmin
 .. _TracStandalone#UsingAuthentication: https://trac.edgewall.org/wiki/TracStandalone#UsingAuthentication

@@ -97,7 +97,7 @@ Alternatively you can configure Trac to run in any of the following environments
    for WikiRestructuredText.
  * [http://pygments.org Pygments] for 
    [TracSyntaxColoring syntax highlighting].
- * [https://pypi.org/project/textile Textile] for rendering the [https://txstyle.org Textile markup language].
+ * [https://pypi.org/project/textile Textile] for rendering the [https://github.com/textile/python-textile Textile markup language].
  * [http://pytz.sourceforge.net pytz] to get a complete list of time zones,
    otherwise Trac will fall back on a shorter list from 
    an internal time zone implementation.
@@ -229,7 +229,7 @@ Trac provides various options for connecting to a "real" web server:
  - [TracFastCgi FastCGI]
  - [wiki:TracModWSGI Apache with mod_wsgi] 
  - [TracModPython Apache with mod_python]
- - //[TracCgi CGI] (should not be used, as the performance is far from optimal)//
+ - [TracCgi CGI] //(should not be used, as the performance is far from optimal)//
 
 Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS. Other deployment scenarios are possible: [trac:TracNginxRecipe nginx], [https://uwsgi-docs.readthedocs.io/en/latest/#Traconapacheinasub-uri uwsgi], [trac:TracOnWindowsIisIsapi Isapi-wsgi] etc.
 
@@ -384,4 +384,4 @@ Keep in mind that //anonymous// (not logged in) users can by default access only
 [trac:TracTeam The Trac Team]
 
 ----
-See also: [trac:TracInstallPlatforms TracInstallPlatforms], TracGuide, TracUpgrade, TracPermissions
+See also: [trac:TracInstallPlatforms TracInstallPlatforms], TracGuide, TracUpgrade
