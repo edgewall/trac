@@ -16,6 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import sys
+
 __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
            'TracBaseError', 'TracError', 'TracValueError']
 
@@ -186,8 +188,6 @@ class Component(object):
         """Can be used in the class definition of `Component`
         subclasses to declare the extension points that are extended.
         """
-        import sys
-
         frame = sys._getframe(1)
         locals_ = frame.f_locals
 
