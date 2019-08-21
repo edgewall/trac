@@ -22,7 +22,8 @@ from pkg_resources import working_set, DistributionNotFound, \
                           VersionConflict, UnknownExtra
 import sys
 
-from trac.util import get_doc, get_module_path, get_sources, get_pkginfo
+from trac.core import ComponentMeta
+from trac.util import get_doc, get_module_path, get_pkginfo, get_sources
 from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['load_components']
@@ -62,7 +63,6 @@ def load_eggs(entry_point_name):
 
         def deregister_components(entry_point):
             """Remove components for `entry_point` from the registry."""
-            from trac.core import ComponentMeta
             for name in entry_point.attrs:
                 for c in ComponentMeta._components:
                     if c.__module__ == entry_point.module_name and \
@@ -155,7 +155,6 @@ def get_plugin_info(env, include_core=False):
 
     plugins_dir = env.plugins_dir
     plugins = {}
-    from trac.core import ComponentMeta
     for component in ComponentMeta._components:
         module = sys.modules[component.__module__]
 
