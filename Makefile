@@ -63,11 +63,11 @@ export HELP_CFG
 .PHONY: all help help-all status clean clean-bytecode clean-mo
 
 %.py : status
-	$(PYTHON) setup.py -q test -m $(subst /,.,$(@:.py=)) $(testopts)
+	$(PYTHON) -m unittest $(testopts) $(subst /,.,$(@:.py=)).test_suite
 
 ifdef test
 all: status
-	$(PYTHON) setup.py -q test -m $(subst /,.,$(test:.py=)) $(testopts)
+	$(PYTHON) -m unittest $(testopts) $(subst /,.,$(test:.py=)).test_suite
 else
 all: help
 endif
@@ -405,13 +405,13 @@ export HELP_testing
 test: unit-test functional-test
 
 unit-test: Trac.egg-info
-	$(PYTHON) ./trac/test.py --skip-functional-tests $(testopts)
+	SKIP_FUNCTIONAL_TESTS=1 $(PYTHON) -m unittest $(testopts) trac.test.test_suite
 
 functional-test: Trac.egg-info
-	$(PYTHON) trac/tests/functional/__init__.py $(testopts)
+	$(PYTHON) -m unittest $(testopts) trac.tests.functional.test_suite
 
 test-wiki:
-	$(PYTHON) trac/tests/allwiki.py $(testopts)
+	$(PYTHON) -m unittest $(testopts) trac.tests.allwiki.test_suite
 
 # ----------------------------------------------------------------------------
 #
