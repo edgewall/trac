@@ -113,20 +113,6 @@ class TicketModule(Component):
     def __init__(self):
         self._warn_for_moved_attr = set()
 
-    def __getattr__(self, name):
-        """Delegate access to Options which were moved to TicketSystem.
-
-        .. todo:: remove in 1.5.1
-        """
-        if name in ('max_comment_size', 'max_description_size',
-                    'max_summary_size'):
-            if name not in self._warn_for_moved_attr:
-                self.log.warning("%s option should be accessed via "
-                                 "TicketSystem component", name)
-                self._warn_for_moved_attr.add(name)
-            return getattr(TicketSystem(self.env), name)
-        raise AttributeError("TicketModule has no attribute '%s'" % name)
-
     @lazy
     def must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines

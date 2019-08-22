@@ -102,17 +102,6 @@ class TicketModuleTestCase(unittest.TestCase):
             if field['name'] == name:
                 return field
 
-    def test_get_moved_attributes(self):
-        """The attributes `max_comment_size`, `max_description_size` and
-        `max_summary_size` have been moved to TicketSystem but are
-        accessible on TicketModule for backward compatibility.
-        """
-        ts = TicketSystem(self.env)
-        tm = TicketModule(self.env)
-        self.assertEqual(ts.max_comment_size, tm.max_comment_size)
-        self.assertEqual(ts.max_description_size, tm.max_description_size)
-        self.assertEqual(ts.max_summary_size, tm.max_summary_size)
-
     def test_ticket_module_as_default_handler(self):
         """The New Ticket mainnav entry is active when TicketModule is the
         `default_handler` and navigating to the base url. Test for regression
