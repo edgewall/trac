@@ -60,14 +60,6 @@ from trac.web.chrome import (
 from trac.wiki.formatter import format_to, format_to_html
 
 
-class InvalidTicket(TracError):
-    """Exception raised when a ticket fails validation.
-
-    :since 1.3.2: deprecated and will be removed in 1.5.1
-    """
-    title = N_("Invalid Ticket")
-
-
 class TicketModule(Component):
 
     implements(IContentConverter, INavigationContributor, IRequestHandler,

@@ -42,9 +42,6 @@ Classes
 .. autoclass :: Attachment
    :members:
 
-.. autoexception :: InvalidAttachment
-   :members:
-
 Components
 ----------
 

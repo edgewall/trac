@@ -49,13 +49,6 @@ from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
 
-class InvalidAttachment(TracError):
-    """Exception raised when attachment validation fails.
-
-    :since 1.3.2: deprecated and will be removed in 1.5.1
-    """
-
-
 class IAttachmentChangeListener(Interface):
     """Extension point interface for components that require
     notification when attachments are created, deleted, renamed
