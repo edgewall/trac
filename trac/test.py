@@ -453,38 +453,6 @@ class EnvironmentStub(Environment):
         except (TracError, self.db_exc.DatabaseError):
             pass
 
-    def clear_component_registry(self):
-        """Clear the component registry.
-
-        The registry entries are saved entries so they can be restored
-        later using the `restore_component_registry` method.
-
-        :since: 1.0.11
-        :since 1.3.2: Deprecated and will be removed in 1.5.1. Create
-                      components in `setUpClass` and remove them in
-                      `tearDownClass` using `ComponentMeta.deregister`.
-        """
-        self._old_registry = ComponentMeta._registry
-        self._old_components = ComponentMeta._components
-        ComponentMeta._registry = {}
-
-    def restore_component_registry(self):
-        """Restore the component registry.
-
-        The component registry must have been cleared and saved using
-        the `clear_component_registry` method.
-
-        :since: 1.0.11
-        :since 1.3.2: Deprecated and will be removed in 1.5.1. Create
-                      components in `setUpClass` and remove them in
-                      `tearDownClass` using `ComponentMeta.deregister`.
-        """
-        if self._old_registry is None:
-            raise TracError("The clear_component_registry method must be "
-                            "called first.")
-        ComponentMeta._registry = self._old_registry
-        ComponentMeta._components = self._old_components
-
     # tearDown helper
 
     def reset_db_and_disk(self):
