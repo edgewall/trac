@@ -54,7 +54,6 @@ $pgPassword = 'Password12!'
 
 $pipCommonPackages = @(
     'jinja2',
-    'genshi>=0.7',
     'babel',
     'twill==0.9.1',
     'docutils',

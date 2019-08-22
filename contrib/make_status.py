@@ -20,19 +20,12 @@ def _svn_version():
                core.SVN_VER_MICRO)
     return '%d.%d.%d' % version + core.SVN_VER_TAG
 
-def _genshi_version():
-    import genshi
-    return '%s (%s speedups)' % \
-           (genshi.__version__,
-            'with' if hasattr(genshi, '_speedups') else 'without')
-
 PACKAGES = [
     ("Python",            'sys.version'),
     ("Setuptools",        'setuptools.__version__'),
     ("Pip",               'pip.__version__'),
     ("Wheel",             'wheel.__version__'),
     ("Jinja2",            'jinja2.__version__'),
-    ("Genshi",            '__main__._genshi_version()'),
     ("Babel",             'babel.__version__'),
     ("sqlite3",           ('sqlite3.version',
                            'sqlite3.sqlite_version')),

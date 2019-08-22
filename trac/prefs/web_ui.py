@@ -97,16 +97,10 @@ class PreferencesModule(Component):
         children = []
         if child_panels.get(panel_id):
             for name, label in child_panels[panel_id]:
-                resp = providers[name].render_preference_panel(req, name)
-                ctemplate, cdata = resp[:2]
+                ctemplate, cdata = \
+                    providers[name].render_preference_panel(req, name)
                 cdata.update(session_data)
-                if len(resp) == 2:
-                    rendered = chrome.render_fragment(req, ctemplate, cdata)
-                else:
-                    # Backward compatibility with Genshi preference panels
-                    # TODO (1.5.1) remove
-                    rendered = chrome.render_template(req, ctemplate, cdata,
-                                                      None, fragment=True)
+                rendered = chrome.render_fragment(req, ctemplate, cdata)
                 children.append((name, label, rendered))
 
         resp = chosen_provider.render_preference_panel(req, panel_id)

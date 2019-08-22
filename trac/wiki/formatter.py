@@ -31,8 +31,8 @@ from trac.util.text import (
     unquote_label
 )
 from trac.util.html import (
-    Element, Fragment, Markup, Stream, TracHTMLSanitizer, escape, genshi,
-    plaintext, stream_to_unicode, tag, to_fragment
+    Element, Fragment, Markup, TracHTMLSanitizer, escape, plaintext, tag,
+    to_fragment
 )
 from trac.util.translation import _, tag_
 from trac.wiki.api import WikiSystem, parse_args
@@ -47,8 +47,6 @@ __all__ = ['Formatter', 'MacroError', 'ProcessorError',
 def _markup_to_unicode(markup):
     if isinstance(markup, Fragment):
         return Markup(markup)
-    elif genshi and isinstance(markup, Stream):
-        return stream_to_unicode(markup)
     else:
         return to_unicode(markup)
 

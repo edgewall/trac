@@ -26,31 +26,6 @@ import htmlentitydefs as entities
 
 from markupsafe import Markup, escape as escape_quotes
 
-"""Utilities for producing HTML content.
-
-Imports related to the legacy Genshi template engine should all go
-through this module:
-
-    from trac.util.html import genshi, Stream
-
-If Genshi is not installed, `genshi` and all related symbols will be
-`None`.
-
-"""
-
-try:
-    import genshi
-    import genshi.input
-    from genshi.core import Attrs, QName, Stream, COMMENT, START, END, TEXT
-    from genshi.input import ParseError
-    def stream_to_unicode(stream):
-        return Markup(stream.render('xhtml', encoding=None,
-                                    strip_whitespace=False))
-except ImportError:
-    genshi = stream_to_unicode = None
-    HTML = COMMENT = START = END = TEXT = Attrs = QName = Stream = None
-    ParseError = None
-
 try:
     from babel.support import LazyProxy
 except ImportError:
@@ -367,13 +342,9 @@ class Fragment(object):
         return Fragment(self, other)
 
     def append(self, arg):
-        global genshi
         if arg: # ignore most false values (None, False, [], (), ''), except 0!
             if isinstance(arg, (Fragment, basestring, int, float, long)):
                 self.children.append(arg)
-            elif genshi and isinstance(arg, Stream):
-                # legacy support for Genshi streams
-                self.children.append(stream_to_unicode(arg))
             else:
                 # support iterators and generators
                 try:
@@ -387,14 +358,6 @@ class Fragment(object):
     def as_text(self):
         return u''.join(c.as_text() if isinstance(c, Fragment) else unicode(c)
                         for c in self.children)
-
-    if genshi:
-        def __iter__(self):
-            """Genshi compatibility layer.
-
-            :deprecated: this will be removed in Trac 1.5.1.
-            """
-            yield TEXT, Markup(self), (None, -1, -1)
 
 
 class XMLElement(Fragment):
@@ -515,9 +478,6 @@ class TracHTMLSanitizer(object):
 
     The usual way to use the sanitizer is to call the `sanitize`
     method on some potentially unsafe HTML content.
-
-    Note that for backward compatibility, the TracHTMLSanitizer still
-    behaves as a Genshi filter.
 
     See also `genshi.HTMLSanitizer`_ from which the TracHTMLSanitizer
     has evolved.
@@ -654,40 +614,6 @@ class TracHTMLSanitizer(object):
         transform.close()
         return Markup(transform.out.getvalue())
 
-    if genshi:
-        def __call__(self, stream):
-            """Apply the filter to the given stream.
-
-            :deprecated: the ability to behave as a Genshi filter will be
-                         removed in Trac 1.5.1.
-
-            :param stream: the markup event stream to filter
-            """
-            waiting_for = None
-
-            for kind, data, pos in stream:
-                if kind is START:
-                    if waiting_for:
-                        continue
-                    tag, attrs = data
-                    if not self.is_safe_elem(tag, attrs):
-                        waiting_for = tag
-                        continue
-                    new_attrs = self.sanitize_attrs(tag, dict(attrs))
-                    yield kind, (tag, Attrs(new_attrs.iteritems())), pos
-
-                elif kind is END:
-                    tag = data
-                    if waiting_for:
-                        if waiting_for == tag:
-                            waiting_for = None
-                    else:
-                        yield kind, data, pos
-
-                elif kind is not COMMENT:
-                    if not waiting_for:
-                        yield kind, data, pos
-
     def is_safe_css(self, prop, value):
         """Determine whether the given css property declaration is to be
         considered safe for inclusion in the output.
@@ -708,26 +634,17 @@ class TracHTMLSanitizer(object):
         inclusion in the output.
 
         :param tag: the tag name of the element
-        :type tag: QName or basestring
+        :type tag: basestring
         :param attrs: the element attributes
-        :type attrs: Attrs or list
+        :type attrs: list
         :return: whether the element should be considered safe
         :rtype: bool
 
         """
         if tag not in self.safe_tags:
             return False
-        if hasattr(tag, 'localname'): # in Genshi QName
-            tag = tag.localname
-        if tag == 'input':
-            # TODO (1.5.1) no more Attrs
-            if Attrs and isinstance(attrs, Attrs):
-                input_type = attrs.get('type', '').lower()
-                if input_type == 'password':
-                    return False
-            else:
-                if ('type', 'password') in attrs:
-                    return False
+        if tag == 'input' and ('type', 'password') in attrs:
+            return False
         return True
 
     def is_safe_uri(self, uri):
@@ -785,8 +702,6 @@ class TracHTMLSanitizer(object):
         if tag == 'img' and 'src' in new_attrs and \
                 not self._is_safe_origin(new_attrs['src']):
             attr = 'crossorigin'
-            if QName and isinstance(tag, QName):
-                attr = QName(attr)
             new_attrs[attr] = 'anonymous'
         return new_attrs
 
@@ -1203,72 +1118,3 @@ def _html_parser_unescape(s):
 
     return _reference_re.sub(repl, s)
 
-
-if genshi:
-    class GenshiHTMLParserFixup(genshi.input.HTMLParser):
-
-        def handle_starttag(self, tag, attrib):
-            fixed_attrib = [(QName(name), name if value is None else value)
-                            for name, value in attrib]
-            self._enqueue(START, (QName(tag), Attrs(fixed_attrib)))
-            if tag in self._EMPTY_ELEMS:
-                self._enqueue(END, QName(tag))
-            else:
-                self._open_tags.append(tag)
-
-        def handle_charref(self, name):
-            if name.startswith(('x', 'X')):
-                codepoint = int(name[1:], 16)
-            else:
-                codepoint = int(name)
-            if 0 <= codepoint <= 0x10ffff:
-                text = _unichr(codepoint)
-            else:
-                text = '&#%s;' % name
-            self._enqueue(TEXT, text)
-
-        def handle_entityref(self, name):
-            text = None
-            try:
-                codepoint = _name2codepoint[name]
-            except KeyError:
-                pass
-            else:
-                if 0 <= codepoint <= 0x10ffff:
-                    text = _unichr(codepoint)
-            self._enqueue(TEXT, text or '&%s;' % name)
-
-        def unescape(self, s):
-            return _html_parser_unescape(s)
-
-
-    def HTML(text, encoding=None):
-        if isinstance(text, unicode):
-            f = io.StringIO(text)
-            encoding = None
-        else:
-            f = io.BytesIO(text)
-        parser = GenshiHTMLParserFixup(f, encoding=encoding)
-        return Stream(list(parser))
-
-
-    def expand_markup(stream, ctxt=None):
-        """A Genshi stream filter for expanding `genshi.Markup` events.
-
-        :deprecated: will be removed in Trac 1.5.1.
-
-        Note: Expansion may not be possible if the fragment is badly
-        formed, or partial.
-
-        """
-        for event in stream:
-            if isinstance(event[1], Markup):
-                try:
-                    for subevent in HTML(event[1]):
-                        yield subevent
-                except ParseError:
-                    yield event
-            else:
-                yield event
-else:
-    expand_markup = None

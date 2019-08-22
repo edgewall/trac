@@ -90,7 +90,3 @@ Misc. HTML processing
 .. autofunction :: to_fragment
 .. autofunction :: valid_html_bytes
 .. autofunction :: to_fragment
-
-Kept for backward compatibility purposes:
-
-.. autofunction :: expand_markup

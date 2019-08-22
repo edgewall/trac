@@ -249,8 +249,8 @@ class RequestDispatcher(Component):
             # Process the request and render the template
             resp = chosen_handler.process_request(req)
             if resp:
-                resp = self._post_process_request(req, *resp)
-                template, data, metadata, method = resp
+                template, data, metadata = \
+                    self._post_process_request(req, *resp)
                 if 'hdfdump' in req.args:
                     req.perm.require('TRAC_ADMIN')
                     # debugging helper - no need to render first
@@ -260,16 +260,9 @@ class RequestDispatcher(Component):
                             'data': data}, out)
                     req.send(out.getvalue(), 'text/plain')
                 self.log.debug("Rendering response with template %s", template)
-                iterable = chrome.use_chunked_encoding
-                if isinstance(metadata, dict):
-                    iterable = metadata.setdefault('iterable', iterable)
-                    content_type = metadata.get('content_type')
-                else:
-                    content_type = metadata
-                output = chrome.render_template(req, template, data, metadata,
-                                                iterable=iterable,
-                                                method=method)
-                # TODO (1.5.1) remove iterable and method parameters
+                metadata.setdefault('iterable', chrome.use_chunked_encoding)
+                content_type = metadata.get('content_type')
+                output = chrome.render_template(req, template, data, metadata)
                 req.send(output, content_type or 'text/html')
             else:
                 self.log.debug("Empty or no response from handler. "
@@ -463,39 +456,18 @@ class RequestDispatcher(Component):
         return chosen_handler
 
     def _post_process_request(self, req, *args):
-        resp = args
-        # `metadata` and the backward compatibility `method` are
-        # optional in IRequestHandler's response. If not specified,
-        # the default value is appended to response.
         metadata = {}
-        method = None
-        if len(resp) == 2:
-            resp += (metadata, None)
-        elif len(resp) == 3:
-            metadata = resp[2]
-            resp += (None,)
-        elif len(resp) == 4:
-            metadata = resp[2]
-            method = resp[3]
-        if method and isinstance(metadata, dict):
-            metadata['method'] = method
-        nbargs = len(resp)
+        resp = args
+        if len(args) == 3:
+            metadata = args[2]
+        elif len(args) == 2:
+            resp += (metadata,)
+        elif len(args) == 0:
+            resp = (None,) * 3
         for f in reversed(self.filters):
-            # As the arity of `post_process_request` has changed since
-            # Trac 0.10, only filters with same arity gets passed real values.
-            # Errors will call all filters with None arguments,
-            # and results will not be not saved.
-            extra_arg_count = arity(f.post_process_request) - 1
-            if extra_arg_count == nbargs:
-                resp = f.post_process_request(req, *resp)
-            elif extra_arg_count == nbargs - 1:
-                # IRequestFilters may modify the `method`, but the `method`
-                # is forwarded when not accepted by the IRequestFilter.
-                method = resp[-1]
-                resp = f.post_process_request(req, *resp[:-1])
-                resp += (method,)
-            elif nbargs == 0:
-                f.post_process_request(req, *(None,) * extra_arg_count)
+            resp = f.post_process_request(req, *resp)
+            if len(resp) == 2:
+                resp += (metadata,)
         return resp
 
 

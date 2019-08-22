@@ -75,7 +75,7 @@ setup(
 
     packages = find_packages(exclude=['*.tests', 'tests.*', '*.tests.*']),
     package_data = {
-        '': ['templates/*.*', 'templates/genshi/*'],
+        '': ['templates/*.*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*.*',
                  'htdocs/js/messages/*.*', 'htdocs/css/*.*',
                  'htdocs/css/jquery-ui/*.*',
@@ -98,7 +98,6 @@ setup(
         'jinja2>=2.9.3',
     ],
     extras_require = {
-        'genshi': ['Genshi>=0.7'],
         'babel': ['Babel>=0.9.5'],
         'mysql': ['PyMySQL'],
         'postgresql': ['psycopg2 >= 2.0'],

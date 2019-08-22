@@ -25,22 +25,12 @@ other forms of web content are also using facilities provided here.
 from contextlib import contextmanager
 import datetime
 import itertools
-import io
 import operator
 import os.path
 import pkg_resources
 import pprint
 import re
 from functools import partial
-
-# Legacy Genshi support
-from trac.util.html import genshi
-if genshi:
-    from genshi.core import Attrs, START
-    from genshi.filters import Translator
-    from genshi.input import HTML
-    from genshi.output import DocType
-    from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
 from jinja2 import FileSystemLoader
 
@@ -66,7 +56,7 @@ from trac.util.datefmt import (
     get_first_week_day_jquery_ui, get_timepicker_separator_jquery_ui,
     get_period_names_jquery_ui, localtz)
 from trac.util.translation import _, get_available_locales
-from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
+from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
@@ -432,7 +422,6 @@ class Chrome(Component):
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
-    stream_filters = ExtensionPoint(ITemplateStreamFilter)  # TODO (1.5.1): del
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the //shared templates directory//.
@@ -459,15 +448,6 @@ class Chrome(Component):
 
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
-
-    genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
-        """The maximum number of templates that the template loader will cache
-        in memory. You may want to choose a higher value if your site uses a
-        larger number of templates, and you have enough memory to spare, or
-        you can reduce it if you are short on memory.
-
-        (''deprecated, will be removed in Trac 1.5.1'')
-        """)
 
     htdocs_location = Option('trac', 'htdocs_location', '',
         """Base URL for serving the core static resources below
@@ -661,24 +641,9 @@ class Chrome(Component):
         'utc': utc,
     }
 
-    def __init__(self):
-        self._warned_stream_filters = set()
-        self._warned_genshi_templates = set()
-
     # ISystemInfoProvider methods
 
     def get_system_info(self):
-        global genshi
-        # Optional and legacy Genshi
-        if genshi:
-            info = get_pkginfo(genshi).get('version')
-            if hasattr(genshi, '_speedups'):
-                info += ' (with speedups)'
-            else:
-                info += ' (without speedups)'
-        else:
-            info = '(not installed, some old plugins may not work as expected)'
-        yield 'Genshi', info
         # Mandatory Jinja2
         import jinja2
         info = get_pkginfo(jinja2).get('version')
@@ -790,8 +755,7 @@ class Chrome(Component):
         return filter(None, [
             self.env.templates_dir,
             self.shared_templates_dir,
-            # pkg_resources.resource_filename('trac', 'templates'),
-            # TODO (1.5.1) reenable
+            pkg_resources.resource_filename('trac', 'templates'),
         ])
 
     # IWikiSyntaxProvider methods
@@ -1185,7 +1149,7 @@ class Chrome(Component):
         })
         add_script(req, 'common/js/jquery-ui-i18n.js')
 
-    # Template data (Jinja2 + legacy Genshi)
+    # Template data (Jinja2)
 
     def populate_data(self, req=None, data=None, d=None):
         """Fills a dictionary with the standard set of fields expected
@@ -1338,7 +1302,7 @@ class Chrome(Component):
             d.update(data)
         return d
 
-    # Template rendering (Jinja2 + legacy Genshi)
+    # Template rendering (Jinja2)
 
     def load_template(self, filename, text=False):
         """Retrieves a template with the given name.
@@ -1350,34 +1314,7 @@ class Chrome(Component):
 
         :param text: in text mode (``True``) XML/HTML auto-escape of
                      variable expansion is disabled.
-
-        .. note::
-
-           If the `text` argument is set to a string instead of a
-           boolean, this corresponds to the legacy API and it will be
-           assumed that you want to load a Genshi template instead of
-           a Jinja2 template. If *text* is ``'text'`` , a
-           `NewTextTemplate` instance will be created. If it is set to
-           ``None`` or to another string value, a `MarkupTemplate`
-           instance will be created and returned.
-
-           This backward compatibility behavior will be removed in
-           Trac 1.5.1.
-
         """
-        if text in (True, False):
-            return self._load_jinja_template(filename, text)
-        elif genshi:
-            return self._load_genshi_template(filename, text)
-
-    def _load_jinja_template(self, filename, text=False):
-        """Retrieves the Jinja2 `Template` corresponding to the given name.
-
-        Also responsible for initializing the main Jinja2
-        `Environment`s on first use.
-
-        """
-        # TODO (1.5.1) merge in `load_template`
         if not self.jenv:
             jinja2_dirs = [
                 pkg_resources.resource_filename('trac', 'templates')
@@ -1394,86 +1331,42 @@ class Chrome(Component):
             self.jenv_text = self.jenv.overlay(autoescape=False)
         return (self.jenv_text if text else self.jenv).get_template(filename)
 
-    def render_template(self, req, filename, data, metadata=None,
-                        fragment=False, iterable=False, method=None):
+    def render_template(self, req, filename, data, metadata):
         """Renders the ``filename`` template using ``data`` for the context.
 
         It attempts to load a Jinja2 template, augments the provided
         *data* with standard data, and renders it according to the
         options provided in *metadata*.
 
-        The ``fragment``, ``iterable`` and ``method`` parameters are
-        deprecated and will be removed in Trac 1.5.1. Instead, use
-        the ``metadata`` dictionary with keys with the same name. The
-        ``method`` key is itself deprecated, use ``text=True`` instead
-        of ``method='text'`` to indicate that the template is a plain
-        text one, with no need for HTML/XML escaping to take place.
+        The options that can be specified in ``metadata`` are
+        ``content_type``, ``text``, ``domain``, ``fragment`` and ``iterable``.
 
-        When ``fragment`` is specified, or ``method`` is ``'text'``,
-        or ``text`` is ``True``, we generate some content which does
-        not need all of the chrome related data, typically HTML
-        fragments, XML or plain text.
+        When ``fragment`` is ``True``, or ``text`` is ``True``, we generate
+        some content which does not need all of the chrome related data,
+        typically HTML fragments, XML or plain text.
 
-        If ``iterable`` is set, we use `generate_template_stream` to
+        If ``iterable`` is ``True``, we use `generate_template_stream` to
         produce the output (iterable of UTF-8 encoded bytes),
         otherwise we use `render_template_string` and UTF-8 encode the
         result.
 
-        .. note::
-
-           If the Jinja2 template is not found, this method will try
-           to load a Genshi template instead.
-
-           Also if ``metadata`` is *not* a dictionary, we assume that
-           it is the ``content_type`` value from the legacy API (a
-           string or `None`). As a consequence, we assume the template
-           will be a Genshi template and we'll use the legacy Genshi
-           template engine for the rendering.
-
-           This backward compatibility behavior will be removed in
-           Trac 1.5.1.
-
+        :since 1.5.1: The ``fragment``, ``iterable`` and ``method`` parameters
+            have been removed. Use the ``metadata`` dictionary with keys of
+            the same name. The ``method`` key of ``metadata`` is no longer
+            supported, use ``text=True`` to indicate that the template is a
+            plain text one, with no need for HTML/XML escaping to take place.
         """
-        # TODO (1.5.1) merge with _render_jinja_template
-        if isinstance(metadata, dict):
-            return self._render_jinja_template(req, filename, data, metadata,
-                                               fragment, iterable, method)
-        elif not genshi:
-            self.log.error("Genshi template (%s) detected but "
-                           "Genshi is not installed", filename)
-            raise TracError(
-                _("Legacy Genshi template needs the 'genshi' package to be "
-                  "installed. Please contact your Trac administrator."))
-
-        return self._render_genshi_template(req, filename, data, metadata,
-                                            fragment, iterable, method)
-
-    def _render_jinja_template(self, req, filename, data, metadata=None,
-                               fragment=False, iterable=False, method=None):
-        """Render the `filename` using the `data` for the context.
-
-        TODO (1.5.1): merge into render_template
-
-        """
-        content_type = text = domain = None
-
-        if metadata:
-            content_type = metadata.get('content_type')
-            text = metadata.get('text')
-            domain = metadata.get('domain')
-            if fragment is False:
-                fragment = metadata.get('fragment')
-            if iterable is False:
-                iterable = metadata.get('iterable')
-            if method is None:
-                method = metadata.get('method')
+        content_type = metadata.get('content_type')
+        text = metadata.get('text')
+        domain = metadata.get('domain')
+        fragment = metadata.get('fragment')
+        iterable = metadata.get('iterable')
 
         if content_type is None:
             content_type = 'text/html'
 
-        if method is None:
-            method = {'text/html': 'html',
-                      'text/plain': 'text'}.get(content_type, 'xml')
+        method = {'text/html': 'html',
+                  'text/plain': 'text'}.get(content_type, 'xml')
 
         if method == "html":
             # Retrieve post-redirect messages saved in session
@@ -1492,30 +1385,6 @@ class Chrome(Component):
 
         template, data = self.prepare_template(req, filename, data, text,
                                                domain)
-
-        # TODO (1.5.1) - have another try at simplifying all this...
-        # With Jinja2, it's certainly possible to do things
-        # differently, but for as long as we have to support Genshi,
-        # better keep one way.
-        links = req.chrome.get('links')
-        scripts = req.chrome.get('scripts')
-        script_data = req.chrome.get('script_data')
-        req.chrome.update({'early_links': links, 'early_scripts': scripts,
-                           'early_script_data': script_data,
-                           'links': {}, 'scripts': [], 'script_data': {}})
-        data.setdefault('chrome', {}).update({
-            'late_links': req.chrome['links'],
-            'late_scripts': req.chrome['scripts'],
-            'late_script_data': req.chrome['script_data'],
-        })
-
-        # Hack for supporting Genshi stream filters - TODO (1.5.1) remove
-        if genshi and self._check_for_stream_filters(req, method, filename,
-                                                     data):
-            page = self.render_template_string(template, data, text)
-            return self._filter_jinja_page(req, page, method, filename,
-                                           content_type, data, fragment,
-                                           iterable)
 
         if fragment or text:
             if iterable:
@@ -1601,7 +1470,7 @@ class Chrome(Component):
         :rtype: a pair of Jinja2 `Template` and a `dict`.
 
         """
-        template = self._load_jinja_template(filename, text)
+        template = self.load_template(filename, text)
         if domain:
             symbols = list(translation.functions)
             domain_functions = translation.domain_functions(domain, symbols)
@@ -1640,7 +1509,7 @@ class Chrome(Component):
         stream = template.stream(data)
         stream.enable_buffering(75)  # buffer_size
         if iterable or iterable is None and self.use_chunked_encoding:
-            return self._iterable_jinja_content(stream, text)
+            return self.iterable_content(stream, text)
         else:
             if text:
                 def generate():
@@ -1680,21 +1549,7 @@ class Chrome(Component):
 
         :param text: in text mode (``True``) XML/HTML auto-escape of
                      variable expansion is disabled.
-
-        .. note:
-
-        If text is a string, this corresponds to the old API and we
-        assume to have a Genshi stream. This backward compatibility
-        behavior will be removed in Trac 1.5.1.
-
         """
-        if text in (True, False):
-            return self._iterable_jinja_content(stream, text)
-        elif genshi:
-            return self._iterable_genshi_content(stream, text, **kwargs)
-
-    def _iterable_jinja_content(self, stream, text):
-        # TODO (1.5.1) merge with iterable_content
         try:
             if text:
                 for chunk in stream:
@@ -1710,237 +1565,3 @@ class Chrome(Component):
                            'text' if text else 'XML/HTML',
                            exception_to_unicode(e, traceback=True))
 
-    # Template rendering (legacy Genshi support) - TODO (1.5.1) remove
-
-    if genshi:
-        # DocType for 'text/html' output
-        html_doctype = DocType.XHTML_STRICT
-
-        def _load_genshi_template(self, filename, method=None):
-            if not self.templates:
-                genshi_dirs = [
-                    pkg_resources.resource_filename('trac', 'templates/genshi')
-                ] + self.get_all_templates_dirs()
-                self.templates = TemplateLoader(
-                    genshi_dirs,
-                    auto_reload=self.auto_reload,
-                    max_cache_size=self.genshi_cache_size,
-                    default_encoding="utf-8",
-                    variable_lookup='lenient', callback=lambda template:
-                    Translator(translation.get_translations()).setup(template))
-
-            if method == 'text':
-                cls = NewTextTemplate
-            else:
-                cls = MarkupTemplate
-            return self.templates.load(filename, cls=cls)
-
-        def _get_genshi_data(self):
-            def classes(*args, **kwargs):
-                s = presentation.classes(*args, **kwargs)
-                return s or None
-            def styles(*args, **kwargs):
-                s = presentation.styles(*args, **kwargs)
-                return s or None
-            d = self._default_context_data.copy()
-            d.update({
-                'classes': classes,
-                'first_last': presentation.first_last,
-                'group': presentation.group,
-                'istext': presentation.istext,
-                'paginate': presentation.paginate,
-                'separated': presentation.separated,
-                'styles': styles,
-                'to_json': presentation.to_json,
-            })
-            d.update(translation.functions)
-            return d
-
-        def _render_genshi_template(self, req, filename, data,
-                                    content_type=None, fragment=False,
-                                    iterable=False, method=None):
-            if filename not in self._warned_genshi_templates:
-                self.log.warning("Rendering Genshi template '%s' (convert to "
-                                 "Jinja2 before Trac 1.5.1)", filename)
-                self._warned_genshi_templates.add(filename)
-            if content_type is None:
-                content_type = 'text/html'
-
-            if method is None:
-                method = {'text/html': 'html',
-                          'text/plain': 'text'}.get(content_type, 'xml')
-
-            if method == "html":
-                # Retrieve post-redirect messages saved in session
-                for type_ in ['warnings', 'notices']:
-                    try:
-                        for i in itertools.count():
-                            message = Markup(req.session.pop('chrome.%s.%d'
-                                                             % (type_, i)))
-                            if message not in req.chrome[type_]:
-                                req.chrome[type_].append(message)
-                    except KeyError:
-                        pass
-
-            template = self.load_template(filename, method)
-
-            # Populate data with request dependent data
-            data = self.populate_data(req, data, self._get_genshi_data())
-            data['chrome']['content_type'] = content_type
-            stream = template.generate(**data)
-            # Filter through ITemplateStreamFilter plugins
-            if self.stream_filters:
-                stream |= self._filter_stream(req, method, filename, data)
-            if fragment:
-                return stream
-
-            doctype = None
-            if content_type == 'text/html':
-                doctype = self.html_doctype
-                if req.form_token:
-                    stream |= self._add_form_token(req.form_token)
-                if not req.session.as_int('accesskeys'):
-                    stream |= self._strip_accesskeys
-
-            return self._send_genshi_content(req, stream, filename, method,
-                                             doctype, data, iterable)
-
-        def _send_genshi_content(self, req, stream, filename, method, doctype,
-                                 data, iterable):
-            if method == 'text':
-                buffer = io.BytesIO()
-                stream.render('text', out=buffer, encoding='utf-8')
-                return buffer.getvalue()
-
-            links = req.chrome.get('links')
-            scripts = req.chrome.get('scripts')
-            script_data = req.chrome.get('script_data')
-            req.chrome.update({'early_links': links, 'early_scripts': scripts,
-                               'early_script_data': script_data,
-                               'links': {}, 'scripts': [], 'script_data': {}})
-            data.setdefault('chrome', {}).update({
-                'late_links': req.chrome['links'],
-                'late_scripts': req.chrome['scripts'],
-                'late_script_data': req.chrome['script_data'],
-            })
-
-            if iterable:
-                return self.iterable_content(stream, method, doctype=doctype)
-
-            try:
-                buffer = io.BytesIO()
-                stream.render(method, doctype=doctype, out=buffer,
-                              encoding='utf-8')
-                return valid_html_bytes(buffer.getvalue())
-            except Exception as e:
-                # restore what may be needed by the error template
-                req.chrome.update({'early_links': None, 'early_scripts': None,
-                                   'early_script_data': None, 'links': links,
-                                   'scripts': scripts,
-                                   'script_data': script_data})
-                # give some hints when hitting a Genshi unicode error
-                if isinstance(e, UnicodeError):
-                    pos = self._stream_location(stream)
-                    if pos:
-                        location = "'%s', line %s, char %s" % pos
-                    else:
-                        location = '%s %s' % (filename,
-                                              _("(unknown template location)"))
-                    raise TracError(_("Genshi %(error)s error while rendering "
-                                      "template %(location)s",
-                                      error=e.__class__.__name__,
-                                      location=location))
-                raise
-
-        def _iterable_genshi_content(self, stream, method, **kwargs):
-            """Generate an iterable object which iterates `str` instances
-            from the given stream instance.
-
-            :param method: the serialization method; can be either "xml",
-                           "xhtml", "html", "text", or a custom serializer
-                           class
-            """
-            try:
-                if method == 'text':
-                    for chunk in stream.serialize(method, **kwargs):
-                        yield chunk.encode('utf-8')
-                else:
-                    for chunk in stream.serialize(method, **kwargs):
-                        yield valid_html_bytes(chunk.encode('utf-8'))
-            except Exception as e:
-                pos = self._stream_location(stream)
-                if pos:
-                    location = "'%s', line %s, char %s" % pos
-                else:
-                    location = '(unknown template location)'
-                self.log.error('Genshi %s error while rendering template %s%s',
-                               e.__class__.__name__, location,
-                               exception_to_unicode(e, traceback=True))
-
-        # Genshi Template filters
-
-        def _add_form_token(self, token):
-            from genshi.builder import tag as gtag
-            elem = gtag.div(
-                gtag.input(type='hidden', name='__FORM_TOKEN', value=token)
-            )
-            def _generate(stream, ctxt=None):
-                for kind, data, pos in stream:
-                    if kind is START and data[0].localname == 'form' \
-                            and data[1].get('method', '').lower() == 'post':
-                        yield kind, data, pos
-                        for event in elem.generate():
-                            yield event
-                    else:
-                        yield kind, data, pos
-            return _generate
-
-        def _strip_accesskeys(self, stream, ctxt=None):
-            for kind, data, pos in stream:
-                if kind is START and 'accesskey' in data[1]:
-                    data = data[0], Attrs([(k, v) for k, v in data[1]
-                                           if k != 'accesskey'])
-                yield kind, data, pos
-
-        def _filter_stream(self, req, method, filename, data):
-            def inner(stream, ctxt=None):
-                for filter in self.stream_filters:
-                    stream = filter.filter_stream(req, method, filename,
-                                                  stream, data)
-                return stream
-            return inner
-
-        def _stream_location(self, stream):
-            for kind, data, pos in stream:
-                return pos
-
-        def _check_for_stream_filters(self, req, method, filename, data):
-            class FakeStream(object):
-                def __or__(self, x):
-                    raise GenshiStreamFilterUsed()
-            class GenshiStreamFilterUsed(Exception):
-                pass
-            stream = FakeStream()
-            for filter in self.stream_filters:
-                try:
-                    stream = filter.filter_stream(req, method, filename,
-                                                  stream, data)
-                except GenshiStreamFilterUsed:
-                    name = filter.__class__.__name__
-                    if name not in self._warned_stream_filters:
-                        self.log.warning("Component %s relies on deprecated"
-                                         " Genshi stream filtering", name)
-                        self._warned_stream_filters.add(name)
-                    return True
-            return False
-
-        def _filter_jinja_page(self, req, content, method, filename,
-                               content_type, data, fragment, iterable):
-            doctype = self.html_doctype if content_type == 'text/html' else None
-            stream = HTML(content)
-            stream |= self._filter_stream(req, method, filename, data)
-            if fragment:
-                return stream
-            else:
-                return self._send_genshi_content(req, stream, filename, method,
-                                                 doctype, data, iterable)

@@ -15,7 +15,7 @@ import os
 import unittest
 
 from trac.core import Component, TracError, implements
-from trac.util.html import genshi, html
+from trac.util.html import html
 from trac.util.translation import tag_
 from trac.wiki.api import IWikiMacroProvider, IWikiSyntaxProvider
 from trac.wiki.formatter import MacroError, ProcessorError
@@ -110,20 +110,15 @@ class DivCodeElementMacro(WikiMacroBase):
 
 
 class DivCodeStreamMacro(WikiMacroBase):
-    """A dummy macro returning a Genshi Stream, used by the unit test."""
+    """A dummy macro returning a template, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         template = """
             <div>Hello World, args = ${args}</div>
             """
-        if genshi:
-            from genshi.template import MarkupTemplate
-            tmpl = MarkupTemplate(template)
-            return tmpl.generate(args=content)
-        else:
-            from trac.util.text import jinja2template
-            tmpl = jinja2template(template.strip())
-            return tmpl.render(args=content)
+        from trac.util.text import jinja2template
+        tmpl = jinja2template(template.strip())
+        return tmpl.render(args=content)
 
 
 class NoneMacro(WikiMacroBase):

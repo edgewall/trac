@@ -23,14 +23,8 @@ from trac.ticket.report import Report, ReportModule
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
-from trac.util.html import genshi
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
-
-if genshi:
-    from genshi.input import XML
-else:
-    XML = None
 
 
 class ReportModuleTestCase(unittest.TestCase):
@@ -393,8 +387,6 @@ class ReportModuleTestCase(unittest.TestCase):
                                  r'<tr[^>]*>\s*'
                                  r'<td class="fullrow baz" colspan="100">'
                                  r'\s*blah\s*<hr />\s*</td>\s*</tr>')
-        if genshi:
-            XML(rendered)  # validates as XML
 
     def test_timestamp_columns(self):
         req = MockRequest(self.env, method='POST', path_info='/report', args={

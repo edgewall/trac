@@ -22,19 +22,12 @@ time during install.
 """
 
 from HTMLParser import HTMLParser
-from itertools import izip
 import io
 import os
 import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
 
 from jinja2.ext import babel_extract as jinja2_extractor
-
-try:
-    import genshi
-    from genshi.filters.i18n import extract as genshi_extractor
-except ImportError:
-    genshi = None
 
 from distutils import log as distlog
 from distutils.cmd import Command
@@ -100,9 +93,6 @@ try:
     from babel.messages.pofile import read_po
     from babel.support import Translations
     from babel.util import parse_encoding
-
-    _GENSHI_MARKUP_SEARCH = re.compile(r'\[[0-9]+:').search
-
 
     _DEFAULT_KWARGS_MAPS = {
         'Option': {'doc': 4},
@@ -288,50 +278,28 @@ try:
         return extract_javascript(out, keywords, comment_tags, options)
 
 
-    def extract_html(fileobj, keywords, comment_tags, options, text=False):
+    def extract_html(fileobj, keywords, comment_tags, options):
         """Extracts translatable texts from templates.
 
         We simplify white-space found in translatable texts collected
         via the ``gettext`` function (which is what the ``trans``
-        directives use) and for text in the legacy Genshi templates,
-        otherwise we would have near duplicates (e.g. admin.html,
-        prefs.html).
+        directives use), otherwise we would have near duplicates
+        (e.g. admin.html, prefs.html).
 
         We assume the template function ``gettext`` will do the same
         before trying to fetch the translation from the catalog.
 
         """
-        extractor = None
-        # TODO (1.5.1) remove genshi support
         if fileobj:
-            if 'xmlns:py="http://genshi.edgewall.org/"' in fileobj.read():
-                if not genshi:
-                    raise ValueError("Cannot extract messages from a legacy "
-                                     "Genshi template because Genshi is "
-                                     "not installed.")
-                if text:
-                    options.update(template_class=
-                                   'genshi.template:NewTextTemplate')
-                extractor = genshi_extractor
-            else:
-                extractor = jinja2_extractor
+            extractor = jinja2_extractor
             fileobj.seek(0)
             for m in extractor(fileobj, keywords, comment_tags, options):
                 # lineno, func, message, comments = m
                 if m[1] in ('gettext', None):
-                    #   (Jinja2 trans, Genshi)
+                    # Jinja2 trans
                     yield m[0], m[1], simplify_message(m[2]), m[3]
                 else:
                     yield m
-
-    def extract_text(fileobj, keywords, comment_tags, options):
-        """Extract messages from Genshi or Jinja2 text templates.
-
-        This is only needed as an interim measure, as long as we have both.
-        """
-        for m in extract_html(fileobj, keywords, comment_tags, options,
-                              text=True):
-            yield m
 
 
     class generate_messages_js(Command):
@@ -476,11 +444,6 @@ try:
                 yield e
             for e in check_markup(catalog, message):
                 yield e
-            if genshi: # TODO (1.5.1) remove
-                try:
-                    check_genshi_markup(catalog, message)
-                except TranslationError as e:
-                    yield e
 
     def check_markup(catalog, message):
         """Verify markups in the translation."""
@@ -648,46 +611,6 @@ try:
             'update_catalog_tracini': update_catalog,
             'check_catalog_tracini': check_catalog,
         }
-
-    # TODO (1.5.1) remove
-    if genshi:
-        def check_genshi_markup(catalog, message):
-            """Verify the genshi markups in the translation."""
-            msgids = message.id
-            if not isinstance(msgids, (list, tuple)):
-                msgids = (msgids,)
-            msgstrs = message.string
-            if not isinstance(msgstrs, (list, tuple)):
-                msgstrs = (msgstrs,)
-
-            # check using genshi-markup
-            if not _GENSHI_MARKUP_SEARCH(msgids[0]):
-                return
-
-            for msgid, msgstr in izip(msgids, msgstrs):
-                if msgstr:
-                    _validate_genshi_markup(msgid, msgstr)
-
-
-        def _validate_genshi_markup(markup, alternative):
-            indices_markup = _parse_genshi_markup(markup)
-            indices_alternative = _parse_genshi_markup(alternative)
-            indices = indices_markup - indices_alternative
-            if indices:
-                raise TranslationError(
-                    'genshi markups are unbalanced %s' %
-                    ' '.join('[%d:]' % idx for idx in indices))
-
-
-        def _parse_genshi_markup(message):
-            from genshi.filters.i18n import parse_msg
-            try:
-                return {idx for idx, text in parse_msg(message) if idx > 0}
-            except Exception as e:
-                raise TranslationError('cannot parse message (%s: %s)' % \
-                                       (e.__class__.__name__, unicode(e)))
-
-
 
 except ImportError:
     def get_l10n_cmdclass():

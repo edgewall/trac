@@ -86,7 +86,7 @@ install:
   fi
 - |
   requires='Jinja2 lxml twill==0.9.1'
-  if [ "$build" != minimum ]; then requires="$requires Genshi>=0.7 Babel Pygments docutils textile pytz"; fi
+  if [ "$build" != minimum ]; then requires="$requires Babel Pygments docutils textile pytz"; fi
   if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
   if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
   pip install $requires

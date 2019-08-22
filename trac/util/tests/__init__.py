@@ -228,18 +228,6 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
         self.assertEqual(pkginfo, util.get_pkginfo(core))
         self.assertEqual(pkginfo, util.get_pkginfo(tracopt))
 
-    def test_get_pkginfo_genshi(self):
-        try:
-            import genshi
-            import genshi.core
-            dist = pkg_resources.get_distribution('Genshi')
-        except:
-            pass
-        else:
-            pkginfo = util.get_pkginfo(genshi)
-            self.assertNotEqual({}, pkginfo)
-            self.assertEqual(pkginfo, util.get_pkginfo(genshi.core))
-
     def test_get_pkginfo_babel(self):
         try:
             import babel

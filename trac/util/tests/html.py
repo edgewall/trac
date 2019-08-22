@@ -21,9 +21,9 @@ import unittest
 from trac.core import TracError
 from trac.util import html
 from trac.util.html import (
-    Element, FormTokenInjector, Fragment, HTML, Markup, TracHTMLSanitizer,
-    escape, find_element, genshi, html_attribute, is_safe_origin,
-    tag, to_fragment, xml
+    Element, FormTokenInjector, Fragment, Markup, TracHTMLSanitizer,
+    escape, find_element, html_attribute, is_safe_origin, tag,
+    to_fragment, xml
 )
 from trac.util.translation import gettext, tgettext
 
@@ -373,21 +373,6 @@ class TracHTMLSanitizerTestCase(TracHTMLSanitizerTestCaseBase):
              '<p>&#38;&#60;&#62;&#34;&#39;</p>')
 
 
-if genshi:
-    class TracHTMLSanitizerLegacyGenshiTestCase(TracHTMLSanitizerTestCaseBase):
-        def sanitize(self, html):
-            sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes,
-                                          safe_origins=self.safe_origins)
-            return unicode(HTML(html, encoding='utf-8') | sanitizer)
-
-        def test_special_characters_data_genshi(self):
-            test = self._assert_sanitize
-            test('''<p>&amp;&lt;&gt;"'</p>''',
-                 '<p>&amp;&lt;&gt;&quot;&apos;</p>')
-            test('''<p>&amp;&lt;&gt;"'</p>''',
-                 '<p>&#38;&#60;&#62;&#34;&#39;</p>')
-
-
 class FindElementTestCase(unittest.TestCase):
 
     def test_find_element_with_tag(self):
@@ -589,8 +574,6 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ElementTestCase))
     suite.addTest(unittest.makeSuite(FormTokenInjectorTestCase))
     suite.addTest(unittest.makeSuite(TracHTMLSanitizerTestCase))
-    if genshi:
-        suite.addTest(unittest.makeSuite(TracHTMLSanitizerLegacyGenshiTestCase))
     suite.addTest(unittest.makeSuite(FindElementTestCase))
     suite.addTest(unittest.makeSuite(IsSafeOriginTestCase))
     suite.addTest(unittest.makeSuite(ToFragmentTestCase))

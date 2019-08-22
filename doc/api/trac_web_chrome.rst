@@ -22,9 +22,8 @@ Components
 ----------
 
 The `Chrome` component is in charge of generating the content of the
-pages, with the help of template engines. The default engine for Trac
-1.4 is Jinja2_, though we'll still support Genshi_ until the next
-development cycle begins (Trac 1.5.1).
+pages, with the help of template engines. The template engine for Trac
+1.4 is Jinja2_.
 
 The high-level API for generating content is the
 `~Chrome.render_template` method, which is paired with the output of
@@ -57,7 +56,6 @@ For even lower-level access to the template engine, see the section
    :members:
 
 .. _jinja2: http://jinja.pocoo.org/
-.. _genshi: http://genshi.edgewall.org/
 
 
 Functions
