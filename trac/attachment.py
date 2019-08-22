@@ -65,13 +65,6 @@ class IAttachmentChangeListener(Interface):
                          old_filename):
         """Called when an attachment is moved."""
 
-    def attachment_reparented(attachment, old_parent_realm, old_parent_id):
-        """Called when an attachment is reparented.
-
-        :since 1.3.2: deprecated and will be removed in 1.5.1. Use
-            `attachment_moved` instead.
-        """
-
 
 class IAttachmentManipulator(Interface):
     """Extension point interface for components that need to
@@ -782,14 +775,6 @@ class Attachment(object):
         """
         self._move(new_realm, new_id, new_filename, new_parent_must_exist=True)
 
-    def reparent(self, new_realm, new_id):
-        """Change the attachment's `parent_realm` and/or `parent_id`
-
-        :since 1.3.2: deprecated and will be removed in 1.5.1. Use the
-            `move` method instead.
-        """
-        self._move(new_realm, new_id)
-
     def insert(self, filename, fileobj, size, t=None):
         """Create a new Attachment record and save the file content.
         """
@@ -1171,6 +1156,3 @@ class AttachmentAdmin(Component):
         with attachment.open() as input:
             with file_or_std(destination, 'wb') as output:
                 shutil.copyfileobj(input, output)
-
-# Compatibility for Trac 1.2. Will be removed in 1.5.1.
-_normalized_filename = normalize_filename

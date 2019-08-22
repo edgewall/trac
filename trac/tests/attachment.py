@@ -111,12 +111,6 @@ class AttachmentTestCase(unittest.TestCase):
                 self.moved_old_parent_id = old_parent_id
                 self.moved_old_filename = old_filename
 
-            def attachment_reparented(self, attachment, old_parent_realm,
-                                      old_parent_id):
-                self.reparented_call_count += 1
-                self.reparented_old_parent_realm = old_parent_realm
-                self.reparented_old_parent_id = old_parent_id
-
         class LegacyChangeListener(Component):
             implements(IAttachmentChangeListener)
 
@@ -383,7 +377,6 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(1, modern_listener.added_call_count)
         self.assertEqual(1, modern_listener.deleted_call_count)
         self.assertEqual(1, modern_listener.moved_call_count)
-        self.assertEqual(1, modern_listener.reparented_call_count)
         self.assertEqual('wiki', modern_listener.moved_old_parent_realm)
         self.assertEqual('SomePage', modern_listener.moved_old_parent_id)
         self.assertEqual('foo.txt', modern_listener.moved_old_filename)
