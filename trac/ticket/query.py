@@ -266,16 +266,10 @@ class Query(object):
             cols[-1] = self.order
         return cols
 
-    def count(self, req=None, cached_ids=None, authname=None, tzinfo=None,
-              locale=None):
+    def count(self, req=None, cached_ids=None, authname=None):
         """Get the number of matching tickets for the present query.
-
-        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
-            removed in version 1.5.1
-        :since 1.0.17: the `locale` parameter is deprecated and will be
-            removed in version 1.5.1
         """
-        sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
+        sql, args = self.get_sql(req, cached_ids, authname)
         return self._count(sql, args)
 
     def _count(self, sql, args):
@@ -285,20 +279,14 @@ class Query(object):
         self.env.log.debug("Count results in Query: %d", cnt)
         return cnt
 
-    def execute(self, req=None, cached_ids=None, authname=None, tzinfo=None,
-                href=None, locale=None):
+    def execute(self, req=None, cached_ids=None, authname=None, href=None):
         """Retrieve the list of matching tickets.
-
-        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
-            removed in version 1.5.1
-        :since 1.0.17: the `locale` parameter is deprecated and will be
-            removed in version 1.5.1
         """
         if req is not None:
             href = req.href
 
         self.num_items = 0
-        sql, args = self.get_sql(req, cached_ids, authname, tzinfo, locale)
+        sql, args = self.get_sql(req, cached_ids, authname)
         self.num_items = self._count(sql, args)
 
         if self.num_items <= self.max:
@@ -411,14 +399,8 @@ class Query(object):
         query_string = query_string.split('?', 1)[-1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self, req=None, cached_ids=None, authname=None, tzinfo=None,
-                locale=None):
+    def get_sql(self, req=None, cached_ids=None, authname=None):
         """Return a (sql, params) tuple for the query.
-
-        :since 1.0.17: the `tzinfo` parameter is deprecated and will be
-            removed in version 1.5.1
-        :since 1.0.17: the `locale` parameter is deprecated and will be
-            removed in version 1.5.1
         """
         if req is not None:
             authname = req.authname
