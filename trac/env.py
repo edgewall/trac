@@ -293,15 +293,6 @@ class Environment(Component, ComponentManager):
         return sorted(set(info),
                       key=lambda args: (args[0] != 'Trac', args[0].lower()))
 
-    def get_systeminfo(self):
-        """Return a list of `(name, version)` tuples describing the name
-        and version information of external packages used by Trac and plugins.
-
-        :since 1.3.1: deprecated and will be removed in 1.5.1. Use
-                      system_info property instead.
-        """
-        return self.system_info
-
     # ISystemInfoProvider methods
 
     def get_system_info(self):

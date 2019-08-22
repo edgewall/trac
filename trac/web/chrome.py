@@ -1313,7 +1313,6 @@ class Chrome(Component):
             'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
-            'get_systeminfo': self.env.get_systeminfo,  # TODO (1.5.1) remove
             'captioned_button': partial(presentation.captioned_button, req),
             'accesskey': accesskey_attr,
 
