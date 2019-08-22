@@ -695,7 +695,6 @@ class WorkflowMacro(WikiMacroBase):
                  'width': width, 'height': height}
         graph_id = '%012x' % id(graph)
         req = formatter.req
-        add_script(req, 'common/js/excanvas.js', ie_if='IE')
         add_script(req, 'common/js/workflow_graph.js')
         add_script_data(req, {'graph_%s' % graph_id: graph})
         return tag(

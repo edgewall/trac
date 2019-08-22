@@ -64,7 +64,7 @@
     #   endif
 
     #   for script in chrome.scripts:
-    ${script.prefix}<script${script.attrs|htmlattr}></script>${script.suffix}
+    <script${script.attrs|htmlattr}></script>
     #   endfor
 
     <script>
@@ -144,9 +144,9 @@
     </script>
     #   endif
     #   for script in chrome.late_scripts:
-    ${script.prefix}<script>
+    <script>
       jQuery.loadScript("${script.attrs.src}", "${script.attrs.type}");
-    </script>${script.suffix}
+    </script>
     #   endfor
 
     #   if 'alternate' in chrome.links:

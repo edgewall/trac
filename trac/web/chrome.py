@@ -159,8 +159,7 @@ def add_stylesheet(req, filename, mimetype='text/css', **attrs):
     add_link(req, 'stylesheet', href, mimetype=mimetype, **attrs)
 
 
-def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
-               ie_if=None):
+def add_script(req, filename, mimetype='text/javascript'):
     """Add a reference to an external javascript file to the template.
 
     If `filename` is a network-path reference (i.e. starts with a protocol
@@ -168,19 +167,13 @@ def add_script(req, filename, mimetype='text/javascript', charset='utf-8',
     (i.e. starts with `/`), the generated link will be based off the
     application root path. If it is relative, the link will be based off the
     `/chrome/` path.
-
-    :deprecated: the `charset` attribute is deprecated for script elements,
-                 and the `ie_if` logic is as deprecated as IE itself...
-                 These parameters will be removed in Trac 1.5.1.
     """
     scriptset = req.chrome.setdefault('scriptset', set())
     if filename in scriptset:
         return False  # Already added that script
 
     href = chrome_resource_path(req, filename)
-    script = {'attrs': { 'src': href },
-              'prefix': Markup('<!--[if %s]>' % ie_if) if ie_if else None,
-              'suffix': Markup('<![endif]-->') if ie_if else None}
+    script = {'attrs': {'src': href}}
     if mimetype != 'text/javascript' and mimetype is not None:
         script['attrs']['type'] = mimetype
 
@@ -355,12 +348,10 @@ def chrome_info_script(req, use_late=None):
     if content:
         fragment.append(tag.script('\n'.join(content), type='text/javascript'))
     for script in scripts:
-        fragment.append(script['prefix'])
         attrs = script['attrs']
         fragment.append(tag.script(
             'jQuery.loadScript(%s, %s)' % (to_js_string(attrs['src']),
                                            to_js_string(attrs.get('type')))))
-        fragment.append(script['suffix'])
 
     return fragment
 

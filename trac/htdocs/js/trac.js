@@ -205,8 +205,7 @@
     $(listener);
   };
 
-  $.loadScript = function(href, type, charset) {
-    // Note: charset is no longer used (remove in 1.5.1)
+  $.loadScript = function(href, type) {
     var script;
     $("head script").each(function() {
       if (this.getAttribute("src") === href) {
