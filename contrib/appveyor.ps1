@@ -52,12 +52,13 @@ $pgPassword = 'Password12!'
 
 # External Python dependencies
 
-$pipCommonPackages = @(
+$pipPackages = @(
     'jinja2',
     'genshi>=0.7',
     'babel',
     'twill==0.9.1',
     'docutils',
+    'passlib',
     'pygments',
     'pytz',
     'textile',
@@ -70,12 +71,6 @@ $fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
 $svnBase = "svn-win32-1.8.15"
 $svnBaseAp = "$svnBase-ap24"
 $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
-
-
-$pipPackages = @{
-    '1.2-stable' = @('passlib')
-    trunk = @('passlib')
-}
 
 $condaCommonPackages = @(
     'lxml'
@@ -217,7 +212,7 @@ function Trac-Install {
     # Install packages via pip
 
     & pip.exe --version
-    & pip.exe install $pipCommonPackages $pipPackages.$svnBranch
+    & pip.exe install $pipPackages
 
     if ($pyIsConda) {
         & conda.exe install -qy $condaCommonPackages
