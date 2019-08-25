@@ -1117,4 +1117,3 @@ def _html_parser_unescape(s):
             return match
 
     return _reference_re.sub(repl, s)
-

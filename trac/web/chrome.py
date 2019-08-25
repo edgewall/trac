@@ -1555,4 +1555,3 @@ class Chrome(Component):
                            e.__class__.__name__,
                            'text' if text else 'XML/HTML',
                            exception_to_unicode(e, traceback=True))
-

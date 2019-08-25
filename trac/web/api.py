@@ -168,7 +168,7 @@ class IRequestFilter(Interface):
            content_type)`), the `metadata` parameter passed to
            `post_process_request` will actually be the `content_type`
            value (`String` or `None`).
-           
+
         :Since 1.5.1.: Genshi templates are no longer supported. `metadata`
             is always a `dict` or `None`.
 

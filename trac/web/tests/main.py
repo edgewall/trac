@@ -418,9 +418,9 @@ class PostProcessRequestTestCase(unittest.TestCase):
         self.req = MockRequest(self.env)
 
     def test_post_process_request_error_handling(self):
-        """The post_process_request methods are called with a triple of 
-        `None` values when an exception is raised in process_request or 
-        post_process_request, or an empty response is returned by 
+        """The post_process_request methods are called with a triple of
+        `None` values when an exception is raised in process_request or
+        post_process_request, or an empty response is returned by
         process_request.
         """
         request_dispatcher = RequestDispatcher(self.env)
