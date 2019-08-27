@@ -16,6 +16,16 @@ See [trac:wiki:1.3/TracChangeLog#a1.3.xReleases 1.3.x Releases].
 
 This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
 
+=== 1.2.5
+
+//(August 27, 2019)//
+
+Trac 1.2.5 contains a few minor fixes.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#MaintenanceReleases | 1.2.5]].
+
+[trac:source:/tags/trac-1.2.5 View Tag] | [trac:milestone:1.2.5 View Milestone]
+
 === 1.2.4
 
 //(July 17, 2019)//
@@ -254,6 +264,21 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 [trac:source:/tags/trac-1.1.1 View Tag] | [trac:milestone:1.1.1 View Milestone]
 
 == 1.0.x Releases
+
+=== 1.0.18
+
+//(July 18, 2019)//
+
+Trac 1.0.18 provides more than a dozen bug fixes and minor
+enhancements. The following are some highlights:
+
+ * Fixed query module regression when ordering
+   multiple columns ([trac:#13068]).
+ * Fixed regression preventing workflow status
+   changes for plugins ([trac:#13087]).
+ * Made compatible with MySQL 8.x ([trac:#13128]).
+
+[trac:source:/tags/trac-1.0.18 View Tag] | [trac:milestone:1.0.18 View Milestone]
 
 === 1.0.17
 

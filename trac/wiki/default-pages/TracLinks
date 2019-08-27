@@ -134,7 +134,7 @@ To link from a [trac:SubWiki SubWiki] page to a [=#sibling sibling] page, use a 
   [../Sibling see next sibling] or [[../Sibling|see next sibling]]
 
 But in practice you often won't need to add the `../` prefix to link to a sibling page.
-For resolving the location of a wiki link, it's the target page closest in the hierarchy to the page where the link is written which will be selected. So for example, within a sub-hierarchy, a sibling page will be targeted in preference to a toplevel page.
+For resolving the location of a wiki link, it's the target page closest in the hierarchy to the page where the link is written which will be selected. So for example, within a sub-hierarchy, a sibling page will be targeted in preference to a top-level page.
 This makes it easy to copy or move pages to a sub-hierarchy by [[WikiNewPage#renaming|renaming]] without having to adapt the links.
 
 To link explicitly to a [=#toplevel toplevel] Wiki page, use the `wiki:/` prefix. Be careful **not** to use the `/` prefix alone, as this corresponds to the [#Server-relativelinks] syntax and with such a link you will lack the `/wiki/` part in the resulting URL. A link such as `[../newticket]` will stay in the wiki namespace and therefore link to a sibling page.
@@ -147,7 +147,7 @@ To create a link to a specific anchor in a page, use '#':
 }}}
   [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
 
-Hint: when you move your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
+Hint: when you hover your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
 
 To create a link to the first or last occurrence of a term on a page, use a ''pseudo anchor'' starting with '#/' or '#?':
 {{{
@@ -193,7 +193,7 @@ This can be seen as a kind of InterWiki link specialized for targeting other Tra
 
 Any type of Trac link can be written in one Trac environment and actually refer to resources in another Trac environment. All that is required is to prefix the Trac link with the name of the other Trac environment followed by a colon. The other Trac environment must be registered on the InterTrac page. 
 
-A distinctive advantage of InterTrac links over InterWiki links is that the shorthand form of Trac links (e.g. `{}`, `r`, `#`) can also be used. For example if T was set as an alias for Trac, links to Trac tickets can be written #T234, links to Trac changesets can be written [trac 1508].
+A distinct advantage of InterTrac links over InterWiki links is that the shorthand form of Trac links can also be used, such as `{}`, `r`, `#`. For example, if T was set as an alias for Trac, then links to Trac tickets can be written as #T234, and links to Trac changesets can be written as [trac 1508].
 See InterTrac for the complete details. 
 
 === Server-relative links

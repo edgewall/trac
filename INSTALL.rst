@@ -783,7 +783,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_,
 .. _Deploying Trac: https://trac.edgewall.org/wiki/TracInstall#DeployingTrac
 .. _docutils: http://docutils.sourceforge.net/
 .. _FastCGI*: https://trac.edgewall.org/wiki/TracFastCgi
-.. _FastCGI: http://www.fastcgi.com/
+.. _FastCGI: https://fastcgi-archives.github.io/
 .. _Genshi*: https://pypi.org/project/Genshi
 .. _Genshi: https://genshi.edgewall.org/
 .. _Git: https://git-scm.com/

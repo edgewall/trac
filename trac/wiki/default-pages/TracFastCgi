@@ -3,7 +3,7 @@
 [[TracGuideToc]]
 [[PageOutline(2-5, Contents, floated)]]
 
-[http://www.fastcgi.com/ FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python] or [wiki:TracModWSGI mod_wsgi]. It is faster than external CGI interfaces which must start a new process for each request. Additionally, it is supported by a much wider variety of web servers.
+[https://fastcgi-archives.github.io FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python] or [wiki:TracModWSGI mod_wsgi]. It is faster than external CGI interfaces which must start a new process for each request. Additionally, it is supported by a much wider variety of web servers.
 
 Note that unlike mod_python, FastCGI supports [https://httpd.apache.org/docs/suexec.html Apache SuEXEC], ie run with different permissions than the web server runs with. `mod_wsgi` supports the `WSGIDaemonProcess` with user / group parameters to achieve the same effect.
 
