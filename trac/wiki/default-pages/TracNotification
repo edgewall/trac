@@ -8,7 +8,10 @@ Email notification is useful to keep users up-to-date on tickets/issues of inter
 Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
 
 == Receiving Notification Mails
-When reporting a new ticket or adding a comment, enter a valid email address or your Trac username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket, depending on how notification is configured.
+When reporting a new ticket or adding a comment, enter a valid email address or your Trac username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac may send you an email when changes are made to the ticket, depending on how your notification preferences are configured.
+
+Permission groups can also be entered in the CC field,
+to notify all members of the group.
 
 === How to use your username to receive notification mails
 
@@ -72,11 +75,11 @@ ${prefix} #${ticket.id}: ${summary}
 }}}
 The following variables are available in the template:
 
- * `changes`: The ticket changes (prepared by [trac:source:/trunk/trac/ticket/model.py Ticket.get_change]). 
- * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
+ * `changes`: The ticket changes (prepared by [trac:source:/branches/1.4-stable/trac/ticket/model.py Ticket.get_change]). 
+ * `env`: The project environment (see [trac:source:/branches/1.4-stable/trac/env.py env.py]).
  * `prefix`: The prefix defined in `smtp_subject_prefix`.
  * `summary`: The ticket summary, with the old value if the summary was edited.
- * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
+ * `ticket`: The ticket model object (see [trac:source:/branches/1.4-stable/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `$ticket.milestone`.
 
 === Customizing the e-mail content
 

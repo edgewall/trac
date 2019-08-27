@@ -322,7 +322,7 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 </Directory>
 }}}
 
-Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [TracIni#trac-htdocs_location-option trac.htdocs_location] configuration setting:
 {{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/

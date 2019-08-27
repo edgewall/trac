@@ -153,7 +153,7 @@ Note that you may have to set the environment variable `PYTHON_EGG_CACHE` to the
 
 ===== Using `trac-svn-hook`
 
-In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script comes with a number of safety checks and usage advice. Output is written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
+In a Unix environment, the simplest way to configure explicit synchronization is by using the [trac:source:branches/1.4-stable/contrib/trac-svn-hook contrib/trac-svn-hook] script. `trac-svn-hook` starts `trac-admin` asynchronously to avoid slowing the commit and log editing operations. The script comes with a number of safety checks and usage advice. Output is written to a log file with prefix `svn-hooks-` in the environment `log` directory, which can make configuration issues easier to debug.
 
 There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash. The documentation header of `trac-svn-hook` contains a Cygwin configuration example.
 

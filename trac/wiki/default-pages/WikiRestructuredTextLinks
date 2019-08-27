@@ -1,4 +1,5 @@
 = TracLinks in reStructuredText =
+[[TracGuideToc]]
 
 This document illustrates how to use the `:trac:` role in [http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html reStructuredText]. The page is written like:
 

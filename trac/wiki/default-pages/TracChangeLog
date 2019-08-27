@@ -4,11 +4,36 @@ This is a rough list of changes between released versions.
 
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
+== 1.4.x Releases
+
+=== '''1.4 'Jinja''''
+
+//(August 28, 2019)//
+
+Trac 1.4 is the first major release of Trac in almost 3 years.
+
+The following are some highlights from the release:
+
+* Jinja2 is the template engine, providing performance
+  improvements over Genshi. Genshi is still supported
+  until Trac 1.5.1 for rendering plugin templates.
+* Custom navigation items can be added to the
+  main and meta navigation ([trac:#11317]).
+* TracAdmin `convert_db` command for
+  converting to a new database backend while
+  preserving all environment data
+  ([trac:#12299]).
+* Restyled wiki that allows toggling between
+  narrow and full width ([trac:#12640]).
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.4 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.4#DevelopmentReleases | 1.4]] and the change log for [#a1.3.xReleases 1.3.x Releases] below.
+
+[trac:source:/tags/trac-1.4 View Tag] | [trac:milestone:1.4 View Milestone]
+
 == 1.3.x Releases
 
-This series of releases correspond to the development branch i.e. [trac:source:trunk trunk], in preparation for the future 1.4.x stable releases.
-
-// ** No guarantees of feature and API compatibility is made from one 1.1.x release to the next. //
+// ** No guarantees of feature and API compatibility is made from one 1.3.x release to the next. //
 
 For more information see the [trac:wiki:TracDev/ApiChanges/1.3 API changes] and the detailed
 release notes for [[trac:wiki:TracDev/ReleaseNotes/1.3#DevelopmentReleases | 1.3]].
@@ -127,6 +152,16 @@ Highlights of the changes since 1.2:
 
 This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
 
+=== 1.2.5
+
+//(August 27, 2019)//
+
+Trac 1.2.5 contains a few minor fixes.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#MaintenanceReleases | 1.2.5]].
+
+[trac:source:/tags/trac-1.2.5 View Tag] | [trac:milestone:1.2.5 View Milestone]
+
 === 1.2.4
 
 //(July 17, 2019)//
@@ -190,7 +225,7 @@ See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#Maintena
 
 [trac:source:/tags/trac-1.2.1 View Tag] | [trac:milestone:1.2.1 View Milestone]
 
-=== 1.2 'Hermes'
+=== '''1.2 'Hermes''''
 
 //(November 5, 2016)//
 

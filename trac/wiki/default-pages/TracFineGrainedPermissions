@@ -28,11 +28,11 @@ permission_policies = DefaultWikiPolicy,
 * !LegacyAttachmentPolicy uses the coarse-grained permissions to check permissions on attachments.
 
 Among the optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
-[trac:source:trunk/tracopt/perm/authz_policy.py authz_policy.py] for details. 
+[trac:source:branches/1.4-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
 
 Another permission policy [#AuthzSourcePolicy], uses the [http://svnbook.red-bean.com/nightly/en/svn.serverconfig.pathbasedauthz.html path-based authorization] defined by Subversion to enforce permissions on the version control system.
 
-See also [trac:source:trunk/sample-plugins/permissions sample-plugins/permissions] for more examples.
+See also [trac:source:branches/1.4-stable/sample-plugins/permissions sample-plugins/permissions] for more examples.
 
 === !AuthzPolicy
 ==== Configuration
