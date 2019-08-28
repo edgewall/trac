@@ -1072,6 +1072,40 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
               </body>
             </html>"""), content)
 
+    def test_render_template_late_data(self):
+        def fn():
+            add_stylesheet(req, 'common/css/blahblah.css')
+            add_script(req, 'common/js/blahblah.js')
+            add_script_data(req, blahblah=42)
+            return 'blahblah'
+
+        template = textwrap.dedent("""\
+            # extends 'layout.html'
+            <!DOCTYPE html>
+            <html>
+              <body>
+                # block content
+                <div>${fn()}</div>
+                ${ super() }
+                # endblock content
+              </body>
+            </html>
+            """)
+        filename = 'test_render_template_late_data.html'
+        filepath = os.path.join(self.env.templates_dir, filename)
+        create_file(filepath, template)
+        req = MockRequest(self.env)
+        data = {'fn': fn}
+        content = self.chrome.render_template(req, filename, data,
+                                              {'fragment': True})
+        self.assertIsInstance(content, str)
+        self.assertIn('<div>blahblah</div>', content)
+        self.assertIn(' jQuery.loadScript("/trac.cgi/chrome/'
+                      'common/js/blahblah.js", "");', content)
+        self.assertIn(' jQuery.loadStyleSheet("/trac.cgi/chrome/'
+                      'common/css/blahblah.css", "text/css");', content)
+        self.assertIn(' var blahblah=42;', content)
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -1377,6 +1377,22 @@ class Chrome(Component):
         template, data = self.prepare_template(req, filename, data, text,
                                                domain)
 
+        # TODO (1.5.1) - have another try at simplifying all this...
+        # With Jinja2, it's certainly possible to do things
+        # differently, but for as long as we have to support Genshi,
+        # better keep one way.
+        links = req.chrome.get('links')
+        scripts = req.chrome.get('scripts')
+        script_data = req.chrome.get('script_data')
+        req.chrome.update({'early_links': links, 'early_scripts': scripts,
+                           'early_script_data': script_data,
+                           'links': {}, 'scripts': [], 'script_data': {}})
+        data.setdefault('chrome', {}).update({
+            'late_links': req.chrome['links'],
+            'late_scripts': req.chrome['scripts'],
+            'late_script_data': req.chrome['script_data'],
+        })
+
         if fragment or text:
             if iterable:
                 return self.generate_template_stream(template, data, text,
