@@ -1,21 +1,21 @@
 # Translations template for Trac.
-# Copyright (C) 2018-2019 Edgewall Software
+# Copyright (C) 2019 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.2.4\n"
+"Project-Id-Version: Trac 1.2.6\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-29 12:20-0700\n"
+"POT-Creation-Date: 2019-08-28 15:42+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -52,7 +52,7 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:112
+#: tracopt/ticket/commit_updater.py:113
 msgid ""
 "Require commands to be enclosed in an envelope.\n"
 "\n"
@@ -60,11 +60,11 @@ msgid ""
 "then commands must be in the form of `[closes #4]`."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:118
+#: tracopt/ticket/commit_updater.py:119
 msgid "Commands that close tickets, as a space-separated list."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:122
+#: tracopt/ticket/commit_updater.py:123
 msgid ""
 "Commands that add a reference, as a space-separated list.\n"
 "\n"
@@ -72,7 +72,7 @@ msgid ""
 "message will get a reference to the changeset."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:129
+#: tracopt/ticket/commit_updater.py:130
 msgid ""
 "Check that the committer has permission to perform the requested\n"
 "operations on the referenced tickets.\n"
@@ -81,7 +81,7 @@ msgid ""
 "operations."
 msgstr ""
 
-#: tracopt/ticket/commit_updater.py:137
+#: tracopt/ticket/commit_updater.py:138
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
 
@@ -454,7 +454,7 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
-#: trac/db/mysql_backend.py:94
+#: trac/db/mysql_backend.py:98
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
@@ -670,38 +670,38 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:275
+#: trac/notification/mail.py:293
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
 "resolvers will not be called."
 msgstr ""
 
-#: trac/notification/mail.py:284
+#: trac/notification/mail.py:302
 msgid "Default format to distribute email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:476
+#: trac/notification/mail.py:494
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:479
+#: trac/notification/mail.py:497
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:482
+#: trac/notification/mail.py:500
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:485
+#: trac/notification/mail.py:503
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:488
+#: trac/notification/mail.py:506
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:544
+#: trac/notification/mail.py:562
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -811,7 +811,7 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:63
+#: trac/ticket/notification.py:64
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -820,13 +820,13 @@ msgid ""
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
 
-#: trac/ticket/notification.py:72
+#: trac/ticket/notification.py:73
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:77
+#: trac/ticket/notification.py:78
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -837,7 +837,7 @@ msgid ""
 "0.12.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:865
+#: trac/ticket/query.py:876
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -845,7 +845,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:873
+#: trac/ticket/query.py:884
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -853,7 +853,7 @@ msgid ""
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
 
-#: trac/ticket/query.py:881
+#: trac/ticket/query.py:892
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1023,7 +1023,7 @@ msgid ""
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:179
+#: trac/versioncontrol/admin.py:175
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1590,7 +1590,7 @@ msgid ""
 "\n"
 "# -- Link to an external Trac:\n"
 "trac.title = Edgewall's Trac for Trac\n"
-"trac.url = http://trac.edgewall.org\n"
+"trac.url = https://trac.edgewall.org\n"
 "}}}"
 msgstr ""
 
