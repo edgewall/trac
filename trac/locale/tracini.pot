@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.6\n"
+"Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-01 14:50-0400\n"
+"POT-Creation-Date: 2019-08-27 21:44-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -433,24 +433,24 @@ msgid ""
 "access control to Trac resources."
 msgstr ""
 
-#: trac/db/api.py:261
+#: trac/db/api.py:262
 msgid ""
 "Database connection\n"
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
 
-#: trac/db/api.py:266
+#: trac/db/api.py:267
 msgid "Database backup location"
 msgstr ""
 
-#: trac/db/api.py:269
+#: trac/db/api.py:270
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''."
 msgstr ""
 
-#: trac/db/api.py:273
+#: trac/db/api.py:274
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr ""
 
@@ -669,38 +669,38 @@ msgid ""
 "[[SubscriberList]]"
 msgstr ""
 
-#: trac/notification/mail.py:274
+#: trac/notification/mail.py:292
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called. If an email address is resolved, the remaining\n"
 "resolvers will not be called."
 msgstr ""
 
-#: trac/notification/mail.py:283
+#: trac/notification/mail.py:301
 msgid "Default format to distribute email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:475
+#: trac/notification/mail.py:493
 msgid "SMTP server hostname to use for email notifications."
 msgstr ""
 
-#: trac/notification/mail.py:478
+#: trac/notification/mail.py:496
 msgid "SMTP server port to use for email notification."
 msgstr ""
 
-#: trac/notification/mail.py:481
+#: trac/notification/mail.py:499
 msgid "Username for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:484
+#: trac/notification/mail.py:502
 msgid "Password for authenticating with SMTP server."
 msgstr ""
 
-#: trac/notification/mail.py:487
+#: trac/notification/mail.py:505
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr ""
 
-#: trac/notification/mail.py:543
+#: trac/notification/mail.py:561
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -822,7 +822,7 @@ msgid ""
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
 
-#: trac/ticket/notification.py:102
+#: trac/ticket/notification.py:104
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -832,13 +832,13 @@ msgid ""
 "US-ASCII characters.  This is expected by CJK users."
 msgstr ""
 
-#: trac/ticket/notification.py:112
+#: trac/ticket/notification.py:114
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
 
-#: trac/ticket/notification.py:117
+#: trac/ticket/notification.py:119
 msgid ""
 "A Jinja2 text template snippet used to get the notification\n"
 "subject.\n"
@@ -1472,11 +1472,11 @@ msgid ""
 "the contents are rendered. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/web/main.py:128
+#: trac/web/main.py:127
 msgid "Ordered list of filters to apply to all requests."
 msgstr ""
 
-#: trac/web/main.py:132
+#: trac/web/main.py:131
 msgid ""
 "Name of the component that handles requests to the base\n"
 "URL.\n"
@@ -1489,15 +1489,15 @@ msgid ""
 "take precedence, when set."
 msgstr ""
 
-#: trac/web/main.py:145
+#: trac/web/main.py:144
 msgid "The default timezone to use"
 msgstr ""
 
-#: trac/web/main.py:148
+#: trac/web/main.py:147
 msgid "The preferred language to use if no user preference has been set."
 msgstr ""
 
-#: trac/web/main.py:153
+#: trac/web/main.py:152
 msgid ""
 "The date format. Valid options are 'iso8601' for selecting\n"
 "ISO 8601 format, or leave it empty which means the default\n"
@@ -1505,7 +1505,7 @@ msgid ""
 "language. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:160
+#: trac/web/main.py:159
 msgid ""
 "When true, send a `X-Sendfile` header and no content when sending\n"
 "files from the filesystem, so that the web server handles the content.\n"
@@ -1513,13 +1513,13 @@ msgid ""
 "like Apache with `mod_xsendfile` or lighttpd. (''since 1.0'')"
 msgstr ""
 
-#: trac/web/main.py:167
+#: trac/web/main.py:166
 msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
 msgstr ""
 
-#: trac/web/main.py:171
+#: trac/web/main.py:170
 msgid ""
 "Headers to be added to the HTTP request. (''since 1.2.3'')\n"
 "\n"
@@ -1528,15 +1528,15 @@ msgid ""
 "location, etag, pragma, cache-control, expires."
 msgstr ""
 
-#: trac/wiki/api.py:261
+#: trac/wiki/api.py:265
 msgid "Enable/disable highlighting CamelCase links to missing pages."
 msgstr ""
 
-#: trac/wiki/api.py:265
+#: trac/wiki/api.py:269
 msgid "Enable/disable splitting the WikiPageNames with space characters."
 msgstr ""
 
-#: trac/wiki/api.py:269
+#: trac/wiki/api.py:273
 msgid ""
 "Enable/disable the use of unsafe HTML tags such as `<script>` or\n"
 "`<embed>` with the HTML [wiki:WikiProcessors WikiProcessor].\n"
@@ -1545,13 +1545,13 @@ msgid ""
 "recommended to leave this option disabled."
 msgstr ""
 
-#: trac/wiki/api.py:277
+#: trac/wiki/api.py:281
 msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`."
 msgstr ""
 
-#: trac/wiki/api.py:284
+#: trac/wiki/api.py:288
 msgid ""
 "List of URIs considered \"safe cross-origin\", that will be\n"
 "rendered as `img` element without `crossorigin=\"anonymous\"` attribute\n"

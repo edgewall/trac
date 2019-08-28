@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.3.6\n"
+"Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-11 18:21-0700\n"
+"POT-Creation-Date: 2019-08-27 21:44-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgstr ""
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1833
-#: trac/wiki/macros.py:379 trac/wiki/templates/wiki_view.html:67
+#: trac/wiki/macros.py:391 trac/wiki/templates/wiki_view.html:67
 #: trac/wiki/web_ui.py:791 tracopt/versioncontrol/git/git_fs.py:464
 msgid "diff"
 msgstr ""
@@ -338,7 +338,7 @@ msgid "Back to %(parent)s"
 msgstr ""
 
 #: trac/attachment.py:235 trac/ticket/batch.py:58 trac/ticket/report.py:175
-#: trac/ticket/roadmap.py:767 trac/web/api.py:1015 trac/wiki/web_ui.py:168
+#: trac/ticket/roadmap.py:767 trac/web/api.py:1019 trac/wiki/web_ui.py:168
 msgid "Invalid request arguments."
 msgstr ""
 
@@ -594,7 +594,7 @@ msgstr ""
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr ""
 
-#: trac/core.py:33
+#: trac/core.py:35
 msgid "Trac Error"
 msgstr ""
 
@@ -1278,7 +1278,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_basics.html:161
 #: trac/admin/templates/admin_logging.html:92
-#: trac/admin/templates/admin_plugins.html:235
+#: trac/admin/templates/admin_plugins.html:247
 #: trac/ticket/templates/admin_components.html:143
 #: trac/ticket/templates/admin_enums.html:132
 #: trac/ticket/templates/admin_milestones.html:139
@@ -1476,31 +1476,35 @@ msgid "Author:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:143
+msgid "Maintainer:"
+msgstr ""
+
+#: trac/admin/templates/admin_plugins.html:155
 msgid "Home page:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:150
+#: trac/admin/templates/admin_plugins.html:162
 msgid "License:"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:160 trac/ticket/admin.py:80
+#: trac/admin/templates/admin_plugins.html:172 trac/ticket/admin.py:80
 #: trac/ticket/api.py:367
 msgid "Component"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:162
+#: trac/admin/templates/admin_plugins.html:174
 msgid "Show all descriptions"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:165
+#: trac/admin/templates/admin_plugins.html:177
 msgid "Hide all descriptions"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:170
+#: trac/admin/templates/admin_plugins.html:182
 msgid "Enabled"
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:242
+#: trac/admin/templates/admin_plugins.html:254
 #, python-format
 msgid "%(note)s See %(page)s for help on using plugins."
 msgstr ""
@@ -1745,23 +1749,23 @@ msgstr ""
 msgid "Header length is too short"
 msgstr ""
 
-#: trac/notification/mail.py:162
+#: trac/notification/mail.py:170
 #, python-format
 msgid "Unknown hash type '%(type)s'"
 msgstr ""
 
-#: trac/notification/mail.py:508
+#: trac/notification/mail.py:526
 #, python-format
 msgid ""
 "SMTP server connection error (%(error)s). Please modify %(option1)s or "
 "%(option2)s in your configuration."
 msgstr ""
 
-#: trac/notification/mail.py:513
+#: trac/notification/mail.py:531
 msgid "TLS enabled but server does not support TLS"
 msgstr ""
 
-#: trac/notification/mail.py:565
+#: trac/notification/mail.py:583
 #, python-format
 msgid ""
 "Sendmail error (%(error)s). Please modify %(option)s in your "
@@ -2534,8 +2538,8 @@ msgid "Location"
 msgstr ""
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:762
-#: trac/web/main.py:768
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:765
+#: trac/web/main.py:771
 msgid "N/A"
 msgstr ""
 
@@ -3556,27 +3560,27 @@ msgstr ""
 msgid "Invalid version name."
 msgstr ""
 
-#: trac/ticket/notification.py:550
+#: trac/ticket/notification.py:577
 msgid "Ticket that I own is created or modified"
 msgstr ""
 
-#: trac/ticket/notification.py:572
+#: trac/ticket/notification.py:599
 msgid "I update a ticket"
 msgstr ""
 
-#: trac/ticket/notification.py:598
+#: trac/ticket/notification.py:625
 msgid "Ticket that I previously updated is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:620
+#: trac/ticket/notification.py:647
 msgid "Ticket that I reported is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:646
+#: trac/ticket/notification.py:673
 msgid "Any ticket is created"
 msgstr ""
 
-#: trac/ticket/notification.py:674
+#: trac/ticket/notification.py:701
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr ""
 
@@ -5352,12 +5356,12 @@ msgid ""
 "information.\n"
 msgstr ""
 
-#: trac/util/__init__.py:888
+#: trac/util/__init__.py:889
 #, python-format
 msgid "Failed to read %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
 
-#: trac/util/__init__.py:893
+#: trac/util/__init__.py:894
 #, python-format
 msgid "Failed to parse %(metadata)s file for %(dist)s: %(err)s"
 msgstr ""
@@ -6640,17 +6644,17 @@ msgstr ""
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr ""
 
-#: trac/web/api.py:866
+#: trac/web/api.py:870
 #, python-format
 msgid "File %(path)s not found"
 msgstr ""
 
-#: trac/web/api.py:1008
+#: trac/web/api.py:1012
 #, python-format
 msgid "Exception caught while reading request: %(msg)s"
 msgstr ""
 
-#: trac/web/api.py:1033
+#: trac/web/api.py:1037
 #, python-format
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr ""
@@ -6709,11 +6713,11 @@ msgid ""
 " contact your Trac administrator."
 msgstr ""
 
-#: trac/web/chrome.py:1847
+#: trac/web/chrome.py:1849
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:1848
+#: trac/web/chrome.py:1850
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
@@ -6743,28 +6747,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:710
+#: trac/web/main.py:713
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:711
+#: trac/web/main.py:714
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:775
+#: trac/web/main.py:778
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:776
+#: trac/web/main.py:779
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:777
+#: trac/web/main.py:780
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:807
+#: trac/web/main.py:810
 #, python-format
 msgid ""
 "==== How to Reproduce\n"
@@ -6902,7 +6906,7 @@ msgstr ""
 msgid "  %(page)s imported from %(filename)s"
 msgstr ""
 
-#: trac/wiki/api.py:448
+#: trac/wiki/api.py:452
 msgid "no permission to view this wiki page"
 msgstr ""
 
@@ -7001,7 +7005,7 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
-#: trac/wiki/macros.py:90
+#: trac/wiki/macros.py:102
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -7039,7 +7043,7 @@ msgid ""
 "The `include` and `exclude` lists accept shell-style patterns."
 msgstr ""
 
-#: trac/wiki/macros.py:316
+#: trac/wiki/macros.py:328
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -7065,7 +7069,7 @@ msgid ""
 "e.g. `[[RecentChanges(,10,group=none)]]`."
 msgstr ""
 
-#: trac/wiki/macros.py:395
+#: trac/wiki/macros.py:407
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -7098,7 +7102,7 @@ msgid ""
 "   default). This parameter only has an effect in `inline` style."
 msgstr ""
 
-#: trac/wiki/macros.py:463
+#: trac/wiki/macros.py:475
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -7176,16 +7180,16 @@ msgid ""
 "<gotoh@taiyo.co.jp>''"
 msgstr ""
 
-#: trac/wiki/macros.py:686
+#: trac/wiki/macros.py:698
 msgid "No filespec given"
 msgstr ""
 
-#: trac/wiki/macros.py:696
+#: trac/wiki/macros.py:708
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr ""
 
-#: trac/wiki/macros.py:722
+#: trac/wiki/macros.py:734
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7198,20 +7202,20 @@ msgid ""
 "macros if the `PythonOptimize` option is enabled for mod_python!"
 msgstr ""
 
-#: trac/wiki/macros.py:749
+#: trac/wiki/macros.py:761
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:772
+#: trac/wiki/macros.py:786
 msgid "Aliases:"
 msgstr ""
 
-#: trac/wiki/macros.py:775
+#: trac/wiki/macros.py:789
 msgid "No documentation found"
 msgstr ""
 
-#: trac/wiki/macros.py:782
+#: trac/wiki/macros.py:796
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7228,11 +7232,11 @@ msgid ""
 " option  :: a glob-style filtering on the option names"
 msgstr ""
 
-#: trac/wiki/macros.py:842
+#: trac/wiki/macros.py:856
 msgid "(no default)"
 msgstr ""
 
-#: trac/wiki/macros.py:869
+#: trac/wiki/macros.py:883
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7240,11 +7244,11 @@ msgid ""
 "filter."
 msgstr ""
 
-#: trac/wiki/macros.py:892
+#: trac/wiki/macros.py:906
 msgid "MIME Types"
 msgstr ""
 
-#: trac/wiki/macros.py:906
+#: trac/wiki/macros.py:920
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -7255,11 +7259,11 @@ msgid ""
 "table of contents."
 msgstr ""
 
-#: trac/wiki/macros.py:953
+#: trac/wiki/macros.py:967
 msgid "Table of Contents"
 msgstr ""
 
-#: trac/wiki/macros.py:967
+#: trac/wiki/macros.py:981
 #, python-format
 msgid "Invalid macro argument %(expr)s"
 msgstr ""
