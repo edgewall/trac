@@ -69,8 +69,8 @@ def create_charset(mime_encoding):
     """Create an appropriate email charset for the given encoding.
 
     Valid options are 'base64' for Base64 encoding, 'qp' for
-    Quoted-Printable, and 'none' for no encoding, in which case emails will
-    be sent as 7bit if the content is all ASCII, or 8bit otherwise.
+    Quoted-Printable, and 'none' for no encoding, in which case emails
+    will be sent as 7bit if the content is all ASCII, or 8bit otherwise.
     """
     charset = Charset()
     charset.input_charset = 'utf-8'
@@ -94,7 +94,16 @@ def create_charset(mime_encoding):
 
 
 def create_header(key, value, charset):
-    """Create an appropriate email Header."""
+    """Create an email Header.
+
+    The `key` is always a string and will be converted to the
+    appropriate `charset`. The `value` can either be a string or a
+    two-element tuple where the first item is the name and the
+    second item is the email address.
+
+    See `set_header()` for a helper that sets a header directly on a
+    message.
+    """
     maxlength = MAXHEADERLEN-(len(key)+2)
     # Do not sent very short headers
     if maxlength < 10:
@@ -129,7 +138,20 @@ def create_header(key, value, charset):
 
 
 def set_header(message, key, value, charset):
-    """Create and add or replace a header."""
+    """Create and add or replace a header in a `MIMEMultipart`.
+
+    The `key` is always a string and will be converted to the
+    appropriate `charset`. The `value` can either be a string or a
+    two-element tuple where the first item is the name and the
+    second item is the email address.
+
+    The `charset` should be created using `create_charset()`
+
+    Example::
+
+        set_header(my_message, 'From', ('Trac', 'noreply@ourcompany.com'),
+                   my_charset)
+    """
     header = create_header(key, value, charset)
     if key in message:
         message.replace_header(key, header)
@@ -138,14 +160,39 @@ def set_header(message, key, value, charset):
 
 
 def create_mime_multipart(subtype):
-    """Create an appropriate email `MIMEMultipart`."""
+    """Create an email `MIMEMultipart`.
+
+    The `subtype` is a string that describes the type of multipart
+    message you are defining. You should pick one that is defined
+    by the email standards. The function does not check if the `subtype`
+    is valid.
+
+    The most common examples are:
+
+    * `related` infers that each part is in an integrated whole, like
+      images that are embedded in a html part.
+    * `alternative` infers that the message contains different formats
+      and the client can choose which to display based on capabilities
+      and user preferences, such as a text/html with an alternative
+      text/plain.
+
+    The `MIMEMultipart` is defined in the `email.mime.multipart` module in the
+    Python standard library.
+    """
     msg = MIMEMultipart(subtype)
     del msg['Content-Transfer-Encoding']
     return msg
 
 
 def create_mime_text(body, format, charset):
-    """Create an appropriate email `MIMEText`."""
+    """Create a `MIMEText` that can be added to an email message.
+
+    :param body: a string with the body of the message.
+    :param format: each text has a MIMEType, like `text/plain`. The
+        supertype is always `text`, so in the `format` parameter you
+        pass the subtype, like `plain` or `html`.
+    :param charset: should be created using `create_charset()`.
+    """
     if isinstance(body, unicode):
         body = body.encode('utf-8')
     msg = MIMEText(body, format)
@@ -158,7 +205,20 @@ def create_mime_text(body, format, charset):
 
 
 def create_message_id(env, targetid, from_email, time, more=None):
-    """Generate a predictable, but sufficiently unique message ID."""
+    """Generate a predictable, but sufficiently unique message ID.
+
+    In case you want to set the "Message ID" header, this convenience
+    function will generate one by running a hash algorithm over a number
+    of properties.
+
+    :param env: the `Environment`
+    :param targetid: a string that identifies the target, like
+        `NotificationEvent.target`
+    :param from_email: the email address that the message is sent from
+    :param time: a Python `datetime`
+    :param more: a string that contains additional information that
+        makes this message unique
+    """
     items = [env.project_url.encode('utf-8'), targetid, to_utimestamp(time)]
     if more is not None:
         items.append(more.encode('ascii', 'ignore'))
@@ -179,6 +239,16 @@ def get_message_addresses(message, name):
 
 
 def get_from_author(env, event):
+    """Get the author name and email from a given `event`.
+
+    The `event` parameter should be of the type `NotificationEvent`.
+    If you only have the username of a Trac user, you should instead
+    use the `RecipientMatcher` to find the user's details.
+
+    The method returns a tuple that contains the name and email address
+    of the user. For example: `('developer', 'developer@ourcompany.com')`.
+    This tuple can be parsed by `set_header()`.
+    """
     if event.author and NotificationSystem(env).smtp_from_author:
         matcher = RecipientMatcher(env)
         from_ = matcher.match_from_author(event.author)
@@ -187,7 +257,10 @@ def get_from_author(env, event):
 
 
 class RecipientMatcher(object):
+    """Matches user names and email addresses.
 
+    :param env: The `trac.env.Enviroment`
+    """
     nodomaddr_re = re.compile(r"^[-A-Za-z0-9!*+/=_.]+$")
 
     def __init__(self, env):
@@ -219,6 +292,16 @@ class RecipientMatcher(object):
         return self.env.get_known_users(as_dict=True)
 
     def is_email(self, address):
+        """Check if an email address is valid.
+
+        This method checks against the list of domains that are
+        to be ignored, which is controlled by the `ignore_domains_list`
+        configuration option.
+
+        :param address: the address to validate
+        :return: `True` if it is a valid email address that is not in
+            the ignore list.
+        """
         if not address:
             return False
         match = self.shortaddr_re.match(address)
@@ -229,6 +312,21 @@ class RecipientMatcher(object):
         return False
 
     def match_recipient(self, address):
+        """Convenience function to check for an email address
+
+        The parameter `address` can either be a valid user name,
+        or an email address. The method first checks if the parameter
+        is a valid user name. If so, it will look up the address. If
+        there is no match, the function will check if it is a valid
+        email address.
+
+        :return: A tuple with a session id, a `1` or `0` to indicate
+            whether the user is authenticated, and the matched address.
+            Returns `None` when `address` does not match a valid user,
+            nor a valid email address. When `address` is an email address,
+            the sid will be `None` and the authentication parameter
+            will always be `0`
+        """
         if not address or address == 'anonymous':
             return None
 
@@ -263,6 +361,12 @@ class RecipientMatcher(object):
         return sid, auth, address
 
     def match_from_author(self, author):
+        """Find a name and email address for a specific user
+
+        :param author: The username that you want to query.
+        :return: On success, a two-item tuple is returned, with the
+            real name and the email address of the user.
+        """
         if author:
             author = author.strip()
         recipient = self.match_recipient(author)
