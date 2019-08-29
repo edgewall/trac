@@ -795,15 +795,17 @@ class BrowserModule(Component):
 
     def get_link_resolvers(self):
         """TracBrowser link resolvers.
-         - `source:` and `browser:`
-             * simple paths (/dir/file)
-             * paths at a given revision (/dir/file@234)
-             * paths with line number marks (/dir/file@234:10,20-30)
-             * paths with line number anchor (/dir/file@234#L100)
-            Marks and anchor can be combined.
-            The revision must be present when specifying line numbers.
-            In the few cases where it would be redundant (e.g. for tags), the
-            revision number itself can be omitted: /tags/v10/file@100-110#L99
+
+        `source:` and `browser:`
+         * simple paths (/dir/file)
+         * paths at a given revision (/dir/file@234)
+         * paths with line number marks (/dir/file@234:10,20-30)
+         * paths with line number anchor (/dir/file@234#L100)
+
+        Marks and anchor can be combined.
+        The revision must be present when specifying line numbers.
+        In the few cases where it would be redundant (e.g. for tags), the
+        revision number itself can be omitted: /tags/v10/file@100-110#L99
         """
         return [('repos', self._format_browser_link),
                 ('export', self._format_export_link),

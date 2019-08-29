@@ -1202,8 +1202,10 @@ class TicketModule(Component):
         return content.getvalue(), '%s;charset=utf-8' % mimetype
 
     def export_rss(self, req, ticket):
-        """:deprecated: since 1.0.6, use `_export_rss` instead. Will be
-                        removed in 1.3.1.
+        """Export as RSS
+
+        :deprecated: since 1.0.6, use `_export_rss` instead. Will be
+            removed in 1.3.1.
         """
         content, content_type = self._export_rss(req, ticket)
         return ''.join(content), content_type
