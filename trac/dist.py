@@ -302,6 +302,9 @@ try:
                     yield m
 
 
+    extract_text = extract_html
+
+
     class generate_messages_js(Command):
         """Generating message javascripts command for use ``setup.py`` scripts.
         """
