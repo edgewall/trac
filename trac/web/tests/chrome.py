@@ -1019,6 +1019,9 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         create_file(filepath, self.template)
         self.chrome = Chrome(self.env)
 
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
     def test_load_template(self):
         t1 = self.chrome.load_template(self.filename)
         self.assertTrue(isinstance(t1, jinja2.Template))

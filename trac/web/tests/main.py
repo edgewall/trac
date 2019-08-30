@@ -753,7 +753,7 @@ class SendErrorTestCase(unittest.TestCase):
                     raise Exception("The Exception message")
 
         cls.components = [RaiseExceptionHandler]
-        cls.env_path = os.path.join(mkdtemp(), 'env')
+        cls.env_path = mkdtemp()
         env = trac.env.Environment(path=cls.env_path, create=True)
         PermissionSystem(env).grant_permission('admin', 'TRAC_ADMIN')
         env.shutdown()
