@@ -1,21 +1,21 @@
 # Translations template for Trac.
-# Copyright (C) 2018-2019 Edgewall Software
+# Copyright (C) 2019 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0.17\n"
+"Project-Id-Version: Trac 1.0.19\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-04-24 17:05+0000\n"
+"POT-Creation-Date: 2019-09-02 18:45+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.3\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: tracopt/mimeview/enscript.py:105
 msgid "Path to the Enscript executable."
@@ -623,7 +623,7 @@ msgid ""
 "''(Since 0.11.5)''"
 msgstr ""
 
-#: trac/db/mysql_backend.py:86
+#: trac/db/mysql_backend.py:90
 msgid "Location of mysqldump for MySQL database backups"
 msgstr ""
 
@@ -835,7 +835,7 @@ msgid ""
 "0.12.2)''"
 msgstr ""
 
-#: trac/ticket/query.py:856
+#: trac/ticket/query.py:867
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -844,7 +844,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:864
+#: trac/ticket/query.py:875
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -853,7 +853,7 @@ msgid ""
 "(''since 0.11.2'')"
 msgstr ""
 
-#: trac/ticket/query.py:872
+#: trac/ticket/query.py:883
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default (''since 0.11'')"
@@ -1088,7 +1088,7 @@ msgid ""
 "repository. If left empty, the global section is used."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:118
+#: trac/versioncontrol/web_ui/browser.py:120
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser.\n"
@@ -1096,7 +1096,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:125
+#: trac/versioncontrol/web_ui/browser.py:127
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser.\n"
@@ -1104,7 +1104,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:184
+#: trac/versioncontrol/web_ui/browser.py:186
 msgid ""
 "List of repository paths that can be downloaded.\n"
 "\n"
@@ -1118,7 +1118,7 @@ msgid ""
 "(''since 0.10'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:197
+#: trac/versioncontrol/web_ui/browser.py:199
 msgid ""
 "Enable colorization of the ''age'' column.\n"
 "\n"
@@ -1127,7 +1127,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:206
+#: trac/versioncontrol/web_ui/browser.py:208
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the newest color, for the color scale used in ''blame'' or\n"
@@ -1135,7 +1135,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:214
+#: trac/versioncontrol/web_ui/browser.py:216
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the oldest color, for the color scale used in ''blame'' or\n"
@@ -1143,7 +1143,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:220
+#: trac/versioncontrol/web_ui/browser.py:222
 msgid ""
 "If set to a value between 0 and 1 (exclusive), this will be the\n"
 "point chosen to set the `intermediate_color` for interpolating\n"
@@ -1151,7 +1151,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:226
+#: trac/versioncontrol/web_ui/browser.py:228
 msgid ""
 "(r,g,b) color triple to use for the color corresponding\n"
 "to the intermediate color, if two linear interpolations are used\n"
@@ -1161,7 +1161,7 @@ msgid ""
 "(''since 0.11'')"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:234
+#: trac/versioncontrol/web_ui/browser.py:236
 msgid ""
 "Whether raw files should be rendered in the browser, or only made\n"
 "downloadable.\n"
@@ -1174,7 +1174,7 @@ msgid ""
 "recommended to leave this option disabled (which is the default)."
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:246
+#: trac/versioncontrol/web_ui/browser.py:248
 msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser.\n"
@@ -1592,7 +1592,7 @@ msgid ""
 "\n"
 "# -- Link to an external Trac:\n"
 "trac.title = Edgewall's Trac for Trac\n"
-"trac.url = http://trac.edgewall.org\n"
+"trac.url = https://trac.edgewall.org\n"
 "}}}"
 msgstr ""
 
