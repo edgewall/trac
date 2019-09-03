@@ -245,11 +245,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         self.log.debug('render_ticket_action_control: action "%s"', action)
 
         this_action = self.actions[action]
-        status = this_action['newstate']
         label = this_action['label']
         operations = this_action['operations']
         ticket_owner = ticket._old.get('owner', ticket['owner'])
         ticket_status = ticket._old.get('status', ticket['status'])
+        next_status = this_action['newstate']
         author = get_reporter_id(req, 'author')
         author_info = partial(Chrome(self.env).authorinfo, req,
                               resource=ticket.resource)
@@ -346,7 +346,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   "%(current_owner)s to %(new_owner)s",
                                   current_owner=formatted_current_owner,
                                   new_owner=formatted_author))
-            elif ticket_status != status:
+            elif ticket_status != next_status:
                 hints.append(tag_("The owner will remain %(current_owner)s",
                                   current_owner=formatted_current_owner))
         if 'set_resolution' in operations:
@@ -386,21 +386,20 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(tag_("as %(status)s", status=ticket_status))
             if len(operations) == 1:
+                control.append(tag_("as %(status)s", status=ticket_status))
                 hints.append(tag_("The owner will remain %(current_owner)s",
                                   current_owner=formatted_current_owner)
                              if ticket_owner else
                              _("The ticket will remain with no owner"))
-        else:
-            if status == '*':
-                label = None  # Control won't be created
-            elif ticket['status'] is None:  # New ticket
-                hints.append(tag_("The status will be '%(name)s'",
-                                  name=status))
-            else:
-                hints.append(tag_("Next status will be '%(name)s'",
-                                  name=status))
+        elif next_status == '*':
+            label = None  # Control won't be created
+        elif ticket['status'] is None:  # New ticket
+            hints.append(tag_("The status will be '%(name)s'",
+                              name=next_status))
+        elif next_status != ticket_status:
+            hints.append(tag_("Next status will be '%(name)s'",
+                              name=next_status))
         return (label, tag(separated(control, ' ')),
                 tag(separated(hints, '. ', '.') if hints else ''))
 
