@@ -217,7 +217,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         self.log.debug('render_ticket_action_control: action "%s"', action)
 
         this_action = self.actions[action]
-        status = this_action['newstate']
+        status = ticket._old.get('status', ticket['status'])
+        next_status = this_action['newstate']
         label = this_action['name']
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'])
@@ -319,19 +320,17 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append(_("as %(status)s",
-                             status= ticket._old.get('status',
-                                                     ticket['status'])))
             if len(operations) == 1:
+                control.append(_("as %(status)s", status=status))
                 hints.append(_("The owner will remain %(current_owner)s",
                                current_owner=formatted_current_owner)
                              if current_owner else
                              _("The ticket will remain with no owner"))
-        else:
-            if status == '*':
-                label = None  # Control won't be created
-            else:
-                hints.append(_("Next status will be '%(name)s'", name=status))
+        elif next_status == '*':
+            label = None  # Control won't be created
+        elif next_status != status:
+            hints.append(_("Next status will be '%(name)s'",
+                           name=next_status))
         return (label, tag(separated(control, ' ')),
                 '. '.join(hints) + '.' if hints else '')
 
