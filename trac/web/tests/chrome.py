@@ -27,11 +27,12 @@ from trac.tests.contentgen import random_sentence
 from trac.resource import Resource
 from trac.util import create_file
 from trac.util.datefmt import pytz, timezone, utc
-from trac.util.html import Markup, tag
+from trac.util.html import Markup, genshi, tag
 from trac.web.api import IRequestHandler
 from trac.web.chrome import (
-    Chrome, INavigationContributor, add_link, add_meta, add_notice,
-    add_script, add_script_data, add_stylesheet, add_warning, web_context)
+    Chrome, INavigationContributor, ITemplateStreamFilter, add_link, add_meta,
+    add_notice, add_script, add_script_data, add_stylesheet, add_warning,
+    web_context)
 from trac.web.href import Href
 
 
@@ -1076,6 +1077,126 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
             </html>"""), content)
 
 
+class ChromeTemplateStreamFilterTestCase(unittest.TestCase):
+
+    xhtml1_doctype = '<!DOCTYPE html PUBLIC ' \
+                     '"-//W3C//DTD XHTML 1.0 Strict//EN" ' \
+                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+
+    stream_filters = None
+
+    @classmethod
+    def setUpClass(cls):
+        from genshi.filters.transform import Transformer
+        class TestTemplateStreamFilter(Component):
+            implements(ITemplateStreamFilter)
+
+            def filter_stream(self, req, method, filename, stream, data):
+                return stream | Transformer('//body').prepend(u'Bláh')
+
+        cls.stream_filters = [TestTemplateStreamFilter]
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for class_ in cls.stream_filters:
+            ComponentMeta.deregister(class_)
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=['trac.*'] + self.stream_filters,
+                                   path=mkdtemp())
+        os.mkdir(self.env.templates_dir)
+        self.chrome = Chrome(self.env)
+
+    def tearDown(self):
+        self.env.reset_db_and_disk()
+
+    def test_filter_stream_html(self):
+        filename = 'test_chrome.html'
+        template = textwrap.dedent("""\
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <link rel="alternate" href="${link}">
+              </head>
+              <body>
+                <h1>${title}</h1>
+              </body>
+            </html>
+            """)
+        self._write_template(filename, template)
+        data = {'title': u'Tickét #13196',
+                'link': 'http://example.org/?x=1&y=2'}
+        content = self._render_template(filename, data, 'text/html')
+        self.assertIsInstance(content, bytes)
+        self.assertEqual(self.xhtml1_doctype + '\n\n' + textwrap.dedent("""\
+            <html>
+              <head>
+                <link rel="alternate" href="http://example.org/?x=1&amp;y=2">
+              </head>
+              <body>Bláh
+                <h1>Tickét #13196</h1>
+              </body>
+            </html>"""), content)
+
+    def test_filter_stream_xml(self):
+        """Regression test for #13196"""
+
+        filename = 'test_chrome.html'
+        template = textwrap.dedent("""\
+            <?xml version="1.0"?>
+            <rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+              <channel>
+                <title>${title}</title>
+                <link>${link}</link>
+                <description>${title}</description>
+                <language>en-US</language>
+                <generator>Trac</generator>
+              </channel>
+            </rss>
+            """)
+        self._write_template(filename, template)
+        data = {'title': u'Tickét #13196',
+                'link': 'http://example.org/?x=1&y=2'}
+        content = self._render_template(filename, data, 'application/rss+xml')
+        self.assertIsInstance(content, bytes)
+        self.assertEqual(textwrap.dedent("""\
+            <?xml version="1.0"?>
+            <rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+              <channel>
+                <title>Tickét #13196</title>
+                <link>http://example.org/?x=1&amp;y=2</link>
+                <description>Tickét #13196</description>
+                <language>en-US</language>
+                <generator>Trac</generator>
+              </channel>
+            </rss>"""), content)
+
+    def test_filter_stream_text(self):
+        filename = 'test_chrome.txt'
+        template = textwrap.dedent("""\
+            <title>${title}</title>
+            <link>${link}</link>
+            """)
+        self._write_template(filename, template)
+        data = {'title': u'Tickét #13196',
+                'link': 'http://example.org/?x=1&y=2'}
+        content = self._render_template(filename, data, 'text/plain')
+        self.assertIsInstance(content, bytes)
+        self.assertEqual(textwrap.dedent("""\
+            <title>Tickét #13196</title>
+            <link>http://example.org/?x=1&y=2</link>"""), content)
+
+    def _render_template(self, filename, data, content_type):
+        req = MockRequest(self.env)
+        metadata = {'content_type': content_type, 'iterable': False}
+        return self.chrome.render_template(req, filename, data, metadata)
+
+    def _write_template(self, filename, template):
+        filepath = os.path.join(self.env.templates_dir, filename)
+        create_file(filepath, template)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ChromeTestCase))
@@ -1085,6 +1206,10 @@ def test_suite():
     suite.addTest(unittest.makeSuite(FormatAuthorTestCase))
     suite.addTest(unittest.makeSuite(AuthorInfoTestCase))
     suite.addTest(unittest.makeSuite(ChromeTemplateRenderingTestCase))
+    if genshi:
+        suite.addTest(unittest.makeSuite(ChromeTemplateStreamFilterTestCase))
+    else:
+        print("SKIP: web/tests/chrome.py (no genshi installed)")
     return suite
 
 

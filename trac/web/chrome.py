@@ -38,7 +38,7 @@ from trac.util.html import genshi
 if genshi:
     from genshi.core import Attrs, START
     from genshi.filters import Translator
-    from genshi.input import HTML
+    from genshi.input import HTML, XML
     from genshi.output import DocType
     from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
@@ -1937,8 +1937,16 @@ class Chrome(Component):
 
         def _filter_jinja_page(self, req, content, method, filename,
                                content_type, data, fragment, iterable):
-            doctype = self.html_doctype if content_type == 'text/html' else None
-            stream = HTML(content)
+            if content_type == 'text/plain':
+                # Avoid to apply filters to text/plain content
+                return content.encode('utf-8') \
+                       if isinstance(content, unicode) else content
+            if content_type == 'text/html':
+                doctype = self.html_doctype
+                stream = HTML(content)
+            else:
+                doctype = None
+                stream = XML(content)
             stream |= self._filter_stream(req, method, filename, data)
             if fragment:
                 return stream
