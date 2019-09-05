@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-11 18:21-0700\n"
+"POT-Creation-Date: 2019-08-27 21:44-0700\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -172,7 +172,7 @@ msgstr "インストールされている GIT バージョン %(hasver)s は互�
 
 #. TRANSLATOR: modified ('diff') (link)
 #: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1833
-#: trac/wiki/macros.py:379 trac/wiki/templates/wiki_view.html:67
+#: trac/wiki/macros.py:391 trac/wiki/templates/wiki_view.html:67
 #: trac/wiki/web_ui.py:791 tracopt/versioncontrol/git/git_fs.py:464
 msgid "diff"
 msgstr "差分"
@@ -357,7 +357,7 @@ msgid "Back to %(parent)s"
 msgstr "%(parent)s に戻る"
 
 #: trac/attachment.py:235 trac/ticket/batch.py:58 trac/ticket/report.py:175
-#: trac/ticket/roadmap.py:767 trac/web/api.py:1015 trac/wiki/web_ui.py:168
+#: trac/ticket/roadmap.py:767 trac/web/api.py:1019 trac/wiki/web_ui.py:168
 msgid "Invalid request arguments."
 msgstr "不正なリクエストの引数です。"
 
@@ -622,18 +622,17 @@ msgstr ""
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr "オプション '%(option)s' はセクション '%(section)s' に存在しません"
 
-#: trac/core.py:33
+#: trac/core.py:35
 msgid "Trac Error"
 msgstr "Trac エラー"
 
 #: trac/env.py:193
-#, fuzzy
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 "Trac オープンソースプロジェクトのページへ<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 
 #: trac/env.py:408
 #, python-format
@@ -666,7 +665,7 @@ msgstr "設定ファイルが %(path)s に存在しません"
 #: trac/env.py:760
 #, python-format
 msgid "Unable to check for upgrade of %(module)s.%(name)s: %(err)s"
-msgstr ""
+msgstr "%(module)s.%(name)s のアップグレードチェックに失敗: %(err)s"
 
 #: trac/env.py:845
 msgid ""
@@ -964,6 +963,11 @@ msgid ""
 " It is also possible to use an existing MySQL or PostgreSQL database\n"
 " (check the Trac documentation for the connection string syntax).\n"
 msgstr ""
+"\n"
+" 使用するデータベースへの接続文字列を指定してください。デフォルトでは\n"
+" SQLite データベースを Trac Environment ディレクトリ配下に作成します。\n"
+" 既存の MySQL または PostgreSQL データベースを使うこともできます。\n"
+" (接続文字列については Trac のドキュメントを参照してください)\n"
 
 #: trac/admin/console.py:361
 #, python-format
@@ -994,7 +998,7 @@ msgid "Failed to create environment."
 msgstr "tracenv が作成できません。"
 
 #: trac/admin/console.py:462
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Project environment for '%(project_name)s' created.\n"
@@ -1034,7 +1038,7 @@ msgstr ""
 "\n"
 "最新のドキュメントは、プロジェクトのウェブサイトにあります。\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 
 #: trac/admin/console.py:468
@@ -1363,7 +1367,7 @@ msgstr "絶対書式"
 
 #: trac/admin/templates/admin_basics.html:161
 #: trac/admin/templates/admin_logging.html:92
-#: trac/admin/templates/admin_plugins.html:235
+#: trac/admin/templates/admin_plugins.html:247
 #: trac/ticket/templates/admin_components.html:143
 #: trac/ticket/templates/admin_enums.html:132
 #: trac/ticket/templates/admin_milestones.html:139
@@ -1560,31 +1564,35 @@ msgid "Author:"
 msgstr "更新者:"
 
 #: trac/admin/templates/admin_plugins.html:143
+msgid "Maintainer:"
+msgstr "メンテナ:"
+
+#: trac/admin/templates/admin_plugins.html:155
 msgid "Home page:"
 msgstr "ホームページ:"
 
-#: trac/admin/templates/admin_plugins.html:150
+#: trac/admin/templates/admin_plugins.html:162
 msgid "License:"
 msgstr "ライセンス:"
 
-#: trac/admin/templates/admin_plugins.html:160 trac/ticket/admin.py:80
+#: trac/admin/templates/admin_plugins.html:172 trac/ticket/admin.py:80
 #: trac/ticket/api.py:367
 msgid "Component"
 msgstr "コンポーネント"
 
-#: trac/admin/templates/admin_plugins.html:162
+#: trac/admin/templates/admin_plugins.html:174
 msgid "Show all descriptions"
 msgstr "説明をすべて表示する"
 
-#: trac/admin/templates/admin_plugins.html:165
+#: trac/admin/templates/admin_plugins.html:177
 msgid "Hide all descriptions"
 msgstr "説明をすべて隠す"
 
-#: trac/admin/templates/admin_plugins.html:170
+#: trac/admin/templates/admin_plugins.html:182
 msgid "Enabled"
 msgstr "有効"
 
-#: trac/admin/templates/admin_plugins.html:242
+#: trac/admin/templates/admin_plugins.html:254
 #, python-format
 msgid "%(note)s See %(page)s for help on using plugins."
 msgstr "%(note)s プラグインについて詳しくは %(page)s を参照してください。"
@@ -1840,23 +1848,23 @@ msgstr "メールのエンコーディング設定が不正です: %(mime_encodi
 msgid "Header length is too short"
 msgstr "ヘッダー長が短すぎます"
 
-#: trac/notification/mail.py:162
+#: trac/notification/mail.py:170
 #, python-format
 msgid "Unknown hash type '%(type)s'"
 msgstr "不明なログ種別: '%(type)s'"
 
-#: trac/notification/mail.py:508
+#: trac/notification/mail.py:526
 #, python-format
 msgid ""
 "SMTP server connection error (%(error)s). Please modify %(option1)s or "
 "%(option2)s in your configuration."
 msgstr "SMTP サーバの接続エラーです (%(error)s)。設定にある %(option1)s または %(option2)s を修正してください。"
 
-#: trac/notification/mail.py:513
+#: trac/notification/mail.py:531
 msgid "TLS enabled but server does not support TLS"
 msgstr "TLS が有効になっていますが、サーバは TLS をサポートしていません"
 
-#: trac/notification/mail.py:565
+#: trac/notification/mail.py:583
 #, python-format
 msgid ""
 "Sendmail error (%(error)s). Please modify %(option)s in your "
@@ -2037,7 +2045,7 @@ msgstr "ユーザインターフェイス"
 #: trac/prefs/web_ui.py:289
 #, python-format
 msgid "Discarded invalid value \"%(val)s\" for auto preview timeout."
-msgstr ""
+msgstr "自動プレビューのタイムアウトに対する不正な値 \"%(val)s\" を無視しました。"
 
 #: trac/prefs/templates/prefs.html:19 trac/templates/genshi/prefs.html:20
 msgid "Preferences:"
@@ -2238,9 +2246,8 @@ msgid ""
 msgstr "ヘルプを非表示とし、ページが冗長ではなくなります。"
 
 #: trac/prefs/templates/prefs_userinterface.html:100
-#, fuzzy
 msgid "Auto preview timeout:"
-msgstr "リビジョン:"
+msgstr "自動プレビューのタイムアウト:"
 
 #: trac/prefs/templates/prefs_userinterface.html:106
 #, python-format
@@ -2248,6 +2255,8 @@ msgid ""
 "Defaults to the site-configured value (%(default_auto_preview_timeout)s "
 "seconds) when empty. Set to 0 to disable autopreview."
 msgstr ""
+"空にした場合はデフォルトとしてプロジェクトの設定値を使用します "
+"(%(default_auto_preview_timeout)s秒)。0を設定すると自動プレビューを無効にします。"
 
 #: trac/prefs/templates/prefs_userinterface.html:121
 #, python-format
@@ -2649,8 +2658,8 @@ msgid "Location"
 msgstr "場所"
 
 #: trac/templates/environment_info.html:75
-#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:762
-#: trac/web/main.py:768
+#: trac/templates/genshi/environment_info.html:61 trac/web/main.py:765
+#: trac/web/main.py:771
 msgid "N/A"
 msgstr "該当なし"
 
@@ -2984,9 +2993,8 @@ msgstr ""
 "ファイルと同じものが[2:オンライン]で参照できます。"
 
 #: trac/templates/genshi/about.html:44
-#, fuzzy
 msgid "Please visit the Trac open source project: [1:https://trac.edgewall.org/]"
-msgstr "Trac オープンソースプロジェクトのページへ:  [1:http://trac.edgewall.org/]"
+msgstr "Trac オープンソースプロジェクトのページへ:  [1:https://trac.edgewall.org/]"
 
 #: trac/templates/genshi/about.html:46
 #, python-format
@@ -3733,27 +3741,27 @@ msgstr "存在しないバージョンは変更できません。"
 msgid "Invalid version name."
 msgstr "バージョンの名称が不正です。"
 
-#: trac/ticket/notification.py:550
+#: trac/ticket/notification.py:577
 msgid "Ticket that I own is created or modified"
 msgstr "担当するチケットの作成時または変更時"
 
-#: trac/ticket/notification.py:572
+#: trac/ticket/notification.py:599
 msgid "I update a ticket"
 msgstr "自身によるチケット更新時"
 
-#: trac/ticket/notification.py:598
+#: trac/ticket/notification.py:625
 msgid "Ticket that I previously updated is modified"
 msgstr "変更したことのあるチケットの更新時"
 
-#: trac/ticket/notification.py:620
+#: trac/ticket/notification.py:647
 msgid "Ticket that I reported is modified"
 msgstr "自分が報告したチケットの更新時"
 
-#: trac/ticket/notification.py:646
+#: trac/ticket/notification.py:673
 msgid "Any ticket is created"
 msgstr "すべてのチケット作成時"
 
-#: trac/ticket/notification.py:674
+#: trac/ticket/notification.py:701
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr "Cc 欄に自分が入っているチケットの変更時"
 
@@ -4486,13 +4494,13 @@ msgid "no"
 msgstr "いいえ"
 
 #: trac/ticket/web_ui.py:1784
-#, fuzzy, python-format
+#, python-format
 msgid "%(value)s added"
 msgid_plural "%(value)s added"
-msgstr[0] "%(value)s を削除"
+msgstr[0] "%(value)s を追加"
 
 #: trac/ticket/web_ui.py:1787 trac/ticket/web_ui.py:1817
-#, fuzzy, python-format
+#, python-format
 msgid "%(value)s removed"
 msgid_plural "%(value)s removed"
 msgstr[0] "%(value)s を削除"
@@ -4718,16 +4726,14 @@ msgid "Batch Modify"
 msgstr "一括更新"
 
 #: trac/ticket/templates/batch_modify.html:40
-#, fuzzy
 msgid "Change:"
-msgstr "変更内容"
+msgstr "変更:"
 
 #: trac/ticket/templates/batch_modify.html:43
 #: trac/ticket/templates/query.html:223 trac/ticket/templates/query.html:245
 #: trac/ticket/templates/query.html:289
-#, fuzzy
 msgid "field…"
-msgstr "ファイル"
+msgstr "フィールド…"
 
 #: trac/ticket/templates/batch_modify.html:65
 #, python-format
@@ -5234,9 +5240,8 @@ msgid "%(label)s:"
 msgstr "%(label)s:"
 
 #: trac/ticket/templates/ticket.html:370
-#, fuzzy
 msgid "(unset)"
-msgstr "解除"
+msgstr "(未設定)"
 
 #: trac/ticket/templates/ticket.html:436
 #, python-format
@@ -5353,12 +5358,12 @@ msgid_plural "follow-ups:"
 msgstr[0] "フォローアップ"
 
 #: trac/ticket/templates/ticket_change.html:78
-#, fuzzy, python-format
+#, python-format
 msgid "by %(author)s, %(date)s"
-msgstr "更新者: %(author)s"
+msgstr "更新者: %(author)s (%(date)s)"
 
 #: trac/ticket/templates/ticket_change.html:84
-#, fuzzy, python-format
+#, python-format
 msgid "by %(author)s"
 msgstr "更新者: %(author)s"
 
@@ -5565,7 +5570,6 @@ msgstr ""
 
 #. TRANSLATOR: Wrap message to 80 columns
 #: trac/upgrades/db30.py:37
-#, fuzzy
 msgid ""
 "Notice: To enable the readonly wiki attribute, trac.ini must be manually\n"
 "edited to add ReadonlyWikiPolicy to the list of permission_policies in\n"
@@ -5577,7 +5581,7 @@ msgstr ""
 "ReadonlyWikiPolicy を [trac] セクションの permission_policies に追加する\n"
 "必要があります。\n"
 "\n"
-"詳細は次を参照してください: http://trac.edgewall.org/wiki/ReadonlyWikiPolicy\n"
+"詳細は次を参照してください: https://trac.edgewall.org/wiki/ReadonlyWikiPolicy\n"
 
 #. TRANSLATOR: Wrap message to 80 columns
 #: trac/upgrades/db43.py:43
@@ -5602,9 +5606,8 @@ msgstr ""
 "permission_policies に追加する必要があります。\n"
 
 #: trac/upgrades/db43.py:63
-#, fuzzy
 msgid "For more details see: https://trac.edgewall.org/wiki/TracUpgrade\n"
-msgstr "詳細は次を参照してください: http://trac.edgewall.org/wiki/TracUpgrade\n"
+msgstr "詳細は次を参照してください: https://trac.edgewall.org/wiki/TracUpgrade\n"
 
 #. TRANSLATOR: Wrap message to 80 columns
 #: trac/upgrades/db44.py:56
@@ -5619,12 +5622,12 @@ msgstr ""
 "あるかも知れません。\n"
 "詳細は %(url)s を参照してください。\n"
 
-#: trac/util/__init__.py:888
+#: trac/util/__init__.py:889
 #, python-format
 msgid "Failed to read %(metadata)s file for %(dist)s: %(err)s"
 msgstr "%(dist)s の %(metadata)s ファイルの読み込みに失敗しました: %(err)s"
 
-#: trac/util/__init__.py:893
+#: trac/util/__init__.py:894
 #, python-format
 msgid "Failed to parse %(metadata)s file for %(dist)s: %(err)s"
 msgstr "%(dist)s の %(metadata)s ファイルの解析に失敗しました: %(err)s"
@@ -6932,17 +6935,17 @@ msgstr "リクエストの引数 %(name)s がありません。この引数は�
 msgid "Invalid URL encoding (was %(path_info)r)"
 msgstr "不正な URL エンコーディング (%(path_info)r)"
 
-#: trac/web/api.py:866
+#: trac/web/api.py:870
 #, python-format
 msgid "File %(path)s not found"
 msgstr "ファイル %(path)s が見つかりません"
 
-#: trac/web/api.py:1008
+#: trac/web/api.py:1012
 #, python-format
 msgid "Exception caught while reading request: %(msg)s"
 msgstr "リクエスト読込中に例外が発生しました: %(msg)s"
 
-#: trac/web/api.py:1033
+#: trac/web/api.py:1037
 #, python-format
 msgid "Invalid encoding in form data: %(msg)s"
 msgstr "フォームデータのエンコーディングが正しくありません: %(msg)s"
@@ -7001,11 +7004,11 @@ msgid ""
 " contact your Trac administrator."
 msgstr "旧来の Genshi テンプレートは 'genshi' パッケージをインストールする必要があります。Trac 管理者に連絡してください。"
 
-#: trac/web/chrome.py:1847
+#: trac/web/chrome.py:1849
 msgid "(unknown template location)"
 msgstr "(ファイル名不明)"
 
-#: trac/web/chrome.py:1848
+#: trac/web/chrome.py:1850
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
@@ -7037,29 +7040,29 @@ msgstr ""
 "を直接変更してください。"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:710
+#: trac/web/main.py:713
 msgid "do so"
 msgstr "こちら"
 
-#: trac/web/main.py:711
+#: trac/web/main.py:714
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "現在ログインしていません。%(do_so)sからログインしてください。"
 
-#: trac/web/main.py:775
+#: trac/web/main.py:778
 msgid "''System information not available''\n"
 msgstr "''システム情報が利用できません''\n"
 
-#: trac/web/main.py:776
+#: trac/web/main.py:779
 msgid "''Plugin information not available''\n"
 msgstr "''プラグイン情報が利用できません''\n"
 
-#: trac/web/main.py:777
+#: trac/web/main.py:780
 msgid "''Interface customization information not available''\n"
 msgstr "''インターフェイスカスタマイズ情報が利用できません''\n"
 
-#: trac/web/main.py:807
-#, fuzzy, python-format
+#: trac/web/main.py:810
+#, python-format
 msgid ""
 "==== How to Reproduce\n"
 "\n"
@@ -7085,7 +7088,7 @@ msgid ""
 "{{{\n"
 "%(traceback)s}}}"
 msgstr ""
-"==== 再現方法 ====\n"
+"==== 再現方法\n"
 "\n"
 "`%(path_info)s` に対して %(method)s を送信した際に Trac がエラーになりました。\n"
 "\n"
@@ -7098,13 +7101,13 @@ msgstr ""
 "\n"
 "ユーザエージェント: `#USER_AGENT#`\n"
 "\n"
-"==== システム情報 ====\n"
+"==== システム情報\n"
 "%(sys_info)s\n"
-"==== 有効にしているプラグイン ====\n"
+"==== 有効にしているプラグイン\n"
 "%(enabled_plugins)s\n"
-"==== インターフェイスカスタマイズ ====\n"
+"==== インターフェイスカスタマイズ\n"
 "%(interface_customization)s\n"
-"==== Python トレースバック ====\n"
+"==== Python トレースバック\n"
 "{{{\n"
 "%(traceback)s}}}"
 
@@ -7218,7 +7221,7 @@ msgstr "'%(name)s' はディレクトリではありません。"
 msgid "  %(page)s imported from %(filename)s"
 msgstr "  %(page)s を %(filename)s からインポートしました"
 
-#: trac/wiki/api.py:448
+#: trac/wiki/api.py:452
 msgid "no permission to view this wiki page"
 msgstr "このページを参照する権限がありません"
 
@@ -7252,9 +7255,9 @@ msgid "Error: Failed to load processor %(name)s"
 msgstr "エラー: プロセッサ %(name)s のロードに失敗しました"
 
 #: trac/wiki/formatter.py:717
-#, fuzzy, python-format
+#, python-format
 msgid "Trac project %(name)s"
-msgstr "プロパティ %(name)s"
+msgstr "Trac プロジェクト %(name)s"
 
 #: trac/wiki/formatter.py:720 trac/wiki/intertrac.py:110
 msgid "The Trac Project"
@@ -7317,7 +7320,7 @@ msgstr "設定済みの InterWiki プレフィックスの一覧です。"
 msgid "Site"
 msgstr "サイト"
 
-#: trac/wiki/macros.py:90
+#: trac/wiki/macros.py:102
 msgid ""
 "Insert an alphabetic list of all wiki pages into the output.\n"
 "\n"
@@ -7384,7 +7387,7 @@ msgstr ""
 "\n"
 "`include` と `exclude` はシェル形式のパターンを受け付けます。"
 
-#: trac/wiki/macros.py:316
+#: trac/wiki/macros.py:328
 msgid ""
 "List all pages that have recently been modified, ordered by the\n"
 "time they were last modified.\n"
@@ -7425,7 +7428,7 @@ msgstr ""
 "ヒント: プレフィックス文字列でフィルタを行わずに項目の最大数のみを指定したい場合には、1つ目のパラメータを空にします。例えば "
 "`[[RecentChanges(,10,group=none)]]` とします。"
 
-#: trac/wiki/macros.py:395
+#: trac/wiki/macros.py:407
 msgid ""
 "Display a structural outline of the current wiki page, each item in the\n"
 "outline being a link to the corresponding heading.\n"
@@ -7472,7 +7475,7 @@ msgstr ""
 " * 4つ目のパラメータはアウトラインを番号付きにするかどうかを指定します。`numbered` または `unnumbered` "
 "のどちらかにすることができます (前者がデフォルトです)。このパラメータは `inline` スタイルでのみ効果があります。"
 
-#: trac/wiki/macros.py:463
+#: trac/wiki/macros.py:475
 msgid ""
 "Embed an image in wiki-formatted text.\n"
 "\n"
@@ -7603,16 +7606,16 @@ msgstr ""
 "\n"
 "''Shun-ichi Goto <gotoh@taiyo.co.jp> が作成した Image.py マクロが元になっています。''"
 
-#: trac/wiki/macros.py:686
+#: trac/wiki/macros.py:698
 msgid "No filespec given"
 msgstr "ファイルが指定されていません"
 
-#: trac/wiki/macros.py:696
+#: trac/wiki/macros.py:708
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
 msgstr "画像 \"%(id)s\" は %(parent)s に添付してありません"
 
-#: trac/wiki/macros.py:722
+#: trac/wiki/macros.py:734
 msgid ""
 "Display a list of all installed Wiki macros, including documentation if\n"
 "available.\n"
@@ -7630,21 +7633,20 @@ msgstr ""
 "\n"
 "※ このマクロは mod_python の `PythonOptimize` オプションを有効にしているとマクロのドキュメントを表示できません。"
 
-#: trac/wiki/macros.py:749
+#: trac/wiki/macros.py:761
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "エラー: マクロ %(name)s の詳細説明が取得できません"
 
-#: trac/wiki/macros.py:772
+#: trac/wiki/macros.py:786
 msgid "Aliases:"
 msgstr "エイリアス:"
 
-#: trac/wiki/macros.py:775
-#, fuzzy
+#: trac/wiki/macros.py:789
 msgid "No documentation found"
 msgstr "ドキュメントが見つかりません"
 
-#: trac/wiki/macros.py:782
+#: trac/wiki/macros.py:796
 msgid ""
 "Produce documentation for the Trac configuration file.\n"
 "\n"
@@ -7671,11 +7673,11 @@ msgstr ""
 " section :: セクション名に対してフィルタするワイルドカード文字列を指定します\n"
 " option  :: オプション名に対してフィルタするワイルドカード文字列を指定します"
 
-#: trac/wiki/macros.py:842
+#: trac/wiki/macros.py:856
 msgid "(no default)"
 msgstr "(デフォルトなし)"
 
-#: trac/wiki/macros.py:869
+#: trac/wiki/macros.py:883
 msgid ""
 "List all known mime-types which can be used as WikiProcessors.\n"
 "\n"
@@ -7686,11 +7688,11 @@ msgstr ""
 "\n"
 "引数を指定すると mime-type をフィルタリングすることができます。"
 
-#: trac/wiki/macros.py:892
+#: trac/wiki/macros.py:906
 msgid "MIME Types"
 msgstr "MIME タイプ"
 
-#: trac/wiki/macros.py:906
+#: trac/wiki/macros.py:920
 msgid ""
 "Display a table of content for the Trac guide.\n"
 "\n"
@@ -7706,11 +7708,11 @@ msgstr ""
 "目次は Trac* と WikiFormatting ページを含んでいてカスタマイズできません。\n"
 "目次のカスタマイズには [https://trac-hacks.org/wiki/TocMacro TocMacro] を検索してください。"
 
-#: trac/wiki/macros.py:953
+#: trac/wiki/macros.py:967
 msgid "Table of Contents"
 msgstr "目次"
 
-#: trac/wiki/macros.py:967
+#: trac/wiki/macros.py:981
 #, python-format
 msgid "Invalid macro argument %(expr)s"
 msgstr "%(expr)s は不正なマクロの引数です"
@@ -7922,15 +7924,15 @@ msgid "Delete %(name)s"
 msgstr "%(name)s の削除"
 
 #: trac/wiki/templates/wiki_delete.html:72
-#, fuzzy, python-format
+#, python-format
 msgid "versions %(from)s to %(to)s"
-msgstr "%(name)s のバージョン %(from)s から %(to)s を削除しました。"
+msgstr "バージョン%(from)sから%(to)s"
 
 #: trac/wiki/templates/wiki_delete.html:75
 #: trac/wiki/templates/wiki_delete.html:101
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to delete %(version)s of this page?"
-msgstr "このページのバージョン %(version)s を削除しますか?"
+msgstr "このページの%(version)sを削除しますか?"
 
 #: trac/wiki/templates/wiki_delete.html:84
 #: trac/wiki/templates/wiki_delete.html:147
@@ -7947,24 +7949,23 @@ msgid ""
 msgstr "%(num_versions)sを削除しようとしています。最初の更新は%(first_modified)s、最後の更新は%(last_modified)sです。"
 
 #: trac/wiki/templates/wiki_delete.html:98
-#, fuzzy, python-format
+#, python-format
 msgid "version %(number)s"
-msgstr "バージョン %(num)s"
+msgstr "バージョン%(number)s"
 
 #: trac/wiki/templates/wiki_delete.html:109
-#, fuzzy, python-format
+#, python-format
 msgid "Created %(created)s."
 msgstr "登録: %(created)s"
 
 #: trac/wiki/templates/wiki_delete.html:115
-#, fuzzy, python-format
 msgid ""
 "This is the only version of the page, so the page will be removed "
 "completely!"
-msgstr "これが唯一の%(version)sのため(%(created)sに作成)、ページ自体を削除します。"
+msgstr "このページはバージョンが1つしかないためページ自体を削除します。"
 
 #: trac/wiki/templates/wiki_delete.html:121
-#, fuzzy, python-format
+#, python-format
 msgid "Modified %(modified)s."
 msgstr "最終更新: %(modified)s"
 
@@ -8250,64 +8251,4 @@ msgstr "また、上位の階層にページを作成することもできます
 #: trac/wiki/templates/wiki_view.html:225
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "以下のページはこのページの名前に似ているので、関係があるかもしれません。"
-
-#~ msgid ""
-#~ "\n"
-#~ " Please specify the connection string for the database. By default, \n"
-#~ " a local SQLite database is created in the environment directory. \n"
-#~ " It is also possible to use an existing MySQL or PostgreSQL database\n"
-#~ " (check the Trac documentation for the connection string syntax).\n"
-#~ msgstr ""
-#~ "\n"
-#~ " 使用するデータベースへの接続文字列を指定してください。\n"
-#~ " デフォルトでは SQLite データベースを Trac Environment ディレクトリ配下に作成します。\n"
-#~ " 既存の MySQL または PostgreSQL データベースを使うこともできます。\n"
-#~ " (接続文字列については Trac のドキュメントを参照してください)\n"
-
-#~ msgid "No upgrade package %(pkg)s"
-#~ msgstr "アップグレードパッケージ %(pkg)s がありません"
-
-#~ msgid "Subscription rules"
-#~ msgstr "購読ルール"
-
-#~ msgid "%(items)s added"
-#~ msgid_plural "%(items)s added"
-#~ msgstr[0] "%(items)s を追加"
-
-#~ msgid "%(items)s removed"
-#~ msgid_plural "%(items)s removed"
-#~ msgstr[0] "%(items)s を削除"
-
-#~ msgid "Batch modification fields"
-#~ msgstr "一括更新フィールド"
-
-#~ msgid "Add Field:"
-#~ msgstr "フィールドの追加:"
-
-#~ msgid "Query filters"
-#~ msgstr "検索フィルタ"
-
-#~ msgid "Report arguments"
-#~ msgstr "レポート引数"
-
-#~ msgid "Changed %(date)s by %(author)s"
-#~ msgstr "更新者: %(author)s (%(date)s)"
-
-#~ msgid "Changed by %(author)s"
-#~ msgstr "更新者: %(author)s"
-
-#~ msgid "%(reponame)s is not a cached repository."
-#~ msgstr "%(reponame)s はキャッシュありのリポジトリではありません。"
-
-#~ msgid "Revision info"
-#~ msgstr "リビジョン情報"
-
-#~ msgid ""
-#~ "Are you sure you want to delete"
-#~ " versions %(from)s to %(to)s of this"
-#~ " page?"
-#~ msgstr "このページのバージョン %(from)s から %(to)s を削除しますか?"
-
-#~ msgid "Modified %(last_modified)s."
-#~ msgstr "最終更新: %(last_modified)s"
 
