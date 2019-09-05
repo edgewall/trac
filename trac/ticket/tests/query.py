@@ -1377,6 +1377,19 @@ ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
                          '%d,0\r\n' % (tktids[0], tktids[1]),
                          csv)
 
+    def test_rss_feed_for_authenticated_users(self):
+        req = MockRequest(self.env, authname='admin', path_info='/query',
+                          args={'status': '!closed'})
+        self._process_request(req)
+        alternates = req.chrome['links']['alternate']
+        for link in alternates:
+            if link['type'] == 'application/rss+xml':
+                break
+        else:
+            self.fail('No application/rss+xml in %r' % alternates)
+        self.assertIn('/trac.cgi/login?referer=%2Ftrac.cgi%2Fquery%3F',
+                      link['href'])
+
 
 class QueryLinksTestCase(unittest.TestCase):
 
