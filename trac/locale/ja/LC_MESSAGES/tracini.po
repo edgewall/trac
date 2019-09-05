@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.2.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-07 16:55+0000\n"
+"POT-Creation-Date: 2019-08-28 15:42+0900\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.3\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -74,7 +74,7 @@ msgstr ""
 "_perms = EXTRA_VIEW, EXTRA_MODIFY\n"
 "}}}"
 
-#: tracopt/ticket/commit_updater.py:112
+#: tracopt/ticket/commit_updater.py:113
 msgid ""
 "Require commands to be enclosed in an envelope.\n"
 "\n"
@@ -86,11 +86,11 @@ msgstr ""
 "空にするか、2つの文字にする必要があります。例えば、`[]` を設定するとコマンドは `[close #4]` "
 "という形式にしなければならないようになります。"
 
-#: tracopt/ticket/commit_updater.py:118
+#: tracopt/ticket/commit_updater.py:119
 msgid "Commands that close tickets, as a space-separated list."
 msgstr "チケットをクローズするコマンド。クローズ対象のチケットは空白区切りにします。"
 
-#: tracopt/ticket/commit_updater.py:122
+#: tracopt/ticket/commit_updater.py:123
 msgid ""
 "Commands that add a reference, as a space-separated list.\n"
 "\n"
@@ -101,7 +101,7 @@ msgstr ""
 "\n"
 "特別な値である `<ALL>` を設定した場合、メッセージ中のすべてのチケットに参照を追加します。"
 
-#: tracopt/ticket/commit_updater.py:129
+#: tracopt/ticket/commit_updater.py:130
 msgid ""
 "Check that the committer has permission to perform the requested\n"
 "operations on the referenced tickets.\n"
@@ -113,7 +113,7 @@ msgstr ""
 "\n"
 "これは、Trac とリポジトリとでユーザ名が同じ必要があります。"
 
-#: tracopt/ticket/commit_updater.py:137
+#: tracopt/ticket/commit_updater.py:138
 msgid "Send ticket change notification when updating a ticket."
 msgstr "チケットの更新時にチケットの変更通知を送信するかどうかを指定します。"
 
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
 msgstr "DEBUG レベルのときに SQL クエリをログに表示するかどうかを指定します。"
 
-#: trac/db/mysql_backend.py:94
+#: trac/db/mysql_backend.py:98
 msgid "Location of mysqldump for MySQL database backups"
 msgstr "MySQL データベースのバックアップに使う mysqldump の場所を指定します。"
 
@@ -904,7 +904,7 @@ msgstr ""
 "有効な受信処理:\n"
 "[[SubscriberList]]"
 
-#: trac/notification/mail.py:275
+#: trac/notification/mail.py:293
 msgid ""
 "Comma separated list of email resolver components in the order\n"
 "they will be called.  If an email address is resolved, the remaining\n"
@@ -913,31 +913,31 @@ msgstr ""
 "!IEmailAddressResolver "
 "コンポーネントを呼び出し順にカンマ区切りで指定します。メールアドレスが解決すると、それ以降のコンポーネントは呼び出されません。"
 
-#: trac/notification/mail.py:284
+#: trac/notification/mail.py:302
 msgid "Default format to distribute email notifications."
 msgstr "メール通知を配信する際に使用するデフォルトのフォーマットを指定します。"
 
-#: trac/notification/mail.py:476
+#: trac/notification/mail.py:494
 msgid "SMTP server hostname to use for email notifications."
 msgstr "メール通知に使用する SMTP サーバのホスト名を指定します。"
 
-#: trac/notification/mail.py:479
+#: trac/notification/mail.py:497
 msgid "SMTP server port to use for email notification."
 msgstr "メール通知に使用する SMTP サーバのポート番号を指定します。"
 
-#: trac/notification/mail.py:482
+#: trac/notification/mail.py:500
 msgid "Username for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのユーザ名を指定します。"
 
-#: trac/notification/mail.py:485
+#: trac/notification/mail.py:503
 msgid "Password for authenticating with SMTP server."
 msgstr "SMTP サーバの認証に使用するのパスワードを指定します。"
 
-#: trac/notification/mail.py:488
+#: trac/notification/mail.py:506
 msgid "Use SSL/TLS to send notifications over SMTP."
 msgstr "SMTP 接続により通知を送信する際に SSL/TLS を使用するかどうかを指定します。"
 
-#: trac/notification/mail.py:544
+#: trac/notification/mail.py:562
 msgid ""
 "Path to the sendmail executable.\n"
 "\n"
@@ -1066,7 +1066,7 @@ msgstr ""
 "そのコンポーネントは `trac.ini` ファイルのこのセクションでワークフローを設定するようになっています。詳細については "
 "TracWorkflow を参照してください。"
 
-#: trac/ticket/notification.py:63
+#: trac/ticket/notification.py:64
 msgid ""
 "A Genshi text template snippet used to get the notification\n"
 "subject.\n"
@@ -1079,7 +1079,7 @@ msgstr ""
 "テンプレート変数については [TracNotification#Customizingthee-mailsubject "
 "TracNotification] ページに説明があります。"
 
-#: trac/ticket/notification.py:72
+#: trac/ticket/notification.py:73
 msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
@@ -1087,7 +1087,7 @@ msgstr ""
 "ticket_subject_template に似ていますが一括更新用のものです。\n"
 "(''1.0 以降'')"
 
-#: trac/ticket/notification.py:77
+#: trac/ticket/notification.py:78
 msgid ""
 "Width of ambiguous characters that should be used in the table\n"
 "of the notification mail.\n"
@@ -1103,7 +1103,7 @@ msgstr ""
 "文字の倍の幅になります。これは CJK ユーザが期待するものです。\n"
 "(''0.12.2 以降'')"
 
-#: trac/ticket/query.py:848
+#: trac/ticket/query.py:876
 msgid ""
 "The default query for authenticated users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1114,7 +1114,7 @@ msgstr ""
 "シンタックス、または `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:856
+#: trac/ticket/query.py:884
 msgid ""
 "The default query for anonymous users. The query is either\n"
 "in [TracQuery#QueryLanguage query language] syntax, or a URL query\n"
@@ -1125,7 +1125,7 @@ msgstr ""
 " `query:` [TracQuery#UsingTracLinks Trac リンク]で使う `?` で始まる URL "
 "クエリ文字列のどちらかを指定します。"
 
-#: trac/ticket/query.py:864
+#: trac/ticket/query.py:892
 msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default."
@@ -1357,7 +1357,7 @@ msgstr ""
 "\n"
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。"
 
-#: trac/versioncontrol/admin.py:179
+#: trac/versioncontrol/admin.py:175
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -2110,7 +2110,7 @@ msgid ""
 "\n"
 "# -- Link to an external Trac:\n"
 "trac.title = Edgewall's Trac for Trac\n"
-"trac.url = http://trac.edgewall.org\n"
+"trac.url = https://trac.edgewall.org\n"
 "}}}"
 msgstr ""
 "このセクションは InterTrac プレフィックスを設定します。名前に `.` を含んでいる設定は、`.` までの設定名に対する "
@@ -2129,7 +2129,7 @@ msgstr ""
 "\n"
 "# -- 外部 Trac へのリンク:\n"
 "trac.title = Edgewall's Trac for Trac\n"
-"trac.url = http://trac.edgewall.org\n"
+"trac.url = https://trac.edgewall.org\n"
 "}}}"
 
 #: trac/wiki/interwiki.py:36
