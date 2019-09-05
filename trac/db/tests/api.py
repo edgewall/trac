@@ -433,6 +433,10 @@ class DatabaseManagerTestCase(unittest.TestCase):
         self.assertIs(False, self.dbm.has_table('trac'))
         self.assertIs(False, self.dbm.has_table('blah.blah'))
 
+    def test_no_database_version(self):
+        """False is returned when entry doesn't exist"""
+        self.assertFalse(self.dbm.get_database_version('trac_plugin_version'))
+
     def test_set_default_database_version(self):
         """Set database version for the default entry named
         `database_version`.
@@ -440,6 +444,8 @@ class DatabaseManagerTestCase(unittest.TestCase):
         new_db_version = default_db_version + 1
         self.dbm.set_database_version(new_db_version)
         self.assertEqual(new_db_version, self.dbm.get_database_version())
+        self.assertEqual([('INFO', 'Upgraded database_version from 45 to 46')],
+                         self.env.log_messages)
 
         # Restore the previous version to avoid destroying the database
         # on teardown
@@ -450,12 +456,15 @@ class DatabaseManagerTestCase(unittest.TestCase):
         """Get and set database version for an entry with an
         arbitrary name.
         """
-        name = 'a_trac_plugin_version'
+        name = 'trac_plugin_version'
         db_ver = 1
 
-        self.assertFalse(self.dbm.get_database_version(name))
         self.dbm.set_database_version(db_ver, name)
+        self.assertEqual([], self.env.log_messages)
         self.assertEqual(db_ver, self.dbm.get_database_version(name))
+        # DB update will be skipped when new value equals database version
+        self.dbm.set_database_version(db_ver, name)
+        self.assertEqual([], self.env.log_messages)
 
     def test_get_sequence_names(self):
         sequence_names = []

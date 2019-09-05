@@ -27,7 +27,7 @@ from trac.admin.test import TracAdminTestCaseBase
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.attachment import Attachment
 from trac.config import ConfigurationError, Option
-from trac.core import Component, ComponentManager, TracError, implements
+from trac.core import Component, TracError, implements
 from trac.db.api import DatabaseManager, get_column_names
 from trac.env import Environment, EnvironmentAdmin, open_environment
 from trac.test import EnvironmentStub, get_dburi, mkdtemp, rmtree
@@ -36,47 +36,44 @@ from trac.util.compat import close_fds
 from trac.util import create_file
 
 
-class EnvironmentCreatedWithoutData(Environment):
-    def __init__(self, path, create=False, options=[]):
-        ComponentManager.__init__(self)
-
-        self.path = path
-        self.href = self.abs_href = None
-
-        if create:
-            self.create(options)
-        else:
-            self.verify()
-            self.setup_config()
-
-
-class EmptyEnvironmentTestCase(unittest.TestCase):
+class EnvironmentWithoutDataTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env_path = mkdtemp()
-        self.env = EnvironmentCreatedWithoutData(self.env_path, create=True)
+        self.env = self._create_env(self.env_path)
 
     def tearDown(self):
         self.env.shutdown() # really closes the db connections
         rmtree(self.env.path)
 
+    def _create_env(self, env_path):
+        return Environment(env_path, create=True, default_data=False)
+
     def test_database_version(self):
-        """Testing env.database_version"""
-        self.assertFalse(self.env.database_version)
+        self.assertEqual(db_default.db_version,
+                         self.env.database_version)
+        self.assertEqual(db_default.db_version,
+                         self.env.database_initial_version)
+
+    def test_environment_data(self):
+        with self.env.db_query as db:
+            for table, columns, default_data in db_default.get_data(db):
+                table_data = db("SELECT * FROM %s" % db.quote(table))
+                self.assertEqual([], table_data)
 
     def test_create_nonexistent_parent_directory(self):
         """TracError raised creating Environment at non-existent path."""
         base_dir = os.path.join(self.env_path, 'non-existent')
         env_path = os.path.join(base_dir, 'non-existent')
         with self.assertRaises(TracError) as cm:
-            EnvironmentCreatedWithoutData(env_path, create=True)
+            self._create_env(env_path)
         self.assertEqual("Base directory '%s' does not exist. Please create "
                          "it and retry." % base_dir, unicode(cm.exception))
 
     def test_create_in_existing_environment(self):
         """TracError raised creating Environment in existing Environment."""
         with self.assertRaises(TracError) as cm:
-            EnvironmentCreatedWithoutData(self.env_path, create=True)
+            self._create_env(self.env_path)
         self.assertEqual("Directory exists and is not empty.",
                          unicode(cm.exception))
 
@@ -213,6 +210,14 @@ class EnvironmentDataTestCase(unittest.TestCase):
                          self.env.database_version)
         self.assertEqual(db_default.db_version,
                          self.env.database_initial_version)
+
+    def test_environment_data(self):
+        with self.env.db_query as db:
+            for table, columns, default_data in db_default.get_data(db):
+                table_data = db("""
+                    SELECT %s FROM %s
+                    """ % (','.join(columns), db.quote(table)))
+                self.assertEqual(list(default_data), table_data)
 
     def test_is_component_enabled(self):
         self.assertTrue(Environment.required)
@@ -928,6 +933,71 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
             self.admin.env.shutdown()
         rmtree(self.parent_dir)
 
+    def test_default_values(self):
+        tracini_path = os.path.join(self.env_path, 'conf', 'trac.ini')
+        rv, output = self.execute('initenv project1 sqlite:db/sqlite.db')
+
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'tracini_path': tracini_path
+        })
+
+        rv, output = self.execute('component list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_component_list')
+        rv, output = self.execute('milestone list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_milestone_list')
+        rv, output = self.execute('version list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_version_list')
+        rv, output = self.execute('resolution list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_resolution_list')
+        rv, output = self.execute('priority list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_priority_list')
+        rv, output = self.execute('ticket_type list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_ticket_type_list')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_permission_list')
+
+    def test_no_default_data_argument(self):
+        tracini_path = os.path.join(self.env_path, 'conf', 'trac.ini')
+        rv, output = self.execute('initenv project1 sqlite:db/sqlite.db '
+                                  '--no-default-data')
+
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, {
+            'env_path': self.env_path,
+            'tracini_path': tracini_path
+        })
+
+        rv, output = self.execute('component list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_component_list')
+        rv, output = self.execute('milestone list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_milestone_list')
+        rv, output = self.execute('version list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_version_list')
+        rv, output = self.execute('resolution list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_resolution_list')
+        rv, output = self.execute('priority list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_priority_list')
+        rv, output = self.execute('ticket_type list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_ticket_type_list')
+        rv, output = self.execute('permission list')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output, suffix='_permission_list')
+
     def test_config_argument(self):
         """Options contained in file specified by the --config argument
         are written to trac.ini.
@@ -994,7 +1064,7 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EmptyEnvironmentTestCase))
+    suite.addTest(unittest.makeSuite(EnvironmentWithoutDataTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentDataTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentTestCase))
     suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))

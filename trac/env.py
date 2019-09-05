@@ -239,15 +239,16 @@ class Environment(Component, ComponentManager):
         `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`
         """)
 
-    def __init__(self, path, create=False, options=[]):
+    def __init__(self, path, create=False, options=[], default_data=True):
         """Initialize the Trac environment.
 
         :param path:   the absolute path to the Trac environment
-        :param create: if `True`, the environment is created and
-                       populated with default data; otherwise, the
-                       environment is expected to already exist.
+        :param create: if `True`, the environment is created and otherwise,
+                       the environment is expected to already exist.
         :param options: A list of `(section, name, value)` tuples that
                         define configuration options
+        :param default_data: if `True` (the default), the environment is
+                             populated with default data when created.
         """
         ComponentManager.__init__(self)
 
@@ -256,7 +257,7 @@ class Environment(Component, ComponentManager):
         self.config = None
 
         if create:
-            self.create(options)
+            self.create(options, default_data)
             for setup_participant in self.setup_participants:
                 setup_participant.environment_created()
         else:
@@ -502,7 +503,7 @@ class Environment(Component, ComponentManager):
         if tid is None:
             log.shutdown(self.log)
 
-    def create(self, options=[]):
+    def create(self, options=[], default_data=True):
         """Create the basic directory structure of the environment,
         initialize the database and populate the configuration file
         with default values.
@@ -554,7 +555,10 @@ class Environment(Component, ComponentManager):
         self._update_sample_config()
 
         # Create the database
-        DatabaseManager(self).init_db()
+        dbm = DatabaseManager(self)
+        dbm.init_db()
+        if default_data:
+            dbm.insert_default_data()
 
     @lazy
     def database_version(self):

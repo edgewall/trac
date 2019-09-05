@@ -112,8 +112,10 @@ class TracAdminTestCaseBase(unittest.TestCase):
                            strip_trailing_space=strip_trailing_space,
                            input=input)
 
-    def assertExpectedResult(self, output, args=None):
+    def assertExpectedResult(self, output, args=None, suffix=None):
         test_name = inspect.stack()[1][3]
+        if suffix:
+            test_name += suffix
         expected_result = self.expected_results[test_name]
         if args is not None:
             expected_result %= args

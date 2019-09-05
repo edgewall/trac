@@ -377,6 +377,7 @@ in order to initialize and prepare the project database.
         arg = self.arg_tokenize(line)
         inherit_paths = []
         config_file_path = None
+        default_data = True
         i = 0
         while i < len(arg):
             item = arg[i]
@@ -384,6 +385,9 @@ in order to initialize and prepare the project database.
                 inherit_paths.append(arg.pop(i)[10:])
             elif item.startswith('--config='):
                 config_file_path = arg.pop(i)[9:]
+            elif item == '--no-default-data':
+                arg.pop(i)
+                default_data = False
             else:
                 i += 1
         config = None
@@ -427,8 +431,8 @@ in order to initialize and prepare the project database.
                             ",\n      ".join(inherit_paths)))
 
         try:
-            self.__env = Environment(self.envname, create=True,
-                                     options=options)
+            self.__env = Environment(self.envname, create=True, options=options,
+                                     default_data=default_data)
         except TracError as e:
             initenv_error(e)
             return 2

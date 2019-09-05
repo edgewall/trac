@@ -283,6 +283,12 @@ class DatabaseManager(Component):
         connector, args = self.get_connector()
         args['schema'] = db_default.schema
         connector.init_db(**args)
+        version = db_default.db_version
+        self.set_database_version(version, 'initial_database_version')
+        self.set_database_version(version)
+
+    def insert_default_data(self):
+        self.insert_into_tables(db_default.get_data)
 
     def destroy_db(self):
         connector, args = self.get_connector()
@@ -487,7 +493,7 @@ class DatabaseManager(Component):
                 db("""
                     INSERT INTO {0} (name, value) VALUES (%s, %s)
                     """.format(db.quote('system')), (name, version))
-        else:
+        elif version != self.get_database_version(name):
             with self.env.db_transaction as db:
                 db("""
                     UPDATE {0} SET value=%s WHERE name=%s
@@ -604,8 +610,7 @@ class DatabaseManager(Component):
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
-        """Insert default data into the database."""
-        self.insert_into_tables(db_default.get_data)
+        pass
 
     def environment_needs_upgrade(self):
         return self.needs_upgrade(db_default.db_version)

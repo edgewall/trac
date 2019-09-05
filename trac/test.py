@@ -442,9 +442,8 @@ class EnvironmentStub(Environment):
                 dbm.shutdown()
 
         if default_data:
-            dbm.insert_into_tables(db_default.get_data)
-        else:
-            dbm.set_database_version(db_default.db_version)
+            dbm.insert_default_data()
+        dbm.set_database_version(db_default.db_version)
 
     def destroy_db(self):
         """Destroy the database."""
