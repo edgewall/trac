@@ -135,12 +135,12 @@ class TicketModule(Component):
     # IContentConverter methods
 
     def get_supported_conversions(self):
+        yield ('rss', _("RSS Feed"), 'xml',
+               'trac.ticket.Ticket', 'application/rss+xml', 8)
         yield ('csv', _("Comma-delimited Text"), 'csv',
                'trac.ticket.Ticket', 'text/csv', 8)
         yield ('tab', _("Tab-delimited Text"), 'tsv',
                'trac.ticket.Ticket', 'text/tab-separated-values', 8)
-        yield ('rss', _("RSS Feed"), 'xml',
-               'trac.ticket.Ticket', 'application/rss+xml', 8)
 
     def convert_content(self, req, mimetype, ticket, key):
         if key == 'csv':
