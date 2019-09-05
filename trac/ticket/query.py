@@ -45,7 +45,7 @@ from trac.web.href import Href
 from trac.web.chrome import (INavigationContributor, Chrome,
                              add_ctxtnav, add_link, add_script,
                              add_script_data, add_stylesheet, add_warning,
-                             web_context)
+                             auth_link, web_context)
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import system_message
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
@@ -1002,9 +1002,12 @@ class QueryModule(Component):
         # Add registered converters
         for conversion in Mimeview(self.env).get_supported_conversions(
                                              'trac.ticket.Query'):
-            add_link(req, 'alternate',
-                     query.get_href(req.href, format=conversion[0]),
-                     conversion[1], conversion[4], conversion[0])
+            format_ = conversion[0]
+            conversion_href = query.get_href(req.href, format=format_)
+            if format_ == 'rss':
+                conversion_href = auth_link(req, conversion_href)
+            add_link(req, 'alternate', conversion_href, conversion[1],
+                     conversion[4], format_)
 
         if format:
             filename = 'query' if format != 'rss' else None
