@@ -58,17 +58,16 @@ class TicketConversionTestCase(unittest.TestCase):
     def test_conversions(self):
         conversions = self.mimeview.get_supported_conversions(
             'trac.ticket.Ticket')
-        expected = sorted([('csv', 'Comma-delimited Text', 'csv',
-                           'trac.ticket.Ticket', 'text/csv', 8,
-                           self.ticket_module),
-                          ('tab', 'Tab-delimited Text', 'tsv',
-                           'trac.ticket.Ticket', 'text/tab-separated-values', 8,
-                           self.ticket_module),
-                           ('rss', 'RSS Feed', 'xml',
-                            'trac.ticket.Ticket', 'application/rss+xml', 8,
-                            self.ticket_module)],
-                          key=lambda i: i[-1], reverse=True)
-        self.assertEqual(expected, conversions)
+        expected = [('rss', 'RSS Feed', 'xml',
+                     'trac.ticket.Ticket', 'application/rss+xml', 8,
+                     self.ticket_module),
+                    ('csv', 'Comma-delimited Text', 'csv',
+                     'trac.ticket.Ticket', 'text/csv', 8,
+                     self.ticket_module),
+                    ('tab', 'Tab-delimited Text', 'tsv',
+                     'trac.ticket.Ticket', 'text/tab-separated-values', 8,
+                     self.ticket_module)]
+        self.assertEqual(expected, list(conversions))
 
     def test_csv_conversion(self):
         ticket = self._create_a_ticket()
