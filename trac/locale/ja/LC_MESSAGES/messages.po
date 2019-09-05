@@ -625,7 +625,7 @@ msgid ""
 "href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 "Trac オープンソースプロジェクトのページへ<br /><a "
-"href=\"https://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 
 #: trac/env.py:405
 #, python-format
