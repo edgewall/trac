@@ -434,8 +434,6 @@ class TicketModule(Component):
                                                            action):
                 label, widget, hint = controller.render_ticket_action_control(
                     req, ticket, action)
-                if label is None:
-                    continue
                 labels.append(label)
                 widgets.append(widget)
                 hints.append(hint)

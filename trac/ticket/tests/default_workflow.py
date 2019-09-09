@@ -304,13 +304,10 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         ticket = Ticket(self.env)
         req = MockRequest(self.env, path_info='/newticket', method='POST')
 
-        label, control, hints = \
-            self.ctlr.render_ticket_action_control(req, ticket,
-                                                   'create_and_triage')
+        actions = self.ctlr.get_ticket_actions(req, ticket)
 
-        self.assertIsNone(label)
-        self.assertEqual('', unicode(control))
-        self.assertEqual('', unicode(hints))
+        # create_and_triage not in actions
+        self.assertEqual([(1, 'create'), (0, 'create_and_assign')], actions)
 
     def test_get_actions_by_operation_for_req(self):
         """Request with no permission checking."""

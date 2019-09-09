@@ -177,6 +177,9 @@ class ConfigurableTicketWorkflow(Component):
         for action_name, action_info in self.actions.items():
             operations = action_info['operations']
             newstate = action_info['newstate']
+            if 'leave_status' not in operations and newstate == '*':
+                # Some other controller handles this operation
+                continue
             # Exclude action that is effectively a No-op.
             if len(operations) == 1 and \
                     operations[0] == 'set_owner_to_self' and \
@@ -364,8 +367,6 @@ class ConfigurableTicketWorkflow(Component):
                                   current_owner=formatted_current_owner)
                              if ticket_owner else
                              _("The ticket will remain with no owner"))
-        elif next_status == '*':
-            label = None  # Control won't be created
         elif ticket['status'] is None:  # New ticket
             hints.append(tag_("The status will be '%(name)s'",
                               name=next_status))
