@@ -26,7 +26,7 @@ from trac.versioncontrol.web_ui.log import LogModule
 from trac.web.api import parse_arg_list
 from trac.web.chrome import web_context
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
-from trac.wiki.formatter import format_to_oneliner
+from trac.wiki.formatter import format_to_html
 
 
 mock_repotype = 'mock:' + __name__
@@ -48,7 +48,13 @@ class TestLogModulePermissionPolicy(Component):
     implements(IPermissionPolicy)
 
     def check_permission(self, action, username, resource, perm):
-        if action == 'LOG_VIEW' and resource.realm == 'repository':
+        if action == 'LOG_VIEW':
+            if resource.realm != 'source':
+                raise AssertionError('Invalid realm %r' % resource.realm)
+            if resource.id == 'deny' or resource.id.endswith('/deny'):
+                return False
+            if resource.id == 'allow' or resource.id.endswith('/allow'):
+                return True
             return username != 'anonymous'
 
 
@@ -468,19 +474,22 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def test_log_link_checking_repository_resource(self):
         self.env.config.set('trac', 'permission_policies',
             'TestLogModulePermissionPolicy, DefaultPermissionPolicy')
+
+        self.assertIn(' title="No permission to view change log"',
+                      self._format_to_html('anonymous', 'log:mock@42-43'))
+        self.assertIn(' href="/trac.cgi/log/mock/allow?revs=42-43"',
+                      self._format_to_html('anonymous',
+                                           'log:mock/allow@42-43'))
+        self.assertIn(' href="/trac.cgi/log/mock/?revs=42-43"',
+                      self._format_to_html('blah', 'log:mock@42-43'))
+        self.assertIn(' title="No permission to view change log"',
+                      self._format_to_html('blah', 'log:mock/deny'))
+
+    def _format_to_html(self, authname, wiki):
         resource = Resource('wiki', 'WikiStart')
-
-        req = MockRequest(self.env, authname='anonymous')
-        rendered = unicode(format_to_oneliner(self.env,
-                                              web_context(req, resource),
-                                              'log:mock@42-43'))
-        self.assertIn(' title="No permission to view change log"', rendered)
-
-        req = MockRequest(self.env, authname='blah')
-        rendered = unicode(format_to_oneliner(self.env,
-                                              web_context(req, resource),
-                                              'log:mock@42-43'))
-        self.assertIn(' href="/trac.cgi/log/mock/?revs=42-43"', rendered)
+        req = MockRequest(self.env, authname=authname)
+        return unicode(format_to_html(self.env, web_context(req, resource),
+                                      wiki))
 
 
 def suite():
