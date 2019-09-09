@@ -11,9 +11,4 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/.
 
-# Workaround for http://bugs.python.org/issue6763 and
-# http://bugs.python.org/issue5853 thread issues
-import mimetypes
-mimetypes.init()
-
 from trac.web.api import *
