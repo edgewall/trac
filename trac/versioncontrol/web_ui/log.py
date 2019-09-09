@@ -396,9 +396,10 @@ class LogModule(Component):
                     repos = rm.get_repository(reponame)
 
             if repos:
-                if 'LOG_VIEW' in formatter.perm(repos.resource):
+                path = path or '/'
+                if 'LOG_VIEW' in formatter.perm(repos.resource
+                                                .child('source', path)):
                     reponame = repos.reponame or None
-                    path = path or '/'
                     revranges = RevRanges(repos, revs)
                     if revranges.has_ranges():
                         href = formatter.href.log(reponame, path,
