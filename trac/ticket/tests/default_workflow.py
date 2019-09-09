@@ -309,31 +309,6 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         # create_and_triage not in actions
         self.assertEqual([(1, 'create'), (0, 'create_and_assign')], actions)
 
-    def test_get_actions_by_operation_for_req(self):
-        """Request with no permission checking."""
-        req = MockRequest(self.env, path_info='/ticket/1')
-        ticket = insert_ticket(self.env, status='new')
-        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
-                                                             'set_owner')
-        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
-
-    def test_get_actions_by_operation_for_req_with_ticket_modify(self):
-        """User without TICKET_MODIFY won't have reassign action."""
-        req = MockRequest(self.env, authname='user1', path_info='/ticket/1')
-        ticket = insert_ticket(self.env, status='new')
-        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
-                                                             'set_owner')
-        self.assertEqual([(0, u'change_owner')], actions)
-
-    def test_get_actions_by_operation_for_req_without_ticket_modify(self):
-        """User with TICKET_MODIFY will have reassign action."""
-        PermissionSystem(self.env).grant_permission('user1', 'TICKET_MODIFY')
-        req = MockRequest(self.env, authname='user1', path_info='/ticket/1')
-        ticket = insert_ticket(self.env, status='new')
-        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
-                                                             'set_owner')
-        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
-
     def test_transition_to_star_with_leave_operation(self):
         """Action is rendered by CTW for transition to * with leave_status
         """
@@ -372,13 +347,37 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
                           authname='user1')
 
         label, control, hints = \
-            self.ctlr.render_ticket_action_control(req, ticket,
-                                                   'leave')
+            self.ctlr.render_ticket_action_control(req, ticket, 'leave')
 
         self.assertEqual('leave', label)
         self.assertEqual('as assigned', unicode(control))
         self.assertEqual('The owner will remain <span class="trac-author">'
                          'user2</span>.', unicode(hints))
+
+    def test_get_actions_by_operation_for_req(self):
+        """Request with no permission checking."""
+        req = MockRequest(self.env, path_info='/ticket/1')
+        ticket = insert_ticket(self.env, status='new')
+        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
+                                                             'set_owner')
+        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
+
+    def test_get_actions_by_operation_for_req_with_ticket_modify(self):
+        """User without TICKET_MODIFY won't have reassign action."""
+        req = MockRequest(self.env, authname='user1', path_info='/ticket/1')
+        ticket = insert_ticket(self.env, status='new')
+        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
+                                                             'set_owner')
+        self.assertEqual([(0, u'change_owner')], actions)
+
+    def test_get_actions_by_operation_for_req_without_ticket_modify(self):
+        """User with TICKET_MODIFY will have reassign action."""
+        PermissionSystem(self.env).grant_permission('user1', 'TICKET_MODIFY')
+        req = MockRequest(self.env, authname='user1', path_info='/ticket/1')
+        ticket = insert_ticket(self.env, status='new')
+        actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
+                                                             'set_owner')
+        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
 
 
 class ResetActionTestCase(unittest.TestCase):
