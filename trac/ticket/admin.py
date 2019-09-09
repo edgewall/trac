@@ -24,7 +24,8 @@ from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
 from trac.util.text import exception_to_unicode, print_table, printout
 from trac.util.translation import _, N_, gettext
-from trac.web.chrome import Chrome, add_notice, add_script, add_warning
+from trac.web.chrome import Chrome, add_ctxtnav, add_notice, add_script, \
+                            add_warning
 
 
 class TicketAdminPanel(Component):
@@ -252,6 +253,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
             chrome = Chrome(self.env)
             chrome.add_wiki_toolbars(req)
             chrome.add_auto_preview(req)
+            add_ctxtnav(req, _("View Milestone"),
+                        req.href.milestone(milestone_name))
             data = {'view': 'detail',
                     'milestone': milestone,
                     'default_due': milestone_module.get_default_due(req)}
