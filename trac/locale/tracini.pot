@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.5.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-29 20:58-0700\n"
+"POT-Creation-Date: 2019-09-10 11:18-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -814,7 +814,7 @@ msgstr ""
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:126
+#: trac/ticket/default_workflow.py:128
 msgid ""
 "The workflow for tickets is controlled by plugins. By default,\n"
 "there's only a `ConfigurableTicketWorkflow` component in charge.\n"
