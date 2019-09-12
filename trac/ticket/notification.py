@@ -311,14 +311,9 @@ class TicketFormatter(Component):
     def _format_body(self, data, template_name):
         chrome = Chrome(self.env)
         template = chrome.load_template(template_name, text=True)
-        # don't translate the e-mail stream
-        with translation_deactivated():
-            try:
-                body = chrome.render_template_string(template, data, text=True)
-                return body.encode('utf-8')
-            except Exception as e:
-                self.log.debug("Failed to format body of notification mail: %s",
-                               exception_to_unicode(e, traceback=True))
+        with translation_deactivated():  # don't translate the e-mail stream
+            body = chrome.render_template_string(template, data, text=True)
+            return body.encode('utf-8')
 
     def _format_subj(self, event):
         is_newticket = event.category == 'created'
