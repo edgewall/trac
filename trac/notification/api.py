@@ -325,22 +325,6 @@ class NotificationSystem(Component):
     distributors = ExtensionPoint(INotificationDistributor)
     subscribers = ExtensionPoint(INotificationSubscriber)
 
-    @property
-    def smtp_always_cc(self):  # For backward compatibility
-        return self.config.get('notification', 'smtp_always_cc')
-
-    @property
-    def smtp_always_bcc(self):  # For backward compatibility
-        return self.config.get('notification', 'smtp_always_bcc')
-
-    @property
-    def ignore_domains(self):  # For backward compatibility
-        return self.config.get('notification', 'ignore_domains')
-
-    @property
-    def admit_domains(self):  # For backward compatibility
-        return self.config.get('notification', 'admit_domains')
-
     @lazy
     def subscriber_defaults(self):
         rawsubscriptions = self.notification_subscriber_section.options()
