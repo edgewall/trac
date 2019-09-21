@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+from datetime import datetime
 import argparse
 import os.path
 import sys
@@ -61,7 +62,7 @@ def main():
     """Merge translated strings from another PO file.
 
     $ src=../trac-1.2-stable/trac/locale/de/LC_MESSAGES
-    $ PYTHONPATH=. contrib/%(prog)s messages $src/messages.po
+    $ PYTHONPATH=. contrib/%(prog)s messages $src/messages.po [locale]
     """
     domains = _get_domains()
     if not domains:
@@ -70,17 +71,23 @@ def main():
     parser.add_argument('domain', choices=domains,
                         help="Name of catalog to merge")
     parser.add_argument('pofile', help="Path of the catalog to merge from")
+    parser.add_argument('locale', help="Locale of the catalog to merge from",
+                        nargs='?', default=None)
     args = parser.parse_args()
 
-    domain, source_file = args.domain, args.pofile
+    domain, source_file, locale = args.domain, args.pofile, args.locale
     locales = _get_locales(domain)
     if not locales:
         raise ScriptError('No trac/locale/*/LC_MESSAGES/*.po files.')
+    pot = _open_pofile(os.path.join('trac', 'locale', domain + '.pot'))
     source = _open_pofile(source_file)
-    preferred_locales = [value.split(None, 1)[0]
-                         for value in (source.locale and str(source.locale),
-                                       source.language_team)
-                         if value]
+    if locale:
+        preferred_locales = [locale]
+    else:
+        preferred_locales = [value.split(None, 1)[0]
+                             for value in (source.locale and str(source.locale),
+                                           source.language_team)
+                             if value]
     locale = negotiate_locale(preferred_locales, locales)
     if not locale or locale == 'en_US':
         raise ScriptError('No available *.po file for %s.\n' %
@@ -115,6 +122,11 @@ def main():
         target_msg.flags = source_msg.flags
         n += 1
     if n > 0:
+        target.msgid_bugs_address = pot.msgid_bugs_address
+        target.revision_date = datetime.utcnow()
+        target.locale = locale
+        target.language_team = '%s <%s>' % (locale, pot.msgid_bugs_address)
+        target.fuzzy = False  # clear fuzzy flag of the header
         with open(target_file, 'w') as f:
             write_po(f, target)
             del f
