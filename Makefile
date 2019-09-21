@@ -160,6 +160,9 @@ define HELP_l10n
   summary-xy          display percent translated for the xy locale only
                       (suitable for a commit message)
 
+  tx-merge            merge catalogs from Transifex for all locales
+  tx-merge-xy         merge catalogs from Transifex for the xy locale only
+
   diff                show relevant changes after an update for all catalogs
   diff-xy             show relevant changes after an update for the xy locale
   [vc=...]            variable containing the version control command to use
@@ -293,9 +296,71 @@ summary-%:
 	@rm -f messages.mo
 
 
+tx-merge-%:
+	@$(foreach catalog,$(catalogs), \
+	    touch $(catalog.po); \
+	    mv $(catalog.po) $(catalog.po).orig; \
+	)
+	@tx pull --force --no-interactive -l $(*)
+	@$(foreach catalog,$(catalogs), \
+	    [ -f $(catalog.po) ] && mv $(catalog.po) $(catalog.po).tx; \
+	    mv $(catalog.po).orig $(catalog.po); \
+	    [ -f $(catalog.po).tx ] && { \
+	        $(PYTHON) contrib/merge_catalog.py $(catalog) $(catalog.po).tx $(*); \
+	        rm $(catalog.po).tx; \
+	    }; \
+	)
+
+tx-merge: $(addprefix tx-merge-,$(filter-out en_US,$(locales)))
+
+
 diff: $(addprefix diff-,$(locales))
 
-vc ?= svn
+ifndef vc
+ifneq "$(wildcard $(CURDIR)/.svn)" ""
+    vc := svn
+else ifneq "$(wildcard $(CURDIR)/.git)" ""
+    vc := git
+else ifneq "$(wildcard $(CURDIR)/.hg)" ""
+    vc := hg
+endif
+endif
+
+define vc_cat-svn
+    $(vc) cat -rBASE $(1)
+endef
+define vc_cat-git
+    $(vc) show HEAD:$(1)
+endef
+define vc_cat-hg
+    $(vc) cat -r. $(1)
+endef
+define vc_cat
+    $(call vc_cat-$(vc),$(1))
+endef
+
+define xdiff_catalog
+    { \
+        $(call vc_cat,$(1)) \
+            | msgcat --no-wrap --no-location -s -i - >$(1).tmp; \
+        msgcat --no-wrap --no-location -s -i - <$(1) \
+            | diff -u -L $(1) -L $(1) $(1).tmp - || :; \
+        rm -- $(1).tmp; \
+    }
+endef
+
+
+xdiff-pot:
+	@$(foreach catalog,$(catalogs), \
+	    $(call xdiff_catalog,$(catalog.pot)); \
+	)
+
+xdiff-%:
+	@$(foreach catalog,$(catalogs), \
+	    $(call xdiff_catalog,$(catalog.po)); \
+	)
+
+xdiff: $(addprefix xdiff-,$(locales))
 
 diff-%:
 	@diff=l10n-$(*).diff; \
