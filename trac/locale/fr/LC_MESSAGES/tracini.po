@@ -2280,7 +2280,7 @@ msgid ""
 "\n"
 "# -- Link to an external Trac:\n"
 "trac.title = Edgewall's Trac for Trac\n"
-"trac.url = http://trac.edgewall.org\n"
+"trac.url = https://trac.edgewall.org\n"
 "}}}"
 msgstr ""
 

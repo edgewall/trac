@@ -648,10 +648,10 @@ msgstr "Erreur Trac"
 #: trac/env.py:227
 msgid ""
 "Visit the Trac open source project at<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 "En savoir plus sur le projet Trac :<br /> <a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 
 #: trac/env.py:405
 #, python-format
@@ -1131,7 +1131,7 @@ msgid ""
 "The latest documentation can also always be found on the project\n"
 "website:\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "Congratulations!\n"
 msgstr ""
@@ -1163,7 +1163,7 @@ msgstr ""
 "Web\n"
 "du projet Trac :\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "Félicitations !\n"
 
@@ -2266,10 +2266,10 @@ msgstr "animé par Python"
 #: trac/templates/about.html:56
 msgid ""
 "Please visit the Trac open source project:\n"
-"        [1:http://trac.edgewall.org/]"
+"        [1:https://trac.edgewall.org/]"
 msgstr ""
 "Consultez le site Open Source du projet Trac :\n"
-"        [1:http://trac.edgewall.org/]"
+"        [1:https://trac.edgewall.org/]"
 
 #: trac/templates/about.html:58
 #, python-format

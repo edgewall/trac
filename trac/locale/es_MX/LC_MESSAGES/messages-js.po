@@ -10,17 +10,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
-"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2012-10-31 15:35+0000\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2019-09-02 18:45+0900\n"
+"PO-Revision-Date: 2019-09-05 12:59+0000\n"
 "Last-Translator: tzkmx <tezcatl@freire.mayfirst.org>\n"
-"Language-Team: Spanish (Mexico) <internationalization@lists.mayfirst.org>"
-"\n"
+"Language: es_MX\n"
+"Language-Team: es_MX <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -77,67 +77,65 @@ msgstr "%(title)s (clic para ocultar la columna)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr ""
+msgstr "Hecho"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Anterior"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Hoy"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Sem"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
-msgstr ""
+msgstr "Seleccione hora"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-#, fuzzy
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
-msgstr "o"
-
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-msgid "Minute"
-msgstr ""
-
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-msgid "Second"
-msgstr ""
+msgstr "Hora"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Minuto"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Segundo"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
-msgstr ""
+msgstr "Zona horaria"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
-#, fuzzy
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
-msgstr "no"
+msgstr "Ahora"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
@@ -147,11 +145,11 @@ msgstr "Ya existe un filtro para esa propiedad"
 msgid "or"
 msgstr "o"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:311
 msgid "yes"
 msgstr "sí"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:314
 msgid "no"
 msgstr "no"
 
@@ -163,60 +161,62 @@ msgstr "entre"
 msgid "and"
 msgstr "y"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:342
 msgid " remove:"
-msgstr ""
+msgstr "eliminar:"
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:352
 msgid " add:"
-msgstr ""
+msgstr "añadir:"
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgstr "Elija requerimiento %(id)s para cambios"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
+"Alterne la selección de todos los requerimientos que se muestran en este "
+"grupo"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "Enlazar aquí"
 
-#: trac/htdocs/js/wikitoolbar.js:56
+#: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: '''Example'''"
 msgstr "Texto en negrita: '''Ejemplo'''"
 
-#: trac/htdocs/js/wikitoolbar.js:59
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Texto en cursiva: ''Ejemplo''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
+#: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example =="
 msgstr "Encabezado: == Ejemplo =="
 
-#: trac/htdocs/js/wikitoolbar.js:65
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "Enlace: [http://www.ejemplo.com/ Ejemplo]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "Bloque de código: {{{ ejemplo }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "Línea horizontal: ----"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "Nuevo párrafo"
 
-#: trac/htdocs/js/wikitoolbar.js:77
+#: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: [[BR]]"
 msgstr "Forzar salto de línea: [[BR]]"
 
-#: trac/htdocs/js/wikitoolbar.js:80
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "Image:[[Image(tuimagen.ext)]]"
 

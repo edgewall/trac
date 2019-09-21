@@ -489,10 +489,10 @@ msgstr "Trac 錯誤"
 #: trac/env.py:218
 msgid ""
 "Visit the Trac open source project at<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 "瀏覽 Trac 開放原始碼專案<br/><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 
 #: trac/env.py:761
 msgid "Database newer than Trac version"
@@ -911,7 +911,7 @@ msgid ""
 "The latest documentation can also always be found on the project\n"
 "website:\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "Congratulations!\n"
 msgstr ""
@@ -934,7 +934,7 @@ msgstr ""
 "\n"
 "要查閱最新的文件，可以瀏覽此專案的網站：\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "祝您一切順利、愉快！\n"
 
@@ -2045,10 +2045,10 @@ msgstr "python powered"
 #: trac/templates/about.html:44
 msgid ""
 "Please visit the Trac open source project:\n"
-"        [1:http://trac.edgewall.org/]"
+"        [1:https://trac.edgewall.org/]"
 msgstr ""
 "請瀏覽 Trac 開放原始碼專案網站：\n"
-"        [1:http://trac.edgewall.org/]"
+"        [1:https://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 #, python-format

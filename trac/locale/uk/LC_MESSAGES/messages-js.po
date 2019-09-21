@@ -8,9 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
 "Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
+"POT-Creation-Date: 2019-09-02 18:45+0900\n"
 "PO-Revision-Date: 2012-02-14 09:21+0000\n"
 "Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
+"Language: uk\n"
 "Language-Team: Ukrainian "
 "(http://www.transifex.com/projects/p/trac/language/uk/)\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -18,7 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -79,7 +80,7 @@ msgstr ""
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr ""
 
@@ -104,35 +105,35 @@ msgid "Wk"
 msgstr ""
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr ""
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr ""
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 #, fuzzy
 msgid "Hour"
 msgstr "або"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr ""
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr ""
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr ""
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 #, fuzzy
 msgid "Now"
 msgstr "ні"
@@ -145,11 +146,11 @@ msgstr "Фільтр для цієї властивості вже існує"
 msgid "or"
 msgstr "або"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:311
 msgid "yes"
 msgstr "так"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:314
 msgid "no"
 msgstr "ні"
 
@@ -161,20 +162,20 @@ msgstr "між"
 msgid "and"
 msgstr "та"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:342
 msgid " remove:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:352
 msgid " add:"
 msgstr ""
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr ""
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
 msgstr ""
 
@@ -182,39 +183,39 @@ msgstr ""
 msgid "Link here"
 msgstr "Посилання сюди"
 
-#: trac/htdocs/js/wikitoolbar.js:56
+#: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: '''Example'''"
 msgstr "Жирний текст: '''Зразок'''"
 
-#: trac/htdocs/js/wikitoolbar.js:59
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "Курсивний текст: ''Зразок''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
+#: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example =="
 msgstr "Заголовок: == Зразок =="
 
-#: trac/htdocs/js/wikitoolbar.js:65
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "Посилання: [http://www.example.com/ Зразок]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "Блок коду: {{{ зразок }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "Горизонтальна лінія: ----"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "Новий абзац"
 
-#: trac/htdocs/js/wikitoolbar.js:77
+#: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: [[BR]]"
 msgstr "Розрив рядка: [[BR]]"
 
-#: trac/htdocs/js/wikitoolbar.js:80
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "Зображення: [[Image()]]"
 

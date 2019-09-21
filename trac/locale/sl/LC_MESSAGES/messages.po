@@ -505,10 +505,10 @@ msgstr "Trac napaka"
 #: trac/env.py:218
 msgid ""
 "Visit the Trac open source project at<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 "Obiščite Trac odprtokodni projekt na<br /><a "
-"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+"href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 
 #: trac/env.py:761
 msgid "Database newer than Trac version"
@@ -936,7 +936,7 @@ msgid ""
 "The latest documentation can also always be found on the project\n"
 "website:\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "Congratulations!\n"
 msgstr ""
@@ -960,7 +960,7 @@ msgstr ""
 "\n"
 "Najnovejšo dokumentacijo lahko vedno najdeš tudi na spletni strani:\n"
 "\n"
-"  http://trac.edgewall.org/\n"
+"  https://trac.edgewall.org/\n"
 "\n"
 "Vse čestitke!\n"
 
@@ -2141,10 +2141,10 @@ msgstr "python oskrbljeno"
 #: trac/templates/about.html:44
 msgid ""
 "Please visit the Trac open source project:\n"
-"        [1:http://trac.edgewall.org/]"
+"        [1:https://trac.edgewall.org/]"
 msgstr ""
 "Prosimo, obiščite Trac odprtokodni projekt:\n"
-" [1:http://trac.edgewall.org/]"
+" [1:https://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 #, python-format
