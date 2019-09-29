@@ -94,9 +94,10 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
         with self.assertRaises(PermissionError) as cm:
             self.panel.render_admin_panel(req, 'general', 'perm', None)
 
-        self.assertEqual("The subject user2 was not added to the group group1 "
-                         "because the group has WIKI_ADMIN permission and "
-                         "users cannot grant permissions they don't possess.",
+        self.assertEqual("The subject <strong>user2</strong> was not added "
+                         "to the group <strong>group1</strong>. The "
+                         "group has <strong>WIKI_ADMIN</strong> permission "
+                         "and you cannot grant permissions you don't possess.",
                          unicode(cm.exception))
 
     def test_grant_undefined_permission_with_permission_grant(self):
