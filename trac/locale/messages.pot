@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.5.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-09-10 11:18-0700\n"
+"POT-Creation-Date: 2019-09-29 11:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -358,7 +358,7 @@ msgstr ""
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:495 trac/admin/web_ui.py:498 trac/admin/web_ui.py:502
+#: trac/admin/web_ui.py:496 trac/admin/web_ui.py:499 trac/admin/web_ui.py:503
 #: trac/attachment.py:399
 msgid "No file uploaded"
 msgstr ""
@@ -1000,7 +1000,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/web_ui.py:169 trac/admin/web_ui.py:248 trac/admin/web_ui.py:354
-#: trac/admin/web_ui.py:473 trac/prefs/templates/prefs_general.html:17
+#: trac/admin/web_ui.py:474 trac/prefs/templates/prefs_general.html:17
 #: trac/prefs/web_ui.py:186
 msgid "General"
 msgstr ""
@@ -1082,60 +1082,60 @@ msgstr ""
 msgid "Unknown action"
 msgstr ""
 
-#: trac/admin/web_ui.py:383 trac/admin/web_ui.py:436
+#: trac/admin/web_ui.py:383 trac/admin/web_ui.py:437
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:393
+#: trac/admin/web_ui.py:398
 #, python-format
 msgid ""
-"The subject %(subject)s was not added to the group %(group)s because the "
-"group has %(perm)s permission and users cannot grant permissions they "
-"don't possess."
+"The subject %(subject)s was not added to the group %(group)s. The group "
+"has %(perm)s permission and you cannot grant permissions you don't "
+"possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:403
+#: trac/admin/web_ui.py:404
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:413
+#: trac/admin/web_ui.py:414
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr ""
 
-#: trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:426
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
 "cannot grant permissions they don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:451
+#: trac/admin/web_ui.py:452
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:473
+#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:474
 msgid "Plugins"
 msgstr ""
 
-#: trac/admin/web_ui.py:505
+#: trac/admin/web_ui.py:506
 msgid "Uploaded file is not a Python source file or egg"
 msgstr ""
 
-#: trac/admin/web_ui.py:510
+#: trac/admin/web_ui.py:511
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr ""
 
-#: trac/admin/web_ui.py:579
+#: trac/admin/web_ui.py:580
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/web_ui.py:584
+#: trac/admin/web_ui.py:585
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] ""
@@ -3351,27 +3351,27 @@ msgstr ""
 msgid "Invalid version name."
 msgstr ""
 
-#: trac/ticket/notification.py:577
+#: trac/ticket/notification.py:572
 msgid "Ticket that I own is created or modified"
 msgstr ""
 
-#: trac/ticket/notification.py:599
+#: trac/ticket/notification.py:594
 msgid "I update a ticket"
 msgstr ""
 
-#: trac/ticket/notification.py:625
+#: trac/ticket/notification.py:620
 msgid "Ticket that I previously updated is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:647
+#: trac/ticket/notification.py:642
 msgid "Ticket that I reported is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:673
+#: trac/ticket/notification.py:668
 msgid "Any ticket is created"
 msgstr ""
 
-#: trac/ticket/notification.py:701
+#: trac/ticket/notification.py:696
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr ""
 
@@ -5310,7 +5310,7 @@ msgstr ""
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:246
 #: trac/versioncontrol/web_ui/changeset.py:1086
-#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:417
+#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr ""
@@ -6353,7 +6353,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1088
-#: trac/versioncontrol/web_ui/log.py:419
+#: trac/versioncontrol/web_ui/log.py:420
 msgid "No default repository defined"
 msgstr ""
 
@@ -6389,7 +6389,7 @@ msgstr ""
 msgid "Older Revisions"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:415
+#: trac/versioncontrol/web_ui/log.py:416
 msgid "No permission to view change log"
 msgstr ""
 
