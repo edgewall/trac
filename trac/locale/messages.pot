@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2019-08-27 21:44-0700\n"
+"POT-Creation-Date: 2019-09-29 11:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -362,7 +362,7 @@ msgstr ""
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/admin/web_ui.py:495 trac/admin/web_ui.py:498 trac/admin/web_ui.py:502
+#: trac/admin/web_ui.py:496 trac/admin/web_ui.py:499 trac/admin/web_ui.py:503
 #: trac/attachment.py:413
 msgid "No file uploaded"
 msgstr ""
@@ -430,7 +430,7 @@ msgstr ""
 #: trac/templates/list_of_attachments.html:26
 #: trac/ticket/templates/ticket_change.html:137
 #: trac/versioncontrol/templates/dir_entries.html:37
-#: trac/versioncontrol/web_ui/browser.py:861
+#: trac/versioncontrol/web_ui/browser.py:863
 msgid "Download"
 msgstr ""
 
@@ -1010,7 +1010,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/web_ui.py:169 trac/admin/web_ui.py:248 trac/admin/web_ui.py:354
-#: trac/admin/web_ui.py:473 trac/prefs/templates/prefs_general.html:17
+#: trac/admin/web_ui.py:474 trac/prefs/templates/prefs_general.html:17
 #: trac/prefs/web_ui.py:192
 msgid "General"
 msgstr ""
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Unknown action"
 msgstr ""
 
-#: trac/admin/web_ui.py:383 trac/admin/web_ui.py:436
+#: trac/admin/web_ui.py:383 trac/admin/web_ui.py:437
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr ""
@@ -1100,52 +1100,52 @@ msgstr ""
 #: trac/admin/web_ui.py:393
 #, python-format
 msgid ""
-"The subject %(subject)s was not added to the group %(group)s because the "
-"group has %(perm)s permission and users cannot grant permissions they "
-"don't possess."
+"The subject %(subject)s was not added to the group %(group)s. The group "
+"has %(perm)s permission and you cannot grant permissions you don't "
+"possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:403
+#: trac/admin/web_ui.py:404
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr ""
 
-#: trac/admin/web_ui.py:413
+#: trac/admin/web_ui.py:414
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr ""
 
-#: trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:426
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
 "cannot grant permissions they don't possess."
 msgstr ""
 
-#: trac/admin/web_ui.py:451
+#: trac/admin/web_ui.py:452
 msgid "The selected permissions have been revoked."
 msgstr ""
 
-#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:473
+#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:474
 msgid "Plugins"
 msgstr ""
 
-#: trac/admin/web_ui.py:505
+#: trac/admin/web_ui.py:506
 msgid "Uploaded file is not a Python source file or egg"
 msgstr ""
 
-#: trac/admin/web_ui.py:510
+#: trac/admin/web_ui.py:511
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr ""
 
-#: trac/admin/web_ui.py:579
+#: trac/admin/web_ui.py:580
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/admin/web_ui.py:584
+#: trac/admin/web_ui.py:585
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] ""
@@ -1745,27 +1745,27 @@ msgstr ""
 msgid "Invalid email encoding setting: %(mime_encoding)s"
 msgstr ""
 
-#: trac/notification/mail.py:101
+#: trac/notification/mail.py:110
 msgid "Header length is too short"
 msgstr ""
 
-#: trac/notification/mail.py:170
+#: trac/notification/mail.py:230
 #, python-format
 msgid "Unknown hash type '%(type)s'"
 msgstr ""
 
-#: trac/notification/mail.py:526
+#: trac/notification/mail.py:630
 #, python-format
 msgid ""
 "SMTP server connection error (%(error)s). Please modify %(option1)s or "
 "%(option2)s in your configuration."
 msgstr ""
 
-#: trac/notification/mail.py:531
+#: trac/notification/mail.py:635
 msgid "TLS enabled but server does not support TLS"
 msgstr ""
 
-#: trac/notification/mail.py:583
+#: trac/notification/mail.py:687
 #, python-format
 msgid ""
 "Sendmail error (%(error)s). Please modify %(option)s in your "
@@ -3339,7 +3339,7 @@ msgstr ""
 msgid "The resolution will be deleted"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:361
+#: trac/ticket/default_workflow.py:362
 #, python-format
 msgid "as %(status)s"
 msgstr ""
@@ -3348,17 +3348,17 @@ msgstr ""
 msgid "The ticket will remain with no owner"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:371
+#: trac/ticket/default_workflow.py:370
 #, python-format
 msgid "The status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:374
+#: trac/ticket/default_workflow.py:373
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:580
+#: trac/ticket/default_workflow.py:579
 msgid ""
 "Render a workflow graph.\n"
 "\n"
@@ -3417,12 +3417,12 @@ msgid ""
 "}}}"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:659
+#: trac/ticket/default_workflow.py:658
 #, python-format
 msgid "The file %(file)s does not exist."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:707
+#: trac/ticket/default_workflow.py:706
 msgid "Enable JavaScript to display the workflow graph."
 msgstr ""
 
@@ -3560,27 +3560,27 @@ msgstr ""
 msgid "Invalid version name."
 msgstr ""
 
-#: trac/ticket/notification.py:577
+#: trac/ticket/notification.py:572
 msgid "Ticket that I own is created or modified"
 msgstr ""
 
-#: trac/ticket/notification.py:599
+#: trac/ticket/notification.py:594
 msgid "I update a ticket"
 msgstr ""
 
-#: trac/ticket/notification.py:625
+#: trac/ticket/notification.py:620
 msgid "Ticket that I previously updated is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:647
+#: trac/ticket/notification.py:642
 msgid "Ticket that I reported is modified"
 msgstr ""
 
-#: trac/ticket/notification.py:673
+#: trac/ticket/notification.py:668
 msgid "Any ticket is created"
 msgstr ""
 
-#: trac/ticket/notification.py:701
+#: trac/ticket/notification.py:696
 msgid "Ticket that I'm listed in the CC field is modified"
 msgstr ""
 
@@ -3645,18 +3645,18 @@ msgid "Ticket"
 msgstr ""
 
 #: trac/ticket/query.py:906 trac/ticket/report.py:326 trac/ticket/report.py:630
-#: trac/ticket/web_ui.py:144 trac/timeline/web_ui.py:231
+#: trac/ticket/web_ui.py:140 trac/timeline/web_ui.py:231
 #: trac/versioncontrol/web_ui/log.py:324
 msgid "RSS Feed"
 msgstr ""
 
 #: trac/ticket/query.py:908 trac/ticket/report.py:328 trac/ticket/report.py:632
-#: trac/ticket/web_ui.py:140
+#: trac/ticket/web_ui.py:142
 msgid "Comma-delimited Text"
 msgstr ""
 
 #: trac/ticket/query.py:910 trac/ticket/report.py:330 trac/ticket/report.py:634
-#: trac/ticket/web_ui.py:142
+#: trac/ticket/web_ui.py:144
 msgid "Tab-delimited Text"
 msgstr ""
 
@@ -3664,28 +3664,28 @@ msgstr ""
 msgid "View Tickets"
 msgstr ""
 
-#: trac/ticket/query.py:1142
+#: trac/ticket/query.py:1145
 msgid "Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1151 trac/ticket/report.py:197
+#: trac/ticket/query.py:1154 trac/ticket/report.py:197
 #: trac/ticket/report.py:198 trac/ticket/report.py:200
 #: trac/ticket/templates/report_list.html:17
 #: trac/ticket/templates/report_list.html:42
 msgid "Available Reports"
 msgstr ""
 
-#: trac/ticket/query.py:1152 trac/ticket/report.py:205
+#: trac/ticket/query.py:1155 trac/ticket/report.py:205
 #: trac/ticket/templates/report_list.html:85
 msgid "New Custom Query"
 msgstr ""
 
-#: trac/ticket/query.py:1266
+#: trac/ticket/query.py:1269
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr ""
 
-#: trac/ticket/query.py:1272
+#: trac/ticket/query.py:1275
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3749,28 +3749,28 @@ msgid ""
 "but is deprecated."
 msgstr ""
 
-#: trac/ticket/query.py:1395
+#: trac/ticket/query.py:1398
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/ticket/query.py:1477
+#: trac/ticket/query.py:1480
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr ""
 
-#: trac/ticket/query.py:1491
+#: trac/ticket/query.py:1494
 msgid "No results"
 msgstr ""
 
-#: trac/ticket/query.py:1509
+#: trac/ticket/query.py:1512
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr ""
 
-#: trac/ticket/query.py:1533
+#: trac/ticket/query.py:1536
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
@@ -5523,7 +5523,7 @@ msgstr ""
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:246
 #: trac/versioncontrol/web_ui/changeset.py:1086
-#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:418
+#: trac/versioncontrol/web_ui/log.py:98 trac/versioncontrol/web_ui/log.py:419
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr ""
@@ -5606,7 +5606,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:256
 #: trac/versioncontrol/templates/admin_repositories.html:258
 #: trac/versioncontrol/templates/admin_repositories.html:262
-#: trac/versioncontrol/web_ui/browser.py:947
+#: trac/versioncontrol/web_ui/browser.py:949
 #: trac/versioncontrol/web_ui/changeset.py:855
 #: trac/versioncontrol/web_ui/changeset.py:995
 msgid "(default)"
@@ -6195,7 +6195,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:36
 #: trac/versioncontrol/templates/repository_index.html:47
-#: trac/versioncontrol/web_ui/browser.py:862
+#: trac/versioncontrol/web_ui/browser.py:864
 msgid "Download as Zip archive"
 msgstr ""
 
@@ -6211,7 +6211,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dirlist_thead.html:23
 #: trac/versioncontrol/templates/revisionlog.html:158
-#: trac/versioncontrol/web_ui/browser.py:870
+#: trac/versioncontrol/web_ui/browser.py:872
 msgid "Rev"
 msgstr ""
 
@@ -6431,11 +6431,11 @@ msgstr ""
 msgid "Path not available for download"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:870
+#: trac/versioncontrol/web_ui/browser.py:872
 msgid "Revision in which the line changed"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:885
+#: trac/versioncontrol/web_ui/browser.py:887
 msgid ""
 "Display the list of available repositories.\n"
 "\n"
@@ -6457,7 +6457,7 @@ msgid ""
 "    When set to 1, order by descending order"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/browser.py:949
+#: trac/versioncontrol/web_ui/browser.py:951
 #, python-format
 msgid "View repository %(repo)s"
 msgstr ""
@@ -6566,7 +6566,7 @@ msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:1088
-#: trac/versioncontrol/web_ui/log.py:420
+#: trac/versioncontrol/web_ui/log.py:421
 msgid "No default repository defined"
 msgstr ""
 
@@ -6602,7 +6602,7 @@ msgstr ""
 msgid "Older Revisions"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/log.py:416
+#: trac/versioncontrol/web_ui/log.py:417
 msgid "No permission to view change log"
 msgstr ""
 
