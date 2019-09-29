@@ -261,9 +261,9 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
             tc.formvalue('addsubj', 'sg_group', 'authenticated')
             tc.submit()
             tc.find("The subject someuser was not added to the "
-                    "group authenticated because the group has "
-                    "TICKET_CREATE permission and users cannot "
-                    "grant permissions they don&#39;t possess.")
+                    "group authenticated. The group has TICKET_CREATE "
+                    "permission and you cannot grant permissions you "
+                    "don&#39;t possess.")
         finally:
             self._tester.login('admin')
             self._tester.go_to_admin("Permissions")

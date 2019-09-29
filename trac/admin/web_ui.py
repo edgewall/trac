@@ -390,11 +390,12 @@ class PermissionAdminPanel(Component):
                 for action in sorted(
                         perm.get_user_permissions(group, expand_meta=False)):
                     req.perm.require(action,
-                        message=_("The subject %(subject)s was not added to "
-                                  "the group %(group)s because the group has "
-                                  "%(perm)s permission and users cannot grant "
-                                  "permissions they don't possess.",
-                                  subject=subject, group=group, perm=action))
+                        message=_("The subject %(subject)s was not added "
+                                  "to the group %(group)s. The group has "
+                                  "%(perm)s permission and you cannot "
+                                  "grant permissions you don't possess.",
+                                  subject=subject, group=group,
+                                  perm=action))
                 try:
                     perm.grant_permission(subject, group)
                 except TracError as e:
