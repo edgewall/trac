@@ -145,6 +145,7 @@ define HELP_l10n
 
   update              update all the catalog files from the templates
   update-xy           update the catalogs for the xy locale only
+  [updateopts=...]    variable containing extra options for update (e.g. -N)
 
   compile             compile all the catalog files
   compile-xy          compile the catalogs for the xy locale only
@@ -163,13 +164,15 @@ define HELP_l10n
   tx-merge            merge catalogs from Transifex for all locales
   tx-merge-xy         merge catalogs from Transifex for the xy locale only
 
-  diff                show relevant changes after an update for all catalogs
-  diff-xy             show relevant changes after an update for the xy locale
+  xdiff               show changes to message strings for all catalogs
+  xdiff-pot           show changes to message strings in the catalog template
+  xdiff-xy            show changes to message strings for the xy locale
+
+  diff                show summarized changes after an update for all catalogs
+  diff-xy             show summarized changes after an update for the xy locale
   [vc=...]            variable containing the version control command to use
 
   [locale=...]        variable for selecting a set of locales
-
-  [updateopts=...]    variable containing extra options for update (e.g. -N)
 
 endef
 export HELP_l10n
