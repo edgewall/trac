@@ -14,6 +14,7 @@
 from __future__ import absolute_import
 
 import os
+import re
 import textwrap
 import unittest
 from pkg_resources import parse_version
@@ -53,6 +54,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
                                        'pygments.html'))
         self.pygments_html = Stream(list(HTMLParser(pygments_html, encoding='utf-8')))
 
+    @property
+    def python_mimetype(self):
+        if pygments_version >= parse_version('2.5.0'):
+            return 'text/x-python2'
+        else:
+            return 'text/x-python'
+
     def _expected(self, expected_id):
         return self.pygments_html.select(
             '//div[@id="%s"]/*|//div[@id="%s"]/text())' %
@@ -63,16 +71,14 @@ class PygmentsRendererTestCase(unittest.TestCase):
         result = unicode(result)
         #print("\nE: " + repr(expected))
         #print("\nR: " + repr(result))
-        expected, result = expected.splitlines(), result.splitlines()
-        for exp, res in zip(expected, result):
-            self.assertEqual(exp, res)
-        self.assertEqual(len(expected), len(result))
+        self.assertEqual(re.split(r'(<[^>]*>)', expected),
+                         re.split(r'(<[^>]*>)', result))
 
     def test_python_hello(self):
         """
         Simple Python highlighting with Pygments (direct)
         """
-        result = self.pygments.render(self.context, 'text/x-python',
+        result = self.pygments.render(self.context, self.python_mimetype,
                                       textwrap.dedent("""
             def hello():
                     return "Hello World!"
@@ -87,7 +93,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         """
         Simple Python highlighting with Pygments (through Mimeview.render)
         """
-        result = Mimeview(self.env).render(self.context, 'text/x-python',
+        result = Mimeview(self.env).render(self.context, self.python_mimetype,
                                            textwrap.dedent("""
             def hello():
                     return "Hello World!"
@@ -100,13 +106,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
 
     def test_python_with_lineno(self):
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
-            {{{#!text/x-python lineno
+            {{{#!%s lineno
             print 'this is a python sample'
             a = b+3
             z = "this is a string"
             print 'this is the end of the python sample'
             }}}
-            """))
+            """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_1', result)
@@ -114,13 +120,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
             self._test('python_with_lineno_1_pygments_2.1plus', result)
 
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
-            {{{#!text/x-python lineno=3
+            {{{#!%s lineno=3
             print 'this is a python sample'
             a = b+3
             z = "this is a string"
             print 'this is the end of the python sample'
             }}}
-            """))
+            """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_2', result)
@@ -131,13 +137,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
         """Python highlighting with Pygments and lineno annotator
         """
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
-            {{{#!text/x-python lineno=3 id=b marks=4-5
+            {{{#!%s lineno=3 id=b marks=4-5
             print 'this is a python sample'
             a = b+3
             z = "this is a string"
             print 'this is the end of the python sample'
             }}}
-            """))
+            """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_lineno_and_markups', result)
@@ -146,13 +152,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
 
     def test_python_with_invalid_arguments(self):
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
-            {{{#!text/x-python lineno=-10
+            {{{#!%s lineno=-10
             print 'this is a python sample'
             a = b+3
             z = "this is a string"
             print 'this is the end of the python sample'
             }}}
-            """))
+            """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_1', result)
@@ -160,13 +166,13 @@ class PygmentsRendererTestCase(unittest.TestCase):
             self._test('python_with_invalid_arguments_1_pygments_2.1plus', result)
 
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
-            {{{#!text/x-python lineno=a id=d marks=a-b
+            {{{#!%s lineno=a id=d marks=a-b
             print 'this is a python sample'
             a = b+3
             z = "this is a string"
             print 'this is the end of the python sample'
             }}}
-            """))
+            """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
             self._test('python_with_invalid_arguments_2', result)
@@ -224,7 +230,8 @@ class PygmentsRendererTestCase(unittest.TestCase):
         """
         from pkg_resources import parse_version, get_distribution
 
-        result = self.pygments.render(self.context, 'text/x-python', '\n\n\n\n')
+        result = self.pygments.render(self.context, self.python_mimetype,
+                                      '\n\n\n\n')
         self.assertTrue(result)
         t = "".join([r[1] for r in result if r[0] is TEXT])
 
@@ -240,7 +247,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
         A '\n' token is generated for an empty file, so we have to bypass
         pygments when rendering empty files.
         """
-        result = self.pygments.render(self.context, 'text/x-python', '')
+        result = self.pygments.render(self.context, self.python_mimetype, '')
         self.assertIsNone(result)
 
     def test_extra_mimetypes(self):
