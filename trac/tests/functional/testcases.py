@@ -253,14 +253,26 @@ class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
 
         Verify that URLs not encoded with UTF-8 are reported as invalid.
         """
-        # invalid PATH_INFO
-        self._tester.go_to_wiki(u'été'.encode('latin1'))
-        tc.code(404)
-        tc.find('Invalid URL encoding')
-        # invalid SCRIPT_NAME
-        tc.go(u'été'.encode('latin1'))
-        tc.code(404)
-        tc.find('Invalid URL encoding')
+        import httplib
+        # Work around for InvalidURL since Python 2.7.17 (#13233)
+        saved_re = httplib._contains_disallowed_url_pchar_re \
+                   if hasattr(httplib, '_contains_disallowed_url_pchar_re') \
+                   else None
+        try:
+            if saved_re:
+                httplib._contains_disallowed_url_pchar_re = \
+                    re.compile(r'[\x00-\x20]')
+            # invalid PATH_INFO
+            self._tester.go_to_wiki(u'été'.encode('latin1'))
+            tc.code(404)
+            tc.find('Invalid URL encoding')
+            # invalid SCRIPT_NAME
+            tc.go(u'été'.encode('latin1'))
+            tc.code(404)
+            tc.find('Invalid URL encoding')
+        finally:
+            if saved_re:
+                httplib._contains_disallowed_url_pchar_re = saved_re
 
 
 class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
