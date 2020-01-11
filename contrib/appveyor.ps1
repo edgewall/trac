@@ -164,7 +164,7 @@ if (-not $env:APPVEYOR) {
 
 # Actions common to all steps (set up the PATH, determine Python version...)
 
-$env:Path = "$pyHome;$pyHome\Scripts;$msysHome;$($env:Path)"
+$env:Path = "$pyHome;$pyHome\Scripts;$pyHome\Library\bin;$msysHome;$($env:Path)"
 
 $pyV = [string](& python.exe -c 'import sys; print sys.version' 2>&1)
 $pyVersion = if ($pyV -match '^(\d\.\d)') { $Matches[1] }
