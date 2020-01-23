@@ -55,8 +55,25 @@ before_install:
     eval "$(pyenv init -)"
     pyver_latest="$(pyenv install -l | grep -E "^[ ]*${pyver/./\\.}\.[0-9]+$" | tail -1 | tr -d '[:blank:]')"
     venv="$HOME/venv-$pyver_latest"
-    pyenv install --skip-existing $pyver_latest
+    case "$pyver" in
+      2.6)
+        # Avoid using openssl from homebrew
+        sed -i '' -e 's/ --if has_broken_mac_openssl//' \
+          "$(brew --prefix pyenv)/plugins/python-build/share/python-build/$pyver_latest"
+        GET_PIP_URL=https://bootstrap.pypa.io/2.6/get-pip.py
+        ;;
+      *)
+        GET_PIP_URL=
+        ;;
+    esac
+    GET_PIP_URL="$GET_PIP_URL" \
+      pyenv install --skip-existing $pyver_latest \
+      || { rc=$?; echo "pyenv exits with $rc"; exit $rc; }
     pyenv shell $pyver_latest
+    if [ "$pyver" != "$(python -c "$print_version")" ]; then
+      echo "Unable to build $pyver_latest"
+      exit 1
+    fi
     pip install --upgrade virtualenv
     python -m virtualenv $venv
     source $venv/bin/activate
