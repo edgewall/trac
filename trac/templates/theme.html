@@ -106,7 +106,9 @@
          'uisymbols': req.session.get('ui.use_symbols'),
          'uinohelp': req.session.get('ui.hide_help'),
          }}|htmlattr}>
-      # include resourcepath_template if resourcepath_template ignore missing
+      # if resource_template:
+      #   include resourcepath_template ignore missing
+      # endif
       <div id="ctxtnav" class="nav">
         <h2>${_("Context Navigation")}</h2>
         # if chrome.ctxtnav:
