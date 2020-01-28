@@ -95,7 +95,9 @@
             #   set stats = mstats.stats
             #   set interval_hrefs = mstats.interval_hrefs
             #   set stats_href = mstats.stats_href
-            #   include 'progress_bar.html' if stats.count ignore missing
+            #   if stats.count:
+            #     include 'progress_bar.html' ignore missing
+            #   endif
             # endwith
           </div>
 

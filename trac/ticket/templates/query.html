@@ -335,7 +335,9 @@
       </form>
 
       # include 'query_results.html'
-      # include 'batch_modify.html' if tickets and batch_modify ignore missing
+      # if tickets:
+      #   include 'batch_modify.html' ignore missing
+      # endif
 
       <div id="trac-report-buttons" class="buttons">
         # set edit = report_resource and 'REPORT_MODIFY' in perm(report_resource)

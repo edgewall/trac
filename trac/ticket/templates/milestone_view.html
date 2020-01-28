@@ -57,7 +57,9 @@
           ${_("No date set")}
           # endif
           </p>
-        # include 'progress_bar.html' if stats.count ignore missing
+        # if stats.count:
+        #   include 'progress_bar.html' ignore missing
+        # endif
       </div>
 
       # if available_groups and stats.count:
@@ -81,7 +83,9 @@
             </script>
           </legend>
           # with summary = _('Shows the milestone completion status grouped by %(grouped_by)s', grouped_by=grouped_by)
-          #   include 'progress_bar_grouped.html' if groups ignore missing
+          #   if groups:
+          #     include 'progress_bar_grouped.html' ignore missing
+          #   endif
           # endwith
         </fieldset>
       </form>
