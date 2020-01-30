@@ -140,6 +140,11 @@ class Href(object):
     '/milestone/<look,here%3E?param=%3Chere,too>'
     """
 
+    # Avoid passing Jinja2 context to __call__ (#13244)
+    contextfunction = 0
+    evalcontextfunction = 0
+    environmentfunction = 0
+
     def __init__(self, base, path_safe="/!~*'()", query_safe="!~*'()"):
         self.base = base.rstrip('/')
         self.path_safe = path_safe
