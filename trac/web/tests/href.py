@@ -15,6 +15,7 @@
 import doctest
 import unittest
 
+from trac.util.text import jinja2template
 import trac.web.href
 
 
@@ -120,6 +121,21 @@ class HrefTestCase(unittest.TestCase):
         self.assertEqual('/base/p%C3%A4th/to/file'
                          '?type=def%C3%A9ct&or&type=abc%20def',
                          href + u'päth/to/file?type=deféct&or&type=abc def')
+
+    def test_jinja2(self):
+        # https://trac.edgewall.org/ticket/13244
+
+        data = {'href': trac.web.href.Href('http://localhost/base')}
+        self.assertEqual(
+            '<a href="http://localhost/base">anchor</a>',
+            self._render_template('<a href="${href()}">anchor</a>', data))
+        self.assertEqual(
+            'URL: http://localhost/base',
+            self._render_template('URL: ${href()}', data, text=True))
+
+    def _render_template(self, template, data, text=False):
+        t = jinja2template(template, text=text)
+        return t.render(**data)
 
 
 def test_suite():
