@@ -14,6 +14,7 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+import math
 import pkg_resources
 import re
 
@@ -279,7 +280,8 @@ def _do_save(req, panel, form_fields):
         if val:
             if field == 'ui.auto_preview_timeout':
                 fval = as_float(val, default=None)
-                if fval is None or fval < 0:
+                if fval is None or math.isinf(fval) or math.isnan(fval) \
+                        or fval < 0:
                     add_warning(req, _("Discarded invalid value \"%(val)s\" "
                                        "for auto preview timeout.", val=val))
                     continue
