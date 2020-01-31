@@ -137,15 +137,24 @@ class UserInterfacePreferencePanelTestCase(unittest.TestCase):
 
         self.assertEqual(timeout, req.session['ui.auto_preview_timeout'])
 
-    def test_auto_preview_timeout_value_invalid(self):
+    def _test_auto_preview_timeout_value_invalid(self, val):
         timeout = '3'
         req = self._test_auto_preview_timeout(timeout)
         req.session.save()
-        req = self._test_auto_preview_timeout('A')
+        req = self._test_auto_preview_timeout(val)
 
-        self.assertEqual('Discarded invalid value "A" for auto preview '
-                         'timeout.', req.session['chrome.warnings.0'])
+        self.assertEqual('Discarded invalid value "%s" for auto preview '
+                         'timeout.' % val, req.session['chrome.warnings.0'])
         self.assertEqual(timeout, req.session['ui.auto_preview_timeout'])
+
+    def test_auto_preview_timeout_value_is_char(self):
+        self._test_auto_preview_timeout_value_invalid('A')
+
+    def test_auto_preview_timeout_value_is_inf(self):
+        self._test_auto_preview_timeout_value_invalid('inf')
+
+    def test_auto_preview_timeout_value_is_nan(self):
+        self._test_auto_preview_timeout_value_invalid('NaN')
 
     def test_delete_auto_preview_timeout(self):
         self._test_auto_preview_timeout('1')
