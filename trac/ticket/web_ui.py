@@ -746,8 +746,13 @@ class TicketModule(Component):
                     break
 
         # Data need for Javascript-specific logic
-        old_values = {name: ticket[name]
-                      for name in [field['name'] for field in ticket.fields]}
+        old_values = {}
+        for field in ticket.fields:
+            name = field['name']
+            value = ticket._old.get(name, ticket[name])
+            if name in ticket.time_fields and isinstance(value, datetime):
+                value = format_datetime(value, 'iso8601', utc)
+            old_values[name] = value
         old_values['id'] = ticket.id
         add_script_data(req, {'comments_prefs': self._get_prefs(req),
                               'old_values': old_values,

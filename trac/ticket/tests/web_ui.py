@@ -879,6 +879,60 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertIn(('DEBUG', "Side effect for MockTicketOperation"),
                       self.env.log_messages)
 
+    def test_old_values_in_script_data_with_time_field(self):
+        when = datetime(2009, 1, 12, 13, 21, 20, 123456, utc)
+        when_ts = str(to_utimestamp(when))
+
+        self.env.config.set('ticket-custom', 'due', 'text')
+        self._reset_ticket_fields()
+        for due in ('', 'invalid', '001234567890123456'):
+            ticket = self._insert_ticket(when=when, reporter='joe',
+                                         summary='the summary', status='new',
+                                         due=due)
+        self.env.config.set('ticket-custom', 'due', 'time')
+        self._reset_ticket_fields()
+        for due in ('', datetime(2010, 3, 14, 22, 30, 29, 234567, utc)):
+            self._insert_ticket(when=when, reporter='joe',
+                                summary='the summary', status='new', due=due)
+
+        def get_old_values(method, path_info, **kwargs):
+            req = MockRequest(self.env, method=method, path_info=path_info,
+                              **kwargs)
+            self.assertTrue(self.ticket_module.match_request(req))
+            rv = self.ticket_module.process_request(req)
+            self.assertEqual('ticket.html', rv[0])
+            self.assertFalse(req.chrome['warnings'])
+            return req.chrome['script_data']['old_values']
+
+        old_values = get_old_values('GET', '/ticket/1')
+        self.assertEqual(None, old_values['due'])
+        self.assertEqual('2009-01-12T13:21:20Z', old_values['time'])
+        self.assertEqual('2009-01-12T13:21:20Z', old_values['changetime'])
+        old_values = get_old_values('GET', '/ticket/2')
+        self.assertEqual(None, old_values['due'])
+        old_values = get_old_values('GET', '/ticket/3')
+        self.assertEqual('2009-02-13T23:31:30Z', old_values['due'])
+        old_values = get_old_values('GET', '/ticket/4')
+        self.assertEqual(None, old_values['due'])
+        old_values = get_old_values('GET', '/ticket/5')
+        self.assertEqual('2010-03-14T22:30:29Z', old_values['due'])
+
+        old_values = get_old_values('POST', '/ticket/1',
+            args={'field_due': 'now', 'preview': '1', 'action': 'leave',
+                  'start_time': when_ts, 'view_time': when_ts})
+        self.assertEqual(None, old_values['due'])
+        self.assertEqual('2009-01-12T13:21:20Z', old_values['time'])
+        self.assertEqual('2009-01-12T13:21:20Z', old_values['changetime'])
+        old_values = get_old_values('POST', '/ticket/3',
+            args={'field_due': '', 'preview': '1', 'action': 'leave',
+                  'start_time': when_ts, 'view_time': when_ts})
+        self.assertEqual('2009-02-13T23:31:30Z', old_values['due'])
+
+    def _reset_ticket_fields(self):
+        tktsys = TicketSystem(self.env)
+        tktsys.reset_ticket_fields()
+        del tktsys.custom_fields
+
 
 class CustomFieldMaxSizeTestCase(unittest.TestCase):
     """Tests for [ticket-custom] max_size attribute."""
