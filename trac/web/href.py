@@ -18,6 +18,8 @@
 
 import re
 
+from jinja2.runtime import Context as Jinja2Context
+
 from trac.util.text import unicode_quote, unicode_urlencode
 
 
@@ -140,11 +142,6 @@ class Href(object):
     '/milestone/<look,here%3E?param=%3Chere,too>'
     """
 
-    # Avoid passing Jinja2 context to __call__ (#13244)
-    contextfunction = 0
-    evalcontextfunction = 0
-    environmentfunction = 0
-
     def __init__(self, base, path_safe="/!~*'()", query_safe="!~*'()"):
         self.base = base.rstrip('/')
         self.path_safe = path_safe
@@ -165,6 +162,9 @@ class Href(object):
             elif value is not None:
                 params.append((name, value))
 
+        # Skip Jinja2 context (#13244)
+        if args and isinstance(args[0], Jinja2Context):
+            args = args[1:]
         if args:
             lastp = args[-1]
             if isinstance(lastp, dict):
