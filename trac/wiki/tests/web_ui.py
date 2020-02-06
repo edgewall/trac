@@ -11,11 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import re
 import unittest
 
 from trac.perm import DefaultPermissionStore, PermissionCache
 from trac.test import EnvironmentStub, MockRequest
 from trac.web.api import HTTPBadRequest
+from trac.web.chrome import Chrome
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import DefaultWikiPolicy, WikiModule
 
@@ -146,6 +148,41 @@ class WikiModuleTestCase(unittest.TestCase):
         self.assertEqual('wiki_edit.html', resp[0])
         self.assertNotIn('version', resp[1])
         self.assertEqual('NewPage', resp[1]['page'].name)
+
+    def test_wiki_page_path(self):
+        for name in ('WikiStart', 'Page', 'Page/SubPage'):
+            page = WikiPage(self.env)
+            page.name = name
+            page.text = 'Contents for %s\n' % name
+            page.save('trac', 'create page')
+
+        def get_pagepath(path_info):
+            content = self._render_wiki_page(path_info)
+            match = re.search(r'<div\s+id="pagepath"[^>]*>.*?</div>', content,
+                              re.DOTALL)
+            return match and match.group(0)
+
+        pagepath = get_pagepath('/wiki')
+        self.assertIn(' href="/trac.cgi/wiki">wiki:</a>', pagepath)
+        self.assertIn(' href="/trac.cgi/wiki/WikiStart"', pagepath)
+        pagepath = get_pagepath('/wiki/Page')
+        self.assertIn(' href="/trac.cgi/wiki">wiki:</a>', pagepath)
+        self.assertIn(' href="/trac.cgi/wiki/Page"', pagepath)
+        pagepath = get_pagepath('/wiki/Page/SubPage')
+        self.assertIn(' href="/trac.cgi/wiki">wiki:</a>', pagepath)
+        self.assertIn(' href="/trac.cgi/wiki/Page"', pagepath)
+        self.assertIn(' href="/trac.cgi/wiki/Page/SubPage"', pagepath)
+
+    def _render_wiki_page(self, path_info):
+        req = MockRequest(self.env, path_info=path_info, method='GET')
+        mod = WikiModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        resp = mod.process_request(req)
+        self.assertEqual(2, len(resp))
+        content = Chrome(self.env).render_template(req, resp[0], resp[1],
+                                                   {'iterable': False,
+                                                    'fragment': False})
+        return content.decode('utf-8')
 
 
 def test_suite():
