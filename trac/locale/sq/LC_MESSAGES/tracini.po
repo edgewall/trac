@@ -1,18 +1,19 @@
-# Dutch translations for Trac.
-# Copyright (C) 2011-2020 Edgewall Software
+# Albanian translations for Trac.
+# Copyright (C) 2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
-# M A <marco.awater@acq.nl>, 2019
+# Besnik <besnik@programeshqip.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2020-02-11 04:45+0000\n"
 "PO-Revision-Date: 2019-08-22 05:57+0000\n"
-"Last-Translator: M A <marco.awater@acq.nl>, 2019\n"
-"Language: nl\n"
-"Language-Team: Dutch (https://www.transifex.com/cboos/teams/16191/nl/)\n"
+"Last-Translator: Besnik <besnik@programeshqip.org>, 2019\n"
+"Language: sq\n"
+"Language-Team: Albanian (https://www.transifex.com/cboos/teams/16191/sq/)"
+"\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -64,7 +65,7 @@ msgstr ""
 
 #: tracopt/ticket/commit_updater.py:118
 msgid "Commands that close tickets, as a space-separated list."
-msgstr "Commando's om tickets te sluiten, als een komma-gescheiden lijst."
+msgstr ""
 
 #: tracopt/ticket/commit_updater.py:122
 msgid ""
@@ -86,8 +87,6 @@ msgstr ""
 #: tracopt/ticket/commit_updater.py:137
 msgid "Send ticket change notification when updating a ticket."
 msgstr ""
-"Stuur een ticket veranderingsnotificatie wanneer een ticket bijgewerkt "
-"wordt."
 
 #: tracopt/versioncontrol/git/git_fs.py:303
 msgid "Enable persistent caching of commit tree."
@@ -137,7 +136,7 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:341
 msgid "Path to the git executable."
-msgstr ""
+msgstr "Shteg për te i ekzekutueshmi git"
 
 #: tracopt/versioncontrol/git/git_fs.py:942
 msgid "Path to a gitweb-formatted projects.list"
@@ -233,7 +232,7 @@ msgstr ""
 
 #: trac/attachment.py:143
 msgid "Maximum allowed file size (in bytes) for attachments."
-msgstr "Maximum toegestane bestandsgrootte (in bytes) voor bijlagen."
+msgstr ""
 
 #: trac/attachment.py:146
 msgid ""
@@ -345,11 +344,11 @@ msgstr ""
 
 #: trac/env.py:169
 msgid "Name of the project."
-msgstr ""
+msgstr "Emër i projektit"
 
 #: trac/env.py:172
 msgid "Short description of the project."
-msgstr ""
+msgstr "Përshkrim i shkurtër i projektit."
 
 #: trac/env.py:175
 msgid ""
@@ -357,12 +356,10 @@ msgid ""
 "which the `base_url` resides. This is used in notification\n"
 "e-mails."
 msgstr ""
-"URL van de hoofd project website, normaliter de website waarin de "
-"`base_url` zit. Dit wordt gebruikt in notificatie e-mails."
 
 #: trac/env.py:180
 msgid "E-Mail address of the project's administrator."
-msgstr "E-mail adres van de project beheerder."
+msgstr "Adresë email e përgjegjësit të projektit."
 
 #: trac/env.py:183
 msgid ""
@@ -376,11 +373,11 @@ msgstr ""
 
 #: trac/env.py:193
 msgid "Page footer text (right-aligned)."
-msgstr "Voettekst van de pagina (rechts uitgelijnd)."
+msgstr ""
 
 #: trac/env.py:198
 msgid "URL of the icon of the project."
-msgstr "URL van het project icoon."
+msgstr "URL e ikonës së projektit."
 
 #: trac/env.py:201
 msgid ""
@@ -448,7 +445,7 @@ msgstr ""
 
 #: trac/db/api.py:267
 msgid "Database backup location"
-msgstr ""
+msgstr "Vendndodhje kopjeruajtjeje baze të dhënash"
 
 #: trac/db/api.py:270
 msgid ""
@@ -484,7 +481,7 @@ msgstr ""
 
 #: trac/mimeview/api.py:623
 msgid "Maximum file size for HTML preview."
-msgstr "Maximale bestandsgrootte voor HTML voorbeeldweergaven."
+msgstr "Madhësi maksimum kartele për paraparje HTML."
 
 #: trac/mimeview/api.py:626
 msgid ""
@@ -556,7 +553,7 @@ msgstr ""
 
 #: trac/notification/api.py:225
 msgid "Enable email notification."
-msgstr "Schakel e-mail notificaties in."
+msgstr "Aktivizo njoftim me email."
 
 #: trac/notification/api.py:228
 msgid ""
@@ -568,7 +565,7 @@ msgstr ""
 
 #: trac/notification/api.py:234
 msgid "Sender name to use in notification emails."
-msgstr "Naam van de verzender van notificatie e-mails."
+msgstr "Emër dërguesi për t’u përdorur në email-e njoftimesh."
 
 #: trac/notification/api.py:237
 msgid ""
@@ -684,27 +681,27 @@ msgstr ""
 
 #: trac/notification/mail.py:405
 msgid "Default format to distribute email notifications."
-msgstr "Standaard formaat voor het distribueren van notificatie e-mails."
+msgstr ""
 
 #: trac/notification/mail.py:597
 msgid "SMTP server hostname to use for email notifications."
-msgstr "SMTP server hostname te gebruiken voor e-mail notificaties."
+msgstr ""
 
 #: trac/notification/mail.py:600
 msgid "SMTP server port to use for email notification."
-msgstr "SMTP server poort te gebruiken voor e-mail notificaties."
+msgstr ""
 
 #: trac/notification/mail.py:603
 msgid "Username for authenticating with SMTP server."
-msgstr "Gebruikersnaam voor de authentificatie met de SMTP server."
+msgstr "Emër përdoruesi për mirëfilltësim me shërbyes SMTP."
 
 #: trac/notification/mail.py:606
 msgid "Password for authenticating with SMTP server."
-msgstr "Wachtwoord voor de authentificatie met de SMTP server."
+msgstr "Fjalëkalim për mirëfilltësim me shërbyes SMTP."
 
 #: trac/notification/mail.py:609
 msgid "Use SSL/TLS to send notifications over SMTP."
-msgstr "Gebruik SSL/TLS om notificaties te verzenden met SMTP."
+msgstr ""
 
 #: trac/notification/mail.py:665
 msgid ""
@@ -754,39 +751,39 @@ msgstr ""
 
 #: trac/ticket/api.py:234
 msgid "Default version for newly created tickets."
-msgstr "Standaard versie voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:237
 msgid "Default type for newly created tickets."
-msgstr "Standaard type voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:240
 msgid "Default priority for newly created tickets."
-msgstr "Standaard prioriteit voor nieuw aangemaakte tickets."
+msgstr "Përparësi parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:243
 msgid "Default milestone for newly created tickets."
-msgstr "Standaard-mijlpaal voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:246
 msgid "Default component for newly created tickets."
-msgstr "Standaard component voor nieuw aangemaakte tickets."
+msgstr "Përbërë parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:249
 msgid "Default severity for newly created tickets."
-msgstr "Standaard ernstigheid voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:252
 msgid "Default summary (title) for newly created tickets."
-msgstr "Standaard samenvatting (titel) voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:255
 msgid "Default description for newly created tickets."
-msgstr "Standaard beschrijving voor nieuw aangemaakte tickets."
+msgstr "Përshkrim parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:258
 msgid "Default keywords for newly created tickets."
-msgstr "Standaard sleutelwoorden voor nieuw aangemaakte tickets."
+msgstr "Fjalëkyçe parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:261
 msgid ""
@@ -796,11 +793,11 @@ msgstr ""
 
 #: trac/ticket/api.py:266
 msgid "Default cc: list for newly created tickets."
-msgstr "Standaard cc: lijst voor nieuw aangemaakte tickets."
+msgstr ""
 
 #: trac/ticket/api.py:269
 msgid "Default resolution for resolving (closing) tickets."
-msgstr "Standaard oplossing voor opgeloste (gesloten) tickets."
+msgstr ""
 
 #: trac/ticket/api.py:272
 msgid ""
@@ -810,17 +807,15 @@ msgstr ""
 
 #: trac/ticket/api.py:277
 msgid "Maximum allowed comment size in characters."
-msgstr "Maximum toegestane grootte van commentaar, in karakters."
+msgstr ""
 
 #: trac/ticket/api.py:280
 msgid "Maximum allowed description size in characters."
-msgstr "Maximum toegestane grootte van een omschrijving, in karakters."
+msgstr ""
 
 #: trac/ticket/api.py:283
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
-"Maximum toegestane grootte van samenvatting, in karakters. (//since "
-"1.0.2//)"
 
 #: trac/ticket/default_workflow.py:126
 msgid ""
@@ -1014,7 +1009,7 @@ msgstr ""
 
 #: trac/timeline/web_ui.py:52
 msgid "Default number of days displayed in the Timeline, in days."
-msgstr "Standaard aantal dagen getoond in de Tijdlijn, in dagen."
+msgstr ""
 
 #: trac/timeline/web_ui.py:56
 msgid ""
@@ -1499,7 +1494,7 @@ msgstr ""
 
 #: trac/web/main.py:144
 msgid "The default timezone to use"
-msgstr "De standaard gebruikte tijdzone"
+msgstr ""
 
 #: trac/web/main.py:147
 msgid "The preferred language to use if no user preference has been set."
@@ -1614,7 +1609,7 @@ msgstr ""
 
 #: trac/wiki/web_ui.py:56
 msgid "Maximum allowed wiki page size in characters."
-msgstr "Maximum toegestane grootte van een wiki pagina, in karakters."
+msgstr ""
 
 #: trac/wiki/web_ui.py:59
 msgid ""
