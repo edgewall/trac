@@ -3,7 +3,7 @@ Trac supports adding custom, user-defined fields to the ticket module. With cust
 
 == Configuration
 
-Configuring custom ticket fields in the [TracIni#ticket-custom-section "[ticket-custom]"] section of trac.ini.
+Configure custom ticket fields in the [TracIni#ticket-custom-section "[ticket-custom]"] section of trac.ini.
 
 The syntax of each field definition is:
 {{{
@@ -14,6 +14,41 @@ The syntax of each field definition is:
 
 The example below should help to explain the syntax.
 
+=== Field Names
+A field name can only contain lowercase letters a-z, uppercase letters A-Z or digits 0-9, and must not start with a leading digit.
+
+The following field names are reserved and can not be used for custom fields:
+* cc
+* changetime
+* col
+* comment
+* component
+* desc
+* description
+* format
+* group
+* groupdesc
+* id
+* keywords
+* max
+* milestone
+* or
+* order
+* owner
+* page
+* priority
+* report
+* reporter
+* resolution
+* row
+* severity
+* status
+* summary
+* time
+* type
+* verbose
+* version
+
 === Available Field Types and Options
 
  * '''text''': A simple (one line) text field.
@@ -21,8 +56,8 @@ The example below should help to explain the syntax.
    * value: Default value.
    * order: Sort order placement relative to other custom fields.
    * max_size: Maximum allowed size in characters (//Since 1.3.2//).
-   * format: One of: 
-     * `plain` for plain text 
+   * format: One of:
+     * `plain` for plain text
      * `wiki` for [WikiFormatting wiki formatted] content
      * `reference` to treat the content as a queryable value
      * `list` to interpret the content as a list of queryable values, separated by whitespace

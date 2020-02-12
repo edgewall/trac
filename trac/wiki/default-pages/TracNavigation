@@ -8,7 +8,7 @@ The primary attributes that can be customized are `href`, `label`, `order` and `
 `[mainnav]` corresponds to the '''main navigation bar''', the one containing entries such as ''Wiki'', ''Timeline'', ''Roadmap'', ''Browse Source'' and so on. This navigation bar is meant to access the default page of the main modules enabled in Trac that are accessible for the current user.
 
 
-** [=#Example Example] ** 
+** [=#Example Example] **
 
 In the following example we rename the link to WikiStart //Home//, and make the //View Tickets// entry link to a specific report.
 {{{#!ini
@@ -25,7 +25,7 @@ Note the entries on the main navigation are displayed in uppercase regardless of
 There is one special entry in the  `[metanav]` section: `logout.redirect` is the page the user sees after hitting the logout button.  The ''!Help/Guide'' link is also hidden in the following example.
 [[comment(see also #Trac3808)]]
 
-** Example ** 
+** Example **
 
 {{{#!ini
 [metanav]
@@ -62,7 +62,7 @@ admin = enabled
 admin.label = Administration
 }}}
 
-Attributes of the navigation item that are not overridden by the configuration will be preserved. 
+Attributes of the navigation item that are not overridden by the configuration will be preserved.
 
 === URL Formats
 Possible URL formats for `.href` or `.redirect`:
@@ -97,7 +97,7 @@ prefs.order = 3
 }}}
 
 === Permissions #nav-permissions
-The `permission` attribute controls the visibility of the navigation item on the navigation bar. This is mainly useful for new entries in the navigation bar. Note that it does not provide access control to the URL that the navigation item directs to, and cannot override permission checks done by Trac and plugins. 
+The `permission` attribute controls the visibility of the navigation item on the navigation bar. This is mainly useful for new entries in the navigation bar. Note that it does not provide access control to the URL that the navigation item directs to, and cannot override permission checks done by Trac and plugins.
 
 For example, the //Roadmap// navigation item will only display for users with `ROADMAP_VIEW`. Adding the attribute `roadmap.permission = MILESTONE_VIEW` will require both `ROADMAP_VIEW` and `MILESTONE_VIEW` for the entry to be visible, but as noted will not provide access control for the `/roadmap` path. TracFineGrainedPermissions should be used for access control to modules provided by Trac and plugins.
 

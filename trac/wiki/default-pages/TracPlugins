@@ -35,7 +35,7 @@ Trac also searches for plugins installed in the [TracIni#GlobalConfiguration glo
 
 '''Note''': In a multi-project setup, a pool of Python interpreters will be dynamically allocated to projects based on need. Since plugins occupy a place in Python's module system, the first version of any given plugin to be loaded will be used for all projects. In other words, you cannot use different versions of a plugin in different projects of a multi-project setup. Install plugins for all projects (see below) and enable them as needed for each project.
 
-==== Uninstalling
+==== Uninstalling #UninstallEgg
 
 Remove the egg from the `plugins` directory and restart the web server.
 
@@ -69,7 +69,7 @@ $ pip install svn+https://trac-hacks.org/svn/tagsplugin/trunk
 }}}
 
 Replace the `svn+` prefix with `git+` if installing
-from a Git repository. 
+from a Git repository.
 
 Or from the path or URL of a tar.gz or zip archive:
 {{{#!sh
@@ -84,7 +84,7 @@ $ pip install tractags
 
 ==== Enabling the plugin
 
-Unlike plugins installed per environment, you have to explicitly enable globally installed plugins. This also applies to plugins installed in the shared plugins directory. 
+Unlike plugins installed per environment, you have to explicitly enable globally installed plugins. This also applies to plugins installed in the shared plugins directory.
 
 This is done in the `[components]` section of the configuration file `trac.ini`. For example:
 {{{#!ini
@@ -127,7 +127,7 @@ Remove above note once #9936 is fixed.
 }}}
 }}}
 
-==== Uninstalling
+==== Uninstalling #UninstallWithPip
 
 Get a list of installed plugins:
 {{{#!sh
@@ -192,7 +192,7 @@ Or for mod_python:
 
 '''Note''': !SetEnv requires the `mod_env` module, which needs to be activated for Apache. In this case the !SetEnv directive can also be used in the `mod_python` Location block.
 
-For [TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
+For [TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
 
 '''Note''': if you already use -initial-env to set the project directory for either a single project or parent, you will need to add an additional -initial-env directive to the !FastCgiConfig directive:
 
@@ -230,7 +230,7 @@ If you install a plugin globally, i.e. ''not'' inside the `plugins` directory of
 
 === Check the permissions
 
-Trac must be able to read the .py file or package (.egg or .whl). 
+Trac must be able to read the .py file or package (.egg or .whl).
 
 === Check the log files
 

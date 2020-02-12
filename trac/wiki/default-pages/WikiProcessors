@@ -1,6 +1,6 @@
 = Wiki Processors
 
-Processors are WikiMacros that provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
+Processors are WikiMacros that provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''.
 
 Wiki processors can be used in any Wiki text throughout Trac, such as:
  - [#CodeHighlightingSupport syntax highlighting] or for rendering text verbatim
@@ -154,7 +154,7 @@ The following processors are included in the Trac distribution:
 || '''`#!td`''' || Wrap wiki content inside a <td> element. (''since 0.12'') ||
 || '''`#!th`''' || Wrap wiki content inside a <th> element. (''since 0.12'') ||
 || '''`#!tr`''' || Can optionally be used for wrapping `#!td` and `#!th` blocks, either for specifying row attributes or better visual grouping. (''since 0.12'') ||
-|| '''`#!table`''' || Can optionally be used for wrapping `#!tr`, `#!td` and `#!th` blocks, for specifying table attributes. One current limitation however is that tables cannot be nested. (''since 0.12'') || 
+|| '''`#!table`''' || Can optionally be used for wrapping `#!tr`, `#!td` and `#!th` blocks, for specifying table attributes. One current limitation however is that tables cannot be nested. (''since 0.12'') ||
 || || See WikiHtml for example usage and more details about these processors. ||
 |||| ||
 ||||= '''Other Markups''' =||

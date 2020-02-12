@@ -2,11 +2,11 @@
 
 [[PageOutline(2-5,Contents,pullout)]]
 
-To migrate issue tickets from other issue-tracking systems into Trac or perform housekeeping actions on tickets or simply synchronize different databases, there are some tools, plugins and scripts available. 
+To migrate issue tickets from other issue-tracking systems into Trac or perform housekeeping actions on tickets or simply synchronize different databases, there are some tools, plugins and scripts available.
 
 == !TicketImportPlugin
 
-[https://trac-hacks.org/wiki/TicketImportPlugin TicketImportPlugin]: a plugin that lets you import or update into Trac a series of tickets from a '''CSV file''' or (if the [https://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel spreadsheet'''. 
+[https://trac-hacks.org/wiki/TicketImportPlugin TicketImportPlugin]: a plugin that lets you import or update into Trac a series of tickets from a '''CSV file''' or (if the [https://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel spreadsheet'''.
 
 == !ExportImportXlsPlugin
 
@@ -64,7 +64,7 @@ For more details on the available options, see the configuration section at the 
 
 == !PlanetForge
 
-[https://trac-hacks.org/wiki/PlanetForgeImportExportPlugin PlanetForgeImportExportPlugin]: this plugin exports Trac data (wiki, tickets, compoments, permissions, repositories, etc.) using the open format designed by the [https://gforge.inria.fr/projects/coclico/ COCLICO] project. It extends the webadmin panel and the 'trac admin ...' command. Has no 'import' feature. 
+[https://trac-hacks.org/wiki/PlanetForgeImportExportPlugin PlanetForgeImportExportPlugin]: this plugin exports Trac data (wiki, tickets, compoments, permissions, repositories, etc.) using the open format designed by the [https://gforge.inria.fr/projects/coclico/ COCLICO] project. It extends the webadmin panel and the 'trac admin ...' command. Has no 'import' feature.
 
 == Scarab
 
@@ -83,9 +83,9 @@ Since Trac uses a SQL database to store the data, you can also custom-import fro
 
 See [trac:attachment:csv2trac.2.py:wiki:TracSynchronize csv2trac.2.py] for details. This approach is particularly useful if you need to enter a large number of tickets by hand. Note that the ticket type type field, (task etc.) is also needed for this script to work with more recent Trac releases.
 
-Comments on script: The script has an error on line 168: 'Ticket' needs to be 'ticket'. Also, the listed values for severity and priority are swapped. 
+Comments on script: The script has an error on line 168: 'Ticket' needs to be 'ticket'. Also, the listed values for severity and priority are swapped.
 
 ----
-See also: 
- * to import/export wiki pages: TracAdmin, 
+See also:
+ * to import/export wiki pages: TracAdmin,
  * to export tickets: TracTickets, TracQuery

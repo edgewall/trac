@@ -10,7 +10,7 @@ See TracPermissions for a more general introduction to Trac permissions and perm
 
 == Permission Policies
 
-A great diversity of permission policies can be implemented and Trac comes with a few examples. 
+A great diversity of permission policies can be implemented and Trac comes with a few examples.
 
 The active policies are determined by a [TracIni#trac-permission_policies-option configuration setting]:
 
@@ -28,7 +28,7 @@ permission_policies = DefaultWikiPolicy,
 * !LegacyAttachmentPolicy uses the coarse-grained permissions to check permissions on attachments.
 
 Among the optional choices, there is [#AuthzPolicy], a very generic permission policy, based on an Authz-style system. See
-[trac:source:branches/1.4-stable/tracopt/perm/authz_policy.py authz_policy.py] for details. 
+[trac:source:branches/1.4-stable/tracopt/perm/authz_policy.py authz_policy.py] for details.
 
 Another permission policy [#AuthzSourcePolicy], uses the [http://svnbook.red-bean.com/nightly/en/svn.serverconfig.pathbasedauthz.html path-based authorization] defined by Subversion to enforce permissions on the version control system.
 
@@ -93,8 +93,8 @@ Example: Match the attachment `wiki:WikiStart@117/attachment:FOO.JPG@*` on WikiS
 
 * Sections are checked against the current Trac resource descriptor '''IN ORDER''' of appearance in the configuration file. '''ORDER IS CRITICAL'''.
 
-* Once a section matches, the current username is matched against the keys (usernames) of the section, '''IN ORDER'''. 
-  * If a key (username) is prefixed with a `@`, it is treated as a group. 
+* Once a section matches, the current username is matched against the keys (usernames) of the section, '''IN ORDER'''.
+  * If a key (username) is prefixed with a `@`, it is treated as a group.
   * If a value (permission) is prefixed with a `!`, the permission is denied rather than granted.
 
 The username will match any of 'anonymous', 'authenticated', <username> or '*', using normal Trac permission rules.
@@ -117,7 +117,7 @@ jack           WIKI_VIEW
 # anonymous has no WIKI_VIEW
 }}}
 
-Then: 
+Then:
   * All versions of WikiStart will be viewable by everybody, including anonymous
   * !PrivatePage will be viewable only by john
   * other pages will be viewable only by john and jack
@@ -171,7 +171,7 @@ john = BROWSER_VIEW, FILE_VIEW
 [repository:test_repo@*/source:trunk/src/some/location/*@1]
 john = BROWSER_VIEW, FILE_VIEW
 
-# John has BROWSER_VIEW and FILE_VIEW access to all revisions of 'somefile' at trunk/src/some/location only 
+# John has BROWSER_VIEW and FILE_VIEW access to all revisions of 'somefile' at trunk/src/some/location only
 [repository:test_repo@*/source:trunk/src/some/location/somefile@*]
 john = BROWSER_VIEW, FILE_VIEW
 
@@ -207,7 +207,7 @@ permission_level_2  = permission_level_1, WIKI_MODIFY, TICKET_MODIFY
 
 === !AuthzSourcePolicy  (`mod_authz_svn`-like permission policy) #AuthzSourcePolicy
 
-`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's `mod_authz_svn`. 
+`AuthzSourcePolicy` can be used for restricting access to the repository. Granular permission control needs a definition file, which is the one used by Subversion's `mod_authz_svn`.
 More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/en/1.7/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
@@ -250,12 +250,12 @@ authz_file = /path/to/svnaccessfile
 authz_module_name = somemodule
 ...
 [repositories]
-somemodule.dir = /srv/active/svn/somemodule 
+somemodule.dir = /srv/active/svn/somemodule
 }}}
 
 where the svn access file, {{{/path/to/svnaccessfile}}}, contains entries such as {{{[somemodule:/some/path]}}}.
 
-'''Note:''' Usernames inside the Authz file __must__ be the same as those used inside trac. 
+'''Note:''' Usernames inside the Authz file __must__ be the same as those used inside trac.
 
 Make sure you have ''!AuthzSourcePolicy'' included in the permission_policies list in trac.ini, otherwise the authz permissions file will be ignored.
 
@@ -335,4 +335,4 @@ See the sourced documentation of the plugin for more info.
 
 ----
 See also: TracPermissions,
-[http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin FineGrainedPageAuthzEditorPlugin] for a simple editor.
+[https://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin FineGrainedPageAuthzEditorPlugin] for a simple editor.

@@ -42,7 +42,7 @@ Trac allows wiki markup in issue descriptions and commit messages, creating link
      * TracImport — Importing tickets from other bug databases.
      * TracPlugins — Installing and managing Trac extensions.
    * Configuration and customization:
-     * TracIni — Trac configuration file reference. 
+     * TracIni — Trac configuration file reference.
      * TracPermissions — Access control and permissions.
      * TracNavigation — Customize main navigation menus.
      * TracInterfaceCustomization — Customizing the Trac interface.

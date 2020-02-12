@@ -10,7 +10,7 @@ The macro syntax is `[[macro-name(optional-arguments)]]`.
 
 {{{
 {{{#!wiki-processor-name
-... 
+...
 }}}
 }}}
 

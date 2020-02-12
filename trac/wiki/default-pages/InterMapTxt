@@ -3,7 +3,7 @@
 == This is the place for defining InterWiki prefixes
 
 This page is interpreted in a special way by Trac, in order to support
-!InterWiki links in a flexible and dynamic way. 
+!InterWiki links in a flexible and dynamic way.
 It is modeled after the MeatBall:InterMapTxt page.
 In addition, an optional comment is allowed after the mapping.
 
@@ -26,7 +26,7 @@ The definitions below can be viewed in the [InterWiki#ListofActivePrefixes list 
 == Prefix Definitions
 
 {{{
-PEP     https://www.python.org/dev/peps/pep-$1/   # Python Enhancement Proposal 
+PEP     https://www.python.org/dev/peps/pep-$1/   # Python Enhancement Proposal
 PythonBug    https://bugs.python.org/issue$1      # Python Issue #$1
 Python-issue https://bugs.python.org/issue$1      # Python Issue #$1
 PythonWiki    https://wiki.python.org/moin/       # Python Wiki
@@ -102,7 +102,7 @@ Dictionary       http://www.dict.org/bin/Dict?Database=*&Form=Dict1&Strategy=*&Q
 Google           https://www.google.com/search?q=
 lmgtfy           https://lmgtfy.com/?q= # Well, just search for "$1", follow the link to see how to do it...
 GoogleGroups     https://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
-gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion $2 in $1 Google 
+gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion $2 in $1 Google
 gmessage         https://groups.google.com/d/msg/$1/$2 # Message $2 in $1 Google Group
 gforum           https://groups.google.com/forum/#!forum/$1 # Forum $1 in Google Groups
 JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=

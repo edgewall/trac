@@ -6,7 +6,7 @@
 
 == The `trac.wsgi` script
 
-Trac can be run on top of mod_wsgi with the help of an application script, which is a Python file saved with a `.wsgi` extension. 
+Trac can be run on top of mod_wsgi with the help of an application script, which is a Python file saved with a `.wsgi` extension.
 
 A robust and generic version of this file can be created using the `trac-admin <env> deploy <dir>` command which automatically substitutes the required paths, see TracInstall#cgi-bin. The script should be sufficient for most installations and users not wanting more information can proceed to [#Mappingrequeststothescript configuring Apache].
 
@@ -14,7 +14,7 @@ If you are using Trac with multiple projects, you can specify their common paren
 {{{#!python
 def application(environ, start_request):
     # Add this when you have multiple projects
-    environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')  
+    environ.setdefault('trac.env_parent_dir', '/usr/share/trac/projects')
     ..
 }}}
 
@@ -48,7 +48,7 @@ os.environ['PYTHON_EGG_CACHE'] = r'C:\Trac-Python-Eggs'
 
 === A more elaborate script
 
-If you are using multiple `.wsgi` files (for example one per Trac environment) you must ''not'' use `os.environ['TRAC_ENV']` to set the path to the Trac environment. Using this method may lead to Trac delivering the content of another Trac environment, as the variable may be filled with the path of a previously viewed Trac environment. 
+If you are using multiple `.wsgi` files (for example one per Trac environment) you must ''not'' use `os.environ['TRAC_ENV']` to set the path to the Trac environment. Using this method may lead to Trac delivering the content of another Trac environment, as the variable may be filled with the path of a previously viewed Trac environment.
 
 To solve this problem, use the following `.wsgi` file instead:
 {{{#!python
@@ -58,11 +58,11 @@ os.environ['PYTHON_EGG_CACHE'] = '/usr/local/trac/mysite/eggs'
 
 import trac.web.main
 def application(environ, start_response):
-  environ['trac.env_path'] = '/usr/local/trac/mysite' 
+  environ['trac.env_path'] = '/usr/local/trac/mysite'
   return trac.web.main.dispatch_request(environ, start_response)
 }}}
 
-For clarity, you should give this file a `.wsgi` extension. You should probably put the file in its own directory, since you will expose it to Apache. 
+For clarity, you should give this file a `.wsgi` extension. You should probably put the file in its own directory, since you will expose it to Apache.
 
 If you have installed Trac and Python eggs in a path different from the standard one, you should add that path by adding the following code at the top of the wsgi script:
 
@@ -129,7 +129,7 @@ For more information about using the mod_wsgi specific directives, see the [http
 
 == Configuring Authentication
 
-The following sections describe different methods for setting up authentication. See also [http://httpd.apache.org/docs/2.4/howto/auth.html Authentication, Authorization and Access Control] in the Apache guide.
+The following sections describe different methods for setting up authentication. See also [https://httpd.apache.org/docs/2.4/howto/auth.html Authentication, Authorization and Access Control] in the Apache guide.
 
 === Using Basic Authentication
 
@@ -207,7 +207,7 @@ Don't forget to activate the mod_auth_digest. For example, on a Debian 4.0r1 (et
 
 See also the [https://httpd.apache.org/docs/2.4/mod/mod_auth_basic.html mod_auth_digest] documentation.
 
-=== Using LDAP Authentication 
+=== Using LDAP Authentication
 
 Configuration for [https://httpd.apache.org/docs/2.4/mod/mod_ldap.html mod_ldap] authentication in Apache is more involved (httpd 2.2+ and OpenLDAP: slapd 2.3.19).
 
@@ -267,13 +267,13 @@ Note 2: You can also require the user be a member of a certain LDAP group, inste
 }}}
 
 See also:
- - [https://httpd.apache.org/docs/2.4/mod/mod_authnz_ldap.html mod_authnz_ldap], documentation for mod_authnz_ldap.   
+ - [https://httpd.apache.org/docs/2.4/mod/mod_authnz_ldap.html mod_authnz_ldap], documentation for mod_authnz_ldap.
  - [https://httpd.apache.org/docs/2.4/mod/mod_ldap.html mod_ldap], documentation for mod_ldap, which provides connection pooling and a shared cache.
  - [https://trac-hacks.org/wiki/LdapPlugin TracHacks:LdapPlugin] for storing TracPermissions in LDAP.
 
 === Using SSPI Authentication
 
-If you are using Apache on Windows, you can use mod_auth_sspi to provide single-sign-on. Download the module from the !SourceForge [http://sourceforge.net/projects/mod-auth-sspi/ mod-auth-sspi project] and then add the following to your !VirtualHost:
+If you are using Apache on Windows, you can use mod_auth_sspi to provide single-sign-on. Download the module from the !SourceForge [https://sourceforge.net/projects/mod-auth-sspi/ mod-auth-sspi project] and then add the following to your !VirtualHost:
 {{{#!apache
 <Location /trac/login>
   AuthType SSPI
@@ -309,10 +309,10 @@ Also add a !LogOffUri parameter to the agent configuration, for example `/trac/l
 Then modify the trac.wsgi script generated using `trac-admin <env> deploy <dir>` to add the following lines, which extract the `HTTP_REMOTE_USER` variable and set it to `REMOTE_USER`:
 
 {{{#!python
-def application(environ, start_request): 
-    # Set authenticated username on CA SiteMinder to REMOTE_USER variable 
+def application(environ, start_request):
+    # Set authenticated username on CA SiteMinder to REMOTE_USER variable
     # strip() is used to remove any spaces on the end of the string
-    if 'HTTP_SM_USER' in environ: 
+    if 'HTTP_SM_USER' in environ:
         environ['REMOTE_USER'] = environ['HTTP_REMOTE_USER'].strip()
     ...
 }}}
@@ -368,7 +368,7 @@ For subdomains to work you would probably also need to alter `/etc/hosts` and ad
 
 Please use either version 1.6, 2.4 or later of `mod_wsgi`. Versions prior to 2.4 in the 2.X branch have problems with some Apache configurations that use WSGI file wrapper extension. This extension is used in Trac to serve up attachments and static media files such as style sheets. If you are affected by this problem, attachments will appear to be empty and formatting of HTML pages will appear not to work due to style sheet files not loading properly. Another frequent symptom is that binary attachment downloads are truncated. See mod_wsgi tickets [https://code.google.com/archive/p/modwsgi/issues/100 #100] and [https://code.google.com/archive/p/modwsgi/issues/132 #132].
 
-'''Note''': using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [http://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks
+'''Note''': using mod_wsgi 2.5 and Python 2.6.1 gave an Internal Server Error on my system (Apache 2.2.11 and Trac 0.11.2.1). Upgrading to Python 2.6.2 (as suggested [https://www.mail-archive.com/modwsgi@googlegroups.com/msg01917.html here]) solved this for me[[BR]]-- Graham Shanks
 
 If you plan to use `mod_wsgi` in embedded mode on Windows or with the MPM worker on Linux, then you will need version 3.4 or greater. See [trac:#10675] for details.
 

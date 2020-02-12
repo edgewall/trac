@@ -54,7 +54,7 @@ A simple setup of Trac on mod_python looks like this:
 <Location /projects/myproject>
   SetHandler mod_python
   PythonInterpreter main_interpreter
-  PythonHandler trac.web.modpython_frontend 
+  PythonHandler trac.web.modpython_frontend
   PythonOption TracEnv /var/trac/myproject
   PythonOption TracUriRoot /projects/myproject
   # For Apache 2.2
@@ -88,7 +88,7 @@ PythonOption TracTemplateVars key1,val1 key2,val2
 # Useful to get the date in the wanted order
 PythonOption TracLocale en_GB.UTF8
 
-# See description above        
+# See description above
 PythonOption TracUriRoot /projects/myproject
 }}}
 
@@ -109,12 +109,12 @@ See corresponding section in the [wiki:TracModWSGI#ConfiguringAuthentication] pa
 
 === Setting the Python Egg Cache
 
-If the Egg Cache isn't writeable by your Web server, you'll either have to change the permissions, or point Python to a location where Apache can write. This can manifest itself as a `500 internal server error` and/or a complaint in the syslog. 
+If the Egg Cache isn't writeable by your Web server, you'll either have to change the permissions, or point Python to a location where Apache can write. This can manifest itself as a `500 internal server error` and/or a complaint in the syslog.
 
 {{{#!apache
 <Location /projects/myproject>
   ...
-  PythonOption PYTHON_EGG_CACHE /tmp 
+  PythonOption PYTHON_EGG_CACHE /tmp
   ...
 </Location>
 }}}
@@ -139,7 +139,7 @@ The Trac mod_python handler supports a configuration option similar to Subversio
 <Location /projects>
   SetHandler mod_python
   PythonInterpreter main_interpreter
-  PythonHandler trac.web.modpython_frontend 
+  PythonHandler trac.web.modpython_frontend
   PythonOption TracEnvParentDir /var/trac
   PythonOption TracUriRoot /projects
 </Location>
@@ -233,7 +233,7 @@ The workaround is to use negation expression as follows (for multi project setup
    PythonOption TracUriRoot /
 
    #remove these if you don't want to force SSL
-   RewriteEngine On 
+   RewriteEngine On
    RewriteCond %{HTTPS} off
    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
@@ -278,7 +278,7 @@ This also works out-of-box, with following trivial config:
 {{{#!apache
 SetHandler mod_python
 PythonInterpreter main_interpreter
-PythonHandler trac.web.modpython_frontend 
+PythonHandler trac.web.modpython_frontend
 PythonOption TracEnv /system/path/to/this/directory
 PythonOption TracUriRoot /path/on/apache
 
@@ -317,7 +317,7 @@ If Trac reports something like: `Cannot get shared lock on db.lock`, then the se
 chcon -R -h -t httpd_sys_content_t PATH_TO_REPOSITORY
 }}}
 
-See also [http://subversion.apache.org/faq.html#reposperms How do I set repository permissions correctly?]
+See also [https://subversion.apache.org/faq.html#reposperms How do I set repository permissions correctly?]
 
 ==== FreeBSD issues
 
@@ -375,9 +375,9 @@ If you want to run Trac fully under https you might find that it tries to redire
 
 === Segmentation fault with php5-mhash or other php5 modules
 
-You may encounter segfaults (reported on Debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See [http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487 Debian bug report].
+You may encounter segfaults (reported on Debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See [https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487 Debian bug report].
 
-Some people also have troubles when using PHP5 compiled with its own third party libraries instead of system libraries. Check [http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault Django segmentation fault].
+Some people also have troubles when using PHP5 compiled with its own third party libraries instead of system libraries. Check [https://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault Django segmentation fault].
 
 ----
 See also: TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI], [trac:TracNginxRecipe]

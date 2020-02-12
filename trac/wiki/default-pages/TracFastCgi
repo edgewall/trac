@@ -26,7 +26,7 @@ Regardless of which cgi module is used, be sure the web server has executable pe
 # this is probably already present)
 <IfModule mod_fastcgi.c>
    AddHandler fastcgi-script .fcgi
-   FastCgiIpcDir /var/lib/apache2/fastcgi 
+   FastCgiIpcDir /var/lib/apache2/fastcgi
 </IfModule>
 LoadModule fastcgi_module /usr/lib/apache2/modules/mod_fastcgi.so
 }}}
@@ -47,7 +47,7 @@ FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects
 
 You can also specify the `PYTHON_EGG_CACHE` environment variable using a second `-initial-env` directive:
 {{{#!apache
-FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac \ 
+FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac \
     -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
 }}}
 
@@ -121,7 +121,7 @@ For using `trac.fcgi`(prior to 0.11) / fcgi_frontend.py (0.11) with Lighttpd add
 #var.fcgi_binary="/usr/bin/python /path/to/fcgi_frontend.py" # 0.11 if installed with easy_setup, it is inside the egg directory
 var.fcgi_binary="/path/to/cgi-bin/trac.fcgi" # 0.10 name of prior fcgi executable
 fastcgi.server = ("/trac" =>
-   
+
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
                       "bin-path" => fcgi_binary,
@@ -416,7 +416,7 @@ try:
      from trac.web.main import dispatch_request
      import trac.web._fcgi
 
-     fcgiserv = trac.web._fcgi.WSGIServer(dispatch_request, 
+     fcgiserv = trac.web._fcgi.WSGIServer(dispatch_request,
           bindAddress = sockaddr, umask = 7)
      fcgiserv.run()
 
@@ -437,9 +437,9 @@ except Exception, e:
     print tb.getvalue()
 
 }}}
- 1. Reload nginx and launch trac.fcgi: 
+ 1. Reload nginx and launch trac.fcgi:
  {{{#!sh
-trac@trac.example ~ $ ./trac-standalone-fcgi.py 
+trac@trac.example ~ $ ./trac-standalone-fcgi.py
 }}}
 
 The above assumes that:
@@ -450,10 +450,10 @@ The above assumes that:
   * and if your system is Linux the `/home/trac/run` has setgid bit set (`chmod g+s run`)
   * and patch from [trac:#7239] is applied, or you'll have to fix the socket file permissions every time
 
-Unfortunately Nginx does not support variable expansion in fastcgi_pass directive. 
-Thus it is not possible to serve multiple Trac instances from one server block. 
+Unfortunately Nginx does not support variable expansion in fastcgi_pass directive.
+Thus it is not possible to serve multiple Trac instances from one server block.
 
-If you worry enough about security, run Trac instances under separate users. 
+If you worry enough about security, run Trac instances under separate users.
 
 Another way to run Trac as a FCGI external application is offered in [trac:#6224].
 

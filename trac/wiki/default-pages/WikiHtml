@@ -1,9 +1,9 @@
 = Using HTML in Wiki Text
 
-Trac supports the display of HTML in any wiki context, by using the `#!html` [wiki:WikiProcessors WikiProcessor]. 
+Trac supports the display of HTML in any wiki context, by using the `#!html` [wiki:WikiProcessors WikiProcessor].
 
 However, this HTML has to be [https://en.wikipedia.org/wiki/Well-formed_element well-formed].
-In particular, you can't insert a start tag in an `#!html` block, resume normal wiki text and insert the corresponding end tag in a second `#!html` block. 
+In particular, you can't insert a start tag in an `#!html` block, resume normal wiki text and insert the corresponding end tag in a second `#!html` block.
 
 For creating styled `<div>`s, `<span>`s  or even complex tables containing arbitrary Wiki text, there is a powerful alternative: `#!div`, `#!span` and `#!table`, `#!tr`, `#!td` and `#!th` blocks. Those Wiki processors are built-in and do not require additional packages to be installed.
 
@@ -24,7 +24,7 @@ To inform the wiki engine that a block of text should be treated as HTML, use th
   }}}
 }}}
 
-Note that Trac sanitizes your HTML code before displaying it. That means that potentially dangerous constructs, such as Javascript event handlers, will be removed from the output. 
+Note that Trac sanitizes your HTML code before displaying it. That means that potentially dangerous constructs, such as Javascript event handlers, will be removed from the output.
 
 The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output will be a well-formed fragment of HTML. This means that you cannot use two HTML blocks, one for opening a <div> and another for closing it, in order to wrap arbitrary wiki text.
 
@@ -33,13 +33,13 @@ The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output wi
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
-  {{{#!div class="important" 
+  {{{#!div class="important"
   **important** is a predefined class.
   }}}
   }}}
   {{{
   {{{#!div style="border: 1pt dotted; margin: 1em"
-  **wikipage** is another predefined class that will 
+  **wikipage** is another predefined class that will
   be used when no class is specified.
   }}}
   }}}
@@ -52,7 +52,7 @@ The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output wi
   {{{
   {{{#!div class="wikipage compact" style="border: 1pt dotted"
   Classes can be combined (here **wikipage** and **compact**)
-  which results in this case in reduced //vertical// 
+  which results in this case in reduced //vertical//
   padding but there's still some horizontal space for coping
   with headings.
   }}}
@@ -67,12 +67,12 @@ The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output wi
 }}}
 {{{#!td style="padding-left: 2em"
 
-  {{{#!div class="important" 
+  {{{#!div class="important"
   **important** is a predefined class.
   }}}
 
   {{{#!div style="border: 1pt dotted; margin: 1em"
-  **wikipage** is another predefined class that will 
+  **wikipage** is another predefined class that will
   be used when no class is specified.
   }}}
 
@@ -83,7 +83,7 @@ The filtering is done by [https://genshi.edgewall.org/ Genshi] and the output wi
 
   {{{#!div class="wikipage compact" style="border: 1pt dotted"
   Classes can be combined (here **wikipage** and **compact**)
-  which results in this case in reduced //vertical// 
+  which results in this case in reduced //vertical//
   padding but there's still some horizontal space for coping
   with headings.
   }}}
@@ -102,7 +102,7 @@ For spans, you should use the Macro call syntax:
 ||= Wiki Markup =||
 {{{#!td
   {{{
-  Hello 
+  Hello
   [[span(''WORLD'' (click [#anchor here]), style=color: green; font-size: 120%, id=anchor)]]!
   }}}
 }}}
@@ -143,14 +143,14 @@ The `#!td` or `#!th` processors should be used to create table data and table he
  {{{#!td colspan=2
  Pick the style the more appropriate
  to your content
- 
+
  See WikiFormatting#Tables for details
  on the pipe-based table syntax.
  }}}
- 
- If one needs to add some 
+
+ If one needs to add some
  attributes to the table itself...
- 
+
  {{{#!table style="border:none;text-align:center;margin:auto"
    {{{#!tr ====================================
      {{{#!th style="border: none"
@@ -210,7 +210,7 @@ See WikiFormatting#Tables for details
 on the pipe-based table syntax.
 }}}
 
-If one needs to add some 
+If one needs to add some
 attributes to the table itself...
 
 {{{#!table style="border:none;text-align:center;margin:auto"
@@ -241,7 +241,7 @@ attributes to the table itself...
 }}}
 }}}
 
-Note that by default tables are assigned the "wiki" CSS class, which gives a distinctive look to the header cells and a default border to the table and cells, as can be seen for the tables on this page. By removing this class (`#!table class=""`), one regains complete control on the table presentation. In particular, neither the table nor the rows nor the cells will have a border, so this is a more effective way to get such an effect rather than having to specify a `style="border: no"` parameter everywhere. 
+Note that by default tables are assigned the "wiki" CSS class, which gives a distinctive look to the header cells and a default border to the table and cells, as can be seen for the tables on this page. By removing this class (`#!table class=""`), one regains complete control on the table presentation. In particular, neither the table nor the rows nor the cells will have a border, so this is a more effective way to get such an effect rather than having to specify a `style="border: no"` parameter everywhere.
 
 {{{#!table class=""
 ||= Wiki Markup =||= Display =||

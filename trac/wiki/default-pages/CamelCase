@@ -1,6 +1,6 @@
 = !CamelCase
 
-New wiki links are automatically created when concatenating capitalized words, such that for example the words 'Camel' and 'Case' concatenated form a link to this CamelCase page. 
+New wiki links are automatically created when concatenating capitalized words, such that for example the words 'Camel' and 'Case' concatenated form a link to this CamelCase page.
 
 !CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capital letters are followed by a lower-case letter; hence "AlabamA" and "ABc" will not be links.
 

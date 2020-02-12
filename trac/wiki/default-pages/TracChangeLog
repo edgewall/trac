@@ -6,6 +6,14 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.4.x Releases
 
+=== 1.4.1
+
+Trac 1.4.1 fixes compatibility issues with
+Jinja2 versions 2.11 and 2.11.1. Several
+other minor defects were also fixed.
+
+[trac:source:/tags/trac-1.4.1 View Tag] | [trac:milestone:1.4.1 View Milestone]
+
 === '''1.4 'Jinja''''
 
 //(August 28, 2019)//
@@ -78,7 +86,7 @@ See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#Maintena
 
 [trac:source:/tags/trac-1.3.4 View Tag] | [trac:milestone:1.3.4 View Milestone]
 
-=== 1.3.3 
+=== 1.3.3
 
 //(July 20, 2018)//
 
@@ -95,7 +103,7 @@ Additional highlights of changes since 1.3.2:
 
 [trac:source:/tags/trac-1.3.3 View Tag] | [trac:milestone:1.3.3 View Milestone]
 
-=== 1.3.2 
+=== 1.3.2
 
 //(July 31, 2017)//
 
@@ -141,7 +149,7 @@ Highlights of the changes since 1.2:
 
 * Modernized the code to support Python 2.7 idioms (earlier versions are no longer supported)
   ([trac:#12046], [trac:#12148], [trac:#12558], [trac:#12569])
-* Removed lots of backward compatibility APIs from pre-1.0 days; 
+* Removed lots of backward compatibility APIs from pre-1.0 days;
   in particular, the database API is now exclusively based on the [[trac:wiki:TracDev/ApiChanges/1.1#DatabaseAPIChanges|context managers]] ([trac:#9612], [trac:#11901])
 * Ticket changes can be used to format the subject template ([trac:#12205])
 
@@ -346,7 +354,7 @@ The following list contains highlights of the changes:
  - Groups and permissions can be used in the workflow `set_owner` attribute
    ([trac:#11839]).
 
-See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.1.3]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]] (as 1.1.3 contains all the fixes done 
+See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.1#DevelopmentReleases | 1.1.3]] and [[trac:wiki:TracDev/ReleaseNotes/1.0#MaintenanceReleases | 1.0.3]] (as 1.1.3 contains all the fixes done
 for 1.0.3).
 
 [trac:source:/tags/trac-1.1.3 View Tag] | [trac:milestone:1.1.3 View Milestone]
@@ -401,6 +409,16 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 
 == 1.0.x Releases
 
+=== 1.0.19
+
+//(October 15, 2019)//
+
+Trac 1.0.19 provides a few bug fixes. The translation
+catalogs have also been updated and merged with
+those from Transifex.
+
+[trac:source:/tags/trac-1.0.19 View Tag] | [trac:milestone:1.0.19 View Milestone]
+
 === 1.0.18
 
 //(July 18, 2019)//
@@ -423,7 +441,7 @@ enhancements. The following are some highlights:
 Trac 1.0.17 provides more than 3 dozen bug fixes and minor
 enhancements. The following are some highlights:
 
- * Fixed `ERR_BLOCKED_BY_XSS_AUDITOR` during preview for 
+ * Fixed `ERR_BLOCKED_BY_XSS_AUDITOR` during preview for
    certain content with Chrome browser ([trac:#12926]).
  * Improved performance of query module when many custom
    fields are used ([trac:#12967]).
@@ -456,7 +474,7 @@ enhancements. The following are some highlights:
  - Reduced memory usage exporting a zip file ([trac:#12765]).
  - Fixed batch modify not working for list fields
    (regression in 1.0.11) ([trac:#12585]).
- - Performance improvements to the Roadmap and Milestone 
+ - Performance improvements to the Roadmap and Milestone
    admin pages when there are many milestones and tickets
    ([trac:#12609]).
  - SECURITY: Possible XSS via reStructuredText link.
@@ -472,7 +490,7 @@ enhancements. The following are some highlights:
 Trac 1.0.13 provides around a dozen bug fixes and minor
 enhancements. The following are some highlights:
 
- - Use locale environment variables to negotiate locale 
+ - Use locale environment variables to negotiate locale
    on console ([trac:#12418]).
  - Fixed using incorrect revisions when downloading a zip
    file via browser page from Git repository ([trac:#12557]).
@@ -493,7 +511,7 @@ Trac 1.0.12 provides around 20 bug fixes and minor enhancements. The following a
    contained a dash ([trac:#12505]).
  - Fixed incorrect parsing of projects list file by
    `GitwebProjectsRepositoryProvider` ([trac:#12518]).
- - `TracIni` macro displays option documentation as 
+ - `TracIni` macro displays option documentation as
    multi-line rather than one-liner ([trac:#12522]).
  - Fixed regression with `GitConnector` leading to
    `IOError: Too many open files` ([trac:#12524]).
@@ -512,13 +530,13 @@ The following are some additional highlights:
  - Fixed resetting //Oldest first// after auto-preview of
    ticket change log ([trac:#12381]).
  - Trac is now distributed as wheel package ([trac:#12391]).
- - Fixed database exceptions in query system when 
+ - Fixed database exceptions in query system when
    ''milestones/versions/enums'' are not defined and a custom
    field of the same name is added ([trac:#12399]).
  - Custom field //milestone// was not shown when
    standard //milestone// field was hidden ([trac:#12400]).
  - Query system now sorts by `enum.value` rather than
-   `ticket.type` for `order=type` ([trac:#12402]). 
+   `ticket.type` for `order=type` ([trac:#12402]).
  - Added support for Babel 2.3.2 (2.3.0 and 2.3.1 should
    not be used)  ([trac:#12445]).
 
@@ -651,7 +669,7 @@ Trac 1.0.2 contains a number of bug fixes and minor enhancements, as well as a m
 
 The following list contains only a few highlights:
 
- - Subversion keywords are expanded and EOL substitutions made when viewing a file in the repository browser and when downloading a file ([trac:#717]). 
+ - Subversion keywords are expanded and EOL substitutions made when viewing a file in the repository browser and when downloading a file ([trac:#717]).
  - Notification email is sent to the old owner when a ticket is reassigned ([trac:#2311]).
  - Ticket change history is updated when renaming and deleting a milestone, and when retargeting tickets to another milestone ([trac:#4582], [trac:#5658]).
  - Numerous fixes for the Authz permissions policy in the browser/repository ([trac:#10961], [trac:#11646]), wiki ([trac:#8976], [trac:#11067]), admin ([trac:#11069]) and report ([trac:#11176]) realms.
@@ -701,10 +719,10 @@ See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.0#Maintena
 Trac 1.0 is a major release adding refreshed user interface and improved DVCS repository support as the most visible changes.
 
 The following list contains only a few highlights:
- - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7) 
+ - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7)
  - The [TH:GitPlugin] has been donated by Herbert Valerio Riedel to the Trac project (many thanks!) and is now maintained here as an optional component
  - As a consequence, the Subversion support has been moved below `tracopt.versioncontrol` as well
- - The Git and Mercurial log view feature a visualization of the branching structure 
+ - The Git and Mercurial log view feature a visualization of the branching structure
  - Usability improvements for the tickets, with a better support for conflict detection and resolution
  - Integration of the [TH:BatchModifyPlugin], contributed by Brian Meeker (many thanks!) and is now maintained there as a default component
  - jQuery/UI integration, featuring a date picker for date fields
@@ -763,7 +781,7 @@ Trac 0.12.5 contains fixes for a few issues:
 
 [trac:source:/tags/trac-0.12.5 View Tag] | [trac:milestone:0.12.5 View Milestone]
 
-=== 0.12.4 
+=== 0.12.4
 
 //(September 7, 2012)//
 

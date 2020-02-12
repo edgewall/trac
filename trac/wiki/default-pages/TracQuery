@@ -1,7 +1,7 @@
 = Trac Ticket Queries
 [[TracGuideToc]]
 
-In addition to [TracReports reports], Trac provides ''custom ticket queries'', which display tickets meeting specified criteria. 
+In addition to [TracReports reports], Trac provides ''custom ticket queries'', which display tickets meeting specified criteria.
 
 To configure and execute a custom query, navigate to the ''View Tickets'' module from the navigation bar, and select the ''New Custom Query'' link.
 
@@ -12,7 +12,7 @@ When you first go to the query page, the default filter will display tickets rel
  * If not logged in, but you have specified a name or email address in the preferences, all open tickets where your name or email is in the CC list.
  * If not logged in and no name/email is defined in the preferences, then all open issues.
 
-New filters are added using the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right. Filters are removed by clicking the button to the left with the minus sign on the label. 
+New filters are added using the dropdown lists at the bottom corners of the filters box; 'And' conditions on the left, 'Or' conditions on the right. Filters are removed by clicking the button to the left with the minus sign on the label.
 
 After you have edited your filters, click the ''Update'' button to refresh your results.
 
@@ -31,9 +31,9 @@ The modifier key is platform and browser dependent. On Mac the modified key is !
 
 == Navigating Tickets
 
-Clicking on one of the query results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
+Clicking on one of the query results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results. When you return to the query ''any tickets which were edited'' will be displayed with italicized text. If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]], the text will also be greyed. If '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
+You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results. When you return to the query ''any tickets which were edited'' will be displayed with italicized text. If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]], the text will also be greyed. If '''a new ticket matching the query criteria has been created''', it will be shown in bold.
 
 The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
@@ -89,7 +89,7 @@ Filters combining matches and negated matches can be constructed for text fields
 || '''`status=closed,keywords~=firefox -opera`''' || query closed tickets that contain keyword `firefox`, but not `opera` ||
 || '''`status=closed,keywords~=opera -firefox`''' || query closed tickets that contain keyword `opera`, but no `firefox` ||
 
-The date fields `created` and `modified` and custom fields of type `time` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string. 
+The date fields `created` and `modified` and custom fields of type `time` can be constrained by using the `=` operator and specifying a value containing two dates separated by two dots (`..`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be omitted to avoid having to quote the query string.
 || '''`created=2007-01-01..2008-01-01`''' || query tickets created in 2007 ||
 || '''`created=lastmonth..thismonth`''' || query tickets created during the previous month ||
 || '''`modified=1weekago..`''' || query tickets that have been modified in the last week ||

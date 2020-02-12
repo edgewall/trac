@@ -1,11 +1,11 @@
 = Syntax Coloring of Source Code
-Trac supports language-specific syntax highlighting of source code within wiki formatted text in [WikiProcessors#CodeHighlightingSupport wiki processors] blocks and in the [TracBrowser repository browser]. Syntax coloring is provided using [http://pygments.org/ Pygments], which covers a wide range of programming languages and other structured texts, and is actively supported. If Pygments is not available, Trac will display the content as plain text. 
+Trac supports language-specific syntax highlighting of source code within wiki formatted text in [WikiProcessors#CodeHighlightingSupport wiki processors] blocks and in the [TracBrowser repository browser]. Syntax coloring is provided using [http://pygments.org/ Pygments], which covers a wide range of programming languages and other structured texts, and is actively supported. If Pygments is not available, Trac will display the content as plain text.
 
 == About Pygments
 
 [http://pygments.org/ Pygments] is a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
 
-The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be overridden by setting a //Style// preference on the [/prefs/pygments preferences page]. 
+The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be overridden by setting a //Style// preference on the [/prefs/pygments preferences page].
 
 [http://pygments.org/docs/lexers/ Pygments lexer] options can be specified as [WikiProcessors WikiProcessor] arguments and defaults can be set in the [TracIni#pygments-lexer-section environment configuration].
 

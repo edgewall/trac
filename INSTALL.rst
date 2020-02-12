@@ -1,4 +1,4 @@
-Trac Installation Guide for 1.3
+Trac Installation Guide for 1.4
 ===============================
 
 Trac is written in the Python programming language and needs a
@@ -138,7 +138,7 @@ environments:
 
 + `Apache`_ with
 
-    + `mod_wsgi`_, see `TracModWSGI`_ and `ModWSGI IntegrationWithTrac`_.
+    + `mod_wsgi`_, see `TracModWSGI`_ and`ModWSGI IntegrationWithTrac`_.
     + `mod_python 3.5.0`_, see `TracModPython`_
 
 + a `FastCGI`_-capable web server (see `TracFastCgi`_)
@@ -156,7 +156,7 @@ Other Python Packages
 
 + `Babel*`_, version 0.9.6 or >= 1.3, needed for localization support
 + `docutils`_, version >= 0.3.9 for `WikiRestructuredText`_.
-+ `Pygments`_ for `syntax highlighting`_.
++ `Pygments`_ for`syntax highlighting`_.
 + `Textile`_ for rendering the `Textile markup language`_.
 + `pytz`_ to get a complete list of time zones, otherwise Trac will
   fall back on a shorter list from an internal time zone implementation.

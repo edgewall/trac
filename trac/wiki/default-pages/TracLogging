@@ -20,7 +20,7 @@ The log method is set using the [TracIni#logging-log_type-option "[logging] log_
 The verbosity level of logged messages can be set using the [TracIni#logging-log_level-option "[logging] log_level"] option. The log level defines the minimum level of urgency required for a message to be logged, and those levels are:
 
  '''CRITICAL''':: Log only the most critical (typically fatal) errors.
- '''ERROR''':: Log failures, bugs and errors. 
+ '''ERROR''':: Log failures, bugs and errors.
  '''WARN''':: Log warnings, non-interrupting events.
  '''INFO''':: Diagnostic information, log information about all processing.
  '''DEBUG''':: Trace messages, profiling, etc.

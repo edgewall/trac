@@ -89,7 +89,7 @@ The following [wiki:TracAdmin trac-admin] commands can be used to perform reposi
    Remove the repository `<repos>`.
 
  `repository set <repos> <key> <value>`::
-   Set the attribute `<key>` to `<value>` for the repository `<repos>`. 
+   Set the attribute `<key>` to `<value>` for the repository `<repos>`.
 
 Note that the default repository has an empty name, so it will need to be quoted when running `trac-admin` from a shell. Alternatively, the name `(default)` can be used instead, for example when running `trac-admin` in interactive mode.
 
@@ -159,7 +159,7 @@ There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be
 
 Follow the help in the documentation header of the script to configure `trac-svn-hook`. You'll need to minimally set the `TRAC_ENV` variable, and may also need to set `TRAC_PATH` and `TRAC_LD_LIBRARY_PATH` for a non-standard installation or a virtual environment.
 
-Configuring the hook environment variables is even easier in Subversion 1.8 and later using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, or exporting them from the hook that invokes `trac-svn-hook`, they can be configured through the repository `conf/hooks-env` file. 
+Configuring the hook environment variables is even easier in Subversion 1.8 and later using the [http://svnbook.red-bean.com/en/1.8/svn.reposadmin.create.html#svn.reposadmin.hooks.configuration hook script environment] configuration. Rather than directly editing `trac-svn-hook` to set the environment variables, or exporting them from the hook that invokes `trac-svn-hook`, they can be configured through the repository `conf/hooks-env` file.
 
 Here is an example, using a Python virtual environment at `/usr/local/venv`:
 {{{#!ini
@@ -221,7 +221,7 @@ Alternatively, if your git repository is one that gets committed to directly on 
 #!/bin/sh
 tracenv=/path/to/env  # set to your Trac environment's path
 repos=                # set to your repository's name
-REV=$(git rev-parse HEAD) 
+REV=$(git rev-parse HEAD)
 trac-admin "$tracenv" changeset added "$repos" $REV
 }}}
 The `post-commit` hook will do nothing if you only update the repository by pushing to it.

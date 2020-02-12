@@ -12,7 +12,7 @@ Simply use the name of the other Trac environment as a prefix, followed by a col
 
 The other resource is specified using a regular !TracLink, of any flavor.
 
-That target environment name is either the real name of the environment or an alias. 
+That target environment name is either the real name of the environment or an alias.
 The aliases are defined in the `trac.ini` file, see below.
 The prefix is case insensitive.
 
@@ -47,14 +47,14 @@ Now, given the above configuration, one could create the following links:
    * Keys are case insensitive: `T:wiki:InterTrac` T:wiki:InterTrac
  * to the ticket #234:
    * `trac:ticket:234` trac:ticket:234
-   * `trac:#234` trac:#234 
+   * `trac:#234` trac:#234
    * `genshi:#234` genshi:#234
    * `#T234` #T234
  * to the changeset [1912]:
    * `trac:changeset:1912` trac:changeset:1912
    * `[T1912]` [T1912]
  * to the log range [3300:3330]:
-   * `trac:log:@3300:3330` trac:log:@3300:3330  
+   * `trac:log:@3300:3330` trac:log:@3300:3330
    * `[trac 3300:3330]` [trac 3300:3330]
    * finally, to link to the start page of a remote trac, simply use its prefix followed by ':', inside an explicit link. Example: `[th: Trac Hacks]` (note that the ''remote'' Trac has to run Trac >= 0.11 for this to work'')
 
