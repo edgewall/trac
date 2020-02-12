@@ -52,7 +52,7 @@ def readme():
 
 setup(
     name = 'Trac',
-    version = '1.4.1',
+    version = '1.4.2',
     description = 'Integrated SCM, wiki, issue tracker and project environment',
     long_description = readme(),
     author = 'Edgewall Software',
