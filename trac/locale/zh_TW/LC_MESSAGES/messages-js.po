@@ -3,17 +3,17 @@
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
+# Chi-Chung Lin <zclin.csie92g@gmail.com>, 2010.
 # yuenfu <yuenfu.chiu@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2020-02-11 04:45+0000\n"
-"PO-Revision-Date: 2019-08-22 05:56+0000\n"
-"Last-Translator: yuenfu <yuenfu.chiu@gmail.com>, 2020\n"
+"PO-Revision-Date: 2020-02-12 03:31+0000\n"
+"Last-Translator: yuenfu <yuenfu.chiu@gmail.com>\n"
 "Language: zh_TW\n"
-"Language-Team: Chinese (Taiwan) "
-"(https://www.transifex.com/cboos/teams/16191/zh_TW/)\n"
+"Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -229,11 +229,11 @@ msgstr "請選擇待辦事項 #%(id)s 進行修改"
 
 #: trac/htdocs/js/timeline_multirepos.js:4
 msgid "Show all repositories"
-msgstr "顯示所有資料庫"
+msgstr "顯示所有儲存庫"
 
 #: trac/htdocs/js/timeline_multirepos.js:5
 msgid "Hide all repositories"
-msgstr "隱藏所有資料庫"
+msgstr "隱藏所有儲存庫"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
@@ -307,5 +307,26 @@ msgstr "拖動規則以重新排序"
 
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
-msgstr "連結到此差異"
+msgstr "連結到此 diff"
+
+#~ msgid "between"
+#~ msgstr "介於"
+
+#~ msgid "and"
+#~ msgstr "且"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr "請選擇代辦事項 %(id)s 進行修改"
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr ""
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "粗體: '''範例'''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "標題: == 範例 =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "換行: [[BR]]"
 

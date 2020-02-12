@@ -11,10 +11,10 @@ msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2020-02-11 04:45+0000\n"
-"PO-Revision-Date: 2019-08-22 05:56+0000\n"
-"Last-Translator: M A <marco.awater@acq.nl>, 2019\n"
+"PO-Revision-Date: 2020-02-12 03:31+0000\n"
+"Last-Translator: M A <marco.awater@acq.nl>\n"
 "Language: nl\n"
-"Language-Team: Dutch (https://www.transifex.com/cboos/teams/16191/nl/)\n"
+"Language-Team: nl <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -93,7 +93,7 @@ msgstr "Tabulair"
 
 #: trac/htdocs/js/diff.js:123
 msgid "Unified"
-msgstr "Verenigd"
+msgstr "Unified"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
@@ -101,12 +101,12 @@ msgstr "Map uitklappen"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr "Map opnieuw uitklappen"
+msgstr "Map overnieuw uitklappen"
 
 #: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr "%(entry)s laden..."
+msgstr "Bezig met laden van %(entry)s..."
 
 #: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
@@ -134,13 +134,13 @@ msgstr "%(title)s (klik om kolom te verbergen)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr "$maand$jaar"
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr "Klaar"
+msgstr "Gereed"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
@@ -196,7 +196,7 @@ msgstr "Nu"
 
 #: trac/htdocs/js/query.js:160
 msgid "A filter already exists for that property"
-msgstr "Er bestaat al een filter voor die eigenschap"
+msgstr "Een filter bestaat al voor die eigenschap"
 
 #: trac/htdocs/js/query.js:187
 msgid "or"
@@ -221,7 +221,7 @@ msgstr "verwijder:"
 
 #: trac/htdocs/js/query.js:391
 msgid " add:"
-msgstr " toevoegen:"
+msgstr "voeg toe:"
 
 #: trac/htdocs/js/query.js:425
 #, python-format
@@ -311,4 +311,25 @@ msgstr "Regel slepen om te herordenen"
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
 msgstr "Link naar deze diff"
+
+#~ msgid "between"
+#~ msgstr "tussen"
+
+#~ msgid "and"
+#~ msgstr "en"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr "Selecteer ticket %(id)s om aan te passen"
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr "Wijzig selectie van alle getoonde tickets uit deze groep"
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "Vet gedrukt: '''Voorbeeld'''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "Kop: == Voorbeeld =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "Regelafbreking: [[BR]]"
 
