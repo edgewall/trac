@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007-2019 Edgewall Software
+# Copyright (C) 2007-2020 Edgewall Software
 # Copyright (C) 2007 Eli Carter <retracile@gmail.com>
 # All rights reserved.
 #
