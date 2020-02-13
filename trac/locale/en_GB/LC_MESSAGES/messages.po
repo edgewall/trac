@@ -1,5 +1,5 @@
 # English (United Kingdom) translations for Trac.
-# Copyright (C) 2008-2019 Edgewall Software
+# Copyright (C) 2008-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # David Lodge <dave@cirt.net>, 2008.
 # Mikael Relbe (mrelbe) <mikael@relbe.se>, 2010-2013

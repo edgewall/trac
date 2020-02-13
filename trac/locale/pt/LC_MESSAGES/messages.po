@@ -1,5 +1,5 @@
 # Portuguese (Portugal) translations for Trac.
-# Copyright (C) 2007-2019 Edgewall Software
+# Copyright (C) 2007-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 # Pedro Algarvio <ufs@ufsoft.org>, 2007

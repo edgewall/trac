@@ -1,5 +1,5 @@
 # German (Germany) translations for Trac.
-# Copyright (C) 2007-2019 Edgewall Software
+# Copyright (C) 2007-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Christopher Lenz <cmlenz@gmx.de>, 2007-2008.
 # Daniel Musketa <daniel@musketa.de>, 2010.
