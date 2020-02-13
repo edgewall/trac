@@ -163,6 +163,7 @@ class Href(object):
                 params.append((name, value))
 
         # Skip Jinja2 context (#13244)
+        # Only needed for Jinja versions 2.11.0 and 2.11.1
         if args and isinstance(args[0], Jinja2Context):
             args = args[1:]
         if args:
