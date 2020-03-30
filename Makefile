@@ -62,12 +62,17 @@ export HELP_CFG
 
 .PHONY: all help help-all status clean clean-bytecode clean-mo
 
+define unittest-main
+    $(PYTHON) -c 'from $1 import test_suite; import unittest; \
+                  unittest.main(defaultTest="test_suite")' $(testopts)
+endef
+
 %.py : status
-	$(PYTHON) setup.py -q test -s $(subst /,.,$(@:.py=)).test_suite $(testopts)
+	$(call unittest-main,$(subst /,.,$(@:.py=)))
 
 ifdef test
 all: status
-	$(PYTHON) setup.py -q test -s $(subst /,.,$(test:.py=)).test_suite $(testopts)
+	$(call unittest-main,$(subst /,.,$(test:.py=)))
 else
 all: help
 endif
