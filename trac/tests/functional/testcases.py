@@ -332,7 +332,6 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
         self._tester.logout()
         try:
             # also test a regular ascii user name
-            self._testenv.adduser(u'user')
             self._tester.login(u'user')
             self._tester.go_to_front()
             self._tester.logout()

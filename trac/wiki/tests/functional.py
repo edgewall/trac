@@ -195,7 +195,7 @@ class TestWikiReadonlyAttribute(FunctionalTwillTestCaseSetup):
             # is not in the list of active permission policies
             pp_list = [p.strip() for p in permission_policies.split(',')]
             pp_list.remove('ReadonlyWikiPolicy')
-            self._testenv._tracadmin('trac', 'permission_policies',
+            self._testenv.set_config('trac', 'permission_policies',
                                      ', '.join(pp_list))
             self._testenv.grant_perm('user', 'WIKI_ADMIN')
             self._tester.go_to_wiki(page_name)
