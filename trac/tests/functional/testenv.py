@@ -138,8 +138,12 @@ class FunctionalTestEnvironment(object):
 
         config_file = os.path.join(self.dirname, 'config.ini')
         config = Configuration(config_file)
-        config.set('repositories', '.dir', self.repo_path_for_initenv())
-        config.set('repositories', '.type', self.repotype)
+        repo_path = self.repo_path_for_initenv()
+        if repo_path:
+            config.set('repositories', '.dir', repo_path)
+            config.set('repositories', '.type', self.repotype)
+        for component in self.get_enabled_components():
+            config.set('components', component, 'enabled')
         config.save()
         self._tracadmin('initenv', self.tracdir, self.dburi,
                         '--config=%s' % config_file)
@@ -152,9 +156,6 @@ class FunctionalTestEnvironment(object):
         self.adduser('joe')
         self.grant_perm('admin', 'TRAC_ADMIN')
         env = self.get_trac_environment()
-        for component in self.get_enabled_components():
-            env.config.set('components', component, 'enabled')
-        env.config.save()
         self.post_create(env)
 
     def adduser(self, user):
@@ -221,7 +222,7 @@ class FunctionalTestEnvironment(object):
         """Internal utility method for calling trac-admin"""
         proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
                       'admin', 'console.py'), self.tracdir],
-                     stdin=PIPE, stdout=PIPE, stderr=STDOUT,
+                     stdin=PIPE, stdout=PIPE, stderr=PIPE,
                      close_fds=close_fds, cwd=self.command_cwd)
         if args:
             if any('\n' in arg for arg in args):
@@ -233,13 +234,12 @@ class FunctionalTestEnvironment(object):
                              for idx, arg in enumerate(args))
         else:
             input = None
-        out = proc.communicate(input=input)[0]
-        if proc.returncode:
-            print(out)
-            self.logfile.write(out)
+        out, err = proc.communicate(input=input)
+        if proc.returncode or err:
+            self.logfile.write(err)
             raise Exception("Failed while running trac-admin with arguments %r.\n"
                             "Exitcode: %s \n%s"
-                            % (args, proc.returncode, out))
+                            % (args, proc.returncode, err))
         else:
             # trac-admin is started in interactive mode, so we strip away
             # everything up to the to the interactive prompt
@@ -298,7 +298,7 @@ class FunctionalTestEnvironment(object):
 
     def repo_path_for_initenv(self):
         """Default to no repository"""
-        return ''
+        return None
 
     def call_in_dir(self, dir, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=self.logfile,
