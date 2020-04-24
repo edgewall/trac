@@ -131,12 +131,12 @@ class Environment(Component, ComponentManager):
         """)
 
     base_url = Option('trac', 'base_url', '',
-        """Reference URL for the Trac deployment.
+        """Base URL of the Trac site.
 
-        This is the base URL that will be used when producing
-        documents that will be used outside of the web browsing
-        context, like for example when inserting URLs pointing to Trac
-        resources in notification e-mails.""")
+        This is used to produce documents outside of the web browsing
+        context, such as URLs in notification e-mails that point to
+        Trac resources.
+        """)
 
     base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
                                         False,
@@ -173,9 +173,14 @@ class Environment(Component, ComponentManager):
         """Short description of the project.""")
 
     project_url = Option('project', 'url', '',
-        """URL of the main project web site, usually the website in
-        which the `base_url` resides. This is used in notification
-        e-mails.""")
+        """URL of the project web site.
+
+        This is usually the domain in which the `base_url` resides.
+        For example, the project URL might be !https://myproject.com,
+        with the Trac site (`base_url`) residing at either
+        !https://trac.myproject.com or !https://myproject.com/trac.
+        The project URL is added to the footer of notification e-mails.
+        """)
 
     project_admin = Option('project', 'admin', '',
         """E-Mail address of the project's administrator.""")
