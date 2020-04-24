@@ -85,36 +85,34 @@ class Environment(Component, ComponentManager):
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     components_section = ConfigSection('components',
-        """This section is used to enable or disable components
-        provided by plugins, as well as by Trac itself. The component
-        to enable/disable is specified via the name of the
-        option. Whether its enabled is determined by the option value;
-        setting the value to `enabled` or `on` will enable the
-        component, any other value (typically `disabled` or `off`)
-        will disable the component.
+        """Enable or disable components provided by Trac and plugins.
+        The component to enable/disable is specified by the option name.
+        The enabled state is determined by the option value: setting
+        the value to `enabled` or `on` will enable the component, any
+        other value (typically `disabled` or `off`) will disable the
+        component.
 
         The option name is either the fully qualified name of the
-        components or the module/package prefix of the component. The
+        component or the module/package prefix of the component. The
         former enables/disables a specific component, while the latter
-        enables/disables any component in the specified
-        package/module.
+        enables/disables any component in the specified package/module.
 
         Consider the following configuration snippet:
-        {{{
+        {{{#!ini
         [components]
         trac.ticket.report.ReportModule = disabled
         acct_mgr.* = enabled
         }}}
 
         The first option tells Trac to disable the
-        [wiki:TracReports report module].
+        [TracReports report module].
         The second option instructs Trac to enable all components in
-        the `acct_mgr` package. Note that the trailing wildcard is
-        required for module/package matching.
+        the `acct_mgr` package. The trailing wildcard is required for
+        module/package matching.
 
         To view the list of active components, go to the ''Plugins''
-        page on ''About Trac'' (requires `CONFIG_VIEW`
-        [wiki:TracPermissions permissions]).
+        section of ''About Trac'' (requires `CONFIG_VIEW`
+        [TracPermissions permission]).
 
         See also: TracPlugins
         """)
