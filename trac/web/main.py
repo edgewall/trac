@@ -170,7 +170,8 @@ class RequestDispatcher(Component):
     configurable_headers = ConfigSection('http-headers', """
         Headers to be added to the HTTP request. (''since 1.2.3'')
 
-        The header name must conform to RFC7230 and the following
+        The header name must conform to
+        [https://tools.ietf.org/html/rfc7230 RFC7230] and the following
         reserved names are not allowed: content-type, content-length,
         location, etag, pragma, cache-control, expires.
         """)
