@@ -8,7 +8,7 @@ issue tracking and convenient report facilities.
 
 Trac is distributed using the modified BSD License.
 
-* For installation instructions, please see INSTALL.rst or page
+* For installation instructions, please see INSTALL.rst or the
   trac/wiki/default-pages/TracInstall page for complete, up-to-date
   instructions
 
