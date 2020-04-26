@@ -1,3 +1,4 @@
+version: ~> 1.0
 language: python
 python: 2.7
 addons:
@@ -91,18 +92,6 @@ before_install:
 - pip list
 install:
 - |
-  if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
-       "$TRAVIS_BUILD_STAGE_NAME" = Test -a \
-       "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
-  then
-    print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
-    sitelib_global="$(/usr/bin/python -c "$print_sitelib")"
-    sitelib_venv="$(python -c "$print_sitelib")"
-    ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
-    ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
-    python -c 'from svn import core'
-  fi
-- |
   requires='Genshi>=0.7 twill==0.9.1'
   case "$pyver" in
     2.6) requires="$requires lxml<4.3.0" ;;
@@ -128,13 +117,22 @@ install:
     *)        tracdb_uri= ;;
   esac
   echo ".uri = $tracdb_uri" >Makefile.cfg
-script:
 - echo "$tracdb_version"
+before_script:
 - |
-  if [ "$build" != minimum ]; then make compile; fi
-  if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
-    make Trac.egg-info unit-test functional-test;
+  if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
+       "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
+  then
+    print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
+    sitelib_global="$(/usr/bin/python -c "$print_sitelib")"
+    sitelib_venv="$(python -c "$print_sitelib")"
+    ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
+    ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
+    python -c 'from svn import core'
   fi
+script:
+- if [ "$build" != minimum ]; then make compile; fi
+- make Trac.egg-info unit-test functional-test;
 before_deploy:
 - cat contrib/travis/edgewall_host_key >> $HOME/.ssh/known_hosts
 - keyfile=/tmp/id_rsa
@@ -217,8 +215,10 @@ jobs:
     language: generic
     env: pyver=2.7 tracdb=postgresql
   - stage: deploy
+    before_script: skip
+    script: skip
     deploy:
-    - provider: script
+      provider: script
       skip_cleanup: true
       script: scp -i "$keyfile" dist/Trac-* travis@edgewall.org:/var/ftp/pub/trac/incoming
       on:
