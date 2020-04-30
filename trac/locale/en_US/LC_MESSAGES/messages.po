@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-04-24 08:54-0700\n"
+"POT-Creation-Date: 2020-04-29 19:46-0700\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language: en_US\n"
@@ -589,50 +589,50 @@ msgstr ""
 msgid "Trac Error"
 msgstr ""
 
-#: trac/env.py:198
+#: trac/env.py:196
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"https://trac.edgewall.org/\">https://trac.edgewall.org/</a>"
 msgstr ""
 
-#: trac/env.py:405
+#: trac/env.py:403
 #, python-format
 msgid ""
 "No Trac environment found at %(path)s\n"
 "%(e)s"
 msgstr ""
 
-#: trac/env.py:407
+#: trac/env.py:405
 #, python-format
 msgid "Unknown Trac environment type '%(type)s'"
 msgstr ""
 
-#: trac/env.py:525
+#: trac/env.py:523
 #, python-format
 msgid "Base directory '%(env)s' does not exist. Please create it and retry."
 msgstr ""
 
-#: trac/env.py:530
+#: trac/env.py:528
 msgid "Directory exists and is not empty."
 msgstr ""
 
-#: trac/env.py:602
+#: trac/env.py:600
 #, python-format
 msgid "The configuration file is not found at %(path)s"
 msgstr ""
 
-#: trac/env.py:760
+#: trac/env.py:758
 #, python-format
 msgid "Unable to check for upgrade of %(module)s.%(name)s: %(err)s"
 msgstr ""
 
-#: trac/env.py:845
+#: trac/env.py:843
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/admin/console.py:249 trac/env.py:879
+#: trac/admin/console.py:249 trac/env.py:877
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded. Run:\n"
@@ -640,7 +640,7 @@ msgid ""
 "  trac-admin \"%(path)s\" upgrade"
 msgstr ""
 
-#: trac/env.py:964
+#: trac/env.py:962
 #, python-format
 msgid ""
 "Resources cannot be deployed to a target directory that is equal to or "
@@ -649,60 +649,60 @@ msgid ""
 "Please choose a different target directory and try again."
 msgstr ""
 
-#: trac/env.py:973
+#: trac/env.py:971
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:991
+#: trac/env.py:989
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:1003
+#: trac/env.py:1001
 #, python-format
 msgid "Invalid argument '%(arg)s'"
 msgstr ""
 
-#: trac/env.py:1008
+#: trac/env.py:1006
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:1012
+#: trac/env.py:1010
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:1033
+#: trac/env.py:1031
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:1045
+#: trac/env.py:1043
 msgid "Backing up database ..."
 msgstr ""
 
-#: trac/env.py:1050
+#: trac/env.py:1048
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/admin/api.py:134 trac/env.py:1055
+#: trac/admin/api.py:134 trac/env.py:1053
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:1058
+#: trac/env.py:1056
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:1064
+#: trac/env.py:1062
 msgid ""
 "The pre-upgrade backup failed.\n"
 "Use '--no-backup' to upgrade without doing a backup.\n"
 msgstr ""
 
-#: trac/env.py:1068
+#: trac/env.py:1066
 msgid "The upgrade failed. Please fix the issue and try again.\n"
 msgstr ""
 
-#: trac/env.py:1075
+#: trac/env.py:1073
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -2498,8 +2498,8 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: trac/templates/environment_info.html:75 trac/web/main.py:737
-#: trac/web/main.py:743
+#: trac/templates/environment_info.html:75 trac/web/main.py:738
+#: trac/web/main.py:744
 msgid "N/A"
 msgstr ""
 
@@ -6499,24 +6499,24 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: trac/web/main.py:188
+#: trac/web/main.py:189
 msgid "Authentication error. Please contact your administrator."
 msgstr ""
 
-#: trac/web/main.py:242
+#: trac/web/main.py:243
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 
-#: trac/web/main.py:245
+#: trac/web/main.py:246
 msgid "Do you have cookies enabled?"
 msgstr ""
 
-#: trac/web/main.py:246
+#: trac/web/main.py:247
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr ""
 
-#: trac/web/main.py:352
+#: trac/web/main.py:353
 #, python-format
 msgid ""
 "%(handler)s is not a valid default handler. Please update %(option)s "
@@ -6524,28 +6524,28 @@ msgid ""
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:685
+#: trac/web/main.py:686
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:686
+#: trac/web/main.py:687
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
-#: trac/web/main.py:750
+#: trac/web/main.py:751
 msgid "''System information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:751
+#: trac/web/main.py:752
 msgid "''Plugin information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:752
+#: trac/web/main.py:753
 msgid "''Interface customization information not available''\n"
 msgstr ""
 
-#: trac/web/main.py:782
+#: trac/web/main.py:783
 #, python-format
 msgid ""
 "==== How to Reproduce\n"

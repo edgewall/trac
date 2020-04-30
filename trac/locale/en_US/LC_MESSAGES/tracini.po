@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.3.3\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-04-24 08:54-0700\n"
+"POT-Creation-Date: 2020-04-29 19:46-0700\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en_US\n"
@@ -254,41 +254,39 @@ msgstr ""
 
 #: trac/env.py:87
 msgid ""
-"This section is used to enable or disable components\n"
-"provided by plugins, as well as by Trac itself. The component\n"
-"to enable/disable is specified via the name of the\n"
-"option. Whether its enabled is determined by the option value;\n"
-"setting the value to `enabled` or `on` will enable the\n"
-"component, any other value (typically `disabled` or `off`)\n"
-"will disable the component.\n"
+"Enable or disable components provided by Trac and plugins.\n"
+"The component to enable/disable is specified by the option name.\n"
+"The enabled state is determined by the option value: setting\n"
+"the value to `enabled` or `on` will enable the component, any\n"
+"other value (typically `disabled` or `off`) will disable the\n"
+"component.\n"
 "\n"
 "The option name is either the fully qualified name of the\n"
-"components or the module/package prefix of the component. The\n"
+"component or the module/package prefix of the component. The\n"
 "former enables/disables a specific component, while the latter\n"
-"enables/disables any component in the specified\n"
-"package/module.\n"
+"enables/disables any component in the specified package/module.\n"
 "\n"
 "Consider the following configuration snippet:\n"
-"{{{\n"
+"{{{#!ini\n"
 "[components]\n"
 "trac.ticket.report.ReportModule = disabled\n"
 "acct_mgr.* = enabled\n"
 "}}}\n"
 "\n"
 "The first option tells Trac to disable the\n"
-"[wiki:TracReports report module].\n"
+"[TracReports report module].\n"
 "The second option instructs Trac to enable all components in\n"
-"the `acct_mgr` package. Note that the trailing wildcard is\n"
-"required for module/package matching.\n"
+"the `acct_mgr` package. The trailing wildcard is required for\n"
+"module/package matching.\n"
 "\n"
 "To view the list of active components, go to the ''Plugins''\n"
-"page on ''About Trac'' (requires `CONFIG_VIEW`\n"
-"[wiki:TracPermissions permissions]).\n"
+"section of ''About Trac'' (requires `CONFIG_VIEW`\n"
+"[TracPermissions permission]).\n"
 "\n"
 "See also: TracPlugins"
 msgstr ""
 
-#: trac/env.py:122
+#: trac/env.py:120
 msgid ""
 "Path to the //shared plugins directory//.\n"
 "\n"
@@ -300,7 +298,7 @@ msgid ""
 "directory."
 msgstr ""
 
-#: trac/env.py:133
+#: trac/env.py:131
 msgid ""
 "Base URL of the Trac site.\n"
 "\n"
@@ -309,7 +307,7 @@ msgid ""
 "Trac resources."
 msgstr ""
 
-#: trac/env.py:141
+#: trac/env.py:139
 msgid ""
 "Optionally use `[trac] base_url` for redirects.\n"
 "\n"
@@ -322,7 +320,7 @@ msgid ""
 "as redirects are frequently used."
 msgstr ""
 
-#: trac/env.py:154
+#: trac/env.py:152
 msgid ""
 "Restrict cookies to HTTPS connections.\n"
 "\n"
@@ -331,7 +329,7 @@ msgid ""
 "your Trac instance is only accessible through HTTPS."
 msgstr ""
 
-#: trac/env.py:162
+#: trac/env.py:160
 msgid ""
 "Lifetime of the anonymous session, in days.\n"
 "\n"
@@ -339,15 +337,15 @@ msgid ""
 "(''since 1.0.17'')"
 msgstr ""
 
-#: trac/env.py:169
+#: trac/env.py:167
 msgid "Name of the project."
 msgstr ""
 
-#: trac/env.py:172
+#: trac/env.py:170
 msgid "Short description of the project."
 msgstr ""
 
-#: trac/env.py:175
+#: trac/env.py:173
 msgid ""
 "URL of the project web site.\n"
 "\n"
@@ -358,11 +356,11 @@ msgid ""
 "The project URL is added to the footer of notification e-mails."
 msgstr ""
 
-#: trac/env.py:185
+#: trac/env.py:183
 msgid "E-Mail address of the project's administrator."
 msgstr ""
 
-#: trac/env.py:188
+#: trac/env.py:186
 msgid ""
 "Base URL of a Trac instance where errors in this Trac\n"
 "should be reported.\n"
@@ -372,36 +370,36 @@ msgid ""
 "buttons."
 msgstr ""
 
-#: trac/env.py:198
+#: trac/env.py:196
 msgid "Page footer text (right-aligned)."
 msgstr ""
 
-#: trac/env.py:203
+#: trac/env.py:201
 msgid "URL of the icon of the project."
 msgstr ""
 
-#: trac/env.py:206
+#: trac/env.py:204
 msgid ""
 "Logging facility to use.\n"
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
 
-#: trac/env.py:213
+#: trac/env.py:211
 msgid ""
 "If `log_type` is `file`, this should be a path to the\n"
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
 
-#: trac/env.py:218
+#: trac/env.py:216
 msgid ""
 "Level of verbosity in log.\n"
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`)."
 msgstr ""
 
-#: trac/env.py:225
+#: trac/env.py:223
 msgid ""
 "Custom logging format.\n"
 "\n"
@@ -1517,7 +1515,8 @@ msgstr ""
 msgid ""
 "Headers to be added to the HTTP request. (''since 1.2.3'')\n"
 "\n"
-"The header name must conform to RFC7230 and the following\n"
+"The header name must conform to\n"
+"[https://tools.ietf.org/html/rfc7230 RFC7230] and the following\n"
 "reserved names are not allowed: content-type, content-length,\n"
 "location, etag, pragma, cache-control, expires."
 msgstr ""
