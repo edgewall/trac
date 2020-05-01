@@ -1,5 +1,9 @@
 version: '{branch}.{build}'
 clone_depth: 20
+skip_commits:
+  files:
+    - trac/locale/
+    - trac/wiki/default-pages/
 init:
 - ps: >-
     # Note 1: in 'Environment variables' groups above, use:
