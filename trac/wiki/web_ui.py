@@ -798,6 +798,37 @@ class WikiModule(Component):
             yield ('wiki', _('Wiki'))
 
     def get_search_results(self, req, terms, filters):
+        def pagename_rating(pagename, query):
+            query = query.lower()
+            pagename = pagename.lower()
+            if pagename.startswith("/trac/attachment/wiki/"):
+                pagename = pagename.partition("/trac/wiki/")[2]
+
+            if query == pagename.split('/')[-1]:
+                # best case: last part of the page name matches searchterm
+                return 5
+            elif query in pagename.split('/')[-1]:
+                # slightly worse: last part of the page name contains searchterm
+                return 4
+            elif query in pagename:
+                # searchterm is somewhere in pagename
+                return 3
+            elif pagename.startswith('trac') or pagename.startswith('wiki'):
+                # downrate trac documentation
+                return 0
+            else:
+                return 2
+
+        def heading_rating(content, query):
+            query = query.lower()
+            lines = [line.strip() for line in content.lower().split('\\r\\n')]
+            return sum([1 for line in lines if line.startswith('=') and query in line])
+
+        def content_rating(content, query):
+            query = query.lower()
+            content = content.lower()
+            return content.count(query)
+
         if not 'wiki' in filters:
             return
         with self.env.db_query as db:
@@ -812,10 +843,12 @@ class WikiModule(Component):
                     AND """ + sql_query, args):
                 page = wiki_realm(id=name)
                 if 'WIKI_VIEW' in req.perm(page):
+                    order = (pagename_rating(name, terms[0]), heading_rating(text, terms[0]), content_rating(text, terms[0]), ts)
                     yield (get_resource_url(self.env, page, req.href),
                            '%s: %s' % (name, shorten_line(text)),
                            from_utimestamp(ts), author,
-                           shorten_result(text, terms))
+                           shorten_result(text, terms),
+                           order)
 
         # Attachments
         for result in AttachmentModule(self.env).get_search_results(

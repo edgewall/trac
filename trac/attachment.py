@@ -322,6 +322,30 @@ class AttachmentModule(Component):
         `resource_realm.realm` whose filename, description or author match
         the given terms.
         """
+
+        def filenamerating(filename, query):
+            query = query.lower()
+            filename = filename.lower()
+            if filename.startswith("/trac/attachment/wiki/"):
+                filename = filename.partition("/trac/attachment/wiki/")[2]
+            basefilename = filename.rpartition('.')[0]
+            if filename == query:
+                # best case: filename matches searchterm
+                return 5
+            elif basefilename.endswith(query):
+                # slightly worse: filename without extension ends with searchterm
+                return 4
+            elif query in basefilename:
+                # slightly worse: filename without extension contains searchterm
+                return 3
+            else:
+                return 2
+
+        def descriptionrating(description, query):
+            query = query.lower()
+            description = description.lower()
+            return description.count(query)
+
         with self.env.db_query as db:
             sql_query, args = search_to_sql(
                     db, ['filename', 'description', 'author'], terms)
@@ -331,10 +355,12 @@ class AttachmentModule(Component):
                     (resource_realm.realm,) + args):
                 attachment = resource_realm(id=id).child(self.realm, filename)
                 if 'ATTACHMENT_VIEW' in req.perm(attachment):
+                    order = (filenamerating(filename, terms[0]), 0, descriptionrating(desc, terms[0]), time)
                     yield (get_resource_url(self.env, attachment, req.href),
                            get_resource_shortname(self.env, attachment),
                            from_utimestamp(time), author,
-                           shorten_result(desc, terms))
+                           shorten_result(desc, terms),
+                           order)
 
     # IResourceManager methods
 
