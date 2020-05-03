@@ -172,8 +172,8 @@ class ITicketManipulator(Interface):
         detected. `field` can be `None` to indicate an overall problem with the
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
-    def validate_comment(self, comment):
-        """Validate ticket comment.
+    def validate_comment(req, comment):
+        """Validate ticket comment after it has been edited.
 
         Must return a list of messages, one for each problem detected.
         The return value `[]` indicates no problems.
