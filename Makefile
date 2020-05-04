@@ -776,7 +776,7 @@ else
 	      && echo 1), \
 	    sed --in-place= -r -e, \
 	    sed -i '' -E))
-	@PREFIX="<!--!  "; find . -type f -name "*.html" \
+	@PREFIX="\{\#\s+"; find . -type f -name "*.html" \
 	    -exec $(SED) $(copyright_re) {} \;
 	@PREFIX="\# "; find . -type f \
 	    \( -name "*.py" -o -name "*.po" -o -name "*.pot" -o \
