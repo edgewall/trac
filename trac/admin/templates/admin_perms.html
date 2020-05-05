@@ -136,8 +136,6 @@
                 <label>
                   #   set invalid = action not in actions
                   #   set has_perm = action in perm
-                  <!--! base64 makes it safe to use ':' as separator when passing
-                      both subject and action as one query parameter -->
                   #   if can_revoke:
                   <input type="checkbox" name="sel"
                          class="trac-disable-determinant"
@@ -155,11 +153,11 @@
               </td>
             </tr>
             # endfor
+            # if not perms:
             <tr>
-              # if not perms:
               <td colspan="2">${_("No permissions")}</td>
-              # endif
             </tr>
+            # endif
           </tbody>
         </table>
 
@@ -175,8 +173,6 @@
               <td>
                 # for subject in group_subjects:
                 <label>
-                  <!--! base64 makes it safe to use ':' as separator when passing
-                      both subject and action as one query parameter -->
                   # if can_revoke:
                   <input type="checkbox" name="sel"
                          class="trac-disable-determinant"
