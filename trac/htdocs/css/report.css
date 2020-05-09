@@ -280,12 +280,6 @@ table.tickets tbody tr p:last-child { margin-bottom: 0 }
  font-style: italic;
  padding-left: .5em;
 }
-#batchmod_help {
- float: right;
- color: #999;
- margin: 0.3em 1em;
-}
-#batchmod_help :link, #batchmod_help :visited { cursor: help; }
 
 @media print {
  .sel { display: none }
