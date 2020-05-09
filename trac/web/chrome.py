@@ -1307,9 +1307,7 @@ class Chrome(Component):
                      variable expansion is disabled.
         """
         if not self.jenv:
-            jinja2_dirs = [
-                pkg_resources.resource_filename('trac', 'templates')
-            ] + self.get_all_templates_dirs()
+            jinja2_dirs = self.get_all_templates_dirs()
             self.jenv = jinja2env(
                 loader=FileSystemLoader(jinja2_dirs),
                 auto_reload=self.auto_reload,
