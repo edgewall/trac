@@ -743,7 +743,7 @@ else
 endif
 
 copyright_re := "s/^($$PREFIX)(Copyright \(C\) 20[0-9][0-9])(-20[0-9][0-9])?$\
-    ( Edgewall Software)$$/\1\2-$(year)\4/g"
+    ( Edgewall Software\r?)$$/\1\2-$(year)\4/g"
 
 update-copyright:
 ifeq "$(year)" ""
