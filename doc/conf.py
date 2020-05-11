@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2008-2019 Edgewall Software
+# Copyright (C) 2008-2020 Edgewall Software
 # Copyright (C) 2008 Noah Kantrowitz <noah@coderanger.net>
 # All rights reserved.
 #

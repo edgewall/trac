@@ -1,5 +1,5 @@
 # Russian (Russia) translations for Trac.
-# Copyright (C) 2011-2019 Edgewall Software
+# Copyright (C) 2011-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 msgid ""

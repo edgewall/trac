@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009-2019 Edgewall Software
+# Copyright (C) 2009-2020 Edgewall Software
 # Copyright (C) 2009 Remy Blank <remy.blank@pobox.com>
 # All rights reserved.
 #

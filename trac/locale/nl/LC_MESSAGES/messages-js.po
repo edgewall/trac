@@ -1,5 +1,5 @@
 # Dutch translations for Trac.
-# Copyright (C) 2010-2019 Edgewall Software
+# Copyright (C) 2010-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Laurens Holst <laurens.nospam@grauw.nl>, 2010.
 # Bas van Oostveen <trbs@trbs.net>, 2010.

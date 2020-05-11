@@ -1,5 +1,5 @@
 # Armenian (Republic of Armenia) translations for Trac.
-# Copyright (C) 2010-2019 Edgewall Software
+# Copyright (C) 2010-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Instigate Training Center: Narine Martirosyan <training@instigate.am>,
 # 2010

@@ -1,5 +1,5 @@
 # Translations template for Trac.
-# Copyright (C) 2019 Edgewall Software
+# Copyright (C) 2019-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2008-2019 Edgewall Software
+# Copyright (C) 2008-2020 Edgewall Software
 # Copyright (C) 2008 Eli Carter
 # All rights reserved.
 #

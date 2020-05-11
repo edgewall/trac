@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2019 Edgewall Software
+# Copyright (C) 2004-2020 Edgewall Software
 # Copyright (C) 2004 Dmitry Yusupov <dmitry_yus@yahoo.com>
 # Copyright (C) 2004 Mark Rowe <mrowe@bluewire.net.nz>
 # Copyright (C) 2005 Bill Soudan <bill@soudan.net>
