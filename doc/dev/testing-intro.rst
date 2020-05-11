@@ -12,7 +12,6 @@ Beyond the standard installation prereqs, you also need:
 * `Pygments <http://pygments.org/>`_ (0.8+)
 * `Twill <http://twill.idyll.org/>`_ (0.9+)
 * `Coverage <http://nedbatchelder.com/code/coverage/>`_ (for coverage)
-* `Figleaf <http://darcs.idyll.org/~t/projects/figleaf/doc/>`_ (0.6.1+, alternative for coverage)
 
 Additionally, if you're on Windows, you need to get fcrypt.  See
 `Prerequisites on Windows`_ below for more information.
