@@ -27,7 +27,7 @@ from trac.util.html import tag
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web.api import HTTPBadRequest, IRequestFilter, IRequestHandler
-from trac.web.chrome import add_warning, add_script_data
+from trac.web.chrome import Chrome, add_script_data, add_warning
 
 
 class BatchModifyModule(Component):
@@ -90,6 +90,9 @@ class BatchModifyModule(Component):
         if req.path_info == '/query' and data is not None and \
                 'TICKET_BATCH_MODIFY' in req.perm('ticket'):
             self.add_template_data(req, data, data['tickets'])
+            chrome = Chrome(self.env)
+            chrome.add_auto_preview(req)
+            chrome.add_wiki_toolbars(req)
         return template, data, metadata
 
     # IPermissionRequestor methods
