@@ -49,7 +49,6 @@ PACKAGES = [
     ("Twill",             'twill.__version__'),
     ("LXML",              'lxml.etree.__version__'),
     ("coverage",          'coverage.__version__'),
-    ("figleaf",           'figleaf.__version__'),
 ]
 
 def package_versions(packages, out=None):

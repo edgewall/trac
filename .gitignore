@@ -13,10 +13,7 @@ functional-testing.log
 trac/test.db
 html
 htmlcov
-figleaf
 .coverage
-.figleaf*
-*.figleaf
 Makefile.cfg
 doc/.build
 *.mo
