@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2019 Edgewall Software
+# Copyright (C) 2003-2020 Edgewall Software
 # Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2005-2006 Christian Boos <cboos@edgewall.org>

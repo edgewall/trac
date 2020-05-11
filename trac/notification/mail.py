@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2019 Edgewall Software
+# Copyright (C) 2003-2020 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # Copyright (C) 2008 Stephen Hansen

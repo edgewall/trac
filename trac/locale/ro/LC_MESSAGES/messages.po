@@ -1,5 +1,5 @@
 # Romanian (Romania) translations for Trac.
-# Copyright (C) 2009-2019 Edgewall Software
+# Copyright (C) 2009-2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Alexandru Szasz <alexxed@gmail.com>, 2009.
 #
