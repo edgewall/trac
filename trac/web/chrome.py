@@ -957,13 +957,13 @@ class Chrome(Component):
 
         files = {}
         # Collect templates list
-        site_templates = list_dir(self.env.templates_dir, '.html')
-        shared_templates = list_dir(Chrome(self.env).shared_templates_dir,
-                                    '.html')
+        exts = ('.html', '.txt')
+        site_templates = list_dir(self.env.templates_dir, exts)
+        shared_templates = list_dir(self.shared_templates_dir, exts)
 
         # Collect static resources list
         site_htdocs = list_dir(self.env.htdocs_dir)
-        shared_htdocs = list_dir(Chrome(self.env).shared_htdocs_dir)
+        shared_htdocs = list_dir(self.shared_htdocs_dir)
 
         if any((site_templates, shared_templates, site_htdocs, shared_htdocs)):
             files = {
