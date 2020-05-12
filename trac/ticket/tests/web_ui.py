@@ -764,7 +764,7 @@ class TicketModuleTestCase(unittest.TestCase):
         """New ticket page has autopreview."""
         req = MockRequest(self.env, method='GET', path_info='/newticket')
 
-        self.assertTrue(self.ticket_module.process_request(req))
+        self.assertTrue(self.ticket_module.match_request(req))
         self.ticket_module.process_request(req)
 
         self.assertTrue(self._has_auto_preview(req))
@@ -776,7 +776,7 @@ class TicketModuleTestCase(unittest.TestCase):
         config.remove('ticket-workflow', 'create_and_assign')
         req = MockRequest(self.env, method='GET', path_info='/newticket')
 
-        self.assertTrue(self.ticket_module.process_request(req))
+        self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
 
         self.assertEqual([], data['action_controls'])
@@ -789,9 +789,10 @@ class TicketModuleTestCase(unittest.TestCase):
         for option in config.options('ticket-workflow'):
             if not option[0].startswith('leave'):
                 config.remove('ticket-workflow', option[0])
+        self._insert_ticket(summary='the summary')
         req = MockRequest(self.env, method='GET', path_info='/ticket/1')
 
-        self.assertTrue(self.ticket_module.process_request(req))
+        self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
 
         self.assertEqual([], data['action_controls'])
