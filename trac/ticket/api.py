@@ -166,14 +166,14 @@ class ITicketManipulator(Interface):
         compatibility."""
 
     def validate_ticket(req, ticket):
-        """Validate a ticket after it's been populated from user input.
+        """Validate ticket properties when creating or modifying.
 
         Must return a list of `(field, message)` tuples, one for each problem
         detected. `field` can be `None` to indicate an overall problem with the
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
     def validate_comment(req, comment):
-        """Validate ticket comment after it has been edited.
+        """Validate ticket comment when appending or editing.
 
         Must return a list of messages, one for each problem detected.
         The return value `[]` indicates no problems.

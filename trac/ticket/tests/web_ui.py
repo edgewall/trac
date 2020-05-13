@@ -19,7 +19,8 @@ from trac.core import Component, TracError, implements
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
-from trac.ticket.api import ITicketActionController, TicketSystem
+from trac.ticket.api import (ITicketActionController, ITicketManipulator,
+                             TicketSystem)
 from trac.ticket.model import Milestone, Ticket, Version
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import DefaultTicketPolicy, TicketModule
@@ -32,7 +33,9 @@ from trac.web.chrome import Chrome
 
 class TicketModuleTestCase(unittest.TestCase):
 
+    mock_components = None
     mock_ticket_operation = None
+    mock_ticket_manipulator = None
 
     @classmethod
     def setUpClass(cls):
@@ -60,12 +63,34 @@ class TicketModuleTestCase(unittest.TestCase):
                 if action == 'mock':
                     self.side_effect_count += 1
 
+        class MockTicketManipulator(Component):
+
+            implements(ITicketManipulator)
+
+            def __init__(self):
+                self.validate_ticket_called = 0
+                self.validate_comment_called = 0
+
+            def prepare_ticket(self, req, ticket, fields, actions):
+                pass
+
+            def validate_ticket(self, req, ticket):
+                self.validate_ticket_called += 1
+                return []
+
+            def validate_comment(self, req, comment):
+                self.validate_comment_called += 1
+                return []
+
         cls.mock_ticket_operation = MockTicketOperation
+        cls.mock_ticket_manipulator = MockTicketManipulator
+        cls.mock_components = (MockTicketOperation, MockTicketManipulator)
 
     @classmethod
     def tearDownClass(cls):
         from trac.core import ComponentMeta
-        ComponentMeta.deregister(cls.mock_ticket_operation)
+        for m in cls.mock_components:
+            ComponentMeta.deregister(m)
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
@@ -939,6 +964,43 @@ class TicketModuleTestCase(unittest.TestCase):
             args={'field_due': '', 'preview': '1', 'action': 'leave',
                   'start_time': when_ts, 'view_time': when_ts})
         self.assertEqual('2009-02-13T23:31:30Z', old_values['due'])
+
+    def _prepare_newticket_request(self):
+        self.env.config.set('ticket', 'default_component', 'component1')
+        self.env.config.set('ticket', 'default_milestone', 'milestone1')
+        req = MockRequest(self.env, method='GET', path_info='/newticket',
+                          authname='user1')
+
+        mod = TicketModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+
+        fields = {'field_%s' % f['name']: f.get('value', '')
+                  for f in data['fields']}
+        fields['field_summary'] = 'The summary'
+        req = MockRequest(
+            self.env, method='POST', path_info='/newticket', authname='user1',
+            args=dict(action=data['action'],
+                      submit='Create ticket',
+                      **fields)
+        )
+        return req
+
+    def test_newticket_ticket_validate_comment_not_called(self):
+        req = self._prepare_newticket_request()
+
+        mod = TicketModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        with self.assertRaises(RequestDone):
+            mod.process_request(req)
+
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(['303 See Other'], req.status_sent)
+        self.assertEqual('http://example.org/trac.cgi/ticket/1',
+                         req.headers_sent['Location'])
+        tm = self.mock_ticket_manipulator(self.env)
+        self.assertEqual(0, tm.validate_comment_called)
+        self.assertEqual(1, tm.validate_ticket_called)
 
     def _reset_ticket_fields(self):
         tktsys = TicketSystem(self.env)
