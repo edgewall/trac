@@ -64,16 +64,13 @@ $pipPackages = @(
     'wheel'
 )
 
-$fcrypt    = "$deps\fcrypt-1.3.1.tar.gz"
-$fcryptUrl = 'http://www.carey.geek.nz/code/python-fcrypt/fcrypt-1.3.1.tar.gz'
+$condaPackages = @(
+    'lxml'
+)
 
 $svnBase = "svn-win32-1.8.15"
 $svnBaseAp = "$svnBase-ap24"
 $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
-
-$condaCommonPackages = @(
-    'lxml'
-)
 
 # ------------------------------------------------------------------
 # "Environment" environment variables
@@ -84,7 +81,6 @@ $condaCommonPackages = @(
 # tested.
 
 # These variables are:
-#  - SVN_BRANCH: the line of development (1.2-stable, ... trunk)
 #  - PYTHONHOME: the version of python we are testing
 #  - TRAC_TEST_DB_URI: the database backend we are testing
 #  - SKIP_ENV: don't perform any step with this environment (optional)
@@ -102,8 +98,6 @@ $usingPostgresql = $env:TRAC_TEST_DB_URI -match '^postgres:'
 $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
-
-$svnBranch = $env:SVN_BRANCH
 
 
 # ------------------------------------------------------------------
@@ -214,7 +208,7 @@ function Trac-Install {
     & pip.exe install $pipPackages
 
     if ($pyIsConda) {
-        & conda.exe install -qy $condaCommonPackages
+        & conda.exe install -qy $condaPackages
     }
 
     if ($usingMysql) {
