@@ -17,17 +17,13 @@ init:
     # Note 2: restoration of cached directories happens *after* this step
 environment:
   matrix:
-  - SVN_BRANCH: 1.4-stable
-    PYTHONHOME: C:\Python27
+  - PYTHONHOME: C:\Python27
     TRAC_TEST_DB_URI:
-  - SVN_BRANCH: 1.4-stable
-    PYTHONHOME: C:\Python27-x64
+  - PYTHONHOME: C:\Python27-x64
     TRAC_TEST_DB_URI: sqlite:test.db
-  - SVN_BRANCH: 1.4-stable
-    PYTHONHOME: C:\Miniconda
+  - PYTHONHOME: C:\Miniconda
     TRAC_TEST_DB_URI: mysql://tracuser:password@localhost/trac?charset=utf8mb4
-  - SVN_BRANCH: 1.4-stable
-    PYTHONHOME: C:\Miniconda-x64
+  - PYTHONHOME: C:\Miniconda-x64
     TRAC_TEST_DB_URI: postgres://tracuser:password@localhost/trac?schema=tractest
 services:
 - mysql
