@@ -15,21 +15,8 @@ particular to help resolve nesting issues.
 
 """
 
-def usage():
-    return """
-Usage: python %s [options] TEMPLATES...
-
-Where options can be:
- -j, --jinja-only    Only checks the jinja2 structure
- -h, --html-only     Only validates the HTML
- -q, --quiet         Don't show the filtered content, only the errors
-
-If no flags are given, both checks are performed.
-
-An alternative usage is to run the tool via make, i.e. `make jinja`.
-This will run the tool on all .html files.
-"""
-
+import argparse
+import glob
 import io
 import re
 import sys
@@ -76,33 +63,41 @@ def setup_html():
 
 # -- Common ----------------------------------------------------------------
 
-def main(args):
+def main():
+    parser = argparse.ArgumentParser(description="""\
+        If no flags are given, both jinja and html checks will be performed.
+
+        An alternative usage is to run the tool via make, i.e. `make jinja`,
+        which  will run the tool on all .html files.
+        """)
+    parser.add_argument('templates', nargs='+', metavar='TEMPLATE',
+                        help="path or glob of template(s) to check")
+    parser.add_argument('-j', '--jinja-only', action='store_true', dest='jinja',
+                        help="only check the jinja structure")
+    parser.add_argument('--html-only', action='store_true', dest='html',
+                        help="only validate the HTML")
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help="""don't show the filtered content, only the
+                        errors""")
+    parser.add_argument('-i', '--show-ignored', action='store_true',
+                        dest='ignored',
+                        help="""show ignored XHTML errors and HTML hints""")
+    args = parser.parse_args()
     status = 0
-    if args:
-        # FIXME
-        only = quiet = None
-        if args[0] in ('-j', '--jinja-only'):
-            only = 'jinja'
-        elif args[0] in ('-h', '--html-only'):
-            only = 'html'
-        if only:
-            del args[0]
-        if args[0] in ('-q', '--quiet'):
-            quiet = True
-        from glob import glob
-        setup_html()
-        for arg in args:
-            for template in glob(arg):
-                status += analyze(template, only, quiet)
-        if status > 0:
-            print("One error found." if status == 1 else
-                  "%d errors found." % status)
+    only = 'jinja' if args.jinja else ('html' if args.html else None)
+    setup_html()
+    for arg in args.templates:
+        for template in glob.glob(arg):
+            status += analyze(template, only, args.quiet, args.ignored)
+    if status > 0:
+        print("One error found." if status == 1 else
+              "%d errors found." % status)
     else:
-        print(usage())
-    exit(status)
+        print("No errors.")
+    return 1 if status > 0 else 0
 
 
-def analyze(jinja_template, only=None, quiet=False):
+def analyze(jinja_template, only=None, quiet=False, show_ignored=False):
     """Analyzes a Jinja2 template, its control structure as well as the
     structure of the HTML.
     """
@@ -114,7 +109,8 @@ def analyze(jinja_template, only=None, quiet=False):
         issues_j = check_jinja(jinja_template, line_statements, quiet)
         report_errors('Jinja2', issues_j)
     if only != 'jinja' and etree and jinja_template.endswith('.html'):
-        issues_h = check_html(jinja_template, html, html_hints, quiet)
+        issues_h = check_html(jinja_template, html, html_hints, quiet,
+                              show_ignored)
         report_errors('HTML', issues_h)
     return issues_j + issues_h
 
@@ -321,7 +317,7 @@ IGNORED_XHTML_ERRORS = [
     ]
 
 
-def check_html(filename, html_lines, html_hints, quiet):
+def check_html(filename, html_lines, html_hints, quiet, show_ignored):
     """Validates the given HTML (as XHTML actually)
     """
     global etree
@@ -387,7 +383,9 @@ def check_html(filename, html_lines, html_hints, quiet):
             if not ignored:
                 real_errors.append(linenum)
                 ignored = ''
-            print('%s:%s:%s: %s%s' % (filename, linenum, col, msg, ignored))
+            if not ignored or show_ignored:
+                print('%s:%s:%s: %s%s'
+                      % (filename, linenum, col, msg, ignored))
         for linenum, line in html_lines:
             if not quiet:
                 print('%5d %s' % (linenum, line)),
@@ -442,4 +440,4 @@ def remove_jinja_exprs(linenum, line, opened_braces):
     return normalized, opened_braces
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    sys.exit(main())
