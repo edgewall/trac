@@ -402,6 +402,7 @@ define HELP_code
   [module=...]        module or package to check with pylint
   [templates=...]     list of Jinja2 templates to check
   [coffeescripts=...] list of coffee script files to compile
+  [jinjaopts=]        list of options for jinja checker
 
 endef
 export HELP_code
