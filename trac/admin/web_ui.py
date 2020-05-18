@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import itertools
 import os
 import pkg_resources
 import re
@@ -106,10 +107,10 @@ class AdminModule(Component):
         data.update({
             'active_cat': cat_id, 'active_panel': panel_id,
             'panel_href': partial(req.href, 'admin', cat_id, panel_id),
-            'panels': [{
+            'panels': itertools.groupby([{
                 'category': {'id': panel[0], 'label': panel[1]},
                 'panel': {'id': panel[2], 'label': panel[3]}
-            } for panel in panels]
+            } for panel in panels], lambda k: k['category']),
         })
 
         add_stylesheet(req, 'common/css/admin.css')
