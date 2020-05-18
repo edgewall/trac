@@ -46,15 +46,36 @@ class TicketSystemTestCase(unittest.TestCase):
         return next((i for i in fields if i['name'] == field_name))
 
     def test_custom_field_text(self):
-        self.env.config.set('ticket-custom', 'test', 'text')
-        self.env.config.set('ticket-custom', 'test.label', 'Test')
-        self.env.config.set('ticket-custom', 'test.value', 'Foo bar')
-        self.env.config.set('ticket-custom', 'test.format', 'wiki')
+        def add_text_field(name, format):
+            self.env.config.set('ticket-custom', name, 'text')
+            self.env.config.set('ticket-custom', '%s.label' % name, 'Test')
+            self.env.config.set('ticket-custom', '%s.value' % name, 'Foo bar')
+            self.env.config.set('ticket-custom', '%s.format' % name, format)
+
+        add_text_field('test1', 'plain')
+        add_text_field('test2', 'wiki')
+        add_text_field('test3', 'reference')
+        add_text_field('test4', 'list')
+
         fields = TicketSystem(self.env).get_custom_fields()
-        self.assertEqual({'name': 'test', 'type': 'text', 'label': 'Test',
+        self.assertEqual({'name': 'test1', 'type': 'text', 'label': 'Test',
+                          'value': 'Foo bar', 'max_size': 0, 'order': 0,
+                          'format': 'plain', 'custom': True},
+                         fields[0])
+        self.assertEqual({'name': 'test2', 'type': 'text', 'label': 'Test',
                           'value': 'Foo bar', 'max_size': 0, 'order': 0,
                           'format': 'wiki', 'custom': True},
-                         fields[0])
+                         fields[1])
+        self.assertEqual({'name': 'test3', 'type': 'text', 'label': 'Test',
+                          'value': 'Foo bar', 'max_size': 0, 'order': 0,
+                          'ticketlink_query': None,
+                          'format': 'reference', 'custom': True},
+                         fields[2])
+        self.assertEqual({'name': 'test4', 'type': 'text', 'label': 'Test',
+                          'value': 'Foo bar', 'max_size': 0, 'order': 0,
+                          'ticketlink_query': None,
+                          'format': 'list', 'custom': True},
+                         fields[3])
 
     def test_custom_field_select(self):
         self.env.config.set('ticket-custom', 'test', 'select')
@@ -64,7 +85,8 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
                           'value': '1', 'options': ['option1', 'option2'],
-                          'order': 0, 'custom': True},
+                          'order': 0, 'ticketlink_query': None,
+                          'custom': True},
                          fields[0])
 
     def test_custom_field_optional_select(self):
@@ -75,7 +97,8 @@ class TicketSystemTestCase(unittest.TestCase):
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
                           'value': '1', 'options': ['option1', 'option2'],
-                          'order': 0, 'optional': True, 'custom': True},
+                          'order': 0, 'optional': True,
+                          'ticketlink_query': None, 'custom': True},
                          fields[0])
 
     def test_custom_field_select_without_options(self):
@@ -84,6 +107,20 @@ class TicketSystemTestCase(unittest.TestCase):
         self.env.config.set('ticket-custom', 'test.value', '1')
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual(0, len(fields))
+
+    def test_custom_field_select_with_ticketlink_query(self):
+        self.env.config.set('ticket-custom', 'test', 'select')
+        self.env.config.set('ticket-custom', 'test.label', 'Test')
+        self.env.config.set('ticket-custom', 'test.value', '1')
+        self.env.config.set('ticket-custom', 'test.options', 'option1|option2')
+        self.env.config.set('ticket-custom', 'test.ticketlink_query',
+                            '?status=new')
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'test', 'type': 'select', 'label': 'Test',
+                          'value': '1', 'options': ['option1', 'option2'],
+                          'order': 0, 'ticketlink_query': '?status=new',
+                          'custom': True},
+                         fields[0])
 
     def test_custom_field_textarea(self):
         self.env.config.set('ticket-custom', 'test', 'textarea')
@@ -104,27 +141,74 @@ class TicketSystemTestCase(unittest.TestCase):
                           field)
 
     def test_custom_field_checkbox(self):
-        def add_checkbox(name, value):
+        def add_checkbox_field(name, value):
             self.env.config.set('ticket-custom', name, 'checkbox')
             self.env.config.set('ticket-custom', '%s.value' % name, value)
 
-        add_checkbox('checkbox0', 'true')
-        add_checkbox('checkbox1', 1)
-        add_checkbox('checkbox2', 'enabled')
-        add_checkbox('checkbox3', 0)
-        add_checkbox('checkbox4', 'tru')
-        add_checkbox('checkbox5', 'off')
+        add_checkbox_field('checkbox0', 'true')
+        add_checkbox_field('checkbox1', 1)
+        add_checkbox_field('checkbox2', 'enabled')
+        add_checkbox_field('checkbox3', 0)
+        add_checkbox_field('checkbox4', 'tru')
+        add_checkbox_field('checkbox5', 'off')
 
         fields = TicketSystem(self.env).get_custom_fields()
         self.assertEqual({'name': 'checkbox0', 'type': 'checkbox',
                           'label': 'Checkbox0', 'value': '1',
-                          'order': 0, 'custom': True},
+                          'order': 0, 'ticketlink_query': None,
+                          'custom': True},
                          fields[0])
         self.assertEqual('1', fields[1]['value'])
         self.assertEqual('1', fields[2]['value'])
         self.assertEqual('0', fields[3]['value'])
         self.assertEqual('0', fields[4]['value'])
         self.assertEqual('0', fields[5]['value'])
+
+    def test_custom_field_checkbox_with_ticketlink_query(self):
+        self.env.config.set('ticket-custom', 'checkbox0', 'checkbox')
+        ticketlink_query = '?status=assigned'
+        self.env.config.set('ticket-custom', 'checkbox0.ticketlink_query',
+                            ticketlink_query)
+
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'checkbox0', 'type': 'checkbox',
+                          'label': 'Checkbox0', 'value': '0',
+                          'order': 0, 'ticketlink_query': ticketlink_query,
+                          'custom': True},
+                         fields[0])
+
+    def test_custom_field_radio(self):
+        def add_radio(name, value=None):
+            self.env.config.set('ticket-custom', name, 'radio')
+            if value:
+                self.env.config.set('ticket-custom', '%s.value' % name, value)
+            self.env.config.set('ticket-custom', '%s.options' % name, '1|2|3')
+
+        add_radio('radio0')
+        add_radio('radio1', '2')
+
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'radio0', 'type': 'radio',
+                          'label': 'Radio0', 'value': '',
+                          'options': ['1', '2', '3'], 'order': 0,
+                          'ticketlink_query': None, 'custom': True},
+                         fields[0])
+        self.assertEqual('2', fields[1]['value'])
+
+    def test_custom_field_radio_with_ticketlink_query(self):
+        self.env.config.set('ticket-custom', 'radio0', 'radio')
+        self.env.config.set('ticket-custom', 'radio0.options', '1|2|3')
+        ticketlink_query = '?status=assigned'
+        self.env.config.set('ticket-custom', 'radio0.ticketlink_query',
+                            ticketlink_query)
+
+        fields = TicketSystem(self.env).get_custom_fields()
+        self.assertEqual({'name': 'radio0', 'type': 'radio',
+                          'label': 'Radio0', 'value': '',
+                          'options': ['1', '2', '3'], 'order': 0,
+                          'ticketlink_query': ticketlink_query,
+                          'custom': True},
+                         fields[0])
 
     def test_custom_field_time(self):
         self.env.config.set('ticket-custom', 'test', 'time')

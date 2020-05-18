@@ -430,6 +430,11 @@ class TicketSystem(Component):
                          name.replace("_", " ").strip().capitalize(),
                 'value': config.get(name + '.value', '')
             }
+
+            def _get_ticketlink_query():
+                field['ticketlink_query'] = \
+                        config.get(name + '.ticketlink_query', None)
+
             if field['type'] == 'select' or field['type'] == 'radio':
                 field['options'] = config.getlist(name + '.options', sep='|')
                 if not field['options']:
@@ -439,11 +444,15 @@ class TicketSystem(Component):
                     field['optional'] = True
                     if '' in field['options']:
                         field['options'].remove('')
+                _get_ticketlink_query()
             elif field['type'] == 'checkbox':
                 field['value'] = '1' if as_bool(field['value']) else '0'
+                _get_ticketlink_query()
             elif field['type'] == 'text':
                 field['format'] = config.get(name + '.format', 'plain')
                 field['max_size'] = config.getint(name + '.max_size', 0)
+                if field['format'] in ('reference', 'list'):
+                    _get_ticketlink_query()
             elif field['type'] == 'textarea':
                 field['format'] = config.get(name + '.format', 'plain')
                 field['max_size'] = config.getint(name + '.max_size', 0)

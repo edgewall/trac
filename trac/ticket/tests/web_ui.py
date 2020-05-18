@@ -991,6 +991,94 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertEqual(0, tm.validate_comment_called)
         self.assertEqual(1, tm.validate_ticket_called)
 
+    def _test_custom_field_with_ticketlink_query_option(self, ticketlink_query):
+        ticket_custom = self.env.config['ticket-custom']
+        ticket_custom.set('select1', 'select')
+        ticket_custom.set('select1.options', 'one|two')
+        if ticketlink_query:
+            ticket_custom.set('select1.ticketlink_query', ticketlink_query)
+        ticket_custom.set('checkbox1', 'checkbox')
+        if ticketlink_query:
+            ticket_custom.set('checkbox1.ticketlink_query', ticketlink_query)
+        ticket_custom.set('radio1', 'radio')
+        ticket_custom.set('radio1.options', '1|2')
+        if ticketlink_query:
+            ticket_custom.set('radio1.ticketlink_query', ticketlink_query)
+        ticket_custom.set('text1', 'text')
+        ticket_custom.set('text1.format', 'plain')
+        if ticketlink_query:
+            ticket_custom.set('text1.ticketlink_query', ticketlink_query)
+        ticket_custom.set('text2', 'text')
+        ticket_custom.set('text2.format', 'wiki')
+        if ticketlink_query:
+            ticket_custom.set('text2.ticketlink_query', ticketlink_query)
+        ticket_custom.set('text3', 'text')
+        ticket_custom.set('text3.format', 'reference')
+        if ticketlink_query:
+            ticket_custom.set('text3.ticketlink_query', ticketlink_query)
+        ticket_custom.set('text4', 'text')
+        ticket_custom.set('text4.format', 'list')
+        if ticketlink_query:
+            ticket_custom.set('text4.ticketlink_query', ticketlink_query)
+        ticket_custom.set('textarea1', 'textarea')
+        if ticketlink_query:
+            ticket_custom.set('textarea1.ticketlink_query', ticketlink_query)
+        ticket_custom.set('time1', 'time')
+        if ticketlink_query:
+            ticket_custom.set('time1.ticketlink_query', ticketlink_query)
+
+        ticket = self._insert_ticket(
+            reporter='reporter', summary='the summary', status='new',
+            select1='two', checkbox1='1', radio1='2', text1='word1',
+            text2='WordTwo', text3='word2', text4='word3 word4',
+            textarea1='word5\nword6',
+            time1=datetime(2010, 3, 14, 22, 30, 29, 234567, utc))
+        req = MockRequest(self.env, method='GET', path_info='/ticket/1')
+
+        self.assertTrue(self.ticket_module.match_request(req))
+        data = self.ticket_module.process_request(req)[1]
+
+        base = '<a href="/trac.cgi/query%s&amp;' % \
+               (ticketlink_query if ticketlink_query \
+                else self.env.config.get('query', 'ticketlink_query'))
+        field = self._get_field_by_name(data, 'select1')
+        self.assertEqual('%sselect1=two">two</a>' % base,
+                         unicode(field['rendered']))
+        field = self._get_field_by_name(data, 'checkbox1')
+        self.assertEqual('%scheckbox1=1">yes</a>' % base,
+                         unicode(field['rendered']))
+        field = self._get_field_by_name(data, 'radio1')
+        self.assertEqual('%sradio1=2">2</a>' % base,
+                         unicode(field['rendered']))
+        field = self._get_field_by_name(data, 'text1')
+        self.assertNotIn('rendered', field)
+        field = self._get_field_by_name(data, 'text2')
+        self.assertNotIn('rendered', field)
+        field = self._get_field_by_name(data, 'text3')
+        self.assertEqual('%stext3=word2">word2</a>' % base,
+                         unicode(field['rendered']))
+        field = self._get_field_by_name(data, 'text4')
+        self.assertEqual('%(base)stext4=~word3">word3</a> '
+                         '%(base)stext4=~word4">word4</a>' % {'base': base},
+                         unicode(field['rendered']))
+        field = self._get_field_by_name(data, 'textarea1')
+        self.assertNotIn('rendered', field)
+        field = self._get_field_by_name(data, 'time1')
+        self.assertNotIn('rendered', field)
+
+    def test_custom_field_custom_ticketlink_query_option(self):
+        """Custom fields with default ticketlink_query."""
+        ticketlink_query = '?status=accepted'
+        self._test_custom_field_with_ticketlink_query_option(ticketlink_query)
+
+    def test_custom_field_custom_ticketlink_query_option_none(self):
+        """Custom fields with custom ticketlink_query."""
+        self._test_custom_field_with_ticketlink_query_option(None)
+
+    def test_custom_field_custom_ticketlink_query_option_empty(self):
+        """Custom fields with custom ticketlink_query."""
+        self._test_custom_field_with_ticketlink_query_option('')
+
     def _reset_ticket_fields(self):
         tktsys = TicketSystem(self.env)
         tktsys.reset_ticket_fields()
