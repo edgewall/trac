@@ -148,6 +148,7 @@ class VersionControlAdmin(Component):
                 printout(_('Resyncing repository history for %(reponame)s... ',
                            reponame=pretty_name))
                 repos.sync(self._sync_feedback, clean=clean)
+                self._sync_feedback(None)
                 for cnt, in self.env.db_query(
                         "SELECT count(rev) FROM revision WHERE repos=%s",
                         (repos.id,)):
@@ -156,7 +157,11 @@ class VersionControlAdmin(Component):
         printout(_('Done.'))
 
     def _sync_feedback(self, rev):
-        sys.stdout.write(' [%s]\r' % rev)
+        if rev is not None:
+            sys.stdout.write(' [%s]\r' % rev)
+        else:
+            # Erase to end of line.
+            sys.stdout.write('\033[K')
         sys.stdout.flush()
 
     def _do_resync(self, reponame, rev=None):
@@ -188,9 +193,7 @@ class VersionControlAdmin(Component):
  in the [repositories] section of your trac.ini file.
 """, pretty_name=pretty_name, name=repos.reponame or ''))
             else:
-                # Erase to end of line.
-                sys.stdout.write('\033[K')
-                sys.stdout.flush()
+                self._sync_feedback(None)
 
     def environment_needs_upgrade(self):
         pass
