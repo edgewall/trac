@@ -25,7 +25,7 @@
 #}
 <div id="ticket">
   # if not ticket.exists and preview_mode:
-  ${jmacros.warnings(chrome.warnings)}
+  ${jmacros.warnings(chrome.warnings, 'trac-preview-warning')}
   # endif
   <div id="ticketbox"${
      {'class': ['trac-content', 'ticketdraft' if preview_mode],
