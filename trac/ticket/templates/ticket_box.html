@@ -53,19 +53,19 @@
     <h2>
       <a href="${href.ticket(ticket.id)}" class="trac-id">#${ticket.id}</a>
       <span class="trac-status">
-        ${'status' in fields_map and
-        fields[fields_map['status']].rendered or ticket.status}
+        ${'status' in fields and
+        fields.by_name('status').rendered or ticket.status}
       </span>
       # if ticket.type:
       <span class="trac-type">
-        ${'type' in fields_map and
-        fields[fields_map['type']].rendered or ticket.type}
+        ${'type' in fields and
+        fields.by_name('type').rendered or ticket.type}
       </span>
       # endif
       # if ticket.resolution:
       <span class="trac-resolution">
-        (${'resolution' in fields_map and
-        fields[fields_map['resolution']].rendered or ticket.resolution})
+        (${'resolution' in fields and
+        fields.by_name('resolution').rendered or ticket.resolution})
       </span>
       # endif
     </h2>

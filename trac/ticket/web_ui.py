@@ -33,7 +33,7 @@ from trac.resource import (
 )
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket import model
-from trac.ticket.api import TicketSystem, ITicketManipulator
+from trac.ticket.api import TicketSystem, ITicketManipulator, TicketFieldList
 from trac.ticket.notification import TicketChangeEvent
 from trac.ticket.roadmap import group_milestones
 from trac.timeline.api import ITimelineEventProvider
@@ -533,6 +533,7 @@ class TicketModule(Component):
         fields = self._prepare_fields(req, ticket)
 
         data['fields'] = fields
+        # fields_map is deprecated and removed in 1.5.1
         data['fields_map'] = {field['name']: i
                               for i, field in enumerate(fields)}
 
@@ -1498,7 +1499,7 @@ class TicketModule(Component):
 
     def _prepare_fields(self, req, ticket, field_changes=None):
         context = web_context(req, ticket.resource)
-        fields = []
+        fields = TicketFieldList()
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
@@ -1632,6 +1633,7 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket, field_changes)
+        # fields_map is deprecated and removed in 1.5.1
         fields_map = {field['name']: i for i, field in enumerate(fields)}
 
         # -- Ticket Change History
@@ -1727,7 +1729,8 @@ class TicketModule(Component):
                     class_=chrome.author_class(req, user))
         data.update({
             'context': context, 'conflicts': conflicts,
-            'fields': fields, 'fields_map': fields_map,
+            'fields': fields,
+            'fields_map': fields_map,  # deprecated and removed in 1.5.1
             'changes': changes, 'replies': replies,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls, 'action': selected_action,
