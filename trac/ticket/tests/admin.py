@@ -13,6 +13,7 @@
 
 import unittest
 
+from trac.admin.web_ui import AdminModule
 from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceExistsError, ResourceNotFound
 from trac.test import EnvironmentStub, MockRequest
@@ -21,7 +22,8 @@ from trac.ticket.admin import ComponentAdminPanel, MilestoneAdminPanel, \
                               SeverityAdminPanel, TicketTypeAdminPanel, \
                               VersionAdminPanel
 from trac.ticket.model import Component, Milestone, Priority, Resolution,\
-                              Severity, Type, Version
+                              Severity, Ticket, Type, Version
+from trac.ticket.test import insert_ticket
 from trac.web.api import RequestDone
 
 
@@ -325,6 +327,70 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         req = MockRequest(self.env, authname='user1')
         rv = MilestoneAdminPanel(self.env).get_admin_panels(req)
         self.assertEqual([], list(rv))
+
+    def test_complete_milestone_no_retarget(self):
+        name = 'milestone1'
+        insert_ticket(self.env, summary='Ticket 1', milestone=name)
+        insert_ticket(self.env, summary='Ticket 2', milestone=name)
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'TICKET_ADMIN')
+        ps.grant_permission('user1', 'MILESTONE_MODIFY')
+        req = MockRequest(self.env, authname='user1', method='POST',
+            path_info='/admin/ticket/milestones/%s' % name,
+            args=dict(action='edit', save='Submit changes', name=name,
+                      description='', comment='', completed='on',
+                      completeddate='May 20, 2020, 9:07:52 PM'))
+
+        mod = AdminModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        with self.assertRaises(RequestDone):
+            mod.process_request(req)
+
+        self.assertEqual(1, len(req.chrome['notices']))
+        self.assertEqual('Your changes have been saved.',
+                         req.chrome['notices'][0])
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(['303 See Other'], req.status_sent)
+        self.assertEqual('http://example.org/trac.cgi/admin/ticket/milestones',
+                         req.headers_sent['Location'])
+        self.assertTrue(Milestone(self.env, name).is_completed)
+        self.assertEqual(name, Ticket(self.env, 1)['milestone'])
+        self.assertEqual(name, Ticket(self.env, 2)['milestone'])
+
+    def test_complete_milestone_retarget_tickets(self):
+        name = 'milestone1'
+        target = 'milestone2'
+        insert_ticket(self.env, summary='Ticket 1', milestone=name)
+        insert_ticket(self.env, summary='Ticket 2', milestone=name)
+        ps = PermissionSystem(self.env)
+        ps.grant_permission('user1', 'TICKET_ADMIN')
+        ps.grant_permission('user1', 'MILESTONE_MODIFY')
+        req = MockRequest(self.env, authname='user1', method='POST',
+            path_info='/admin/ticket/milestones/%s' % name,
+            args=dict(action='edit', save='Submit changes', name=name,
+                      description='', retarget='on', target=target,
+                      comment='', completed='on',
+                      completeddate='May 20, 2020, 9:07:52 PM'))
+
+        mod = AdminModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        with self.assertRaises(RequestDone):
+            mod.process_request(req)
+
+        self.assertEqual(2, len(req.chrome['notices']))
+        self.assertEqual(
+            'The open tickets associated with milestone "milestone1" '
+            'have been retargeted to milestone "milestone2".',
+            req.chrome['notices'][0])
+        self.assertEqual('Your changes have been saved.',
+                         req.chrome['notices'][1])
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(['303 See Other'], req.status_sent)
+        self.assertEqual('http://example.org/trac.cgi/admin/ticket/milestones',
+                         req.headers_sent['Location'])
+        self.assertTrue(Milestone(self.env, name).is_completed)
+        self.assertEqual(target, Ticket(self.env, 1)['milestone'])
+        self.assertEqual(target, Ticket(self.env, 2)['milestone'])
 
 
 class AbstractEnumTestCase(BaseTestCase):

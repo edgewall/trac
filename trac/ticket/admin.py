@@ -18,7 +18,8 @@ from trac.core import *
 from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
-from trac.ticket.roadmap import MilestoneModule
+from trac.ticket.roadmap import (
+    MilestoneModule, get_num_tickets_for_milestone, group_milestones)
 from trac.util import as_int, getuser
 from trac.util.datefmt import format_date, format_datetime, \
                               get_datetime_format_hint, parse_date, user_time
@@ -250,14 +251,26 @@ class MilestoneAdminPanel(TicketAdminPanel):
                 elif 'cancel' in req.args:
                     req.redirect(req.href.admin(cat, page))
 
+            data = {
+                'view': 'detail',
+                'milestone': milestone,
+                'default_due': milestone_module.get_default_due(req),
+                'retarget_to': milestone_module.default_retarget_to
+            }
+            milestones = [m for m in model.Milestone.select(self.env)
+                          if m.name != milestone.name
+                          and 'MILESTONE_VIEW' in req.perm(m.resource)]
+            data['milestone_groups'] = \
+                group_milestones(milestones, 'TICKET_ADMIN' in req.perm)
+            data['num_open_tickets'] = \
+                get_num_tickets_for_milestone(self.env, milestone,
+                                              exclude_closed=True)
+
             chrome = Chrome(self.env)
             chrome.add_wiki_toolbars(req)
             chrome.add_auto_preview(req)
             add_ctxtnav(req, _("View Milestone"),
                         req.href.milestone(milestone_name))
-            data = {'view': 'detail',
-                    'milestone': milestone,
-                    'default_due': milestone_module.get_default_due(req)}
 
         # List view
         else:
