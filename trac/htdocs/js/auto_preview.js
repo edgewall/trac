@@ -28,6 +28,7 @@
     var timer = null;
     var updating = false;
     var queued = false;
+    var values = null;
 
     // Return true iff the values have changed
     function values_changed(new_values) {
@@ -81,6 +82,8 @@
 
     // Trigger a request after the given timeout
     function trigger() {
+      if (values === null)
+        values = form.serializeArray();
       if (!updating) {
         if (timer)
           clearTimeout(timer);
@@ -91,7 +94,6 @@
       return true;
     }
 
-    var values = form.serializeArray();
     // See #11510
     return inputs.on('input cut paste keydown keypress change blur', trigger);
   };
