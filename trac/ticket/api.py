@@ -55,6 +55,9 @@ class TicketFieldList(list):
     def __deepcopy__(self, memo):
         return TicketFieldList(copy.deepcopy(value, memo) for value in self)
 
+    def __contains__(self, name):
+        return name in self._map
+
 
 class ITicketActionController(Interface):
     """Extension point interface for components willing to participate
