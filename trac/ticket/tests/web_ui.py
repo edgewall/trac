@@ -1144,7 +1144,7 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
     """Tests for [ticket-custom] max_size attribute."""
 
     def setUp(self):
-        self.env = EnvironmentStub()
+        self.env = EnvironmentStub(default_data=True)
         self.ticket_module = TicketModule(self.env)
 
     def tearDown(self):
@@ -1153,13 +1153,14 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
     def _setup_env_and_req(self, max_size, field_value):
         self.env.config.set('ticket-custom', 'text1', 'text')
         self.env.config.set('ticket-custom', 'text1.max_size', max_size)
-        ticket = insert_ticket(self.env, summary='summary', text1='init')
+        ticket = insert_ticket(self.env, text1='init')
         change_time = Ticket(self.env, ticket.id)['changetime']
         view_time = str(to_utimestamp(change_time))
         req = MockRequest(
             self.env, method='POST', path_info='/ticket/%d' % ticket.id,
             args={'submit': 'Submit changes', 'field_text1': field_value,
-                  'action': 'leave', 'view_time': view_time})
+                  'action': 'leave', 'view_time': view_time,
+                  'start_time': view_time})
         return req
 
     def test_ticket_custom_field_greater_than_max_size(self):

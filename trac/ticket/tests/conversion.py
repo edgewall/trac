@@ -65,7 +65,7 @@ class TicketConversionTestCase(unittest.TestCase):
                                             ticket, 'csv')
         self.assertEqual(('\xef\xbb\xbf'
                           'id,summary,reporter,owner,description,status,'
-                          'keywords,cc\r\n1,Foo,santa,,Bar,,,\r\n',
+                          'keywords,cc\r\n1,Foo,santa,,Bar,new,,\r\n',
                           'text/csv;charset=utf-8', 'csv'), csv)
 
     def test_csv_conversion_with_obfuscation(self):
@@ -75,7 +75,7 @@ class TicketConversionTestCase(unittest.TestCase):
         self.assertEqual(
             ('\xef\xbb\xbf'
              'id,summary,reporter,owner,description,status,keywords,cc\r\n'
-             '1,Foo,santa@…,joe@…,Bar,,,cc1 cc2@…\r\n',
+             '1,Foo,santa@…,joe@…,Bar,new,,cc1 cc2@…\r\n',
              'text/csv;charset=utf-8', 'csv'),
             csv)
         self.req.perm = MockPerm()
@@ -84,7 +84,7 @@ class TicketConversionTestCase(unittest.TestCase):
         self.assertEqual(
             ('\xef\xbb\xbf'
              'id,summary,reporter,owner,description,status,keywords,cc\r\n'
-             '1,Foo,santa@example.org,joe@example.org,Bar,,,'
+             '1,Foo,santa@example.org,joe@example.org,Bar,new,,'
              'cc1 cc2@example.org\r\n',
              'text/csv;charset=utf-8', 'csv'),
             csv)
@@ -95,7 +95,7 @@ class TicketConversionTestCase(unittest.TestCase):
                                             ticket, 'tab')
         self.assertEqual(('\xef\xbb\xbf'
                           'id\tsummary\treporter\towner\tdescription\tstatus\t'
-                          'keywords\tcc\r\n1\tFoo\tsanta\t\tBar\t\t\t\r\n',
+                          'keywords\tcc\r\n1\tFoo\tsanta\t\tBar\tnew\t\t\r\n',
                           'text/tab-separated-values;charset=utf-8', 'tsv'),
                          csv)
 
@@ -107,7 +107,7 @@ class TicketConversionTestCase(unittest.TestCase):
             ('\xef\xbb\xbf'
              'id\tsummary\treporter\towner\tdescription\tstatus\tkeywords\t'
              'cc\r\n'
-             '1\tFoo\tsanta@…\tjoe@…\tBar\t\t\tcc1 cc2@…\r\n',
+             '1\tFoo\tsanta@…\tjoe@…\tBar\tnew\t\tcc1 cc2@…\r\n',
              'text/tab-separated-values;charset=utf-8', 'tsv'),
             csv)
         self.req.perm = MockPerm()
@@ -117,7 +117,7 @@ class TicketConversionTestCase(unittest.TestCase):
             ('\xef\xbb\xbf'
              'id\tsummary\treporter\towner\tdescription\tstatus\tkeywords\t'
              'cc\r\n'
-             '1\tFoo\tsanta@example.org\tjoe@example.org\tBar\t\t\t'
+             '1\tFoo\tsanta@example.org\tjoe@example.org\tBar\tnew\t\t'
              'cc1 cc2@example.org\r\n',
              'text/tab-separated-values;charset=utf-8', 'tsv'),
             csv)
