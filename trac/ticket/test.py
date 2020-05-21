@@ -21,6 +21,8 @@ def insert_ticket(env, **props):
     """
     when = props.pop('when', None)
     ticket = Ticket(env)
+    ticket['status'] = 'new'
+    ticket['summary'] = 'the summary'
     for k, v in props.items():
         ticket[k] = v
     ticket.insert(when)
