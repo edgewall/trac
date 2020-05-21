@@ -28,7 +28,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int, embedded_numbers, to_list
 from trac.util.datefmt import (datetime_now, from_utimestamp, parse_date,
                                to_utimestamp, utc, utcmax)
-from trac.util.text import empty
+from trac.util.text import empty, stripws
 from trac.util.translation import _, N_, gettext
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
@@ -349,7 +349,7 @@ class Ticket(object):
 
         props_unchanged = all(self.values.get(k) == v
                               for k, v in self._old.iteritems())
-        if (not comment or not comment.strip()) and props_unchanged:
+        if (not comment or not stripws(comment)) and props_unchanged:
             return False  # Not modified
 
         if when is None:

@@ -122,6 +122,55 @@ class TicketModuleTestCase(unittest.TestCase):
         """Helper for inserting a ticket into the database"""
         return insert_ticket(self.env, **kw)
 
+    def _prepare_newticket_post_request(self):
+        self.env.config.set('ticket', 'default_component', 'component1')
+        self.env.config.set('ticket', 'default_milestone', 'milestone1')
+        req = MockRequest(self.env, method='GET', path_info='/newticket',
+                          authname='user1')
+
+        mod = TicketModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+
+        fields = {'field_%s' % f['name']: f.get('value', '')
+                  for f in data['fields']}
+        fields['field_summary'] = 'The summary'
+        req = MockRequest(
+            self.env, method='POST', path_info='/newticket', authname='user1',
+            args=dict(action=data['action'], submit='Create ticket', **fields)
+        )
+        return req
+
+    def _prepare_ticket_post_request(self, tid):
+        path_info = '/ticket/%s' % tid
+        req = MockRequest(self.env, method='GET', path_info=path_info,
+                          authname='user1')
+
+        mod = TicketModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        data = mod.process_request(req)[1]
+
+        start_time = to_utimestamp(data['start_time'])
+        ticket = data['ticket']
+        fields = {'field_%s' % f: v for f, v in ticket.values.iteritems()}
+        req = MockRequest(
+            self.env, method='POST', path_info=path_info, authname='user1',
+            args=dict(action=data['action'], submit='Submit changes',
+                      comment='', replyto='', start_time=start_time,
+                      view_time=start_time, **fields)
+        )
+        return req
+
+    def _process_ticket_request(self, req):
+        mod = TicketModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        try:
+            data = mod.process_request(req)[1]
+        except RequestDone:
+            return None
+        else:
+            return data
+
     def _get_field_by_name(self, data, name):
         for field in data['fields']:
             if field['name'] == name:
@@ -195,6 +244,36 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         self.assertNotIn(u'title="Released ',
                          unicode(version_field(data)['rendered']))
+
+    def test_comment_save(self):
+        req = self._prepare_newticket_post_request()
+        self._process_ticket_request(req)
+
+        req = self._prepare_ticket_post_request(1)
+        req.args['comment'] = 'The comment'
+        data = self._process_ticket_request(req)
+
+        self.assertIsNone(data)
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(['303 See Other'], req.status_sent)
+        self.assertEqual('http://example.org/trac.cgi/ticket/1#comment:1',
+                         req.headers_sent['Location'])
+        self.assertEqual(1, len(Ticket(self.env, 1).get_changelog()))
+
+    def test_whitespace_comment_not_saved(self):
+        req = self._prepare_newticket_post_request()
+        self._process_ticket_request(req)
+
+        req = self._prepare_ticket_post_request(1)
+        req.args['comment'] = u'\u200b\t\t\n\n\n\n\u200b'
+        data = self._process_ticket_request(req)
+
+        self.assertIsNone(data)
+        self.assertEqual([], req.chrome['warnings'])
+        self.assertEqual(['303 See Other'], req.status_sent)
+        self.assertEqual('http://example.org/trac.cgi/ticket/1',
+                         req.headers_sent['Location'])
+        self.assertEqual(0, len(Ticket(self.env, 1).get_changelog()))
 
     def test_quoted_reply_author_is_obfuscated(self):
         """Reply-to author is obfuscated in a quoted reply."""
@@ -954,34 +1033,10 @@ class TicketModuleTestCase(unittest.TestCase):
                   'start_time': when_ts, 'view_time': when_ts})
         self.assertEqual('2009-02-13T23:31:30Z', old_values['due'])
 
-    def _prepare_newticket_request(self):
-        self.env.config.set('ticket', 'default_component', 'component1')
-        self.env.config.set('ticket', 'default_milestone', 'milestone1')
-        req = MockRequest(self.env, method='GET', path_info='/newticket',
-                          authname='user1')
-
-        mod = TicketModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        data = mod.process_request(req)[1]
-
-        fields = {'field_%s' % f['name']: f.get('value', '')
-                  for f in data['fields']}
-        fields['field_summary'] = 'The summary'
-        req = MockRequest(
-            self.env, method='POST', path_info='/newticket', authname='user1',
-            args=dict(action=data['action'],
-                      submit='Create ticket',
-                      **fields)
-        )
-        return req
-
     def test_newticket_ticket_validate_comment_not_called(self):
-        req = self._prepare_newticket_request()
+        req = self._prepare_newticket_post_request()
 
-        mod = TicketModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        with self.assertRaises(RequestDone):
-            mod.process_request(req)
+        self._process_ticket_request(req)
 
         self.assertEqual([], req.chrome['warnings'])
         self.assertEqual(['303 See Other'], req.status_sent)
