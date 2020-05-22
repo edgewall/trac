@@ -24,7 +24,6 @@
 
 __docformat__ = 'reStructuredText'
 
-from distutils.version import StrictVersion
 try:
     from docutils import nodes
     from docutils.core import publish_parts
@@ -32,9 +31,10 @@ try:
     from docutils.readers import standalone
     from docutils.writers import html4css1
     from docutils import __version__
-    has_docutils = True
 except ImportError:
     has_docutils = False
+else:
+    has_docutils = True
 
 from trac.api import ISystemInfoProvider
 from trac.core import *
@@ -44,22 +44,6 @@ from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
 
-if has_docutils and StrictVersion(__version__) < StrictVersion('0.6'):
-    # Monkey-patch "raw" role handler in docutils to add a missing check
-    # See docutils bug #2845002 on SourceForge
-    def raw_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
-        if not inliner.document.settings.raw_enabled:
-            msg = inliner.reporter.warning('raw (and derived) roles disabled')
-            prb = inliner.problematic(rawtext, rawtext, msg)
-            return [prb], [msg]
-        return _raw_role(role, rawtext, text, lineno, inliner, options,
-                         content)
-
-    from docutils.parsers.rst import roles
-    raw_role.options = roles.raw_role.options
-    _raw_role = roles.raw_role
-    roles.raw_role = raw_role
-    roles.register_canonical_role('raw', raw_role)
 
 if has_docutils:
     # Register "trac" role handler and directive
@@ -219,16 +203,6 @@ class ReStructuredTextRenderer(Component):
     """HTML renderer for plain text in reStructuredText format."""
     implements(ISystemInfoProvider, IHTMLPreviewRenderer)
 
-    can_render = False
-
-    def __init__(self):
-        if has_docutils:
-            if StrictVersion(__version__) < StrictVersion('0.3.9'):
-                self.log.warning('Docutils version >= %s required, '
-                                 '%s found', '0.3.9', __version__)
-            else:
-                self.can_render = True
-
     # ISystemInfoProvider methods
 
     def get_system_info(self):
@@ -238,8 +212,8 @@ class ReStructuredTextRenderer(Component):
     # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
-        if self.can_render and mimetype in ('text/x-rst',
-                                            'text/prs.fallenstein.rst'):
+        if has_docutils and mimetype in ('text/x-rst',
+                                         'text/prs.fallenstein.rst'):
             return 8
         return 0
 
