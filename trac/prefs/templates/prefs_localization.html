@@ -33,7 +33,8 @@
                  'title': _('Translations are currently unavailable')
                           if not languages
                 }|htmlattr}>
-            <option value="">${_("Default language")}</option>
+            <option value="">${_("Default: %(default)s",
+                                 default=default_language)}</option>
             # for locale, language in languages:
             <option${{'value': locale,
                       'selected': session_language == locale
@@ -104,7 +105,8 @@
       <tr class="field">
         <th><label for="tz">${_("Time zone:")}</label></th>
         <td><select id="tz" name="tz">
-          <option value="">${_("Default time zone")}</option>
+          <option value="">${_("Default: %(default)s",
+                               default=default_timezone)}</option>
           # for tzname in timezones:
           <option${{'value': tzname,
                     'selected': session_tzname is not none and
@@ -175,7 +177,10 @@
         # set session_lc_time = session.get('lc_time')
         <th><label for="lc_time">${_("Date format:")}</label></th>
         <td><select id="lc_time" name="lc_time">
-          <option value="">${_("Default date format")}</option>
+          <option value="">${_("Default: %(default)s",
+                               default=_("ISO 8601 format")
+                                       if default_date_format == 'iso8601'
+                                       else _("Your language setting"))}</option>
           # if locales and languages:
           <option value="locale"${
                 {'selected': session_lc_time == 'locale'
@@ -204,7 +209,10 @@
         # set session_dateinfo = session.get('dateinfo')
         <th><label for="dateinfo">${_("Time format:")}</label></th>
         <td><select id="dateinfo" name="dateinfo">
-            <option value="">${_("Default format")}</option>
+            <option value="">${_("Default: %(default)s",
+                                 default=_("Absolute format")
+                                         if default_time_format == 'absolute'
+                                         else _("Relative format"))}</option>
             <option value="relative"${
                   {'selected': session_dateinfo == 'relative'
                   }|htmlattr}>${_("Relative format")}</option>

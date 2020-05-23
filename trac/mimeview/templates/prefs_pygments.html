@@ -35,10 +35,12 @@
         }
       })(jQuery);
       jQuery(function($) {
-        switchStyleSheet("${selection.title()}");
         $("#pygment_theme").attr("autocomplete", "off").on('change keypress', function() {
-          switchStyleSheet(this.options[this.selectedIndex].text);
-        });
+          var idx = this.selectedIndex;
+          var text = this.options[idx].text;
+          var stylesheet = idx > 0 ? text : default_style;
+          switchStyleSheet(stylesheet);
+        }).change();
       });
     </script>
     # endblock head
@@ -49,6 +51,8 @@
     <div class="field">
       <label>${_("Style:")}
         <select id="pygment_theme" name="style">
+          <option value="">${_("Default: %(default)s",
+                               default=default_style.title())}</option>
           # for style in sorted(styles):
           <option${{'value': style,
                     'selected': selection == style

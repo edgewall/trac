@@ -23,6 +23,39 @@ from trac.util.html import Markup
 from trac.web.api import RequestDone
 
 
+class PreferencePanelTestCase(unittest.TestCase):
+
+    path_info = None
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _process_request(self, req):
+        mod = PreferencesModule(self.env)
+        self.assertTrue(mod.match_request(req))
+        try:
+            data = mod.process_request(req)[1]
+        except RequestDone:
+            return None
+        else:
+            return data
+
+    def _prepare_prefs_post_request(self, args):
+        args['action'] = 'save'
+        return MockRequest(self.env, method='POST',
+                           path_info=self.path_info,
+                           cookie='trac_session=1234567890abcdef;',
+                           args=args)
+
+    def _prepare_prefs_get_request(self):
+        return MockRequest(self.env, method='GET',
+                           path_info=self.path_info,
+                           cookie='trac_session=1234567890abcdef;')
+
+
 class AdvancedPreferencePanelTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -108,27 +141,19 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
                          unicode(cm.exception))
 
 
-class UserInterfacePreferencePanelTestCase(unittest.TestCase):
+class UserInterfacePreferencePanelTestCase(PreferencePanelTestCase):
 
-    def setUp(self):
-        self.env = EnvironmentStub()
-
-    def tearDown(self):
-        self.env.reset_db()
+    path_info = '/prefs/userinterface'
 
     def _test_auto_preview_timeout(self, timeout):
-        req = MockRequest(self.env, method='POST',
-                          path_info='/prefs/userinterface',
-                          cookie='trac_session=1234567890abcdef;',
-                          args={'ui.auto_preview_timeout': timeout})
-        module = PreferencesModule(self.env)
+        args = {'ui.auto_preview_timeout': timeout}
+        req = self._prepare_prefs_post_request(args)
 
-        self.assertTrue(module.match_request(req))
-        with self.assertRaises(RequestDone) as cm:
-            module.process_request(req)
+        self._process_request(req)
 
+        self.assertEqual(1, len(req.chrome['notices']))
         self.assertEqual("Your preferences have been saved.",
-                         req.session['chrome.notices.0'])
+                         req.chrome['notices'][0])
         return req
 
     def test_save_auto_preview_timeout(self):
@@ -143,8 +168,9 @@ class UserInterfacePreferencePanelTestCase(unittest.TestCase):
         req.session.save()
         req = self._test_auto_preview_timeout(val)
 
+        self.assertEqual(1, len(req.chrome['warnings']))
         self.assertEqual('Discarded invalid value "%s" for auto preview '
-                         'timeout.' % val, req.session['chrome.warnings.0'])
+                         'timeout.' % val, req.chrome['warnings'][0])
         self.assertEqual(timeout, req.session['ui.auto_preview_timeout'])
 
     def test_auto_preview_timeout_value_is_char(self):
@@ -161,6 +187,56 @@ class UserInterfacePreferencePanelTestCase(unittest.TestCase):
         req = self._test_auto_preview_timeout('')
 
         self.assertNotIn('ui.auto_preview_timeout', req.session)
+
+    def _test_default_handler(self, default_handler):
+        args = {'default_handler': default_handler}
+        req = self._prepare_prefs_post_request(args)
+
+        self._process_request(req)
+
+        self.assertEqual(0, len(req.chrome['warnings']))
+        self.assertEqual(1, len(req.chrome['notices']))
+        self.assertEqual("Your preferences have been saved.",
+                         req.chrome['notices'][0])
+        return req
+
+    def test_get_template_data_default_values_in_config(self):
+        req = self._prepare_prefs_get_request()
+        data = self._process_request(req)
+
+        self.assertEqual('WikiModule', data['project_default_handler'])
+        self.assertEqual(['AboutModule', 'AdminModule', 'AnyDiffModule',
+            'BrowserModule', 'ChangesetModule', 'LogModule',
+            'MilestoneModule', 'PreferencesModule', 'ReportModule',
+            'RoadmapModule', 'SearchModule', 'TimelineModule',
+            'WikiModule'], data['valid_default_handlers'])
+        self.assertEqual(2.0, data['default_auto_preview_timeout'])
+
+    def test_get_template_data_empty_values_in_config(self):
+        self.env.config.set('trac', 'default_handler', '')
+        self.env.config.set('trac', 'auto_preview_timeout', '')
+        req = self._prepare_prefs_get_request()
+        data = self._process_request(req)
+
+        self.assertEqual('WikiModule', data['project_default_handler'])
+        self.assertEqual(0, data['default_auto_preview_timeout'])
+
+    def test_get_template_data_custom_values_in_config(self):
+        self.env.config.set('trac', 'default_handler', 'TimelineModule')
+        self.env.config.set('trac', 'auto_preview_timeout', '3.0')
+        req = self._prepare_prefs_get_request()
+        data = self._process_request(req)
+
+        self.assertEqual('TimelineModule', data['project_default_handler'])
+        self.assertEqual(3.0, data['default_auto_preview_timeout'])
+
+    def test_set_default_handler(self):
+        default_handler = 'TimelineModule'
+        req = self._test_default_handler(default_handler)
+        self.assertEqual(default_handler, req.session['default_handler'])
+
+        req = self._test_default_handler('')
+        self.assertNotIn('default_handler', req.session)
 
 
 class PreferencesModuleTestCase(unittest.TestCase):

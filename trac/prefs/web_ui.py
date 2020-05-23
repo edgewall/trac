@@ -24,7 +24,8 @@ from trac.util import as_float, lazy
 from trac.util.datefmt import all_timezones, get_timezone, localtz
 from trac.util.html import tag
 from trac.util.translation import _, Locale, deactivate,\
-                                  get_available_locales, make_activable
+                                  get_available_locales, get_locale_name, \
+                                  make_activable
 from trac.web.api import HTTPNotFound, IRequestHandler, \
                          is_valid_default_handler
 from trac.web.chrome import Chrome, INavigationContributor, \
@@ -214,9 +215,19 @@ class LocalizationPreferencePanel(Component):
                 make_activable(lambda: req.locale, self.env.path)
             _do_save(req, panel, self._form_fields)
 
+        default_timezone_id = self.config.get('trac', 'default_timezone')
+        default_timezone = get_timezone(default_timezone_id) or localtz
+        default_time_format = \
+            self.config.get('trac', 'default_dateinfo_format') or 'relative'
+        default_date_format = \
+            self.config.get('trac', 'default_date_format') or 'locale'
+
         data = {
             'timezones': all_timezones,
             'timezone': get_timezone,
+            'default_timezone': default_timezone,
+            'default_time_format': default_time_format,
+            'default_date_format': default_date_format,
             'localtz': localtz,
             'has_babel': False,
         }
@@ -229,8 +240,12 @@ class LocalizationPreferencePanel(Component):
             # see #11258.
             languages = sorted((id_, locale.display_name)
                                for id_, locale in zip(locale_ids, locales))
+            default_language_id = self.config.get('trac', 'default_language')
+            default_language = get_locale_name(default_language_id) or \
+                               _("Browser's language")
             data['locales'] = locales
             data['languages'] = languages
+            data['default_language'] = default_language
             data['has_babel'] = True
         return 'prefs_localization.html', data
 
@@ -253,19 +268,22 @@ class UserInterfacePreferencePanel(Component):
         if req.method == 'POST':
             _do_save(req, panel, self._form_fields)
 
-        auto_preview_timeout = self.config.get('trac', 'auto_preview_timeout')
         data = {
             'project_default_handler': self._project_default_handler,
             'valid_default_handlers': self._valid_default_handlers,
-            'default_auto_preview_timeout': auto_preview_timeout,
+            'default_auto_preview_timeout': self._auto_preview_timeout,
         }
         return 'prefs_userinterface.html', data
 
     # Internal methods
 
     @property
+    def _auto_preview_timeout(self):
+        return self.config.getfloat('trac', 'auto_preview_timeout') or 0
+
+    @property
     def _project_default_handler(self):
-        return self.config.get('trac', 'default_handler')
+        return self.config.get('trac', 'default_handler') or 'WikiModule'
 
     @lazy
     def _valid_default_handlers(self):

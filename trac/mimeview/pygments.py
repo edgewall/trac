@@ -33,7 +33,8 @@ from trac.util.datefmt import http_date, localtz
 from trac.util.html import Markup
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, HTTPNotFound
-from trac.web.chrome import ITemplateProvider, add_notice, add_stylesheet
+from trac.web.chrome import (
+    ITemplateProvider, add_notice, add_script_data, add_stylesheet)
 
 __all__ = ['PygmentsRenderer']
 
@@ -143,15 +144,19 @@ class PygmentsRenderer(Component):
             style = req.args.get('style')
             if style and style in styles:
                 req.session['pygments_style'] = style
-                add_notice(req, _("Your preferences have been saved."))
+            elif not style and 'pygments_style' in req.session:
+                del req.session['pygments_style']
+            add_notice(req, _("Your preferences have been saved."))
             req.redirect(req.href.prefs(panel or None))
 
         for style in sorted(styles):
             add_stylesheet(req, '/pygments/%s.css' % style, title=style.title())
         output = self._generate('html', self.EXAMPLE)
+        add_script_data(req, default_style=self.default_style.title())
         return 'prefs_pygments.html', {
             'output': output,
-            'selection': req.session.get('pygments_style', self.default_style),
+            'selection': req.session.get('pygments_style'),
+            'default_style': self.default_style,
             'styles': styles
         }
 

@@ -118,7 +118,7 @@
       <label for="default_handler">${_("Default handler:")}</label>
       <select id="default_handler" name="default_handler">
         <option value="">
-          ${_("Default (%(handler)s)", handler=project_default_handler)}</option>
+          ${_("Default: %(default)s", default=project_default_handler)}</option>
         # if session_default_handler and session_default_handler not in valid_default_handlers:
         <option selected="selected" value="${session_default_handler}">${
           session_default_handler}</option>

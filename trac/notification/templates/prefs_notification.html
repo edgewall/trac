@@ -116,7 +116,9 @@
           <label for="format-${distributor}">${_("Format:")}</label>
           <select id="format-${distributor}" name="format-${distributor}"
                   class="subscription-format">
-            <option value="">${_("Default format")}</option>
+            # set default_format = data['default_format'][distributor]
+            <option value="">${_("Default: %(default)s",
+                                 default=default_format)}</option>
             # for f in data['formatters'][distributor]:
             <option${{'selected': f == data['selected_format'][distributor]
                      }|htmlattr} value="${f}">${f}</option>

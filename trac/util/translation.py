@@ -106,7 +106,7 @@ class NullTranslationsBabel(NullTranslations):
 has_babel = False
 
 try:
-    from babel import Locale
+    from babel import Locale, UnknownLocaleError
     from babel.support import LazyProxy, Translations
 
     class TranslationsProxy(object):
@@ -368,6 +368,17 @@ try:
             assert str(locale) in available_locales
         return locale
 
+    def get_locale_name(locale_id):
+        """"Return locale name from locale identifier, or `None` if
+        identifier is not valid.
+        """
+        try:
+            locale = Locale.parse(locale_id)
+        except (UnknownLocaleError, ValueError):
+            return None
+        else:
+            return locale.display_name
+
     has_babel = True
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
@@ -404,6 +415,8 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     def get_negotiated_locale(preferred_locales):
         return None
 
+    def get_locale_name(locale_id):
+        return None
 
 # White-space simplification of msgids
 

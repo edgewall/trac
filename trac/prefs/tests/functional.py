@@ -55,7 +55,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         # Project default_handler is selected.
         self._tester.go_to_preferences("User Interface")
         tc.notfind(r'<option[^>]+selected="selected"')
-        tc.find("Default \(WikiModule\)")
+        tc.find("Default: WikiModule")
 
         try:
             # Project default handler still selected after value is changed.
@@ -65,7 +65,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
                                      'SearchModule')
             self._tester.go_to_preferences("User Interface")
             tc.notfind('<option[^>]+selected="selected"')
-            tc.find("Default \(SearchModule\)")
+            tc.find("Default: SearchModule")
             tc.notfind(hint)
 
             # Project default handler still selected after module is disabled.
@@ -74,7 +74,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
             self._tester.go_to_preferences("User Interface")
             try:
                 tc.notfind('<option[^>]+selected="selected"')
-                tc.find(r"Default \(SearchModule\)")
+                tc.find(r"Default: SearchModule")
                 tc.find(hint)
             finally:
                 self._testenv.remove_config('components', component)
@@ -95,7 +95,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         tc.submit()
         tc.find("Your preferences have been saved\.")
         tc.notfind(r'<option[^>]+selected="selected"')
-        tc.find("Default \(WikiModule\)")
+        tc.find("Default: WikiModule")
 
 
 class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
