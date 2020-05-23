@@ -185,11 +185,11 @@
               </td>
             </tr>
             # endfor
+            # if not groups:
             <tr>
-              # if not groups:
               <td colspan="2">${_("No group memberships")}</td>
-              # endif
             </tr>
+            # endif
           </tbody>
         </table>
         # if can_revoke:
