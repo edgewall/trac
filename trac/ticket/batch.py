@@ -232,12 +232,9 @@ class BatchModifyModule(Component):
                              "%(message)s", message=to_unicode(e)))
 
     def _change_list(self, old_list, new_list, new_list2, mode):
-        def _to_list(s):
-            return [i.strip() for i in self.list_separator_re.split(s) if i]
-
-        changed_list = _to_list(old_list)
-        new_list = _to_list(new_list)
-        new_list2 = _to_list(new_list2)
+        changed_list = to_list(old_list, self.list_separator_re)
+        new_list = to_list(new_list, self.list_separator_re)
+        new_list2 = to_list(new_list2, self.list_separator_re)
 
         if mode == '=':
             changed_list = new_list
