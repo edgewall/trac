@@ -56,7 +56,7 @@ class BatchModifyModule(Component):
     def process_request(self, req):
         if req.method != 'POST':
             raise HTTPBadRequest(_("Invalid request arguments."))
-        req.perm.assert_permission('TICKET_BATCH_MODIFY')
+        req.perm.require('TICKET_BATCH_MODIFY')
 
         comment = req.args.get('batchmod_value_comment', '')
         action = req.args.get('action')

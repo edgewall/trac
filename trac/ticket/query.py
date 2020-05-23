@@ -918,10 +918,10 @@ class QueryModule(Component):
         return req.path_info == '/query'
 
     def process_request(self, req):
-        req.perm(self.realm).assert_permission('TICKET_VIEW')
+        req.perm(self.realm).require('TICKET_VIEW')
         report_id = req.args.get('report')
         if report_id:
-            req.perm('report', report_id).assert_permission('REPORT_VIEW')
+            req.perm('report', report_id).require('REPORT_VIEW')
 
         constraints = self._get_constraints(req)
         args = req.args

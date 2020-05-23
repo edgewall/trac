@@ -411,21 +411,21 @@ class PermissionCacheTestCase(BaseTestCase):
     def test_require(self):
         self.perm.require('TEST_MODIFY')
         self.perm.require('TEST_ADMIN')
-        self.assertRaises(perm.PermissionError, self.perm.require,
-                          'TRAC_ADMIN')
+        with self.assertRaises(perm.PermissionError):
+            self.perm.require('TRAC_ADMIN')
 
     def test_assert_permission(self):
         self.perm.assert_permission('TEST_MODIFY')
         self.perm.assert_permission('TEST_ADMIN')
-        self.assertRaises(perm.PermissionError,
-                          self.perm.assert_permission, 'TRAC_ADMIN')
+        with self.assertRaises(perm.PermissionError):
+            self.perm.assert_permission('TRAC_ADMIN')
 
     def test_cache(self):
-        self.perm.assert_permission('TEST_MODIFY')
-        self.perm.assert_permission('TEST_ADMIN')
+        self.perm.require('TEST_MODIFY')
+        self.perm.require('TEST_ADMIN')
         self.perm_system.revoke_permission('testuser', 'TEST_ADMIN')
         # Using cached GRANT here
-        self.perm.assert_permission('TEST_ADMIN')
+        self.perm.require('TEST_ADMIN')
 
     def test_cache_shared(self):
         # we need to start with an empty cache here (#7201)
@@ -433,10 +433,10 @@ class PermissionCacheTestCase(BaseTestCase):
         perm1 = perm1('ticket', 1)
         perm2 = perm1('ticket', 1) # share internal cache
         self.perm_system.grant_permission('testcache', 'TEST_ADMIN')
-        perm1.assert_permission('TEST_ADMIN')
+        perm1.require('TEST_ADMIN')
         self.perm_system.revoke_permission('testcache', 'TEST_ADMIN')
         # Using cached GRANT here (from shared cache)
-        perm2.assert_permission('TEST_ADMIN')
+        perm2.require('TEST_ADMIN')
 
     def test_has_permission_on_resource_none(self):
         """'PERM' in perm(None) should cache the same value as
@@ -484,9 +484,9 @@ class PermissionPolicyTestCase(BaseTestCase):
 
     def test_no_permissions(self):
         self.assertRaises(perm.PermissionError,
-                          self.perm.assert_permission, 'TEST_MODIFY')
+                          self.perm.require, 'TEST_MODIFY')
         self.assertRaises(perm.PermissionError,
-                          self.perm.assert_permission, 'TEST_ADMIN')
+                          self.perm.require, 'TEST_ADMIN')
         self.assertEqual(self.policy.results,
                          {('testuser', 'TEST_MODIFY'): None,
                           ('testuser', 'TEST_ADMIN'): None})

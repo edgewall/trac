@@ -84,7 +84,7 @@ class SearchModule(Component):
                is not None
 
     def process_request(self, req):
-        req.perm.assert_permission('SEARCH_VIEW')
+        req.perm.require('SEARCH_VIEW')
 
         if req.path_info == '/search/opensearch':
             return ('opensearch.xml', {},
