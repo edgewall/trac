@@ -209,10 +209,9 @@
           #   set change_date = change['comment_history'][latest]['date']
           <div class="${classes('change',
                       'trac-new' if change_date is greaterthan(start_time) and
-                      'attachment' not in change.fields)}"
-               id="${'trac-change-%d-%d' % (
-                   change.cnum,
-                   to_utimestamp(change.date)) if 'cnum' in change}">
+                      'attachment' not in change.fields)}"${
+             {'id': 'trac-change-%d-%d' % (change.cnum, to_utimestamp(change.date))
+                    if 'cnum' in change}|htmlattr}>
             # include 'ticket_change.html'
           </div>
           # endfor
