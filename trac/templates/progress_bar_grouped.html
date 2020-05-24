@@ -13,9 +13,8 @@
 Arguments:
  - groups: a list of group data dicts
  - grouped_by: ticket field by which tickets are grouped
- - summary: table summary text
 #}
-  <table${{'summary': summary if summary is defined}|htmlattr}>
+  <table>
     # for group in groups:
     #   set obfuscated = is_obfuscated(format_author(group.name))
     <tr>

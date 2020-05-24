@@ -1660,7 +1660,7 @@ QUERY_TEST_CASES = u"""
 ------------------------------
 <p>
 </p><div class="trac-groupprogress">
-  <table summary="Ticket completion status for each project">
+  <table>
     <tr>
       <th scope="row">
         <i><a href="/query?project=&amp;max=0&amp;order=id">(none)</a></i>
@@ -1711,7 +1711,7 @@ QUERY_TEST_CASES = u"""
 ------------------------------
 <p>
 </p><div class="trac-groupprogress">
-  <table summary="Ticket completion status for each project">
+  <table>
     <tr>
       <th scope="row">
         <a href="/query?project=xmas&amp;max=0&amp;order=id">xmas</a>
@@ -1762,7 +1762,7 @@ QUERY_TEST_CASES = u"""
 ------------------------------
 <p>
 </p><div class="trac-groupprogress">
-  <table summary="Ticket completion status for each project">
+  <table>
     <tr>
       <th scope="row">
         <a href="/query?project=xmas&amp;reporter=santa&amp;max=0&amp;order=id">xmas</a>
@@ -1792,7 +1792,7 @@ QUERY_TEST_CASES = u"""
 ------------------------------
 <p>
 </p><div class="trac-groupprogress">
-  <table summary="Ticket completion status for each project">
+  <table>
     <tr>
       <th scope="row">
         <a href="/query?project=xmas&amp;reporter=santa&amp;or&amp;owner=santa&amp;project=xmas&amp;max=0&amp;order=id">xmas</a>
