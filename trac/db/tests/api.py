@@ -143,7 +143,7 @@ class StringsTestCase(unittest.TestCase):
     def test_quote(self):
         with self.env.db_query as db:
             cursor = db.cursor()
-            cursor.execute('SELECT 1 AS %s' % \
+            cursor.execute('SELECT 1 AS %s' %
                            db.quote(r'alpha\`\"\'\\beta``gamma""delta'))
             self.assertEqual(r'alpha\`\"\'\\beta``gamma""delta',
                              get_column_names(cursor)[0])

@@ -966,7 +966,7 @@ class Storage(object):
     def history_timerange(self, start, stop):
         # retrieve start <= committer-time < stop,
         # see CachedRepository.get_changesets()
-        return [ rev.strip() for rev in \
+        return [ rev.strip() for rev in
                      self.repo.rev_list('--date-order',
                                         '--max-age=%d' % start,
                                         '--min-age=%d' % (stop - 1),

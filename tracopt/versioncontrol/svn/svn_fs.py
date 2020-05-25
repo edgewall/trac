@@ -226,7 +226,7 @@ class Pool(object):
             # Set up callbacks to mark pool as invalid when parents
             # are destroyed
             self._weakref = weakref.ref(self._parent_pool._is_valid,
-                                        lambda x: \
+                                        lambda x:
                                         _mark_weakpool_invalid(weakself))
 
         # mark pool as valid

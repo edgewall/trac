@@ -1519,7 +1519,7 @@ class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
             tc.find('<input type="text" name="0_cc"[ \n]+value="admin"'
                     ' size="[0-9]+"/>')
             # query:owner=$USER&or&cc~=$USER
-            tc.go(self._tester.url + \
+            tc.go(self._tester.url +
                   '/intertrac/query:owner=$USER&or&cc~=$USER')
             tc.find('<input type="text" name="0_owner"[ \n]+value="admin"'
                     ' size="[0-9]+"/>')

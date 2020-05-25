@@ -103,7 +103,7 @@ class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
         tc.go(component_url)
         tc.formvalue('component_table', 'default', name)
         tc.submit('apply')
-        tc.find('type="radio" name="default" checked="checked" value="%s"' % \
+        tc.find('type="radio" name="default" checked="checked" value="%s"' %
                 name)
         tc.go(self._tester.url + '/newticket')
         tc.find('<option selected="selected" value="%s">%s</option>'
@@ -994,7 +994,7 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
         tc.go(version_url)
         tc.formvalue('version_table', 'default', name)
         tc.submit('apply')
-        tc.find('type="radio" name="default" checked="checked" value="%s"' % \
+        tc.find('type="radio" name="default" checked="checked" value="%s"' %
                 name)
         # verify it is the default on the newticket page.
         tc.go(self._tester.url + '/newticket')

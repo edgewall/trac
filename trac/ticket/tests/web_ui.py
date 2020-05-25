@@ -1094,7 +1094,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
 
         base = '<a href="/trac.cgi/query%s&amp;' % \
-               (ticketlink_query if ticketlink_query \
+               (ticketlink_query if ticketlink_query
                 else self.env.config.get('query', 'ticketlink_query'))
         field = self._get_field_by_name(data, 'select1')
         self.assertEqual('%sselect1=two">two</a>' % base,

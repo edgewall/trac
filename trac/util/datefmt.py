@@ -667,7 +667,7 @@ def _i18n_parse_date_pattern(locale):
         date_format = get_date_format('medium', locale=locale)
         time_format = get_time_format('medium', locale=locale)
         datetime_format = get_datetime_format('medium', locale=locale)
-        formats = (datetime_format.replace('{0}', time_format.format) \
+        formats = (datetime_format.replace('{0}', time_format.format)
                                   .replace('{1}', date_format.format),
                    date_format.format)
 
@@ -835,7 +835,7 @@ _time_starts = dict(
                                 now.minute),
     hour=lambda now: datetime(now.year, now.month, now.day, now.hour),
     day=lambda now: datetime(now.year, now.month, now.day),
-    week=lambda now: datetime(now.year, now.month, now.day) \
+    week=lambda now: datetime(now.year, now.month, now.day)
                      - timedelta(days=now.weekday()),
     month=lambda now: datetime(now.year, now.month, 1),
     year=lambda now: datetime(now.year, 1, 1),

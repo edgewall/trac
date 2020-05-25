@@ -763,7 +763,7 @@ class GitNode(Node):
         if not self.isfile:
             return
 
-        return [rev for rev, lineno in \
+        return [rev for rev, lineno in
                 self.repos.git.blame(self.rev,self.__git_path())]
 
     def get_entries(self):

@@ -191,7 +191,7 @@ class DetachedSession(SessionDict):
                     return
 
             if authenticated and \
-                    (new or self._old.get('name') != self.get('name') or \
+                    (new or self._old.get('name') != self.get('name') or
                      self._old.get('email') != self.get('email')):
                 self.env.invalidate_known_users_cache()
 
