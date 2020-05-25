@@ -70,15 +70,20 @@
       </p>
       ${_("Preview:")}
       <div class="code"><pre>${output|safe}</pre></div>
+    </div>
+    # endblock prefpanel
 
-      # call(note, page) jmacros.wikihelp('TracSyntaxColoring'):
-      #   trans note, page
+    <div>
+      # block prefpanelhelp
+      #   call(note, page) jmacros.wikihelp('TracSyntaxColoring'):
+      #     trans note, page
 
       ${note} See ${page} for help on using syntax coloring.
 
-      #   endtrans
-      # endcall
+      #     endtrans
+      #   endcall
+      # endblock prefpanelhelp
     </div>
-    # endblock prefpanel
+
   </body>
 </html>

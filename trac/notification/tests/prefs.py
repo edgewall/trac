@@ -184,10 +184,16 @@ class NotificationPreferencesTestCase(unittest.TestCase):
         self.assertRaises(RequestDone, self._process, req)
         self.assertEqual(rules, self._get_rules('foo'))
 
-    def test_set_format(self):
+    def test_change_format(self):
         # set text/html
-        req = self._request(authname='foo', args={'action': 'set-format_email',
-                                                  'format-email': 'text/html'})
+        rules = self._get_rules('foo')
+        arg_list = [
+            ('action', 'replace_all'),
+            ('format-email', 'text/html'),
+        ] + \
+        [('adverb-email', r[3]) for r in rules] + \
+        [('class-email', r[4]) for r in rules]
+        req = self._request(authname='foo', arg_list=arg_list)
         self.assertNotIn('notification.format.email', req.session)
         self.assertRaises(RequestDone, self._process, req)
         self.assertEqual(
@@ -201,8 +207,8 @@ class NotificationPreferencesTestCase(unittest.TestCase):
         self.assertEqual('text/html', req.session['notification.format.email'])
 
         # set default format
-        req = self._request(authname='foo', args={'action': 'set-format_email',
-                                                  'format-email': ''})
+        arg_list[1] = ('format-email', None)
+        req = self._request(authname='foo', arg_list=arg_list)
         self.assertRaises(RequestDone, self._process, req)
         self.assertEqual(
             [('email', None, 1, 'always', 'TicketOwnerSubscriber'),

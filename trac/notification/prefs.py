@@ -48,7 +48,6 @@ class NotificationPreferences(Component):
             'add-rule': self._add_rule,
             'delete-rule': self._delete_rule,
             'move-rule': self._move_rule,
-            'set-format': self._set_format,
             'replace': self._replace_rules,
         }
 
@@ -158,13 +157,6 @@ class NotificationPreferences(Component):
                 session = req.session
                 Subscription.move(self.env, rule_id, priority, session.sid,
                                   session.authenticated)
-
-    def _set_format(self, arg, req):
-        format_ = req.args.getfirst('format-%s' % arg)
-        format_ = self._normalize_format(format_, arg)
-        req.session.set('notification.format.%s' % arg, format_, '')
-        Subscription.update_format_by_distributor_and_sid(
-            self.env, arg, req.session.sid, req.session.authenticated, format_)
 
     def _replace_rules(self, arg, req):
         subscriptions = []
