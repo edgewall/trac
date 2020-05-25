@@ -1,5 +1,5 @@
 # Translations template for Trac.
-# Copyright (C) 2020-2020 Edgewall Software
+# Copyright (C) 2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.5.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-04-29 19:46-0700\n"
+"POT-Creation-Date: 2020-05-24 17:56-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

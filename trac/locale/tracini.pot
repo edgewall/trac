@@ -1,5 +1,5 @@
 # Translations template for Trac.
-# Copyright (C) 2020-2020 Edgewall Software
+# Copyright (C) 2020 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.5.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-04-29 19:46-0700\n"
+"POT-Creation-Date: 2020-05-24 17:56-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -503,7 +503,7 @@ msgid ""
 "binary data."
 msgstr ""
 
-#: trac/mimeview/pygments.py:50
+#: trac/mimeview/pygments.py:51
 #, python-format
 msgid ""
 "Configure Pygments [%(url)s lexer] options.\n"
@@ -522,11 +522,11 @@ msgid ""
 "of the lexer name."
 msgstr ""
 
-#: trac/mimeview/pygments.py:67
+#: trac/mimeview/pygments.py:68
 msgid "The default style to use for Pygments syntax highlighting."
 msgstr ""
 
-#: trac/mimeview/pygments.py:70
+#: trac/mimeview/pygments.py:71
 msgid ""
 "List of additional MIME types known by Pygments.\n"
 "\n"
@@ -725,17 +725,17 @@ msgid ""
 "be manually enabled by the user on the search page."
 msgstr ""
 
-#: trac/ticket/api.py:213
+#: trac/ticket/api.py:216
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:220
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:226
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -747,71 +747,71 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:234
+#: trac/ticket/api.py:237
 msgid "Default version for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:237
+#: trac/ticket/api.py:240
 msgid "Default type for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:240
+#: trac/ticket/api.py:243
 msgid "Default priority for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:243
+#: trac/ticket/api.py:246
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:246
+#: trac/ticket/api.py:249
 msgid "Default component for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:249
+#: trac/ticket/api.py:252
 msgid "Default severity for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:252
+#: trac/ticket/api.py:255
 msgid "Default summary (title) for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:255
+#: trac/ticket/api.py:258
 msgid "Default description for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:258
+#: trac/ticket/api.py:261
 msgid "Default keywords for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:261
+#: trac/ticket/api.py:264
 msgid ""
 "Default owner for newly created tickets. The component owner\n"
 "is used when set to the value `< default >`."
 msgstr ""
 
-#: trac/ticket/api.py:266
+#: trac/ticket/api.py:269
 msgid "Default cc: list for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:269
+#: trac/ticket/api.py:272
 msgid "Default resolution for resolving (closing) tickets."
 msgstr ""
 
-#: trac/ticket/api.py:272
+#: trac/ticket/api.py:275
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr ""
 
-#: trac/ticket/api.py:277
+#: trac/ticket/api.py:280
 msgid "Maximum allowed comment size in characters."
 msgstr ""
 
-#: trac/ticket/api.py:280
+#: trac/ticket/api.py:283
 msgid "Maximum allowed description size in characters."
 msgstr ""
 
-#: trac/ticket/api.py:283
+#: trac/ticket/api.py:286
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr ""
 
@@ -1023,7 +1023,7 @@ msgid ""
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:213
+#: trac/versioncontrol/admin.py:216
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
