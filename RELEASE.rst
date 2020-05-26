@@ -12,7 +12,7 @@ Highlights
 Detailed User Visible Changes
 -----------------------------
 
-A detailed view of the API changes since 1.2.x can be found in
+A detailed view of the changes since 1.2.x can be found in
 https://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.4
 
 Developer-visible changes
