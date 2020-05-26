@@ -1,25 +1,25 @@
-Release Notes for Trac 1.4 'Jinja2' Release
+Release Notes for Trac 1.4 'Jinja' Release
 ===========================================
-(Not yet released)
+August 28, 2019
 
 Highlights
 ----------
 * Jinja2 templating engine
+* Custom navigation items for main and meta navigation
 * TracAdmin command for converting databases
 * Restyled wiki
-* Custom navigation items for main and meta navigation
 
 Detailed User Visible Changes
 -----------------------------
 
 A detailed view of the API changes since 1.2.x can be found in
-https://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.2
+https://trac.edgewall.org/wiki/TracDev/ReleaseNotes/1.4
 
 Developer-visible changes
 -------------------------
 
 A detailed view of the API changes since 1.2.x can be found in
-https://trac.edgewall.org/wiki/TracDev/ApiChanges/1.2
+https://trac.edgewall.org/wiki/TracDev/ApiChanges/1.4
 
 Acknowledgements
 ----------------
