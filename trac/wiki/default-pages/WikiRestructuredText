@@ -23,7 +23,7 @@ To activate RST support in Trac, install the python docutils package with the co
 
 == Using RST in Trac
 
-To specify that a block of text should be parsed using RST, use the ''rst'' processor. 
+To specify that a block of text should be parsed using RST, use the ''rst'' processor.
 
 === TracLinks in reStructuredText
 
@@ -65,7 +65,7 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
      }}}
    }}}
 
- For a complete example of all uses of the `:trac:` role, see WikiRestructuredTextLinks. 
+ For a complete example of all uses of the `:trac:` role, see WikiRestructuredTextLinks.
 
 === Syntax highlighting in reStructuredText
 
@@ -82,7 +82,7 @@ There is a directive for doing TracSyntaxColoring in RST as well. The directive 
 
          def TestFunction(self):
              pass
-  
+
   }}}
   }}}
 }}}

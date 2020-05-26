@@ -8,7 +8,7 @@ Trac has a powerful wiki rendering engine that implements a subset of the comman
 
 The sections below provide an overview for the most common syntax, each link in the ''Category'' column leads you to the more detailed explanation later in this page.
 
-The following wiki pages present the advanced features of the Trac wiki markup in more depth: 
+The following wiki pages present the advanced features of the Trac wiki markup in more depth:
  - TracLinks covers all the possible ways to refer to any Trac resource or parts thereof.
  - WikiPageNames covers the various names a wiki page can take, whether in CamelCase or not.
  - WikiMacros lists the macros available for generating dynamic content.
@@ -30,7 +30,7 @@ The following wiki pages present the advanced features of the Trac wiki markup i
 || `monospaced (''other markup ignored'')` ||
 |-----------------------------------------------------------
 ||= [#Headings Headings] =||\
-{{{#!td 
+{{{#!td
  {{{
  == Level 2
  === Level 3 ^([#hn note])^
@@ -63,7 +63,7 @@ Second paragraph.
  * bullet list
    on multiple lines
    1. nested list
-     a. different numbering 
+     a. different numbering
         styles
  }}}
 }}}
@@ -163,7 +163,7 @@ Second paragraph.
 || `Ticket [[ticket:1]]`, `[[ticket:1|ticket one]]` ||\
 || Ticket [[ticket:1]], [[ticket:1|ticket one]] ||
 |-----------------------------------------------------------
-{{{#!th rowspan=2 
+{{{#!th rowspan=2
 [#SettingAnchors Setting Anchors]
 }}}
 || `[=#point1 (1)] First...` ||\
@@ -203,7 +203,7 @@ Second paragraph.
 {{{#!td style="padding-left: 2em"
  {{{#!div style="font-size: 80%"
  Code highlighting:
-   {{{#!python 
+   {{{#!python
    hello = lambda: "world"
    }}}
  }}}
@@ -222,7 +222,7 @@ Second paragraph.
 ||= [#Miscellaneous Miscellaneous] =||\
 {{{#!td
  {{{
- Line [[br]] break 
+ Line [[br]] break
  Line \\ break
  ----
  }}}
@@ -239,9 +239,9 @@ The Trac wiki supports the following font styles:
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
-   * '''bold''', 
-     ''' triple quotes !''' 
-     can be bold too if prefixed by ! ''', 
+   * '''bold''',
+     ''' triple quotes !'''
+     can be bold too if prefixed by ! ''',
    * ''italic''
    * '''''bold italic''''' or ''italic and
      ''' italic bold ''' ''
@@ -249,17 +249,17 @@ The Trac wiki supports the following font styles:
    * {{{monospace}}} or `monospace`
      (hence `{{{` or {{{`}}} quoting)
    * ~~strike-through~~
-   * ^superscript^ 
+   * ^superscript^
    * ,,subscript,,
-   * **also bold**, //italic as well//, 
+   * **also bold**, //italic as well//,
      and **'' bold italic **'' //(since 0.12)//
    * [[span(style=color: #FF0000, a red text )]]
   }}}
 }}}
 {{{#!td
- * '''bold''', 
-   ''' triple quotes !''' 
-   can be bold too if prefixed by ! ''', 
+ * '''bold''',
+   ''' triple quotes !'''
+   can be bold too if prefixed by ! ''',
  * ''italic''
  * '''''bold italic''''' or ''italic and
    ''' italic bold ''' ''
@@ -267,9 +267,9 @@ The Trac wiki supports the following font styles:
  * {{{monospace}}} or `monospace`
    (hence `{{{` or {{{`}}} quoting)
  * ~~strike-through~~
- * ^superscript^ 
+ * ^superscript^
  * ,,subscript,,
- * **also bold**, //italic as well//, 
+ * **also bold**, //italic as well//,
    and **'' bold italic **'' //(since 0.12)//
  * [[span(style=color: #FF0000, a red text )]]
 }}}
@@ -277,13 +277,13 @@ The Trac wiki supports the following font styles:
 Notes:
  * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
  * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after `!`, e.g. when ending bold.
- * all the font styles marks have to be used in opening/closing pairs, 
-   and they must nest properly; in particular, an `''` italic can't be paired 
+ * all the font styles marks have to be used in opening/closing pairs,
+   and they must nest properly; in particular, an `''` italic can't be paired
    with a `//` one, and `'''` can't be paired with `**`.
 
 == Headings
 
-You can create a heading by starting a line with one up to six ''equal'' characters (`=`) followed by a single space and the headline text. 
+You can create a heading by starting a line with one up to six ''equal'' characters (`=`) followed by a single space and the headline text.
 
 [=#hn]
 The headline text can be followed by the same number of `=` characters, but this is not mandatory. That is, `=== Section3 ===` is identical to `=== Section3`.
@@ -325,17 +325,17 @@ A forced line break can also be inserted, using:
   Paragraph
   one
 
-  Paragraph 
+  Paragraph
   two
   }}}
 }}}
 {{{#!td
   Line 1[[BR]]Line 2
 
-  Paragraph 
+  Paragraph
   one
 
-  Paragraph 
+  Paragraph
   two
 }}}
 
@@ -348,17 +348,17 @@ The wiki supports both ordered/numbered and unordered lists.
   {{{
    * Item 1
      * Item 1.1
-        * Item 1.1.1   
+        * Item 1.1.1
         * Item 1.1.2
         * Item 1.1.3
      * Item 1.2
    * Item 2
   - items can start at the beginning of a line
     and they can span multiple lines
-    - be careful though to continue the line 
+    - be careful though to continue the line
     with the appropriate indentation, otherwise
   that will start a new paragraph...
-  
+
    1. Item 1
      a. Item 1.a
      a. Item 1.b
@@ -373,14 +373,14 @@ The wiki supports both ordered/numbered and unordered lists.
 {{{#!td
  * Item 1
    * Item 1.1
-      * Item 1.1.1   
+      * Item 1.1.1
       * Item 1.1.2
       * Item 1.1.3
    * Item 1.2
  * Item 2
 - items can start at the beginning of a line
   and they can span multiple lines
-  - be careful though to continue the line 
+  - be careful though to continue the line
   with the appropriate indentation, otherwise
 that will start a new paragraph...
 
@@ -421,7 +421,7 @@ Note that you need a space in front of the defined term.
 == Preformatted Text
 
 Block containing preformatted text are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote. The curly braces need to be on a separate line.
-  
+
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
@@ -458,7 +458,7 @@ Paragraph
 
 == Discussion Citations
 
-To delineate a citation in an ongoing discussion thread, such as the ticket comment area, email-like citation marks (`>`, `>>`, etc.) may be used.  
+To delineate a citation in an ongoing discussion thread, such as the ticket comment area, email-like citation marks (`>`, `>>`, etc.) may be used.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -586,26 +586,26 @@ Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks 
 TitleIndex, https://www.edgewall.com/, !NotAlink
 }}}
 
-Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets. 
+Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.
 If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
    * [https://www.edgewall.com Edgewall Software]
-   * [wiki:TitleIndex Title Index] 
-   * [wiki:TitleIndex] 
+   * [wiki:TitleIndex Title Index]
+   * [wiki:TitleIndex]
    * [wiki:ISO9000]
   }}}
 }}}
 {{{#!td
    * [https://www.edgewall.com Edgewall Software]
-   * [wiki:TitleIndex Title Index] 
-   * [wiki:TitleIndex] 
+   * [wiki:TitleIndex Title Index]
+   * [wiki:TitleIndex]
    * [wiki:ISO9000]
 }}}
 
-Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe (`|`) and a title and all this inside //double// square brackets. 
+Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe (`|`) and a title and all this inside //double// square brackets.
 
 {{{#!td
   {{{
@@ -640,7 +640,7 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
    * Reports: {1} or report:1
    * Changesets: r1, [1] or changeset:1
    * ...
-   * targeting other Trac instances, 
+   * targeting other Trac instances,
      so called InterTrac links:
      - Tickets: #Trac1 or Trac:ticket:1
      - Changesets: [Trac1] or Trac:changeset:1
@@ -650,8 +650,8 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
- * ... 
- * targeting other Trac instances, 
+ * ...
+ * targeting other Trac instances,
    so called InterTrac links:
    - Tickets: #Trac1 or Trac:ticket:1
    - Changesets: [Trac1] or Trac:changeset:1
@@ -784,8 +784,8 @@ The detailed help for a specific macro can also be obtained more directly by app
 
 == Processors
 
-Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in 
-[wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
+Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in
+[wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML].
 
 ||= Wiki Markup =||= Display =||
 |--------------------------------------------------------
@@ -822,7 +822,7 @@ Trac supports alternative markup formats using WikiProcessors. For example, proc
   {{{
   {{{#!python
   class Test:
-  
+
       def __init__(self):
           print "Hello World"
   if __name__ == '__main__':
@@ -862,7 +862,7 @@ if __name__ == '__main__':
   }}}
   |----------------
   {{{#!td
-  As processors can be easily nested, 
+  As processors can be easily nested,
   so can be tables:
     {{{#!th
     Example:
@@ -893,7 +893,7 @@ if __name__ == '__main__':
   }}}
   |----------------
   {{{#!td
-  As processors can be easily nested, 
+  As processors can be easily nested,
   so can be tables:
     {{{#!th
     Example:
@@ -941,7 +941,7 @@ Comments can be added to the plain text. These will not be rendered and will not
 {{{#!td
   Horizontal line:
   {{{
-  Four or more dashes will be replaced 
+  Four or more dashes will be replaced
   by a horizontal line (<HR>)
   ----
   See?

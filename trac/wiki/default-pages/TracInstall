@@ -1,4 +1,4 @@
-= Trac Installation Guide for 1.3
+= Trac Installation Guide for 1.4
 [[TracGuideToc]]
 
 Trac is written in the Python programming language and needs a database, [https://sqlite.org/ SQLite], [https://www.postgresql.org/ PostgreSQL], or [https://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://jinja.pocoo.org Jinja2] templating system, though Genshi templates will still be supported until at least Trac 1.5.1.
@@ -77,29 +77,29 @@ Support for other version control systems is provided via third-party plugins. S
 A web server is optional because Trac is shipped with a server included, see the [#RunningtheStandaloneServer Running the Standalone Server] section below.
 
 Alternatively you can configure Trac to run in any of the following environments:
- * [https://httpd.apache.org/ Apache] with 
-   - [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and 
+ * [https://httpd.apache.org/ Apache] with
+   - [https://github.com/GrahamDumpleton/mod_wsgi mod_wsgi], see [wiki:TracModWSGI] and
      [https://code.google.com/p/modwsgi/wiki/IntegrationWithTrac ModWSGI IntegrationWithTrac].
    - [http://modpython.org/ mod_python 3.5.0], see TracModPython
  * a [https://fastcgi-archives.github.io FastCGI]-capable web server (see TracFastCgi)
  * an [https://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
  * Microsoft IIS with FastCGI and a FastCGI-to-WSGI gateway (see [trac:CookBook/Installation/TracOnWindowsIisWfastcgi IIS with FastCGI])
- * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
-   is highly discouraged''', better use one of the previous options. 
-   
+ * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script
+   is highly discouraged''', better use one of the previous options.
+
 
 ==== Other Python Packages
 
- * [http://babel.pocoo.org Babel], version 0.9.6 or >= 1.3, 
+ * [http://babel.pocoo.org Babel], version 0.9.6 or >= 1.3,
    needed for localization support
- * [http://docutils.sourceforge.net docutils], version >= 0.3.9 
+ * [http://docutils.sourceforge.net docutils], version >= 0.3.9
    for WikiRestructuredText.
- * [http://pygments.org Pygments] for 
+ * [http://pygments.org Pygments] for
    [TracSyntaxColoring syntax highlighting].
  * [https://pypi.org/project/textile Textile] for rendering the [https://github.com/textile/python-textile Textile markup language].
  * [http://pytz.sourceforge.net pytz] to get a complete list of time zones,
-   otherwise Trac will fall back on a shorter list from 
+   otherwise Trac will fall back on a shorter list from
    an internal time zone implementation.
  * [https://pypi.org/project/passlib passlib] on Windows to decode [TracStandalone#BasicAuthorization:Usingahtpasswdpasswordfile htpasswd formats] other than `SHA-1`.
  * [https://pypi.org/project/pyreadline pyreadline] on Windows for trac-admin [TracAdmin#InteractiveMode command completion].
@@ -174,7 +174,7 @@ A new environment is created using [TracAdmin trac-admin]:
 $ trac-admin /path/to/myproject initenv
 }}}
 
-[TracAdmin trac-admin] will prompt you for the information it needs to create the environment: the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for any of these options, just press `<Enter>` to use the default value. 
+[TracAdmin trac-admin] will prompt you for the information it needs to create the environment: the name of the project and the [TracEnvironment#DatabaseConnectionStrings database connection string]. If you're not sure what to specify for any of these options, just press `<Enter>` to use the default value.
 
 Using the default database connection string will always work as long as you have SQLite installed. For the other [trac:DatabaseBackend database backends] you should plan ahead and already have a database ready to use at this point.
 
@@ -225,9 +225,9 @@ $ tracd -s --port 8000 /path/to/myproject
 
 === Running Trac on a Web Server
 
-Trac provides various options for connecting to a "real" web server: 
+Trac provides various options for connecting to a "real" web server:
  - [TracFastCgi FastCGI]
- - [wiki:TracModWSGI Apache with mod_wsgi] 
+ - [wiki:TracModWSGI Apache with mod_wsgi]
  - [TracModPython Apache with mod_python]
  - [TracCgi CGI] //(should not be used, as the performance is far from optimal)//
 
@@ -322,7 +322,7 @@ Alias /trac/chrome/site /path/to/projectenv/htdocs
 </Directory>
 }}}
 
-Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [[TracIni#trac-section| [trac] htdocs_location]] configuration setting:
+Another alternative to aliasing `/trac/chrome/common` is having Trac generate direct links for those static resources (and only those), using the [TracIni#trac-htdocs_location-option trac.htdocs_location] configuration setting:
 {{{#!ini
 [trac]
 htdocs_location = http://static.example.org/trac-common/
@@ -343,7 +343,7 @@ Some Python plugins need to be extracted to a cache directory. By default the ca
 
 Trac uses HTTP authentication. You'll need to configure your webserver to request authentication when the `.../login` URL is hit (the virtual path of the "login" button). Trac will automatically pick the `REMOTE_USER` variable up after you provide your credentials. Therefore, all user management goes through your web server configuration. Please consult the documentation of your web server for more info.
 
-The process of adding, removing, and configuring user accounts for authentication depends on the specific way you run Trac. 
+The process of adding, removing, and configuring user accounts for authentication depends on the specific way you run Trac.
 
 Please refer to one of the following sections:
  * TracStandalone#UsingAuthentication if you use the standalone server, `tracd`.

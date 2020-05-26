@@ -39,7 +39,7 @@ configuration of the Trac site and the user’s permissions.
 If the user doesn’t possess TRAC_ADMIN, the site to which a user is directed to create a ticket is determined by the [[#project-admin_trac_url-option|"[trac] admin_trac_url"]] setting:
 
 * If empty, there will be no //Create// button.
-* If set to the default value (`.`), the ticket will be 
+* If set to the default value (`.`), the ticket will be
   created on the site which the error occurred.
 * Otherwise the ticket will be created at the site pointed
   to by `admin_trac_url`.

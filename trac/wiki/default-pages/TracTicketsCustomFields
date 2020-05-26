@@ -3,7 +3,7 @@ Trac supports adding custom, user-defined fields to the ticket module. With cust
 
 == Configuration
 
-Configuring custom ticket fields in the [TracIni#ticket-custom-section "[ticket-custom]"] section of trac.ini.
+Configure custom ticket fields in the [TracIni#ticket-custom-section "[ticket-custom]"] section of trac.ini.
 
 The syntax of each field definition is:
 {{{
@@ -14,6 +14,41 @@ The syntax of each field definition is:
 
 The example below should help to explain the syntax.
 
+=== Field Names
+A field name can only contain lowercase letters a-z, uppercase letters A-Z or digits 0-9, and must not start with a leading digit.
+
+The following field names are reserved and can not be used for custom fields:
+* cc
+* changetime
+* col
+* comment
+* component
+* desc
+* description
+* format
+* group
+* groupdesc
+* id
+* keywords
+* max
+* milestone
+* or
+* order
+* owner
+* page
+* priority
+* report
+* reporter
+* resolution
+* row
+* severity
+* status
+* summary
+* time
+* type
+* verbose
+* version
+
 === Available Field Types and Options
 
  * '''text''': A simple (one line) text field.
@@ -21,25 +56,30 @@ The example below should help to explain the syntax.
    * value: Default value.
    * order: Sort order placement relative to other custom fields.
    * max_size: Maximum allowed size in characters (//Since 1.3.2//).
-   * format: One of: 
-     * `plain` for plain text 
+   * format: One of:
+     * `plain` for plain text
      * `wiki` for [WikiFormatting wiki formatted] content
      * `reference` to treat the content as a queryable value
      * `list` to interpret the content as a list of queryable values, separated by whitespace
+   * ticketlink_query: Query for linkifying ticket values.
+     Not applicable for format `plain` and `wiki`.
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
    * value: Default value, 0 or 1.
    * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
  * '''select''': Drop-down select box. Uses a list of values.
    * label: Descriptive label.
    * options: List of values, separated by '''|''' (vertical pipe).
    * value: Default value (one of the values from options).
    * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
  * '''radio''': Radio buttons. Essentially the same as '''select'''.
    * label: Descriptive label.
    * options: List of values, separated by '''|''' (vertical pipe).
    * value: Default value, one of the values from options.
    * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
  * '''textarea''': Multi-line text area.
    * label: Descriptive label.
    * value: Default text.
@@ -59,6 +99,12 @@ The example below should help to explain the syntax.
 If the `label` is not specified, it will be created by capitalizing the custom field name and replacing underscores with whitespaces.
 
 Macros will be expanded when rendering `textarea` fields with format `wiki`, but not when rendering `text` fields with format `wiki`.
+
+For applicable fields, the `ticketlink_query` option
+overrides [[TracIni#query-ticketlink_query-option|"[query] ticketlink_query"]], and the format is the same as
+that option. When the `ticketlink_query` option
+is not specified, `[query]` `ticketlink_query` is used to
+linkify the field.
 
 === Sample Configuration
 

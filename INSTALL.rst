@@ -1,4 +1,4 @@
-Trac Installation Guide for 1.3
+Trac Installation Guide for 1.4
 ===============================
 
 Trac is written in the Python programming language and needs a
@@ -138,7 +138,7 @@ environments:
 
 + `Apache`_ with
 
-    + `mod_wsgi`_, see `TracModWSGI`_ and `ModWSGI IntegrationWithTrac`_.
+    + `mod_wsgi`_, see `TracModWSGI`_ and`ModWSGI IntegrationWithTrac`_.
     + `mod_python 3.5.0`_, see `TracModPython`_
 
 + a `FastCGI`_-capable web server (see `TracFastCgi`_)
@@ -156,7 +156,7 @@ Other Python Packages
 
 + `Babel*`_, version 0.9.6 or >= 1.3, needed for localization support
 + `docutils`_, version >= 0.3.9 for `WikiRestructuredText`_.
-+ `Pygments`_ for `syntax highlighting`_.
++ `Pygments`_ for`syntax highlighting`_.
 + `Textile`_ for rendering the `Textile markup language`_.
 + `pytz`_ to get a complete list of time zones, otherwise Trac will
   fall back on a shorter list from an internal time zone implementation.
@@ -567,7 +567,7 @@ names and locations to match your installation:
 
 Another alternative to aliasing `/trac/chrome/common` is having Trac
 generate direct links for those static resources (and only those),
-using the ` [trac] htdocs_location`_ configuration setting:
+using the `trac.htdocs_location`_ configuration setting:
 
 
 ::
@@ -687,7 +687,6 @@ users to see the full set of features.
 
 See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_
 
-.. _ [trac] htdocs_location: https://trac.edgewall.org/wiki/TracIni#trac-section
 .. _AJP*: https://trac.edgewall.org/intertrac/TracOnWindowsIisAjp
 .. _AJP: https://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html
 .. _Apache with mod_python: https://trac.edgewall.org/wiki/TracModPython
@@ -756,6 +755,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_
 .. _Ticket deletion: https://trac.edgewall.org/wiki/TracTickets#deleter
 .. _Trac environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _trac-admin: https://trac.edgewall.org/wiki/TracAdmin
+.. _trac.htdocs_location: https://trac.edgewall.org/wiki/TracIni#trac-htdocs_location-option
 .. _TracAdmin: https://trac.edgewall.org/wiki/TracAdmin
 .. _TracAuthenticationIntroduction: https://trac.edgewall.org/intertrac/TracAuthenticationIntroduction
 .. _TracCgi: https://trac.edgewall.org/wiki/TracCgi

@@ -10,7 +10,7 @@ The macro syntax is `[[macro-name(optional-arguments)]]`.
 
 {{{
 {{{#!wiki-processor-name
-... 
+...
 }}}
 }}}
 
@@ -48,7 +48,7 @@ The [https://trac-hacks.org/ Trac Hacks] site provides a large collection of mac
 
 Macros, like Trac itself, are written in the [https://python.org/ Python programming language] and are a type of [TracPlugins plugin].
 
-Here are 2 simple examples showing how to create a Macro. For more information about developing macros, see the [trac:TracDev development resources] and [trac:browser:branches/1.2-stable/sample-plugins sample-plugins].
+Here are 2 simple examples showing how to create a Macro. For more information about developing macros, see the [trac:TracDev development resources] and [trac:browser:branches/1.4-stable/sample-plugins sample-plugins].
 
 === Macro without arguments
 

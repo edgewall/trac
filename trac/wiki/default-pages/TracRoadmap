@@ -15,7 +15,7 @@ It is possible to drill down into this simple statistic by viewing the individua
 
 == Roadmap Administration
 
-With appropriate permissions it is possible to add, modify and remove milestones using either the web interface (roadmap and milestone pages), web administration interface or by using `trac-admin`. 
+With appropriate permissions it is possible to add, modify and remove milestones using either the web interface (roadmap and milestone pages), web administration interface or by using `trac-admin`.
 
 == iCalendar Support
 

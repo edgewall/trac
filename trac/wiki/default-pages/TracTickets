@@ -1,7 +1,7 @@
 = The Trac Ticket System
 [[TracGuideToc]]
 
-As the central project management element of Trac, tickets can be used for '''project tasks''', '''feature requests''', '''bug reports''' and '''software support issues''', among others. 
+As the central project management element of Trac, tickets can be used for '''project tasks''', '''feature requests''', '''bug reports''' and '''software support issues''', among others.
 
 As with the TracWiki, this subsystem has been designed to make user contribution and participation as simple as possible. Tickets can be edited, annotated, assigned, prioritized and discussed.
 
@@ -11,11 +11,11 @@ The default installation doesn't permit to non-authenticated users ("anonymous" 
 == Ticket Fields
 
 A ticket contains the following information:
- 
+
  * '''Summary''' — Simple text without WikiFormatting.
  * '''Description''' — The body of the ticket. Accepts WikiFormatting.
  * '''Reporter''' — The author of the ticket.
- * '''Type''' — The default types are `defect`, `enhancement` and `task`. 
+ * '''Type''' — The default types are `defect`, `enhancement` and `task`.
  * '''Component''' — The project module or subsystem that this ticket concerns.
  * '''Version''' — Version of the project that this ticket pertains to.
  * '''Keywords''' — Useful for searching and report generation.
@@ -40,7 +40,7 @@ Comment editing is meant for making small corrections to comments, like fixing f
 
 All edits (field changes, new comments, comment edits) update the "last changed" time of the ticket.
 
-'''Note:''' 
+'''Note:'''
  - TracLinks and WikiFormatting can be used in the ticket description and comments. Use TracLinks to refer to other issues, changesets and files.
 
  - See TracNotification for how to configure email notifications on ticket changes.
@@ -84,8 +84,8 @@ trac-admin /path/to/projenv session delete SID
 Alternatively, you can just revoke `TICKET_MODIFY` from users that you don't want to be included in the list. However, that will not be possible if you've granted `TICKET_MODIFY` to all //anonymous// or //authenticated// users.
 
 '''Notes:'''
- - If you need more flexibility, you can subclass `ConfigurableTicketWokflow` and override the `get_allowed_owners` method.
- 
+ - If you need more flexibility, then use subclass `ConfigurableTicketWorkflow` and override the `get_allowed_owners` method (see [trac:#12807 Trac ticket 12807]).
+
  - Activating this option may cause some performance degradation. Read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
 
 == Preset Values for New Tickets
@@ -102,10 +102,13 @@ To create a link to the new-ticket form filled with preset values, you need to c
  * '''keywords''' — The keywords or tags.
  * '''priority''' — The priority dropdown list.
  * '''milestone''' — The milestone dropdown list.
- * '''owner''' — The person responsible for the ticket.
  * '''cc''' — The list of emails for notifying about the ticket change.
 
 Example: `[/newticket?summary=Compile%20Error&version=1.0&component=gui]`
+
+To set the ticket owner the workflow action may also need to be selected. For the [TracWorkflow#TicketCreateAction default workflow], the //create and assign// action can be selected with `action=create_and_assign` and the owner specified by assigning `action_create_and_assign_reassign_owner`. Alternatively, you could avoid needing to select the action by using the [TracWorkflow#BasicTicketWorkflowCustomization default attribute] to make //create and assign// the default action.
+
+For other custom workflow actions, determine the variable names by inspecting the `name` attribute of the //action// radio button and the //owner// input or select element.
 
 == Deleting Tickets #deleter
 

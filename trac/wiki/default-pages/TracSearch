@@ -21,7 +21,7 @@ To disable the Quickjump feature for a keyword start the query with an exclamati
 == Search TracLinks
 
 From the Wiki, it is possible to link to a specific search using `search:` links:
- * `search:?q=crash` will search for the string "crash" 
+ * `search:?q=crash` will search for the string "crash"
  * `search:?q=trac+link&wiki=on` will search for "trac" and "link" in wiki pages only
 
 == Search Filters

@@ -1,7 +1,7 @@
 = Steps to Add a New Wiki Page =
 [[TracGuideToc]]
 
-You can create a new wiki page by typing the CamelCase name of the page in the quick-search field at the top of the page, or by trying to view a wiki page of that name. Note that a page is "orphaned" by default until it is linked to from another page. 
+You can create a new wiki page by typing the CamelCase name of the page in the quick-search field at the top of the page, or by trying to view a wiki page of that name. Note that a page is "orphaned" by default until it is linked to from another page.
 
 You must be granted permission to create wiki pages. If you don't see the **Create this page** button when visiting a non-existent wiki page, you lack appropriate permission. Contact your local Trac administrator for more information.
 

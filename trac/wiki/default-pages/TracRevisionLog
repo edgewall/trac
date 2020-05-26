@@ -5,20 +5,20 @@ Each path in the //Repository Browser// contains a contextual navigation link to
 
 == The Revision Log Form
 
-It is possible to set the revision at which the revision log should start, using the ''View log starting at'' field. An empty value or a value of ''head'' is interpreted as the newest changeset. 
+It is possible to set the revision at which the revision log should start, using the ''View log starting at'' field. An empty value or a value of ''head'' is interpreted as the newest changeset.
 
-It is also possible to specify the revision at which the log should stop, using the ''Back to'' field. By default it is empty, 
+It is also possible to specify the revision at which the log should stop, using the ''Back to'' field. By default it is empty,
 which means the revision log will show the [TracIni#revisionlog-default_log_limit-option default log limit], which defaults to the latest 100 revisions.
 
 There are three modes of operation of the revision log.
 
 By default, the revision log ''stops on copy'', which means that whenever an ''Add'', ''Copy'' or ''Rename'' operation is detected, no older revision will be shown. That's very convenient when working with branches, as one only sees the history for that branch.
 
-It is also possible to indicate that one wants include what happened before a ''Copy'' or ''Rename'' change, by selecting the 
+It is also possible to indicate that one wants include what happened before a ''Copy'' or ''Rename'' change, by selecting the
 ''Follow copies'' mode. This will continue to list all revisions across copies and renames.
 Each time the name of the path changes, there will be an additional indentation level. That way, the changes on the different paths are easily grouped together visually.
 
-It is even possible to go past an ''Add'' change, in order to see if there has been a ''Delete'' change on that path, before 
+It is even possible to go past an ''Add'' change, in order to see if there has been a ''Delete'' change on that path, before
 that ''Add''. This mode is labeled ''Show only adds, moves and deletes''. The operation can be quite resource intensive and therefore take some time to display.
 
 Finally, there's a checkbox ''Show full log messages'', which controls whether the full content of the commit log message
@@ -27,7 +27,7 @@ should be displayed for each change, or only a shortened version of it.
 == The Revision Log Information
 
 For each revision log entry, the following columns are displayed:
- 1. The first column contains a pair of radio buttons and should be used 
+ 1. The first column contains a pair of radio buttons and should be used
     for selecting the ''old'' and the ''new'' revisions that will be used for [#InspectingChangesBetweenRevisions viewing the actual changes].
  1. A color code (similar to the one used for the
     [TracChangeset#ChangesetHeader changesets]) indicates the kind of change.
@@ -37,12 +37,12 @@ For each revision log entry, the following columns are displayed:
     This is a link to the TracBrowser, using the displayed revision as the base line.
  Next to it, you can see a little "wheel" icon [[Image(htdocs:../common/changeset.png)]],  which is clickable and leads to the TracChangeset view for that revision.
  1. The '''Age'''/'''Date''' at which the change was made.
-    Depending on your [/prefs/localization session preference], the date is displayed in either //Relative// or //Absolute// format. 
-  * //Relative// format shows the '''Age''': the time elapsed as the number of hours, days, weeks, months, or years. 
+    Depending on your [/prefs/localization session preference], the date is displayed in either //Relative// or //Absolute// format.
+  * //Relative// format shows the '''Age''': the time elapsed as the number of hours, days, weeks, months, or years.
   * //Absolute// format shows the '''Date''' of the revision as a datetime.
  1. The '''Author''' of the change.
- 1. The '''Log Message''', which contains either the truncated or full commit 
-    log message, depending on the value of the ''Show full log messages'' 
+ 1. The '''Log Message''', which contains either the truncated or full commit
+    log message, depending on the value of the ''Show full log messages''
     checkbox in the form above.
 
 == Inspecting Changes Between Revisions

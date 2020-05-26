@@ -48,7 +48,7 @@ This page is modelled after the MeatBall:InterMapTxt page.
 In addition, an optional comment is allowed after the mapping.
 ----
 {{{
-PEP      http://www.python.org/peps/pep-$1.html           # Python Enhancement Proposal $1 
+PEP      http://www.python.org/peps/pep-$1.html           # Python Enhancement Proposal $1
 Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/$1  # Message $1 in Trac Mailing List
 
 tsvn     tsvn:                                            # Interact with TortoiseSvn
@@ -61,7 +61,7 @@ MoinMoin http://moinmoin.wikiwikiweb.de/
 }}}
 }}}
 
-Then, 
+Then,
  * `MoinMoin:InterWikiMap` will be rendered as MoinMoin:InterWikiMap and the ''title'' for that link will be "!InterWikiMap in !MoinMoin".
  * `Trac-ML:4346` will be rendered as Trac-ML:4346 and the ''title'' for that link will be "Message 4346 in Trac Mailing List".
 
