@@ -477,16 +477,12 @@ ifdef test
 test-coverage:
 	coverage run $(test) $(testopts)
 else
-test-coverage: unit-test-coverage functional-test-coverage
+test-coverage: unit-test-coverage
 endif
 
 unit-test-coverage:
 	coverage run -a $(coverageopts) $(COVERAGEOPTS) \
 	    trac/test.py --skip-functional-tests $(testopts)
-
-functional-test-coverage:
-	FIGLEAF='coverage run -a $(coverageopts) $(COVERAGEOPTS)' \
-	python trac/tests/functional/__init__.py -v $(testopts)
 
 show-coverage: htmlcov/index.html
 	$(if $(START),$(START) $(<))
