@@ -256,20 +256,14 @@ class FunctionalTestEnvironment(object):
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
-        if 'FIGLEAF' in os.environ:
-            exe = os.environ['FIGLEAF']
-            if ' ' in exe: # e.g. 'coverage run'
-                args = exe.split()
-            else:
-                args = [exe]
-        else:
-            args = [sys.executable]
+        args = [
+            sys.executable,
+            os.path.join(self.trac_src, 'trac', 'web', 'standalone.py')
+        ]
         options = ["--port=%s" % self.port, "-s", "--hostname=127.0.0.1",
                    "--basic-auth=trac,%s," % self.htpasswd]
         if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
             options += os.environ['TRAC_TEST_TRACD_OPTIONS'].split()
-        args.append(os.path.join(self.trac_src, 'trac', 'web',
-                                 'standalone.py'))
         server = Popen(args + options + [self.tracdir],
                        stdout=self.logfile, stderr=self.logfile,
                        close_fds=close_fds,
