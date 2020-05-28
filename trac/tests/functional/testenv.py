@@ -204,12 +204,12 @@ class FunctionalTestEnvironment(object):
         self.get_trac_environment().config.touch()
 
     def set_config(self, *args):
-        """Calls trac-admin to get the value for the given option
+        """Calls trac-admin to set the value for the given option
         in `trac.ini`."""
         self._tracadmin('config', 'set', *args)
 
     def get_config(self, *args):
-        """Calls trac-admin to set the value for the given option
+        """Calls trac-admin to get the value for the given option
         in `trac.ini`."""
         return self._tracadmin('config', 'get', *args)
 
