@@ -18,6 +18,8 @@ import socket
 import textwrap
 import unittest
 
+import jinja2
+
 from trac.util.text import (
     _get_default_ambiwidth, empty, exception_to_unicode, expandtabs, fix_eol,
     javascript_quote, jinja2template, levenshtein_distance,
@@ -429,12 +431,29 @@ class StripwsTestCase(unittest.TestCase):
 class Jinja2TemplateTestCase(unittest.TestCase):
     def test_html_template(self):
         self.assertEqual("<h1>Hell&amp;O</h1>",
-                         jinja2template("<h1>${hell}O</h1>").render(
-                             {'hell': 'Hell&'}))
+                         jinja2template("<h1>${hell}O</h1>")
+                         .render({'hell': 'Hell&'}))
+
     def test_text_template(self):
         self.assertEqual("<h1>Hell&O</h1>",
-                         jinja2template("<h1>${hell}O</h1>", text=True).render(
-                             {'hell': 'Hell&'}))
+                         jinja2template("<h1>${hell}O</h1>", text=True)
+                         .render({'hell': 'Hell&'}))
+
+    def test_text_template_line_statement_prefix_none(self):
+        with self.assertRaises(jinja2.TemplateSyntaxError):
+            self.assertEqual("",
+                jinja2template("#${id}", text=True).render({'id': 10}))
+        self.assertEqual("#10",
+             jinja2template("#${id}", text=True,
+                            line_statement_prefix=None).render({'id': 10}))
+
+    def test_text_template_line_comment_prefix_none(self):
+        self.assertEqual("",
+             jinja2template("##${id}", text=True,
+                            line_statement_prefix=None).render({'id': 10}))
+        self.assertEqual("##10",
+             jinja2template("##${id}", text=True, line_statement_prefix=None,
+                            line_comment_prefix=None).render({'id': 10}))
 
 
 class LevenshteinDistanceTestCase(unittest.TestCase):

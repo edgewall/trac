@@ -336,7 +336,7 @@ class TicketFormatter(Component):
             'env': self.env,
         }
 
-        template = jinja2template(self.ticket_subject_template, text=True)
+        template = _template_from_string(self.ticket_subject_template)
         subj = template.render(**data).strip()
         if not is_newticket:
             subj = "Re: " + subj
@@ -345,7 +345,7 @@ class TicketFormatter(Component):
     def _format_subj_batchmodify(self, tickets):
         tickets_descr = ', '.join('#%s' % t for t in tickets)
 
-        template = jinja2template(self.batch_subject_template, text=True)
+        template = _template_from_string(self.batch_subject_template)
 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__':
@@ -775,3 +775,8 @@ def _ticket_change_subscribers(subscriber, candidates):
 
     for s in Subscription.find_by_sids_and_class(subscriber.env, sids, klass):
         yield s.subscription_tuple()
+
+
+def _template_from_string(string):
+        return jinja2template(string, text=True, line_statement_prefix=None,
+                              line_comment_prefix=None)
