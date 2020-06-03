@@ -923,19 +923,6 @@ def get_module_metadata(module):
     return info
 
 
-def warn_setuptools_issue(out=None):
-    if not out:
-        out = sys.stderr
-    import setuptools
-    from pkg_resources import parse_version as parse
-    if parse('5.4') <= parse(setuptools.__version__) < parse('5.7') and \
-            not os.environ.get('PKG_RESOURCES_CACHE_ZIP_MANIFESTS'):
-        out.write("Warning: Detected setuptools version %s. The environment "
-                  "variable 'PKG_RESOURCES_CACHE_ZIP_MANIFESTS' must be set "
-                  "to avoid significant performance degradation.\n"
-                  % setuptools.__version__)
-
-
 # -- crypto utils
 
 try:

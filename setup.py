@@ -94,7 +94,7 @@ setup(
         'jinja2>=2.9.3',
     ],
     install_requires = [
-        'setuptools>=0.6',
+        'setuptools>5.6',
         'jinja2>=2.9.3',
     ],
     extras_require = {
