@@ -75,15 +75,16 @@ def jinja2env(**kwargs):
     )
     return jenv
 
-def jinja2template(template, text=False):
+def jinja2template(template, text=False, **kwargs):
     """Creates a Jinja2 ``Template`` from inlined source.
 
     :param template: the template content
     :param text: if set to `False`, the result of the variable
                  expansion will be XML/HTML escaped
-
+    :param kwargs: additional arguments to pass to `jinja2env`. See
+                   `jinja2.Environment` for supported arguments.
     """
-    return jinja2env(autoescape=not text).from_string(template)
+    return jinja2env(autoescape=not text, **kwargs).from_string(template)
 
 
 # -- Unicode

@@ -1680,6 +1680,30 @@ ${prefix} (${
         self.assertEqual('Re: [TracTest] (worksforme) #1: The summary',
                          headers['Subject'])
 
+    def test_format_subject_custom_template_with_hash(self):
+        """Format subject with a custom template with leading #."""
+        ticket = self._insert_ticket()
+        self.env.config.set('notification', 'ticket_subject_template',
+                            '#${ticket.id}: ${summary}')
+
+        notify_ticket_created(self.env, ticket)
+        message = smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('#1: The summary', headers['Subject'])
+
+    def test_format_subject_custom_template_with_double_hash(self):
+        """Format subject with a custom template with leading ##."""
+        ticket = self._insert_ticket()
+        self.env.config.set('notification', 'ticket_subject_template',
+                            '##${prefix}## #${ticket.id}: ${summary}')
+
+        notify_ticket_created(self.env, ticket)
+        message = smtpd.get_message()
+        headers, body = parse_smtp_message(message)
+
+        self.assertEqual('##[TracTest]## #1: The summary', headers['Subject'])
+
 
 class AttachmentNotificationTestCase(unittest.TestCase):
 
@@ -1786,22 +1810,18 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         smtpd.cleanup()
         self.env.reset_db_and_disk()
 
-    def test_batchmod_notify(self):
-        self.assertEqual(1, min(self.tktids))
-        self.assertEqual(14, max(self.tktids))
-        new_values = {'milestone': 'milestone1'}
-        author = 'author@example.org'
-        comment = 'batch-modify'
-        when = datetime(2016, 8, 21, 12, 34, 56, 987654, utc)
-
+    def _change_tickets(self, author, new_values, comment, when=None):
+        if when is None:
+            when = datetime(2016, 8, 21, 12, 34, 56, 987654, utc)
         with self.env.db_transaction:
             for tktid in self.tktids:
                 t = Ticket(self.env, tktid)
                 for name, value in new_values.iteritems():
                     t[name] = value
                 t.save_changes(author, comment, when=when)
-        event = BatchTicketChangeEvent(self.tktids, when, author, comment,
-                                       new_values, 'leave')
+        return BatchTicketChangeEvent(self.tktids, when, author, comment,
+                                      new_values, 'leave')
+    def _notify(self, event):
         smtpd.cleanup()
         NotificationSystem(self.env).notify(event)
         recipients = sorted(smtpd.get_recipients())
@@ -1809,6 +1829,18 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
         body = body.splitlines()
+        return recipients, sender, message, headers, body
+
+    def test_batchmod_notify(self):
+        self.assertEqual(1, min(self.tktids))
+        self.assertEqual(14, max(self.tktids))
+        new_values = {'milestone': 'milestone1'}
+        author = 'author@example.org'
+        comment = 'batch-modify'
+        when = datetime(2016, 8, 21, 12, 34, 56, 987654, utc)
+        event = self._change_tickets(author, new_values, comment, when)
+
+        recipients, sender, message, headers, body = self._notify(event)
 
         self.assertEqual(['author@example.org', 'cc1@example.org',
                           'cc2@example.org', 'reporter@example.org'],
@@ -1827,6 +1859,34 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         self.assertIn('Tickets URL: <http://example.org/trac.cgi/query?id=3'
                       '%2C10%2C4%2C11%2C5%2C12%2C6%2C13%2C7%2C14%2C1%2C2%2C8'
                       '%2C9>', body)
+
+    def test_format_subject_custom_template_with_hash(self):
+        """Format subject with a custom template with leading #."""
+        self.env.config.set('notification', 'batch_subject_template',
+                            '#${prefix}# Batch modify')
+
+        event = self._change_tickets(
+            author='author@example.org',
+            new_values={'milestone': 'milestone1'},
+            comment='batch-modify')
+
+        recipients, sender, message, headers, body = self._notify(event)
+
+        self.assertEqual('#[TracTest]# Batch modify', headers['Subject'])
+
+    def test_format_subject_custom_template_with_double_hash(self):
+        """Format subject with a custom template with leading ##."""
+        self.env.config.set('notification', 'batch_subject_template',
+                            '##${prefix}## Batch modify')
+
+        event = self._change_tickets(
+            author='author@example.org',
+            new_values={'milestone': 'milestone1'},
+            comment='batch-modify')
+
+        recipients, sender, message, headers, body = self._notify(event)
+
+        self.assertEqual('##[TracTest]## Batch modify', headers['Subject'])
 
 
 def test_suite():
