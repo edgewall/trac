@@ -777,7 +777,7 @@ class SubversionNode(Node):
             except core.SubversionException as e:
                 raise NoSuchNode(path, rev, exception_to_unicode(e))
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
-        if not node_type in _kindmap:
+        if node_type not in _kindmap:
             raise NoSuchNode(path, rev)
         cp_utf8 = fs.node_created_path(self.root, self._scoped_path_utf8, pool)
         cp = _from_svn(cp_utf8)

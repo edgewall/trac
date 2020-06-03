@@ -47,7 +47,7 @@ def random_unique_camel():
     """Returns a unique camelcase word pair"""
     while True:
         camel = random_word(2).title() + random_word(2).title()
-        if not camel in _random_unique_camels:
+        if camel not in _random_unique_camels:
             break
     _random_unique_camels.append(camel)
     return camel

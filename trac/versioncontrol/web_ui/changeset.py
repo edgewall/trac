@@ -506,7 +506,7 @@ class ChangesetModule(Component):
             if old_props != new_props:
                 for k, v in sorted(old_props.items()):
                     new = old = diff = None
-                    if not k in new_props:
+                    if k not in new_props:
                         old = v  # won't be displayed, no need to render it
                     elif v != new_props[k]:
                         diff = self.render_property_diff(
@@ -520,7 +520,7 @@ class ChangesetModule(Component):
                         changed_properties.append({'name': k, 'old': old,
                                                    'new': new, 'diff': diff})
                 for k, v in sorted(new_props.items()):
-                    if not k in old_props:
+                    if k not in old_props:
                         new = browser.render_property(k, 'changeset',
                                                       new_ctx, new_props)
                         if new is not None:
@@ -953,7 +953,7 @@ class ChangesetModule(Component):
                             resource = c.resource.parent.child('source',
                                                                chg[0] or '/',
                                                                r.id)
-                            if not 'FILE_VIEW' in context.perm(resource):
+                            if 'FILE_VIEW' not in context.perm(resource):
                                 continue
                             filestats[chg[2]] += 1
                             files.append(chg[0])
@@ -975,7 +975,7 @@ class ChangesetModule(Component):
                             resource = c.resource.parent.child('source',
                                                                chg[0] or '/',
                                                                r.id)
-                            if not 'FILE_VIEW' in context.perm(resource):
+                            if 'FILE_VIEW' not in context.perm(resource):
                                 continue
                             if 0 < show_files < len(files):
                                 break
@@ -1129,7 +1129,7 @@ class ChangesetModule(Component):
             yield ('changeset', _('Changesets'))
 
     def get_search_results(self, req, terms, filters):
-        if not 'changeset' in filters:
+        if 'changeset' not in filters:
             return
         rm = RepositoryManager(self.env)
         repositories = {repos.params['id']: repos

@@ -370,7 +370,7 @@ class RecentChangesMacro(WikiMacroBase):
         entries_per_date = []
         prevdate = None
         for name, version, ts in self.env.db_query(sql, args):
-            if not 'WIKI_VIEW' in formatter.perm('wiki', name, version):
+            if 'WIKI_VIEW' not in formatter.perm('wiki', name, version):
                 continue
             req = formatter.req
             date = user_time(req, format_date, from_utimestamp(ts))

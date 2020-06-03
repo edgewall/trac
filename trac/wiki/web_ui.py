@@ -798,7 +798,7 @@ class WikiModule(Component):
             yield ('wiki', _('Wiki'))
 
     def get_search_results(self, req, terms, filters):
-        if not 'wiki' in filters:
+        if 'wiki' not in filters:
             return
         with self.env.db_query as db:
             sql_query, args = search_to_sql(db, ['w1.name', 'w1.author',

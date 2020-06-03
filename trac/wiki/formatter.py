@@ -1261,7 +1261,7 @@ class Formatter(object):
 
     def handle_match(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
-            if match and not itype in self.wikiparser.helper_patterns:
+            if match and itype not in self.wikiparser.helper_patterns:
                 # Check for preceding escape character '!'
                 if match[0] == '!':
                     return escape(match[1:])
