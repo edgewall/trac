@@ -216,7 +216,7 @@ class FunctionalTestEnvironment(object):
     def remove_config(self, *args):
         """Calls trac-admin to remove the value for the given option
         in `trac.ini`."""
-        return self._tracadmin('config', 'remove', *args)
+        self._tracadmin('config', 'remove', *args)
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
