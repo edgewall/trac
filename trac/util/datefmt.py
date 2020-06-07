@@ -42,6 +42,7 @@ else:
         get_period_names as babel_get_period_names,
         get_day_names
     )
+    # 'context' parameter was added in Babel 2.3.1
     if 'context' in inspect.getargspec(babel_get_period_names)[0]:
         def get_period_names(locale=None):
             return babel_get_period_names(context='format', locale=locale)
