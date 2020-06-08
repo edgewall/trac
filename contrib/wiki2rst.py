@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Copyright (C) 2015-2020 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at https://trac.edgewall.org/log/.
 
 import codecs
-import io
 import os.path
 import re
 import sys
 
-from contextlib import closing
 from pkg_resources import resource_listdir, resource_string
 
 from trac.loader import load_components
@@ -19,69 +28,67 @@ from trac.wiki.formatter import format_to_html
 from trac.wiki.model import WikiPage
 
 try:
-    import html2rest
+    import pypandoc
 except ImportError:
-    printerr("The html2rest package must be installed.")
+    printerr("The pypandoc package must be installed.")
     sys.exit(1)
 
 
-class Parser(html2rest.Parser):
-
-    def __init__(self, writer=sys.stdout, encoding='utf8', relroot=None,
-                 relpath=None):
-        html2rest.Parser.__init__(self, writer, encoding, relroot, relpath)
-        self.links = {}
-
-    def end_a(self):
-        if '#pending' in self.hrefs:
-            href = self.hrefs['#pending']
-            label = self.hrefs[href]
-            key = label.lower()
-            if key not in self.links:
-                self.links[key] = (label, href)
-            elif href != self.links[key][1]:
-                alt = label
-                while True:
-                    alt += '*'
-                    if alt not in self.links:
-                        break
-                    continue
-                self.data(alt[len(label):])
-                self.hrefs[href] = alt
-                self.links[alt] = (alt, href)
-            self.data('`_')
-            del self.hrefs['#pending']
-
-    def end_body(self):
-        self.end_p()
-        for label, href in self.links.itervalues():
-            if href[0] != '#':
-                self.writeline('.. _%s: %s' % (label, href))
-        self.end_p()
-
-
 def wiki2rest(env, context, wiki):
+    # Convert CRLF to LF and remove macros.
     text = re.sub('\r?\n', '\n', wiki.text)
     text = re.sub(r'\[\[TracGuideToc\]\]\r?\n?', '', text)
     text = re.sub(r'\[\[PageOutline\([^\)]*\)\]\]\r?\n?', '', text)
+
     html = unicode(format_to_html(env, context, text))
     html = html.replace(u'<span class="icon">\u200b</span>', '')
     html = re.sub(r'<em>\s*([^<]*?)\s*</em>', r'<em>\1</em>', html)
+    # Convert intra-document links from absolute to relative URLs.
+    html = re.sub(r'(<a [^>]*href=")%s(#\w+")' % context.href.wiki(wiki.name),
+                  r'\1\2', html)
+
     html = '<html><body>%s</body></html>' % html
-    writer = io.BytesIO()
-    with closing(Parser(writer, 'utf-8', None, None)) as parser:
-        parser.feed(html)
-    rst = writer.getvalue().strip('\n')
-    rst = re.sub('\n{4,}', '\n\n\n', rst)
-    # sort links
-    rst = re.sub(r'(?:\n\.\. _[^\n]*)+\Z',
-                 lambda m: '\n'.join(sorted(m.group(0).split('\n'),
-                                            key=lambda v: v.lower())),
-                 rst)
+    rst = pypandoc.convert_text(html, 'rst', 'html')
+
+    # Remove "wiki" class from code directive - not recognized by Pygments.
+    rst = re.sub(r'^(\.\. code::) wiki$', r'\1', rst, flags=re.M)
+    rst = lower_reference_names(rst)
+    rst = lower_intradocument_links(rst)
+    rst = re.sub(r'\n{4,}', '\n\n\n', rst)
     if any(ord(c) > 0x7f for c in rst):
         # Trac detects utf-8 using BOM
         rst = '%s.. charset=utf-8\n\n%s' % (codecs.BOM_UTF8, rst)
     return rst + '\n'
+
+
+def lower_reference_names(rst):
+    """Lowercase reference names
+
+    Reference names are converted to lowercase when HTML is rendered
+    from reST. Here they are lowercased for consistency in the rst
+    document.
+
+    .. _Target-No.1: -> .. _target-no.1:
+    """
+    rst = re.sub(r'^\.\. _[^:]+:$', lambda m: m.group(0).lower(),
+                 rst, flags=re.M)
+    return rst
+
+
+def lower_intradocument_links(rst):
+    """Lowercase intra-document links
+
+    Reference names are converted to lowercase when HTML is rendered
+    from reST (https://bit.ly/2yXRPzL). Intra-document links must be
+    lowercased in order to preserve linkage.
+
+    `The Link <#Target-No.1>`__ -> `The Link <#target-no.1>`__
+    """
+    pattern = r'`%s <#%s>`__'
+    rst = re.sub(pattern % (r'([^<]+)', r'([^>]+)'),
+                 lambda m: pattern % (m.group(1), m.group(2).lower()),
+                 rst)
+    return rst
 
 
 def main():
@@ -95,7 +102,7 @@ def main():
         for name in names:
             wiki = WikiPage(env, name)
             wiki.text = resource_string('trac.wiki', 'default-pages/' +
-                                        name).decode('utf-8')
+                                                     name).decode('utf-8')
             if wiki.text:
                 wiki.save('trac', '')
             else:

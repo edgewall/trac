@@ -6,4 +6,4 @@ babel
 setuptools_subversion
 reindent
 twine
-html2rest
+pypandoc
