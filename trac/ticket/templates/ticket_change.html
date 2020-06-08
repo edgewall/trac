@@ -43,6 +43,7 @@
 #   macro commentref(prefix, cnum, cls=none)
 <a href="#comment:${cnum}" class="${cls}">${prefix}${cnum}</a>
 #   endmacro
+## jinjacheck: "(a h3 div form div div div div )" OK
 
 <h3 class="change"${{'id': 'comment:%s' % cnum if 'cnum' in change}|htmlattr}>
   <span class="threading">
@@ -247,4 +248,3 @@ ${jmacros.warnings(chrome.warnings, 'trac-preview-warning')}
 </div>
 #   endif
 # endwith
-## jinjacheck: "CDATA" OK
