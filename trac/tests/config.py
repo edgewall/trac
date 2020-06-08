@@ -210,6 +210,9 @@ class ConfigurationTestCase(unittest.TestCase):
         self.config.parser.add_section(u'séction1')
         self.config.parser.set(u'séction1', u'öption1', u'cönfig-valué')
         self.config.parser.set(u'séction1', u'öption4', u'cönfig-valué')
+        self.config.parser.add_section(u'séction5')
+        self.config.parser.set(u'séction5', u'öption2', u'cönfig-valué')
+        self.config.parser.set(u'séction5', u'öption3', u'cönfig-valué')
         parent_config = Configuration(None)
         parent_config.parser.add_section(u'séction1')
         parent_config.parser.add_section(u'séction2')
@@ -217,12 +220,15 @@ class ConfigurationTestCase(unittest.TestCase):
         parent_config.parser.set(u'séction1', u'öption2', u'înherited-valué')
         parent_config.parser.set(u'séction2', u'öption2', u'înherited-valué')
         self.config.parents = [parent_config]
+        self.default_value = u'dēfault-valué'
 
         class OptionClass(object):
-            Option(u'séction1', u'öption1', u'dēfault-valué')
-            Option(u'séction1', u'öption2', u'dēfault-valué')
-            Option(u'séction1', u'öption3', u'dēfault-valué')
-            Option(u'séction3', u'öption1', u'dēfault-valué')
+            Option(u'séction1', u'öption1', self.default_value)
+            Option(u'séction1', u'öption2', self.default_value)
+            Option(u'séction1', u'öption3', self.default_value)
+            Option(u'séction3', u'öption1', self.default_value)
+            Option(u'séction5', u'öption1', self.default_value)
+            Option(u'séction5', u'öption2', self.default_value)
             ConfigSection(u'séction4', u"Séction 4")
 
     def test_get_from_config(self):
@@ -241,7 +247,7 @@ class ConfigurationTestCase(unittest.TestCase):
         """Value not specified in the config or the inherited config
         is retrieved from the option default.
         """
-        self.assertEqual(u'dēfault-valué',
+        self.assertEqual(self.default_value,
                          self.config.get(u'séction1', u'öption3'))
 
     def test_get_is_cached(self):
@@ -284,12 +290,69 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertNotIn(u'séction3', sections)
         self.assertIn(u'séction4', sections)
 
-    def test_remove_from_config(self):
+    def test_remove_option_from_config(self):
         """Value is removed from configuration."""
         self.config.remove(u'séction1', u'öption4')
         parser = self.config.parser
+        self.assertNotIn(u'öption4', self.config[u'séction1'])
         self.assertFalse(parser.has_option(u'séction1', u'öption4'))
         self.assertEqual('', self.config.get(u'séction1', u'öption4'))
+
+    def test_remove_non_existent_option_from_config(self):
+        """Removing non-existent value from config doesn't raise error."""
+        parser = self.config.parser
+        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
+        self.config.remove(u'séction1', u'öption5')
+        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
+        self.assertEqual('', self.config.get(u'séction1', u'öption5'))
+
+    def test_remove_option_from_section(self):
+        """Value is removed from section."""
+        self.config[u'séction1'].remove(u'öption4')
+        parser = self.config.parser
+        self.assertNotIn(u'öption4', self.config[u'séction1'])
+        self.assertFalse(parser.has_option(u'séction1', u'öption4'))
+        self.assertEqual('', self.config.get(u'séction1', u'öption4'))
+        self.assertEqual('', self.config[u'séction1'].get(u'öption4'))
+
+    def test_remove_non_existent_option_from_section(self):
+        """Removing non-existent value from section doesn't raise error."""
+        parser = self.config.parser
+        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
+        self.config[u'séction1'].remove(u'öption5')
+        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
+        self.assertEqual('', self.config.get(u'séction1', u'öption5'))
+
+    def _assert_section_removed(self):
+        parser = self.config.parser
+        self.assertFalse(parser.has_option(u'séction5', u'öption1'))
+        self.assertFalse(parser.has_option(u'séction5', u'öption2'))
+        self.assertFalse(parser.has_option(u'séction5', u'öption3'))
+        self.assertFalse(parser.has_section(u'séction5'))
+        self.assertIn(u'séction5', self.config)
+        self.assertEqual(self.default_value,
+                         self.config.get(u'séction5', u'öption1'))
+        self.assertEqual(self.default_value,
+                         self.config.get(u'séction5', u'öption2'))
+        self.assertEqual('', self.config.get(u'séction5', u'öption3'))
+
+    def test_remove_section_from_config(self):
+        """Section is removed from configuration."""
+        self.config.remove(u'séction5')
+        self._assert_section_removed()
+
+    def test_remove_section_from_config_when_last_option_removed(self):
+        """Section is removed from configuration when last option is
+        removed from the configuration."""
+        self.config.remove(u'séction5', u'öption1')
+        self.config.remove(u'séction5', u'öption2')
+        self.config.remove(u'séction5', u'öption3')
+        self._assert_section_removed()
+
+    def test_remove_non_existent_section(self):
+        """Removing non-existent section doesn't raise error."""
+        self.assertNotIn(u'séction6', self.config)
+        self.config.remove(u'séction6')
 
     def test_remove_leaves_inherited_unchanged(self):
         """Value is not removed from inherited configuration."""
@@ -1260,17 +1323,70 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         self.assertEqual('Test project',
                          self.env.config.get('project', 'name'))
 
-    def test_config_remove(self):
+    def test_config_remove_option(self):
         """
-        Tests the 'config remove' command in trac-admin.  This particular
-        test removes the project name from the config, therefore reverting
-        the option to the default value.
+        Tests the 'config remove <section> <option>' command in trac-admin.
+        This particular test removes the project name from the config,
+        therefore reverting the option to the default value.
         """
         self.env.config.set('project', 'name', 'Test project')
         rv, output = self.execute('config remove project name')
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
         self.assertEqual('My Project', self.env.config.get('project', 'name'))
+
+    def test_config_remove_mising_option_raises_error(self):
+        """
+        Tests the 'config remove <section> <option>' command in trac-admin.
+        Removing a non-existent option raises an error.
+        """
+        self.assertNotIn('section1', self.env.config)
+        rv, output = self.execute('config remove section1 no_exists')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+        self.assertNotIn('section1', self.env.config)
+
+    def test_config_remove_all_options_for_section(self):
+        """
+        Tests the 'config remove <section> <option>' command in trac-admin.
+        Remove the all options for a section and confirm the section is
+        no longer present in the config.
+        """
+        self.env.config.set('section1', 'opt1', 'val1')
+        self.env.config.set('section1', 'opt2', 'val2')
+        self.assertIn('section1', self.env.config)
+        rv1, output1 = self.execute('config remove section1 opt1')
+        rv2, output2 = self.execute('config remove section1 opt2')
+        self.assertEqual(0, rv1, output1)
+        self.assertExpectedResult(output1)
+        self.assertEqual(0, rv2, output2)
+        self.assertExpectedResult(output2)
+        self.assertNotIn('section1', self.env.config)
+
+    def test_config_remove_section(self):
+        """
+        Tests the 'config remove <section>' command in trac-admin.
+        Remove the section and confirm it's no longer present in the config.
+        """
+        self.env.config.set('section1', 'opt1', 'val1')
+        self.env.config.set('section1', 'opt2', 'val2')
+        self.env.config.set('section1', 'opt3', 'val3')
+        self.assertIn('section1', self.env.config)
+        rv, output = self.execute('config remove section1')
+        self.assertEqual(0, rv, output)
+        self.assertExpectedResult(output)
+        self.assertNotIn('section1', self.env.config)
+
+    def test_config_remove_mising_section_raises_error(self):
+        """
+        Tests the 'config remove <section>' command in trac-admin.
+        Removing a non-existent section raises an error.
+        """
+        self.assertNotIn('section1', self.env.config)
+        rv, output = self.execute('config remove section1')
+        self.assertEqual(2, rv, output)
+        self.assertExpectedResult(output)
+        self.assertNotIn('section1', self.env.config)
 
     def test_config_set_complete_section(self):
         """Tab complete on a configuration section."""

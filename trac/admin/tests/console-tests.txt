@@ -20,7 +20,7 @@ component list         Show components
 component remove       Remove component
 component rename       Rename component
 config get             Get the value of the given option in "trac.ini"
-config remove          Remove the specified option from "trac.ini"
+config remove          Remove the specified option or section from "trac.ini"
 config set             Set the value for the given option in "trac.ini"
 convert_db             Convert database
 deploy                 Extract static resources from Trac and all plugins
