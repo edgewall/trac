@@ -1,7 +1,13 @@
 ===== test_config_get =====
 Test project
 ===== test_config_set =====
-===== test_config_remove =====
+===== test_config_remove_option =====
+===== test_config_remove_mising_option_raises_error =====
+Error: Option 'no_exists' doesn't exist in section 'section1'
+===== test_config_remove_all_options_for_section =====
+===== test_config_remove_section =====
+===== test_config_remove_mising_section_raises_error =====
+Error: Section 'section1' doesn't exist
 ===== test_permission_list_ok =====
 
 User           Action

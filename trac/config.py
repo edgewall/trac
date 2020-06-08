@@ -185,6 +185,10 @@ class Configuration(object):
             self._sections[name] = Section(self, name)
         return self._sections[name]
 
+    def __delitem__(self, name):
+        self._sections.pop(name, None)
+        self.parser.remove_section(name)
+
     @property
     def exists(self):
         """Return boolean indicating configuration file existence.
@@ -284,9 +288,12 @@ class Configuration(object):
         """
         return self[section].options(compmgr)
 
-    def remove(self, section, key):
-        """Remove the specified option."""
-        self[section].remove(key)
+    def remove(self, section, key=None):
+        """Remove the specified option or section."""
+        if key:
+            self[section].remove(key)
+        else:
+            del self[section]
 
     def sections(self, compmgr=None, defaults=True, empty=False):
         """Return a list of section names.
@@ -614,9 +621,11 @@ class Section(object):
         Like for `set()`, the changes won't persist until `save()` gets
         called.
         """
+        self._cache.pop(key, None)
         if self.config.parser.has_section(self.name):
-            self._cache.pop(key, None)
             self.config.parser.remove_option(self.name, key)
+            if not self.config.parser.options(self.name):
+                del self.config[self.name]
 
 
 def _get_registry(cls, compmgr=None):
@@ -950,8 +959,8 @@ class ConfigurationAdmin(Component):
         yield ('config get', '<section> <option>',
                'Get the value of the given option in "trac.ini"',
                self._complete_config, self._do_get)
-        yield ('config remove', '<section> <option>',
-               'Remove the specified option from "trac.ini"',
+        yield ('config remove', '<section> [<option>]',
+               'Remove the specified option or section from "trac.ini"',
                self._complete_config, self._do_remove)
         yield ('config set', '<section> <option> <value>',
                'Set the value for the given option in "trac.ini"',
@@ -978,11 +987,14 @@ class ConfigurationAdmin(Component):
         if section == 'inherit' and option == 'file':
             self.config.parse_if_needed(force=True)  # Full reload
 
-    def _do_remove(self, section, option):
-        if not self.config.has_option(section, option):
+    def _do_remove(self, section, option=None):
+        if option and not self.config.has_option(section, option):
             raise AdminCommandError(
                 _("Option '%(option)s' doesn't exist in section"
                   " '%(section)s'", option=option, section=section))
+        elif section not in self.config:
+            raise AdminCommandError(
+                _("Section '%(section)s' doesn't exist", section=section))
         self.config.remove(section, option)
         self.config.save()
         if section == 'inherit' and option == 'file':
