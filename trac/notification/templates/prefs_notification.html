@@ -300,17 +300,16 @@
     </p>
     # endblock prefpanel
 
-    <div>
-      # block prefpanelhelp
-      #   call(note, page) jmacros.wikihelp('TracNotification'):
-      #     trans note, page
+    # block prefpanelhelp
+    #   call(note, page) jmacros.wikihelp('TracNotification'):
+    #     trans note, page
 
-      ${note} See ${page} for help on using notifications.
+    ${note} See ${page} for help on using notifications.
 
-      #     endtrans
-      #   endcall
-      # endblock
-    </div>
+    #     endtrans
+    #   endcall
+    # endblock
+    ## jinjacheck: "(h2 div p CDATA)" OK
 
   </body>
 </html>

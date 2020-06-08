@@ -161,12 +161,27 @@ class Statement(StatementTuple):
 LINE_STATEMENT_RE = re.compile(r'^(\s*)%s-?(\s*)(end)?(\w+)(.*?)?(:)?$' %
                                LINE_STATEMENT_PREFIX)
 
+STATEMENT_RE = re.compile(r'^(\s*)(.*)\s*$')
+
 JINJACHECK_RE = re.compile(r'jinjacheck(?:er)?: "([^"]+)" OK')
 
 
 def scan(lines):
     """Scans template lines and separates Jinja2 structure from HTML structure.
     """
+
+    def count_parens(line):
+        return line.count('(') - line.count(')')
+
+    def process_multiline_expr(expr, open_parens=0):
+        open_parens += count_parens(expr)
+        if open_parens:
+            linenum, line = lines.next()
+            m = STATEMENT_RE.match(line)
+            line_statements.append(
+                Statement(linenum, len(m.group(1)), '', '', m.group(2), ''))
+            process_multiline_expr(line.rstrip(), open_parens)
+
     lines = iter(enumerate(lines, 1))
     line_statements = []
     html = []
@@ -217,11 +232,13 @@ def scan(lines):
                             # check for a line statement
                             m = LINE_STATEMENT_RE.match(line)
                             if m:
+                                expr = m.group(5)
                                 line_statements.append(
                                     Statement(linenum, (len(m.group(1)) +
                                                         len(m.group(2)) + 1),
                                               m.group(3) or '', m.group(4),
-                                              m.group(5), m.group(6) or ''))
+                                              expr, m.group(6) or ''))
+                                process_multiline_expr(expr)
                             else:
                                 html_line = line
             html.append((linenum, ''.join(html_line).rstrip() + '\n'))
@@ -275,7 +292,7 @@ def check_jinja(filename, line_statements, quiet):
                 if s.colon:
                     warn.append("no ending colon wanted for '%s' statement"
                                 % s.kw)
-            elif not s.colon:
+            elif s.kw and not s.colon:
                 warn.append("ending colon wanted for '%s' statement" % s.kw)
             if s.kw in ('elif', 'else'):
                 if not top or not top.kw == 'if':
