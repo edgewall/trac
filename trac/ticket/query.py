@@ -33,7 +33,7 @@ from trac.mimeview.api import IContentConverter, Mimeview
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, group_milestones
-from trac.util import Ranges, as_bool
+from trac.util import Ranges, as_bool, as_int
 from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
                               parse_date, to_timestamp, to_utimestamp, utc, \
                               user_time
@@ -923,7 +923,7 @@ class QueryModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('TICKET_VIEW')
-        report_id = req.args.getfirst('report')
+        report_id = as_int(req.args.getfirst('report'), None)
         if report_id:
             req.perm('report', report_id).assert_permission('REPORT_VIEW')
 
@@ -1149,11 +1149,12 @@ class QueryModule(Component):
             data['report_href'] = req.href.report()
             add_ctxtnav(req, _('Available Reports'), req.href.report())
             add_ctxtnav(req, _('Custom Query'), req.href.query())
-            if query.id:
+            report_id = as_int(query.id, None)
+            if report_id is not None:
                 for title, description in self.env.db_query("""
                         SELECT title, description FROM report WHERE id=%s
-                        """, (query.id,)):
-                    data['report_resource'] = Resource('report', query.id)
+                        """, (report_id,)):
+                    data['report_resource'] = Resource('report', report_id)
                     data['description'] = description
         else:
             data['report_href'] = None

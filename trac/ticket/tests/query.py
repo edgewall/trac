@@ -1229,7 +1229,7 @@ class QueryLinksTestCase(unittest.TestCase):
     def test_duplicated_report_arguments(self):
         data = self._process_request('report=1&report=2')
         self.assertEqual([], data['tickets'])
-        self.assertEqual('1', data['query'].id)
+        self.assertEqual(1, data['query'].id)
 
     def test_duplicated_group_arguments(self):
         self._insert_ticket(status='new')
@@ -1269,6 +1269,16 @@ class QueryLinksTestCase(unittest.TestCase):
         self.assertEqual(3, data['query'].max)
         self.assertTrue(data['query'].groupdesc)
         self.assertFalse(data['query'].desc)
+
+    def test_non_numeric_report_argument(self):
+        data = self._process_request('id=0&report=42xx')
+        self.assertEqual([], data['tickets'])
+        self.assertEqual(None, data['query'].id)
+
+    def test_unicode_report_argument(self):
+        data = self._process_request(u'id=0&report=42éá')
+        self.assertEqual([], data['tickets'])
+        self.assertEqual(None, data['query'].id)
 
 
 class TicketQueryMacroTestCase(unittest.TestCase):
