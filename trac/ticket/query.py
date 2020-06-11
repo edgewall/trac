@@ -31,7 +31,7 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem, translation_deactivated
 from trac.ticket.model import Milestone, _datetime_to_db_str
 from trac.ticket.roadmap import group_milestones
-from trac.util import Ranges, as_bool
+from trac.util import Ranges, as_bool, as_int
 from trac.util.datefmt import (datetime_now, from_utimestamp,
                                format_date_or_datetime, parse_date,
                                to_timestamp, to_utimestamp, utc, user_time)
@@ -919,7 +919,7 @@ class QueryModule(Component):
 
     def process_request(self, req):
         req.perm(self.realm).require('TICKET_VIEW')
-        report_id = req.args.get('report')
+        report_id = req.args.as_int('report')
         if report_id:
             req.perm('report', report_id).require('REPORT_VIEW')
 
@@ -1135,10 +1135,11 @@ class QueryModule(Component):
             data['report_href'] = req.href.report()
             add_ctxtnav(req, _("Available Reports"), req.href.report())
             add_ctxtnav(req, _("New Custom Query"), req.href.query())
-            if query.id:
+            report_id = as_int(query.id, None)
+            if report_id is not None:
                 for title, description in self.env.db_query("""
                         SELECT title, description FROM report WHERE id=%s
-                        """, (query.id,)):
+                        """, (report_id,)):
                     data['report_resource'] = report_resource
                     data['description'] = description
         else:
