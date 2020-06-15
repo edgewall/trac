@@ -204,6 +204,27 @@ class TimelineModuleTestCase(unittest.TestCase):
 
         self.assertEqual(90, data['daysback'])
 
+    def test_render_rss_with_unicode_unknown_author(self):
+        self.env.config.set('trac', 'show_email_addresses', 'enabled')
+        self.env.insert_users([('blah', 'Blah user', 'blah@example.org')])
+        req = MockRequest(self.env, path_info='/timeline',
+                          args={'format': 'rss'})
+        rv = TimelineModule(self.env).process_request(req)
+        self.assertEqual('timeline.rss', rv[0])
+        author = u'jöé'
+        event = ('mock', datetime_now(utc), author, None)
+        rv[1]['events'] = [
+            {'kind': event[0], 'date': event[1], 'author': event[2],
+             'data': event[3], 'event': event, 'provider': None,
+             'dateuid': '42', 'render': lambda field, context: 'mock'},
+        ]
+        output = Chrome(self.env).render_template(req, rv[0], rv[1], rv[2])
+        if not output.startswith('<?xml version="1.0"?>'):
+            raise AssertionError('Missing <?xml?> in %r' % output)
+        dc_creator = '<dc:creator>%s</dc:creator>' % author.encode('utf-8')
+        if dc_creator not in output:
+            raise AssertionError('Missing %r in %r' % (dc_creator, output))
+
 
 def test_suite():
     suite = unittest.TestSuite()
