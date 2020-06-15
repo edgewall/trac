@@ -1257,7 +1257,9 @@ class Chrome(Component):
                     label = absolute
                 elif req.lc_time == 'iso8601':
                     label = _("at %(iso8601)s", iso8601=absolute)
-                else:
+                elif format == 'date':
+                    label = _("on %(date)s", date=absolute)
+                else:  # format == 'datetime'
                     label = _("on %(date)s at %(time)s",
                               date=user_time(req, format_date, date),
                               time=user_time(req, format_time, date))
