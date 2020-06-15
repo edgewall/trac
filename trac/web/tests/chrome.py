@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import datetime
 import os
 import tempfile
 import textwrap
@@ -28,6 +29,7 @@ from trac.resource import Resource
 from trac.util import create_file
 from trac.util.datefmt import pytz, timezone, utc
 from trac.util.html import Markup, tag
+from trac.util.translation import has_babel
 from trac.web.api import IRequestHandler
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice,
@@ -1006,23 +1008,26 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
     template = textwrap.dedent("""\
         <!DOCTYPE html>
         <html>
-          <body>
-            <h1>${greeting}</h1>
-          </body>
+        <body>
+        %s
+        </body>
         </html>
         """)
 
     def setUp(self):
         self.env = EnvironmentStub(path=mkdtemp())
         os.mkdir(self.env.templates_dir)
-        filepath = os.path.join(self.env.templates_dir, self.filename)
-        create_file(filepath, self.template)
+        self.filepath = os.path.join(self.env.templates_dir, self.filename)
         self.chrome = Chrome(self.env)
 
     def tearDown(self):
         self.env.reset_db_and_disk()
 
+    def _create_template(self, body):
+        create_file(self.filepath, self.template % body)
+
     def test_load_template(self):
+        self._create_template('<h1>${greeting}</h1>')
         t1 = self.chrome.load_template(self.filename)
         self.assertTrue(isinstance(t1, jinja2.Template))
         t1_text = self.chrome.load_template(self.filename, text=True)
@@ -1035,6 +1040,7 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertIsNot(t1, t1_text)
 
     def test_render_template_string(self):
+        self._create_template('<h1>${greeting}</h1>')
         t = self.chrome.load_template(self.filename)
         self.assertIsNotNone(t)
         t_text = self.chrome.load_template(self.filename, text=True)
@@ -1045,9 +1051,9 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertEqual(textwrap.dedent(u"""\
             <!DOCTYPE html>
             <html>
-              <body>
-                <h1>Hell&amp;ö</h1>
-              </body>
+            <body>
+            <h1>Hell&amp;ö</h1>
+            </body>
             </html>"""), content)
         content_text = self.chrome.render_template_string(t_text, data,
                                                           text=True)
@@ -1056,12 +1062,13 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertEqual(textwrap.dedent(u"""\
             <!DOCTYPE html>
             <html>
-              <body>
-                <h1>Hell&ö</h1>
-              </body>
+            <body>
+            <h1>Hell&ö</h1>
+            </body>
             </html>"""), content_text)
 
     def test_render_template(self):
+        self._create_template('<h1>${greeting}</h1>')
         data = {'greeting': u"Hell&ö"}
         content = self.chrome.render_template(MockRequest(self.env),
                                               self.filename, data,
@@ -1070,10 +1077,59 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertEqual(textwrap.dedent("""\
             <!DOCTYPE html>
             <html>
-              <body>
-                <h1>Hell&amp;ö</h1>
-              </body>
+            <body>
+            <h1>Hell&amp;ö</h1>
+            </body>
             </html>"""), content)
+
+    def test_pretty_dateinfo(self):
+        self._create_template(textwrap.dedent("""\
+            <ul>
+            <li>${pretty_dateinfo(None)}</li>
+            <li>${pretty_dateinfo(dt)}</li>
+            <li>${pretty_dateinfo(dt, format='relative')}</li>
+            <li>${pretty_dateinfo(dt, format='date')}</li>
+            <li>${pretty_dateinfo(dt, format='datetime')}</li>
+            <li>${pretty_dateinfo(dt, format='date', dateonly=True)}</li>
+            <li>${pretty_dateinfo(dt, format='datetime', dateonly=True)}</li>
+            </ul>"""))
+        data = {'dt': datetime.datetime(2007, 7, 1, 12, 34, 56, 987654, utc)}
+        content = self.chrome.render_template(MockRequest(self.env),
+                                              self.filename, data,
+                                              {'fragment': True})
+
+        if has_babel:
+            self.assertRegexpMatches(content, textwrap.dedent("""\
+                <!DOCTYPE html>
+                <html>
+                <body>
+                <ul>
+                <li></li>
+                <li><span title="Jul 1, 2007, 12:34:56 PM">\d+ years ago</span></li>
+                <li><span title="Jul 1, 2007, 12:34:56 PM">\d+ years ago</span></li>
+                <li><span title="\d+ years ago">on Jul 1, 2007</span></li>
+                <li><span title="\d+ years ago">on Jul 1, 2007 at 12:34:56 PM</span></li>
+                <li><span title="\d+ years ago">Jul 1, 2007</span></li>
+                <li><span title="\d+ years ago">Jul 1, 2007, 12:34:56 PM</span></li>
+                </ul>
+                </body>
+                </html>"""), content)
+        else:
+            self.assertRegexpMatches(content, textwrap.dedent("""\
+                <!DOCTYPE html>
+                <html>
+                <body>
+                <ul>
+                <li></li>
+                <li><span title="07/01/07 12:34:56">\d+ years ago</span></li>
+                <li><span title="07/01/07 12:34:56">\d+ years ago</span></li>
+                <li><span title="\d+ years ago">on 07/01/07</span></li>
+                <li><span title="\d+ years ago">on 07/01/07 at 12:34:56</span></li>
+                <li><span title="\d+ years ago">07/01/07</span></li>
+                <li><span title="\d+ years ago">07/01/07 12:34:56</span></li>
+                </ul>
+                </body>
+                </html>"""), content)
 
     def test_render_template_late_data(self):
         def fn():

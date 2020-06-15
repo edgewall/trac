@@ -129,7 +129,7 @@
           #       if name == 'summary':
           <a href="${result.href}" title="${_('View ticket')}">${value}</a>
           #       elif header.field.type == 'time':
-          ${pretty_dateinfo(value, header.field.format)}
+          ${pretty_dateinfo(value, header.field.format, dateonly=True)}
           #       elif header.field.type == 'checkbox':
           ${_("yes") if value else _("no")}
           #       elif name == 'reporter':
