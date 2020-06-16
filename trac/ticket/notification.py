@@ -778,5 +778,5 @@ def _ticket_change_subscribers(subscriber, candidates):
 
 
 def _template_from_string(string):
-        return jinja2template(string, text=True, line_statement_prefix=None,
-                              line_comment_prefix=None)
+    return jinja2template(string, text=True, line_statement_prefix=None,
+                          line_comment_prefix=None)
