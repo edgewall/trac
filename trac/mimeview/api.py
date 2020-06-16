@@ -298,6 +298,7 @@ KNOWN_MIME_TYPES = {
 
     'text/css':                'css',
     'text/html':               'html htm',
+    'text/html+jinja':         'jinja',
     'text/plain':              'txt TXT text README INSTALL '
                                'AUTHORS COPYING ChangeLog RELEASE',
     'text/xml':                'xml',
