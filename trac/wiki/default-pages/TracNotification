@@ -117,39 +117,36 @@ The following variables are available in the template:
 
 The notification email content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default is:
 
-{{{#!genshi
-$ticket_body_hdr
-$ticket_props
-{% choose ticket.new %}\
-{%   when True %}\
-$ticket.description
-{%   end %}\
-{%   otherwise %}\
-{%     if changes_body %}\
+{{{#!jinja
+${ticket_body_hdr}
+${ticket_props}
+# if ticket.new:
+${ticket.description}
+# else:
+#   if changes_body:
 ${_('Changes (by %(author)s):', author=change.author)}
 
-$changes_body
-{%     end %}\
-{%     if changes_descr %}\
-{%       if not changes_body and not change.comment and change.author %}\
+${changes_body}
+#   endif
+#   if changes_descr:
+#     if not changes_body and not change.comment and change.author:
 ${_('Description changed by %(author)s:', author=change.author)}
-{%       end %}\
-$changes_descr
+#     endif
+${changes_descr}
 --
-{%     end %}\
-{%     if change.comment %}\
+#   endif
+#   if change.comment:
 
-${_('Comment:') if changes_body else _('Comment (by %(author)s):', author=change.author)}
+${_('Comment:') if changes_body else
+  _('Comment (by %(author)s):', author=change.author)}
 
-$change.comment
-{%     end %}\
-{%   end %}\
-{% end %}\
-
+${change.comment}
+#   endif
+# endif
 ${'-- '}
 ${_('Ticket URL: <%(link)s>', link=ticket.link)}
-$project.name <${project.url or abs_href()}>
-$project.descr
+${project.name} <${project.url or abs_href()}>
+${project.descr}
 }}}
 
 See the [trac:CookBook/Notification/Templates cookbook] for additional template customization recipes.

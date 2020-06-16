@@ -3,8 +3,8 @@ Trac Installation Guide for 1.4
 
 Trac is written in the Python programming language and needs a
 database, `SQLite`_, `PostgreSQL`_, or `MySQL`_. For HTML rendering,
-Trac uses the `Jinja2`_ templating system, though Genshi templates
-will still be supported until at least Trac 1.5.1.
+Trac uses the `Jinja2`_ templating system, though Genshi templates are
+supported until Trac 1.5.1.
 
 Trac can also be localized, and there is probably a translation
 available in your language. If you want to use the Trac interface in
@@ -155,11 +155,12 @@ Other Python Packages
 
 
 + `Babel*`_, version 0.9.6 or >= 1.3, needed for localization support
++ `pytz`_ to get a complete list of time zones, otherwise Trac will
+  fall back on a shorter list from an internal time zone implementation.
+  Installing Babel will install pytz.
 + `docutils`_, version >= 0.3.9 for `WikiRestructuredText`_.
 + `Pygments`_ for`syntax highlighting`_.
 + `Textile`_ for rendering the `Textile markup language`_.
-+ `pytz`_ to get a complete list of time zones, otherwise Trac will
-  fall back on a shorter list from an internal time zone implementation.
 + `passlib`_ on Windows to decode `htpasswd formats`_ other than
   `SHA-1`.
 + `pyreadline`_ on Windows for trac-admin `command completion`_.
@@ -257,8 +258,22 @@ The optional dependencies can be installed from PyPI using `pip`:
 
 ::
 
-    $ pip install babel docutils pygments pytz textile
+    $ pip install babel docutils pygments textile
 
+
+The optional dependencies can alternatively be specified using the
+`extras` keys in the setup file:
+
+
+::
+
+    $ pip install Trac[babel,rest,pygments,textile]
+
+
+`rest` is the extra that installs the `docutils` dependency.
+
+Include `mysql` or `psycopg2-binary` in the list if using the MySQL or
+PostgreSQL database.
 
 Additionally, you can install several Trac plugins from PyPI (listed
 `here`_) using pip. See `TracPlugins`_ for more information.

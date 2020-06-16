@@ -17,12 +17,11 @@ that you are upgrading to. Obsolete plugins listed in the `version
 specific steps`_ below should be uninstalled or disabled.
 
 If you are upgrading to a minor release, plugin compatibility is
-usually not a concern because the Trac API rarely changes, and major
-features are usually not introduced, for minor releases.
+usually not a concern because the Trac API is normally unchanged.
 
 If your plugins are installed from `trac-hacks.org`_ you can check
 compatibility by looking for a tag on the project page corresponding
-to a major release (e.g. `1.2`). If you are unsure, you'll want to
+to a major release (e.g. `1.4`). If you are unsure, you'll want to
 contact the plugin author or ask on the `MailingList`_.
 
 If you are running several Trac plugins it is good to test the upgrade
@@ -52,9 +51,10 @@ beginning. You may also wish to create a full backup of your server.
 
 The packages are available through several channels, as described in
 `TracDownload`_. If your Trac instance was installed through an
-operating system package manager or an installer on Windows, proceed
-with the standard steps that are appropriate for your operating
-system.
+operating system package manager, proceed with the standard steps that
+are appropriate for your operating system package manager. If it was
+installed through a Windows installer, uninstall the old Trac package
+before installing new Trac package.
 
 If you are managing your Trac installation using command line tools,
 `pip` is the preferred tool to upgrade a Trac instance because it will
@@ -75,7 +75,7 @@ specify the Trac version in the `pip` command.
 
 ::
 
-    $ pip install --upgrade Trac==1.2.1
+    $ pip install --upgrade Trac==1.4.1
 
 
 You should also upgrade dependencies so they are compliant with the
@@ -204,15 +204,15 @@ should verify that your plugins are compatible with this change.
 
 If you customized the Trac templates, or the `site.html` template,
 you'll need to adapt that as well. (TODO: expand...) See
-`#CustomizedTemplates`_. Email notification templates
-(`TracNotification#CustomizingContent`_) also need to be adapted.
+`#CustomizedTemplates`_. Email `notification templates`_ also need to
+be adapted.
 
 
 New permission policies for Wiki and Ticket realms
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Since 1.3.2 there are new permission policies for the ticket and wiki
-systems. `DefaultTicketPolicy` allows an authenticated users with
+systems. `DefaultTicketPolicy` allows an authenticated user with
 `TICKET_APPEND` or `TICKET_CHPROP` to modify the description of a
 ticket they reported. It also implements the pre-1.3.2 behavior of
 allowing users to edit their own ticket comments.
@@ -269,6 +269,7 @@ Removed `<repostype>` and `<repospath>` arguments from `trac-admin`
 The `TracAdmin`_ `initenv` command allowed the default repository to
 be specified using the third and fourth positional arguments of
 `initenv`:
+
 
 ::
 
@@ -353,6 +354,23 @@ If other permission policies are enabled, `trac.ini` will need to have
 `permission_policies`. See
 `TracFineGrainedPermissions#ReadonlyWikiPolicy`_ for additional
 details on the proper ordering.
+
+
+Navigation Ordering Moved
++++++++++++++++++++++++++
+
+The mainnav and metanav configuration ordering have been moved from
+`[trac]` `mainnav` and `[trac]` `metanav` to the `[mainnav]` and
+`[metanav]` sections. The ordering is now specified using the `order`
+attribute as described in `TracNavigation*`_.
+
+The new configuration values will be written to trac.ini on upgrade,
+preserving the navigation order for the environment. You may need to
+edit trac.ini if you use a shared `global configuration`_. For
+example, if you wish to specify the navigation ordering for several
+environments in `global.ini`, you'll need to add the `[mainnav]` and
+`[metanav]` sections in that file and delete those sections from each
+environment's trac.ini.
 
 
 Upgrading from Trac 0.12 to Trac 1.0
@@ -532,6 +550,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _FlexibleAssignToPlugin: https://trac-hacks.org/wiki/FlexibleAssignToPlugin
 .. _FlexibleReporterNotificationPlugin: https://trac-hacks.org/wiki/FlexibleReporterNotificationPlugin
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
+.. _global configuration: https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
 .. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin
 .. _GroupingAssignToPlugin: https://trac-hacks.org/wiki/GroupingAssignToPlugin
 .. _hotcopy: https://trac.edgewall.org/wiki/TracBackup
@@ -546,6 +565,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _NavAddPlugin: https://trac-hacks.org/wiki/NavAddPlugin
 .. _NeverNotifyUpdaterPlugin: https://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
 .. _notification subscribers: https://trac.edgewall.org/wiki/TracNotification#notification-subscriber-section
+.. _notification templates: https://trac.edgewall.org/wiki/TracNotification#CustomizingContent
 .. _OverrideEditPlugin: https://trac-hacks.org/wiki/OverrideEditPlugin
 .. _ProgressMeterMacro: https://trac-hacks.org/wiki/ProgressMeterMacro
 .. _PyMySQL: https://pypi.python.org/pypi/PyMySQL
@@ -571,8 +591,8 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracInstall: https://trac.edgewall.org/wiki/TracInstall
 .. _TracInterfaceCustomization: https://trac.edgewall.org/wiki/TracInterfaceCustomization
 .. _TracMigratePlugin: https://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracNavigation*: https://trac.edgewall.org/wiki/TracNavigation#nav-order
 .. _TracNavigation: https://trac.edgewall.org/wiki/TracNavigation
-.. _TracNotification#CustomizingContent: https://trac.edgewall.org/wiki/TracNotification#CustomizingContent
 .. _TracQuery#Filters: https://trac.edgewall.org/wiki/TracQuery#Filters
 .. _TracUpgrade for 0.10: https://trac.edgewall.org/intertrac/wiki%3A0.10/TracUpgrade%23SpecificVersions
 .. _TracUpgrade for 0.12: https://trac.edgewall.org/intertrac/wiki%3A0.12/TracUpgrade%23SpecificVersions
