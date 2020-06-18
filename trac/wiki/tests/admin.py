@@ -99,6 +99,17 @@ class WikiAdminTestCase(unittest.TestCase):
         self.assertEqual(0, page.readonly)
         self.assertEqual(page_text, page.text)
 
+    def test_import_page_replace(self):
+        page = WikiPage(self.env, 'WritablePage')
+        self.assertEqual(3, page.version)
+        self.assertEqual(0, page.readonly)
+        self.assertNotEqual(self.page_text, page.text)
+        self._import_page(self.filename, 'WritablePage', replace=True)
+        page = WikiPage(self.env, 'WritablePage')
+        self.assertEqual(3, page.version)
+        self.assertEqual(0, page.readonly)
+        self.assertEqual(self.page_text, page.text)
+
 
 def suite():
     return unittest.makeSuite(WikiAdminTestCase)

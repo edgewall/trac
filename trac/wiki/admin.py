@@ -127,33 +127,27 @@ class WikiAdmin(Component):
 
         with self.env.db_transaction as db:
             # Make sure we don't insert the exact same page twice
-            old = db("""SELECT text FROM wiki WHERE name=%s
-                        ORDER BY version DESC LIMIT 1
-                        """, (title,))
-            if old and title in create_only:
+            page = model.WikiPage(self.env, title)
+            if page.exists and title in create_only:
                 printout(_("  %(title)s already exists", title=title))
                 return False
-            if old and data == old[0][0]:
+            if page.exists and data == page.text:
                 printout(_("  %(title)s is already up to date", title=title))
                 return False
 
-            if replace and old:
-                db("""UPDATE wiki SET text=%s
-                      WHERE name=%s
-                        AND version=(SELECT max(version) FROM wiki
-                                     WHERE name=%s)
-                      """, (data, title, title))
+            if replace and page.exists:
+                db("""UPDATE wiki SET text=%s WHERE name=%s AND version=%s
+                      """, (data, title, page.version))
             else:
                 db("""INSERT INTO wiki (version, readonly, name, time, author,
                                         ipnr, text)
                       SELECT 1 + COALESCE(max(version), 0),
                              COALESCE(max(readonly), 0),
                              %s, %s, 'trac', '127.0.0.1', %s FROM wiki
-                      WHERE name=%s AND version=(SELECT max(version)
-                                                 FROM wiki WHERE name=%s)
+                      WHERE name=%s AND version=%s
                       """, (title, to_utimestamp(datetime_now(utc)), data,
-                            title, title))
-            if not old:
+                            title, page.version))
+            if not page.exists:
                 del WikiSystem(self.env).pages
         return True
 
