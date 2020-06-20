@@ -82,7 +82,7 @@ before_install:
 - |
   case "$pyver" in
     2.7)
-      pip install --upgrade pip setuptools wheel
+      pip install --upgrade "pip<21" "setuptools<45" wheel
       ;;
   esac
 - pyenv --version
@@ -92,7 +92,7 @@ before_install:
 - pip list
 install:
 - |
-  requires='Genshi>=0.7 configobj Pygments docutils textile pytz twill==0.9.1'
+  requires='Genshi>=0.7 configobj pygments<2.6 docutils textile<4.0 pytz twill==0.9.1'
   case "$pyver" in
     2.6) requires="$requires Babel<2.6.0 lxml<4.3.0" ;;
     *)   requires="$requires Babel lxml" ;;

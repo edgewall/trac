@@ -58,9 +58,9 @@ $pipCommonPackages = @(
     'twill==0.9.1',
     'configobj',
     'docutils',
-    'pygments',
+    'pygments<2.6',
     'pytz',
-    'textile',
+    'textile<4.0',
     'wheel'
 )
 

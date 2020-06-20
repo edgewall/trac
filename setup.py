@@ -106,16 +106,16 @@ setup(
         'Genshi>=0.6',
     ],
     install_requires = [
-        'setuptools>=0.6b1',
+        'setuptools>=0.6b1,<45',
         'Genshi>=0.6',
     ],
     extras_require = {
         'babel': ['Babel>=0.9.5'],
         'configobj': ['configobj'],
-        'pygments': ['Pygments>=0.6'],
+        'pygments': ['Pygments>=0.6,<2.6'],
         'rest': ['docutils>=0.3.9'],
         'silvercity': ['SilverCity>=0.9.4'],
-        'textile': ['textile>=2.0'],
+        'textile': ['textile>=2.0,<4.0'],
     },
 
     entry_points = """
