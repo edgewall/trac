@@ -20,7 +20,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: tracopt/mimeview/php.py:96
 msgid ""
@@ -1647,7 +1647,7 @@ msgid "documentation"
 msgstr "документація з встановлення"
 
 #: trac/db/api.py:462
-#, fuzzy, python-format
+#, fuzzy
 msgid "Database Connection Strings documentation"
 msgstr "Рядок підключення бази даних [%(default)s]> "
 
@@ -3126,7 +3126,7 @@ msgid "Tickets %(ranges)s"
 msgstr ""
 
 #: trac/ticket/api.py:535
-#, fuzzy, python-format
+#, fuzzy
 msgid "ticket comment does not exist"
 msgstr "Квиток %(id)s не існує."
 
@@ -3151,7 +3151,7 @@ msgid "no permission to view ticket"
 msgstr "немає права на перегляд цієї сторінки wiki"
 
 #: trac/ticket/api.py:557
-#, fuzzy, python-format
+#, fuzzy
 msgid "ticket does not exist"
 msgstr "Квиток %(id)s не існує."
 
@@ -3659,7 +3659,7 @@ msgid "Invalid Report Number"
 msgstr "Хибний номер звіту"
 
 #: trac/ticket/report.py:949
-#, fuzzy, python-format
+#, fuzzy
 msgid "report does not exist"
 msgstr "Звіт {%(num)s} не існує."
 
@@ -7224,7 +7224,7 @@ msgid "Page not modified"
 msgstr "Сторінку не змінено"
 
 #: trac/wiki/model.py:181
-#, fuzzy, python-format
+#, fuzzy
 msgid "Cannot rename non-existent page"
 msgstr "Не можу перейменувати у наявну сторінку %(name)s."
 

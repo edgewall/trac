@@ -7,19 +7,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:  Trac\n"
-"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2019-09-02 18:45+0900\n"
-"PO-Revision-Date: 2012-02-14 09:21+0000\n"
+"PO-Revision-Date: 2020-06-20 21:41+0000\n"
 "Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
 "Language: uk\n"
-"Language-Team: Ukrainian "
-"(http://www.transifex.com/projects/p/trac/language/uk/)\n"
+"Language-Team: uk <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -82,61 +81,59 @@ msgstr ""
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr ""
+msgstr "Готово"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Попередній"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Наступний"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Нині"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Тж"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
-msgstr ""
+msgstr "Обрати час"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
-msgstr ""
+msgstr "Час"
 
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:35
-#, fuzzy
 msgid "Hour"
-msgstr "або"
+msgstr "Година"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
-msgstr ""
+msgstr "Хвилина"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
-msgstr ""
+msgstr "Секунда"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
-msgstr ""
+msgstr "Часовий пояс"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:38
-#, fuzzy
 msgid "Now"
-msgstr "ні"
+msgstr "Зараз"
 
 #: trac/htdocs/js/query.js:132
 msgid "A filter already exists for that property"
@@ -164,20 +161,20 @@ msgstr "та"
 
 #: trac/htdocs/js/query.js:342
 msgid " remove:"
-msgstr ""
+msgstr " вилучити:"
 
 #: trac/htdocs/js/query.js:352
 msgid " add:"
-msgstr ""
+msgstr " додати:"
 
 #: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgstr "Позначте квиток %(id)s для зміни"
 
 #: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+msgstr "Перемкнути виділення усіх квитків у цій групі"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"

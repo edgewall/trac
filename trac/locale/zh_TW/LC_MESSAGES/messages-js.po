@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-01-27 11:21+0900\n"
-"PO-Revision-Date: 2010-10-03 14:13+0800\n"
+"POT-Creation-Date: 2019-09-02 18:45+0900\n"
+"PO-Revision-Date: 2020-06-20 21:41+0000\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
+"Language: zh_TW\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -76,7 +77,7 @@ msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr "完成"
 
@@ -101,34 +102,34 @@ msgid "Wk"
 msgstr "週"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr "選擇時間"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr "時間"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
 msgstr "時"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr "分"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr "秒"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr "時區"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
 msgstr "現在"
 
@@ -140,11 +141,11 @@ msgstr "此屬性已存在一過濾器"
 msgid "or"
 msgstr "或"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:310
+#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:311
 msgid "yes"
 msgstr "是"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:313
+#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:314
 msgid "no"
 msgstr "否"
 
@@ -156,60 +157,60 @@ msgstr "介於"
 msgid "and"
 msgstr "且"
 
-#: trac/htdocs/js/query.js:337
+#: trac/htdocs/js/query.js:342
 msgid " remove:"
 msgstr " 移除:"
 
-#: trac/htdocs/js/query.js:347
+#: trac/htdocs/js/query.js:352
 msgid " add:"
 msgstr " 新增:"
 
-#: trac/htdocs/js/query.js:376
+#: trac/htdocs/js/query.js:381
 #, python-format
 msgid "Select ticket %(id)s for modification"
 msgstr "請選擇代辦事項 %(id)s 進行修改"
 
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:393
 msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+msgstr "切換在這個群組中所有選取的待辦事項"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "連結到此"
 
-#: trac/htdocs/js/wikitoolbar.js:56
+#: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: '''Example'''"
 msgstr "粗體: '''範例'''"
 
-#: trac/htdocs/js/wikitoolbar.js:59
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "斜體: ''範例''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
+#: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example =="
 msgstr "標題: == 範例 =="
 
-#: trac/htdocs/js/wikitoolbar.js:65
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "連結: [http://www.example.com/ 範例]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "程式碼區塊: {{{ 範例 }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "水平線: ---"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "新增段落"
 
-#: trac/htdocs/js/wikitoolbar.js:77
+#: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: [[BR]]"
 msgstr "換行: [[BR]]"
 
-#: trac/htdocs/js/wikitoolbar.js:80
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "圖片: [[Image()]]"
 
