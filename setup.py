@@ -94,7 +94,7 @@ setup(
         'jinja2>=2.9.3',
     ],
     install_requires = [
-        'setuptools>=0.6',
+        'setuptools>=0.6,<45',
         'jinja2>=2.9.3',
     ],
     extras_require = {
@@ -104,9 +104,9 @@ setup(
         'postgresql': ['psycopg2 >= 2.0'],
         'psycopg2': ['psycopg2 >= 2.0'],
         'psycopg2-binary': ['psycopg2-binary'],
-        'pygments': ['Pygments>=1.0'],
+        'pygments': ['Pygments>=1.0,<2.6'],
         'rest': ['docutils>=0.3.9'],
-        'textile': ['textile>=2.0'],
+        'textile': ['textile>=2.0,<4.0'],
     },
 
     entry_points = """

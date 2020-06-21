@@ -59,9 +59,9 @@ $pipPackages = @(
     'twill==0.9.1',
     'docutils',
     'passlib',
-    'pygments',
+    'pygments<2.6',
     'pytz',
-    'textile',
+    'textile<4.0',
     'wheel'
 )
 
