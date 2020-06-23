@@ -1,9 +1,14 @@
 version: '{branch}.{build}'
 clone_depth: 20
-skip_commits:
+only_commits:
   files:
-    - trac/locale/
-    - trac/wiki/default-pages/
+    - .appveyor.yml
+    - contrib/appveyor.ps1
+    - setup.py
+    - trac/**/*.py
+    - trac/**/*.html
+    - tracopt/**/*.py
+    - tracopt/**/*.html
 init:
 - ps: >-
     # Note 1: in 'Environment variables' groups above, use:
