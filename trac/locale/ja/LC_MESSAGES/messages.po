@@ -1183,8 +1183,8 @@ msgid ""
 "has %(perm)s permission and you cannot grant permissions you don't "
 "possess."
 msgstr ""
-"%(subject)s をグループ %(group)s に追加しませんでした。グループが %(perm)s "
-"権限を持っており、保有していない権限を付与することはできません。"
+"グループ %(group)s に %(subject)s を追加しませんでした。グループは %(perm)s "
+"権限を持っていいますが、保有していない権限を許可することはできません。"
 
 #: trac/admin/web_ui.py:404
 #, python-format
