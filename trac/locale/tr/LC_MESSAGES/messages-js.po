@@ -7,15 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2010-06-24 08:11+0200\n"
+"POT-Creation-Date: 2019-09-29 11:44+0100\n"
+"PO-Revision-Date: 2020-06-23 09:03+0000\n"
 "Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
-"Language-Team: tr <LL@li.org>\n"
+"Language: tr\n"
+"Language-Team: tr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Tümüne geç"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -25,11 +30,11 @@ msgstr "(değişimset bilgisi yok)"
 msgid "Close"
 msgstr "Kapat"
 
-#: trac/htdocs/js/diff.js:119
+#: trac/htdocs/js/diff.js:117
 msgid "Tabular"
 msgstr "Tablolu"
 
-#: trac/htdocs/js/diff.js:125
+#: trac/htdocs/js/diff.js:123
 msgid "Unified"
 msgstr "Birleşik"
 
@@ -41,20 +46,20 @@ msgstr "Klasörü genişlet"
 msgid "Re-expand directory"
 msgstr "Klasörü yeniden genişlet"
 
-#: trac/htdocs/js/expand_dir.js:121
+#: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Yükleniyor %(entry)s..."
 
-#: trac/htdocs/js/expand_dir.js:149
+#: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
 msgstr "(boş)"
 
-#: trac/htdocs/js/expand_dir.js:157
+#: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
 msgstr "(hata)"
 
-#: trac/htdocs/js/expand_dir.js:164
+#: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
 msgstr "Klasörü katla"
 
@@ -63,7 +68,7 @@ msgstr "Klasörü katla"
 msgid "Show %(title)s"
 msgstr "Göster %(title)s"
 
-#: trac/htdocs/js/folding.js:78
+#: trac/htdocs/js/folding.js:74
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (sütunu gizlemek için tıklayın)"
@@ -72,152 +77,176 @@ msgstr "%(title)s (sütunu gizlemek için tıklayın)"
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr ""
+msgstr "Bitti"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "Önceki"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Sonraki"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr ""
+msgstr "Bugün"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Hf"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
-msgstr ""
+msgstr "Zaman Seç"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
-msgstr ""
+msgstr "Zaman"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-#, fuzzy
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
-msgstr "veya"
-
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-msgid "Minute"
-msgstr ""
-
-#: trac/htdocs/js/jquery-ui-i18n.js:34
-msgid "Second"
-msgstr ""
+msgstr "Saat"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Dakika"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Saniye"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
-msgstr ""
+msgstr "Zaman Dilimi"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
-#, fuzzy
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
-msgstr "hayır"
+msgstr "Şimdi"
 
-#: trac/htdocs/js/query.js:132
+#: trac/htdocs/js/query.js:156
 msgid "A filter already exists for that property"
 msgstr "Bu özellik için zaten bir filtre mevcut"
 
-#: trac/htdocs/js/query.js:159
+#: trac/htdocs/js/query.js:183
 msgid "or"
 msgstr "veya"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
+#: trac/htdocs/js/query.js:206 trac/htdocs/js/query.js:343
 msgid "yes"
 msgstr "evet"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
+#: trac/htdocs/js/query.js:209 trac/htdocs/js/query.js:346
 msgid "no"
 msgstr "hayır"
 
-#: trac/htdocs/js/query.js:196
+#: trac/htdocs/js/query.js:221
 msgid "between"
 msgstr "arasında"
 
-#: trac/htdocs/js/query.js:198
+#: trac/htdocs/js/query.js:223
 msgid "and"
 msgstr "ve"
 
-#: trac/htdocs/js/query.js:350
+#: trac/htdocs/js/query.js:379
 msgid " remove:"
-msgstr ""
-
-#: trac/htdocs/js/query.js:360
-msgid " add:"
-msgstr ""
+msgstr " kaldır:"
 
 #: trac/htdocs/js/query.js:389
-#, python-format
-msgid "Select ticket %(id)s for modification"
-msgstr ""
+msgid " add:"
+msgstr " ekle:"
 
-#: trac/htdocs/js/query.js:400
-msgid "Toggle selection of all tickets shown in this group"
-msgstr ""
+#: trac/htdocs/js/query.js:423
+#, python-format
+msgid "Select ticket #%(id)s for modification"
+msgstr "Değiştirmek için #%(id)s bilet seçin"
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr "Tüm depoları göster"
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr "Tüm depoları gizle"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "Buraya bağlantı"
 
-#: trac/htdocs/js/wikitoolbar.js:56
-msgid "Bold text: '''Example'''"
-msgstr "Kalın metin: '''Örnek'''"
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr "Gruba geç"
+
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "En az bir öğe seçilmelidir"
+
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Kaydedilmemiş değişiklikleriniz var. Değişikliklerinizi kaydetmeden önce "
+"bu sayfadan çıkarsanız tüm değişiklikleriniz kaybolacak."
 
 #: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Kalın metin: **Örnek**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
 msgstr "İtalik metin: ''Örnek''"
 
-#: trac/htdocs/js/wikitoolbar.js:62
-msgid "Heading: == Example =="
-msgstr "Başlık: == Örnek =="
-
 #: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Başlık: == Örnek"
+
+#: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
 msgstr "Bağlantı: [http://www.ornek.com/ Örnek]"
 
-#: trac/htdocs/js/wikitoolbar.js:68
+#: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
 msgstr "Kod bloğu: {{{ örnek }}}"
 
-#: trac/htdocs/js/wikitoolbar.js:71
+#: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
 msgstr "Yatay çizgi: ----"
 
-#: trac/htdocs/js/wikitoolbar.js:74
+#: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
 msgstr "Yeni paragraf"
 
-#: trac/htdocs/js/wikitoolbar.js:77
-msgid "Line break: [[BR]]"
-msgstr "Satır sonu: [[BR]]"
-
 #: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Satır sonu: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
 msgstr "Resim: [[Image()]]"
 
+#: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "Bu bölüme bağlantı"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "Düzenlemek için kuralı sürükleyin"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
