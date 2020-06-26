@@ -10,7 +10,7 @@ body {
 }
 body, th, tr {
  font-style: normal;
- font-family: Roboto,Segoe UI,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
+ font-family: Roboto,'Segoe UI',Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
 }
 h1, h2, h3, h4 {
  font-weight: bold;
@@ -109,7 +109,7 @@ input, textarea, select, .trac-button { margin: 2px }
 input, select, button {
  font-style: normal;
  font-size: .9em;
- font-family: Roboto,Segoe UI,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
+ font-family: Roboto,'Segoe UI',Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
 }
 
 textarea {
@@ -241,7 +241,7 @@ input[type=submit].trac-delete:hover,
  color: #e31313;
 }
 textarea {
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
 }
 textarea.trac-fullwidth, input.trac-fullwidth, button.trac-fullwidth {
  -moz-box-sizing: border-box;
@@ -666,7 +666,7 @@ div.wiki-code {
 
 code, tt {
  color: #600;
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
  border: 1px solid #edc;
  border-radius: .25em;
  padding: 0 0.15em;
@@ -680,7 +680,7 @@ h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
 }
 
 pre {
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
  font-size: .9em;
 }
 
@@ -944,7 +944,7 @@ div.system-message .trac-close-msg:hover {
 #content.error #traceback div { margin-left: 1em; }
 #content.error #traceback h3 { font-size: 95%; margin: .5em 0 0; }
 #content.error #traceback :link var, #content.error #traceback :visited var {
-  font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+  font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
   font-style: normal;
   font-weight: bold;
 }
@@ -958,7 +958,7 @@ div.system-message .trac-close-msg:hover {
  padding: 1px;
 }
 #content.error #traceback th var {
-  font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+  font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
   font-style: normal;
 }
 #content.error #traceback td code { white-space: pre; }

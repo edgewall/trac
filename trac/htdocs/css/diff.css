@@ -138,7 +138,7 @@
 }
 .diff table.trac-diff td {
  background: #fff;
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
  overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
