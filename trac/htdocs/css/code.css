@@ -77,7 +77,7 @@ table.code tbody tr:hover td {
  background: #eed;
 }
 table.code td {
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
  overflow: hidden;
  padding: 1px 2px;
  vertical-align: top;
@@ -94,5 +94,5 @@ table.code tr.hilite td {
 
 /* Default XXX is that used anywhere? */
 .code-block span {
- font-family: Open Sans Mono,Consolas,Lucida Console,monospace; /* code_monospace */
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
 }
