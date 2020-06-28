@@ -6,6 +6,16 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.0.x Releases
 
+=== 1.0.20
+
+//(June 29, 2020)//
+
+Trac 1.0.20 provides a few bug fixes. The translation
+catalogs have also been updated and merged with
+those from Transifex.
+
+[trac:source:/tags/trac-1.0.20 View Tag] | [trac:milestone:1.0.20 View Milestone]
+
 === 1.0.19
 
 //(October 15, 2019)//
