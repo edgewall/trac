@@ -192,6 +192,23 @@ If other permission policies are enabled, `trac.ini` will need to have
 details on the proper ordering.
 
 
+Navigation Ordering Moved
++++++++++++++++++++++++++
+
+The mainnav and metanav configuration ordering have been moved from
+`[trac]` `mainnav` and `[trac]` `metanav` to the `[mainnav]` and
+`[metanav]` sections. The ordering is now specified using the `order`
+attribute as described in `TracNavigation`_.
+
+The new configuration values will be written to trac.ini on upgrade,
+preserving the navigation order for the environment. You may need to
+edit trac.ini if you use a shared `global configuration`_. For
+example, if you wish to specify the navigation ordering for several
+environments in `global.ini`, you'll need to add the `[mainnav]` and
+`[metanav]` sections in that file and delete those sections from each
+environment's trac.ini.
+
+
 Upgrading from Trac 0.12 to Trac 1.0
 ````````````````````````````````````
 
@@ -568,6 +585,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _easy_install: https://pypi.org/project/setuptools
 .. _environment: https://trac.edgewall.org/wiki/TracEnvironment
 .. _GitPlugin: https://trac-hacks.org/wiki/GitPlugin
+.. _global configuration: https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration
 .. _GroupBasedRedirectionPlugin: https://trac-hacks.org/wiki/GroupBasedRedirectionPlugin
 .. _here: https://trac.edgewall.org/wiki/TracWorkflow#Howtocombinethetracopt.ticket.commit_updaterwiththetestingworkflow
 .. _hotcopy: https://trac.edgewall.org/wiki/TracBackup
@@ -600,6 +618,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _TracInterfaceCustomization#SiteAppearance: https://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
 .. _TracInterfaceCustomization: https://trac.edgewall.org/wiki/TracInterfaceCustomization
 .. _TracMigratePlugin: https://trac-hacks.org/wiki/TracMigratePlugin
+.. _TracNavigation: https://trac.edgewall.org/wiki/TracNavigation#nav-order
 .. _TracQuery#Filters: https://trac.edgewall.org/wiki/TracQuery#Filters
 .. _TracRepositoryAdmin#ExplicitSync: https://trac.edgewall.org/wiki/TracRepositoryAdmin#ExplicitSync
 .. _TracRepositoryAdmin#Migration: https://trac.edgewall.org/wiki/TracRepositoryAdmin#Migration

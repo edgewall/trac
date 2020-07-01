@@ -105,6 +105,18 @@ permission_policies = ReadonlyWikiPolicy,
 
 If other permission policies are enabled, `trac.ini` will need to have `ReadonlyWikiPolicy` appended to the list of active `permission_policies`. See TracFineGrainedPermissions#ReadonlyWikiPolicy for additional details on the proper ordering.
 
+===== Navigation Ordering Moved
+
+The mainnav and metanav configuration ordering have
+been moved from `[trac]` `mainnav` and `[trac]` `metanav` to the `[mainnav]` and `[metanav]` sections. The ordering is now specified using the `order` attribute as described in [TracNavigation#nav-order TracNavigation].
+
+The new configuration values will be written to trac.ini on upgrade, preserving the navigation order for the environment. You may need to edit trac.ini
+if you use a shared [TracIni#GlobalConfiguration global configuration].
+For example, if you wish to specify the navigation ordering for several environments in `global.ini`, you'll
+need to add the `[mainnav]` and `[metanav]` sections
+in that file and delete those sections from each
+environment's trac.ini.
+
 ==== Upgrading from Trac 0.12 to Trac 1.0 #to1.0
 
 ===== Python 2.4 no longer supported

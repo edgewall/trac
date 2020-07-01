@@ -196,7 +196,7 @@ Optionally, you can also add a new action that allows you to change the ticket's
 {{{#!ini
 reassign_reviewing = reviewing -> *
 reassign_reviewing.label = reassign review
-reassign_reviewing.operations = set_owner
+reassign_reviewing.operations = set_owner, leave_status
 reassign_reviewing.permissions = TICKET_MODIFY
 }}}
 
@@ -229,7 +229,7 @@ review = new,assigned,reopened -> reviewing
 review.operations = set_owner
 review.permissions = TICKET_MODIFY
 reassign_reviewing = reviewing -> *
-reassign_reviewing.operations = set_owner
+reassign_reviewing.operations = set_owner, leave_status
 reassign_reviewing.label = reassign review
 reassign_reviewing.permissions = TICKET_MODIFY
 }}}

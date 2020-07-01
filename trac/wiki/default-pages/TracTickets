@@ -97,7 +97,7 @@ trac-admin /path/to/projenv session delete SID
 Alternatively, you can just revoke `TICKET_MODIFY` from users that you don't want to be included in the list. However, that will not be possible if you've granted `TICKET_MODIFY` to all //anonymous// or //authenticated// users.
 
 '''Notes:'''
- - If you need more flexibility and aren't afraid of a little plugin coding of your own, see the [https://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo plugin].
+ - If you need more flexibility, then use subclass `ConfigurableTicketWorkflow` and override the `get_allowed_owners` method (see [trac:#12807 Trac ticket 12807]).
  
  - Activating this option may cause some performance degradation. Read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
 
