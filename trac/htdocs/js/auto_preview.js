@@ -95,7 +95,7 @@
     }
 
     // See #11510
-    return inputs.on('input cut paste keydown keypress change blur', trigger);
+    return inputs.on('input cut paste keydown keypress change focus blur', trigger);
   };
 
   // Enable automatic previewing to <textarea> elements.
