@@ -95,7 +95,7 @@
     }
 
     // See #11510
-    return inputs.bind('input cut paste keydown keypress change blur',
+    return inputs.bind('input cut paste keydown keypress change focus blur',
                        trigger);
   };
 
