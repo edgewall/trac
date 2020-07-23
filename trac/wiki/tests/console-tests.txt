@@ -1,0 +1,93 @@
+===== test_wiki_dump =====
+ '%(name1)s' => '%(path1)s'
+ '%(name2)s' => '%(path2)s'
+===== test_wiki_dump_all =====
+ '%(name1)s' => '%(path1)s'
+ '%(name2)s' => '%(path2)s'
+===== test_wiki_dump_all_create_dst_dir =====
+ '%(name1)s' => '%(path1)s'
+ '%(name2)s' => '%(path2)s'
+===== test_wiki_dump_all_glob =====
+ '%(name1)s' => '%(path1)s'
+ '%(name2)s' => '%(path2)s'
+===== test_wiki_dump_all_dst_is_file =====
+Error: '%(dstdir)s' is not a directory
+===== test_wiki_export =====
+ '%(name)s' => '%(path)s'
+===== test_wiki_export_file_exists =====
+Error: File '%(export_path)s' exists
+===== test_wiki_export_print_to_stdout =====
+%(content)s
+===== test_wiki_export_page_not_found =====
+Error: Page '%(name)s' not found
+===== test_wiki_import =====
+ '%(path)s' => '%(name)s'
+===== test_wiki_import_page_exists =====
+ '%(path)s' => '%(name)s'
+===== test_wiki_import_page_up_to_date =====
+ '%(name)s' is already up to date
+===== test_wiki_import_page_name_invalid =====
+Error: Invalid Wiki page name '%(name)s'
+===== test_wiki_import_file_not_found =====
+Error: '%(import_path)s' is not a file
+===== test_wiki_list =====
+
+Title    Edits  Modified
+-----------------------------------
+PageOne  1      %(page1_modified)s
+PageTwo  2      %(page2_modified)s
+
+===== test_wiki_list_no_pages =====
+
+Title  Edits  Modified
+----------------------
+
+===== test_wiki_load =====
+ '%(path1)s' => '%(name1)s'
+ '%(path2)s' => '%(name2)s'
+===== test_wiki_load_page_exists =====
+ '%(path)s' => '%(name)s'
+===== test_wiki_load_pages_from_dir =====
+ '%(path1)s' => '%(name1)s'
+ '%(path2)s' => '%(name2)s'
+===== test_wiki_load_from_invalid_path =====
+Error: '%(path)s' is not a file
+===== test_wiki_remove =====
+ '%(name)s' deleted
+===== test_wiki_remove_glob =====
+
+Deleted pages
+-------------
+PageOne
+PageThree
+PageTwo
+
+===== test_wiki_rename =====
+ '%(name1)s' renamed to '%(name2)s'
+===== test_wiki_rename_name_unchanged =====
+Error: Page name is unchanged.
+===== test_wiki_rename_name_not_specified =====
+Error: Invalid arguments
+
+wiki rename <page> <new_name>
+
+    Rename wiki page
+
+===== test_wiki_rename_new_name_invalid =====
+Error: Invalid Wiki page name '%(name)s'
+===== test_wiki_rename_new_page_exists =====
+Error: The page 'PageTwo' already exists.
+===== test_wiki_replace =====
+ '%(path1)s' => '%(name1)s'
+ '%(path2)s' => '%(name2)s'
+===== test_wiki_replace_new_page =====
+ '%(path)s' => '%(name)s'
+===== test_wiki_replace_pages_from_dir =====
+ '%(path1)s' => '%(name1)s'
+ '%(path2)s' => '%(name2)s'
+===== test_wiki_replace_from_invalid_path =====
+Error: '%(path)s' is not a file
+===== test_wiki_upgrade =====
+Upgrade done: 58 pages upgraded.
+===== test_wiki_upgrade_up_to_date =====
+Upgrade done: 0 pages upgraded.
