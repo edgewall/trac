@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/.
 
-import os.path
+import os
 import pkg_resources
 import sys
 
@@ -19,10 +19,9 @@ from trac.admin import *
 from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
 from trac.wiki import model
-from trac.wiki.api import WikiSystem, validate_page_name
-from trac.util import read_file
-from trac.util.datefmt import datetime_now, format_datetime, from_utimestamp, \
-                              to_utimestamp, utc
+from trac.wiki.api import WikiSystem
+from trac.util import lazy, read_file
+from trac.util.datefmt import format_datetime, from_utimestamp
 from trac.util.text import path_to_unicode, print_table, printout, \
                            to_unicode, unicode_quote, unicode_unquote
 from trac.util.translation import _
@@ -86,32 +85,28 @@ class WikiAdmin(Component):
                'Upgrade default wiki pages to current version',
                None, self._do_upgrade)
 
-    def get_wiki_list(self):
-        return list(WikiSystem(self.env).get_pages())
+    @lazy
+    def default_pages_dir(self):
+        return pkg_resources.resource_filename('trac.wiki', 'default-pages')
+
+    def get_wiki_list(self, prefix=None):
+        return sorted(WikiSystem(self.env).get_pages(prefix))
 
     def export_page(self, page, filename):
-
-        for text, in self.env.db_query("""
-                SELECT text FROM wiki WHERE name=%s
-                ORDER BY version DESC LIMIT 1
-                """, (page,)):
+        wikipage = model.WikiPage(self.env, page)
+        if wikipage.exists:
             if not filename:
-                printout(text)
+                printout(wikipage.text)
             else:
                 if os.path.isfile(filename):
                     raise AdminCommandError(_("File '%(name)s' exists",
                                               name=path_to_unicode(filename)))
                 with open(filename, 'w') as f:
-                    f.write(text.encode('utf-8'))
-            break
+                    f.write(wikipage.text.encode('utf-8'))
         else:
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))
 
-    def import_page(self, filename, title, create_only=[],
-                    replace=False):
-        if not validate_page_name(title):
-            raise AdminCommandError(_("Invalid Wiki page name '%(name)s'",
-                                      name=title))
+    def import_page(self, filename, title, create_only=[], replace=False):
         if filename:
             if not os.path.isfile(filename):
                 raise AdminCommandError(_("'%(name)s' is not a file",
@@ -120,44 +115,38 @@ class WikiAdmin(Component):
         else:
             data = sys.stdin.read()
         data = to_unicode(data, 'utf-8')
+        name = unicode_unquote(title.encode('utf-8'))
 
-        with self.env.db_transaction as db:
-            # Make sure we don't insert the exact same page twice
-            page = model.WikiPage(self.env, title)
-            if page.exists and title in create_only:
-                printout(_("  %(title)s already exists", title=title))
+        page = model.WikiPage(self.env, name)
+        if page.exists:
+            if name in create_only:
+                self.log.info("%s already exists", name)
                 return False
-            if page.exists and data == page.text:
-                printout(_("  %(title)s is already up to date", title=title))
+            if data == page.text:
+                self.log.info("%s is already up to date", name)
                 return False
 
-            if replace and page.exists:
-                db("""UPDATE wiki SET text=%s WHERE name=%s AND version=%s
-                      """, (data, title, page.version))
-            else:
-                db("""INSERT INTO wiki (version, readonly, name, time, author,
-                                        text)
-                      SELECT 1 + COALESCE(max(version), 0),
-                             COALESCE(max(readonly), 0),
-                             %s, %s, 'trac', %s FROM wiki
-                      WHERE name=%s AND version=%s
-                      """, (title, to_utimestamp(datetime_now(utc)), data,
-                            title, page.version))
-            if not page.exists:
-                del WikiSystem(self.env).pages
+        page.text = data
+        try:
+            page.save('trac', None, replace=replace)
+        except TracError as e:
+            raise AdminCommandError(e)
+
+        self.log.info("%s imported from %s", name, path_to_unicode(filename))
         return True
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
+        loaded = []
         with self.env.db_transaction:
-            for page in os.listdir(dir):
+            for page in sorted(os.listdir(dir)):
                 if page in ignore:
                     continue
                 filename = os.path.join(dir, page)
-                page = unicode_unquote(page.encode('utf-8'))
                 if os.path.isfile(filename):
+                    page = unicode_unquote(page.encode('utf-8'))
                     if self.import_page(filename, page, create_only, replace):
-                        self.log.info("%s imported from %s",
-                                      page, path_to_unicode(filename))
+                        loaded.append(page)
+        return loaded
 
     def _complete_page(self, args):
         if len(args) == 1:
@@ -189,24 +178,18 @@ class WikiAdmin(Component):
              ], [_("Title"), _("Edits"), _("Modified")])
 
     def _do_rename(self, name, new_name):
-        if new_name == name:
-            return
-        if not new_name:
-            raise AdminCommandError(_("A new name is mandatory for a rename."))
-        if not validate_page_name(new_name):
-            raise AdminCommandError(_("The new name is invalid."))
-        with self.env.db_transaction:
-            if model.WikiPage(self.env, new_name).exists:
-                raise AdminCommandError(_("The page %(name)s already exists.",
-                                          name=new_name))
-            page = model.WikiPage(self.env, name)
+        page = model.WikiPage(self.env, name)
+        try:
             page.rename(new_name)
+        except TracError as e:
+            raise AdminCommandError(e)
+        printout(_(" '%(name1)s' renamed to '%(name2)s'",
+                   name1=name, name2=new_name))
 
     def _do_remove(self, name):
         with self.env.db_transaction:
             if name.endswith('*'):
-                pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
-                                                            or None))
+                pages = self.get_wiki_list(name.rstrip('*') or None)
                 for p in pages:
                     page = model.WikiPage(self.env, p)
                     page.delete()
@@ -214,12 +197,15 @@ class WikiAdmin(Component):
             else:
                 page = model.WikiPage(self.env, name)
                 page.delete()
+                printout(_(" '%(page)s' deleted", page=name))
 
     def _do_export(self, page, filename=None):
         self.export_page(page, filename)
+        if filename:
+            printout(" '%s' => '%s'" % (page, filename))
 
     def _do_import(self, page, filename=None):
-        self.import_page(filename, page)
+        self._import(filename, page)
 
     def _do_dump(self, directory, *names):
         if not names:
@@ -232,24 +218,12 @@ class WikiAdmin(Component):
                 raise AdminCommandError(_("'%(name)s' is not a directory",
                                           name=path_to_unicode(directory)))
         for p in pages:
-            if any(p == name or (name.endswith('*')
-                                 and p.startswith(name[:-1]))
+            if any(p == name or
+                   name.endswith('*') and p.startswith(name[:-1])
                    for name in names):
                 dst = os.path.join(directory, unicode_quote(p, ''))
-                printout(' %s => %s' % (p, dst))
+                printout(" '%s' => '%s'" % (p, dst))
                 self.export_page(p, dst)
-
-    def _load_or_replace(self, paths, replace):
-        with self.env.db_transaction:
-            for path in paths:
-                if os.path.isdir(path):
-                    self.load_pages(path, replace=replace)
-                else:
-                    page = os.path.basename(path)
-                    page = unicode_unquote(page.encode('utf-8'))
-                    if self.import_page(path, page, replace=replace):
-                        printout(_("  %(page)s imported from %(filename)s",
-                                   filename=path_to_unicode(path), page=page))
 
     def _do_load(self, *paths):
         self._load_or_replace(paths, replace=False)
@@ -258,23 +232,41 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
 
     def _do_upgrade(self):
-        self.load_pages(pkg_resources.resource_filename('trac.wiki',
-                                                        'default-pages'),
-                        ignore=['WikiStart', 'SandBox'],
-                        create_only=['InterMapTxt'])
+        names = self.load_pages(self.default_pages_dir,
+                                ignore=['WikiStart', 'SandBox'],
+                                create_only=['InterMapTxt'])
+        printout(_("Upgrade done: %(count)s pages upgraded.",
+                   count=len(names)))
+
+    def _import(self, filename, title, replace=False):
+        if self.import_page(filename, title, replace=replace):
+            printout(" '%s' => '%s'" % (path_to_unicode(filename), title))
+        else:
+            printout(_(" '%(title)s' is already up to date", title=title))
+
+    def _load_or_replace(self, paths, replace):
+        with self.env.db_transaction:
+            for path in paths:
+                if os.path.isdir(path):
+                    for page in sorted(os.listdir(path)):
+                        filename = os.path.join(path, page)
+                        if os.path.isfile(filename):
+                            self._import(filename, page, replace)
+                else:
+                    page = os.path.basename(path)
+                    self._import(path, page, replace)
 
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
         """Add default wiki pages when environment is created."""
         self.log.info("Installing default wiki pages")
-        pages_dir = pkg_resources.resource_filename('trac.wiki',
-                                                    'default-pages')
-        with self.env.db_transaction as db:
-            self.load_pages(pages_dir)
-            for page in os.listdir(pages_dir):
-                if page not in ('InterMapTxt', 'SandBox', 'WikiStart'):
-                    db("UPDATE wiki SET readonly='1' WHERE name=%s", (page,))
+        with self.env.db_transaction:
+            for name in self.load_pages(self.default_pages_dir):
+                if name not in ('InterMapTxt', 'SandBox', 'WikiStart'):
+                    page = model.WikiPage(self.env, name)
+                    page.readonly = 1
+                    page.save(None, None)
 
     def environment_needs_upgrade(self):
         pass
