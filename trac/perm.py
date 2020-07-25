@@ -27,7 +27,7 @@ from trac.cache import cached
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
-from trac.util import file_or_std
+from trac.util import file_or_std, lazy
 from trac.util.datefmt import time_now
 from trac.util.text import path_to_unicode, print_table, printout, \
                            stream_encoding, to_unicode, wrap
@@ -411,6 +411,10 @@ class PermissionSystem(Component):
                 else:
                     actions.setdefault(action, [])
         return actions
+
+    @lazy
+    def actions(self):
+        return self.get_actions()
 
     def get_actions(self, skip=None):
         """Get a list of all actions defined by permission requestors."""
