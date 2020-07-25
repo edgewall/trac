@@ -231,6 +231,13 @@ class PermissionSystemTestCase(BaseTestCase):
         self.assertEqual(tpr_perms,
                          self.perm.get_actions(skip=self.perm))
 
+    def test_actions(self):
+        self.assertEqual(self.perm.get_actions(), self.perm.actions)
+
+    def test_actions_is_lazy(self):
+        actions = self.perm.actions
+        self.assertEqual(id(actions), id(self.perm.actions))
+
     def test_get_actions_dict(self):
         self.assertEqual({
             'TEST_ADMIN': ['TEST_CREATE', 'TEST_DELETE', 'TEST_MODIFY'],

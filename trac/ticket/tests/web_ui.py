@@ -29,6 +29,7 @@ from trac.util.datefmt import (datetime_now, format_date, format_datetime,
 from trac.util.html import HTMLTransform
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
+from tracopt.perm.config_perm_provider import ExtraPermissionsProvider
 
 
 class TicketModuleTestCase(unittest.TestCase):
@@ -1212,7 +1213,8 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
 class DefaultTicketPolicyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(enable=('trac.ticket.*', 'trac.perm.*'))
+        self.env = EnvironmentStub(
+            enable=('trac.ticket.*', 'trac.perm.*', 'tracopt.perm.*'))
         self.env.config.set('trac', 'permission_policies',
                             'DefaultTicketPolicy,DefaultPermissionPolicy')
         self.perm_sys = PermissionSystem(self.env)
@@ -1343,10 +1345,11 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
     def test_user_with_milestone_view_can_change_milestone(self):
         """User with MILESTONE_VIEW can change the ticket milestone.
         """
-        self.perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
         action = 'TICKET_CHG_MILESTONE'
+        self.perm_sys.grant_permission('user_w_mv', 'MILESTONE_VIEW')
         perm_cache, resource = self._test_change_milestone('user_w_mv')
 
+        self.assertNotIn(action, self.perm_sys.actions)
         self.assertIn(action, perm_cache)
         self.assertTrue(self.policy.check_permission(
             action, perm_cache.username, resource, perm_cache))
@@ -1357,6 +1360,32 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
         action = 'TICKET_CHG_MILESTONE'
         perm_cache, resource = self._test_change_milestone('user_w_mv')
 
+        self.assertNotIn(action, self.perm_sys.actions)
+        self.assertNotIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_user_with_ticket_chg_milestone_can_change_milestone(self):
+        """User with TICKET_CHG_MILESTONE can change the ticket milestone.
+        """
+        action = 'TICKET_CHG_MILESTONE'
+        self.env.config.set('extra-permissions', '_perms', action)
+        self.perm_sys.grant_permission('user1', action)
+        perm_cache, resource = self._test_change_milestone('user1')
+
+        self.assertIn(action, self.perm_sys.actions)
+        self.assertIn(action, perm_cache)
+        self.assertIsNone(self.policy.check_permission(
+            action, perm_cache.username, resource, perm_cache))
+
+    def test_user_without_ticket_chg_milestone_can_change_milestone(self):
+        """User without MILESTONE_VIEW cannot change the ticket milestone.
+        """
+        action = 'TICKET_CHG_MILESTONE'
+        self.env.config.set('extra-permissions', '_perms', action)
+        perm_cache, resource = self._test_change_milestone('user1')
+
+        self.assertIn(action, self.perm_sys.get_actions())
         self.assertNotIn(action, perm_cache)
         self.assertIsNone(self.policy.check_permission(
             action, perm_cache.username, resource, perm_cache))
