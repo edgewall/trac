@@ -401,7 +401,7 @@ class Environment(Component, ComponentManager):
         directory."""
         try:
             with open(os.path.join(self.path, 'VERSION')) as f:
-                tag = f.readline().rstrip('\n')
+                tag = f.readline().rstrip()
         except Exception as e:
             raise TracError(_("No Trac environment found at %(path)s\n"
                               "%(e)s",
