@@ -6,6 +6,15 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.5.x Releases
 
+=== 1.5.2
+
+//(December 19, 2020)//
+
+Support for Python 2.7 has been dropped.
+Python 3.5+ is supported.
+
+[trac:source:/tags/trac-1.5.2 View Tag] | [trac:milestone:1.5.2 View Milestone]
+
 === 1.5.1
 
 //(May 25, 2020)//
@@ -183,6 +192,18 @@ Highlights of the changes since 1.2:
 == 1.2.x Releases
 
 This series correspond to the current stable release branch, i.e. [trac:source:branches/1.2-stable branches/1.2-stable].
+
+=== 1.2.6
+
+//(July 1, 2020)//
+
+Trac 1.2.6 contains a few minor fixes, inluding a
+fix for ticket autopreview triggering without a
+form change.
+
+See the detailed release notes for [[trac:wiki:TracDev/ReleaseNotes/1.2#MaintenanceReleases | 1.2.6]].
+
+[trac:source:/tags/trac-1.2.6 View Tag] | [trac:milestone:1.2.6 View Milestone]
 
 === 1.2.5
 
@@ -432,6 +453,16 @@ See also the [trac:wiki:TracDev/ApiChanges/1.1 API changes] and the detailed rel
 [trac:source:/tags/trac-1.1.1 View Tag] | [trac:milestone:1.1.1 View Milestone]
 
 == 1.0.x Releases
+
+=== 1.0.20
+
+//(June 29, 2020)//
+
+Trac 1.0.20 provides a few bug fixes. The translation
+catalogs have also been updated and merged with
+those from Transifex.
+
+[trac:source:/tags/trac-1.0.20 View Tag] | [trac:milestone:1.0.20 View Milestone]
 
 === 1.0.19
 

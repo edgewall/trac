@@ -1,7 +1,7 @@
-= Trac Installation Guide for 1.4
+= Trac Installation Guide for 1.5
 [[TracGuideToc]]
 
-Trac is written in the Python programming language and needs a database, [https://sqlite.org/ SQLite], [https://www.postgresql.org/ PostgreSQL], or [https://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://jinja.pocoo.org Jinja2] templating system, though Genshi templates will still be supported until at least Trac 1.5.1.
+Trac is written in the Python programming language and needs a database, [https://sqlite.org/ SQLite], [https://www.postgresql.org/ PostgreSQL], or [https://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://jinja.pocoo.org Jinja2] templating system, though Genshi templates are supported until Trac 1.5.1.
 
 Trac can also be localized, and there is probably a translation available in your language. If you want to use the Trac interface in other languages, then make sure you have installed the optional package [#OtherPythonPackages Babel]. Pay attention to the extra steps for localization support in the [#InstallingTrac Installing Trac] section below. Lacking Babel, you will only get the default English version.
 
@@ -15,14 +15,9 @@ What follows are generic instructions for installing and setting up Trac. While 
 === Mandatory Dependencies
 To install Trac, the following software packages must be installed:
 
- * [https://www.python.org/ Python], version >= 2.7 and < 3.0
-   (note that we dropped the support for Python 2.6 in this release)
- * [https://pypi.org/project/setuptools setuptools], version >= 0.6
+ * [https://www.python.org/ Python], version >= 3.5
+ * [https://pypi.org/project/setuptools setuptools], version > 5.6
  * [https://pypi.org/project/Jinja2 Jinja2], version >= 2.9.3
-
-{{{#!div style="border: 1pt dotted; margin: 1em"
-**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in [#DeployingTrac Deploying Trac].
-}}}
 
 You also need a database system and the corresponding python bindings. The database can be either SQLite, PostgreSQL or MySQL.
 
@@ -36,7 +31,7 @@ Optionally, you may install a newer version of [https://pypi.org/project/pysqlit
 
 You need to install the database and its Python bindings:
  * [https://www.postgresql.org/ PostgreSQL], version 9.1 or later
- * [https://pypi.org/project/psycopg2 psycopg2], version 2.0 or later
+ * [https://pypi.org/project/psycopg2 psycopg2], version 2.5 or later
 
 See [trac:DatabaseBackend#Postgresql DatabaseBackend] for details.
 
@@ -53,7 +48,7 @@ Given the caveats and known issues surrounding MySQL, read carefully the [trac:M
 
 ==== Subversion
 
-[https://subversion.apache.org/ Subversion], 1.6.x or later and the '''''corresponding''''' Python bindings.
+[https://subversion.apache.org/ Subversion], 1.14.x or later and the '''''corresponding''''' Python bindings.
 
 There are [https://subversion.apache.org/packages.html pre-compiled SWIG bindings] available for various platforms. See [trac:TracSubversion#GettingSubversion getting Subversion] for more information.
 
@@ -91,17 +86,19 @@ Alternatively you can configure Trac to run in any of the following environments
 
 ==== Other Python Packages
 
- * [http://babel.pocoo.org Babel], version 0.9.6 or >= 1.3,
+ * [http://babel.pocoo.org Babel], version >= 2.2,
    needed for localization support
  * [http://pytz.sourceforge.net pytz] to get a complete list of time zones,
    otherwise Trac will fall back on a shorter list from
    an internal time zone implementation. Installing Babel
    will install pytz.
- * [http://docutils.sourceforge.net docutils], version >= 0.3.9
-   for WikiRestructuredText.
- * [http://pygments.org Pygments] for
-   [TracSyntaxColoring syntax highlighting].
- * [https://pypi.org/project/textile Textile] for rendering the [https://github.com/textile/python-textile Textile markup language].
+ * [http://docutils.sourceforge.net docutils],
+   version >= 0.14, for WikiRestructuredText.
+ * [http://pygments.org Pygments], version >= 1.0,
+   for [TracSyntaxColoring syntax highlighting].
+ * [https://pypi.org/project/textile Textile],
+   version >= 2.3,
+   for rendering the [https://github.com/textile/python-textile Textile markup language].
  * [https://pypi.org/project/passlib passlib] on Windows to decode [TracStandalone#BasicAuthorization:Usingahtpasswdpasswordfile htpasswd formats] other than `SHA-1`.
  * [https://pypi.org/project/pyreadline pyreadline] on Windows for trac-admin [TracAdmin#InteractiveMode command completion].
 
@@ -118,13 +115,9 @@ The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracE
 It is assumed throughout this guide that you have elevated permissions as the `root` user or by prefixing commands with `sudo`. The umask `0002` should be used for a typical installation on a Unix-based platform.
 
 === Using `pip`
-`pip` is the modern Python package manager and is included in Python 2.7.9 and later. Use [https://bootstrap.pypa.io/get-pip.py get-pip.py] to install `pip` for an earlier version of Python.
-
-{{{#!sh
-$ pip install Trac
-}}}
-
-`pip` will automatically resolve the //required// dependencies (Jinja2 and setuptools) and download the latest packages from pypi.org.
+`pip` is the modern Python package manager and is included in Python distributions. `pip` will automatically
+resolve the //required// dependencies (Jinja2 and
+setuptools) and download the latest packages from pypi.org.
 
 You can also install directly from a source package. You can obtain the source in a tar or zip from the [trac:TracDownload] page. After extracting the archive, change to the directory containing `setup.py` and run:
 
@@ -142,7 +135,7 @@ $ pip install https://download.edgewall.org/trac/Trac-latest.zip
 {{{#!sh
 $ pip install https://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 }}}
-* Install the unreleased 1.2-stable from subversion:
+* Install the unreleased 1.4-stable from subversion:
 {{{#!sh
 $ pip install svn+https://svn.edgewall.org/repos/trac/branches/1.2-stable
 }}}
@@ -205,24 +198,6 @@ The actual username and groupname of the apache server may not be exactly `apach
 }}}
 
 == Deploying Trac
-
-{{{#!div style="border: 1pt dotted; margin: 1em"
-**Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation.
-
-If running `tracd`, the environment variable can be set system-wide or for just the user that runs the `tracd` process. There are several ways to accomplish this in addition to what is discussed here, and depending on the distribution of your OS.
-
-To be effective system-wide a shell script with the `export` statement may be added to `/etc/profile.d`. To be effective for a user session the `export` statement may be added to `~/.profile`.
-{{{#!sh
-export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
-}}}
-
-Alternatively, the variable can be set in the shell before executing `tracd`:
-{{{#!sh
-$ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
-}}}
-
-If running the Apache web server, !Ubuntu/Debian users should add the `export` statement to `/etc/apache2/envvars`. !RedHat/CentOS/Fedora should can add the `export` statement to `/etc/sysconfig/httpd`.
-}}}
 
 === Running the Standalone Server
 

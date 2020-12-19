@@ -22,13 +22,12 @@ steps <#versionspecificsteps>`__ below should be uninstalled or
 disabled.
 
 If you are upgrading to a minor release, plugin compatibility is usually
-not a concern because the Trac API rarely changes, and major features
-are usually not introduced, for minor releases.
+not a concern because the Trac API is normally unchanged.
 
 If your plugins are installed from
 `trac-hacks.org <https://trac-hacks.org>`__ you can check compatibility
 by looking for a tag on the project page corresponding to a major
-release (e.g. ``1.2``). If you are unsure, you'll want to contact the
+release (e.g. ``1.4``). If you are unsure, you'll want to contact the
 plugin author or ask on the
 `MailingList <https://trac.edgewall.org/intertrac/MailingList>`__.
 
@@ -93,7 +92,7 @@ Trac version in the ``pip`` command.
 
       ::
 
-         $ pip install --upgrade Trac==1.2.1
+         $ pip install --upgrade Trac==1.4.1
 
 You should also upgrade dependencies so they are compliant with the
 `required
@@ -199,6 +198,18 @@ usual, make a backup before deleting the directory.
 7. Steps specific to a given Trac version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. _to1.5:
+
+Upgrading from Trac 1.4 to 1.5
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _python2.7nolongersupported:
+
+Python 2.7 no longer supported
+''''''''''''''''''''''''''''''
+
+Upgrade Python to 3.5 or later.
+
 .. _to1.4:
 
 Upgrading from Trac 1.2 to 1.4
@@ -261,7 +272,7 @@ New permission policies for Wiki and Ticket realms
 ''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Since 1.3.2 there are new permission policies for the ticket and wiki
-systems. ``DefaultTicketPolicy`` allows an authenticated users with
+systems. ``DefaultTicketPolicy`` allows an authenticated user with
 ``TICKET_APPEND`` or ``TICKET_CHPROP`` to modify the description of a
 ticket they reported. It also implements the pre-1.3.2 behavior of
 allowing users to edit their own ticket comments.
@@ -426,6 +437,26 @@ If other permission policies are enabled, ``trac.ini`` will need to have
 ``permission_policies``. See
 `TracFineGrainedPermissions#ReadonlyWikiPolicy <https://trac.edgewall.org/wiki/TracFineGrainedPermissions#ReadonlyWikiPolicy>`__
 for additional details on the proper ordering.
+
+.. _navigationorderingmoved:
+
+Navigation Ordering Moved
+'''''''''''''''''''''''''
+
+The mainnav and metanav configuration ordering have been moved from
+``[trac]`` ``mainnav`` and ``[trac]`` ``metanav`` to the ``[mainnav]``
+and ``[metanav]`` sections. The ordering is now specified using the
+``order`` attribute as described in
+`TracNavigation <https://trac.edgewall.org/wiki/TracNavigation#nav-order>`__.
+
+The new configuration values will be written to trac.ini on upgrade,
+preserving the navigation order for the environment. You may need to
+edit trac.ini if you use a shared `global
+configuration <https://trac.edgewall.org/wiki/TracIni#GlobalConfiguration>`__.
+For example, if you wish to specify the navigation ordering for several
+environments in ``global.ini``, you'll need to add the ``[mainnav]`` and
+``[metanav]`` sections in that file and delete those sections from each
+environment's trac.ini.
 
 .. _to1.0:
 

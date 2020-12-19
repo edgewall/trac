@@ -1,6 +1,6 @@
-.. _tracinstallationguidefor1.4:
+.. _tracinstallationguidefor1.5:
 
-Trac Installation Guide for 1.4
+Trac Installation Guide for 1.5
 ===============================
 
 Trac is written in the Python programming language and needs a database,
@@ -8,7 +8,7 @@ Trac is written in the Python programming language and needs a database,
 `PostgreSQL <https://www.postgresql.org/>`__, or
 `MySQL <https://mysql.com/>`__. For HTML rendering, Trac uses the
 `Jinja2 <http://jinja.pocoo.org>`__ templating system, though Genshi
-templates will still be supported until at least Trac 1.5.1.
+templates are supported until Trac 1.5.1.
 
 Trac can also be localized, and there is probably a translation
 available in your language. If you want to use the Trac interface in
@@ -41,18 +41,9 @@ Mandatory Dependencies
 
 To install Trac, the following software packages must be installed:
 
--  `Python <https://www.python.org/>`__, version >= 2.7 and < 3.0 (note
-   that we dropped the support for Python 2.6 in this release)
--  `setuptools <https://pypi.org/project/setuptools>`__, version >= 0.6
+-  `Python <https://www.python.org/>`__, version >= 3.5
+-  `setuptools <https://pypi.org/project/setuptools>`__, version > 5.6
 -  `Jinja2 <https://pypi.org/project/Jinja2>`__, version >= 2.9.3
-
-.. container:: wikipage
-
-   **Setuptools Warning:** If the version of your setuptools is in the
-   range 5.4 through 5.6, the environment variable
-   ``PKG_RESOURCES_CACHE_ZIP_MANIFESTS`` must be set in order to avoid
-   significant performance degradation. More information may be found in
-   `Deploying Trac <#deployingtrac>`__.
 
 You also need a database system and the corresponding python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
@@ -79,7 +70,7 @@ For the PostgreSQL database
 You need to install the database and its Python bindings:
 
 -  `PostgreSQL <https://www.postgresql.org/>`__, version 9.1 or later
--  `psycopg2 <https://pypi.org/project/psycopg2>`__, version 2.0 or
+-  `psycopg2 <https://pypi.org/project/psycopg2>`__, version 2.5 or
    later
 
 See
@@ -110,7 +101,7 @@ Optional Dependencies
 Subversion
 ^^^^^^^^^^
 
-`Subversion <https://subversion.apache.org/>`__, 1.6.x or later and the
+`Subversion <https://subversion.apache.org/>`__, 1.14.x or later and the
 **corresponding** Python bindings.
 
 There are `pre-compiled SWIG
@@ -193,18 +184,18 @@ environments:
 Other Python Packages
 ^^^^^^^^^^^^^^^^^^^^^
 
--  `Babel <http://babel.pocoo.org>`__, version 0.9.6 or >= 1.3, needed
-   for localization support
+-  `Babel <http://babel.pocoo.org>`__, version >= 2.2, needed for
+   localization support
 -  `pytz <http://pytz.sourceforge.net>`__ to get a complete list of time
    zones, otherwise Trac will fall back on a shorter list from an
    internal time zone implementation. Installing Babel will install
    pytz.
--  `docutils <http://docutils.sourceforge.net>`__, version >= 0.3.9 for
+-  `docutils <http://docutils.sourceforge.net>`__, version >= 0.14, for
    `WikiRestructuredText <https://trac.edgewall.org/wiki/WikiRestructuredText>`__.
--  `Pygments <http://pygments.org>`__ for `syntax
+-  `Pygments <http://pygments.org>`__, version >= 1.0, for `syntax
    highlighting <https://trac.edgewall.org/wiki/TracSyntaxColoring>`__.
--  `Textile <https://pypi.org/project/textile>`__ for rendering the
-   `Textile markup
+-  `Textile <https://pypi.org/project/textile>`__, version >= 2.3, for
+   rendering the `Textile markup
    language <https://github.com/textile/python-textile>`__.
 -  `passlib <https://pypi.org/project/passlib>`__ on Windows to decode
    `htpasswd
@@ -253,20 +244,9 @@ Using ``pip``
 ~~~~~~~~~~~~~
 
 ``pip`` is the modern Python package manager and is included in Python
-2.7.9 and later. Use
-`get-pip.py <https://bootstrap.pypa.io/get-pip.py>`__ to install ``pip``
-for an earlier version of Python.
-
-.. container:: wiki-code
-
-   .. container:: code
-
-      ::
-
-         $ pip install Trac
-
-``pip`` will automatically resolve the *required* dependencies (Jinja2
-and setuptools) and download the latest packages from pypi.org.
+distributions. ``pip`` will automatically resolve the *required*
+dependencies (Jinja2 and setuptools) and download the latest packages
+from pypi.org.
 
 You can also install directly from a source package. You can obtain the
 source in a tar or zip from the
@@ -305,7 +285,7 @@ URL of an archive or other download location. Here are some examples:
 
             $ pip install https://download.edgewall.org/trac/Trac-latest-dev.tar.gz
 
--  Install the unreleased 1.2-stable from subversion:
+-  Install the unreleased 1.4-stable from subversion:
 
    .. container:: wiki-code
 
@@ -446,46 +426,6 @@ you use).
 
 Deploying Trac
 --------------
-
-.. container:: wikipage
-
-   **Setuptools Warning:** If the version of your setuptools is in the
-   range 5.4 through 5.6, the environment variable
-   ``PKG_RESOURCES_CACHE_ZIP_MANIFESTS`` must be set in order to avoid
-   significant performance degradation.
-
-   If running ``tracd``, the environment variable can be set system-wide
-   or for just the user that runs the ``tracd`` process. There are
-   several ways to accomplish this in addition to what is discussed
-   here, and depending on the distribution of your OS.
-
-   To be effective system-wide a shell script with the ``export``
-   statement may be added to ``/etc/profile.d``. To be effective for a
-   user session the ``export`` statement may be added to ``~/.profile``.
-
-   .. container:: wiki-code
-
-      .. container:: code
-
-         ::
-
-            export PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1
-
-   Alternatively, the variable can be set in the shell before executing
-   ``tracd``:
-
-   .. container:: wiki-code
-
-      .. container:: code
-
-         ::
-
-            $ PKG_RESOURCES_CACHE_ZIP_MANIFESTS=1 tracd --port 8000 /path/to/myproject
-
-   If running the Apache web server, Ubuntu/Debian users should add the
-   ``export`` statement to ``/etc/apache2/envvars``.
-   RedHat/CentOS/Fedora should can add the ``export`` statement to
-   ``/etc/sysconfig/httpd``.
 
 .. _runningthestandaloneserver:
 
