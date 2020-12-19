@@ -95,7 +95,7 @@ class LinesIterator(object):
         self.idx = 0
         self.current = None
 
-    def next(self):
+    def __next__(self):
         idx = self.idx
         if self.current is not None:
             self.formatter.next_callback(self.current, idx)
@@ -139,7 +139,7 @@ re_box_processor = re.compile(r'{{{#!box[^\}]+}}}\s*\r?\n?')
 
 
 def download_default_pages(names, prefix, strict):
-    from httplib import HTTPSConnection
+    from http.client import HTTPSConnection
     host = 'trac.edgewall.org'
     if prefix and not prefix.endswith('/'):
         prefix += '/'
@@ -157,6 +157,7 @@ def download_default_pages(names, prefix, strict):
                 conn.request('GET', '/wiki/%s?format=txt' % name)
                 response = conn.getresponse()
                 content = response.read()
+            content = str(content, 'utf-8')
             if response.status == 200 and content:
                 with open('trac/wiki/default-pages/' + name, 'w',
                           encoding='utf-8') as f:
