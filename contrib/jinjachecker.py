@@ -177,7 +177,7 @@ def scan(lines):
     def process_multiline_expr(expr, open_parens=0):
         open_parens += count_parens(expr)
         if open_parens:
-            linenum, line = lines.next()
+            linenum, line = get_line()
             m = STATEMENT_RE.match(line)
             line_statements.append(
                 Statement(linenum, len(m.group(1)), '', '', m.group(2), ''))
