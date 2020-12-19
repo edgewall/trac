@@ -15,8 +15,8 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from abc import ABCMeta
-from BaseHTTPServer import BaseHTTPRequestHandler
-from Cookie import CookieError, BaseCookie, SimpleCookie
+from http.cookies import CookieError, BaseCookie, SimpleCookie
+from http.server import BaseHTTPRequestHandler
 import cgi
 from datetime import datetime
 import hashlib
@@ -25,8 +25,8 @@ import mimetypes
 import os
 import re
 import sys
-import urllib
-import urlparse
+import tempfile
+import urllib.parse
 
 from trac.core import Interface, TracBaseError, TracError
 from trac.util import as_bool, as_int, get_last_traceback, lazy, \
@@ -187,14 +187,12 @@ class TracNotImplementedError(TracError, NotImplementedError):
     title = N_("Not Implemented Error")
 
 
-HTTP_STATUS = {code: reason.title()
+HTTP_STATUS = {int(code): reason.title()
                for code, (reason, description)
                in BaseHTTPRequestHandler.responses.items()}
 
 
-class HTTPException(TracBaseError):
-
-    __metaclass__ = ABCMeta
+class HTTPException(TracBaseError, metaclass=ABCMeta):
 
     code = None
 
@@ -207,7 +205,7 @@ class HTTPException(TracBaseError):
             self.detail = detail
         if args:
             self.detail = self.detail % args
-        arg = u'%s %s (%s)' % (self.code, self.reason, to_unicode(self.detail))
+        arg = '%s %s (%s)' % (self.code, self.reason, to_unicode(self.detail))
         super(HTTPException, self).__init__(arg)
 
     @property
@@ -264,6 +262,10 @@ del code, exc_name
 
 class _FieldStorage(cgi.FieldStorage):
     """Our own version of cgi.FieldStorage, with tweaks."""
+
+    def make_file(self):
+        # We always use binary mode even if filename parameter is missing
+        return tempfile.TemporaryFile('wb+')
 
     def read_multi(self, *args, **kwargs):
         try:
@@ -429,8 +431,11 @@ class _RequestArgs(dict):
         if hasattr(upload, 'file'):
             fileobj = upload.file
             if hasattr(fileobj, 'fileno'):
-                size = os.fstat(fileobj.fileno())[6]
-            else:
+                try:
+                    size = os.fstat(fileobj.fileno())[6]
+                except io.UnsupportedOperation:
+                    size = None
+            if size is None:
                 fileobj.seek(0, 2)  # seek to end of file
                 size = fileobj.tell()
                 fileobj.seek(0)
@@ -452,12 +457,12 @@ def parse_arg_list(query_string):
             (name, value) = nv
         else:
             (name, value) = (nv[0], empty)
-        name = urllib.unquote(name.replace('+', ' '))
-        if isinstance(name, str):
-            name = unicode(name, 'utf-8')
-        value = urllib.unquote(value.replace('+', ' '))
-        if isinstance(value, str):
-            value = unicode(value, 'utf-8')
+        name = urllib.parse.unquote(name.replace('+', ' '))
+        if isinstance(name, bytes):
+            name = str(name, 'utf-8')
+        value = urllib.parse.unquote(value.replace('+', ' '))
+        if isinstance(value, bytes):
+            value = str(value, 'utf-8')
         args.append((name, value))
     return args
 
@@ -600,8 +605,13 @@ class Request(object):
     def path_info(self):
         """Path inside the application"""
         path_info = self.environ.get('PATH_INFO', '')
+        if isinstance(path_info, str):
+            # According to PEP 3333, the value is decoded by iso-8859-1
+            # encoding when it is a unicode string. However, we need
+            # decoded unicode string by utf-8 encoding.
+            path_info = path_info.encode('iso-8859-1')
         try:
-            return unicode(path_info, 'utf-8')
+            return str(path_info, 'utf-8')
         except UnicodeDecodeError:
             raise HTTPNotFound(_("Invalid URL encoding (was %(path_info)r)",
                                  path_info=path_info))
@@ -674,12 +684,12 @@ class Request(object):
     def send_header(self, name, value):
         """Send the response header with the specified name and value.
 
-        `value` must either be an `unicode` string or can be converted to one
+        `value` must either be a `str` string or can be converted to one
         (e.g. numbers, ...)
         """
         if name.lower() == 'content-type':
             self._content_type = value.split(';', 1)[0]
-        self._outheaders.append((name, unicode(value).encode('utf-8')))
+        self._outheaders.append((name, str(value)))
 
     def end_headers(self, exc_info=None):
         """Must be called after all headers have been sent and before the
@@ -711,7 +721,7 @@ class Request(object):
         if isinstance(extra, list):
             m = hashlib.sha1()
             for elt in extra:
-                m.update(repr(elt))
+                m.update(repr(elt).encode('utf-8'))
             extra = m.hexdigest()
         etag = 'W/"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
         inm = self.get_header('If-None-Match')
@@ -744,8 +754,9 @@ class Request(object):
         self.send_response(status)
         if not url.startswith(('http://', 'https://')):
             # Make sure the URL is absolute
-            scheme, host = urlparse.urlparse(self.base_url)[:2]
-            url = urlparse.urlunparse((scheme, host, url, None, None, None))
+            scheme, host = urllib.parse.urlparse(self.base_url)[:2]
+            url = urllib.parse.urlunparse((scheme, host, url, None, None,
+                                           None))
 
         # Workaround #10382, IE6-IE9 bug when post and redirect with hash
         if status == 303 and '#' in url:
@@ -840,8 +851,8 @@ class Request(object):
     def write(self, data):
         """Write the given data to the response body.
 
-        *data* **must** be a `str` string or an iterable instance
-        which iterates `str` strings, encoded with the charset which
+        *data* **must** be a `bytes` string or an iterable instance
+        which iterates `bytes` strings, encoded with the charset which
         has been specified in the ``'Content-Type'`` header or UTF-8
         otherwise.
 
@@ -857,21 +868,21 @@ class Request(object):
             bufsize = 0
             buf = []
             buf_append = buf.append
-            if isinstance(data, basestring):
+            if isinstance(data, bytes):
                 data = [data]
             for chunk in data:
-                if isinstance(chunk, unicode):
-                    raise ValueError("Can't send unicode content")
+                if isinstance(chunk, str):
+                    raise ValueError("Can't send str content")
                 if not chunk:
                     continue
                 bufsize += len(chunk)
                 buf_append(chunk)
                 if bufsize >= chunk_size:
-                    self._write(''.join(buf))
+                    self._write(b''.join(buf))
                     bufsize = 0
                     buf[:] = ()
             if bufsize > 0:
-                self._write(''.join(buf))
+                self._write(b''.join(buf))
         except IOError as e:
             if is_client_disconnect_exception(e):
                 raise RequestDone
@@ -896,7 +907,7 @@ class Request(object):
         self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        if isinstance(content, basestring):
+        if isinstance(content, str):
             self.send_header('Content-Length', len(content))
         self.end_headers(exc_info)
 
@@ -926,7 +937,10 @@ class Request(object):
             qs_on_post = self.environ.pop('QUERY_STRING', '')
         try:
             fs = _FieldStorage(fp, environ=self.environ,
-                               keep_blank_values=True)
+                               keep_blank_values=True, errors='strict')
+        except UnicodeDecodeError as e:
+            raise HTTPBadRequest(_("Invalid encoding in form data: %(msg)s",
+                                   msg=exception_to_unicode(e)))
         except IOError as e:
             if is_client_disconnect_exception(e):
                 raise HTTPBadRequest(
@@ -944,19 +958,11 @@ class Request(object):
         for value in fs.list or ():
             name = value.name
             raise_if_null_bytes(name)
-            try:
-                if name is not None:
-                    name = unicode(name, 'utf-8')
-                if value.filename:
-                    raise_if_null_bytes(value.filename)
-                else:
-                    value = value.value
-                    raise_if_null_bytes(value)
-                    value = unicode(value, 'utf-8')
-            except UnicodeDecodeError as e:
-                raise HTTPBadRequest(
-                    _("Invalid encoding in form data: %(msg)s",
-                      msg=exception_to_unicode(e)))
+            if value.filename:
+                raise_if_null_bytes(value.filename)
+            else:
+                value = value.value
+                raise_if_null_bytes(value)
             args.append((name, value))
         return args
 
@@ -1007,8 +1013,8 @@ class Request(object):
                 host = '%s:%d' % (self.server_name, self.server_port)
             else:
                 host = self.server_name
-        return urlparse.urlunparse((self.scheme, host, self.base_path, None,
-                                    None, None))
+        return urllib.parse.urlunparse((self.scheme, host, self.base_path,
+                                        None, None, None))
 
     def _send_configurable_headers(self):
         sent_headers = [name.lower() for name, val in self._outheaders]
@@ -1025,7 +1031,7 @@ class Request(object):
                            .replace(',', '%3C')
             self.outcookie[name]['path'] = path
 
-        cookies = to_unicode(self.outcookie.output(header='')).encode('utf-8')
+        cookies = to_unicode(self.outcookie.output(header=''))
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
 

@@ -242,12 +242,12 @@ class TicketTestCase(unittest.TestCase):
             Ticket(self.env, '42')
             self.fail('ResourceNotFound not raised')
         except ResourceNotFound as e:
-            self.assertEqual(u'Ticket 42 does not exist.', unicode(e))
+            self.assertEqual('Ticket 42 does not exist.', str(e))
         try:
             Ticket(self.env, 'blah')
             self.fail('ResourceNotFound not raised')
         except ResourceNotFound as e:
-            self.assertEqual(u'Ticket blah does not exist.', unicode(e))
+            self.assertEqual('Ticket blah does not exist.', str(e))
 
     def test_can_save_ticket_without_explicit_comment(self):
         ticket = insert_ticket(self.env)
@@ -526,7 +526,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('changed', listener.action)
         self.assertEqual(comment, listener.comment)
         self.assertEqual('author', listener.author)
-        for key, value in data.iteritems():
+        for key, value in data.items():
             self.assertEqual(value, listener.old_values[key])
 
     def test_change_listener_deleted(self):
@@ -590,7 +590,7 @@ class TicketCommentTestCase(unittest.TestCase):
 
     def _modify_ticket(self, author, comment, when, replyto=None, **kwargs):
         ticket = Ticket(self.env, self.id)
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             ticket[k] = v
         ticket.save_changes(author, comment, when, replyto)
 
@@ -752,19 +752,19 @@ class TicketCommentEditTestCase(TicketCommentTestCase):
         """Check the generation of the comment history"""
         ticket = Ticket(self.env, self.id)
         t = [self.t1]
-        for i in xrange(1, 32):
+        for i in range(1, 32):
             t.append(self.created + timedelta(minutes=i))
             ticket.modify_comment(self._find_change(ticket, 1),
                                   'joe (%d)' % i,
                                   'Comment 1 (%d)' % i, t[-1])
         history = ticket.get_comment_history(cnum=1)
         self.assertEqual((0, t[0], 'jack', 'Comment 1'), history[0])
-        for i in xrange(1, len(history)):
+        for i in range(1, len(history)):
             self.assertEqual((i, t[i], 'joe (%d)' % i,
                              'Comment 1 (%d)' % i), history[i])
         history = ticket.get_comment_history(cdate=self.t1)
         self.assertEqual((0, t[0], 'jack', 'Comment 1'), history[0])
-        for i in xrange(1, len(history)):
+        for i in range(1, len(history)):
             self.assertEqual((i, t[i], 'joe (%d)' % i,
                              'Comment 1 (%d)' % i), history[i])
 
@@ -962,7 +962,7 @@ class EnumTestCase(unittest.TestCase):
 
     def test_repr(self):
         self.assertEqual("<Priority None None>", repr(Priority(self.env)))
-        self.assertEqual("<Priority 'major' u'3'>",
+        self.assertEqual("<Priority 'major' '3'>",
                          repr(Priority(self.env, 'major')))
 
     def test_priority_fetch(self):
@@ -1060,7 +1060,7 @@ class EnumTestCase(unittest.TestCase):
         names = ('blocker', 'critical', 'major', 'minor', 'trivial')
         for i, name in enumerate(names):
             self.assertEqual(name, priorities[i].name)
-            self.assertEqual(unicode(i + 1), priorities[i].value)
+            self.assertEqual(str(i + 1), priorities[i].value)
             self.assertEqual('', priorities[i].description)
 
 
@@ -1106,7 +1106,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def _create_milestone(self, **values):
         milestone = Milestone(self.env)
-        for k, v in values.iteritems():
+        for k, v in values.items():
             setattr(milestone, k, v)
         return milestone
 
@@ -1115,7 +1115,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def _update_ticket(self, ticket, author=None, comment=None, when=None,
                        **kwargs):
-        for name, value in kwargs.iteritems():
+        for name, value in kwargs.items():
             ticket[name] = value
         ticket.save_changes(author, comment, when or self.updated_at)
 
@@ -1150,7 +1150,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertIsNone(milestone.due)
         self.assertIsNone(milestone.completed)
         self.assertEqual('', milestone.description)
-        self.assertEqual("<Milestone u'Test'>", repr(milestone))
+        self.assertEqual("<Milestone 'Test'>", repr(milestone))
 
     def test_create_and_update_milestone(self):
         milestone = Milestone(self.env)
@@ -1448,7 +1448,7 @@ class ComponentTestCase(unittest.TestCase):
             Component(self.env, 'none')
 
         self.assertEqual("Component none does not exist.",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_repr(self):
         """Return string representation of object."""
@@ -1504,9 +1504,9 @@ class ComponentTestCase(unittest.TestCase):
             component1.delete()
 
         exc_message = "Cannot delete non-existent component."
-        self.assertEqual(exc_message, unicode(cm0.exception))
+        self.assertEqual(exc_message, str(cm0.exception))
         self.assertFalse(component0.exists)
-        self.assertEqual(exc_message, unicode(cm1.exception))
+        self.assertEqual(exc_message, str(cm1.exception))
         self.assertFalse(component1.exists)
 
     def test_insert(self):
@@ -1554,9 +1554,9 @@ class ComponentTestCase(unittest.TestCase):
             component3.insert()
 
         exc_message = "Invalid component name."
-        self.assertEqual(exc_message, unicode(cm1.exception))
-        self.assertEqual(exc_message, unicode(cm2.exception))
-        self.assertEqual(exc_message, unicode(cm3.exception))
+        self.assertEqual(exc_message, str(cm1.exception))
+        self.assertEqual(exc_message, str(cm2.exception))
+        self.assertEqual(exc_message, str(cm3.exception))
 
     def test_insert_existing_raises(self):
         """ResourceExistsError is raised when `insert`ing an existing
@@ -1569,7 +1569,7 @@ class ComponentTestCase(unittest.TestCase):
             component.insert()
 
         self.assertEqual('Component "component1" already exists.',
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_insert_existing_renamed_raises(self):
         """ResourceExistsError is raised when `insert`ing existing renamed
@@ -1582,7 +1582,7 @@ class ComponentTestCase(unittest.TestCase):
             component.insert()
 
         self.assertEqual('Component "component3" already exists.',
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_update(self):
         """Update existing component."""
@@ -1733,7 +1733,7 @@ class ReportTestCase(unittest.TestCase):
             report.insert()
         self.assertIsNone(report.id)
         self.assertEqual("Query cannot be empty.",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_insert_existing_report(self):
         report = Report(self.env, 1)
@@ -1773,8 +1773,7 @@ class ReportTestCase(unittest.TestCase):
 
         with self.assertRaises(TracError) as cm:
             report.update()
-        self.assertEqual("Query cannot be empty.",
-                         unicode(cm.exception))
+        self.assertEqual("Query cannot be empty.", str(cm.exception))
 
     def test_select(self):
         reports = list(Report.select(self.env))

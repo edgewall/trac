@@ -20,10 +20,9 @@ from trac.api import ISystemInfoProvider
 from trac.cache import cached
 from trac.config import BoolOption, IntOption, ListOption, PathOption, Option
 from trac.core import Component, TracError, implements
-from trac.util import shorten_line
 from trac.util.datefmt import FixedOffset, to_timestamp, format_datetime
 from trac.util.html import Markup, tag
-from trac.util.text import to_unicode, exception_to_unicode
+from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _
 from trac.versioncontrol.api import Changeset, Node, Repository, \
                                     IRepositoryConnector, InvalidRepository,\
@@ -101,7 +100,7 @@ class GitCachedRepository(CachedRepository):
             max_holders = 999
             revs = sorted(set(rev for refname, rev in repos.git.get_refs()))
             step = max_holders - 1
-            for idx in xrange(0, len(revs), step):
+            for idx in range(0, len(revs), step):
                 revs_ = revs[idx:idx + step]
                 holders = ','.join(('%s',) * len(revs_))
                 args = [self.id]
@@ -190,7 +189,10 @@ class GitCachedChangeset(CachedChangeset):
 def _last_iterable(iterable):
     """helper for detecting last iteration in for-loop"""
     i = iter(iterable)
-    v = next(i)
+    try:
+        v = next(i)
+    except StopIteration:
+        return
     for nextv in i:
         yield False, v
         v = nextv
@@ -214,24 +216,24 @@ def _parse_user_time(s):
     """
 
     user, time, tz_str = s.rsplit(None, 2)
-    tz = FixedOffset((int(tz_str) * 6) / 10, tz_str)
+    tz = FixedOffset((int(tz_str) * 6) // 10, tz_str)
     time = datetime.fromtimestamp(float(time), tz)
     return user, time
 
 
-_file_type_mask = 0170000
+_file_type_mask = 0o170000
 
 
 def _is_dir(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) in (0040000, 0160000)
+    return (mode & _file_type_mask) in (0o040000, 0o160000)
 
 
 def _is_submodule(mode):
     if mode is None:
         return False
-    return (mode & _file_type_mask) == 0160000
+    return (mode & _file_type_mask) == 0o160000
 
 
 class GitConnector(Component):
@@ -492,7 +494,7 @@ class CsetPropertyRenderer(Component):
             _str = "%s (%s)" % (
                 Chrome(self.env).format_author(context.req, user_),
                 format_datetime(time_, tzinfo=context.req.tz))
-            return unicode(_str)
+            return str(_str)
 
         raise TracError(_("Internal error"))
 
@@ -908,8 +910,8 @@ class GitChangeset(Changeset):
         parent = self.props.get('parent')
         parent = parent[0] if parent else None
 
-        for mode1, mode2, obj1, obj2, action, path1, path2 in \
-                self.repos.git.diff_tree(parent, self.rev, find_renames=True):
+        changes = self.repos.git.get_changes(parent, self.rev)
+        for mode1, mode2, obj1, obj2, action, path1, path2 in changes:
             path = path2 or path1
             p_path, p_rev = path1, parent
 
@@ -963,7 +965,7 @@ class GitwebProjectsRepositoryProvider(Component):
                              "'%s'", self.projects_list)
             return
 
-        with open(self.projects_list, 'r') as fp:
+        with open(self.projects_list, 'r', encoding='utf-8') as fp:
             for line in fp:
                 entries = line.strip().split()
                 if entries:
@@ -977,7 +979,8 @@ class GitwebProjectsRepositoryProvider(Component):
                     description_path = \
                         os.path.join(info['dir'], 'description')
                     if os.path.exists(description_path):
-                        with open(description_path, 'r') as fd:
+                        with open(description_path, 'r',
+                                  encoding='utf-8') as fd:
                             info['description'] = fd.read().strip()
                     if self.projects_url:
                         info['url'] = self.projects_url % reponame

@@ -153,7 +153,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         start_time = to_utimestamp(data['start_time'])
         ticket = data['ticket']
-        fields = {'field_%s' % f: v for f, v in ticket.values.iteritems()}
+        fields = {'field_%s' % f: v for f, v in ticket.values.items()}
         req = MockRequest(
             self.env, method='POST', path_info=path_info, authname='user1',
             args=dict(action=data['action'], submit='Submit changes',
@@ -203,12 +203,12 @@ class TicketModuleTestCase(unittest.TestCase):
 
         data = self.ticket_module.process_request(req)[1]
 
-        self.assertEqual(u'<a class="trac-author" href="/trac.cgi/query?'
-                         u'status=!closed&amp;reporter=user1">User One</a>',
-                         unicode(data['reporter_link']))
-        self.assertEqual(u'<a class="trac-author-user" href="/trac.cgi/query?'
-                         u'status=!closed&amp;owner=user2">User Two</a>',
-                         unicode(data['owner_link']))
+        self.assertEqual('<a class="trac-author" href="/trac.cgi/query?'
+                         'reporter=user1&amp;status=!closed">User One</a>',
+                         str(data['reporter_link']))
+        self.assertEqual('<a class="trac-author-user" href="/trac.cgi/query?'
+                         'owner=user2&amp;status=!closed">User Two</a>',
+                         str(data['owner_link']))
 
     def test_version_release_date_displayed(self):
         """Version release date is shown in ticket properties."""
@@ -231,20 +231,20 @@ class TicketModuleTestCase(unittest.TestCase):
         # Version with release data.
         req = MockRequest(self.env, method='GET', args={'id': ticket[0].id})
         data = self.ticket_module.process_request(req)[1]
-        self.assertIn(u'title="Released ',
-                      unicode(version_field(data)['rendered']))
+        self.assertIn('title="Released ',
+                      str(version_field(data)['rendered']))
 
         # Version without release data.
         req = MockRequest(self.env, method='GET', args={'id': ticket[1].id})
         data = self.ticket_module.process_request(req)[1]
-        self.assertNotIn(u'title="Released ',
-                         unicode(version_field(data)['rendered']))
+        self.assertNotIn('title="Released ',
+                         str(version_field(data)['rendered']))
 
         # Non-existent version.
         req = MockRequest(self.env, method='GET', args={'id': ticket[2].id})
         data = self.ticket_module.process_request(req)[1]
-        self.assertNotIn(u'title="Released ',
-                         unicode(version_field(data)['rendered']))
+        self.assertNotIn('title="Released ',
+                         str(version_field(data)['rendered']))
 
     def test_comment_save(self):
         req = self._prepare_newticket_post_request()
@@ -266,7 +266,7 @@ class TicketModuleTestCase(unittest.TestCase):
         self._process_ticket_request(req)
 
         req = self._prepare_ticket_post_request(1)
-        req.args['comment'] = u'\u200b\t\t\n\n\n\n\u200b'
+        req.args['comment'] = '\u200b\t\t\n\n\n\n\u200b'
         data = self._process_ticket_request(req)
 
         self.assertIsNone(data)
@@ -286,8 +286,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
         data = self.ticket_module.process_request(req)[1]
 
-        comment = u"Replying to [comment:1 author <author@\u2026>]:\n> " \
-                  u"the comment\n"
+        comment = "Replying to [comment:1 author <author@\u2026>]:\n> " \
+                  "the comment\n"
         self.assertEqual(comment, data['comment'])
         self.assertEqual(comment, data['change_preview']['comment'])
 
@@ -302,8 +302,8 @@ class TicketModuleTestCase(unittest.TestCase):
 
         data = self.ticket_module.process_request(req)[1]
 
-        comment = u"Replying to [comment:1 The Author]:\n> " \
-                  u"the comment\n"
+        comment = "Replying to [comment:1 The Author]:\n> " \
+                  "the comment\n"
         self.assertEqual(comment, data['comment'])
         self.assertEqual(comment, data['change_preview']['comment'])
 
@@ -319,7 +319,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertEqual('changed from <span class="trac-author-user">owner1'
                          '</span> to <span class="trac-author">owner2</span>',
-                         unicode(field['rendered']))
+                         str(field['rendered']))
 
     def test_ticket_property_diff_owner_change_from_anonymous(self):
         """Property diff message when ticket owner is changed from anonymous.
@@ -333,7 +333,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertEqual('changed from <span class="trac-author-anonymous">'
                          'anonymous</span> to <span class="trac-author">'
-                         'owner1</span>', unicode(field['rendered']))
+                         'owner1</span>', str(field['rendered']))
 
     def test_ticket_property_diff_owner_add(self):
         """Property diff message when ticket owner is added."""
@@ -345,7 +345,7 @@ class TicketModuleTestCase(unittest.TestCase):
         field = data['changes'][0]['fields']['owner']
 
         self.assertEqual('set to <span class="trac-author">owner2</span>',
-                         unicode(field['rendered']))
+                         str(field['rendered']))
 
     def test_ticket_property_diff_owner_remove(self):
         """Property diff message when ticket owner is removed."""
@@ -357,7 +357,7 @@ class TicketModuleTestCase(unittest.TestCase):
         field = data['changes'][0]['fields']['owner']
 
         self.assertEqual('<span class="trac-author">owner1</span> removed',
-                         unicode(field['rendered']))
+                         str(field['rendered']))
 
     def test_ticket_property_diff_reporter_change(self):
         """Property diff message when ticket reporter is changed."""
@@ -371,7 +371,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertEqual('changed from <span class="trac-author">reporter1'
                          '</span> to <span class="trac-author-user">reporter2'
-                         '</span>', unicode(field['rendered']))
+                         '</span>', str(field['rendered']))
 
     def test_ticket_property_diff_reporter_add(self):
         """Property diff message when ticket reporter is added."""
@@ -383,7 +383,7 @@ class TicketModuleTestCase(unittest.TestCase):
         field = data['changes'][0]['fields']['reporter']
 
         self.assertEqual('set to <span class="trac-author">reporter2</span>',
-                         unicode(field['rendered']))
+                         str(field['rendered']))
 
     def test_ticket_property_diff_reporter_remove(self):
         """Property diff message when ticket reporter is removed."""
@@ -395,7 +395,7 @@ class TicketModuleTestCase(unittest.TestCase):
         field = data['changes'][0]['fields']['reporter']
 
         self.assertEqual('<span class="trac-author">reporter1</span> removed',
-                         unicode(field['rendered']))
+                         str(field['rendered']))
 
     def test_ticket_property_diff_cc_separator_changed(self):
         """No change when CC list separator changed."""
@@ -426,7 +426,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['keywords']
 
-        self.assertEqual(u'kw1 kw2 → kw1, kw2', unicode(field['rendered']))
+        self.assertEqual('kw1 kw2 → kw1, kw2', str(field['rendered']))
 
     def test_ticket_property_diff_keywords_duplicate_added(self):
         t = self._create_ticket_with_change({'keywords': 'kw1 kw2'},
@@ -436,7 +436,7 @@ class TicketModuleTestCase(unittest.TestCase):
         data = self.ticket_module.process_request(req)[1]
         field = data['changes'][0]['fields']['keywords']
 
-        self.assertEqual(u'kw1 kw2 → kw1 kw2 kw2', unicode(field['rendered']))
+        self.assertEqual('kw1 kw2 → kw1 kw2 kw2', str(field['rendered']))
 
     def _test_invalid_cnum_raises(self, action, cnum=None):
         self._insert_ticket()
@@ -490,7 +490,7 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         with self.assertRaises(TracError) as cm:
             self.ticket_module.process_request(req)
-        self.assertEqual('Comment 42 not found', unicode(cm.exception))
+        self.assertEqual('Comment 42 not found', str(cm.exception))
 
     def test_edit_comment_validate_max_comment_size(self):
         """The [ticket] max_comment_size attribute is validated during
@@ -513,7 +513,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertEqual("The ticket comment is invalid: Must be less than or "
                          "equal to 5 characters",
-                         unicode(req.chrome['warnings'][0]))
+                         str(req.chrome['warnings'][0]))
 
     def test_preview_comment_validate_max_comment_size(self):
         """The [ticket] max_comment_size attribute is validated during
@@ -536,7 +536,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
         self.assertEqual("The ticket comment is invalid: Must be less than or "
                          "equal to 5 characters",
-                         unicode(req.chrome['warnings'][0]))
+                         str(req.chrome['warnings'][0]))
 
     def _test_template_data_for_time_field(self, req, value, expected, format):
         self.env.config.set('ticket-custom', 'timefield', 'time')
@@ -651,13 +651,13 @@ class TicketModuleTestCase(unittest.TestCase):
         dt1_text = user_time(req, format_datetime, dt1)
         dt2_text = user_time(req, format_datetime, dt2)
         self.assertEqual(2, len(changes))
-        self.assertEqual(u'\u2192 <span class="trac-field-new">%s</span>'
+        self.assertEqual('\u2192 <span class="trac-field-new">%s</span>'
                          % dt1_text,
-                         unicode(changes[0]['fields']['timefield']['rendered']))
-        self.assertEqual(u'<span class="trac-field-old">%s</span> \u2192 '
-                         u'<span class="trac-field-new">%s</span>'
+                         str(changes[0]['fields']['timefield']['rendered']))
+        self.assertEqual('<span class="trac-field-old">%s</span> \u2192 '
+                         '<span class="trac-field-new">%s</span>'
                          % (dt1_text, dt2_text),
-                         unicode(changes[1]['fields']['timefield']['rendered']))
+                         str(changes[1]['fields']['timefield']['rendered']))
 
     def test_submit_with_time_field(self):
         self.env.config.set('ticket-custom', 'timefield', 'time')
@@ -681,7 +681,7 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertNotEqual([], warnings)
         self.assertEqual(1, len(warnings))
         self.assertIn('is an invalid date, or the date format is not known.',
-                      unicode(warnings[0]))
+                      str(warnings[0]))
         ticket = Ticket(self.env, 1)
         self.assertIsNone(ticket['timefield'])
 
@@ -719,9 +719,9 @@ class TicketModuleTestCase(unittest.TestCase):
                     if self.pick_next_text:
                         self.pick_next_text = False
 
-            extractor = TimefieldExtractor(io.BytesIO())
-            extractor.feed(content.encode('utf-8'))
-            return extractor.value.decode('utf-8').strip()
+            extractor = TimefieldExtractor(io.StringIO())
+            extractor.feed(content)
+            return extractor.value.strip()
 
         self._insert_ticket(summary='Time fields')
         self.assertEqual('', timefield_text())
@@ -812,7 +812,7 @@ class TicketModuleTestCase(unittest.TestCase):
                 self.env, authname=authname,
                 method='POST', path_info='/ticket/1',
                 args={'comment': comment, 'action': 'leave', 'submit': True,
-                      'view_time': unicode(to_utimestamp(change_time))})
+                      'view_time': str(to_utimestamp(change_time))})
 
         req = make_req('user1')
         self.assertTrue(self.ticket_module.match_request(req))
@@ -827,7 +827,7 @@ class TicketModuleTestCase(unittest.TestCase):
         self.ticket_module.process_request(req)
         self.assertEqual(1, len(req.chrome['warnings']))
         self.assertEqual("No permissions to add a comment.",
-                         unicode(req.chrome['warnings'][0]))
+                         str(req.chrome['warnings'][0]))
 
     def test_change_milestone_requires_milestone_view(self):
         """Changing ticket milestone requires MILESTONE_VIEW."""
@@ -1051,36 +1051,36 @@ class TicketModuleTestCase(unittest.TestCase):
         ticket_custom = self.env.config['ticket-custom']
         ticket_custom.set('select1', 'select')
         ticket_custom.set('select1.options', 'one|two')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('select1.ticketlink_query', ticketlink_query)
         ticket_custom.set('checkbox1', 'checkbox')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('checkbox1.ticketlink_query', ticketlink_query)
         ticket_custom.set('radio1', 'radio')
         ticket_custom.set('radio1.options', '1|2')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('radio1.ticketlink_query', ticketlink_query)
         ticket_custom.set('text1', 'text')
         ticket_custom.set('text1.format', 'plain')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('text1.ticketlink_query', ticketlink_query)
         ticket_custom.set('text2', 'text')
         ticket_custom.set('text2.format', 'wiki')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('text2.ticketlink_query', ticketlink_query)
         ticket_custom.set('text3', 'text')
         ticket_custom.set('text3.format', 'reference')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('text3.ticketlink_query', ticketlink_query)
         ticket_custom.set('text4', 'text')
         ticket_custom.set('text4.format', 'list')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('text4.ticketlink_query', ticketlink_query)
         ticket_custom.set('textarea1', 'textarea')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('textarea1.ticketlink_query', ticketlink_query)
         ticket_custom.set('time1', 'time')
-        if ticketlink_query:
+        if ticketlink_query is not None:
             ticket_custom.set('time1.ticketlink_query', ticketlink_query)
 
         ticket = self._insert_ticket(
@@ -1094,29 +1094,35 @@ class TicketModuleTestCase(unittest.TestCase):
         self.assertTrue(self.ticket_module.match_request(req))
         data = self.ticket_module.process_request(req)[1]
 
-        base = '<a href="/trac.cgi/query%s&amp;' % \
-               (ticketlink_query if ticketlink_query
-                else self.env.config.get('query', 'ticketlink_query'))
+        base = '<a href="/trac.cgi/query'
+        if ticketlink_query is not None:
+            query = ticketlink_query.lstrip('?')
+        else:
+            query = 'status=!closed'
+        amp = '&amp;' if query else ''
         field = self._get_field_by_name(data, 'select1')
-        self.assertEqual('%sselect1=two">two</a>' % base,
-                         unicode(field['rendered']))
+        self.assertEqual('%s?select1=two%s%s">two</a>' \
+                         % (base, amp, query),
+                         str(field['rendered']))
         field = self._get_field_by_name(data, 'checkbox1')
-        self.assertEqual('%scheckbox1=1">yes</a>' % base,
-                         unicode(field['rendered']))
+        self.assertEqual('%s?checkbox1=1%s%s">yes</a>'
+                         % (base, amp, query), str(field['rendered']))
         field = self._get_field_by_name(data, 'radio1')
-        self.assertEqual('%sradio1=2">2</a>' % base,
-                         unicode(field['rendered']))
+        self.assertEqual('%s?radio1=2%s%s">2</a>' % (base, amp, query),
+                         str(field['rendered']))
         field = self._get_field_by_name(data, 'text1')
         self.assertNotIn('rendered', field)
         field = self._get_field_by_name(data, 'text2')
         self.assertNotIn('rendered', field)
         field = self._get_field_by_name(data, 'text3')
-        self.assertEqual('%stext3=word2">word2</a>' % base,
-                         unicode(field['rendered']))
+        self.assertEqual('%s?%s%stext3=word2">word2</a>'
+                         % (base, query, amp),
+                         str(field['rendered']))
         field = self._get_field_by_name(data, 'text4')
-        self.assertEqual('%(base)stext4=~word3">word3</a> '
-                         '%(base)stext4=~word4">word4</a>' % {'base': base},
-                         unicode(field['rendered']))
+        self.assertEqual('%(base)s?%(query)s%(amp)stext4=~word3">word3</a> '
+                         '%(base)s?%(query)s%(amp)stext4=~word4">word4</a>'
+                         % {'base': base, 'amp': amp, 'query': query},
+                         str(field['rendered']))
         field = self._get_field_by_name(data, 'textarea1')
         self.assertNotIn('rendered', field)
         field = self._get_field_by_name(data, 'time1')
@@ -1124,7 +1130,7 @@ class TicketModuleTestCase(unittest.TestCase):
 
     def test_custom_field_custom_ticketlink_query_option(self):
         """Custom fields with default ticketlink_query."""
-        ticketlink_query = '?status=accepted'
+        ticketlink_query = 'status=accepted'
         self._test_custom_field_with_ticketlink_query_option(ticketlink_query)
 
     def test_custom_field_custom_ticketlink_query_option_none(self):
@@ -1179,7 +1185,7 @@ class CustomFieldMaxSizeTestCase(unittest.TestCase):
         self.assertEqual(1, len(req.chrome['warnings']))
         self.assertIn("The ticket field <strong>Text1</strong> is invalid: "
                       "Must be less than or equal to 5 characters",
-                      unicode(req.chrome['warnings'][0]))
+                      str(req.chrome['warnings'][0]))
 
     def test_ticket_custom_field_less_than_max_size(self):
         """Validation succeeds for a ticket custom field with content length

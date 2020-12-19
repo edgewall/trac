@@ -78,7 +78,7 @@ def parse(authz_file, modules):
             yield subject
 
     authz = {}
-    for (module, path), items in sections.iteritems():
+    for (module, path), items in sections.items():
         section = authz.setdefault(module, {}).setdefault(path, {})
         for subject, perms in items:
             readable = 'r' in perms
@@ -233,8 +233,8 @@ class AuthzSourcePolicy(Component):
                 raise ConfigurationError()
             else:
                 self._users = {user
-                               for paths in self._authz.itervalues()
-                               for path in paths.itervalues()
-                               for user, result in path.iteritems()
+                               for paths in self._authz.values()
+                               for path in paths.values()
+                               for user, result in path.items()
                                if result}
         return self._authz, self._users

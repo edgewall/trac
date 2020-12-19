@@ -408,7 +408,7 @@ class TicketModule(Component):
         if field == 'url':
             return context.href.query(id=','.join(str(t) for t in tickets))
         elif field == 'title':
-            ticketids = u',\u200b'.join(str(t) for t in tickets)
+            ticketids = ',\u200b'.join(str(t) for t in tickets)
             title = _("Tickets %(ticketids)s", ticketids=ticketids)
             return tag_("Tickets %(ticketlist)s batch updated",
                         ticketlist=tag.em('#', ticketids, title=title))
@@ -835,7 +835,7 @@ class TicketModule(Component):
         for each in model.Ticket.protected_fields:
             fields.pop(each, None)
             fields.pop('checkbox_' + each, None)    # See Ticket.populate()
-        for field, value in fields.iteritems():
+        for field, value in fields.items():
             if field in ticket.time_fields:
                 try:
                     fields[field] = user_time(req, parse_date, value) \
@@ -941,9 +941,9 @@ class TicketModule(Component):
 
         # assume a linear sequence of change numbers, starting at 1, with gaps
         def replay_changes(values, old_values, from_version, to_version):
-            for version in xrange(from_version, to_version+1):
+            for version in range(from_version, to_version+1):
                 if version in changes:
-                    for k, v in changes[version]['fields'].iteritems():
+                    for k, v in changes[version]['fields'].items():
                         values[k] = v['new']
                         if old_values is not None and k not in old_values:
                             old_values[k] = v['old']
@@ -975,7 +975,7 @@ class TicketModule(Component):
 
         # -- prop changes
         props = []
-        for k, v in new_ticket.iteritems():
+        for k, v in new_ticket.items():
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
@@ -1187,11 +1187,13 @@ class TicketModule(Component):
                   if f['name'] not in ('time', 'changetime')]
         content = io.BytesIO()
         content.write(b'\xef\xbb\xbf')   # BOM
-        writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['id'] + [unicode(f['name']) for f in fields])
+        writer = csv.writer(io.TextIOWrapper(content, encoding='utf-8',
+                                             newline='\n', write_through=True),
+                            delimiter=sep, quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['id'] + [f['name'] for f in fields])
 
         context = web_context(req, ticket.resource)
-        cols = [unicode(ticket.id)]
+        cols = [str(ticket.id)]
         for f in fields:
             name = f['name']
             value = ticket[name] or ''
@@ -1201,7 +1203,7 @@ class TicketModule(Component):
                 format = ticket.fields.by_name(name).get('format')
                 value = user_time(req, format_date_or_datetime, format,
                                   value) if value else ''
-            cols.append(value.encode('utf-8'))
+            cols.append(value)
         writer.writerow(cols)
         return content.getvalue(), '%s;charset=utf-8' % mimetype
 
@@ -1215,7 +1217,7 @@ class TicketModule(Component):
             # wikify comment
             if 'comment' in change:
                 change_summary['added'] = ['comment']
-            for field, values in change['fields'].iteritems():
+            for field, values in change['fields'].items():
                 if field == 'description':
                     change_summary.setdefault('changed', []).append(field)
                 else:
@@ -1417,7 +1419,7 @@ class TicketModule(Component):
             field_changes[field] = {'old': old, 'new': new, 'by': author,
                                     'label': field_labels.get(field, field)}
         # Start with user changes
-        for field, value in ticket._old.iteritems():
+        for field, value in ticket._old.items():
             store_change(field, value or '', ticket[field], 'user')
 
         # Apply controller changes corresponding to the selected action
@@ -1443,7 +1445,7 @@ class TicketModule(Component):
                 store_change(key, old, new, cname)
 
         # Detect non-changes
-        for key, item in field_changes.items():
+        for key, item in list(field_changes.items()):
             if item['old'] == item['new']:
                 del field_changes[key]
         return field_changes, problems
@@ -1472,7 +1474,7 @@ class TicketModule(Component):
     def _query_link_words(self, context, name, value, query=None):
         """Splits a list of words and makes a query link to each separately"""
         from trac.ticket.query import QueryModule
-        if not (isinstance(value, basestring) and  # None or other non-splitable
+        if not (isinstance(value, str) and  # None or other non-splitable
                 self.env.is_component_enabled(QueryModule)):
             return value
         if query is None:
@@ -1659,7 +1661,7 @@ class TicketModule(Component):
                 if ticket.resource.version is not None and \
                         cnum > ticket.resource.version:
                     # Retrieve initial ticket values from later changes
-                    for k, v in change['fields'].iteritems():
+                    for k, v in change['fields'].items():
                         if k not in values:
                             values[k] = v['old']
                     skip = True
@@ -1673,7 +1675,7 @@ class TicketModule(Component):
                                        'comment:%s' % replyto)
                     if ticket.resource.version:
                         # Override ticket value by current changes
-                        for k, v in change['fields'].iteritems():
+                        for k, v in change['fields'].items():
                             values[k] = v['new']
                     if 'description' in change['fields']:
                         data['description_change'] = change
@@ -1750,7 +1752,7 @@ class TicketModule(Component):
                 yield group
 
     def _render_property_changes(self, req, ticket, fields, resource_new=None):
-        for field, changes in fields.iteritems():
+        for field, changes in fields.items():
             new, old = changes['new'], changes['old']
             changes['rendered'] = \
                 self._render_property_diff(req, ticket, field, old, new,
@@ -1775,14 +1777,14 @@ class TicketModule(Component):
             if added or remvd:
                 return tag(added, added and remvd and _("; "), remvd)
             else:
-                return tag(old, u" \u2192 ", new)
+                return tag(old, " \u2192 ", new)
 
         def render_default(old, new):
             if old and new:
-                rendered = tag(tag.span(old, class_='trac-field-old'), u' → ',
+                rendered = tag(tag.span(old, class_='trac-field-old'), ' → ',
                                tag.span(new, class_='trac-field-new'))
             elif not old and new:
-                rendered = tag(u'→ ', tag.span(new, class_='trac-field-new'))
+                rendered = tag('→ ', tag.span(new, class_='trac-field-new'))
             else:  # old and not new
                 rendered = tag.span(old, class_='trac-field-deleted')
             return rendered

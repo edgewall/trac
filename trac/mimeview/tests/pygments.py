@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-from __future__ import absolute_import
-
 import os
 import re
 import sys
@@ -26,11 +24,6 @@ from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
 from trac.wiki.formatter import format_to_html
 
-# Note: if trac/mimeview/tests is in sys.path, then the absolute
-#       import will try to load this pygments.py file again, which is bad.
-dir_ = os.path.dirname(__file__)
-if dir_ in sys.path:
-    sys.path.remove(dir_)
 try:
     import pygments
 except ImportError:
@@ -53,12 +46,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.pygments_html = {}
         testcase = []
         html_file = os.path.join(os.path.dirname(__file__), 'pygments.data')
-        with open(html_file, 'rb') as f:
+        with open(html_file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     self.pygments_html[line[1:].strip()] = testcase = []
                 else:
-                    testcase.append(unicode(line.rstrip(), 'utf-8'))
+                    testcase.append(line.rstrip())
 
     @property
     def python_mimetype(self):
@@ -72,7 +65,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
 
     def _test(self, expected_id, result):
         expected = self._expected(expected_id)
-        result = unicode(result).splitlines()
+        result = str(result).splitlines()
         # from pprint import pformat
         # print("\nE: " + expected_id + "\n" + pformat(expected))
         # print("\nR: " + expected_id + "\n" + pformat(result))

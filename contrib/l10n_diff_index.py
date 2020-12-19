@@ -51,8 +51,6 @@ only, and apply the corresponding chunks if needed.
 
 """
 
-from __future__ import print_function
-
 from bisect import bisect_left
 import re
 
@@ -89,13 +87,13 @@ def index_diffs(path, diffs):
 
 def write_index_for(path):
     with open(path, 'rb') as f:
-        diffs = unicode(f.read(), 'utf-8')
+        diffs = str(f.read(), 'utf-8')
     changes = index_diffs(path, diffs)
     if changes:
         index = path + '.index'
         with open(index, 'wb') as idx:
             for n, line in changes:
-                print((u"%s:%s: %s" % (path, n, line)).encode('utf-8'),
+                print(("%s:%s: %s" % (path, n, line)).encode('utf-8'),
                       file=idx)
         print("%s: %d changes indexed in %s" % (path, len(changes), index))
     else:

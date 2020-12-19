@@ -97,7 +97,7 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual('joe', page.author)
         self.assertEqual('Testing', page.comment)
         self.assertEqual(t, page.time)
-        self.assertEqual("<WikiPage u'TestPage@1'>", repr(page))
+        self.assertEqual("<WikiPage 'TestPage@1'>", repr(page))
 
         history = list(page.get_history())
         self.assertEqual(1, len(history))

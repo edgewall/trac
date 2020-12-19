@@ -63,71 +63,71 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket = self._create_a_ticket()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'csv')
-        self.assertEqual(('\xef\xbb\xbf'
-                          'id,summary,reporter,owner,description,status,'
-                          'keywords,cc\r\n1,Foo,santa,,Bar,new,,\r\n',
-                          'text/csv;charset=utf-8', 'csv'), csv)
+        content = (b'\xef\xbb\xbf'
+                   b'id,summary,reporter,owner,description,status,'
+                   b'keywords,cc\r\n1,Foo,santa,,Bar,new,,\r\n')
+        self.assertEqual((content, 'text/csv;charset=utf-8', 'csv'), csv)
 
     def test_csv_conversion_with_obfuscation(self):
         ticket = self._create_a_ticket_with_email()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'csv')
-        self.assertEqual(
-            ('\xef\xbb\xbf'
-             'id,summary,reporter,owner,description,status,keywords,cc\r\n'
-             '1,Foo,santa@…,joe@…,Bar,new,,cc1 cc2@…\r\n',
-             'text/csv;charset=utf-8', 'csv'),
-            csv)
+        content = (
+            '\ufeff'
+            'id,summary,reporter,owner,description,status,keywords,cc\r\n'
+            '1,Foo,santa@…,joe@…,Bar,new,,cc1 cc2@…\r\n').encode('utf-8')
+        self.assertEqual((content, 'text/csv;charset=utf-8', 'csv'), csv)
+
         self.req.perm = MockPerm()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'csv')
-        self.assertEqual(
-            ('\xef\xbb\xbf'
-             'id,summary,reporter,owner,description,status,keywords,cc\r\n'
-             '1,Foo,santa@example.org,joe@example.org,Bar,new,,'
-             'cc1 cc2@example.org\r\n',
-             'text/csv;charset=utf-8', 'csv'),
-            csv)
+        content = (
+            '\ufeff'
+            'id,summary,reporter,owner,description,status,keywords,cc\r\n'
+            '1,Foo,santa@example.org,joe@example.org,Bar,new,,'
+            'cc1 cc2@example.org\r\n').encode('utf-8')
+        self.assertEqual((content, 'text/csv;charset=utf-8', 'csv'), csv)
 
     def test_tab_conversion(self):
         ticket = self._create_a_ticket()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'tab')
-        self.assertEqual(('\xef\xbb\xbf'
-                          'id\tsummary\treporter\towner\tdescription\tstatus\t'
-                          'keywords\tcc\r\n1\tFoo\tsanta\t\tBar\tnew\t\t\r\n',
-                          'text/tab-separated-values;charset=utf-8', 'tsv'),
-                         csv)
+        content = ('\ufeff'
+                   'id\tsummary\treporter\towner\tdescription\tstatus\t'
+                   'keywords\tcc\r\n1\tFoo\tsanta\t\tBar\tnew\t\t\r\n') \
+                  .encode('utf-8')
+        self.assertEqual((content, 'text/tab-separated-values;charset=utf-8',
+                          'tsv'), csv)
 
     def test_tab_conversion_with_obfuscation(self):
         ticket = self._create_a_ticket_with_email()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'tab')
-        self.assertEqual(
-            ('\xef\xbb\xbf'
-             'id\tsummary\treporter\towner\tdescription\tstatus\tkeywords\t'
-             'cc\r\n'
-             '1\tFoo\tsanta@…\tjoe@…\tBar\tnew\t\tcc1 cc2@…\r\n',
-             'text/tab-separated-values;charset=utf-8', 'tsv'),
-            csv)
+        content = ('\ufeff'
+                   'id\tsummary\treporter\towner\tdescription\tstatus\t'
+                   'keywords\tcc\r\n'
+                   '1\tFoo\tsanta@…\tjoe@…\tBar\tnew\t\tcc1 cc2@…\r\n') \
+                  .encode('utf-8')
+        self.assertEqual((content, 'text/tab-separated-values;charset=utf-8',
+                          'tsv'), csv)
+
         self.req.perm = MockPerm()
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'tab')
-        self.assertEqual(
-            ('\xef\xbb\xbf'
-             'id\tsummary\treporter\towner\tdescription\tstatus\tkeywords\t'
-             'cc\r\n'
-             '1\tFoo\tsanta@example.org\tjoe@example.org\tBar\tnew\t\t'
-             'cc1 cc2@example.org\r\n',
-             'text/tab-separated-values;charset=utf-8', 'tsv'),
-            csv)
+        content = ('\ufeff'
+                   'id\tsummary\treporter\towner\tdescription\tstatus\t'
+                   'keywords\tcc\r\n'
+                   '1\tFoo\tsanta@example.org\tjoe@example.org\tBar\tnew\t\t'
+                   'cc1 cc2@example.org\r\n').encode('utf-8')
+        self.assertEqual((content, 'text/tab-separated-values;charset=utf-8',
+                          'tsv'), csv)
 
     def test_rss_conversion(self):
         ticket = self._create_a_ticket()
         content, mimetype, ext = self.mimeview.convert_content(
             self.req, 'trac.ticket.Ticket', ticket, 'rss')
         self.maxDiff = None
-        self.assertEqual(("""<?xml version="1.0"?>
+        expected_content = """<?xml version="1.0"?>
 
 
 
@@ -149,9 +149,10 @@ Bar
     <generator>Trac %s</generator>
 
  </channel>
-</rss>""" % self.env.trac_version,
+</rss>""" % self.env.trac_version
+        self.assertEqual((expected_content.encode('utf-8'),
                           'application/rss+xml', 'xml'),
-                         (content.replace('\r', ''), mimetype, ext))
+                         (content.replace(b'\r', b''), mimetype, ext))
 
 
 def test_suite():

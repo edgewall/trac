@@ -14,28 +14,29 @@
 
 import os
 import re
+import socket
 import unittest
 
-from trac.tests.functional import FunctionalTwillTestCaseSetup, \
+from trac.tests.functional import FunctionalTestCaseSetup, \
                                   internal_error, tc
 from trac.util import create_file
 
 
-class TestAttachmentNonexistentParent(FunctionalTwillTestCaseSetup):
+class TestAttachmentNonexistentParent(FunctionalTestCaseSetup):
     def runTest(self):
         """TracError should be raised when navigating to the attachment
         page for a nonexistent resource."""
         self._tester.go_to_wiki('NonexistentPage')
-        tc.find("The page[ \n]+<strong>NonexistentPage</strong>[ \n]+"
-                "does not exist. You can create it here.")
+        tc.find(r"The page[ \n]+<strong>NonexistentPage</strong>[ \n]+"
+                r"does not exist. You can create it here.")
         tc.find(r"\bCreate this page\b")
 
         tc.go(self._tester.url + '/attachment/wiki/NonexistentPage')
-        tc.find('<h1>Trac Error</h1>\s+<p class="message">'
-                'Parent resource NonexistentPage doesn&#39;t exist</p>')
+        tc.find(r'<h1>Trac Error</h1>\s+<p class="message">'
+                r"Parent resource NonexistentPage doesn&#39;t exist</p>")
 
 
-class TestAboutPage(FunctionalTwillTestCaseSetup):
+class TestAboutPage(FunctionalTestCaseSetup):
     def runTest(self):
         """Validate the About page."""
         tc.follow(r"\bAbout Trac\b")
@@ -44,7 +45,7 @@ class TestAboutPage(FunctionalTwillTestCaseSetup):
         tc.find(r"<h2>Configuration</h2>")
 
 
-class TestErrorPage(FunctionalTwillTestCaseSetup):
+class TestErrorPage(FunctionalTestCaseSetup):
     """Validate the error page.
     Defects reported to trac-hacks should use the Component defined in the
     plugin's URL (#11434).
@@ -125,16 +126,16 @@ class RaiseExceptionPlugin(Component):
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
-class RegressionTestTicket3833(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket3833(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/3833"""
         env = self._testenv.get_trac_environment()
         trac_log = os.path.join(env.log_dir, 'trac.log')
 
         def read_log_file(offset):
-            with open(trac_log) as fd:
+            with open(trac_log, 'rb') as fd:
                 fd.seek(offset)
-                return fd.read()
+                return str(fd.read(), 'utf-8')
 
         # Verify that file logging is enabled as info level.
         log_size = os.path.getsize(trac_log)
@@ -173,7 +174,7 @@ class RegressionTestTicket3833(FunctionalTwillTestCaseSetup):
         self.assertIn(warn3, log_content)
 
 
-class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5572(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5572"""
         # TODO: this ticket (implemented in r6011) adds a new feature to
@@ -181,7 +182,7 @@ class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
         # new configurability.
 
 
-class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket7209(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/7209"""
         ticketid = self._tester.create_ticket()
@@ -213,7 +214,7 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
         tc.notfind('Second Attachment')
 
 
-class RegressionTestTicket9880(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket9880(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/9880
 
@@ -231,35 +232,55 @@ See also http://bugs.python.org/issue15564.
 """)
 
 
-class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket3663(FunctionalTestCaseSetup):
     def runTest(self):
         """Regression test for non-UTF-8 PATH_INFO (#3663)
 
         Verify that URLs not encoded with UTF-8 are reported as invalid.
         """
-        import httplib
-        # Work around for InvalidURL since Python 2.7.17 (#13233)
-        saved_re = httplib._contains_disallowed_url_pchar_re \
-                   if hasattr(httplib, '_contains_disallowed_url_pchar_re') \
-                   else None
-        try:
-            if saved_re:
-                httplib._contains_disallowed_url_pchar_re = \
-                    re.compile(r'[\x00-\x20]')
-            # invalid PATH_INFO
-            self._tester.go_to_wiki(u'été'.encode('latin1'))
-            tc.code(404)
-            tc.find('Invalid URL encoding')
-            # invalid SCRIPT_NAME
-            tc.go(u'été'.encode('latin1'))
-            tc.code(404)
-            tc.find('Invalid URL encoding')
-        finally:
-            if saved_re:
-                httplib._contains_disallowed_url_pchar_re = saved_re
+        def fetch(uri):
+            # http.client module disallows non-ascii characters in request
+            # line. Instead, use directly socket module.
+            cookie = '; '.join('%s=%s' % (c['name'], c['value'])
+                               for c in tc.get_cookies()).encode('utf-8')
+            req = (b'GET %s HTTP/1.0\r\n'
+                   b'Host: %s:%d\r\n'
+                   b'Cookie: %s\r\n'
+                   b'Connection: close\r\n'
+                   b'\r\n' % (uri, b'127.0.0.1', self._testenv.port, cookie))
+            resp = []
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect(('127.0.0.1', self._testenv.port))
+                s.send(req)
+                while True:
+                    chunk = s.recv(4096)
+                    if not chunk:
+                        break
+                    resp.append(chunk)
+            resp = b''.join(resp)
+            if not resp:
+                raise RuntimeError('No response')
+            match = re.match(b'HTTP\/[0-9]\.[0-9] +([0-9]{3}) +.*\r\n', resp)
+            if not match:
+                raise RuntimeError('No status line: %r' % resp)
+            status = int(match.group(1))
+            pos = resp.find(b'\r\n\r\n', len(match.group(0)))
+            if pos == -1:
+                raise RuntimeError('Missing CRLFCRLF in response: %r' % resp)
+            body = resp[pos:]
+            return status, body
+
+        # invalid PATH_INFO
+        status, body = fetch('/wiki/été'.encode('latin1'))
+        self.assertEqual(404, status)
+        self.assertIn(b'Invalid URL encoding', body)
+        # invalid SCRIPT_NAME
+        status, body = fetch('/été'.encode('latin1'))
+        self.assertEqual(404, status)
+        self.assertIn(b'Invalid URL encoding', body)
 
 
-class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6318(FunctionalTestCaseSetup):
     def runTest(self):
         """Regression test for non-ascii usernames (#6318)
         """
@@ -272,12 +293,12 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
         self._tester.logout()
         try:
             # also test a regular ascii user name
-            self._tester.login(u'user')
+            self._tester.login('user')
             self._tester.go_to_front()
             self._tester.logout()
             # now test utf-8 user name
-            self._testenv.adduser(u'joé')
-            self._tester.login(u'joé')
+            self._testenv.adduser('joé')
+            self._tester.login('joé')
             self._tester.go_to_front()
             # when failed to retrieve session, FakeSession() and FakePerm()
             # are used and the req.perm has no permissions.
@@ -287,10 +308,10 @@ class RegressionTestTicket6318(FunctionalTwillTestCaseSetup):
             # finally restore expected 'admin' login
             self._tester.login('admin')
         finally:
-            self._testenv.deluser(u'joé')
+            self._testenv.deluser('joé')
 
 
-class RegressionTestTicket11434(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11434(FunctionalTestCaseSetup):
     """Test for regression of https://trac.edgewall.org/ticket/11434
     Defects reported to trac-hacks should use the Component defined in the
     plugin's URL.
@@ -329,31 +350,31 @@ class RaiseExceptionPlugin(Component):
             env.config.set('components', 'RaiseExceptionPlugin.*', 'disabled')
 
 
-class RegressionTestTicket11503a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11503a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11503 a"""
         base = self._tester.url
 
         tc.go(base + '/notf%C5%91und/')
         tc.notfind(internal_error)
-        tc.url(re.escape(base + '/notf%C5%91und') + r'\Z')
+        tc.url(base + '/notf%C5%91und', regexp=False)
 
         tc.go(base + '/notf%C5%91und/?type=def%C3%A9ct')
         tc.notfind(internal_error)
-        tc.url(re.escape(base + '/notf%C5%91und?type=def%C3%A9ct') + r'\Z')
+        tc.url(base + '/notf%C5%91und?type=def%C3%A9ct', regexp=False)
 
         tc.go(base + '/notf%C5%91und/%252F/?type=%252F')
         tc.notfind(internal_error)
-        tc.url(re.escape(base + '/notf%C5%91und/%252F?type=%252F') + r'\Z')
+        tc.url(base + '/notf%C5%91und/%252F?type=%252F', regexp=False)
 
 
-class RegressionTestTicket11503b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11503b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11503 b"""
         env = self._testenv.get_trac_environment()
         try:
             env.config.set('mainnav', 'wiki.href',
-                           u'/wiki/SändBõx?action=history&blah=%252F')
+                           '/wiki/SändBõx?action=history&blah=%252F')
             env.config.save()
             # reloads the environment
             env = self._testenv.get_trac_environment()

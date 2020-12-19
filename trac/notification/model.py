@@ -138,7 +138,7 @@ class Subscription(object):
                     WHERE sid=%s AND authenticated=%s""",
                     (sid, authenticated)):
                 ids_map.setdefault((distributor, class_), []).append(id_)
-            for ids in ids_map.itervalues():
+            for ids in ids_map.values():
                 ids.sort(reverse=True)
 
             priorities = {}
@@ -169,7 +169,7 @@ class Subscription(object):
                          sub['class']))
 
             delete_ids = []
-            for ids in ids_map.itervalues():
+            for ids in ids_map.values():
                 delete_ids.extend(ids)
             if delete_ids:
                 db("DELETE FROM notify_subscription WHERE id IN (%s)" %
@@ -193,7 +193,7 @@ class Subscription(object):
         with env.db_query as db:
             conditions = []
             args = []
-            for name, value in sorted(kwargs.iteritems()):
+            for name, value in sorted(kwargs.items()):
                 if name.endswith('_'):
                     name = name[:-1]
                 if name == 'authenticated':
@@ -322,7 +322,7 @@ class Watch(object):
         with env.db_query as db:
             conditions = []
             args = []
-            for name, value in sorted(kwargs.iteritems()):
+            for name, value in sorted(kwargs.items()):
                 if name.endswith('_'):
                     name = name[:-1]
                 if name == 'authenticated':

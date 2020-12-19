@@ -40,8 +40,8 @@ def wiki2rest(env, context, wiki):
     text = re.sub(r'\[\[TracGuideToc\]\]\r?\n?', '', text)
     text = re.sub(r'\[\[PageOutline\([^\)]*\)\]\]\r?\n?', '', text)
 
-    html = unicode(format_to_html(env, context, text))
-    html = html.replace(u'<span class="icon">\u200b</span>', '')
+    html = str(format_to_html(env, context, text))
+    html = html.replace('<span class="icon">\u200b</span>', '')
     html = re.sub(r'<em>\s*([^<]*?)\s*</em>', r'<em>\1</em>', html)
     # Convert intra-document links from absolute to relative URLs.
     html = re.sub(r'(<a [^>]*href=")%s(#\w+")' % context.href.wiki(wiki.name),

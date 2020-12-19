@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-from __future__ import unicode_literals
-
 import doctest
 import io
 import sys
@@ -78,20 +76,15 @@ class FragmentTestCase(unittest.TestCase):
                          Markup(tag(0, tag.b(0), ' and ', tag.b(0.0))))
 
     def test_unicode(self):
-        self.assertEqual('<b>M</b>essäge',
-                         unicode(tag(tag.b('M'), 'essäge')))
-
-    def test_str(self):
-        self.assertEqual(b'<b>M</b>ess\xc3\xa4ge',
-                         str(tag(tag.b('M'), 'essäge')))
+        self.assertEqual('<b>M</b>essäge', str(tag(tag.b('M'), 'essäge')))
 
 
 class XMLElementTestCase(unittest.TestCase):
 
     def test_xml(self):
-        self.assertEqual(Markup('0<a>0</a> and <b>0</b> and <c/> and'
-                                ' <d class="[\'a\', \'\', \'b\']"'
-                                ' more_="[\'a\']"/>'),
+        self.assertEqual(Markup('''0<a>0</a> and <b>0</b> and <c/> and'''
+                                ''' <d class="[b'a', b'', b'b']"'''
+                                ''' more_="[b'a']"/>'''),
                          Markup(xml(0, xml.a(0), ' and ', xml.b(0.0),
                                     ' and ', xml.c(None), ' and ',
                                     xml.d('', class_=[b'a', b'', b'b'],
@@ -101,8 +94,8 @@ class XMLElementTestCase(unittest.TestCase):
 class ElementTestCase(unittest.TestCase):
 
     def test_tag(self):
-        self.assertEqual(Markup('0<a>0</a> and <b>0</b> and <c></c>'
-                                ' and <d class="a b" more_="[\'a\']"></d>'),
+        self.assertEqual(Markup('''0<a>0</a>b' and '<b>0</b> and <c></c>'''
+                                ''' and <d class="a b" more_="[b'a']"></d>'''),
                          Markup(tag(0, tag.a(0, href=''), b' and ', tag.b(0.0),
                                     ' and ', tag.c(None), ' and ',
                                     tag.d('', class_=['a', '', 'b'],
@@ -110,10 +103,6 @@ class ElementTestCase(unittest.TestCase):
 
     def test_unicode(self):
         self.assertEqual('<b>M<em>essäge</em></b>',
-                         unicode(tag.b('M', tag.em('essäge'))))
-
-    def test_str(self):
-        self.assertEqual(b'<b>M<em>ess\xc3\xa4ge</em></b>',
                          str(tag.b('M', tag.em('essäge'))))
 
 
@@ -151,7 +140,7 @@ class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
     def sanitize(self, html):
         sanitizer = TracHTMLSanitizer(safe_schemes=self.safe_schemes,
                                       safe_origins=self.safe_origins)
-        return unicode(sanitizer.sanitize(html))
+        return str(sanitizer.sanitize(html))
 
     def test_input_type_password(self):
         html = '<input type="password" />'
@@ -159,9 +148,10 @@ class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
 
     def test_empty_attribute(self):
         html = '<option value="1236" selected>Family B</option>'
-        self.assertEqual(
-            '<option selected="selected" value="1236">Family B</option>',
-            self.sanitize(html))
+        self.assertIn(
+            self.sanitize(html),
+            ['<option selected="selected" value="1236">Family B</option>',
+             '<option value="1236" selected="selected">Family B</option>'])
 
     def test_expression(self):
         html = '<div style="top:expression(alert())">XSS</div>'
@@ -275,15 +265,15 @@ class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
 
         test('<img src="data:image/png,...."/>',
              '<img src="data:image/png,...."/>')
-        test('<img src="http://example.org/login" crossorigin="anonymous"/>',
+        test('<img crossorigin="anonymous" src="http://example.org/login"/>',
              '<img src="http://example.org/login"/>')
-        test('<img src="http://example.org/login" crossorigin="anonymous"/>',
-             '<img src="http://example.org/login"'
-             ' crossorigin="use-credentials"/>')
+        test('<img crossorigin="anonymous" src="http://example.org/login"/>',
+             '<img crossorigin="use-credentials"'
+             ' src="http://example.org/login"/>')
         test('<img src="http://example.net/bar.png"/>',
              '<img src="http://example.net/bar.png"/>')
-        test('<img src="http://example.net:443/qux.png"'
-             ' crossorigin="anonymous"/>',
+        test('<img crossorigin="anonymous"'
+             ' src="http://example.net:443/qux.png"/>',
              '<img src="http://example.net:443/qux.png"/>')
         test('<img src="/path/foo.png"/>', '<img src="/path/foo.png"/>')
         test('<img src="../../bar.png"/>', '<img src="../../bar.png"/>')
@@ -316,15 +306,14 @@ class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
         test('<p>&amp;&amp;</p>',       '<p>&amp;&amp;</p>')
         test('<p>&amp;\u2026</p>',      '<p>&amp;&hellip;</p>')
         test("<p>&amp;unknown;</p>",    '<p>&unknown;</p>')
-        test("<p>\U0010ffff</p>",       '<p>&#1114111;</p>')
-        test("<p>\U0010ffff</p>",       '<p>&#x10ffff;</p>')
-        test("<p>\U0010ffff</p>",       '<p>&#X10FFFF;</p>')
-        test("<p>&amp;#1114112;</p>",   '<p>&#1114112;</p>')
-        test("<p>&amp;#x110000;</p>",   '<p>&#x110000;</p>')
-        test("<p>&amp;#X110000;</p>",   '<p>&#X110000;</p>')
+        test('<p>\U0010fffd\ufffd</p>',
+             '<p>&#1114109;&#1114110;&#1114111;&#1114112;</p>')
+        test('<p>\U0010fffd\ufffd</p>',
+             '<p>&#x10fffd;&#x10fffe;&#x10ffff;&#x110000;</p>')
+        test('<p>\U0010fffd\ufffd</p>',
+             '<p>&#x10FFFD;&#x10FFFE;&#x10FFFF;&#x110000;</p>')
         test("<p>&amp;#abcd;</p>",      '<p>&#abcd;</p>')
-        test('<p>&amp;#%d;</p>' % (sys.maxint + 1),
-             '<p>&#%d;</p>' % (sys.maxint + 1))
+        test('<p>\ufffd</p>',           '<p>&#%d;</p>' % (sys.maxsize + 1))
 
     def test_special_characters_attribute(self):
         self._assert_sanitize('<img title="&amp;"/>', '<img title="&amp;"/>')
@@ -342,22 +331,19 @@ class TracHTMLSanitizerTestCaseBase(unittest.TestCase):
                               '<img title="&amp;hellip;"/>')
         self._assert_sanitize('<img title="&amp;unknown;"/>',
                               '<img title="&unknown;"/>')
-        self._assert_sanitize('<img title="\U0010ffff"/>',
-                              '<img title="&#1114111;"/>')
-        self._assert_sanitize('<img title="\U0010ffff"/>',
-                              '<img title="&#x10ffff;"/>')
-        self._assert_sanitize('<img title="\U0010ffff"/>',
-                              '<img title="&#X10FFFF;"/>')
-        self._assert_sanitize('<img title="&amp;#1114112;"/>',
-                              '<img title="&#1114112;"/>')
-        self._assert_sanitize('<img title="&amp;#x110000;"/>',
-                              '<img title="&#x110000;"/>')
-        self._assert_sanitize('<img title="&amp;#X110000;"/>',
-                              '<img title="&#X110000;"/>')
+        self._assert_sanitize(
+            '<img title="\U0010fffd\ufffd"/>',
+            '<img title="&#1114109;&#1114110;&#1114111;&#1114112;"/>')
+        self._assert_sanitize(
+            '<img title="\U0010fffd\ufffd"/>',
+            '<img title="&#x10fffd;&#x10fffe;&#x10ffff;&#x110000;"/>')
+        self._assert_sanitize(
+            '<img title="\U0010fffd\ufffd"/>',
+            '<img title="&#x10FFFD;&#x10FFFE;&#x10FFFF;&#x110000;"/>')
         self._assert_sanitize('<img title="&amp;#abcd;"/>',
                               '<img title="&#abcd;"/>')
-        self._assert_sanitize('<img title="&amp;#%d;"/>' % (sys.maxint + 1),
-                              '<img title="&#%d;"/>' % (sys.maxint + 1))
+        self._assert_sanitize('<img title="\ufffd"/>',
+                              '<img title="&#%d;"/>' % (sys.maxsize + 1))
 
     def _assert_sanitize(self, expected, content):
         self.assertEqual(expected, self.sanitize(content))
@@ -448,22 +434,22 @@ class ToFragmentTestCase(unittest.TestCase):
     def test_unicode(self):
         rv = to_fragment('blah')
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('blah', unicode(rv))
+        self.assertEqual('blah', str(rv))
 
     def test_fragment(self):
         rv = to_fragment(tag('blah'))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('blah', unicode(rv))
+        self.assertEqual('blah', str(rv))
 
     def test_element(self):
         rv = to_fragment(tag.p('blah'))
         self.assertEqual(Element, type(rv))
-        self.assertEqual('<p>blah</p>', unicode(rv))
+        self.assertEqual('<p>blah</p>', str(rv))
 
     def test_tracerror(self):
         rv = to_fragment(TracError('blah'))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('blah', unicode(rv))
+        self.assertEqual('blah', str(rv))
 
     def test_tracerror_with_fragment(self):
         message = tag('Powered by ',
@@ -471,7 +457,7 @@ class ToFragmentTestCase(unittest.TestCase):
         rv = to_fragment(TracError(message))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual('Powered by <a href="https://trac.edgewall.org/">Trac'
-                         '</a>', unicode(rv))
+                         '</a>', str(rv))
 
     def test_tracerror_with_element(self):
         message = tag.p('Powered by ',
@@ -479,7 +465,7 @@ class ToFragmentTestCase(unittest.TestCase):
         rv = to_fragment(TracError(message))
         self.assertEqual(Element, type(rv))
         self.assertEqual('<p>Powered by <a href="https://trac.edgewall.org/">'
-                         'Trac</a></p>', unicode(rv))
+                         'Trac</a></p>', str(rv))
 
     def test_tracerror_with_tracerror_with_fragment(self):
         message = tag('Powered by ',
@@ -487,7 +473,7 @@ class ToFragmentTestCase(unittest.TestCase):
         rv = to_fragment(TracError(TracError(message)))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual('Powered by <a href="https://trac.edgewall.org/">Trac'
-                         '</a>', unicode(rv))
+                         '</a>', str(rv))
 
     def test_tracerror_with_tracerror_with_element(self):
         message = tag.p('Powered by ',
@@ -495,29 +481,29 @@ class ToFragmentTestCase(unittest.TestCase):
         rv = to_fragment(TracError(TracError(message)))
         self.assertEqual(Element, type(rv))
         self.assertEqual('<p>Powered by <a href="https://trac.edgewall.org/">'
-                         'Trac</a></p>', unicode(rv))
+                         'Trac</a></p>', str(rv))
 
     def test_error(self):
         rv = to_fragment(ValueError('invalid literal for int(): blah'))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('invalid literal for int(): blah', unicode(rv))
+        self.assertEqual('invalid literal for int(): blah', str(rv))
 
     def test_error_with_fragment(self):
         rv = to_fragment(ValueError(tag('invalid literal for int(): ',
                                         tag.b('blah'))))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('invalid literal for int(): <b>blah</b>', unicode(rv))
+        self.assertEqual('invalid literal for int(): <b>blah</b>', str(rv))
 
     def test_error_with_error_with_fragment(self):
         v1 = ValueError(tag('invalid literal for int(): ', tag.b('blah')))
         rv = to_fragment(ValueError(v1))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('invalid literal for int(): <b>blah</b>', unicode(rv))
+        self.assertEqual('invalid literal for int(): <b>blah</b>', str(rv))
 
     def test_gettext(self):
         rv = to_fragment(gettext('%(size)s bytes', size=0))
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('0 bytes', unicode(rv))
+        self.assertEqual('0 bytes', str(rv))
 
     def test_tgettext(self):
         rv = to_fragment(tgettext('Back to %(parent)s',
@@ -525,13 +511,13 @@ class ToFragmentTestCase(unittest.TestCase):
                                                href='http://localhost/')))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual('Back to <a href="http://localhost/">WikiStart</a>',
-                         unicode(rv))
+                         str(rv))
 
     def test_tracerror_with_gettext(self):
         e = TracError(gettext('%(size)s bytes', size=0))
         rv = to_fragment(e)
         self.assertEqual(Fragment, type(rv))
-        self.assertEqual('0 bytes', unicode(rv))
+        self.assertEqual('0 bytes', str(rv))
 
     def test_tracerror_with_tgettext(self):
         e = TracError(tgettext('Back to %(parent)s',
@@ -540,7 +526,7 @@ class ToFragmentTestCase(unittest.TestCase):
         rv = to_fragment(e)
         self.assertEqual(Fragment, type(rv))
         self.assertEqual('Back to <a href="http://localhost/">WikiStart</a>',
-                         unicode(rv))
+                         str(rv))
 
     def _ioerror(self, filename):
         try:
@@ -551,17 +537,17 @@ class ToFragmentTestCase(unittest.TestCase):
             self.fail('IOError not raised')
 
     def test_ioerror(self):
-        rv = to_fragment(self._ioerror(b'./notfound'))
+        rv = to_fragment(self._ioerror('./notfound'))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual("[Errno 2] No such file or directory: './notfound'",
-                         unicode(rv))
+                         str(rv))
 
     def test_error_with_ioerror(self):
-        e = self._ioerror(b'./notfound')
+        e = self._ioerror('./notfound')
         rv = to_fragment(ValueError(e))
         self.assertEqual(Fragment, type(rv))
         self.assertEqual("[Errno 2] No such file or directory: './notfound'",
-                         unicode(rv))
+                         str(rv))
 
 
 def test_suite():

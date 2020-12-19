@@ -34,7 +34,7 @@ class DatabaseFileTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        cls.devnull = io.open(os.devnull, 'wb')
+        cls.devnull = io.open(os.devnull, 'w', encoding='utf-8')
         sys.stdout = sys.stderr = cls.devnull
 
     @classmethod
@@ -69,9 +69,11 @@ class DatabaseFileTestCase(unittest.TestCase):
             self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
-            self.assertIn('Database "', unicode(e))
-            self.assertIn('" not found.', unicode(e))
+            self.assertIn('Database "', str(e))
+            self.assertIn('" not found.', str(e))
 
+    @unittest.skipIf(os.name == 'posix' and os.getuid() == 0,
+                     'For root, os.access() always returns True')
     def test_no_permissions(self):
         self._create_env()
         os.chmod(self.db_path, 0o444)
@@ -80,10 +82,7 @@ class DatabaseFileTestCase(unittest.TestCase):
             self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
-            self.assertIn('requires read _and_ write permissions', unicode(e))
-
-    if os.name == 'posix' and os.getuid() == 0:
-        del test_no_permissions  # For root, os.access() always returns True
+            self.assertIn('requires read _and_ write permissions', str(e))
 
     def test_error_with_lazy_translation(self):
         self._create_env()
@@ -95,7 +94,7 @@ class DatabaseFileTestCase(unittest.TestCase):
             self._db_query(self.env)
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
-            message = unicode(e)
+            message = str(e)
             self.assertIn('Database "', message)
             self.assertIn('" not found.', message)
         finally:
@@ -131,7 +130,7 @@ class SQLiteConnectionTestCase(unittest.TestCase):
         self.dbm.insert_into_tables([
             ('test_simple',
              ('username', 'email', 'enabled'),
-             [('joe', 'joe@example.org', 1), (u'joé', 'joe@example.org', 0)]),
+             [('joe', 'joe@example.org', 1), ('joé', 'joe@example.org', 0)]),
             ('test_composite',
              ('id', 'name', 'value', 'enabled'),
              [(1, 'foo', '42', 1),
@@ -156,7 +155,7 @@ class SQLiteConnectionTestCase(unittest.TestCase):
             cursor = db.cursor()
             cursor.execute("PRAGMA index_list(%s)" % db.quote(table))
             results = {row[1]: {'unique': row[2]} for row in cursor}
-            for index, info in results.iteritems():
+            for index, info in results.items():
                 cursor.execute("PRAGMA index_info(%s)" % db.quote(index))
                 info['columns'] = [row[2] for row in cursor]
         return results

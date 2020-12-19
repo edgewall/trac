@@ -59,7 +59,7 @@ def load_eggs(entry_point_name):
                 env.log.error('Skipping "%s": %s', item,
                               exception_to_unicode(e, traceback=True))
 
-        for dist, e in errors.iteritems():
+        for dist, e in errors.items():
             _log_error(dist, e)
 
         def deregister_components(entry_point):
@@ -70,6 +70,8 @@ def load_eggs(entry_point_name):
                             c.__name__ == name:
                         ComponentMeta.deregister(c)
 
+        if auto_enable:
+            auto_enable = os.path.normcase(auto_enable)
         for entry in sorted(working_set.iter_entry_points(entry_point_name),
                             key=lambda entry: entry.name):
             env.log.debug('Loading plugin "%s" from "%s"',
@@ -80,7 +82,8 @@ def load_eggs(entry_point_name):
                 _log_error(entry, e)
                 deregister_components(entry)
             else:
-                if os.path.dirname(entry.dist.location) == auto_enable:
+                if os.path.normcase(os.path.dirname(entry.dist.location)) == \
+                        auto_enable:
                     _enable_plugin(env, entry.module_name)
     return _load_eggs
 
@@ -153,7 +156,8 @@ def get_plugin_info(env, include_core=False):
 
         dist = find_distribution(module)
         plugin_filename = None
-        if os.path.realpath(os.path.dirname(dist.location)) == plugins_dir:
+        if os.path.normcase(os.path.realpath(os.path.dirname(dist.location))) \
+                == plugins_dir:
             plugin_filename = os.path.basename(dist.location)
 
         if dist.project_name not in plugins:
@@ -206,7 +210,7 @@ def get_plugin_info(env, include_core=False):
         for name in list(plugins):
             if name.lower() == 'trac':
                 plugins.pop(name)
-    return sorted(plugins.itervalues(),
+    return sorted(iter(plugins.values()),
                   key=lambda p: (p['name'].lower() != 'trac',
                                  p['name'].lower()))
 

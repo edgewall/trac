@@ -110,17 +110,17 @@ class HrefTestCase(unittest.TestCase):
     def test_add_unicode(self):
         href = trac.web.href.Href('/base')
         self.assertEqual('/base/p%C3%A4th/to/%20/file/',
-                         href + u'/päth/to/ /file/')
+                         href + '/päth/to/ /file/')
         self.assertEqual('/base/p%C3%A4th/to/%20/file',
-                         href + u'päth/to/ /file')
+                         href + 'päth/to/ /file')
         self.assertEqual('/base?type=def%C3%A9ct&or&type=abc%20def',
-                         href + u'?type=deféct&or&type=abc def')
+                         href + '?type=deféct&or&type=abc def')
         self.assertEqual('/base/p%C3%A4th/to/file/'
                          '?type=def%C3%A9ct&or&type=abc%20def',
-                         href + u'/päth/to/file/?type=deféct&or&type=abc def')
+                         href + '/päth/to/file/?type=deféct&or&type=abc def')
         self.assertEqual('/base/p%C3%A4th/to/file'
                          '?type=def%C3%A9ct&or&type=abc%20def',
-                         href + u'päth/to/file?type=deféct&or&type=abc def')
+                         href + 'päth/to/file?type=deféct&or&type=abc def')
 
     def test_jinja2(self):
         # https://trac.edgewall.org/ticket/13244

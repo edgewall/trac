@@ -102,7 +102,7 @@ class WikiPage(object):
         if self.name is None:
             name = self.name
         else:
-            name = u'%s@%s' % (self.name, self.version)
+            name = '%s@%s' % (self.name, self.version)
         return '<%s %r>' % (self.__class__.__name__, name)
 
     exists = property(lambda self: self.version > 0)

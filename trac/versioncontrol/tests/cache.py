@@ -305,15 +305,15 @@ class CacheTestCase(unittest.TestCase):
         cache = MockCachedRepository(self.env, repos, self.log)
 
         cache.sync_changeset('0')   # not cached yet
-        cache.sync_changeset(u'1')  # not cached yet
+        cache.sync_changeset('1')  # not cached yet
         rows = self.env.db_query(
             "SELECT rev,author FROM revision ORDER BY rev")
         self.assertEqual(2, len(rows))
         self.assertEqual(('0000000000', 'joe'), rows[0])
         self.assertEqual(('0000000001', 'joe'), rows[1])
 
-        cache.sync_changeset(u'0')  # cached
-        cache.sync_changeset('1')   # cached
+        cache.sync_changeset('0')  # cached
+        cache.sync_changeset('1')  # cached
         rows = self.env.db_query(
             "SELECT rev,author FROM revision ORDER BY rev")
         self.assertEqual(2, len(rows))

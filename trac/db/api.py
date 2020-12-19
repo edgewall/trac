@@ -17,7 +17,7 @@
 import importlib
 import os
 import time
-import urllib
+import urllib.parse
 from abc import ABCMeta, abstractmethod
 
 from trac import db_default
@@ -110,10 +110,8 @@ class QueryContextManager(DbContextManager):
                 self.db.close()
 
 
-class ConnectionBase(object):
+class ConnectionBase(object, metaclass=ABCMeta):
     """Abstract base class for database connection classes."""
-
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def cast(self, column, type):
@@ -536,7 +534,7 @@ class DatabaseManager(Component):
         :raises TracError: if the package or module doesn't exist.
         """
         dbver = self.get_database_version(name)
-        for i in xrange(dbver + 1, version + 1):
+        for i in range(dbver + 1, version + 1):
             module = '%s.db%i' % (pkg, i)
             try:
                 upgrader = importlib.import_module(module)
@@ -628,7 +626,7 @@ class DatabaseManager(Component):
 
 def get_column_names(cursor):
     """Retrieve column names from a cursor, if possible."""
-    return [unicode(d[0], 'utf-8') if isinstance(d[0], str) else d[0]
+    return [str(d[0], 'utf-8') if isinstance(d[0], bytes) else d[0]
             for d in cursor.description] if cursor.description else []
 
 
@@ -690,9 +688,9 @@ def parse_connection_uri(db_str):
         else:
             password = None
         if user:
-            user = urllib.unquote(user)
+            user = urllib.parse.unquote(user)
         if password:
-            password = unicode_passwd(urllib.unquote(password))
+            password = unicode_passwd(urllib.parse.unquote(password))
     else:
         user = password = None
 
@@ -721,7 +719,7 @@ def parse_connection_uri(db_str):
                 name, value = param.split('=', 1)
             except ValueError:
                 raise _invalid_db_str(db_str)
-            value = urllib.unquote(value)
+            value = urllib.parse.unquote(value)
             params[name] = value
 
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),

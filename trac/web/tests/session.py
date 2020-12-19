@@ -40,7 +40,7 @@ def _prep_session_table(env, spread_visits=False):
     visit_delta = 86400 if spread_visits else 0
     auth_list, anon_list = [], []
     with env.db_transaction as db:
-        for x in xrange(20):
+        for x in range(20):
             sid = 'name%02d' % x
             authenticated = int(x < 10)
             last_visit = last_visit_base + (visit_delta * x)
@@ -168,7 +168,7 @@ class SessionTestCase(unittest.TestCase):
     def test_authenticated_session(self):
         self._test_authenticated_session('john')
         self._test_authenticated_session('j.smith')
-        self._test_authenticated_session(u'Jöhn')  # non-ascii username
+        self._test_authenticated_session('Jöhn')  # non-ascii username
         self._test_authenticated_session('john@EXAMPLE.LOCAL')  # LDAP username
 
     def _test_session_promotion(self, username):
@@ -191,11 +191,11 @@ class SessionTestCase(unittest.TestCase):
     def test_session_promotion(self):
         self._test_session_promotion('john')
         self._test_session_promotion('j.smith')
-        self._test_session_promotion(u'Jöhn')  # non-ascii username
+        self._test_session_promotion('Jöhn')  # non-ascii username
         self._test_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
 
         sessions = self.env.db_query("SELECT sid, authenticated FROM session")
-        self.assertEqual({('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+        self.assertEqual({('john', 1), ('j.smith', 1), ('Jöhn', 1),
                           ('john@EXAMPLE.LOCAL', 1)},
                          set(sessions))
 
@@ -219,11 +219,11 @@ class SessionTestCase(unittest.TestCase):
     def test_new_session_promotion(self):
         self._test_new_session_promotion('john')
         self._test_new_session_promotion('j.smith')
-        self._test_new_session_promotion(u'Jöhn')  # non-ascii username
+        self._test_new_session_promotion('Jöhn')  # non-ascii username
         self._test_new_session_promotion('john@EXAMPLE.LOCAL')  # LDAP username
 
         sessions = self.env.db_query("SELECT sid, authenticated FROM session")
-        self.assertEqual({('john', 1), ('j.smith', 1), (u'Jöhn', 1),
+        self.assertEqual({('john', 1), ('j.smith', 1), ('Jöhn', 1),
                           ('john@EXAMPLE.LOCAL', 1)},
                          set(sessions))
 
@@ -832,9 +832,9 @@ class SessionTestCase(unittest.TestCase):
         self.assertRaises(TracError, session.get_session, 'abc 123 xyz')
         self.assertRaises(TracError, session.get_session, 'abc-123-xyz')
         self.assertRaises(TracError, session.get_session, 'abc<i>123</i>xyz')
-        self.assertRaises(TracError, session.get_session, u'abc123xÿz')
+        self.assertRaises(TracError, session.get_session, 'abc123xÿz')
         self.assertRaises(TracError, session.get_session,
-                          u'abc¹₂³xyz')  # Unicode digits
+                          'abc¹₂³xyz')  # Unicode digits
 
     def test_session_change_id_with_invalid_sid(self):
         req = MockRequest(self.env, authname='anonymous', base_path='/')
@@ -848,9 +848,9 @@ class SessionTestCase(unittest.TestCase):
         self.assertRaises(TracError, session.change_sid, 'abc 123 xyz')
         self.assertRaises(TracError, session.change_sid, 'abc-123-xyz')
         self.assertRaises(TracError, session.change_sid, 'abc<i>123</i>xyz')
-        self.assertRaises(TracError, session.change_sid, u'abc123xÿz')
+        self.assertRaises(TracError, session.change_sid, 'abc123xÿz')
         self.assertRaises(TracError, session.change_sid,
-                          u'abc¹₂³xyz')  # Unicode digits
+                          'abc¹₂³xyz')  # Unicode digits
 
 
 class TracAdminTestCase(TracAdminTestCaseBase):
@@ -1059,7 +1059,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def test_help_session_purge(self):
         doc = self.get_command_help('session', 'purge')
-        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+        self.assertIn('"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
 
 def test_suite():

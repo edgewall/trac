@@ -23,7 +23,7 @@ from trac.web.href import Href
 from trac.wiki.tests import formatter
 
 
-SEARCH_TEST_CASES = u"""
+SEARCH_TEST_CASES = """
 ============================== search: link resolver
 search:foo
 search:"foo bar"
@@ -58,7 +58,7 @@ search:"?q=foo bar&wiki=on"
 ------------------------------
 """
 
-ATTACHMENT_TEST_CASES = u"""
+ATTACHMENT_TEST_CASES = """
 ============================== attachment: link resolver (deprecated)
 attachment:wiki:WikiStart:file.txt (deprecated)
 attachment:ticket:123:file.txt (deprecated)
@@ -143,7 +143,7 @@ def attachment_teardown(tc):
     tc.env.reset_db_and_disk()
 
 
-EMAIL_TEST_CASE_DEFAULT = u"""
+EMAIL_TEST_CASE_DEFAULT = """
 ============================== mailto: obfuscated by default, like plain email
 user@example.org vs. mailto:user@example.org
 and [mailto:user@example.org Joe User]
@@ -168,7 +168,7 @@ def email_default_context():
     return context
 
 
-EMAIL_TEST_CASE_NEVER_OBFUSCATE = u"""
+EMAIL_TEST_CASE_NEVER_OBFUSCATE = """
 ============================== mailto: not obfuscated, unlike plain email
 user@example.org vs. mailto:user@example.org
 and [mailto:user@example.org Joe User]

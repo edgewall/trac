@@ -18,6 +18,7 @@ import os
 import re
 import sys
 from contextlib import closing
+from subprocess import Popen, PIPE
 
 from trac.api import IEnvironmentSetupParticipant
 from trac.core import *
@@ -42,23 +43,21 @@ else:
     pymsql_version = get_pkginfo(pymysql).get('version', pymysql.__version__)
 
     class MySQLUnicodeCursor(pymysql.cursors.Cursor):
-        def _convert_row(self, row):
-            return tuple(v.decode('utf-8') if isinstance(v, str) else v
-                         for v in row)
+        def execute(self, query, args=None):
+            if args:
+                args = tuple(str(arg) if isinstance(arg, Markup) else arg
+                             for arg in args)
+            return super(MySQLUnicodeCursor, self).execute(query, args)
 
-        def fetchone(self):
-            row = super(MySQLUnicodeCursor, self).fetchone()
-            return self._convert_row(row) if row else None
-
-        def fetchmany(self, num):
-            rows = super(MySQLUnicodeCursor, self).fetchmany(num)
-            return [self._convert_row(row) for row in rows] \
-                   if rows is not None else []
+        def executemany(self, query, args):
+            if args:
+                args = [tuple(str(item) if isinstance(item, Markup) else item
+                              for item in arg)
+                        for arg in args]
+            return super(MySQLUnicodeCursor, self).executemany(query, args)
 
         def fetchall(self):
-            rows = super(MySQLUnicodeCursor, self).fetchall()
-            return [self._convert_row(row) for row in rows] \
-                   if rows is not None else []
+            return list(super(MySQLUnicodeCursor, self).fetchall())
 
     class MySQLSilentCursor(MySQLUnicodeCursor):
         def _show_warnings(self, conn=None):
@@ -176,12 +175,12 @@ class MySQLConnector(Component):
         with a max of 767 bytes per column.
         """
         cols = []
-        limit_col = 767 / max_bytes
-        limit = min(self._max_key_length / (max_bytes * len(columns)),
+        limit_col = 767 // max_bytes
+        limit = min(self._max_key_length // (max_bytes * len(columns)),
                     limit_col)
         for c in columns:
             name = _quote(c)
-            table_col = filter((lambda x: x.name == c), table.columns)
+            table_col = list(filter((lambda x: x.name == c), table.columns))
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
                 if table_col[0].key_size is not None:
                     name += '(%d)' % min(table_col[0].key_size, limit_col)
@@ -228,7 +227,7 @@ class MySQLConnector(Component):
         to `(from, to)` SQL type tuples.
         """
         alterations = []
-        for name, (from_, to) in sorted(columns.iteritems()):
+        for name, (from_, to) in sorted(columns.items()):
             to = _type_map.get(to, to)
             if to != _type_map.get(from_, from_):
                 alterations.append((name, to))
@@ -238,7 +237,6 @@ class MySQLConnector(Component):
                           for each in alterations))
 
     def backup(self, dest_file):
-        from subprocess import Popen, PIPE
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = parse_connection_uri(db_url)
         db_params = db_prop.setdefault('params', {})
@@ -251,7 +249,7 @@ class MySQLConnector(Component):
             args.extend(['-P', str(db_prop['port'])])
         if 'user' in db_prop:
             args.extend(['-u', db_prop['user']])
-        for name, value in db_params.iteritems():
+        for name, value in db_params.items():
             if name == 'compress' and as_int(value, 0):
                 args.append('--compress')
             elif name == 'named_pipe' and as_int(value, 0):
@@ -379,20 +377,19 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         if port is None:
             port = 3306
         opts = {'charset': 'utf8'}
-        for name, value in params.iteritems():
-            key = name.encode('utf-8')
+        for name, value in params.items():
             if name == 'read_default_group':
-                opts[key] = value
+                opts[name] = value
             elif name == 'init_command':
-                opts[key] = value.encode('utf-8')
+                opts[name] = value
             elif name in ('read_default_file', 'unix_socket'):
-                opts[key] = value.encode(sys.getfilesystemencoding())
+                opts[name] = value
             elif name in ('compress', 'named_pipe'):
-                opts[key] = as_int(value, 0)
+                opts[name] = as_int(value, 0)
             elif name == 'charset':
                 value = value.lower()
                 if value in ('utf8', 'utf8mb4'):
-                    opts[key] = value
+                    opts[name] = value
                 else:
                     self.log.warning("Invalid connection string parameter "
                                      "'%s=%s'", name, value)
@@ -412,9 +409,6 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             cnx = pymysql.connect(db=path, user=user, passwd=password,
                                   host=host, port=port, **opts)
         self.schema = path
-        if hasattr(cnx, 'encoders'):
-            # 'encoders' undocumented but present since 1.2.1 (r422)
-            cnx.encoders[Markup] = cnx.encoders[unicode]
         ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
 
@@ -457,7 +451,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                 row = dict(zip(columns, row))
                 keys.setdefault(row['Key_name'], []).append(row['Column_name'])
             # drop all composite indices which in the given column is involved
-            for key, columns in keys.iteritems():
+            for key, columns in keys.items():
                 if len(columns) > 1 and column in columns:
                     if key == 'PRIMARY':
                         cursor.execute("ALTER TABLE %s DROP PRIMARY KEY" %

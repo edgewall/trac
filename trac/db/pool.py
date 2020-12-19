@@ -68,7 +68,7 @@ class ConnectionPoolBackend(object):
     def get_cnx(self, connector, kwargs, timeout=None):
         cnx = None
         log = kwargs.get('log')
-        key = unicode(kwargs)
+        key = str(kwargs)
         start = time_now()
         tid = get_thread_id()
         # Get a Connection, either directly or a deferred one
@@ -90,7 +90,7 @@ class ConnectionPoolBackend(object):
                 self._active[(tid, key)] = (cnx, num)
 
         deferred = num == 1 and isinstance(cnx, tuple)
-        exc_info = (None, None, None)
+        exception = None
         if deferred:
             # Potentially lengthy operations must be done without lock held
             op, cnx = cnx
@@ -101,11 +101,11 @@ class ConnectionPoolBackend(object):
                     cnx.close()
                 if op in ('close', 'create'):
                     cnx = connector.get_connection(**kwargs)
-            except TracError:
-                exc_info = sys.exc_info()
+            except TracError as e:
+                exception = e
                 cnx = None
-            except Exception:
-                exc_info = sys.exc_info()
+            except Exception as e:
+                exception = e
                 if log:
                     log.error('Exception caught on %s', op, exc_info=True)
                 cnx = None
@@ -125,14 +125,15 @@ class ConnectionPoolBackend(object):
                 return self.get_cnx(connector, kwargs)
 
         # if we didn't get a cnx after wait(), something's fishy...
-        if isinstance(exc_info[1], TracError):
-            raise exc_info[0], exc_info[1], exc_info[2]
+        if isinstance(exception, TracError):
+            raise exception
         timeout = time_now() - start
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
-        if exc_info[1]:
-            errmsg += " (%s)" % exception_to_unicode(exc_info[1])
-        raise TimeoutError(errmsg)
+        if exception:
+            raise TimeoutError(errmsg) from exception
+        else:
+            raise TimeoutError(errmsg)
 
     def _take_cnx(self, connector, kwargs, key, tid):
         """Note: _available lock must be held when calling this method."""

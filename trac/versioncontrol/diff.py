@@ -71,8 +71,8 @@ def get_filtered_hunks(fromlines, tolines, context=None,
     SequenceMatcher.
     """
     if ignore_space_changes:
-        fromlines = map(_norm_space_changes, fromlines)
-        tolines = map(_norm_space_changes, tolines)
+        fromlines = list(map(_norm_space_changes, fromlines))
+        tolines = list(map(_norm_space_changes, tolines))
     if ignore_case:
         fromlines = [l.lower() for l in fromlines]
         tolines = [l.lower() for l in tolines]
@@ -113,13 +113,13 @@ def filter_ignorable_lines(hunks, fromlines, tolines, context,
         if (ignore_case or ignore_space_changes) and tag == 'replace':
             if len(fromlines) != len(tolines):
                 return False
-            def f(str):
+            def f(value):
                 if ignore_case:
-                    str = str.lower()
+                    value = value.lower()
                 if ignore_space_changes:
-                    str = _norm_space_changes(str)
-                return str
-            for i in xrange(len(fromlines)):
+                    value = _norm_space_changes(value)
+                return value
+            for i in range(len(fromlines)):
                 if f(fromlines[i]) != f(tolines[i]):
                     return False
             return True
@@ -205,7 +205,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
     def markup_intraline_changes(opcodes):
         for tag, i1, i2, j1, j2 in opcodes:
             if tag == 'replace' and i2 - i1 == j2 - j1:
-                for i in xrange(i2 - i1):
+                for i in range(i2 - i1):
                     fromline, toline = fromlines[i1 + i], tolines[j1 + i]
                     (start, end) = get_change_extent(fromline, toline)
                     if start != 0 or end != 0:
@@ -234,11 +234,11 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                 for line in fromlines[i1:i2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['base']['lines'].append(Markup(unicode(line)))
+                    blocks[-1]['base']['lines'].append(Markup(str(line)))
                 for line in tolines[j1:j2]:
                     line = line.expandtabs(tabwidth)
                     line = space_re.sub(htmlify, escape(line, quotes=False))
-                    blocks[-1]['changed']['lines'].append(Markup(unicode(line)))
+                    blocks[-1]['changed']['lines'].append(Markup(str(line)))
             else:
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
@@ -248,7 +248,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                                             for seg in line.split('\0'))
                         line = line.replace('\1', '</del>')
                         blocks[-1]['base']['lines'].append(
-                            Markup(unicode(line)))
+                            Markup(str(line)))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
                         line = expandtabs(line, tabwidth, '\0\1')
@@ -257,7 +257,7 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                                             for seg in line.split('\0'))
                         line = line.replace('\1', '</ins>')
                         blocks[-1]['changed']['lines'].append(
-                            Markup(unicode(line)))
+                            Markup(str(line)))
         changes.append(blocks)
     return changes
 
@@ -301,7 +301,7 @@ def get_diff_options(req):
         the style and options information represented as
         key/value pairs in dictionaries, for example::
 
-          {'style': u'sidebyside',
+          {'style': 'sidebyside',
            'options': {'contextall': 1, 'contextlines': 2,
                        'ignorecase': 0,  'ignoreblanklines': 0,
                        'ignorewhitespace': 1}}

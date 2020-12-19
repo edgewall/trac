@@ -72,7 +72,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
         link = resource.render_resource_link(self.env, self.context, res)
         html = tag.a('fake:exists',  class_='fake',
                      href='/trac.cgi/fake/exists?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
     def test_resource_exists_summary_format(self):
         res = resource.Resource('fake', 'exists', version=1)
@@ -80,14 +80,14 @@ class RenderResourceLinkTestCase(unittest.TestCase):
                                              res, 'summary')
         html = tag.a('fake:exists at version 1', class_='fake',
                      href='/trac.cgi/fake/exists?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
     def test_resource_missing_default_format(self):
         res = resource.Resource('fake', 'missing', version=1)
         link = resource.render_resource_link(self.env, self.context, res)
         html = tag.a('fake:missing', class_='fake missing',
                      rel='nofollow', href='/trac.cgi/fake/missing?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
     def test_resource_missing_summary_format(self):
         res = resource.Resource('fake', 'missing', version=1)
@@ -95,14 +95,14 @@ class RenderResourceLinkTestCase(unittest.TestCase):
                                              res, 'summary')
         html = tag.a('fake:missing at version 1', class_='fake missing',
                      rel='nofollow', href='/trac.cgi/fake/missing?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
     def test_resource_has_no_manager_default_format(self):
         res = resource.Resource('unmanaged', 'exists', version=1)
         link = resource.render_resource_link(self.env, self.context, res)
         html = tag.a('unmanaged:exists', class_='unmanaged',
                      href='/trac.cgi/unmanaged/exists?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
     def test_resource_has_no_manager_summary_format(self):
         res = resource.Resource('unmanaged', 'exists', version=1)
@@ -110,7 +110,7 @@ class RenderResourceLinkTestCase(unittest.TestCase):
                                              res, 'summary')
         html = tag.a('unmanaged:exists at version 1', class_='unmanaged',
                      href='/trac.cgi/unmanaged/exists?version=1')
-        self.assertEqual(unicode(html), unicode(link))
+        self.assertEqual(str(html), str(link))
 
 def test_suite():
     suite = unittest.TestSuite()

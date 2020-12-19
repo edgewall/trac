@@ -17,7 +17,7 @@
 
 import os
 import pkg_resources
-import urllib
+import urllib.parse
 
 from trac import __version__ as VERSION
 from trac.web.main import dispatch_request
@@ -33,7 +33,8 @@ class FlupMiddleware(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        environ['PATH_INFO'] = urllib.unquote(environ.get('PATH_INFO', ''))
+        environ['PATH_INFO'] = urllib.parse.unquote(environ.get('PATH_INFO',
+                                                                ''))
         return self.application(environ, start_response)
 
 params = {}

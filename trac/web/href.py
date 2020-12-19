@@ -94,7 +94,7 @@ class Href(object):
     as Python keywords is supported too:
 
     >>> href('timeline', from_='02/24/05', daysback=30)
-    '/trac/timeline?from=02%2F24%2F05&daysback=30'
+    '/trac/timeline?daysback=30&from=02%2F24%2F05'
 
     If the order of query string parameters should be preserved, you may also
     pass a sequence of (name, value) tuples as last positional argument:
@@ -142,6 +142,11 @@ class Href(object):
     '/milestone/<look,here%3E?param=%3Chere,too>'
     """
 
+    # Avoid passing Jinja2 context to __call__ (#13244)
+    contextfunction = 0
+    evalcontextfunction = 0
+    environmentfunction = 0
+
     def __init__(self, base, path_safe="/!~*'()", query_safe="!~*'()"):
         self.base = base.rstrip('/')
         self.path_safe = path_safe
@@ -169,7 +174,7 @@ class Href(object):
         if args:
             lastp = args[-1]
             if isinstance(lastp, dict):
-                for k, v in lastp.items():
+                for k, v in sorted(lastp.items(), key=lambda i: i[0]):
                     add_param(k, v)
                 args = args[:-1]
             elif isinstance(lastp, (list, tuple)):
@@ -178,7 +183,7 @@ class Href(object):
                 args = args[:-1]
 
         # build the path
-        path = '/'.join(unicode_quote(unicode(arg).strip('/'), self.path_safe)
+        path = '/'.join(unicode_quote(str(arg).strip('/'), self.path_safe)
                         for arg in args if arg is not None)
         if path:
             href += '/' + slashes_re.sub('/', path).lstrip('/')
@@ -186,7 +191,7 @@ class Href(object):
             href = '/'
 
         # assemble the query string
-        for k, v in kw.items():
+        for k, v in sorted(kw.items(), key=lambda i: i[0]):
             add_param(k[:-1] if k.endswith('_') else k, v)
         if params:
             href += '?' + unicode_urlencode(params, self.query_safe)
@@ -198,7 +203,7 @@ class Href(object):
             self._derived[name] = lambda *args, **kw: self(name, *args, **kw)
         return self._derived[name]
 
-    _printable_safe = ''.join(map(chr, xrange(0x21, 0x7f)))
+    _printable_safe = ''.join(map(chr, range(0x21, 0x7f)))
 
     def __add__(self, rhs):
         if not rhs:

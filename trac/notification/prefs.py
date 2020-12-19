@@ -166,7 +166,7 @@ class NotificationPreferences(Component):
             req.session.set('notification.format.%s' % transport, format_, '')
             adverbs = req.args.getlist('adverb-' + transport)
             classes = req.args.getlist('class-' + transport)
-            for idx in xrange(min(len(adverbs), len(classes))):
+            for idx in range(min(len(adverbs), len(classes))):
                 subscriptions.append({'distributor': transport,
                                       'format': format_,
                                       'adverb': adverbs[idx],

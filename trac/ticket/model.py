@@ -348,7 +348,7 @@ class Ticket(object):
             self['cc'] = _fixup_cc_list(self.values['cc'])
 
         props_unchanged = all(self.values.get(k) == v
-                              for k, v in self._old.iteritems())
+                              for k, v in self._old.items())
         if (not comment or not stripws(comment)) and props_unchanged:
             return False  # Not modified
 
@@ -432,7 +432,7 @@ class Ticket(object):
 
     def _to_db_types(self, values):
         values = values.copy()
-        for field, value in values.iteritems():
+        for field, value in values.items():
             if field in self.time_fields:
                 is_custom_field = field in self.custom_fields
                 values[field] = _datetime_to_db_str(value, is_custom_field)
@@ -697,7 +697,7 @@ class Ticket(object):
 
     def _find_change(self, cnum):
         """Find a comment by its number."""
-        scnum = unicode(cnum)
+        scnum = str(cnum)
         with self.env.db_query as db:
             for row in db("""
                     SELECT time, author, newvalue FROM ticket_change
@@ -795,7 +795,7 @@ class AbstractEnum(object):
             for enum in self.select(self.env):
                 try:
                     if int(enum.value) > int(self._old_value):
-                        enum.value = unicode(int(enum.value) - 1)
+                        enum.value = str(int(enum.value) - 1)
                         enum.update()
                 except ValueError:
                     pass  # Ignore cast error for this non-essential operation
@@ -1081,7 +1081,7 @@ class MilestoneCache(core.Component):
 
     def fetchall(self):
         """Iterator on all milestones."""
-        for data in self.milestones.itervalues():
+        for data in self.milestones.values():
             yield self.factory(data)
 
     def factory(self, values, milestone=None):
@@ -1221,7 +1221,7 @@ class Milestone(object):
         # Fields need reset if renamed or completed/due changed
         TicketSystem(self.env).reset_ticket_fields()
 
-        old_values = {k: v for k, v in old.iteritems()
+        old_values = {k: v for k, v in old.items()
                       if getattr(self, k) != v}
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_changed(self, old_values)

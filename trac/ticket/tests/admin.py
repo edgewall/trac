@@ -57,7 +57,7 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             cap.render_admin_panel(req, 'ticket', 'component', None)
         self.assertIn('Component "component3" already exists',
-                      unicode(cm.exception))
+                      str(cm.exception))
 
     def test_add_component_with_spaces(self):
         cap = ComponentAdminPanel(self.env)
@@ -75,7 +75,7 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             cap.render_admin_panel(req, 'ticket', 'component', None)
         self.assertIn('Component "comp on ent 4" already exists',
-                      unicode(cm.exception))
+                      str(cm.exception))
 
     def test_save_component(self):
         cap = ComponentAdminPanel(self.env)
@@ -93,7 +93,7 @@ class ComponentAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             cap.render_admin_panel(req, 'ticket', 'component', old_name)
         self.assertIn('Component "component1" already exists',
-                      unicode(cm.exception))
+                      str(cm.exception))
 
         req = MockRequest(self.env, method='POST',
                           args={'name': ' comp \t on \t ent \t 2 ',
@@ -196,7 +196,7 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             map.render_admin_panel(req, 'ticket', 'milestone', None)
         self.assertIn('Milestone "mile stone 5" already exists',
-                      unicode(cm.exception))
+                      str(cm.exception))
 
     def test_save_milestone(self):
         map = MilestoneAdminPanel(self.env)
@@ -210,7 +210,7 @@ class MilestoneAdminPanelTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             map.render_admin_panel(req, 'ticket', 'milestone', old_name)
         self.assertIn('Milestone "milestone1" already exists',
-                unicode(cm.exception))
+                      str(cm.exception))
 
         req = MockRequest(self.env, method='POST',
                           args={'name': ' mile \t stone \t 6 ', 'save': True})
@@ -423,7 +423,7 @@ class AbstractEnumTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             self.admin.render_admin_panel(req, 'ticket', self.type, None)
         self.assertIn('%s value "%s" already exists' %
-                      (self.type_name, norm_name), unicode(cm.exception))
+                      (self.type_name, norm_name), str(cm.exception))
 
     def _test_save(self, old_name, name, norm_name=None):
         if norm_name is None:
@@ -444,7 +444,7 @@ class AbstractEnumTestCase(BaseTestCase):
         with self.assertRaises(ResourceExistsError) as cm:
             self.admin.render_admin_panel(req, 'ticket', self.type, old_name)
         self.assertIn('value "%s" already exists' % norm_name,
-                      unicode(cm.exception))
+                      str(cm.exception))
 
     def _test_set_default(self, name):
         config_key = 'default_' + self.type
@@ -485,7 +485,7 @@ class AbstractEnumTestCase(BaseTestCase):
             self.admin.render_admin_panel(req, 'ticket', self.type, name)
 
         self.assertIn("Your changes have been saved",
-                      unicode(req.chrome['notices']))
+                      str(req.chrome['notices']))
         self.assertEqual(description, self.cls(self.env, name).description)
 
 
@@ -665,8 +665,7 @@ class VersionAdminPanelTestCase(BaseTestCase):
 
         with self.assertRaises(ResourceExistsError) as cm:
             ap.render_admin_panel(req, 'ticket', 'version', None)
-        self.assertIn('Version "4.0 dev" already exists',
-                      unicode(cm.exception))
+        self.assertIn('Version "4.0 dev" already exists', str(cm.exception))
 
     def test_save_version(self):
         ap = VersionAdminPanel(self.env)
@@ -679,7 +678,7 @@ class VersionAdminPanelTestCase(BaseTestCase):
                           args={'name': ' 1.0 ', 'save': True})
         with self.assertRaises(ResourceExistsError) as cm:
             ap.render_admin_panel(req, 'ticket', 'version', old_name)
-        self.assertIn('Version "1.0" already exists', unicode(cm.exception))
+        self.assertIn('Version "1.0" already exists', str(cm.exception))
 
         req = MockRequest(self.env, method='POST',
                           args={'name': ' 4.0 \t dev ', 'save': True})

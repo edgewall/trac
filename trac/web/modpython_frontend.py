@@ -19,7 +19,7 @@
 import os
 import pkg_resources
 import sys
-import urllib
+import urllib.parse
 try:
     import threading
 except ImportError:
@@ -88,7 +88,8 @@ class ModPythonGateway(WSGIGateway):
                 raise ValueError('TracUriRoot set to %s but request URL '
                                  'is %s' % (root_uri, request_uri))
             environ['SCRIPT_NAME'] = root_uri
-            environ['PATH_INFO'] = urllib.unquote(request_uri[len(root_uri):])
+            environ['PATH_INFO'] = \
+                urllib.parse.unquote(request_uri[len(root_uri):])
 
         WSGIGateway.__init__(self, environ, InputWrapper(req),
                              _ErrorsWrapper(lambda x: req.log_error(x)))

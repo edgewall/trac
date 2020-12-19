@@ -238,13 +238,13 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertIsNotNone(fields.by_name('field4'))
         self.assertIsNotNone(fields.by_name('field5'))
         self.assertIn(
-            ('WARNING', u'Invalid name for custom field: "_field1" (ignoring)'),
+            ('WARNING', 'Invalid name for custom field: "_field1" (ignoring)'),
             self.env.log_messages)
         self.assertIn(
-            ('WARNING', u'Invalid name for custom field: "2field" (ignoring)'),
+            ('WARNING', 'Invalid name for custom field: "2field" (ignoring)'),
             self.env.log_messages)
         self.assertIn(
-            ('WARNING', u'Invalid name for custom field: "f3%^&*" (ignoring)'),
+            ('WARNING', 'Invalid name for custom field: "f3%^&*" (ignoring)'),
             self.env.log_messages)
 
     def test_custom_field_with_reserved_name(self):
@@ -258,11 +258,11 @@ class TicketSystemTestCase(unittest.TestCase):
 
         self.assertIn(
             ('WARNING',
-             u'Field name "owner" is a reserved name (ignoring)'),
+             'Field name "owner" is a reserved name (ignoring)'),
             self.env.log_messages)
         self.assertIn(
             ('WARNING',
-             u'Field name "description" is a reserved name (ignoring)'),
+             'Field name "description" is a reserved name (ignoring)'),
             self.env.log_messages)
         self.assertEqual({'name': 'owner', 'label': 'Owner', 'type': 'text'},
                          ts.fields.by_name('owner'))

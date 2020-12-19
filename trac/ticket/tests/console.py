@@ -432,7 +432,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         Tests adding more than 10 priority values.  This makes sure that
         ordering is preserved when adding more than 10 values.
         """
-        for i in xrange(11):
+        for i in range(11):
             self.execute('priority add p%s' % i)
         rv, output = self.execute('priority list')
         self.assertEqual(0, rv, output)
@@ -647,7 +647,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
     def test_help_version_time(self):
         doc = self.get_command_help('version', 'time')
         self.assertIn(self.datetime_format_hint, doc)
-        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+        self.assertIn('"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
     def test_version_help(self):
         rv, output = self.execute('help version')
@@ -786,12 +786,12 @@ class TracAdminTestCase(TracAdminTestCaseBase):
     def test_help_milestone_due(self):
         doc = self.get_command_help('milestone', 'due')
         self.assertIn(self.datetime_format_hint, doc)
-        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+        self.assertIn('"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
     def test_help_milestone_completed(self):
         doc = self.get_command_help('milestone', 'completed')
         self.assertIn(self.datetime_format_hint, doc)
-        self.assertIn(u'"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
+        self.assertIn('"YYYY-MM-DDThh:mm:ss±hh:mm"', doc)
 
     def test_milestone_list_ok(self):
         """
@@ -818,7 +818,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         Tests the 'milestone add' command in trac-admin.  This particular
         test passes valid arguments and checks for success.
         """
-        self.execute(u'milestone add \xa9tat_final "%s"'  # \xc2\xa9
+        self.execute('milestone add \xa9tat_final "%s"'  # \xc2\xa9
                      % self._test_date)
         rv, output = self.execute('milestone list')
         self.assertEqual(0, rv, output)

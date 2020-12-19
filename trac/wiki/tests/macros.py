@@ -63,7 +63,7 @@ def image_teardown(tc):
 #       unicode robustness and whitespace support (first space is
 #       normal ASCII SPACE, second is Unicode NO-BREAK SPACE).
 
-IMAGE_MACRO_TEST_CASES = u"""
+IMAGE_MACRO_TEST_CASES = """
 ============================== Image, no arguments
 [[Image]]
 ------------------------------
@@ -296,7 +296,7 @@ def intertrac_setup(tc):
     tc.env.config.set('intertrac', 'example.url', 'http://example.org')
 
 
-INTERTRAC_MACRO_TEST_CASES = u"""\
+INTERTRAC_MACRO_TEST_CASES = """\
 ==============================
 [[InterTrac]]
 ------------------------------
@@ -313,7 +313,7 @@ def titleindex_teardown(tc):
 
 
 
-TITLEINDEX1_MACRO_TEST_CASES = u"""
+TITLEINDEX1_MACRO_TEST_CASES = """
 ============================== TitleIndex, default format
 [[TitleIndex()]]
 ------------------------------
@@ -345,7 +345,7 @@ TITLEINDEX1_MACRO_TEST_CASES = u"""
 ------------------------------
 """
 
-TITLEINDEX2_MACRO_TEST_CASES = u"""
+TITLEINDEX2_MACRO_TEST_CASES = """
 ============================== TitleIndex, default format
 [[TitleIndex()]]
 ------------------------------
@@ -400,7 +400,7 @@ def titleindex2_setup(tc):
     add_pages(tc, ['WikiEnd'])
 
 
-TITLEINDEX3_MACRO_TEST_CASES = u"""
+TITLEINDEX3_MACRO_TEST_CASES = """
 ============================== TitleIndex, group format
 [[TitleIndex(Wiki,format=group)]]
 ------------------------------
@@ -497,7 +497,7 @@ def titleindex3_setup(tc):
         ])
 
 
-TITLEINDEX4_MACRO_TEST_CASES = u"""
+TITLEINDEX4_MACRO_TEST_CASES = """
 ============================== TitleIndex group and page with numbers (#7919)
 [[TitleIndex(format=group)]]
 ------------------------------
@@ -553,7 +553,7 @@ def titleindex4_setup(tc):
         ])
 
 
-TITLEINDEX5_MACRO_TEST_CASES = u"""
+TITLEINDEX5_MACRO_TEST_CASES = """
 ============================== TitleIndex, hierarchy format with complex hierarchy
 [[TitleIndex(format=hierarchy)]]
 ------------------------------
@@ -588,7 +588,7 @@ def titleindex5_setup(tc):
         ])
 
 
-RECENTCHANGES_MACRO_TEST_CASES = u""""
+RECENTCHANGES_MACRO_TEST_CASES = """"
 ============================== RecentChanges, group option
 [[RecentChanges()]]
 [[RecentChanges(group=date)]]
@@ -648,7 +648,7 @@ def recentchanges_teardown(tc):
     tc.env.reset_db()
 
 
-PAGEOUTLINE_MACRO_TEST_CASES = u""""
+PAGEOUTLINE_MACRO_TEST_CASES = """"
 ==============================
 [[PageOutline(a)]]
 ------------------------------
@@ -745,7 +745,7 @@ PAGEOUTLINE_MACRO_TEST_CASES = u""""
 """
 
 
-TRACINI_MACRO_TEST_CASES = u"""\
+TRACINI_MACRO_TEST_CASES = """\
 ============================== TracIni, option with empty doc (#10940)
 [[TracIni(section-42)]]
 ------------------------------
@@ -925,7 +925,7 @@ def tracini_teardown(tc):
     ConfigSection.registry, Option.registry = tc._orig_registries
 
 
-INTERWIKI_MACRO_TEST_CASES = u"""
+INTERWIKI_MACRO_TEST_CASES = """
 ==============================
 [[InterWiki]]
 ------------------------------

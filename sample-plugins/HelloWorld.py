@@ -46,7 +46,7 @@ class HelloWorldMacro(WikiMacroBase):
           Wiki processor syntax and will be `None` if called using the
           macro syntax.
         """
-        return 'Hello World, content = ' + unicode(content)
+        return 'Hello World, content = ' + str(content)
 
     # Note that there's no need to HTML escape the returned data, as
     # the template engine (Jinja2) will do it for us.  To prevent

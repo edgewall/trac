@@ -4,6 +4,5 @@ wheel
 jinja2
 babel
 setuptools_subversion
-reindent
 twine
 pypandoc

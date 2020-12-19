@@ -25,7 +25,7 @@ from trac.util.datefmt import (datetime_now, format_datetime, pretty_timedelta,
 from trac.wiki.tests import formatter
 
 
-TICKET_TEST_CASES = u"""
+TICKET_TEST_CASES = """
 ============================== ticket: link resolver
 bug:1
 issue:1
@@ -155,7 +155,7 @@ def ticket_teardown(tc):
 
 
 
-REPORT_TEST_CASES = u"""
+REPORT_TEST_CASES = """
 ============================== report link shorthand form
 {1}, {2}
 {12}, {abc}
@@ -230,7 +230,7 @@ dt_past = datetime_now(utc) - timedelta(days=1)
 dt_future = datetime_now(utc) + timedelta(days=1)
 
 
-MILESTONE_TEST_CASES = u"""
+MILESTONE_TEST_CASES = """
 ============================== milestone: link resolver
 milestone:foo
 [milestone:boo Milestone Boo]
@@ -287,7 +287,7 @@ def milestone_teardown(tc):
 
 
 
-QUERY_TEST_CASES = u"""
+QUERY_TEST_CASES = """
 ============================== query: link resolver
 query:?order=priority
 
@@ -407,7 +407,7 @@ New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#
 ------------------------------
 """
 
-QUERY2_TEST_CASES = u"""
+QUERY2_TEST_CASES = """
 ============================== TicketQuery macro: two results, list form
 New tickets: [[TicketQuery(status=new, order=reporter)]]
 ------------------------------
@@ -448,7 +448,7 @@ def query2_teardown(tc):
     tc.env.reset_db()
 
 
-COMMENT_TEST_CASES = u"""
+COMMENT_TEST_CASES = """
 ============================== comment: link resolver (deprecated)
 comment:ticket:1:1 (deprecated)
 [comment:ticket:1:1 see above] (deprecated)

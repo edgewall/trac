@@ -125,9 +125,9 @@ class AuthzPolicyTestCase(unittest.TestCase):
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
-        perm = self.get_perm(u'änon')
+        perm = self.get_perm('änon')
         self.assertTrue(
-            self.check_permission('WIKI_VIEW', u'änon', resource, perm))
+            self.check_permission('WIKI_VIEW', 'änon', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
 
@@ -140,14 +140,14 @@ class AuthzPolicyTestCase(unittest.TestCase):
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
-        perm = self.get_perm(u'John')
+        perm = self.get_perm('John')
         self.assertTrue(
-            self.check_permission('WIKI_VIEW', u'John', resource, perm))
+            self.check_permission('WIKI_VIEW', 'John', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
 
     def test_unicode_resource_name(self):
-        resource = Resource('wiki', u'résumé')
+        resource = Resource('wiki', 'résumé')
 
         perm = self.get_perm('anonymous')
         self.assertFalse(
@@ -155,15 +155,15 @@ class AuthzPolicyTestCase(unittest.TestCase):
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
-        perm = self.get_perm(u'änon')
+        perm = self.get_perm('änon')
         self.assertFalse(
-            self.check_permission('WIKI_VIEW', u'änon', resource, perm))
+            self.check_permission('WIKI_VIEW', 'änon', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertNotIn('WIKI_VIEW', perm(resource))
 
-        perm = self.get_perm(u'éat')
+        perm = self.get_perm('éat')
         self.assertTrue(
-            self.check_permission('WIKI_VIEW', u'éat', resource, perm))
+            self.check_permission('WIKI_VIEW', 'éat', resource, perm))
         self.assertNotIn('WIKI_VIEW', perm)
         self.assertIn('WIKI_VIEW', perm(resource))
 
@@ -174,13 +174,13 @@ class AuthzPolicyTestCase(unittest.TestCase):
         self.assertNotIn('TICKET_VIEW', perm('ticket', 42))
         self.assertNotIn('TICKET_VIEW', perm('ticket', 43))
 
-        perm = self.get_perm(u'änon')
+        perm = self.get_perm('änon')
         self.assertNotIn('TICKET_VIEW', perm)
         self.assertNotIn('TICKET_VIEW', perm('ticket'))
         self.assertNotIn('TICKET_VIEW', perm('ticket', 42))
         self.assertIn('TICKET_VIEW', perm('ticket', 43))
 
-        perm = self.get_perm(u'éat')
+        perm = self.get_perm('éat')
         self.assertNotIn('TICKET_VIEW', perm)
         self.assertIn('TICKET_VIEW', perm('ticket'))
         self.assertIn('TICKET_VIEW', perm('ticket', 42))
@@ -189,21 +189,21 @@ class AuthzPolicyTestCase(unittest.TestCase):
     def test_default_repository(self):
         repos = self.get_repository('')
         self.assertFalse(repos.is_viewable(self.get_perm('anonymous')))
-        self.assertFalse(repos.is_viewable(self.get_perm(u'änon')))
-        self.assertTrue(repos.is_viewable(self.get_perm(u'éat')))
+        self.assertFalse(repos.is_viewable(self.get_perm('änon')))
+        self.assertTrue(repos.is_viewable(self.get_perm('éat')))
 
     def test_non_default_repository(self):
-        repos = self.get_repository(u'bláh')
+        repos = self.get_repository('bláh')
         self.assertFalse(repos.is_viewable(self.get_perm('anonymous')))
-        self.assertTrue(repos.is_viewable(self.get_perm(u'änon')))
-        self.assertTrue(repos.is_viewable(self.get_perm(u'éat')))
+        self.assertTrue(repos.is_viewable(self.get_perm('änon')))
+        self.assertTrue(repos.is_viewable(self.get_perm('éat')))
 
     def test_case_sensitive_resource(self):
         resource = Resource('WIKI', 'wikistart')
         self.assertIsNone(
             self.check_permission('WIKI_VIEW', 'anonymous', resource))
         self.assertIsNone(
-            self.check_permission('WIKI_VIEW', u'änon', resource))
+            self.check_permission('WIKI_VIEW', 'änon', resource))
 
     def test_authenticated_inherits_anonymous_permission(self):
         """Metagroup authenticated inherits all permissions granted to

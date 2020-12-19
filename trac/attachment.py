@@ -491,7 +491,7 @@ class AttachmentModule(Component):
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         filename = 'attachments-%s-%s.zip' % \
-                   (parent.realm, re.sub(r'[/\\:]', '-', unicode(parent.id)))
+                   (parent.realm, re.sub(r'[/\\:]', '-', str(parent.id)))
         req.send_header('Content-Disposition',
                         content_disposition('inline', filename))
         req.end_headers()
@@ -626,7 +626,7 @@ class AttachmentModule(Component):
                 href = get_resource_url(self.env, attachment, formatter.href)
                 return tag(tag.a(label, class_='attachment', title=title,
                                  href=href + params),
-                           tag.a(u'\u200b', class_='trac-rawlink',
+                           tag.a('\u200b', class_='trac-rawlink',
                                  href=raw_href + params, title=_("Download")))
             # FIXME: should be either:
             #
@@ -657,11 +657,11 @@ class Attachment(object):
         if isinstance(parent_realm_or_attachment_resource, Resource):
             resource = parent_realm_or_attachment_resource
             self.parent_realm = resource.parent.realm
-            self.parent_id = unicode(resource.parent.id)
+            self.parent_id = str(resource.parent.id)
             self.filename = resource.id
         else:
             self.parent_realm = parent_realm_or_attachment_resource
-            self.parent_id = unicode(parent_id)
+            self.parent_id = str(parent_id)
             self.filename = filename
 
         self.env = env
@@ -689,7 +689,7 @@ class Attachment(object):
                 SELECT filename, description, size, time, author
                 FROM attachment WHERE type=%s AND id=%s AND filename=%s
                 ORDER BY time
-                """, (self.parent_realm, unicode(self.parent_id), filename)):
+                """, (self.parent_realm, str(self.parent_id), filename)):
             self._from_database(*row)
             break
         else:
@@ -827,7 +827,7 @@ class Attachment(object):
         for row in env.db_query("""
                 SELECT filename, description, size, time, author
                 FROM attachment WHERE type=%s AND id=%s ORDER BY time
-                """, (parent_realm, unicode(parent_id))):
+                """, (parent_realm, str(parent_id))):
             attachment = Attachment(env, parent_realm, parent_id)
             attachment._from_database(*row)
             yield attachment
@@ -888,7 +888,7 @@ class Attachment(object):
 
         if new_realm is None:
             new_realm = self.parent_realm
-        new_id = self.parent_id if new_id is None else unicode(new_id)
+        new_id = self.parent_id if new_id is None else str(new_id)
         if new_filename is None:
             new_filename = self.filename
         if (new_realm, new_id, new_filename) == \
@@ -962,7 +962,7 @@ class Attachment(object):
         while 1:
             path = os.path.join(dir, self._get_hashed_filename(filename))
             try:
-                return filename, os.fdopen(os.open(path, flags, 0o666), 'w')
+                return filename, os.fdopen(os.open(path, flags, 0o666), 'wb')
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise

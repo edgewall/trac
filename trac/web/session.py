@@ -51,7 +51,7 @@ class SessionDict(dict):
         self.sid = None
 
     def __setitem__(self, key, value):
-        super(SessionDict, self).__setitem__(key, unicode(value))
+        super(SessionDict, self).__setitem__(key, str(value))
 
     def as_bool(self, key, default=None):
         """Return the value as a boolean. Return `default` if
@@ -109,9 +109,9 @@ class SessionDict(dict):
         """Set a variable in the session, or remove it if it's equal to the
         default value.
         """
-        value = unicode(value)
+        value = str(value)
         if default is not None:
-            default = unicode(default)
+            default = str(default)
             if value == default:
                 self.pop(key, None)
                 return
@@ -156,7 +156,7 @@ class DetachedSession(SessionDict):
     def save(self):
         authenticated = int(self.authenticated)
         now = int(time_now())
-        items = self.items()
+        items = list(self.items())
         if not authenticated and not self._old and not items:
             # The session for anonymous doesn't have associated data,
             # so there's no need to persist it

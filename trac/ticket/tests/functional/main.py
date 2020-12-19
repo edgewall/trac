@@ -13,7 +13,6 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import os
-import re
 import textwrap
 import time
 import unittest
@@ -23,11 +22,10 @@ from datetime import timedelta
 from trac.test import locale_en
 from trac.tests.contentgen import random_sentence, random_unique_camel, \
                                   random_word
-from trac.tests.functional import FunctionalTwillTestCaseSetup, b, \
-                                  internal_error, regex_owned_by, tc, twill
+from trac.tests.functional import FunctionalTestCaseSetup, b, \
+                                  internal_error, regex_owned_by, tc
 from trac.util import create_file
 from trac.util.datefmt import datetime_now, format_datetime, localtz, utc
-from trac.util.text import to_utf8
 
 
 def find_field_deleted(name, find=True):
@@ -51,7 +49,7 @@ def find_field_change(old_name, new_name, find=True):
         tc.notfind(markup)
 
 
-class TestTickets(FunctionalTwillTestCaseSetup):
+class TestTickets(FunctionalTestCaseSetup):
     def runTest(self):
         """Create a ticket and comment on it."""
         # TODO: this should be split into multiple tests
@@ -59,7 +57,7 @@ class TestTickets(FunctionalTwillTestCaseSetup):
         self._tester.add_comment(id)
 
 
-class TestTicketMaxSummarySize(FunctionalTwillTestCaseSetup):
+class TestTicketMaxSummarySize(FunctionalTestCaseSetup):
     def runTest(self):
         """Test `[ticket] max_summary_size` option.
         https://trac.edgewall.org/ticket/11472"""
@@ -80,17 +78,17 @@ class TestTicketMaxSummarySize(FunctionalTwillTestCaseSetup):
             self._tester.go_to_front()
             tc.follow(r"\bNew Ticket\b")
             tc.notfind(internal_error)
-            tc.url(self._tester.url + '/newticket')
+            tc.url(self._tester.url + '/newticket', regexp=False)
             tc.formvalue('propertyform', 'field_summary', long_summary)
             tc.submit('submit')
-            tc.url(self._tester.url + '/newticket')
+            tc.url(self._tester.url + '/newticket#ticket', regexp=False)
             tc.find(warning_message)
         finally:
             self._testenv.set_config('ticket', 'max_summary_size',
                                      prev_max_summary_size)
 
 
-class TestTicketAddAttachment(FunctionalTwillTestCaseSetup):
+class TestTicketAddAttachment(FunctionalTestCaseSetup):
     def runTest(self):
         """Add attachment to a ticket. Test that the attachment button
         reads 'Attach file' when no files have been attached, and 'Attach
@@ -108,7 +106,7 @@ class TestTicketAddAttachment(FunctionalTwillTestCaseSetup):
                 'href="/zip-attachment/ticket/%s/">.zip</a>' % id)
 
 
-class TestTicketPreview(FunctionalTwillTestCaseSetup):
+class TestTicketPreview(FunctionalTestCaseSetup):
     def runTest(self):
         """Preview ticket creation"""
         self._tester.go_to_front()
@@ -118,13 +116,13 @@ class TestTicketPreview(FunctionalTwillTestCaseSetup):
         tc.formvalue('propertyform', 'field-summary', summary)
         tc.formvalue('propertyform', 'field-description', desc)
         tc.submit('preview')
-        tc.url(self._tester.url + '/newticket$')
+        tc.url(self._tester.url + '/newticket#ticket', regexp=False)
         tc.find('ticket not yet created')
         tc.find(summary)
         tc.find(desc)
 
 
-class TestTicketNoSummary(FunctionalTwillTestCaseSetup):
+class TestTicketNoSummary(FunctionalTestCaseSetup):
     def runTest(self):
         """Creating a ticket without summary should fail"""
         self._tester.go_to_front()
@@ -138,7 +136,7 @@ class TestTicketNoSummary(FunctionalTwillTestCaseSetup):
         tc.find('ticket not yet created')
 
 
-class TestTicketManipulator(FunctionalTwillTestCaseSetup):
+class TestTicketManipulator(FunctionalTestCaseSetup):
     def runTest(self):
         plugin_name = self.__class__.__name__
         env = self._testenv.get_trac_environment()
@@ -175,7 +173,7 @@ class TicketManipulator(Component):
             tc.formvalue('propertyform', 'field-description',
                          "Testing ticket manipulator")
             tc.submit('submit')
-            tc.url(self._tester.url + '/newticket$')
+            tc.url(self._tester.url + '/newticket#ticket', regexp=False)
             tc.find("The ticket field <strong>summary</strong> is invalid: "
                     "Tickets must contain a summary.")
             tc.find("The ticket field <strong>reporter</strong> is invalid: "
@@ -186,65 +184,63 @@ class TicketManipulator(Component):
             env.config.save()
 
 
-class TestTicketAltFormats(FunctionalTwillTestCaseSetup):
+class TestTicketAltFormats(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in alternative formats"""
         summary = random_sentence(5)
+        summary_bytes = summary.encode('utf-8')
         self._tester.create_ticket(summary)
-        for format in ['Comma-delimited Text', 'Tab-delimited Text',
-                       'RSS Feed']:
-            tc.follow(format)
-            content = b.get_html()
-            if content.find(summary) < 0:
-                raise AssertionError('Summary missing from %s format'
-                                     % format)
-            tc.back()
+        for fmt in ('Comma-delimited Text', 'Tab-delimited Text', 'RSS Feed'):
+            code, content = tc.download_link(fmt)
+            self.assertEqual(200, code)
+            if content.find(summary_bytes) < 0:
+                url = tc.write_source(content)
+                raise AssertionError('Summary missing from %s format in %s' %
+                                     (fmt, url))
 
 
-class TestTicketCSVFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCSVFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in CSV format"""
         self._tester.create_ticket()
-        tc.follow('Comma-delimited Text')
-        csv = b.get_html()
-        if not csv.startswith('\xef\xbb\xbfid,summary,'): # BOM
-            raise AssertionError('Bad CSV format')
+        code, csv = tc.download_link('Comma-delimited Text')
+        if not csv.startswith(b'\xef\xbb\xbfid,summary,'): # BOM
+            raise AssertionError('Bad CSV format: %r' % csv)
 
 
-class TestTicketTabFormat(FunctionalTwillTestCaseSetup):
+class TestTicketTabFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in Tab-delimited format"""
         self._tester.create_ticket()
-        tc.follow('Tab-delimited Text')
-        tab = b.get_html()
-        if not tab.startswith('\xef\xbb\xbfid\tsummary\t'): # BOM
-            raise AssertionError('Bad tab delimited format')
+        code, tab = tc.download_link('Tab-delimited Text')
+        if not tab.startswith(b'\xef\xbb\xbfid\tsummary\t'): # BOM
+            raise AssertionError('Bad tab delimited format: %r' % tab)
 
 
-class TestTicketRSSFormat(FunctionalTwillTestCaseSetup):
+class TestTicketRSSFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in RSS format"""
         summary = random_sentence(5)
         self._tester.create_ticket(summary)
         # Make a number of changes to exercise all of the RSS feed code
         tc.formvalue('propertyform', 'comment', random_sentence(3))
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-type', 'task')
-        tc.formvalue('propertyform', 'description', summary + '\n\n' +
-                                                    random_sentence(8))
+        tc.formvalue('propertyform', 'field-description',
+                     summary + '\n\n' + random_sentence(8))
         tc.formvalue('propertyform', 'field-keywords', 'key')
         tc.submit('submit')
-        time.sleep(1) # Have to wait a second
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-keywords', '')
         tc.submit('submit')
 
         tc.find('RSS Feed')
-        tc.follow('RSS Feed')
-        rss = b.get_html()
-        if not rss.startswith('<?xml version="1.0"?>'):
+        code, rss = tc.download_link('RSS Feed')
+        if not rss.startswith(b'<?xml version="1.0"?>'):
             raise AssertionError('RSS Feed not valid feed')
 
 
-class TestTicketSearch(FunctionalTwillTestCaseSetup):
+class TestTicketSearch(FunctionalTestCaseSetup):
     def runTest(self):
         """Test ticket search"""
         summary = random_sentence(4)
@@ -253,28 +249,28 @@ class TestTicketSearch(FunctionalTwillTestCaseSetup):
         tc.follow('Search')
         tc.formvalue('fullsearch', 'ticket', True)
         tc.formvalue('fullsearch', 'q', summary)
-        tc.submit('Search')
+        tc.submit()
         tc.find('class="searchable">.*' + summary)
         tc.notfind('No matches found')
 
 
-class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
+class TestNonTicketSearch(FunctionalTestCaseSetup):
     def runTest(self):
         """Test non-ticket search"""
         # Create a summary containing only unique words
         summary = ' '.join(random_word() + '_TestNonTicketSearch'
-                           for i in xrange(5))
+                           for i in range(5))
         self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
         tc.formvalue('fullsearch', 'ticket', False)
         tc.formvalue('fullsearch', 'q', summary)
-        tc.submit('Search')
+        tc.submit()
         tc.notfind('class="searchable">' + summary)
         tc.find('No matches found')
 
 
-class TestTicketHistory(FunctionalTwillTestCaseSetup):
+class TestTicketHistory(FunctionalTestCaseSetup):
     def runTest(self):
         """Test ticket history"""
         summary = random_sentence(5)
@@ -319,20 +315,20 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         # View comment versions.
         self._tester.go_to_ticket(ticketid)
         tc.follow(r"\bprevious\b")
-        tc.url(url + re.escape(r'?cversion=0&cnum_hist=1#comment:1'))
+        tc.url(url + '?cnum_hist=1&cversion=0#comment:1', regexp=False)
         tc.find(r"[^\"]%s[^\"]" % comment)
         tc.notfind(r"[^\"]%s[^\"]" % revised_comment)
         tc.follow(r"\bnext\b")
         tc.notfind(r"[^\"]%s[^\"]" % comment)
         tc.find(r"[^\"]%s[^\"]" % revised_comment)
-        tc.url(url + re.escape(r'?cversion=1&cnum_hist=1#comment:1'))
+        tc.url(url + '?cnum_hist=1&cversion=1#comment:1', regexp=False)
 
         # View comment diff.
         tc.follow(r'^/ticket/%s\?action=comment-diff&cnum=1&version=1$' %
                   ticketid)
         tc.notfind(r"\bComment:\b")
         tc.find(r"\bChanges between\b")
-        tc.url(url + re.escape(r'?action=comment-diff&cnum=1&version=1'))
+        tc.url(url + '?action=comment-diff&cnum=1&version=1', regexp=False)
 
         # View ticket comment history.
         tc.follow(r"\bTicket Comment History\b")
@@ -341,11 +337,12 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
                 r'<a href="/ticket/\d+#comment:1">Ticket #\d+, comment 1</a>')
 
 
-class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
+class TestTicketHistoryDiff(FunctionalTestCaseSetup):
     def runTest(self):
         """Test ticket history (diff)"""
         self._tester.create_ticket()
-        tc.formvalue('propertyform', 'description', random_sentence(6))
+        tc.click('#propertyform .collapsed .foldable a')
+        tc.formvalue('propertyform', 'field_description', random_sentence(6))
         tc.submit('submit')
         tc.find('Description:</th>[ \n]+<td>[ \n]+'
                 'modified \\(<[^>]*>diff', 's')
@@ -354,7 +351,7 @@ class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
                 '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
 
 
-class TestTicketHistoryInvalidCommentVersion(FunctionalTwillTestCaseSetup):
+class TestTicketHistoryInvalidCommentVersion(FunctionalTestCaseSetup):
     def runTest(self):
         """Viewing an invalid comment version does not raise a KeyError
         or AttributeError. Regression test for
@@ -363,8 +360,9 @@ class TestTicketHistoryInvalidCommentVersion(FunctionalTwillTestCaseSetup):
         """
         tkt = self._tester.create_ticket()
         self._tester.add_comment(tkt, "the comment")
-        tc.formvalue('edit-comment-1', 'cnum_edit', '1')
-        tc.submit()
+        tc.click('[href="#comment:1"]')
+        tc.move_to('[id="comment:1"]')
+        tc.submit(formname='edit-comment-1')
         tc.formvalue('trac-comment-editor', 'edited_comment',
                      "the revised comment")
         tc.submit('edit_comment')
@@ -383,12 +381,13 @@ class TestTicketHistoryInvalidCommentVersion(FunctionalTwillTestCaseSetup):
             tc.find("Version 0")
 
 
-class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
+class TestTicketQueryLinks(FunctionalTestCaseSetup):
+    @tc.javascript_disabled
     def runTest(self):
         """Test ticket query links"""
         count = 3
         ticket_ids = [self._tester.create_ticket('TestTicketQueryLinks%s' % i)
-                      for i in xrange(count)]
+                      for i in range(count)]
         self._tester.go_to_query()
         # We don't have the luxury of javascript, so this is a multi-step
         # process
@@ -400,14 +399,14 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         tc.submit('update')
         query_url = b.get_url()
         tc.find(r'\(%d matches\)' % count)
-        for i in xrange(count):
+        for i in range(count):
             tc.find('TestTicketQueryLinks%s' % i)
 
         tc.follow('TestTicketQueryLinks0')
         tc.find('class="missing">&larr; Previous Ticket')
         tc.find('title="Ticket #%s">Next Ticket' % ticket_ids[1])
         tc.follow('Back to Query')
-        tc.url(re.escape(query_url))
+        tc.url(query_url, regexp=False)
 
         tc.follow('TestTicketQueryLinks1')
         tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[0])
@@ -418,18 +417,17 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         tc.find('class="missing">Next Ticket &rarr;')
 
 
-class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
+class TestTicketQueryLinksQueryModuleDisabled(FunctionalTestCaseSetup):
     def runTest(self):
         """Ticket query links should not be present when the QueryModule
         is disabled."""
         def enable_query_module(enable):
             self._tester.go_to_admin('Plugins')
-            tc.formvalue('edit-plugin-trac', 'component',
-                         'trac.ticket.query.QueryModule')
+            tc.click('#trac-plugin-Trac.collapsed .foldable a')
             tc.formvalue('edit-plugin-trac', 'enable',
                          '%strac.ticket.query.QueryModule'
                          % ('+' if enable else '-'))
-            tc.submit()
+            tc.submit(formname='edit-plugin-trac')
             tc.find("The following component has been %s:"
                     ".*QueryModule.*\(trac\.ticket\.query\.\*\)"
                     % ("enabled" if enable else "disabled"))
@@ -448,7 +446,7 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
             r'title=".*">\s*%(milestone)s\s*</a>\s*</td>'\
             % {'milestone': props['milestone']}
         try:
-            for field, value in props.iteritems():
+            for field, value in props.items():
                 if field != 'milestone':
                     links = r', '.join(r'<a[^>]+href="/query.*>%s</a>'
                                        % v.strip() for v in value.split(','))
@@ -458,7 +456,7 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
                     tc.find(milestone_cell)
             enable_query_module(False)
             self._tester.go_to_ticket(tid)
-            for field, value in props.iteritems():
+            for field, value in props.items():
                 if field != 'milestone':
                     tc.find(r'<td( class="searchable")? headers="h_%s">'
                             r'\s*%s\s*</td>' % (field, value))
@@ -468,13 +466,14 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTwillTestCaseSetup):
             enable_query_module(True)
 
 
-class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
+class TestTicketQueryOrClause(FunctionalTestCaseSetup):
+    @tc.javascript_disabled
     def runTest(self):
         """Test ticket query with an or clauses"""
         count = 3
         [self._tester.create_ticket(summary='TestTicketQueryOrClause%s' % i,
                                     info={'keywords': str(i)})
-         for i in xrange(count)]
+         for i in range(count)]
         self._tester.go_to_query()
         tc.formvalue('query', '0_owner', '')
         tc.submit('rm_filter_0_owner_0')
@@ -490,7 +489,7 @@ class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
             tc.find('TestTicketQueryOrClause%s' % i)
 
 
-class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextNoFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom text field with no format explicitly specified.
         Its contents should be rendered as plain text.
@@ -507,7 +506,7 @@ class TestTicketCustomFieldTextNoFormat(FunctionalTwillTestCaseSetup):
         tc.find('<td headers="h_newfield">\s*%s\s*</td>' % val)
 
 
-class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextAreaNoFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom textarea field with no format explicitly specified,
         its contents should be rendered as plain text.
@@ -524,7 +523,7 @@ class TestTicketCustomFieldTextAreaNoFormat(FunctionalTwillTestCaseSetup):
         tc.find('<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % val)
 
 
-class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextWikiFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom text field with `wiki` format.
         Its contents should through the wiki engine, wiki-links and all.
@@ -545,7 +544,7 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTwillTestCaseSetup):
         tc.find('<td headers="h_newfield">\s*%s\s*</td>' % wiki)
 
 
-class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom textarea field with no format explicitly specified,
         its contents should be rendered as plain text.
@@ -565,7 +564,7 @@ class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTwillTestCaseSetup):
         tc.find('<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % wiki)
 
 
-class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextReferenceFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom text field with `reference` format.
         Its contents are treated as a single value
@@ -583,12 +582,12 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTwillTestCaseSetup):
         word2 = random_word()
         val = "%s %s" % (word1, word2)
         self._tester.create_ticket(info={'newfield': val})
-        query = 'status=!closed&amp;newfield=%s\+%s' % (word1, word2)
+        query = 'newfield=%s\+%s&amp;status=!closed' % (word1, word2)
         querylink = '<a href="/query\?%s">%s</a>' % (query, val)
         tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylink)
 
 
-class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
+class TestTicketCustomFieldTextListFormat(FunctionalTestCaseSetup):
     def runTest(self):
         """Test custom text field with `list` format.
         Its contents are treated as a space-separated list of values
@@ -606,15 +605,15 @@ class TestTicketCustomFieldTextListFormat(FunctionalTwillTestCaseSetup):
         word2 = random_word()
         val = "%s %s" % (word1, word2)
         self._tester.create_ticket(info={'newfield': val})
-        query1 = 'status=!closed&amp;newfield=~%s' % word1
-        query2 = 'status=!closed&amp;newfield=~%s' % word2
+        query1 = 'newfield=~%s&amp;status=!closed' % word1
+        query2 = 'newfield=~%s&amp;status=!closed' % word2
         querylink1 = '<a href="/query\?%s">%s</a>' % (query1, word1)
         querylink2 = '<a href="/query\?%s">%s</a>' % (query2, word2)
         querylinks = '%s %s' % (querylink1, querylink2)
         tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
 
 
-class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket10828(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/10828
         Rendered property changes should be described as lists of added and
@@ -632,6 +631,7 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s added' % (word1, word2))
@@ -639,21 +639,24 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         word3 = random_unique_camel()
         word4 = random_unique_camel()
         val = "%s,  %s; %s" % (word2, word3, word4)
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s added; %s removed' % (word3, word4, word1))
 
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-newfield', '')
         tc.submit('submit')
         tc.find('%s %s %s removed' % (word2, word3, word4))
 
         val = "%s %s,%s" % (word1, word2, word3)
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s %s added' % (word1, word2, word3))
-        query1 = 'status=!closed&amp;newfield=~%s' % word1
-        query2 = 'status=!closed&amp;newfield=~%s' % word2
-        query3 = 'status=!closed&amp;newfield=~%s' % word3
+        query1 = 'newfield=~%s&amp;status=!closed' % word1
+        query2 = 'newfield=~%s&amp;status=!closed' % word2
+        query3 = 'newfield=~%s&amp;status=!closed' % word3
         querylink1 = '<a href="/query\?%s">%s</a>' % (query1, word1)
         querylink2 = '<a href="/query\?%s">%s</a>' % (query2, word2)
         querylink3 = '<a href="/query\?%s">%s</a>' % (query3, word3)
@@ -661,7 +664,7 @@ class RegressionTestTicket10828(FunctionalTwillTestCaseSetup):
         tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
 
 
-class TestTicketTimeline(FunctionalTwillTestCaseSetup):
+class TestTicketTimeline(FunctionalTestCaseSetup):
     def runTest(self):
         """Test ticket details on timeline"""
         env = self._testenv.get_trac_environment()
@@ -673,17 +676,17 @@ class TestTicketTimeline(FunctionalTwillTestCaseSetup):
 
         self._tester.go_to_timeline()
         tc.formvalue('prefs', 'ticket', True)
-        tc.submit()
+        tc.submit(formname='prefs')
         tc.find('Ticket.*#%s.*created' % ticketid)
         tc.formvalue('prefs', 'ticket_details', True)
-        tc.submit()
+        tc.submit(formname='prefs')
         htmltags = '(<[^>]*>)*'
         tc.find('Ticket ' + htmltags + '#' + str(ticketid) + htmltags +
                 ' \\(' + summary.split()[0] +
                 ' [^\\)]+\\) updated\\s+by\\s+' + htmltags + 'admin', 's')
 
 
-class TestNewReport(FunctionalTwillTestCaseSetup):
+class TestNewReport(FunctionalTestCaseSetup):
     def runTest(self):
         """Create a new report"""
         self._tester.create_report(
@@ -711,7 +714,7 @@ class TestNewReport(FunctionalTwillTestCaseSetup):
             ' been closed this week.)')
 
 
-class TestReportRealmDecoration(FunctionalTwillTestCaseSetup):
+class TestReportRealmDecoration(FunctionalTestCaseSetup):
     def runTest(self):
         """Realm/id decoration in report"""
         self._tester.create_report(
@@ -760,7 +763,7 @@ class TestReportRealmDecoration(FunctionalTwillTestCaseSetup):
                 'file[.]ext [(]WikiStart[)]</a>')
 
 
-class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
+class TestReportDynamicVariables(FunctionalTestCaseSetup):
     def runTest(self):
         """Generate a report with dynamic variables in title, summary
         and SQL"""
@@ -800,14 +803,14 @@ class TestReportDynamicVariables(FunctionalTwillTestCaseSetup):
                 (ticket_id2, summary))
 
 
-class TestReportSorting(FunctionalTwillTestCaseSetup):
+class TestReportSorting(FunctionalTestCaseSetup):
     def runTest(self):
         """Test sorting of report.
         """
         tid = (self._tester.create_ticket(),
                self._tester.create_ticket())
         sort_href_desc = 'href="/report/1\?sort=ticket"'
-        sort_href_asc = sort_href_desc[:-1] + '&amp;asc=1"'
+        sort_href_asc = 'href="/report/1\?asc=1&amp;sort=ticket"'
         sort_text = r'(?<!New )\bTicket\b'
 
         def find_table_entries(tid):
@@ -826,7 +829,7 @@ class TestReportSorting(FunctionalTwillTestCaseSetup):
         find_table_entries(tuple(reversed(tid)))
         # Sort order preserved when submitting preferences form.
         sort_href_desc = 'href="/report/1\?sort=summary"'
-        sort_href_asc = sort_href_desc[:-1] + '&amp;asc=1"'
+        sort_href_asc = 'href="/report/1\?asc=1&amp;sort=summary"'
         tc.find(sort_href_asc)
         tc.follow(r'\bSummary\b')
         tc.find(sort_href_desc)
@@ -838,12 +841,12 @@ class TestReportSorting(FunctionalTwillTestCaseSetup):
         tc.find(sort_href_asc)
 
 
-class TestMilestone(FunctionalTwillTestCaseSetup):
+class TestMilestone(FunctionalTestCaseSetup):
     def runTest(self):
         """Create a milestone."""
         self._tester.go_to_roadmap()
         tc.submit(formname='add')
-        tc.url(self._tester.url + '/milestone\?action=new')
+        tc.url(self._tester.url + '/milestone?action=new', regexp=False)
         name = random_unique_camel()
         due = format_datetime(datetime_now(tz=utc) + timedelta(hours=1),
                               tzinfo=localtz, locale=locale_en)
@@ -852,7 +855,7 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'duedate', due)
         tc.notfind("Retarget associated open tickets to milestone:")
         tc.submit('add')
-        tc.url(self._tester.url + '/milestone/' + name + '$')
+        tc.url(self._tester.url + '/milestone/' + name, regexp=False)
         tc.find(r'<h1>Milestone %s</h1>' % name)
         tc.find(due)
         self._tester.create_ticket(info={'milestone': name})
@@ -861,7 +864,7 @@ class TestMilestone(FunctionalTwillTestCaseSetup):
                 % {'name': name})
 
 
-class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
+class TestMilestoneAddAttachment(FunctionalTestCaseSetup):
     def runTest(self):
         """Add attachment to a milestone. Test that the attachment
         button reads 'Attach file' when no files have been attached, and
@@ -880,12 +883,13 @@ class TestMilestoneAddAttachment(FunctionalTwillTestCaseSetup):
                 'href="/zip-attachment/milestone/%s/">.zip</a>' % name)
 
 
-class TestMilestoneClose(FunctionalTwillTestCaseSetup):
+class TestMilestoneClose(FunctionalTestCaseSetup):
     """Close a milestone and verify that tickets are retargeted
     to the selected milestone"""
     def runTest(self):
         name = self._tester.create_milestone()
         tid1 = self._tester.create_ticket(info={'milestone': name})
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform',
                      'action_resolve_resolve_resolution', 'fixed')
@@ -909,7 +913,7 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'target', retarget_to)
         tc.submit('save')
 
-        tc.url(self._tester.url + '/milestone/%s$' % name)
+        tc.url(self._tester.url + '/milestone/%s' % name, regexp=False)
         tc.find('The open tickets associated with milestone "%s" '
                 'have been retargeted to milestone "%s".'
                 % (name, retarget_to))
@@ -931,13 +935,13 @@ class TestMilestoneClose(FunctionalTwillTestCaseSetup):
         tc.find("Ticket retargeted after milestone closed")
 
 
-class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
+class TestMilestoneDelete(FunctionalTestCaseSetup):
     def runTest(self):
         """Delete a milestone and verify that tickets are retargeted
         to the selected milestone."""
         def submit_delete(name, retarget_to=None, tid=None):
             tc.submit('delete', 'delete-confirm')
-            tc.url(self._tester.url + '/roadmap')
+            tc.url(self._tester.url + '/roadmap', regexp=False)
             tc.find('The milestone "%s" has been deleted.' % name)
             tc.notfind('Milestone:.*%s' % name)
             retarget_notice = 'The tickets associated with milestone "%s" ' \
@@ -993,7 +997,7 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tc.submit(formname='deletemilestone')
         tc.submit('cancel', 'delete-confirm')
 
-        tc.url(self._tester.url + '/milestone/%s' % name)
+        tc.url(self._tester.url + '/milestone/%s' % name, regexp=False)
         tc.notfind('The milestone "%s" has been deleted.' % name)
         tc.notfind('The tickets associated with milestone "%s" '
                    'have been retargeted to milestone' % name)
@@ -1001,32 +1005,30 @@ class TestMilestoneDelete(FunctionalTwillTestCaseSetup):
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': name})
         find_field_deleted(name, False)
-        tc.notfind("Ticket retargeted after milestone deleted<br />")
+        tc.notfind("Ticket retargeted after milestone deleted<br>")
 
         # No attachments associated with milestone
         name = self._tester.create_milestone()
         self._tester.go_to_milestone(name)
-        tc.formvalue('deletemilestone', 'action', 'delete')
-        tc.submit()
+        tc.submit(formname='deletemilestone')
         tc.notfind("The following attachments will also be deleted:")
         tc.submit('delete', 'delete-confirm')
         tc.find('The milestone "%s" has been deleted.' % name)
-        tc.url(self._tester.url)
+        tc.url(self._tester.url + '/roadmap', regexp=False)
 
         # Attachments associated with milestone
         name = self._tester.create_milestone()
         filename = self._tester.attach_file_to_milestone(name)
         self._tester.go_to_milestone(name)
-        tc.formvalue('deletemilestone', 'action', 'delete')
-        tc.submit()
+        tc.submit(formname='deletemilestone')
         tc.find("The following attachments will also be deleted:")
         tc.find(filename)
         tc.submit('delete', 'delete-confirm')
         tc.find('The milestone "%s" has been deleted.' % name)
-        tc.url(self._tester.url)
+        tc.url(self._tester.url + '/roadmap', regexp=False)
 
 
-class TestMilestoneRename(FunctionalTwillTestCaseSetup):
+class TestMilestoneRename(FunctionalTestCaseSetup):
     def runTest(self):
         """Rename a milestone and verify that the rename is shown in the
         change history for the associated tickets."""
@@ -1039,7 +1041,7 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'name', new_name)
         tc.submit('save')
 
-        tc.url(self._tester.url + '/milestone/' + new_name)
+        tc.url(self._tester.url + '/milestone/' + new_name, regexp=False)
         tc.find("Your changes have been saved.")
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
@@ -1051,7 +1053,7 @@ class TestMilestoneRename(FunctionalTwillTestCaseSetup):
         tc.find("Milestone renamed")
 
 
-class TestMilestoneGroupedProgress(FunctionalTwillTestCaseSetup):
+class TestMilestoneGroupedProgress(FunctionalTestCaseSetup):
     def runTest(self):
         """Verify that grouped progress bar is displayed with proper
         owner/reporter and link obfuscation.
@@ -1062,8 +1064,7 @@ class TestMilestoneGroupedProgress(FunctionalTwillTestCaseSetup):
         self._tester.go_to_milestone(name)
 
         # Owner should not be obfuscated.
-        tc.formvalue('stats', 'by', 'owner')
-        tc.submit()
+        tc.click('#stats select[name="by"] option[value="owner"]')
         tc.find('<th scope="row">[ \t\n]+'
                 '<a href="[^"]+">'
                 '<span class="trac-author">user1@example.com</span>')
@@ -1074,8 +1075,7 @@ class TestMilestoneGroupedProgress(FunctionalTwillTestCaseSetup):
         # Owner should be obfuscated.
         self._tester.logout()
         self._tester.go_to_milestone(name)
-        tc.formvalue('stats', 'by', 'owner')
-        tc.submit()
+        tc.click('#stats select[name="by"] option[value="owner"]')
         tc.find('<th scope="row">[ \t\n]+'
                 '<span class="trac-author">user1@…</span>')
         tc.find('<form id="stats" class="trac-groupprogress" [^>]+>.*'
@@ -1084,7 +1084,7 @@ class TestMilestoneGroupedProgress(FunctionalTwillTestCaseSetup):
         self._tester.login('admin')
 
 
-class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
+class RegressionTestRev5994(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of the column label fix in r5994"""
         env = self._testenv.get_trac_environment()
@@ -1094,14 +1094,14 @@ class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
         try:
             self._tester.go_to_query()
             tc.find('<label>( |\\n)*<input[^<]*value="custfield"'
-                    '[^<]*/>( |\\n)*Custom Field( |\\n)*</label>', 's')
+                    '[^<]*>( |\\n)*Custom Field( |\\n)*</label>', 's')
         finally:
             pass
             #env.config.set('ticket', 'restrict_owner', 'no')
             #env.config.save()
 
 
-class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket4447(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/4447"""
         ticketid = self._tester.create_ticket("Hello World")
@@ -1118,7 +1118,7 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
                    '</strong>[ \n]*set to <em>')
 
 
-class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket4630a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/4630 a"""
         env = self._testenv.get_trac_environment()
@@ -1136,6 +1136,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.logout()
             self._tester.login('admin')
             self._tester.create_ticket()
+            tc.click('#propertyform .collapsed .foldable a')
             tc.formvalue('propertyform', 'action', 'reassign')
             tc.find('reassign_reassign_owner')
             tc.formvalue('propertyform', 'action_reassign_reassign_owner',
@@ -1148,7 +1149,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket4630b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket4630b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/4630 b"""
         # NOTE: this must be run after RegressionTestTicket4630 (user must
@@ -1162,7 +1163,7 @@ class RegressionTestTicket4630b(FunctionalTwillTestCaseSetup):
         self.assertEqual(sorted(users), ['admin', 'joe', 'user'])
 
 
-class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5022(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5022
         """
@@ -1172,7 +1173,7 @@ class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
         tc.notfind(summary)
 
 
-class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5394a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5394 a
         Order user list alphabetically in (re)assign action
@@ -1205,12 +1206,12 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
         options = 'name="action_reassign_reassign_owner">' + \
             ''.join('<option[^>]*>%s</option>' % user for user in
                     sorted(test_users + ['admin', 'joe', 'user']))
-        tc.find(to_utf8(options), 's')
+        tc.find(options, 's')
         # We don't have a good way to fully delete a user from the Trac db.
         # Once we do, we may want to cleanup our list of users here.
 
 
-class RegressionTestTicket5394b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5394b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5394 b
         Order user list alphabetically on new ticket page
@@ -1228,7 +1229,7 @@ class RegressionTestTicket5394b(FunctionalTwillTestCaseSetup):
 
 # TODO: this should probably be changed to be a testsuite derived from
 # TestSetup
-class RegressionTestTicket5497prep(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5497prep(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5497 prep
         When the component is changed, the owner should update to the
@@ -1242,21 +1243,23 @@ class RegressionTestTicket5497prep(FunctionalTwillTestCaseSetup):
         self._tester.create_component('regression5497', 'user')
 
 
-class RegressionTestTicket5497a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5497a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5497 a
         Open ticket, component changed, owner not changed"""
         self._tester.create_ticket("regression test 5497a")
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-component', 'regression5497')
         tc.submit('submit')
         tc.find(regex_owned_by('user'))
 
 
-class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5497b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5497 b
         Open ticket, component changed, owner changed"""
         self._tester.create_ticket("regression test 5497b")
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'field-component', 'regression5497')
         tc.formvalue('propertyform', 'action', 'reassign')
         tc.formvalue('propertyform', 'action_reassign_reassign_owner',
@@ -1266,7 +1269,7 @@ class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
         tc.find(regex_owned_by('admin'))
 
 
-class RegressionTestTicket5497c(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5497c(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5497 c
         New ticket, component changed, owner not changed"""
@@ -1275,7 +1278,7 @@ class RegressionTestTicket5497c(FunctionalTwillTestCaseSetup):
         tc.find(regex_owned_by('user'))
 
 
-class RegressionTestTicket5497d(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5497d(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5497 d
         New ticket, component changed, owner changed"""
@@ -1285,34 +1288,38 @@ class RegressionTestTicket5497d(FunctionalTwillTestCaseSetup):
         tc.find(regex_owned_by('admin'))
 
 
-class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5602(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5602"""
         # Create a set of tickets, and assign them all to a milestone
         milestone = self._tester.create_milestone()
         ids = [self._tester.create_ticket(info={'milestone': milestone})
-               for x in xrange(5)]
+               for x in range(5)]
         # Need a ticket in each state: new, assigned, accepted, closed,
         # reopened
         # leave ids[0] as new
         # make ids[1] be assigned
         self._tester.go_to_ticket(ids[1])
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'reassign')
         tc.formvalue('propertyform', 'action_reassign_reassign_owner',
                      'admin')
         tc.submit('submit')
         # make ids[2] be accepted
         self._tester.go_to_ticket(ids[2])
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'accept')
         tc.submit('submit')
         # make ids[3] be closed
         self._tester.go_to_ticket(ids[3])
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('submit')
         # make ids[4] be reopened
         self._tester.go_to_ticket(ids[4])
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
@@ -1320,9 +1327,9 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         # FIXME: we have to wait a second to avoid "IntegrityError: columns
         # ticket, time, field are not unique"
         time.sleep(1)
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'reopen')
         tc.submit('submit')
-        tc.show()
         tc.notfind("Python Traceback")
 
         # Go to the milestone and follow the links to the closed and active
@@ -1342,7 +1349,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         tc.find("Status:[ \n]+reopened")
 
 
-class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5687(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5687"""
         self._tester.go_to_front()
@@ -1353,7 +1360,7 @@ class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
         self._tester.login('admin')
 
 
-class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5930(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5930
         TypeError: from_string() takes exactly 3 non-keyword arguments (4
@@ -1362,8 +1369,7 @@ class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
         """
         self._tester.create_report('Saved Query', 'query:version=1.0', '')
         tc.notfind(internal_error)
-        tc.formvalue('trac-report-edit', 'action', 'new')
-        tc.submit()
+        tc.submit(formname='trac-report-edit')
         tc.find("Modify Query:")
         tc.find("Save query")
         # TODO: Add a testcase for the following:
@@ -1372,7 +1378,7 @@ class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
         # up in the report?
 
 
-class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6747(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/6747"""
         env = self._testenv.get_trac_environment()
@@ -1396,7 +1402,7 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6879a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/6879 a
 
@@ -1405,15 +1411,17 @@ class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
         """
         # create a ticket, then preview resolving the ticket twice
         self._tester.create_ticket("RegressionTestTicket6879 a")
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('preview')
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('preview')
 
 
-class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6879b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/6879 a
 
@@ -1422,40 +1430,36 @@ class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
         """
         # create a ticket, then preview resolving the ticket twice
         self._tester.create_ticket("RegressionTestTicket6879 b")
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('preview')
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
 
 
-class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6912a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/6912 a"""
-        try:
-            self._tester.create_component(name='RegressionTestTicket6912a',
-                                          owner='')
-        except twill.utils.ClientForm.ItemNotFoundError as e:
-            raise twill.errors.TwillAssertionError(e)
+        self._tester.create_component(name='RegressionTestTicket6912a',
+                                      owner='')
 
 
-class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket6912b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/6912 b"""
         self._tester.create_component(name='RegressionTestTicket6912b',
                                       owner='admin')
         tc.follow('RegressionTestTicket6912b')
-        try:
-            tc.formvalue('edit', 'owner', '')
-        except twill.utils.ClientForm.ItemNotFoundError as e:
-            raise twill.errors.TwillAssertionError(e)
+        tc.formvalue('edit', 'owner', '')
         tc.submit('save', formname='edit')
         tc.find('RegressionTestTicket6912b</a>[ \n]*</td>[ \n]*'
                 '<td class="owner"></td>', 's')
 
 
-class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket7821group(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/7821 group.
         """
@@ -1500,7 +1504,7 @@ class RegressionTestTicket7821group(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket7821var(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/7821 var"""
         env = self._testenv.get_trac_environment()
@@ -1531,7 +1535,7 @@ class RegressionTestTicket7821var(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket8247(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/8247
         Author field of ticket comment corresponding to the milestone removal
@@ -1552,7 +1556,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.notfind('</a> ago by anonymous')
 
 
-class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket8861(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/8816
         When creating a milestone with an already existing name, you get
@@ -1572,23 +1576,26 @@ class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
         tc.find('Milestone: +<em>%s</em>' % (name + '__'))
 
 
-class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket9084(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/9084"""
         ticketid = self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.go_to_ticket(ticketid)
-        tc.submit('2', formname='reply-to-comment-1') # '1' hidden, '2' submit
+        tc.click('[href="#comment:1"]')
+        tc.move_to('[id="comment:1"]')
+        tc.submit(formname='reply-to-comment-1')
         tc.formvalue('propertyform', 'comment', random_sentence(3))
         tc.submit('Submit changes')
         tc.notfind('AssertionError')
 
 
-class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket9981(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/9981"""
         tid1 = self._tester.create_ticket()
         self._tester.add_comment(tid1)
+        tc.click('#propertyform .collapsed .foldable a')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
         tid2 = self._tester.create_ticket()
@@ -1599,7 +1606,7 @@ class RegressionTestTicket9981(FunctionalTwillTestCaseSetup):
                 'href="/ticket/%(num)s#comment:1"' % {'num': tid1})
 
 
-class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket10010(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/10010
         Allow configuring the default retargeting option when closing or
@@ -1609,15 +1616,13 @@ class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket(info={'milestone': m1})
         def go_to_and_find_markup(markup, find=True):
             self._tester.go_to_milestone(m1)
-            tc.formvalue('editmilestone', 'action', 'edit')
-            tc.submit()
+            tc.submit(formname='editmilestone')
             if find:
                 tc.find(markup)
             else:
                 tc.notfind(markup)
             self._tester.go_to_milestone(m1)
-            tc.formvalue('editmilestone', 'action', 'delete')
-            tc.submit()
+            tc.submit(formname='deletemilestone')
             if find:
                 tc.find(markup)
             else:
@@ -1635,7 +1640,7 @@ class RegressionTestTicket10010(FunctionalTwillTestCaseSetup):
             self._testenv.remove_config('milestone', 'default_retarget_to')
 
 
-class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket10984(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/10984
         The milestone field should be hidden from the newticket, ticket
@@ -1668,7 +1673,7 @@ class RegressionTestTicket10984(FunctionalTwillTestCaseSetup):
             self._testenv.grant_perm('anonymous', 'MILESTONE_VIEW')
 
 
-class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11028(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11028"""
         self._tester.go_to_roadmap()
@@ -1703,7 +1708,7 @@ class RegressionTestTicket11028(FunctionalTwillTestCaseSetup):
                                      ('ROADMAP_VIEW', 'MILESTONE_VIEW'))
 
 
-class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11176(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11176
         Fine-grained permission checks should be enforced on the Report list
@@ -1729,7 +1734,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
                     r'href="/report/1">[ \n]*<em>\{1\}</em>')
             tc.find(r'<a title="View report" '
                     r'href="/report/2">[ \n]*<em>\{2\}</em>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.notfind(r'<a title="View report" '
                            r'href="/report/%(num)s">[ \n]*'
                            r'<em>\{%(num)s\}</em>' % {'num': report_num})
@@ -1742,7 +1747,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
             tc.find(r'<h1>\{2\} Active Tickets by Version[ \n]*'
                     r'(<span class="numrows">\(\d+ matches\)</span>)?'
                     r'[ \n]*</h1>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.go(self._tester.url + '/report/%d' % report_num)
                 tc.find(r'<h1>Error: Forbidden</h1>')
             # Check that permissions are enforced on the query pages
@@ -1752,7 +1757,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
             tc.go(self._tester.url + '/query?report=2')
             tc.find(r'<h1>Active Tickets by Version '
                     r'<span class="numrows">\(\d+ matches\)</span></h1>')
-            for report_num in xrange(3, 9):
+            for report_num in range(3, 9):
                 tc.go(self._tester.url + '/query?report=%d' % report_num)
                 tc.find(r'<h1>Error: Forbidden</h1>')
         finally:
@@ -1760,7 +1765,7 @@ class RegressionTestTicket11176(FunctionalTwillTestCaseSetup):
             self._testenv.disable_authz_permpolicy()
 
 
-class RegressionTestTicket11590(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11590(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11590"""
         report_id = self._tester.create_report('#11590', 'SELECT 1',
@@ -1771,7 +1776,7 @@ class RegressionTestTicket11590(FunctionalTwillTestCaseSetup):
                 report_id)
 
 
-class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11996(FunctionalTestCaseSetup):
     def runTest(self):
         """Field default value is only selected for new tickets.
         Test for regression https://trac.edgewall.org/ticket/11996
@@ -1788,7 +1793,7 @@ class RegressionTestTicket11996(FunctionalTwillTestCaseSetup):
             self._testenv.set_config('ticket', 'default_milestone', milestone)
 
 
-class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket12801(FunctionalTestCaseSetup):
     def runTest(self):
         """Textarea fields with plain format preserve newlines.
         Test for regression https://trac.edgewall.org/ticket/12801
@@ -1832,7 +1837,7 @@ class RegressionTestTicket12801(FunctionalTwillTestCaseSetup):
             env.config.save()
 
 
-class RegressionTestTicket12919(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket12919(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression https://trac.edgewall.org/ticket/12919"""
         self._tester.create_report('#12919.', "SELECT 'blah' as keywords", '')

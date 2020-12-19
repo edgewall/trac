@@ -41,22 +41,25 @@ class FunctionalTester(object):
         self.ticketcount = 0
 
         # Connect, and login so we can run tests.
-        self.go_to_front()
         self.login('admin')
 
     def login(self, username):
         """Login as the given user"""
-        username = to_utf8(username)
-        tc.add_auth("", self.url, username, username)
+        tc.add_auth('', self.url + '/login', username, username)
         self.go_to_front()
         tc.find("Login")
-        tc.follow(r"\bLogin\b")
+        url = self.url.replace('://',
+                               '://{0}:{0}@'.format(unicode_quote(username)))
+        url = '%s/login?referer=%s' % (url, unicode_quote(self.url))
+        tc.go(url)
+        tc.notfind(internal_error)
+        tc.url(self.url, regexp=False)
         # We've provided authentication info earlier, so this should
         # redirect back to the base url.
         tc.find('logged in as[ \t\n]+<span class="trac-author-user">%s</span>'
                 % username)
         tc.find("Logout")
-        tc.url(self.url)
+        tc.url(self.url, regexp=False)
         tc.notfind(internal_error)
 
     def logout(self):
@@ -86,7 +89,7 @@ class FunctionalTester(object):
         tc.formvalue('propertyform', 'field_summary', summary)
         tc.formvalue('propertyform', 'field_description', random_page())
         if 'owner' in info:
-            tc.formvalue('propertyform', 'action', 'assign')
+            tc.formvalue('propertyform', 'action', 'create_and_assign')
             tc.formvalue('propertyform',
                          'action_create_and_assign_reassign_owner',
                          info.pop('owner'))
@@ -95,7 +98,8 @@ class FunctionalTester(object):
         tc.submit('submit')
         tc.notfind(internal_error)
         # we should be looking at the newly created ticket
-        tc.url(self.url + '/ticket/%s' % (self.ticketcount + 1))
+        tc.url('%s/ticket/%s#ticket' % (self.url, self.ticketcount + 1),
+               regexp=False)
         # Increment self.ticketcount /after/ we've verified that the ticket
         # was created so a failure does not trigger spurious later
         # failures.
@@ -110,8 +114,10 @@ class FunctionalTester(object):
         tc.notfind(internal_error)
 
     def go_to_url(self, url):
+        if url.startswith('/'):
+            url = self.url + url
         tc.go(url)
-        tc.url(re.escape(url))
+        tc.url(url, regexp=False)
         tc.notfind(internal_error)
 
     def go_to_front(self):
@@ -127,7 +133,7 @@ class FunctionalTester(object):
         else:
             ticket_url = self.url + '/newticket'
         self.go_to_url(ticket_url)
-        tc.url(ticket_url + '$')
+        tc.url(ticket_url, regexp=False)
 
     def go_to_wiki(self, name, version=None):
         """Surf to the wiki page. By default this will be the latest version
@@ -145,9 +151,7 @@ class FunctionalTester(object):
 
     def go_to_timeline(self):
         """Surf to the timeline page."""
-        self.go_to_front()
-        tc.follow(r"\bTimeline\b")
-        tc.url(self.url + '/timeline')
+        tc.go(self.url + '/timeline')
 
     def go_to_view_tickets(self, href='report'):
         """Surf to the View Tickets page. By default this will be the Reports
@@ -155,21 +159,21 @@ class FunctionalTester(object):
         non-default configurations."""
         self.go_to_front()
         tc.follow(r"\bView Tickets\b")
-        tc.url(self.url + '/' + href.lstrip('/'))
+        tc.url(self.url + '/' + href.lstrip('/'), regexp=False)
 
     def go_to_query(self):
         """Surf to the custom query page."""
         self.go_to_front()
         tc.follow(r"\bView Tickets\b")
         tc.follow(r"\bNew Custom Query\b")
-        tc.url(self.url + '/query')
+        tc.url(self.url + '/query', regexp=False)
 
     def go_to_admin(self, panel_label=None):
         """Surf to the webadmin page. Continue surfing to a specific
         admin page if `panel_label` is specified."""
         self.go_to_front()
         tc.follow(r"\bAdmin\b")
-        tc.url(self.url + '/admin')
+        tc.url(self.url + '/admin', regexp=False)
         if panel_label is not None:
             tc.follow(r"\b%s\b" % panel_label)
 
@@ -177,13 +181,13 @@ class FunctionalTester(object):
         """Surf to the roadmap page."""
         self.go_to_front()
         tc.follow(r"\bRoadmap\b")
-        tc.url(self.url + '/roadmap')
+        tc.url(self.url + '/roadmap', regexp=False)
 
     def go_to_milestone(self, name):
         """Surf to the specified milestone page. Assumes milestone exists."""
         self.go_to_roadmap()
-        tc.follow(r"\bMilestone: %s\b" % name)
-        tc.url(self.url + '/milestone/%s' % name)
+        tc.follow(r"\bMilestone:\s+%s\b" % name)
+        tc.url(self.url + '/milestone/%s' % name, regexp=False)
 
     def go_to_report(self, id, args=None):
         """Surf to the specified report.
@@ -201,15 +205,14 @@ class FunctionalTester(object):
             for param, value in args.items():
                 arglist.append('%s=%s' % (param.upper(), unicode_quote(value)))
             report_url += '?' + '&'.join(arglist)
-        tc.go(report_url)
-        tc.url(report_url.encode('string-escape').replace('?', '\?'))
+        self.go_to_url(report_url)
 
     def go_to_preferences(self, panel_label=None):
         """Surf to the preferences page. Continue surfing to a specific
         preferences panel if `panel_label` is specified."""
         self.go_to_front()
         tc.follow(r"\bPreferences\b")
-        tc.url(self.url + '/prefs')
+        tc.url(self.url + '/prefs', regexp=False)
         if panel_label is not None:
             tc.follow(r"\b%s\b" % panel_label)
 
@@ -233,6 +236,7 @@ class FunctionalTester(object):
         provided.  Assumes the ticket exists.
         """
         self.go_to_ticket(ticketid)
+        tc.click('#attachments .foldable a')
         return self._attach_file_to_resource('ticket', ticketid, data,
                                              filename, description,
                                              replace, content_type)
@@ -240,13 +244,12 @@ class FunctionalTester(object):
     def clone_ticket(self, ticketid):
         """Create a clone of the given ticket id using the clone button."""
         ticket_url = self.url + '/ticket/%s' % ticketid
-        tc.go(ticket_url)
-        tc.url(ticket_url)
+        self.go_to_url(ticket_url)
         tc.formvalue('clone', 'clone', 'Clone')
         tc.submit()
         # we should be looking at the newly created ticket
         self.ticketcount += 1
-        tc.url(self.url + "/ticket/%s" % self.ticketcount)
+        tc.url('%s/ticket/%s' % (self.url, self.ticketcount), regexp=False)
         return self.ticketcount
 
     def create_wiki_page(self, name=None, content=None, comment=None):
@@ -266,7 +269,7 @@ class FunctionalTester(object):
         # verify the event shows up in the timeline
         self.go_to_timeline()
         tc.formvalue('prefs', 'wiki', True)
-        tc.submit()
+        tc.submit(formname='prefs')
         tc.find(name + ".*created")
 
         self.go_to_wiki(name)
@@ -282,13 +285,11 @@ class FunctionalTester(object):
         if comment is None:
             comment = random_sentence()
         self.go_to_wiki(name)
-        tc.formvalue('modifypage', 'action', 'edit')
-        tc.submit()
+        tc.submit(formname='modifypage')
         tc.formvalue('edit', 'text', content)
         tc.formvalue('edit', 'comment', comment)
         tc.submit('save')
-        page_url = self.url + '/wiki/%s' % name
-        tc.url(page_url+'$')
+        tc.url('%s/wiki/%s' % (self.url, name), regexp=False)
 
         return content
 
@@ -311,8 +312,7 @@ class FunctionalTester(object):
         if name is None:
             name = random_unique_camel()
         milestone_url = self.url + "/admin/ticket/milestones"
-        tc.go(milestone_url)
-        tc.url(milestone_url)
+        self.go_to_url(milestone_url)
         tc.formvalue('addmilestone', 'name', name)
         if due:
             # TODO: How should we deal with differences in date formats?
@@ -320,17 +320,8 @@ class FunctionalTester(object):
         tc.submit()
         tc.notfind(internal_error)
         tc.notfind('Milestone .* already exists')
-        tc.url(milestone_url)
+        tc.url(milestone_url, regexp=False)
         tc.find(name)
-
-        # Make sure it's on the roadmap.
-        tc.follow(r"\bRoadmap\b")
-        tc.url(self.url + "/roadmap")
-        tc.find('Milestone:.*%s' % name)
-        tc.follow(r"\b%s\b" % name)
-        tc.url('%s/milestone/%s' % (self.url, unicode_quote(name)))
-        if not due:
-            tc.find('No date set')
 
         return name
 
@@ -352,21 +343,20 @@ class FunctionalTester(object):
         if name is None:
             name = random_unique_camel()
         component_url = self.url + "/admin/ticket/components"
-        tc.go(component_url)
-        tc.url(component_url)
+        self.go_to_url(component_url)
         tc.formvalue('addcomponent', 'name', name)
         if owner is not None:
             tc.formvalue('addcomponent', 'owner', owner)
         tc.submit()
         # Verify the component appears in the component list
-        tc.url(component_url)
+        tc.url(re.escape(component_url) + '#?$')
         tc.find(name)
         tc.notfind(internal_error)
         if description is not None:
             tc.follow(r"\b%s\b" % name)
             tc.formvalue('edit', 'description', description)
             tc.submit('save')
-            tc.url(component_url)
+            tc.url(re.escape(component_url) + '#?$')
             tc.find("Your changes have been saved.")
             tc.notfind(internal_error)
         # TODO: verify the component shows up in the newticket page
@@ -379,12 +369,11 @@ class FunctionalTester(object):
         """
         if name is None:
             name = random_unique_camel()
-        priority_url = self.url + "/admin/ticket/" + kind
-        tc.go(priority_url)
-        tc.url(priority_url)
+        enum_url = self.url + "/admin/ticket/" + kind
+        self.go_to_url(enum_url)
         tc.formvalue('addenum', 'name', name)
         tc.submit()
-        tc.url(priority_url)
+        tc.url(re.escape(enum_url) + '#?$')
         tc.find(name)
         tc.notfind(internal_error)
         return name
@@ -411,23 +400,22 @@ class FunctionalTester(object):
         version_admin = self.url + "/admin/ticket/versions"
         if name is None:
             name = random_unique_camel()
-        tc.go(version_admin)
-        tc.url(version_admin)
+        self.go_to_url(version_admin)
         tc.formvalue('addversion', 'name', name)
         if releasetime is not None:
             tc.formvalue('addversion', 'time', releasetime)
         tc.submit()
-        tc.url(version_admin)
+        tc.url(re.escape(version_admin) + '#?$')
         tc.find(name)
         tc.notfind(internal_error)
+        return name
         # TODO: verify releasetime
 
     def create_report(self, title, query, description):
         """Create a new report with the given title, query, and description"""
         self.go_to_front()
         tc.follow(r"\bView Tickets\b")
-        tc.formvalue('create_report', 'action', 'new') # select the right form
-        tc.submit()
+        tc.submit(formname='create_report')
         tc.find('New Report')
         tc.notfind(internal_error)
         tc.formvalue('edit_report', 'title', title)
@@ -462,14 +450,15 @@ class FunctionalTester(object):
             filename = random_word()
 
         tc.submit('attachfilebutton', 'attachfile')
-        tc.url(self.url + r'/attachment/%s/%s/\?action=new$' % (realm, name))
-        fp = io.BytesIO(data)
+        tc.url('%s/attachment/%s/%s/?action=new' % (self.url, realm, name),
+               regexp=False)
+        fp = io.BytesIO(data.encode('utf-8'))
         tc.formfile('attachment', 'attachment', filename,
                     content_type=content_type, fp=fp)
         tc.formvalue('attachment', 'description', description)
         if replace:
             tc.formvalue('attachment', 'replace', True)
-        tc.submit()
-        tc.url(self.url + r'/attachment/%s/%s/$' % (realm, name))
+        tc.submit(formname='attachment')
+        tc.url('%s/attachment/%s/%s/' % (self.url, realm, name), regexp=False)
 
         return filename

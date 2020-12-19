@@ -228,21 +228,21 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_sub_var_no_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            u"$VAR", {'VAR': 'value'})
+            "$VAR", {'VAR': 'value'})
         self.assertEqual("%s", sql)
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 
     def test_sub_var_digits_underscore(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            u"$_VAR, $VAR2, $2VAR", {'_VAR': 'value1', 'VAR2': 'value2'})
+            "$_VAR, $VAR2, $2VAR", {'_VAR': 'value1', 'VAR2': 'value2'})
         self.assertEqual("%s, %s, $2VAR", sql)
         self.assertEqual(['value1', 'value2'], values)
         self.assertEqual([], missing_args)
 
     def test_sub_var_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            u"'$VAR'", {'VAR': 'value'})
+            "'$VAR'", {'VAR': 'value'})
         with self.env.db_query as db:
             concatenated = db.concat("''", '%s', "''")
         self.assertEqual(concatenated, sql)
@@ -251,7 +251,7 @@ class ReportModuleTestCase(unittest.TestCase):
 
     def test_sub_var_missing_args(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
-            u"$VAR, $PARAM, $MISSING", {'VAR': 'value'})
+            "$VAR, $PARAM, $MISSING", {'VAR': 'value'})
         self.assertEqual("%s, %s, %s", sql)
         self.assertEqual(['value', '', ''], values)
         self.assertEqual(['PARAM', 'MISSING'], missing_args)
@@ -263,26 +263,29 @@ class ReportModuleTestCase(unittest.TestCase):
 
         self.assertRaises(RequestDone,
                           self.report_module._send_csv, req, cols, rows)
-        self.assertEqual('\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"'
-                         'value, needs escaped",0\r\n',
+        self.assertEqual(b'\xef\xbb\xbfTEST_COL,TEST_ZERO\r\n"'
+                         b'value, needs escaped",0\r\n',
                          req.response_sent.getvalue())
 
     def test_saved_custom_query_redirect(self):
-        query = u'query:?type=résumé'
+        query = 'query:?type=résumé'
         rid = self._insert_report('redirect', query, '')
         req = MockRequest(self.env)
 
         self.assertRaises(RequestDone,
                           self.report_module._render_view, req, rid)
-        self.assertEqual('http://example.org/trac.cgi/query?' +
-                         'type=r%C3%A9sum%C3%A9&report=' + str(rid),
-                         req.headers_sent['Location'])
+        str_rid = str(rid)
+        self.assertIn(req.headers_sent['Location'],
+                      ['http://example.org/trac.cgi/query?'
+                       'type=r%C3%A9sum%C3%A9&report=' + str_rid,
+                       'http://example.org/trac.cgi/query?report=' +
+                       str_rid + '&type=r%C3%A9sum%C3%A9'])
 
     def test_quoted_id_with_var(self):
         req = MockRequest(self.env)
         name = """%s"`'%%%?"""
         with self.env.db_query as db:
-            sql = u'SELECT 1 AS %s, $USER AS user' % db.quote(name)
+            sql = 'SELECT 1 AS %s, $USER AS user' % db.quote(name)
             rv = self.report_module.execute_paginated_report(req, 1, sql,
                                                              {'USER': 'joe'})
         self.assertEqual(5, len(rv), repr(rv))
@@ -375,18 +378,19 @@ class ReportModuleTestCase(unittest.TestCase):
         rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
                                                     {'fragment': False,
                                                      'iterable': False})
-        self.assertRegexpMatches(rendered,
-                                 r'<tr[^>]*>\s*'
-                                 r'<td class="fullrow foo" colspan="100">'
-                                 r'\s*#13046\s*<hr />\s*</td>\s*</tr>')
-        self.assertRegexpMatches(rendered,
-                                 r'<tr[^>]*>\s*'
-                                 r'<td class="fullrow bar" colspan="100">'
-                                 r'\s*42\s*<hr />\s*</td>\s*</tr>')
-        self.assertRegexpMatches(rendered,
-                                 r'<tr[^>]*>\s*'
-                                 r'<td class="fullrow baz" colspan="100">'
-                                 r'\s*blah\s*<hr />\s*</td>\s*</tr>')
+        rendered = str(rendered, 'utf-8')
+        self.assertRegex(rendered,
+                         r'<tr[^>]*>\s*'
+                         r'<td class="fullrow foo" colspan="100">'
+                         r'\s*#13046\s*<hr />\s*</td>\s*</tr>')
+        self.assertRegex(rendered,
+                         r'<tr[^>]*>\s*'
+                         r'<td class="fullrow bar" colspan="100">'
+                         r'\s*42\s*<hr />\s*</td>\s*</tr>')
+        self.assertRegex(rendered,
+                         r'<tr[^>]*>\s*'
+                         r'<td class="fullrow baz" colspan="100">'
+                         r'\s*blah\s*<hr />\s*</td>\s*</tr>')
 
     def test_timestamp_columns(self):
         req = MockRequest(self.env, method='POST', path_info='/report', args={
@@ -406,13 +410,14 @@ class ReportModuleTestCase(unittest.TestCase):
         rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
                                                     {'fragment': False,
                                                      'iterable': False})
-        self.assertRegexpMatches(rendered,
+        rendered = str(rendered, 'utf-8')
+        self.assertRegex(rendered,
             r'<td class="date">\s*(12:00:42 AM|00:00:42)\s*</td>')
-        self.assertRegexpMatches(rendered,
-            r'<td class="date">\s*(Jan 3, 1970|01/03/70)\s*</td>')
-        self.assertRegexpMatches(rendered,
+        self.assertRegex(rendered,
+            r'<td class="date">\s*(Jan 3, 1970|01/03/(19)?70)\s*</td>')
+        self.assertRegex(rendered,
             r'<td class="date">\s*(Jan 4, 1970, 12:00:44 AM|'
-            r'01/04/70 00:00:44)\s*</td>')
+            r'01/04/(19)?70 00:00:44)\s*</td>')
 
 
 class ExecuteReportTestCase(unittest.TestCase):
@@ -431,7 +436,7 @@ class ExecuteReportTestCase(unittest.TestCase):
                      **kwargs):
         if when is None:
             when = ticket['changetime'] + timedelta(microseconds=1)
-        for name, value in kwargs.iteritems():
+        for name, value in kwargs.items():
             ticket[name] = value
         return ticket.save_changes(author=author, comment=comment, when=when)
 

@@ -18,20 +18,21 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christian Boos <cboos@edgewall.org>
 
-import __builtin__
+import base64
+import configparser
 import locale
 import os
 import re
 import sys
 import textwrap
-from urllib import quote, quote_plus, unquote
+from urllib.parse import quote, quote_plus, unquote
 from unicodedata import east_asian_width
 
 import jinja2
 
 CRLF = '\r\n'
 
-class Empty(unicode):
+class Empty(str):
     """A special tag object evaluating to the empty string"""
     __slots__ = []
 
@@ -90,60 +91,46 @@ def jinja2template(template, text=False, **kwargs):
 # -- Unicode
 
 def to_unicode(text, charset=None):
-    """Convert input to an `unicode` object.
+    """Convert input to a `str` object.
 
-    For a `str` object, we'll first try to decode the bytes using the given
+    For a `bytes` object, we'll first try to decode the bytes using the given
     `charset` encoding (or UTF-8 if none is specified), then we fall back to
     the latin1 encoding which might be correct or not, but at least preserves
     the original byte sequence by mapping each byte to the corresponding
     unicode code point in the range U+0000 to U+00FF.
 
-    For anything else, a simple `unicode()` conversion is attempted,
+    For anything else, a simple `str()` conversion is attempted,
     with special care taken with `Exception` objects.
     """
-    if isinstance(text, str):
+    if isinstance(text, bytes):
         try:
-            return unicode(text, charset or 'utf-8')
+            return str(text, charset or 'utf-8')
         except UnicodeDecodeError:
-            return unicode(text, 'latin1')
-    elif isinstance(text, Exception):
-        if os.name == 'nt' and isinstance(text, EnvironmentError):
-            strerror = text.strerror
-            filename = text.filename
-            if isinstance(strerror, basestring) and \
-                    isinstance(filename, basestring):
-                try:
-                    if not isinstance(strerror, unicode):
-                        strerror = unicode(strerror, 'mbcs')
-                    if not isinstance(filename, unicode):
-                        filename = unicode(filename, 'mbcs')
-                except UnicodeError:
-                    pass
-                else:
-                    if isinstance(text, WindowsError):
-                        return u"[Error %s] %s: '%s'" % (text.winerror,
-                                                         strerror, filename)
-                    else:
-                        return u"[Errno %s] %s: '%s'" % (text.errno, strerror,
-                                                         filename)
-            # the exception might have a localized error string encoded with
-            # ANSI codepage if OSError and IOError on Windows
-            try:
-                return unicode(str(text), 'mbcs')
-            except UnicodeError:
-                pass
+            return str(text, 'latin1')
+    if isinstance(text, Exception):
         # two possibilities for storing unicode strings in exception data:
         try:
             # custom __str__ method on the exception (e.g. PermissionError)
-            return unicode(text)
+            result = str(text)
         except UnicodeError:
             # unicode arguments given to the exception (e.g. parse_date)
             return ' '.join(to_unicode(arg) for arg in text.args)
-    return unicode(text)
+        if os.name == 'nt':
+            # remove duplicated backslashes from filename in the message
+            if isinstance(text, EnvironmentError) and text.filename:
+                source = repr(text.filename)
+            elif isinstance(text, configparser.ParsingError) and text.source:
+                source = repr(text.source)
+            else:
+                source = None
+            if source:
+                result = result.replace(source, source.replace(r'\\', '\\'))
+        return result
+    return str(text)
 
 
 def exception_to_unicode(e, traceback=False):
-    """Convert an `Exception` to an `unicode` object.
+    """Convert an `Exception` to a `str` object.
 
     In addition to `to_unicode`, this representation of the exception
     also contains the class name and optionally the traceback.
@@ -157,17 +144,17 @@ def exception_to_unicode(e, traceback=False):
 
 
 def path_to_unicode(path):
-    """Convert a filesystem path to unicode, using the filesystem encoding."""
-    if isinstance(path, str):
+    """Convert a filesystem path to str, using the filesystem encoding."""
+    if isinstance(path, bytes):
         try:
-            return unicode(path, sys.getfilesystemencoding())
+            return str(path, sys.getfilesystemencoding())
         except UnicodeDecodeError:
-            return unicode(path, 'latin1')
-    return unicode(path)
+            return str(path, 'latin1')
+    return str(path)
 
 
-_ws_leading_re = re.compile(u'\\A[\\s\u200b]+', re.UNICODE)
-_ws_trailing_re = re.compile(u'[\\s\u200b]+\\Z', re.UNICODE)
+_ws_leading_re = re.compile('\\A[\\s\u200b]+', re.UNICODE)
+_ws_trailing_re = re.compile('[\\s\u200b]+\\Z', re.UNICODE)
 
 def stripws(text, leading=True, trailing=True):
     """Strips unicode white-spaces and ZWSPs from ``text``.
@@ -202,10 +189,10 @@ def strip_line_ws(text, leading=True, trailing=True):
 
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
-for i in list(xrange(0x20)) + [ord(c) for c in u'&<>\u2028\u2029']:
-    _js_quote.setdefault(unichr(i), '\\u%04x' % i)
-_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>' + u'\u2028\u2029]')
-_js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>' + u'\u2028\u2029]')
+for i in list(range(0x20)) + [ord(c) for c in '&<>\u2028\u2029']:
+    _js_quote.setdefault(chr(i), '\\u%04x' % i)
+_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>' + '\u2028\u2029]')
+_js_string_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t&<>' + '\u2028\u2029]')
 
 
 def javascript_quote(text):
@@ -233,36 +220,36 @@ def to_js_string(text):
 def unicode_quote(value, safe='/'):
     """A unicode aware version of `urllib.quote`
 
-    :param value: anything that converts to a `str`. If `unicode`
+    :param value: anything that converts to a `bytes`. If `str`
                   input is given, it will be UTF-8 encoded.
     :param safe: as in `quote`, the characters that would otherwise be
                  quoted but shouldn't here (defaults to '/')
     """
-    return quote(value.encode('utf-8') if isinstance(value, unicode)
-                 else str(value), safe)
+    return quote(value if isinstance(value, bytes) else str(value), safe)
 
 
 def unicode_quote_plus(value, safe=''):
     """A unicode aware version of `urllib.quote_plus`.
 
-    :param value: anything that converts to a `str`. If `unicode`
+    :param value: anything that converts to a `bytes`. If `str`
                   input is given, it will be UTF-8 encoded.
     :param safe: as in `quote_plus`, the characters that would
                  otherwise be quoted but shouldn't here (defaults to
                  '/')
     """
-    return quote_plus(value.encode('utf-8') if isinstance(value, unicode)
-                      else str(value), safe)
+    return quote_plus(value if isinstance(value, bytes) else str(value), safe)
 
 
 def unicode_unquote(value):
     """A unicode aware version of `urllib.unquote`.
 
-    :param str: UTF-8 encoded `str` value (for example, as obtained by
-                `unicode_quote`).
-    :rtype: `unicode`
+    :param value: UTF-8 encoded `str` value (for example, as obtained by
+                  `unicode_quote`).
+    :rtype: `str`
     """
-    return unquote(value).decode('utf-8')
+    if isinstance(value, bytes):
+        value = value.decode('latin1')
+    return unquote(value, encoding='utf-8', errors='strict')
 
 
 def unicode_urlencode(params, safe=''):
@@ -272,7 +259,7 @@ def unicode_urlencode(params, safe=''):
     equal sign.
     """
     if isinstance(params, dict):
-        params = params.iteritems()
+        params = sorted(params.items(), key=lambda i: i[0])
     l = []
     for k, v in params:
         if v is empty:
@@ -283,7 +270,7 @@ def unicode_urlencode(params, safe=''):
     return '&'.join(l)
 
 
-_qs_quote_safe = ''.join(chr(c) for c in xrange(0x21, 0x7f))
+_qs_quote_safe = ''.join(chr(c) for c in range(0x21, 0x7f))
 
 def quote_query_string(text):
     """Quote strings for query string
@@ -292,22 +279,22 @@ def quote_query_string(text):
 
 
 def to_utf8(text, charset='latin1'):
-    """Convert input to a UTF-8 `str` object.
+    """Convert input to a UTF-8 `bytes` object.
 
-    If the input is not an `unicode` object, we assume the encoding is
+    If the input is not an `str` object, we assume the encoding is
     already UTF-8, ISO Latin-1, or as specified by the optional
     *charset* parameter.
     """
-    if isinstance(text, str):
+    if isinstance(text, bytes):
         try:
-            u = unicode(text, 'utf-8')
+            u = str(text, 'utf-8')
         except UnicodeError:
             try:
                 # Use the user supplied charset if possible
-                u = unicode(text, charset)
+                u = str(text, charset)
             except UnicodeError:
                 # This should always work
-                u = unicode(text, 'latin1')
+                u = str(text, 'latin1')
         else:
             # Do nothing if it's already utf-8
             return text
@@ -316,7 +303,7 @@ def to_utf8(text, charset='latin1'):
     return u.encode('utf-8')
 
 
-class unicode_passwd(unicode):
+class unicode_passwd(str):
     """Conceal the actual content of the string when `repr` is called."""
     def __repr__(self):
         return '*******'
@@ -336,9 +323,7 @@ def console_print(out, *args, **kwargs):
     :param kwargs: ``newline`` controls whether a newline will be appended
                    (defaults to `True`)
     """
-    cons_charset = stream_encoding(out)
-    out.write(' '.join(to_unicode(a).encode(cons_charset, 'replace')
-                       for a in args))
+    out.write(' '.join(to_unicode(a) for a in args))
     if kwargs.get('newline', True):
         out.write('\n')
 
@@ -378,7 +363,7 @@ def raw_input(prompt):
     appropriate.
     """
     printout(prompt, newline=False)
-    return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
+    return to_unicode(input(), sys.stdin.encoding)
 
 
 _preferredencoding = locale.getpreferredencoding()
@@ -454,7 +439,6 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
     """
     if out is None:
         out = sys.stdout
-    charset = getattr(out, 'encoding', None) or 'utf-8'
     if ambiwidth is None:
         ambiwidth = _default_ambiwidth
     data = list(data)
@@ -463,11 +447,11 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
     elif not data:
         return
 
-    # Convert to an unicode object with `to_unicode`. If None, convert to a
+    # Convert to a str object with `to_unicode`. If None, convert to a
     # empty string.
     def to_text(val):
         if val is None:
-            return u''
+            return ''
         return to_unicode(val)
 
     def tw(text):
@@ -484,7 +468,7 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
                     if len(cell) < max_lines:
                         cell += [''] * (max_lines - len(cell))
                 lines.extend([cell[idx] for cell in row]
-                             for idx in xrange(max_lines))
+                             for idx in range(max_lines))
             else:
                 lines.append(row)
         return lines
@@ -493,7 +477,7 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
 
     num_cols = len(data[0])
     col_width = [max(tw(row[idx]) for row in data)
-                 for idx in xrange(num_cols)]
+                 for idx in range(num_cols)]
 
     out.write('\n')
     for ridx, row in enumerate(data):
@@ -505,9 +489,8 @@ def print_table(data, headers=None, sep='  ', out=None, ambiwidth=None):
                     sp = ' ' * tw(sep)  # No separator in header
                 else:
                     sp = sep
-                line = u'%-*s%s' % (col_width[cidx] - tw(cell) + len(cell),
+                line = '%-*s%s' % (col_width[cidx] - tw(cell) + len(cell),
                                     cell, sp)
-            line = line.encode(charset, 'replace')
             out.write(line)
 
         out.write('\n')
@@ -553,8 +536,8 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
         (0xF900, 0xFAFF),   # CJK Compatibility Ideographs
         (0xFE30, 0xFE4F),   # CJK Compatibility Forms
         (0xFF00, 0xFFEF),   # Halfwidth and Fullwidth Forms
-        (0x20000, 0x2FFFF, u'[\uD840-\uD87F][\uDC00-\uDFFF]'), # Plane 2
-        (0x30000, 0x3FFFF, u'[\uD880-\uD8BF][\uDC00-\uDFFF]'), # Plane 3
+        (0x20000, 0x2FFFF, '[\uD840-\uD87F][\uDC00-\uDFFF]'), # Plane 2
+        (0x30000, 0x3FFFF, '[\uD880-\uD8BF][\uDC00-\uDFFF]'), # Plane 3
     ]
 
     split_re = None
@@ -563,25 +546,16 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
     @classmethod
     def _init_patterns(cls):
         char_ranges = []
-        surrogate_pairs = []
         for val in cls.breakable_char_ranges:
-            try:
-                high = unichr(val[0])
-                low = unichr(val[1])
-                char_ranges.append(u'%s-%s' % (high, low))
-            except ValueError:
-                # Narrow build, `re` cannot use characters >= 0x10000
-                surrogate_pairs.append(val[2])
-        char_ranges = u''.join(char_ranges)
-        if surrogate_pairs:
-            pattern = u'(?:[%s]|%s)+' % (char_ranges,
-                                         u'|'.join(surrogate_pairs))
-        else:
-            pattern = u'[%s]+' % char_ranges
+            high = chr(val[0])
+            low = chr(val[1])
+            char_ranges.append('%s-%s' % (high, low))
+        char_ranges = ''.join(char_ranges)
+        pattern = '[%s]+' % char_ranges
 
         cls.split_re = re.compile(
             r'(\s+|' +                                  # any whitespace
-            pattern + u'|' +                            # breakable text
+            pattern + '|' +                             # breakable text
             r'[^\s\w]*\w+[^0-9\W]-(?=\w+[^0-9\W])|' +   # hyphenated words
             r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))',     # em-dash
             re.UNICODE)
@@ -599,8 +573,7 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
 
     def _split(self, text):
         chunks = self.split_re.split(to_unicode(text))
-        chunks = filter(None, chunks)
-        return chunks
+        return list(filter(None, chunks))
 
     def _text_width(self, text):
         return text_width(text, ambiwidth=self.ambiwidth)
@@ -631,7 +604,7 @@ class UnicodeTextWrapper(textwrap.TextWrapper):
                     cur_width += w
                 elif self.breakable_re.match(chunk):
                     left_space = width - cur_width
-                    for i in xrange(len(chunk)):
+                    for i in range(len(chunk)):
                         w = text_width(chunk[i])
                         if left_space < w:
                             break
@@ -679,7 +652,7 @@ def wrap(t, cols=75, initial_indent='', subsequent_indent='',
     return linesep.join(wrappedLines)
 
 
-_obfuscation_char = u'@\u2026'
+_obfuscation_char = '@\u2026'
 
 def obfuscate_email_address(address):
     """Replace anything looking like an e-mail address (``'@something'``)
@@ -712,11 +685,11 @@ def breakable_path(path):
     if path.startswith('/'):    # Avoid breaking after a leading /
         prefix = '/'
         path = path[1:]
-    return prefix + path.replace('/', u'/\u200b').replace('\\', u'\\\u200b') \
-                        .replace(' ', u'\u00a0')
+    return prefix + path.replace('/', '/\u200b').replace('\\', '\\\u200b') \
+                        .replace(' ', '\u00a0')
 
 
-def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
+def normalize_whitespace(text, to_space='\u00a0', remove='\u200b'):
     """Normalize whitespace in a string, by replacing special spaces by normal
     spaces and removing zero-width spaces."""
     if not text:
@@ -807,7 +780,12 @@ def expandtabs(s, tabstop=8, ignoring=None):
 def fix_eol(text, eol):
     """Fix end-of-lines in a text."""
     lines = text.splitlines()
-    lines.append('')
+    if isinstance(text, bytes):
+        last = b''
+        eol = eol.encode('utf-8')
+    else:
+        last = ''
+    lines.append(last)
     return eol.join(lines)
 
 def unicode_to_base64(text, strip_newlines=True):
@@ -817,13 +795,16 @@ def unicode_to_base64(text, strip_newlines=True):
     Strips newlines from output unless ``strip_newlines`` is `False`.
     """
     text = to_unicode(text)
+    text = text.encode('utf-8')
     if strip_newlines:
-        return text.encode('utf-8').encode('base64').replace('\n', '')
-    return text.encode('utf-8').encode('base64')
+        rv = base64.b64encode(text)
+    else:
+        rv = base64.encodebytes(text)
+    return str(rv, 'ascii')
 
 def unicode_from_base64(text):
-    """Safe conversion of ``text`` to unicode based on utf-8 bytes."""
-    return text.decode('base64').decode('utf-8')
+    """Safe conversion of ``text`` to str based on utf-8 bytes."""
+    return str(base64.b64decode(text), 'utf-8')
 
 
 def levenshtein_distance(lhs, rhs):
@@ -833,7 +814,7 @@ def levenshtein_distance(lhs, rhs):
     if not lhs:
         return len(rhs)
 
-    prev = xrange(len(rhs) + 1)
+    prev = range(len(rhs) + 1)
     for lidx, lch in enumerate(lhs):
         curr = [lidx + 1]
         for ridx, rch in enumerate(rhs):

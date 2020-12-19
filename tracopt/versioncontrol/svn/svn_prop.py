@@ -124,7 +124,7 @@ class SubversionPropertyRenderer(Component):
             prefix = []
             base_url = url
             while base_url:
-                if base_url in self._externals_map or base_url == u'/':
+                if base_url in self._externals_map or base_url == '/':
                     break
                 base_url, pref = posixpath.split(base_url)
                 prefix.append(pref)
@@ -167,7 +167,7 @@ class SubversionPropertyRenderer(Component):
             try:
                 (path, revs) = row.rsplit(':', 1)
                 rows.append([tag.td(path),
-                             tag.td(revs.replace(',', u',\u200b'))])
+                             tag.td(revs.replace(',', ',\u200b'))])
             except ValueError:
                 rows.append(tag.td(row, colspan=2))
         return tag.table(tag.tbody([tag.tr(row) for row in rows]),
@@ -232,7 +232,7 @@ class SubversionMergePropertyRenderer(Component):
                         first_rev = branch_starts.get(spath)
                         if not first_rev:
                             first_rev = node.get_branch_origin()
-                        eligible = set(xrange(first_rev or 1, target_rev + 1))
+                        eligible = set(range(first_rev or 1, target_rev + 1))
                         eligible -= set(Ranges(revs))
                         blocked = _get_blocked_revs(props, name, spath)
                         if blocked:
@@ -248,7 +248,7 @@ class SubversionMergePropertyRenderer(Component):
                     continue
             except NoSuchNode:
                 deleted = True
-            revs = revs.replace(',', u',\u200b')
+            revs = revs.replace(',', ',\u200b')
             rows.append((deleted, spath,
                          [tag.td('/' + spath),
                           tag.td(revs, colspan=revs_cols)]))
@@ -377,7 +377,7 @@ class SubversionMergePropertyDiffRenderer(Component):
         sources = []
         changed_revs = {}
         changed_nodes = []
-        for spath, (new_revs, new_revs_ni) in new_sources.iteritems():
+        for spath, (new_revs, new_revs_ni) in new_sources.items():
             new_spath = spath not in old_sources
             if new_spath:
                 old_revs = old_revs_ni = set()
@@ -404,7 +404,7 @@ class SubversionMergePropertyDiffRenderer(Component):
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
-                return _get_revs_link(revs.replace(',', u',\u200b'),
+                return _get_revs_link(revs.replace(',', ',\u200b'),
                                       context, spath, revs)
         modified_sources = []
         for spath, new_spath, added, removed, added_ni, removed_ni in sources:
@@ -431,7 +431,7 @@ class SubversionMergePropertyDiffRenderer(Component):
                     ))
         # Go through remaining old sources, those were deleted
         removed_sources = []
-        for spath, old_revs in old_sources.iteritems():
+        for spath, old_revs in old_sources.items():
             removed_sources.append((spath,
                                     _get_source_link(spath, old_context)))
         if modified_sources or removed_sources:

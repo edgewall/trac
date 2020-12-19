@@ -136,9 +136,9 @@ class TimelineModuleTestCase(unittest.TestCase):
 
         TimelineModule(self.env).process_request(req)
 
-        self.assertIn(u'"2011-02-02T11:38:50 01:00" is an invalid date, '
-                      u'or the date format is not known. Try "%s" or "%s" '
-                      u'instead.' % (get_date_format_hint(locale_en),
+        self.assertIn('"2011-02-02T11:38:50 01:00" is an invalid date, '
+                      'or the date format is not known. Try "%s" or "%s" '
+                      'instead.' % (get_date_format_hint(locale_en),
                                      get_date_format_hint('iso8601')),
                       req.chrome['warnings'])
 
@@ -236,7 +236,7 @@ class TimelineEventProviderTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        for c in (cls.timeline_event_providers or {}).itervalues():
+        for c in (cls.timeline_event_providers or {}).values():
             ComponentMeta.deregister(c)
 
     def setUp(self):
@@ -275,7 +275,7 @@ class TimelineEventProviderTestCase(unittest.TestCase):
         rv = self._process_request(req)
         self.assertEqual('timeline.rss', rv[0])
         self.assertEqual({'content_type': 'application/rss+xml'}, rv[2])
-        output = self._render_template(req, *rv)
+        output = str(self._render_template(req, *rv), 'utf-8')
 
         self.assertIn('<title>summary 1: &lt;b&gt;&amp;&lt;/b&gt;</title>',
                       output)

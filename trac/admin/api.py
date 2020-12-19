@@ -221,7 +221,7 @@ def get_console_locale(env=None, lang=None,
             locales.append(value)
         if env:
             locales.append(env.config.get('trac', 'default_language'))
-        locales = filter(None, map(normalize, locales))
+        locales = list(filter(None, map(normalize, locales)))
         try:
             return get_negotiated_locale(locales)
         except UnknownLocaleError:

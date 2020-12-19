@@ -22,17 +22,10 @@ import errno
 import functools
 import hashlib
 import importlib
-import inspect
 import io
-try:
-    from itertools import izip, tee
-except ImportError:
-    import sys
-    sys.exit("Python 3 not supported... yet! (#12130)")
-import locale
 import os
+import pkg_resources
 import posixpath
-from pkg_resources import find_distributions
 import random
 import re
 import shutil
@@ -40,13 +33,13 @@ import sys
 import string
 import struct
 import tempfile
+import urllib.parse
 import unicodedata
 import zipfile
-from urllib import quote, unquote, urlencode
 
 from trac.util.datefmt import time_now, to_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, getpreferredencoding, \
-                           stripws, to_unicode
+    stripws, to_unicode, to_utf8
 
 
 def get_reporter_id(req, arg_name=None):
@@ -77,11 +70,11 @@ def content_disposition(type=None, filename=None):
     """Generate a properly escaped Content-Disposition header."""
     type = type or ''
     if filename is not None:
-        if isinstance(filename, unicode):
+        if isinstance(filename, str):
             filename = filename.encode('utf-8')
         if type:
             type += '; '
-        type += 'filename=' + quote(filename, safe='')
+        type += 'filename=' + urllib.parse.quote(filename, safe='')
     return type
 
 
@@ -134,14 +127,14 @@ def native_path(path):
 _control_codes_re = re.compile(
     '[' +
     ''.join(filter(lambda c: unicodedata.category(c) == 'Cc',
-                   map(unichr, xrange(0x10000)))) +
+                   map(chr, range(0x10000)))) +
     ']')
 
 def normalize_filename(filepath):
     # We try to normalize the filename to unicode NFC if we can.
     # Files from OS X might be in NFD.
-    if not isinstance(filepath, unicode):
-        filepath = unicode(filepath, 'utf-8')
+    if not isinstance(filepath, str):
+        filepath = str(filepath, 'utf-8')
     filepath = unicodedata.normalize('NFC', filepath)
     # Replace control codes with spaces, e.g. NUL, LF, DEL, U+009F
     filepath = _control_codes_re.sub(' ', filepath)
@@ -166,10 +159,10 @@ if os.name == 'nt':
         MoveFileEx = ctypes.windll.kernel32.MoveFileExW
 
         def _rename(src, dst):
-            if not isinstance(src, unicode):
-                src = unicode(src, sys.getfilesystemencoding())
-            if not isinstance(dst, unicode):
-                dst = unicode(dst, sys.getfilesystemencoding())
+            if not isinstance(src, str):
+                src = str(src, sys.getfilesystemencoding())
+            if not isinstance(dst, str):
+                dst = str(dst, sys.getfilesystemencoding())
             if _rename_atomic(src, dst):
                 return True
             return MoveFileEx(src, dst, MOVEFILE_REPLACE_EXISTING
@@ -205,7 +198,7 @@ if os.name == 'nt':
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
-            old = "%s-%08x" % (dst, random.randint(0, sys.maxint))
+            old = "%s-%08x" % (dst, random.randint(0, 0xffffffff))
             os.rename(dst, old)
             os.rename(src, dst)
             try:
@@ -225,12 +218,15 @@ class AtomicFile(object):
     atomically (on Unix, at least) to its final name. If it is rolled back,
     the temporary file is removed.
     """
-    def __init__(self, path, mode='w', bufsize=-1):
+    def __init__(self, path, mode='w', bufsize=-1, encoding='utf-8',
+                 errors='strict'):
         self._file = None
         self._path = os.path.realpath(path)
         dir, name = os.path.split(self._path)
         fd, self._temp = tempfile.mkstemp(prefix=name + '-', dir=dir)
-        self._file = os.fdopen(fd, mode, bufsize)
+        kwargs = {} if 'b' in mode else \
+                 {'encoding': encoding, 'errors': errors}
+        self._file = os.fdopen(fd, mode, bufsize, **kwargs)
 
         # Try to preserve permissions and group ownership, but failure
         # should not be fatal
@@ -283,20 +279,22 @@ class AtomicFile(object):
     closed = property(lambda self: self._file is None or self._file.closed)
 
 
-def read_file(path, mode='r'):
+def read_file(path, mode='r', encoding='utf-8', errors='strict'):
     """Read a file and return its content."""
-    with open(path, mode) as f:
+    kwargs = {} if 'b' in mode else {'encoding': encoding, 'errors': errors}
+    with open(path, mode, **kwargs) as f:
         return f.read()
 
 
-def create_file(path, data='', mode='w'):
+def create_file(path, data='', mode='w', encoding='utf-8', errors='strict'):
     """Create a new file with the given data.
 
     :data: string or iterable of strings.
     """
-    with open(path, mode) as f:
+    kwargs = {} if 'b' in mode else {'encoding': encoding, 'errors': errors}
+    with open(path, mode, **kwargs) as f:
         if data:
-            if isinstance(data, basestring):
+            if isinstance(data, (str, bytes)):
                 f.write(data)
             else:  # Assume iterable
                 f.writelines(data)
@@ -311,7 +309,7 @@ def create_unique_file(path):
     idx = 1
     while 1:
         try:
-            return path, os.fdopen(os.open(path, flags, 0o666), 'w')
+            return path, os.fdopen(os.open(path, flags, 0o666), 'wb')
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
@@ -330,7 +328,11 @@ if os.name == 'nt':
         # on Windows
         with open(filename, 'ab') as f:
             stat = os.fstat(f.fileno())
-            f.truncate(stat.st_size)
+            size = stat.st_size
+            # update forcibly the modified time because f.truncate()
+            # with the same size doesn't update
+            f.truncate(size + 1)
+            f.truncate(size)
 else:
     def touch_file(filename):
         """Update modified time of the given file. The file is created if
@@ -369,14 +371,7 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
     :param comment: comment of the entry
     """
     zipinfo = zipfile.ZipInfo()
-
-    # The general purpose bit flag 11 is used to denote
-    # UTF-8 encoding for path and comment. Only set it for
-    # non-ascii files for increased portability.
-    # See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
-    if any(ord(c) >= 128 for c in filename):
-        zipinfo.flag_bits |= 0x0800
-    zipinfo.filename = filename.encode('utf-8')
+    zipinfo.filename = filename
 
     if mtime is not None:
         mtime = to_datetime(mtime, utc)
@@ -413,7 +408,8 @@ def create_zipinfo(filename, mtime=None, dir=False, executable=False, symlink=Fa
             zipinfo.external_attr |= 0o120000 << 16  # symlink file type
 
     if comment:
-        zipinfo.comment = comment.encode('utf-8')
+        zipinfo.comment = comment.encode('utf-8') \
+                          if isinstance(comment, str) else comment
 
     return zipinfo
 
@@ -450,7 +446,7 @@ class NaivePopen(object):
         command = '( %s ) > %s' % (command, outfile)
         if input is not None:
             infile = tempfile.mktemp()
-            with open(infile, 'w') as tmp:
+            with open(infile, 'wb') as tmp:
                 tmp.write(input)
             command = command + ' <' + infile
         if capturestderr:
@@ -524,7 +520,7 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     which we don't want to copy.
     """
     def str_path(path):
-        if isinstance(path, unicode):
+        if isinstance(path, str):
             path = path.encode(sys.getfilesystemencoding() or
                                getpreferredencoding())
         return path
@@ -576,8 +572,6 @@ def is_path_below(path, parent):
     at any level.
     """
     def normalize(path):
-        if os.name == 'nt' and not isinstance(path, unicode):
-            path = path.decode('mbcs')
         return os.path.normcase(os.path.abspath(path))
     path = normalize(path)
     parent = normalize(parent)
@@ -593,15 +587,23 @@ class file_or_std(object):
 
     file = None
 
-    def __init__(self, filename, mode='r', bufsize=-1):
+    def __init__(self, filename, mode='r', bufsize=-1, encoding='utf-8',
+                 errors='strict'):
         self.filename = filename
         self.mode = mode
         self.bufsize = bufsize
+        self.encoding = encoding
+        self.errors = errors
 
     def __enter__(self):
         if not self.filename:
-            return sys.stdin if 'r' in self.mode else sys.stdout
-        self.file = open(self.filename, self.mode, self.bufsize)
+            f = sys.stdin if 'r' in self.mode else sys.stdout
+            if 'b' in self.mode:
+                f = f.buffer
+            return f
+        kwargs = {} if 'b' in self.mode else \
+                 {'encoding': self.encoding, 'errors': self.errors}
+        self.file = open(self.filename, self.mode, self.bufsize, **kwargs)
         return self.file
 
     def __exit__(self, et, ev, tb):
@@ -622,15 +624,15 @@ def arity(f):
     """Return the number of arguments expected by the given function, unbound
     or bound method.
     """
-    return f.func_code.co_argcount - bool(getattr(f, 'im_self', False))
+    return f.__code__.co_argcount - bool(getattr(f, '__self__', False))
 
 
 def get_last_traceback():
-    """Retrieve the last traceback as an `unicode` string."""
+    """Retrieve the last traceback as a `str` string."""
     import traceback
-    tb = io.BytesIO()
+    tb = io.StringIO()
     traceback.print_exc(file=tb)
-    return to_unicode(tb.getvalue())
+    return tb.getvalue()
 
 
 _egg_path_re = re.compile(r'build/bdist\.[^/]+/egg/(.*)')
@@ -744,7 +746,7 @@ def get_doc(obj):
     where `summary` is the first paragraph and `description` is the remaining
     text.
     """
-    doc = inspect.getdoc(obj)
+    doc = obj.__doc__
     if not doc:
         return None, None
     doc = to_unicode(doc).split('\n\n', 1)
@@ -762,7 +764,7 @@ def import_namespace(globals_dict, module_name):
     backward compatibility.
     """
     module = importlib.import_module(module_name)
-    globals_dict.update(item for item in module.__dict__.iteritems()
+    globals_dict.update(item for item in module.__dict__.items()
                         if item[0] not in _dont_import)
     globals_dict.pop('import_namespace', None)
 
@@ -791,7 +793,7 @@ def get_sources(path):
     distributions that contain them.
     """
     sources = {}
-    for dist in find_distributions(path, only=True):
+    for dist in pkg_resources.find_distributions(path, only=True):
         if not dist.has_metadata('top_level.txt'):
             continue
         toplevels = dist.get_metadata_lines('top_level.txt')
@@ -802,10 +804,11 @@ def get_sources(path):
                            if any(src.startswith(top) for top in toplevels))
             continue
         if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
-            reader = csv.reader(io.BytesIO(dist.get_metadata('RECORD')))
-            sources.update((row[0], dist)
-                           for row in reader if any(row[0].startswith(top)
-                                                    for top in toplevels))
+            with io.StringIO(dist.get_metadata('RECORD')) as f:
+                reader = csv.reader(f)
+                sources.update((row[0], dist)
+                               for row in reader if any(row[0].startswith(top)
+                                                        for top in toplevels))
             continue
     return sources
 
@@ -826,7 +829,7 @@ def get_pkginfo(dist):
     from trac.util.translation import _
 
     def parse_pkginfo(dist, name):
-        return email.message_from_string(to_utf8(dist.get_metadata(name)))
+        return email.message_from_string(dist.get_metadata(name))
 
     if isinstance(dist, types.ModuleType):
         def has_resource(dist, module, resource_name):
@@ -842,15 +845,16 @@ def get_pkginfo(dist):
                 return any(resource_name == os.path.normpath(name)
                            for name in dist.get_metadata_lines('SOURCES.txt'))
             if dist.has_metadata('RECORD'):  # *.dist-info/RECORD
-                reader = csv.reader(io.BytesIO(dist.get_metadata('RECORD')))
-                return any(resource_name == row[0] for row in reader)
+                with io.StringIO(dist.get_metadata('RECORD')) as f:
+                    reader = csv.reader(f)
+                    return any(resource_name == row[0] for row in reader)
             if dist.has_metadata('PKG-INFO'):
                 try:
                     pkginfo = parse_pkginfo(dist, 'PKG-INFO')
                     provides = pkginfo.get_all('Provides', ())
                     names = module.__name__.split('.')
                     if any('.'.join(names[:n + 1]) in provides
-                           for n in xrange(len(names))):
+                           for n in range(len(names))):
                         return True
                 except (IOError, email.Errors.MessageError):
                     pass
@@ -866,7 +870,7 @@ def get_pkginfo(dist):
             resource_name += '/__init__.py'
         else:
             resource_name += '.py'
-        for dist in find_distributions(module_path, only=True):
+        for dist in pkg_resources.find_distributions(module_path, only=True):
             if os.path.isfile(module_path) or \
                     has_resource(dist, module, resource_name):
                 break
@@ -904,7 +908,7 @@ def get_module_metadata(module):
               'maintainer_email', 'home_page', 'url', 'license',
               'summary', 'trac'):
         v = getattr(module, k, '')
-        if v and isinstance(v, basestring):
+        if v and isinstance(v, str):
             if k in ('home_page', 'url'):
                 k = 'home_page'
                 v = v.replace('$', '').replace('URL: ', '').strip()
@@ -934,24 +938,25 @@ except NotImplementedError:
 
     def urandom(n):
         result = []
-        hasher = hashlib.sha1(str(os.getpid()) + str(time_now()))
+        hasher = hashlib.sha1('{}{}'.format(os.getpid(), time_now())
+                              .encode('utf-8'))
         while len(result) * hasher.digest_size < n:
-            hasher.update(str(_entropy.random()))
+            hasher.update(str(_entropy.random()).encode('utf-8'))
             result.append(hasher.digest())
-        result = ''.join(result)
+        result = b''.join(result)
         return result[:n] if len(result) > n else result
 
 
 def hex_entropy(digits=32):
     """Generate `digits` number of hex digits of entropy."""
-    result = ''.join('%.2x' % ord(v) for v in urandom((digits + 1) // 2))
+    result = ''.join('%.2x' % v for v in urandom((digits + 1) // 2))
     return result[:digits] if len(result) > digits else result
 
 
 def salt(length=2):
     """Returns a string of `length` random letters and numbers."""
     return ''.join(random.choice(string.ascii_letters + string.digits + '/.')
-                   for x in xrange(length))
+                   for x in range(length))
 
 
 # Original license for md5crypt:
@@ -968,6 +973,12 @@ def md5crypt(password, salt, magic='$1$'):
     :param salt: the raw salt
     :param magic: our magic string
     """
+    magic_arg = magic
+    salt_arg = salt
+    password = to_utf8(password)
+    magic = to_utf8(magic)
+    salt = to_utf8(salt)
+
     # /* The password first, since that is what is most unknown */
     # /* Then our magic string */
     # /* Then the raw salt */
@@ -975,23 +986,24 @@ def md5crypt(password, salt, magic='$1$'):
 
     # /* Then just as many characters of the MD5(pw,salt,pw) */
     mixin = hashlib.md5(password + salt + password).digest()
-    for i in xrange(len(password)):
-        m.update(mixin[i % 16])
+    m.update(bytes(mixin[i % 16] for i in range(len(password))))
 
     # /* Then something really weird... */
     # Also really broken, as far as I can tell.  -m
-    i = len(password)
-    while i:
-        if i & 1:
-            m.update('\x00')
-        else:
-            m.update(password[0])
-        i >>= 1
+    def iter_password_or_zero():
+        i = len(password)
+        while i:
+            if i & 1:
+                yield 0
+            else:
+                yield password[0]
+            i >>= 1
+    m.update(bytes(iter_password_or_zero()))
 
     final = m.digest()
 
     # /* and now, just to make sure things don't run too fast */
-    for i in xrange(1000):
+    for i in range(1000):
         m2 = hashlib.md5()
         if i & 1:
             m2.update(password)
@@ -1013,21 +1025,23 @@ def md5crypt(password, salt, magic='$1$'):
 
     # This is the bit that uses to64() in the original code.
 
-    itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    def iter_ito64(value):
+        itoa64 = b'./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' \
+                 b'abcdefghijklmnopqrstuvwxyz'
 
-    rearranged = ''
-    for a, b, c in ((0, 6, 12), (1, 7, 13), (2, 8, 14), (3, 9, 15), (4, 10, 5)):
-        v = ord(final[a]) << 16 | ord(final[b]) << 8 | ord(final[c])
-        for i in xrange(4):
-            rearranged += itoa64[v & 0x3f]
+        for a, b, c in ((0, 6, 12), (1, 7, 13), (2, 8, 14), (3, 9, 15),
+                        (4, 10, 5)):
+            v = final[a] << 16 | final[b] << 8 | final[c]
+            for i in range(4):
+                yield itoa64[v & 0x3f]
+                v >>= 6
+
+        v = final[11]
+        for i in range(2):
+            yield itoa64[v & 0x3f]
             v >>= 6
 
-    v = ord(final[11])
-    for i in xrange(2):
-        rearranged += itoa64[v & 0x3f]
-        v >>= 6
-
-    return magic + salt + '$' + rearranged
+    return magic_arg + salt_arg + '$' + str(bytes(iter_ito64(final)), 'ascii')
 
 
 # -- data structures
@@ -1046,7 +1060,7 @@ class Ranges(object):
     True
     >>> 16 in x
     False
-    >>> [i for i in xrange(20) if i in x]
+    >>> [i for i in range(20) if i in x]
     [1, 2, 9, 10, 11, 12, 13, 14, 15]
 
     Also supports iteration, which makes that last example a bit simpler:
@@ -1096,16 +1110,16 @@ class Ranges(object):
     >>> str(Ranges("20-10", reorder=True))
     '10-20'
 
-    As rendered ranges are often using u',\u200b' (comma + Zero-width
+    As rendered ranges are often using ',\u200b' (comma + Zero-width
     space) to enable wrapping, we also support reading such ranges, as
     they can be copy/pasted back.
 
-    >>> str(Ranges(u'1,\u200b3,\u200b5,\u200b6,\u200b7,\u200b9'))
+    >>> str(Ranges('1,\u200b3,\u200b5,\u200b6,\u200b7,\u200b9'))
     '1,3,5-7,9'
 
     """
 
-    RE_STR = u'[0-9]+(?:[-:][0-9]+)?(?:,\u200b?[0-9]+(?:[-:][0-9]+)?)*'
+    RE_STR = '[0-9]+(?:[-:][0-9]+)?(?:,\u200b?[0-9]+(?:[-:][0-9]+)?)*'
 
     def __init__(self, r=None, reorder=False):
         self.pairs = []
@@ -1123,8 +1137,8 @@ class Ranges(object):
         if not r:
             return
         p = self.pairs
-        if isinstance(r, basestring):
-            r = re.split(u',\u200b?', r)
+        if isinstance(r, str):
+            r = re.split(',\u200b?', r)
         for x in r:
             try:
                 a, b = map(int, x.split('-', 1))
@@ -1159,10 +1173,10 @@ class Ranges(object):
         This is another way I came up with to do it.  Is it faster?
 
         from itertools import chain
-        return chain(*[xrange(a, b+1) for a, b in self.pairs])
+        return chain(*[range(a, b+1) for a, b in self.pairs])
         """
         for a, b in self.pairs:
-            for i in xrange(a, b+1):
+            for i in range(a, b+1):
                 yield i
 
     def __contains__(self, x):
@@ -1204,7 +1218,7 @@ class Ranges(object):
         if self.a is None or self.b is None:
             return 0
         # Result must fit an int
-        return min(self.b - self.a + 1, sys.maxint)
+        return min(self.b - self.a + 1, sys.maxsize)
 
     def __nonzero__(self):
         """Return True iff the range is not empty.
@@ -1313,8 +1327,9 @@ def embedded_numbers(s):
 
 def partition(iterable, order=None):
     """
-    >>> partition([(1, "a"), (2, "b"), (3, "a")])
-    {'a': [1, 3], 'b': [2]}
+    >>> rv = partition([(1, "a"), (2, "b"), (3, "a")])
+    >>> rv == {'a': [1, 3], 'b': [2]}
+    True
     >>> partition([(1, "a"), (2, "b"), (3, "a")], "ab")
     [[1, 3], [2]]
     """
@@ -1369,7 +1384,7 @@ def as_bool(value, default=False):
 
     :since 1.2: the `default` argument can be specified.
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         try:
             return bool(float(value))
         except ValueError:
@@ -1398,7 +1413,7 @@ def to_list(splittable, sep=','):
     ['1', '2', '3', '4']
     >>> to_list('1;2; 3;4 ', sep=';')
     ['1', '2', '3', '4']
-    >>> to_list('1,2;3 4 ', sep='[,;\s]+')
+    >>> to_list('1,2;3 4 ', sep=r'[,;\s]+')
     ['1', '2', '3', '4']
     >>> to_list('')
     []
@@ -1426,16 +1441,5 @@ def sub_val(the_list, item_to_remove, item_to_add):
     else:
         the_list[index] = item_to_add
 
-
-# Imports for backward compatibility (at bottom to avoid circular dependencies)
-from trac.core import TracError
-from trac.util.compat import reversed
-from trac.util.html import escape, unescape, Markup, Deuglifier
-from trac.util.text import CRLF, to_utf8, shorten_line, wrap, pretty_size
-from trac.util.datefmt import pretty_timedelta, format_datetime, \
-                              format_date, format_time, \
-                              get_date_format_hint, \
-                              get_datetime_format_hint, http_date, \
-                              parse_date
 
 __no_apidoc__ = 'compat presentation translation'

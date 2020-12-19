@@ -184,7 +184,7 @@ class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
         class UnicodeHelpCommand(Component):
             implements(IAdminCommandProvider)
 
-            unicode_help = u'Hélp text with unicöde charàcters'
+            unicode_help = 'Hélp text with unicöde charàcters'
 
             def get_admin_commands(self):
                 yield ('unicode-help', '', self.unicode_help,
@@ -204,7 +204,7 @@ class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
 
     def test_unicode_help(self):
         macro = TracAdminHelpMacro(self.env)
-        help = unicode(macro.expand_macro(None, None, 'unicode-help'))
+        help = str(macro.expand_macro(None, None, 'unicode-help'))
         self.assertIn(self.unicode_help_command.unicode_help, help)
 
     def test_invalid_command(self):
@@ -213,8 +213,7 @@ class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
         try:
             macro.expand_macro(None, None, 'copystatic')
         except MacroError as e:
-            self.assertEqual('Unknown trac-admin command "copystatic"',
-                             unicode(e))
+            self.assertEqual('Unknown trac-admin command "copystatic"', str(e))
         else:
             self.fail("MacroError not raised")
 

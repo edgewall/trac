@@ -31,15 +31,15 @@ from trac.util.datefmt import time_now
 
 def _write(filename, lines):
     wait_for_file_mtime_change(filename)
-    create_file(filename, '\n'.join(lines + ['']).encode('utf-8'))
+    create_file(filename, '\n'.join(lines + ['']))
 
 
 def _read(filename):
-    return read_file(filename).decode('utf-8')
+    return read_file(filename)
 
 
 def readlines(filename):
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         return f.readlines()
 
 
@@ -49,11 +49,11 @@ class UnicodeParserTestCase(unittest.TestCase):
         self.tempdir = mkdtemp()
         self.filename = os.path.join(self.tempdir, 'config.ini')
         _write(self.filename, [
-            u'[ä]', u'öption = ÿ',
-            u'[ä]', u'optīon = 1.1',
-            u'[č]', u'ôption = ž',
-            u'[č]', u'optïon = 1',
-            u'[ė]', u'optioñ = true',
+            '[ä]', 'öption = ÿ',
+            '[ä]', 'optīon = 1.1',
+            '[č]', 'ôption = ž',
+            '[č]', 'optïon = 1',
+            '[ė]', 'optioñ = true',
         ])
         self.parser = UnicodeConfigParser()
         self._read()
@@ -62,101 +62,101 @@ class UnicodeParserTestCase(unittest.TestCase):
         rmtree(self.tempdir)
 
     def _write(self):
-        with open(self.filename, 'w') as f:
+        with open(self.filename, 'w', encoding='utf-8') as f:
             self.parser.write(f)
 
     def _read(self):
         self.parser.read(self.filename)
 
     def test_sections(self):
-        self.assertEqual([u'ä', u'č', u'ė'], self.parser.sections())
+        self.assertEqual(['ä', 'č', 'ė'], self.parser.sections())
 
     def test_add_section(self):
-        self.parser.add_section(u'ē')
+        self.parser.add_section('ē')
         self._write()
         self.assertEqual(
-            u'[ä]\n'
-            u'öption = ÿ\n'
-            u'optīon = 1.1\n\n'
-            u'[č]\n'
-            u'ôption = ž\n'
-            u'optïon = 1\n\n'
-            u'[ė]\n'
-            u'optioñ = true\n\n'
-            u'[ē]\n\n', _read(self.filename))
+            '[ä]\n'
+            'öption = ÿ\n'
+            'optīon = 1.1\n\n'
+            '[č]\n'
+            'ôption = ž\n'
+            'optïon = 1\n\n'
+            '[ė]\n'
+            'optioñ = true\n\n'
+            '[ē]\n\n', _read(self.filename))
 
     def test_has_section(self):
-        self.assertTrue(self.parser.has_section(u'ä'))
-        self.assertTrue(self.parser.has_section(u'č'))
-        self.assertTrue(self.parser.has_section(u'ė'))
-        self.assertFalse(self.parser.has_section(u'î'))
+        self.assertTrue(self.parser.has_section('ä'))
+        self.assertTrue(self.parser.has_section('č'))
+        self.assertTrue(self.parser.has_section('ė'))
+        self.assertFalse(self.parser.has_section('î'))
 
     def test_options(self):
-        self.assertEqual([u'öption', u'optīon'], self.parser.options(u'ä'))
-        self.assertEqual([u'ôption', u'optïon'], self.parser.options(u'č'))
+        self.assertEqual(['öption', 'optīon'], self.parser.options('ä'))
+        self.assertEqual(['ôption', 'optïon'], self.parser.options('č'))
 
     def test_get(self):
-        self.assertEqual(u'ÿ', self.parser.get(u'ä', u'öption'))
-        self.assertEqual(u'ž', self.parser.get(u'č', u'ôption'))
+        self.assertEqual('ÿ', self.parser.get('ä', 'öption'))
+        self.assertEqual('ž', self.parser.get('č', 'ôption'))
 
     def test_items(self):
-        self.assertEqual([(u'öption', u'ÿ'), (u'optīon', u'1.1')],
-                          self.parser.items(u'ä'))
-        self.assertEqual([(u'ôption', u'ž'), (u'optïon', u'1')],
-                         self.parser.items(u'č'))
+        self.assertEqual([('öption', 'ÿ'), ('optīon', '1.1')],
+                          self.parser.items('ä'))
+        self.assertEqual([('ôption', 'ž'), ('optïon', '1')],
+                         self.parser.items('č'))
 
     def test_getint(self):
-        self.assertEqual(1, self.parser.getint(u'č', u'optïon'))
+        self.assertEqual(1, self.parser.getint('č', 'optïon'))
 
     def test_getfloat(self):
-        self.assertEqual(1.1, self.parser.getfloat(u'ä', u'optīon'))
+        self.assertEqual(1.1, self.parser.getfloat('ä', 'optīon'))
 
     def test_getboolean(self):
-        self.assertTrue(self.parser.getboolean(u'ė', u'optioñ'))
+        self.assertTrue(self.parser.getboolean('ė', 'optioñ'))
 
     def test_has_option(self):
-        self.assertTrue(self.parser.has_option(u'ä', u'öption'))
-        self.assertTrue(self.parser.has_option(u'ä', u'optīon'))
-        self.assertTrue(self.parser.has_option(u'č', u'ôption'))
-        self.assertTrue(self.parser.has_option(u'č', u'optïon'))
-        self.assertTrue(self.parser.has_option(u'ė', u'optioñ'))
-        self.assertFalse(self.parser.has_option(u'î', u'optioñ'))
+        self.assertTrue(self.parser.has_option('ä', 'öption'))
+        self.assertTrue(self.parser.has_option('ä', 'optīon'))
+        self.assertTrue(self.parser.has_option('č', 'ôption'))
+        self.assertTrue(self.parser.has_option('č', 'optïon'))
+        self.assertTrue(self.parser.has_option('ė', 'optioñ'))
+        self.assertFalse(self.parser.has_option('î', 'optioñ'))
 
     def test_set(self):
-        self.parser.set(u'ä', u'öption', u'ù')
-        self.parser.set(u'ė', u'optiœn', None)
+        self.parser.set('ä', 'öption', 'ù')
+        self.parser.set('ė', 'optiœn', None)
         self._write()
         self.assertEqual(
-            u'[ä]\n'
-            u'öption = ù\n'
-            u'optīon = 1.1\n\n'
-            u'[č]\n'
-            u'ôption = ž\n'
-            u'optïon = 1\n\n'
-            u'[ė]\n'
-            u'optioñ = true\n'
-            u'optiœn = \n\n', _read(self.filename))
+            '[ä]\n'
+            'öption = ù\n'
+            'optīon = 1.1\n\n'
+            '[č]\n'
+            'ôption = ž\n'
+            'optïon = 1\n\n'
+            '[ė]\n'
+            'optioñ = true\n'
+            'optiœn = \n\n', _read(self.filename))
 
     def test_remove_option(self):
-        self.parser.remove_option(u'ä', u'öption')
-        self.parser.remove_option(u'ė', u'optioñ')
+        self.parser.remove_option('ä', 'öption')
+        self.parser.remove_option('ė', 'optioñ')
         self._write()
         self.assertEqual(
-            u'[ä]\n'
-            u'optīon = 1.1\n\n'
-            u'[č]\n'
-            u'ôption = ž\n'
-            u'optïon = 1\n\n'
-            u'[ė]\n\n', _read(self.filename))
+            '[ä]\n'
+            'optīon = 1.1\n\n'
+            '[č]\n'
+            'ôption = ž\n'
+            'optïon = 1\n\n'
+            '[ė]\n\n', _read(self.filename))
 
     def test_remove_section(self):
-        self.parser.remove_section(u'ä')
-        self.parser.remove_section(u'ė')
+        self.parser.remove_section('ä')
+        self.parser.remove_section('ė')
         self._write()
         self.assertEqual(
-            u'[č]\n'
-            u'ôption = ž\n'
-            u'optïon = 1\n\n', _read(self.filename))
+            '[č]\n'
+            'ôption = ž\n'
+            'optïon = 1\n\n', _read(self.filename))
 
 
 class BaseTestCase(unittest.TestCase):
@@ -176,7 +176,7 @@ class BaseTestCase(unittest.TestCase):
         ComponentMeta._components = list(ComponentMeta._components)
         ComponentMeta._registry = {interface: list(classes)
                                    for interface, classes
-                                   in ComponentMeta._registry.iteritems()}
+                                   in ComponentMeta._registry.items()}
         ConfigSection.registry = {}
         Option.registry = {}
 
@@ -207,160 +207,160 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def setUp(self):
         self.config = Configuration(None)
-        self.config.parser.add_section(u'séction1')
-        self.config.parser.set(u'séction1', u'öption1', u'cönfig-valué')
-        self.config.parser.set(u'séction1', u'öption4', u'cönfig-valué')
-        self.config.parser.add_section(u'séction5')
-        self.config.parser.set(u'séction5', u'öption2', u'cönfig-valué')
-        self.config.parser.set(u'séction5', u'öption3', u'cönfig-valué')
+        self.config.parser.add_section('séction1')
+        self.config.parser.set('séction1', 'öption1', 'cönfig-valué')
+        self.config.parser.set('séction1', 'öption4', 'cönfig-valué')
+        self.config.parser.add_section('séction5')
+        self.config.parser.set('séction5', 'öption2', 'cönfig-valué')
+        self.config.parser.set('séction5', 'öption3', 'cönfig-valué')
         parent_config = Configuration(None)
-        parent_config.parser.add_section(u'séction1')
-        parent_config.parser.add_section(u'séction2')
-        parent_config.parser.set(u'séction1', u'öption1', u'cönfig-valué')
-        parent_config.parser.set(u'séction1', u'öption2', u'înherited-valué')
-        parent_config.parser.set(u'séction2', u'öption2', u'înherited-valué')
+        parent_config.parser.add_section('séction1')
+        parent_config.parser.add_section('séction2')
+        parent_config.parser.set('séction1', 'öption1', 'cönfig-valué')
+        parent_config.parser.set('séction1', 'öption2', 'înherited-valué')
+        parent_config.parser.set('séction2', 'öption2', 'înherited-valué')
         self.config.parents = [parent_config]
-        self.default_value = u'dēfault-valué'
+        self.default_value = 'dēfault-valué'
 
         class OptionClass(object):
-            Option(u'séction1', u'öption1', self.default_value)
-            Option(u'séction1', u'öption2', self.default_value)
-            Option(u'séction1', u'öption3', self.default_value)
-            Option(u'séction3', u'öption1', self.default_value)
-            Option(u'séction5', u'öption1', self.default_value)
-            Option(u'séction5', u'öption2', self.default_value)
-            ConfigSection(u'séction4', u"Séction 4")
+            Option('séction1', 'öption1', self.default_value)
+            Option('séction1', 'öption2', self.default_value)
+            Option('séction1', 'öption3', self.default_value)
+            Option('séction3', 'öption1', self.default_value)
+            Option('séction5', 'öption1', self.default_value)
+            Option('séction5', 'öption2', self.default_value)
+            ConfigSection('séction4', 'Séction 4')
 
     def test_get_from_config(self):
         """Value is retrieved from the config."""
-        self.assertEqual(u'cönfig-valué',
-                         self.config.get(u'séction1', u'öption1'))
+        self.assertEqual('cönfig-valué',
+                         self.config.get('séction1', 'öption1'))
 
     def test_get_from_inherited(self):
         """Value not specified in the config is retrieved from the
         inherited config.
         """
-        self.assertEqual(u'înherited-valué',
-                         self.config.get(u'séction1', u'öption2'))
+        self.assertEqual('înherited-valué',
+                         self.config.get('séction1', 'öption2'))
 
     def test_get_from_default(self):
         """Value not specified in the config or the inherited config
         is retrieved from the option default.
         """
         self.assertEqual(self.default_value,
-                         self.config.get(u'séction1', u'öption3'))
+                         self.config.get('séction1', 'öption3'))
 
     def test_get_is_cached(self):
         """Value is cached on first retrieval from the parser."""
-        option1 = self.config.get(u'séction1', u'öption1')
-        self.config.parser.set(u'séction1', u'öption1', u'cönfig-valué2')
-        self.assertIs(self.config.get(u'séction1', u'öption1'), option1)
+        option1 = self.config.get('séction1', 'öption1')
+        self.config.parser.set('séction1', 'öption1', 'cönfig-valué2')
+        self.assertIs(self.config.get('séction1', 'öption1'), option1)
 
     def test_contains_from_config(self):
         """Contains returns `True` for section defined in config."""
-        self.assertIn(u'séction1', self.config)
+        self.assertIn('séction1', self.config)
 
     def test_contains_from_inherited(self):
         """Contains returns `True` for section defined in inherited config."""
-        self.assertIn(u'séction2', self.config)
+        self.assertIn('séction2', self.config)
 
     def test_contains_from_default(self):
         """Contains returns `True` for section defined in an option."""
-        self.assertIn(u'séction3', self.config)
+        self.assertIn('séction3', self.config)
 
     def test_sections_with_default(self):
         """Sections including defaults."""
         sections = self.config.sections()
-        self.assertIn(u'séction1', sections)
-        self.assertIn(u'séction2', sections)
-        self.assertIn(u'séction3', sections)
-        self.assertNotIn(u'séction4', sections)
+        self.assertIn('séction1', sections)
+        self.assertIn('séction2', sections)
+        self.assertIn('séction3', sections)
+        self.assertNotIn('séction4', sections)
 
     def test_sections_without_default(self):
         """Sections without defaults."""
         sections = self.config.sections(defaults=False)
-        self.assertIn(u'séction1', sections)
-        self.assertIn(u'séction2', sections)
-        self.assertNotIn(u'séction3', sections)
-        self.assertNotIn(u'séction4', sections)
+        self.assertIn('séction1', sections)
+        self.assertIn('séction2', sections)
+        self.assertNotIn('séction3', sections)
+        self.assertNotIn('séction4', sections)
 
     def test_sections_with_empty(self):
         """Sections including empty."""
         sections = self.config.sections(defaults=False, empty=True)
-        self.assertNotIn(u'séction3', sections)
-        self.assertIn(u'séction4', sections)
+        self.assertNotIn('séction3', sections)
+        self.assertIn('séction4', sections)
 
     def test_remove_option_from_config(self):
         """Value is removed from configuration."""
-        self.config.remove(u'séction1', u'öption4')
+        self.config.remove('séction1', 'öption4')
         parser = self.config.parser
-        self.assertNotIn(u'öption4', self.config[u'séction1'])
-        self.assertFalse(parser.has_option(u'séction1', u'öption4'))
-        self.assertEqual('', self.config.get(u'séction1', u'öption4'))
+        self.assertNotIn('öption4', self.config['séction1'])
+        self.assertFalse(parser.has_option('séction1', 'öption4'))
+        self.assertEqual('', self.config.get('séction1', 'öption4'))
 
     def test_remove_non_existent_option_from_config(self):
         """Removing non-existent value from config doesn't raise error."""
         parser = self.config.parser
-        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
-        self.config.remove(u'séction1', u'öption5')
-        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
-        self.assertEqual('', self.config.get(u'séction1', u'öption5'))
+        self.assertFalse(parser.has_option('séction1', 'öption5'))
+        self.config.remove('séction1', 'öption5')
+        self.assertFalse(parser.has_option('séction1', 'öption5'))
+        self.assertEqual('', self.config.get('séction1', 'öption5'))
 
     def test_remove_option_from_section(self):
         """Value is removed from section."""
-        self.config[u'séction1'].remove(u'öption4')
+        self.config['séction1'].remove('öption4')
         parser = self.config.parser
-        self.assertNotIn(u'öption4', self.config[u'séction1'])
-        self.assertFalse(parser.has_option(u'séction1', u'öption4'))
-        self.assertEqual('', self.config.get(u'séction1', u'öption4'))
-        self.assertEqual('', self.config[u'séction1'].get(u'öption4'))
+        self.assertNotIn('öption4', self.config['séction1'])
+        self.assertFalse(parser.has_option('séction1', 'öption4'))
+        self.assertEqual('', self.config.get('séction1', 'öption4'))
+        self.assertEqual('', self.config['séction1'].get('öption4'))
 
     def test_remove_non_existent_option_from_section(self):
         """Removing non-existent value from section doesn't raise error."""
         parser = self.config.parser
-        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
-        self.config[u'séction1'].remove(u'öption5')
-        self.assertFalse(parser.has_option(u'séction1', u'öption5'))
-        self.assertEqual('', self.config.get(u'séction1', u'öption5'))
+        self.assertFalse(parser.has_option('séction1', 'öption5'))
+        self.config['séction1'].remove('öption5')
+        self.assertFalse(parser.has_option('séction1', 'öption5'))
+        self.assertEqual('', self.config.get('séction1', 'öption5'))
 
     def _assert_section_removed(self):
         parser = self.config.parser
-        self.assertFalse(parser.has_option(u'séction5', u'öption1'))
-        self.assertFalse(parser.has_option(u'séction5', u'öption2'))
-        self.assertFalse(parser.has_option(u'séction5', u'öption3'))
-        self.assertFalse(parser.has_section(u'séction5'))
-        self.assertIn(u'séction5', self.config)
+        self.assertFalse(parser.has_option('séction5', 'öption1'))
+        self.assertFalse(parser.has_option('séction5', 'öption2'))
+        self.assertFalse(parser.has_option('séction5', 'öption3'))
+        self.assertFalse(parser.has_section('séction5'))
+        self.assertIn('séction5', self.config)
         self.assertEqual(self.default_value,
-                         self.config.get(u'séction5', u'öption1'))
+                         self.config.get('séction5', 'öption1'))
         self.assertEqual(self.default_value,
-                         self.config.get(u'séction5', u'öption2'))
-        self.assertEqual('', self.config.get(u'séction5', u'öption3'))
+                         self.config.get('séction5', 'öption2'))
+        self.assertEqual('', self.config.get('séction5', 'öption3'))
 
     def test_remove_section_from_config(self):
         """Section is removed from configuration."""
-        self.config.remove(u'séction5')
+        self.config.remove('séction5')
         self._assert_section_removed()
 
     def test_remove_section_from_config_when_last_option_removed(self):
         """Section is removed from configuration when last option is
         removed from the configuration."""
-        self.config.remove(u'séction5', u'öption1')
-        self.config.remove(u'séction5', u'öption2')
-        self.config.remove(u'séction5', u'öption3')
+        self.config.remove('séction5', 'öption1')
+        self.config.remove('séction5', 'öption2')
+        self.config.remove('séction5', 'öption3')
         self._assert_section_removed()
 
     def test_remove_non_existent_section(self):
         """Removing non-existent section doesn't raise error."""
-        self.assertNotIn(u'séction6', self.config)
-        self.config.remove(u'séction6')
+        self.assertNotIn('séction6', self.config)
+        self.config.remove('séction6')
 
     def test_remove_leaves_inherited_unchanged(self):
         """Value is not removed from inherited configuration."""
-        self.config.remove(u'séction1', u'öption2')
+        self.config.remove('séction1', 'öption2')
         parser = self.config.parents[0].parser
-        self.assertTrue(parser.has_option(u'séction1', u'öption1'))
-        self.assertEqual(u'înherited-valué',
-                         self.config.get(u'séction1', u'öption2'))
+        self.assertTrue(parser.has_option('séction1', 'öption1'))
+        self.assertEqual('înherited-valué',
+                         self.config.get('séction1', 'öption2'))
 
 
 class IntegrationTestCase(BaseTestCase):
@@ -451,11 +451,11 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual('y', config.get('b', 'option2', 'y'))
 
     def test_read_and_get_unicode(self):
-        self._write([u'[ä]', u'öption = x'])
+        self._write(['[ä]', 'öption = x'])
         config = self._read()
-        self.assertEqual('x', config.get(u'ä', u'öption'))
-        self.assertEqual('x', config.get(u'ä', u'öption', 'y'))
-        self.assertEqual('y', config.get('b', u'öption2', 'y'))
+        self.assertEqual('x', config.get('ä', 'öption'))
+        self.assertEqual('x', config.get('ä', 'öption', 'y'))
+        self.assertEqual('y', config.get('b', 'öption2', 'y'))
 
     def test_read_and_getbool(self):
         self._write(['[a]', 'option = yes', 'option2 = true',
@@ -525,8 +525,8 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_read_and_getlist_false_values(self):
         config = self._read()
-        values = [None, False, '', 'foo', u'', u'bar', 0, 0.0, 0j, 42, 43.0]
-        self.assertEqual([False, 'foo', u'bar', 0, 0.0, 0j, 42, 43.0],
+        values = [None, False, '', 'foo', '', 'bar', 0, 0.0, 0j, 42, 43.0]
+        self.assertEqual([False, 'foo', 'bar', 0, 0.0, 0j, 42, 43.0],
                          config.getlist('a', 'false', values))
         self.assertEqual(values, config.getlist('a', 'false', values,
                                                 keep_empty=True))
@@ -553,14 +553,14 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_read_and_choice(self):
         self._write(['[a]', 'option = 2', 'invalid = d', 'case-insensitive = b',
-                     u'[û]', u'èncoded = à'])
+                     '[û]', 'èncoded = à'])
         config = self._read()
 
         class Foo(object):
             option = ChoiceOption('a', 'option', ['Item1', 2, '3'])
             other = ChoiceOption('a', 'other', [1, 2, 3])
             invalid = ChoiceOption('a', 'invalid', ['a', 'b', 'c'])
-            encoded = ChoiceOption('a', u'èncoded', [u'à', u'ć', u'ē'])
+            encoded = ChoiceOption('a', 'èncoded', ['à', 'ć', 'ē'])
             case_insensitive = ChoiceOption('a', 'case-insensitive',
                                             ['A', 'B', 'C'],
                                             case_sensitive=False)
@@ -572,9 +572,9 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual('2', foo.option)
         self.assertEqual('1', foo.other)
         self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
-        self.assertEqual(u'à', foo.encoded)
-        config.set('a', u'èncoded', u'ć')
-        self.assertEqual(u'ć', foo.encoded)
+        self.assertEqual('à', foo.encoded)
+        config.set('a', 'èncoded', 'ć')
+        self.assertEqual('ć', foo.encoded)
         self.assertEqual('B', foo.case_insensitive)
 
     def test_read_and_getextensionoption(self):
@@ -682,23 +682,23 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_set_and_save(self):
         config = self._read()
-        config.set('b', u'öption0', 'y')
-        config.set(u'aä', 'öption0', 'x')
+        config.set('b', 'öption0', 'y')
+        config.set('aä', 'öption0', 'x')
         config.set('aä', 'option2', "Voilà l'été")  # UTF-8
-        config.set(u'aä', 'option1', u"Voilà l'été")  # unicode
+        config.set('aä', 'option1', "Voilà l'été")  # unicode
         section = config['b']
         section.set('option1', None)
-        section = config[u'aä']
+        section = config['aä']
         section.set('öption1', 'z')
         section.set('öption2', None)
         # Note: the following would depend on the locale.getpreferredencoding()
         # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
-        self.assertEqual('x', config.get(u'aä', u'öption0'))
-        self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option1'))
-        self.assertEqual(u"Voilà l'été", config.get(u'aä', 'option2'))
+        self.assertEqual('x', config.get('aä', 'öption0'))
+        self.assertEqual("Voilà l'été", config.get('aä', 'option1'))
+        self.assertEqual("Voilà l'été", config.get('aä', 'option2'))
         self.assertEqual('', config.get('b', 'option1'))
-        self.assertEqual('z', config.get(u'aä', 'öption1'))
-        self.assertEqual('', config.get(u'aä', 'öption2'))
+        self.assertEqual('z', config.get('aä', 'öption1'))
+        self.assertEqual('', config.get('aä', 'öption2'))
         config.save()
 
         self.assertEqual(['# -*- coding: utf-8 -*-\n',
@@ -716,20 +716,20 @@ class IntegrationTestCase(BaseTestCase):
                           'öption0 = y\n',
                           '\n'], readlines(self.filename))
         config2 = Configuration(self.filename)
-        self.assertEqual('x', config2.get(u'aä', u'öption0'))
-        self.assertEqual(u"Voilà l'été", config2.get(u'aä', 'option1'))
-        self.assertEqual(u"Voilà l'été", config2.get(u'aä', 'option2'))
-        # self.assertEqual(u"Voilà l'été", config2.get('a', 'option3'))
+        self.assertEqual('x', config2.get('aä', 'öption0'))
+        self.assertEqual("Voilà l'été", config2.get('aä', 'option1'))
+        self.assertEqual("Voilà l'été", config2.get('aä', 'option2'))
+        # self.assertEqual("Voilà l'été", config2.get('a', 'option3'))
 
     def test_set_and_save_inherit(self):
         with self.inherited_file():
             self._write(['[a]', 'option = x'], site=True)
             config = self._read()
             config.set('a', 'option2', "Voilà l'été")  # UTF-8
-            config.set('a', 'option1', u"Voilà l'été")  # unicode
+            config.set('a', 'option1', "Voilà l'été")  # unicode
             self.assertEqual('x', config.get('a', 'option'))
-            self.assertEqual(u"Voilà l'été", config.get('a', 'option1'))
-            self.assertEqual(u"Voilà l'été", config.get('a', 'option2'))
+            self.assertEqual("Voilà l'été", config.get('a', 'option1'))
+            self.assertEqual("Voilà l'été", config.get('a', 'option2'))
             config.save()
 
             self.assertEqual(['# -*- coding: utf-8 -*-\n',
@@ -743,17 +743,17 @@ class IntegrationTestCase(BaseTestCase):
                               '\n'], readlines(self.filename))
             config2 = Configuration(self.filename)
             self.assertEqual('x', config2.get('a', 'option'))
-            self.assertEqual(u"Voilà l'été", config2.get('a', 'option1'))
-            self.assertEqual(u"Voilà l'été", config2.get('a', 'option2'))
+            self.assertEqual("Voilà l'été", config2.get('a', 'option1'))
+            self.assertEqual("Voilà l'été", config2.get('a', 'option2'))
 
     def test_set_and_save_inherit_remove_matching(self):
         """Options with values matching the inherited value are removed from
         the base configuration.
         """
         with self.inherited_file():
-            self._write(['[a]', u'ôption = x'], site=True)
+            self._write(['[a]', 'ôption = x'], site=True)
             config = self._read()
-            self.assertEqual('x', config.get('a', u'ôption'))
+            self.assertEqual('x', config.get('a', 'ôption'))
             config.save()
 
             self.assertEqual(
@@ -763,7 +763,7 @@ class IntegrationTestCase(BaseTestCase):
                 'file = trac-site.ini\n'
                 '\n', read_file(self.filename))
 
-            config.set('a', u'ôption', 'y')
+            config.set('a', 'ôption', 'y')
             config.save()
 
             self.assertEqual(
@@ -776,7 +776,7 @@ class IntegrationTestCase(BaseTestCase):
                 'file = trac-site.ini\n'
                 '\n', read_file(self.filename))
 
-            config.set('a', u'ôption', 'x')
+            config.set('a', 'ôption', 'x')
             config.save()
             self.assertEqual(
                 '# -*- coding: utf-8 -*-\n'
@@ -789,10 +789,10 @@ class IntegrationTestCase(BaseTestCase):
         self._write(['[a]', 'option = x'])
         config = self._read()
         config.get('a', 'option')  # populates the cache
-        config.set(u'aä', u'öption', u'öne')
+        config.set('aä', 'öption', 'öne')
         config.remove('a', 'option')
         self.assertEqual('', config.get('a', 'option'))
-        config.remove(u'aä', u'öption')
+        config.remove('aä', 'öption')
         self.assertEqual('', config.get('aä', 'öption'))
         config.remove('a', 'option2')  # shouldn't fail
         config.remove('b', 'option2')  # shouldn't fail
@@ -813,14 +813,14 @@ class IntegrationTestCase(BaseTestCase):
         self.assertEqual('value', foo.section_c.get('option'))
 
     def test_sections_unicode(self):
-        self._write([u'[aä]', u'öption = x', '[b]', 'option = y'])
+        self._write(['[aä]', 'öption = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEqual([u'aä', 'b'], config.sections())
+        self.assertEqual(['aä', 'b'], config.sections())
 
         class Foo(object):
-            option_c = Option(u'cä', 'option', 'value')
+            option_c = Option('cä', 'option', 'value')
 
-        self.assertEqual([u'aä', 'b', u'cä'], config.sections())
+        self.assertEqual(['aä', 'b', 'cä'], config.sections())
 
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
@@ -839,18 +839,18 @@ class IntegrationTestCase(BaseTestCase):
                          list(config.options('a')))
 
     def test_options_unicode(self):
-        self._write([u'[ä]', u'öption = x', '[b]', 'option = y'])
+        self._write(['[ä]', 'öption = x', '[b]', 'option = y'])
         config = self._read()
-        self.assertEqual((u'öption', 'x'), next(iter(config.options(u'ä'))))
+        self.assertEqual(('öption', 'x'), next(iter(config.options('ä'))))
         self.assertEqual(('option', 'y'), next(iter(config.options('b'))))
         self.assertRaises(StopIteration, next, iter(config.options('c')))
-        self.assertEqual(u'öption', next(iter(config['ä'])))
+        self.assertEqual('öption', next(iter(config['ä'])))
 
         class Foo(object):
-            option_a = Option(u'ä', u'öption2', 'c')
+            option_a = Option('ä', 'öption2', 'c')
 
-        self.assertEqual([(u'öption', 'x'), (u'öption2', 'c')],
-                         list(config.options(u'ä')))
+        self.assertEqual([('öption', 'x'), ('öption2', 'c')],
+                         list(config.options('ä')))
 
     def test_has_option(self):
         config = self._read()
@@ -868,17 +868,17 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_has_option_unicode(self):
         config = self._read()
-        self.assertFalse(config.has_option(u'ä', u'öption'))
-        self.assertNotIn(u'öption', config[u'ä'])
-        self._write([u'[ä]', u'öption = x'])
+        self.assertFalse(config.has_option('ä', 'öption'))
+        self.assertNotIn('öption', config['ä'])
+        self._write(['[ä]', 'öption = x'])
         config = self._read()
-        self.assertTrue(config.has_option(u'ä', u'öption'))
-        self.assertIn(u'öption', config[u'ä'])
+        self.assertTrue(config.has_option('ä', 'öption'))
+        self.assertIn('öption', config['ä'])
 
         class Foo(object):
-            option_a = Option(u'ä', u'öption2', 'x2')
+            option_a = Option('ä', 'öption2', 'x2')
 
-        self.assertTrue(config.has_option(u'ä', u'öption2'))
+        self.assertTrue(config.has_option('ä', 'öption2'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])
@@ -950,7 +950,7 @@ class IntegrationTestCase(BaseTestCase):
     def test_option_with_raw_default(self):
         class Foo(object):
             option_none = Option('a', 'none', None)
-            option_blah = Option('a', 'blah', u'Blàh!')
+            option_blah = Option('a', 'blah', 'Blàh!')
             option_true = BoolOption('a', 'true', True)
             option_false = BoolOption('a', 'false', False)
             option_list1 = ListOption('a', 'list', ['#cc0', 4.2, 42, 0, None,
@@ -982,15 +982,15 @@ class IntegrationTestCase(BaseTestCase):
 
     def test_unicode_option_with_raw_default(self):
         class Foo(object):
-            option_none = Option(u'résumé', u'nöné', None)
-            option_blah = Option(u'résumé', u'bláh', u'Blàh!')
-            option_true = BoolOption(u'résumé', u'trüé', True)
-            option_false = BoolOption(u'résumé', u'fálsé', False)
-            option_list = ListOption(u'résumé', u'liśt',
-                                     [u'#ccö', 4.2, 42, 0, None, True,
-                                        False, None],
+            option_none = Option('résumé', 'nöné', None)
+            option_blah = Option('résumé', 'bláh', 'Blàh!')
+            option_true = BoolOption('résumé', 'trüé', True)
+            option_false = BoolOption('résumé', 'fálsé', False)
+            option_list = ListOption('résumé', 'liśt',
+                                     ['#ccö', 4.2, 42, 0, None, True,
+                                      False, None],
                                      sep='|', keep_empty=True)
-            option_choice = ChoiceOption(u'résumé', u'chöicé', [-42, 42])
+            option_choice = ChoiceOption('résumé', 'chöicé', [-42, 42])
 
         config = self._read()
         config.set_defaults()

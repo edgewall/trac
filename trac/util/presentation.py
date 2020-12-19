@@ -125,11 +125,11 @@ def htmlattr_filter(_eval_ctx, d, autospace=True):
     for key in sorted(d):
         val = d[key]
         val = html_attribute(key, None if isinstance(val, Undefined) else val)
-        if val is not None :
-            attrs.append(u'%s="%s"' % (key, val))
-    rv = u' '.join(attrs)
+        if val is not None:
+            attrs.append('%s="%s"' % (key, val))
+    rv = ' '.join(attrs)
     if autospace and rv:
-        rv = u' ' + rv
+        rv = ' ' + rv
     if _eval_ctx.autoescape:
         rv = Markup(rv)
     return rv
@@ -191,7 +191,7 @@ def is_not_in(a, b):
 def captioned_button(req, symbol, text):
     """Return symbol and text or only symbol, according to user preferences."""
     return symbol if req.session.get('ui.use_symbols') \
-        else u'%s %s' % (symbol, text)
+        else '%s %s' % (symbol, text)
 
 
 def first_last(idx, seq):
@@ -274,8 +274,8 @@ def groupattr_filter(_eval_ctx, iterable, num, attr, *args, **kwargs):
 
 
 def istext(text):
-    """`True` for text (`unicode` and `str`), but `False` for `Markup`."""
-    return isinstance(text, basestring) and not isinstance(text, Markup)
+    """`True` for text (`str` and `bytes`), but `False` for `Markup`."""
+    return isinstance(text, str) and not isinstance(text, Markup)
 
 def prepared_paginate(items, num_items, max_per_page):
     if max_per_page == 0:
@@ -294,7 +294,7 @@ def paginate(items, page=0, max_per_page=10):
 
     The `items` parameter can be a list, tuple, or iterator:
 
-    >>> items = list(xrange(12))
+    >>> items = list(range(12))
     >>> items
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     >>> paginate(items)
@@ -309,7 +309,7 @@ def paginate(items, page=0, max_per_page=10):
     This function also works with generators:
 
     >>> def generate():
-    ...     for idx in xrange(12):
+    ...     for idx in range(12):
     ...         yield idx
     >>> paginate(generate())
     ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 12, 2)
@@ -319,7 +319,7 @@ def paginate(items, page=0, max_per_page=10):
     The `max_per_page` parameter can be used to set the number of items that
     should be displayed per page:
 
-    >>> items = xrange(12)
+    >>> items = list(range(12))
     >>> paginate(items, page=0, max_per_page=6)
     ([0, 1, 2, 3, 4, 5], 12, 2)
     >>> paginate(items, page=1, max_per_page=6)
@@ -406,13 +406,13 @@ class Paginator(object):
 
     def get_shown_pages(self, page_index_count = 11):
         if not self.has_more_pages:
-            return xrange(1, 2)
+            return list(range(1, 2))
 
         min_page = 1
         max_page = int(ceil(float(self.num_items) / self.max_per_page))
         current_page = self.page + 1
-        start_page = current_page - page_index_count / 2
-        end_page = current_page + page_index_count / 2 + \
+        start_page = current_page - page_index_count // 2
+        end_page = current_page + page_index_count // 2 + \
                    (page_index_count % 2 - 1)
 
         if start_page < min_page:
@@ -420,7 +420,7 @@ class Paginator(object):
         if end_page > max_page:
             end_page = max_page
 
-        return xrange(start_page, end_page + 1)
+        return list(range(start_page, end_page + 1))
 
     def displayed_items(self):
         from trac.util.translation import _
@@ -452,7 +452,10 @@ def separated(items, sep=',', last=None):
     [(1, ';'), (2, ';'), (3, '.')]
     """
     items = iter(items)
-    nextval = next(items)
+    try:
+        nextval = next(items)
+    except StopIteration:
+        return
     for i in items:
         yield nextval, sep
         nextval = i
@@ -469,7 +472,7 @@ class TracJSONEncoder(JSONEncoder):
         elif isinstance(o, datetime):
             return to_utimestamp(o if o.tzinfo else o.replace(tzinfo=utc))
         elif isinstance(o, Fragment):
-            return '"%s"' % javascript_quote(unicode(o))
+            return '"%s"' % javascript_quote(str(o))
         return JSONEncoder.default(self, o)
 
 def to_json(value):

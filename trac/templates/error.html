@@ -84,7 +84,7 @@
              value="${trac.version.split('-', 1)[0] if 'dev' in trac.version
                     else trac.version}" />
       #   endif
-      #   for arg, value in tracker_args.iteritems():
+      #   for arg, value in tracker_args.items():
       <input type="hidden" name="${arg}" value="${value}" />
       #   endfor
       <input type="hidden" name="summary" value="${message}" />

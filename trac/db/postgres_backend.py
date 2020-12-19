@@ -19,6 +19,7 @@ import ctypes
 import os
 import re
 from pkg_resources import DistributionNotFound
+from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
@@ -41,7 +42,7 @@ except ImportError:
     raise DistributionNotFound('psycopg2>=2.0 or psycopg2-binary', ['Trac'])
 else:
     register_type(UNICODE)
-    register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
+    register_adapter(Markup, lambda markup: QuotedString(str(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
     psycopg2_version = get_pkginfo(psycopg).get('version',
                                                 psycopg.__version__)
@@ -58,12 +59,13 @@ else:
                             (?:/[^/\0]+)*/?
                             libpq\.(?:so\.[0-9]+|[0-9]+\.dylib)
                             )\0
-                        ''',
+                        '''.encode('utf-8'),
                         _f.read(), re.VERBOSE)
                     if _match:
                         _libpq_pathname = _match.group(1)
                 else:
-                    if re.search(r'\0libpq\.dll\0', _f.read(), re.IGNORECASE):
+                    if re.search(r'\0libpq\.dll\0'.encode('utf-8'), _f.read(),
+                                 re.IGNORECASE):
                         _libpq_pathname = find_library('libpq')
         except AttributeError:
             pass
@@ -82,14 +84,14 @@ min_postgresql_version = (9, 1, 0)
 def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
     """Quote the parameters and assemble the DSN."""
     def quote(value):
-        if not isinstance(value, basestring):
-            value = unicode(value)
+        if not isinstance(value, str):
+            value = str(value)
         return "'%s'" % value.replace('\\', r'\\').replace("'", r"\'")
 
     dsn = {'dbname': path, 'user': user, 'password': password, 'host': host,
            'port': port}
     return ' '.join("%s=%s" % (name, quote(value))
-                    for name, value in dsn.iteritems() if value)
+                    for name, value in dsn.items() if value)
 
 
 def _quote(identifier):
@@ -234,7 +236,7 @@ class PostgreSQLConnector(Component):
         to `(from, to)` SQL type tuples.
         """
         alterations = []
-        for name, (from_, to) in sorted(columns.iteritems()):
+        for name, (from_, to) in sorted(columns.items()):
             to = _type_map.get(to, to)
             if to != _type_map.get(from_, from_):
                 alterations.append((name, to))
@@ -245,7 +247,6 @@ class PostgreSQLConnector(Component):
                              for name, type_ in alterations))
 
     def backup(self, dest_file):
-        from subprocess import Popen, PIPE
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = parse_connection_uri(db_url)
         db_params = db_prop.setdefault('params', {})
@@ -304,7 +305,6 @@ class PostgreSQLConnector(Component):
         return _version_tuple(version)
 
     def _pgdump_version(self):
-        from subprocess import Popen, PIPE
         try:
             p = Popen([self.pg_dump_path, '--version'], stdout=PIPE,
                       close_fds=close_fds)

@@ -303,8 +303,8 @@ class TicketSystem(Component):
                     actions[action] = max(actions[action], weight)
                 else:
                     actions[action] = weight
-        all_weighted_actions = [(weight, action) for action, weight in
-                                actions.items()]
+        all_weighted_actions = [(weight, action) for action, weight
+                                                 in actions.items()]
         return [x[1] for x in sorted(all_weighted_actions, reverse=True)]
 
     def get_all_status(self):
@@ -641,8 +641,8 @@ class TicketSystem(Component):
                 ranges = str(r)
                 if params:
                     params = '&' + params[1:]
-                label_wrap = label.replace(',', u',\u200b')
-                ranges_wrap = ranges.replace(',', u', ')
+                label_wrap = label.replace(',', ',\u200b')
+                ranges_wrap = ranges.replace(',', ', ')
                 return tag.a(label_wrap,
                              title=_("Tickets %(ranges)s", ranges=ranges_wrap),
                              href=formatter.href.query(id=ranges) + params)

@@ -243,7 +243,7 @@ class LogModule(Component):
                                if info[-1]['change'] else None
                 next_revranges = revranges.truncate(curr_revrange,
                                                     new_revrange)
-                next_revranges = unicode(next_revranges) or None
+                next_revranges = str(next_revranges) or None
             if next_revranges or not revranges:
                 older_revisions_href = make_log_href(
                     next_path, rev=next_rev, revs=next_revranges)
@@ -403,7 +403,7 @@ class LogModule(Component):
                     revranges = RevRanges(repos, revs)
                     if revranges.has_ranges():
                         href = formatter.href.log(reponame, path,
-                                                  revs=unicode(revranges))
+                                                  revs=str(revranges))
                     else:
                         # try to resolve if single rev
                         repos.normalize_rev(revs)
@@ -481,7 +481,7 @@ class RevRanges(object):
             return
 
         pairs = []
-        for rev in re.split(u',\u200b?', revs):
+        for rev in re.split(',\u200b?', revs):
             a = b = None
             if self._cset_range_re.match(rev):
                 for sep in ':-':
@@ -500,11 +500,10 @@ class RevRanges(object):
         self._reduce()
 
     def _reduce(self):
-        if all(isinstance(pair[0], (int, long)) and
-               isinstance(pair[1], (int, long))
+        if all(isinstance(pair[0], int) and isinstance(pair[1], int)
                for pair in self.pairs):
             try:
-                ranges = Ranges(unicode(self), reorder=True)
+                ranges = Ranges(str(self), reorder=True)
             except:
                 pass
             else:
@@ -528,8 +527,8 @@ class RevRanges(object):
     def __len__(self):
         return len(self.pairs)
 
-    def __unicode__(self):
+    def __str__(self):
         sep = '-' if self.repos.has_linear_changesets else ':'
-        return ','.join(sep.join(map(unicode, pair)) if pair[0] != pair[1]
-                                                     else unicode(pair[0])
+        return ','.join(sep.join(map(str, pair)) if pair[0] != pair[1]
+                                                 else str(pair[0])
                         for pair in self.pairs)

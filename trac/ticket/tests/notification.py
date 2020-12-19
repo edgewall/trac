@@ -219,7 +219,7 @@ class RecipientTestCase(unittest.TestCase):
         def _test_updater(enabled):
             config_subscriber(self.env, updater=enabled)
             ticket = insert_ticket(self.env, reporter='joe.user@example.org',
-                                   summary=u'This is a súmmäry')
+                                   summary='This is a súmmäry')
             now = datetime_now(utc)
             ticket.save_changes('joe.bar2@example.com', 'This is a change',
                                 when=now)
@@ -241,8 +241,8 @@ class RecipientTestCase(unittest.TestCase):
         def _test_reporter(enabled):
             config_subscriber(self.env, owner=enabled)
             ticket = insert_ticket(self.env, summary='Foo',
-                                   reporter=u'joe@example.org',
-                                   owner=u'jim@example.org')
+                                   reporter='joe@example.org',
+                                   owner='jim@example.org')
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
@@ -262,7 +262,7 @@ class RecipientTestCase(unittest.TestCase):
         def _test_reporter(enabled):
             config_subscriber(self.env, reporter=enabled)
             ticket = insert_ticket(self.env, summary='Foo',
-                                   reporter=u'joe@example.org')
+                                   reporter='joe@example.org')
             now = datetime_now(utc)
             ticket.save_changes('joe@example.org', 'this is my comment',
                                 when=now)
@@ -339,7 +339,7 @@ class RecipientTestCase(unittest.TestCase):
         ticket = insert_ticket(self.env,
            reporter='"Joe" <joe.user@example.com>',
            owner='Joe <joe.user@example.net>',
-           cc=u' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 ',
+           cc=' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 ',
            summary='Long form')
         notify_ticket_created(self.env, ticket)
         recipients = smtpd.get_recipients()
@@ -423,9 +423,9 @@ class NotificationTestCase(unittest.TestCase):
         self.assertTrue(mo)
         if mo.group('day'):
             self.assertIn(mo.group('day'), days)
-        self.assertIn(int(mo.group('dm')), xrange(1, 32))
+        self.assertIn(int(mo.group('dm')), range(1, 32))
         self.assertIn(mo.group('month'), months)
-        self.assertIn(int(mo.group('hour')), xrange(24))
+        self.assertIn(int(mo.group('hour')), range(24))
         if mo.group('tz'):
             self.assertIn(mo.group('tz'), tz)
 
@@ -581,7 +581,7 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('"Joe User" <user-joe@example.com>', headers['From'])
+        self.assertEqual('Joe User <user-joe@example.com>', headers['From'])
         self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
                          headers['Message-ID'])
         self.assertNotIn('In-Reply-To', headers)
@@ -592,7 +592,7 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_changed(self.env, ticket, 'jim@domain')
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('"Jim User" <user-jim@example.com>', headers['From'])
+        self.assertEqual('Jim User <user-jim@example.com>', headers['From'])
         self.assertEqual('<062.a890ee4ad5488fb49e60b68099995ba3@example.com>',
                          headers['Message-ID'])
         self.assertEqual('<047.54e62c60198a043f858f1311784a5791@example.com>',
@@ -614,7 +614,7 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_changed(self.env, ticket, 'noemail')
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        self.assertEqual('My Trac <trac@example.com>', headers['From'])
         self.assertEqual('<062.98cff27cb9fabd799bcb09f9edd6c99e@example.com>',
                          headers['Message-ID'])
         # Unknown author with name and e-mail address
@@ -624,7 +624,7 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_changed(self.env, ticket, 'Test User <test@example.com>')
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('"Test User" <test@example.com>', headers['From'])
+        self.assertEqual('Test User <test@example.com>', headers['From'])
         self.assertEqual('<062.6e08a363c340c1d4e2ed84c6123a1e9d@example.com>',
                          headers['Message-ID'])
         # Unknown author with e-mail address only
@@ -642,7 +642,7 @@ class NotificationTestCase(unittest.TestCase):
         notify_ticket_changed(self.env, ticket, 'unknown')
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertEqual('"My Trac" <trac@example.com>', headers['From'])
+        self.assertEqual('My Trac <trac@example.com>', headers['From'])
         self.assertEqual('<062.6d5543782e7aba4100302487e75ce16f@example.com>',
                          headers['Message-ID'])
 
@@ -700,8 +700,8 @@ class NotificationTestCase(unittest.TestCase):
         """Encoded headers split into multiple lines"""
         self.env.config.set('notification', 'mime_encoding', 'qp')
         ticket = insert_ticket(self.env, reporter='joe.user@example.org',
-                               summary=u'A_very %s súmmäry'
-                                       % u' '.join(['long'] * 20))
+                               summary='A_very %s súmmäry'
+                                       % ' '.join(['long'] * 20))
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -713,34 +713,35 @@ class NotificationTestCase(unittest.TestCase):
     def test_mimebody_b64(self):
         """MIME Base64/utf-8 encoding"""
         self.env.config.set('notification', 'mime_encoding', 'base64')
-        summary = u'This is a long enough summary to cause Trac ' \
-                  u'to generate a multi-line (2 lines) súmmäry'
+        summary = 'This is a long enough summary to cause Trac ' \
+                  'to generate a multi-line (2 lines) súmmäry'
         ticket = insert_ticket(self.env, reporter='joe.user@example.org',
                                summary=summary)
-        self._validate_mimebody((base64, 'base64', 'utf-8'), ticket, True)
+        self._validate_mimebody((base64.b64decode, 'base64', 'utf-8'),
+                                ticket, True)
 
     def test_mimebody_qp(self):
         """MIME QP/utf-8 encoding"""
         self.env.config.set('notification', 'mime_encoding', 'qp')
-        summary = u'This is a long enough summary to cause Trac ' \
-                  u'to generate a multi-line (2 lines) súmmäry'
+        summary = 'This is a long enough summary to cause Trac ' \
+                  'to generate a multi-line (2 lines) súmmäry'
         ticket = insert_ticket(self.env, reporter='joe.user@example.org',
                                summary=summary)
-        self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'),
-                                ticket, True)
+        self._validate_mimebody((quopri.decodestring, 'quoted-printable',
+                                 'utf-8'), ticket, True)
 
     def test_mimebody_none_7bit(self):
         """MIME None encoding resulting in 7bit"""
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = insert_ticket(self.env, reporter='joe.user',
-                               summary=u'This is a summary')
+                               summary='This is a summary')
         self._validate_mimebody((None, '7bit', 'utf-8'), ticket, True)
 
     def test_mimebody_none_8bit(self):
         """MIME None encoding resulting in 8bit"""
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = insert_ticket(self.env, reporter='joe.user',
-                               summary=u'This is a summary for Jöe Usèr')
+                               summary='This is a summary for Jöe Usèr')
         self._validate_mimebody((None, '8bit', 'utf-8'), ticket, True)
 
     def _test_msgid_digest(self, hash_type):
@@ -749,8 +750,8 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_always_cc', '')
         if hash_type:
             self.env.config.set('notification', 'message_id_hash', hash_type)
-        ticket = insert_ticket(self.env, summary=u'This is a summary',
-                               reporter=u'"Jöe Usèr" <joe.user@example.org>')
+        ticket = insert_ticket(self.env, summary='This is a summary',
+                               reporter='"Jöe Usèr" <joe.user@example.org>')
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
@@ -849,8 +850,8 @@ class NotificationTestCase(unittest.TestCase):
         # and charset
         try:
             if mime_decoder:
-                body = mime_decoder.decodestring(body)
-            body = unicode(body, charset)
+                body = mime_decoder(body)
+                body = str(body, charset)
         except Exception as e:
             raise AssertionError(e)
         # now processes each line of the body
@@ -928,17 +929,17 @@ class NotificationTestCase(unittest.TestCase):
         self.env.config.set('notification', 'mime_encoding', 'none')
         self.env.config.set('notification', 'ambiguous_char_width', '')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'аnonymoиs'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somеbody'
-        ticket['type'] = u'バグ(dеfеct)'
-        ticket['priority'] = u'メジャー(mаjor)'
-        ticket['milestone'] = u'マイルストーン1'
-        ticket['component'] = u'コンポーネント1'
-        ticket['version'] = u'2.0 аlphа'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'аnonymoиs'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somеbody'
+        ticket['type'] = 'バグ(dеfеct)'
+        ticket['priority'] = 'メジャー(mаjor)'
+        ticket['milestone'] = 'マイルストーン1'
+        ticket['component'] = 'コンポーネント1'
+        ticket['version'] = '2.0 аlphа'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  аnonymoиs        |      Owner:  somеbody
@@ -952,17 +953,17 @@ Resolution:  fixed            |   Keywords:"""
         self.env.config.set('notification', 'mime_encoding', 'none')
         self.env.config.set('notification', 'ambiguous_char_width', 'double')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'аnonymoиs'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somеbody'
-        ticket['type'] = u'バグ(dеfеct)'
-        ticket['priority'] = u'メジャー(mаjor)'
-        ticket['milestone'] = u'マイルストーン1'
-        ticket['component'] = u'コンポーネント1'
-        ticket['version'] = u'2.0 аlphа'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'аnonymoиs'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somеbody'
+        ticket['type'] = 'バグ(dеfеct)'
+        ticket['priority'] = 'メジャー(mаjor)'
+        ticket['milestone'] = 'マイルストーン1'
+        ticket['component'] = 'コンポーネント1'
+        ticket['version'] = '2.0 аlphа'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  аnonymoиs       |      Owner:  somеbody
@@ -975,17 +976,17 @@ Resolution:  fixed             |   Keywords:"""
     def test_props_format_obfuscated_email(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'joe@foobar.foo.bar.example.org'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'joe.bar@foobar.foo.bar.example.org'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'milestone1'
-        ticket['component'] = u'component1'
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'joe@foobar.foo.bar.example.org'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'joe.bar@foobar.foo.bar.example.org'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'milestone1'
+        ticket['component'] = 'component1'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  joe@…       |      Owner:  joe.bar@…
@@ -999,17 +1000,17 @@ Resolution:  fixed       |   Keywords:"""
         self.env.config.set('notification', 'mime_encoding', 'none')
         self.env.config.set('trac', 'show_email_addresses', 'true')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'joe@foobar.foo.bar.example.org'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'joe.bar@foobar.foo.bar.example.org'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'milestone1'
-        ticket['component'] = u'component1'
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'joe@foobar.foo.bar.example.org'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'joe.bar@foobar.foo.bar.example.org'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'milestone1'
+        ticket['component'] = 'component1'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:                          |      Owner:
@@ -1022,8 +1023,8 @@ Resolution:  fixed                   |   Keywords:"""
 
     def test_props_format_show_full_names(self):
         self.env.insert_users([
-            ('joefoo', u'Joę Fœœ', 'joe@foobar.foo.bar.example.org'),
-            ('joebar', u'Jœe Bær', 'joe.bar@foobar.foo.bar.example.org')
+            ('joefoo', 'Joę Fœœ', 'joe@foobar.foo.bar.example.org'),
+            ('joebar', 'Jœe Bær', 'joe.bar@foobar.foo.bar.example.org')
         ])
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
@@ -1050,28 +1051,28 @@ Resolution:  fixed       |   Keywords:"""
     def test_props_format_wrap_leftside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'milestone1'
-        ticket['component'] = u'Lorem ipsum dolor sit amet, consectetur ' \
-                              u'adipisicing elit, sed do eiusmod tempor ' \
-                              u'incididunt ut labore et dolore magna ' \
-                              u'aliqua. Ut enim ad minim veniam, quis ' \
-                              u'nostrud exercitation ullamco laboris nisi ' \
-                              u'ut aliquip ex ea commodo consequat. Duis ' \
-                              u'aute irure dolor in reprehenderit in ' \
-                              u'voluptate velit esse cillum dolore eu ' \
-                              u'fugiat nulla pariatur. Excepteur sint ' \
-                              u'occaecat cupidatat non proident, sunt in ' \
-                              u'culpa qui officia deserunt mollit anim id ' \
-                              u'est laborum.'
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'milestone1'
+        ticket['component'] = 'Lorem ipsum dolor sit amet, consectetur ' \
+                              'adipisicing elit, sed do eiusmod tempor ' \
+                              'incididunt ut labore et dolore magna ' \
+                              'aliqua. Ut enim ad minim veniam, quis ' \
+                              'nostrud exercitation ullamco laboris nisi ' \
+                              'ut aliquip ex ea commodo consequat. Duis ' \
+                              'aute irure dolor in reprehenderit in ' \
+                              'voluptate velit esse cillum dolore eu ' \
+                              'fugiat nulla pariatur. Excepteur sint ' \
+                              'occaecat cupidatat non proident, sunt in ' \
+                              'culpa qui officia deserunt mollit anim id ' \
+                              'est laborum.'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  anonymous                           |      Owner:  somebody
@@ -1094,22 +1095,22 @@ Resolution:  fixed                               |   Keywords:"""
     def test_props_format_wrap_leftside_unicode(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'milestone1'
-        ticket['component'] = u'Trac は BSD ライセンスのもとで配' \
-                              u'布されています。[1:]このライセ' \
-                              u'ンスの全文は、配布ファイルに' \
-                              u'含まれている [3:COPYING] ファイル' \
-                              u'と同じものが[2:オンライン]で参' \
-                              u'照できます。'
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'milestone1'
+        ticket['component'] = 'Trac は BSD ライセンスのもとで配' \
+                              '布されています。[1:]このライセ' \
+                              'ンスの全文は、配布ファイルに' \
+                              '含まれている [3:COPYING] ファイル' \
+                              'と同じものが[2:オンライン]で参' \
+                              '照できます。'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  anonymous                           |      Owner:  somebody
@@ -1125,28 +1126,28 @@ Resolution:  fixed                               |   Keywords:"""
     def test_props_format_wrap_rightside(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'Lorem ipsum dolor sit amet, consectetur ' \
-                              u'adipisicing elit, sed do eiusmod tempor ' \
-                              u'incididunt ut labore et dolore magna ' \
-                              u'aliqua. Ut enim ad minim veniam, quis ' \
-                              u'nostrud exercitation ullamco laboris nisi ' \
-                              u'ut aliquip ex ea commodo consequat. Duis ' \
-                              u'aute irure dolor in reprehenderit in ' \
-                              u'voluptate velit esse cillum dolore eu ' \
-                              u'fugiat nulla pariatur. Excepteur sint ' \
-                              u'occaecat cupidatat non proident, sunt in ' \
-                              u'culpa qui officia deserunt mollit anim id ' \
-                              u'est laborum.'
-        ticket['component'] = u'component1'
-        ticket['version'] = u'2.0 Standard and International Edition'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'Lorem ipsum dolor sit amet, consectetur ' \
+                              'adipisicing elit, sed do eiusmod tempor ' \
+                              'incididunt ut labore et dolore magna ' \
+                              'aliqua. Ut enim ad minim veniam, quis ' \
+                              'nostrud exercitation ullamco laboris nisi ' \
+                              'ut aliquip ex ea commodo consequat. Duis ' \
+                              'aute irure dolor in reprehenderit in ' \
+                              'voluptate velit esse cillum dolore eu ' \
+                              'fugiat nulla pariatur. Excepteur sint ' \
+                              'occaecat cupidatat non proident, sunt in ' \
+                              'culpa qui officia deserunt mollit anim id ' \
+                              'est laborum.'
+        ticket['component'] = 'component1'
+        ticket['version'] = '2.0 Standard and International Edition'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  anonymous   |      Owner:  somebody
@@ -1170,20 +1171,20 @@ Resolution:  fixed       |   Keywords:"""
     def test_props_format_wrap_rightside_unicode(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'Trac 在经过修改的BSD协议下发布。' \
-                              u'[1:]协议的完整文本可以[2:在线查' \
-                              u'看]也可在发布版的 [3:COPYING] 文' \
-                              u'件中找到。'
-        ticket['component'] = u'component1'
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'Trac 在经过修改的BSD协议下发布。' \
+                              '[1:]协议的完整文本可以[2:在线查' \
+                              '看]也可在发布版的 [3:COPYING] 文' \
+                              '件中找到。'
+        ticket['component'] = 'component1'
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  anonymous   |      Owner:  somebody
@@ -1198,30 +1199,30 @@ Resolution:  fixed       |   Keywords:"""
     def test_props_format_wrap_bothsides(self):
         self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'Lorem ipsum dolor sit amet, consectetur ' \
-                              u'adipisicing elit, sed do eiusmod tempor ' \
-                              u'incididunt ut labore et dolore magna ' \
-                              u'aliqua. Ut enim ad minim veniam, quis ' \
-                              u'nostrud exercitation ullamco laboris nisi ' \
-                              u'ut aliquip ex ea commodo consequat. Duis ' \
-                              u'aute irure dolor in reprehenderit in ' \
-                              u'voluptate velit esse cillum dolore eu ' \
-                              u'fugiat nulla pariatur. Excepteur sint ' \
-                              u'occaecat cupidatat non proident, sunt in ' \
-                              u'culpa qui officia deserunt mollit anim id ' \
-                              u'est laborum.'
-        ticket['component'] = (u'Lorem ipsum dolor sit amet, consectetur '
-                               u'adipisicing elit, sed do eiusmod tempor '
-                               u'incididunt ut labore et dolore magna aliqua.')
-        ticket['version'] = u'2.0'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u'Ut enim ad minim veniam, ....'
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'Lorem ipsum dolor sit amet, consectetur ' \
+                              'adipisicing elit, sed do eiusmod tempor ' \
+                              'incididunt ut labore et dolore magna ' \
+                              'aliqua. Ut enim ad minim veniam, quis ' \
+                              'nostrud exercitation ullamco laboris nisi ' \
+                              'ut aliquip ex ea commodo consequat. Duis ' \
+                              'aute irure dolor in reprehenderit in ' \
+                              'voluptate velit esse cillum dolore eu ' \
+                              'fugiat nulla pariatur. Excepteur sint ' \
+                              'occaecat cupidatat non proident, sunt in ' \
+                              'culpa qui officia deserunt mollit anim id ' \
+                              'est laborum.'
+        ticket['component'] = ('Lorem ipsum dolor sit amet, consectetur '
+                               'adipisicing elit, sed do eiusmod tempor '
+                               'incididunt ut labore et dolore magna aliqua.')
+        ticket['version'] = '2.0'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = 'Ut enim ad minim veniam, ....'
         ticket.insert()
         formatted = """\
   Reporter:  anonymous               |      Owner:  somebody
@@ -1249,25 +1250,25 @@ Resolution:  fixed                   |   Keywords:  Ut enim ad minim
         self.env.config.set('notification', 'mime_encoding', 'none')
         self.env.config.set('notification', 'ambiguous_char_width', 'double')
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['status'] = u'new'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['priority'] = u'major'
-        ticket['milestone'] = u'Trac 在经过修改的BSD协议下发布。' \
-                              u'[1:]协议的完整文本可以[2:在线查' \
-                              u'看]也可在发布版的 [3:COPYING] 文' \
-                              u'件中找到。'
-        ticket['component'] = u'Trac は BSD ライセンスのもとで配' \
-                              u'布されています。[1:]このライセ' \
-                              u'ンスの全文は、※配布ファイル' \
-                              u'に含まれている[3:CОPYING]ファイ' \
-                              u'ルと同じものが[2:オンライン]で' \
-                              u'参照できます。'
-        ticket['version'] = u'2.0 International Edition'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['status'] = 'new'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['priority'] = 'major'
+        ticket['milestone'] = 'Trac 在经过修改的BSD协议下发布。' \
+                              '[1:]协议的完整文本可以[2:在线查' \
+                              '看]也可在发布版的 [3:COPYING] 文' \
+                              '件中找到。'
+        ticket['component'] = 'Trac は BSD ライセンスのもとで配' \
+                              '布されています。[1:]このライセ' \
+                              'ンスの全文は、※配布ファイル' \
+                              'に含まれている[3:CОPYING]ファイ' \
+                              'ルと同じものが[2:オンライン]で' \
+                              '参照できます。'
+        ticket['version'] = '2.0 International Edition'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket.insert()
         formatted = """\
   Reporter:  anonymous               |      Owner:  somebody
@@ -1305,16 +1306,16 @@ Resolution:  fixed                   |   Keywords:"""
             self.env.config.set('ticket-custom', name, value)
 
         ticket = Ticket(self.env)
-        ticket['summary'] = u'This is a summary'
-        ticket['reporter'] = u'anonymous'
-        ticket['owner'] = u'somebody'
-        ticket['type'] = u'defect'
-        ticket['status'] = u'closed'
-        ticket['priority'] = u'normal'
-        ticket['milestone'] = u'iter_01'
-        ticket['component'] = u'XXXXXXXXXXXXXXXXXXXXXXXXXX'
-        ticket['resolution'] = u'fixed'
-        ticket['keywords'] = u''
+        ticket['summary'] = 'This is a summary'
+        ticket['reporter'] = 'anonymous'
+        ticket['owner'] = 'somebody'
+        ticket['type'] = 'defect'
+        ticket['status'] = 'closed'
+        ticket['priority'] = 'normal'
+        ticket['milestone'] = 'iter_01'
+        ticket['component'] = 'XXXXXXXXXXXXXXXXXXXXXXXXXX'
+        ticket['resolution'] = 'fixed'
+        ticket['keywords'] = ''
         ticket['deployment'] = ''
         ticket['privacy'] = '0'
         ticket['nodes'] = 'XXXXXXXXXX'
@@ -1378,18 +1379,19 @@ Security sensitive:  0                           |          Blocking:
             self.env.config.set('notification', 'smtp_from_name', from_name)
             notify_ticket_created(self.env, ticket)
             message = smtpd.get_message()
-            headers, body = parse_smtp_message(message)
+            headers, body = parse_smtp_message(message, decode=False)
             return message, headers, body
 
-        message, headers, body = notify(u'Träc')
-        self.assertEqual(r'"=?utf-8?b?VHLDpGM=?=" <trac@example.com>',
-                         headers['From'])
-        message, headers, body = notify(u'Trac\\')
+        message, headers, body = notify('Träc')
+        self.assertIn(headers['From'],
+                      ('=?utf-8?b?VHLDpGM=?= <trac@example.com>',
+                       '=?utf-8?q?Tr=C3=A4c?= <trac@example.com>'))
+        message, headers, body = notify('Trac\\')
         self.assertEqual(r'"Trac\\" <trac@example.com>', headers['From'])
-        message, headers, body = notify(u'Trac"')
+        message, headers, body = notify('Trac"')
         self.assertEqual(r'"Trac\"" <trac@example.com>', headers['From'])
-        message, headers, body = notify(u'=?utf-8?b?****?=')
-        self.assertEqual('"=?utf-8?b?PT91dGYtOD9iPyoqKio/PQ==?=" '
+        message, headers, body = notify('=?utf-8?q?e_?=')
+        self.assertEqual('=?utf-8?b?PeKAiz91dGYtOD9xP2VfPz0=?= '
                          '<trac@example.com>', headers['From'])
 
     def test_mime_meta_characters_in_subject_header(self):
@@ -1397,14 +1399,15 @@ Security sensitive:  0                           |          Blocking:
 
         self.env.config.set('notification', 'smtp_from', 'trac@example.com')
         self.env.config.set('notification', 'mime_encoding', 'base64')
-        summary = u'=?utf-8?q?****?='
+        summary = '=?utf-8?q?e_?='
         ticket = insert_ticket(self.env, reporter='joeuser', summary=summary)
         notify_ticket_created(self.env, ticket)
         message = smtpd.get_message()
         headers, body = parse_smtp_message(message)
-        self.assertIn('\nSubject: =?utf-8?b?', message)  # is mime-encoded
-        self.assertEqual(summary,
-                         re.split(r' #[0-9]+: ', headers['Subject'], 1)[1])
+        self.assertEqual('[TracTest] #1: =\u200b?utf-8?q?e_?=',
+                         headers['Subject'])
+        self.assertIn('\nSubject: [TracTest] #1: '
+                      '=?utf-8?b?PeKAiz91dGYtOD9xP2VfPz0=?=', message)
 
     def test_mail_headers(self):
         def validates(headers):
@@ -1501,11 +1504,11 @@ Security sensitive:  0                           |          Blocking:
     def test_property_change_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
         self.env.insert_users([
-            ('user0', u'Ußęr0', 'user0@d.org'),
-            ('user1', u'Ußęr1', 'user1@d.org'),
-            ('user2', u'Ußęr2', 'user2@d.org'),
-            ('user3', u'Ußęr3', 'user3@d.org'),
-            ('user4', u'Ußęr4', 'user4@d.org'),
+            ('user0', 'Ußęr0', 'user0@d.org'),
+            ('user1', 'Ußęr1', 'user1@d.org'),
+            ('user2', 'Ußęr2', 'user2@d.org'),
+            ('user3', 'Ußęr3', 'user3@d.org'),
+            ('user4', 'Ußęr4', 'user4@d.org'),
         ])
         ticket = self._insert_ticket(owner='user1', reporter='user2',
                                      cc='user3, user4')
@@ -1526,7 +1529,7 @@ Security sensitive:  0                           |          Blocking:
     def test_comment_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
         self.env.insert_users([
-            ('user', u'Thę Ußęr', 'user@domain.org')
+            ('user', 'Thę Ußęr', 'user@domain.org')
         ])
         ticket = self._insert_ticket()
         ticket.save_changes('user', "The comment")
@@ -1770,7 +1773,7 @@ class AttachmentNotificationTestCase(unittest.TestCase):
     def test_author_full_name(self):
         self.env.config.set('trac', 'show_email_addresses', True)
         self.env.insert_users([
-            ('user', u'Thę Ußęr', 'user@domain.org')
+            ('user', 'Thę Ußęr', 'user@domain.org')
         ])
         self._insert_attachment('user')
 
@@ -1789,7 +1792,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
 
         self.tktids = []
         with self.env.db_transaction as db:
-            for n in xrange(2):
+            for n in range(2):
                 for priority in ('', 'blah', 'blocker', 'critical', 'major',
                                  'minor', 'trivial'):
                     idx = len(self.tktids)
@@ -1816,7 +1819,7 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         with self.env.db_transaction:
             for tktid in self.tktids:
                 t = Ticket(self.env, tktid)
-                for name, value in new_values.iteritems():
+                for name, value in new_values.items():
                     t[name] = value
                 t.save_changes(author, comment, when=when)
         return BatchTicketChangeEvent(self.tktids, when, author, comment,
@@ -1848,8 +1851,8 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
         self.assertEqual('trac@localhost', sender)
         self.assertIn('Date', headers)
         self.assertEqual('[TracTest] Batch modify: #3, #10, #4, #11, #5, #12, '
-                         '#6, #13, #7, #14,...', headers['Subject'])
-        self.assertEqual('"TracTest" <trac@localhost>', headers['From'])
+                         '#6, #13, #7, #14, ...', headers['Subject'])
+        self.assertEqual('TracTest <trac@localhost>', headers['From'])
         self.assertEqual('<078.0b9de298f9080302285a0e333c75dd47@localhost>',
                          headers['Message-ID'])
         self.assertIn('Batch modification to #3, #10, #4, #11, #5, #12, #6, '

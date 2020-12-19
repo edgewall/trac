@@ -34,7 +34,7 @@ def do_upgrade(env, version, cursor):
 
             # Execute directly "ALTER TABLE" statements because
             # `alter_column_types()` does not work in the case
-            for tab, cols in text_columns.iteritems():
+            for tab, cols in text_columns.items():
                 mods = ', '.join('MODIFY %s mediumtext' % db.quote(col)
                                  for col in cols)
                 cursor.execute('ALTER TABLE %s %s' % (db.quote(tab), mods))

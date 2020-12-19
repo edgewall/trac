@@ -69,6 +69,9 @@ def _make_environ(scheme='http', server_name='example.org',
                'REQUEST_METHOD': method, 'SERVER_NAME': server_name,
                'SERVER_PORT': server_port, 'SCRIPT_NAME': script_name}
     environ.update(kwargs)
+    for key, value in environ.items():
+        if isinstance(value, bytes):
+            environ[key] = str(value, 'utf-8')
     return environ
 
 
@@ -233,9 +236,9 @@ class RequestTestCase(unittest.TestCase):
             req.args.getbool('arg3', 2)
 
     def test_getfile(self):
-        file_content = 'The file content.'
-        file_name = 'thefile.txt'
-        form_data = """\
+        file_content = b'The file content.'
+        file_name = b'thefile.txt'
+        form_data = b"""\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="attachment"; filename="%(file_name)s"\r\n\
 Content-Type: text/plain\r\n\
@@ -247,12 +250,12 @@ Content-Disposition: form-data; name="action"\r\n\
 new\r\n\
 --%(boundary)s--\r\n\
 """
-        boundary = '_BOUNDARY_'
+        boundary = b'_BOUNDARY_'
         content_type = b'multipart/form-data; boundary="%s"' % boundary
         form_data %= {
-            'boundary': boundary,
-            'file_content': file_content,
-            'file_name': file_name,
+            b'boundary': boundary,
+            b'file_content': file_content,
+            b'file_name': file_name,
         }
         environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
@@ -263,14 +266,14 @@ new\r\n\
 
         file_ = req.args.getfile('attachment')
 
-        self.assertEqual(file_name, file_[0])
+        self.assertEqual(str(file_name, 'utf-8'), file_[0])
         self.assertEqual(file_content, file_[1].getvalue())
         self.assertEqual(len(file_content), file_[2])
 
     def test_getfilelist(self):
-        file_content = 'The file0 content.', 'The file1 content.'
-        file_name = 'file0.txt', 'file1.txt'
-        form_data = """\
+        file_content = b'The file0 content.', b'The file1 content.'
+        file_name = b'file0.txt', b'file1.txt'
+        form_data = b"""\
 --%(boundary)s\r\n\
 Content-Disposition: form-data; name="attachment"; filename="%(file0_name)s"\r\n\
 Content-Type: text/plain\r\n\
@@ -287,14 +290,14 @@ Content-Disposition: form-data; name="action"\r\n\
 new\r\n\
 --%(boundary)s--\r\n\
 """
-        boundary = '_BOUNDARY_'
+        boundary = b'_BOUNDARY_'
         content_type = b'multipart/form-data; boundary="%s"' % boundary
         form_data %= {
-            'boundary': boundary,
-            'file0_content': file_content[0],
-            'file0_name': file_name[0],
-            'file1_content': file_content[1],
-            'file1_name': file_name[1],
+            b'boundary': boundary,
+            b'file0_content': file_content[0],
+            b'file0_name': file_name[0],
+            b'file1_content': file_content[1],
+            b'file1_name': file_name[1],
         }
         environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
@@ -306,9 +309,9 @@ new\r\n\
         file_ = req.args.getfilelist('attachment')
 
         self.assertEqual(2, len(file_))
-        self.assertEqual(file_name[0], file_[0][0])
+        self.assertEqual(str(file_name[0], 'utf-8'), file_[0][0])
         self.assertEqual(file_content[0], file_[0][1].getvalue())
-        self.assertEqual(file_name[1], file_[1][0])
+        self.assertEqual(str(file_name[1], 'utf-8'), file_[1][0])
         self.assertEqual(file_content[1], file_[1][1].getvalue())
         self.assertEqual(len(file_content[1]), file_[1][2])
 
@@ -454,8 +457,8 @@ new\r\n\
     def test_write_iterable(self):
         req = _make_req(_make_environ(method='GET'))
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        req.write(('Foo', 'bar', 'baz'))
-        self.assertEqual('Foobarbaz', req.response_sent)
+        req.write((b'Foo', b'bar', b'baz'))
+        self.assertEqual(b'Foobarbaz', req.response_sent)
 
     def test_write_unicode(self):
         req = _make_req(_make_environ(method='HEAD'))
@@ -463,16 +466,16 @@ new\r\n\
         req.send_header('Content-Length', 0)
         # anyway we're not supposed to send unicode, so we get a ValueError
         with self.assertRaises(ValueError):
-            req.write(u'Föö')
+            req.write('Föö')
         with self.assertRaises(ValueError):
-            req.write(('F', u'öo'))
+            req.write((b'F', 'öo'))
 
     def test_send_iterable(self):
         def iterable():
-            yield 'line1,'
-            yield ''
-            yield 'line2,'
-            yield 'line3\n'
+            yield b'line1,'
+            yield b''
+            yield b'line2,'
+            yield b'line3\n'
 
         req = _make_req(_make_environ(method='GET'))
         with self.assertRaises(RequestDone):
@@ -483,10 +486,10 @@ new\r\n\
                          req.headers_sent['Expires'])
         self.assertEqual('text/html;charset=utf-8',
                          req.headers_sent['Content-Type'])
-        self.assertEqual('line1,line2,line3\n', req.response_sent)
+        self.assertEqual(b'line1,line2,line3\n', req.response_sent)
 
     def test_invalid_cookies(self):
-        environ = _make_environ(HTTP_COOKIE='bad:key=value;')
+        environ = _make_environ(HTTP_COOKIE='bad/key=value;')
         req = Request(environ, None)
         self.assertEqual('', str(req.incookie))
 
@@ -501,14 +504,14 @@ new\r\n\
             'wsgi.input': io.BytesIO(b'test input')
         })
         req = Request(environ, None)
-        self.assertEqual('test input', req.read())
+        self.assertEqual(b'test input', req.read())
 
     def test_read_size(self):
         environ = _make_environ(**{
             'wsgi.input': io.BytesIO(b'test input')
         })
         req = Request(environ, None)
-        self.assertEqual('test', req.read(size=4))
+        self.assertEqual(b'test', req.read(size=4))
 
     def _test_qs_with_null_bytes(self, environ):
         req = Request(environ, None)
@@ -516,7 +519,7 @@ new\r\n\
             req.args['action']
         except HTTPBadRequest as e:
             self.assertEqual("400 Bad Request (Invalid request arguments.)",
-                             unicode(e))
+                             str(e))
         else:
             self.fail("HTTPBadRequest not raised.")
 
@@ -530,7 +533,7 @@ new\r\n\
 
     def test_post_with_unnamed_value(self):
         boundary = '_BOUNDARY_'
-        form_data = textwrap.dedent(b"""\
+        form_data = textwrap.dedent("""\
             --%(boundary)s\r\n\
             Content-Disposition: form-data; name="foo"\r\n\
             \r\n\
@@ -545,7 +548,7 @@ new\r\n\
             unnamed value\r\n\
             --%(boundary)s--\r\n\
             """)
-        form_data %= {'boundary': boundary}
+        form_data = (form_data % {'boundary': boundary}).encode('utf-8')
         content_type = 'multipart/form-data; boundary="%s"' % boundary
         environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
@@ -560,8 +563,8 @@ new\r\n\
 
     def _test_post_with_null_bytes(self, form_data):
         boundary = '_BOUNDARY_'
-        content_type = b'multipart/form-data; boundary="%s"' % boundary
-        form_data %= {'boundary': boundary}
+        content_type = 'multipart/form-data; boundary="%s"' % boundary
+        form_data = (form_data % {'boundary': boundary}).encode('utf-8')
 
         environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
@@ -574,7 +577,7 @@ new\r\n\
             req.args['action']
         except HTTPBadRequest as e:
             self.assertEqual("400 Bad Request (Invalid request arguments.)",
-                             unicode(e))
+                             str(e))
         else:
             self.fail("HTTPBadRequest not raised.")
 
@@ -602,7 +605,6 @@ new\r\n\
             new\r\n\
             --%(boundary)s--\r\n\
             """)
-
         self._test_post_with_null_bytes(form_data)
 
     def test_post_with_null_bytes_for_value(self):
@@ -635,20 +637,20 @@ new\r\n\
         environ = _make_environ(QUERY_STRING='name=%FF')
         req = Request(environ, None)
         with self.assertRaises(HTTPBadRequest):
-            req.arg_list()
+            req.arg_list
 
     def test_qs_invalid_name_bytes(self):
         environ = _make_environ(QUERY_STRING='%FF=value')
         req = Request(environ, None)
         with self.assertRaises(HTTPBadRequest):
-            req.arg_list()
+            req.arg_list
 
     def test_post_text_html_disables_xss(self):
         """POST request with content-type text/html disables XSS
         protection (#12926).
         """
         content_type = 'text/html'
-        content = "The content"
+        content = b"The content"
         environ = _make_environ(method='POST',
                                 **{'wsgi.input': io.BytesIO(content),
                                    'CONTENT_LENGTH': str(len(content)),
@@ -680,7 +682,7 @@ class RequestSendFileTestCase(unittest.TestCase):
     def setUp(self):
         self.dir = mkdtemp()
         self.filename = os.path.join(self.dir, 'test.txt')
-        self.data = 'contents\n'
+        self.data = b'contents\n'
         create_file(self.filename, self.data, 'wb')
         self.req = None
 
@@ -703,8 +705,8 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual(str(len(self.data)),
                          req.headers_sent['Content-Length'])
         self.assertNotIn('X-Sendfile', req.headers_sent)
-        self.assertEqual(self.data, ''.join(req._response))
-        self.assertEqual('', req.response_sent)
+        self.assertEqual(self.data, b''.join(req._response))
+        self.assertEqual(b'', req.response_sent)
 
     def test_send_file_with_xsendfile(self):
         req = self._create_req(use_xsendfile=True)
@@ -714,7 +716,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual('text/plain', req.headers_sent['Content-Type'])
         self.assertEqual(self.filename, req.headers_sent['X-Sendfile'])
         self.assertIsNone(req._response)
-        self.assertEqual('', req.response_sent)
+        self.assertEqual(b'', req.response_sent)
 
     def test_send_file_with_xsendfile_header(self):
         req = self._create_req(use_xsendfile=True,
@@ -726,7 +728,7 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual(self.filename, req.headers_sent['X-Accel-Redirect'])
         self.assertNotIn('X-Sendfile', req.headers_sent)
         self.assertIsNone(req._response)
-        self.assertEqual('', req.response_sent)
+        self.assertEqual(b'', req.response_sent)
 
     def test_send_file_with_xsendfile_and_empty_header(self):
         req = self._create_req(use_xsendfile=True, xsendfile_header='')
@@ -737,39 +739,39 @@ class RequestSendFileTestCase(unittest.TestCase):
         self.assertEqual(str(len(self.data)),
                          req.headers_sent['Content-Length'])
         self.assertNotIn('X-Sendfile', req.headers_sent)
-        self.assertEqual(self.data, ''.join(req._response))
-        self.assertEqual('', req.response_sent)
+        self.assertEqual(self.data, b''.join(req._response))
+        self.assertEqual(b'', req.response_sent)
 
 
 class ParseArgListTestCase(unittest.TestCase):
 
     def test_qs_str(self):
         args = parse_arg_list('k%C3%A9y=resum%C3%A9&r%C3%A9sum%C3%A9')
-        self.assertTrue(unicode, type(args[0][0]))
-        self.assertTrue(unicode, type(args[0][1]))
-        self.assertEqual(u'kéy', args[0][0])
-        self.assertEqual(u'resumé', args[0][1])
-        self.assertTrue(unicode, type(args[1][0]))
-        self.assertEqual(u'résumé', args[1][0])
+        self.assertTrue(str, type(args[0][0]))
+        self.assertTrue(str, type(args[0][1]))
+        self.assertEqual('kéy', args[0][0])
+        self.assertEqual('resumé', args[0][1])
+        self.assertTrue(str, type(args[1][0]))
+        self.assertEqual('résumé', args[1][0])
 
     def test_qs_str_with_prefix(self):
         """The leading `?` should be stripped from the query string."""
         args = parse_arg_list('?k%C3%A9y=resum%C3%A9&r%C3%A9sum%C3%A9')
-        self.assertTrue(unicode, type(args[0][0]))
-        self.assertTrue(unicode, type(args[0][1]))
-        self.assertEqual(u'kéy', args[0][0])
-        self.assertEqual(u'resumé', args[0][1])
-        self.assertTrue(unicode, type(args[1][0]))
-        self.assertEqual(u'résumé', args[1][0])
+        self.assertTrue(str, type(args[0][0]))
+        self.assertTrue(str, type(args[0][1]))
+        self.assertEqual('kéy', args[0][0])
+        self.assertEqual('resumé', args[0][1])
+        self.assertTrue(str, type(args[1][0]))
+        self.assertEqual('résumé', args[1][0])
 
     def test_qs_unicode(self):
-        args = parse_arg_list(u'ké%3Dy=re%26su=mé&résu%26mé')
-        self.assertTrue(unicode, type(args[0][0]))
-        self.assertTrue(unicode, type(args[0][1]))
-        self.assertEqual(u'ké=y', args[0][0])
-        self.assertEqual(u're&su=mé', args[0][1])
-        self.assertTrue(unicode, type(args[1][0]))
-        self.assertEqual(u'résu&mé', args[1][0])
+        args = parse_arg_list('ké%3Dy=re%26su=mé&résu%26mé')
+        self.assertTrue(str, type(args[0][0]))
+        self.assertTrue(str, type(args[0][1]))
+        self.assertEqual('ké=y', args[0][0])
+        self.assertEqual('re&su=mé', args[0][1])
+        self.assertTrue(str, type(args[1][0]))
+        self.assertEqual('résu&mé', args[1][0])
 
 
 class HTTPExceptionTestCase(unittest.TestCase):
@@ -777,29 +779,28 @@ class HTTPExceptionTestCase(unittest.TestCase):
     def test_tracerror_with_string_as_argument(self):
         e1 = TracError('the message')
         e2 = HTTPInternalServerError(e1)
-        self.assertEqual('500 Trac Error (the message)', unicode(e2))
+        self.assertEqual('500 Trac Error (the message)', str(e2))
 
     def test_tracerror_with_fragment_as_argument(self):
         e1 = TracError(tag(tag.b('the message')))
         e2 = HTTPInternalServerError(e1)
-        self.assertEqual('500 Trac Error (<b>the message</b>)', unicode(e2))
+        self.assertEqual('500 Trac Error (<b>the message</b>)', str(e2))
 
     def test_exception_with_string_as_argument(self):
         e1 = Exception('the message')
         e2 = HTTPInternalServerError(e1)
-        self.assertEqual('500 Internal Server Error (the message)',
-                         unicode(e2))
+        self.assertEqual('500 Internal Server Error (the message)', str(e2))
 
     def test_exception_with_fragment_as_argument(self):
         e1 = Exception(tag(tag.b('the message')))
         e2 = HTTPInternalServerError(e1)
         self.assertEqual('500 Internal Server Error (<b>the message</b>)',
-                         unicode(e2))
+                         str(e2))
 
     def test_fragment_with_unicode_as_argument(self):
-        e = HTTPInternalServerError(tag.b(u'thé méssägé'))
-        self.assertEqual(u'500 Internal Server Error (<b>thé méssägé</b>)',
-                         unicode(e))
+        e = HTTPInternalServerError(tag.b('thé méssägé'))
+        self.assertEqual('500 Internal Server Error (<b>thé méssägé</b>)',
+                         str(e))
 
 
 def test_suite():

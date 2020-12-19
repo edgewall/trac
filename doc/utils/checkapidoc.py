@@ -85,7 +85,7 @@ def check_api_doc(basename, verbose, only_documented, has_submodules):
         all = get_default_symbols(module, only_documented, has_submodules)
     no_apidoc = getattr(module, '__no_apidoc__', None)
     if no_apidoc:
-        if isinstance(no_apidoc, basestring):
+        if isinstance(no_apidoc, str):
             no_apidoc = [s.strip() for s in no_apidoc.split()]
         all = list(set(all) - set(no_apidoc))
     symbols, keywords = get_sphinx_documented_symbols(basename + '.rst')
@@ -114,7 +114,7 @@ sphinx_doc_re = re.compile(r'''
 ''', re.MULTILINE | re.VERBOSE)
 
 def get_sphinx_documented_symbols(rst):
-    with open(os.path.join(api_doc, rst)) as f:
+    with open(os.path.join(api_doc, rst), encoding='utf-8') as f:
         doc = f.read()
     symbols, keywords = [], []
     for k, s in sphinx_doc_re.findall(doc):
@@ -161,7 +161,7 @@ def get_imported_symbols(module, has_submodules):
     src_filename = module.__file__.replace('\\', '/').replace('.pyc', '.py')
     if src_filename.endswith('/__init__.py') and not has_submodules:
         return set()
-    with open(src_filename) as f:
+    with open(src_filename, encoding='utf-8') as f:
         src = f.read()
     imported = set()
     for mod, symbol_list in import_from_re.findall(src):

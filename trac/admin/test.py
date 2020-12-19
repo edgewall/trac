@@ -32,10 +32,10 @@ def load_expected_results(file, pattern):
     """
     expected = {}
     compiled_pattern = re.compile(pattern)
-    with open(file) as f:
+    with open(file, encoding='utf-8') as f:
         test = None
         for line in f:
-            line = line.rstrip().decode('utf-8')
+            line = line.rstrip()
             match = compiled_pattern.search(line)
             if match:
                 test = match.groups()[0]
@@ -46,27 +46,32 @@ def load_expected_results(file, pattern):
 
 
 def _execute(func, strip_trailing_space=True, input=None):
-    _in = sys.stdin
-    _err = sys.stderr
-    _out = sys.stdout
-    try:
-        if input:
-            sys.stdin = io.BytesIO(input.encode('utf-8'))
-            sys.stdin.encoding = 'utf-8'  # fake input encoding
-        sys.stderr = sys.stdout = out = io.BytesIO()
-        out.encoding = 'utf-8'  # fake output encoding
-        return_val = func()
-        value = out.getvalue()
-        if isinstance(value, str):  # reverse what print_listing did
-            value = value.decode('utf-8')
-        if strip_trailing_space:
-            return return_val, STRIP_TRAILING_SPACE.sub('', value)
-        else:
-            return return_val, value
-    finally:
-        sys.stdin = _in
-        sys.stderr = _err
-        sys.stdout = _out
+    if isinstance(input, str):
+        input = input.encode('utf-8')
+    elif input is None:
+        input = b''
+    elif not isinstance(input, bytes):
+        raise ValueError('input must be str, bytes or None, not %s' %
+                         type(input))
+
+    with io.BytesIO(input) as rbuf, io.BytesIO() as wbuf:
+        stdin = io.TextIOWrapper(rbuf, encoding='utf-8', newline='\n')
+        stdout = io.TextIOWrapper(wbuf, encoding='utf-8', newline='\n',
+                                  write_through=True)
+        _files = sys.stdin, sys.stdout, sys.stderr
+        try:
+            sys.stdin = stdin
+            sys.stderr = sys.stdout = stdout
+            return_val = func()
+        finally:
+            sys.stdin, sys.stdout, sys.stderr = _files
+        value = wbuf.getvalue()
+
+    value = str(value, 'utf-8')
+    if strip_trailing_space:
+        return return_val, STRIP_TRAILING_SPACE.sub('', value)
+    else:
+        return return_val, value
 
 
 def execute_cmd(tracadmin, cmd, strip_trailing_space=True, input=None):

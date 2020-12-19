@@ -17,7 +17,7 @@
 # Author: Eli Carter
 
 import io
-from ConfigParser import ParsingError, RawConfigParser
+from configparser import ParsingError, RawConfigParser
 from collections import defaultdict
 from functools import partial
 from pkg_resources import resource_filename
@@ -458,7 +458,7 @@ class ConfigurableTicketWorkflow(Component):
         actions = parse_workflow_config(self.ticket_workflow_section.options())
 
         has_new_state = any('new' in [a['newstate']] + a['oldstates']
-                            for a in actions.itervalues())
+                            for a in actions.values())
         if has_new_state:
             # Special action that gets enabled if the current status no
             # longer exists, as no other action can then change its state.
@@ -474,7 +474,7 @@ class ConfigurableTicketWorkflow(Component):
             for key, val in reset.items():
                 actions['_reset'].setdefault(key, val)
 
-        for name, info in actions.iteritems():
+        for name, info in actions.items():
             if not info['newstate']:
                 self.log.warning("Ticket workflow action '%s' doesn't define "
                                  "any transitions", name)
@@ -675,9 +675,9 @@ class WorkflowMacro(WikiMacroBase):
             raw_actions = list(parser.items('ticket-workflow'))
         actions = parse_workflow_config(raw_actions)
         states = list(
-            {state for action in actions.itervalues()
+            {state for action in actions.values()
                    for state in action['oldstates']} |
-            {action['newstate'] for action in actions.itervalues()})
+            {action['newstate'] for action in actions.values()})
         action_labels = [attrs['label'] for attrs in actions.values()]
         action_names = list(actions)
         edges = []

@@ -121,8 +121,8 @@
 
   # if change.fields:
   <table class="changes">
-    ## for field_name, field in sorted(change.fields.iteritems(), key=lambda item: item[1].label.lower()):
-    # for field_name, field in change.fields.iteritems()|sort(attribute='1.label'):
+    ## for field_name, field in sorted(change.fields.items(), key=lambda item: item[1].label.lower()):
+    # for field_name, field in change.fields.items()|sort(attribute='1.label'):
     ## FIXME attribute='1.label|lower'
     <tr class="${classes(
                'trac-field-' + field_name,

@@ -201,7 +201,7 @@ class AuthzPolicy(Component):
                 else:
                     self.groups_by_user.setdefault(item, set()).add(group)
 
-        for group, users in groups.iteritems():
+        for group, users in groups.items():
             add_items('@' + group, users)
 
         all_actions = set(PermissionSystem(self.env).get_actions())
@@ -264,7 +264,7 @@ class AuthzPolicy(Component):
                             who in self.groups_by_user.get(username, []):
                         self.log.debug("%s matched section %s for user %s",
                                        resource_key, resource_glob, username)
-                        if isinstance(permissions, basestring):
+                        if isinstance(permissions, str):
                             return [permissions]
                         else:
                             return permissions

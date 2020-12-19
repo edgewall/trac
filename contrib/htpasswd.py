@@ -48,7 +48,7 @@ class HtpasswdFile(object):
     def load(self):
         """Read the htpasswd file into memory."""
         self.entries = []
-        with open(self.filename, 'r') as f:
+        with open(self.filename, 'r', encoding='utf-8') as f:
             for line in f:
                 username, pwhash = line.split(':')
                 entry = [username, pwhash.rstrip()]
@@ -57,7 +57,7 @@ class HtpasswdFile(object):
     def save(self):
         """Write the htpasswd file to disk"""
         wait_for_file_mtime_change(self.filename)
-        with open(self.filename, 'w') as f:
+        with open(self.filename, 'w', encoding='utf-8') as f:
             f.writelines("%s:%s\n" % (entry[0], entry[1])
                          for entry in self.entries)
 

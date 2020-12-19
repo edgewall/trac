@@ -43,7 +43,7 @@ else:
         get_day_names
     )
     # 'context' parameter was added in Babel 2.3.1
-    if 'context' in inspect.getargspec(babel_get_period_names)[0]:
+    if 'context' in inspect.signature(babel_get_period_names).parameters:
         def get_period_names(locale=None):
             return babel_get_period_names(context='format', locale=locale)
     else:
@@ -115,7 +115,7 @@ if os.name == 'nt':
                 raise RuntimeError('[LastError %s %d]' %
                                    (func_systime, GetLastError()))
             ft = ft.dwHighDateTime * 0x100000000 + ft.dwLowDateTime
-            usec = (ft - ft_epoch) / 10
+            usec = (ft - ft_epoch) // 10
             return usec / 1000000.0
 
         def datetime_now(tz=None):
@@ -160,7 +160,7 @@ def to_datetime(t, tzinfo=None):
             dt = tz.localize(t)
     elif isinstance(t, date):
         dt = tz.localize(datetime(t.year, t.month, t.day))
-    elif isinstance(t, (int, long, float)):
+    elif isinstance(t, (int, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
             t *= 0.000001
@@ -176,7 +176,7 @@ def to_datetime(t, tzinfo=None):
         dt = None
     if dt:
         return tz.normalize(dt)
-    raise TypeError('expecting datetime, int, long, float, or None; got %s' %
+    raise TypeError('expecting datetime, int, float, or None; got %s' %
                     type(t))
 
 
@@ -250,10 +250,7 @@ _BABEL_FORMATS = {
 _STRFTIME_HINTS = {'%x %X': 'datetime', '%x': 'date', '%X': 'time'}
 
 def _format_datetime_without_babel(t, format):
-    text = t.strftime(str(format))
-    encoding = getlocale(LC_TIME)[1] or getpreferredencoding() \
-               or sys.getdefaultencoding()
-    return unicode(text, encoding, 'replace')
+    return t.strftime(format)
 
 def _format_datetime_iso8601(t, format, hint):
     if format != 'full':
@@ -269,7 +266,7 @@ def _format_datetime_iso8601(t, format, hint):
         text = text.split('T', 1)[0]
     elif hint == 'time':
         text = text.split('T', 1)[1]
-    return unicode(text, 'ascii')
+    return text
 
 def _format_datetime(t, format, tzinfo, locale, hint):
     t = to_datetime(t, tzinfo or localtz)
@@ -306,7 +303,7 @@ def _format_datetime(t, format, tzinfo, locale, hint):
     return _format_datetime_without_babel(t, format)
 
 def format_datetime(t=None, format='%x %X', tzinfo=None, locale=None):
-    """Format the `datetime` object `t` into an `unicode` string
+    """Format the `datetime` object `t` into a `str` string
 
     If `t` is None, the current time will be used.
 
@@ -360,7 +357,7 @@ def get_datetime_format_hint(locale=None):
     date.
     """
     if locale == 'iso8601':
-        return u'YYYY-MM-DDThh:mm:ss±hh:mm'
+        return 'YYYY-MM-DDThh:mm:ss±hh:mm'
     if babel and locale:
         date_pattern = get_date_format('medium', locale=locale).pattern
         time_pattern = get_time_format('medium', locale=locale).pattern
@@ -393,7 +390,7 @@ def get_month_names_jquery_ui(req):
         month_names = {}
         for width in ('wide', 'abbreviated'):
             names = get_month_names(width, locale=locale)
-            month_names[width] = [names[i + 1] for i in xrange(12)]
+            month_names[width] = [names[i + 1] for i in range(12)]
         return month_names
 
     return {
@@ -414,7 +411,7 @@ def get_day_names_jquery_ui(req):
         day_names = {}
         for width in ('wide', 'abbreviated', 'narrow'):
             names = get_day_names(width, locale=locale)
-            day_names[width] = [names[(i + 6) % 7] for i in xrange(7)]
+            day_names[width] = [names[(i + 6) % 7] for i in range(7)]
         return day_names
 
     return {
@@ -641,11 +638,13 @@ def parse_date(text, tzinfo=None, locale=None, hint='date'):
                     'not known. Try "%(hint)s" or "%(isohint)s" instead.',
                     date=text, hint=formatted_hint, isohint=isohint)
         raise TracError(msg, _('Invalid Date'))
-    # Make sure we can convert it to a timestamp and back - fromtimestamp()
-    # may raise ValueError if larger than platform C localtime() or gmtime()
+    # Make sure we can convert it to a timestamp and back -
+    # utcfromtimestamp() may raise OverflowError and OSError if out of
+    # range by platform C gmtime() and gmtime() failure
+    ts = to_timestamp(dt)
     try:
-        datetime.utcfromtimestamp(to_timestamp(dt))
-    except (ValueError, OverflowError):
+        datetime.utcfromtimestamp(ts)
+    except (ValueError, OverflowError, OSError):
         raise TracError(_('The date "%(date)s" is outside valid range. '
                           'Try a date closer to present time.', date=text),
                           _('Invalid Date'))
@@ -675,7 +674,7 @@ def _i18n_parse_date_pattern(locale):
     orders = []
     for format in formats:
         order = []
-        for key, chars in format_keys.iteritems():
+        for key, chars in format_keys.items():
             for char in chars:
                 idx = format.find('%(' + char)
                 if idx != -1:
@@ -687,11 +686,11 @@ def _i18n_parse_date_pattern(locale):
     # always allow using English names regardless of locale
     month_names = dict(zip(('jan', 'feb', 'mar', 'apr', 'may', 'jun',
                             'jul', 'aug', 'sep', 'oct', 'nov', 'dec',),
-                           xrange(1, 13)))
+                           range(1, 13)))
     period_names = {'am': 'am', 'pm': 'pm'}
 
     if locale is None:
-        for num in xrange(1, 13):
+        for num in range(1, 13):
             t = datetime(1999, num, 1, tzinfo=utc)
             names = format_date(t, '%b\t%B', utc).split('\t')
             month_names.update((name.lower(), num) for name in names
@@ -706,11 +705,11 @@ def _i18n_parse_date_pattern(locale):
             for width in ('wide', 'abbreviated'):
                 names = get_month_names(width, locale=locale)
                 month_names.update((name.lower(), num)
-                                   for num, name in names.iteritems())
+                                   for num, name in names.items())
         if formats[0].find('%(a)s') != -1:
             names = get_period_names(locale=locale)
             period_names.update((name.lower(), period)
-                                for period, name in names.iteritems()
+                                for period, name in names.items()
                                 if period in ('am', 'pm'))
 
     regexp = ['[0-9]+']
@@ -772,7 +771,7 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
         matches.insert(order['s'], 0)
 
     values = {}
-    for key, idx in order.iteritems():
+    for key, idx in order.items():
         if idx < len(matches):
             value = matches[idx]
             if key == 'y':
@@ -793,7 +792,7 @@ def _i18n_parse_date_0(text, order, regexp, period_names, month_names, tzinfo):
                 values[key], values['M'] = values['M'], value
             break
 
-    values = {key: int(value) for key, value in values.iteritems()}
+    values = {key: int(value) for key, value in values.items()}
     values.setdefault('h', 0)
     values.setdefault('m', 0)
     values.setdefault('s', 0)
@@ -1005,7 +1004,7 @@ class LocalTimezone(tzinfo):
     def _tzname_offset(self, offset):
         secs = offset.days * 3600 * 24 + offset.seconds
         hours, rem = divmod(abs(secs), 3600)
-        return 'UTC%c%02d:%02d' % ('+-'[secs < 0], hours, rem / 60)
+        return 'UTC%c%02d:%02d' % ('+-'[secs < 0], hours, rem // 60)
 
     def _tzinfo(self, dt, is_dst=False):
         tzinfo = dt.tzinfo

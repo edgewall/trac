@@ -15,8 +15,6 @@
 #
 # Author: Matthew Good <matt@matt-good.net>
 
-from __future__ import print_function
-
 import argparse
 import errno
 import fileinput
@@ -43,7 +41,8 @@ def get_digest(userprefix, password=None):
 
 
 def make_digest(userprefix, password):
-    return userprefix + hashlib.md5(userprefix + password).hexdigest()
+    value = (userprefix + password).encode('utf-8')
+    return userprefix + hashlib.md5(value).hexdigest()
 
 
 def main():
@@ -72,7 +71,7 @@ def main():
     prefix = '%s:%s:' % (args.username, args.realm)
     if args.create:
         try:
-            with open(args.passwordfile, 'w') as f:
+            with open(args.passwordfile, 'w', encoding='utf-8') as f:
                 print(get_digest(prefix, args.password), file=f)
         except EnvironmentError as e:
             if e.errno == errno.EACCES:
@@ -91,7 +90,7 @@ def main():
                 else:
                     print(line.rstrip())
             if not matched:
-                with open(args.passwordfile, 'a') as f:
+                with open(args.passwordfile, 'a', encoding='utf-8') as f:
                     print(get_digest(prefix, args.password), file=f)
         except EnvironmentError as e:
             if e.errno == errno.ENOENT:

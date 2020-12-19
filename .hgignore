@@ -12,6 +12,7 @@ testenv
 testing.log
 functional-testing.log
 trac/test.db
+geckodriver.log
 html
 htmlcov
 .coverage

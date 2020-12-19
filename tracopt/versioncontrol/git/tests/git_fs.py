@@ -16,12 +16,12 @@ import os
 import sys
 import unittest
 from datetime import datetime, timedelta
-from subprocess import PIPE
+from subprocess import DEVNULL, PIPE, Popen
 
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockRequest, locate, mkdtemp, rmtree
 from trac.util import create_file
-from trac.util.compat import Popen, close_fds
+from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import to_utf8
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
@@ -49,8 +49,8 @@ class GitCommandMixin(object):
         return self._git(*args, **kwargs)
 
     def _spawn_git(self, *args, **kwargs):
-        args = map(to_utf8, (self.git_bin,) + args)
-        kwargs.setdefault('stdin', PIPE)
+        args = (self.git_bin,) + args
+        kwargs.setdefault('stdin', DEVNULL)
         kwargs.setdefault('stdout', PIPE)
         kwargs.setdefault('stderr', PIPE)
         kwargs.setdefault('cwd', self.repos_path)
@@ -66,7 +66,7 @@ class GitCommandMixin(object):
         return proc
 
     def _git_fast_import(self, data, **kwargs):
-        if isinstance(data, unicode):
+        if isinstance(data, str):
             data = data.encode('utf-8')
         with self._spawn_git('fast-import', stdin=PIPE, **kwargs) as proc:
             stdout, stderr = proc.communicate(input=data)
@@ -81,10 +81,10 @@ class GitCommandMixin(object):
         secs = offset.days * 3600 * 24 + offset.seconds
         hours, rem = divmod(abs(secs), 3600)
         return '%d %c%02d:%02d' % (to_timestamp(dt), '-' if secs < 0 else '+',
-                                   hours, rem / 60)
+                                   hours, rem // 60)
 
     def _set_committer_date(self, env, dt):
-        if not isinstance(dt, basestring):
+        if not isinstance(dt, str):
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=utc)
             dt = self._git_date_format(dt)
@@ -93,6 +93,9 @@ class GitCommandMixin(object):
 
 
 class BaseTestCase(unittest.TestCase, GitCommandMixin):
+
+    gitignore_content = b'*.py[co]\n' \
+                        b'\312\326\267\347\307\331.txt\n'
 
     def setUp(self):
         self.env = EnvironmentStub()
@@ -134,7 +137,8 @@ class BaseTestCase(unittest.TestCase, GitCommandMixin):
         if not bare and data:
             self._git('config', 'user.name', 'Joe', **kwargs)
             self._git('config', 'user.email', 'joe@example.com', **kwargs)
-            create_file(os.path.join(self.repos_path, '.gitignore'))
+            create_file(os.path.join(self.repos_path, '.gitignore'),
+                        self.gitignore_content, 'wb')
             self._git('add', '.gitignore', **kwargs)
             self._git_commit('-a', '-m', 'test',
                              date=datetime(2001, 1, 29, 16, 39, 56), **kwargs)
@@ -228,7 +232,7 @@ class HistoryTimeRangeTestCase(BaseTestCase):
         filename = os.path.join(self.repos_path, '.gitignore')
         start = datetime(2000, 1, 1, 0, 0, 0, 0, utc)
         ts = datetime(2014, 2, 5, 15, 24, 6, 0, utc)
-        for idx in xrange(3):
+        for idx in range(3):
             create_file(filename, 'commit-%d.txt' % idx)
             self._git_commit('-a', '-m', 'commit %d' % idx, date=ts)
         self._add_repository()
@@ -261,13 +265,17 @@ class GitNormalTestCase(BaseTestCase):
         self._add_repository()
         repos = self._repomgr.get_repository('gitrepos')
         rev = repos.youngest_rev
-        self.assertIsNotNone(rev)
+        self.assertIsInstance(rev, str)
         self.assertEqual(40, len(rev))
 
         self.assertEqual(rev, repos.get_node('/').rev)
         self.assertEqual(rev, repos.get_node('/', rev[:7]).rev)
         self.assertEqual(rev, repos.get_node('/.gitignore').rev)
         self.assertEqual(rev, repos.get_node('/.gitignore', rev[:7]).rev)
+        self.assertEqual(self.gitignore_content,
+                         repos.get_node('/.gitignore').get_content().read())
+        self.assertEqual(len(self.gitignore_content),
+                         repos.get_node('/.gitignore').content_length)
 
         self.assertRaises(NoSuchNode, repos.get_node, '/non-existent')
         self.assertRaises(NoSuchNode, repos.get_node, '/non-existent', rev[:7])
@@ -279,13 +287,10 @@ class GitNormalTestCase(BaseTestCase):
         self.assertRaises(NoSuchChangeset,
                           repos.get_node, '/non-existent', 'invalid-revision')
 
-        # git_fs doesn't support non-ANSI strings on Windows
-        if os.name != 'nt':
-            self._git('branch', u'tïckét10605', 'master')
-            repos.sync()
-            self.assertEqual(rev, repos.get_node('/', u'tïckét10605').rev)
-            self.assertEqual(rev, repos.get_node('/.gitignore',
-                                                 u'tïckét10605').rev)
+        self._git('branch', 'tïckét10605', 'master')
+        repos.sync()
+        self.assertEqual(rev, repos.get_node('/', 'tïckét10605').rev)
+        self.assertEqual(rev, repos.get_node('/.gitignore', 'tïckét10605').rev)
 
     def _test_on_empty_repos(self, cached_repository):
         self.env.config.set('git', 'persistent_cache', 'false')
@@ -297,7 +302,7 @@ class GitNormalTestCase(BaseTestCase):
         repos = self._repomgr.get_repository('gitrepos')
         if cached_repository:
             # call sync() thrice with empty repository (#11851)
-            for i in xrange(3):
+            for i in range(3):
                 repos.sync()
                 rows = self.env.db_query("SELECT value FROM repository "
                                          "WHERE id=%s AND name=%s",
@@ -352,7 +357,7 @@ class GitRepositoryTestCase(BaseTestCase):
     def _create_merge_commit(self):
         for idx, branch in enumerate(('alpha', 'beta')):
             self._git('checkout', '-b', branch, 'master')
-            for n in xrange(2):
+            for n in range(2):
                 filename = 'file-%s-%d.txt' % (branch, n)
                 create_file(os.path.join(self.repos_path, filename))
                 self._git('add', filename)
@@ -372,11 +377,11 @@ class GitRepositoryTestCase(BaseTestCase):
 
         e = try_init('')
         self.assertEqual('"(default)" is not readable or not a Git '
-                         'repository.', unicode(e))
+                         'repository.', str(e))
 
         e = try_init('therepos')
         self.assertEqual('"therepos" is not readable or not a Git repository.',
-                         unicode(e))
+                         str(e))
 
     def test_repository_instance(self):
         self._git_init()
@@ -397,9 +402,16 @@ class GitRepositoryTestCase(BaseTestCase):
         entries = list(repos.get_node('').get_history())
         self.assertEqual(2, len(entries))
         self.assertEqual('', entries[0][0])
+        self.assertEqual(youngest_rev, entries[0][1])
         self.assertEqual(Changeset.EDIT, entries[0][2])
         self.assertEqual('', entries[1][0])
+        self.assertIsInstance(entries[1][1], str)
         self.assertEqual(Changeset.ADD, entries[1][2])
+
+        self.assertEqual(entries[1][1], repos.previous_rev(youngest_rev, ''))
+        self.assertEqual(None, repos.next_rev(youngest_rev, ''))
+        self.assertEqual(None, repos.previous_rev(entries[1][1], ''))
+        self.assertEqual(youngest_rev, repos.next_rev(entries[1][1], ''))
 
         self._git('reset', '--hard', 'HEAD~')
         repos.sync()
@@ -407,6 +419,9 @@ class GitRepositoryTestCase(BaseTestCase):
         self.assertEqual(1, len(new_entries))
         self.assertEqual(new_entries[0], entries[1])
         self.assertNotEqual(youngest_rev, repos.youngest_rev)
+        self.assertEqual(new_entries[0][1], repos.youngest_rev)
+        self.assertEqual(None, repos.next_rev(repos.youngest_rev, ''))
+        self.assertEqual(None, repos.previous_rev(repos.youngest_rev, ''))
 
     def test_tags(self):
         self._git_init()
@@ -508,7 +523,7 @@ class GitRepositoryTestCase(BaseTestCase):
                                                       rev))),
                          sorted(cset.get_changes()))
 
-    _data_annotations = """\
+    _data_annotations = b"""\
 blob
 mark :1
 data 14
@@ -613,7 +628,7 @@ from :6
     # * | 998bf23843c8fd982bbc23f88ec33c4d08114557 Changed b1
     # |/
     # * c5b01c74e125aa034a1d4ae31dc16f1897a73779 First commit
-    _data_iter_nodes = """\
+    _data_iter_nodes = b"""\
 blob
 mark :1
 data 2
@@ -811,7 +826,7 @@ from :17
         self.assertEqual({(':100666', FILE, MOVE, ':100644', rev1)},
                          set(cset.get_changes()))
 
-    _data_colon_character_in_filename = """\
+    _data_colon_character_in_filename = b"""\
 blob
 mark :1
 data 0
@@ -898,7 +913,7 @@ from :4
         self.assertEqual({'mode': '160000', 'commit': submodule_rev2},
                          node2.get_properties())
 
-    _data_submodule = """\
+    _data_submodule = b"""\
 blob
 mark :1
 data 0
@@ -952,7 +967,7 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
 
     def test_sync(self):
         self._git_init()
-        for idx in xrange(3):
+        for idx in range(3):
             filename = 'file%d.txt' % idx
             create_file(os.path.join(self.repos_path, filename))
             self._git('add', filename)
@@ -985,7 +1000,7 @@ class GitCachedRepositoryTestCase(GitRepositoryTestCase):
 
     def test_sync_file_with_invalid_byte_sequence(self):
         self._git_init(data=False)
-        self._git_fast_import("""\
+        self._git_fast_import(b"""\
 blob
 mark :1
 data 0
@@ -997,7 +1012,7 @@ author Ryan Ollos <rjollos@edgewall.com> 1463639119 +0200
 committer Ryan Ollos <rjollos@edgewall.com> 1463639119 +0200
 data 9
 (#12322)
-M 100644 :1 "\312\326\267\347\307\331.txt"
+M 100644 :1 "\\312\\326\\267\\347\\307\\331.txt"
 
 reset refs/heads/master
 from :2
@@ -1013,7 +1028,7 @@ from :2
 
         changes = list(repos.repos.get_changeset(revs[0]).get_changes())
         self.assertEqual(1, len(changes))
-        self.assertEqual(u'\ufffd\u05b7\ufffd\ufffd\ufffd.txt', changes[0][0])
+        self.assertEqual('\ufffd\u05b7\ufffd\ufffd\ufffd.txt', changes[0][0])
 
     def test_sync_merge(self):
         self._git_init()
@@ -1047,22 +1062,17 @@ from :2
         self.assertEqual(revs, revs2)
 
     def test_sync_too_many_merges(self):
-        data = self._generate_data_many_merges(100)
+        n_merges = 2000
+        data = self._generate_data_many_merges(n_merges)
         self._git_init(data=False, bare=True)
         self._git_fast_import(data)
         self._add_repository('gitrepos', bare=True)
         repos = self._repomgr.get_repository('gitrepos')
-
-        reclimit = sys.getrecursionlimit()
-        try:
-            sys.setrecursionlimit(80)
-            repos.sync()
-        finally:
-            sys.setrecursionlimit(reclimit)
+        repos.sync()
 
         rows = self.env.db_query("SELECT COUNT(*) FROM revision "
                                  "WHERE repos=%s", (repos.id,))
-        self.assertEqual(202, rows[0][0])
+        self.assertEqual(n_merges * 2 + 2, rows[0][0])
 
     def _generate_data_many_merges(self, n, timestamp=1400000000):
         init = b"""\
@@ -1111,12 +1121,12 @@ M 100644 :1 dev%(dev)08d.txt
 
 """
         data = io.BytesIO()
-        data.write(init % {'timestamp': timestamp})
-        for idx in xrange(n):
-            data.write(merge % {'timestamp': timestamp,
-                                'dev': 4 + idx * 2,
-                                'merge': 5 + idx * 2,
-                                'from': 3 + idx * 2})
+        data.write(init % {b'timestamp': timestamp})
+        for idx in range(n):
+            data.write(merge % {b'timestamp': timestamp,
+                                b'dev': 4 + idx * 2,
+                                b'merge': 5 + idx * 2,
+                                b'from': 3 + idx * 2})
         return data.getvalue()
 
     def test_sync_many_refs(self):
@@ -1167,7 +1177,7 @@ from :2
 """
         data = io.BytesIO()
         data.write(to_utf8(root_commit % {'timestamp': timestamp}))
-        for idx in xrange(n):
+        for idx in range(n):
             data.write(to_utf8(ref_commit % {'timestamp': timestamp + idx,
                                              'mark': idx + 3, 'ref': idx}))
         return data.getvalue()
@@ -1179,7 +1189,7 @@ class GitwebProjectsRepositoryProviderTestCase(unittest.TestCase):
         self.env = EnvironmentStub()
         self.projects_base = mkdtemp()
         self.projects_list = os.path.join(self.projects_base, 'projects_list')
-        with open(self.projects_list, 'w') as f:
+        with open(self.projects_list, 'w', encoding='utf-8') as f:
             f.write("""
             repos1 user1
             repos2.git user+2+<user@example.com>

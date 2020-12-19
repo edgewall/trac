@@ -64,15 +64,15 @@ class ApiTestCase(unittest.TestCase):
                      {'name': 'testrepo', 'id': 1}, None)
         node1 = Mock(Node, repos, '/trunk', None, Node.DIRECTORY)
         node2 = Mock(Node, repos, '/trunk', 1, Node.DIRECTORY)
-        self.assertEqual("<Mock u'testrepo:/trunk'>", repr(node1))
-        self.assertEqual("<Mock u'testrepo:/trunk@1'>", repr(node2))
+        self.assertEqual("<Mock 'testrepo:/trunk'>", repr(node1))
+        self.assertEqual("<Mock 'testrepo:/trunk@1'>", repr(node2))
 
     def test_changeset_repr(self):
         repo = Mock(Repository, 'testrepo',
                     {'name': 'testrepo', 'id': 1}, None)
         changeset = Mock(Changeset, repo, 1, 'Test commit',
                          'user@example.com', None)
-        self.assertEqual("<Mock u'testrepo@1'>", repr(changeset))
+        self.assertEqual("<Mock 'testrepo@1'>", repr(changeset))
 
 
 class ResourceManagerTestCase(unittest.TestCase):
@@ -143,7 +143,7 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
             func(*args, **kwargs)
             self.fail('%s not raised' % exc.__name__)
         except exc as e:
-            self.assertEqual(message, unicode(e))
+            self.assertEqual(message, str(e))
 
     def do_remove(self, reponame, message):
         self.verify_raises(TracError, message,

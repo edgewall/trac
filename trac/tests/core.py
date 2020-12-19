@@ -30,7 +30,7 @@ class TracErrorTestCase(unittest.TestCase):
 
     def test_unicode(self):
         e = TracError("the message")
-        self.assertEqual("the message", unicode(e))
+        self.assertEqual("the message", str(e))
 
 
 class ITest(Interface):

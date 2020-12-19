@@ -15,12 +15,12 @@
 import re
 import unittest
 
-from trac.tests.functional import FunctionalTwillTestCaseSetup, \
+from trac.tests.functional import FunctionalTestCaseSetup, \
                                   internal_error, tc
 
 
 #TODO: split this into multiple smaller testcases
-class TestPreferences(FunctionalTwillTestCaseSetup):
+class TestPreferences(FunctionalTestCaseSetup):
     def runTest(self):
         """Set preferences for admin user"""
         self._tester.go_to_preferences()
@@ -48,7 +48,7 @@ class TestPreferences(FunctionalTwillTestCaseSetup):
             tc.find('Your preferences have been saved.')
 
 
-class TestDefaultHandler(FunctionalTwillTestCaseSetup):
+class TestDefaultHandler(FunctionalTestCaseSetup):
     def runTest(self):
         """Set default handler."""
 
@@ -98,7 +98,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
         tc.find("Default: WikiModule")
 
 
-class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
+class RegressionTestRev5785(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of the fix in r5785"""
         self._tester.go_to_preferences()
@@ -107,21 +107,21 @@ class RegressionTestRev5785(FunctionalTwillTestCaseSetup):
         tc.follow('Login')
 
 
-class RegressionTestTicket5765(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket5765(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/5765
         Unable to turn off 'Enable access keys' in Preferences
         """
         self._tester.go_to_preferences("User Interface")
         tc.formvalue('userprefs', 'accesskeys', True)
-        tc.submit()
+        tc.submit(formname='userprefs')
         tc.find('name="accesskeys".*checked="checked"')
         tc.formvalue('userprefs', 'accesskeys', False)
-        tc.submit()
+        tc.submit(formname='userprefs')
         tc.notfind('name="accesskeys".*checked="checked"')
 
 
-class RegressionTestTicket11319(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11319(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11319
         Only alphanumeric characters can be used for session key in advanced
@@ -143,7 +143,7 @@ class RegressionTestTicket11319(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
-class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11337(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11337
         The language select will be disabled if Babel is not installed and a
@@ -198,7 +198,7 @@ class RegressionTestTicket11337(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
-class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11515(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11515
         Show a notice message with new language setting after it is changed.
@@ -238,7 +238,7 @@ class RegressionTestTicket11515(FunctionalTwillTestCaseSetup):
             tc.find('Your preferences have been saved')
 
 
-class RegressionTestTicket11531(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11531(FunctionalTestCaseSetup):
     """Test for regression of https://trac.edgewall.org/ticket/11531
     PreferencesModule can be set as the default_handler."""
     def runTest(self):

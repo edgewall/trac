@@ -17,7 +17,7 @@ import unittest
 from trac.timeline.web_ui import TimelineModule
 from trac.wiki.tests import formatter
 
-TIMELINE_TEST_CASES = u"""
+TIMELINE_TEST_CASES = """
 ============================== timeline: link resolver
 timeline:2008-01-29
 timeline:2008-01-29T15:48

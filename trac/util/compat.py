@@ -13,17 +13,11 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-"""Various classes and functions to provide some backwards-compatibility with
-previous versions of Python from 2.6 onward.
-"""
-
 import errno
-import math
 import os
 import subprocess
 import time
 
-from trac.util.text import cleandoc
 
 # Windows doesn't have a crypt module by default.
 try:
@@ -40,41 +34,6 @@ except ImportError:
                 return des_crypt.using(salt=salt).hash(secret)
             else:
                 return des_crypt.encrypt(secret, salt=salt)
-
-# Import symbols previously defined here, kept around so that plugins importing
-# them don't suddenly stop working
-all = all
-any = any
-frozenset = frozenset
-reversed = reversed
-set = set
-sorted = sorted
-from collections import OrderedDict
-from functools import partial
-from hashlib import md5, sha1
-from itertools import groupby, tee
-
-
-class Popen(subprocess.Popen):
-    """Popen objects are supported as context managers starting in
-    Python 3.2. This code was taken from Python 3.5 and can be removed
-    when support for Python < 3.2 is dropped.
-    """
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        if self.stdout:
-            self.stdout.close()
-        if self.stderr:
-            self.stderr.close()
-        try:  # Flushing a BufferedWriter may raise an error
-            if self.stdin:
-                self.stdin.close()
-        finally:
-            # Wait for the process to terminate, to avoid zombies.
-            self.wait()
 
 
 def rpartition(s, sep):

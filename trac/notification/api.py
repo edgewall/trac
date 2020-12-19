@@ -17,7 +17,6 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 from collections import defaultdict
-from operator import itemgetter
 
 from trac.config import (BoolOption, ConfigSection, ExtensionOption,
                          ListOption, Option)
@@ -171,7 +170,7 @@ def parse_subscriber_config(rawsubscriptions):
         else:
             attribute = parts[1]
             known = known_attrs.get(attribute)
-            if known is None or isinstance(known, basestring):
+            if known is None or isinstance(known, str):
                 pass
             elif isinstance(known, int):
                 value = int(value)
@@ -377,7 +376,7 @@ class NotificationSystem(Component):
                 if transport in packages:
                     recipients = [(k[0], k[1], k[2], format)
                                   for k, format
-                                  in packages[transport].iteritems()]
+                                  in packages[transport].items()]
                     distributor.distribute(transport, recipients, event)
 
     def subscriptions(self, event):
@@ -398,7 +397,9 @@ class NotificationSystem(Component):
         # If it is "always" keep it. If it is "never" drop it.
 
         # sort by (transport, sid, authenticated, priority)
-        ordered = sorted(subscriptions, key=itemgetter(1,2,3,6))
+        ordered = sorted(subscriptions,
+                         key=lambda v: (v[1], '' if v[2] is None else v[2],
+                                        v[3], v[6]))
         previous_combination = None
         for rule, transport, sid, auth, addr, fmt, prio, adverb in ordered:
             if (transport, sid, auth) == previous_combination:

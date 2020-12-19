@@ -11,7 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 from glob import glob
 from subprocess import PIPE, Popen
 import inspect
@@ -68,14 +68,14 @@ class EnvironmentWithoutDataTestCase(unittest.TestCase):
         with self.assertRaises(TracError) as cm:
             self._create_env(env_path)
         self.assertEqual("Base directory '%s' does not exist. Please create "
-                         "it and retry." % base_dir, unicode(cm.exception))
+                         "it and retry." % base_dir, str(cm.exception))
 
     def test_create_in_existing_environment(self):
         """TracError raised creating Environment in existing Environment."""
         with self.assertRaises(TracError) as cm:
             self._create_env(self.env_path)
         self.assertEqual("Directory exists and is not empty.",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
 
 class EnvironmentTestCase(unittest.TestCase):
@@ -88,7 +88,7 @@ class EnvironmentTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        cls.devnull = io.open(os.devnull, 'wb')
+        cls.devnull = io.open(os.devnull, 'w', encoding='utf-8')
         sys.stdout = sys.stderr = cls.devnull
 
     @classmethod
@@ -114,15 +114,14 @@ class EnvironmentTestCase(unittest.TestCase):
             Environment(self.env.path)
         self.assertEqual(
             "Unknown Trac environment type 'Trac Environment Version 0'",
-            unicode(cm.exception))
+            str(cm.exception))
 
     def test_version_file_empty(self):
         """TracError raised when environment version is empty."""
         create_file(os.path.join(self.env.path, 'VERSION'), '')
         with self.assertRaises(TracError) as cm:
             Environment(self.env.path)
-        self.assertEqual("Unknown Trac environment type ''",
-                         unicode(cm.exception))
+        self.assertEqual("Unknown Trac environment type ''", str(cm.exception))
 
     def test_version_file_not_found(self):
         """TracError raised when environment version file not found."""
@@ -132,9 +131,9 @@ class EnvironmentTestCase(unittest.TestCase):
             Environment(self.env.path)
         self.assertEqual(
             "No Trac environment found at %s\n"
-            "IOError: [Errno 2] No such file or directory: '%s'"
+            "FileNotFoundError: [Errno 2] No such file or directory: '%s'"
             % (self.env.path, version_file),
-            unicode(cm.exception))
+            str(cm.exception))
 
     def test_missing_config_file_raises_trac_error(self):
         """TracError is raised when config file is missing."""
@@ -153,7 +152,7 @@ class EnvironmentTestCase(unittest.TestCase):
 
         self.env.log.warning("The warning message")
 
-        with open(self.env.log_file_path) as f:
+        with open(self.env.log_file_path, encoding='utf-8') as f:
             log = f.readlines()
         self.assertEqual("Trac[env] My Project: The warning message\n",
                          log[-1])
@@ -193,7 +192,7 @@ class EnvironmentDataTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        cls.devnull = io.open(os.devnull, 'wb')
+        cls.devnull = io.open(os.devnull, 'w', encoding='utf-8')
         sys.stdout = sys.stderr = cls.devnull
         cls.env = Environment(mkdtemp(), create=True)
 
@@ -226,7 +225,7 @@ class EnvironmentDataTestCase(unittest.TestCase):
     def test_dumped_values_in_tracini(self):
         parser = RawConfigParser()
         filename = self.env.config.filename
-        self.assertEqual([filename], parser.read(filename))
+        self.assertEqual([filename], parser.read(filename, 'utf-8'))
         self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
                          parser.get('revisionlog', 'graph_colors'))
         self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
@@ -234,7 +233,7 @@ class EnvironmentDataTestCase(unittest.TestCase):
     def test_dumped_values_in_tracini_sample(self):
         parser = RawConfigParser()
         filename = self.env.config.filename + '.sample'
-        self.assertEqual([filename], parser.read(filename))
+        self.assertEqual([filename], parser.read(filename, 'utf-8'))
         self.assertEqual('#cc0,#0c0,#0cc,#00c,#c0c,#c00',
                          parser.get('revisionlog', 'graph_colors'))
         self.assertEqual('disabled', parser.get('trac', 'secure_cookies'))
@@ -494,35 +493,35 @@ class SystemInfoTestCase(unittest.TestCase):
             self.fail('Missing %r' % name)
 
         if self.env.dburi.startswith('mysql'):
-            self.assertRegexpMatches(get_info(info_before, 'MySQL'),
-                                     r'^server: \(not-connected\), '
-                                     r'client: "\d+(\.\d+)+([-.].+)?", '
-                                     r'thread-safe: True$')
-            self.assertRegexpMatches(get_info(info_after, 'MySQL'),
-                                     r'^server: "\d+(\.\d+)+([-.].+)?", '
-                                     r'client: "\d+(\.\d+)+([-.].+)?", '
-                                     r'thread-safe: True$')
-            self.assertRegexpMatches(get_info(info_before, 'pymysql'),
-                                     r'^\d+(\.\d+)+$')
-            self.assertRegexpMatches(get_info(info_after, 'pymysql'),
-                                     r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_before, 'MySQL'),
+                             r'^server: \(not-connected\), '
+                             r'client: "\d+(\.\d+)+([-.].+)?", '
+                             r'thread-safe: True$')
+            self.assertRegex(get_info(info_after, 'MySQL'),
+                             r'^server: "\d+(\.\d+)+([-.].+)?", '
+                             r'client: "\d+(\.\d+)+([-.].+)?", '
+                             r'thread-safe: True$')
+            self.assertRegex(get_info(info_before, 'pymysql'),
+                             r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_after, 'pymysql'),
+                             r'^\d+(\.\d+)+$')
         elif self.env.dburi.startswith('postgres'):
-            self.assertRegexpMatches(get_info(info_before, 'PostgreSQL'),
-                                     r'^server: \(not-connected\), '
-                                     r'client: (\d+(\.\d+)+|\(unknown\))$')
-            self.assertRegexpMatches(get_info(info_after, 'PostgreSQL'),
-                                     r'^server: \d+(\.\d+)+, '
-                                     r'client: (\d+(\.\d+)+|\(unknown\))$')
-            self.assertRegexpMatches(get_info(info_before, 'psycopg2'),
-                                     r'^\d+(\.\d+)+$')
-            self.assertRegexpMatches(get_info(info_after, 'psycopg2'),
-                                     r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_before, 'PostgreSQL'),
+                             r'^server: \(not-connected\), '
+                             r'client: (\d+(\.\d+)+|\(unknown\))$')
+            self.assertRegex(get_info(info_after, 'PostgreSQL'),
+                             r'^server: \d+(\.\d+)+, '
+                             r'client: (\d+(\.\d+)+|\(unknown\))$')
+            self.assertRegex(get_info(info_before, 'psycopg2'),
+                             r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_after, 'psycopg2'),
+                             r'^\d+(\.\d+)+$')
         elif self.env.dburi.startswith('sqlite'):
             self.assertEqual(info_before, info_after)
-            self.assertRegexpMatches(get_info(info_before, 'SQLite'),
-                                     r'^\d+(\.\d+)+$')
-            self.assertRegexpMatches(get_info(info_before, 'pysqlite'),
-                                     r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_before, 'SQLite'),
+                             r'^\d+(\.\d+)+$')
+            self.assertRegex(get_info(info_before, 'pysqlite'),
+                             r'^\d+(\.\d+)+$')
         else:
             self.fail("Unknown value for dburi %s" % self.env.dburi)
 
@@ -536,7 +535,7 @@ class ConvertDatabaseTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        cls.devnull = io.open(os.devnull, 'wb')
+        cls.devnull = io.open(os.devnull, 'w', encoding='utf-8')
         sys.stdout = sys.stderr = cls.devnull
 
     @classmethod
@@ -564,14 +563,14 @@ class ConvertDatabaseTestCase(unittest.TestCase):
         env = Environment(path, True,
                           [('trac', 'database', dburi),
                            ('trac', 'base_url', 'http://localhost/'),
-                           ('project', 'name', u'Pŕójéćŧ Ńáḿé')])
+                           ('project', 'name', 'Pŕójéćŧ Ńáḿé')])
         dbm = DatabaseManager(env)
         dbm.set_database_version(21, 'initial_database_version')
         att = Attachment(env, 'wiki', 'WikiStart')
-        att.insert('filename.txt', io.BytesIO('test'), 4)
+        att.insert('filename.txt', io.BytesIO(b'test'), 4)
         env.shutdown()
 
-    if 'destroying' in inspect.getargspec(EnvironmentStub.__init__)[0]:
+    if 'destroying' in inspect.signature(EnvironmentStub.__init__).parameters:
         def _destroy_db(self):
             EnvironmentStub(path=self.path, destroying=True).destroy_db()
     else:
@@ -628,11 +627,11 @@ class ConvertDatabaseTestCase(unittest.TestCase):
         self._convert_db(env, dburi, None)
 
     def _compare_records(self, expected, actual):
-        self.assertEqual(expected.keys(), actual.keys())
+        self.assertEqual(list(expected), list(actual))
         for table in db_default.schema:
             name = table.name
             if name == 'report':
-                self.assertEqual(expected[name].keys(), actual[name].keys())
+                self.assertEqual(list(expected[name]), list(actual[name]))
             else:
                 self.assertEqual(expected[name], actual[name])
 
@@ -870,7 +869,7 @@ class TracAdminDeployTestCase(TracAdminTestCaseBase):
     def setUpClass(cls):
         cls.stdout = sys.stdout
         cls.stderr = sys.stderr
-        cls.devnull = io.open(os.devnull, 'wb')
+        cls.devnull = io.open(os.devnull, 'w', encoding='utf-8')
         sys.stdout = sys.stderr = cls.devnull
 
     @classmethod
@@ -1024,7 +1023,7 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
         self.assertEqual('project1', cfile.get('project', 'name'))
         self.assertEqual('sqlite:db/sqlite.db', cfile.get('trac', 'database'))
         for (section, name), option in \
-                Option.get_registry(env.compmgr).iteritems():
+                Option.get_registry(env.compmgr).items():
             if (section, name) not in \
                     (('trac', 'database'), ('project', 'name')):
                 self.assertEqual(option.default, cfile.get(section, name))

@@ -76,7 +76,7 @@ class IPropertyDiffRenderer(Interface):
         The rendered result can be one of the following:
          - `None`: the property change will be shown the normal way
            (''changed from `old` to `new`'')
-         - an `unicode` value: the change will be shown as textual content
+         - an `str` value: the change will be shown as textual content
          - `Markup` or `Fragment`: the change will shown as block markup
         """
 
@@ -681,7 +681,7 @@ class ChangesetModule(Component):
     def _render_diff(self, req, filename, repos, data):
         """Raw Unified Diff version"""
 
-        output = (line.encode('utf-8') if isinstance(line, unicode) else line
+        output = (line.encode('utf-8') if isinstance(line, str) else line
                   for line in self._iter_diff_lines(req, repos, data))
         if Chrome(self.env).use_chunked_encoding:
             length = None
@@ -852,7 +852,7 @@ class ChangesetModule(Component):
             if len(repositories) > 1:
                 filters = [
                     ('repo-' + repos.reponame,
-                     u"\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
+                     "\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
                     for repos in repositories
                     if not as_bool(repos.params.get('hidden'))
                     and repos.is_viewable(req.perm)]
@@ -983,7 +983,7 @@ class ChangesetModule(Component):
                     files = [tag.li(tag.div(class_=mod), path or '/')
                              for path, mod in sorted(unique_files)]
                     if 0 < show_files < len(files):
-                        files = files[:show_files] + [tag.li(u'\u2026')]
+                        files = files[:show_files] + [tag.li('\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
                 markup += format_to(self.env, None,

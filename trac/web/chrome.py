@@ -342,7 +342,7 @@ def chrome_info_script(req, use_late=None):
                    (to_js_string(link['href']), to_js_string(link['type']))
                    for link in links or ())
     content.extend('var %s=%s;' % (name, presentation.to_json(value))
-                   for name, value in (script_data or {}).iteritems())
+                   for name, value in (script_data or {}).items())
 
     fragment = tag()
     if content:
@@ -659,7 +659,7 @@ class Chrome(Component):
         def write_sample_template(filename, kind, example=''):
             site_path = os.path.join(self.env.templates_dir,
                                      filename + '.sample')
-            with open(site_path, 'w') as fileobj:
+            with open(site_path, 'w', encoding='utf-8') as fileobj:
                 fileobj.write("""\
 {#  This file allows customizing the appearance of the Trac installation.
 
@@ -743,11 +743,11 @@ class Chrome(Component):
                 ('site', self.env.htdocs_dir)]
 
     def get_templates_dirs(self):
-        return filter(None, [
+        return list(filter(None, [
             self.env.templates_dir,
             self.shared_templates_dir,
             pkg_resources.resource_filename('trac', 'templates'),
-        ])
+        ]))
 
     # IWikiSyntaxProvider methods
 
@@ -877,7 +877,7 @@ class Chrome(Component):
             label = section.get(name + '.label')
             if href and href.startswith('/'):
                 href = req.href + href
-            if isinstance(text, Element) and text.tag == u'a':
+            if isinstance(text, Element) and text.tag == 'a':
                 link = text
                 if label:
                     link.children[0] = label
@@ -930,10 +930,10 @@ class Chrome(Component):
                         active = name
 
         nav_items = {}
-        for category, category_items in all_items.iteritems():
+        for category, category_items in all_items.items():
             nav_items.setdefault(category, [])
             for name, attributes in \
-                    sorted(category_items.iteritems(),
+                    sorted(iter(category_items.items()),
                            key=lambda name_attr: (name_attr[1]['order'], name_attr[0])):
                 if attributes['enabled'] and attributes['link'] and \
                         (not attributes['perm'] or
@@ -1447,7 +1447,7 @@ class Chrome(Component):
         If you don't need that and don't want the overhead, use
         `load_template` and `render_template_string` directly.
 
-        :rtype: the generated output is an `unicode` string if *text*
+        :rtype: the generated output is a `str` string if *text*
                 is ``True``, or a `Markup` string otherwise.
 
         See also `generate_fragment`, which produces an output
@@ -1489,7 +1489,7 @@ class Chrome(Component):
                                  iterable=None):
         """Returns the rendered template in a form that can be "sent".
 
-        This will be either a single UTF-8 encoded `str` object, or an
+        This will be either a single UTF-8 encoded `btyes` object, or an
         iterable made of chunks of the above.
 
         :param template: the Jinja2 template
@@ -1499,11 +1499,11 @@ class Chrome(Component):
                      not be sanitized (see `valid_html_bytes`).
 
         :param iterable: determine whether the output should be
-                         generated in chunks or as a single `str`; if
+                         generated in chunks or as a single `btyes`; if
                          `None`, the `use_chunked_encoding` property
                          will be used to determine this instead
 
-        :rtype: `str` or an iterable of `str`, depending on *iterable*
+        :rtype: `btyes` or an iterable of `btyes`, depending on *iterable*
 
         .. note:
 
@@ -1529,7 +1529,7 @@ class Chrome(Component):
             return b''.join(generate())
 
     def render_template_string(self, template, data, text=False):
-        """Renders the template as an unicode or Markup string.
+        """Renders the template as a str or Markup string.
 
         :param template: the Jinja2 template
         :type template: ``jinja2.Template``
@@ -1537,7 +1537,7 @@ class Chrome(Component):
         :param text: in text mode (``True``) the generated string
                      will not be wrapped in `Markup`
 
-        :rtype: `unicode` if *text* is ``True``, `Markup` otherwise.
+        :rtype: `str` if *text* is ``True``, `Markup` otherwise.
 
         .. note:
 
@@ -1551,7 +1551,7 @@ class Chrome(Component):
         return string if text else Markup(string)
 
     def iterable_content(self, stream, text=False, **kwargs):
-        """Generate an iterable object which iterates `str` instances
+        """Generate an iterable object which iterates `btyes` instances
         from the given stream instance.
 
         :param text: in text mode (``True``) XML/HTML auto-escape of

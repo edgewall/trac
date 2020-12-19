@@ -48,7 +48,7 @@ def do_upgrade(env, version, cursor):
                     r.query = query
                     r.update()
                 else:
-                    failures.append(unicode(id_))
+                    failures.append(str(id_))
 
     if failures:
         failures = ', '.join(failures)

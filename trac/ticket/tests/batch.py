@@ -427,7 +427,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertTrue(all(ev[0] != 'batchmodify' for ev in events))
 
         prio_ids = {}
-        for i in xrange(20):
+        for i in range(20):
             priority = ('', 'minor', 'major', 'critical')[i % 4]
             t = insert_ticket(self.env, summary='Ticket %d' % i,
                               priority=priority)
@@ -561,7 +561,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertEqual(1, len(req2.chrome['warnings']))
         self.assertEqual("The ticket comment is invalid: Must be less than or "
                          "equal to 5 characters",
-                         unicode(req2.chrome['warnings'][0]))
+                         str(req2.chrome['warnings'][0]))
         self.assertEqual(1, len(model.Ticket(self.env, 1).get_changelog()))
         self.assertEqual(1, len(model.Ticket(self.env, 2).get_changelog()))
 
@@ -582,7 +582,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertEqual(1, len(req.chrome['warnings']))
         self.assertEqual('The ticket field <strong>component</strong> is '
                          'invalid: "component3" is not a valid value',
-                         unicode(req.chrome['warnings'][0]))
+                         str(req.chrome['warnings'][0]))
 
     def test_validate_ticket_custom_field_max_size(self):
         """The [ticket-custom] max_size attribute is enforced."""
@@ -615,7 +615,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertEqual(1, len(req2.chrome['warnings']))
         self.assertEqual("The ticket field <strong>Text1</strong> is "
                          "invalid: Must be less than or equal to 5 "
-                         "characters", unicode(req2.chrome['warnings'][0]))
+                         "characters", str(req2.chrome['warnings'][0]))
         self.assertEqual('12345', model.Ticket(self.env, 1)['text1'])
         self.assertEqual('12345', model.Ticket(self.env, 2)['text1'])
 
@@ -649,7 +649,7 @@ class BatchModifyTestCase(unittest.TestCase):
             module.process_request(req2)
 
         self.assertEqual(1, len(req2.chrome['warnings']))
-        self.assertRegexpMatches(unicode(req2.chrome['warnings'][0]),
+        self.assertRegex(str(req2.chrome['warnings'][0]),
             'The ticket field <strong>Time1</strong> is invalid: "invalid" '
             'is an invalid date, or the date format is not known. '
             'Try "[^"]+" or "[^"]+" instead.')
@@ -677,7 +677,7 @@ class BatchModifyTestCase(unittest.TestCase):
         self.assertEqual(1, len(req1.chrome['warnings']))
         self.assertEqual("The ticket field <strong>component</strong> is "
                          "invalid: Invalid Component",
-                         unicode(req1.chrome['warnings'][0]))
+                         str(req1.chrome['warnings'][0]))
         self.assertFieldValue(1, 'component', 'component1')
         self.assertFieldValue(2, 'component', 'component2')
 
@@ -709,7 +709,7 @@ class BatchModifyTestCase(unittest.TestCase):
             module.process_request(req3)
 
         self.assertEqual("The ticket comment is invalid: Word is not allowed "
-                         "in comment", unicode(req3.chrome['warnings'][0]))
+                         "in comment", str(req3.chrome['warnings'][0]))
         self.assertFieldValue(1, 'component', 'component4')
         self.assertFieldValue(2, 'component', 'component4')
 

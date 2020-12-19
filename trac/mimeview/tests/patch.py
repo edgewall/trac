@@ -30,7 +30,7 @@ class PatchRendererTestCase(unittest.TestCase):
         html_file = os.path.join(os.path.dirname(__file__), 'patch.data')
         self.patch_html = {}
         testcase = []
-        with open(html_file, 'rb') as f:
+        with open(html_file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     self.patch_html[line[1:].strip()] = testcase = []
@@ -97,6 +97,7 @@ class PatchRendererTestCase(unittest.TestCase):
 """)
         self.assertTrue(result)
         self._test('no_newline_in_changed', result)
+
     def test_diff_to_hdf_expandtabs(self):
         """Regression test related to #4557"""
         changes = self.patch._diff_to_hdf(

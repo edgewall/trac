@@ -51,28 +51,30 @@ class AtomicFileTestCase(unittest.TestCase):
         self.assertTrue(f.closed)
         self.assertEqual('Some new content', util.read_file(self.path))
 
-    if os.name != 'nt':
-        def test_symbolic_link(self):
-            link_path = os.path.join(self.dir, 'trac-tempfile-link')
-            os.symlink(self.path, link_path)
+    @unittest.skipIf(os.name == 'nt',
+                     'Symbolic links are not supported on Windows')
+    def test_symbolic_link(self):
+        link_path = os.path.join(self.dir, 'trac-tempfile-link')
+        os.symlink(self.path, link_path)
 
-            with util.AtomicFile(link_path) as f:
-                f.write('test content')
+        with util.AtomicFile(link_path) as f:
+            f.write('test content')
 
-            self.assertTrue(os.path.islink(link_path))
-            self.assertEqual('test content', util.read_file(link_path))
-            self.assertEqual('test content', util.read_file(self.path))
+        self.assertTrue(os.path.islink(link_path))
+        self.assertEqual('test content', util.read_file(link_path))
+        self.assertEqual('test content', util.read_file(self.path))
 
-    if util.can_rename_open_file:
-        def test_existing_open_for_reading(self):
-            util.create_file(self.path, 'Initial file content')
-            self.assertEqual('Initial file content', util.read_file(self.path))
-            with open(self.path) as rf:
-                with util.AtomicFile(self.path) as f:
-                    f.write('Replaced content')
-            self.assertTrue(rf.closed)
-            self.assertTrue(f.closed)
-            self.assertEqual('Replaced content', util.read_file(self.path))
+    @unittest.skipIf(not util.can_rename_open_file,
+                     'Open files cannot be renamed on Windows')
+    def test_existing_open_for_reading(self):
+        util.create_file(self.path, 'Initial file content')
+        self.assertEqual('Initial file content', util.read_file(self.path))
+        with open(self.path, 'rb') as rf:
+            with util.AtomicFile(self.path) as f:
+                f.write('Replaced content')
+        self.assertTrue(rf.closed)
+        self.assertTrue(f.closed)
+        self.assertEqual('Replaced content', util.read_file(self.path))
 
     # FIXME: It is currently not possible to make this test pass on all
     # platforms and with all locales. Typically, it will fail on Linux with
@@ -81,7 +83,7 @@ class AtomicFileTestCase(unittest.TestCase):
     # to remove the dependency on the locale. So the test is disabled until
     # we require Python 3.
     def _test_unicode_path(self):
-        self.path = os.path.join(self.dir, u'träc-témpfilè')
+        self.path = os.path.join(self.dir, 'träc-témpfilè')
         with util.AtomicFile(self.path) as f:
             f.write('test content')
         self.assertTrue(f.closed)
@@ -141,17 +143,17 @@ class RandomTestCase(unittest.TestCase):
 
     def test_urandom(self):
         """urandom() returns random bytes"""
-        for i in xrange(129):
+        for i in range(129):
             self.assertEqual(i, len(util.urandom(i)))
         # For a large enough sample, each value should appear at least once
         entropy = util.urandom(65536)
-        values = {ord(c) for c in entropy}
+        values = set(entropy)
         self.assertEqual(256, len(values))
 
     def test_hex_entropy(self):
         """hex_entropy() returns random hex digits"""
         hex_digits = set('0123456789abcdef')
-        for i in xrange(129):
+        for i in range(129):
             entropy = util.hex_entropy(i)
             self.assertEqual(i, len(entropy))
             self.assertEqual(set(), set(entropy) - hex_digits)
@@ -185,7 +187,7 @@ class ContentDispositionTestCase(unittest.TestCase):
 
 class SafeReprTestCase(unittest.TestCase):
     def test_normal_repr(self):
-        for x in ([1, 2, 3], "été", u"été"):
+        for x in ([1, 2, 3], "été", "été"):
             self.assertEqual(repr(x), util.safe_repr(x))
 
     def test_buggy_repr(self):
@@ -269,7 +271,8 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
     def test_file_metadata(self):
         pkgname = 'TestModule_' + util.hex_entropy(16)
         modname = pkgname.lower()
-        with open(os.path.join(self.dir, pkgname + '-0.1.egg-info'), 'w') as f:
+        with open(os.path.join(self.dir, pkgname + '-0.1.egg-info'), 'w',
+                  encoding='utf-8') as f:
             f.write('Metadata-Version: 1.1\n'
                     'Name: %(pkgname)s\n'
                     'Version: 0.1\n'
@@ -285,7 +288,8 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
                     % {'pkgname': pkgname, 'modname': modname})
         os.mkdir(os.path.join(self.dir, modname))
         for name in ('__init__.py', 'bar.py', 'foo.py'):
-            with open(os.path.join(self.dir, modname, name), 'w') as f:
+            with open(os.path.join(self.dir, modname, name), 'w',
+                      encoding='utf-8') as f:
                 f.write('# -*- coding: utf-8 -*-\n')
 
         mod = importlib.import_module(modname)
@@ -306,7 +310,7 @@ class SetuptoolsUtilsTestCase(unittest.TestCase):
     def _write_module(self, version, url):
         modname = 'TestModule_' + util.hex_entropy(16)
         modpath = os.path.join(self.dir, modname + '.py')
-        with open(modpath, 'w') as f:
+        with open(modpath, 'w', encoding='utf-8') as f:
             f.write(textwrap.dedent("""\
                 # -*- coding: utf-8 -*-
                 from trac.core import Component
@@ -387,7 +391,7 @@ class FileTestCase(unittest.TestCase):
     def setUp(self):
         self.dir = mkdtemp()
         self.filename = os.path.join(self.dir, 'trac-tempfile')
-        self.data = 'Lorem\ripsum\ndolor\r\nsit\namet,\rconsectetur\r\n'
+        self.data = b'Lorem\ripsum\ndolor\r\nsit\namet,\rconsectetur\r\n'
 
     def tearDown(self):
         rmtree(self.dir)

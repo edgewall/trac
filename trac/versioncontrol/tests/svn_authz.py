@@ -77,27 +77,27 @@ class AuthzParserTestCase(unittest.TestCase):
         authz = parse(self.authz_file, {'', 'module'})
         self.assertEqual({
             '': {
-                u'/': {
-                    u'*': True,
+                '/': {
+                    '*': True,
                 },
-                u'/trunk': {
-                    u'foo': True,
-                    u'bar': True,
-                    u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
+                '/trunk': {
+                    'foo': True,
+                    'bar': True,
+                    'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
-                u'/branches': {
-                    u'bar': True,
+                '/branches': {
+                    'bar': True,
                 },
             },
-            u'module': {
-                u'/trunk': {
-                    u'foo': True,
-                    u'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
+            'module': {
+                '/trunk': {
+                    'foo': True,
+                    'CN=Hàröld Hacker,OU=Enginéers,DC=red-bean,DC=com': True,
                 },
-                u'/c/résumé': {
-                    u'bar': True,
-                    u'Foo': True,
-                    u'BAZ': True,
+                '/c/résumé': {
+                    'bar': True,
+                    'Foo': True,
+                    'BAZ': True,
                 },
             },
         }, authz)

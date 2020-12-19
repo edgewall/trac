@@ -208,8 +208,6 @@ class SQLiteConnector(Component):
             dir = os.path.dirname(path)
             if not os.path.exists(dir):
                 os.makedirs(dir)
-            if isinstance(path, unicode):  # needed with 2.4.0
-                path = path.encode('utf-8')
             # this direct connect will create the database if needed
             cnx = sqlite.connect(path, isolation_level=None,
                                  timeout=int(params.get('timeout', 10000)))
@@ -247,7 +245,7 @@ class SQLiteConnector(Component):
         Type changes are specified as a `columns` dict mapping column names
         to `(from, to)` SQL type tuples.
         """
-        for name, (from_, to) in sorted(columns.iteritems()):
+        for name, (from_, to) in sorted(columns.items()):
             if _type_map.get(to, to) != _type_map.get(from_, from_):
                 raise NotImplementedError("Conversion from %s to %s is not "
                                           "implemented" % (from_, to))
@@ -311,8 +309,6 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
         timeout = int(params.get('timeout', 10.0))
         self._eager = params.get('cursor', 'eager') == 'eager'
         # eager is default, can be turned off by specifying ?cursor=
-        if isinstance(path, unicode):  # needed with 2.4.0
-            path = path.encode('utf-8')
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                              isolation_level=None,
                              check_same_thread=sqlite_version < (3, 3, 1),

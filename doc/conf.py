@@ -259,13 +259,13 @@ latex_documents = [
 # The options element is a dictionary that lets you override
 # this config per-document.
 # For example,
-# ('index', u'MyProject', u'My Project', u'Author Name',
+# ('index', 'MyProject', 'My Project', 'Author Name',
 #  dict(pdf_compressed = True))
 # would mean that specific document would be compressed
 # regardless of the global pdf_compressed setting.
 
 pdf_documents = [
-    ('index', 'trac_dev', project, u'The Trac Team'),
+    ('index', 'trac_dev', project, 'The Trac Team'),
 ]
 
 # A comma-separated list of custom stylesheets (latest has higher precedence)

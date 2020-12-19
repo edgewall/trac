@@ -43,7 +43,7 @@ class WikiParser(Component):
     STARTBLOCK = "{{{"
     ENDBLOCK_TOKEN = r"\}\}\}"
     ENDBLOCK = "}}}"
-    BULLET_CHARS = u"-*\u2022"
+    BULLET_CHARS = "-*\u2022"
 
     LINK_SCHEME = r"[a-zA-Z][-a-zA-Z0-9+._]*" # as per RFC 2396 + '_'
     INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (for shorthand links)
@@ -107,10 +107,10 @@ class WikiParser(Component):
         (r"(?P<lhref>!?\[(?:"
          r"(?P<rel>%s)|" % LHREF_RELATIVE_TARGET + # ./... or /...
          r"(?P<lns>%s):(?P<ltgt>%s:(?:%s)|%s|[^\]\s\%s]*))" %
-         (LINK_SCHEME, LINK_SCHEME, QUOTED_STRING, QUOTED_STRING, u'\u200b') +
+         (LINK_SCHEME, LINK_SCHEME, QUOTED_STRING, QUOTED_STRING, '\u200b') +
          # wiki:TracLinks or wiki:"trac links" or intertrac:wiki:"trac links"
          r"(?:[\s%s]+(?P<label>%s|[^\]]*))?\])" %
-         (u'\u200b', QUOTED_STRING)), # trailing space, optional label
+         ('\u200b', QUOTED_STRING)), # trailing space, optional label
         # [=#anchor] creation
         r"(?P<anchor>!?\[%s\])" % _set_anchor(XML_NAME, r'\s+'),
         # [[macro]] call or [[WikiCreole link]]

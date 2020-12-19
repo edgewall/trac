@@ -101,7 +101,8 @@ class AuthenticateTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         from trac.core import ComponentMeta
-        for component in cls.authenticators.values() + cls.request_handlers:
+        for component in list(cls.authenticators.values()) + \
+                         cls.request_handlers:
             ComponentMeta.deregister(component)
 
     def setUp(self):
@@ -264,7 +265,7 @@ class PreProcessRequestTestCase(unittest.TestCase):
             RequestDispatcher(self.env).dispatch(req)
         except HTTPInternalServerError as e:
             self.assertEqual("500 Trac Error (Raised in pre_process_request)",
-                             unicode(e))
+                             str(e))
         else:
             self.fail("HTTPInternalServerError not raised")
 
@@ -309,7 +310,7 @@ class ProcessRequestTestCase(unittest.TestCase):
             self.assertEqual(
                 "403 Forbidden (Raised in process_request "
                 "privileges are required to perform this operation. You "
-                "don't have the required permissions.)", unicode(e))
+                "don't have the required permissions.)", str(e))
         else:
             self.fail("HTTPForbidden not raised")
 
@@ -324,7 +325,7 @@ class ProcessRequestTestCase(unittest.TestCase):
             RequestDispatcher(self.env).dispatch(req)
         except HTTPNotFound as e:
             self.assertEqual("404 Trac Error (Raised in process_request)",
-                             unicode(e))
+                             str(e))
         else:
             self.fail("HTTPNotFound not raised")
 
@@ -339,7 +340,7 @@ class ProcessRequestTestCase(unittest.TestCase):
             RequestDispatcher(self.env).dispatch(req)
         except HTTPInternalServerError as e:
             self.assertEqual("500 Trac Error (Raised in process_request)",
-                             unicode(e))
+                             str(e))
         else:
             self.fail("HTTPInternalServerError not raised")
 
@@ -354,7 +355,7 @@ class ProcessRequestTestCase(unittest.TestCase):
             RequestDispatcher(self.env).dispatch(req)
         except HTTPInternalServerError as e:
             self.assertEqual("500 Not Implemented Error (Raised in "
-                             "process_request)", unicode(e))
+                             "process_request)", str(e))
         else:
             self.fail("HTTPInternalServerError not raised")
 
@@ -480,7 +481,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
                                 TestStubRequestHandler.filename)
         create_file(filepath, TestStubRequestHandler.template)
         self.filename = os.path.join(self.env.path, 'test.txt')
-        self.data = 'contents\n'
+        self.data = b'contents\n'
         create_file(self.filename, self.data, 'wb')
 
     def tearDown(self):
@@ -494,14 +495,14 @@ class RequestDispatcherTestCase(unittest.TestCase):
         return sid, name, email
 
     def _content(self):
-        yield 'line1,'
-        yield 'line2,'
-        yield 'line3\n'
+        yield b'line1,'
+        yield b'line2,'
+        yield b'line3\n'
 
     def test_invalid_default_date_format_raises_exception(self):
-        self.env.config.set('trac', 'default_date_format', u'ĭšo8601')
+        self.env.config.set('trac', 'default_date_format', 'ĭšo8601')
 
-        self.assertEqual(u'ĭšo8601',
+        self.assertEqual('ĭšo8601',
                          self.env.config.get('trac', 'default_date_format'))
         self.assertRaises(ConfigurationError, getattr,
                           RequestDispatcher(self.env), 'default_date_format')
@@ -522,7 +523,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertEqual(email, req.session['email'])
         self.assertFalse(req.session.authenticated)
         self.assertEqual('200 Ok', req.status_sent[0])
-        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+        self.assertIn(b'<h1>Hello World</h1>', req.response_sent.getvalue())
 
     def test_get_session_returns_fake_session(self):
         """Fake session is returned when database is not reachable."""
@@ -559,7 +560,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertNotIn('email', req.session)
         self.assertFalse(req.session.authenticated)
         self.assertEqual('200 Ok', req.status_sent[0])
-        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+        self.assertIn(b'<h1>Hello World</h1>', req.response_sent.getvalue())
 
     def test_invalid_session_id_returns_fake_session(self):
         """Fake session is returned when session id is invalid."""
@@ -581,7 +582,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertIsInstance(req.session, FakeSession)
         self.assertIsNone(req.session.sid)
         self.assertEqual('200 Ok', req.status_sent[0])
-        self.assertIn('<h1>Hello World</h1>', req.response_sent.getvalue())
+        self.assertIn(b'<h1>Hello World</h1>', req.response_sent.getvalue())
 
     def test_set_valid_xsendfile_header(self):
         """Send file using xsendfile header."""
@@ -599,7 +600,7 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertEqual(self.filename, req.headers_sent['X-Accel-Redirect'])
         self.assertNotIn('X-Sendfile', req.headers_sent)
         self.assertIsNone(req._response)
-        self.assertEqual('', req.response_sent.getvalue())
+        self.assertEqual(b'', req.response_sent.getvalue())
 
     def _test_file_not_sent_using_xsendfile_header(self, xsendfile_header):
         req = MockRequest(self.env)
@@ -612,7 +613,8 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertEqual('text/plain', req.headers_sent['Content-Type'])
         self.assertNotIn(xsendfile_header, req.headers_sent)
         self.assertEqual('_FileWrapper', type(req._response).__name__)
-        self.assertEqual('', req.response_sent.getvalue())
+        self.assertEqual(b'', req.response_sent.getvalue())
+        req._response.close()
 
     def test_set_invalid_xsendfile_header(self):
         """Not sent by xsendfile header because header is invalid."""
@@ -653,9 +655,9 @@ class RequestDispatcherTestCase(unittest.TestCase):
         self.assertIn(custom2.lower(), req.headers_sent)
         self.assertNotIn('x-custom-(3)', req.headers_sent)
         self.assertIn(('WARNING', "[http-headers] invalid headers are ignored: "
-                                  "u'content-type': u'not-allowed', "
-                                  "u'x-custom-1': u'\\x00custom1', "
-                                  "u'x-custom-(3)': u'custom3'"),
+                                  "'content-type': 'not-allowed', "
+                                  "'x-custom-1': '\\x00custom1', "
+                                  "'x-custom-(3)': 'custom3'"),
                       self.env.log_messages)
 
     def test_send_configurable_headers(self):
@@ -681,7 +683,8 @@ class RequestDispatcherTestCase(unittest.TestCase):
 
         self.assertNotIn('X-XSS-protection', req1.headers_sent)
         self.assertIn('x-xss-protection', req1.headers_sent)
-        self.assertEqual('1; mode=block', req1.headers_sent['x-xss-protection'])
+        self.assertEqual('1; mode=block',
+                         req1.headers_sent['x-xss-protection'])
 
         req2 = MockRequest(self.env, method='POST')
         request_dispatcher.set_default_callbacks(req2)
@@ -724,7 +727,7 @@ class HdfdumpTestCase(unittest.TestCase):
         self.env.config.set('trac', 'default_handler', 'HdfdumpRequestHandler')
         self.assertRaises(RequestDone, self.request_dispatcher.dispatch,
                           self.req)
-        self.assertIn("{'name': 'value'}",
+        self.assertIn(b"{'name': 'value'}",
                       self.req.response_sent.getvalue())
         self.assertEqual('text/plain;charset=utf-8',
                          self.req.headers_sent['Content-Type'])
@@ -802,7 +805,7 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertEqual('500 Internal Server Error', self.status_sent[0])
         self.assertEqual('text/html;charset=utf-8',
                          self.headers_sent['Content-Type'])
-        self.assertIn('<h1>Oops\xe2\x80\xa6</h1>', content)
+        self.assertIn(b'<h1>Oops\xe2\x80\xa6</h1>', content)
 
     def test_trac_error(self):
         self._set_config(admin_trac_url='.')
@@ -814,11 +817,11 @@ class SendErrorTestCase(unittest.TestCase):
         self.assertEqual('500 Internal Server Error', self.status_sent[0])
         self.assertEqual('text/html;charset=utf-8',
                          self.headers_sent['Content-Type'])
-        self.assertIn('<h1>Trac Error</h1>', content)
-        self.assertIn('<p class="message">The TracError message</p>', content)
-        self.assertNotIn('<strong>Trac detected an internal error:</strong>',
+        self.assertIn(b'<h1>Trac Error</h1>', content)
+        self.assertIn(b'<p class="message">The TracError message</p>', content)
+        self.assertNotIn(b'<strong>Trac detected an internal error:</strong>',
                          content)
-        self.assertNotIn('There was an internal error in Trac.', content)
+        self.assertNotIn(b'There was an internal error in Trac.', content)
 
     def test_internal_error_for_non_admin(self):
         self._set_config(admin_trac_url='.')
@@ -828,11 +831,11 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>\nTo that end, you could', content)
-        self.assertNotIn('This is probably a local installation issue.',
+        self.assertIn(b'There was an internal error in Trac.', content)
+        self.assertIn(b'<p>\nTo that end, you could', content)
+        self.assertNotIn(b'This is probably a local installation issue.',
                          content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertNotIn(b'<h2>Found a bug in Trac?</h2>', content)
 
     def test_internal_error_with_admin_trac_url_for_non_admin(self):
         self._set_config(admin_trac_url='http://example.org/admin')
@@ -842,12 +845,12 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertIn('<p>\nTo that end, you could', content)
-        self.assertIn(' action="http://example.org/admin/newticket#"', content)
-        self.assertNotIn('This is probably a local installation issue.',
+        self.assertIn(b'There was an internal error in Trac.', content)
+        self.assertIn(b'<p>\nTo that end, you could', content)
+        self.assertIn(b' action="http://example.org/admin/newticket#"', content)
+        self.assertNotIn(b'This is probably a local installation issue.',
                          content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertNotIn(b'<h2>Found a bug in Trac?</h2>', content)
 
     def test_internal_error_without_admin_trac_url_for_non_admin(self):
         self._set_config(admin_trac_url='')
@@ -857,11 +860,11 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertIn('There was an internal error in Trac.', content)
-        self.assertNotIn('<p>\nTo that end, you could', content)
-        self.assertNotIn('This is probably a local installation issue.',
+        self.assertIn(b'There was an internal error in Trac.', content)
+        self.assertNotIn(b'<p>\nTo that end, you could', content)
+        self.assertNotIn(b'This is probably a local installation issue.',
                          content)
-        self.assertNotIn('<h2>Found a bug in Trac?</h2>', content)
+        self.assertNotIn(b'<h2>Found a bug in Trac?</h2>', content)
 
     def test_internal_error_for_admin(self):
         self._set_config(admin_trac_url='.')
@@ -872,12 +875,12 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertNotIn('a ticket at the admin Trac to report', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+        self.assertNotIn(b'There was an internal error in Trac.', content)
+        self.assertIn(b'This is probably a local installation issue.', content)
+        self.assertNotIn(b'a ticket at the admin Trac to report', content)
+        self.assertIn(b'<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn(b'<p>\nOtherwise, please', content)
+        self.assertIn(b' action="https://trac.edgewall.org/newticket"',
                       content)
 
     def test_internal_error_with_admin_trac_url_for_admin(self):
@@ -889,13 +892,13 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertIn('a ticket at the admin Trac to report', content)
-        self.assertIn(' action="http://example.org/admin/newticket#"', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+        self.assertNotIn(b'There was an internal error in Trac.', content)
+        self.assertIn(b'This is probably a local installation issue.', content)
+        self.assertIn(b'a ticket at the admin Trac to report', content)
+        self.assertIn(b' action="http://example.org/admin/newticket#"', content)
+        self.assertIn(b'<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn(b'<p>\nOtherwise, please', content)
+        self.assertIn(b' action="https://trac.edgewall.org/newticket"',
                       content)
 
     def test_internal_error_without_admin_trac_url_for_admin(self):
@@ -907,12 +910,12 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assert_internal_error(content)
-        self.assertNotIn('There was an internal error in Trac.', content)
-        self.assertIn('This is probably a local installation issue.', content)
-        self.assertNotIn('a ticket at the admin Trac to report', content)
-        self.assertIn('<h2>Found a bug in Trac?</h2>', content)
-        self.assertIn('<p>\nOtherwise, please', content)
-        self.assertIn(' action="https://trac.edgewall.org/newticket"',
+        self.assertNotIn(b'There was an internal error in Trac.', content)
+        self.assertIn(b'This is probably a local installation issue.', content)
+        self.assertNotIn(b'a ticket at the admin Trac to report', content)
+        self.assertIn(b'<h2>Found a bug in Trac?</h2>', content)
+        self.assertIn(b'<p>\nOtherwise, please', content)
+        self.assertIn(b' action="https://trac.edgewall.org/newticket"',
                       content)
 
     def test_environment_not_found(self):
@@ -924,9 +927,12 @@ class SendErrorTestCase(unittest.TestCase):
         content = self.response_sent.getvalue()
 
         self.assertEqual(
-            "Trac Error\n\nTracError: No Trac environment found at %s\n"
-            "IOError: [Errno 2] No such file or directory: '%s'"
-            % (env_path, os.path.join(env_path, 'VERSION')), content)
+            "Trac Error\n"
+            "\n"
+            "TracError: No Trac environment found at {}\n"
+            "FileNotFoundError: [Errno 2] No such file or directory: '{}'"
+            .format(env_path, os.path.join(env_path, 'VERSION'))
+            .encode('utf-8'), content)
 
 
 class SendErrorUseChunkedEncodingTestCase(SendErrorTestCase):

@@ -44,8 +44,8 @@ hashes = {
     'foo.$$$': 'eefc6aa745dbe129e8067a4a57637883edd83a8a',
     'foo.2.txt': 'a8fcfcc2ef4e400ee09ae53c1aabd7f5a5fda0c7',
     'foo.txt': '9206ac42b532ef8e983470c251f4e1a365fd636c',
-    u'bar.aäc': '70d0e3b813fdc756602d82748719a3ceb85cbf29',
-    u'ÜberSicht': 'a16c6837f6d3d2cc3addd68976db1c55deb694c8',
+    'bar.aäc': '70d0e3b813fdc756602d82748719a3ceb85cbf29',
+    'ÜberSicht': 'a16c6837f6d3d2cc3addd68976db1c55deb694c8',
 }
 
 
@@ -169,7 +169,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(8, attachment.size)
         self.assertEqual(self.datetime, attachment.date)
         self.assertEqual('joe', attachment.author)
-        self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
+        self.assertEqual("<Attachment 'foo.txt'>", repr(attachment))
 
     def test_existing_attachment_from_resource(self):
         resource = Resource('ticket', 43).child('attachment', 'foo.txt')
@@ -179,7 +179,7 @@ class AttachmentTestCase(unittest.TestCase):
         self.assertEqual(8, attachment.size)
         self.assertEqual(self.datetime, attachment.date)
         self.assertEqual('joe', attachment.author)
-        self.assertEqual("<Attachment u'foo.txt'>", repr(attachment))
+        self.assertEqual("<Attachment 'foo.txt'>", repr(attachment))
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)
@@ -217,11 +217,11 @@ class AttachmentTestCase(unittest.TestCase):
                                       hashes['foo.$$$']),
                          attachment.path)
         attachment = Attachment(self.env, 'wiki', 'SomePage')
-        attachment.filename = u'bar.aäc'
+        attachment.filename = 'bar.aäc'
         self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
                                       hashes['SomePage'][0:3],
                                       hashes['SomePage'],
-                                      hashes[u'bar.aäc']),
+                                      hashes['bar.aäc']),
                          attachment.path)
 
     def test_get_path_encoded(self):
@@ -231,11 +231,11 @@ class AttachmentTestCase(unittest.TestCase):
                                       hashes['42'][0:3], hashes['42'],
                                       hashes['Teh foo.txt'] + '.txt'),
                          attachment.path)
-        attachment = Attachment(self.env, 'wiki', u'ÜberSicht')
+        attachment = Attachment(self.env, 'wiki', 'ÜberSicht')
         attachment.filename = 'Teh bar.jpg'
         self.assertEqual(os.path.join(self.env.attachments_dir, 'wiki',
-                                      hashes[u'ÜberSicht'][0:3],
-                                      hashes[u'ÜberSicht'],
+                                      hashes['ÜberSicht'][0:3],
+                                      hashes['ÜberSicht'],
                                       hashes['Teh bar.jpg'] + '.jpg'),
                          attachment.path)
 
@@ -331,7 +331,7 @@ class AttachmentTestCase(unittest.TestCase):
             attachment.move(attachment.parent_realm, attachment.parent_id,
                             attachment.filename)
         self.assertEqual("Cannot rename non-existent attachment",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_move_attachment_not_modified_raises(self):
         """TracError is raised when attachment not modified on move."""
@@ -341,7 +341,7 @@ class AttachmentTestCase(unittest.TestCase):
         with self.assertRaises(TracError) as cm:
             attachment.move(attachment.parent_realm, attachment.parent_id,
                             attachment.filename)
-        self.assertEqual("Attachment not modified", unicode(cm.exception))
+        self.assertEqual("Attachment not modified", str(cm.exception))
 
     def test_move_attachment_to_nonexistent_resource_raises(self):
         """TracError is raised moving an attachment to nonexistent resource
@@ -352,7 +352,7 @@ class AttachmentTestCase(unittest.TestCase):
         with self.assertRaises(TracError) as cm:
             attachment.move('wiki', 'NonExistentPage')
         self.assertEqual("NonExistentPage doesn't exist, can't move attachment",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_move_attachment_to_existing_path_raises(self):
         """TracError is raised if target already exists"""
@@ -364,7 +364,7 @@ class AttachmentTestCase(unittest.TestCase):
         with self.assertRaises(TracError) as cm:
             attachment1.move(new_filename=attachment2.filename)
         self.assertEqual('Cannot move attachment "foo.txt" to "wiki:SomePage: '
-                         'bar.txt" as it already exists', unicode(cm.exception))
+                         'bar.txt" as it already exists', str(cm.exception))
 
     def test_attachment_change_listeners_called(self):
         """The move method calls attachment change listeners"""
@@ -433,7 +433,7 @@ class AttachmentTestCase(unittest.TestCase):
             Attachment.reparent_all(self.env, 'wiki', 'SomePage',
                                     'unknown_realm', 'UnknownId')
         self.assertEqual("unknown_realm doesn't exist, can't move attachment",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_reparent_all(self):
         """Change the parent realm and parent id of multiple attachments.
@@ -500,7 +500,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.assertTrue(module.match_request(req))
         with self.assertRaises(TracError) as cm:
             module.process_request(req)
-        self.assertEqual("No file uploaded", unicode(cm.exception))
+        self.assertEqual("No file uploaded", str(cm.exception))
 
     def test_post_request_with_empty_attachment_raises_exception(self):
         """TracError is raised for POST request with empty file."""
@@ -514,7 +514,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
             self.assertTrue(module.match_request(req))
             with self.assertRaises(TracError) as cm:
                 module.process_request(req)
-        self.assertEqual("Can't upload empty file", unicode(cm.exception))
+        self.assertEqual("Can't upload empty file", str(cm.exception))
 
     def test_post_request_exceeding_max_size_raises_exception(self):
         """TracError is raised for file exceeding max size"""
@@ -532,7 +532,7 @@ class AttachmentModuleTestCase(unittest.TestCase):
             with self.assertRaises(TracError) as cm:
                 module.process_request(req)
         self.assertEqual("Maximum attachment size: 10 bytes",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_attachment_parent_realm_raises_exception(self):
         """TracError is raised when 'attachment' is the resource parent
@@ -555,11 +555,11 @@ class AttachmentModuleTestCase(unittest.TestCase):
 
     def test_download_zip(self):
         att = Attachment(self.env, 'parent_realm', 'parent_id')
-        att.description = 'Blah blah'
-        att.insert('foo.txt', io.BytesIO('foo'), 3,
+        att.description = 'Bláh błah'
+        att.insert('föö.txt', io.BytesIO(b'foo'), 3,
                    datetime(2016, 9, 23, 12, 34, 56, tzinfo=utc))
         att = Attachment(self.env, 'parent_realm', 'parent_id')
-        att.insert('bar.jpg', io.BytesIO('bar'), 3,
+        att.insert('bar.jpg', io.BytesIO(b'bar'), 3,
                    datetime(2016, 12, 14, 23, 56, 30, tzinfo=utc))
         module = AttachmentModule(self.env)
         req = MockRequest(self.env, args={'format': 'zip'},
@@ -568,20 +568,20 @@ class AttachmentModuleTestCase(unittest.TestCase):
         self.assertTrue(module.match_request(req))
         self.assertRaises(RequestDone, module.process_request, req)
         z = zipfile.ZipFile(req.response_sent, 'r')
-        self.assertEqual(['bar.jpg', 'foo.txt'],
+        self.assertEqual(['bar.jpg', 'föö.txt'],
                          sorted(i.filename for i in z.infolist()))
 
-        zinfo = z.getinfo('foo.txt')
-        self.assertEqual('foo', z.read('foo.txt'))
+        zinfo = z.getinfo('föö.txt')
+        self.assertEqual(b'foo', z.read('föö.txt'))
         self.assertEqual(3, zinfo.file_size)
         self.assertEqual((2016, 9, 23, 12, 34, 56), zinfo.date_time)
-        self.assertEqual('Blah blah', zinfo.comment)
+        self.assertEqual('Bláh błah'.encode('utf-8'), zinfo.comment)
 
         zinfo = z.getinfo('bar.jpg')
-        self.assertEqual('bar', z.read('bar.jpg'))
+        self.assertEqual(b'bar', z.read('bar.jpg'))
         self.assertEqual(3, zinfo.file_size)
         self.assertEqual((2016, 12, 14, 23, 56, 30), zinfo.date_time)
-        self.assertEqual('', zinfo.comment)
+        self.assertEqual(b'', zinfo.comment)
 
     def test_preview_valid_xhtml(self):
         chrome = Chrome(self.env)
@@ -601,22 +601,22 @@ class AttachmentModuleTestCase(unittest.TestCase):
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
         attachment.insert('empty', io.BytesIO(), 0, 1)
         result = render(attachment)
-        self.assertIn('<strong>(The file is empty)</strong>', result)
+        self.assertIn(b'<strong>(The file is empty)</strong>', result)
         xml = minidom.parseString(result)
 
         # text file
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
         attachment.insert('foo.txt', io.BytesIO(b'text'), 4, 1)
         result = render(attachment)
-        self.assertIn('<tr><th id="L1"><a href="#L1">1</a></th>'
-                      '<td>text</td></tr>', result)
+        self.assertIn(b'<tr><th id="L1"><a href="#L1">1</a></th>'
+                      b'<td>text</td></tr>', result)
         xml = minidom.parseString(result)
 
         # preview unavailable
         attachment = Attachment(self.env, 'parent_realm', 'parent_id')
         attachment.insert('foo.dat', io.BytesIO(b'\x00\x00\x01\xb3'), 4, 1)
         result = render(attachment)
-        self.assertIn('<strong>HTML preview not available</strong>', result)
+        self.assertIn(b'<strong>HTML preview not available</strong>', result)
         xml = minidom.parseString(result)
 
 

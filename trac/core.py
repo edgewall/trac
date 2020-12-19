@@ -57,8 +57,9 @@ class TracError(TracBaseError):
     message = property(lambda self: self._message,
                        lambda self, v: setattr(self, '_message', v))
 
-    def __unicode__(self):
-        return unicode(self.message)
+    def __str__(self):
+        from trac.util.text import to_unicode
+        return to_unicode(self.message)
 
 
 class TracValueError(TracError, ValueError):
@@ -175,13 +176,12 @@ class ComponentMeta(type):
                     pass
 
 
-class Component(object):
+class Component(object, metaclass=ComponentMeta):
     """Base class for components.
 
     Every component can declare what extension points it provides, as
     well as what extension points of other components it extends.
     """
-    __metaclass__ = ComponentMeta
 
     @staticmethod
     def implements(*interfaces):

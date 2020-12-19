@@ -59,11 +59,11 @@ class GitRepositoryStub(object):
     _revs = [
         ('ffffffffffffffffffffffffffffffffffffffff', ('HEAD',)),
         ('deadbef222222222222222222222222222222222', ('1.0-stable',
-                                                      u'1.0-stáblé')),
-        ('deadbef111111111111111111111111111111111', ('v1.0.1', u'vér1.0.1')),
-        ('deadbef000000000000000000000000000000000', ('v1.0', u'vér1.0')),
+                                                      '1.0-stáblé')),
+        ('deadbef111111111111111111111111111111111', ('v1.0.1', 'vér1.0.1')),
+        ('deadbef000000000000000000000000000000000', ('v1.0', 'vér1.0')),
         ('deadbeefffffffffffffffffffffffffffffffff', ('0.12-stable',
-                                                      u'0.12-stáblé')),
+                                                      '0.12-stáblé')),
         ('0000009876543210987654321098765432109876', ()),  # only digits
         ('0000001234567890123456789012345678901234', ()),
         ('1111111111111111111111111111111111111111', ()),  # oldest rev
@@ -121,7 +121,7 @@ def repository_setup(tc):
             _get_all_repositories)
 
 
-CHANGESET_TEST_CASES = u"""
+CHANGESET_TEST_CASES = """
 ============================== changeset: link resolver
 changeset:1
 changeset:12
@@ -222,7 +222,7 @@ T:r2081
 """ #"
 
 
-LOG_TEST_CASES = u"""
+LOG_TEST_CASES = """
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
 [1:2/trunk], r1:2/trunk
@@ -436,7 +436,7 @@ r₁₂:₂₀,₂₅,₃₀-₃₅
 """
 
 
-DIFF_TEST_CASES = u"""
+DIFF_TEST_CASES = """
 ============================== diff: link resolver
 diff:trunk//branch
 diff:trunk@12//branch@23
@@ -467,7 +467,7 @@ diff://
 """
 
 
-SOURCE_TEST_CASES = u"""
+SOURCE_TEST_CASES = """
 ============================== source: link resolver
 source:/foo/bar
 source:/foo/bar#42   # no long works as rev spec

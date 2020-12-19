@@ -137,9 +137,9 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.assertEqual('open', open['css_class'], 'open class incorrect')
         self.assertFalse(open['overall_completion'],
                          "open shouldn't contribute to overall completion")
-        self.assertEqual({'status':
-                          [u'assigned', u'new', u'accepted', u'reopened']},
-                         open['qry_args'], 'qry_args incorrect')
+        self.assertEqual(['accepted', 'assigned', 'new', 'reopened'],
+                         sorted(open['qry_args']['status']))
+        self.assertEqual(['status'], sorted(open['qry_args']))
         self.assertEqual(2, open['count'], 'open count incorrect')
         self.assertEqual(67, open['percent'], 'open percent incorrect')
 
@@ -154,7 +154,7 @@ class MilestoneModuleTestCase(unittest.TestCase):
             m = Milestone(self.env)
             m.name = term
             m.due = datetime_now(utc)
-            m.description = u"""\
+            m.description = """\
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod \
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim \
 veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea \
@@ -224,7 +224,7 @@ est laborum."""
         self.assertEqual('Milestone ' + milestone.name, results[0][1])
         self.assertEqual(milestone.due, results[0][2])
         self.assertEqual('', results[0][3])
-        shorten_desc = u"""\
+        shorten_desc = """\
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod \
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, \
 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo \
@@ -382,7 +382,7 @@ class RoadmapTestCase(unittest.TestCase):
             rm.process_request(req)
 
         self.assertEqual('200 Ok', req.status_sent[0])
-        self.assertRegexpMatches(req.response_sent.getvalue(), """\
+        self.assertRegex(req.response_sent.getvalue(), b"""\
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Edgewall Software//NONSGML Trac [\.\w]+//EN
@@ -398,7 +398,7 @@ SUMMARY:Milestone milestone1
 URL:http://example.org/trac.cgi/milestone/milestone1
 END:VEVENT
 END:VCALENDAR
-""".replace('\n', '\r\n'))
+""".replace(b'\n', b'\r\n'))
 
 
 class ResourceTestCase(unittest.TestCase):
@@ -420,7 +420,7 @@ class ResourceTestCase(unittest.TestCase):
                                     format='compact')
         self.assertEqual('<a class="milestone" href="/trac.cgi/milestone/'
                          'milestone1" title="No date set">milestone1</a>',
-                         unicode(link))
+                         str(link))
 
     def test_resource_link_ticket_context_milestone_missing(self):
         """Resource link in ticket context for non-existent milestone.
@@ -431,7 +431,7 @@ class ResourceTestCase(unittest.TestCase):
         link = render_resource_link(self.env, context, resource,
                                     format='compact')
         self.assertEqual('<a class="milestone missing">milestone1</a>',
-                         unicode(link))
+                         str(link))
 
     def test_resource_link_ticket_context_milestone_no_view_perm(self):
         """Resource link in ticket context with no milestone view permission.
@@ -444,8 +444,7 @@ class ResourceTestCase(unittest.TestCase):
         context = web_context(req)
         link = render_resource_link(self.env, context, resource,
                                     format='compact')
-        self.assertEqual('<a class="milestone">milestone1</a>',
-                         unicode(link))
+        self.assertEqual('<a class="milestone">milestone1</a>', str(link))
 
 
 def in_tlist(ticket, list):

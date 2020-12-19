@@ -26,7 +26,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
         # process running
         pidfile = os.path.abspath(pidfile)
         if os.path.exists(pidfile):
-            with open(pidfile) as fileobj:
+            with open(pidfile, 'rb') as fileobj:
                 try:
                     pid = int(fileobj.read())
                 except ValueError:
@@ -68,9 +68,9 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
     # The process is now daemonized, redirect standard file descriptors
     for stream in sys.stdout, sys.stderr:
         stream.flush()
-    stdin = open(stdin, 'r')
-    stdout = open(stdout, 'a+')
-    stderr = open(stderr, 'a+', 0)
+    stdin = os.open(stdin, 'rb')
+    stdout = os.open(stdout, 'ab+')
+    stderr = os.open(stderr, 'ab+', 0)
     os.dup2(stdin.fileno(), sys.stdin.fileno())
     os.dup2(stdout.fileno(), sys.stdout.fileno())
     os.dup2(stderr.fileno(), sys.stderr.fileno())
@@ -86,8 +86,8 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
             if os.path.exists(pidfile):
                 os.remove(pidfile)
         atexit.register(remove_pidfile)
-        with open(pidfile, 'w') as fileobj:
-            fileobj.write(str(os.getpid()))
+        with open(pidfile, 'wb') as fileobj:
+            fileobj.write(b'%d' % os.getpid())
 
 
 def handle_signal(signum, frame):

@@ -112,7 +112,7 @@ class InterTracDispatcher(Component):
 
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
-            if isinstance(intertrac, basestring):
+            if isinstance(intertrac, str):
                 yield tag.tr(tag.td(tag.strong(prefix)),
                              tag.td(tag_("Alias for %(name)s",
                                          name=tag.strong(intertrac))))

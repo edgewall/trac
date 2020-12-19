@@ -79,14 +79,14 @@ class SubscriptionTestCase(unittest.TestCase):
             self._add_subscriber(req, 'XmppSubscriber1', distributor='xmpp',
                                  adverb='never')
         self.assertEqual(
-            [(u'joe', 1, u'email', u'text/html', 1, u'always',
-              u'TicketSubscriber1'),
-             (u'joe', 1, u'email', u'text/plain', 2, u'always',
-              u'TicketSubscriber2'),
-             (u'joe', 1, u'email', u'text/html', 3, u'always',
-              u'TicketSubscriber3'),
-             (u'joe', 1, u'xmpp',  u'text/plain', 1, u'never',
-              u'XmppSubscriber1')],
+            [('joe', 1, 'email', 'text/html', 1, 'always',
+              'TicketSubscriber1'),
+             ('joe', 1, 'email', 'text/plain', 2, 'always',
+              'TicketSubscriber2'),
+             ('joe', 1, 'email', 'text/html', 3, 'always',
+              'TicketSubscriber3'),
+             ('joe', 1, 'xmpp',  'text/plain', 1, 'never',
+              'XmppSubscriber1')],
             self.env.db_query("""\
                 SELECT sid, authenticated, distributor, format, priority,
                        adverb, class

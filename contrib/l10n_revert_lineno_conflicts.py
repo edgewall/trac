@@ -51,7 +51,7 @@ po_headers_re = re.compile(r'''
 
 
 def sanitize_file(path):
-    with open(path, 'r+') as f:
+    with open(path, 'r+', encoding='utf-8') as f:
         sanitized, nsub = ignore_lineno_re.subn(r'\1', f.read())
         sanitized, nsub2 = po_headers_re.subn(r'\1', sanitized)
         nsub += nsub2

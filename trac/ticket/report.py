@@ -49,9 +49,9 @@ LIMIT_OFFSET = '@LIMIT_OFFSET@'
 def cell_value(v):
     """Normalize a cell value for display.
     >>> (cell_value(None), cell_value(0), cell_value(1), cell_value('v'))
-    ('', '0', u'1', u'v')
+    ('', '0', '1', 'v')
     """
-    return '0' if v == 0 else unicode(v) if v else ''
+    return '0' if v == 0 else str(v) if v else ''
 
 
 _sql_re = re.compile(r'''
@@ -72,14 +72,14 @@ def sql_skeleton(sql):
     This is probably not 100% robust but should be enough for most
     needs.
 
-    >>> re.sub('\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton(''' \\n\
+    >>> re.sub(r'\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton('''\\n\
         SELECT a FROM (SELECT x FROM z ORDER BY COALESCE(u, ')/*(')) ORDER \\n\
           /* SELECT a FROM (SELECT x /* FROM z                             \\n\
-                        ORDER BY */ COALESCE(u, '\)X(')) ORDER */          \\n\
+                        ORDER BY */ COALESCE(u, ')X(')) ORDER */           \\n\
           BY c, (SELECT s FROM f WHERE v in ('ORDER BY', '(\\')')          \\n\
                  ORDER BY (1), '') -- LIMIT                                \\n\
          '''))
-    '<10>SELECT<1>a<1>FROM<48>ORDER<164>BY<1>c,<144>'
+    '<9>SELECT<1>a<1>FROM<48>ORDER<164>BY<1>c,<144>'
     """
     old = None
     while sql != old:
@@ -518,7 +518,7 @@ class ReportModule(Component):
                         if sort_values:
                             return sort_values.get(val)
                         # otherwise, continue with string comparison:
-                        if isinstance(val, basestring):
+                        if isinstance(val, str):
                             val = val.lower()
                         return val
                     results = sorted(results, key=sortkey, reverse=not asc)
@@ -894,10 +894,13 @@ class ReportModule(Component):
 
         def iterate():
             out = io.BytesIO()
-            writer = csv.writer(out, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
+            writer = csv.writer(io.TextIOWrapper(out, encoding='utf-8',
+                                                 newline='\n',
+                                                 write_through=True),
+                                delimiter=sep, quoting=csv.QUOTE_MINIMAL)
 
             def writerow(values):
-                writer.writerow([value.encode('utf-8') for value in values])
+                writer.writerow(values)
                 rv = out.getvalue()
                 out.truncate(0)
                 out.seek(0)
@@ -905,7 +908,7 @@ class ReportModule(Component):
 
             converters = [col_conversions.get(c.strip('_'), cell_value)
                           for c in cols]
-            yield '\xef\xbb\xbf'  # BOM
+            yield b'\xef\xbb\xbf'  # BOM
             yield writerow(c for c in cols if c not in self._html_cols)
             for row in rows:
                 yield writerow(converters[i](cell)
@@ -916,7 +919,7 @@ class ReportModule(Component):
         if Chrome(self.env).use_chunked_encoding:
             length = None
         else:
-            data = ''.join(data)
+            data = b''.join(data)
             length = len(data)
 
         req.send_response(200)

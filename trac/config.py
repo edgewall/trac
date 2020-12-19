@@ -15,7 +15,8 @@
 import copy
 import os.path
 import re
-from ConfigParser import ConfigParser, ParsingError
+from configparser import (ConfigParser, NoOptionError, NoSectionError,
+                          ParsingError)
 
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.core import Component, ExtensionPoint, TracError, implements
@@ -44,7 +45,7 @@ def _getfloat(value):
 def _getlist(value, sep, keep_empty):
     if not value:
         return []
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         if isinstance(sep, (list, tuple)):
             splitted = re.split('|'.join(map(re.escape, sep)), value)
         else:
@@ -90,6 +91,8 @@ class UnicodeConfigParser(ConfigParser):
 
     def __init__(self, ignorecase_option=True, **kwargs):
         self._ignorecase_option = ignorecase_option
+        kwargs.setdefault('interpolation', None)
+        kwargs.setdefault('strict', False)
         ConfigParser.__init__(self, **kwargs)
 
     def optionxform(self, option):
@@ -97,51 +100,29 @@ class UnicodeConfigParser(ConfigParser):
             option = option.lower()
         return option
 
-    def sections(self):
-        return map(to_unicode, ConfigParser.sections(self))
+    def get(self, section, option, raw=False, vars=None,
+            fallback=_use_default):
+        try:
+            return ConfigParser.get(self, section, option, raw=raw, vars=vars)
+        except (NoSectionError, NoOptionError):
+            if fallback is _use_default:
+                raise
+            return fallback
 
-    def add_section(self, section):
-        section_str = to_utf8(section)
-        ConfigParser.add_section(self, section_str)
-
-    def has_section(self, section):
-        section_str = to_utf8(section)
-        return ConfigParser.has_section(self, section_str)
-
-    def options(self, section):
-        section_str = to_utf8(section)
-        return map(to_unicode, ConfigParser.options(self, section_str))
-
-    def get(self, section, option, raw=False, vars=None):
-        section_str = to_utf8(section)
-        option_str = to_utf8(option)
-        return to_unicode(ConfigParser.get(self, section_str,
-                                           option_str, raw, vars))
-
-    def items(self, section, raw=False, vars=None):
-        section_str = to_utf8(section)
-        return [(to_unicode(k), to_unicode(v))
-                for k, v in ConfigParser.items(self, section_str, raw, vars)]
-
-    def has_option(self, section, option):
-        section_str = to_utf8(section)
-        option_str = to_utf8(option)
-        return ConfigParser.has_option(self, section_str, option_str)
+    def items(self, section, raw=False, vars=None, fallback=_use_default):
+        try:
+            return ConfigParser.items(self, section, raw=raw, vars=vars)
+        except NoSectionError:
+            if fallback is _use_default:
+                raise
+            return fallback
 
     def set(self, section, option, value=None):
-        section_str = to_utf8(section)
-        option_str = to_utf8(option)
-        value_str = to_utf8(value) if value is not None else ''
-        ConfigParser.set(self, section_str, option_str, value_str)
+        value_str = to_unicode(value if value is not None else '')
+        ConfigParser.set(self, section, option, value_str)
 
-    def remove_option(self, section, option):
-        section_str = to_utf8(section)
-        option_str = to_utf8(option)
-        ConfigParser.remove_option(self, section_str, option_str)
-
-    def remove_section(self, section):
-        section_str = to_utf8(section)
-        ConfigParser.remove_section(self, section_str)
+    def read(self, filename, encoding='utf-8'):
+        return ConfigParser.read(self, filename, encoding)
 
     def __copy__(self):
         parser = self.__class__()
@@ -272,7 +253,7 @@ class Configuration(object):
         """
         defaults = {}
         for (section, key), option in \
-                Option.get_registry(compmgr).iteritems():
+                Option.get_registry(compmgr).items():
             defaults.setdefault(section, {})[key] = \
                 option.dumps(option.default)
         return defaults
@@ -325,7 +306,7 @@ class Configuration(object):
         """Write the configuration options to the primary file."""
 
         all_options = {}
-        for (section, name), option in Option.get_registry().iteritems():
+        for (section, name), option in Option.get_registry().items():
             all_options.setdefault(section, {})[name] = option
 
         def normalize(section, name, value):
@@ -421,11 +402,11 @@ class Configuration(object):
                 clsname = (cls.__module__ + '.' + cls.__name__).lower() \
                                                                .split('.')
                 if clsname[:len(component)] == component:
-                    for option in cls.__dict__.itervalues():
+                    for option in cls.__dict__.values():
                         if isinstance(option, Option):
                             set_option_default(option)
         else:
-            for option in Option.get_registry(compmgr).itervalues():
+            for option in Option.get_registry(compmgr).values():
                 set_option_default(option)
 
     def _get_parents(self):
@@ -491,7 +472,7 @@ class Section(object):
                     options.add(loption)
                     yield option
         if defaults:
-            for section, option in Option.get_registry(compmgr).iterkeys():
+            for section, option in Option.get_registry(compmgr).keys():
                 if section == self.name and option.lower() not in options:
                     yield option
 
@@ -640,11 +621,11 @@ def _get_registry(cls, compmgr=None):
     from trac.core import ComponentMeta
     components = {}
     for comp in ComponentMeta._components:
-        for attr in comp.__dict__.itervalues():
+        for attr in comp.__dict__.values():
             if isinstance(attr, cls):
                 components[attr] = comp
 
-    return dict(each for each in cls.registry.iteritems()
+    return dict(each for each in cls.registry.items()
                 if each[1] not in components
                    or compmgr.is_enabled(components[each[1]]))
 
@@ -753,7 +734,7 @@ class Option(object):
             return 'enabled'
         if value is False:
             return 'disabled'
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             return value
         return to_unicode(value)
 
@@ -847,7 +828,7 @@ class ChoiceOption(Option):
         value = section.get(name, default)
         choices = self.choices[:]
         if not self.case_sensitive:
-            choices = map(unicode.lower, choices)
+            choices = [c.lower() for c in choices]
             value = value.lower()
         try:
             idx = choices.index(value)
@@ -1012,7 +993,7 @@ def get_configinfo(env):
     """
     all_options = {}
     for (section, name), option in \
-            Option.get_registry(env.compmgr).iteritems():
+            Option.get_registry(env.compmgr).items():
         all_options.setdefault(section, {})[name] = option
     sections = []
     for section in env.config.sections(env.compmgr):
@@ -1023,8 +1004,8 @@ def get_configinfo(env):
                 default = registered.default
                 normalized = registered.normalize(value)
             else:
-                default = u''
-                normalized = unicode(value)
+                default = ''
+                normalized = str(value)
             options.append({'name': name, 'value': value,
                             'modified': normalized != default})
         options.sort(key=lambda o: o['name'])

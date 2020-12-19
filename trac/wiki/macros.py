@@ -85,8 +85,9 @@ class WikiMacroBase(Component):
         if description:
             return (domain, description) if domain else description
         # For pre-0.12 compatibility
-        doc = inspect.getdoc(self.__class__)
-        return to_unicode(doc) if doc else ''
+        # don't use inspect.getdoc() to avoid retreiving from the inheritance
+        # hierarchy
+        return inspect.cleandoc(self.__doc__) if self.__doc__ else ''
 
     def parse_macro(self, parser, name, content):
         raise NotImplementedError
@@ -718,7 +719,7 @@ class ImageMacro(WikiMacroBase):
                 attr[key] = desc
         if style:
             attr['style'] = '; '.join('%s:%s' % (k, escape(v))
-                                      for k, v in style.iteritems())
+                                      for k, v in style.items())
         if not WikiSystem(self.env).is_safe_origin(raw_url,
                                                    formatter.context.req):
             attr['crossorigin'] = 'anonymous'  # avoid password prompt
@@ -833,7 +834,7 @@ class TracIniMacro(WikiMacroBase):
         section_registry = ConfigSection.get_registry(self.compmgr)
         option_registry = Option.get_registry(self.compmgr)
         options = {}
-        for (section, key), option in option_registry.iteritems():
+        for (section, key), option in option_registry.items():
             if section_filter(section) and option_filter(key):
                 options.setdefault(section, {})[key] = option
         if not has_option_filter:
@@ -841,7 +842,7 @@ class TracIniMacro(WikiMacroBase):
                 if section_filter(section):
                     options.setdefault(section, {})
         for section in options:
-            options[section] = sorted(options[section].itervalues(),
+            options[section] = sorted(iter(options[section].values()),
                                       key=lambda option: option.name)
         sections = [(section, section_registry[section].doc
                               if section in section_registry else '')
@@ -895,7 +896,7 @@ class KnownMimeTypesMacro(WikiMacroBase):
             mime_type_filter = args.pop(0).strip().rstrip('*')
 
         mime_types = {}
-        for key, mime_type in mime_map.iteritems():
+        for key, mime_type in mime_map.items():
             if (not mime_type_filter or
                 mime_type.startswith(mime_type_filter)) and key != mime_type:
                 mime_types.setdefault(mime_type, []).append(key)

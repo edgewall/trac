@@ -288,7 +288,7 @@ class WikiModule(Component):
         with self.env.db_transaction:
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
-                for v in xrange(old_version, version):
+                for v in range(old_version, version):
                     page.delete(v + 1)
             else:
                 # only delete that `version`, or the whole page if `None`
@@ -341,7 +341,7 @@ class WikiModule(Component):
                 redirection = WikiPage(self.env, old_name)
                 redirection.text = _('See [wiki:"%(name)s"].', name=new_name)
                 author = get_reporter_id(req)
-                comment = u'[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (
+                comment = '[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (
                           new_name, old_version, old_name, new_name)
                 redirection.save(author, comment)
 
@@ -395,10 +395,10 @@ class WikiModule(Component):
         new_date = None
         old_date = None
         for v, t, author, comment in page.get_history():
-            if (v <= version or what == 'page') and new_date is None:
+            if (what == 'page' or v <= version) and new_date is None:
                 new_date = t
-            if (v <= old_version and what == 'multiple' or
-                num_versions > 1 and what == 'single'):
+            if (what == 'multiple' and v <= old_version or
+                what == 'single' and num_versions > 1):
                 break
             num_versions += 1
             old_date = t
@@ -649,7 +649,7 @@ class WikiModule(Component):
             formatter = OneLinerFormatter(self.env, context)
             if '/' in page.name:
                 parts = page.name.split('/')
-                for i in xrange(len(parts) - 2, -1, -1):
+                for i in range(len(parts) - 2, -1, -1):
                     name = '/'.join(parts[:i] + [parts[-1]])
                     if not ws.has_page(name):
                         higher.append(ws._format_link(formatter, 'wiki',

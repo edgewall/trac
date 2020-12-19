@@ -16,7 +16,7 @@ import unittest
 
 from trac.perm import DefaultPermissionStore, PermissionCache
 from trac.test import EnvironmentStub, MockRequest
-from trac.web.api import HTTPBadRequest
+from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 from trac.wiki.model import WikiPage
 from trac.wiki.web_ui import DefaultWikiPolicy, WikiModule
@@ -94,7 +94,7 @@ class WikiModuleTestCase(unittest.TestCase):
         with self.assertRaises(HTTPBadRequest) as cm:
             WikiModule(self.env).process_request(req)
         self.assertEqual("400 Bad Request (Invalid value for request argument "
-                         "<em>version</em>.)", unicode(cm.exception))
+                         "<em>version</em>.)", str(cm.exception))
 
         req = MockRequest(self.env, method='GET', action=None,
                           args=dict(version='2', old_version='a'))
@@ -102,7 +102,7 @@ class WikiModuleTestCase(unittest.TestCase):
         with self.assertRaises(HTTPBadRequest) as cm:
             WikiModule(self.env).process_request(req)
         self.assertEqual("400 Bad Request (Invalid value for request argument "
-                         "<em>old_version</em>.)", unicode(cm.exception))
+                         "<em>old_version</em>.)", str(cm.exception))
 
     def test_wiki_template_relative_path(self):
         self._insert_templates()
@@ -173,16 +173,42 @@ class WikiModuleTestCase(unittest.TestCase):
         self.assertIn(' href="/trac.cgi/wiki/Page"', pagepath)
         self.assertIn(' href="/trac.cgi/wiki/Page/SubPage"', pagepath)
 
+    def test_delete_page(self):
+        page = WikiPage(self.env)
+        page.name = 'SandBox'
+        page.text = 'Contents for SandBox'
+        page.save('trac', 'create page')
+
+        mod = WikiModule(self.env)
+        req = MockRequest(self.env, path_info='/wiki/SandBox', method='GET',
+                          args={'action': 'delete', 'version': '1'})
+        self.assertTrue(mod.match_request(req))
+        resp = mod.process_request(req)
+        self.assertEqual(2, len(resp))
+        self.assertIn('Are you sure you want to completely delete this page?',
+                      self._render_template(req, resp[0], resp[1]))
+
+        req = MockRequest(self.env, path_info='/wiki/SandBox', method='POST',
+                          args={'action': 'delete'})
+        self.assertTrue(mod.match_request(req))
+        self.assertRaises(RequestDone, mod.process_request, req)
+        self.assertIn('The page SandBox has been deleted.',
+                      req.chrome.get('notices'))
+        self.assertEqual(False, WikiPage(self.env, 'SandBox').exists)
+
+    def _render_template(self, req, template, data):
+        content = Chrome(self.env).render_template(req, template, data,
+                                                   {'iterable': False,
+                                                    'fragment': False})
+        return content.decode('utf-8')
+
     def _render_wiki_page(self, path_info):
         req = MockRequest(self.env, path_info=path_info, method='GET')
         mod = WikiModule(self.env)
         self.assertTrue(mod.match_request(req))
         resp = mod.process_request(req)
         self.assertEqual(2, len(resp))
-        content = Chrome(self.env).render_template(req, resp[0], resp[1],
-                                                   {'iterable': False,
-                                                    'fragment': False})
-        return content.decode('utf-8')
+        return self._render_template(req, resp[0], resp[1])
 
 
 def test_suite():

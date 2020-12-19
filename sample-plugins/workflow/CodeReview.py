@@ -80,7 +80,7 @@ class CodeReviewActionController(Component):
         for weight, action \
                 in controller.get_actions_by_operation('code_review'):
             review_options = self._get_review_options(action)
-            all_status.update(review_options.itervalues())
+            all_status.update(iter(review_options.values()))
         return all_status
 
     def render_ticket_action_control(self, req, ticket, action):
@@ -101,7 +101,7 @@ class CodeReviewActionController(Component):
             hint = "Next status will be '%s'" % new_status
         else:
             hint = "Next status will be one of " + \
-                   ', '.join("'%s'" % st for st in review_options.itervalues())
+                   ', '.join("'%s'" % st for st in review_options.values())
         return label, control, hint
 
     def get_ticket_changes(self, req, ticket, action):

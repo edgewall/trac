@@ -285,9 +285,9 @@ class ChromeTestCase(unittest.TestCase):
         self.assertIsNone(data['timezone_list'])
 
     def test_invalid_default_dateinfo_format_raises_exception(self):
-        self.env.config.set('trac', 'default_dateinfo_format', u'ābšolute')
+        self.env.config.set('trac', 'default_dateinfo_format', 'ābšolute')
 
-        self.assertEqual(u'ābšolute',
+        self.assertEqual('ābšolute',
                          self.env.config.get('trac', 'default_dateinfo_format'))
         with self.assertRaises(ConfigurationError):
             Chrome(self.env).default_dateinfo_format
@@ -499,13 +499,12 @@ class NavigationContributorTestCase(unittest.TestCase):
         item = self._get_navigation_item(mainnav, 'test1')
         self.assertEqual('Test 1', item['label'])
         item = self._get_navigation_item(mainnav, 'test2')
-        self.assertEqual(unicode(tag.a('Test 2', href='testtwo',
-                                       target='blank')),
-                         unicode(item['label']))
+        self.assertEqual(str(tag.a('Test 2', href='testtwo', target='blank')),
+                         str(item['label']))
         item = self._get_navigation_item(mainnav, 'test3')
-        self.assertEqual(unicode(tag.a('Test Three', href='testthree',
-                                       target='blank')),
-                         unicode(item['label']))
+        self.assertEqual(str(tag.a('Test Three', href='testthree',
+                                   target='blank')),
+                         str(item['label']))
 
     def test_attributes_preserved_in_navigation_item(self):
         req = MockRequest(self.env)
@@ -516,13 +515,12 @@ class NavigationContributorTestCase(unittest.TestCase):
         mainnav = req.chrome['nav']['mainnav']
 
         item = self._get_navigation_item(mainnav, 'test2')
-        self.assertEqual(unicode(tag.a('Test Two', href='test2',
-                                       target='blank')),
-                         unicode(item['label']))
+        self.assertEqual(str(tag.a('Test Two', href='test2', target='blank')),
+                         str(item['label']))
         item = self._get_navigation_item(mainnav, 'test3')
-        self.assertEqual(unicode(tag.a('Test Three', href='testthree',
-                                       target='blank')),
-                         unicode(item['label']))
+        self.assertEqual(str(tag.a('Test Three', href='testthree',
+                                   target='blank')),
+                         str(item['label']))
 
 
 class NavigationCustomizationTestCase(unittest.TestCase):
@@ -631,10 +629,10 @@ class NavigationCustomizationTestCase(unittest.TestCase):
 
         self.assertEqual('google', mainnav[0]['name'])
         self.assertEqual('<a href="https://google.com">google</a>',
-                         unicode(mainnav[0]['label']))
+                         str(mainnav[0]['label']))
         self.assertEqual('tracguide', items['metanav'][2]['name'])
         self.assertEqual('<a href="/trac.cgi/wiki/TracGuide">Trac Guide</a>',
-                         unicode(items['metanav'][2]['label']))
+                         str(items['metanav'][2]['label']))
 
     def test_move_metanav_to_mainnav(self):
         """Move items between metanav and mainnav."""
@@ -652,18 +650,18 @@ class NavigationCustomizationTestCase(unittest.TestCase):
         metanav = items['metanav']
 
         self.assertEqual(1, len(metanav))
-        self.assertEqual('test2', unicode(metanav[0]['name']))
+        self.assertEqual('test2', str(metanav[0]['name']))
         self.assertEqual('<a href="/trac.cgi/test/2">Test 2</a>',
-                         unicode(metanav[0]['label']))
+                         str(metanav[0]['label']))
         self.assertEqual(2, len(mainnav))
         self.assertNotIn('test1', metanav)
-        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertEqual('test3', str(mainnav[0]['name']))
         self.assertEqual('<a href="/trac.cgi/test/3">Test 3</a>',
-                         unicode(mainnav[0]['label']))
+                         str(mainnav[0]['label']))
         self.assertFalse(mainnav[0]['active'])
-        self.assertEqual('test1', unicode(mainnav[1]['name']))
+        self.assertEqual('test1', str(mainnav[1]['name']))
         self.assertEqual('<a href="/trac.cgi/test/1">Test 1</a>',
-                         unicode(mainnav[1]['label']))
+                         str(mainnav[1]['label']))
 
     def test_disable_items(self):
         """Disable navigation items."""
@@ -677,7 +675,7 @@ class NavigationCustomizationTestCase(unittest.TestCase):
         metanav = items['metanav']
 
         self.assertEqual(1, len(metanav))
-        self.assertEqual('test2', unicode(metanav[0]['name']))
+        self.assertEqual('test2', str(metanav[0]['name']))
         self.assertEqual([], mainnav)
 
     def test_permission_attribute(self):
@@ -714,18 +712,18 @@ class NavigationCustomizationTestCase(unittest.TestCase):
         items = chrome.prepare_request(req, handler)['nav']
         mainnav = items['mainnav']
         self.assertEqual(2, len(mainnav))
-        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertEqual('test3', str(mainnav[0]['name']))
         self.assertTrue(mainnav[0]['active'])
-        self.assertEqual('test4', unicode(mainnav[1]['name']))
+        self.assertEqual('test4', str(mainnav[1]['name']))
         self.assertFalse(mainnav[1]['active'])
 
         req = MockRequest(self.env, path_info='/test/3/1')
         items = chrome.prepare_request(req, handler)['nav']
         mainnav = items['mainnav']
         self.assertEqual(2, len(mainnav))
-        self.assertEqual('test3', unicode(mainnav[0]['name']))
+        self.assertEqual('test3', str(mainnav[0]['name']))
         self.assertFalse(mainnav[0]['active'])
-        self.assertEqual('test4', unicode(mainnav[1]['name']))
+        self.assertEqual('test4', str(mainnav[1]['name']))
         self.assertTrue(mainnav[1]['active'])
 
 
@@ -767,7 +765,7 @@ class FormatAuthorTestCase(unittest.TestCase):
     def test_actor_no_email_view(self):
         req = MockRequest(self.env, authname='user2')
         author = Chrome(self.env).format_author(req, 'user@domain.com')
-        self.assertEqual(u'user@\u2026', author)
+        self.assertEqual('user@\u2026', author)
 
     def test_actor_no_email_view_show_email_addresses(self):
         self.env.config.set('trac', 'show_email_addresses', True)
@@ -777,7 +775,7 @@ class FormatAuthorTestCase(unittest.TestCase):
 
     def test_actor_no_email_view_no_req(self):
         author = Chrome(self.env).format_author(None, 'user@domain.com')
-        self.assertEqual(u'user@\u2026', author)
+        self.assertEqual('user@\u2026', author)
 
     def test_actor_has_email_view_for_resource(self):
         format_author = Chrome(self.env).format_author
@@ -791,7 +789,7 @@ class FormatAuthorTestCase(unittest.TestCase):
         req = MockRequest(self.env, authname='user2')
         resource = Resource('wiki', 'TracGuide')
         author = format_author(req, 'user@domain.com', resource)
-        self.assertEqual(u'user@\u2026', author)
+        self.assertEqual('user@\u2026', author)
 
     def test_show_full_names_true(self):
         format_author = Chrome(self.env).format_author
@@ -825,9 +823,9 @@ class FormatAuthorTestCase(unittest.TestCase):
         req = MockRequest(self.env, authname='user1')
 
         author = format_author(None, 'user@domain.com', show_email=False)
-        self.assertEqual(u'user@\u2026', author)
+        self.assertEqual('user@\u2026', author)
         author = format_author(req, 'user@domain.com', show_email=False)
-        self.assertEqual(u'user@\u2026', author)
+        self.assertEqual('user@\u2026', author)
 
     def test_show_full_names_true_actor_has_email_view(self):
         format_author = Chrome(self.env).format_author
@@ -863,7 +861,7 @@ class FormatAuthorTestCase(unittest.TestCase):
         format_author = Chrome(self.env).format_author
         self.env.config.set('trac', 'show_email_addresses', False)
 
-        self.assertEqual(u'user3@\u2026',
+        self.assertEqual('user3@\u2026',
                          format_author(None, 'user3@example.org'))
         self.assertEqual('user3@example.org',
                          format_author(req, 'user3@example.org'))
@@ -872,7 +870,7 @@ class FormatAuthorTestCase(unittest.TestCase):
         format_emails = Chrome(self.env).format_emails
         to_format = 'user1@example.org, user2; user3@example.org'
 
-        self.assertEqual(u'user1@\u2026, user2, user3@\u2026',
+        self.assertEqual('user1@\u2026, user2, user3@\u2026',
                          format_emails(None, to_format))
 
     def test_format_emails_actor_has_email_view(self):
@@ -890,7 +888,7 @@ class FormatAuthorTestCase(unittest.TestCase):
         format_emails = Chrome(self.env).format_emails
         to_format = 'user1@example.org, user2; user3@example.org'
 
-        self.assertEqual(u'user1@\u2026, user2, user3@\u2026',
+        self.assertEqual('user1@\u2026, user2, user3@\u2026',
                          format_emails(context, to_format))
 
 
@@ -944,9 +942,9 @@ class AuthorInfoTestCase(unittest.TestCase):
         chrome = Chrome(self.env)
         req = MockRequest(self.env, authname='user1')
         self.assertEqual('<span class="trac-author">user@domain.com</span>',
-                         unicode(chrome.authorinfo(req, 'user@domain.com')))
+                         str(chrome.authorinfo(req, 'user@domain.com')))
         self.assertEqual('<span class="trac-author">User One &lt;user@example.org&gt;</span>',
-                         unicode(chrome.authorinfo(req, 'User One <user@example.org>')))
+                         str(chrome.authorinfo(req, 'User One <user@example.org>')))
         self.assertEqual('<span class="trac-author">user</span>',
                          str(chrome.authorinfo_short('User One <user@example.org>')))
         self.assertEqual('<span class="trac-author">user</span>',
@@ -955,26 +953,26 @@ class AuthorInfoTestCase(unittest.TestCase):
     def test_actor_no_email_view(self):
         req = MockRequest(self.env, authname='user2')
         authorinfo = Chrome(self.env).authorinfo
-        self.assertEqual(u'<span class="trac-author">user@\u2026</span>',
-                         unicode(authorinfo(req, 'user@domain.com')))
-        self.assertEqual(u'<span class="trac-author">User One &lt;user@\u2026&gt;</span>',
-                         unicode(authorinfo(req, 'User One <user@domain.com>')))
+        self.assertEqual('<span class="trac-author">user@\u2026</span>',
+                         str(authorinfo(req, 'user@domain.com')))
+        self.assertEqual('<span class="trac-author">User One &lt;user@\u2026&gt;</span>',
+                         str(authorinfo(req, 'User One <user@domain.com>')))
 
     def test_actor_no_email_view_show_email_addresses(self):
         self.env.config.set('trac', 'show_email_addresses', True)
         req = MockRequest(self.env, authname='user2')
         authorinfo = Chrome(self.env).authorinfo
         self.assertEqual('<span class="trac-author">user@domain.com</span>',
-                         unicode(authorinfo(req, 'user@domain.com')))
+                         str(authorinfo(req, 'user@domain.com')))
         self.assertEqual('<span class="trac-author">User One &lt;user@domain.com&gt;</span>',
-                         unicode(authorinfo(req, 'User One <user@domain.com>')))
+                         str(authorinfo(req, 'User One <user@domain.com>')))
 
     def test_actor_no_email_view_no_req(self):
         authorinfo = Chrome(self.env).authorinfo
-        self.assertEqual(u'<span class="trac-author">user@\u2026</span>',
-                         unicode(authorinfo(None, 'user@domain.com')))
-        self.assertEqual(u'<span class="trac-author">User One &lt;user@\u2026&gt;</span>',
-                         unicode(authorinfo(None, 'User One <user@domain.com>')))
+        self.assertEqual('<span class="trac-author">user@\u2026</span>',
+                         str(authorinfo(None, 'user@domain.com')))
+        self.assertEqual('<span class="trac-author">User One &lt;user@\u2026&gt;</span>',
+                         str(authorinfo(None, 'User One <user@domain.com>')))
 
     def test_actor_has_email_view_for_resource(self):
         authorinfo = Chrome(self.env).authorinfo
@@ -983,10 +981,10 @@ class AuthorInfoTestCase(unittest.TestCase):
         resource = Resource('wiki', 'WikiStart')
         authorinfo = authorinfo(req, 'user@domain.com', resource=resource)
         author_short = authorinfo_short('user@domain.com')
-        self.assertEqual(u'<span class="trac-author">user@domain.com</span>',
-                         unicode(authorinfo))
-        self.assertEqual(u'<span class="trac-author">user</span>',
-                         unicode(author_short))
+        self.assertEqual('<span class="trac-author">user@domain.com</span>',
+                         str(authorinfo))
+        self.assertEqual('<span class="trac-author">user</span>',
+                         str(author_short))
 
     def test_actor_has_email_view_for_resource_negative(self):
         authorinfo = Chrome(self.env).authorinfo
@@ -995,10 +993,10 @@ class AuthorInfoTestCase(unittest.TestCase):
         resource = Resource('wiki', 'TracGuide')
         author = authorinfo(req,  'user@domain.com', resource=resource)
         author_short = authorinfo_short('user@domain.com')
-        self.assertEqual(u'<span class="trac-author">user@\u2026</span>',
-                         unicode(author))
-        self.assertEqual(u'<span class="trac-author">user</span>',
-                         unicode(author_short))
+        self.assertEqual('<span class="trac-author">user@\u2026</span>',
+                         str(author))
+        self.assertEqual('<span class="trac-author">user</span>',
+                         str(author_short))
 
 
 class ChromeTemplateRenderingTestCase(unittest.TestCase):
@@ -1045,10 +1043,10 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertIsNotNone(t)
         t_text = self.chrome.load_template(self.filename, text=True)
         self.assertIsNotNone(t_text)
-        data = {'greeting': u"Hell&ö"}
+        data = {'greeting': "Hell&ö"}
         content = self.chrome.render_template_string(t, data)
         self.assertIsInstance(content, Markup)
-        self.assertEqual(textwrap.dedent(u"""\
+        self.assertEqual(textwrap.dedent("""\
             <!DOCTYPE html>
             <html>
             <body>
@@ -1058,8 +1056,8 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         content_text = self.chrome.render_template_string(t_text, data,
                                                           text=True)
         self.assertFalse(isinstance(content_text, Markup))
-        self.assertIsInstance(content_text, unicode)
-        self.assertEqual(textwrap.dedent(u"""\
+        self.assertIsInstance(content_text, str)
+        self.assertEqual(textwrap.dedent("""\
             <!DOCTYPE html>
             <html>
             <body>
@@ -1069,18 +1067,18 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
 
     def test_render_template(self):
         self._create_template('<h1>${greeting}</h1>')
-        data = {'greeting': u"Hell&ö"}
+        data = {'greeting': "Hell&ö"}
         content = self.chrome.render_template(MockRequest(self.env),
                                               self.filename, data,
                                               {'fragment': True})
-        self.assertIsInstance(content, str)
+        self.assertIsInstance(content, bytes)
         self.assertEqual(textwrap.dedent("""\
             <!DOCTYPE html>
             <html>
             <body>
             <h1>Hell&amp;ö</h1>
             </body>
-            </html>"""), content)
+            </html>""").encode('utf-8'), content)
 
     def test_pretty_dateinfo(self):
         self._create_template(textwrap.dedent("""\
@@ -1098,8 +1096,10 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                                               self.filename, data,
                                               {'fragment': True})
 
+        self.assertIsInstance(content, bytes)
+        content = str(content, 'utf-8')
         if has_babel:
-            self.assertRegexpMatches(content, textwrap.dedent("""\
+            self.assertRegex(content, textwrap.dedent("""\
                 <!DOCTYPE html>
                 <html>
                 <body>
@@ -1115,18 +1115,18 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                 </body>
                 </html>"""), content)
         else:
-            self.assertRegexpMatches(content, textwrap.dedent("""\
+            self.assertRegex(content, textwrap.dedent("""\
                 <!DOCTYPE html>
                 <html>
                 <body>
                 <ul>
                 <li></li>
-                <li><span title="07/01/07 12:34:56">\d+ years ago</span></li>
-                <li><span title="07/01/07 12:34:56">\d+ years ago</span></li>
-                <li><span title="\d+ years ago">on 07/01/07</span></li>
-                <li><span title="\d+ years ago">on 07/01/07 at 12:34:56</span></li>
-                <li><span title="\d+ years ago">07/01/07</span></li>
-                <li><span title="\d+ years ago">07/01/07 12:34:56</span></li>
+                <li><span title="07/01/(20)?07 12:34:56">\d+ years ago</span></li>
+                <li><span title="07/01/(20)?07 12:34:56">\d+ years ago</span></li>
+                <li><span title="\d+ years ago">on 07/01/(20)?07</span></li>
+                <li><span title="\d+ years ago">on 07/01/(20)?07 at 12:34:56</span></li>
+                <li><span title="\d+ years ago">07/01/(20)?07</span></li>
+                <li><span title="\d+ years ago">07/01/(20)?07 12:34:56</span></li>
                 </ul>
                 </body>
                 </html>"""), content)
@@ -1157,13 +1157,13 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         data = {'fn': fn}
         content = self.chrome.render_template(req, filename, data,
                                               {'fragment': True})
-        self.assertIsInstance(content, str)
-        self.assertIn('<div>blahblah</div>', content)
-        self.assertIn(' jQuery.loadScript("/trac.cgi/chrome/'
-                      'common/js/blahblah.js", "");', content)
-        self.assertIn(' jQuery.loadStyleSheet("/trac.cgi/chrome/'
-                      'common/css/blahblah.css", "text/css");', content)
-        self.assertIn(' var blahblah=42;', content)
+        self.assertIsInstance(content, bytes)
+        self.assertIn(b'<div>blahblah</div>', content)
+        self.assertIn(b' jQuery.loadScript("/trac.cgi/chrome/'
+                      b'common/js/blahblah.js", "");', content)
+        self.assertIn(b' jQuery.loadStyleSheet("/trac.cgi/chrome/'
+                      b'common/css/blahblah.css", "text/css");', content)
+        self.assertIn(b' var blahblah=42;', content)
 
 
 def test_suite():

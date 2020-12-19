@@ -102,14 +102,17 @@ class LoadComponentsTestCase(unittest.TestCase):
             ComponentMeta.deregister(c)
 
     def _cleanup_working_set(self):
+        ws = pkg_resources.working_set
         for plugin_name in os.listdir(self.env.plugins_dir):
             plugin_path = os.path.join(self.env.plugins_dir, plugin_name)
-            try:
-                pkg_resources.working_set.entries.remove(plugin_path)
-            except ValueError:
-                pass
-            else:
-                del pkg_resources.working_set.entry_keys[plugin_path]
+            if plugin_path not in ws.entry_keys and os.name == 'nt':
+                for path in ws.entry_keys:
+                    if os.path.normcase(plugin_path) == os.path.normcase(path):
+                        plugin_path = path
+                        break
+            if plugin_path in ws.entry_keys:
+                del ws.entry_keys[plugin_path]
+                ws.entries.remove(plugin_path)
 
     def _build_egg_file(self, module_name):
         plugin_src = os.path.join(self.env.path, 'plugin_src')

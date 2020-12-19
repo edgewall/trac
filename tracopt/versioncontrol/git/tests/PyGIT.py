@@ -29,11 +29,11 @@ from tracopt.versioncontrol.git.tests.git_fs import GitCommandMixin
 class GitTestCase(unittest.TestCase):
 
     def test_is_sha(self):
-        self.assertFalse(GitCore.is_sha('123'))
-        self.assertTrue(GitCore.is_sha('1a3f'))
-        self.assertTrue(GitCore.is_sha('f' * 40))
-        self.assertFalse(GitCore.is_sha('x' + 'f' * 39))
-        self.assertFalse(GitCore.is_sha('f' * 41))
+        self.assertFalse(GitCore.is_sha(b'123'))
+        self.assertTrue(GitCore.is_sha(b'1a3f'))
+        self.assertTrue(GitCore.is_sha(b'f' * 40))
+        self.assertFalse(GitCore.is_sha(b'x' + b'f' * 39))
+        self.assertFalse(GitCore.is_sha(b'f' * 41))
 
     def test_git_version(self):
         v = Storage.git_version()
@@ -191,6 +191,8 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         os.remove(os.path.join(self.repos_path, '.git', 'HEAD'))
         self.assertRaises(GitError, self._storage, self.repos_path)
 
+    @unittest.skipIf(os.name == 'nt', 'Control characters cannot be used in '
+                                      'filesystem on Windows')
     def test_get_branches_with_cr_in_commitlog(self):
         # regression test for #11598
         message = 'message with carriage return'.replace(' ', '\r')
@@ -204,9 +206,6 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         branches = sorted(storage.get_branches())
         self.assertEqual('master', branches[0][0])
         self.assertEqual(1, len(branches))
-
-    if os.name == 'nt':
-        del test_get_branches_with_cr_in_commitlog
 
     def test_rev_is_anchestor_of(self):
         # regression test for #11215
@@ -222,6 +221,7 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         repos.sync()
         rev = repos.youngest_rev
 
+        self.assertEqual(rev, repos.normalize_rev(rev[:7]))
         self.assertNotEqual(rev, parent_rev)
         self.assertFalse(repos.rev_older_than(None, None))
         self.assertFalse(repos.rev_older_than(None, rev[:7]))
@@ -246,10 +246,10 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         node = repos.get_node('', rev)
         self.assertEqual(rev, repos.git.last_change(rev, ''))
         history = list(node.get_history())
-        self.assertEqual(u'', history[0][0])
+        self.assertEqual('', history[0][0])
         self.assertEqual(rev, history[0][1])
         self.assertEqual(Changeset.EDIT, history[0][2])
-        self.assertEqual(u'', history[1][0])
+        self.assertEqual('', history[1][0])
         self.assertEqual(parent_rev, history[1][1])
         self.assertEqual(Changeset.ADD, history[1][2])
         self.assertEqual(2, len(history))
@@ -285,6 +285,47 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         rev = self._factory(True).getInstance().youngest_rev()
         self.assertNotEqual(rev, parent_rev)
 
+    @unittest.skipIf(os.name == 'nt', 'Control characters cannot be used in '
+                                      'filesystem on Windows')
+    def test_ls_tree_with_control_chars(self):
+        paths = ['normal-path.txt',
+                 '\a\b\t\n\v\f\r\x1b"\\.tx\\t']
+        for path in paths:
+            create_file(os.path.join(self.repos_path, path))
+            self._git('add', path)
+        self._git_commit('-m', 'ticket:11180 and ticket:11198')
+
+        storage = self._storage()
+        rev = storage.head()
+        entries = storage.ls_tree(rev, '/')
+        self.assertEqual(['\a\b\t\n\v\f\r\x1b"\\.tx\\t',
+                          '.gitignore',
+                          'normal-path.txt'],
+                         [entry[4] for entry in entries])
+
+    @unittest.skipIf(os.name == 'nt', 'Control characters cannot be used in '
+                                      'filesystem on Windows')
+    def test_get_historian_with_control_chars(self):
+        paths = ['normal-path.txt', '\a\b\t\n\v\f\r\x1b"\\.tx\\t']
+
+        for path in paths:
+            create_file(os.path.join(self.repos_path, path))
+            self._git('add', path)
+        self._git_commit('-m', 'ticket:11180 and ticket:11198')
+
+        def validate(path, quotepath):
+            self._git('config', 'core.quotepath', quotepath)
+            storage = self._storage()
+            rev = storage.head()
+            with storage.get_historian('HEAD', path) as historian:
+                hrev = storage.last_change('HEAD', path, historian)
+                self.assertEqual(rev, hrev)
+
+        validate(paths[0], 'true')
+        validate(paths[0], 'false')
+        validate(paths[1], 'true')
+        validate(paths[1], 'false')
+
 
 class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
@@ -312,8 +353,8 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
     def test_unicode_verifyrev(self):
         storage = self._storage()
-        self.assertIsNotNone(storage.verifyrev(u'master'))
-        self.assertIsNone(storage.verifyrev(u'tété'))
+        self.assertIsNotNone(storage.verifyrev('master'))
+        self.assertIsNone(storage.verifyrev('tété'))
 
     def test_unicode_filename(self):
         create_file(os.path.join(self.repos_path, 'tickét.txt'))
@@ -322,29 +363,29 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         storage = self._storage()
         filenames = sorted(fname for mode, type, sha, size, fname
                                  in storage.ls_tree('HEAD'))
-        self.assertEqual(unicode, type(filenames[0]))
-        self.assertEqual(unicode, type(filenames[1]))
-        self.assertEqual(u'.gitignore', filenames[0])
-        self.assertEqual(u'tickét.txt', filenames[1])
+        self.assertEqual(str, type(filenames[0]))
+        self.assertEqual(str, type(filenames[1]))
+        self.assertEqual('.gitignore', filenames[0])
+        self.assertEqual('tickét.txt', filenames[1])
         # check commit author, for good measure
-        self.assertEqual(u'Joé <joe@example.com> 1359912600 +0100',
+        self.assertEqual('Joé <joe@example.com> 1359912600 +0100',
                          storage.read_commit(storage.head())[1]['author'][0])
 
     def test_unicode_branches(self):
         self._git('checkout', '-b', 'tickɇt10980', 'master')
         storage = self._storage()
         branches = sorted(storage.get_branches())
-        self.assertEqual(unicode, type(branches[0][0]))
-        self.assertEqual(unicode, type(branches[1][0]))
-        self.assertEqual(u'master', branches[0][0])
-        self.assertEqual(u'tickɇt10980', branches[1][0])
+        self.assertEqual(str, type(branches[0][0]))
+        self.assertEqual(str, type(branches[1][0]))
+        self.assertEqual('master', branches[0][0])
+        self.assertEqual('tickɇt10980', branches[1][0])
 
         contains = sorted(storage.get_branch_contains(branches[1][1],
                                                       resolve=True))
-        self.assertEqual(unicode, type(contains[0][0]))
-        self.assertEqual(unicode, type(contains[1][0]))
-        self.assertEqual(u'master', contains[0][0])
-        self.assertEqual(u'tickɇt10980', contains[1][0])
+        self.assertEqual(str, type(contains[0][0]))
+        self.assertEqual(str, type(contains[1][0]))
+        self.assertEqual('master', contains[0][0])
+        self.assertEqual('tickɇt10980', contains[1][0])
 
     def test_unicode_tags(self):
         self._git('tag', 'tɐg-t10980', 'master')
@@ -353,48 +394,36 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         storage = self._storage()
 
         tags = storage.get_tags()
-        self.assertEqual(unicode, type(tags[0]))
-        self.assertEqual([u'tɐg-t10980', 'v0.42.1'], tags)
+        self.assertEqual(str, type(tags[0]))
+        self.assertEqual(['tɐg-t10980', 'v0.42.1'], tags)
 
-        rev = storage.verifyrev(u'tɐg-t10980')
+        rev = storage.verifyrev('tɐg-t10980')
         self.assertIsNotNone(rev)
-        self.assertEqual([u'tɐg-t10980'], storage.get_tags(rev))
+        self.assertEqual(['tɐg-t10980'], storage.get_tags(rev))
 
         rev = storage.verifyrev('v0.42.1')
         self.assertIsNotNone(rev)
         self.assertEqual(['v0.42.1'], storage.get_tags(rev))
 
-    def test_ls_tree(self):
-        paths = [u'normal-path.txt',
-                 u'tickét.tx\\t',
-                 u'\a\b\t\n\v\f\r\x1b"\\.tx\\t']
+    def test_ls_tree_with_unicode_chars(self):
+        paths = ['normal-path.txt', 'ŧïckét.txt']
         for path in paths:
-            path_utf8 = path.encode('utf-8')
-            create_file(os.path.join(self.repos_path, path_utf8))
-            self._git('add', path_utf8)
-        self._git_commit('-m', 'ticket:11180 and ticket:11198',
-                         date=datetime(2013, 4, 30, 13, 48, 57))
+            create_file(os.path.join(self.repos_path, path))
+            self._git('add', path)
+        self._git_commit('-m', 'ticket:11180 and ticket:11198')
 
         storage = self._storage()
         rev = storage.head()
         entries = storage.ls_tree(rev, '/')
-        self.assertEqual(4, len(entries))
-        self.assertEqual(u'\a\b\t\n\v\f\r\x1b"\\.tx\\t', entries[0][4])
-        self.assertEqual(u'.gitignore', entries[1][4])
-        self.assertEqual(u'normal-path.txt', entries[2][4])
-        self.assertEqual(u'tickét.tx\\t', entries[3][4])
+        self.assertEqual(['.gitignore', 'normal-path.txt', 'ŧïckét.txt'],
+                         [entry[4] for entry in entries])
 
-    def test_get_historian(self):
-        paths = [u'normal-path.txt',
-                 u'tickét.tx\\t',
-                 u'\a\b\t\n\v\f\r\x1b"\\.tx\\t']
-
+    def test_get_historian_with_unicode_chars(self):
+        paths = ['normal-path.txt', 'ŧïckét.txt']
         for path in paths:
-            path_utf8 = path.encode('utf-8')
-            create_file(os.path.join(self.repos_path, path_utf8))
-            self._git('add', path_utf8)
-        self._git_commit('-m', 'ticket:11180 and ticket:11198',
-                         date=datetime(2013, 4, 30, 17, 48, 57))
+            create_file(os.path.join(self.repos_path, path))
+            self._git('add', path)
+        self._git_commit('-m', 'ticket:11180 and ticket:11198')
 
         def validate(path, quotepath):
             self._git('config', 'core.quotepath', quotepath)
@@ -408,8 +437,6 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         validate(paths[0], 'false')
         validate(paths[1], 'true')
         validate(paths[1], 'false')
-        validate(paths[2], 'true')
-        validate(paths[2], 'false')
 
 
 class SizedDictTestCase(unittest.TestCase):
@@ -517,7 +544,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        print("--------------")
 #
 #        p = g.head()
-#        for i in xrange(-5, 5):
+#        for i in range(-5, 5):
 #            print(i, g.history_relative_rev(p, i))
 #
 #        # check for loops
@@ -533,7 +560,7 @@ class SizedDictTestCase(unittest.TestCase):
 #        print(len(check4loops(g.parents(g.head())[0])))
 #
 #        #p = g.head()
-#        #revs = [g.history_relative_rev(p, i) for i in xrange(10)]
+#        #revs = [g.history_relative_rev(p, i) for i in range(10)]
 #        print_data_usage()
 #        revs = list(g.get_commits())
 #        print_data_usage()
@@ -573,9 +600,7 @@ def test_suite():
         suite.addTest(unittest.makeSuite(GitTestCase))
         suite.addTest(unittest.makeSuite(TestParseCommit))
         suite.addTest(unittest.makeSuite(NormalTestCase))
-        if os.name != 'nt':
-            # Popen doesn't accept unicode path and arguments on Windows
-            suite.addTest(unittest.makeSuite(UnicodeNameTestCase))
+        suite.addTest(unittest.makeSuite(UnicodeNameTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")

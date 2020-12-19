@@ -19,7 +19,7 @@ from trac.util.compat import crypt
 from trac.test import EnvironmentStub, MockRequest, rmtree
 from trac.web.auth import BasicAuthentication, DigestAuthentication, LoginModule
 
-from Cookie import SimpleCookie as Cookie
+from http.cookies import SimpleCookie as Cookie
 import unittest
 
 
@@ -159,7 +159,7 @@ class DigestAuthenticationTestCase(unittest.TestCase):
 
     def test_extra_entries_ignored(self):
         """Extra entries and comments are ignored."""
-        with open(self.filename, 'w') as fd:
+        with open(self.filename, 'w', encoding='utf-8') as fd:
             fd.write("user1:trac:f21b2f8c5abd6baaeb3ffc28dce30e7c:U One #cmt\n")
             fd.write("user2:trac:97a40f5b8d13962839f664534aa573ef:U Two \n")
 
@@ -180,7 +180,7 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         rmtree(self.dir)
 
     def _write_default_htpasswd(self):
-        with open(self.filename, 'w') as fd:
+        with open(self.filename, 'w', encoding='utf-8') as fd:
             fd.write("crypt:PgjnZnmDQ8S7w\n")
             fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/\n")
             fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=\n")
@@ -205,7 +205,7 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 
     def test_extra_entries_ignored(self):
         """Extra entries and comments are ignored."""
-        with open(self.filename, 'w') as fd:
+        with open(self.filename, 'w', encoding='utf-8') as fd:
             fd.write("crypt:PgjnZnmDQ8S7w:User One #comment\n")
             fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/:User Two \n")
             fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=:User Three #\n")

@@ -18,8 +18,6 @@
 See also: https://github.com/textile/python-textile
 """
 
-from HTMLParser import HTMLParseError
-
 try:
     import textile
 except ImportError:
@@ -30,10 +28,8 @@ from trac.api import ISystemInfoProvider
 from trac.core import Component, implements
 from trac.mimeview.api import IHTMLPreviewRenderer
 from trac.util import get_pkginfo, lazy
-from trac.util.html import Markup, TracHTMLSanitizer, escape
-from trac.util.translation import _
+from trac.util.html import Markup, TracHTMLSanitizer
 from trac.wiki.api import WikiSystem
-from trac.wiki.formatter import system_message
 
 
 if not has_textile:
@@ -71,13 +67,7 @@ class TextileRenderer(Component):
         output = render_textile(content)
         if WikiSystem(self.env).render_unsafe_content:
             return Markup(output)
-        try:
-            return self._sanitizer.sanitize(output)
-        except HTMLParseError as e:
-            self.log.warning(e)
-            line = content.splitlines()[e.lineno - 1].strip()
-            return system_message(_("HTML parsing error: %(message)s",
-                                    message=escape(e.msg)), line)
+        return self._sanitizer.sanitize(output)
 
     # ISystemInfoProvider methods
 

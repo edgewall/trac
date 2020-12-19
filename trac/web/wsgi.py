@@ -17,9 +17,14 @@
 from abc import ABCMeta, abstractmethod
 import errno
 import sys
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
-from SocketServer import ForkingMixIn, ThreadingMixIn
-import urllib
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
+import urllib.parse
+
+try:
+    from socketserver import ForkingMixIn
+except ImportError:
+    ForkingMixIn = None
 
 
 # winsock errors
@@ -50,7 +55,8 @@ class _ErrorsWrapper(object):
         self.logfunc(msg)
 
     def writelines(self, seq):
-        map(self.write, seq)
+        for item in seq:
+            self.write(item)
 
 
 class _FileWrapper(object):
@@ -75,10 +81,8 @@ class _FileWrapper(object):
     next = __next__
 
 
-class WSGIGateway(object):
+class WSGIGateway(object, metaclass=ABCMeta):
     """Abstract base class for WSGI servers or gateways."""
-
-    __metaclass__ = ABCMeta
 
     wsgi_version = (1, 0)
     wsgi_multithread = True
@@ -120,7 +124,7 @@ class WSGIGateway(object):
                     if chunk:
                         self._write(chunk)
                 if not self.headers_sent or self.use_chunked:
-                    self._write('') # last chunk '\r\n0\r\n' if use_chunked
+                    self._write(b'') # last chunk '\r\n0\r\n' if use_chunked
         finally:
             if hasattr(response, 'close'):
                 response.close()
@@ -130,7 +134,7 @@ class WSGIGateway(object):
         if exc_info:
             try:
                 if self.headers_sent: # Re-raise original exception
-                    raise exc_info[0], exc_info[1], exc_info[2]
+                    raise exc_info[1]
             finally:
                 exc_info = None # avoid dangling circular ref
         else:
@@ -166,7 +170,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             path_info, query_string = self.path.split('?', 1)
         else:
             path_info, query_string = self.path, ''
-        environ['PATH_INFO'] = urllib.unquote(path_info)
+        environ['PATH_INFO'] = urllib.parse.unquote(path_info, 'iso-8859-1')
         environ['QUERY_STRING'] = query_string
 
         host = self.address_string()
@@ -174,17 +178,13 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             environ['REMOTE_HOST'] = host
         environ['REMOTE_ADDR'] = self.client_address[0]
 
-        if self.headers.typeheader is None:
-            environ['CONTENT_TYPE'] = self.headers.type
-        else:
-            environ['CONTENT_TYPE'] = self.headers.typeheader
+        environ['CONTENT_TYPE'] = self.headers.get('content-type')
 
-        length = self.headers.getheader('content-length')
+        length = self.headers.get('content-length')
         if length:
             environ['CONTENT_LENGTH'] = length
 
-        for name, value in [header.split(':', 1) for header
-                            in self.headers.headers]:
+        for name, value in self.headers.items():
             name = name.replace('-', '_').upper()
             value = value.strip()
             if name in environ:
@@ -254,10 +254,12 @@ class WSGIServerGateway(WSGIGateway):
                         headers.append(('Connection', 'close'))
                 self.handler.send_response(int(status[:3]))
                 for name, value in headers:
+                    if isinstance(value, bytes):
+                        value = str(value, 'utf-8')
                     self.handler.send_header(name, value)
                 self.handler.end_headers()
             if self.use_chunked:
-                self.handler.wfile.write('%x\r\n%s\r\n' % (len(data), data))
+                self.handler.wfile.write(b'%x\r\n%s\r\n' % (len(data), data))
             else:
                 self.handler.wfile.write(data)
         except IOError as e:
@@ -276,7 +278,8 @@ class WSGIServer(HTTPServer):
         self.application = application
 
         gateway.wsgi_multithread = isinstance(self, ThreadingMixIn)
-        gateway.wsgi_multiprocess = isinstance(self, ForkingMixIn)
+        gateway.wsgi_multiprocess = bool(ForkingMixIn and
+                                         isinstance(self, ForkingMixIn))
         self.gateway = gateway
 
         self.environ = {'SERVER_NAME': self.server_name,

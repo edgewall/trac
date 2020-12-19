@@ -45,7 +45,7 @@ class TextileRendererTestCase(unittest.TestCase):
             self.assertEqual('Textile', name)
 
     def test_image(self):
-        result = self._render(textwrap.dedent(u"""\
+        result = self._render(textwrap.dedent("""\
             !https://example.org/foo.png! uníćode
             !//example.net/foo.png!       uníćode
             !/path/to/foo.png!            uníćode
@@ -66,7 +66,7 @@ class TextileRendererTestCase(unittest.TestCase):
         self.assertEqual(elements[4].get('crossorigin'), None)
 
     def test_style(self):
-        result = self._render(textwrap.dedent(u"""\
+        result = self._render(textwrap.dedent("""\
             *{background:url(https://example.org/foo.png)}uníćode*
             *{background:url(//example.net/foo.png)      }uníćode*
             *{background:url(/path/to/foo.png)           }uníćode*
@@ -82,14 +82,14 @@ class TextileRendererTestCase(unittest.TestCase):
         self.assertIn('url(data:image/png,foo)', result)
 
     def test_html(self):
-        result = self._render(textwrap.dedent(u"""\
+        result = self._render(textwrap.dedent("""\
             <a href="ftp://example.org/">unsafe</a>
             <img src="//example.org/foo.png" />
             <span style="background-image:url(http://example.org/foo.png)">unsafe</span>
             """))
         self.assertNotIn('href="ftp://', result)
         self.assertIn(
-            '<img src="//example.org/foo.png" crossorigin="anonymous"', result)
+            '<img crossorigin="anonymous" src="//example.org/foo.png"', result)
         self.assertNotIn('url(http://example.org/foo.png)', result)
         self.assertIn('<span>unsafe</span>', result)
 

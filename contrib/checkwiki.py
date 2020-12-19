@@ -42,10 +42,7 @@ class DefaultWikiChecker(Formatter):
     def handle_match(self, fullmatch):
         rv = self.__super.handle_match(fullmatch)
         if rv:
-            if not isinstance(rv, basestring):
-                text = unicode(rv)
-            else:
-                text = rv
+            text = str(rv) if not isinstance(rv, str) else rv
             if text.startswith('<a ') and text.endswith('</a>') and \
                     'class="missing ' in text:
                 self.__marks.append((fullmatch.start(0), fullmatch.end(0)))
@@ -161,7 +158,8 @@ def download_default_pages(names, prefix, strict):
                 response = conn.getresponse()
                 content = response.read()
             if response.status == 200 and content:
-                with open('trac/wiki/default-pages/' + name, 'w') as f:
+                with open('trac/wiki/default-pages/' + name, 'w',
+                          encoding='utf-8') as f:
                     if not strict:
                         content = re_box_processor.sub('', content)
                     lines = content.replace('\r\n', '\n').splitlines(True)

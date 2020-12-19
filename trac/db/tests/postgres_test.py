@@ -116,7 +116,7 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         ]
         for orig in values:
             dsn = assemble_pg_dsn(**orig)
-            for k, v in orig.iteritems():
+            for k, v in orig.items():
                 orig[k] = "'%s'" % v
                 continue
             orig['dbname'] = "'t'"
@@ -216,7 +216,7 @@ class PostgresConnectionTestCase(unittest.TestCase):
         self.dbm.insert_into_tables([
             ('test_simple',
              ('username', 'email', 'enabled'),
-             [('joe', 'joe@example.org', 1), (u'joé', 'joe@example.org', 0)]),
+             [('joe', 'joe@example.org', 1), ('joé', 'joe@example.org', 0)]),
             ('test_composite',
              ('id', 'name', 'value', 'enabled'),
              [(1, 'foo', '42', 1),

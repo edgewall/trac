@@ -139,12 +139,12 @@ class DbRepositoryProvider(Component):
             if value is not None:
                 repos.setdefault(id, {})[name] = value
         reponames = {}
-        for id, info in repos.iteritems():
+        for id, info in repos.items():
             if 'name' in info and ('dir' in info or 'alias' in info):
                 info['id'] = id
                 reponames[info['name']] = info
             info['sync_per_request'] = as_bool(info.get('sync_per_request'))
-        return reponames.iteritems()
+        return iter(reponames.items())
 
     # IAdminCommandProvider methods
 
@@ -263,7 +263,7 @@ class DbRepositoryProvider(Component):
         rm = RepositoryManager(self.env)
         repositories = rm.get_all_repositories()
         if any(reponame == repos.get('alias')
-               for repos in repositories.itervalues()):
+               for repos in repositories.values()):
             raise TracError(_('Cannot remove the repository "%(repos)s" used '
                               'in aliases', repos=reponame or '(default)'))
         with self.env.db_transaction as db:
@@ -284,7 +284,7 @@ class DbRepositoryProvider(Component):
         if reponame != new_reponame:
             repositories = rm.get_all_repositories()
             if any(reponame == repos.get('alias')
-                   for repos in repositories.itervalues()):
+                   for repos in repositories.values()):
                 raise TracError(_('Cannot rename the repository "%(repos)s" '
                                   'used in aliases',
                                   repos=reponame or '(default)'))
@@ -296,7 +296,7 @@ class DbRepositoryProvider(Component):
                     raise TracError(_('The repository "%(name)s" already '
                                       'exists.',
                                       name=new_reponame or '(default)'))
-            for (k, v) in changes.iteritems():
+            for (k, v) in changes.items():
                 if k not in self.repository_attrs:
                     continue
                 if k in ('alias', 'name') and is_default(v):
@@ -505,7 +505,7 @@ class RepositoryManager(Component):
                 if name in reponames and detail != 'alias':
                     reponames[name][detail] = repositories.get(option)
 
-        for reponame, info in reponames.iteritems():
+        for reponame, info in reponames.items():
             yield (reponame, info)
 
     # ITemplateProvider methods
@@ -535,7 +535,7 @@ class RepositoryManager(Component):
         """
         directory = os.path.join(os.path.normcase(native_path(directory)), '')
         repositories = []
-        for reponame, repoinfo in self.get_all_repositories().iteritems():
+        for reponame, repoinfo in self.get_all_repositories().items():
             dir = native_path(repoinfo.get('dir'))
             if dir:
                 dir = os.path.join(os.path.normcase(dir), '')
@@ -756,7 +756,7 @@ class RepositoryManager(Component):
             assert tid == get_thread_id()
             with self._lock:
                 repositories = self._cache.pop(tid, {})
-                for reponame, repos in repositories.iteritems():
+                for reponame, repos in repositories.items():
                     repos.close()
 
     def read_file_by_path(self, path):
@@ -765,7 +765,7 @@ class RepositoryManager(Component):
         :param path: the repository-scoped path. The repository revision may
                      specified by appending `@` followed by the revision,
                      otherwise the HEAD revision is assumed.
-        :return: the file content as a unicode string. `None` is returned if
+        :return: the file content as a `str` string. `None` is returned if
                  the file is not found.
 
         :since: 1.2.2
@@ -836,10 +836,8 @@ class NoSuchNode(ResourceNotFound):
         ResourceNotFound.__init__(self, msg, _('No such node'))
 
 
-class Repository(object):
+class Repository(object, metaclass=ABCMeta):
     """Base class for a repository provided by a version control system."""
-
-    __metaclass__ = ABCMeta
 
     has_linear_changesets = False
 
@@ -1103,10 +1101,8 @@ class Repository(object):
     can_view = is_viewable  # 0.12 compatibility
 
 
-class Node(object):
+class Node(object, metaclass=ABCMeta):
     """Represents a directory or file in the repository at a given revision."""
-
-    __metaclass__ = ABCMeta
 
     DIRECTORY = "dir"
     FILE = "file"
@@ -1134,9 +1130,9 @@ class Node(object):
         self.kind = kind
 
     def __repr__(self):
-        name = u'%s:%s' % (self.repos.name, self.path)
+        name = '%s:%s' % (self.repos.name, self.path)
         if self.rev is not None:
-            name += '@' + unicode(self.rev)
+            name += '@' + str(self.rev)
         return '<%s %r>' % (self.__class__.__name__, name)
 
     @abstractmethod
@@ -1257,10 +1253,8 @@ class Node(object):
     can_view = is_viewable  # 0.12 compatibility
 
 
-class Changeset(object):
+class Changeset(object, metaclass=ABCMeta):
     """Represents a set of changes committed at once in a repository."""
-
-    __metaclass__ = ABCMeta
 
     ADD = 'add'
     COPY = 'copy'
@@ -1287,7 +1281,7 @@ class Changeset(object):
         self.date = date
 
     def __repr__(self):
-        name = u'%s@%s' % (self.repos.name, self.rev)
+        name = '%s@%s' % (self.repos.name, self.rev)
         return '<%s %r>' % (self.__class__.__name__, name)
 
     def get_properties(self):

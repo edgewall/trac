@@ -836,8 +836,8 @@ Paragraph
 <img src="data:image/png,foo" />
 }}}
 ------------------------------
-<img src="http://example.org/foo.png" crossorigin="anonymous"/>
-<img src="//example.org/foo.png" crossorigin="anonymous"/>
+<img crossorigin="anonymous" src="http://example.org/foo.png"/>
+<img crossorigin="anonymous" src="//example.org/foo.png"/>
 <img src="/path/to/foo.png"/>
 <img src="./foo.png"/>
 <img src="foo.png"/>

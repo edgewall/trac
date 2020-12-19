@@ -25,9 +25,9 @@ from trac.config import *
 from trac.notification.api import (IEmailDecorator, INotificationFormatter,
                                    INotificationSubscriber,
                                    NotificationEvent, NotificationSystem)
-from trac.notification.mail import (RecipientMatcher, create_header,
-                                    create_message_id, get_from_author,
-                                    get_message_addresses, set_header)
+from trac.notification.mail import (RecipientMatcher, create_message_id,
+                                    get_from_author, get_message_addresses,
+                                    set_header)
 from trac.notification.model import Subscription
 from trac.perm import PermissionSystem
 from trac.ticket.api import translation_deactivated
@@ -166,7 +166,7 @@ class TicketFormatter(Component):
                                         '\n', self.ambiwidth)
                     })
                     link += '#comment:%s' % str(change.get('cnum', ''))
-                    for field, values in change['fields'].iteritems():
+                    for field, values in change['fields'].items():
                         old = values['old']
                         new = values['new']
                         newv = ''
@@ -291,7 +291,7 @@ class TicketFormatter(Component):
             tickets = sort_tickets_by_priority(self.env, event.target)
             changes_descr = '\n'.join('%s to %s' % (prop, val)
                                       for prop, val
-                                      in event.new_values.iteritems())
+                                      in event.new_values.items())
             tickets_descr = ', '.join('#%s' % t for t in tickets)
             link = self.env.abs_href.query(id=','.join(str(t) for t in tickets))
             data = Chrome(self.env).populate_data(None, {
@@ -389,17 +389,17 @@ class TicketFormatter(Component):
             i += 1
         width_l = width[0] + width[1] + 5
         width_r = width[2] + width[3] + 5
-        half_cols = (self.COLS - 1) / 2
+        half_cols = (self.COLS - 1) // 2
         if width_l + width_r + 1 > self.COLS:
             if ((width_l > half_cols and width_r > half_cols) or
-                    (width[0] > half_cols / 2 or width[2] > half_cols / 2)):
+                    (width[0] > half_cols // 2 or width[2] > half_cols // 2)):
                 width_l = half_cols
                 width_r = half_cols
             elif width_l > width_r:
-                width_l = min((self.COLS - 1) * 2 / 3, width_l)
+                width_l = min((self.COLS - 1) * 2 // 3, width_l)
                 width_r = self.COLS - width_l - 1
             else:
-                width_r = min((self.COLS - 1) * 2 / 3, width_r)
+                width_r = min((self.COLS - 1) * 2 // 3, width_r)
                 width_l = self.COLS - width_r - 1
         sep = width_l * '-' + '+' + width_r * '-'
         txt = sep + '\n'
@@ -417,12 +417,12 @@ class TicketFormatter(Component):
                 fval = self._format_time_field(fval, format)
             if fname in ['owner', 'reporter']:
                 fval = self._format_author(fval)
-            if f['type'] == 'textarea' or '\n' in unicode(fval):
+            if f['type'] == 'textarea' or '\n' in str(fval):
                 big.append((f['label'], '\n'.join(fval.splitlines())))
             else:
                 # Note: f['label'] is a Babel's LazyObject, make sure its
                 # __str__ method won't be called.
-                str_tmp = u'%s:  %s' % (f['label'], unicode(fval))
+                str_tmp = '%s:  %s' % (f['label'], str(fval))
                 idx = i % 2
                 initial_indent = ' ' * (width[2 * idx] -
                                         self._get_text_width(f['label']) +
@@ -436,7 +436,7 @@ class TicketFormatter(Component):
 
         cell_l = []
         cell_r = []
-        for i in xrange(len(vals_lr[0])):
+        for i in range(len(vals_lr[0])):
             vals_l = vals_lr[0][i]
             vals_r = vals_lr[1][i]
             vals_diff = len(vals_l) - len(vals_r)
@@ -454,14 +454,14 @@ class TicketFormatter(Component):
             cell_l.extend(vals_l)
             cell_r.extend(vals_r)
 
-        for i in xrange(max(len(cell_l), len(cell_r))):
+        for i in range(max(len(cell_l), len(cell_r))):
             if i >= len(cell_l):
                 cell_l.append(width_l * ' ')
             elif i >= len(cell_r):
                 cell_r.append('')
             fmt_width = width_l - self._get_text_width(cell_l[i]) \
                         + len(cell_l[i])
-            txt += u'%-*s|%s%s' % (fmt_width, cell_l[i], cell_r[i], '\n')
+            txt += '%-*s|%s%s' % (fmt_width, cell_l[i], cell_r[i], '\n')
         if big:
             txt += sep
             for name, value in big:
@@ -515,15 +515,15 @@ class TicketFormatter(Component):
             msgid = self._get_message_id(targetid, from_email, None, more)
             url = self.env.abs_href.ticket(ticket.id)
             if event.category != 'created':
-                set_header(message, 'In-Reply-To', msgid, charset)
-                set_header(message, 'References', msgid, charset)
+                set_header(message, 'In-Reply-To', msgid)
+                set_header(message, 'References', msgid)
                 msgid = self._get_message_id(targetid, from_email, event.time,
                                              more)
                 cnum = ticket.get_comment_number(event.time)
                 if cnum is not None:
                     url += '#comment:%d' % cnum
-            set_header(message, 'X-Trac-Ticket-ID', ticket.id, charset)
-            set_header(message, 'X-Trac-Ticket-URL', url, charset)
+            set_header(message, 'X-Trac-Ticket-ID', ticket.id)
+            set_header(message, 'X-Trac-Ticket-URL', url)
             # When owner, reporter and updater are listed in the Cc header,
             # move the address to To header.
             if NotificationSystem(self.env).use_public_cc:
@@ -540,18 +540,15 @@ class TicketFormatter(Component):
                     cc_addrs = get_message_addresses(message, 'Cc')
                     to_addrs &= set(addr for name, addr in cc_addrs)
                 if to_addrs:
-                    cc_header = ', '.join(create_header('Cc', (name, addr),
-                                                        charset)
-                                          for name, addr in cc_addrs
-                                          if addr not in to_addrs)
-                    if cc_header:
-                        set_header(message, 'Cc', cc_header, charset)
+                    cc_addrs = [(name, addr) for name, addr in cc_addrs
+                                             if addr not in to_addrs]
+                    if cc_addrs:
+                        set_header(message, 'Cc', addresses=cc_addrs)
                     elif 'Cc' in message:
                         del message['Cc']
-                    to_header = ', '.join(sorted(to_addrs))
-                    set_header(message, 'To', to_header, charset)
-        set_header(message, 'Subject', subject, charset)
-        set_header(message, 'Message-ID', msgid, charset)
+                    set_header(message, 'To', addresses=to_addrs)
+        set_header(message, 'Subject', subject)
+        set_header(message, 'Message-ID', msgid)
 
 
 class TicketOwnerSubscriber(Component):

@@ -111,8 +111,6 @@ def Mock(bases=(), *initargs, **kw):
     def dummyfn(self, *args, **kwargs):
         raise NotImplementedError
     for base in bases:
-        if getattr(base, '__metaclass__', None) is not abc.ABCMeta:
-            continue
         fn = types.MethodType(dummyfn, base)
         for name, attr in inspect.getmembers(base):
             if name in attrs:
@@ -179,9 +177,9 @@ def MockRequest(env, **kwargs):
 
     def convert(val):
         if isinstance(val, bool):
-            return unicode(int(val))
+            return str(int(val))
         elif isinstance(val, numbers.Real):
-            return unicode(val)
+            return str(val)
         elif isinstance(val, (list, tuple)):
             return [convert(v) for v in val]
         else:
@@ -193,7 +191,7 @@ def MockRequest(env, **kwargs):
     else:
         args = _RequestArgs()
         args.update((k, convert(v))
-                    for k, v in kwargs.get('args', {}).iteritems())
+                    for k, v in kwargs.get('args', {}).items())
         arg_list = [(name, value) for name in args
                                   for value in args.getlist(name)]
 
@@ -211,8 +209,9 @@ def MockRequest(env, **kwargs):
         'SERVER_PORT': kwargs.get('server_port', '80'),
     }
     for key in environ:
-        if isinstance(environ[key], unicode):
-            environ[key] = environ[key].encode('utf-8')
+        if isinstance(environ[key], bytes):
+            environ[key] = str(environ[key], 'utf-8')
+
 
     status_sent = []
     headers_sent = {}
@@ -504,7 +503,8 @@ def mkdtemp():
     """Create a temp directory with prefix `trac-tempenv`
     and return the directory name.
     """
-    return os.path.realpath(tempfile.mkdtemp(prefix='trac-testdir-'))
+    tmpdir = tempfile.mkdtemp(prefix='trac-testdir-')
+    return os.path.normcase(os.path.realpath(tmpdir))
 
 
 def locate(fn):
@@ -522,14 +522,13 @@ def locate(fn):
 
 
 def rmtree(path):
-    import errno
     def onerror(function, path, excinfo, retry=1):
-        # `os.remove` fails for a readonly file on Windows.
+        # `os.unlink` and `os.remove` fail for a readonly file on Windows.
         # Then, it attempts to be writable and remove.
-        if function != os.remove:
+        if function not in (os.unlink, os.remove):
             raise
         e = excinfo[1]
-        if isinstance(e, OSError) and e.errno == errno.EACCES:
+        if isinstance(e, PermissionError):
             mode = os.stat(path).st_mode
             os.chmod(path, mode | 0o666)
             try:
@@ -542,10 +541,10 @@ def rmtree(path):
                 onerror(function, path, excinfo, retry + 1)
         else:
             raise
-    if os.name == 'nt' and isinstance(path, str):
+    if os.name == 'nt' and isinstance(path, bytes):
         # Use unicode characters in order to allow non-ansi characters
         # on Windows.
-        path = unicode(path, sys.getfilesystemencoding())
+        path = str(path, sys.getfilesystemencoding())
     shutil.rmtree(path, onerror=onerror)
 
 

@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.tests import attachment, config, core, env, loader, notification, \
+from . import attachment, config, core, env, loader, notification, \
                        perm, resource, wikisyntax, functional
 
 

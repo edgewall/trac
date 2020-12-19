@@ -97,7 +97,7 @@ class UpgradeTestCase(unittest.TestCase):
         projects_list = os.path.join(self.env.path, 'projects_list')
         projects_base = os.path.dirname(projects_list)
         projects_url = 'http://localhost/%s'
-        with open(projects_list, 'w') as f:
+        with open(projects_list, 'w', encoding='utf-8') as f:
             f.write("""
             repos1 user1+<user1@example.com>
             repos2
@@ -137,7 +137,7 @@ class UpgradeTestCase(unittest.TestCase):
         projects_list = os.path.join(self.env.path, 'projects_list')
         projects_base = os.path.dirname(projects_list)
         projects_url = 'http://localhost/%s'
-        with open(projects_list, 'w') as f:
+        with open(projects_list, 'w', encoding='utf-8') as f:
             f.write("""
             repos1 user1+<user1@example.com>
             repos2

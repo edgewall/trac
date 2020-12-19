@@ -15,11 +15,11 @@
 import unittest
 
 from trac.perm import PermissionSystem
-from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
+from trac.tests.functional import FunctionalTestCaseSetup, tc
 from trac.util.text import unicode_to_base64
 
 
-class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
+class AuthorizationTestCaseSetup(FunctionalTestCaseSetup):
     def test_authorization(self, href, perms, h2_text):
         """Check permissions required to access an administration panel.
 
@@ -31,7 +31,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
         self._tester.go_to_front()
         self._tester.logout()
         self._tester.login('user')
-        if isinstance(perms, basestring):
+        if isinstance(perms, str):
             perms = (perms, )
 
         h2 = r'<h2>[ \t\n]*%s[ \t\n]*' \
@@ -62,7 +62,7 @@ class AuthorizationTestCaseSetup(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
-class TestBasicSettings(FunctionalTwillTestCaseSetup):
+class TestBasicSettings(FunctionalTestCaseSetup):
     def runTest(self):
         """Check basic settings."""
         self._tester.go_to_admin()
@@ -91,7 +91,7 @@ class TestBasicSettingsAuthorization(AuthorizationTestCaseSetup):
                                 "Basic Settings")
 
 
-class TestDefaultHandler(FunctionalTwillTestCaseSetup):
+class TestDefaultHandler(FunctionalTestCaseSetup):
     def runTest(self):
         """Set default handler from the Basic Settings page."""
 
@@ -153,7 +153,7 @@ class TestDefaultHandler(FunctionalTwillTestCaseSetup):
             self._testenv.set_config('trac', 'default_handler', 'WikiModule')
 
 
-class TestLoggingNone(FunctionalTwillTestCaseSetup):
+class TestLoggingNone(FunctionalTestCaseSetup):
     def runTest(self):
         """Turn off logging."""
         # For now, we just check that it shows up.
@@ -171,7 +171,7 @@ class TestLoggingAuthorization(AuthorizationTestCaseSetup):
                                 "Logging")
 
 
-class TestLoggingToFile(FunctionalTwillTestCaseSetup):
+class TestLoggingToFile(FunctionalTestCaseSetup):
     def runTest(self):
         """Turn logging back on."""
         # For now, we just check that it shows up.
@@ -186,7 +186,7 @@ class TestLoggingToFile(FunctionalTwillTestCaseSetup):
         tc.find('selected="selected">INFO</option>')
 
 
-class TestLoggingToFileNormal(FunctionalTwillTestCaseSetup):
+class TestLoggingToFileNormal(FunctionalTestCaseSetup):
     def runTest(self):
         """Setting logging back to normal."""
         # For now, we just check that it shows up.
@@ -208,7 +208,7 @@ class TestPermissionsAuthorization(AuthorizationTestCaseSetup):
                                 "Manage Permissions and Groups")
 
 
-class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
+class TestCreatePermissionGroup(FunctionalTestCaseSetup):
     def runTest(self):
         """Create a permissions group"""
         self._tester.go_to_admin("Permissions")
@@ -221,7 +221,7 @@ class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
         tc.find('%s:%s' % (somegroup, REPORT_CREATE))
 
 
-class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
+class TestRemovePermissionGroup(FunctionalTestCaseSetup):
     def runTest(self):
         """Remove a permissions group"""
         self._tester.go_to_admin("Permissions")
@@ -230,12 +230,12 @@ class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
         REPORT_CREATE = unicode_to_base64('REPORT_CREATE')
         tc.find('%s:%s' % (somegroup, REPORT_CREATE))
         tc.formvalue('revokeform', 'sel', '%s:%s' % (somegroup, REPORT_CREATE))
-        tc.submit()
+        tc.submit(formname='revokeform')
         tc.notfind('%s:%s' % (somegroup, REPORT_CREATE))
         tc.notfind(somegroup)
 
 
-class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
+class TestAddUserToGroup(FunctionalTestCaseSetup):
     def runTest(self):
         """Add a user to a permissions group"""
         self._tester.go_to_admin("Permissions")
@@ -268,11 +268,11 @@ class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
             self._tester.go_to_admin("Permissions")
             tc.formvalue('revokeform', 'sel', revoke_checkbox)
-            tc.submit()
+            tc.submit(formname='revokeform')
             tc.notfind(revoke_checkbox)
 
 
-class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
+class TestRemoveUserFromGroup(FunctionalTestCaseSetup):
     def runTest(self):
         """Remove a user from a permissions group"""
         self._tester.go_to_admin("Permissions")
@@ -281,11 +281,11 @@ class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
         somegroup = unicode_to_base64('somegroup')
         tc.find('%s:%s' % (authenticated, somegroup))
         tc.formvalue('revokeform', 'sel', '%s:%s' % (authenticated, somegroup))
-        tc.submit()
+        tc.submit(formname='revokeform')
         tc.notfind('%s:%s' % (authenticated, somegroup))
 
 
-class TestCopyPermissions(FunctionalTwillTestCaseSetup):
+class TestCopyPermissions(FunctionalTestCaseSetup):
     def runTest(self):
         """Tests for the Copy Permissions functionality
         added in https://trac.edgewall.org/ticket/11099."""
@@ -418,7 +418,7 @@ class TestCopyPermissions(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
-class TestPluginSettings(FunctionalTwillTestCaseSetup):
+class TestPluginSettings(FunctionalTestCaseSetup):
     def runTest(self):
         """Check plugin settings."""
         self._tester.go_to_admin("Plugins")
@@ -433,7 +433,7 @@ class TestPluginsAuthorization(AuthorizationTestCaseSetup):
                                 "Manage Plugins")
 
 
-class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket10752(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/10752
         Permissions on the web admin page should be greyed out when they
@@ -457,7 +457,7 @@ class RegressionTestTicket10752(FunctionalTwillTestCaseSetup):
                    '[^>]+>')
 
 
-class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11069(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11069
         The permissions list should only be populated with permissions that
@@ -484,7 +484,7 @@ class RegressionTestTicket11069(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
 
 
-class RegressionTestTicket11095(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11095(FunctionalTestCaseSetup):
     """Test for regression of https://trac.edgewall.org/ticket/11095
     The permission is truncated if it overflows the available space (CSS)
     and the full permission name is shown in the title on hover.
@@ -495,7 +495,7 @@ class RegressionTestTicket11095(FunctionalTwillTestCaseSetup):
         tc.find('<span title="WIKI_VIEW">WIKI_VIEW</span>')
 
 
-class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11117(FunctionalTestCaseSetup):
     """Test for regression of https://trac.edgewall.org/ticket/11117
     Hint should be shown on the Basic Settings admin panel when pytz is not
     installed.
@@ -510,7 +510,7 @@ class RegressionTestTicket11117(FunctionalTwillTestCaseSetup):
             tc.notfind(pytz_hint)
 
 
-class RegressionTestTicket11257(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11257(FunctionalTestCaseSetup):
     """Test for regression of https://trac.edgewall.org/ticket/11257
     Hints should be shown on the Basic Settings admin panel when Babel is not
     installed.

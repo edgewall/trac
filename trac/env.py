@@ -23,10 +23,10 @@ import setuptools
 import shutil
 import sys
 import time
-from ConfigParser import RawConfigParser
-from subprocess import PIPE
+from configparser import RawConfigParser
+from subprocess import PIPE, Popen
 from tempfile import mkdtemp
-from urlparse import urlsplit
+from urllib.parse import urlsplit
 
 from trac import log
 from trac.admin.api import (AdminCommandError, IAdminCommandProvider,
@@ -43,7 +43,7 @@ from trac.db.convert import copy_tables
 from trac.loader import load_components
 from trac.util import as_bool, backup_config_file, copytree, create_file, \
                       get_pkginfo, is_path_below, lazy, makedirs
-from trac.util.compat import Popen, close_fds
+from trac.util.compat import close_fds
 from trac.util.concurrency import threading
 from trac.util.datefmt import pytz
 from trac.util.text import exception_to_unicode, path_to_unicode, printerr, \
@@ -321,7 +321,7 @@ class Environment(Component, ComponentManager):
 
     def _component_name(self, name_or_class):
         name = name_or_class
-        if not isinstance(name_or_class, basestring):
+        if not isinstance(name_or_class, str):
             name = name_or_class.__module__ + '.' + name_or_class.__name__
         return name.lower()
 
@@ -395,7 +395,8 @@ class Environment(Component, ComponentManager):
         """Verify that the provided path points to a valid Trac environment
         directory."""
         try:
-            with open(os.path.join(self.path, 'VERSION')) as f:
+            with open(os.path.join(self.path, 'VERSION'),
+                      encoding='utf-8') as f:
                 tag = f.readline().rstrip()
         except Exception as e:
             raise TracError(_("No Trac environment found at %(path)s\n"
@@ -619,7 +620,7 @@ class Environment(Component, ComponentManager):
         path = self.path
         for dir in dirs:
             path = os.path.join(path, dir)
-        return os.path.realpath(path)
+        return os.path.normcase(os.path.realpath(path))
 
     @lazy
     def attachments_dir(self):
@@ -687,7 +688,8 @@ class Environment(Component, ComponentManager):
                       self.trac_version)
 
     def create_logger(self, log_type, log_file, log_level, log_format):
-        log_id = 'Trac.%s' % hashlib.sha1(self.path).hexdigest()
+        log_id = 'Trac.%s' % \
+                 hashlib.sha1(self.path.encode('utf-8')).hexdigest()
         if log_format:
             log_format = log_format.replace('$(', '%(') \
                                    .replace('%(path)s', self.path) \
@@ -993,8 +995,8 @@ class EnvironmentAdmin(Component):
             template = chrome.load_template('deploy_trac.' + script, text=True)
             text = chrome.render_template_string(template, data, text=True)
 
-            with open(dest, 'w') as out:
-                out.write(text.encode('utf-8'))
+            with open(dest, 'w', encoding='utf-8') as out:
+                out.write(text)
 
     def _do_hotcopy(self, dest, no_db=None):
         if no_db not in (None, '--no-database'):
@@ -1127,13 +1129,13 @@ class EnvironmentAdmin(Component):
 
     def _create_env(self, env_path, dburi):
         parser = RawConfigParser()
-        parser.read(self.env.config_file_path)
+        parser.read(self.env.config_file_path, 'utf-8')
         options = dict(((section, name), value)
                        for section in parser.sections()
                        for name, value in parser.items(section))
         options[('trac', 'database')] = dburi
         options = sorted((section, name, value) for (section, name), value
-                                                in options.iteritems())
+                                                in options.items())
 
         class MigrateEnvironment(Environment):
             abstract = True

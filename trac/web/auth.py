@@ -14,16 +14,14 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from __future__ import print_function
-
 from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from hashlib import md5, sha1
 import os
 import re
 import sys
-import urllib2
-import urlparse
+import urllib.parse
+import urllib.request
 
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
@@ -267,9 +265,9 @@ class LoginModule(Component):
         if referer:
             if not referer.startswith(('http://', 'https://')):
                 # Make URL absolute
-                scheme, host = urlparse.urlparse(req.base_url)[:2]
-                referer = urlparse.urlunparse((scheme, host, referer, None,
-                                               None, None))
+                scheme, host = urllib.parse.urlparse(req.base_url)[:2]
+                referer = urllib.parse.urlunparse((scheme, host, referer, None,
+                                                   None, None))
             pos = req.base_url.find(':')
             base_scheme = req.base_url[:pos]
             base_noscheme = req.base_url[pos:]
@@ -288,9 +286,7 @@ class LoginModule(Component):
         return req.args.get('referer') or req.get_header('Referer')
 
 
-class HTTPAuthentication(object):
-
-    __metaclass__ = ABCMeta
+class HTTPAuthentication(object, metaclass=ABCMeta):
 
     @abstractmethod
     def do_auth(self, environ, start_response):
@@ -324,7 +320,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def load(self, filename):
         # FIXME use a logger
         self.hash = {}
-        with open(filename) as fd:
+        with open(filename, encoding='utf-8') as fd:
             for line in fd:
                 line = line.split('#')[0].strip()
                 if not line:
@@ -353,7 +349,8 @@ class BasicAuthentication(PasswordFileAuthentication):
             return False
 
         if the_hash.startswith('{SHA}'):
-            return b64encode(sha1(password).digest()) == the_hash[5:]
+            return str(b64encode(sha1(password.encode('utf-8')).digest()),
+                       'ascii') == the_hash[5:]
 
         if '$' not in the_hash:
             return self.crypt(password, the_hash[:2]) == the_hash
@@ -365,15 +362,16 @@ class BasicAuthentication(PasswordFileAuthentication):
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
         if header and header.startswith('Basic'):
-            auth = b64decode(header[6:]).split(':')
+            auth = str(b64decode(header[6:]), 'utf-8').split(':')
             if len(auth) == 2:
                 user, password = auth
                 if self.test(user, password):
                     return user
 
-        start_response('401 Unauthorized',
-                       [('WWW-Authenticate', 'Basic realm="%s"' % self.realm),
-                        ('Content-Length', '0')])('')
+        headers = [('WWW-Authenticate', 'Basic realm="%s"' % self.realm),
+                   ('Content-Length', '0')]
+        write = start_response('401 Unauthorized', headers)
+        write(b'')
 
 
 class DigestAuthentication(PasswordFileAuthentication):
@@ -395,7 +393,7 @@ class DigestAuthentication(PasswordFileAuthentication):
         """
         # FIXME use a logger
         self.hash = {}
-        with open(filename) as fd:
+        with open(filename, encoding='utf-8') as fd:
             for line in fd:
                 line = line.split('#')[0].strip()
                 if not line:
@@ -414,7 +412,7 @@ class DigestAuthentication(PasswordFileAuthentication):
 
     def parse_auth_header(self, authorization):
         values = {}
-        for value in urllib2.parse_http_list(authorization):
+        for value in urllib.request.parse_http_list(authorization):
             n, v = value.split('=', 1)
             if v[0] == '"' and v[-1] == '"':
                 values[n] = v[1:-1]
@@ -430,11 +428,12 @@ class DigestAuthentication(PasswordFileAuthentication):
         self.active_nonces.append(nonce)
         if len(self.active_nonces) > self.MAX_NONCES:
             self.active_nonces = self.active_nonces[-self.MAX_NONCES:]
-        start_response('401 Unauthorized',
-                       [('WWW-Authenticate',
-                        'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
-                        % (self.realm, nonce, stale)),
-                        ('Content-Length', '0')])('')
+        headers = [('WWW-Authenticate',
+                    'Digest realm="%s", nonce="%s", qop="auth", stale="%s"' %
+                    (self.realm, nonce, stale)),
+                   ('Content-Length', '0')]
+        write = start_response('401 Unauthorized', headers)
+        write(b'')
 
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
@@ -456,7 +455,7 @@ class DigestAuthentication(PasswordFileAuthentication):
             self.send_auth_request(environ, start_response)
             return None
 
-        kd = lambda x: md5(':'.join(x)).hexdigest()
+        kd = lambda x: md5(b':'.join(v.encode('utf-8') for v in x)).hexdigest()
         a1 = self.hash[auth['username']]
         a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
         # Is the response correct?

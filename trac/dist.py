@@ -21,7 +21,7 @@ time during install.
 
 """
 
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 import io
 import os
 import re
@@ -192,7 +192,7 @@ try:
                     else:
                         messages.append(None)
 
-                    for name, message in messages_kwargs.iteritems():
+                    for name, message in messages_kwargs.items():
                         if name not in func_kwargs_map:
                             continue
                         index = func_kwargs_map[name]
@@ -229,7 +229,7 @@ try:
                     # aid=617979&group_id=5470
                     value = eval('# coding=%s\n%s' % (encoding, value),
                                  {'__builtins__':{}}, {})
-                    if isinstance(value, str):
+                    if isinstance(value, bytes):
                         value = value.decode(encoding)
                     buf.append(value)
                 elif tok == OP and value == '=' and prev_tok == NAME:
@@ -272,7 +272,7 @@ try:
             return []
         out = io.StringIO()
         extractor = ScriptExtractor(out)
-        extractor.feed(unicode(fileobj.read(), 'utf-8'))
+        extractor.feed(str(fileobj.read(), 'utf-8'))
         extractor.close()
         out.seek(0)
         return extract_javascript(out, keywords, comment_tags, options)
@@ -386,7 +386,7 @@ try:
                     t = Translations(infile, self.domain)
                     catalog = t._catalog
 
-                with open(js_file, 'w') as outfile:
+                with open(js_file, 'w', encoding='utf-8') as outfile:
                     write_js(outfile, catalog, self.domain, locale)
 
 
@@ -419,7 +419,7 @@ try:
         def run(self):
             for filename in self._get_po_files():
                 distlog.info('checking catalog %s', filename)
-                with open(filename) as f:
+                with open(filename, 'rb') as f:
                     catalog = read_po(f, domain=self.domain)
                 for message in catalog:
                     for error in self._check_message(catalog, message):
@@ -502,7 +502,7 @@ try:
         data = {'domain': domain, 'locale': locale}
 
         messages = {}
-        for msgid, msgstr in catalog.iteritems():
+        for msgid, msgstr in catalog.items():
             if isinstance(msgid, (list, tuple)):
                 messages.setdefault(msgid[0], {})
                 messages[msgid[0]][msgid[1]] = msgstr
@@ -521,11 +521,14 @@ try:
                         data['plural_expr'] = pluralexpr(val)
                         break
         data['messages'] = messages
+        data = to_json(data)
+        if isinstance(data, bytes):
+            data = str(data, 'utf-8')
 
         fileobj.write('// Generated messages javascript file '
                       'from compiled MO file\n')
         fileobj.write('babel.Translations.load(')
-        fileobj.write(to_json(data).encode('utf-8'))
+        fileobj.write(data)
         fileobj.write(').install();\n')
 
     def pluralexpr(forms):

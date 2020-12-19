@@ -14,8 +14,6 @@
 
 # Simple wrapper script needed to run epydoc
 
-from __future__ import print_function
-
 import sys
 
 try:

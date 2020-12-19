@@ -55,6 +55,7 @@ Requirements:
  - lxml for XHTML validation (optional)
 """
 
+import atexit
 import os
 import subprocess
 import unittest
@@ -74,19 +75,21 @@ else:
 
 import trac
 from trac.test import TestSetup, TestCaseSetup
-from trac.tests.functional.better_twill import b, tc, twill
+from trac.tests.functional.better_twill import b, tc, selenium
+from trac.util import create_file, read_file
 
 
 internal_error = 'Trac detected an internal error:'
 
 trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 
-if twill:
+if selenium:
     from trac.tests.functional.testenv import FunctionalTestEnvironment
     from trac.tests.functional.svntestenv import SvnFunctionalTestEnvironment
 
     from trac.tests.functional.tester import FunctionalTester
 
+    from selenium.common.exceptions import WebDriverException
 
     class FunctionalTestSuite(TestSetup):
         """TestSuite that provides a test fixture containing a
@@ -101,9 +104,10 @@ if twill:
         tester_class = FunctionalTester
 
         def __init__(self):
-            if parse_version(twill.__version__) != parse_version('0.9'):
-                raise ImportError("Twill 0.9 is required. Found version %s."
-                                  % twill.__version__)
+            minimum = '3.0.0'
+            if parse_version(selenium.__version__) < parse_version(minimum):
+                raise ImportError('Selenium %s is required. Found version %s.'
+                                  % (minimum, selenium.__version__))
             super(FunctionalTestSuite, self).__init__()
 
         def setUp(self, port=None):
@@ -125,23 +129,40 @@ if twill:
                 env_path += str(port or '')
 
             if port is None:
-                port = 8000 + os.getpid() % 1000
+                port = get_ephemeral_port()
+            server_port = get_ephemeral_port()
 
             baseurl = "http://127.0.0.1:%s" % port
-            self._testenv = self.env_class(env_path, port, baseurl)
+            self._testenv = self.env_class(env_path, server_port, baseurl)
+            self._testenv.set_config('project', 'name', 'Functional Tests')
+            self._testenv.set_config('trac', 'base_url', baseurl)
+            create_file(
+                os.path.join(env_path, 'trac', 'htdocs',
+                             'your_project_logo.png'),
+                read_file(os.path.join(trac_source_tree, 'trac', 'htdocs',
+                                       'trac_logo_mini.png'), 'rb'),
+                'wb')
 
             # functional-testing.log gets the twill output
             self.functional_test_log = \
                 os.path.join(env_path, 'functional-testing.log')
-            twill.set_output(open(self.functional_test_log, 'w'))
 
+            tc.init(port, server_port)
             self._testenv.start()
-            self._tester = self.tester_class(baseurl)
+            try:
+                self._tester = self.tester_class(baseurl)
+            except:
+                self._testenv.stop()
+                tc.close()
+                raise
             self.fixture = (self._testenv, self._tester)
-            self._testenv.set_config('project', 'name', 'Functional Tests')
+
+            atexit.register(self.tearDown)
 
         def tearDown(self):
-            self._testenv.stop()
+            atexit.unregister(self.tearDown)
+            self._testenv.close()
+            tc.close()
 
 
     class FunctionalTestCaseSetup(TestCaseSetup):
@@ -151,20 +172,32 @@ if twill:
             self._testenv, self._tester = self.fixture
 
 
-    class FunctionalTwillTestCaseSetup(FunctionalTestCaseSetup):
-        failureException = twill.errors.TwillAssertionError
+    class FunctionalTestCaseSetup(FunctionalTestCaseSetup):
+        failureException = WebDriverException
 
 else:
     # We're going to have to skip the functional tests
     class FunctionalTestSuite(TestSetup):
         def __init__(self):
-            raise ImportError("Twill not installed")
+            raise ImportError("Selenium not installed")
 
-    class FunctionalTwillTestCaseSetup(object):
+    class FunctionalTestCaseSetup(object):
         pass
 
     class FunctionalTestCaseSetup(object):
         pass
+
+# Compatibility code: Remove in 1.7.1
+FunctionalTwillTestCaseSetup = FunctionalTestCaseSetup
+
+
+def get_ephemeral_port():
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('127.0.0.1', 0))
+        s.listen(1)
+        return s.getsockname()[1]
 
 
 # Twill's find command accepts regexes; some convenient but complex regexes
@@ -181,6 +214,11 @@ def functionalSuite():
 def test_suite():
     try:
         suite = functionalSuite()
+    except ImportError as e:
+        print("SKIP: functional tests (%s)" % e)
+        # No tests to run, provide an empty suite.
+        suite = unittest.TestSuite()
+    else:
         import trac.tests.functional.testcases
         trac.tests.functional.testcases.functionalSuite(suite)
         import trac.versioncontrol.tests
@@ -202,10 +240,6 @@ def test_suite():
         # The db tests should be last since the backup test occurs there.
         import trac.db.tests
         trac.db.tests.functionalSuite(suite)
-    except ImportError as e:
-        print("SKIP: functional tests (%s)" % e)
-        # No tests to run, provide an empty suite.
-        suite = unittest.TestSuite()
     return suite
 
 

@@ -11,8 +11,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-from __future__ import print_function
-
 import os
 import tempfile
 import textwrap
@@ -225,10 +223,10 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             self.ctlr.render_ticket_action_control(req, ticket, 'accept')
 
         self.assertEqual('accept', label)
-        self.assertEqual('', unicode(control))
+        self.assertEqual('', str(control))
         self.assertEqual("The owner will be <span class=\"trac-author-user\">"
                          "user2</span>. The status will be 'accepted'.",
-                         unicode(hints))
+                         str(hints))
 
     def test_status_change_with_no_operation(self):
         """Existing ticket status change with no operation."""
@@ -245,8 +243,8 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
                                                    'change_status')
 
         self.assertEqual('change status', label)
-        self.assertEqual('', unicode(control))
-        self.assertEqual("Next status will be 'status2'.", unicode(hints))
+        self.assertEqual('', str(control))
+        self.assertEqual("Next status will be 'status2'.", str(hints))
 
     def test_new_ticket_status_change_with_no_operation(self):
         """New ticket status change with no operation."""
@@ -261,8 +259,8 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
                                                    'change_status')
 
         self.assertEqual('change status', label)
-        self.assertEqual('', unicode(control))
-        self.assertEqual("The status will be 'status1'.", unicode(hints))
+        self.assertEqual('', str(control))
+        self.assertEqual("The status will be 'status1'.", str(hints))
 
     def test_operation_with_no_status_change(self):
         """Operation with no status change."""
@@ -286,10 +284,10 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         self.assertEqual(
             'to <input id="action_change_owner_reassign_owner" '
             'name="action_change_owner_reassign_owner" type="text" '
-            'value="user1" />', unicode(control))
+            'value="user1" />', str(control))
         self.assertEqual(
             'The owner will be changed from <span class="trac-author">'
-            'user2</span> to the specified user.', unicode(hints))
+            'user2</span> to the specified user.', str(hints))
 
     def test_transition_to_star(self):
         """Action not rendered by CTW for transition to *
@@ -307,7 +305,8 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         actions = self.ctlr.get_ticket_actions(req, ticket)
 
         # create_and_triage not in actions
-        self.assertEqual([(1, 'create'), (0, 'create_and_assign')], actions)
+        self.assertEqual({(1, 'create'), (0, 'create_and_assign')},
+                         set(actions))
 
     def test_transition_to_star_with_leave_operation(self):
         """Action is rendered by CTW for transition to * with leave_status
@@ -333,10 +332,10 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             self.assertEqual(
                 'to <input id="action_change_owner_reassign_owner" '
                 'name="action_change_owner_reassign_owner" type="text" '
-                'value="user1" />', unicode(control))
+                'value="user1" />', str(control))
             self.assertEqual(
                 'The owner will be changed from <span class="trac-author">'
-                'user2</span> to the specified user.', unicode(hints))
+                'user2</span> to the specified user.', str(hints))
 
     def test_leave_operation(self):
         ticket = Ticket(self.env)
@@ -350,9 +349,9 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
             self.ctlr.render_ticket_action_control(req, ticket, 'leave')
 
         self.assertEqual('leave', label)
-        self.assertEqual('as assigned', unicode(control))
+        self.assertEqual('as assigned', str(control))
         self.assertEqual('The owner will remain <span class="trac-author">'
-                         'user2</span>.', unicode(hints))
+                         'user2</span>.', str(hints))
 
     def test_get_actions_by_operation_for_req(self):
         """Request with no permission checking."""
@@ -360,7 +359,8 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         ticket = insert_ticket(self.env, status='new')
         actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
                                                              'set_owner')
-        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
+        self.assertEqual([(0, 'change_owner'), (0, 'reassign')],
+                         sorted(actions))
 
     def test_get_actions_by_operation_for_req_with_ticket_modify(self):
         """User without TICKET_MODIFY won't have reassign action."""
@@ -368,7 +368,7 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         ticket = insert_ticket(self.env, status='new')
         actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
                                                              'set_owner')
-        self.assertEqual([(0, u'change_owner')], actions)
+        self.assertEqual([(0, 'change_owner')], sorted(actions))
 
     def test_get_actions_by_operation_for_req_without_ticket_modify(self):
         """User with TICKET_MODIFY will have reassign action."""
@@ -377,7 +377,8 @@ class ConfigurableTicketWorkflowTestCase(unittest.TestCase):
         ticket = insert_ticket(self.env, status='new')
         actions = self.ctlr.get_actions_by_operation_for_req(req, ticket,
                                                              'set_owner')
-        self.assertEqual([(0, u'change_owner'), (0, u'reassign')], actions)
+        self.assertEqual([(0, 'change_owner'), (0, 'reassign')],
+                         sorted(actions))
 
 
 class ResetActionTestCase(unittest.TestCase):
@@ -562,11 +563,11 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
 
         self.assertIn('accept', ticket_actions)
         self.assertEqual(label, 'accept')
-        self.assertEqual('', unicode(control))
+        self.assertEqual('', str(control))
         self.assertEqual('The owner will be changed from '
                          '<span class="trac-author">User 2</span> to '
                          '<span class="trac-author-user">User 1</span>.',
-                         unicode(hints))
+                         str(hints))
 
     def test_owner_is_self_and_state_change(self):
         """Ticket owner is auth'ed user with state change.
@@ -582,10 +583,10 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
 
         self.assertIn('accept', ticket_actions)
         self.assertEqual(label, 'accept')
-        self.assertEqual('', unicode(control))
+        self.assertEqual('', str(control))
         self.assertEqual('The owner will remain <span class="trac-author-user">'
                          'User 1</span>. Next status will be \'accepted\'.',
-                         unicode(hints))
+                         str(hints))
 
     def test_owner_is_self_and_no_state_change(self):
         """Ticket owner is the auth'ed user and no state change.
@@ -625,11 +626,11 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
         self.assertEqual(
             'as fixed<input id="action_resolve_as_owner_resolve_resolution" '
             'name="action_resolve_as_owner_resolve_resolution" type="hidden" '
-            'value="fixed" />', unicode(control))
+            'value="fixed" />', str(control))
         self.assertEqual(
             "The owner will remain <span class=\"trac-author-user\">User 1"
             "</span>. The resolution will be set to fixed. Next status will "
-            "be 'closed'.", unicode(hints))
+            "be 'closed'.", str(hints))
 
     def test_owner_is_self_no_state_change_and_multiple_operations(self):
         """Ticket owner is auth'ed user, no state change and multiple ops.
@@ -655,9 +656,9 @@ class SetOwnerToSelfAttributeTestCase(unittest.TestCase):
         self.assertEqual(
             'as invalid<input id="action_fix_resolution_resolve_resolution" '
             'name="action_fix_resolution_resolve_resolution" type="hidden" '
-            'value="invalid" />', unicode(control))
+            'value="invalid" />', str(control))
         self.assertEqual("The resolution will be set to invalid.",
-                         unicode(hints))
+                         str(hints))
 
 
 class RestrictOwnerTestCase(unittest.TestCase):
@@ -763,7 +764,7 @@ class SetResolutionAttributeTestCase(unittest.TestCase):
             self.ctlr.render_ticket_action_control(req, ticket, 'resolve')
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
-            self.assertIn('but none is defined', unicode(e))
+            self.assertIn('but none is defined', str(e))
 
     def test_undefined_resolutions(self):
         config = self.env.config['ticket-workflow']
@@ -783,7 +784,7 @@ class SetResolutionAttributeTestCase(unittest.TestCase):
             self.ctlr.render_ticket_action_control(req, ticket, 'resolve')
             self.fail('ConfigurationError not raised')
         except ConfigurationError as e:
-            self.assertIn('but uses undefined resolutions', unicode(e))
+            self.assertIn('but uses undefined resolutions', str(e))
 
 
 def test_suite():

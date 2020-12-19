@@ -15,7 +15,7 @@ import os
 import re
 from subprocess import call
 
-from testenv import FunctionalTestEnvironment
+from .testenv import FunctionalTestEnvironment
 from trac.util.compat import close_fds
 
 
@@ -95,7 +95,8 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
             self._testenv.svn_add("root.txt", "Hello World")
 
         """
-        with open(os.path.join(self.work_dir(), filename), 'w') as f:
+        with open(os.path.join(self.work_dir(), filename), 'w',
+                  encoding='utf-8') as f:
             f.write(data)
         self.call_in_workdir(['svn', 'add', filename])
         environ = os.environ.copy()
@@ -105,11 +106,10 @@ class SvnFunctionalTestEnvironment(FunctionalTestEnvironment):
                                        'commit', '-m', msg, filename],
                                       environ=environ)
         try:
-            revision = re.search(r'Committed revision ([0-9]+)\.',
+            revision = re.search(b'Committed revision ([0-9]+)\\.',
                                  output).group(1)
         except Exception as e:
-            args = e.args + (output, )
-            raise Exception(*args)
+            raise Exception(output) from e
         return int(revision)
 
     def call_in_workdir(self, args, environ=None):

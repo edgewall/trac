@@ -14,10 +14,10 @@
 
 import unittest
 
-from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
+from trac.tests.functional import FunctionalTestCaseSetup, tc
 
 
-class TestSearchFilterSelection(FunctionalTwillTestCaseSetup):
+class TestSearchFilterSelection(FunctionalTestCaseSetup):
     def runTest(self):
         """Check persistence of search filters in session (#11292)."""
         filters = ['milestone', 'changeset', 'ticket', 'wiki']

@@ -18,7 +18,7 @@ from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
 
-TEST_CASES = u"""
+TEST_CASES = """
 ============================== wiki: link resolver
 wiki:TestPage
 wiki:TestPage/
@@ -359,7 +359,7 @@ WikiStart@₄₂#heading
 """ #" Emacs likes it that way better
 
 
-RELATIVE_LINKS_TESTS = u"""
+RELATIVE_LINKS_TESTS = """
 ============================== Relative to the project url
 [//docs Documentation]
 [//docs?param=1#fragment Documentation]
@@ -531,7 +531,7 @@ OnePage/SubPage
 """ # "
 
 
-SPLIT_PAGE_NAMES_TESTS = u"""
+SPLIT_PAGE_NAMES_TESTS = """
 ============================== Splitting relative links
 [//WikiPage]
 [/WikiPage]
@@ -608,7 +608,7 @@ And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPa
 """ # "
 
 
-SCOPED_LINKS_TESTS = u"""
+SCOPED_LINKS_TESTS = """
 ============================== Scoped links for hierarchical pages
 ThirdLevel
 [wiki:ThirdLevel]
@@ -663,7 +663,7 @@ MissingFirstLevel/MissingPage
 """ # "
 
 
-SAFE_INTERWIKI_TESTS = u"""
+SAFE_INTERWIKI_TESTS = """
 ============================== InterWiki with safe_schemes
 This is the original MeatBall:InterMapTxt wiki page.
 
@@ -708,12 +708,12 @@ def wiki_setup(tc):
     wiki2.save('joe', 'not a WikiPageNames', now)
 
     wiki3 = WikiPage(tc.env)
-    wiki3.name = u"C'est l'\xe9t\xe9"
+    wiki3.name = "C'est l'\xe9t\xe9"
     wiki3.text = '--'
     wiki3.save('joe', 'unicode WikiPageNames', now)
 
     imt = WikiPage(tc.env)
-    imt.name = u"InterMapTxt"
+    imt.name = "InterMapTxt"
     imt.text = """
 This is the InterMapTxt
 ----

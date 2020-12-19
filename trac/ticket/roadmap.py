@@ -223,8 +223,7 @@ class DefaultTicketGroupStatsProvider(Component):
                                                       'order': order})
                 group[qualifier] = value
                 order = max(order, int(group['order'])) + 1
-            return [group for group in sorted(groups.values(),
-                                              key=lambda g: int(g['order']))]
+            return sorted(groups.values(), key=lambda g: int(g['order']))
         else:
             return self.default_milestone_groups
 
@@ -275,10 +274,12 @@ class DefaultTicketGroupStatsProvider(Component):
         for group in groups:
             group_cnt = 0
             query_args = {}
-            for s, cnt in status_cnt.iteritems():
+            for s, cnt in status_cnt.items():
                 if s in group['statuses']:
                     group_cnt += cnt
                     query_args.setdefault('status', []).append(s)
+                if 'status' in query_args:
+                    query_args['status'].sort()
             for arg in [kv for kv in group.get('query_args', '').split(',')
                         if '=' in kv]:
                 k, v = [a.strip() for a in arg.split('=', 1)]
@@ -566,8 +567,8 @@ class RoadmapModule(Component):
             return '\\n'.join(re.split(r'[\r\n]+', s))
 
         def write_prop(name, value, params={}):
-            text = ';'.join([name] + [k + '=' + v for k, v
-                                                  in params.items()]) + \
+            text = ';'.join([name] +
+                            [k + '=' + v for k, v in params.items()]) + \
                    ':' + escape_value(value)
             firstline = 1
             text = to_unicode(text)
@@ -633,7 +634,7 @@ class RoadmapModule(Component):
                 write_prop('DESCRIPTION', ticket['description'])
                 priority = get_priority(ticket)
                 if priority:
-                    write_prop('PRIORITY', unicode(priority))
+                    write_prop('PRIORITY', str(priority))
                 write_prop('STATUS', get_status(ticket))
                 if ticket['status'] == 'closed':
                     for time, in self.env.db_query("""
@@ -701,7 +702,7 @@ class MilestoneModule(Component):
         if 'milestone' in filters:
             milestone_realm = Resource(self.realm)
             for name, due, completed, description \
-                    in MilestoneCache(self.env).milestones.itervalues():
+                    in MilestoneCache(self.env).milestones.values():
                 if completed and start <= completed <= stop:
                     # TODO: creation and (later) modifications should also be
                     #       reported
@@ -1166,7 +1167,7 @@ class MilestoneModule(Component):
         term_regexps = search_to_regexps(terms)
         milestone_realm = Resource(self.realm)
         for name, due, completed, description \
-                in MilestoneCache(self.env).milestones.itervalues():
+                in MilestoneCache(self.env).milestones.values():
             if all(r.search(description) or r.search(name)
                    for r in term_regexps):
                 milestone = milestone_realm(id=name)

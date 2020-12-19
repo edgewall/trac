@@ -35,7 +35,7 @@ class IResourceManager(Interface):
     def get_resource_realms():
         """Return resource realms managed by the component.
 
-        :rtype: `basestring` generator
+        :rtype: `str` generator
         """
 
     def get_resource_url(resource, href, **kwargs):
@@ -115,9 +115,9 @@ class Resource(object):
         while r:
             name = r.realm
             if r.id:
-                name += ':' + unicode(r.id)  # id can be numerical
+                name += ':' + str(r.id)  # id can be numerical
             if r.version is not None:
-                name += '@' + unicode(r.version)
+                name += '@' + str(r.version)
             path.append(name or '')
             r = r.parent
         return '<Resource %r>' % (', '.join(reversed(path)))
@@ -145,30 +145,30 @@ class Resource(object):
 
         :param resource_or_realm: this can be either:
            - a `Resource`, which is then used as a base for making a copy
-           - a `basestring`, used to specify a `realm`
+           - a `str`, used to specify a `realm`
         :param id: the resource identifier
         :param version: the version or `None` for indicating the latest version
 
         >>> main = Resource('wiki', 'WikiStart')
         >>> repr(main)
-        "<Resource u'wiki:WikiStart'>"
+        "<Resource 'wiki:WikiStart'>"
 
         >>> Resource(main) is main
         True
 
         >>> main3 = Resource(main, version=3)
         >>> repr(main3)
-        "<Resource u'wiki:WikiStart@3'>"
+        "<Resource 'wiki:WikiStart@3'>"
 
         >>> main0 = main3(version=0)
         >>> repr(main0)
-        "<Resource u'wiki:WikiStart@0'>"
+        "<Resource 'wiki:WikiStart@0'>"
 
         In a copy, if `id` is overridden, then the original `version` value
         will not be reused.
 
         >>> repr(Resource(main3, id="WikiEnd"))
-        "<Resource u'wiki:WikiEnd'>"
+        "<Resource 'wiki:WikiEnd'>"
 
         >>> repr(Resource(None))
         "<Resource ''>"
@@ -218,7 +218,7 @@ class Resource(object):
         Same as `__call__`, except that this one sets the parent to `self`.
 
         >>> repr(Resource(None).child('attachment', 'file.txt'))
-        "<Resource u', attachment:file.txt'>"
+        "<Resource ', attachment:file.txt'>"
         """
         return Resource(realm, id, version, self)
 
@@ -326,19 +326,19 @@ def get_resource_description(env, resource, format='default', **kwargs):
     >>> env = EnvironmentStub()
     >>> main = Resource('generic', 'Main')
     >>> get_resource_description(env, main)
-    u'generic:Main'
+    'generic:Main'
 
     >>> get_resource_description(env, main(version=3))
-    u'generic:Main'
+    'generic:Main'
 
     >>> get_resource_description(env, main(version=3), format='summary')
-    u'generic:Main at version 3'
+    'generic:Main at version 3'
 
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
     if manager and hasattr(manager, 'get_resource_description'):
         return manager.get_resource_description(resource, format, **kwargs)
-    name = u'%s:%s' % (resource.realm, resource.id)
+    name = '%s:%s' % (resource.realm, resource.id)
     if format == 'summary':
         name = _('%(name)s at version %(version)s',
                  name=name, version=resource.version)
@@ -365,7 +365,7 @@ def get_relative_resource(resource, path=''):
     if path in (None, '', '.'):
         return resource
     else:
-        base = unicode(resource.id if path[0] != '/' else '').split('/')
+        base = str(resource.id if path[0] != '/' else '').split('/')
         for comp in path.split('/'):
             if comp == '..':
                 if base:

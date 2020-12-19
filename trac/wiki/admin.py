@@ -101,8 +101,8 @@ class WikiAdmin(Component):
                 if os.path.isfile(filename):
                     raise AdminCommandError(_("File '%(name)s' exists",
                                               name=path_to_unicode(filename)))
-                with open(filename, 'w') as f:
-                    f.write(wikipage.text.encode('utf-8'))
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(wikipage.text)
         else:
             raise AdminCommandError(_("Page '%(page)s' not found", page=page))
 

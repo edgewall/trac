@@ -16,8 +16,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
-from __future__ import print_function
-
 import cgi
 import fnmatch
 from functools import partial
@@ -30,7 +28,7 @@ from pprint import pformat, pprint
 import re
 import sys
 import traceback
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from jinja2 import FileSystemLoader
 
@@ -254,11 +252,14 @@ class RequestDispatcher(Component):
                 if 'hdfdump' in req.args:
                     req.perm.require('TRAC_ADMIN')
                     # debugging helper - no need to render first
-                    out = io.BytesIO()
-                    pprint({'template': template,
-                            'metadata': metadata,
-                            'data': data}, out)
-                    req.send(out.getvalue(), 'text/plain')
+                    with io.TextIOWrapper(io.BytesIO(), encoding='utf-8',
+                                          newline='\n',
+                                          write_through=True) as out:
+                        pprint({'template': template,
+                                'metadata': metadata,
+                                'data': data}, out)
+                        out = out.buffer.getvalue()
+                    req.send(out, 'text/plain')
                 self.log.debug("Rendering response with template %s", template)
                 metadata.setdefault('iterable', chrome.use_chunked_encoding)
                 content_type = metadata.get('content_type')
@@ -286,18 +287,18 @@ class RequestDispatcher(Component):
                                    " request: %s",
                                    exception_to_unicode(e2, traceback=True))
             if isinstance(e, PermissionError):
-                raise HTTPForbidden(e)
+                raise HTTPForbidden(e) from e
             if isinstance(e, ResourceNotFound):
-                raise HTTPNotFound(e)
+                raise HTTPNotFound(e) from e
             if isinstance(e, NotImplementedError):
                 tb = traceback.extract_tb(err[2])[-1]
                 self.log.warning("%s caught from %s:%d in %s: %s",
                                  e.__class__.__name__, tb[0], tb[1], tb[2],
                                  to_unicode(e) or "(no message)")
-                raise HTTPInternalServerError(TracNotImplementedError(e))
+                raise HTTPInternalServerError(TracNotImplementedError(e)) from e
             if isinstance(e, TracError):
-                raise HTTPInternalServerError(e)
-            raise err[0], err[1], err[2]
+                raise HTTPInternalServerError(e) from e
+            raise e
 
     # ITemplateProvider methods
 
@@ -422,7 +423,7 @@ class RequestDispatcher(Component):
     def _xsendfile_header(self):
         header = self.xsendfile_header.strip()
         if Request.is_valid_header(header):
-            return to_utf8(header)
+            return header
         else:
             if not self._warn_xsendfile_header:
                 self._warn_xsendfile_header = True
@@ -534,7 +535,9 @@ def dispatch_request(environ, start_response):
             # the remaining path in the `PATH_INFO` variable.
             script_name = environ.get('SCRIPT_NAME', '')
             try:
-                script_name = unicode(script_name, 'utf-8')
+                if isinstance(script_name, str):
+                    script_name = script_name.encode('iso-8859-1')  # PEP 3333
+                script_name = str(script_name, 'utf-8')
             except UnicodeDecodeError:
                 errmsg = 'Invalid URL encoding (was %r)' % script_name
             else:
@@ -551,6 +554,7 @@ def dispatch_request(environ, start_response):
                     errmsg = 'Environment not found'
 
             if errmsg:
+                errmsg = errmsg.encode('utf-8')
                 start_response('404 Not Found',
                                [('Content-Type', 'text/plain'),
                                 ('Content-Length', str(len(errmsg)))])
@@ -657,7 +661,7 @@ def _send_error(req, exc_info, template='error.html', content_type='text/html',
                                     data.get('type'),
                                     data.get('message'))
 
-    if isinstance(content, unicode):
+    if isinstance(content, str):
         content = content.encode('utf-8')
 
     try:
@@ -705,8 +709,8 @@ def send_internal_error(env, req, exc_info):
         if env:
             plugins = [p for p in get_plugin_info(env)
                        if any(c['enabled']
-                              for m in p['modules'].itervalues()
-                              for c in m['components'].itervalues())]
+                              for m in p['modules'].values()
+                              for c in m['components'].values())]
             match_plugins_to_frames(plugins, frames)
 
             # Identify the tracker where the bug should be reported
@@ -736,10 +740,10 @@ def send_internal_error(env, req, exc_info):
             enabled_plugins = "".join("|| '''`%s`''' || `%s` ||\n"
                                       % (p['name'], p['version'] or _('N/A'))
                                       for p in plugins)
-            files = Chrome(env).get_interface_customization_files().items()
+            files = Chrome(env).get_interface_customization_files()
             interface_files = "".join("|| **%s** || %s ||\n"
                                       % (k, ", ".join("`%s`" % f for f in v))
-                                      for k, v in sorted(files))
+                                      for k, v in sorted(files.items()))
         else:
             sys_info = _("''System information not available''\n")
             enabled_plugins = _("''Plugin information not available''\n")

@@ -12,24 +12,17 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import random
+import re
 import uuid
 
 try:
-    all_words = [x.strip() for x in open('/usr/share/dict/words').readlines()
-                           if x.strip().isalpha()]
+    isalpha = re.compile(r'[A-Za-z]+$').match
+    with open('/usr/share/dict/words', 'r', encoding='utf-8') as f:
+        all_words = list(filter(isalpha, map(lambda v: v.strip(), f)))
+        del f
 except IOError:
-    all_words = [
-        'one',
-        'two',
-        'three',
-        'four',
-        'five',
-        'six',
-        'seven',
-        'eight',
-        'nine',
-        'ten',
-    ]
+    with open('trac/tests/random_words.txt', 'r', encoding='utf-8') as f:
+        all_words = f.read().split()
 
 
 def random_word(min_length=1):
@@ -61,7 +54,7 @@ def random_sentence(word_count=None):
     """
     if word_count is None:
         word_count = random.randint(1, 20)
-    words = [random_word() for x in xrange(word_count - 1)]
+    words = [random_word() for x in range(word_count - 1)]
     words.insert(0, str(uuid.uuid1()).split('-')[0])
     return '%s.' % ' '.join(words)
 
@@ -70,11 +63,11 @@ def random_paragraph(sentence_count=None):
     if sentence_count is None:
         sentence_count = random.randint(1, 10)
     return '  '.join(random_sentence(random.randint(2, 15))
-                     for x in xrange(sentence_count))
+                     for x in range(sentence_count))
 
 
 def random_page(paragraph_count=None):
     if paragraph_count is None:
         paragraph_count = random.randint(1, 10)
     return '\r\n\r\n'.join(random_paragraph(random.randint(1, 5))
-                           for x in xrange(paragraph_count))
+                           for x in range(paragraph_count))

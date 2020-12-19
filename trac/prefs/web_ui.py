@@ -80,7 +80,7 @@ class PreferencesModule(Component):
                     name = panel[0]
                     panels.append(panel)
                 providers[name] = provider
-        panels = sorted(panels)
+        panels = sorted(panels, key=lambda p: (p[0] or '',) + p[1:])
 
         panel_id = req.args.get('panel_id')
         if panel_id is None:

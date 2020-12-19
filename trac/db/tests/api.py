@@ -118,8 +118,8 @@ class StringsTestCase(unittest.TestCase):
         with self.env.db_transaction as db:
             quoted = db.quote('system')
             db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
-               ('test-unicode', u'ünicöde'))
-        self.assertEqual([(u'ünicöde',)], self.env.db_query(
+               ('test-unicode', 'ünicöde'))
+        self.assertEqual([('ünicöde',)], self.env.db_query(
             "SELECT value FROM " + quoted + " WHERE name='test-unicode'"))
 
     def test_insert_empty(self):
@@ -128,17 +128,25 @@ class StringsTestCase(unittest.TestCase):
             quoted = db.quote('system')
             db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
                ('test-empty', empty))
-        self.assertEqual([(u'',)], self.env.db_query(
+        self.assertEqual([('',)], self.env.db_query(
             "SELECT value FROM " + quoted + " WHERE name='test-empty'"))
 
     def test_insert_markup(self):
         from trac.util.html import Markup
         with self.env.db_transaction as db:
             quoted = db.quote('system')
-            db("INSERT INTO " + quoted + " (name,value) VALUES (%s,%s)",
-               ('test-markup', Markup(u'<em>märkup</em>')))
-        self.assertEqual([(u'<em>märkup</em>',)], self.env.db_query(
-            "SELECT value FROM " + quoted + " WHERE name='test-markup'"))
+            query = "INSERT INTO {} (name,value) VALUES (%s,%s)".format(quoted)
+            db(query, ('test-markup', Markup('<em>märkup</em>')))
+            db.executemany(query, [('test-markup.%d' % i,
+                                    Markup('<em>märkup.%d</em>' % i))
+                                   for i in range(3)])
+        values = dict(self.env.db_query(
+            "SELECT name, value FROM {} WHERE name LIKE %s".format(quoted),
+            ('test-markup%',)))
+        self.assertEqual({'test-markup': '<em>märkup</em>',
+                          'test-markup.0': '<em>märkup.0</em>',
+                          'test-markup.1': '<em>märkup.1</em>',
+                          'test-markup.2': '<em>märkup.2</em>'}, values)
 
     def test_quote(self):
         with self.env.db_query as db:
@@ -175,8 +183,8 @@ class StringsTestCase(unittest.TestCase):
             db.executemany("""
                 INSERT INTO {0} (name,value) VALUES (%s,1)
                 """.format(db.quote('system')),
-                [('blahblah',), ('BlahBlah',), ('BLAHBLAH',), (u'BlähBlah',),
-                 (u'BlahBläh',)])
+                [('blahblah',), ('BlahBlah',), ('BLAHBLAH',), ('BlähBlah',),
+                 ('BlahBläh',)])
 
         with self.env.db_query as db:
             names = sorted(name for name, in db(
@@ -184,7 +192,7 @@ class StringsTestCase(unittest.TestCase):
                 .format(db.quote('system'), db.prefix_match()),
                 (db.prefix_match_value('Blah'),)))
         self.assertEqual('BlahBlah', names[0])
-        self.assertEqual(u'BlahBläh', names[1])
+        self.assertEqual('BlahBläh', names[1])
         self.assertEqual(2, len(names))
 
     def test_prefix_match_metachars(self):
@@ -383,8 +391,8 @@ class ConnectionTestCase(unittest.TestCase):
     def test_get_column_names_non_existent_table(self):
         with self.assertRaises(self.env.db_exc.OperationalError) as cm:
             self.dbm.get_column_names('blah')
-        self.assertIn(unicode(cm.exception), ('Table "blah" not found',
-                                              'Table `blah` not found'))
+        self.assertIn(str(cm.exception), ('Table "blah" not found',
+                                          'Table `blah` not found'))
 
 
 class DatabaseManagerTestCase(unittest.TestCase):
@@ -552,8 +560,8 @@ class ModifyTableTestCase(unittest.TestCase):
     def test_drop_columns_non_existent_table(self):
         with self.assertRaises(self.env.db_exc.OperationalError) as cm:
             self.dbm.drop_columns('blah', ('col1',))
-        self.assertIn(unicode(cm.exception), ('Table "blah" not found',
-                                              'Table `blah` not found'))
+        self.assertIn(str(cm.exception), ('Table "blah" not found',
+                                          'Table `blah` not found'))
 
     def test_upgrade_tables_have_new_schema(self):
         """The upgraded tables have the new schema."""

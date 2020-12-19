@@ -433,7 +433,7 @@ class CachedRepository(Repository):
                 components = path.lstrip('/').split('/')
                 parents = ','.join(('%s',) * len(components))
                 sql += " OR (path IN (" + parents + ") AND change_type='D'))"
-                for i in xrange(1, len(components) + 1):
+                for i in range(1, len(components) + 1):
                     args.append('/'.join(components[:i]))
             else:
                 sql %= {'aggr': aggr, 'dir': direction, 'tab': 'revision'}
@@ -460,16 +460,18 @@ class CachedRepository(Repository):
         return self.repos.normalize_path(path)
 
     def normalize_rev(self, rev):
-        if rev is None or isinstance(rev, basestring) and \
+        if rev is None or isinstance(rev, str) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
             return self.rev_db(self.youngest_rev or 0)
         else:
             try:
                 rev = int(rev)
-                if rev <= self.youngest_rev:
-                    return rev
+                youngest_rev = int(self.youngest_rev)
             except (ValueError, TypeError):
                 pass
+            else:
+                if rev <= youngest_rev:
+                    return rev
             raise NoSuchChangeset(rev)
 
     def db_rev(self, rev):

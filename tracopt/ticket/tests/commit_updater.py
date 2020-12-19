@@ -38,7 +38,7 @@ class CommitTicketUpdaterTestCase(unittest.TestCase):
 
     def _make_tickets(self, num):
         self.tickets = []
-        for i in xrange(num):
+        for i in range(num):
             ticket = insert_ticket(self.env, reporter='someone',
                                    summary=random_sentence())
             self.tickets.append(ticket)
@@ -134,7 +134,7 @@ def macro_setup(tc):
     setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
 
 
-COMMIT_TICKET_REF_MACRO_TEST_CASES = u"""\
+COMMIT_TICKET_REF_MACRO_TEST_CASES = """\
 ============================== No arguments
 [[CommitTicketReference]]
 ------------------------------

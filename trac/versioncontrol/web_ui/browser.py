@@ -72,7 +72,7 @@ class IPropertyRenderer(Interface):
 
         The rendered result can be one of the following:
          - `None`: the property will be skipped
-         - an `unicode` value: the property will be displayed as text
+         - a `str` value: the property will be displayed as text
          - a `RenderedProperty` instance: the property will only be displayed
            using the instance's `content` attribute, and the other attributes
            will also be used in some display contexts (like `revprop`)
@@ -272,7 +272,7 @@ class BrowserModule(Component):
         if intermediate:
             intermediate_color = parse_color(self.intermediate_color, None)
             if not intermediate_color:
-                intermediate_color = tuple([(a + b) / 2 for a, b in
+                intermediate_color = tuple([(a + b) // 2 for a, b in
                                             zip(newest_color, oldest_color)])
             def colorizer(value):
                 if value <= intermediate:
@@ -508,7 +508,7 @@ class BrowserModule(Component):
 
         rm = RepositoryManager(self.env)
         repositories = []
-        for reponame, repoinfo in all_repositories.iteritems():
+        for reponame, repoinfo in all_repositories.items():
             if not reponame or as_bool(repoinfo.get('hidden')):
                 continue
             try:
@@ -534,7 +534,7 @@ class BrowserModule(Component):
                     entry = (reponame, repoinfo, repos, youngest, None,
                              raw_href)
                 else:
-                    entry = (reponame, repoinfo, None, None, u"\u2013", None)
+                    entry = (reponame, repoinfo, None, None, "\u2013", None)
             if entry[4] is not None:  # Check permission in case of error
                 root = Resource('repository', reponame).child(self.realm, '/')
                 if 'BROWSER_VIEW' not in context.perm(root):
@@ -757,8 +757,9 @@ class BrowserModule(Component):
 
     def render_properties(self, mode, context, props):
         """Prepare rendering of a collection of properties."""
-        return filter(None, [self.render_property(name, mode, context, props)
-                             for name in sorted(props)])
+        return list(filter(None,
+                           [self.render_property(name, mode, context, props)
+                            for name in sorted(props)]))
 
     def render_property(self, name, mode, context, props):
         """Renders a node property to HTML."""
@@ -841,7 +842,7 @@ class BrowserModule(Component):
             return tag.a(label, class_='missing source')
         link = tag.a(label, class_='source', href=src_href)
         if raw_href:
-            link = tag(link, tag.a(u'\u200b', href=raw_href + fragment,
+            link = tag(link, tag.a('\u200b', href=raw_href + fragment,
                                    title=title,
                                    class_='trac-rawlink' if node.isfile
                                           else 'trac-ziplink'))
@@ -993,7 +994,7 @@ class BlameAnnotator(object):
         chgset = self.repos.get_changeset(rev)
         chgsets = {rev: chgset}
         self.timerange = TimeRange(chgset.date)
-        for idx in xrange(len(self.annotations)):
+        for idx in range(len(self.annotations)):
             rev = self.annotations[idx]
             chgset = chgsets.get(rev)
             if not chgset:

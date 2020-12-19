@@ -56,7 +56,7 @@ class SearchModuleTestCase(unittest.TestCase):
         return rendered.decode('utf-8')
 
     def test_process_request_page_in_range(self):
-        for _ in xrange(21):
+        for _ in range(21):
             self._insert_ticket(summary="Trac")
         req = MockRequest(self.env, path_info='/search',
                           args={'page': '3', 'q': 'Trac', 'ticket': 'on'})
@@ -68,7 +68,7 @@ class SearchModuleTestCase(unittest.TestCase):
 
     def test_process_request_page_out_of_range(self):
         """Out of range value for page defaults to page 1."""
-        for _ in xrange(20):
+        for _ in range(20):
             self._insert_ticket(summary="Trac")
         req = MockRequest(self.env, path_info='/search',
                           args={'page': '3', 'q': 'Trac', 'ticket': 'on'})
@@ -116,11 +116,11 @@ class SearchModuleTestCase(unittest.TestCase):
             template, data = self._process_request(req)
             return self._render_template(req, template, data)
 
-        self.assertIn(u'<a href="/trac.cgi/query?id=1-2">Quickjump to <em>'
-                      u'ticket:1,\u200b2</em></a>', do_render('ticket:1,2'))
-        self.assertIn(u'<a href="mailto:blah@example.org">Quickjump to <em>'
-                      u'<span class="icon">\u200b</span>blah@example.org'
-                      u'</em></a>', do_render('blah@example.org'))
+        self.assertIn('<a href="/trac.cgi/query?id=1-2">Quickjump to <em>'
+                      'ticket:1,\u200b2</em></a>', do_render('ticket:1,2'))
+        self.assertIn('<a href="mailto:blah@example.org">Quickjump to <em>'
+                      '<span class="icon">\u200b</span>blah@example.org'
+                      '</em></a>', do_render('blah@example.org'))
 
 
 def test_suite():

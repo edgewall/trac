@@ -16,12 +16,9 @@ import sys
 
 from setuptools import setup, find_packages
 
-min_python = (2, 7)
+min_python = (3, 5)
 if sys.version_info < min_python:
     print("Trac requires Python %d.%d or later" % min_python)
-    sys.exit(1)
-if sys.version_info >= (3,):
-    print("Trac doesn't support Python 3 (yet)")
     sys.exit(1)
 
 extra = {}
@@ -44,7 +41,7 @@ except ImportError:
 
 def readme():
     # Don't use context manager (comment:21:ticket:12578)
-    f = open('README.rst')
+    f = open('README.rst', encoding='utf-8')
     content = f.read()
     f.close()
     return content
@@ -98,14 +95,14 @@ setup(
         'jinja2>=2.9.3',
     ],
     extras_require = {
-        'babel': ['Babel>=0.9.5'],
+        'babel': ['Babel>=2.2'],
         'mysql': ['PyMySQL'],
-        'postgresql': ['psycopg2 >= 2.0'],
-        'psycopg2': ['psycopg2 >= 2.0'],
+        'postgresql': ['psycopg2 >= 2.5'],
+        'psycopg2': ['psycopg2 >= 2.5'],
         'psycopg2-binary': ['psycopg2-binary'],
         'pygments': ['Pygments>=1.0'],
-        'rest': ['docutils>=0.6'],
-        'textile': ['textile>=2.0'],
+        'rest': ['docutils>=0.14'],
+        'textile': ['textile>=2.3'],
     },
 
     entry_points = """

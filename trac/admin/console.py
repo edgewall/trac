@@ -12,8 +12,6 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
-from __future__ import print_function
-
 import cmd
 import io
 import os
@@ -70,8 +68,8 @@ class TracAdmin(cmd.Cmd):
         pass
 
     def onecmd(self, line):
-        """`line` may be a `str` or an `unicode` object"""
-        if isinstance(line, str):
+        """`line` may be a `bytes` or a `str` object"""
+        if isinstance(line, bytes):
             if self.interactive:
                 encoding = sys.stdin.encoding
             else:
@@ -154,16 +152,12 @@ Type:  '?' or 'help' for help on commands.
         return AdminCommandManager(self.env)
 
     def arg_tokenize(self, argstr):
-        """`argstr` is an `unicode` string
-
-        ... but shlex is not unicode friendly.
-        """
-        lex = shlex(argstr.encode('utf-8'), posix=True)
+        lex = shlex(argstr, posix=True)
         lex.whitespace_split = True
         lex.commenters = ''
         if os.name == 'nt':
             lex.escape = ''
-        return [unicode(token, 'utf-8') for token in lex] or ['']
+        return list(lex) or ['']
 
     def word_complete(self, text, words):
         words = list({a for a in words if a.startswith(text)})
@@ -493,9 +487,9 @@ class TracAdminHelpMacro(WikiMacroBase):
                                    '"%(command)s"', command=content))
         else:
             doc = TracAdmin.all_docs(self.env)
-        buf = io.BytesIO()
+        buf = io.StringIO()
         TracAdmin.print_doc(doc, buf, long=True)
-        return html.PRE(buf.getvalue().decode('utf-8'), class_='wiki')
+        return html.pre(buf.getvalue(), class_='wiki')
 
 
 def _quote_args(args):
@@ -516,14 +510,7 @@ def _run(args):
         elif args[0] in ('-v', '--version'):
             printout(os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
-            env_path = os.path.abspath(args[0])
-            try:
-                unicode(env_path, 'ascii')
-            except UnicodeDecodeError:
-                printerr(_("Non-ascii environment path '%(path)s' not "
-                           "supported.", path=to_unicode(env_path)))
-                return 2
-            admin.env_set(env_path)
+            admin.env_set(os.path.abspath(args[0]))
             if len(args) > 1:
                 return admin.onecmd(' '.join(_quote_args(args[1:])))
             else:

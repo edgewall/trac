@@ -92,8 +92,8 @@ class AdminModule(Component):
         path_info = req.args.get('path_info')
         if not panel_id:
             try:
-                panel_id = \
-                    filter(lambda panel: panel[0] == cat_id, panels)[0][2]
+                panel_id = list(filter(lambda panel: panel[0] == cat_id,
+                                       panels))[0][2]
             except IndexError:
                 raise HTTPNotFound(_("Unknown administration panel"))
 
@@ -496,7 +496,7 @@ class PluginAdminPanel(Component):
         if 'plugin_file' not in req.args:
             raise TracError(_("No file uploaded"))
         upload = req.args['plugin_file']
-        if isinstance(upload, unicode) or not upload.filename:
+        if isinstance(upload, str) or not upload.filename:
             raise TracError(_("No file uploaded"))
         plugin_filename = upload.filename.replace('\\', '/').replace(':', '/')
         plugin_filename = os.path.basename(plugin_filename)
@@ -519,7 +519,8 @@ class PluginAdminPanel(Component):
         except AttributeError:
             # OS_BINARY not available on every platform
             pass
-        with os.fdopen(os.open(target_path, flags, 0o666), 'w') as target_file:
+        with os.fdopen(os.open(target_path, flags, 0o666),
+                       'wb') as target_file:
             shutil.copyfileobj(upload.file, target_file)
             self.log.info("Plugin %s installed to %s", plugin_filename,
                           target_path)

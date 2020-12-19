@@ -44,10 +44,10 @@ class WikiRendererTestCase(unittest.TestCase):
             self.fail('RequestDone not raised')
         except RequestDone:
             output = req.response_sent.getvalue()
-            self.assertIn('<div class="wiki-code">', output)
-            self.assertIn('<table class="trac-diff inline"', output)
-            self.assertIn('jQuery.loadStyleSheet("'
-                          '/trac.cgi/chrome/common/css/diff.css"', output)
+            self.assertIn(b'<div class="wiki-code">', output)
+            self.assertIn(b'<table class="trac-diff inline"', output)
+            self.assertIn(b'jQuery.loadStyleSheet("'
+                          b'/trac.cgi/chrome/common/css/diff.css"', output)
 
 
 def test_suite():

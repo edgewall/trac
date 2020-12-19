@@ -10,8 +10,6 @@
 #
 # Author: Matthew Good <matt@matt-good.net>
 
-from __future__ import absolute_import
-
 import io
 import os
 import re
@@ -185,7 +183,7 @@ class PygmentsRenderer(Component):
             return
 
         formatter = HtmlFormatter(style=style_cls)
-        content = u'\n\n'.join([
+        content = '\n\n'.join([
             formatter.get_style_defs('div.code pre'),
             formatter.get_style_defs('table.code td')
         ]).encode('utf-8')
@@ -255,8 +253,8 @@ class PygmentsRenderer(Component):
         lexer = get_lexer_by_name(lexer_name, **lexer_options)
         out = io.StringIO()
         # Specify `lineseparator` to workaround exception with Pygments 2.2.0:
-        # "TypeError: unicode argument expected, got 'str'" with newline input
-        formatter = HtmlFormatter(nowrap=True, lineseparator=u'\n')
+        # "TypeError: str argument expected, got 'bytes'" with newline input
+        formatter = HtmlFormatter(nowrap=True, lineseparator='\n')
         formatter.format(lexer.get_tokens(content), out)
         return Markup(out.getvalue())
 

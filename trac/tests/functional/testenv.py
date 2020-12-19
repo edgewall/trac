@@ -15,23 +15,27 @@
 Provides some Trac environment-wide utility functions, and a way to call
 :command:`trac-admin` without it being on the path."""
 
+import contextlib
 import hashlib
+import io
 import locale
 import os
 import re
 import sys
 import time
-from subprocess import call, Popen, PIPE, STDOUT
+from subprocess import call, run, Popen, DEVNULL, PIPE, STDOUT
 
-from trac.config import Configuration, UnicodeConfigParser
+from trac.admin.api import AdminCommandManager
+from trac.config import Configuration, ConfigurationAdmin, UnicodeConfigParser
 from trac.db.api import DatabaseManager
 from trac.env import open_environment
+from trac.perm import PermissionAdmin
 from trac.test import EnvironmentStub, get_dburi, rmtree
+from trac.tests.contentgen import random_unique_camel
 from trac.tests.functional import trac_source_tree
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util import create_file, terminate
 from trac.util.compat import close_fds, wait_for_file_mtime_change
-from trac.util.text import to_utf8
 
 # TODO: refactor to support testing multiple frontends, backends
 #       (and maybe repositories and authentication).
@@ -68,7 +72,8 @@ class FunctionalTestEnvironment(object):
         self.tracdir = os.path.join(self.dirname, "trac")
         self.htpasswd = os.path.join(self.dirname, "htpasswd")
         self.port = port
-        self.pid = None
+        self.server = None
+        self.logfile = None
         self.init()
         self.destroy()
         time.sleep(0.1) # Avoid race condition on Windows
@@ -133,7 +138,7 @@ class FunctionalTestEnvironment(object):
         """
         os.mkdir(self.dirname)
         # testing.log gets any unused output from subprocesses
-        self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'w')
+        self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'wb')
         self.create_repo()
 
         config_file = os.path.join(self.dirname, 'config.ini')
@@ -147,33 +152,36 @@ class FunctionalTestEnvironment(object):
         config.save()
         self._tracadmin('initenv', self.tracdir, self.dburi,
                         '--config=%s' % config_file)
-        if call([sys.executable,
-                 os.path.join(self.trac_src, 'contrib', 'htpasswd.py'), "-c",
-                 "-b", self.htpasswd, "admin", "admin"], close_fds=close_fds,
-                cwd=self.command_cwd):
-            raise Exception('Unable to setup admin password')
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-c', '-b',
+                 self.htpasswd, 'admin', 'admin'],
+                close_fds=close_fds, cwd=self.command_cwd):
+            raise Exception("Unable to setup admin password")
         self.adduser('user')
         self.adduser('joe')
         self.grant_perm('admin', 'TRAC_ADMIN')
         env = self.get_trac_environment()
         self.post_create(env)
 
+    def close(self):
+        self.stop()
+        if self.logfile:
+            self.logfile.close()
+            self.logfile = None
+
     def adduser(self, user):
         """Add a user to the environment.  The password will be set to the
         same as username."""
-        user = to_utf8(user)
         self._tracadmin('session', 'add', user)
-        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
-                 'htpasswd.py'), '-b', self.htpasswd,
-                 user, user], close_fds=close_fds, cwd=self.command_cwd):
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-b',
+                 self.htpasswd, user, user],
+                close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
     def deluser(self, user):
         """Delete a user from the environment."""
-        user = to_utf8(user)
         self._tracadmin('session', 'delete', user)
-        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
-                 'htpasswd.py'), '-D', self.htpasswd, user],
+        if call([sys.executable, '-m', 'contrib.htpasswd', '-D',
+                 self.htpasswd, user],
                 close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to remove password for user "%s"' % user)
 
@@ -181,85 +189,107 @@ class FunctionalTestEnvironment(object):
         """Grant permission(s) to specified user. A single permission may
         be specified as a string, or multiple permissions may be
         specified as a list or tuple of strings."""
+        env = self.get_trac_environment()
         if isinstance(perm, (list, tuple)):
-            self._tracadmin('permission', 'add', user, *perm)
+            PermissionAdmin(env)._do_add(user, *perm)
         else:
-            self._tracadmin('permission', 'add', user, perm)
+            PermissionAdmin(env)._do_add(user, perm)
         # We need to force an environment reset, as this is necessary
         # for the permission change to take effect: grant only
         # invalidates the `DefaultPermissionStore._all_permissions`
         # cache, but the `DefaultPermissionPolicy.permission_cache` is
         # unaffected.
-        self.get_trac_environment().config.touch()
+        env.config.touch()
 
     def revoke_perm(self, user, perm):
         """Revoke permission(s) from specified user. A single permission
         may be specified as a string, or multiple permissions may be
         specified as a list or tuple of strings."""
+        env = self.get_trac_environment()
         if isinstance(perm, (list, tuple)):
-            self._tracadmin('permission', 'remove', user, *perm)
+            PermissionAdmin(env)._do_remove(user, *perm)
         else:
-            self._tracadmin('permission', 'remove', user, perm)
+            PermissionAdmin(env)._do_remove(user, perm)
         # Force an environment reset (see grant_perm above)
-        self.get_trac_environment().config.touch()
+        env.config.touch()
 
     def set_config(self, *args):
         """Calls trac-admin to set the value for the given option
         in `trac.ini`."""
-        self._tracadmin('config', 'set', *args)
+        self._execute_command('config', 'set', *args)
 
     def get_config(self, *args):
         """Calls trac-admin to get the value for the given option
         in `trac.ini`."""
-        return self._tracadmin('config', 'get', *args)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self._execute_command('config', 'get', *args)
+        return out.getvalue()
 
     def remove_config(self, *args):
         """Calls trac-admin to remove the value for the given option
         in `trac.ini`."""
-        self._tracadmin('config', 'remove', *args)
+        self._execute_command('config', 'remove', *args)
+
+    def add_milestone(self, name=None, due=None):
+        return self._add_ticket_field_value('milestone', name, due)
+
+    def add_component(self, name=None, owner=None):
+        return self._add_ticket_field_value('component', name, owner)
+
+    def add_version(self, name=None, time=None):
+        return self._add_ticket_field_value('version', name, time)
+
+    def add_severity(self, name=None):
+        return self._add_ticket_field_value('severity', name)
+
+    def add_priority(self, name=None):
+        return self._add_ticket_field_value('priority', name)
+
+    def add_resolution(self, name=None):
+        return self._add_ticket_field_value('resolution', name)
+
+    def add_ticket_type(self, name=None):
+        return self._add_ticket_field_value('ticket_type', name)
+
+    def _add_ticket_field_value(self, field, name, *args):
+        if name is None:
+            name = random_unique_camel()
+        self._execute_command(field, 'add', name, *args)
+        return name
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
-                      'admin', 'console.py'), self.tracdir],
-                     stdin=PIPE, stdout=PIPE, stderr=PIPE,
-                     close_fds=close_fds, cwd=self.command_cwd)
-        if args:
-            if any('\n' in arg for arg in args):
-                raise Exception(
-                    "trac-admin in interactive mode doesn't support "
-                    "arguments with newline characters: %r" % (args,))
-            # Don't quote first token which is sub-command name
-            input = ' '.join(('"%s"' % to_utf8(arg) if idx else arg)
-                             for idx, arg in enumerate(args))
+        proc = run([sys.executable, '-m', 'trac.admin.console',
+                    self.tracdir] + list(args),
+                   stdin=DEVNULL, stdout=PIPE, stderr=STDOUT,
+                   close_fds=close_fds, cwd=self.command_cwd)
+        if proc.stderr:
+            self.logfile.write(proc.stderr)
+        out = str(proc.stdout, 'utf-8')
+        if proc.returncode:
+            print(out)
+            raise Exception("Failed while running trac-admin with arguments "
+                            "%r.\nExitcode: %s \n%s"
+                            % (args, proc.returncode, proc.stderr))
         else:
-            input = None
-        out, err = proc.communicate(input=input)
-        if proc.returncode or err:
-            self.logfile.write(err)
-            raise Exception("Failed while running trac-admin with arguments %r.\n"
-                            "Exitcode: %s \n%s"
-                            % (args, proc.returncode, err))
-        else:
-            # trac-admin is started in interactive mode, so we strip away
-            # everything up to the to the interactive prompt
-            return re.split(r'\r?\nTrac \[[^]]+\]> ', out, 2)[1]
+            return out
+
+    def _execute_command(self, *args):
+        env = self.get_trac_environment()
+        AdminCommandManager(env).execute_command(*args)
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
-        args = [
-            sys.executable,
-            os.path.join(self.trac_src, 'trac', 'web', 'standalone.py')
-        ]
+        args = [sys.executable, '-m', 'trac.web.standalone']
         options = ["--port=%s" % self.port, "-s", "--hostname=127.0.0.1",
                    "--basic-auth=trac,%s," % self.htpasswd]
         if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
             options += os.environ['TRAC_TEST_TRACD_OPTIONS'].split()
-        server = Popen(args + options + [self.tracdir],
-                       stdout=self.logfile, stderr=self.logfile,
-                       close_fds=close_fds,
-                       cwd=self.command_cwd)
-        self.pid = server.pid
+        self.server = Popen(args + options + [self.tracdir],
+                            stdout=self.logfile, stderr=self.logfile,
+                            close_fds=close_fds,
+                            cwd=self.command_cwd)
         # Verify that the url is ok
         timeout = 30
         while timeout:
@@ -271,15 +301,17 @@ class FunctionalTestEnvironment(object):
             timeout -= 1
         else:
             raise Exception('Timed out waiting for server to start.')
-        tc.url(self.url)
+        tc.url(self.url, regexp=False)
 
     def stop(self):
         """Stops the webserver, if running
 
         FIXME: probably needs a nicer way to exit for coverage to work
         """
-        if self.pid:
-            terminate(self.pid)
+        if self.server:
+            terminate(self.server.pid)
+            self.server.wait()
+            self.server = None
 
     def restart(self):
         """Restarts the webserver"""
@@ -330,13 +362,13 @@ class FunctionalTestEnvironment(object):
         "authz-".
         """
         if filename is None:
-            filename = 'authz-' + \
-                       hashlib.md5(str(authz_content)).hexdigest()[:9]
+            filename = 'authz-' + hashlib.md5(repr(authz_content).
+                                              encode('utf-8')).hexdigest()[:9]
         env = self.get_trac_environment()
         authz_file = os.path.join(env.conf_dir, filename)
         if os.path.exists(authz_file):
             wait_for_file_mtime_change(authz_file)
-        if isinstance(authz_content, basestring):
+        if isinstance(authz_content, str):
             authz_content = [line.strip() + '\n'
                              for line in authz_content.strip().splitlines()]
             authz_content = ['# -*- coding: utf-8 -*-\n'] + authz_content
@@ -347,7 +379,7 @@ class FunctionalTestEnvironment(object):
                 parser.add_section(section)
                 for key, value in options.items():
                     parser.set(section, key, value)
-            with open(authz_file, 'w') as f:
+            with open(authz_file, 'w', encoding='utf-8') as f:
                 parser.write(f)
         permission_policies = env.config.get('trac', 'permission_policies')
         env.config.set('trac', 'permission_policies',

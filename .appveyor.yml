@@ -6,9 +6,11 @@ only_commits:
     - contrib/appveyor.ps1
     - setup.py
     - trac/**/*.py
+    - trac/**/*.js
     - trac/**/*.html
     - trac/**/*.txt
     - tracopt/**/*.py
+    - tracopt/**/*.js
     - tracopt/**/*.html
 init:
 - ps: >-
@@ -23,13 +25,19 @@ init:
     # Note 2: restoration of cached directories happens *after* this step
 environment:
   matrix:
-  - PYTHONHOME: C:\Python27
+  - PYTHONHOME: C:\Python38
     TRAC_TEST_DB_URI:
-  - PYTHONHOME: C:\Python27-x64
+  - PYTHONHOME: C:\Python37-x64
+    TRAC_TEST_DB_URI:
+  - PYTHONHOME: C:\Python36-x64
+    TRAC_TEST_DB_URI:
+  - PYTHONHOME: C:\Python35-x64
+    TRAC_TEST_DB_URI:
+  - PYTHONHOME: C:\Python38-x64
     TRAC_TEST_DB_URI: sqlite:test.db
-  - PYTHONHOME: C:\Miniconda
+  - PYTHONHOME: C:\Miniconda37
     TRAC_TEST_DB_URI: mysql://tracuser:password@localhost/trac?charset=utf8mb4
-  - PYTHONHOME: C:\Miniconda-x64
+  - PYTHONHOME: C:\Miniconda37-x64
     TRAC_TEST_DB_URI: postgres://tracuser:password@localhost/trac?schema=tractest
 services:
 - mysql

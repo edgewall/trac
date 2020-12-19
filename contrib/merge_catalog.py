@@ -26,7 +26,7 @@ class ScriptError(Exception):
 
 
 def _is_fuzzy(message):
-    return u'fuzzy' in message.flags
+    return 'fuzzy' in message.flags
 
 
 def _has_msgstr(message):
@@ -127,7 +127,7 @@ def main():
         target.locale = locale
         target.language_team = '%s <%s>' % (locale, pot.msgid_bugs_address)
         target.fuzzy = False  # clear fuzzy flag of the header
-        with open(target_file, 'w') as f:
+        with open(target_file, 'w', encoding='utf-8') as f:
             write_po(f, target)
             del f
         print('Merged %d messages from %s and updated %s' % (n, source_file,

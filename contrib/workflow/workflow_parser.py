@@ -103,8 +103,7 @@ def main(filename, output, show_ops=False, show_perms=False):
     digraph_lines = actions2graphviz(actions, show_ops, show_perms)
 
     # And output
-    output.write(unicode.encode('\n'.join(digraph_lines),
-                                locale.getpreferredencoding()))
+    output.write('\n'.join(digraph_lines))
 
 
 def usage(output):
@@ -140,7 +139,7 @@ if __name__ == '__main__':
         sys.exit(1)
     ini_filename = args[0]
     if len(args) > 1:
-        output = open(args[1], 'w')
+        output = open(args[1], 'w', encoding='utf-8')
     else:
         output = sys.stdout
 

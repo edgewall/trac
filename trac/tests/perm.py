@@ -170,14 +170,14 @@ class PermissionErrorTestCase(unittest.TestCase):
         self.assertIsNone(permission_error.resource)
         self.assertIsNone(permission_error.env)
         self.assertEqual("Insufficient privileges to perform this operation.",
-                         unicode(permission_error))
+                         str(permission_error))
         self.assertEqual("Forbidden", permission_error.title)
-        self.assertEqual(unicode(permission_error), permission_error.message)
+        self.assertEqual(str(permission_error), permission_error.message)
 
     def test_message_specified(self):
         message = "The message."
         permission_error = perm.PermissionError(msg=message)
-        self.assertEqual(message, unicode(permission_error))
+        self.assertEqual(message, str(permission_error))
 
     def test_message_from_action(self):
         action = 'WIKI_VIEW'
@@ -187,7 +187,7 @@ class PermissionErrorTestCase(unittest.TestCase):
         self.assertIsNone(permission_error.env)
         self.assertEqual("WIKI_VIEW privileges are required to perform this "
                          "operation. You don't have the required "
-                         "permissions.", unicode(permission_error))
+                         "permissions.", str(permission_error))
 
     def test_message_from_action_and_resource(self):
         action = 'WIKI_VIEW'
@@ -198,7 +198,7 @@ class PermissionErrorTestCase(unittest.TestCase):
         self.assertEqual(self.env, permission_error.env)
         self.assertEqual("WIKI_VIEW privileges are required to perform this "
                          "operation on WikiStart. You don't have the "
-                         "required permissions.", unicode(permission_error))
+                         "required permissions.", str(permission_error))
 
     def test_message_from_action_and_resource_without_id(self):
         action = 'TIMELINE_VIEW'
@@ -209,7 +209,7 @@ class PermissionErrorTestCase(unittest.TestCase):
         self.assertEqual(self.env, permission_error.env)
         self.assertEqual("TIMELINE_VIEW privileges are required to perform "
                          "this operation. You don't have the required "
-                         "permissions.", unicode(permission_error))
+                         "permissions.", str(permission_error))
 
 
 class PermissionSystemTestCase(BaseTestCase):
@@ -850,7 +850,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
         Tests the 'permission import' command in trac-admin.  This particular
         test exports additional permissions, removes them and imports them back.
         """
-        user = u'test_user\u0250'
+        user = 'test_user\u0250'
         self.execute('permission add ' + user + ' WIKI_VIEW')
         self.execute('permission add ' + user + ' TICKET_VIEW')
         rv, output = self.execute('permission export')

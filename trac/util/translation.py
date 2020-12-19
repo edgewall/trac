@@ -54,7 +54,7 @@ def dngettext_noop(domain, singular, plural, num, **kwargs):
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
     trans_elts = _param_re.split(trans)
-    for i in xrange(1, len(trans_elts), 2):
+    for i in range(1, len(trans_elts), 2):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
 
@@ -76,7 +76,7 @@ def add_domain(domain, env_path, locale_dir):
     pass
 
 def domain_functions(domain, *symbols):
-    if symbols and not isinstance(symbols[0], basestring):
+    if symbols and not isinstance(symbols[0], str):
         symbols = symbols[0]
     _functions = {
       'gettext': s_gettext,
@@ -98,10 +98,10 @@ class NullTranslationsBabel(NullTranslations):
     """NullTranslations doesn't have the domain related methods."""
 
     def dugettext(self, domain, string):
-        return self.ugettext(string)
+        return self.gettext(string)
 
     def dungettext(self, domain, singular, plural, num):
-        return self.ungettext(singular, plural, num)
+        return self.ngettext(singular, plural, num)
 
 has_babel = False
 
@@ -152,7 +152,7 @@ try:
                 if env_path:
                     with self._plugin_domains_lock:
                         domains = self._plugin_domains.get(env_path, {})
-                        domains = domains.items()
+                        domains = list(domains.items())
                     for domain, dirname in domains:
                         self._add(t, Translations.load(dirname, locale,
                                                        domain))
@@ -196,7 +196,7 @@ try:
 
         def gettext(self, string, **kwargs):
             def _gettext():
-                return safefmt(self.active.ugettext(string), kwargs)
+                return safefmt(self.active.gettext(string), kwargs)
             if not self.isactive:
                 return LazyProxy(_gettext)
             return _gettext()
@@ -212,7 +212,7 @@ try:
             kwargs = kwargs.copy()
             kwargs.setdefault('num', num)
             def _ngettext():
-                trans = self.active.ungettext(singular, plural, num)
+                trans = self.active.ngettext(singular, plural, num)
                 return safefmt(trans, kwargs)
             if not self.isactive:
                 return LazyProxy(_ngettext)
@@ -230,7 +230,7 @@ try:
 
         def tgettext(self, string, **kwargs):
             def _tgettext():
-                trans = self.active.ugettext(string)
+                trans = self.active.gettext(string)
                 return _tag_kwargs(trans, kwargs) if kwargs else trans
             if not self.isactive:
                 return LazyProxy(_tgettext)
@@ -248,7 +248,7 @@ try:
             kwargs = kwargs.copy()
             kwargs.setdefault('num', num)
             def _tngettext():
-                trans = self.active.ungettext(singular, plural, num)
+                trans = self.active.ngettext(singular, plural, num)
                 return _tag_kwargs(trans, kwargs)
             if not self.isactive:
                 return LazyProxy(_tngettext)
@@ -277,7 +277,7 @@ try:
 
         Note: the symbols can also be given as an iterable in the 2nd argument.
         """
-        if symbols and not isinstance(symbols[0], basestring):
+        if symbols and not isinstance(symbols[0], str):
             symbols = symbols[0]
         _functions = {
           'gettext': s_dgettext,

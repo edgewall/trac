@@ -192,7 +192,7 @@ class SearchModule(Component):
                         'description': description}
             else:
                 help_url = req.href.wiki('TracSearch') + '#Quicksearches'
-                search_url = req.href.search(q=kwd, noquickjump=1)
+                search_url = req.href.search([('q', kwd), ('noquickjump', 1)])
                 # FIXME: use tag_
                 add_notice(req, Markup(_(
                     'You arrived here through the <a href="%(help_url)s">'

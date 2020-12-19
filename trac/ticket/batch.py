@@ -136,7 +136,7 @@ class BatchModifyModule(Component):
                         action_tickets[action] = [t]
 
         sorted_actions = [a for a, w
-                            in sorted(action_weights.iteritems(),
+                            in sorted(iter(action_weights.items()),
                                       key=lambda item: (item[1], item[0]),
                                       reverse=True)]
 

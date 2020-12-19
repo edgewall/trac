@@ -52,7 +52,7 @@ class WikiAdminTestCase(unittest.TestCase):
         self.env.reset_db_and_disk()
 
     def _import_page(self, *args, **kwargs):
-        with open(os.devnull, 'wb') as devnull:
+        with open(os.devnull, 'w', encoding='utf-8') as devnull:
             stdout = sys.stdout
             try:
                 sys.stdout = devnull
@@ -192,7 +192,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             'path1': os.path.join(self.tempdir, names[0]),
             'path2': os.path.join(self.tempdir, names[1]),
         })
-        self.assertEquals(names, sorted(os.listdir(self.tempdir)))
+        self.assertEqual(names, sorted(os.listdir(self.tempdir)))
         self.assertFileContentMatchesPage(names)
 
     def test_wiki_dump_all_create_dst_dir(self):
@@ -206,7 +206,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             'path1': os.path.join(dstdir, names[0]),
             'path2': os.path.join(dstdir, names[1]),
         })
-        self.assertEquals(names, sorted(os.listdir(dstdir)))
+        self.assertEqual(names, sorted(os.listdir(dstdir)))
 
     def test_wiki_dump_all_glob(self):
         names = self._insert_pages(['PageOne', 'PageTwo', 'ThreePage'])
@@ -218,7 +218,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
             'path1': os.path.join(self.tempdir, names[0]),
             'path2': os.path.join(self.tempdir, names[1]),
         })
-        self.assertEquals(names[0:2], sorted(os.listdir(self.tempdir)))
+        self.assertEqual(names[0:2], sorted(os.listdir(self.tempdir)))
         self.assertFileContentMatchesPage(names[0:2])
 
     def test_wiki_dump_all_dst_is_file(self):

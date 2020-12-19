@@ -49,19 +49,21 @@ $pgHome     = 'C:\Program Files\PostgreSQL\9.3'
 $pgUser     = 'postgres'
 $pgPassword = 'Password12!'
 
+$firefoxHome = 'C:\Program Files\Mozilla Firefox'
 
 # External Python dependencies
 
 $pipPackages = @(
+    'setuptools',
     'jinja2',
     'babel',
-    'twill==0.9.1',
     'docutils',
     'passlib',
     'pygments',
     'pytz',
     'textile',
-    'wheel'
+    'wheel',
+    'selenium'
 )
 
 $condaPackages = @(
@@ -95,6 +97,7 @@ $svnUrlBase = "https://sourceforge.net/projects/win32svn/files/1.8.15/apache24"
 $pyHome = $env:PYTHONHOME
 $usingMysql      = $env:TRAC_TEST_DB_URI -match '^mysql:'
 $usingPostgresql = $env:TRAC_TEST_DB_URI -match '^postgres:'
+$usingFirefox    = $pipPackages -contains 'selenium'
 $skipInstall = [bool]$env:SKIP_ENV
 $skipBuild   = $env:SKIP_BUILD -or $env:SKIP_ENV
 $skipTests   = $env:SKIP_TESTS -or $env:SKIP_ENV
@@ -170,6 +173,10 @@ function Trac-Install {
         $env:Path = "$deps\$svnBase\bin;$($env:Path)"
         $env:PYTHONPATH = "$deps\$pyVersion\$svnBase\python;$($env:PYTHONPATH)"
     }
+    
+    if ($usingFirefox) {
+        $env:Path = "$($env:Path);$firefoxHome"
+    }
 
     Write-Step -Name INSTALL -Skip $skipInstall
 
@@ -203,8 +210,9 @@ function Trac-Install {
 
     # Install packages via pip
 
+    & python.exe -m pip install -U pip
     & pip.exe --version
-    & pip.exe install $pipPackages
+    & pip.exe install -U $pipPackages
 
     if ($pyIsConda) {
         & conda.exe install -qy $condaPackages
@@ -232,6 +240,10 @@ function Trac-Install {
 
         Add-AppveyorMessage -Message "1.1. psycopg2 package installed" `
           -Category Information
+    }
+
+    if ($usingFirefox) {
+        & cinst.exe --no-progress firefox
     }
 
     & pip.exe list --format=columns
@@ -345,7 +357,8 @@ function Trac-Tests {
         Write-Host "make $goal"
 
         Add-AppveyorTest -Name $name -Outcome Running
-        & make.exe $goal 2>&1 | Tee-Object -Variable make
+        # Enable verbose output to avoid appearance of hanging job on appveyor
+        & make.exe testopts=-v $goal 2>&1 | Tee-Object -Variable make
 
         # Determine outcome Passed or Failed
         $outcome = 'Passed'

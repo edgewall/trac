@@ -19,8 +19,6 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from __future__ import print_function
-
 import argparse
 import functools
 import importlib
@@ -29,7 +27,7 @@ import pkg_resources
 import socket
 import ssl
 import sys
-from SocketServer import ThreadingMixIn
+from socketserver import ThreadingMixIn
 
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
@@ -52,7 +50,7 @@ class AuthenticationMiddleware(object):
 
     def __call__(self, environ, start_response):
         path_info = environ.get('PATH_INFO', '')
-        path_parts = filter(None, path_info.split('/'))
+        path_parts = list(filter(None, path_info.split('/')))
         if len(path_parts) > self.part and path_parts[self.part] == 'login':
             env_name = self.single_env_name or path_parts[0]
             if env_name:
@@ -91,7 +89,7 @@ class TracEnvironMiddleware(object):
             self.environ['trac.env_paths'] = env_paths
 
     def __call__(self, environ, start_response):
-        for k, v in self.environ.iteritems():
+        for k, v in self.environ.items():
             environ.setdefault(k, v)
         return self.application(environ, start_response)
 

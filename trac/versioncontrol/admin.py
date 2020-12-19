@@ -114,7 +114,7 @@ class VersionControlAdmin(Component):
     def _do_list(self):
         rm = RepositoryManager(self.env)
         values = []
-        for reponame, info in sorted(rm.get_all_repositories().iteritems()):
+        for reponame, info in sorted(rm.get_all_repositories().items()):
             alias = ''
             if 'alias' in info:
                 alias = info['alias'] or '(default)'
@@ -379,14 +379,14 @@ class RepositoryAdminPanel(Component):
         # Prepare common rendering data
         repositories = {reponame: self._extend_info(reponame, info.copy(),
                                                     reponame in db_repos)
-                        for (reponame, info) in all_repos.iteritems()}
+                        for (reponame, info) in all_repos.items()}
         types = sorted([''] + rm.get_supported_types())
         data.update(
             {'types': types,
              'default_type': rm.default_repository_type,
              'repositories': repositories,
              'can_add_alias': any('alias' not in info
-                                  for info in repositories.itervalues())})
+                                  for info in repositories.values())})
 
         return 'admin_repositories.html', data
 

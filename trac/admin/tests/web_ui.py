@@ -43,7 +43,7 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
             self.panel.render_admin_panel(req, 'general', 'perm', None)
 
         self.assertEqual("All upper-cased tokens are reserved for permission "
-                         "names.", unicode(cm.exception))
+                         "names.", str(cm.exception))
 
     def test_grant_permission_invalid_username(self):
         self._test_invalid_user(subject='USER', action='WIKI_VIEW')
@@ -98,7 +98,7 @@ class PermissionAdminPanelTestCase(unittest.TestCase):
                          "to the group <strong>group1</strong>. The "
                          "group has <strong>WIKI_ADMIN</strong> permission "
                          "and you cannot grant permissions you don't possess.",
-                         unicode(cm.exception))
+                         str(cm.exception))
 
     def test_grant_undefined_permission_with_permission_grant(self):
         """Undefined permission is granted without checking granter."""
@@ -216,7 +216,7 @@ class SingleFilePlugin(Component):
             if item['name'] == 'single-file-plugin':
                 discovered_metadata = item['info']
 
-        for key, value in plugin_metadata.items():
+        for key in plugin_metadata:
             self.assertEqual(discovered_metadata[key], plugin_metadata[key])
 
 

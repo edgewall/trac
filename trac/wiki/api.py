@@ -216,10 +216,11 @@ def parse_args(args, strict=True):
       ([], {})
       >>> parse_args('Some text')
       (['Some text'], {})
-      >>> parse_args('Some text, mode= 3, some other arg\, with a comma.')
+      >>> parse_args(r'Some text, mode= 3, some other arg\, with a comma.')
       (['Some text', ' some other arg, with a comma.'], {'mode': ' 3'})
-      >>> parse_args('milestone=milestone1,status!=closed', strict=False)
-      ([], {'status!': 'closed', 'milestone': 'milestone1'})
+      >>> sorted(parse_args('milestone=milestone1,status!=closed',
+      ...                   strict=False)[1].items())
+      [('milestone', 'milestone1'), ('status!', 'closed')]
 
     """
     largs, kwargs = [], {}
@@ -232,8 +233,6 @@ def parse_args(args, strict=True):
                 m = re.match(r'\s*[^=]+=', arg)
             if m:
                 kw = arg[:m.end()-1].strip()
-                if strict:
-                    kw = unicode(kw).encode('utf-8')
                 kwargs[kw] = arg[m.end():]
             else:
                 largs.append(arg)
@@ -333,8 +332,8 @@ class WikiSystem(Component):
 
     PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z])(?=[a-z])")
 
-    Lu = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).isupper())
-    Ll = ''.join(unichr(c) for c in xrange(0x10000) if unichr(c).islower())
+    Lu = ''.join(chr(c) for c in range(0x10000) if chr(c).isupper())
+    Ll = ''.join(chr(c) for c in range(0x10000) if chr(c).islower())
 
     def format_page_name(self, page, split=False):
         if split or self.split_page_names:
@@ -468,7 +467,7 @@ class WikiSystem(Component):
         if len(referrer) == 1:           # Non-hierarchical referrer
             return pagename
         # Test for pages with same name, higher in the hierarchy
-        for i in xrange(len(referrer) - 1, 0, -1):
+        for i in range(len(referrer) - 1, 0, -1):
             name = '/'.join(referrer[:i]) + '/' + pagename
             if self.has_page(name):
                 return name

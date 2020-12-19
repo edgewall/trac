@@ -14,10 +14,10 @@
 
 import unittest
 
-from trac.tests.functional import FunctionalTwillTestCaseSetup, tc
+from trac.tests.functional import FunctionalTestCaseSetup, tc
 
 
-class SetOwnerOperation(FunctionalTwillTestCaseSetup):
+class SetOwnerOperation(FunctionalTestCaseSetup):
 
     def setUp(self):
         super(SetOwnerOperation, self).setUp()
@@ -142,7 +142,7 @@ class SetOwnerOperation(FunctionalTwillTestCaseSetup):
             self.env.config.remove('ticket-workflow', 'reassign.set_owner')
 
 
-class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
+class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
     """Test cases for may_set_owner operation with
     `[ticket] restrict_owner = False`
     https://trac.edgewall.org/ticket/10018
@@ -288,7 +288,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTwillTestCaseSetup):
 
 
 
-class MaySetOwnerOperationDefaultRestrictOwnerNone(FunctionalTwillTestCaseSetup):
+class MaySetOwnerOperationDefaultRestrictOwnerNone(FunctionalTestCaseSetup):
     def runTest(self):
         """When using the workflow operation `may_set_owner` with
         restrict_owner=true, the assign-to field will default to an empty
@@ -320,7 +320,7 @@ class MaySetOwnerOperationDefaultRestrictOwnerNone(FunctionalTwillTestCaseSetup)
             env.config.save()
 
 
-class MaySetOwnerOperationDefaultRestrictOwnerAnonymous(FunctionalTwillTestCaseSetup):
+class MaySetOwnerOperationDefaultRestrictOwnerAnonymous(FunctionalTestCaseSetup):
     def runTest(self):
         """When using the workflow operation `may_set_owner` with
         restrict_owner=true, the assign-to dropdown menu will contain a
@@ -359,7 +359,7 @@ class MaySetOwnerOperationDefaultRestrictOwnerAnonymous(FunctionalTwillTestCaseS
             env.config.save()
 
 
-class RegressionTestTicket11930(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket11930(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of https://trac.edgewall.org/ticket/11930
         Workflow action labels are present on the ticket page.
@@ -371,7 +371,7 @@ class RegressionTestTicket11930(FunctionalTwillTestCaseSetup):
         tc.find('<label for="action_accept">accept</label>')
 
 
-class RegressionTestTicket13087(FunctionalTwillTestCaseSetup):
+class RegressionTestTicket13087(FunctionalTestCaseSetup):
     def runTest(self):
         """Workflow controls for transition to * not created by
         ConfigurableTicketWorkflow.

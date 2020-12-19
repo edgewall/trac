@@ -102,8 +102,7 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
         self.assertTrue(module.match_request(req))
         with self.assertRaises(TracValueError) as cm:
             module.process_request(req)
-        self.assertEqual("Session ID must be alphanumeric.",
-                         unicode(cm.exception))
+        self.assertEqual("Session ID must be alphanumeric.", str(cm.exception))
 
     def test_load_session_key(self):
         """Load session key."""
@@ -137,8 +136,7 @@ class AdvancedPreferencePanelTestCase(unittest.TestCase):
         self.assertTrue(module.match_request(req))
         with self.assertRaises(TracValueError) as cm:
             module.process_request(req)
-        self.assertEqual("Session ID must be alphanumeric.",
-                         unicode(cm.exception))
+        self.assertEqual("Session ID must be alphanumeric.", str(cm.exception))
 
 
 class UserInterfacePreferencePanelTestCase(PreferencePanelTestCase):
@@ -307,9 +305,9 @@ class PreferencesModuleTestCase(unittest.TestCase):
 
         self.assertEqual('prefs_panel_1.html', resp[0])
         self.assertEqual(2, len(resp[1]['children']))
-        self.assertEqual(('child1', 'Child 1', Markup(u'<h2>Child 1</h2>')),
+        self.assertEqual(('child1', 'Child 1', Markup('<h2>Child 1</h2>')),
                          resp[1]['children'][0])
-        self.assertEqual(('child2', 'Child 2', Markup(u'<h2>Child 2</h2>')),
+        self.assertEqual(('child2', 'Child 2', Markup('<h2>Child 2</h2>')),
                          resp[1]['children'][1])
 
 

@@ -121,7 +121,7 @@ if __debug__:
             return
 
         try:
-            with open(DEBUGLOG, 'a') as f:
+            with open(DEBUGLOG, 'a', encoding='utf-8') as f:
                 f.write('%sfcgi: %s\n' % (time.ctime()[4:-4], msg))
         except:
             pass
@@ -1058,8 +1058,8 @@ class Server(object):
         """
         web_server_addrs = os.environ.get('FCGI_WEB_SERVER_ADDRS')
         if web_server_addrs is not None:
-            web_server_addrs = map(lambda x: x.strip(),
-                                   web_server_addrs.split(','))
+            web_server_addrs = list(map(lambda x: x.strip(),
+                                        web_server_addrs.split(',')))
 
         sock = self._setupSocket()
 
@@ -1236,8 +1236,7 @@ class WSGIServer(Server):
             if exc_info:
                 try:
                     if headers_sent:
-                        # Re-raise if too late
-                        raise exc_info[0], exc_info[1], exc_info[2]
+                        raise exc_info[1]  # Re-raise if too late
                 finally:
                     exc_info = None # avoid dangling circular ref
             else:
@@ -1303,24 +1302,24 @@ if __name__ == '__main__':
         """Probably not the most efficient example."""
         import cgi
         start_response('200 OK', [('Content-Type', 'text/html')])
-        yield '<html><head><title>Hello World!</title></head>\n' \
-              '<body>\n' \
-              '<p>Hello World!</p>\n' \
-              '<table border="1">'
+        yield b'<html><head><title>Hello World!</title></head>\n' \
+              b'<body>\n' \
+              b'<p>Hello World!</p>\n' \
+              b'<table border="1">'
         for name in sorted(environ):
-            yield '<tr><td>%s</td><td>%s</td></tr>\n' % (
-                name, cgi.escape(environ[name]))
+            yield b'<tr><td>%s</td><td>%s</td></tr>\n' % \
+                  (name, cgi.escape(environ[name]))
 
         form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ,
                                 keep_blank_values=1)
         if form.list:
-            yield '<tr><th colspan="2">Form data</th></tr>'
+            yield b'<tr><th colspan="2">Form data</th></tr>'
 
         for field in form.list:
-            yield '<tr><td>%s</td><td>%s</td></tr>\n' % (
-                field.name, field.value)
+            yield b'<tr><td>%s</td><td>%s</td></tr>\n' % \
+                  (field.name, field.value)
 
-        yield '</table>\n' \
-              '</body></html>\n'
+        yield b'</table>\n' \
+              b'</body></html>\n'
 
     WSGIServer(test_app).run()

@@ -36,7 +36,7 @@ message that contains both a html version and a text version::
   }
 
   # attach headers to the message
-  for k, v in headers.iteritems():
+  for k, v in headers:
     set_header(message, k, v, charset)
 
 After building the message, you will probably want to use
