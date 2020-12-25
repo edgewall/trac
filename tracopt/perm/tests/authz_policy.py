@@ -301,7 +301,9 @@ class AuthzPolicyTestCase(unittest.TestCase):
             * =
             """))
         authz_policy = AuthzPolicy(self.env)
+        authz_mtime = authz_policy.authz_mtime
         self.assertRaises(ConfigurationError, authz_policy.parse_authz)
+        self.assertEqual(authz_mtime, authz_policy.authz_mtime)
 
     # def test_parse_authz_duplicated_sections_raises(self):
     #     """ConfigurationError should be raised if the file has duplicate
