@@ -174,7 +174,7 @@ class AuthzPolicy(Component):
                            "option in trac.ini is empty or not defined.")
             raise ConfigurationError()
         try:
-            self.authz_mtime = os.path.getmtime(self.authz_file)
+            authz_mtime = os.path.getmtime(self.authz_file)
         except OSError as e:
             self.log.error("Error parsing authz permission policy file: %s",
                            exception_to_unicode(e))
@@ -217,6 +217,7 @@ class AuthzPolicy(Component):
                         self.log.warning("The action %s in the [%s] section "
                                          "of %s is not a valid action.",
                                          action, section, authz_basename)
+        self.authz_mtime = authz_mtime
 
     def normalise_resource(self, resource):
         def to_descriptor(resource):
