@@ -11,7 +11,9 @@ cache:
   - "$HOME/.pyenv"
   - "$HOME/venv-lib"
 before_install:
-- test -n "$pyver" || pyver="$(python -c "$print_version")"
+- |
+  : ${pyver:=$TRAVIS_PYTHON_VERSION}
+  test -n "$pyver"
 - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
 - |
   {
@@ -54,6 +56,7 @@ install:
   pip list
 before_script:
 - |  # Link Subversion bindings to the virtualenv.
+  print_version='import sys; print("%d.%d" % sys.version_info[:2])'
   if [ "$TRAVIS_OS_NAME" = linux -a "$build" != minimum -a \
        "$(/usr/bin/python -c "$print_version")" = "$(python -c "$print_version")" ]
   then
