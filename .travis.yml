@@ -155,11 +155,11 @@ jobs:
       system_site_packages: true
     services: mysql
     env: tracdb=mysql
-  - name: Linux | Python 2.7 | SQLite (in-mem) | Minimal
+  - name: OSX | Python 2.7 | SQLite (in-mem) | Minimal
     os: osx
     language: generic
     env: pyver=2.7 tracdb= build=minimum
-  - name: Linux | Python 2.7 | SQLite (in-mem)
+  - name: OSX | Python 2.7 | SQLite (in-mem)
     os: osx
     language: generic
     env: pyver=2.7 tracdb=
