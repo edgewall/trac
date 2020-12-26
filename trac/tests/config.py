@@ -12,6 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import configparser
 import contextlib
 import copy
 import os
@@ -49,10 +50,8 @@ class UnicodeParserTestCase(unittest.TestCase):
         self.tempdir = mkdtemp()
         self.filename = os.path.join(self.tempdir, 'config.ini')
         _write(self.filename, [
-            '[ä]', 'öption = ÿ',
-            '[ä]', 'optīon = 1.1',
-            '[č]', 'ôption = ž',
-            '[č]', 'optïon = 1',
+            '[ä]', 'öption = ÿ\noptīon = 1.1',
+            '[č]', 'ôption = ž\noptïon = 1',
             '[ė]', 'optioñ = true',
         ])
         self.parser = UnicodeConfigParser()
@@ -364,6 +363,22 @@ class ConfigurationTestCase(unittest.TestCase):
 
 
 class IntegrationTestCase(BaseTestCase):
+
+    def test_duplicate_section(self):
+        self._write([
+            '[ä]', 'öption = ÿ',
+            '[ä]', 'optioñ = true',
+        ])
+        with self.assertRaises(configparser.DuplicateSectionError) as context:
+            config = self._read()
+        self.assertIn("section 'ä' already exists", str(context.exception))
+
+    def test_duplicate_option(self):
+        self._write(['[ä]', 'öption = ÿ\nöption = ÿ'])
+        with self.assertRaises(configparser.DuplicateOptionError) as context:
+            config = self._read()
+        self.assertIn("option 'öption' in section 'ä' already exists",
+                      str(context.exception))
 
     def test_repr(self):
         self.assertEqual('<Configuration None>', repr(Configuration(None)))

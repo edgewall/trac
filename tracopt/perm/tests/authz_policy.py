@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import configparser
 import os
 import textwrap
 import unittest
@@ -305,18 +306,31 @@ class AuthzPolicyTestCase(unittest.TestCase):
         self.assertRaises(ConfigurationError, authz_policy.parse_authz)
         self.assertEqual(authz_mtime, authz_policy.authz_mtime)
 
-    # def test_parse_authz_duplicated_sections_raises(self):
-    #     """ConfigurationError should be raised if the file has duplicate
-    #     sections."""
-    #     create_file(self.authz_file, textwrap.dedent("""\
-    #         [wiki:WikiStart]
-    #         änon = WIKI_VIEW
-    #
-    #         [wiki:WikiStart]
-    #         änon = WIKI_VIEW
-    #         """))
-    #     authz_policy = AuthzPolicy(self.env)
-    #     self.assertRaises(ConfigurationError, authz_policy.parse_authz)
+    def test_parse_authz_duplicated_sections_raises(self):
+         """DuplicateSectionError should be raised if the file has duplicate
+         sections."""
+         create_file(self.authz_file, textwrap.dedent("""\
+             [wiki:WikiStart]
+             änon = WIKI_VIEW
+
+             [wiki:WikiStart]
+             änon = WIKI_VIEW
+             """))
+         authz_policy = AuthzPolicy(self.env)
+         self.assertRaises(configparser.DuplicateSectionError,
+                           authz_policy.parse_authz)
+
+    def test_parse_authz_duplicated_options_raises(self):
+         """DuplicateOptionError should be raised if a section has duplicate
+         options."""
+         create_file(self.authz_file, textwrap.dedent("""\
+             [wiki:WikiStart]
+             änon = WIKI_VIEW
+             änon = WIKI_ADMIN
+             """))
+         authz_policy = AuthzPolicy(self.env)
+         self.assertRaises(configparser.DuplicateOptionError,
+                           authz_policy.parse_authz)
 
 
 def test_suite():

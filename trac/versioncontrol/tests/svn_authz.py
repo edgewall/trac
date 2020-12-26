@@ -64,12 +64,6 @@ class AuthzParserTestCase(unittest.TestCase):
             Foo = rw
             BAZ = r
 
-            ; Unicode module names
-            [module:/c/résumé]
-            bar = rw
-            Foo = rw
-            BAZ = r
-
             ; Unused module, not parsed
             [unused:/some/path]
             foo = r

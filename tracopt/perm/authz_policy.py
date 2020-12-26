@@ -14,12 +14,12 @@
 #
 # Author: Alec Thomas <alec@swapoff.org>
 
+import configparser
 import os
 from fnmatch import fnmatchcase
 from itertools import groupby
 
-from trac.config import ConfigurationError, ParsingError, PathOption, \
-                        UnicodeConfigParser
+from trac.config import ConfigurationError, PathOption, UnicodeConfigParser
 from trac.core import Component, implements
 from trac.perm import IPermissionPolicy, PermissionSystem
 from trac.util import to_list
@@ -183,7 +183,7 @@ class AuthzPolicy(Component):
         self.authz = UnicodeConfigParser(ignorecase_option=False)
         try:
             self.authz.read(self.authz_file)
-        except ParsingError as e:
+        except configparser.ParsingError as e:
             self.log.error("Error parsing authz permission policy file: %s",
                            exception_to_unicode(e))
             raise ConfigurationError()
@@ -209,7 +209,7 @@ class AuthzPolicy(Component):
         for section in self.authz.sections():
             if section == 'groups':
                 continue
-            for _, actions in self.authz.items(section):
+            for user, actions in self.authz.items(section):
                 for action in to_list(actions):
                     if action.startswith('!'):
                         action = action[1:]

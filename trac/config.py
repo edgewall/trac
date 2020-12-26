@@ -92,7 +92,6 @@ class UnicodeConfigParser(ConfigParser):
     def __init__(self, ignorecase_option=True, **kwargs):
         self._ignorecase_option = ignorecase_option
         kwargs.setdefault('interpolation', None)
-        kwargs.setdefault('strict', False)
         ConfigParser.__init__(self, **kwargs)
 
     def optionxform(self, option):
