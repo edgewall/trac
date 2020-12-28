@@ -58,17 +58,15 @@ install:
   (
     set -ex
     test -d "$HOME/src" || mkdir "$HOME/src"
-    if svn info "$HOME/src/subversion" >/dev/null 2>&1; then
-      svn update -q "$HOME/src/subversion"
-    else
-      rm -rf "$HOME/src/subversion"
-      svn checkout -q https://svn.apache.org/repos/asf/subversion/trunk "$HOME/src/subversion"
-    fi
-    svn info --show-item=last-changed-revision "$HOME/src/subversion" >/tmp/subversion-rev.txt
-    if ! test -r "$HOME/src/subversion-rev.txt" \
-      || ! test -r "$HOME/src/subversion-bin.tar.gz" \
-      || ! diff -u "$HOME/src/subversion-rev.txt" /tmp/subversion-rev.txt
+    svnver=1.14.0
+    svnurl="https://archive.apache.org/dist/subversion/subversion-$svnver.tar.bz2"
+    svnsrc="$HOME/src/subversion-$svnver.tar.bz2"
+    svnpybin="$HOME/src/subversion-${svnver}-py${pyver}.tar.gz"
+    if ! tar xzf "$svnpybin" -C / || \
+      [ "$(python -c 'from svn import core; print(str(core.SVN_VER_NUM, "ascii"))')" != "$svnver" ];
     then
+      curl -o "/tmp/subversion-$svnver.tar.bz2" "$svnurl"
+      mv "/tmp/subversion-$svnver.tar.bz2" "$svnsrc"
       if git --git-dir "$HOME/src/py3c" count-objects >/dev/null 2>&1; then
         git --git-dir "$HOME/src/py3c" fetch origin
       else
@@ -76,21 +74,18 @@ install:
         git clone --mirror https://github.com/encukou/py3c "$HOME/src/py3c"
       fi
       test -d "$HOME/work" || mkdir "$HOME/work"
-      svn export -q "$HOME/src/subversion" "$HOME/work/subversion"
+      tar xaf "$svnsrc" -C "$HOME/work"
       git --git-dir "$HOME/src/py3c" archive --format=tar --prefix=py3c/ v1.1 | tar xf - -C "$HOME/work"
       set +ex
-      cd "$HOME/work/subversion"
+      cd "$HOME/work/subversion-$svnver"
       set -ex
-      apr_config=/usr/bin/apr-1-config
-      apu_config=/usr/bin/apu-1-config
-      swig_bin=/usr/bin/swig
       prefix="$(python -c 'import sys; print(sys.prefix)')"
       ./autogen.sh
       ./configure \
         --prefix="$prefix" \
-        --with-apr="$apr_config" \
-        --with-apr-util="$apu_config" \
-        --with-swig="$swig_bin" \
+        --with-apr=/usr/bin/apr-1-config \
+        --with-apr-util=/usr/bin/apu-1-config \
+        --with-swig=/usr/bin/swig \
         --with-py3c="$HOME/work/py3c" \
         --without-apxs \
         --without-doxygen \
@@ -100,6 +95,8 @@ install:
         --without-kwallet \
         --without-jdk \
         --disable-javahl \
+        PERL=none \
+        RUBY=none \
         PYTHON="$(python -c 'import sys; print(sys.executable)')"
       sitedir="$(python -c '\
         import os, sys; \
@@ -112,10 +109,9 @@ install:
         swig_pydir="$sitedir/libsvn" \
         swig_pydir_extra="$sitedir/svn" \
         all swig-py install install-swig-py
-      tar czf "$HOME/src/subversion-bin.tar.gz" -C /tmp/subversion-bin "${prefix#/}"
-      mv /tmp/subversion-rev.txt "$HOME/src/subversion-rev.txt"
+      tar czf "$svnpybin" -C /tmp/subversion-bin "${prefix#/}"
+      tar xzf "$svnpybin" -C /
     fi
-    tar xzf "$HOME/src/subversion-bin.tar.gz" -C /
     python -c 'from svn import core; print(str(core.SVN_VERSION, "ascii"))'
   )
   fi
