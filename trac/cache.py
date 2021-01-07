@@ -94,7 +94,7 @@ class CachedProperty(CachedPropertyBase):
     """
 
     def __init__(self, retriever, key_attr):
-        super(CachedProperty, self).__init__(retriever)
+        super().__init__(retriever)
         self.key_attr = key_attr
 
     def __get__(self, instance, owner):

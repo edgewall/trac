@@ -265,7 +265,7 @@ consequat. Duis a ..."""
 class MilestoneModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def setUp(self):
-        super(MilestoneModulePermissionsTestCase, self).setUp(MilestoneModule)
+        super().setUp(MilestoneModule)
 
     def test_milestone_notfound_with_milestone_create(self):
         self.grant_perm('anonymous', 'MILESTONE_VIEW')

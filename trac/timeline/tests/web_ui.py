@@ -101,7 +101,7 @@ class TimelinePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
         """)
 
     def setUp(self):
-        super(TimelinePermissionsTestCase, self).setUp(TimelineModule)
+        super().setUp(TimelineModule)
 
     def test_get_navigation_items_with_timeline_view(self):
         req = MockRequest(self.env, authname='user1', path_info='/timeline')

@@ -1346,8 +1346,7 @@ class EmptyChangeset(Changeset):
     def __init__(self, repos, rev, message=None, author=None, date=None):
         if date is None:
             date = datetime(1970, 1, 1, tzinfo=utc)
-        super(EmptyChangeset, self).__init__(repos, rev, message, author,
-                                             date)
+        super().__init__(repos, rev, message, author, date)
 
     def get_changes(self):
         return iter([])

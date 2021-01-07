@@ -57,7 +57,7 @@ class PermissionError(TracBaseError):
                         "permissions.", perm=self.action)
         elif msg is None:
             msg = _("Insufficient privileges to perform this operation.")
-        super(PermissionError, self).__init__(msg)
+        super().__init__(msg)
 
     @property
     def message(self):

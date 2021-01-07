@@ -576,7 +576,7 @@ class ReverseProxyServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     def __init__(self, *args, **kwargs):
         self.proxy_port = kwargs.pop('proxy_port')
         self.response_dir = kwargs.pop('response_dir')
-        super(ReverseProxyServer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_response(self, path):
         filename = self._response_path(path)

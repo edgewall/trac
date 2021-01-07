@@ -195,7 +195,7 @@ class Resource(object):
                 version = None
             if parent is False:
                 parent = None
-        resource = super(Resource, cls).__new__(cls)
+        resource = super().__new__(cls)
         resource.realm = realm
         resource.id = id
         resource.version = version

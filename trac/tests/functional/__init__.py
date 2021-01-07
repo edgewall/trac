@@ -108,7 +108,7 @@ if selenium:
             if parse_version(selenium.__version__) < parse_version(minimum):
                 raise ImportError('Selenium %s is required. Found version %s.'
                                   % (minimum, selenium.__version__))
-            super(FunctionalTestSuite, self).__init__()
+            super().__init__()
 
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory

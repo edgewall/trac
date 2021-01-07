@@ -73,8 +73,7 @@ class ConfigurationError(TracError):
     def __init__(self, message=None, title=None, show_traceback=False):
         if message is None:
             message = _("Look in the Trac log for more information.")
-        super(ConfigurationError, self).__init__(message, title,
-                                                 show_traceback)
+        super().__init__(message, title, show_traceback)
 
 
 class UnicodeConfigParser(ConfigParser):

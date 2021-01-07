@@ -100,7 +100,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 """
 
     def setUp(self):
-        super(BrowserModulePermissionsTestCase, self).setUp(BrowserModule)
+        super().setUp(BrowserModule)
         provider = DbRepositoryProvider(self.env)
         provider.add_repository('(default)', '/', 'mock')
         provider.add_repository('allow', '/', 'mock')
@@ -109,7 +109,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
     def tearDown(self):
         RepositoryManager(self.env).reload_repositories()
-        super(BrowserModulePermissionsTestCase, self).tearDown()
+        super().tearDown()
 
     def test_get_navigation_items_with_browser_view(self):
         self.grant_perm('anonymous', 'BROWSER_VIEW')

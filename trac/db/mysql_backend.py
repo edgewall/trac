@@ -47,17 +47,17 @@ else:
             if args:
                 args = tuple(str(arg) if isinstance(arg, Markup) else arg
                              for arg in args)
-            return super(MySQLUnicodeCursor, self).execute(query, args)
+            return super().execute(query, args)
 
         def executemany(self, query, args):
             if args:
                 args = [tuple(str(item) if isinstance(item, Markup) else item
                               for item in arg)
                         for arg in args]
-            return super(MySQLUnicodeCursor, self).executemany(query, args)
+            return super().executemany(query, args)
 
         def fetchall(self):
-            return list(super(MySQLUnicodeCursor, self).fetchall())
+            return list(super().fetchall())
 
     class MySQLSilentCursor(MySQLUnicodeCursor):
         def _show_warnings(self, conn=None):

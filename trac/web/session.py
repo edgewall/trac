@@ -45,13 +45,13 @@ COOKIE_KEY = 'trac_session'
 class SessionDict(dict):
 
     def __init__(self, *args, **kwargs):
-        super(SessionDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.authenticated = False
         self.last_visit = 0
         self.sid = None
 
     def __setitem__(self, key, value):
-        super(SessionDict, self).__setitem__(key, str(value))
+        super().__setitem__(key, str(value))
 
     def as_bool(self, key, default=None):
         """Return the value as a boolean. Return `default` if
@@ -115,13 +115,13 @@ class SessionDict(dict):
             if value == default:
                 self.pop(key, None)
                 return
-        super(SessionDict, self).__setitem__(key, value)
+        super().__setitem__(key, value)
 
 
 class DetachedSession(SessionDict):
 
     def __init__(self, env, sid):
-        super(DetachedSession, self).__init__()
+        super().__init__()
         self.env = env
         self._new = True
         self._old = {}
@@ -261,7 +261,7 @@ class Session(DetachedSession):
     """Basic session handling and per-session storage."""
 
     def __init__(self, env, req):
-        super(Session, self).__init__(env, None)
+        super().__init__(env, None)
         self.req = req
         if not req.is_authenticated:
             if COOKIE_KEY not in req.incookie:
@@ -295,7 +295,7 @@ class Session(DetachedSession):
         if self.sid and sid != self.sid:
             refresh_cookie = True
 
-        super(Session, self).get_session(sid, authenticated)
+        super().get_session(sid, authenticated)
         if self.last_visit and time_now() - self.last_visit > UPDATE_INTERVAL:
             refresh_cookie = True
 

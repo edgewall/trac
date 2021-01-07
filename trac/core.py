@@ -49,7 +49,7 @@ class TracError(TracBaseError):
         above the error message.
         """
         from trac.util.translation import gettext
-        super(TracError, self).__init__(message)
+        super().__init__(message)
         self._message = message
         self.title = title or gettext(self.title)
         self.show_traceback = show_traceback

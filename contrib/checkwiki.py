@@ -37,7 +37,7 @@ class DefaultWikiChecker(Formatter):
         Formatter.__init__(self, env, context)
         self.__name = name
         self.__marks = []
-        self.__super = super(DefaultWikiChecker, self)
+        self.__super = super()
 
     def handle_match(self, fullmatch):
         rv = self.__super.handle_match(fullmatch)

@@ -103,7 +103,7 @@ def _make_req(environ, authname='admin', chrome=None, form_token='A' * 40,
                 self.headers_sent.update(dict(headers))
                 return write
 
-            super(RequestWithSentAttrs, self).__init__(environ, start_response)
+            super().__init__(environ, start_response)
 
         @property
         def response_sent(self):

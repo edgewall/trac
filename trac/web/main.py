@@ -104,7 +104,7 @@ class RequestWithSession(Request):
     def send_response(self, code=200):
         if code < 400:
             self.session.save()
-        super(RequestWithSession, self).send_response(code)
+        super().send_response(code)
 
 
 class RequestDispatcher(Component):

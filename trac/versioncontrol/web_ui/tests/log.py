@@ -130,7 +130,7 @@ class MockChangeset(Changeset):
 class MockNode(Node):
 
     def __init__(self, repos, path, rev, kind):
-        super(MockNode, self).__init__(repos, path, rev, kind)
+        super().__init__(repos, path, rev, kind)
         self.created_path = path
         self.created_rev = rev
 
@@ -171,7 +171,7 @@ class MockNode(Node):
 class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
     def setUp(self):
-        self._super = super(LogModuleTestCase, self)
+        self._super = super()
         self._super.setUp(LogModule)
         provider = DbRepositoryProvider(self.env)
         provider.add_repository('mock', '/', mock_repotype)

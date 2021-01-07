@@ -365,7 +365,7 @@ class Environment(Component, ComponentManager):
     def enable_component(self, cls):
         """Enable a component or module."""
         self._component_rules[self._component_name(cls)] = True
-        super(Environment, self).enable_component(cls)
+        super().enable_component(cls)
 
     @contextmanager
     def component_guard(self, component, reraise=False):

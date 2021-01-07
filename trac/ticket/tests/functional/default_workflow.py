@@ -20,7 +20,7 @@ from trac.tests.functional import FunctionalTestCaseSetup, tc
 class SetOwnerOperation(FunctionalTestCaseSetup):
 
     def setUp(self):
-        super(SetOwnerOperation, self).setUp()
+        super().setUp()
         self.env = self._testenv.get_trac_environment()
         self.reassign_operations = self.env.config.get('ticket-workflow',
                                                        'reassign.operations')
@@ -31,7 +31,7 @@ class SetOwnerOperation(FunctionalTestCaseSetup):
         self.env.config.save()
 
     def tearDown(self):
-        super(SetOwnerOperation, self).tearDown()
+        super().tearDown()
         self.env.config.set('ticket-workflow', 'reassign.operations',
                        self.reassign_operations)
         self.env.config.set('ticket', 'restrict_owner', self.restrict_owner)
@@ -148,7 +148,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
     https://trac.edgewall.org/ticket/10018
     """
     def setUp(self):
-        super(MaySetOwnerOperationRestrictOwnerFalse, self).setUp()
+        super().setUp()
         self.env = self._testenv.get_trac_environment()
         self.reassign_operations = self.env.config.get('ticket-workflow',
                                                        'reassign.operations')
@@ -159,7 +159,7 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
         self.env.config.save()
 
     def tearDown(self):
-        super(MaySetOwnerOperationRestrictOwnerFalse, self).tearDown()
+        super().tearDown()
         self.env.config.set('ticket-workflow', 'reassign.operations',
                             self.reassign_operations)
         self.env.config.set('ticket', 'restrict_owner', self.restrict_owner)

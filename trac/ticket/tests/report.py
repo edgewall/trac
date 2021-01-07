@@ -842,7 +842,7 @@ class NavContribReportModuleEnabledTestCase(NavigationContributorTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
-        super(NavContribReportModuleEnabledTestCase, self).setUp()
+        super().setUp()
 
     def test_user_has_no_perms(self):
         """No navigation item when user has neither REPORT_VIEW or
@@ -898,7 +898,7 @@ class NavContribReportModuleDisabledTestCase(NavigationContributorTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(disable=['trac.ticket.report.*'])
-        super(NavContribReportModuleDisabledTestCase, self).setUp()
+        super().setUp()
 
     def test_user_has_ticket_view(self):
         """Navigation item directs to QueryModule when ReportModule is

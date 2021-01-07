@@ -496,7 +496,7 @@ class PriorityAdminPanelTestCase(AbstractEnumTestCase):
     cls = Priority
 
     def setUp(self):
-        super(PriorityAdminPanelTestCase, self).setUp()
+        super().setUp()
         self.admin = PriorityAdminPanel(self.env)
 
     def test_add_priority(self):
@@ -528,7 +528,7 @@ class ResolutionAdminPanelTestCase(AbstractEnumTestCase):
     cls = Resolution
 
     def setUp(self):
-        super(ResolutionAdminPanelTestCase, self).setUp()
+        super().setUp()
         self.admin = ResolutionAdminPanel(self.env)
 
     def test_add_resolution(self):
@@ -561,7 +561,7 @@ class SeverityAdminPanelTestCase(AbstractEnumTestCase):
     cls = Severity
 
     def setUp(self):
-        super(SeverityAdminPanelTestCase, self).setUp()
+        super().setUp()
         self.admin = SeverityAdminPanel(self.env)
 
     def test_add_severity(self):
@@ -610,7 +610,7 @@ class TicketTypeAdminPanelTestCase(AbstractEnumTestCase):
     cls = Type
 
     def setUp(self):
-        super(TicketTypeAdminPanelTestCase, self).setUp()
+        super().setUp()
         self.admin = TicketTypeAdminPanel(self.env)
 
     def test_add_type(self):

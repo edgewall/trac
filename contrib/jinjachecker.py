@@ -154,7 +154,7 @@ StatementTuple = namedtuple('StatementTuple',
 
 class Statement(StatementTuple):
     def __new__(cls, *args, **kwargs):
-        self = super(Statement, cls).__new__(cls, *args, **kwargs)
+        self = super().__new__(cls, *args, **kwargs)
         self.is_block = (self.kw in JINJA2_BLOCK_KEYWORDS or
                          self.kw == 'set' and '=' not in self.expr)
         return self

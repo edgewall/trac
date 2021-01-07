@@ -67,7 +67,7 @@ class TicketChangeEvent(NotificationEvent):
 
     def __init__(self, category, target, time, author, comment=None,
                  changes=None, attachment=None):
-        super(TicketChangeEvent, self).__init__('ticket', category, target,
+        super().__init__('ticket', category, target,
                                                 time, author)
         self.comment = comment
         if changes is None and time is not None:
@@ -80,7 +80,7 @@ class BatchTicketChangeEvent(NotificationEvent):
     """Represent a ticket batch modify `NotificationEvent`."""
 
     def __init__(self, targets, time, author, comment, new_values, action):
-        super(BatchTicketChangeEvent, self).__init__('ticket', 'batchmodify',
+        super().__init__('ticket', 'batchmodify',
                                                      targets, time, author)
         self.comment = comment
         self.new_values = new_values

@@ -162,8 +162,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def execute(self, cmd, *args):
         argstr = ' '.join('"%s"' % a for a in args)
-        return super(TracAdminTestCase, self) \
-               .execute('wiki {} {}'.format(cmd, argstr))
+        return super().execute('wiki {} {}'.format(cmd, argstr))
 
     def assertFileContentMatchesPage(self, names):
         for n in names:

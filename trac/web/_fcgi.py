@@ -251,7 +251,7 @@ class MultiplexedInputStream(InputStream):
     (the consumer) are running in different threads.
     """
     def __init__(self, conn):
-        super(MultiplexedInputStream, self).__init__(conn)
+        super().__init__(conn)
 
         # Arbitrates access to this InputStream (it's used simultaneously
         # by a Request and its owning Connection object).
@@ -267,21 +267,21 @@ class MultiplexedInputStream(InputStream):
     def read(self, n=-1):
         self._lock.acquire()
         try:
-            return super(MultiplexedInputStream, self).read(n)
+            return super().read(n)
         finally:
             self._lock.release()
 
     def readline(self, length=None):
         self._lock.acquire()
         try:
-            return super(MultiplexedInputStream, self).readline(length)
+            return super().readline(length)
         finally:
             self._lock.release()
 
     def add_data(self, data):
         self._lock.acquire()
         try:
-            super(MultiplexedInputStream, self).add_data(data)
+            super().add_data(data)
             self._lock.notify()
         finally:
             self._lock.release()
@@ -821,7 +821,7 @@ class MultiplexedConnection(Connection):
     _inputStreamClass = MultiplexedInputStream
 
     def __init__(self, sock, addr, server):
-        super(MultiplexedConnection, self).__init__(sock, addr, server)
+        super().__init__(sock, addr, server)
 
         # Used to arbitrate access to self._requests.
         lock = threading.RLock()
@@ -837,7 +837,7 @@ class MultiplexedConnection(Connection):
             self._lock.wait()
         self._lock.release()
 
-        super(MultiplexedConnection, self)._cleanupSocket()
+        super()._cleanupSocket()
 
     def writeRecord(self, rec):
         # Must use locking to prevent intermingling of Records from different
@@ -853,7 +853,7 @@ class MultiplexedConnection(Connection):
                     protocolStatus=FCGI_REQUEST_COMPLETE, remove=True):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self).end_request(req, appStatus,
+            super().end_request(req, appStatus,
                                                            protocolStatus,
                                                            remove)
             self._lock.notify()
@@ -863,14 +863,14 @@ class MultiplexedConnection(Connection):
     def _do_begin_request(self, inrec):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self)._do_begin_request(inrec)
+            super()._do_begin_request(inrec)
         finally:
             self._lock.release()
 
     def _do_abort_request(self, inrec):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self)._do_abort_request(inrec)
+            super()._do_abort_request(inrec)
         finally:
             self._lock.release()
 
@@ -880,21 +880,21 @@ class MultiplexedConnection(Connection):
     def _do_params(self, inrec):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self)._do_params(inrec)
+            super()._do_params(inrec)
         finally:
             self._lock.release()
 
     def _do_stdin(self, inrec):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self)._do_stdin(inrec)
+            super()._do_stdin(inrec)
         finally:
             self._lock.release()
 
     def _do_data(self, inrec):
         self._lock.acquire()
         try:
-            super(MultiplexedConnection, self)._do_data(inrec)
+            super()._do_data(inrec)
         finally:
             self._lock.release()
 
@@ -1153,7 +1153,7 @@ class WSGIServer(Server):
         """
         if 'handler' in kw:
             del kw['handler'] # Doesn't make sense to let this through
-        super(WSGIServer, self).__init__(**kw)
+        super().__init__(**kw)
 
         if environ is None:
             environ = {}

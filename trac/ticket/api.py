@@ -39,11 +39,11 @@ class TicketFieldList(list):
     __slots__ = ['_map']
 
     def __init__(self, *args):
-        super(TicketFieldList, self).__init__(*args)
+        super().__init__(*args)
         self._map = {value['name']: value for value in self}
 
     def append(self, value):
-        super(TicketFieldList, self).append(value)
+        super().append(value)
         self._map[value['name']] = value
 
     def by_name(self, name, default=None):
