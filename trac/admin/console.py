@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2020 Edgewall Software
+# Copyright (C) 2003-2021 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -107,7 +107,7 @@ Interactive Trac administration console.
 Copyright (C) %(year)s Edgewall Software
 
 Type:  '?' or 'help' for help on commands.
-        """, version=TRAC_VERSION, year='2003-2020'))
+        """, version=TRAC_VERSION, year='2003-2021'))
         self.cmdloop()
 
     # Environment methods
