@@ -81,7 +81,7 @@ class InterTracDispatcher(Component):
                 raise TracError(
                     _("Can't view %(link)s. Resource doesn't exist or "
                       "you don't have the required permission.", link=link))
-            href = elt.attrib.get('href')
+            href = elt.attrib.get('href').unescape()
         else:
             href = req.href(link.rstrip(':'))
         req.redirect(href)

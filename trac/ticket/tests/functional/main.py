@@ -1525,6 +1525,8 @@ class RegressionTestTicket7821var(FunctionalTestCaseSetup):
             # query:owner=$USER&or&cc~=$USER
             tc.go(self._tester.url +
                   '/intertrac/query:owner=$USER&or&cc~=$USER')
+            tc.url(self._tester.url + '/query?owner=%24USER&or&'
+                   'cc=~%24USER&order=priority', regexp=False)
             tc.find('<input type="text" name="0_owner"[ \n]+value="admin"'
                     ' size="[0-9]+"/>')
             tc.find('<input type="text" name="1_cc"[ \n]+value="admin"'
