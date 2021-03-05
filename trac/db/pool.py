@@ -130,10 +130,7 @@ class ConnectionPoolBackend(object):
         timeout = time_now() - start
         errmsg = _("Unable to get database connection within %(time)d seconds.",
                    time=timeout)
-        if exception:
-            raise TimeoutError(errmsg) from exception
-        else:
-            raise TimeoutError(errmsg)
+        raise TimeoutError(errmsg) from exception
 
     def _take_cnx(self, connector, kwargs, key, tid):
         """Note: _available lock must be held when calling this method."""

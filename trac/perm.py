@@ -774,7 +774,7 @@ class PermissionAdmin(Component):
                 printout(e)
                 return action
             except TracError as e:
-                raise AdminCommandError(e)
+                raise AdminCommandError(e) from e
 
         # An exception rolls back the atomic transaction so it's
         # necessary to retry the transaction after removing the

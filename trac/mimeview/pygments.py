@@ -171,7 +171,7 @@ class PygmentsRenderer(Component):
         try:
             style_cls = get_style_by_name(style)
         except ValueError as e:
-            raise HTTPNotFound(e)
+            raise HTTPNotFound(e) from e
 
         parts = style_cls.__module__.split('.')
         filename = resource_filename('.'.join(parts[:-1]), parts[-1] + '.py')

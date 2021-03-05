@@ -358,7 +358,7 @@ class Configuration(object):
                     raise TracError(_("Error reading '%(file)s', make sure "
                                       "it is readable.", file=self.filename))
             except ParsingError as e:
-                raise TracError(e)
+                raise TracError(e) from e
             self._lastmtime = modtime
             self._pristine_parser = copy.deepcopy(self.parser)
             changed = True

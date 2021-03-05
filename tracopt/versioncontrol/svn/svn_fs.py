@@ -782,7 +782,7 @@ class SubversionNode(Node):
             try:
                 self.root = fs.revision_root(self.fs_ptr, rev, pool)
             except core.SubversionException as e:
-                raise NoSuchNode(path, rev, exception_to_unicode(e))
+                raise NoSuchNode(path, rev, exception_to_unicode(e)) from e
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if node_type not in _kindmap:
             raise NoSuchNode(path, rev)
@@ -880,7 +880,7 @@ class SubversionNode(Node):
             except (core.SubversionException, AttributeError) as e:
                 # svn thinks file is a binary or blame not supported
                 raise TracError(_('svn blame failed on %(path)s: %(error)s',
-                                  path=self.path, error=to_unicode(e)))
+                                  path=self.path, error=to_unicode(e))) from e
         return annotations
 
 #    def get_previous(self):

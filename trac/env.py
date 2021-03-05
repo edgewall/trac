@@ -779,7 +779,7 @@ class Environment(Component, ComponentManager):
             try:
                 self.backup(backup_dest)
             except Exception as e:
-                raise BackupError(e)
+                raise BackupError(e) from e
 
         for participant in upgraders:
             self.log.info("upgrading %s...", participant)

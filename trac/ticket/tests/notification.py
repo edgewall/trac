@@ -853,7 +853,7 @@ class NotificationTestCase(unittest.TestCase):
                 body = mime_decoder(body)
                 body = str(body, charset)
         except Exception as e:
-            raise AssertionError(e)
+            raise AssertionError(e) from e
         # now processes each line of the body
         bodylines = body.splitlines()
         # body starts with one of more summary lines, first line is prefixed

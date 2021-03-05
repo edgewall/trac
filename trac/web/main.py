@@ -295,7 +295,8 @@ class RequestDispatcher(Component):
                 self.log.warning("%s caught from %s:%d in %s: %s",
                                  e.__class__.__name__, tb[0], tb[1], tb[2],
                                  to_unicode(e) or "(no message)")
-                raise HTTPInternalServerError(TracNotImplementedError(e)) from e
+                raise HTTPInternalServerError(TracNotImplementedError(e)) \
+                      from e
             if isinstance(e, TracError):
                 raise HTTPInternalServerError(e) from e
             raise e

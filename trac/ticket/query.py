@@ -1374,7 +1374,7 @@ class TicketQueryMacro(WikiMacroBase):
         try:
             query = Query.from_string(self.env, query_string)
         except QuerySyntaxError as e:
-            raise MacroError(e)
+            raise MacroError(e) from e
 
         if format in ('count', 'rawcount'):
             cnt = query.count(req)
@@ -1390,7 +1390,7 @@ class TicketQueryMacro(WikiMacroBase):
         try:
             tickets = query.execute(req)
         except QueryValueError as e:
-            raise MacroError(e)
+            raise MacroError(e) from e
 
         if format == 'table':
             data = query.template_data(formatter.context, tickets,

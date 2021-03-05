@@ -233,9 +233,9 @@ Type:  '?' or 'help' for help on commands.
             if self.needs_upgrade is None:
                 self.needs_upgrade = self.__env.needs_upgrade()
         except TracError as e:
-            raise AdminCommandError(to_unicode(e))
+            raise AdminCommandError(to_unicode(e)) from e
         except Exception as e:
-            raise AdminCommandError(exception_to_unicode(e))
+            raise AdminCommandError(exception_to_unicode(e)) from e
         args = self.arg_tokenize(line)
         if args[0] == 'upgrade':
             self.needs_upgrade = None

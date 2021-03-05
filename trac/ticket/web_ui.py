@@ -846,7 +846,7 @@ class TicketModule(Component):
                         # Leave it to _validate_ticket() to complain.
                         fields[field] = value
                     else:
-                        raise TracError(e)
+                        raise TracError(e) from e
         ticket.populate(fields)
         # special case for updating the Cc: field
         if 'cc_update' in req.args and 'revert_cc' not in req.args:

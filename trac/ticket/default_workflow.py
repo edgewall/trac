@@ -669,9 +669,9 @@ class WorkflowMacro(WikiMacroBase):
                 parser.readfp(io.StringIO(text))
             except ParsingError as e:
                 if is_macro:
-                    raise MacroError(exception_to_unicode(e))
+                    raise MacroError(exception_to_unicode(e)) from e
                 else:
-                    raise ProcessorError(exception_to_unicode(e))
+                    raise ProcessorError(exception_to_unicode(e)) from e
             raw_actions = list(parser.items('ticket-workflow'))
         actions = parse_workflow_config(raw_actions)
         states = list(

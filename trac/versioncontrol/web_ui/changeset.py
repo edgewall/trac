@@ -253,7 +253,7 @@ class ChangesetModule(Component):
             new = repos.normalize_rev(new)
             old = repos.normalize_rev(old or new)
         except NoSuchChangeset as e:
-            raise ResourceNotFound(e, _("Invalid Changeset Number"))
+            raise ResourceNotFound(e, _("Invalid Changeset Number")) from e
         new_path = repos.normalize_path(new_path)
         old_path = repos.normalize_path(old_path or new_path)
         full_new_path = '/' + pathjoin(repos.reponame, new_path)

@@ -130,7 +130,7 @@ class WikiAdmin(Component):
         try:
             page.save('trac', None, replace=replace)
         except TracError as e:
-            raise AdminCommandError(e)
+            raise AdminCommandError(e) from e
 
         self.log.info("%s imported from %s", name, path_to_unicode(filename))
         return True
@@ -182,7 +182,7 @@ class WikiAdmin(Component):
         try:
             page.rename(new_name)
         except TracError as e:
-            raise AdminCommandError(e)
+            raise AdminCommandError(e) from e
         printout(_(" '%(name1)s' renamed to '%(name2)s'",
                    name1=name, name2=new_name))
 

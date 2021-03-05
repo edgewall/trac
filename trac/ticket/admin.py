@@ -54,7 +54,7 @@ class TicketAdminPanel(Component):
         try:
             return self._render_admin_panel(req, cat, page, path_info)
         except AssertionError as e:
-            raise TracError(e)
+            raise TracError(e) from e
 
     def _save_config(self, req):
         """Try to save the config, and display either a success notice or a
