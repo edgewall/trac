@@ -17,9 +17,6 @@ cache:
   - "$HOME/Library/Caches/Homebrew"
 before_install:
 - set -e
-- |
-  : ${pyver:=$TRAVIS_PYTHON_VERSION}
-  test -n "$pyver"
 - test -d "$HOME/.pip" || mkdir "$HOME/.pip"
 - |
   {
@@ -29,12 +26,28 @@ before_install:
     echo "format = columns"
   } >"$HOME/.pip/pip.conf"
 - |
-  if [ "$TRAVIS_OS_NAME" = osx ]; then
-    export PATH="$(brew --prefix python@3.9)/libexec/bin:$PATH"
-    PYTHONPATH="$(brew --prefix python@3.9)/libexec/pip/src" python -m pip install virtualenv
-    venv="$HOME/venv-$pyver"
-    python -m virtualenv $venv
-    source $venv/bin/activate
+  if [ "$TRAVIS_OS_NAME" = linux ]; then
+    : ${pyver:=$TRAVIS_PYTHON_VERSION}
+  elif [ "$TRAVIS_OS_NAME" = osx ]; then
+    python_prefix="$(brew --prefix python@3.9)"
+    export PATH="$python_prefix/libexec/bin:$PATH"
+    pyver="$(python -c 'import sys; print("%d.%d" % sys.version_info[:2])')"
+    venvdir="$HOME/venv-$pyver"
+    python -m venv "$venvdir"
+    source "$venvdir/bin/activate"
+    # Link Subversion bindings to the virtualenv
+    if [ "$build" != minimum ]; then
+      python_global="$python_prefix/libexec/bin/python"
+      print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
+      sitelib_global="$($python_global -c "$print_sitelib")"
+      sitelib_venv="$(python -c "$print_sitelib")"
+      ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
+      ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
+      python -c 'from svn import core; print(str(core.SVN_VERSION, "ascii"))'
+    fi
+  else
+    echo "Unknown environment: '$TRAVIS_OS_NAME'"
+    exit 1
   fi
 - pip install --upgrade pip setuptools wheel
 - python --version
@@ -130,19 +143,6 @@ install:
   echo ".uri = $tracdb_uri" >Makefile.cfg
 - echo "$tracdb_version"
 before_script:
-- |  # Link Subversion bindings to the virtualenv.
-  if [ "$build" != minimum -a "$TRAVIS_OS_NAME" = osx ]; then
-    python_global="$(brew --prefix python@3.9)/libexec/bin/python"
-    print_version='import sys; print("%d.%d" % sys.version_info[:2])'
-    if [ "$($python_global -c "$print_version")" = "$(python -c "$print_version")" ]; then
-      print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
-      sitelib_global="$($python_global -c "$print_sitelib")"
-      sitelib_venv="$(python -c "$print_sitelib")"
-      ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
-      ln -s "$sitelib_global/libsvn" "$sitelib_venv/libsvn"
-      python -c 'from svn import core'
-    fi
-  fi
 - |
   case "$tracdb" in
     postgresql)
@@ -209,10 +209,10 @@ jobs:
   - {os: linux, python: '3.9', env: 'tracdb=sqlite'}
   - {os: linux, python: '3.9', env: 'tracdb=postgresql', services: postgresql}
   - {os: linux, python: '3.9', env: 'tracdb=mysql', services: mysql}
-  - {os: osx, osx_image: xcode12.2, language: generic, env: 'pyver=3.9 tracdb= build=minimum'}
-  - {os: osx, osx_image: xcode12.2, language: generic, env: 'pyver=3.9 tracdb='}
-  - {os: osx, osx_image: xcode12.2, language: generic, env: 'pyver=3.9 tracdb=sqlite'}
-  - {os: osx, osx_image: xcode12.2, language: generic, env: 'pyver=3.9 tracdb=postgresql'}
+  - {os: osx, osx_image: xcode12.2, language: generic, env: 'tracdb= build=minimum'}
+  - {os: osx, osx_image: xcode12.2, language: generic, env: 'tracdb='}
+  - {os: osx, osx_image: xcode12.2, language: generic, env: 'tracdb=sqlite'}
+  - {os: osx, osx_image: xcode12.2, language: generic, env: 'tracdb=postgresql'}
   - stage: deploy
     before_script: skip
     script: skip
