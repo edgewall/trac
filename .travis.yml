@@ -58,7 +58,7 @@ install:
   (
     set -ex
     test -d "$HOME/src" || mkdir "$HOME/src"
-    svnver=1.14.0
+    svnver=1.14.1
     svnurl="https://archive.apache.org/dist/subversion/subversion-$svnver.tar.bz2"
     svnsrc="$HOME/src/subversion-$svnver.tar.bz2"
     svnpybin="$HOME/src/subversion-${svnver}-py${pyver}.tar.gz"
@@ -104,11 +104,16 @@ install:
                            "python{0}.{1}".format(*sys.version_info), \
                            "site-packages")); \
         ')"
+      # travis-ci environment has 2 cpu cores
+      make -j3 \
+        swig_pydir="$sitedir/libsvn" \
+        swig_pydir_extra="$sitedir/svn" \
+        all swig-py
       make \
         DESTDIR=/tmp/subversion-bin \
         swig_pydir="$sitedir/libsvn" \
         swig_pydir_extra="$sitedir/svn" \
-        all swig-py install install-swig-py
+        install install-swig-py
       tar czf "$svnpybin" -C /tmp/subversion-bin "${prefix#/}"
       tar xzf "$svnpybin" -C /
     fi
