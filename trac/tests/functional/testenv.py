@@ -138,7 +138,8 @@ class FunctionalTestEnvironment(object):
         """
         os.mkdir(self.dirname)
         # testing.log gets any unused output from subprocesses
-        self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'wb')
+        self.logfile = open(os.path.join(self.dirname, 'testing.log'), 'wb',
+                            buffering=0)
         self.create_repo()
 
         config_file = os.path.join(self.dirname, 'config.ini')
