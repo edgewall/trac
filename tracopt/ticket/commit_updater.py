@@ -45,6 +45,7 @@ from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketChangeEvent
+from trac.util import as_int
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import tag
 from trac.util.text import exception_to_unicode
@@ -303,6 +304,8 @@ class CommitTicketReferenceMacro(WikiMacroBase):
      - `revision`: the revision of the desired changeset
     """)
 
+    ticket_re = CommitTicketUpdater.ticket_re
+
     def expand_macro(self, formatter, name, content, args=None):
         args = args or {}
         reponame = args.get('repository') or ''
@@ -318,9 +321,9 @@ class CommitTicketReferenceMacro(WikiMacroBase):
             rev = changeset.rev
             resource = repos.resource
         if formatter.context.resource.realm == 'ticket':
-            ticket_re = CommitTicketUpdater.ticket_re
-            if not any(int(tkt_id) == int(formatter.context.resource.id)
-                       for tkt_id in ticket_re.findall(message)):
+            resource_id = as_int(formatter.context.resource.id)
+            if not resource_id or not any(int(tkt_id) == resource_id
+                       for tkt_id in self.ticket_re.findall(message)):
                 return tag.p(_("(The changeset message doesn't reference "
                                "this ticket)"), class_='hint')
         if ChangesetModule(self.env).wiki_format_messages:
