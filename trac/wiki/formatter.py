@@ -474,9 +474,13 @@ class Formatter(object):
         """Do we currently have any open tag with `tag` as end-tag?"""
         return tag in self._open_tags
 
+    def pop_tags(self):
+        while self._open_tags:
+            yield self._open_tags.pop()
+
     def flush_tags(self):
-        while self._open_tags != []:
-            self.out.write(self._get_close_tag(self._open_tags.pop()))
+        for tag in self.pop_tags():
+            self.out.write(self._get_close_tag(tag))
 
     def open_tag(self, tag_open, tag_close=None):
         """Open an inline style tag.
@@ -1092,7 +1096,9 @@ class Formatter(object):
             attrs += ' style="text-align: %s"' % textalign
         td = '<%s%s>' % (cell, attrs)
         if self.in_table_cell:
-            td = '</%s>' % self.in_table_cell + td
+            close_tags = ''.join(self._get_close_tag(tag)
+                                 for tag in self.pop_tags())
+            td = '%s</%s>%s' % (close_tags, self.in_table_cell, td)
         self.in_table_cell = cell
         return td
 
@@ -1126,6 +1132,7 @@ class Formatter(object):
         if self.in_table_row and (not self.continue_table_row or force):
             self.in_table_row = 0
             if self.in_table_cell:
+                self.flush_tags()
                 self.out.write('</%s>' % self.in_table_cell)
                 self.in_table_cell = ''
             self.out.write('</tr>')

@@ -2472,6 +2472,42 @@ on the next row
 Paragraph
 </p>
 ------------------------------
+============================== Table with broken inline markups (#13355)
+|| a^1 ||
+|| b^2^ ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1
+</sup></td></tr><tr><td> b<sup>2</sup>
+</td></tr></table>
+------------------------------
+============================== Table with broken inline markups 2 (#13355)
+|| a^1 || b^2 ||
+|| c^3^ ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1 </sup></td><td> b<sup>2
+</sup></td></tr><tr><td> c<sup>3</sup>
+</td></tr></table>
+------------------------------
+============================== Table with broken inline markups 3 (#13355)
+|| a^1**2 || b**1//2^3^4//5**6 ||
+|| c^1**2**3^4 || d**1//2^3 ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1<strong>2 </strong></sup></td><td> b<strong>1<em>2<sup>3</sup>4</em>5</strong>6
+</td></tr><tr><td> c<sup>1<strong>2</strong>3</sup>4 </td><td> d<strong>1<em>2<sup>3
+</sup></em></strong></td></tr></table>
+------------------------------
+============================== Table with broken inline markups without closing (#13355)
+|| a^1**2 || b**1//2^3^4//5**6
+|| c^1**2**3^4 || d**1//2^3
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1<strong>2 </strong></sup></td><td> b<strong>1<em>2<sup>3</sup>4</em>5</strong>6
+</td></tr><tr><td> c<sup>1<strong>2</strong>3</sup>4 </td><td> d<strong>1<em>2<sup>3
+</sup></em></strong></td></tr></table>
+------------------------------
 ============================================================
 
          Mixed examples
