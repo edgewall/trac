@@ -78,6 +78,14 @@ class FragmentTestCase(unittest.TestCase):
     def test_unicode(self):
         self.assertEqual('<b>M</b>essäge', str(tag(tag.b('M'), 'essäge')))
 
+    def test_call(self):
+        t = tag()
+        self.assertEqual(b'<b>M</b>',
+                         str(t(tag.b('M'))))
+        t = tag()
+        self.assertEqual(b'<b>M</b>ess\xc3\xa4ge',
+                         str(t(tag.b('M'), 'essäge')))
+
 
 class XMLElementTestCase(unittest.TestCase):
 

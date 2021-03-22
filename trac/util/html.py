@@ -342,6 +342,11 @@ class Fragment(object):
     def __add__(self, other):
         return Fragment(self, other)
 
+    def __call__(self, *args):
+        for arg in args:
+            self.append(arg)
+        return self
+
     def append(self, arg):
         if arg: # ignore most false values (None, False, [], (), ''), except 0!
             if isinstance(arg, (Fragment, str, bytes, int, float)):
