@@ -80,10 +80,10 @@ class FragmentTestCase(unittest.TestCase):
 
     def test_call(self):
         t = tag()
-        self.assertEqual(b'<b>M</b>',
+        self.assertEqual('<b>M</b>',
                          str(t(tag.b('M'))))
         t = tag()
-        self.assertEqual(b'<b>M</b>ess\xc3\xa4ge',
+        self.assertEqual('<b>M</b>essäge',
                          str(t(tag.b('M'), 'essäge')))
 
 
