@@ -26,7 +26,6 @@
 
       <form id="prefs" method="get" action="#">
         <div>
-          ${jmacros.form_token_input()}
           <input type="checkbox" id="showcompleted" name="show"
                  value="completed"${
                {'checked': 'completed' in show}|htmlattr}/>
