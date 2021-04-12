@@ -49,7 +49,6 @@ Warning:
 import functools
 import os.path
 import re
-import weakref
 import posixpath
 from urllib.parse import quote
 
@@ -68,10 +67,6 @@ from trac.util.datefmt import from_utimestamp, to_datetime, utc
 from trac.web.href import Href
 
 
-application_pool = None
-application_pool_lock = threading.Lock()
-
-
 def _import_svn():
     global fs, repos, core, delta, _kindmap, _svn_uri_canonicalize
     from svn import fs, repos, core, delta
@@ -81,9 +76,6 @@ def _import_svn():
         _svn_uri_canonicalize = core.svn_uri_canonicalize  # Subversion 1.7+
     except AttributeError:
         _svn_uri_canonicalize = lambda v: v
-    # Protect svn.core methods from GC
-    Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
-    Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
 
 def _to_svn(pool, *args):
     """Expect a pool and a list of `str` path components.
@@ -150,103 +142,9 @@ def _svn_head():
     revision.kind = core.svn_opt_revision_head
     return revision
 
-# apr_pool_t helpers
 
-def _mark_weakpool_invalid(weakpool):
-    if weakpool():
-        weakpool()._mark_invalid()
-
-
-class Pool(object):
-    """A Pythonic memory pool object"""
-
-    def __init__(self, parent_pool=None):
-        """Create a new memory pool"""
-
-        global application_pool
-
-        with application_pool_lock:
-            self._parent_pool = parent_pool or application_pool
-
-            # Create pool
-            if self._parent_pool:
-                self._pool = core.svn_pool_create(self._parent_pool())
-            else:
-                # If we are an application-level pool,
-                # then initialize APR and set this pool
-                # to be the application-level pool
-                core.apr_initialize()
-                self._pool = core.svn_pool_create(None)
-                application_pool = self
-
-        self._mark_valid()
-
-    def __call__(self):
-        return self._pool
-
-    def valid(self):
-        """Check whether this memory pool and its parents
-        are still valid"""
-        return hasattr(self,"_is_valid")
-
-    def assert_valid(self):
-        """Assert that this memory_pool is still valid."""
-        assert self.valid()
-
-    def clear(self):
-        """Clear embedded memory pool. Invalidate all subpools."""
-        self.apr_pool_clear(self._pool)
-        self._mark_valid()
-
-    def destroy(self):
-        """Destroy embedded memory pool. If you do not destroy
-        the memory pool manually, Python will destroy it
-        automatically."""
-
-        global application_pool
-
-        self.assert_valid()
-
-        # Destroy pool
-        self.apr_pool_destroy(self._pool)
-
-        # Clear application pool and terminate APR if necessary
-        if not self._parent_pool:
-            application_pool = None
-
-        self._mark_invalid()
-
-    def __del__(self):
-        """Automatically destroy memory pools, if necessary"""
-        if self.valid():
-            self.destroy()
-
-    def _mark_valid(self):
-        """Mark pool as valid"""
-        if self._parent_pool:
-            # Refer to self using a weakreference so that we don't
-            # create a reference cycle
-            weakself = weakref.ref(self)
-
-            # Set up callbacks to mark pool as invalid when parents
-            # are destroyed
-            self._weakref = weakref.ref(self._parent_pool._is_valid,
-                                        lambda x:
-                                        _mark_weakpool_invalid(weakself))
-
-        # mark pool as valid
-        self._is_valid = lambda: 1
-
-    def _mark_invalid(self):
-        """Mark pool as invalid"""
-        if self.valid():
-            # Mark invalid
-            del self._is_valid
-
-            # Free up memory
-            del self._parent_pool
-            if hasattr(self, "_weakref"):
-                del self._weakref
+def Pool(parent=None):
+    return core.Pool(parent or core.application_pool)
 
 
 class SvnCachedRepository(CachedRepository):
@@ -313,7 +211,6 @@ class SubversionConnector(Component):
             if version[0] < 1:
                 self.error = _("Subversion >= 1.0 required, found %(version)s",
                                version=self._version)
-            Pool()
 
     # ISystemInfoProvider methods
 
@@ -362,7 +259,7 @@ class SubversionRepository(Repository):
         path_utf8 = core.svn_path_canonicalize(path.encode('utf-8'))
         path = str(path_utf8, 'utf-8')
 
-        root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
+        root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool)
         if root_path_utf8 is None:
             raise InvalidRepository(
                 _("%(path)s does not appear to be a Subversion repository.",
@@ -371,7 +268,7 @@ class SubversionRepository(Repository):
 
         self.path = path
         try:
-            self.repos = repos.svn_repos_open(root_path_utf8, self.pool())
+            self.repos = repos.svn_repos_open(root_path_utf8, self.pool)
         except core.SubversionException as e:
             raise InvalidRepository(
                 _("Couldn't open Subversion repository %(path)s: "
@@ -379,7 +276,7 @@ class SubversionRepository(Repository):
                   svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
 
-        self.uuid = fs.get_uuid(self.fs_ptr, self.pool())
+        self.uuid = fs.get_uuid(self.fs_ptr, self.pool)
         self.base = 'svn:%s:%s' % (self.uuid, root_path)
         name = 'svn:%s:%s' % (self.uuid, path)
 
@@ -416,9 +313,9 @@ class SubversionRepository(Repository):
         if not pool:
             pool = self.pool
         rev = self.normalize_rev(rev)
-        rev_root = fs.revision_root(self.fs_ptr, rev, pool())
-        node_type = fs.check_path(rev_root, _to_svn(pool(), self.scope, path),
-                                  pool())
+        rev_root = fs.revision_root(self.fs_ptr, rev, pool)
+        node_type = fs.check_path(rev_root, _to_svn(pool, self.scope, path),
+                                  pool)
         return node_type in _kindmap
 
     def normalize_path(self, path):
@@ -451,9 +348,9 @@ class SubversionRepository(Repository):
 
     def close(self):
         """Dispose of low-level resources associated to this repository."""
-        if self.pool:
-            self.pool.destroy()
-        self.repos = self.fs_ptr = self.pool = None
+        self.repos = None
+        self.fs_ptr = None
+        self.pool = None
 
     def get_base(self):
         """Retrieve the base path corresponding to the Subversion
@@ -557,25 +454,25 @@ class SubversionRepository(Repository):
 
         (wraps ``fs.node_history``)
         """
-        path_utf8 = _to_svn(pool(), self.scope, path)
+        path_utf8 = _to_svn(pool, self.scope, path)
         if start < end:
             start, end = end, start
         if (start, end) == (1, 0): # only happens for empty repos
             return
-        root = fs.revision_root(self.fs_ptr, start, pool())
+        root = fs.revision_root(self.fs_ptr, start, pool)
         # fs.node_history leaks when path doesn't exist (#6588)
-        if fs.check_path(root, path_utf8, pool()) == core.svn_node_none:
+        if fs.check_path(root, path_utf8, pool) == core.svn_node_none:
             return
         tmp1 = Pool(pool)
         tmp2 = Pool(pool)
-        history_ptr = fs.node_history(root, path_utf8, tmp1())
+        history_ptr = fs.node_history(root, path_utf8, tmp1)
         cross_copies = 1
         while history_ptr:
-            history_ptr = fs.history_prev(history_ptr, cross_copies, tmp2())
+            history_ptr = fs.history_prev(history_ptr, cross_copies, tmp2)
             tmp1.clear()
             tmp1, tmp2 = tmp2, tmp1
             if history_ptr:
-                path_utf8, rev = fs.history_location(history_ptr, tmp2())
+                path_utf8, rev = fs.history_location(history_ptr, tmp2)
                 tmp2.clear()
                 if rev < end:
                     break
@@ -607,7 +504,7 @@ class SubversionRepository(Repository):
         (wraps ``fs.youngest_rev``)
         """
         if not self.youngest:
-            self.youngest = fs.youngest_rev(self.fs_ptr, self.pool())
+            self.youngest = fs.youngest_rev(self.fs_ptr, self.pool)
             if self.scope != '/':
                 for path, rev in self._history('', 1, self.youngest, self.pool):
                     self.youngest = rev
@@ -719,28 +616,32 @@ class SubversionRepository(Repository):
         subpool = Pool(self.pool)
         if new_node.isdir:
             editor = DiffChangeEditor()
-            e_ptr, e_baton = delta.make_editor(editor, subpool())
-            old_root = fs.revision_root(self.fs_ptr, old_rev, subpool())
-            new_root = fs.revision_root(self.fs_ptr, new_rev, subpool())
+            e_ptr, e_baton = delta.make_editor(editor, subpool)
+            old_root = fs.revision_root(self.fs_ptr, old_rev, subpool)
+            new_root = fs.revision_root(self.fs_ptr, new_rev, subpool)
             def authz_cb(root, path, pool):
                 return 1
             text_deltas = 0 # as this is anyway re-done in Diff.py...
             entry_props = 0 # "... typically used only for working copy updates"
             repos.svn_repos_dir_delta(old_root,
-                                      _to_svn(subpool(), self.scope, old_path),
+                                      _to_svn(subpool, self.scope, old_path),
                                       '', new_root,
-                                      _to_svn(subpool(), self.scope, new_path),
+                                      _to_svn(subpool, self.scope, new_path),
                                       e_ptr, e_baton, authz_cb,
                                       text_deltas,
                                       1, # directory
                                       entry_props,
                                       ignore_ancestry,
-                                      subpool())
+                                      subpool)
             # sort deltas by path before creating `SubversionNode`s to reduce
             # memory usage (#10978)
             deltas = sorted(((_from_svn(path), kind, change)
                              for path, kind, change in editor.deltas),
                             key=lambda entry: entry[0])
+
+            # Workaround for ref-count leak due to delta.make_editor()
+            editor.__dict__.clear()
+
             for path, kind, change in deltas:
                 old_node = new_node = None
                 if change != Changeset.ADD:
@@ -751,19 +652,19 @@ class SubversionRepository(Repository):
                                              new_rev)
                 else:
                     kind = _kindmap[fs.check_path(old_root,
-                                                  _to_svn(subpool(),
+                                                  _to_svn(subpool,
                                                           self.scope,
                                                           old_node.path),
-                                                  subpool())]
+                                                  subpool)]
                 yield  (old_node, new_node, kind, change)
         else:
-            old_root = fs.revision_root(self.fs_ptr, old_rev, subpool())
-            new_root = fs.revision_root(self.fs_ptr, new_rev, subpool())
+            old_root = fs.revision_root(self.fs_ptr, old_rev, subpool)
+            new_root = fs.revision_root(self.fs_ptr, new_rev, subpool)
             if fs.contents_changed(old_root,
-                                   _to_svn(subpool(), self.scope, old_path),
+                                   _to_svn(subpool, self.scope, old_path),
                                    new_root,
-                                   _to_svn(subpool(), self.scope, new_path),
-                                   subpool()):
+                                   _to_svn(subpool, self.scope, new_path),
+                                   subpool):
                 yield (old_node, new_node, Node.FILE, Changeset.EDIT)
 
 
@@ -773,7 +674,7 @@ class SubversionNode(Node):
         self.fs_ptr = repos.fs_ptr
         self.scope = repos.scope
         self.pool = Pool(pool)
-        pool = self.pool()
+        pool = self.pool
         self._scoped_path_utf8 = _to_svn(pool, self.scope, path)
 
         if parent_root:
@@ -826,7 +727,7 @@ class SubversionNode(Node):
         if self.isfile:
             return
         pool = Pool(self.pool)
-        entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool())
+        entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool)
         for item in entries:
             path = posixpath.join(self.path, _from_svn(item))
             yield SubversionNode(path, self.rev, self.repos, self.pool,
@@ -876,7 +777,7 @@ class SubversionNode(Node):
                                     file_url_utf8)
                 from svn import client
                 client.blame2(file_url_utf8, rev, start, rev, blame_receiver,
-                              client.create_context(), self.pool())
+                              client.create_context(), self.pool)
             except (core.SubversionException, AttributeError) as e:
                 # svn thinks file is a binary or blame not supported
                 raise TracError(_('svn blame failed on %(path)s: %(error)s',
@@ -891,7 +792,7 @@ class SubversionNode(Node):
 
         (wraps ``fs.node_proplist``)
         """
-        props = fs.node_proplist(self.root, self._scoped_path_utf8, self.pool())
+        props = fs.node_proplist(self.root, self._scoped_path_utf8, self.pool)
         # Note that property values can be arbitrary binary values
         # so we can't assume they are UTF-8 strings...
         return {_from_svn(name): _from_svn(value)
@@ -904,7 +805,7 @@ class SubversionNode(Node):
         """
         if self.isdir:
             return None
-        return fs.file_length(self.root, self._scoped_path_utf8, self.pool())
+        return fs.file_length(self.root, self._scoped_path_utf8, self.pool)
 
     def get_content_type(self):
         """Retrieve mime-type property of a file.
@@ -921,14 +822,14 @@ class SubversionNode(Node):
         (wraps ``fs.revision_prop``)
         """
         _date = fs.revision_prop(self.fs_ptr, self.created_rev,
-                                 core.SVN_PROP_REVISION_DATE, self.pool())
+                                 core.SVN_PROP_REVISION_DATE, self.pool)
         if not _date:
             return None
-        return from_utimestamp(core.svn_time_from_cstring(_date, self.pool()))
+        return from_utimestamp(core.svn_time_from_cstring(_date, self.pool))
 
     def _get_prop(self, name):
         value = fs.node_prop(self.root, self._scoped_path_utf8, name,
-                             self.pool())
+                             self.pool)
         return to_unicode(value)
 
     def get_branch_origin(self):
@@ -965,7 +866,7 @@ class SubversionNode(Node):
                 if copied_from:
                     (rev, path) = copied_from
                     path = path.lstrip(b'/')
-                    root = fs.revision_root(self.fs_ptr, rev, self.pool())
+                    root = fs.revision_root(self.fs_ptr, rev, self.pool)
                     if relpath:
                         path += b'/' + relpath
                     ui_path = _path_within_scope(self.scope, _from_svn(path))
@@ -993,7 +894,7 @@ class SubversionChangeset(Changeset):
         author = _from_svn(author)
         _date = self._get_revprop(core.SVN_PROP_REVISION_DATE)
         if _date:
-            ts = core.svn_time_from_cstring(_date, self.pool())
+            ts = core.svn_time_from_cstring(_date, self.pool)
             date = from_utimestamp(ts)
         else:
             date = None
@@ -1003,7 +904,7 @@ class SubversionChangeset(Changeset):
         """Retrieve `dict` of Subversion properties for this revision
         (revprops)
         """
-        props = fs.revision_proplist(self.fs_ptr, self.rev, self.pool())
+        props = fs.revision_proplist(self.fs_ptr, self.rev, self.pool)
         # Note: the above `_from_svn` has a small probability
         # to mess-up binary properties, like icons.
         return {_from_svn(k): _from_svn(v)
@@ -1019,14 +920,13 @@ class SubversionChangeset(Changeset):
         """
         pool = Pool(self.pool)
         tmp = Pool(pool)
-        root = fs.revision_root(self.fs_ptr, self.rev, pool())
+        root = fs.revision_root(self.fs_ptr, self.rev, pool)
         try:
-            editor = repos.ChangeCollector(self.fs_ptr, root, pool())
+            editor = repos.ChangeCollector(self.fs_ptr, root, pool)
         except AttributeError:
-            editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev,
-                                                   pool())
-        e_ptr, e_baton = delta.make_editor(editor, pool())
-        repos.svn_repos_replay(root, e_ptr, e_baton, pool())
+            editor = repos.RevisionChangeCollector(self.fs_ptr, self.rev, pool)
+        e_ptr, e_baton = delta.make_editor(editor, pool)
+        repos.svn_repos_replay(root, e_ptr, e_baton, pool)
 
         idx = 0
         copies, deletions = {}, {}
@@ -1071,13 +971,13 @@ class SubversionChangeset(Changeset):
                 if base_rev in revroots:
                     b_root = revroots[base_rev]
                 else:
-                    b_root = fs.revision_root(self.fs_ptr, base_rev, pool())
+                    b_root = fs.revision_root(self.fs_ptr, base_rev, pool)
                     revroots[base_rev] = b_root
                 tmp.clear()
                 cbase_path_utf8 = fs.node_created_path(b_root, base_path_utf8,
-                                                       tmp())
+                                                       tmp)
                 cbase_path = _from_svn(cbase_path_utf8)
-                cbase_rev = fs.node_created_rev(b_root, base_path_utf8, tmp())
+                cbase_rev = fs.node_created_rev(b_root, base_path_utf8, tmp)
                 # give up if the created path is outside the scope
                 if _is_path_within_scope(self.scope, cbase_path):
                     base_path, base_rev = cbase_path, cbase_rev
@@ -1087,6 +987,9 @@ class SubversionChangeset(Changeset):
             base_path = _path_within_scope(self.scope, base_path)
             changes.append([path, kind, action, base_path, base_rev])
             idx += 1
+
+        # Workaround for ref-count leak due to delta.make_editor()
+        editor.__dict__.clear()
 
         moves = set()
         # a MOVE is a COPY whose `base_path` corresponds to a `new_path`
@@ -1104,7 +1007,7 @@ class SubversionChangeset(Changeset):
 
     def _get_revprop(self, name):
         try:
-            return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool())
+            return fs.revision_prop(self.fs_ptr, self.rev, name, self.pool)
         except core.SubversionException as e:
             self.log.debug("%r of the %r cannot be retrieved", name, self.rev)
             raise
@@ -1199,7 +1102,7 @@ class FileContentStream(object):
             self.newline = self.NEWLINES[eol]
         self.stream = core.Stream(fs.file_contents(node.root,
                                                    node._scoped_path_utf8,
-                                                   self.pool()))
+                                                   self.pool))
 
     def __enter__(self):
         return self
@@ -1213,9 +1116,7 @@ class FileContentStream(object):
     def close(self):
         self.stream = None
         self.fs_ptr = None
-        if self.pool:
-            self.pool.destroy()
-            self.pool = None
+        self.pool = None
 
     def read(self, n=None):
         if self.stream is None:
@@ -1226,7 +1127,7 @@ class FileContentStream(object):
             return self._read_substitute(self.stream, n)
 
     def _get_revprop(self, name, rev):
-        return fs.revision_prop(self.fs_ptr, rev, name, self.pool())
+        return fs.revision_prop(self.fs_ptr, rev, name, self.pool)
 
     def _get_keyword_values(self, keywords):
         if not keywords:
