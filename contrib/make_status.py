@@ -24,7 +24,22 @@ def _svn_version():
 
 def _pytidylib_version():
     import pkg_resources
-    return pkg_resources.get_distribution('pytidylib').version
+    version = pkg_resources.get_distribution('pytidylib').version
+    try:
+        import tidylib
+        tidy = tidylib.Tidy()
+    except Exception as e:
+        info = 'not installed'
+    else:
+        import ctypes
+        cdll = tidy._tidy
+        fn = cdll.tidyLibraryVersion
+        fn.restype = ctypes.c_char_p
+        libver = fn()
+        if isinstance(libver, bytes):
+            libver = str(libver, 'utf-8')
+        info = '%s %s' % (libver, cdll._name)
+    return '%s (%s)' % (version, info) if info else version
 
 
 PACKAGES = [
