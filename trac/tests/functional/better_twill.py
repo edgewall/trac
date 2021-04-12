@@ -19,6 +19,7 @@ It also handles twill's absense.
 import hashlib
 import http.client
 import http.server
+import locale
 import re
 import os.path
 import socketserver
@@ -36,9 +37,10 @@ try:
 except ImportError:
     selenium = None
 
+_curr = locale.setlocale(locale.LC_ALL, None)
 try:
-    from tidylib import tidy_document
-    tidy_document('<!DOCTYPE html><html><body></body></html>')
+    import tidylib
+    tidylib.tidy_document('<!DOCTYPE html><html><body></body></html>')
 except ImportError:
     print("SKIP: validation of HTML output in functional tests"
           " (no tidylib installed)")
@@ -47,6 +49,22 @@ except OSError as e:
     print("SKIP: validation of HTML output in functional tests"
           " (no tidy dynamic library installed: %s)" % e)
     tidy_document = None
+else:
+    if _curr == locale.setlocale(locale.LC_ALL, None):
+        tidy_document = tidylib.tidy_document
+    else:
+        def tidy_document(*args, **kwargs):
+            curr = locale.setlocale(locale.LC_ALL, None)
+            try:
+                return tidylib.tidy_document(*args, **kwargs)
+            finally:
+                # Restore the locale because tidy-html5 library changes the
+                # locale each call of tidy_document if 5.6.0 or early.
+                locale.setlocale(locale.LC_ALL, curr)
+finally:
+    if _curr != locale.setlocale(locale.LC_ALL, None):
+        locale.setlocale(locale.LC_ALL, _curr)
+    del _curr
 
 
 if selenium:
