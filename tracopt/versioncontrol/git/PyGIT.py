@@ -18,6 +18,7 @@ import io
 import os
 import re
 import subprocess
+import tempfile
 import weakref
 from collections import deque
 from functools import partial
@@ -28,7 +29,7 @@ from trac.core import TracBaseError
 from trac.util import terminate
 from trac.util.compat import close_fds
 from trac.util.datefmt import time_now
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['GitError', 'GitErrorSha', 'Storage', 'StorageFactory']
 
@@ -705,6 +706,9 @@ class Storage(object):
         return self.verifyrev('HEAD')
 
     def cat_file(self, kind, sha):
+        return self._cat_file_reader(kind, sha).read()
+
+    def _cat_file_reader(self, kind, sha):
         with self.__cat_file_pipe_lock:
             if self.__cat_file_pipe is None:
                 self.__cat_file_pipe = self.repo.cat_file_batch()
@@ -726,12 +730,35 @@ class Storage(object):
                                    "kind %r, expected %r)" % (_type, kind))
 
                 size = int(_size)
-                return self.__cat_file_pipe.stdout.read(size + 1)[:size]
-            except EnvironmentError:
+
+                # stdout.read() can return fewer bytes than requested,
+                # especially if a pipe buffers because the contents are
+                # larger than 64k.
+                stdout_read = self.__cat_file_pipe.stdout.read
+                if size > 32 * 1024 * 1024:
+                    buf = tempfile.TemporaryFile()
+                else:
+                    buf = io.BytesIO()
+                remaining = size + 1
+                while remaining > 0:
+                    chunk = stdout_read(min(remaining, 65536))
+                    if not chunk:
+                        # No new data, let's abort
+                        raise GitError("internal error (expected to read %d "
+                                       "bytes, but only got %d)" %
+                                       (size + 1, size + 1 - remaining))
+                    remaining -= len(chunk)
+                    buf.write(chunk if remaining > 0 else chunk[:-1])
+
+                buf.seek(0)
+                return buf
+
+            except EnvironmentError as e:
                 # There was an error, we should close the pipe to get to a
                 # consistent state (Otherwise it happens that next time we
                 # call cat_file we get payload from previous call)
-                self.logger.debug("closing cat_file pipe")
+                self.logger.warning("closing cat_file pipe: %s",
+                                    exception_to_unicode(e))
                 self._cleanup_proc(self.__cat_file_pipe)
                 self.__cat_file_pipe = None
 
@@ -889,13 +916,12 @@ class Storage(object):
 
     def get_file(self, sha):
         sha = _rev_b(sha)
-        content = self.cat_file(b'blob', sha)
-        return io.BytesIO(content)
+        return self._cat_file_reader(b'blob', sha)
 
     def get_obj_size(self, sha):
         sha = _rev_b(sha)
         try:
-            obj_size = int(self.repo.cat_file('-s', sha).strip())
+            obj_size = int(self.repo.cat_file(b'-s', sha).strip())
         except ValueError:
             raise GitErrorSha("object '%s' not found" % sha)
         return obj_size

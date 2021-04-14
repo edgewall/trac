@@ -326,6 +326,36 @@ class NormalTestCase(unittest.TestCase, GitCommandMixin):
         validate(paths[1], 'true')
         validate(paths[1], 'false')
 
+    def test_cat_file_with_large_files(self):
+        # regression test for #13327
+        # Note that you may want to run this with gevent, by installing gevent
+        # and adding
+        #
+        #   from gevent import monkey
+        #   monkey.patch_all()
+        #
+        # at the top of this file.
+        path = os.path.join(self.repos_path, '.git')
+        DbRepositoryProvider(self.env).add_repository('gitrepos', path, 'git')
+        repos = RepositoryManager(self.env).get_repository('gitrepos')
+
+        # 32 MiB of data, significantly more than you would usually get for
+        # one call to read(2).
+        data = bytes(bytearray(range(256))) * (4 * 1024 * 32)
+        create_file(os.path.join(self.repos_path, 'ticket13327.txt'), data,
+                    'wb')
+        self._git('add', 'ticket13327.txt')
+        self._git_commit('-m', 'add ticket13327.txt',
+                         date=datetime(2020, 11, 3, 23, 41, 00))
+
+        repos.sync()
+        node = repos.get_node('ticket13327.txt')
+        content = node.get_content().read()
+
+        self.assertEqual(32 * 1024 * 1024, len(content))
+        self.assertEqual(bytes, type(content))
+        self.assertEqual(data, content)
+
 
 class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
 
