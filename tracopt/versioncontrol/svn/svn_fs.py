@@ -68,14 +68,10 @@ from trac.web.href import Href
 
 
 def _import_svn():
-    global fs, repos, core, delta, _kindmap, _svn_uri_canonicalize
+    global fs, repos, core, delta, _kindmap
     from svn import fs, repos, core, delta
     _kindmap = {core.svn_node_dir: Node.DIRECTORY,
                 core.svn_node_file: Node.FILE}
-    try:
-        _svn_uri_canonicalize = core.svn_uri_canonicalize  # Subversion 1.7+
-    except AttributeError:
-        _svn_uri_canonicalize = lambda v: v
 
 def _to_svn(pool, *args):
     """Expect a pool and a list of `str` path components.
@@ -297,8 +293,8 @@ class SubversionRepository(Repository):
 
         # we keep root_path_utf8 for RA
         ra_prefix = b'file:///' if os.name == 'nt' else b'file://'
-        self.ra_url_utf8 = _svn_uri_canonicalize(ra_prefix +
-                                                 _quote_b(root_path_utf8))
+        self.ra_url_utf8 = core.svn_uri_canonicalize(ra_prefix +
+                                                     _quote_b(root_path_utf8))
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -773,7 +769,7 @@ class SubversionNode(Node):
                     self.repos.ra_url_utf8, _quote_b(self._scoped_path_utf8))
                 # svn_client_blame2() requires a canonical uri since
                 # Subversion 1.7 (#11167)
-                file_url_utf8 = _svn_uri_canonicalize(file_url_utf8)
+                file_url_utf8 = core.svn_uri_canonicalize(file_url_utf8)
                 self.repos.log.info('opening ra_local session to %r',
                                     file_url_utf8)
                 from svn import client
