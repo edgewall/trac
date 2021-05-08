@@ -116,7 +116,7 @@ class RecipientTestCase(unittest.TestCase):
         recipients = smtpd.get_recipients()
         sender = smtpd.get_sender()
         message = smtpd.get_message()
-        self.assertEqual(0, len(recipients))
+        self.assertEqual([], recipients)
         self.assertIsNone(sender)
         self.assertIsNone(message)
 
@@ -226,11 +226,9 @@ class RecipientTestCase(unittest.TestCase):
             notify_ticket_changed(self.env, ticket)
             recipients = smtpd.get_recipients()
             if enabled:
-                self.assertEqual(1, len(recipients))
-                self.assertIn('joe.bar2@example.com', recipients)
+                self.assertEqual(['joe.bar2@example.com'], recipients)
             else:
-                self.assertEqual(0, len(recipients))
-                self.assertNotIn('joe.bar2@example.com', recipients)
+                self.assertEqual([], recipients)
 
         # Validate with and without a default domain
         for enable in False, True:
@@ -249,10 +247,9 @@ class RecipientTestCase(unittest.TestCase):
             notify_ticket_changed(self.env, ticket)
             recipients = smtpd.get_recipients()
             if enabled:
-                self.assertEqual(1, len(recipients))
-                self.assertEqual('jim@example.org', recipients[0])
+                self.assertEqual(['jim@example.org'], recipients)
             else:
-                self.assertEqual(0, len(recipients))
+                self.assertEqual([], recipients)
 
         for enable in False, True:
             _test_reporter(enable)
@@ -269,10 +266,9 @@ class RecipientTestCase(unittest.TestCase):
             notify_ticket_changed(self.env, ticket)
             recipients = smtpd.get_recipients()
             if enabled:
-                self.assertEqual(1, len(recipients))
-                self.assertEqual('joe@example.org', recipients[0])
+                self.assertEqual(['joe@example.org'], recipients)
             else:
-                self.assertEqual(0, len(recipients))
+                self.assertEqual([], recipients)
 
         for enable in False, True:
             _test_reporter(enable)
@@ -297,7 +293,7 @@ class RecipientTestCase(unittest.TestCase):
 
         _test_new_ticket()
         recipients = smtpd.get_recipients()
-        self.assertEqual(0, len(recipients))
+        self.assertEqual([], recipients)
 
         self.env.insert_users([
             ('user1', 'User One', 'joe@example.org', 1),
@@ -308,17 +304,14 @@ class RecipientTestCase(unittest.TestCase):
         _add_new_ticket_subscriber('58bd3a', 0)
 
         ticket = _test_new_ticket()
-        recipients = smtpd.get_recipients()
-        self.assertEqual(2, len(recipients))
-        self.assertIn('joe@example.org', recipients)
-        self.assertIn('jim@example.org', recipients)
+        self.assertEqual({'joe@example.org', 'jim@example.org'},
+                         set(smtpd.get_recipients()))
 
         ticket.save_changes('user4', 'this is my comment',
                             when=datetime_now(utc))
         notify_ticket_changed(self.env, ticket)
 
-        recipients = smtpd.get_recipients()
-        self.assertEqual(0, len(recipients))
+        self.assertEqual([], smtpd.get_recipients())
 
     def test_no_duplicates(self):
         """Email addresses should be found only once in the recipient list."""
@@ -329,9 +322,7 @@ class RecipientTestCase(unittest.TestCase):
                                cc='joe.user@example.com',
                                summary='No duplicates')
         notify_ticket_created(self.env, ticket)
-        recipients = smtpd.get_recipients()
-        self.assertEqual(1, len(recipients))
-        self.assertIn('joe.user@example.com', recipients)
+        self.assertEqual(['joe.user@example.com'], smtpd.get_recipients())
 
     def test_long_forms(self):
         """Long forms of SMTP email addresses 'Display Name <address>'"""
@@ -342,11 +333,8 @@ class RecipientTestCase(unittest.TestCase):
            cc=' \u00a0 Jóe \u3000 < joe.user@example.org > \u00a0 ',
            summary='Long form')
         notify_ticket_created(self.env, ticket)
-        recipients = smtpd.get_recipients()
-        self.assertEqual(3, len(recipients))
-        self.assertIn('joe.user@example.com', recipients)
-        self.assertIn('joe.user@example.net', recipients)
-        self.assertIn('joe.user@example.org', recipients)
+        self.assertEqual({'joe.user@example.com', 'joe.user@example.net',
+                          'joe.user@example.org'}, set(smtpd.get_recipients()))
 
 
 class NotificationTestCase(unittest.TestCase):

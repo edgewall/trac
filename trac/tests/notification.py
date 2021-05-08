@@ -19,15 +19,14 @@
 # classes to run SMTP notification tests
 #
 
+import asyncore
 import base64
+import hmac
 import os
-import quopri
 import re
-import socket
-import string
+import smtpd
 import threading
 import unittest
-from contextlib import closing
 from email.header import decode_header as _email_decode_header
 
 from trac.config import ConfigurationError
@@ -88,218 +87,165 @@ def strip_address(address):
     return address[start:end]
 
 
-def split_to(address):
-    """
-    Return 'address' as undressed (host, fulladdress) tuple.
-    Handy for use with TO: addresses.
-    """
-    start = address.find('<') + 1
-    sep = address.find('@') + 1
-    end = address.find('>')
-    return address[sep:end], address[start:end]
+def _b64decode(value):
+    value = base64.b64decode(value)
+    return str(value, 'utf-8')
 
 
-#
-# This drives the state for a single RFC821 message.
-#
-class SMTPServerEngine(object):
-    """
-    Server engine that calls methods on the SMTPServerInterface object
-    passed at construction time. It is constructed with a bound socket
-    connection to a client. The 'chug' method drives the state,
-    returning when the client RFC821 transaction is complete.
-    """
+def _b64encode(value):
+    if isinstance(value, str):
+        value = value.encode('utf-8')
+    value = base64.b64encode(value)
+    return str(value, 'ascii')
 
-    ST_INIT = 0
-    ST_HELO = 1
-    ST_MAIL = 2
-    ST_RCPT = 3
-    ST_DATA = 4
-    ST_QUIT = 5
 
-    def __init__(self, socket, impl):
-        self.impl = impl
-        self.socket = socket
-        self.state = SMTPServerEngine.ST_INIT
+class SMTPChannel(smtpd.SMTPChannel):
 
-    def chug(self):
-        """
-        Chug the engine, till QUIT is received from the client. As
-        each RFC821 message is received, calls are made on the
-        SMTPServerInterface methods on the object passed at
-        construction time.
-        """
-        self.socket.send(b"220 Welcome to Trac notification test server\r\n")
-        while 1:
-            data = b''
-            complete_line = 0
-            # Make sure an entire line is received before handing off
-            # to the state engine. Thanks to John Hall for pointing
-            # this out.
-            while not complete_line:
-                try:
-                    lump = self.socket.recv(1024)
-                    if lump:
-                        data += lump
-                        if len(data) >= 2 and data[-2:] == b'\r\n':
-                            complete_line = 1
-                            if self.state != SMTPServerEngine.ST_DATA:
-                                rsp, keep = self.do_command(data)
-                            else:
-                                rsp = self.do_data(data)
-                                if rsp is None:
-                                    continue
-                            self.socket.send(rsp + b"\r\n")
-                            if keep == 0:
-                                self.socket.close()
-                                return
-                    else:
-                        # EOF
-                        return
-                except socket.error:
-                    return
+    authmethod = None
+    authenticating = None
 
-    def do_command(self, data):
-        """Process a single SMTP Command"""
-        cmd = data[0:4].upper()
-        keep = 1
-        rv = None
-        if cmd == b"HELO":
-            self.state = SMTPServerEngine.ST_HELO
-            rv = self.impl.helo(data[5:])
-        elif cmd == b"RSET":
-            rv = self.impl.reset(data[5:])
-            self.data_accum = b""
-            self.state = SMTPServerEngine.ST_INIT
-        elif cmd == b"NOOP":
-            pass
-        elif cmd == b"QUIT":
-            rv = self.impl.quit(data[5:])
-            keep = 0
-        elif cmd == b"MAIL":
-            if self.state != SMTPServerEngine.ST_HELO:
-                return b"503 Bad command sequence", 1
-            self.state = SMTPServerEngine.ST_MAIL
-            rv = self.impl.mail_from(data[5:])
-        elif cmd == b"RCPT":
-            if (self.state != SMTPServerEngine.ST_MAIL) and \
-               (self.state != SMTPServerEngine.ST_RCPT):
-                return "503 Bad command sequence", 1
-            self.state = SMTPServerEngine.ST_RCPT
-            rv = self.impl.rcpt_to(data[5:])
-        elif cmd == b"DATA":
-            if self.state != SMTPServerEngine.ST_RCPT:
-                return b"503 Bad command sequence", 1
-            self.state = SMTPServerEngine.ST_DATA
-            self.data_accum = b""
-            return b"354 OK, Enter data, terminated with a \\r\\n.\\r\\n", 1
+    @property
+    def user(self):
+        return self.smtp_server.user
+
+    @property
+    def password(self):
+        return self.smtp_server.password
+
+    def found_terminator(self):
+        line = self._emptystring.join(self.received_lines)
+        if self.authenticating:
+            self.received_lines = []
+            self.smtp_AUTH(line)
         else:
-            return b"505 Eh? WTF was that?", 1
+            self.authenticating = line.split(' ', 1)[0].upper() == 'AUTH'
+            super().found_terminator()
 
-        if rv:
-            return rv, keep
+    def push(self, msg):
+        if msg == '250 HELP':
+            super().push('250-AUTH ' + self.authmethod)
+        super().push(msg)
+        if self.authenticating and not msg.startswith('3'):
+            self.authenticating = False
+        if msg.startswith('5'):
+            self.close_when_done()
+
+
+class SMTPChannelAuthPlain(SMTPChannel):
+
+    authmethod = 'PLAIN'
+
+    def smtp_AUTH(self, arg):
+        values = arg.split(' ', 1)
+        if len(values) == 0 or values[0] != self.authmethod:
+            self.push('535 Authentication failed')
+            return
+        try:
+            creds = _b64decode(values[1])
+        except:
+            self.push('535 Authentication failed')
+            return
+        creds = creds.split('\0')
+        if len(creds) != 3 or len(creds[0]) != 0 and creds[0] != creds[1]:
+            self.push('535 Authentication failed')
+            return
+        user = creds[1]
+        password = creds[2]
+        if self.user == user and self.password == password:
+            self.push('235 Authentication successful')
         else:
-            return b"250 OK", keep
+            self.push('535 Authentication failed')
 
-    def do_data(self, data):
-        """
-        Process SMTP Data. Accumulates client DATA until the
-        terminator is found.
-        """
-        self.data_accum = self.data_accum + data
-        if len(self.data_accum) > 4 and self.data_accum[-5:] == b'\r\n.\r\n':
-            self.data_accum = self.data_accum[:-5]
-            rv = self.impl.data(self.data_accum)
-            self.state = SMTPServerEngine.ST_HELO
-            if rv:
-                return rv
+
+class SMTPChannelAuthLogin(SMTPChannel):
+
+    authmethod = 'LOGIN'
+    incoming_user = None
+
+    def smtp_AUTH(self, arg):
+        if self.incoming_user:
+            try:
+                password = _b64decode(arg)
+            except:
+                password = None
+            if self.incoming_user == self.user and password == self.password:
+                self.push('235 Authentication successful')
             else:
-                return b"250 OK - Data and terminator. found"
+                self.push('535 Authentication failed')
+            return
+
+        values = arg.split(' ', 1)
+        if len(values) == 0:
+            self.push('535 Authentication failed')
+            return
+
+        if values[0] == self.authmethod:
+            if len(values) == 2:
+                try:
+                    self.incoming_user = _b64decode(values[1])
+                except:
+                    self.push('535 Authentication failed')
+                    return
+                self.push('334 ' + _b64encode('Password'))
+            else:
+                self.push('334 ' + _b64encode('Username'))
         else:
-            return None
-
-
-class SMTPServer(object):
-    """
-    A single threaded SMTP Server connection manager. Listens for
-    incoming SMTP connections on a given port. For each connection,
-    the SMTPServerEngine is chugged, passing the given instance of
-    SMTPServerInterface.
-    """
-
-    def __init__(self, host, port):
-        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._socket.settimeout(0.25)
-        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._socket.bind((host, port))
-        self._socket_service = None
-
-    def serve(self, impl):
-        while self._resume:
             try:
-                nsd = self._socket.accept()
-            except socket.timeout:
-                continue
-            except socket.error:
+                self.incoming_user = _b64decode(values[0])
+            except:
+                self.push('535 Authentication failed')
                 return
-            self._socket_service = nsd[0]
-            engine = SMTPServerEngine(self._socket_service, impl)
-            engine.chug()
-            self._socket_service = None
+            self.push('334 ' + _b64encode('Password'))
 
-    def start(self):
-        self._socket.listen(1)
-        self._resume = True
 
-    def stop(self):
-        self._resume = False
+class SMTPChannelAuthCramMd5(SMTPChannel):
 
-    def terminate(self):
-        if self._socket_service:
-            # force the blocking socket to stop waiting for data
+    authmethod = 'CRAM-MD5'
+    challenge = None
+
+    def smtp_AUTH(self, arg):
+        if self.challenge:
             try:
-                #self._socket_service.shutdown(2)
-                self._socket_service.close()
-            except AttributeError:
-                # the SMTP server may also discard the socket
-                pass
-            self._socket_service = None
-        if self._socket:
-            #self._socket.shutdown(2)
-            self._socket.close()
-            self._socket = None
+                user, hash_ = _b64decode(arg).split(' ', 1)
+            except:
+                self.push('535 Authentication failed')
+                return
+            rehash = hmac.HMAC(self.password.encode('utf-8'), self.challenge,
+                               'md5').hexdigest()
+            if user == self.user and hash_ == rehash:
+                self.push('235 Authentication successful')
+            else:
+                self.push('535 Authentication failed')
+            return
+        else:
+            self.challenge = os.urandom(64)
+            self.push('334 ' + _b64encode(self.challenge))
 
 
-class SMTPServerStore(SMTPServerInterface):
-    """
-    Simple store for SMTP data
-    """
+class SMTPServer(smtpd.SMTPServer):
 
-    def __init__(self):
-        self.reset(None)
+    user = None
+    password = None
+    message = None
 
-    def helo(self, args):
-        self.reset(None)
+    def __init__(self, localaddr, **kwargs):
+        if 'channel_class' in kwargs:
+            self.channel_class = kwargs.pop('channel_class') or \
+                                 smtpd.SMTPChannel
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+        if 'password' in kwargs:
+            self.password = kwargs.pop('password')
+        super().__init__(localaddr, None, decode_data=True, **kwargs)
 
-    def mail_from(self, args):
-        if args.lower().startswith(b'from:'):
-            self.sender = str(strip_address(args[5:].replace(b'\r\n', b'')
-                                            .strip()), 'utf-8')
+    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
+        kwargs['peer'] = peer
+        kwargs['mailfrom'] = mailfrom
+        kwargs['rcpttos'] = rcpttos
+        kwargs['data'] = data.replace('\n', '\r\n')
+        self.message = kwargs
 
-    def rcpt_to(self, args):
-        if args.lower().startswith(b'to:'):
-            rcpt = args[3:].replace(b'\r\n', b'').strip()
-            self.recipients.append(str(strip_address(rcpt), 'utf-8'))
-
-    def data(self, args):
-        self.message = str(args, 'utf-8')
-
-    def quit(self, args):
-        pass
-
-    def reset(self, args):
-        self.sender = None
-        self.recipients = []
+    def clear_message(self):
         self.message = None
 
 
@@ -307,42 +253,54 @@ class SMTPThreadedServer(threading.Thread):
     """
     Run a SMTP server for a single connection, within a dedicated thread
     """
+    host = '127.0.0.1'
+    port = None
+    socket_map = None
+    server = None
+    authmethod = None
+    user = None
+    password = None
+    authchannels = {
+        'PLAIN': SMTPChannelAuthPlain,
+        'LOGIN': SMTPChannelAuthLogin,
+        'CRAM-MD5': SMTPChannelAuthCramMd5,
+    }
 
-    def __init__(self, port):
-        self.host = '127.0.0.1'
+    def __init__(self, port, authmethod=None, user=None, password=None):
         self.port = port
-        self.server = SMTPServer(self.host, port)
-        self.store = SMTPServerStore()
-        threading.Thread.__init__(self)
-
-    def run(self):
-        # run from within the SMTP server thread
-        self.server.serve(impl=self.store)
+        self.authmethod = authmethod
+        self.user = user
+        self.password = password
+        self.socket_map = {}
+        super().__init__(target=asyncore.loop,
+                         args=(0.1, True, self.socket_map))
+        self.daemon = True
 
     def start(self):
-        # run from the main thread
-        self.server.start()
-        threading.Thread.start(self)
+        channel_class = self.authchannels.get(self.authmethod)
+        self.server = SMTPServer((self.host, self.port), map=self.socket_map,
+                                  channel_class=channel_class,
+                                  user=self.user, password=self.password)
+        super().start()
 
     def stop(self):
-        # run from the main thread
-        self.server.stop()
-        # wait for the SMTP server to complete (for up to 2 secs)
-        self.join(2.0)
-        # clean up the SMTP server (and force quit if needed)
-        self.server.terminate()
+        self.server.close()
+        self.join()
 
     def get_sender(self):
-        return self.store.sender
+        message = self.server.message
+        return message and message['mailfrom']
 
     def get_recipients(self):
-        return self.store.recipients
+        message = self.server.message
+        return message['rcpttos'] if message else []
 
     def get_message(self):
-        return self.store.message
+        message = self.server.message
+        return message and message['data']
 
     def cleanup(self):
-        self.store.reset(None)
+        self.server.clear_message()
 
 
 def decode_header(header):
@@ -449,6 +407,22 @@ class SendmailEmailSenderTestCase(unittest.TestCase):
 
 class SmtpEmailSenderTestCase(unittest.TestCase):
 
+    maxDiff = None
+
+    message = (
+        'From: admin@example.com\r\n'
+        'To: foo@example.com\r\n'
+        'Subject: test mail\r\n'
+        '\r\n'
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\r\n'
+        'eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut\r\n'
+        'enim ad minim veniam, quis nostrud exercitation ullamco laboris\r\n'
+        'nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in\r\n'
+        'reprehenderit in voluptate velit esse cillum dolore eu fugiat\r\n'
+        'nulla pariatur. Excepteur sint occaecat cupidatat non proident,\r\n'
+        'sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    )
+
     def setUp(self):
         self.env = EnvironmentStub()
 
@@ -458,6 +432,46 @@ class SmtpEmailSenderTestCase(unittest.TestCase):
         self.env.config.set('notification', 'smtp_port', '65536')
         self.assertRaises(ConfigurationError, sender.send,
                           'admin@domain.com', ['foo@domain.com'], "")
+
+    def test_smtp_anonymous(self):
+        self._test_smtp()
+
+    def test_smtp_auth_plain_with_ascii_creds(self):
+        self._test_smtp('PLAIN', 'tracuser', 'password')
+
+    def test_smtp_auth_plain_with_unicode_creds(self):
+        self._test_smtp('PLAIN', 'trácusér', 'paśsẅørd')
+
+    def test_smtp_auth_login_with_ascii_creds(self):
+        self._test_smtp('LOGIN', 'tracuser', 'password')
+
+    def test_smtp_auth_login_with_unicode_creds(self):
+        self._test_smtp('LOGIN', 'trácusér', 'paśsẅørd')
+
+    def test_smtp_auth_cram_md5_with_ascii_creds(self):
+        self._test_smtp('CRAM-MD5', 'tracuser', 'password')
+
+    def test_smtp_auth_cram_md5_with_unicode_creds(self):
+        self._test_smtp('CRAM-MD5', 'trácusér', 'paśsẅørd')
+
+    def _test_smtp(self, authmethod=None, user=None, password=None):
+        self.env.config.set('notification', 'smtp_server', '127.0.0.1')
+        self.env.config.set('notification', 'smtp_port', str(SMTP_TEST_PORT))
+        if authmethod:
+            self.env.config.set('notification', 'smtp_user', user)
+            self.env.config.set('notification', 'smtp_password', password)
+
+        smtpd = SMTPThreadedServer(SMTP_TEST_PORT, authmethod, user, password)
+        try:
+            smtpd.start()
+            sender = SmtpEmailSender(self.env)
+            sender.send('admin@example.com', ['foo@example.com'], self.message)
+        finally:
+            smtpd.stop()
+
+        self.assertEqual('admin@example.com', smtpd.get_sender())
+        self.assertEqual(set(['foo@example.com']), set(smtpd.get_recipients()))
+        self.assertEqual(self.message, smtpd.get_message())
 
 
 def test_suite():

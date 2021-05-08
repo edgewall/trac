@@ -17,6 +17,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import hashlib
+import hmac
 import os
 import re
 import smtplib
@@ -660,6 +661,46 @@ class EmailDistributor(Component):
         notify_sys.send_email(from_addr, list(to_addrs), message.as_bytes())
 
 
+# Workaround for SMTP with unicode credentials
+# https://bugs.python.org/issue29750
+class SMTPWithUnicodeCredsFixup(smtplib.SMTP):
+
+    def auth_plain(self, challenge=None):
+        rv = super().auth_plain(challenge=challenge)
+        return self._patch_encode_method(rv)
+
+    def auth_login(self, challenge=None):
+        rv = super().auth_login(challenge=challenge)
+        return self._patch_encode_method(rv)
+
+    def auth_cram_md5(self, challenge=None):
+        if challenge is None:
+            return None
+        rv = self.user + ' ' + hmac.HMAC(self.password.encode('utf-8'),
+                                         challenge, 'md5').hexdigest()
+        return self._patch_encode_method(rv)
+
+    @classmethod
+    def _patch_encode_method(cls, value):
+        try:
+            value.encode('ascii')
+        except UnicodeEncodeError:
+            return _SMTPAuthResponse(value)
+        else:
+            return value
+
+
+class _SMTPAuthResponse(object):
+
+    __slots__ = ('response',)
+
+    def __init__(self, response):
+        self.response = response
+
+    def encode(self, encoding='utf-8', errors='strict'):
+        return self.response.encode('utf-8')
+
+
 class SmtpEmailSender(Component):
     """E-mail sender connecting to an SMTP server."""
 
@@ -680,17 +721,27 @@ class SmtpEmailSender(Component):
     use_tls = BoolOption('notification', 'use_tls', 'false',
         """Use SSL/TLS to send notifications over SMTP.""")
 
+    @lazy
+    def smtp_class(self):
+        try:
+            for value in (self.smtp_user, self.smtp_password):
+                value.encode('ascii')
+        except UnicodeEncodeError:
+            return SMTPWithUnicodeCredsFixup
+        else:
+            return smtplib.SMTP
+
     def send(self, from_addr, recipients, message):
         global local_hostname
+
         # Ensure the message complies with RFC2822: use CRLF line endings
         message = fix_eol(message, CRLF)
 
         self.log.info("Sending notification through SMTP at %s:%d to %s",
                       self.smtp_server, self.smtp_port, recipients)
         try:
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port,
-                                  local_hostname)
-            local_hostname = server.local_hostname
+            server = self.smtp_class(self.smtp_server, self.smtp_port,
+                                     local_hostname)
         except smtplib.socket.error as e:
             raise ConfigurationError(
                 tag_("SMTP server connection error (%(error)s). Please "
@@ -699,33 +750,46 @@ class SmtpEmailSender(Component):
                      error=to_unicode(e),
                      option1=tag.code("[notification] smtp_server"),
                      option2=tag.code("[notification] smtp_port")))
-        # server.set_debuglevel(True)
-        if self.use_tls:
-            server.ehlo()
-            if 'starttls' not in server.esmtp_features:
-                raise TracError(_("TLS enabled but server does not support"
-                                  " TLS"))
-            server.starttls()
-            server.ehlo()
-        if self.smtp_user:
-            server.login(self.smtp_user.encode('utf-8'),
-                         self.smtp_password.encode('utf-8'))
-        start = time_now()
-        server.sendmail(from_addr, recipients, message)
-        t = time_now() - start
-        if t > 5:
-            self.log.warning("Slow mail submission (%.2f s), "
-                             "check your mail setup", t)
-        if self.use_tls:
-            # avoid false failure detection when the server closes
-            # the SMTP connection with TLS enabled
-            import socket
-            try:
-                server.quit()
-            except socket.sslerror:
-                pass
         else:
-            server.quit()
+            local_hostname = server.local_hostname
+
+        try:
+            # server.set_debuglevel(True)
+            if self.use_tls:
+                server.ehlo()
+                if 'starttls' not in server.esmtp_features:
+                    raise ConfigurationError(_("TLS enabled but server does "
+                                               "not support TLS"))
+                server.starttls()
+                server.ehlo()
+            if self.smtp_user:
+                server.login(self.smtp_user, self.smtp_password)
+            start = time_now()
+            server.sendmail(from_addr, recipients, message)
+            t = time_now() - start
+            if t > 5:
+                self.log.warning("Slow mail submission (%.2f s), "
+                                 "check your mail setup", t)
+            if self.use_tls:
+                # avoid false failure detection when the server closes
+                # the SMTP connection with TLS enabled
+                import socket
+                try:
+                    server.quit()
+                except socket.sslerror:
+                    pass
+            else:
+                server.quit()
+        except smtplib.SMTPException:
+            raise
+        except Exception as e:
+            self.log.error("Exception caught while sending notification "
+                           "through SMTP at %s:%d%s",
+                           self.smtp_server, self.smtp_port,
+                           exception_to_unicode(e, traceback=True))
+            raise
+        finally:
+            server.close()
 
 
 class SendmailEmailSender(Component):
