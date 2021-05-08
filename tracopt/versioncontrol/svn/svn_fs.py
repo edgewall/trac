@@ -142,9 +142,12 @@ def _svn_head():
     revision.kind = core.svn_opt_revision_head
     return revision
 
-
 def Pool(parent=None):
     return core.Pool(parent or core.application_pool)
+
+def _pool_destroy(pool):
+    if pool and pool.valid():
+        pool.destroy()
 
 
 class SvnCachedRepository(CachedRepository):
@@ -305,9 +308,6 @@ class SubversionRepository(Repository):
             self.youngest = self.normalize_rev(youngest_rev)
         self.oldest = None
 
-    def __del__(self):
-        self.close()
-
     def has_node(self, path, rev=None, pool=None):
         """Check if `path` exists at `rev` (or latest if unspecified)"""
         if not pool:
@@ -350,6 +350,7 @@ class SubversionRepository(Repository):
         """Dispose of low-level resources associated to this repository."""
         self.repos = None
         self.fs_ptr = None
+        _pool_destroy(self.pool)
         self.pool = None
 
     def get_base(self):
@@ -1110,12 +1111,10 @@ class FileContentStream(object):
     def __exit__(self, et, ev, tb):
         self.close()
 
-    def __del__(self):
-        self.close()
-
     def close(self):
         self.stream = None
         self.fs_ptr = None
+        _pool_destroy(self.pool)
         self.pool = None
 
     def read(self, n=None):

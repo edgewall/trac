@@ -406,6 +406,18 @@ class RegressionTestTicket11777(FunctionalTestCaseSetup):
         tc.find(' href="/changeset/%d"' % rev)
 
 
+class RegressionTestTicket13401(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Test for regression of https://trac.edgewall.org/ticket/13401
+        fix crash in apr pool when accessing non-existent file in repository
+        browser.
+        """
+        self._tester.go_to_url(self._tester.url + '/browser/missing.txt')
+        tc.find(r'No node missing.txt at revision\b')
+        self._tester.go_to_url(self._tester.url + '/export/2/missing.txt')
+        tc.find(r'No node missing.txt at revision 2\b')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -427,6 +439,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11584())
         suite.addTest(RegressionTestTicket11618())
         suite.addTest(RegressionTestTicket11777())
+        suite.addTest(RegressionTestTicket13401())
         suite.addTest(RegressionTestRev5877())
     else:
         print("SKIP: versioncontrol/tests/functional.py (no svn bindings)")
