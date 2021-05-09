@@ -197,8 +197,8 @@ Using `pip`
 ~~~~~~~~~~~
 
 `pip` is the modern Python package manager and is included in Python
-2.7.9 and later. Use `get-pip.py`_ to install `pip` for an earlier
-version of Python.
+2.7.9 and later. Use `get-pip.py`_ to install `pip` for earlier
+versions.
 
 
 ::
@@ -722,7 +722,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_
 .. _FastCGI*: https://trac.edgewall.org/wiki/TracFastCgi
 .. _FastCGI: https://fastcgi-archives.github.io
 .. _Fine-grained permission policy: https://trac.edgewall.org/wiki/TracFineGrainedPermissions#AuthzPolicy
-.. _get-pip.py: https://bootstrap.pypa.io/get-pip.py
+.. _get-pip.py: https://bootstrap.pypa.io/pip/2.7/get-pip.py
 .. _getting Subversion: https://trac.edgewall.org/intertrac/TracSubversion%23GettingSubversion
 .. _Git: https://git-scm.com/
 .. _here: https://pypi.org/search/?c=Framework+%3A%3A+Trac

@@ -449,6 +449,16 @@ the `default_owner` to be set to an empty value if no default owner is
 desired.
 
 
+Behavior of `* -> *` workflow transition
+++++++++++++++++++++++++++++++++++++++++
+
+The workflow transition `* -> *` must have the operation
+`leave_status`. Due to a defect in Trac < 1.0.18 `leave_status` was
+not required, so it may be necessary to add the operation when
+upgrading. The action will not display for a `* -> *` transition if
+the action does not have the `leave_status` operation.
+
+
 Upgrading from older versions of Trac
 `````````````````````````````````````
 

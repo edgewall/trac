@@ -118,8 +118,7 @@ The [TracAdmin trac-admin] command-line tool, used to create and maintain [TracE
 It is assumed throughout this guide that you have elevated permissions as the `root` user or by prefixing commands with `sudo`. The umask `0002` should be used for a typical installation on a Unix-based platform.
 
 === Using `pip`
-`pip` is the modern Python package manager and is included in Python 2.7.9 and later. Use [https://bootstrap.pypa.io/get-pip.py get-pip.py] to install `pip` for an earlier version of Python.
-
+`pip` is the modern Python package manager and is included in Python 2.7.9 and later. Use [https://bootstrap.pypa.io/pip/2.7/get-pip.py get-pip.py] to install `pip` for earlier versions.
 {{{#!sh
 $ pip install Trac
 }}}

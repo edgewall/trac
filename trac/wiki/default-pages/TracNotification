@@ -82,6 +82,12 @@ The following attributes of default subscriptions can be configured:
   * Other values require plugins. For example `text/html` requires th:TracHtmlNotificationPlugin.
 
 === Example Configuration (default subscriptions)
+
+This example implements the often desired
+//Never Notify Updater// behavior by setting
+the priority of that rule to the highest value,
+thereby taking precedence over other rules.
+
 {{{#!ini
 [notification-subscriber]
 always_notify_owner = TicketOwnerSubscriber
