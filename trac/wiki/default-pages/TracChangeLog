@@ -6,6 +6,15 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.5.x Releases
 
+=== 1.5.3
+
+//(May 9, 2021)//
+
+Fixed several regressions and compatibility
+issues in the Python 3 conversion.
+
+[trac:source:/tags/trac-1.5.3 View Tag] | [trac:milestone:1.5.3 View Milestone]
+
 === 1.5.2
 
 //(December 19, 2020)//
@@ -26,8 +35,8 @@ Python 3.5+ is supported.
   and must be migrated to Jinja2.
 
 Additionally, this release includes all of the
-changes in the [milestone:1.4.1] release and
-changes committed to date for the forthcoming [milestone:1.4.2] release.
+changes in the [trac:milestone:1.4.1] release and
+changes committed to date for the forthcoming [trac:milestone:1.4.2] release.
 
 This will be the only release in the 1.5.x
 release line that supports Python 2.7. Future

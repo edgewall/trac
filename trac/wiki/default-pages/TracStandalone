@@ -206,9 +206,10 @@ Here's the online help, as a reminder (`tracd -h` or `tracd --help`):
 usage: tracd [-h] [--version] [-e PARENTDIR | -s]
              [-a DIGESTAUTH | --basic-auth BASICAUTH] [-p PORT] [-b HOSTNAME]
              [--protocol {http,https,scgi,ajp,fcgi}] [--certfile CERTFILE]
-             [--keyfile KEYFILE] [-q] [--base-path BASE_PATH] [--http10 | --http11]
-             [-r | -d] [--pidfile PIDFILE] [--umask MASK] [--group GROUP] [--user USER]
-             [envs [envs ...]]
+             [--keyfile KEYFILE] [-q] [--base-path BASE_PATH]
+             [--http10 | --http11] [-r | -d] [--pidfile PIDFILE] [--umask MASK]
+             [--group GROUP] [--user USER]
+             [envs ...]
 
 positional arguments:
   envs                  path of the project environment(s)
@@ -230,7 +231,8 @@ optional arguments:
                         the server protocol (default: http)
   --certfile CERTFILE   PEM certificate file for HTTPS
   --keyfile KEYFILE     PEM key file for HTTPS
-  -q, --unquote         unquote PATH_INFO (may be needed when using the ajp protocol)
+  -q, --unquote         unquote PATH_INFO (may be needed when using the ajp
+                        protocol)
   --base-path BASE_PATH
                         the initial portion of the request URL's "path"
   --http10              use HTTP/1.0 protocol instead of HTTP/1.1
@@ -238,8 +240,8 @@ optional arguments:
   -r, --auto-reload     restart automatically when sources are modified
   -d, --daemonize       run in the background as a daemon
   --pidfile PIDFILE     file to write pid when daemonizing
-  --umask MASK          when daemonizing, file mode creation mask to use, in octal
-                        notation (default: 022)
+  --umask MASK          when daemonizing, file mode creation mask to use, in
+                        octal notation (default: 022)
   --group GROUP         the group to run as
   --user USER           the user to run as
 }}}
