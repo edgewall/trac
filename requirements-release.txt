@@ -4,6 +4,6 @@ wheel
 jinja2
 babel
 setuptools_subversion
-reindent
+reindent < 3.5
 twine
 html2rest
