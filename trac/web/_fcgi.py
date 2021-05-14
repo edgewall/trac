@@ -39,28 +39,18 @@ variable FCGI_FORCE_CGI to "Y" or "y".
 __author__ = 'Allan Saddi <allan@saddi.com>'
 __version__ = '$Revision: 2025 $'
 
-import io
-import sys
-import os
-import signal
-import struct
-import select
-import socket
+import _thread
+import codecs
 import errno
+import io
+import os
+import select
+import signal
+import socket
+import struct
+import sys
+import threading
 import traceback
-
-try:
-    import thread
-    import threading
-    thread_available = True
-except ImportError:
-    import dummy_thread as thread
-    import dummy_threading as threading
-    thread_available = False
-
-# Apparently 2.3 doesn't define SHUT_WR? Assume it is 1 in this case.
-if not hasattr(socket, 'SHUT_WR'):
-    socket.SHUT_WR = 1
 
 __all__ = ['WSGIServer']
 
@@ -137,7 +127,7 @@ class InputStream(object):
         # See Server.
         self._shrinkThreshold = conn.server.inputStreamShrinkThreshold
 
-        self._buf = ''
+        self._buf = b''
         self._bufList = []
         self._pos = 0 # Current read position.
         self._avail = 0 # Number of bytes currently available.
@@ -159,7 +149,7 @@ class InputStream(object):
 
     def read(self, n=-1):
         if self._pos == self._avail and self._eof:
-            return ''
+            return b''
         while True:
             if n < 0 or (self._avail - self._pos) < n:
                 # Not enough data available.
@@ -176,7 +166,7 @@ class InputStream(object):
                 break
         # Merge buffer list, if necessary.
         if self._bufList:
-            self._buf += ''.join(self._bufList)
+            self._buf += _bytes_join(self._bufList)
             self._bufList = []
         r = self._buf[self._pos:newPos]
         self._pos = newPos
@@ -185,11 +175,11 @@ class InputStream(object):
 
     def readline(self, length=None):
         if self._pos == self._avail and self._eof:
-            return ''
+            return b''
         while True:
             # Unfortunately, we need to merge the buffer list early.
             if self._bufList:
-                self._buf += ''.join(self._bufList)
+                self._buf += _bytes_join(self._bufList)
                 self._bufList = []
             # Find newline.
             i = self._buf.find('\n', self._pos)
@@ -316,6 +306,7 @@ class OutputStream(object):
 
     def write(self, data):
         assert not self.closed
+        assert type(data) is bytes
 
         if not data:
             return
@@ -336,7 +327,7 @@ class OutputStream(object):
     def flush(self):
         # Only need to flush if this OutputStream is actually buffered.
         if self._buffered:
-            data = ''.join(self._bufList)
+            data = _bytes_join(self._bufList)
             self._bufList = []
             self._write(data)
 
@@ -396,24 +387,24 @@ def decode_pair(s, pos=0):
     The number of bytes decoded as well as the name/value pair
     are returned.
     """
-    nameLength = ord(s[pos])
-    if nameLength & 128:
-        nameLength = struct.unpack('!L', s[pos:pos+4])[0] & 0x7fffffff
+    namelen = s[pos]
+    if namelen & 128:
+        namelen = struct.unpack('!L', s[pos:pos+4])[0] & 0x7fffffff
         pos += 4
     else:
         pos += 1
 
-    valueLength = ord(s[pos])
-    if valueLength & 128:
-        valueLength = struct.unpack('!L', s[pos:pos+4])[0] & 0x7fffffff
+    valuelen = s[pos]
+    if valuelen & 128:
+        valuelen = struct.unpack('!L', s[pos:pos+4])[0] & 0x7fffffff
         pos += 4
     else:
         pos += 1
 
-    name = s[pos:pos+nameLength]
-    pos += nameLength
-    value = s[pos:pos+valueLength]
-    pos += valueLength
+    name = str(s[pos:pos+namelen], 'iso-8859-1')
+    pos += namelen
+    value = str(s[pos:pos+valuelen], 'iso-8859-1')
+    pos += valuelen
 
     return pos, (name, value)
 
@@ -423,19 +414,27 @@ def encode_pair(name, value):
 
     The encoded string is returned.
     """
-    nameLength = len(name)
-    if nameLength < 128:
-        s = chr(nameLength)
-    else:
-        s = struct.pack('!L', nameLength | 0x80000000)
+    name = name.encode('iso-8859-1')
+    value = value.encode('iso-8859-1')
 
-    valueLength = len(value)
-    if valueLength < 128:
-        s += chr(valueLength)
+    namelen = len(name)
+    if namelen < 128:
+        namelen = _code2bytes(namelen)
     else:
-        s += struct.pack('!L', valueLength | 0x80000000)
+        namelen = struct.pack('!L', namelen | 0x80000000)
 
-    return s + name + value
+    valuelen = len(value)
+    if valuelen < 128:
+        valuelen = _code2bytes(valuelen)
+    else:
+        valuelen = struct.pack('!L', valuelen | 0x80000000)
+
+    return namelen + valuelen + name + value
+
+_bytes_join = b''.join
+_str_join = ''.join
+_code2bytes = lambda code: b'%c' % code
+_utf8_writer = lambda f: codecs.getwriter('utf-8')(f)
 
 class Record(object):
     """
@@ -449,7 +448,7 @@ class Record(object):
         self.requestId = requestId
         self.contentLength = 0
         self.paddingLength = 0
-        self.contentData = ''
+        self.contentData = b''
 
     @staticmethod
     def _recvall(sock, length):
@@ -463,7 +462,7 @@ class Record(object):
             try:
                 data = sock.recv(length)
             except socket.error as e:
-                if e[0] == errno.EAGAIN:
+                if e.errno == errno.EAGAIN:
                     select.select([sock], [], [])
                     continue
                 else:
@@ -474,7 +473,7 @@ class Record(object):
             dataLen = len(data)
             recvLen += dataLen
             length -= dataLen
-        return ''.join(dataList), recvLen
+        return _bytes_join(dataList), recvLen
 
     def read(self, sock):
         """Read and decode a Record from a socket."""
@@ -515,12 +514,13 @@ class Record(object):
         """
         Writes data to a socket and does not return until all the data is sent.
         """
+        assert type(data) is bytes
         length = len(data)
         while length:
             try:
                 sent = sock.send(data)
             except socket.error as e:
-                if e[0] == errno.EAGAIN:
+                if e.errno == errno.EAGAIN:
                     select.select([], [sock], [])
                     continue
                 else:
@@ -544,7 +544,7 @@ class Record(object):
         if self.contentLength:
             self._sendall(sock, self.contentData)
         if self.paddingLength:
-            self._sendall(sock, '\x00'*self.paddingLength)
+            self._sendall(sock, b'\x00' * self.paddingLength)
 
 class Request(object):
     """
@@ -562,7 +562,8 @@ class Request(object):
         self.params = {}
         self.stdin = inputStreamClass(conn)
         self.stdout = OutputStream(conn, self, FCGI_STDOUT)
-        self.stderr = OutputStream(conn, self, FCGI_STDERR, buffered=True)
+        self.stderr = _utf8_writer(OutputStream(conn, self, FCGI_STDERR,
+                                                buffered=True))
         self.data = inputStreamClass(conn)
 
     def run(self):
@@ -584,7 +585,7 @@ class Request(object):
             self._flush()
             self._end(appStatus, protocolStatus)
         except socket.error as e:
-            if e[0] != errno.EPIPE:
+            if e.errno != errno.EPIPE:
                 raise
 
     def _end(self, appStatus=0, protocolStatus=FCGI_REQUEST_COMPLETE):
@@ -644,8 +645,8 @@ class Connection(object):
             return
         try:
             while True:
-                r, w, e = select.select([self._sock], [], [])
-                if not r or not self._sock.recv(1024):
+                rlist, wlist, xlist = select.select([self._sock], [], [])
+                if not rlist or not self._sock.recv(1024):
                     break
         except:
             pass
@@ -659,8 +660,8 @@ class Connection(object):
                 self.process_input()
             except EOFError:
                 break
-            except (select.error, socket.error) as e:
-                if e[0] == errno.EBADF: # Socket was closed by Request.
+            except select.error as e:
+                if e.errno == errno.EBADF: # Socket was closed by Request.
                     break
                 raise
 
@@ -674,12 +675,12 @@ class Connection(object):
         # stuck in it indefinitely... (I don't like this solution.)
         while self._keepGoing:
             try:
-                r, w, e = select.select([self._sock], [], [], 1.0)
+                rlist, wlist, xlist = select.select([self._sock], [], [], 1.0)
             except ValueError:
                 # Sigh. ValueError gets thrown sometimes when passing select
                 # a closed socket.
                 raise EOFError
-            if r: break
+            if rlist: break
         if not self._keepGoing:
             return
         rec = Record()
@@ -875,7 +876,7 @@ class MultiplexedConnection(Connection):
             self._lock.release()
 
     def _start_request(self, req):
-        thread.start_new_thread(req.run, ())
+        _thread.start_new_thread(req.run, ())
 
     def _do_params(self, inrec):
         self._lock.acquire()
@@ -947,33 +948,24 @@ class Server(object):
         if handler is not None:
             self.handler = handler
         self.maxwrite = maxwrite
-        if thread_available:
-            try:
-                import resource
-                # Attempt to glean the maximum number of connections
-                # from the OS.
-                maxConns = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
-            except (ImportError, AttributeError):
-                maxConns = 100 # Just some made up number.
-            maxReqs = maxConns
-            if multiplexed:
-                self._connectionClass = MultiplexedConnection
-                maxReqs *= 5 # Another made up number.
-            else:
-                self._connectionClass = Connection
-            self.capability = {
-                FCGI_MAX_CONNS: maxConns,
-                FCGI_MAX_REQS: maxReqs,
-                FCGI_MPXS_CONNS: multiplexed and 1 or 0
-                }
+        try:
+            import resource
+            # Attempt to glean the maximum number of connections
+            # from the OS.
+            maxConns = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+        except (ImportError, AttributeError):
+            maxConns = 100 # Just some made up number.
+        maxReqs = maxConns
+        if multiplexed:
+            self._connectionClass = MultiplexedConnection
+            maxReqs *= 5 # Another made up number.
         else:
             self._connectionClass = Connection
-            self.capability = {
-                # If threads aren't available, these are pretty much correct.
-                FCGI_MAX_CONNS: 1,
-                FCGI_MAX_REQS: 1,
-                FCGI_MPXS_CONNS: 0
-                }
+        self.capability = {
+            FCGI_MAX_CONNS: maxConns,
+            FCGI_MAX_REQS: maxReqs,
+            FCGI_MPXS_CONNS: 1 if multiplexed else 0,
+        }
         self._bindAddress = bindAddress
         self._umask = umask
 
@@ -986,10 +978,10 @@ class Server(object):
             try:
                 sock.getpeername()
             except socket.error as e:
-                if e[0] == errno.ENOTSOCK:
+                if e.errno == errno.ENOTSOCK:
                     # Not a socket, assume CGI context.
                     isFCGI = False
-                elif e[0] != errno.ENOTCONN:
+                elif e.errno != errno.ENOTCONN:
                     raise
 
             # FastCGI/CGI discrimination is broken on Mac OS X.
@@ -1071,17 +1063,17 @@ class Server(object):
 
         while self._keepGoing:
             try:
-                r, w, e = select.select([sock], [], [], timeout)
+                rlist, wlist, xlist = select.select([sock], [], [], timeout)
             except select.error as e:
-                if e[0] == errno.EINTR:
+                if e.errno == errno.EINTR:
                     continue
                 raise
 
-            if r:
+            if rlist:
                 try:
                     clientSock, addr = sock.accept()
                 except socket.error as e:
-                    if e[0] in (errno.EINTR, errno.EAGAIN):
+                    if e.errno in (errno.EINTR, errno.EAGAIN):
                         continue
                     raise
 
@@ -1093,7 +1085,7 @@ class Server(object):
                 # Instantiate a new Connection and begin processing FastCGI
                 # messages (either in a new thread or this thread).
                 conn = self._connectionClass(clientSock, addr, self)
-                thread.start_new_thread(conn.run, ())
+                _thread.start_new_thread(conn.run, ())
 
             self._mainloopPeriodic()
 
@@ -1133,9 +1125,10 @@ class Server(object):
         Called by Request if an exception occurs within the handler. May and
         should be overridden.
         """
-        import cgitb
-        req.stdout.write('Content-Type: text/html\r\n\r\n' +
-                         cgitb.html(sys.exc_info()))
+        out = _utf8_writer(req.stdout)
+        out.write('Content-Type: text/plain; charset=utf-8\r\n\r\n')
+        traceback.print_exc(file=out)
+        out.flush()
 
 class WSGIServer(Server):
     """
@@ -1163,7 +1156,7 @@ class WSGIServer(Server):
         self.multithreaded = multithreaded
 
         # Used to force single-threadedness
-        self._app_lock = thread.allocate_lock()
+        self._app_lock = _thread.allocate_lock()
 
     def handler(self, req):
         """Special handler for WSGI."""
@@ -1174,7 +1167,7 @@ class WSGIServer(Server):
         environ = req.params
         environ.update(self.environ)
 
-        environ['wsgi.version'] = (1,0)
+        environ['wsgi.version'] = (1, 0)
         environ['wsgi.input'] = req.stdin
         if self._bindAddress is None:
             stderr = req.stderr
@@ -1182,7 +1175,7 @@ class WSGIServer(Server):
             stderr = TeeOutputStream((sys.stderr, req.stderr))
         environ['wsgi.errors'] = stderr
         environ['wsgi.multithread'] = not isinstance(req, CGIRequest) and \
-                                      thread_available and self.multithreaded
+                                      self.multithreaded
         # Rationale for the following: If started by the web server
         # (self._bindAddress is None) in either FastCGI or CGI mode, the
         # possibility of being spawned multiple times simultaneously is quite
@@ -1206,28 +1199,17 @@ class WSGIServer(Server):
         result = None
 
         def write(data):
-            assert type(data) is str, 'write() argument must be string'
+            assert type(data) is bytes, 'write() argument must be bytes'
             assert headers_set, 'write() before start_response()'
 
             if not headers_sent:
-                status, responseHeaders = headers_sent[:] = headers_set
-                found = False
-                for header,value in responseHeaders:
-                    if header.lower() == 'content-length':
-                        found = True
-                        break
-                if not found and result is not None:
-                    try:
-                        if len(result) == 1:
-                            responseHeaders.append(('Content-Length',
-                                                    str(len(data))))
-                    except:
-                        pass
-                s = 'Status: %s\r\n' % status
-                for header in responseHeaders:
-                    s += '%s: %s\r\n' % header
-                s += '\r\n'
-                req.stdout.write(s)
+                status, headers = headers_sent[:] = headers_set
+                def generator():
+                    yield 'Status: %s\r\n' % status
+                    for header in headers:
+                        yield '%s: %s\r\n' % header
+                    yield '\r\n'
+                req.stdout.write(_str_join(generator()).encode('iso-8859-1'))
 
             req.stdout.write(data)
             req.stdout.flush()
@@ -1265,13 +1247,13 @@ class WSGIServer(Server):
                         if data:
                             write(data)
                     if not headers_sent:
-                        write('') # in case body was empty
+                        write(b'') # in case body was empty
                 finally:
                     if hasattr(result, 'close'):
                         result.close()
             except socket.error as e:
-                if e[0] != errno.EPIPE:
-                    raise # Don't let EPIPE propagate beyond server
+                if e.errno != errno.EPIPE:
+                    raise  # Don't let EPIPE propagate beyond server
         finally:
             if not self.multithreaded:
                 self._app_lock.release()

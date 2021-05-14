@@ -33,15 +33,13 @@ try:
 except SystemExit:
     raise
 except Exception as e:
-    print("Content-Type: text/plain\r\n\r\n", end=' ')
+    print("Content-Type: text/plain", end="\r\n")
+    print("", end="\r\n")
     print("Oops...")
-    print()
+    print("")
     print("Trac detected an internal error:")
-    print()
+    print("")
     print(e)
-    print()
+    print("", flush=True)
     import traceback
-    import io
-    tb = io.Bytes()
-    traceback.print_exc(file=tb)
-    print(tb.getvalue())
+    traceback.print_exc(file=sys.stdout)

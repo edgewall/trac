@@ -26,7 +26,6 @@ use_flup = os.environ.get('TRAC_USE_FLUP', False)
 if use_flup in ('0', 'no', 'off'):
     use_flup = False
 
-
 class FlupMiddleware(object):
     """Flup doesn't URL unquote the PATH_INFO, so we need to do it."""
     def __init__(self, application):
@@ -42,10 +41,11 @@ params = {}
 if use_flup:
     try:
         from flup.server.fcgi import WSGIServer
-        params['maxThreads'] = 15
-        dispatch_request = FlupMiddleware(dispatch_request)
     except ImportError:
         use_flup = False
+    else:
+        params['maxThreads'] = 15
+        dispatch_request = FlupMiddleware(dispatch_request)
 
 if not use_flup:
     from ._fcgi import WSGIServer
