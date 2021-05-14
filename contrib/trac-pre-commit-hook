@@ -26,8 +26,6 @@
 #  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_ENV" "$LOG" || exit 1
 #
 
-from __future__ import print_function
-
 import os
 import re
 import sys
