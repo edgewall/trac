@@ -34,7 +34,7 @@ _like_escape_re = re.compile(r'([/_%])')
 _glob_escape_re = re.compile(r'[*?\[]')
 
 try:
-    import pysqlite2.dbapi2 as sqlite
+    import pysqlite3.dbapi2 as sqlite
 except ImportError:
     import sqlite3 as sqlite
 
@@ -45,7 +45,6 @@ pysqlite_version_string = get_pkginfo(sqlite).get('version',
                                                   '%d.%d.%s'
                                                   % pysqlite_version)
 min_sqlite_version = (3, 0, 0)
-min_pysqlite_version = (2, 6, 0)  # version provided by Python 2.7
 
 
 class PyFormatCursor(sqlite.Cursor):
@@ -170,9 +169,6 @@ class SQLiteConnector(Component):
                            "version is %(min_version)s.",
                            version=sqlite_version_string,
                            min_version='%d.%d.%d' % min_sqlite_version)
-        elif pysqlite_version < min_pysqlite_version:
-            self.error = _("Need at least PySqlite %(version)s or higher",
-                           version='%d.%d.%d' % min_pysqlite_version)
         yield 'sqlite', -1 if self.error else 1
 
     def get_connection(self, path, log=None, params={}):

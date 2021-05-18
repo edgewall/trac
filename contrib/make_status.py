@@ -21,9 +21,7 @@ def _svn_version():
                core.SVN_VER_MICRO)
     return '%d.%d.%d' % version + str(core.SVN_VER_TAG, 'utf-8')
 
-
 def _pytidylib_version():
-    import pkg_resources
     version = pkg_resources.get_distribution('pytidylib').version
     try:
         import tidylib
@@ -41,6 +39,9 @@ def _pytidylib_version():
         info = '%s %s' % (libver, cdll._name)
     return '%s (%s)' % (version, info) if info else version
 
+def _pysqlite3_version():
+    return pkg_resources.get_distribution('pysqlite3').version
+
 
 PACKAGES = [
     ("Python",            'sys.version'),
@@ -51,8 +52,8 @@ PACKAGES = [
     ("Babel",             'babel.__version__'),
     ("sqlite3",           ('sqlite3.version',
                            'sqlite3.sqlite_version')),
-    ("PySqlite",          ('pysqlite2.dbapi2.version',
-                           'pysqlite2.dbapi2.sqlite_version')),
+    ("PySqlite3",         ('__main__._pysqlite3_version()',
+                           'pysqlite3.dbapi2.sqlite_version')),
     ("PyMySQL",           'pymysql.__version__'),
     ("Psycopg2",          'psycopg2.__version__'),
     ("SVN bindings",      '__main__._svn_version()'),
