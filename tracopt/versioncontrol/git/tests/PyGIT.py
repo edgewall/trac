@@ -37,8 +37,13 @@ class GitTestCase(unittest.TestCase):
 
     def test_git_version(self):
         v = Storage.git_version()
-        self.assertTrue(v)
+        self.assertIsInstance(v, dict)
         self.assertTrue(v['v_compatible'])
+        self.assertIsInstance(v['v_str'], str)
+        self.assertGreaterEqual(len(v['v_tuple']), 3)
+        self.assertIsInstance(v['v_tuple'][0], int)
+        self.assertIsInstance(v['v_tuple'][1], int)
+        self.assertIsInstance(v['v_tuple'][2], int)
 
 
 class TestParseCommit(unittest.TestCase):

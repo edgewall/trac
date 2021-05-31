@@ -26,7 +26,7 @@ from subprocess import DEVNULL, PIPE
 from threading import Lock
 
 from trac.core import TracBaseError
-from trac.util import terminate
+from trac.util import as_int, terminate
 from trac.util.compat import close_fds
 from trac.util.datefmt import time_now
 from trac.util.text import exception_to_unicode, to_unicode
@@ -332,36 +332,28 @@ class Storage(object):
     @staticmethod
     def git_version(git_bin='git'):
         GIT_VERSION_MIN_REQUIRED = (1, 5, 6)
+        g = GitCore(git_bin=git_bin)
+        # 'version' has usually at least 3 numeric version
+        # components, e.g.::
+        #  1.5.6.2
+        #  1.5.6.3.230.g2db511
+        #  1.5.6.GIT
         try:
-            g = GitCore(git_bin=git_bin)
-            [v] = g.version().splitlines()
-            version = v.strip().split()[2]
-            # 'version' has usually at least 3 numeric version
-            # components, e.g.::
-            #  1.5.4.2
-            #  1.5.4.3.230.g2db511
-            #  1.5.4.GIT
-
-            def try_int(s):
-                try:
-                    return int(s)
-                except ValueError:
-                    return s
-
-            split_version = tuple(map(try_int, version.split(b'.')))
-
-            result = {}
-            result['v_str'] = version
-            result['v_tuple'] = split_version
-            result['v_min_tuple'] = GIT_VERSION_MIN_REQUIRED
-            result['v_min_str'] = ".".join(map(str, GIT_VERSION_MIN_REQUIRED))
-            result['v_compatible'] = split_version >= GIT_VERSION_MIN_REQUIRED
-            return result
-
+            v = g.version()
+            m = re.match(b'git version (.*)\n$', v)
+            version = str(m.group(1), 'utf-8')
+            split_version = tuple(as_int(s, s) for s in version.split('.'))
         except Exception as e:
             raise GitError("Could not retrieve GIT version (tried to "
                            "execute/parse '%s --version' but got %s)"
                            % (git_bin, repr(e)))
+        return {
+            'v_str': version,
+            'v_tuple': split_version,
+            'v_min_tuple': GIT_VERSION_MIN_REQUIRED,
+            'v_min_str': '.'.join(map(str, GIT_VERSION_MIN_REQUIRED)),
+            'v_compatible': split_version >= GIT_VERSION_MIN_REQUIRED,
+        }
 
     def __init__(self, git_dir, log, git_bin='git', git_fs_encoding=None,
                  rev_cache=None):
