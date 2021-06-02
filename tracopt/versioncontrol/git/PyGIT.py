@@ -332,27 +332,26 @@ class Storage(object):
     @staticmethod
     def git_version(git_bin='git'):
         GIT_VERSION_MIN_REQUIRED = (1, 5, 6)
-        g = GitCore(git_bin=git_bin)
-        # 'version' has usually at least 3 numeric version
-        # components, e.g.::
+        version = str(GitCore(git_bin=git_bin).version(), 'utf-8')
+        # 'version' should have at least 3 numeric version components:
+        #  1.5.6
+        #  1.5.6.windows.1
         #  1.5.6.2
         #  1.5.6.3.230.g2db511
         #  1.5.6.GIT
-        try:
-            v = g.version()
-            m = re.match(b'git version (.*)\n$', v)
-            version = str(m.group(1), 'utf-8')
-            split_version = tuple(as_int(s, s) for s in version.split('.'))
-        except Exception as e:
-            raise GitError("Could not retrieve GIT version (tried to "
-                           "execute/parse '%s --version' but got %s)"
-                           % (git_bin, repr(e)))
+        m = re.match('git version (.*)\n$', version)
+        if not m:
+            raise GitError("Could not retrieve GIT version. "
+                           "'%s --version' returned %s"
+                           % (git_bin, repr(version)))
+        version_str = m.group(1)
+        version_tuple = tuple(as_int(s, s) for s in version_str.split('.'))
         return {
-            'v_str': version,
-            'v_tuple': split_version,
-            'v_min_tuple': GIT_VERSION_MIN_REQUIRED,
+            'v_str': version_str,
+            'v_tuple': version_tuple,
             'v_min_str': '.'.join(map(str, GIT_VERSION_MIN_REQUIRED)),
-            'v_compatible': split_version >= GIT_VERSION_MIN_REQUIRED,
+            'v_min_tuple': GIT_VERSION_MIN_REQUIRED,
+            'v_compatible': version_tuple >= GIT_VERSION_MIN_REQUIRED,
         }
 
     def __init__(self, git_dir, log, git_bin='git', git_fs_encoding=None,
