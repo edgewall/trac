@@ -233,6 +233,8 @@ class TestWikiReadonlyAttribute(FunctionalTestCaseSetup):
             self._testenv.grant_perm('user', 'WIKI_ADMIN')
             self._tester.go_to_wiki(page_name)
             tc.submit(formname='modifypage')
+            tc.url('%s/wiki/%s?action=edit' % (self._tester.url, page_name),
+                    regexp=False)
             tc.find(readonly_checkbox)
             tc.formvalue('edit', 'readonly', True)
             tc.submit('save')
