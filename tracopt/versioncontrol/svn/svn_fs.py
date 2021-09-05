@@ -736,6 +736,10 @@ class SubversionRepository(Repository):
             deltas = sorted(((_from_svn(path), kind, change)
                              for path, kind, change in editor.deltas),
                             key=lambda entry: entry[0])
+
+            # Workaround for ref-count leak due to delta.make_editor()
+            editor.__dict__.clear()
+
             for path, kind, change in deltas:
                 old_node = new_node = None
                 if change != Changeset.ADD:
@@ -1085,6 +1089,9 @@ class SubversionChangeset(Changeset):
             base_path = _path_within_scope(self.scope, base_path)
             changes.append([path, kind, action, base_path, base_rev])
             idx += 1
+
+        # Workaround for ref-count leak due to delta.make_editor()
+        editor.__dict__.clear()
 
         moves = []
         # a MOVE is a COPY whose `base_path` corresponds to a `new_path`
