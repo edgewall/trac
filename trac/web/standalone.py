@@ -346,6 +346,7 @@ def main():
                 httpd.socket = ssl.wrap_socket(httpd.socket, server_side=True,
                                                certfile=args.certfile,
                                                keyfile=args.keyfile)
+                httpd.environ['HTTPS'] = 'yes'
             httpd.serve_forever()
     elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
