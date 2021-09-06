@@ -42,6 +42,7 @@ from tracopt.versioncontrol.svn import svn_fs, svn_prop
 
 REPOS_PATH = None
 REPOS_NAME = 'repo'
+REPOS_UUID = '92ea810a-adf3-0310-b540-bef912dcf5ba'
 URL = 'svn://test'
 
 HEAD = 31
@@ -150,6 +151,12 @@ class NormalTests(object):
                 td = self._row_col(tr, row, col) # recurse
                 if td:
                     return td
+
+    def test_repos_properties(self):
+        self.assertEqual(REPOS_UUID, self.repos.uuid)
+        self.assertEqual('svn:%s:%s' % (REPOS_UUID, REPOS_PATH),
+                         self.repos.base)
+        self.assertEqual(self.repos.name, self.repos.base)
 
     def test_invalid_path_raises(self):
         self.assertRaises(InvalidRepository, svn_fs.SubversionRepository,
@@ -1103,6 +1110,13 @@ Overlapped keywords:
 
 class ScopedTests(object):
 
+    def test_repos_properties(self):
+        self.assertEqual(REPOS_UUID, self.repos.uuid)
+        self.assertEqual('svn:%s:%s' % (REPOS_UUID, REPOS_PATH),
+                         self.repos.base)
+        self.assertEqual('svn:%s:%s/tête' % (REPOS_UUID, REPOS_PATH),
+                         self.repos.name)
+
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
         self.assertEqual('/', self.repos.normalize_path(''))
@@ -1590,9 +1604,11 @@ def test_suite():
                  ]
         skipped = {
             'SvnCachedRepositoryNormalTests': [
+                'test_repos_properties',
                 'test_changeset_repos_creation',
                 ],
             'SvnCachedRepositoryScopedTests': [
+                'test_repos_properties',
                 'test_changeset_repos_creation',
                 'test_rev_navigation',
                 ],

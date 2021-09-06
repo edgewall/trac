@@ -275,7 +275,7 @@ class SubversionRepository(Repository):
                   svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
 
-        self.uuid = fs.get_uuid(self.fs_ptr, self.pool)
+        self.uuid = _from_svn(fs.get_uuid(self.fs_ptr, self.pool))
         self.base = 'svn:%s:%s' % (self.uuid, root_path)
         name = 'svn:%s:%s' % (self.uuid, path)
 
