@@ -4,6 +4,8 @@
   // within its container ($content).
 
   window.wikiColumn = function($wikipage) {
+    if ($wikipage.length === 0)
+      return;
     var $content = $("#content");
     $("<span id='trac-wiki-expander'></span>").on("click", function () {
       $content.toggleClass('narrow');
