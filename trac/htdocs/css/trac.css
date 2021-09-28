@@ -177,6 +177,10 @@ p.hint, span.hint, span.trac-datetimehint {
  margin: .5em 0;
  padding-left: 1em;
 }
+.trac-has-js .trac-nodatetimehint,
+.trac-has-js .trac-datetimehint {
+ display: none !important
+}
 label.trac-textarea-hint {
  color: #666;
  display: block;
@@ -511,9 +515,6 @@ div.trac-draft {
 .trac-help :link, .trac-help :visited { cursor: help }
 .trac-help hr { display: none }
 
-/* Datepicker hints */
-.trac-nodatetimehint .trac-datetimehint { display: none }
-
 /* Section folding */
 .foldable :link, .foldable :visited {
  background: url(../expanded.png) 4px 50% no-repeat;
@@ -612,7 +613,7 @@ h2 .trac-count, h3 .trac-count {
 a.trac-diff:after { content: "∆" }
 
 /* Wiki */
-.wikipage h1, .wikipage h2, .wikipage h3, .wikipage h4, .wikipage h5, .wikipage h6 { 
+.wikipage h1, .wikipage h2, .wikipage h3, .wikipage h4, .wikipage h5, .wikipage h6 {
  margin-left: -1.5rem; /* wiki_h_margin_left = -(wiki_h_left_padding + wikipage_content_padding_left) */
  margin-right: -1rem; /* wiki_h_margin_right (= -trac_content_padding_right) */
 }

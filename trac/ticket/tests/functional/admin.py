@@ -409,7 +409,7 @@ class TestAdminMilestoneCompletedRetarget(FunctionalTestCaseSetup):
     def runTest(self):
         name = self._testenv.add_milestone()
         tid1 = self._tester.create_ticket(info={'milestone': name})
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform',
                      'action_resolve_resolve_resolution', 'fixed')
@@ -753,7 +753,7 @@ class TestAdminPriorityRenumberDup(FunctionalTestCaseSetup):
         self._tester.go_to_url(priority_url)
         tc.formvalue('enumtable', 'value_1', '2')
         tc.submit('apply')
-        tc.url(priority_url + '#', regexp=False)
+        tc.url(priority_url, regexp=False)
         tc.find('Order numbers must be unique')
 
 

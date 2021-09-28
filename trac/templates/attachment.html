@@ -50,7 +50,7 @@
       <h1>${tag_("Add Attachment to %(parent)s",
                  parent=tag.a(name_of(parent), href=url_of(parent)))}</h1>
       <form id="attachment" class="mod" method="post"
-            enctype="multipart/form-data" action="#">
+            enctype="multipart/form-data" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <div class="field">
           <label>File{% if max_size is greaterthanorequal 0 %}
@@ -121,7 +121,7 @@
         ${_("This is an irreversible operation.")}
       </p>
       <div class="buttons">
-        <form method="post" action="#">
+        <form method="post" action="${req.request_path}">
           ${jmacros.form_token_input()}
           <div id="delete">
             <input type="hidden" name="action" value="delete" />
@@ -180,7 +180,7 @@
 
       #   if attachment and 'ATTACHMENT_DELETE' in perm(attachment.resource):
       <div class="buttons">
-        <form method="get" action="#">
+        <form method="get" action="${req.request_path}">
           <div id="delete"> {# jinjacheck: "ID delete already defined" OK #}
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="${_('Delete attachment')}" />

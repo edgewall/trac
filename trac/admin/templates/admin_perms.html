@@ -40,7 +40,7 @@
 
     <div>
       # if 'PERMISSION_GRANT' in perm('admin', 'general/perm'):
-      <form id="addperm" class="addnew" method="post" action="#">
+      <form id="addperm" class="addnew" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Grant Permission:")}</legend>
@@ -70,7 +70,7 @@
         </fieldset>
       </form>
 
-      <form id="copyperm" class="addnew" method="post" action="#">
+      <form id="copyperm" class="addnew" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Copy Permissions:")}</legend>
@@ -94,7 +94,7 @@
         </fieldset>
       </form>
 
-      <form id="addsubj" class="addnew" method="post" action="#">
+      <form id="addsubj" class="addnew" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Add Subject to Group:")}</legend>
@@ -120,7 +120,7 @@
 
       # with
       #   set can_revoke = 'PERMISSION_REVOKE' in perm('admin', 'general/perm')
-      <form id="revokeform" method="post" action="#">
+      <form id="revokeform" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <h3>${_("Permissions")}</h3>
         <table class="listing" id="permlist">

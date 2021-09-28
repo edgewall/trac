@@ -41,7 +41,7 @@
 
       <h1>${_("Available Reports")}</h1>
 
-      <form id="prefs" method="get" action="#">
+      <form id="prefs" method="get" action="${req.request_path}">
         <div>
           <input id="trac-toggle-description" type="checkbox"/>
           <label for="trac-toggle-description">${_("Show Descriptions")}</label>
@@ -167,7 +167,7 @@
 
       # if 'REPORT_CREATE' in perm('report'):
       <div class="buttons">
-        <form action="#" method="get" id="create_report">
+        <form action="${req.request_path}" method="get" id="create_report">
           <div>
             <input type="hidden" name="action" value="new"/>
             <input type="submit" value="${_('Create new report')}"/>

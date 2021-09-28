@@ -38,7 +38,7 @@
     });
   </script>
   # with
-  <form id="edit" class="mod" method="post" action="#">
+  <form id="edit" class="mod" method="post" action="${req.request_path}">
     ${jmacros.form_token_input()}
     # set disabled = 'disabled' if can_modify is sameas false
     # set readonly = 'readonly' if can_modify is sameas false

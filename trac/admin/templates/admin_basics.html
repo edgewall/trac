@@ -24,7 +24,7 @@
     <h2>${_("Basic Settings")}</h2>
 
     <div>
-      <form class="mod" id="modbasic" method="post" action="#">
+      <form class="mod" id="modbasic" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Project")}</legend>

@@ -25,7 +25,7 @@
     <div id="content" class="milestone">
       <h1>${_("Delete Milestone %(name)s", name=milestone.name)}</h1>
 
-      <form id="delete-confirm" action="#" method="post">
+      <form id="delete-confirm" action="${req.request_path}" method="post">
         <div>
           ${jmacros.form_token_input()}
           <input type="hidden" name="action" value="delete" />

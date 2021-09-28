@@ -101,7 +101,7 @@
 
       #   if view == 'detail':
       #     set info = repositories[reponame]
-      <form id="edit" class="mod" method="post" action="#">
+      <form id="edit" class="mod" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           # with
@@ -201,7 +201,7 @@
       </form>
 
       #   else:
-      <form class="addnew" id="trac-addrepos" method="post" action="#">
+      <form class="addnew" id="trac-addrepos" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Add Repository:")}</legend>
@@ -219,7 +219,7 @@
       </form>
 
       #     if can_add_alias:
-      <form class="addnew" id="trac-addalias" method="post" action="#">
+      <form class="addnew" id="trac-addalias" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Add Alias:")}</legend>
@@ -235,7 +235,7 @@
       #     endif
 
       #     if sorted_repos:
-      <form id="trac-repository_table" method="post" action="#">
+      <form id="trac-repository_table" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <table class="listing" id="trac-reposlist">
           <thead>

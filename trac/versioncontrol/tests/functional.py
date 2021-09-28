@@ -322,7 +322,7 @@ class RegressionTestTicket11355(FunctionalTestCaseSetup):
                regexp=False)
         tc.formvalue('edit', 'dir', os.path.basename(dir))
         tc.submit('save')
-        tc.url('%s/admin/versioncontrol/repository/%s#' %
+        tc.url('%s/admin/versioncontrol/repository/%s' %
                (self._tester.url, name), regexp=False)
         tc.find('The repository directory must be an absolute path.')
 

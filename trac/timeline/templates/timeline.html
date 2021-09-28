@@ -31,7 +31,7 @@
 
       <h1>${_("Timeline")}</h1>
 
-      <form id="prefs" method="get" action="#">
+      <form id="prefs" method="get" action="${req.request_path}">
         <div>
           # set fromdate_input
           <input type="text" id="fromdate" class="trac-datepicker" size="10"

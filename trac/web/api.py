@@ -637,6 +637,10 @@ class Request(object):
             return to_unicode(user)
 
     @property
+    def request_path(self):
+        return self.href(self.path_info)
+
+    @property
     def response_started(self):
         return self._write is not None
 

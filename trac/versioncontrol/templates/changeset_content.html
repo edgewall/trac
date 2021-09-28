@@ -124,7 +124,7 @@
   # set o = diff.options
   # set optionset = o.ignoreblanklines or o.ignorecase or o.ignorewhitespace
   # if not req.is_xhr and (has_diffs or optionset):
-  <form id="prefs" action="#">
+  <form id="prefs" action="${req.request_path}">
     <div>
       # if not changeset:
       <input type="hidden" name="old_path"

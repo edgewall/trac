@@ -224,13 +224,13 @@ class TestTicketRSSFormat(FunctionalTestCaseSetup):
         self._tester.create_ticket(summary)
         # Make a number of changes to exercise all of the RSS feed code
         tc.formvalue('propertyform', 'comment', random_sentence(3))
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-type', 'task')
         tc.formvalue('propertyform', 'field-description',
                      summary + '\n\n' + random_sentence(8))
         tc.formvalue('propertyform', 'field-keywords', 'key')
         tc.submit('submit')
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-keywords', '')
         tc.submit('submit')
 
@@ -341,7 +341,7 @@ class TestTicketHistoryDiff(FunctionalTestCaseSetup):
     def runTest(self):
         """Test ticket history (diff)"""
         self._tester.create_ticket()
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field_description', random_sentence(6))
         tc.submit('submit')
         tc.find('Description:</th>[ \n]+<td>[ \n]+'
@@ -423,7 +423,7 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTestCaseSetup):
         is disabled."""
         def enable_query_module(enable):
             self._tester.go_to_admin('Plugins')
-            tc.click('#trac-plugin-Trac.collapsed .foldable a')
+            tc.toggle_foldable('#trac-plugin-Trac.collapsed .foldable')
             tc.formvalue('edit-plugin-trac', 'enable',
                          '%strac.ticket.query.QueryModule'
                          % ('+' if enable else '-'))
@@ -631,7 +631,7 @@ class RegressionTestTicket10828(FunctionalTestCaseSetup):
         word1 = random_unique_camel()
         word2 = random_word()
         val = "%s %s" % (word1, word2)
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s added' % (word1, word2))
@@ -639,18 +639,18 @@ class RegressionTestTicket10828(FunctionalTestCaseSetup):
         word3 = random_unique_camel()
         word4 = random_unique_camel()
         val = "%s,  %s; %s" % (word2, word3, word4)
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s added; %s removed' % (word3, word4, word1))
 
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-newfield', '')
         tc.submit('submit')
         tc.find('%s %s %s removed' % (word2, word3, word4))
 
         val = "%s %s,%s" % (word1, word2, word3)
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-newfield', val)
         tc.submit('submit')
         tc.find('%s %s %s added' % (word1, word2, word3))
@@ -889,7 +889,7 @@ class TestMilestoneClose(FunctionalTestCaseSetup):
     def runTest(self):
         name = self._tester.create_milestone()
         tid1 = self._tester.create_ticket(info={'milestone': name})
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform',
                      'action_resolve_resolve_resolution', 'fixed')
@@ -1136,7 +1136,7 @@ class RegressionTestTicket4630a(FunctionalTestCaseSetup):
             self._tester.logout()
             self._tester.login('admin')
             self._tester.create_ticket()
-            tc.click('#propertyform .collapsed .foldable a')
+            tc.toggle_foldable('#propertyform .foldable')
             tc.formvalue('propertyform', 'action', 'reassign')
             tc.find('reassign_reassign_owner')
             tc.formvalue('propertyform', 'action_reassign_reassign_owner',
@@ -1248,7 +1248,7 @@ class RegressionTestTicket5497a(FunctionalTestCaseSetup):
         """Test for regression of https://trac.edgewall.org/ticket/5497 a
         Open ticket, component changed, owner not changed"""
         self._tester.create_ticket("regression test 5497a")
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-component', 'regression5497')
         tc.submit('submit')
         tc.find(regex_owned_by('user'))
@@ -1259,7 +1259,7 @@ class RegressionTestTicket5497b(FunctionalTestCaseSetup):
         """Test for regression of https://trac.edgewall.org/ticket/5497 b
         Open ticket, component changed, owner changed"""
         self._tester.create_ticket("regression test 5497b")
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'field-component', 'regression5497')
         tc.formvalue('propertyform', 'action', 'reassign')
         tc.formvalue('propertyform', 'action_reassign_reassign_owner',
@@ -1300,26 +1300,26 @@ class RegressionTestTicket5602(FunctionalTestCaseSetup):
         # leave ids[0] as new
         # make ids[1] be assigned
         self._tester.go_to_ticket(ids[1])
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'reassign')
         tc.formvalue('propertyform', 'action_reassign_reassign_owner',
                      'admin')
         tc.submit('submit')
         # make ids[2] be accepted
         self._tester.go_to_ticket(ids[2])
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'accept')
         tc.submit('submit')
         # make ids[3] be closed
         self._tester.go_to_ticket(ids[3])
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('submit')
         # make ids[4] be reopened
         self._tester.go_to_ticket(ids[4])
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
@@ -1327,7 +1327,7 @@ class RegressionTestTicket5602(FunctionalTestCaseSetup):
         # FIXME: we have to wait a second to avoid "IntegrityError: columns
         # ticket, time, field are not unique"
         time.sleep(1)
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'reopen')
         tc.submit('submit')
         tc.notfind("Python Traceback")
@@ -1411,12 +1411,12 @@ class RegressionTestTicket6879a(FunctionalTestCaseSetup):
         """
         # create a ticket, then preview resolving the ticket twice
         self._tester.create_ticket("RegressionTestTicket6879 a")
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('preview')
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('preview')
 
@@ -1430,12 +1430,12 @@ class RegressionTestTicket6879b(FunctionalTestCaseSetup):
         """
         # create a ticket, then preview resolving the ticket twice
         self._tester.create_ticket("RegressionTestTicket6879 b")
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.formvalue('propertyform', 'action_resolve_resolve_resolution',
                      'fixed')
         tc.submit('preview')
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
 
@@ -1597,7 +1597,7 @@ class RegressionTestTicket9981(FunctionalTestCaseSetup):
         """Test for regression of https://trac.edgewall.org/ticket/9981"""
         tid1 = self._tester.create_ticket()
         self._tester.add_comment(tid1)
-        tc.click('#propertyform .collapsed .foldable a')
+        tc.toggle_foldable('#propertyform .foldable')
         tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
         tid2 = self._tester.create_ticket()

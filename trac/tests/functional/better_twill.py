@@ -16,6 +16,7 @@ monkey-patch some better versions of some of twill's methods.
 It also handles twill's absense.
 """
 
+import contextlib
 import hashlib
 import http.client
 import http.server
@@ -69,9 +70,11 @@ finally:
 
 if selenium:
     from selenium import webdriver
-    from selenium.common.exceptions import (
-        NoSuchElementException, WebDriverException as ConnectError)
+    from selenium.common.exceptions import (NoSuchElementException,
+                                            TimeoutException,
+                                            WebDriverException as ConnectError)
     from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.common.by import By
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.support import expected_conditions
     from selenium.webdriver.support.ui import WebDriverWait
@@ -88,13 +91,13 @@ if selenium:
         driver = None
         auth_handler = None
         keys = Keys
+        _javascript_enabled = True
 
         def init(self, port, proxy_port):
             self.tmpdir = mkdtemp()
             self.proxy_server = self._create_proxy_server(port, proxy_port)
             self.proxy_thread = self._create_proxy_thread(self.proxy_server)
             self.driver = self._create_webdriver()
-            self.driver.maximize_window()
 
         def _create_proxy_server(self, port, proxy_port):
             dir_ = os.path.join(self.tmpdir, 'response')
@@ -130,6 +133,8 @@ if selenium:
             options = webdriver.FirefoxOptions()
             options.profile = profile
             options.add_argument('--headless')
+            options.add_argument('--width=1536')
+            options.add_argument('--height=2048')
             options.log.level = 'debug'
             log_path = 'geckodriver.log'
             open(log_path, 'w').close()
@@ -153,7 +158,8 @@ if selenium:
 
         def go(self, url):
             url = self._urljoin(url)
-            self.driver.get(url)
+            with self._wait_for_page_load():
+                self.driver.get(url)
             self._validate_html(self.get_source())
 
         def back(self):
@@ -163,7 +169,8 @@ if selenium:
             self._find_by(*args, **kwargs).click()
 
         def reload(self):
-            self.driver.refresh()
+            with self._wait_for_page_load():
+                self.driver.refresh()
             self._validate_html(self.get_source())
 
         def download(self, url):
@@ -215,7 +222,8 @@ if selenium:
             self.auth_handler = handler
 
         def follow(self, s):
-            self._find_link(s).click()
+            with self._wait_for_page_load():
+                self._find_link(s).click()
             self._validate_html(self.get_source())
 
         def download_link(self, pattern):
@@ -302,14 +310,23 @@ if selenium:
                                  (type_, url))
             field.send_keys(phypath)
 
+        def toggle_foldable(self, *args, **kwargs):
+            foldable = self._find_by(*args, **kwargs)
+            method = lambda: foldable.find_element_by_tag_name('a')
+            anchor = self.wait_for(method, timeout=2)
+            anchor.click()
+
         def javascript_disabled(self, fn):
             def wrapper(*args, **kwargs):
-                prev = self.set_prefs({'javascript.enabled': False})
+                prev_js = self._javascript_enabled
+                prev_prefs = self.set_prefs({'javascript.enabled': False})
+                self._javascript_enabled = False
                 try:
                     return fn(*args, **kwargs)
                 finally:
-                    if prev is not None:
-                        self.set_prefs(prev)
+                    self._javascript_enabled = prev_js
+                    if prev_prefs is not None:
+                        self.set_prefs(prev_prefs)
             return wrapper
 
         def prefs(self, values):
@@ -386,7 +403,8 @@ if selenium:
                 else:
                     url = self.write_source()
                     raise ValueError('No active submit elements in %s' % url)
-            element.click()
+            with self._wait_for_page_load():
+                element.click()
             self._validate_html(self.get_source())
 
         def move_to(self, *args, **kwargs):
@@ -399,10 +417,18 @@ if selenium:
                 chains.send_keys(arg)
             chains.perform()
 
-        def wait_for(self, condition, *args, **kwargs):
-            element = self._find_by(*args, **kwargs)
-            method = getattr(expected_conditions, condition)
-            WebDriverWait(tc.driver, 2).until(method(element))
+        def wait_for(self, condition, *args, timeout=2, **kwargs):
+            if isinstance(condition, str):
+                locator = self._get_locator(*args, **kwargs)
+                method = getattr(expected_conditions, condition)(locator)
+            else:
+                method = lambda driver: condition(*args, **kwargs)
+            wait = WebDriverWait(self.driver, timeout)
+            try:
+                return wait.until(method)
+            except TimeoutException as e:
+                raise AssertionError('Timed out in %s' %
+                                     self.write_source()) from e
 
         def _find_form(self, id_):
             selector = 'form[id="%(name)s"]' % {'name': id_}
@@ -426,19 +452,28 @@ if selenium:
                 raise AssertionError('Missing field (%r, %r) in %s' %
                                      (field, form, url)) from e
 
-        def _find_by(self, *args, **kwargs):
-            driver = self.driver
-            try:
-                if kwargs.get('id'):
-                    return driver.find_element_by_id(kwargs['id'])
-                if kwargs.get('name'):
-                    return driver.find_element_by_name(kwargs['name'])
-                if kwargs.get('class_'):
-                    return driver.find_element_by_class_name(kwargs['class_'])
+        def _get_locator(self, *args, **kwargs):
+            if kwargs.get('id'):
+                return By.ID, kwargs['id']
+            if kwargs.get('name'):
+                return By.NAME, kwargs['name']
+            if kwargs.get('class_'):
+                return By.CLASS_NAME, kwargs['class_']
+            if kwargs.get('css'):
+                return By.CSS_SELECTOR, kwargs['css']
+            if not kwargs:
                 if len(args) == 1:
-                    return driver.find_element_by_css_selector(args[0])
-                if len(args) == 0:
-                    return driver.switch_to.active_element
+                    return By.CSS_SELECTOR, args[0]
+                if len(args) == 2:
+                    return args
+
+        def _find_by(self, *args, **kwargs):
+            try:
+                if not args and not kwargs:
+                    return self.driver.switch_to.active_element
+                locator = self._get_locator(*args, **kwargs)
+                if locator:
+                    return self.driver.find_element(*locator)
             except NoSuchElementException as e:
                 url = self.write_source()
                 raise AssertionError('Missing element (%r, %r) in %s' %
@@ -475,6 +510,13 @@ if selenium:
                         bit |= value
             return bit
 
+        if hasattr(webdriver.Firefox, 'save_full_page_screenshot'):
+            def _save_screenshot(self, filename):
+                self.driver.save_full_page_screenshot(filename)
+        else:
+            def _save_screenshot(self, filename):
+                self.driver.save_screenshot(filename)
+
         def _to_bytes(self, value):
             if isinstance(value, str):
                 value = value.encode('utf-8')
@@ -503,6 +545,33 @@ if selenium:
                 url = self.write_source(source)
                 raise AssertionError('tidylib found %d error(s) in %s\n\n%s' %
                                      (len(errors), url, '\n'.join(errors)))
+
+        @contextlib.contextmanager
+        def _wait_for_page_load(self, seconds=5):
+
+            def wait_for(expr):
+                script = 'return (%s)' % expr
+                condition = lambda: execute_script(script)
+                try:
+                    self.wait_for(condition, timeout=5)
+                except TimeoutException:
+                    return False
+                else:
+                    return True
+
+            execute_script = self.driver.execute_script
+
+            if self.get_url().startswith('http://'):
+                execute_script('window._trac_page_not_loaded = 42')
+            yield
+            if not wait_for('window._trac_page_not_loaded === undefined'):
+                raise AssertionError('Timed out for page load in %s' %
+                                     self.write_source())
+
+            expr = 'window.jQuery !== undefined && jQuery.isReady'
+            if self._javascript_enabled and not wait_for(expr):
+                raise AssertionError('Timed out for jQuery.ready() in %s' %
+                                     self.write_source())
 
         # When we can't find something we expected, or find something we didn't
         # expect, it helps the debugging effort to have a copy of the html to
@@ -545,6 +614,7 @@ if selenium:
                 html_file.write(source)
             finally:
                 html_file.close()
+            self._save_screenshot(filename[:-4] + 'png')
 
             return urljoin('file:', pathname2url(filename))
 

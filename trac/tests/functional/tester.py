@@ -236,7 +236,7 @@ class FunctionalTester(object):
         provided.  Assumes the ticket exists.
         """
         self.go_to_ticket(ticketid)
-        tc.click('#attachments .foldable a')
+        tc.toggle_foldable('#attachments .foldable')
         return self._attach_file_to_resource('ticket', ticketid, data,
                                              filename, description,
                                              replace, content_type)

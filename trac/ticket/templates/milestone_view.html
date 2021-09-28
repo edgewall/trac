@@ -63,7 +63,7 @@
       </div>
 
       # if available_groups and stats.count:
-      <form id="stats" class="trac-groupprogress" action="#">
+      <form id="stats" class="trac-groupprogress" action="${req.request_path}">
         <fieldset>
           <legend>
             <label for="by">${_("%(stat_title)s by",
@@ -104,7 +104,7 @@
       # if can_modify or can_delete or attachments.can_create:
       <div class="buttons">
         # if can_modify:
-        <form method="get" action="#" id="editmilestone">
+        <form method="get" action="${req.request_path}" id="editmilestone">
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" value="${_('Edit milestone')}" accesskey="e" />
@@ -112,7 +112,7 @@
         </form>
         # endif
         # if can_delete:
-        <form method="get" action="#" id="deletemilestone">
+        <form method="get" action="${req.request_path}" id="deletemilestone">
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="${_('Delete milestone')}" />

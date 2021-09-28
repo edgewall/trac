@@ -88,7 +88,6 @@
           };
           $(".trac-datetimepicker:not([readonly])")
             .prop("autocomplete", "off").datetimepicker();
-          $("#main").addClass("trac-nodatetimehint");
         }
         $(".trac-disable").disableSubmit(".trac-disable-determinant");
         setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
@@ -129,6 +128,9 @@
     content.
 
     ------------------------------------------------------------------ #}
+    <script type="text/javascript">
+      jQuery("body").addClass("trac-has-js");
+    </script>
     #   if chrome.late_links:
     <script>
       #   for link in chrome.late_links.get('stylesheet', []):

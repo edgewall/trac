@@ -40,7 +40,7 @@
                  (url or url_of(resource), name or name_of(resource)))}
       </h1>
       # if history:
-      <form id="history" class="printableform" method="get" action="#">
+      <form id="history" class="printableform" method="get" action="${req.request_path}">
         <div class="buttons">
           <input type="hidden" name="action" value="${diff_action or 'diff'}" />
           # for k, v in  diff_args or []:

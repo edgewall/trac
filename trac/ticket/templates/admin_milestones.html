@@ -54,7 +54,7 @@
       #     include 'milestone_edit_form.html'
       #   else:
       #     if can_create:
-      <form class="addnew" id="addmilestone" method="post" action="#">
+      <form class="addnew" id="addmilestone" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <fieldset>
           <legend>${_("Add Milestone:")}</legend>
@@ -80,7 +80,7 @@
       #     endif
 
       #     if milestones:
-      <form id="milestone_table" method="post" action="#">
+      <form id="milestone_table" method="post" action="${req.request_path}">
         ${jmacros.form_token_input()}
         <table class="listing" id="millist">
           <thead>

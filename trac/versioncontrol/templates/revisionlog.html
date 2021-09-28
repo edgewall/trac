@@ -49,7 +49,7 @@
         # include 'path_links.html'
       </h1>
 
-      <form id="prefs" action="#" method="get">
+      <form id="prefs" action="${req.request_path}" method="get">
         <div>
           <input type="hidden" name="action" value="${mode}" />
           # if revranges:
