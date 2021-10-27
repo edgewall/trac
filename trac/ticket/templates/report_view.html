@@ -238,6 +238,14 @@ history and logs, available at https://trac.edgewall.org/.
               {% if fullrow %}<hr />{% endif %}
             </td>
 
+            #       elif col in ('created', 'modified'):
+            #         do td_attrs['class'].append('date')
+            <td${td_attrs|htmlattr}>${
+              pretty_dateinfo(from_utimestamp(cell.value|int))
+              if cell.value != '' else '--'}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
             <!--! generic fields -->
             #       elif col == 'time':
             #         do td_attrs['class'].append('date')
@@ -247,7 +255,7 @@ history and logs, available at https://trac.edgewall.org/.
               {% if fullrow %}<hr />{% endif %}
             </td>
 
-            #       elif col in ('date', 'created', 'modified'):
+            #       elif col == 'date':
             #         do td_attrs['class'].append('date')
             <td${td_attrs|htmlattr}>${
               format_date(from_utimestamp(cell.value|int)) if cell.value != ''

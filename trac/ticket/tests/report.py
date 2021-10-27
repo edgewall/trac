@@ -20,9 +20,10 @@ from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket.query import QueryModule
 from trac.ticket.report import Report, ReportModule
+from trac.timeline.web_ui import TimelineModule
 from trac.test import EnvironmentStub, MockRequest
 from trac.ticket.test import insert_ticket
-from trac.util.datefmt import utc
+from trac.util.datefmt import time_now, to_utimestamp, utc
 from trac.util.html import genshi
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
@@ -50,6 +51,18 @@ class ReportModuleTestCase(unittest.TestCase):
                 VALUES (%s,%s,%s)
                 """, (title, query, description))
             return db.get_last_id(cursor, 'report')
+
+    def _process_request(self, req):
+        self.assertTrue(self.report_module.match_request(req))
+        return self.report_module.process_request(req)
+
+    def _render_template(self, req, template, data, metadata={}):
+        template, data, metadata = TimelineModule(self.env) \
+                        .post_process_request(req, template, data, metadata)
+        metadata = metadata.copy()
+        metadata['fragment'] = False
+        metadata['iterable'] = False
+        return Chrome(self.env).render_template(req, template, data, metadata)
 
     def test_create_report(self):
         req = MockRequest(self.env, method='POST', args={
@@ -376,11 +389,8 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertRaises(RequestDone, self.report_module.process_request, req)
 
         req = MockRequest(self.env, method='GET', path_info='/report/9')
-        self.assertTrue(self.report_module.match_request(req))
-        rv = self.report_module.process_request(req)
-        rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
-                                                    {'fragment': False,
-                                                     'iterable': False})
+        template, data = self._process_request(req)
+        rendered = self._render_template(req, template, data)
         self.assertRegexpMatches(rendered,
                                  r'<tr[^>]*>\s*'
                                  r'<td class="fullrow foo" colspan="100">'
@@ -397,23 +407,23 @@ class ReportModuleTestCase(unittest.TestCase):
             XML(rendered)  # validates as XML
 
     def test_timestamp_columns(self):
+        now = int(time_now() * 1000000)
         req = MockRequest(self.env, method='POST', path_info='/report', args={
             'action': 'new',
             'title': '#13134',
-            'query': "SELECT %d AS time, %d AS created, %d AS datetime"
+            'query': "SELECT %d AS time, %d AS date, %d AS datetime,\n"
+                     "       $C AS created, $M AS modified"
                      % ((1 * 86400 + 42) * 1000000,
                         (2 * 86400 + 43) * 1000000,
                         (3 * 86400 + 44) * 1000000),
             'description': ''})
-        self.assertTrue(self.report_module.match_request(req))
-        self.assertRaises(RequestDone, self.report_module.process_request, req)
+        self.assertRaises(RequestDone, self._process_request, req)
 
-        req = MockRequest(self.env, method='GET', path_info='/report/9')
-        self.assertTrue(self.report_module.match_request(req))
-        rv = self.report_module.process_request(req)
-        rendered = Chrome(self.env).render_template(req, rv[0], rv[1],
-                                                    {'fragment': False,
-                                                     'iterable': False})
+        req = MockRequest(self.env, method='GET', path_info='/report/9',
+                          args={'C': str(now - (1 * 86400 + 42) * 1000000),
+                                'M': str(now - (2 * 86400 + 43) * 1000000)})
+        rv = self._process_request(req)
+        rendered = self._render_template(req, *rv)
         self.assertRegexpMatches(rendered,
             r'<td class="date">\s*(12:00:42 AM|00:00:42)\s*</td>')
         self.assertRegexpMatches(rendered,
@@ -421,6 +431,28 @@ class ReportModuleTestCase(unittest.TestCase):
         self.assertRegexpMatches(rendered,
             r'<td class="date">\s*(Jan 4, 1970, 12:00:44 AM|'
             r'01/04/70 00:00:44)\s*</td>')
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*<a class="timeline" href="[^"]*" '
+            r'title="See timeline at [^"]*">24 hours ago</a>\s*</td>')
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*<a class="timeline" href="[^"]*" '
+            r'title="See timeline at [^"]*">2 days ago</a>\s*</td>')
+
+        ts = to_utimestamp(datetime(2021, 9, 14, 12, 13, 58, 98765, utc))
+        req = MockRequest(self.env, method='GET', path_info='/report/9',
+                          args={'C': str(ts - (1 * 86400 + 42) * 1000000),
+                                'M': str(ts - (2 * 86400 + 43) * 1000000)})
+        req.session['dateinfo'] = 'absolute'
+        rv = self._process_request(req)
+        rendered = self._render_template(req, *rv)
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*<a class="timeline" href="[^"]*" '
+            r'title="See timeline [^"]+ ago">on (Sep 13, 2021|09/34/21) '
+            r'at (12:13:16 PM|12:13:16)</a>\s*</td>')
+        self.assertRegexpMatches(rendered,
+            r'<td class="date">\s*<a class="timeline" href="[^"]*" '
+            r'title="See timeline [^"]+ ago">on (Sep 12, 2021|09/12/21) '
+            r'at (12:13:15 PM|12:13:15)</a>\s*</td>')
 
 
 class ExecuteReportTestCase(unittest.TestCase):
