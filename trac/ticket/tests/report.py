@@ -445,7 +445,7 @@ class ReportModuleTestCase(unittest.TestCase):
         rendered = str(rendered, 'utf-8')
         self.assertRegex(rendered,
             r'<td class="date">\s*<a class="timeline" href="[^"]*" '
-            r'title="See timeline [^"]+ ago">on (Sep 13, 2021|09/34/21) '
+            r'title="See timeline [^"]+ ago">on (Sep 13, 2021|09/13/21) '
             r'at (12:13:16 PM|12:13:16)</a>\s*</td>')
         self.assertRegex(rendered,
             r'<td class="date">\s*<a class="timeline" href="[^"]*" '
