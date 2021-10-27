@@ -123,16 +123,14 @@ if selenium:
                     f.write('multipart/related mht\n')
             else:
                 mime_types = None
-            profile = webdriver.FirefoxProfile()
-            profile.set_preference('intl.accept_languages', 'en-us')
-            profile.set_preference('network.http.phishy-userpass-length', 255)
-            profile.set_preference('general.warnOnAboutConfig', False)
-            if mime_types:
-                profile.set_preference('helpers.private_mime_types_file',
-                                       mime_types)
             options = webdriver.FirefoxOptions()
-            options.profile = profile
-            options.add_argument('--headless')
+            options.set_preference('intl.accept_languages', 'en-us')
+            options.set_preference('network.http.phishy-userpass-length', 255)
+            options.set_preference('general.warnOnAboutConfig', False)
+            if mime_types:
+                options.set_preference('helpers.private_mime_types_file',
+                                       mime_types)
+            options.headless = True
             options.add_argument('--width=1536')
             options.add_argument('--height=2048')
             options.log.level = 'debug'
@@ -233,8 +231,9 @@ if selenium:
 
         def formvalue(self, form, field, value):
             form_element = self._find_by(id=form)
-            elements = form_element.find_elements_by_css_selector(
-                                    '[name="{0}"], [id="{0}"]'.format(field))
+            selector = '[name="{0}"], [id="{0}"]'.format(field)
+            elements = form_element.find_elements(by=By.CSS_SELECTOR,
+                                                  value=selector)
             for element in elements:
                 tag = element.tag_name
                 if tag == 'input':
@@ -268,7 +267,8 @@ if selenium:
                     element.send_keys(value)
                     return
                 if tag == 'select':
-                    for option in element.find_elements_by_tag_name('option'):
+                    for option in element.find_elements(by=By.CSS_SELECTOR,
+                                                        value='option'):
                         if value == option.get_attribute('value') or \
                                 value == option.get_property('textContent'):
                             option.click()
@@ -312,7 +312,8 @@ if selenium:
 
         def toggle_foldable(self, *args, **kwargs):
             foldable = self._find_by(*args, **kwargs)
-            method = lambda: foldable.find_element_by_tag_name('a')
+            method = lambda: foldable.find_element(by=By.CSS_SELECTOR,
+                                                   value='a')
             anchor = self.wait_for(method, timeout=2)
             anchor.click()
 
@@ -396,8 +397,8 @@ if selenium:
                     if element is None:
                         url = self.write_source()
                         raise ValueError('No form property in %s' % url)
-                for element in element.find_elements_by_css_selector(
-                        '[type="submit"]'):
+                for element in element.find_elements(by=By.CSS_SELECTOR,
+                                                     value='[type="submit"]'):
                     if element.is_enabled():
                         break
                 else:
@@ -440,12 +441,14 @@ if selenium:
             node = self.driver
             try:
                 if form:
-                    node = node.find_element_by_css_selector(
-                        'form[id="{0}"], form[name="{0}"]'.format(form))
+                    selector = 'form[id="{0}"], form[name="{0}"]'.format(form)
+                    node = node.find_element(by=By.CSS_SELECTOR,
+                                             value=selector)
                 if field:
-                    node = node.find_element_by_css_selector(
-                        '[id="{0}"], [name="{0}"], '
-                        '[type="submit"][value="{0}"]'.format(field))
+                    selector = ('[id="{0}"], [name="{0}"], '
+                                '[type="submit"][value="{0}"]').format(field)
+                    node = node.find_element(by=By.CSS_SELECTOR,
+                                             value=selector)
                 return node
             except NoSuchElementException as e:
                 url = self.write_source()
@@ -488,7 +491,8 @@ if selenium:
                 return element.parent.execute_script(script, element)
             re_pattern = re.compile(pattern)
             search = lambda text: text and re_pattern.search(text)
-            for element in self.driver.find_elements_by_tag_name('a'):
+            for element in self.driver.find_elements(by=By.CSS_SELECTOR,
+                                                     value='a'):
                 if search(element.get_property('textContent')) or \
                         search(get_href(element)):
                     return element
