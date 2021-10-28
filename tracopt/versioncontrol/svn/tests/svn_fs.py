@@ -56,6 +56,13 @@ def _create_context(env):
     return web_context(req)
 
 
+def _normalize_repos_path(path):
+    if os.name == 'nt':
+        drive, tail = os.path.splitdrive(path)
+        path = drive.upper() + tail.replace('\\', '/')
+    return path
+
+
 def setlocale(fn=None, locales=None):
     """Decorator to call test method with each locale.
     """
@@ -153,8 +160,9 @@ class NormalTests(object):
                     return td
 
     def test_repos_properties(self):
+        repos_path = _normalize_repos_path(REPOS_PATH)
         self.assertEqual(REPOS_UUID, self.repos.uuid)
-        self.assertEqual('svn:%s:%s' % (REPOS_UUID, REPOS_PATH),
+        self.assertEqual('svn:%s:%s' % (REPOS_UUID, repos_path),
                          self.repos.base)
         self.assertEqual(self.repos.name, self.repos.base)
 
@@ -1111,10 +1119,11 @@ Overlapped keywords:
 class ScopedTests(object):
 
     def test_repos_properties(self):
+        repos_path = _normalize_repos_path(REPOS_PATH)
         self.assertEqual(REPOS_UUID, self.repos.uuid)
-        self.assertEqual('svn:%s:%s' % (REPOS_UUID, REPOS_PATH),
+        self.assertEqual('svn:%s:%s' % (REPOS_UUID, repos_path),
                          self.repos.base)
-        self.assertEqual('svn:%s:%s/tête' % (REPOS_UUID, REPOS_PATH),
+        self.assertEqual('svn:%s:%s/tête' % (REPOS_UUID, repos_path),
                          self.repos.name)
 
     def test_repos_normalize_path(self):
