@@ -14,6 +14,7 @@
 
 from datetime import datetime
 import argparse
+import io
 import os.path
 import sys
 
@@ -127,8 +128,12 @@ def main():
         target.locale = locale
         target.language_team = '%s <%s>' % (locale, pot.msgid_bugs_address)
         target.fuzzy = False  # clear fuzzy flag of the header
+        with io.BytesIO() as buf:
+            write_po(buf, target)
+            content = str(buf.getvalue(), 'utf-8')
+        # write catalog with native newline
         with open(target_file, 'w', encoding='utf-8') as f:
-            write_po(f, target)
+            f.write(content)
             del f
         print('Merged %d messages from %s and updated %s' % (n, source_file,
                                                              target_file))
