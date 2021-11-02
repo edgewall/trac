@@ -477,7 +477,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/%(version)s/jquery-ui.min.js.
 
-        (''since 1.0'')""", doc_args={'version': '1.12.1'})
+        (''since 1.0'')""", doc_args={'version': '1.13.0'})
 
     jquery_ui_theme_location = Option('trac', 'jquery_ui_theme_location', '',
         """Location of the theme to be used with the jQuery UI !JavaScript
@@ -492,7 +492,7 @@ class Chrome(Component):
         or
         http://ajax.aspnetcdn.com/ajax/jquery.ui/%(version)s/themes/start/jquery-ui.css.
 
-        (''since 1.0'')""", doc_args={'version': '1.12.1'})
+        (''since 1.0'')""", doc_args={'version': '1.13.0'})
 
     mainnav = ConfigSection('mainnav', """Configures the main navigation bar,
         which by default contains //Wiki//, //Timeline//, //Roadmap//,
