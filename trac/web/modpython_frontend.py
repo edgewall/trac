@@ -16,6 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
+import importlib
 import os
 import pkg_resources
 import sys
@@ -143,7 +144,7 @@ def handler(req):
                 egg_cache = req.subprocess_env.get('PYTHON_EGG_CACHE')
             if egg_cache:
                 pkg_resources.set_extraction_path(egg_cache)
-            reload(sys.modules['trac.web'])
+            importlib.reload(sys.modules['trac.web'])
     pkg_resources.require('Trac==%s' % VERSION)
     gateway = ModPythonGateway(req, req.get_options())
     from trac.web.main import dispatch_request
