@@ -6204,7 +6204,7 @@ msgstr "このファイルの%(last_change)sは %(rev)s で %(author)s が %(age
 
 #: trac/versioncontrol/templates/browser.html:272
 msgid "File size:"
-msgstr "タイムゾーン:"
+msgstr "ファイルサイズ:"
 
 #: trac/versioncontrol/templates/browser.html:292
 msgid "Repository Index"
