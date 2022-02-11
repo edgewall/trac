@@ -1214,6 +1214,8 @@ class ScopedTests(object):
         self.assertEqual(8, node.content_length)
         self.assertEqual('text/plain', node.content_type)
         self.assertEqual(b'A test.\n', node.get_content().read())
+        node = self.repos.get_node('/Résumé.txt')
+        self.assertIsNone(node.content_type)
 
     def test_get_dir_properties(self):
         f = self.repos.get_node('/dir1')

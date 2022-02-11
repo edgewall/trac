@@ -827,7 +827,7 @@ class SubversionNode(Node):
     def _get_prop(self, name):
         value = fs.node_prop(self.root, self._scoped_path_utf8, name,
                              self.pool)
-        return to_unicode(value)
+        return _from_svn(value)
 
     def get_branch_origin(self):
         """Return the revision in which the node's path was created.
