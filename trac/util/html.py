@@ -24,7 +24,11 @@ import sys
 from html import entities
 from html.parser import HTMLParser
 
-from markupsafe import Markup, escape as escape_quotes, soft_unicode
+from markupsafe import Markup, escape as escape_quotes
+try:
+    from markupsafe import soft_str as soft_unicode
+except ImportError:
+    from markupsafe import soft_unicode
 
 try:
     from babel.support import LazyProxy
