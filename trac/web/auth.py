@@ -348,7 +348,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
         if header and header.startswith('Basic'):
-            auth = b64decode(header[6:]).split(':')
+            auth = b64decode(header[6:]).split(':', 1)
             if len(auth) == 2:
                 user, password = auth
                 if self.test(user, password):

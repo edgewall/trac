@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import base64
 import os
 
 import trac.tests.compat
@@ -216,6 +217,17 @@ class BasicAuthenticationTestCase(unittest.TestCase):
     def test_sha(self):
         self.assertTrue(self.auth.test('sha', 'sha'))
         self.assertFalse(self.auth.test('sha', 'other'))
+
+    def test_colon_in_password(self):
+        def do_auth(username, password):
+            value = 'Basic ' + base64.b64encode('%s:%s' % (username, password))
+            environ = {'HTTP_AUTHORIZATION': value}
+            def start_response(status, headers):
+                return lambda body: None
+            return self.auth.do_auth(environ, start_response)
+        self.assertEqual('colon', do_auth('colon', 'blah:blah'))
+        self.assertIsNone(do_auth('colon', 'blah:blah:'))
+        self.assertIsNone(do_auth('colon', 'blah:blah:blah'))
 
 
 def suite():
