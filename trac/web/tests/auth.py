@@ -11,11 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+import base64
 import os
 import tempfile
 
 from trac.core import TracError
 from trac.util.compat import crypt
+from trac.util.text import unicode_to_base64
 from trac.test import EnvironmentStub, MockRequest, rmtree
 from trac.web.auth import BasicAuthentication, DigestAuthentication, LoginModule
 
@@ -184,6 +186,7 @@ class BasicAuthenticationTestCase(unittest.TestCase):
             fd.write("crypt:PgjnZnmDQ8S7w\n")
             fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/\n")
             fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=\n")
+            fd.write("colon:$apr1$YMlTTmM3$01fy1fQDi4sc48d/FaohC/\n")
 
     def test_crypt(self):
         self._write_default_htpasswd()
@@ -202,6 +205,20 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         auth = BasicAuthentication(self.filename, 'realm')
         self.assertTrue(auth.test('sha', 'sha'))
         self.assertFalse(auth.test('sha', 'other'))
+
+    def test_colon_in_password(self):
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        def do_auth(username, password):
+            value = 'Basic ' + unicode_to_base64('%s:%s' %
+                                                 (username, password))
+            environ = {'HTTP_AUTHORIZATION': value}
+            def start_response(status, headers):
+                return lambda body: None
+            return auth.do_auth(environ, start_response)
+        self.assertEqual('colon', do_auth('colon', 'blah:blah'))
+        self.assertIsNone(do_auth('colon', 'blah:blah:'))
+        self.assertIsNone(do_auth('colon', 'blah:blah:blah'))
 
     def test_extra_entries_ignored(self):
         """Extra entries and comments are ignored."""
