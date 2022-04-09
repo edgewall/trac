@@ -20,11 +20,13 @@ from pkg_resources import resource_listdir, resource_string
 
 from trac.loader import load_components
 from trac.test import EnvironmentStub, Mock, MockPerm
+from trac.util.html import Element
 from trac.util.text import printout
 from trac.web.chrome import web_context
 from trac.web.href import Href
 from trac.wiki.formatter import Formatter
 from trac.wiki.model import WikiPage
+from trac.wiki.parser import WikiParser
 
 
 TURN_ON = '\033[30m\033[41m'
@@ -36,16 +38,26 @@ class DefaultWikiChecker(Formatter):
     def __init__(self, env, context, name):
         Formatter.__init__(self, env, context)
         self.__name = name
+        self.__mark = None
         self.__marks = []
         self.__super = super()
+        namespaces = set(('http', 'https', 'data', 't', 'trac'))
+        namespaces.update(WikiParser(env).link_resolvers)
+        self.__namespaces = frozenset(namespaces)
 
     def handle_match(self, fullmatch):
+        self.__mark = None
         rv = self.__super.handle_match(fullmatch)
-        if rv:
-            text = str(rv) if not isinstance(rv, str) else rv
-            if text.startswith('<a ') and text.endswith('</a>') and \
-                    'class="missing ' in text:
-                self.__marks.append((fullmatch.start(0), fullmatch.end(0)))
+        if self.__mark is True:
+            self.__marks.append((fullmatch.start(0), fullmatch.end(0)))
+        return rv
+
+    def _make_link(self, ns, target, match, label, fullmatch):
+        rv = self.__super._make_link(ns, target, match, label, fullmatch)
+        mark = ns.lower() not in self.__namespaces
+        if not mark and isinstance(rv, Element):
+            mark = 'missing' in rv.attrib.get('class').split()
+        self.__mark = mark
         return rv
 
     def handle_code_block(self, line, startmatch=None):
