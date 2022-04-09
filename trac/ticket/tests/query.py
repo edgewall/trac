@@ -127,6 +127,12 @@ class QueryTestCase(unittest.TestCase):
         self.assertTrue(self.query_module.match_request(req))
         return self.query_module.process_request(req)
 
+    def _render_template(self, req, template, data):
+        rendered = Chrome(self.env).render_template(req, template, data,
+                                                    {'fragment': False,
+                                                     'iterable': False})
+        return unicode(rendered, 'utf-8')
+
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
         sql, args = query.get_sql()
@@ -1350,17 +1356,13 @@ ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
         id_range = '%d-%d' % (tktids[0], tktids[-1])
         req = MockRequest(self.env, path_info='/query',
                           args={'id': id_range, 'col': 'blah', 'order': 'id'})
-        mod = QueryModule(self.env)
-        self.assertTrue(mod.match_request(req))
-        template, data = mod.process_request(req)
+        template, data = self._process_request(req)
         tickets = data['tickets']
         self.assertEqual(tktids[0], tickets[0]['id'])
         self.assertEqual(True, tickets[0]['blah'])
         self.assertEqual(tktids[1], tickets[1]['id'])
         self.assertEqual(False, tickets[1]['blah'])
-        rendered = Chrome(self.env).render_template(req, template, data,
-                                                    {'fragment': False,
-                                                     'iterable': False})
+        rendered = self._render_template(req, template, data)
         matches = list(re.finditer(r'<td class="blah">\s*([^<\s]*)\s*</td>',
                                    rendered))
         self.assertEqual('yes', matches[0].group(1))
@@ -1389,6 +1391,25 @@ ORDER BY COALESCE(t.id,0)=0,t.id""".format(**quoted))
             self.fail('No application/rss+xml in %r' % alternates)
         self.assertIn('/trac.cgi/login?referer=%2Ftrac.cgi%2Fquery%3F',
                       link['href'])
+
+    def test_add_filter_and_clause(self):
+
+        name_re = re.compile(r'\bname="(add_(?:filter|clause)_[^"]*)"')
+
+        def test_names(expected, query_string):
+            req = MockRequest(self.env, path_info='/query',
+                              arg_list=parse_arg_list(query_string))
+            template, data = self._process_request(req)
+            rendered = self._render_template(req, template, data)
+            actual = sorted(m.group(1) for m in name_re.finditer(rendered))
+            self.assertEqual(expected, actual)
+
+        test_names(['add_clause_1', 'add_filter_0'], 'status=closed')
+        test_names(['add_clause_2', 'add_filter_0', 'add_filter_1'],
+                   'status=closed&or&resolution=fixed')
+        test_names(['add_clause_3', 'add_filter_0', 'add_filter_1',
+                    'add_filter_2'],
+                   'status=closed&or&resolution=fixed&or&owner=joe')
 
 
 class QueryLinksTestCase(unittest.TestCase):
