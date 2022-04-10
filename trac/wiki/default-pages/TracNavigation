@@ -22,7 +22,7 @@ Note the entries on the main navigation are displayed in uppercase regardless of
 === `[metanav]` #metanav-bar
 `[metanav]` corresponds to the '''meta navigation bar''', by default positioned above the main navigation bar and below the ''Search'' box. It contains the ''Login'', ''Logout'', ''!Help/Guide'' etc. entries. This navigation bar is meant to access some global information about the Trac project and the current user.
 
-There is one special entry in the  `[metanav]` section: `logout.redirect` is the page the user sees after hitting the logout button.  The ''!Help/Guide'' link is also hidden in the following example.
+There is one special entry in the `[metanav]` section: `logout.redirect` is the page the user sees after hitting the logout button. The ''!Help/Guide'' link is also hidden in the following example.
 [[comment(see also #Trac3808)]]
 
 ** Example **

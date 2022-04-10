@@ -2,7 +2,7 @@
 
 [[TracGuideToc]]
 
-Trac encodes all text using [wikipedia:UTF-8], including text in tickets and wiki pages. Internal processing of text uses true [wikipedia:Unicode] representations. As such, it supports the most commonly used character encodings.
+Trac encodes all text using [https://en.wikipedia.org/wiki/UTF-8 UTF-8], including text in tickets and wiki pages. Internal processing of text uses true [https://en.wikipedia.org/wiki/Unicode Unicode] representations. As such, it supports the most commonly used character encodings.
 
 If the default encoding of your source code repository is not UTF-8, you can specify it in [TracIni#trac-default_charset-option "[trac] default_charset"]:
 {{{#!ini

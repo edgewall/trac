@@ -6,7 +6,7 @@ Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based
 
 == Plugin discovery
 
-From the user's point of view, a plugin is either a single .py file or a package (.egg or .whl). Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Plugins installed to the project environment `plugins` directory are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.  Plugins installed elsewhere must be explicitly enabled in the [[TracIni#components-section| [components] ]] section of the `trac.ini` file.
+A plugin is either a single .py file or a package (.egg or .whl). Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Plugins installed to the project environment `plugins` directory are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.  Plugins installed elsewhere must be explicitly enabled in the [TracIni#components-section "[components]"] section of the `trac.ini` file.
 
 == Installing a Trac plugin
 
@@ -14,13 +14,10 @@ The instructions below are applicable to a plugins installed as packages. Plugin
 
 === For a single project
 
-Packages built for a single project must use the egg
-format, as the wheel format (described below) is not
-supported by the setuptools loading mechanism. Build the `egg` file from the plugin source:
+Packages built for a single project must use the egg format, as the wheel format (described below) is not supported by the setuptools loading mechanism. Build the `egg` file from the plugin source:
 
 * Checkout or download and unpack the source.
-* Change to the directory containing `setup.py`.
-* Run:
+* Change to the directory containing `setup.py` and run:
  {{{#!sh
 $ python setup.py bdist_egg
 }}}
@@ -51,7 +48,7 @@ replacement for the egg format.
 
 ==== From PyPI
 
-Some plugins, such as [th:TagsPlugin TracTags], can be installed directly from [https://pypi.org PyPI] using `pip`:
+Some plugins, such as [https://trac-hacks.org/wiki/TagsPlugin TracTags], can be installed directly from [https://pypi.org PyPI] using `pip`:
 {{{#!sh
 $ pip install TracTags
 }}}

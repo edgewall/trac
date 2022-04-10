@@ -141,22 +141,28 @@ To link explicitly to a [=#toplevel toplevel] Wiki page, use the `wiki:/` prefix
 
 === Link anchors
 
-To create a link to a specific anchor in a page, use '#':
+To create a link to a specific anchor in a page, use `#`:
 {{{
  [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
 }}}
   [#Linkanchors Link anchors] or [[#Linkanchors|Link anchors]]
 
+To create an anchor in a page, use `[=#...]`:
+{{{
+ [=#myanchor my anchor] or empty form [=#myanchor] 
+}}}
+ [=#myanchor my anchor] or empty form [=#myanchor] 
+
 Hint: when you hover your mouse over the title of a section, a '¶' character will be displayed. This is a link to that specific section and you can use this to copy the `#...` part inside a relative link to an anchor.
 
-To create a link to the first or last occurrence of a term on a page, use a ''pseudo anchor'' starting with '#/' or '#?':
+To create a link to the first or last occurrence of a term on a page, use a ''pseudo anchor'' starting with `#/` or `#?`:
 {{{
  [#/Milestone first occurrence of Milestone] or
  [#?Milestone last occurrence of Milestone]
 }}}
  [#/Milestone first occurrence of Milestone] or
  [#?Milestone last occurrence of Milestone]
-This will also highlight all other matches on the linked page. By default only case sensitive matches are considered. To include case insensitive matches append '/i':
+This will also highlight all other matches on the linked page. By default only case sensitive matches are considered. To include case insensitive matches append `/i`:
 {{{
  [#/Milestone/i first occurrence of Milestone or milestone] or
  [#?Milestone/i last occurrence of Milestone or milestone]
@@ -175,7 +181,7 @@ Such anchors can be very useful for linking to specific lines in a file in the s
  [trac:source:tags/trac-0.12/trac/ticket/roadmap.py#L47 Line 47]
 (Hint: The line numbers displayed in the source browser are links to anchors on the respective lines.)
 
-Since such links become outdated when the file changes, it can be useful to link using a '#/' pseudo anchor instead:
+Since such links become outdated when the file changes, it can be useful to link using a `#/` pseudo anchor instead:
 {{{
  [trac:source:trunk/trac/wiki/api.py#/IWikiSyntaxProvider IWikiSyntaxProvider] or
  [trac:source:trunk/trac/env.py#/ISystemInfoProvider ISystemInfoProvider]
@@ -268,7 +274,7 @@ Note that the older way, putting the filename at the end, is still supported: !a
 
 If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use `raw-attachment:` instead of `attachment:`.
 
-This can be useful for pointing directly to an HTML document, for example. Note that for this use case, you'd have to allow the web browser to render the content by setting [[TracIni#attachment-render_unsafe_content-option|"[attachment] render_unsafe_content"]] = `enabled`. Caveat: only do that in environments for which you're 100% confident you can trust the people who are able to attach files, as this opens up your site to [wikipedia:Cross-site_scripting cross-site scripting] attacks.
+This can be useful for pointing directly to an HTML document, for example. Note that for this use case, you'd have to allow the web browser to render the content by setting [[TracIni#attachment-render_unsafe_content-option|"[attachment] render_unsafe_content"]] = `enabled`. Caveat: only do that in environments for which you're 100% confident you can trust the people who are able to attach files, as this opens up your site to [https://en.wikipedia.org/wiki/Cross-site_scripting cross-site scripting] attacks.
 
 See also [#export:links].
 

@@ -72,14 +72,14 @@ The subscription rule name on the left side of the `=` can be anything, it has n
 
 The following attributes of default subscriptions can be configured:
 * `.distributor` (Default: `email`)
-  * Other values require plugins. For example `on-site` requires th:OnSiteNotificationsPlugin.
+  * Other values require plugins. For example `on-site` requires [https://trac-hacks.org/wiki/OnSiteNotificationsPlugin OnSiteNotificationsPlugin].
 * `.priority` (Default: `100`)
   * Smaller values override larger values.
   * If you use `0`, then users will not be able to override this rule.
 * `.adverb` (Default: `always`)
   * `never` can be used to silence other subscription rules with higher values.
 * `.format` (Default: `text/plain`)
-  * Other values require plugins. For example `text/html` requires th:TracHtmlNotificationPlugin.
+  * Other values require plugins. For example `text/html` requires [https://trac-hacks.org/wiki/TracHtmlNotificationPlugin TracHtmlNotificationPlugin].
 
 === Example Configuration (default subscriptions)
 

@@ -124,7 +124,7 @@ Note that `name.alias = target` makes `name` an alias for the `target` repo, not
 
 Caching improves the performance browsing the repository, viewing logs and viewing changesets. Cached repositories must be [#Synchronization synchronized], using either explicit or implicit synchronization. When searching changesets, only cached repositories are searched.
 
-Repositories that support caching are cached by default. The Subversion and Git backends support caching. The [trac:TracMercurial Mercurial plugin] does not yet support caching ([trac:#8417]). To disable caching, set the `cached` attribute to `false`.
+The Subversion and Git backends support caching. The [trac:TracMercurial Mercurial plugin] does not yet support caching ([trac:#8417]). To disable caching, set the `cached` attribute to `false`.
 
 After adding a cached repository, the cache must be populated with the `trac-admin $ENV repository resync` command.
 

@@ -45,7 +45,7 @@ To install Trac, the following software packages must be installed:
 -  `setuptools <https://pypi.org/project/setuptools>`__, version > 5.6
 -  `Jinja2 <https://pypi.org/project/Jinja2>`__, version >= 2.9.3
 
-You also need a database system and the corresponding python bindings.
+You also need a database system and the corresponding Python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
 
 .. _forsqlite:
@@ -265,16 +265,6 @@ page. After extracting the archive, change to the directory containing
 ``pip`` supports numerous other install mechanisms. It can be passed the
 URL of an archive or other download location. Here are some examples:
 
--  Install the latest stable version from a zip archive:
-
-   .. container:: wiki-code
-
-      .. container:: code
-
-         ::
-
-            $ pip install https://download.edgewall.org/trac/Trac-latest.zip
-
 -  Install the latest development version from a tar archive:
 
    .. container:: wiki-code
@@ -293,7 +283,7 @@ URL of an archive or other download location. Here are some examples:
 
          ::
 
-            $ pip install svn+https://svn.edgewall.org/repos/trac/branches/1.2-stable
+            $ pip install svn+https://svn.edgewall.org/repos/trac/branches/1.4-stable
 
 -  Install the latest development preview (*not recommended for
    production installs*):
@@ -490,12 +480,7 @@ Generating the Trac cgi-bin directory
 Application scripts for CGI, FastCGI and mod-wsgi can be generated using
 the `trac-admin <https://trac.edgewall.org/wiki/TracAdmin>`__ ``deploy``
 command:
-
-.. code::
-
-   deploy <directory>
-
-       Extract static resources from Trac and all plugins
+`TracAdminHelp(deploy) <https://trac.edgewall.org/wiki/TracAdminHelp(deploy)>`__
 
 Grant the web server execution right on scripts in the ``cgi-bin``
 directory.
@@ -583,7 +568,7 @@ Assuming the deployment has been done this way:
 
       ::
 
-         $ trac-admin /var/trac/<project> deploy /var/www
+         $ trac-admin /var/trac/<project> deploy /var/www/trac
 
 Add the following snippet to Apache configuration, changing paths to
 match your deployment. The snippet must be placed *before* the
@@ -596,9 +581,9 @@ directives map all requests to the Trac application:
 
       ::
 
-         Alias /trac/chrome /path/to/trac/htdocs
+         Alias /trac/chrome /var/www/trac/htdocs
 
-         <Directory "/path/to/www/trac/htdocs">
+         <Directory "/var/www/trac/htdocs">
            # For Apache 2.2
            <IfModule !mod_authz_core.c>
              Order allow,deny
