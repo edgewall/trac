@@ -150,7 +150,7 @@ This is displayed as:
 
 === Format: table
 
-You can choose the columns displayed in the table format (`format=table`) using `col=<field>`. You can specify multiple fields and the order they are displayed by placing pipes (`|`) between the columns:
+You can choose the columns displayed in the table format (`format=table`) using `col=<field>`. You can specify multiple fields and the order they are displayed in by placing pipes (`|`) between the columns:
 {{{
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
 }}}

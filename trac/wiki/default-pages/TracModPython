@@ -244,12 +244,6 @@ The workaround is to use negation expression as follows (for multi project setup
 </Location>
 }}}
 
-=== Expat-related segmentation faults === #expat
-
-This problem will most certainly hit you on Unix when using Python 2.4.
-In Python 2.4, some version of [http://expat.sourceforge.net/ Expat] (an XML parser library written in C) is used and if Apache is using another version, this results in segmentation faults.
-As Trac 0.11 is using Genshi, which will indirectly use Expat, that problem can now hit you even if everything was working fine before with Trac 0.10. This problem has not been reported for Python 2.5+, so best to upgrade.
-
 === Form submission problems
 
 If you're experiencing problems submitting some of the forms in Trac (a common problem is that you get redirected to the start page after submission), check whether your {{{DocumentRoot}}} contains a folder or file with the same path that you mapped the mod_python handler to. For some reason, mod_python gets confused when it is mapped to a location that also matches a static resource.

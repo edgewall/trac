@@ -331,7 +331,7 @@ Realm: TracUserDB                        <--- only if (4) is set. select realm c
 }}}
  1. Modify `/fullpathto/mytracproject/conf/trac.ini`:
  {{{
-#find/set base_rul, url, and link variables
+#find/set base_url, url, and link variables
 base_url = http://yourdomain.com/trac/ <--- base url to generate correct links to
 url = http://yourdomain.com/trac/      <--- link of project
 link = http://yourdomain.com/trac/     <--- link of graphic logo

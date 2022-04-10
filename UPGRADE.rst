@@ -549,7 +549,7 @@ See also: `TracGuide`_, `TracInstall`_
 .. _backup your environment: https://trac.edgewall.org/wiki/TracBackup
 .. _backup_dir: https://trac.edgewall.org/wiki/TracIni#trac-backup_dir-option
 .. _BatchModifyPlugin: https://trac-hacks.org/wiki/BatchModifyPlugin
-.. _convert_db command: https://trac.edgewall.org/wiki/TracAdmin#ChangingDatabaseBackend
+.. _convert_db command: https://trac.edgewall.org/wiki/TracEnvironment#ChangingDatabaseBackend
 .. _custom field type: https://trac.edgewall.org/wiki/TracTicketsCustomFields#AvailableFieldTypesandOptions
 .. _custom subscribers: https://trac.edgewall.org/intertrac/CookBook/Notification/Subscriptions
 .. _DateFieldPlugin: https://trac-hacks.org/wiki/DateFieldPlugin

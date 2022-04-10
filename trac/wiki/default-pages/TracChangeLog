@@ -767,11 +767,11 @@ Trac 1.0 is a major release adding refreshed user interface and improved DVCS re
 
 The following list contains only a few highlights:
  - The default theme looks more modern, especially on recent browsers (no effort has been made to make it look better on older browsers like IE6 or 7)
- - The [TH:GitPlugin] has been donated by Herbert Valerio Riedel to the Trac project (many thanks!) and is now maintained here as an optional component
+ - The [https://trac-hacks.org/wiki/GitPlugin GitPlugin] has been donated by Herbert Valerio Riedel to the Trac project (many thanks!) and is now maintained here as an optional component
  - As a consequence, the Subversion support has been moved below `tracopt.versioncontrol` as well
  - The Git and Mercurial log view feature a visualization of the branching structure
  - Usability improvements for the tickets, with a better support for conflict detection and resolution
- - Integration of the [TH:BatchModifyPlugin], contributed by Brian Meeker (many thanks!) and is now maintained there as a default component
+ - Integration of the [https://trac-hacks.org/wiki/BatchModifyPlugin BatchModifyPlugin], contributed by Brian Meeker (many thanks!) and is now maintained there as a default component
  - jQuery/UI integration, featuring a date picker for date fields
  - Improved integration with Pygments syntax highlighting
  - ... and numerous smaller features added and bugs fixed since 0.12!

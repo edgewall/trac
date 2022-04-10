@@ -101,7 +101,7 @@ Trac has added functionality equivalent to the following plugins:
 * [https://trac-hacks.org/wiki/DynamicVariablesPlugin DynamicVariablesPlugin]: dynamic variables are autocompleted
 * [https://trac-hacks.org/wiki/NavAddPlugin NavAddPlugin]: see TracNavigation
 * [https://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignToPlugin]: subclass `ConfigurableTicketWorkflow` and override `get_allowed_owners`
-* [https://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin]: Use the `trac-admin` [TracAdmin#ChangingDatabaseBackend convert_db command]
+* [https://trac-hacks.org/wiki/TracMigratePlugin TracMigratePlugin]: Use the `trac-admin` [TracEnvironment#ChangingDatabaseBackend convert_db command]
 
 The plugins should be removed when upgrading Trac to 1.4.
 

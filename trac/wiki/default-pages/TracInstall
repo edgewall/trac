@@ -24,7 +24,7 @@ To install Trac, the following software packages must be installed:
 **Setuptools Warning:** If the version of your setuptools is in the range 5.4 through 5.6, the environment variable `PKG_RESOURCES_CACHE_ZIP_MANIFESTS` must be set in order to avoid significant performance degradation. More information may be found in [#DeployingTrac Deploying Trac].
 }}}
 
-You also need a database system and the corresponding python bindings. The database can be either SQLite, PostgreSQL or MySQL.
+You also need a database system and the corresponding Python bindings. The database can be either SQLite, PostgreSQL or MySQL.
 
 ==== For the SQLite database #ForSQLite
 
@@ -133,10 +133,6 @@ $ pip install .
 
 `pip` supports numerous other install mechanisms. It can be passed the URL of an archive or other download location. Here are some examples:
 
-* Install the latest stable version from a zip archive:
-{{{#!sh
-$ pip install https://download.edgewall.org/trac/Trac-latest.zip
-}}}
 * Install the latest development version from a tar archive:
 {{{#!sh
 $ pip install https://download.edgewall.org/trac/Trac-latest-dev.tar.gz
@@ -290,14 +286,14 @@ Alias /trac/chrome/<plugin> /path/to/trac/htdocs/<plugin>
 
 Assuming the deployment has been done this way:
 {{{#!sh
-$ trac-admin /var/trac/<project> deploy /var/www
+$ trac-admin /var/trac/<project> deploy /var/www/trac
 }}}
 
 Add the following snippet to Apache configuration, changing paths to match your deployment. The snippet must be placed ''before'' the `ScriptAlias` or `WSGIScriptAlias` directive, because those directives map all requests to the Trac application:
 {{{#!apache
-Alias /trac/chrome /path/to/trac/htdocs
+Alias /trac/chrome /var/www/trac/htdocs
 
-<Directory "/path/to/www/trac/htdocs">
+<Directory "/var/www/trac/htdocs">
   # For Apache 2.2
   <IfModule !mod_authz_core.c>
     Order allow,deny

@@ -6,11 +6,11 @@ To migrate issue tickets from other issue-tracking systems into Trac or perform 
 
 == !TicketImportPlugin
 
-[https://trac-hacks.org/wiki/TicketImportPlugin TicketImportPlugin]: a plugin that lets you import or update into Trac a series of tickets from a '''CSV file''' or (if the [https://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel spreadsheet'''.
+[https://trac-hacks.org/wiki/TicketImportPlugin TicketImportPlugin]: a plugin that allows you to import or update a series of tickets from a '''CSV file''' or (if the [https://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel spreadsheet''' into Trac.
 
 == !ExportImportXlsPlugin
 
-[https://trac-hacks.org/wiki/ExportImportXlsPlugin ExportImportXlsPlugin]: a plugin that adds an admin panel for exporting and importing tickets via '''XLS file'''. Requires the python packages xlwt/rxld.
+[https://trac-hacks.org/wiki/ExportImportXlsPlugin ExportImportXlsPlugin]: a plugin that allows you to export and import tickets from a '''XLS file'''. Requires the Python packages xlwt/rxld.
 
 == Bugzilla
 
@@ -49,7 +49,7 @@ For more details on the available options, see the configuration section at the 
 
 == Jira
 
-[https://trac-hacks.org/wiki/JiraToTracIntegration JiraToTracIntegration]: a plugin that provides tools to import Atlassian Jira backup files into Trac. The plugin consists of a Python 3.1 commandline tool that:
+[https://trac-hacks.org/wiki/JiraToTracIntegration JiraToTracIntegration]: a plugin that allows you to import Atlassian Jira backup files into Trac. The plugin consists of a Python 3.1 commandline tool that:
  - Parses the Jira backup XML file.
  - Sends the imported Jira data and attachments to Trac using the [https://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin].
  - Generates a htpasswd file containing the imported Jira users and their SHA-512 base64 encoded passwords.
@@ -77,11 +77,11 @@ Also, ticket data can be imported from Sourceforge using the [trac:browser:branc
 
 == Other
 
-Since Trac uses a SQL database to store the data, you can also custom-import from other systems by examining the database tables. Just go into [https://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import them from your application.
+Since Trac uses a SQL database to store the data, you can also import ticket data from other systems by creating a mapping between the relevant database tables. Just go into [https://www.sqlite.org/sqlite.html sqlite] command line to look at the tables, create the column-to-column mapping as an SQL script and import them from your application.
 
 === Comma delimited file - CSV
 
-See [trac:attachment:csv2trac.2.py:wiki:TracSynchronize csv2trac.2.py] for details. This approach is particularly useful if you need to enter a large number of tickets by hand. Note that the ticket type type field, (task etc.) is also needed for this script to work with more recent Trac releases.
+See [trac:attachment:csv2trac.2.py:wiki:TracSynchronize csv2trac.2.py] for details. This approach is particularly useful if you need to enter a large number of tickets by hand. Note that the ticket type field, (task etc.) is also needed for this script to work with more recent Trac releases.
 
 Comments on script: The script has an error on line 168: 'Ticket' needs to be 'ticket'. Also, the listed values for severity and priority are swapped.
 

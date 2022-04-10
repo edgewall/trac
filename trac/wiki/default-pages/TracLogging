@@ -17,7 +17,7 @@ The log method is set using the [TracIni#logging-log_type-option "[logging] log_
 
 == Log Levels
 
-The verbosity level of logged messages can be set using the [TracIni#logging-log_level-option "[logging] log_level"] option. The log level defines the minimum level of urgency required for a message to be logged, and those levels are:
+The verbosity level of logged messages can be set using the [TracIni#logging-log_level-option "[logging] log_level"] option. The log level defines the minimum level of urgency required for a message to be logged:
 
  '''CRITICAL''':: Log only the most critical (typically fatal) errors.
  '''ERROR''':: Log failures, bugs and errors.
@@ -25,7 +25,7 @@ The verbosity level of logged messages can be set using the [TracIni#logging-log
  '''INFO''':: Diagnostic information, log information about all processing.
  '''DEBUG''':: Trace messages, profiling, etc.
 
-Additionally, you can  enable logging of SQL statements at debug level. This is turned off by default, as it's very verbose. Set [TracIni#trac-debug_sql-option "[trac] debug_sql  = yes"] to activate.
+Additionally, you can enable logging of SQL statements at debug level. This is turned off by default, as it's very verbose. Set [TracIni#trac-debug_sql-option "[trac] debug_sql  = yes"] to activate.
 
 == Log Format
 
@@ -41,7 +41,7 @@ The default format is:
 log_format = Trac[$(module)s] $(levelname)s: $(message)s
 }}}
 
-In a multi-project environment where all logs are sent to the same place (e.g. `syslog`), it makes sense to add the project name. In this example we use `basename` since that can generally be used to identify a project:
+In a multi-project environment where all logs are sent to the same place (e.g. `syslog`), it makes sense to add the project name. In this example we use `basename` as that can generally be used to identify a project:
 {{{#!ini
 log_format = Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
 }}}

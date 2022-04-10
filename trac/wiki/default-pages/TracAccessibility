@@ -9,7 +9,7 @@ The global access keys differ by browser and the following work for several brow
  - on a Mac, use `<Ctrl>` + `<Opt>` + `<Key>`
  - on Windows, use `<Shift> + <Alt> + <Key>`. This works for the most common browsers, such as Firefox, Chrome, Safari and Internet Explorer
 
-See [wikipedia:Access_key#Access_in_different_browsers access in different browsers] for more details.
+See [https://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers access in different browsers] for more details.
 
  * `1` - WikiStart
  * `2` - [TracTimeline Timeline]
@@ -27,7 +27,7 @@ See [wikipedia:Access_key#Access_in_different_browsers access in different brows
 The browser can be navigated using the keys listed below. The key modifiers listed above are not used for navigating the browser.
 
 * `j` and `k` - select the next or previous entry, starting with the first
-* `o` ('''o'''pen) - toggle between expanded and collapsed state of the selected  directory or visit the selected file
+* `o` ('''o'''pen) - toggle between expanded and collapsed state of the selected directory or visit the selected file
 * `v` ('''v'''iew, '''v'''isit) and `<Enter>` - same as above
 * `r` - '''r'''eload an already expanded directory
 * `a` - directly visit a file in '''a'''nnotate (blame) mode

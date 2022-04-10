@@ -1,4 +1,5 @@
 = Custom Ticket Fields
+
 Trac supports adding custom, user-defined fields to the ticket module. With custom fields you can add typed, site-specific properties to tickets.
 
 == Configuration
@@ -15,6 +16,7 @@ The syntax of each field definition is:
 The example below should help to explain the syntax.
 
 === Field Names
+
 A field name can only contain lowercase letters a-z, uppercase letters A-Z or digits 0-9, and must not start with a leading digit.
 
 The following field names are reserved and can not be used for custom fields:
@@ -153,10 +155,10 @@ Custom ticket fields are stored in the `ticket_custom` table, not in the `ticket
 {{{#!sql
 SELECT p.value AS __color__,
    id AS ticket, summary, owner, c.value AS progress
-  FROM ticket t, enum p, ticket_custom c
-  WHERE status IN ('assigned') AND t.id = c.ticket AND c.name = 'progress'
-AND p.name = t.priority AND p.type = 'priority'
-  ORDER BY p.value
+FROM ticket t, enum p, ticket_custom c
+WHERE status IN ('assigned') AND t.id = c.ticket AND c.name = 'progress'
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY p.value
 }}}
 '''Note''': This will only show tickets that have progress set in them. This is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query.
 
@@ -169,11 +171,11 @@ SELECT p.value AS __color__,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter,
    (CASE WHEN c.value = '0' THEN 'None' ELSE c.value END) AS progress
-  FROM ticket t
-     LEFT OUTER JOIN ticket_custom c ON (t.id = c.ticket AND c.name = 'progress')
-     JOIN enum p ON p.name = t.priority AND p.type='priority'
-  WHERE status IN ('new', 'assigned', 'reopened')
-  ORDER BY p.value, milestone, severity, time
+FROM ticket t
+   LEFT OUTER JOIN ticket_custom c ON (t.id = c.ticket AND c.name = 'progress')
+   JOIN enum p ON p.name = t.priority AND p.type = 'priority'
+WHERE status IN ('new', 'assigned', 'reopened')
+ORDER BY p.value, milestone, severity, time
 }}}
 
 Note in particular the `LEFT OUTER JOIN` statement here.

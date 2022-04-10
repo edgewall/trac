@@ -2,11 +2,12 @@
 
 [[PageOutline(2-5,Contents,pullout)]]
 [[TracGuideToc]]
-The Trac ticket system provides a configurable workflow.
+
+The Trac ticket system provides a configurable workflow on how tickets are treated.
 
 == The Default Ticket Workflow
 
-When a new environment is created, a default workflow is configured in your trac.ini. This workflow is the basic workflow, as specified in [trac:source:branches/1.4-stable/trac/ticket/workflows/basic-workflow.ini basic-workflow.ini]:
+When a new environment is created, a default workflow is configured in your `trac.ini`. This workflow is the basic workflow, as specified in [trac:source:branches/1.4-stable/trac/ticket/workflows/basic-workflow.ini basic-workflow.ini]:
 
 {{{#!Workflow width=700 height=300
 leave = * -> *
@@ -61,7 +62,7 @@ The first line in this example defines the `accept` action, along with the state
 
 The `accept.permissions` line specifies the permissions the user must have to use this action. [trac:ExtraPermissionsProvider] can define new permissions to be used here.
 
-The `accept.operations` line specifies changes that will be made to the ticket in addition to the status change when the action is taken.  In this case, when a user clicks on `accept`, the ticket owner field is updated to the logged in user.  Multiple operations may be specified in a comma separated list.
+The `accept.operations` line specifies changes that will be made to the ticket in addition to the status change when the action is taken. In this case, when a user clicks on `accept`, the ticket owner field is updated to the logged in user. Multiple operations may be specified in a comma separated list.
 
 The available operations are:
 - **del_owner** -- Clears the owner field.
@@ -157,7 +158,7 @@ The script outputs `trac.pdf` in the same directory as the `trac.ini` file.
 
 == Example: Adding optional Testing with Workflow
 
-The following adds a `testing` action. When the ticket has status `new`, `accepted` or `needs_work`, you can choose to submit it for testing.  When it's in the testing status the user gets the option to reject it and send it back to `needs_work`, or pass the testing and send it along to `closed`. If they accept it, then it is automatically marked as `closed` and the resolution is set to `fixed`. Since all the old work flow remains, a ticket can skip this entire section.
+The following adds a `testing` action. When the ticket has status `new`, `accepted` or `needs_work`, you can choose to submit it for testing. When it's in the testing status the user gets the option to reject it and send it back to `needs_work`, or pass the testing and send it along to `closed`. If they accept it, then it is automatically marked as `closed` and the resolution is set to `fixed`. Since all the old workflow remains, a ticket can skip this entire section.
 
 {{{#!ini
 testing = new,accepted,needs_work,assigned,reopened -> testing
@@ -248,4 +249,4 @@ If you add additional states to your workflow, you may want to customize your mi
 
 == Ideas for next steps
 
-Enhancement ideas for the workflow system should be filed as enhancement tickets against the [trac:query:?status=assigned&status=new&status=reopened&keywords=~workflow&component=ticket+system ticket system] component.  You can also document ideas on the [trac:TracIdeas/TracWorkflow TracIdeas/TracWorkflow] page.
+Enhancement ideas for the workflow system should be filed as enhancement tickets against the [trac:query:?status=assigned&status=new&status=reopened&keywords=~workflow&component=ticket+system ticket system] component. You can also document ideas on the [trac:TracIdeas/TracWorkflow TracIdeas/TracWorkflow] page.

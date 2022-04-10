@@ -46,7 +46,7 @@ Setuptools Warning: If the version of your setuptools is in the range
 significant performance degradation. More information may be found in
 `Deploying Trac`_.
 
-You also need a database system and the corresponding python bindings.
+You also need a database system and the corresponding Python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
 
 
@@ -222,13 +222,6 @@ and run:
 
 `pip` supports numerous other install mechanisms. It can be passed the
 URL of an archive or other download location. Here are some examples:
-
-
-+ Install the latest stable version from a zip archive:
-
-::
-
-    $ pip install https://download.edgewall.org/trac/Trac-latest.zip
 
 
 + Install the latest development version from a tar archive:
@@ -518,7 +511,7 @@ Assuming the deployment has been done this way:
 
 ::
 
-    $ trac-admin /var/trac/<project> deploy /var/www
+    $ trac-admin /var/trac/<project> deploy /var/www/trac
 
 
 Add the following snippet to Apache configuration, changing paths to
@@ -529,9 +522,9 @@ map all requests to the Trac application:
 
 ::
 
-    Alias /trac/chrome /path/to/trac/htdocs
+    Alias /trac/chrome /var/www/trac/htdocs
     
-    <Directory "/path/to/www/trac/htdocs">
+    <Directory "/var/www/trac/htdocs">
       # For Apache 2.2
       <IfModule !mod_authz_core.c>
         Order allow,deny
