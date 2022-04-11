@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2021 Edgewall Software
+# Copyright (C) 2004-2022 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin
 # All rights reserved.
 #

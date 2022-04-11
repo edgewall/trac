@@ -1,5 +1,5 @@
 # Norwegian Bokmål (Norway) translations for Trac.
-# Copyright (C) 2008-2021 Edgewall Software
+# Copyright (C) 2008-2022 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Odd Simon Simonsen <simon-code@bvnetwork.no>, 2008.
 #
