@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014-2021 Edgewall Software
+# Copyright (C) 2014-2022 Edgewall Software
 # Copyright (C) 2008 Stephen Hansen
 # Copyright (C) 2009-2010 Robert Corsaro
 # All rights reserved.

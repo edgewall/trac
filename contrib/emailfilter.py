@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2021 Edgewall Software
+# Copyright (C) 2005-2022 Edgewall Software
 # Copyright (C) 2005 Daniel Lundin <daniel@edgewall.com>
 # All rights reserved.
 #

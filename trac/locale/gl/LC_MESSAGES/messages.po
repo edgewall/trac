@@ -1,6 +1,6 @@
 # translation of messages.po to Galician
 # Galician translations for Trac.
-# Copyright (C) 2009-2021 Edgewall Software
+# Copyright (C) 2009-2022 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # José manuel Castroagudín Silva <chavescesures@gmail.com>, 2009.
