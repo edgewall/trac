@@ -331,7 +331,11 @@ class MySQLConnector(Component):
                               "don't have the collations: %(tables)s",
                               tables=', '.join(non_utf8bin)))
 
-    SUPPORTED_COLLATIONS = (('utf8', 'utf8_bin'), ('utf8mb4', 'utf8mb4_bin'))
+    SUPPORTED_COLLATIONS = (
+        ('utf8mb4', 'utf8mb4_bin'),
+        ('utf8mb3', 'utf8_bin'),
+        ('utf8', 'utf8_bin'),
+    )
 
     def _verify_variables(self, db):
         cursor = db.cursor()
@@ -404,7 +408,10 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         cursor = cnx.cursor()
         cursor.execute("SHOW VARIABLES WHERE "
                        " variable_name='character_set_database'")
-        self.charset = cursor.fetchone()[1]
+        charset = cursor.fetchone()[1]
+        if charset == 'utf8mb3':
+            charset = 'utf8'
+        self.charset = charset
         cursor.close()
         if self.charset != opts['charset']:
             cnx.close()
