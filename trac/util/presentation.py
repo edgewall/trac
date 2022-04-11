@@ -21,8 +21,13 @@ from datetime import datetime
 from math import ceil
 import re
 
-from jinja2 import Undefined, contextfilter, evalcontextfilter
+from jinja2 import Undefined
 from jinja2.filters import make_attrgetter
+try:
+    from jinja2 import pass_context, pass_eval_context
+except ImportError:
+    from jinja2 import (contextfilter as pass_context,
+                        evalcontextfilter as pass_eval_context)
 
 from trac.core import TracError
 from .datefmt import to_utimestamp, utc
@@ -72,7 +77,7 @@ def jinja2_update(jenv):
 
 # -- Jinja2 custom filters
 
-@evalcontextfilter
+@pass_eval_context
 def htmlattr_filter(_eval_ctx, d, autospace=True):
     """Create an SGML/XML attribute string based on the items in a dict.
 
@@ -259,7 +264,7 @@ def group(iterable, num, predicate=None):
         yield tuple(buf)
 
 
-@contextfilter
+@pass_context
 def groupattr_filter(_eval_ctx, iterable, num, attr, *args, **kwargs):
     """Similar to `group`, but as an attribute filter."""
     attr_getter = make_attrgetter(_eval_ctx.environment, attr)
