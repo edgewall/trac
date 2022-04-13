@@ -24,9 +24,11 @@ time during install.
 from html.parser import HTMLParser
 import io
 import os
+import pkg_resources
 import re
 from tokenize import generate_tokens, COMMENT, NAME, OP, STRING
 
+import jinja2
 from jinja2.ext import babel_extract as jinja2_extractor
 
 from distutils import log as distlog
@@ -34,6 +36,10 @@ from distutils.cmd import Command
 from distutils.command.build import build as _build
 from distutils.errors import DistutilsOptionError
 from setuptools.command.install_lib import install_lib as _install_lib
+
+
+_jinja2_ext_with = pkg_resources.parse_version(jinja2.__version__) < \
+                   pkg_resources.parse_version('3')
 
 
 def simplify_message(message):
@@ -143,7 +149,7 @@ try:
         if 'cleandoc_keywords' in options:
             cleandoc_keywords.update(options['cleandoc_keywords'])
 
-        tokens = generate_tokens(fileobj.readline)
+        tokens = generate_tokens(lambda: fileobj.readline().decode(encoding))
         tok = value = None
         for _ in tokens:
             prev_tok, prev_value = tok, value
@@ -166,7 +172,7 @@ try:
                 continue
             elif call_stack == -1 and tok == COMMENT:
                 # Strip the comment token from the line
-                value = value.decode(encoding)[1:].strip()
+                value = value[1:].strip()
                 if in_translator_comments and \
                         translator_comments[-1][0] == lineno - 1:
                     # We're already inside a translator comment, continue
@@ -274,7 +280,8 @@ try:
         extractor = ScriptExtractor(out)
         extractor.feed(str(fileobj.read(), 'utf-8'))
         extractor.close()
-        out.seek(0)
+        # extract_javascript expects a binary file object
+        out = io.BytesIO(out.getvalue().encode('utf-8'))
         return extract_javascript(out, keywords, comment_tags, options)
 
 
@@ -292,6 +299,9 @@ try:
         """
         if fileobj:
             extractor = jinja2_extractor
+            options.setdefault('extensions', 'jinja2.ext.do, jinja2.ext.with_'
+                                             if _jinja2_ext_with else
+                                             'jinja2.ext.do')
             fileobj.seek(0)
             for m in extractor(fileobj, keywords, comment_tags, options):
                 # lineno, func, message, comments = m
