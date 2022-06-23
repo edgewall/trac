@@ -250,12 +250,13 @@ class SearchModule(Component):
                             'date': user_time(req, format_datetime, result[2]),
                             'author': result[3], 'excerpt': result[4]}
 
+        search_args = [('q', req.args.get('q')), ('noquickjump', '1')]
+        search_args.extend((filter_, 'on') for filter_ in filters)
+
         pagedata = []
         shown_pages = results.get_shown_pages(21)
         for shown_page in shown_pages:
-            page_href = req.href.search([(f, 'on') for f in filters],
-                                        q=req.args.get('q'),
-                                        page=shown_page, noquickjump=1)
+            page_href = req.href.search(search_args, page=shown_page)
             pagedata.append([page_href, None, str(shown_page),
                              _("Page %(num)d", num=shown_page)])
 
@@ -267,18 +268,12 @@ class SearchModule(Component):
                                 'title': None}
 
         if results.has_next_page:
-            next_href = req.href.search(zip(filters, ['on'] * len(filters)),
-                                        q=req.args.get('q'), page=page + 1,
-                                        noquickjump=1)
+            next_href = req.href.search(search_args, page=page + 1)
             add_link(req, 'next', next_href, _('Next Page'))
 
         if results.has_previous_page:
-            prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
-                                        q=req.args.get('q'), page=page - 1,
-                                        noquickjump=1)
+            prev_href = req.href.search(search_args, page=page - 1)
             add_link(req, 'prev', prev_href, _('Previous Page'))
 
-        page_href = req.href.search(
-            zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
-            noquickjump=1)
+        page_href = req.href.search(search_args)
         return {'results': results, 'page_href': page_href}

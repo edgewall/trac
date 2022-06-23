@@ -78,6 +78,32 @@ class SearchModuleTestCase(unittest.TestCase):
         self.assertIn("Page 3 is out of range.", req.chrome['warnings'])
         self.assertEqual(0, data['results'].page)
 
+    def test_results(self):
+        for _ in range(21):
+            self._insert_ticket(summary="Trac")
+        req = MockRequest(self.env, path_info='/search',
+                          args={'page': '2', 'q': 'Trac', 'ticket': 'on'})
+
+        data = self._process_request(req)[1]
+        results = data['results']
+
+        self.assertIn({'href': '/trac.cgi/search?q=Trac&noquickjump=1&'
+                               'ticket=on&page=2',
+                       'class': None, 'string': '2', 'title': 'Page 2'},
+                      results.shown_pages)
+        self.assertEqual(3, len(results.shown_pages))
+
+        self.assertTrue(results.has_next_page)
+        self.assertIn({'href': '/trac.cgi/search?q=Trac&noquickjump=1&'
+                               'ticket=on&page=3',
+                       'title': 'Next Page', 'type': None, 'class': None},
+                      req.chrome['links']['next'])
+        self.assertTrue(results.has_previous_page)
+        self.assertIn({'href': '/trac.cgi/search?q=Trac&noquickjump=1&'
+                               'ticket=on&page=1',
+                       'title': 'Previous Page', 'type': None, 'class': None},
+                      req.chrome['links']['prev'])
+
     def test_camelcase_quickjump(self):
         """CamelCase word does quick-jump."""
         req = MockRequest(self.env, path_info='/search',
