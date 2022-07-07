@@ -1347,7 +1347,7 @@ class TicketModule(Component):
         except Exception as e:
             self.log.error("Failure sending notification on creation of "
                            "ticket #%s: %s",
-                           ticket.id, exception_to_unicode(e))
+                           ticket.id, exception_to_unicode(e, traceback=True))
             add_warning(req, tag_("The ticket has been created, but an error "
                                   "occurred while sending notifications: "
                                   "%(message)s", message=to_fragment(e)))
@@ -1387,8 +1387,8 @@ class TicketModule(Component):
                 NotificationSystem(self.env).notify(event)
             except Exception as e:
                 self.log.error("Failure sending notification on change to "
-                               "ticket #%s: %s",
-                               ticket.id, exception_to_unicode(e))
+                               "ticket #%s: %s", ticket.id,
+                               exception_to_unicode(e, traceback=True))
                 # TRANSLATOR: The 'change' has been saved... (link)
                 change = _('change')
                 if fragment:
