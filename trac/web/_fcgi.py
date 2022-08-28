@@ -182,7 +182,7 @@ class InputStream(object):
                 self._buf += _bytes_join(self._bufList)
                 self._bufList = []
             # Find newline.
-            i = self._buf.find('\n', self._pos)
+            i = self._buf.find(b'\n', self._pos)
             if i < 0:
                 # Not found?
                 if self._eof:
