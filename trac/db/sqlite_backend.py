@@ -48,6 +48,9 @@ min_sqlite_version = (3, 0, 0)
 
 
 class PyFormatCursor(sqlite.Cursor):
+
+    __slots__ = ['cnx']
+
     def _rollback_on_error(self, function, *args, **kwargs):
         try:
             return function(self, *args, **kwargs)
