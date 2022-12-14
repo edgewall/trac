@@ -64,7 +64,7 @@ class AuthzPolicy(Component):
 
        Resources are ordered left to right, from parent to child. If any
        component is inapplicable, `*` is substituted. If the version pattern is
-       not specified explicitely, all versions (`@*`) is added implicitly
+       not specified explicitly, all versions (`@*`) is added implicitly
 
        Example: Match the WikiStart page::
 

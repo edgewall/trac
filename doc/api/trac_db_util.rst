@@ -52,7 +52,7 @@ Here ``db`` is a `ConnectionWrapper`.
 
    .. method :: like_escape(self, text):
 
-      Local SQL dialect for searching for litteral text in a LIKE
+      Local SQL dialect for searching for literal text in a LIKE
       clause.
 
    .. method :: quote(self, identifier):

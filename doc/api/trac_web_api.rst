@@ -63,8 +63,8 @@ Classes
 
    .. attribute :: Request.authname
 
-      The name associated with the user after authentification or
-      `'anonymous'` if no authentification took place.
+      The name associated with the user after authentication or
+      `'anonymous'` if no authentication took place.
 
       This corresponds to the `~Request.remote_user` when the request
       is targeted to an area requiring authentication, otherwise the

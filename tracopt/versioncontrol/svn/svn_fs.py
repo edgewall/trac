@@ -479,7 +479,7 @@ class SubversionRepository(Repository):
     def get_quickjump_entries(self, rev):
         """Retrieve known branches, as (name, id) pairs.
 
-        Purposedly ignores `rev` and always takes the last revision.
+        Purposely ignores `rev` and always takes the last revision.
         """
         for n in self._get_tags_or_branches('branches'):
             yield 'branches', n.path, n.path, None
@@ -608,7 +608,7 @@ class SubversionRepository(Repository):
         return self.youngest
 
     def previous_rev(self, rev, path=''):
-        """Return revision immediately preceeding `rev`, eventually below
+        """Return revision immediately preceding `rev`, eventually below
         given `path` or globally.
         """
         # FIXME optimize for non-scoped

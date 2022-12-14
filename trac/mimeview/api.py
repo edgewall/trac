@@ -730,7 +730,7 @@ class Mimeview(Component):
 
         The specified `mimetype` will be used to select the most appropriate
         `IHTMLPreviewRenderer` implementation available for this MIME type.
-        If not given, the MIME type will be infered from the filename or the
+        If not given, the MIME type will be inferred from the filename or the
         content.
 
         Return a string containing the XHTML text.

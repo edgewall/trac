@@ -47,7 +47,7 @@ def _reloader_thread(modification_callback, loop_callback):
                 filename = filename[:-1]
 
             if not os.path.isfile(filename):
-                # Compiled file for non-existant source
+                # Compiled file for non-existent source
                 continue
 
             mtime = os.stat(filename).st_mtime

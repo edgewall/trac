@@ -390,7 +390,7 @@ class ReportModule(Component):
         default_max = {'rss': self.items_per_page_rss,
                        'csv': 0, 'tab': 0}.get(format, self.items_per_page)
         max = req.args.getint('max')
-        limit = as_int(max, default_max, min=0)  # explict max takes precedence
+        limit = as_int(max, default_max, min=0)  # explicit max takes precedence
         offset = (page - 1) * limit
 
         sort_col = req.args.get('sort', '')

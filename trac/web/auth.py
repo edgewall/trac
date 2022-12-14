@@ -423,7 +423,7 @@ class DigestAuthentication(PasswordFileAuthentication):
         return values
 
     def send_auth_request(self, environ, start_response, stale='false'):
-        """Send a digest challange to the browser. Record used nonces
+        """Send a digest challenge to the browser. Record used nonces
         to avoid replay attacks.
         """
         nonce = hex_entropy()

@@ -44,7 +44,7 @@ from setuptools.command.install_lib import install_lib as _install_lib
 
 
 def simplify_message(message):
-    """Transforms an extracted messsage (string or tuple) into one in
+    """Transforms an extracted message (string or tuple) into one in
     which the repeated white-space has been simplified to a single
     space.
 
@@ -216,7 +216,7 @@ try:
                         messages = tuple(messages)
                     else:
                         messages = messages[0]
-                    # Comments don't apply unless they immediately preceed the
+                    # Comments don't apply unless they immediately precede the
                     # message
                     if translator_comments and \
                             translator_comments[-1][0] < message_lineno - 1:
