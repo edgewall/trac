@@ -90,7 +90,7 @@ class LoginModuleTestCase(unittest.TestCase):
 
     def test_login_ignore_case(self):
         """
-        Test that login is succesful when the usernames differ in case, but case
+        Test that login is successful when the usernames differ in case, but case
         is ignored.
         """
         self.env.config.set('trac', 'ignore_auth_case', 'yes')

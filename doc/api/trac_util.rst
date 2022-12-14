@@ -23,8 +23,8 @@ Web related utilities
 .. autofunction :: trac.util.get_reporter_id
 .. autofunction :: trac.util.content_disposition
 
-OS related utilies
-------------------
+OS related utilities
+--------------------
 
 .. autofunction :: copytree
 .. autofunction :: create_file

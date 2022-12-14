@@ -1133,7 +1133,7 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivHelloWorld(...)]]
-============================== Macro returning a <table> preceeded by space
+============================== Macro returning a <table> preceded by space
 [[TableHelloWorld(hej hopp)]]
 ------------------------------
 <p>
