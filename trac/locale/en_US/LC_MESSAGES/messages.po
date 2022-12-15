@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2021-09-11 08:32+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
 "PO-Revision-Date: 2010-07-19 23:05+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language: en_US\n"
@@ -1588,21 +1588,21 @@ msgid ""
 " following tables don't have the collations: %(tables)s"
 msgstr ""
 
-#: trac/db/mysql_backend.py:347
+#: trac/db/mysql_backend.py:351
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:353
+#: trac/db/mysql_backend.py:357
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
 " InnoDB or NDB storage engine to support transactions."
 msgstr ""
 
-#: trac/db/mysql_backend.py:365
+#: trac/db/mysql_backend.py:369
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -2412,7 +2412,7 @@ msgstr ""
 #: trac/templates/diff_options.html:66
 #: trac/templates/genshi/diff_options.html:61
 #: trac/ticket/templates/milestone_view.html:78
-#: trac/ticket/templates/query.html:332
+#: trac/ticket/templates/query.html:330
 #: trac/ticket/templates/report_view.html:94
 #: trac/ticket/templates/roadmap.html:43
 #: trac/timeline/templates/timeline.html:65
@@ -4498,8 +4498,8 @@ msgid "Change:"
 msgstr ""
 
 #: trac/ticket/templates/batch_modify.html:36
-#: trac/ticket/templates/query.html:223 trac/ticket/templates/query.html:245
-#: trac/ticket/templates/query.html:289
+#: trac/ticket/templates/query.html:222 trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:287
 msgid "field…"
 msgstr ""
 
@@ -4651,64 +4651,64 @@ msgstr ""
 msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
 msgstr ""
 
-#: trac/ticket/templates/query.html:219
+#: trac/ticket/templates/query.html:218
 msgid "And"
 msgstr ""
 
-#: trac/ticket/templates/query.html:272
+#: trac/ticket/templates/query.html:270
 msgid "Columns"
 msgstr ""
 
-#: trac/ticket/templates/query.html:287
+#: trac/ticket/templates/query.html:285
 msgid "Group results by"
 msgstr ""
 
-#: trac/ticket/templates/query.html:301
+#: trac/ticket/templates/query.html:299
 msgid "descending"
 msgstr ""
 
-#: trac/ticket/templates/query.html:308
+#: trac/ticket/templates/query.html:306
 msgid "Show under each result:"
 msgstr ""
 
-#: trac/ticket/templates/query.html:319
+#: trac/ticket/templates/query.html:317
 #: trac/ticket/templates/report_view.html:62
 msgid "Max items per page"
 msgstr ""
 
-#: trac/ticket/templates/query.html:353
+#: trac/ticket/templates/query.html:351
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:356
+#: trac/ticket/templates/query.html:354
 msgid "Edit query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:367
+#: trac/ticket/templates/query.html:365
 #: trac/ticket/templates/report_edit.html:119
 msgid "Save query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:369
+#: trac/ticket/templates/query.html:367
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr ""
 
-#: trac/ticket/templates/query.html:371
+#: trac/ticket/templates/query.html:369
 msgid "Create new report from current query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:383
+#: trac/ticket/templates/query.html:381
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:385
+#: trac/ticket/templates/query.html:383
 msgid "Delete query"
 msgstr ""
 
-#: trac/ticket/templates/query.html:392
+#: trac/ticket/templates/query.html:390
 #, python-format
 msgid "%(note)s See %(page)s for help on using queries."
 msgstr ""
@@ -4769,7 +4769,7 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:42
 #: trac/ticket/templates/report_edit.html:125
 #: trac/ticket/templates/report_list.html:180
-#: trac/ticket/templates/report_view.html:309
+#: trac/ticket/templates/report_view.html:317
 #, python-format
 msgid "%(note)s See %(page)s for help on using and creating reports."
 msgstr ""
@@ -4909,7 +4909,7 @@ msgid "(empty)"
 msgstr ""
 
 #: trac/ticket/templates/report_view.html:151
-#: trac/ticket/templates/report_view.html:305
+#: trac/ticket/templates/report_view.html:313
 msgid "No matches found."
 msgstr ""
 
@@ -4919,7 +4919,7 @@ msgstr ""
 msgid "View %(realm)s"
 msgstr ""
 
-#: trac/ticket/templates/report_view.html:278
+#: trac/ticket/templates/report_view.html:286
 msgid "View milestone"
 msgstr ""
 
