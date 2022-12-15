@@ -52,7 +52,7 @@ if _jinja2_ver < pkg_resources.parse_version('3'):
 def jinja2env(**kwargs):
     """Creates a Jinja2 ``Environment`` configured with Trac conventions.
 
-    All default parameters can optionally be overriden. The ``loader``
+    All default parameters can optionally be overridden. The ``loader``
     parameter is not set by default, so unless it is set by the
     caller, only inline templates can be created from the environment.
 

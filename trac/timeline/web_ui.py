@@ -62,7 +62,7 @@ class TimelineModule(Component):
                                       True,
         """Whether wiki-formatted event messages should be truncated or not.
 
-        This only affects the default rendering, and can be overriden by
+        This only affects the default rendering, and can be overridden by
         specific event providers, see their own documentation.
         """)
 
