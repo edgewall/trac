@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-02-11 04:45+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
 "PO-Revision-Date: 2011-02-23 22:27+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
@@ -638,19 +638,19 @@ msgstr ""
 "[https://sqlite.org/loadext.html SQLite 拡張]のパスを絶対パス、または Trac "
 "環境ディレクトリからの相対パスで指定します。"
 
-#: trac/mimeview/api.py:617
+#: trac/mimeview/api.py:618
 msgid "Charset to be used when in doubt."
 msgstr "文字コードが不明な場合に使用する文字コードを指定します。"
 
-#: trac/mimeview/api.py:620
+#: trac/mimeview/api.py:621
 msgid "Displayed tab width in file preview."
 msgstr "ファイルのプレビューで表示するタブの幅を指定します。"
 
-#: trac/mimeview/api.py:623
+#: trac/mimeview/api.py:624
 msgid "Maximum file size for HTML preview."
 msgstr "HTML プレビューするファイルの上限サイズを指定します。"
 
-#: trac/mimeview/api.py:626
+#: trac/mimeview/api.py:627
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -660,7 +660,7 @@ msgstr ""
 "追加する MIME タイプとキーワードのマッピングのリストを指定します。\n"
 "マッピングはカンマ区切りで、MIME タイプごとに関連するキーワードまたはファイル拡張子のコロン区切り (\":\") のリストを持ちます。"
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:635
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -670,7 +670,7 @@ msgstr ""
 "追加する MIME タイプとそれに対応させるファイルパターンを指定します。マッピングはカンマ区切りで、マッピングごとに MIME "
 "タイプとファイルマッチングに使う Python 正規表現をコロン (`:`) で区切るようにします。(''1.0 以降'')"
 
-#: trac/mimeview/api.py:642
+#: trac/mimeview/api.py:643
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data."
@@ -966,7 +966,7 @@ msgstr ""
 "インターフェイスの実装を探してください。`get_search_method()` "
 "メソッドが返すタプルの最初の要素になります。無効にしても、検索ページでユーザが手動でフィルタを有効にすることができます。"
 
-#: trac/ticket/api.py:213
+#: trac/ticket/api.py:216
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
@@ -974,11 +974,11 @@ msgstr ""
 "このセクションでは、チケットに追加したいフィールドを定義することができます。詳細については TracTicketsCustomFields "
 "を参照してください。"
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:220
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr "チケットのアクションに使用するワークフローコントローラを順番に指定します。"
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:226
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -995,71 +995,71 @@ msgstr ""
 "\n"
 "ドロップダウンメニュー中ではメールアドレスを隠せ'''ない'''ことに注意してください。そのため、メールアドレスを保護したままにしないといけない場合には、このオプションを使用するべきではありません。"
 
-#: trac/ticket/api.py:234
+#: trac/ticket/api.py:237
 msgid "Default version for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのバージョンを指定します。"
 
-#: trac/ticket/api.py:237
+#: trac/ticket/api.py:240
 msgid "Default type for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの分類を指定します。"
 
-#: trac/ticket/api.py:240
+#: trac/ticket/api.py:243
 msgid "Default priority for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの優先度を指定します。"
 
-#: trac/ticket/api.py:243
+#: trac/ticket/api.py:246
 msgid "Default milestone for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのマイルストーンを指定します。"
 
-#: trac/ticket/api.py:246
+#: trac/ticket/api.py:249
 msgid "Default component for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのコンポーネントを指定します。"
 
-#: trac/ticket/api.py:249
+#: trac/ticket/api.py:252
 msgid "Default severity for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの重要度を指定します。"
 
-#: trac/ticket/api.py:252
+#: trac/ticket/api.py:255
 msgid "Default summary (title) for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの概要 (タイトル) を指定します。"
 
-#: trac/ticket/api.py:255
+#: trac/ticket/api.py:258
 msgid "Default description for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの詳細を指定します。"
 
-#: trac/ticket/api.py:258
+#: trac/ticket/api.py:261
 msgid "Default keywords for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトのキーワードを指定します。"
 
-#: trac/ticket/api.py:261
+#: trac/ticket/api.py:264
 msgid ""
 "Default owner for newly created tickets. The component owner\n"
 "is used when set to the value `< default >`."
 msgstr "新規登録チケットに対するデフォルトの担当者を指定します。`< default >` を設定したときはコンポーネントの担当者を使います。"
 
-#: trac/ticket/api.py:266
+#: trac/ticket/api.py:269
 msgid "Default cc: list for newly created tickets."
 msgstr "新規登録チケットに対するデフォルトの関係者を指定します。"
 
-#: trac/ticket/api.py:269
+#: trac/ticket/api.py:272
 msgid "Default resolution for resolving (closing) tickets."
 msgstr "解決 (クローズ) になるチケットに対するデフォルトの解決方法を指定します。"
 
-#: trac/ticket/api.py:272
+#: trac/ticket/api.py:275
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr "空の値にできるようにする `select` フィールドをカンマ区切りで指定します。(//1.1.2 以降//)"
 
-#: trac/ticket/api.py:277
+#: trac/ticket/api.py:280
 msgid "Maximum allowed comment size in characters."
 msgstr "コメントの最大文字数で指定します。"
 
-#: trac/ticket/api.py:280
+#: trac/ticket/api.py:283
 msgid "Maximum allowed description size in characters."
 msgstr "チケットの詳細の最大文字数を指定します。"
 
-#: trac/ticket/api.py:283
+#: trac/ticket/api.py:286
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
 msgstr "概要の最大文字数で指定します。(//1.0.2 以降//)"
 
@@ -1345,14 +1345,14 @@ msgstr "タイムラインに表示できる最大日数 (-1 は無制限) を�
 msgid ""
 "Whether wiki-formatted event messages should be truncated or not.\n"
 "\n"
-"This only affects the default rendering, and can be overriden by\n"
+"This only affects the default rendering, and can be overridden by\n"
 "specific event providers, see their own documentation."
 msgstr ""
 "Wiki フォーマットしたイベントメッセージを切り詰めるかどうかを指定します。\n"
 "\n"
 "これは描画のみに有効でイベントプロバイダは無視することができます。詳細は個々のドキュメントを参照してください。"
 
-#: trac/versioncontrol/admin.py:213
+#: trac/versioncontrol/admin.py:216
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"

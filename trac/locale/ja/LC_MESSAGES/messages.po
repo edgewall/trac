@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 1.4.1\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-02-11 04:45+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
 "PO-Revision-Date: 2011-07-14 21:38+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language: ja\n"
@@ -21,7 +21,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/ticket/commit_updater.py:292
 msgid ""
@@ -63,7 +63,7 @@ msgstr "チケット #%(num)s とそれに関するデータを削除しまし�
 msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
 msgstr "チケット #%(id)s のコメント %(num)s を削除しました。"
 
-#: trac/ticket/admin.py:850 trac/ticket/web_ui.py:629
+#: trac/ticket/admin.py:850 trac/ticket/web_ui.py:630
 #: tracopt/ticket/deleter.py:126
 #, python-format
 msgid "Comment %(num)s not found"
@@ -80,7 +80,7 @@ msgstr "チケット #%(id)s の削除"
 msgid "Delete comment %(num)s on Ticket #%(id)s"
 msgstr "チケット #%(id)s コメント %(num)s の削除"
 
-#: trac/ticket/web_ui.py:735 trac/ticket/web_ui.py:989
+#: trac/ticket/web_ui.py:736 trac/ticket/web_ui.py:990
 #: tracopt/ticket/templates/ticket_delete.html:44
 #, python-format
 msgid "Ticket #%(id)s"
@@ -136,7 +136,7 @@ msgstr "チケットの削除"
 #: trac/ticket/templates/milestone_edit_form.html:166
 #: trac/ticket/templates/report_delete.html:37
 #: trac/ticket/templates/report_edit.html:120
-#: trac/ticket/templates/ticket_change.html:185
+#: trac/ticket/templates/ticket_change.html:186
 #: trac/versioncontrol/templates/admin_repositories.html:199
 #: trac/wiki/templates/wiki_delete.html:183
 #: trac/wiki/templates/wiki_edit_comment.html:59
@@ -171,7 +171,7 @@ msgid "GIT version %(hasver)s installed not compatible (need >= %(needsver)s)"
 msgstr "インストールされている GIT バージョン %(hasver)s は互換性がありません (%(needsver)s 以上が必要)"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/templates/ticket_change.html:245 trac/ticket/web_ui.py:1838
+#: trac/ticket/templates/ticket_change.html:246 trac/ticket/web_ui.py:1841
 #: trac/wiki/macros.py:391 trac/wiki/templates/wiki_view.html:67
 #: trac/wiki/web_ui.py:791 tracopt/versioncontrol/git/git_fs.py:464
 msgid "diff"
@@ -240,7 +240,7 @@ msgstr ""
 "不一致: 元の %(oldnode)s (%(oldpath)s リビジョン %(oldrev)s) と対象の %(newnode)s "
 "(%(newpath)s リビジョン %(newrev)s)。"
 
-#: tracopt/versioncontrol/svn/svn_fs.py:876
+#: tracopt/versioncontrol/svn/svn_fs.py:880
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "svn blame の実行に失敗しました %(path)s: %(error)s"
@@ -381,7 +381,7 @@ msgstr "%(parent)s の添付ファイル: '%(id)s'"
 msgid "Attachments of %(parent)s"
 msgstr "%(parent)s の添付ファイル"
 
-#: trac/admin/web_ui.py:496 trac/admin/web_ui.py:499 trac/admin/web_ui.py:503
+#: trac/admin/web_ui.py:497 trac/admin/web_ui.py:500 trac/admin/web_ui.py:504
 #: trac/attachment.py:413
 msgid "No file uploaded"
 msgstr "アップロードしたファイルはありません"
@@ -450,7 +450,7 @@ msgstr "オリジナルフォーマット"
 
 #: trac/attachment.py:644 trac/templates/genshi/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:26
-#: trac/ticket/templates/ticket_change.html:137
+#: trac/ticket/templates/ticket_change.html:138
 #: trac/versioncontrol/templates/dir_entries.html:37
 #: trac/versioncontrol/web_ui/browser.py:863
 msgid "Download"
@@ -551,9 +551,9 @@ msgstr "更新者"
 msgid "Date"
 msgstr "更新日時"
 
-#: trac/attachment.py:1147 trac/notification/prefs.py:234
-#: trac/templates/genshi/attachment.html:104 trac/ticket/api.py:360
-#: trac/ticket/api.py:683 trac/ticket/templates/ticket.html:576
+#: trac/attachment.py:1147 trac/notification/prefs.py:226
+#: trac/templates/genshi/attachment.html:104 trac/ticket/api.py:363
+#: trac/ticket/api.py:686 trac/ticket/templates/ticket.html:575
 #: trac/ticket/templates/ticket_box.html:162
 msgid "Description"
 msgstr "詳細"
@@ -571,31 +571,31 @@ msgstr "設定エラー"
 msgid "Look in the Trac log for more information."
 msgstr "詳細は Trac のログを参照してください。"
 
-#: trac/config.py:372
+#: trac/config.py:379
 #, python-format
 msgid "Error reading '%(file)s', make sure it is readable."
 msgstr "'%(file)s' の読み込みエラー。読み込み可能か確認してください。"
 
-#: trac/config.py:546
+#: trac/config.py:553
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は整数を入力してください。"
 
-#: trac/config.py:563
+#: trac/config.py:570
 #, python-format
 msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は浮動小数点を入力してください。"
 
-#: trac/config.py:728
+#: trac/config.py:737
 msgid "Setting attribute is not allowed."
 msgstr "属性を設定することはできません。"
 
-#: trac/config.py:851
+#: trac/config.py:860
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は %(choices)s のどれかを入力してください。"
 
-#: trac/config.py:891
+#: trac/config.py:900
 #, python-format
 msgid ""
 "Cannot find an implementation of the %(interface)s interface named "
@@ -606,7 +606,7 @@ msgstr ""
 "インターフェイスの実装を見つけられません。コンポーネントが有効になっているかチェックするか、trac.ini の %(option)s "
 "オプションを更新してください。"
 
-#: trac/config.py:931
+#: trac/config.py:940
 #, python-format
 msgid ""
 "Cannot find implementation(s) of the %(interface)s interface named "
@@ -617,10 +617,15 @@ msgstr ""
 "インターフェイスの実装を見つけられません。コンポーネントが有効になっているかチェックするか、trac.ini の %(option)s "
 "オプションを更新してください。"
 
-#: trac/config.py:969 trac/config.py:984
+#: trac/config.py:978 trac/config.py:993
 #, python-format
 msgid "Option '%(option)s' doesn't exist in section '%(section)s'"
 msgstr "オプション '%(option)s' はセクション '%(section)s' に存在しません"
+
+#: trac/config.py:997
+#, python-format
+msgid "Section '%(section)s' doesn't exist"
+msgstr "セクション '%(section)s' は存在しません。"
 
 #: trac/core.py:35
 msgid "Trac Error"
@@ -788,7 +793,7 @@ msgstr "この操作を行うには %(perm)s 権限が必要ですがその権�
 msgid "Insufficient privileges to perform this operation."
 msgstr "この操作を行う権限がありません。"
 
-#: trac/perm.py:372 trac/perm.py:809
+#: trac/perm.py:372 trac/perm.py:813
 #, python-format
 msgid "%(name)s is not a valid action."
 msgstr "%(name)s は有効なアクションではありません。"
@@ -810,60 +815,60 @@ msgstr "ユーザ %(user)s は %(action)s 権限をすでに持っています�
 msgid "The user %(user)s is already in the group %(group)s."
 msgstr "ユーザ \"%(user)s\" はすでにグループ \"%(group)s\" にいます。"
 
-#: trac/perm.py:749
+#: trac/perm.py:753
 msgid "User"
 msgstr "ユーザ"
 
-#: trac/admin/templates/admin_perms.html:128 trac/perm.py:749
+#: trac/admin/templates/admin_perms.html:128 trac/perm.py:753
 #: trac/ticket/templates/ticket_workflow.html:36
 msgid "Action"
 msgstr "アクション"
 
-#: trac/perm.py:751
+#: trac/perm.py:755
 msgid "Available actions:"
 msgstr "利用できるアクション:"
 
-#: trac/perm.py:762
+#: trac/perm.py:766
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "すべて大文字の名称は権限名に予約されているため使えません"
 
-#: trac/perm.py:800
+#: trac/perm.py:804
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The permission is "
 "granted through a meta-permission or group."
 msgstr "ユーザ %(user)s から %(action)s 権限を削除できません。その権限は、メタ権限またはグループから許可しています。"
 
-#: trac/perm.py:805
+#: trac/perm.py:809
 #, python-format
 msgid ""
 "Cannot remove permission %(action)s for user %(user)s. The user has not "
 "been granted the permission."
 msgstr "ユーザ %(user)s から %(action)s 権限を削除できません。ユーザはその権限を持っていません。"
 
-#: trac/perm.py:826
+#: trac/perm.py:830
 #, python-format
 msgid "Cannot export to %(filename)s: %(error)s"
 msgstr "%(filename)s にエクスポートできません: %(error)s"
 
-#: trac/perm.py:839
+#: trac/perm.py:843
 #, python-format
 msgid "Invalid row %(line)d. Expected <user>, <action>, [action], [...]"
 msgstr "%(line)d行目が正しくありません。<ユーザ>, <アクション>, [アクション], [...] を期待しています。"
 
-#: trac/perm.py:847
+#: trac/perm.py:851
 #, python-format
 msgid ""
 "Invalid user %(user)s on line %(line)d: All upper-cased tokens are "
 "reserved for permission names."
 msgstr "%(line)d行目: ユーザ名 %(user)s が正しくありません。すべて大文字の名称は権限名に予約されているため使えません。"
 
-#: trac/perm.py:857
+#: trac/perm.py:861
 #, python-format
 msgid "Cannot import from %(filename)s line %(line)d: %(error)s "
 msgstr "%(filename)s %(line)d行目がインポートできません: %(error)s "
 
-#: trac/perm.py:862
+#: trac/perm.py:866
 #, python-format
 msgid "Cannot import from %(filename)s: %(error)s"
 msgstr "%(filename)s がインポートできません: %(error)s "
@@ -1073,95 +1078,95 @@ msgstr "未知の trac-admin コマンド \"%(command)s\""
 msgid "Non-ascii environment path '%(path)s' not supported."
 msgstr "非 ASCII 文字のパス '%(path)s' はサポートしていません。"
 
-#: trac/admin/web_ui.py:66
+#: trac/admin/web_ui.py:67
 msgid "Admin"
 msgstr "管理"
 
-#: trac/admin/web_ui.py:82
+#: trac/admin/web_ui.py:83
 msgid "No administration panels available"
 msgstr "利用可能な管理画面はありません"
 
-#: trac/admin/web_ui.py:97 trac/admin/web_ui.py:101
+#: trac/admin/web_ui.py:98 trac/admin/web_ui.py:102
 msgid "Unknown administration panel"
 msgstr "不明な管理画面"
 
-#: trac/admin/web_ui.py:149 trac/ticket/admin.py:70 trac/ticket/admin.py:94
+#: trac/admin/web_ui.py:150 trac/ticket/admin.py:70 trac/ticket/admin.py:94
 #: trac/ticket/admin.py:467 trac/ticket/admin.py:626 trac/ticket/admin.py:690
 #: trac/ticket/report.py:250 trac/ticket/roadmap.py:877
-#: trac/versioncontrol/admin.py:262
+#: trac/versioncontrol/admin.py:265
 msgid "Your changes have been saved."
 msgstr "変更を保存しました。"
 
-#: trac/admin/web_ui.py:154 trac/ticket/admin.py:66
+#: trac/admin/web_ui.py:155 trac/ticket/admin.py:66
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。変更は保存できていません。"
 
-#: trac/admin/web_ui.py:169 trac/admin/web_ui.py:248 trac/admin/web_ui.py:354
-#: trac/admin/web_ui.py:474 trac/prefs/templates/prefs_general.html:17
+#: trac/admin/web_ui.py:170 trac/admin/web_ui.py:249 trac/admin/web_ui.py:355
+#: trac/admin/web_ui.py:475 trac/prefs/templates/prefs_general.html:17
 #: trac/prefs/web_ui.py:193
 msgid "General"
 msgstr "一般設定"
 
-#: trac/admin/templates/admin_basics.html:24 trac/admin/web_ui.py:169
+#: trac/admin/templates/admin_basics.html:24 trac/admin/web_ui.py:170
 msgid "Basic Settings"
 msgstr "基本設定"
 
 #: trac/admin/templates/admin_logging.html:20
-#: trac/admin/templates/admin_logging.html:40 trac/admin/web_ui.py:248
+#: trac/admin/templates/admin_logging.html:40 trac/admin/web_ui.py:249
 msgid "Logging"
 msgstr "ログ"
 
-#: trac/admin/web_ui.py:257 trac/ticket/templates/milestone_delete.html:41
+#: trac/admin/web_ui.py:258 trac/ticket/templates/milestone_delete.html:41
 #: trac/ticket/templates/milestone_edit_form.html:116
 #: trac/ticket/templates/query_results.html:46
 msgid "None"
 msgstr "(割り当てない)"
 
-#: trac/admin/web_ui.py:259
+#: trac/admin/web_ui.py:260
 msgid "Console"
 msgstr "コンソール"
 
-#: trac/admin/web_ui.py:261 trac/templates/genshi/attachment.html:41
+#: trac/admin/web_ui.py:262 trac/templates/genshi/attachment.html:41
 msgid "File"
 msgstr "ファイル"
 
-#: trac/admin/web_ui.py:263
+#: trac/admin/web_ui.py:264
 msgid "Syslog"
 msgstr "Syslog"
 
-#: trac/admin/web_ui.py:266
+#: trac/admin/web_ui.py:267
 msgid "Windows event log"
 msgstr "Windows イベントログ"
 
-#: trac/admin/web_ui.py:277
+#: trac/admin/web_ui.py:278
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "不明なログ種別: %(type)s"
 
-#: trac/admin/web_ui.py:278
+#: trac/admin/web_ui.py:279
 msgid "Invalid log type"
 msgstr "不正なログ種別"
 
-#: trac/admin/web_ui.py:282
+#: trac/admin/web_ui.py:283
 msgid "You must specify a log file"
 msgstr "ログファイルの指定が必要です"
 
-#: trac/admin/web_ui.py:283
+#: trac/admin/web_ui.py:284
 msgid "Missing field"
 msgstr "フィールドがありません"
 
-#: trac/admin/web_ui.py:287
+#: trac/admin/web_ui.py:288
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "不明なログレベル: %(level)s"
 
-#: trac/admin/web_ui.py:288
+#: trac/admin/web_ui.py:289
 msgid "Invalid log level"
 msgstr "不正なログレベル"
 
-#: trac/admin/web_ui.py:303
+#: trac/admin/web_ui.py:304
 #, python-format
 msgid ""
 "Changes not saved. Logger configuration error: %(error)s. Inspect the log"
@@ -1169,24 +1174,24 @@ msgid ""
 msgstr "変更は保存されていません。ログ設定にエラーがあります: %(error)s。詳細はログを調査してください。"
 
 #: trac/admin/templates/admin_perms.html:17
-#: trac/admin/templates/admin_perms.html:125 trac/admin/web_ui.py:354
+#: trac/admin/templates/admin_perms.html:125 trac/admin/web_ui.py:355
 msgid "Permissions"
 msgstr "権限"
 
-#: trac/admin/web_ui.py:369
+#: trac/admin/web_ui.py:370
 msgid "All upper-cased tokens are reserved for permission names."
 msgstr "すべて大文字の名称は権限名に予約されているため使えません。"
 
-#: trac/admin/web_ui.py:376
+#: trac/admin/web_ui.py:377
 msgid "Unknown action"
 msgstr "不明なアクション"
 
-#: trac/admin/web_ui.py:383 trac/admin/web_ui.py:437
+#: trac/admin/web_ui.py:384 trac/admin/web_ui.py:438
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "ユーザ \"%(subject)s\" にアクション \"%(action)s\" を追加しました。"
 
-#: trac/admin/web_ui.py:393
+#: trac/admin/web_ui.py:394
 #, python-format
 msgid ""
 "The subject %(subject)s was not added to the group %(group)s. The group "
@@ -1196,46 +1201,46 @@ msgstr ""
 "グループ %(group)s に %(subject)s を追加しませんでした。グループは %(perm)s "
 "権限を持っていいますが、保有していない権限を許可することはできません。"
 
-#: trac/admin/web_ui.py:404
+#: trac/admin/web_ui.py:405
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "ユーザ \"%(subject)s\" をグループ \"%(group)s\" に追加しました。"
 
-#: trac/admin/web_ui.py:414
+#: trac/admin/web_ui.py:415
 #, python-format
 msgid "The subject %(subject)s does not have any permissions."
 msgstr "ユーザ \"%(subject)s\" は権限を何も持っていません。"
 
-#: trac/admin/web_ui.py:426
+#: trac/admin/web_ui.py:427
 #, python-format
 msgid ""
 "The permission %(action)s was not granted to %(subject)s because users "
 "cannot grant permissions they don't possess."
 msgstr "保有していない権限を許可することはできないため、権限 %(action)s を %(subject)s に追加しませんでした。"
 
-#: trac/admin/web_ui.py:452
+#: trac/admin/web_ui.py:453
 msgid "The selected permissions have been revoked."
 msgstr "選択した権限を無効にしました。"
 
-#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:474
+#: trac/admin/templates/admin_plugins.html:17 trac/admin/web_ui.py:475
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: trac/admin/web_ui.py:506
+#: trac/admin/web_ui.py:507
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "アップロードしたファイルは Python ソースファイルでも egg ファイルでもありません"
 
-#: trac/admin/web_ui.py:511
+#: trac/admin/web_ui.py:512
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "プラグイン %(name)s は既にインストール済みです"
 
-#: trac/admin/web_ui.py:580
+#: trac/admin/web_ui.py:581
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "次のコンポーネントを削除しました:"
 
-#: trac/admin/web_ui.py:585
+#: trac/admin/web_ui.py:586
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "次のコンポーネントを追加しました:"
@@ -1282,7 +1287,7 @@ msgstr "URL:"
 #: trac/ticket/templates/admin_versions.html:74
 #: trac/ticket/templates/milestone_edit_form.html:141
 #: trac/ticket/templates/report_edit.html:76
-#: trac/ticket/templates/ticket.html:321
+#: trac/ticket/templates/ticket.html:320
 #: trac/versioncontrol/templates/admin_repositories.html:178
 msgid "Description:"
 msgstr "詳細:"
@@ -1432,7 +1437,7 @@ msgstr "対象:"
 #: trac/admin/templates/admin_perms.html:60
 #: trac/admin/templates/admin_perms.html:84
 #: trac/admin/templates/admin_perms.html:108
-#: trac/notification/templates/prefs_notification.html:244
+#: trac/notification/templates/prefs_notification.html:234
 #: trac/ticket/templates/admin_components.html:107
 #: trac/ticket/templates/admin_enums.html:92
 #: trac/ticket/templates/admin_milestones.html:76
@@ -1475,36 +1480,36 @@ msgid "Add a user or group to an existing permission group."
 msgstr "ユーザやグループを既存の権限グループに追加します。"
 
 #: trac/admin/templates/admin_perms.html:128
-#: trac/admin/templates/admin_perms.html:169
+#: trac/admin/templates/admin_perms.html:167
 msgid "Subject"
 msgstr "対象"
 
-#: trac/admin/templates/admin_perms.html:144
+#: trac/admin/templates/admin_perms.html:142
 msgid "You don't have permission to revoke this action"
 msgstr "このアクションを無効にする権限を持っていません"
 
-#: trac/admin/templates/admin_perms.html:151
+#: trac/admin/templates/admin_perms.html:149
 #, python-format
 msgid "%(action)s is no longer defined"
 msgstr "%(action)s はすでに定義されていません"
 
-#: trac/admin/templates/admin_perms.html:160
+#: trac/admin/templates/admin_perms.html:158
 msgid "No permissions"
 msgstr "権限なし"
 
-#: trac/admin/templates/admin_perms.html:166
+#: trac/admin/templates/admin_perms.html:164
 msgid "Group Membership"
 msgstr "グループメンバ"
 
-#: trac/admin/templates/admin_perms.html:169
+#: trac/admin/templates/admin_perms.html:167
 msgid "Group"
 msgstr "グループ"
 
-#: trac/admin/templates/admin_perms.html:194
+#: trac/admin/templates/admin_perms.html:190
 msgid "No group memberships"
 msgstr "グループメンバなし"
 
-#: trac/admin/templates/admin_perms.html:201
+#: trac/admin/templates/admin_perms.html:197
 #: trac/ticket/templates/admin_components.html:144
 #: trac/ticket/templates/admin_enums.html:133
 #: trac/ticket/templates/admin_milestones.html:142
@@ -1513,13 +1518,13 @@ msgstr "グループメンバなし"
 msgid "Remove selected items"
 msgstr "選択した項目を削除"
 
-#: trac/admin/templates/admin_perms.html:208
+#: trac/admin/templates/admin_perms.html:204
 msgid ""
 "Note that <em>Subject</em> or <em>Group</em> names can't be all upper-"
 "case, as that is reserved for permission names."
 msgstr "<em>対象</em>や<em>グループ</em>には大文字だけからなる名称は使用できません。権限名に予約されているためです。"
 
-#: trac/admin/templates/admin_perms.html:217
+#: trac/admin/templates/admin_perms.html:213
 #, python-format
 msgid "%(note)s See %(page)s for help on using permissions."
 msgstr "%(note)s 権限について詳しくは %(page)s を参照してください。"
@@ -1534,7 +1539,7 @@ msgid "Install Plugin:"
 msgstr "プラグインのインストール:"
 
 #: trac/admin/templates/admin_plugins.html:87
-#: trac/versioncontrol/templates/changeset_content.html:234
+#: trac/versioncontrol/templates/changeset_content.html:244
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "ファイル:"
@@ -1559,7 +1564,7 @@ msgstr "アンインストール"
 
 #: trac/admin/templates/admin_plugins.html:131
 #: trac/templates/diff_view.html:100 trac/templates/genshi/diff_view.html:60
-#: trac/versioncontrol/templates/changeset_content.html:202
+#: trac/versioncontrol/templates/changeset_content.html:212
 msgid "Author:"
 msgstr "更新者:"
 
@@ -1576,7 +1581,7 @@ msgid "License:"
 msgstr "ライセンス:"
 
 #: trac/admin/templates/admin_plugins.html:172 trac/ticket/admin.py:80
-#: trac/ticket/api.py:367
+#: trac/ticket/api.py:370
 msgid "Component"
 msgstr "コンポーネント"
 
@@ -1633,7 +1638,7 @@ msgid ""
 "refer to the %(doc)s for help."
 msgstr "%(db_str)s はデータベース接続文字列として正しくない形式です。ヘルプは%(doc)sを参照してください。"
 
-#: trac/db/api.py:735 trac/versioncontrol/admin.py:325
+#: trac/db/api.py:735 trac/versioncontrol/admin.py:328
 msgid "documentation"
 msgstr "ドキュメント"
 
@@ -1677,14 +1682,14 @@ msgstr ""
 "すべてのテーブルは照合順序として utf8_bin または utf8mb4_bin "
 "で作成されている必要があります。次のテーブルがその照合順序で作成されていません: %(tables)s"
 
-#: trac/db/mysql_backend.py:347
+#: trac/db/mysql_backend.py:351
 #, python-format
 msgid ""
 "The current storage engine is %(engine)s. It must be InnoDB or NDB "
 "storage engine to support transactions."
 msgstr "ストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:353
+#: trac/db/mysql_backend.py:357
 #, python-format
 msgid ""
 "The current storage engine for TEMPORARY tables is %(engine)s. It must be"
@@ -1693,7 +1698,7 @@ msgstr ""
 "TEMPORARY テーブルに対するストレージエンジンは %(engine)s になっています。トランザクションをサポートしている InnoDB "
 "または NDB にする必要があります。"
 
-#: trac/db/mysql_backend.py:365
+#: trac/db/mysql_backend.py:369
 #, python-format
 msgid ""
 "The charset and collation of database are '%(charset)s' and "
@@ -1763,27 +1768,27 @@ msgstr "PRAGMA journal_mode は SQLite %(version)s でサポートしていま�
 msgid "PRAGMA journal_mode `%(value)s` isn't supported by SQLite %(version)s"
 msgstr "PRAGMA journal_mode `%(value)s` は SQLite %(version)s でサポートしていません"
 
-#: trac/mimeview/api.py:697 trac/mimeview/api.py:715
+#: trac/mimeview/api.py:698 trac/mimeview/api.py:716
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "%(old)s から %(new)s への MIME 変換は、利用可能ではありません"
 
-#: trac/mimeview/api.py:800
+#: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "(%(err)s) のため、%(renderer)s を使った HTML プレビューに失敗しました"
 
-#: trac/mimeview/api.py:852
+#: trac/mimeview/api.py:853
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "%(annotator)s が使えません: %(error)s"
 
-#: trac/mimeview/api.py:1054 trac/templates/error.html:263
+#: trac/mimeview/api.py:1055 trac/templates/error.html:263
 #: trac/templates/genshi/error.html:163
 msgid "Line"
 msgstr "行"
 
-#: trac/mimeview/api.py:1054
+#: trac/mimeview/api.py:1055
 msgid "Line numbers"
 msgstr "行番号"
 
@@ -1805,7 +1810,7 @@ msgstr "この hunk は想定より短いようです"
 msgid "Syntax Highlighting"
 msgstr "シンタックスハイライト"
 
-#: trac/mimeview/pygments.py:146 trac/notification/prefs.py:68
+#: trac/mimeview/pygments.py:146 trac/notification/prefs.py:67
 #: trac/prefs/web_ui.py:304
 msgid "Your preferences have been saved."
 msgstr "個人設定を保存しました。"
@@ -1834,7 +1839,7 @@ msgstr "Pygments シンタックスハイライトをいろいろな配色スタ
 msgid "Preview:"
 msgstr "表示例:"
 
-#: trac/mimeview/templates/prefs_pygments.html:71
+#: trac/mimeview/templates/prefs_pygments.html:75
 #, python-format
 msgid "%(note)s See %(page)s for help on using syntax coloring."
 msgstr "%(note)s シンタックスハイライトについて詳しくは %(page)s を参照してください。"
@@ -1871,20 +1876,20 @@ msgid ""
 "configuration."
 msgstr "sendmail のエラーです (%(error)s)。設定にある %(option)s を修正してください。"
 
-#: trac/notification/prefs.py:58
+#: trac/notification/prefs.py:57
 #: trac/notification/templates/prefs_notification.html:17
 msgid "Notifications"
 msgstr "通知"
 
-#: trac/notification/prefs.py:115
+#: trac/notification/prefs.py:114
 msgid "Notify"
 msgstr "通知する"
 
-#: trac/notification/prefs.py:116
+#: trac/notification/prefs.py:115
 msgid "Never notify"
 msgstr "通知しない"
 
-#: trac/notification/prefs.py:209
+#: trac/notification/prefs.py:201
 msgid ""
 "Display a list of all installed notification subscribers, including\n"
 "documentation if available.\n"
@@ -1903,81 +1908,73 @@ msgstr ""
 "mod_python で `PythonOptimize` "
 "オプションを有効にしている場合、受信処理のドキュメントを表示することができないことに注意してください。"
 
-#: trac/notification/prefs.py:233
+#: trac/notification/prefs.py:225
 msgid "Subscriber"
 msgstr "受信処理"
 
-#: trac/notification/templates/prefs_notification.html:110
+#: trac/notification/templates/prefs_notification.html:109
 msgid "Subscriptions"
 msgstr "購読"
 
-#: trac/notification/templates/prefs_notification.html:116
+#: trac/notification/templates/prefs_notification.html:115
 msgid "Format:"
 msgstr "フォーマット:"
 
-#: trac/notification/templates/prefs_notification.html:119
+#: trac/notification/templates/prefs_notification.html:118
 #: trac/prefs/templates/prefs_localization.html:207
 msgid "Default format"
 msgstr "デフォルト書式"
 
-#: trac/notification/templates/prefs_notification.html:130
-msgid "Save format"
-msgstr "フォーマットの保存"
-
-#: trac/notification/templates/prefs_notification.html:132
-msgid "Save"
-msgstr "保存"
-
-#: trac/notification/templates/prefs_notification.html:136
+#: trac/notification/templates/prefs_notification.html:126
 #, python-format
 msgid "Configure the format of your %(distributor)s notifications."
 msgstr "%(distributor)s による通知のフォーマットを設定します。"
 
-#: trac/notification/templates/prefs_notification.html:145
+#: trac/notification/templates/prefs_notification.html:135
 msgid "Subscription rules:"
 msgstr "購読ルール:"
 
-#: trac/notification/templates/prefs_notification.html:154
-#: trac/notification/templates/prefs_notification.html:198
+#: trac/notification/templates/prefs_notification.html:144
+#: trac/notification/templates/prefs_notification.html:188
 msgid "Move rule up"
 msgstr "このルールを上に移動"
 
-#: trac/notification/templates/prefs_notification.html:163
-#: trac/notification/templates/prefs_notification.html:206
+#: trac/notification/templates/prefs_notification.html:153
+#: trac/notification/templates/prefs_notification.html:196
 msgid "Move rule down"
 msgstr "このルールを下に移動"
 
-#: trac/notification/templates/prefs_notification.html:172
-#: trac/notification/templates/prefs_notification.html:214
+#: trac/notification/templates/prefs_notification.html:162
+#: trac/notification/templates/prefs_notification.html:204
 msgid "Delete rule"
 msgstr "このルールを削除"
 
-#: trac/notification/templates/prefs_notification.html:178
-#: trac/notification/templates/prefs_notification.html:278
+#: trac/notification/templates/prefs_notification.html:168
+#: trac/notification/templates/prefs_notification.html:268
 #, python-format
 msgid "%(key)s: %(value)s"
 msgstr "%(key)s: %(value)s"
 
-#: trac/notification/templates/prefs_notification.html:243
+#: trac/notification/templates/prefs_notification.html:233
 msgid "Add rule"
 msgstr "ルールを追加"
 
-#: trac/notification/templates/prefs_notification.html:247
+#: trac/notification/templates/prefs_notification.html:237
 #, python-format
 msgid ""
 "Add, remove or reorder subscription rules to %(distributor)s "
 "notifications. Only the first matching rule is applied."
 msgstr "%(distributor)s による通知に対する購読ルールの追加、削除、順序変更を行います。最初に該当したルールを適用します。"
 
-#: trac/notification/templates/prefs_notification.html:257
+#: trac/notification/templates/prefs_notification.html:247
 msgid "Never notify: I update a ticket"
 msgstr "通知しない: 自身によるチケット更新時"
 
-#: trac/notification/templates/prefs_notification.html:260
+#: trac/notification/templates/prefs_notification.html:250
 msgid "Notify: Any ticket changes"
 msgstr "通知する: すべてのチケット更新時"
 
-#: trac/notification/templates/prefs_notification.html:262
+#: trac/notification/templates/prefs_notification.html:252
 #, python-format
 msgid ""
 "Example: The rule %(never_notify)s should be above %(any_changes)s to get"
@@ -1986,37 +1983,32 @@ msgstr ""
 "例: "
 "自身での更新を除いてすべてのチケット変更を通知するには、「%(never_notify)s」ルールを「%(any_changes)s」ルールの上にします。"
 
-#: trac/notification/templates/prefs_notification.html:274
+#: trac/notification/templates/prefs_notification.html:264
 msgid "Default rules:"
 msgstr "デフォルトルール:"
 
-#: trac/notification/templates/prefs_notification.html:286
+#: trac/notification/templates/prefs_notification.html:276
 msgid ""
 "These default rules have been configured by the site administrator. "
 "Configure subscription rules to override them."
 msgstr "管理者がデフォルトルールを設定していますが、上書きするように購読ルールを設定できます。"
 
-#: trac/notification/templates/prefs_notification.html:295
+#: trac/notification/templates/prefs_notification.html:285
 #, python-format
 msgid ""
 "Example: The subscription rule %(any_changes)s overrides the default rule"
 " %(never_notify)s."
 msgstr "例: 「%(any_changes)s」ルールはデフォルトルール「%(never_notify)s」を上書きします。"
 
-#: trac/notification/templates/prefs_notification.html:305
+#: trac/notification/templates/prefs_notification.html:303
 #, python-format
 msgid "%(note)s See %(page)s for help on using notifications."
 msgstr "%(note)s 通知設定について詳しくは %(page)s を参照してください。"
 
-#: trac/notification/templates/prefs_notification.html:314
-#: trac/prefs/templates/prefs.html:75 trac/templates/genshi/prefs.html:48
-msgid "Save changes"
-msgstr "保存"
-
 #: trac/prefs/templates/prefs.html:31 trac/prefs/web_ui.py:51
 #: trac/templates/attachment.html:73 trac/templates/genshi/prefs.html:26
-#: trac/ticket/templates/ticket.html:305 trac/ticket/templates/ticket.html:433
-#: trac/ticket/templates/ticket.html:521
+#: trac/ticket/templates/ticket.html:304 trac/ticket/templates/ticket.html:432
+#: trac/ticket/templates/ticket.html:520
 #: trac/wiki/templates/wiki_edit_form.html:71
 msgid "Preferences"
 msgstr "個人設定"
@@ -2058,6 +2050,10 @@ msgid ""
 "stored in a browser cookie. That cookie allows your settings to be "
 "restored on subsequent visits."
 msgstr "このページではこのサイトでの個人向けの設定を行います。設定内容はサーバに保存しブラウザのクッキー情報を用いて管理しているため、次回訪問時にも同じ情報が使われます。"
+
+#: trac/prefs/templates/prefs.html:75 trac/templates/genshi/prefs.html:48
+msgid "Save changes"
+msgstr "保存"
 
 #: trac/prefs/templates/prefs_advanced.html:28
 msgid "Session key:"
@@ -2420,13 +2416,13 @@ msgid "Attachment Info"
 msgstr "添付ファイル情報"
 
 #: trac/templates/attachment.html:67 trac/templates/genshi/attachment.html:49
-#: trac/ticket/templates/ticket.html:294 trac/ticket/templates/ticket.html:509
+#: trac/ticket/templates/ticket.html:293 trac/ticket/templates/ticket.html:508
 #: trac/wiki/templates/wiki_edit_form.html:63
 msgid "Your email or username:"
 msgstr "メールアドレスまたはユーザ名:"
 
-#: trac/templates/attachment.html:77 trac/ticket/templates/ticket.html:307
-#: trac/ticket/templates/ticket.html:523
+#: trac/templates/attachment.html:77 trac/ticket/templates/ticket.html:306
+#: trac/ticket/templates/ticket.html:522
 #, python-format
 msgid "E-mail address and name can be saved in the %(preferences)s."
 msgstr "メールアドレスと名前は%(preferences)sで保存できます。"
@@ -2455,8 +2451,8 @@ msgstr "添付ファイルの削除"
 
 #: trac/templates/attachment.html:154 trac/templates/genshi/attachment.html:108
 #: trac/templates/genshi/list_of_attachments.html:31
-#: trac/templates/list_of_attachments.html:30 trac/util/text.py:758
-#: trac/versioncontrol/templates/browser.html:273
+#: trac/templates/list_of_attachments.html:30 trac/util/text.py:759
+#: trac/versioncontrol/templates/browser.html:274
 #: trac/versioncontrol/templates/dir_entries.html:29
 #, python-format
 msgid "%(num)d byte"
@@ -2474,7 +2470,7 @@ msgid "Property %(name)s changed from %(old)s to %(new)s"
 msgstr "プロパティ %(name)s を %(old)s から %(new)s に変更"
 
 #: trac/templates/diff_div.html:107 trac/templates/genshi/diff_div.html:85
-#: trac/versioncontrol/templates/browser.html:257
+#: trac/versioncontrol/templates/browser.html:258
 #, python-format
 msgid "Property %(name)s set to %(value)s"
 msgstr "プロパティ %(name)s を %(value)s に設定"
@@ -2535,9 +2531,9 @@ msgstr "空白文字の変更"
 #: trac/templates/diff_options.html:66
 #: trac/templates/genshi/diff_options.html:61
 #: trac/ticket/templates/milestone_view.html:78
-#: trac/ticket/templates/query.html:332
+#: trac/ticket/templates/query.html:330
 #: trac/ticket/templates/report_view.html:94
-#: trac/ticket/templates/roadmap.html:44
+#: trac/ticket/templates/roadmap.html:43
 #: trac/timeline/templates/timeline.html:65
 #: trac/versioncontrol/templates/revisionlog.html:117
 msgid "Update"
@@ -2550,7 +2546,7 @@ msgid "Version %(version)s"
 msgstr "バージョン %(version)s"
 
 #: trac/templates/diff_view.html:53 trac/ticket/templates/ticket_box.html:78
-#: trac/ticket/web_ui.py:998 trac/ticket/web_ui.py:1131
+#: trac/ticket/web_ui.py:999 trac/ticket/web_ui.py:1132
 msgid "Initial Version"
 msgstr "初期バージョン"
 
@@ -2565,7 +2561,7 @@ msgid "Changes from %(new_link)s of %(src_link)s"
 msgstr "%(src_link)s に対する %(new_link)s からの変更内容"
 
 #: trac/templates/diff_view.html:88 trac/templates/genshi/diff_view.html:52
-#: trac/versioncontrol/templates/changeset_content.html:187
+#: trac/versioncontrol/templates/changeset_content.html:197
 msgid "Timestamp:"
 msgstr "日時:"
 
@@ -2582,7 +2578,7 @@ msgid "%(date)s (%(duration)s ago)"
 msgstr "%(date)s (%(duration)s前)"
 
 #: trac/templates/diff_view.html:109 trac/templates/genshi/diff_view.html:65
-#: trac/ticket/templates/batch_modify.html:28
+#: trac/ticket/templates/batch_modify.html:52
 #: trac/ticket/templates/batch_ticket_notify_email.txt:10
 #: trac/ticket/templates/milestone_edit_form.html:128
 #: trac/ticket/templates/ticket_notify_email.txt:20
@@ -2592,38 +2588,38 @@ msgstr "コメント:"
 #: trac/templates/diff_view.html:118 trac/templates/genshi/history_view.html:66
 #: trac/templates/history_view.html:87
 #: trac/ticket/templates/report_list.html:141
-#: trac/ticket/templates/ticket_change.html:111
+#: trac/ticket/templates/ticket_change.html:112
 #: trac/wiki/templates/wiki_edit.html:213
 msgid "Edit"
 msgstr "編集"
 
 #: trac/templates/diff_view.html:128 trac/templates/genshi/diff_view.html:73
-#: trac/versioncontrol/templates/changeset_content.html:293
+#: trac/versioncontrol/templates/changeset_content.html:303
 #: trac/versioncontrol/templates/revisionlog.html:123
 msgid "Legend:"
 msgstr "凡例:"
 
 #: trac/templates/diff_view.html:130 trac/templates/genshi/diff_view.html:75
-#: trac/versioncontrol/templates/changeset_content.html:295
+#: trac/versioncontrol/templates/changeset_content.html:305
 msgid "Unmodified"
 msgstr "変更なし"
 
 #: trac/templates/diff_view.html:131 trac/templates/genshi/diff_view.html:76
-#: trac/versioncontrol/templates/changeset_content.html:296
+#: trac/versioncontrol/templates/changeset_content.html:306
 #: trac/versioncontrol/templates/revisionlog.html:125
 msgid "Added"
 msgstr "追加"
 
 #: trac/templates/diff_view.html:132 trac/templates/genshi/diff_view.html:77
-#: trac/versioncontrol/templates/changeset_content.html:297
+#: trac/versioncontrol/templates/changeset_content.html:307
 #: trac/versioncontrol/templates/revisionlog.html:127
 msgid "Removed"
 msgstr "削除"
 
 #: trac/templates/diff_view.html:133 trac/templates/genshi/diff_view.html:78
-#: trac/ticket/api.py:397
-#: trac/versioncontrol/templates/changeset_content.html:299
-#: trac/versioncontrol/templates/revisionlog.html:129 trac/wiki/admin.py:195
+#: trac/ticket/api.py:400
+#: trac/versioncontrol/templates/changeset_content.html:309
+#: trac/versioncontrol/templates/revisionlog.html:129 trac/wiki/admin.py:178
 msgid "Modified"
 msgstr "更新"
 
@@ -2643,7 +2639,7 @@ msgstr "パッケージ"
 #: trac/templates/genshi/environment_info.html:53
 #: trac/templates/genshi/history_view.html:45
 #: trac/templates/history_view.html:56 trac/ticket/admin.py:453
-#: trac/ticket/api.py:368
+#: trac/ticket/api.py:371
 msgid "Version"
 msgstr "バージョン"
 
@@ -2896,7 +2892,7 @@ msgstr "すべての添付ファイルをダウンロード:"
 #: trac/templates/genshi/list_of_attachments.html:53
 #: trac/templates/list_of_attachments.html:60
 #: trac/templates/list_of_attachments.html:79
-#: trac/ticket/templates/ticket.html:572
+#: trac/ticket/templates/ticket.html:571
 msgid "Attachments"
 msgstr "添付ファイル"
 
@@ -3156,12 +3152,12 @@ msgstr "コンポーネントを選択していません"
 msgid "The selected components have been removed."
 msgstr "選択したコンポーネントを削除しました。"
 
-#: trac/ticket/admin.py:200 trac/ticket/api.py:356
+#: trac/ticket/admin.py:200 trac/ticket/api.py:359
 #: trac/ticket/templates/admin_components.html:118
 msgid "Owner"
 msgstr "担当者"
 
-#: trac/ticket/admin.py:225 trac/ticket/api.py:366
+#: trac/ticket/admin.py:225 trac/ticket/api.py:369
 msgid "Milestone"
 msgstr "マイルストーン"
 
@@ -3249,134 +3245,134 @@ msgstr "<ticket#> は数値にしてください"
 msgid "<comment#> must be a number"
 msgstr "<comment#> は数値にしてください"
 
-#: trac/ticket/api.py:318
+#: trac/ticket/api.py:321
 msgid "Attachment"
 msgstr "添付ファイル"
 
-#: trac/ticket/api.py:349
+#: trac/ticket/api.py:352
 msgid "Summary"
 msgstr "概要"
 
-#: trac/ticket/api.py:351
+#: trac/ticket/api.py:354
 msgid "Reporter"
 msgstr "報告者"
 
-#: trac/ticket/api.py:363 trac/versioncontrol/admin.py:123
+#: trac/ticket/api.py:366 trac/versioncontrol/admin.py:123
 #: trac/versioncontrol/templates/admin_repositories.html:243
 msgid "Type"
 msgstr "分類"
 
-#: trac/ticket/api.py:364
+#: trac/ticket/api.py:367
 msgid "Status"
 msgstr "ステータス"
 
-#: trac/ticket/api.py:365 trac/ticket/model.py:920
+#: trac/ticket/api.py:368 trac/ticket/model.py:920
 msgid "Priority"
 msgstr "優先度"
 
-#: trac/ticket/api.py:369 trac/ticket/model.py:925
+#: trac/ticket/api.py:372 trac/ticket/model.py:925
 msgid "Severity"
 msgstr "重要度"
 
-#: trac/ticket/api.py:370 trac/ticket/model.py:915
+#: trac/ticket/api.py:373 trac/ticket/model.py:915
 msgid "Resolution"
 msgstr "解決方法"
 
-#: trac/ticket/api.py:389
+#: trac/ticket/api.py:392
 msgid "Keywords"
 msgstr "キーワード"
 
-#: trac/ticket/api.py:391 trac/ticket/web_ui.py:1575
+#: trac/ticket/api.py:394 trac/ticket/web_ui.py:1576
 msgid "Cc"
 msgstr "関係者"
 
-#: trac/ticket/api.py:395
+#: trac/ticket/api.py:398
 msgid "Created"
 msgstr "作成"
 
-#: trac/ticket/api.py:521
+#: trac/ticket/api.py:524
 #, python-format
 msgid "\"%(value)s\" is not a valid value"
 msgstr "\"%(value)s\" は有効な値ではありません"
 
-#: trac/ticket/api.py:524
+#: trac/ticket/api.py:527
 msgid "field cannot be empty"
 msgstr "項目を空にできません"
 
-#: trac/ticket/api.py:528 trac/ticket/api.py:536 trac/ticket/api.py:545
-#: trac/ticket/api.py:569
+#: trac/ticket/api.py:531 trac/ticket/api.py:539 trac/ticket/api.py:548
+#: trac/ticket/api.py:572
 #, python-format
 msgid "Must be less than or equal to %(num)s characters"
 msgstr "文字数を%(num)sと同じかそれ以下にしてください"
 
-#: trac/ticket/api.py:534
+#: trac/ticket/api.py:537
 msgid "Tickets must contain a summary."
 msgstr "チケットの概要を記述する必要があります。"
 
-#: trac/ticket/api.py:635
+#: trac/ticket/api.py:638
 #, python-format
 msgid "Tickets %(ranges)s"
 msgstr "チケット %(ranges)s"
 
-#: trac/ticket/api.py:664
+#: trac/ticket/api.py:667
 msgid "ticket comment does not exist"
 msgstr "チケットのコメントは存在しません"
 
-#: trac/ticket/api.py:675
+#: trac/ticket/api.py:678
 #, python-format
 msgid "Description for #%(id)s: %(summary)s"
 msgstr "#%(id)s の詳細: %(summary)s"
 
-#: trac/ticket/api.py:678
+#: trac/ticket/api.py:681
 #, python-format
 msgid "Comment %(cnum)s for #%(id)s: %(summary)s"
 msgstr "#%(id)s のコメント%(cnum)s: %(summary)s"
 
-#: trac/ticket/api.py:684
+#: trac/ticket/api.py:687
 #, python-format
 msgid "Comment %(cnum)s"
 msgstr "コメント %(cnum)s"
 
-#: trac/ticket/api.py:688
+#: trac/ticket/api.py:691
 msgid "no permission to view ticket"
 msgstr "チケットを参照する権限がありません"
 
-#: trac/ticket/api.py:691
+#: trac/ticket/api.py:694
 msgid "ticket does not exist"
 msgstr "チケットは存在しません"
 
-#: trac/ticket/api.py:711
+#: trac/ticket/api.py:714
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "チケット #%(shortname)s"
 
-#: trac/ticket/batch.py:107
+#: trac/ticket/batch.py:110
 msgid "add"
 msgstr "追加"
 
-#: trac/ticket/batch.py:108
+#: trac/ticket/batch.py:111
 msgid "remove"
 msgstr "削除"
 
-#: trac/ticket/batch.py:109
+#: trac/ticket/batch.py:112
 msgid "add / remove"
 msgstr "追加 / 削除"
 
-#: trac/ticket/batch.py:110
+#: trac/ticket/batch.py:113
 msgid "set to"
 msgstr "設定"
 
-#: trac/ticket/batch.py:185 trac/ticket/web_ui.py:1336
+#: trac/ticket/batch.py:188 trac/ticket/web_ui.py:1337
 #, python-format
 msgid "The ticket comment is invalid: %(message)s"
 msgstr "チケットコメントの内容が不正です: %(message)s"
 
-#: trac/ticket/batch.py:202 trac/ticket/web_ui.py:1345
+#: trac/ticket/batch.py:205 trac/ticket/web_ui.py:1346
 #, python-format
 msgid "The ticket field %(field)s is invalid: %(message)s"
 msgstr "チケットのフィールド %(field)s の内容が不正です: %(message)s"
 
-#: trac/ticket/batch.py:229 trac/ticket/roadmap.py:876
+#: trac/ticket/batch.py:232 trac/ticket/roadmap.py:876
 #: trac/ticket/roadmap.py:934
 #, python-format
 msgid ""
@@ -3861,12 +3857,12 @@ msgstr "レポート一覧"
 msgid "New Custom Query"
 msgstr "新規カスタムクエリ"
 
-#: trac/ticket/query.py:1269
+#: trac/ticket/query.py:1270
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[エラー: %(error)s]"
 
-#: trac/ticket/query.py:1275
+#: trac/ticket/query.py:1276
 msgid ""
 "Wiki macro listing tickets that match certain criteria.\n"
 "\n"
@@ -3977,27 +3973,27 @@ msgstr ""
 "パラメータとして使います。また、フィールドのセパレータとして \"&\" を使ってもまだ機能しますが非推奨です (`order` "
 "パラメータを除く)。"
 
-#: trac/ticket/query.py:1398
+#: trac/ticket/query.py:1399
 #, python-format
 msgid "%(num)s ticket matching %(criteria)s"
 msgid_plural "%(num)s tickets matching %(criteria)s"
 msgstr[0] "チケット%(num)s件該当: %(criteria)s"
 
-#: trac/ticket/query.py:1480
+#: trac/ticket/query.py:1481
 #, python-format
 msgid "Ticket completion status for each %(group)s"
 msgstr "%(group)sごとのチケット完了ステータス"
 
-#: trac/ticket/query.py:1494
+#: trac/ticket/query.py:1495
 msgid "No results"
 msgstr "一致するものがありません"
 
-#: trac/ticket/query.py:1512
+#: trac/ticket/query.py:1513
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "%(query)s に %(groupvalue)s %(groupname)s のチケットが該当"
 
-#: trac/ticket/query.py:1536
+#: trac/ticket/query.py:1537
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s のチケット:"
@@ -4109,7 +4105,7 @@ msgstr "完了済"
 
 #: trac/ticket/roadmap.py:469 trac/ticket/roadmap.py:599
 #: trac/ticket/roadmap.py:745 trac/ticket/templates/roadmap.html:17
-#: trac/ticket/templates/roadmap.html:48
+#: trac/ticket/templates/roadmap.html:47
 msgid "Roadmap"
 msgstr "ロードマップ"
 
@@ -4201,7 +4197,7 @@ msgid "Back to Roadmap"
 msgstr "ロードマップに戻る"
 
 #: trac/ticket/roadmap.py:1104 trac/ticket/templates/milestone_view.html:44
-#: trac/ticket/templates/roadmap.html:69
+#: trac/ticket/templates/roadmap.html:68
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
 msgstr "%(duration)s前に完了 (%(date)s)"
@@ -4212,13 +4208,13 @@ msgid "%(duration)s late (%(date)s)"
 msgstr "%(duration)s遅延 (%(date)s)"
 
 #: trac/ticket/roadmap.py:1114 trac/ticket/templates/milestone_view.html:53
-#: trac/ticket/templates/roadmap.html:81
+#: trac/ticket/templates/roadmap.html:80
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
 msgstr "期日まで %(duration)s (%(date)s)"
 
 #: trac/ticket/roadmap.py:1117 trac/ticket/templates/milestone_view.html:57
-#: trac/ticket/templates/roadmap.html:87
+#: trac/ticket/templates/roadmap.html:86
 msgid "No date set"
 msgstr "期日なし"
 
@@ -4252,7 +4248,7 @@ msgstr "チケットの登録と解決"
 msgid "Ticket updates"
 msgstr "チケットの更新"
 
-#: trac/ticket/web_ui.py:277 trac/ticket/web_ui.py:1257
+#: trac/ticket/web_ui.py:277 trac/ticket/web_ui.py:1258
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
@@ -4292,157 +4288,157 @@ msgstr "チケット %(ticketlist)s を一括更新しました"
 msgid "There are no workflow actions defined for this ticket's status."
 msgstr "このチケットのステータスに対応するワークフローのアクションを定義していません。"
 
-#: trac/ticket/web_ui.py:513 trac/ticket/web_ui.py:651
+#: trac/ticket/web_ui.py:513 trac/ticket/web_ui.py:652
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "アクション \"%(name)s\" は利用できません。"
 
-#: trac/ticket/web_ui.py:528 trac/ticket/web_ui.py:677
+#: trac/ticket/web_ui.py:528 trac/ticket/web_ui.py:678
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr "設定を見直してください。おそらく %(tracini)s の %(section)s のあたりです。"
 
-#: trac/ticket/web_ui.py:802
+#: trac/ticket/web_ui.py:803
 msgid "Previous Ticket"
 msgstr "前のチケット"
 
-#: trac/ticket/web_ui.py:802
+#: trac/ticket/web_ui.py:803
 msgid "Next Ticket"
 msgstr "次のチケット"
 
-#: trac/ticket/web_ui.py:803
+#: trac/ticket/web_ui.py:804
 msgid "Back to Query"
 msgstr "レポート結果に戻る"
 
-#: trac/ticket/web_ui.py:906 trac/ticket/web_ui.py:1051
-#: trac/ticket/web_ui.py:1059
+#: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:1052
+#: trac/ticket/web_ui.py:1060
 msgid "Ticket History"
 msgstr "チケットの履歴"
 
-#: trac/ticket/web_ui.py:910 trac/ticket/web_ui.py:1107
+#: trac/ticket/web_ui.py:911 trac/ticket/web_ui.py:1108
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "チケット #%(num)s へ戻る"
 
-#: trac/ticket/web_ui.py:952
+#: trac/ticket/web_ui.py:953
 msgid "No differences to show"
 msgstr "表示できる差分はありません"
 
-#: trac/ticket/web_ui.py:995 trac/ticket/web_ui.py:1048
-#: trac/ticket/web_ui.py:1056 trac/ticket/web_ui.py:1128
-#: trac/ticket/web_ui.py:1173 trac/ticket/web_ui.py:1180
+#: trac/ticket/web_ui.py:996 trac/ticket/web_ui.py:1049
+#: trac/ticket/web_ui.py:1057 trac/ticket/web_ui.py:1129
+#: trac/ticket/web_ui.py:1174 trac/ticket/web_ui.py:1181
 #: trac/wiki/web_ui.py:478 trac/wiki/web_ui.py:484 trac/wiki/web_ui.py:693
 #: trac/wiki/web_ui.py:707
 #, python-format
 msgid "Version %(num)s"
 msgstr "バージョン %(num)s"
 
-#: trac/ticket/web_ui.py:998 trac/ticket/web_ui.py:1131
+#: trac/ticket/web_ui.py:999 trac/ticket/web_ui.py:1132
 msgid "initial"
 msgstr "初期"
 
-#: trac/ticket/web_ui.py:1013
+#: trac/ticket/web_ui.py:1014
 #, python-format
 msgid "Property %(label)s %(rendered)s"
 msgstr "プロパティ %(label)s %(rendered)s"
 
-#: trac/ticket/web_ui.py:1058 trac/ticket/web_ui.py:1182
+#: trac/ticket/web_ui.py:1059 trac/ticket/web_ui.py:1183
 #: trac/versioncontrol/web_ui/changeset.py:367 trac/wiki/web_ui.py:497
 msgid "Previous Change"
 msgstr "前の変更"
 
-#: trac/ticket/web_ui.py:1058 trac/ticket/web_ui.py:1182
+#: trac/ticket/web_ui.py:1059 trac/ticket/web_ui.py:1183
 #: trac/versioncontrol/web_ui/changeset.py:367 trac/wiki/web_ui.py:497
 msgid "Next Change"
 msgstr "次の変更"
 
-#: trac/ticket/web_ui.py:1064
+#: trac/ticket/web_ui.py:1065
 msgid "Ticket Diff"
 msgstr "チケットの差分"
 
-#: trac/ticket/web_ui.py:1099 trac/ticket/web_ui.py:1176
-#: trac/ticket/web_ui.py:1183
+#: trac/ticket/web_ui.py:1100 trac/ticket/web_ui.py:1177
+#: trac/ticket/web_ui.py:1184
 msgid "Ticket Comment History"
 msgstr "コメントの履歴"
 
-#: trac/ticket/web_ui.py:1101 trac/ticket/web_ui.py:1125
-#: trac/ticket/web_ui.py:1190
+#: trac/ticket/web_ui.py:1102 trac/ticket/web_ui.py:1126
+#: trac/ticket/web_ui.py:1191
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "チケット #%(num)s, コメント %(cnum)d"
 
-#: trac/ticket/web_ui.py:1147
+#: trac/ticket/web_ui.py:1148
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr "チケット #%(ticket)s のコメント %(cnum)d にはバージョン %(version)d が見つかりません"
 
-#: trac/ticket/web_ui.py:1188
+#: trac/ticket/web_ui.py:1189
 msgid "Ticket Comment Diff"
 msgstr "コメントの差分"
 
-#: trac/ticket/web_ui.py:1261
+#: trac/ticket/web_ui.py:1262
 #, python-format
 msgid "%(labels)s set"
 msgid_plural "%(labels)s set"
 msgstr[0] "%(labels)s を設定"
 
-#: trac/ticket/web_ui.py:1265
+#: trac/ticket/web_ui.py:1266
 #, python-format
 msgid "%(labels)s deleted"
 msgid_plural "%(labels)s deleted"
 msgstr[0] "%(labels)s を削除"
 
-#: trac/ticket/web_ui.py:1266 trac/ticket/web_ui.py:1794
+#: trac/ticket/web_ui.py:1267 trac/ticket/web_ui.py:1797
 msgid "; "
 msgstr "、"
 
-#: trac/ticket/web_ui.py:1290
+#: trac/ticket/web_ui.py:1291
 msgid "No permission to edit the ticket description."
 msgstr "チケットの詳細を編集する権限がありません。"
 
-#: trac/ticket/web_ui.py:1296
+#: trac/ticket/web_ui.py:1297
 msgid "No permission to change the ticket reporter."
 msgstr "チケットの報告者を変更する権限がありません。"
 
-#: trac/ticket/web_ui.py:1301
+#: trac/ticket/web_ui.py:1302
 msgid "No permission to change ticket fields."
 msgstr "チケットのフィールドの内容を変更する権限がありません。"
 
-#: trac/ticket/web_ui.py:1308
+#: trac/ticket/web_ui.py:1309
 msgid "No permissions to add a comment."
 msgstr "コメントを追加する権限がありません。"
 
-#: trac/ticket/web_ui.py:1316
+#: trac/ticket/web_ui.py:1317
 msgid "This ticket has been modified since you started editing."
 msgstr "このチケットは編集開始以降に変更されています。"
 
-#: trac/ticket/web_ui.py:1319
+#: trac/ticket/web_ui.py:1320
 msgid ""
 "Your changes have not been saved because this ticket has been modified "
 "since you started editing."
 msgstr "変更内容を保存できませんでした。このチケットは編集開始以降に変更されています。"
 
-#: trac/ticket/web_ui.py:1328
+#: trac/ticket/web_ui.py:1329
 msgid "Invalid comment threading identifier"
 msgstr "コメント番号が不正です"
 
-#: trac/ticket/web_ui.py:1377
+#: trac/ticket/web_ui.py:1378
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "チケットは作成できましたが、通知処理中にエラーが発生しました: %(message)s"
 
-#: trac/ticket/web_ui.py:1382
+#: trac/ticket/web_ui.py:1383
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created. You can now attach the desired"
 " files."
 msgstr "チケット %(ticketref)s を作成しました。ファイルを添付することができます。"
 
-#: trac/ticket/web_ui.py:1388
+#: trac/ticket/web_ui.py:1389
 #, python-format
 msgid ""
 "The ticket %(ticketref)s has been created, but you don't have permission "
@@ -4450,18 +4446,18 @@ msgid ""
 msgstr "チケット %(ticketref)s は作成できましたが、参照する権限がありません。"
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1417
+#: trac/ticket/web_ui.py:1418
 msgid "change"
 msgstr "変更内容"
 
-#: trac/ticket/web_ui.py:1423
+#: trac/ticket/web_ui.py:1424
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "%(change)sを保存しましたが、通知処理中にエラーが発生しました: %(message)s"
 
-#: trac/ticket/web_ui.py:1465
+#: trac/ticket/web_ui.py:1466
 #, python-format
 msgid ""
 "%(controller1)s changed \"%(key)s\" to \"%(val1)s\", but %(controller2)s "
@@ -4470,66 +4466,66 @@ msgstr ""
 "%(controller1)s が \"%(key)s\" を \"%(val1)s\" に変更しましたが、%(controller2)s "
 "がそれを \"%(val2)s\" に変更しています。"
 
-#: trac/ticket/web_ui.py:1563
+#: trac/ticket/web_ui.py:1564
 #, python-format
 msgid "Released %(datetime)s"
 msgstr "リリース日時: %(datetime)s"
 
-#: trac/ticket/web_ui.py:1573
+#: trac/ticket/web_ui.py:1574
 msgid "Add Cc"
 msgstr "Cc に追加"
 
-#: trac/ticket/web_ui.py:1574
+#: trac/ticket/web_ui.py:1575
 msgid "Remove Cc"
 msgstr "Cc から削除"
 
 #: trac/ticket/templates/query.html:173
-#: trac/ticket/templates/query_results.html:134 trac/ticket/web_ui.py:1610
+#: trac/ticket/templates/query_results.html:134 trac/ticket/web_ui.py:1611
 msgid "yes"
 msgstr "はい"
 
 #: trac/ticket/templates/query.html:181
-#: trac/ticket/templates/query_results.html:134 trac/ticket/web_ui.py:1610
+#: trac/ticket/templates/query_results.html:134 trac/ticket/web_ui.py:1611
 msgid "no"
 msgstr "いいえ"
 
-#: trac/ticket/web_ui.py:1789
+#: trac/ticket/web_ui.py:1792
 #, python-format
 msgid "%(value)s added"
 msgid_plural "%(value)s added"
 msgstr[0] "%(value)s を追加"
 
-#: trac/ticket/web_ui.py:1792 trac/ticket/web_ui.py:1822
+#: trac/ticket/web_ui.py:1795 trac/ticket/web_ui.py:1825
 #, python-format
 msgid "%(value)s removed"
 msgid_plural "%(value)s removed"
 msgstr[0] "%(value)s を削除"
 
-#: trac/ticket/web_ui.py:1824
+#: trac/ticket/web_ui.py:1827
 #, python-format
 msgid "set to %(value)s"
 msgstr "%(value)s に設定"
 
-#: trac/ticket/web_ui.py:1826
+#: trac/ticket/web_ui.py:1829
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "%(old)s から %(new)s に変更"
 
-#: trac/ticket/web_ui.py:1830
+#: trac/ticket/web_ui.py:1833
 msgid "set"
 msgstr "選択"
 
-#: trac/ticket/templates/query.html:142 trac/ticket/web_ui.py:1830
+#: trac/ticket/templates/query.html:142 trac/ticket/web_ui.py:1833
 msgid "unset"
 msgstr "解除"
 
-#: trac/ticket/web_ui.py:1833
-#: trac/versioncontrol/templates/changeset_content.html:280
+#: trac/ticket/web_ui.py:1836
+#: trac/versioncontrol/templates/changeset_content.html:290
 #: trac/versioncontrol/templates/revisionlog.txt:13
 msgid "modified"
 msgstr "更新"
 
-#: trac/ticket/web_ui.py:1839
+#: trac/ticket/web_ui.py:1842
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "更新 (%(diff)s)"
@@ -4549,9 +4545,10 @@ msgstr "コンポーネントの変更:"
 #: trac/ticket/templates/admin_components.html:82
 #: trac/ticket/templates/admin_enums.html:66
 #: trac/ticket/templates/admin_versions.html:78
+#: trac/ticket/templates/batch_modify.html:57
 #: trac/ticket/templates/milestone_edit_form.html:147
 #: trac/ticket/templates/report_edit.html:81
-#: trac/ticket/templates/ticket.html:329 trac/ticket/templates/ticket.html:540
+#: trac/ticket/templates/ticket.html:328 trac/ticket/templates/ticket.html:539
 #: trac/versioncontrol/templates/admin_repositories.html:184
 #, python-format
 msgid "You may use %(wikiformatting)s here."
@@ -4561,8 +4558,8 @@ msgstr "%(wikiformatting)s が使えます。"
 #: trac/ticket/templates/admin_enums.html:76
 #: trac/ticket/templates/admin_versions.html:89
 #: trac/ticket/templates/milestone_edit_form.html:161
-#: trac/ticket/templates/ticket.html:592
-#: trac/ticket/templates/ticket_change.html:182
+#: trac/ticket/templates/ticket.html:591
+#: trac/ticket/templates/ticket_change.html:183
 #: trac/versioncontrol/templates/admin_repositories.html:197
 #: trac/wiki/templates/wiki_edit_comment.html:58
 #: trac/wiki/templates/wiki_edit_form.html:105
@@ -4721,28 +4718,28 @@ msgstr "バージョンの追加:"
 msgid "Released"
 msgstr "リリース日時"
 
-#: trac/ticket/templates/batch_modify.html:24
+#: trac/ticket/templates/batch_modify.html:27
 msgid "Batch Modify"
 msgstr "一括更新"
 
-#: trac/ticket/templates/batch_modify.html:40
+#: trac/ticket/templates/batch_modify.html:34
 msgid "Change:"
 msgstr "変更:"
 
-#: trac/ticket/templates/batch_modify.html:43
-#: trac/ticket/templates/query.html:223 trac/ticket/templates/query.html:245
-#: trac/ticket/templates/query.html:289
+#: trac/ticket/templates/batch_modify.html:36
+#: trac/ticket/templates/query.html:222 trac/ticket/templates/query.html:244
+#: trac/ticket/templates/query.html:287
 msgid "field…"
 msgstr "フィールド…"
 
-#: trac/ticket/templates/batch_modify.html:65
+#: trac/ticket/templates/batch_modify.html:73
+msgid "Change tickets"
+msgstr "チケットを変更"
+
+#: trac/ticket/templates/batch_modify.html:77
 #, python-format
 msgid "%(note)s See %(page)s for help on using batch modify."
 msgstr "%(note)s 一括更新について詳しくは %(page)s を参照してください。"
-
-#: trac/ticket/templates/batch_modify.html:76
-msgid "Change tickets"
-msgstr "チケットを変更"
 
 #: trac/ticket/templates/batch_ticket_notify_email.txt:1
 #, python-format
@@ -4778,14 +4775,14 @@ msgid "There are no tickets associated with this milestone."
 msgstr "このマイルストーンに属するチケットはありません。"
 
 #: trac/ticket/templates/milestone_delete.html:73
-#: trac/ticket/templates/milestone_view.html:120
+#: trac/ticket/templates/milestone_view.html:118
 msgid "Delete milestone"
 msgstr "マイルストーンを削除"
 
 #: trac/ticket/templates/milestone_delete.html:79
 #: trac/ticket/templates/milestone_edit.html:42
-#: trac/ticket/templates/milestone_view.html:131
-#: trac/ticket/templates/roadmap.html:124
+#: trac/ticket/templates/milestone_view.html:129
+#: trac/ticket/templates/roadmap.html:123
 #, python-format
 msgid "%(note)s See %(page)s for help on using the roadmap."
 msgstr "%(note)s ロードマップについて詳しくは %(page)s を参照してください。"
@@ -4838,7 +4835,7 @@ msgid "Edit this milestone"
 msgstr "マイルストーンの編集"
 
 #: trac/ticket/templates/milestone_view.html:49
-#: trac/ticket/templates/roadmap.html:76
+#: trac/ticket/templates/roadmap.html:75
 #, python-format
 msgid "%(duration)s late"
 msgstr "%(duration)s遅延"
@@ -4848,12 +4845,7 @@ msgstr "%(duration)s遅延"
 msgid "%(stat_title)s by"
 msgstr "%(stat_title)s:"
 
-#: trac/ticket/templates/milestone_view.html:85
-#, python-format
-msgid "Shows the milestone completion status grouped by %(grouped_by)s"
-msgstr "このマイルストーンの完了ステータスを%(grouped_by)sごとに表示"
-
-#: trac/ticket/templates/milestone_view.html:112
+#: trac/ticket/templates/milestone_view.html:110
 msgid "Edit milestone"
 msgstr "マイルストーンを編集"
 
@@ -4887,64 +4879,64 @@ msgstr "値なし"
 msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
 msgstr "<label>%(start)s</label><label>から%(end)sの間</label>"
 
-#: trac/ticket/templates/query.html:219
+#: trac/ticket/templates/query.html:218
 msgid "And"
 msgstr "And"
 
-#: trac/ticket/templates/query.html:272
+#: trac/ticket/templates/query.html:270
 msgid "Columns"
 msgstr "カラム"
 
-#: trac/ticket/templates/query.html:287
+#: trac/ticket/templates/query.html:285
 msgid "Group results by"
 msgstr "結果のグループ化:"
 
-#: trac/ticket/templates/query.html:301
+#: trac/ticket/templates/query.html:299
 msgid "descending"
 msgstr "降順"
 
-#: trac/ticket/templates/query.html:308
+#: trac/ticket/templates/query.html:306
 msgid "Show under each result:"
 msgstr "各検索結果の下に表示:"
 
-#: trac/ticket/templates/query.html:319
+#: trac/ticket/templates/query.html:317
 #: trac/ticket/templates/report_view.html:62
 msgid "Max items per page"
 msgstr "1ページに表示する件数"
 
-#: trac/ticket/templates/query.html:353
+#: trac/ticket/templates/query.html:351
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
 msgstr "このクエリに対応するレポート {%(id)s} を編集する"
 
-#: trac/ticket/templates/query.html:356
+#: trac/ticket/templates/query.html:354
 msgid "Edit query"
 msgstr "このクエリを編集"
 
-#: trac/ticket/templates/query.html:367
+#: trac/ticket/templates/query.html:365
 #: trac/ticket/templates/report_edit.html:119
 msgid "Save query"
 msgstr "このクエリを保存"
 
-#: trac/ticket/templates/query.html:369
+#: trac/ticket/templates/query.html:367
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "更新されたクエリをレポート {%(id)s} に保存する"
 
-#: trac/ticket/templates/query.html:371
+#: trac/ticket/templates/query.html:369
 msgid "Create new report from current query"
 msgstr "現在のクエリから新しいレポートを作成する"
 
-#: trac/ticket/templates/query.html:383
+#: trac/ticket/templates/query.html:381
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
 msgstr "このクエリに対応するレポート {%(id)s} を削除する"
 
-#: trac/ticket/templates/query.html:385
+#: trac/ticket/templates/query.html:383
 msgid "Delete query"
 msgstr "このクエリを削除"
 
-#: trac/ticket/templates/query.html:392
+#: trac/ticket/templates/query.html:390
 #, python-format
 msgid "%(note)s See %(page)s for help on using queries."
 msgstr "%(note)s カスタムクエリについて詳しくは %(page)s を参照してください。"
@@ -5005,7 +4997,7 @@ msgstr "このレポートを削除"
 #: trac/ticket/templates/report_delete.html:42
 #: trac/ticket/templates/report_edit.html:125
 #: trac/ticket/templates/report_list.html:180
-#: trac/ticket/templates/report_view.html:311
+#: trac/ticket/templates/report_view.html:317
 #, python-format
 msgid "%(note)s See %(page)s for help on using and creating reports."
 msgstr "%(note)s レポートの使用と作成について詳しくは %(page)s を参照してください。"
@@ -5100,7 +5092,7 @@ msgstr "SQL レポートと保存しているカスタムクエリ"
 msgid "Identifier"
 msgstr "ID"
 
-#: trac/ticket/templates/report_list.html:114 trac/wiki/admin.py:195
+#: trac/ticket/templates/report_list.html:114 trac/wiki/admin.py:178
 msgid "Title"
 msgstr "タイトル"
 
@@ -5119,7 +5111,7 @@ msgid "Edit report"
 msgstr "このレポートを編集"
 
 #: trac/ticket/templates/report_list.html:147
-#: trac/ticket/templates/report_view.html:223
+#: trac/ticket/templates/report_view.html:221
 msgid "View report"
 msgstr "レポートを表示する"
 
@@ -5145,34 +5137,34 @@ msgid "(empty)"
 msgstr "(値なし)"
 
 #: trac/ticket/templates/report_view.html:151
-#: trac/ticket/templates/report_view.html:307
+#: trac/ticket/templates/report_view.html:313
 msgid "No matches found."
 msgstr "一致するものが見つかりませんでした。"
 
-#: trac/ticket/templates/report_view.html:230
-#: trac/ticket/templates/report_view.html:238
+#: trac/ticket/templates/report_view.html:228
+#: trac/ticket/templates/report_view.html:236
 #, python-format
 msgid "View %(realm)s"
 msgstr "%(realm)s の表示"
 
-#: trac/ticket/templates/report_view.html:280
+#: trac/ticket/templates/report_view.html:286
 msgid "View milestone"
 msgstr "マイルストーンの表示"
 
-#: trac/ticket/templates/roadmap.html:34
+#: trac/ticket/templates/roadmap.html:33
 msgid "Show completed milestones"
 msgstr "完了したマイルストーンも表示する"
 
-#: trac/ticket/templates/roadmap.html:41
+#: trac/ticket/templates/roadmap.html:40
 msgid "Hide milestones with no due date"
 msgstr "期限のないマイルストールを表示しない"
 
-#: trac/ticket/templates/roadmap.html:59
+#: trac/ticket/templates/roadmap.html:58
 #, python-format
 msgid "Milestone: %(name)s"
 msgstr "マイルストーン: %(name)s"
 
-#: trac/ticket/templates/roadmap.html:118
+#: trac/ticket/templates/roadmap.html:117
 msgid "Add new milestone"
 msgstr "新しいマイルストーンを登録"
 
@@ -5212,79 +5204,79 @@ msgstr "属性の変更を表示"
 msgid "Change History"
 msgstr "更新履歴"
 
-#: trac/ticket/templates/ticket.html:252
+#: trac/ticket/templates/ticket.html:251
 msgid "Modify Ticket"
 msgstr "チケットの変更"
 
-#: trac/ticket/templates/ticket.html:264
+#: trac/ticket/templates/ticket.html:263
 msgid "Change Properties"
 msgstr "属性変更"
 
-#: trac/ticket/templates/ticket.html:266
+#: trac/ticket/templates/ticket.html:265
 msgid "Properties"
 msgstr "属性"
 
-#: trac/ticket/templates/ticket.html:274
+#: trac/ticket/templates/ticket.html:273
 msgid "Summary:"
 msgstr "概要:"
 
-#: trac/ticket/templates/ticket.html:292
+#: trac/ticket/templates/ticket.html:291
 msgid "Reporter:"
 msgstr "報告者:"
 
-#: trac/ticket/templates/ticket.html:352 trac/ticket/templates/ticket.html:355
+#: trac/ticket/templates/ticket.html:351 trac/ticket/templates/ticket.html:354
 #: trac/ticket/templates/ticket_box.html:121
-#: trac/ticket/templates/ticket_change.html:130
+#: trac/ticket/templates/ticket_change.html:131
 #, python-format
 msgid "%(label)s:"
 msgstr "%(label)s:"
 
-#: trac/ticket/templates/ticket.html:369
+#: trac/ticket/templates/ticket.html:368
 msgid "(unset)"
 msgstr "(未設定)"
 
-#: trac/ticket/templates/ticket.html:435
+#: trac/ticket/templates/ticket.html:434
 #, python-format
 msgid "Set your email in %(preferences_link)s"
 msgstr "%(preferences_link)sでメールアドレスを設定してください"
 
-#: trac/ticket/templates/ticket.html:442
+#: trac/ticket/templates/ticket.html:441
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "関係者に自分自身を登録または削除することができます。"
 
-#: trac/ticket/templates/ticket.html:455
+#: trac/ticket/templates/ticket.html:454
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "空白かカンマ区切りで、メールアドレスかユーザ名を設定できます。"
 
-#: trac/ticket/templates/ticket.html:497
+#: trac/ticket/templates/ticket.html:496
 msgid "Add Comment"
 msgstr "コメントの追加"
 
-#: trac/ticket/templates/ticket.html:558
+#: trac/ticket/templates/ticket.html:557
 msgid "I have files to attach to this ticket"
 msgstr "このチケットにファイルを添付します"
 
-#: trac/ticket/templates/ticket.html:571
+#: trac/ticket/templates/ticket.html:570
 msgid "Go to the list of attachments"
 msgstr "添付ファイルの一覧に移動"
 
-#: trac/ticket/templates/ticket.html:575
+#: trac/ticket/templates/ticket.html:574
 msgid "View the ticket description"
 msgstr "チケットの詳細を表示"
 
-#: trac/ticket/templates/ticket.html:587
-#: trac/ticket/templates/ticket_change.html:180
+#: trac/ticket/templates/ticket.html:586
+#: trac/ticket/templates/ticket_change.html:181
 #: trac/wiki/templates/wiki_edit.html:116
 #: trac/wiki/templates/wiki_edit.html:220
 #: trac/wiki/templates/wiki_edit_form.html:101
 msgid "Preview"
 msgstr "プレビュー"
 
-#: trac/ticket/templates/ticket.html:593
+#: trac/ticket/templates/ticket.html:592
 msgid "Create ticket"
 msgstr "チケットの新規作成"
 
-#: trac/ticket/templates/ticket.html:606
+#: trac/ticket/templates/ticket.html:605
 msgid ""
 "Review any <em class=\"trac-new\">modifications</em> above, and any <em "
 "class=\"trac-conflict\">conflicts</em> in the preview below."
@@ -5292,7 +5284,7 @@ msgstr ""
 "上に追加されている「<em class=\"trac-new\">変更内容</em>」と下のプレビューに表示されている「<em class"
 "=\"trac-conflict\">衝突内容</em>」を確認してください。"
 
-#: trac/ticket/templates/ticket.html:634
+#: trac/ticket/templates/ticket.html:633
 #, python-format
 msgid "%(note)s See %(page)s for help on using tickets."
 msgstr "%(note)s チケットについて詳しくは %(page)s を参照してください。"
@@ -5335,7 +5327,7 @@ msgid "(last modified by %(author)s)"
 msgstr "(最終更新者 %(author)s)"
 
 #: trac/ticket/templates/ticket_box.html:186
-#: trac/ticket/templates/ticket_change.html:102
+#: trac/ticket/templates/ticket_change.html:103
 msgid "Reply"
 msgstr "返信"
 
@@ -5343,82 +5335,82 @@ msgstr "返信"
 msgid "Reply, quoting this description"
 msgstr "説明文を引用してコメントする"
 
-#: trac/ticket/templates/ticket_change.html:53
+#: trac/ticket/templates/ticket_change.html:54
 #, python-format
 msgid "in reply to: %(refs)s"
 msgstr "親コメント: %(refs)s"
 
-#: trac/ticket/templates/ticket_change.html:58
+#: trac/ticket/templates/ticket_change.html:59
 msgid ";"
 msgstr "、"
 
-#: trac/ticket/templates/ticket_change.html:66
+#: trac/ticket/templates/ticket_change.html:67
 msgid "follow-up:"
 msgid_plural "follow-ups:"
 msgstr[0] "フォローアップ"
 
-#: trac/ticket/templates/ticket_change.html:78
+#: trac/ticket/templates/ticket_change.html:79
 #, python-format
 msgid "by %(author)s, %(date)s"
 msgstr "更新者: %(author)s (%(date)s)"
 
-#: trac/ticket/templates/ticket_change.html:84
+#: trac/ticket/templates/ticket_change.html:85
 #, python-format
 msgid "by %(author)s"
 msgstr "更新者: %(author)s"
 
-#: trac/ticket/templates/ticket_change.html:103
+#: trac/ticket/templates/ticket_change.html:104
 #, python-format
 msgid "Reply to comment %(cnum)s"
 msgstr "コメント %(cnum)s に返信する"
 
-#: trac/ticket/templates/ticket_change.html:112
+#: trac/ticket/templates/ticket_change.html:113
 #, python-format
 msgid "Edit comment %(cnum)s"
 msgstr "コメント %(cnum)s の編集"
 
-#: trac/ticket/templates/ticket_change.html:140
+#: trac/ticket/templates/ticket_change.html:141
 #, python-format
 msgid "%(attachment_link)s added"
 msgstr "%(attachment_link)s を追加"
 
-#: trac/ticket/templates/ticket_change.html:153
+#: trac/ticket/templates/ticket_change.html:154
 msgid "Revert this change"
 msgstr "この変更を取り消す"
 
-#: trac/ticket/templates/ticket_change.html:154
+#: trac/ticket/templates/ticket_change.html:155
 msgid "revert"
 msgstr "取り消す"
 
-#: trac/ticket/templates/ticket_change.html:181
+#: trac/ticket/templates/ticket_change.html:182
 #, python-format
 msgid "Preview changes to comment %(cnum)s"
 msgstr "コメント %(cnum)s に対する変更のプレビューを見る"
 
-#: trac/ticket/templates/ticket_change.html:183
+#: trac/ticket/templates/ticket_change.html:184
 #, python-format
 msgid "Submit changes to comment %(cnum)s"
 msgstr "コメント %(cnum)s に対する変更を送信する"
 
-#: trac/ticket/templates/ticket_change.html:186
+#: trac/ticket/templates/ticket_change.html:187
 msgid "Cancel comment edit"
 msgstr "コメントの編集を取り消す"
 
-#: trac/ticket/templates/ticket_change.html:218
+#: trac/ticket/templates/ticket_change.html:219
 #, python-format
 msgid "Version %(version)s, edited %(date)s by %(author)s"
 msgstr "バージョン %(version)s、更新者 %(author)s (%(date)s)"
 
-#: trac/ticket/templates/ticket_change.html:224
+#: trac/ticket/templates/ticket_change.html:225
 #, python-format
 msgid "Last edited %(date)s by %(author)s"
 msgstr "最終更新者: %(author)s (%(date)s)"
 
-#: trac/ticket/templates/ticket_change.html:235
+#: trac/ticket/templates/ticket_change.html:236
 msgid "previous"
 msgstr "前版"
 
-#: trac/ticket/templates/ticket_change.html:240
+#: trac/ticket/templates/ticket_change.html:241
 msgid "next"
 msgstr "次版"
 
@@ -5462,7 +5454,7 @@ msgid "in %(relative)s"
 msgstr "%(relative)s後"
 
 #: trac/timeline/web_ui.py:294 trac/timeline/web_ui.py:311
-#: trac/web/chrome.py:1263
+#: trac/web/chrome.py:1265
 #, python-format
 msgid "on %(date)s at %(time)s"
 msgstr "%(date)s %(time)s"
@@ -5482,7 +5474,7 @@ msgstr "タイムラインで%(absolutetime)sを見る"
 msgid "at %(iso8601)s"
 msgstr "%(iso8601)s"
 
-#: trac/timeline/web_ui.py:307
+#: trac/timeline/web_ui.py:307 trac/web/chrome.py:1261
 #, python-format
 msgid "on %(date)s"
 msgstr "%(date)s"
@@ -5739,22 +5731,22 @@ msgstr "%(reponame)s の %(rev)s に再同期しました。"
 msgid "Resyncing repository history for %(reponame)s... "
 msgstr "リポジトリ %(reponame)s の履歴を再同期します… "
 
-#: trac/versioncontrol/admin.py:154
+#: trac/versioncontrol/admin.py:155
 #, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s リビジョンをキャッシュしました。"
 
-#: trac/versioncontrol/admin.py:156
+#: trac/versioncontrol/admin.py:157
 msgid "Done."
 msgstr "終了しました。"
 
-#: trac/versioncontrol/admin.py:174
+#: trac/versioncontrol/admin.py:179
 #, python-format
 msgid " Indexing '%(name)s' repository"
 msgstr " '%(name)s' リポジトリのインデックスを作成しています"
 
-#: trac/versioncontrol/admin.py:178
+#: trac/versioncontrol/admin.py:183
 #, python-format
 msgid ""
 "\n"
@@ -5781,16 +5773,16 @@ msgstr ""
 " [repositories] セクションにある `%(name)s.type` と `%(name)s.dir`\n"
 " オプションの値を確認する必要があります。\n"
 
-#: trac/versioncontrol/admin.py:227
+#: trac/versioncontrol/admin.py:230
 msgid "Version Control"
 msgstr "バージョンコントロール"
 
-#: trac/versioncontrol/admin.py:228
+#: trac/versioncontrol/admin.py:231
 #: trac/versioncontrol/templates/admin_repositories.html:17
 msgid "Repositories"
 msgstr "リポジトリ"
 
-#: trac/versioncontrol/admin.py:241 trac/versioncontrol/api.py:714
+#: trac/versioncontrol/admin.py:244 trac/versioncontrol/api.py:714
 #: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:246
 #: trac/versioncontrol/web_ui/changeset.py:1086
@@ -5799,38 +5791,38 @@ msgstr "リポジトリ"
 msgid "Repository '%(repo)s' not found"
 msgstr "リポジトリ '%(repo)s' が見つかりません"
 
-#: trac/versioncontrol/admin.py:268 trac/versioncontrol/admin.py:318
+#: trac/versioncontrol/admin.py:271 trac/versioncontrol/admin.py:321
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
 msgstr "Trac をリポジトリと同期させるために %(resync)s を実行してください。"
 
-#: trac/versioncontrol/admin.py:273
+#: trac/versioncontrol/admin.py:276
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr "Trac をリポジトリと同期させるために %(resync)s を実行しなければならないかも知れません。"
 
-#: trac/versioncontrol/admin.py:282
+#: trac/versioncontrol/admin.py:285
 #, python-format
 msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr "新しいリポジトリの名前で %(cset_added)s を呼び出すように post-commit フックを修正する必要があります。"
 
-#: trac/versioncontrol/admin.py:304 trac/versioncontrol/api.py:296
+#: trac/versioncontrol/admin.py:307 trac/versioncontrol/api.py:296
 #, python-format
 msgid "The repository \"%(name)s\" already exists."
 msgstr "リポジトリ \"%(name)s\" はすでに存在しています。"
 
-#: trac/versioncontrol/admin.py:310
+#: trac/versioncontrol/admin.py:313
 msgid "Missing arguments to add a repository."
 msgstr "リポジトリを追加するにはパラメータが足りません。"
 
-#: trac/versioncontrol/admin.py:314
+#: trac/versioncontrol/admin.py:317
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr "リポジトリ \"%(name)s\" を追加しました。"
 
-#: trac/versioncontrol/admin.py:328
+#: trac/versioncontrol/admin.py:331
 #, python-format
 msgid ""
 "You should also set up a post-commit hook on the repository to call "
@@ -5840,33 +5832,33 @@ msgstr ""
 "コミットごとに %(cset_added)s を呼ぶようにリポジトリの post-commit "
 "フックを設定してください。詳しくは%(doc)sを参照してください。"
 
-#: trac/versioncontrol/admin.py:344
+#: trac/versioncontrol/admin.py:347
 #, python-format
 msgid "The alias \"%(name)s\" already exists."
 msgstr "エイリアス \"%(name)s\" はすでに存在しています。"
 
-#: trac/versioncontrol/admin.py:346
+#: trac/versioncontrol/admin.py:349
 #, python-format
 msgid "The alias \"%(name)s\" has been added."
 msgstr "エイリアス \"%(name)s\" を追加しました。"
 
-#: trac/versioncontrol/admin.py:349
+#: trac/versioncontrol/admin.py:352
 msgid "Missing arguments to add an alias."
 msgstr "エイリアスを追加するにはパラメータが足りません。"
 
-#: trac/versioncontrol/admin.py:362
+#: trac/versioncontrol/admin.py:365
 msgid "The selected repositories have been removed."
 msgstr "選択したリポジトリを解除しました。"
 
-#: trac/versioncontrol/admin.py:365
+#: trac/versioncontrol/admin.py:368
 msgid "No repositories were selected."
 msgstr "リポジトリを選択していません。"
 
-#: trac/versioncontrol/admin.py:419
+#: trac/versioncontrol/admin.py:422
 msgid "The repository directory must be an absolute path."
 msgstr "リポジトリディレクトリは絶対パスでなければなりません。"
 
-#: trac/versioncontrol/admin.py:428
+#: trac/versioncontrol/admin.py:431
 #, python-format
 msgid ""
 "The repository directory must be located below one of the following "
@@ -6186,7 +6178,7 @@ msgstr "最終更新内容"
 msgid "View changeset %(rev)s"
 msgstr "チェンジセット %(rev)s 参照"
 
-#: trac/versioncontrol/templates/browser.html:203
+#: trac/versioncontrol/templates/browser.html:204
 #, python-format
 msgid ""
 "%(last_change)s on this file since %(stickyrev)s was %(rev)s, checked in "
@@ -6195,218 +6187,218 @@ msgstr ""
 "このファイルの %(stickyrev)s 以降における%(last_change)sは %(rev)s で %(author)s が "
 "%(age)s に更新しました"
 
-#: trac/versioncontrol/templates/browser.html:210
+#: trac/versioncontrol/templates/browser.html:211
 #, python-format
 msgid ""
 "%(last_change)s on this file was %(rev)s, checked in by %(author)s, "
 "%(age)s"
 msgstr "このファイルの%(last_change)sは %(rev)s で %(author)s が %(age)s に更新しました"
 
-#: trac/versioncontrol/templates/browser.html:272
+#: trac/versioncontrol/templates/browser.html:273
 msgid "File size:"
 msgstr "ファイルサイズ:"
 
-#: trac/versioncontrol/templates/browser.html:292
+#: trac/versioncontrol/templates/browser.html:293
 msgid "Repository Index"
 msgstr "リポジトリ一覧"
 
-#: trac/versioncontrol/templates/browser.html:319
+#: trac/versioncontrol/templates/browser.html:320
 msgid "View changes..."
 msgstr "変更箇所を見る..."
 
-#: trac/versioncontrol/templates/browser.html:320
+#: trac/versioncontrol/templates/browser.html:321
 msgid "Select paths and revs for Diff"
 msgstr "差分をとるパスとリビジョンを指定します"
 
-#: trac/versioncontrol/templates/browser.html:326
+#: trac/versioncontrol/templates/browser.html:327
 #, python-format
 msgid "%(note)s See %(page)s for help on using the repository browser."
 msgstr "%(note)s リポジトリブラウザについて詳しくは %(page)s を参照してください。"
 
-#: trac/versioncontrol/templates/changeset_content.html:9
-#: trac/versioncontrol/templates/changeset_content.html:14
-#: trac/versioncontrol/templates/changeset_content.html:147
+#: trac/versioncontrol/templates/changeset_content.html:19
+#: trac/versioncontrol/templates/changeset_content.html:24
+#: trac/versioncontrol/templates/changeset_content.html:157
 msgid "Show entry in browser"
 msgstr "ブラウザで表示する"
 
-#: trac/versioncontrol/templates/changeset_content.html:19
-#: trac/versioncontrol/templates/changeset_content.html:23
-#: trac/versioncontrol/templates/changeset_content.html:30
+#: trac/versioncontrol/templates/changeset_content.html:29
+#: trac/versioncontrol/templates/changeset_content.html:33
+#: trac/versioncontrol/templates/changeset_content.html:40
 msgid "Show full changeset"
 msgstr "チェンジセット全体を表示する"
 
-#: trac/versioncontrol/templates/changeset_content.html:34
+#: trac/versioncontrol/templates/changeset_content.html:44
 msgid "Show revision log"
 msgstr "更新履歴を表示する"
 
-#: trac/versioncontrol/templates/changeset_content.html:42
+#: trac/versioncontrol/templates/changeset_content.html:52
 #, python-format
 msgid "Changeset %(newrev)s in %(reponame)s for %(newpath)s"
 msgstr "チェンジセット %(newrev)s (%(reponame)s、%(newpath)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:48
+#: trac/versioncontrol/templates/changeset_content.html:58
 #, python-format
 msgid "Changes in %(newpath)s %(logoldnew)s in %(reponame)s"
 msgstr "%(newpath)s %(logoldnew)s (%(reponame)s) の変更内容"
 
-#: trac/versioncontrol/templates/changeset_content.html:54
+#: trac/versioncontrol/templates/changeset_content.html:64
 #, python-format
 msgid ""
 "Changes in %(reponame)s from %(oldpath)s at %(oldrev)s to %(newpath)s at "
 "%(newrev)s"
 msgstr "%(oldpath)s@%(oldrev)s から %(newpath)s@%(newrev)s (%(reponame)s) 間の変更内容"
 
-#: trac/versioncontrol/templates/changeset_content.html:62
+#: trac/versioncontrol/templates/changeset_content.html:72
 #, python-format
 msgid "Changeset %(shortnewrev)s in %(reponame)s"
 msgstr "チェンジセット %(shortnewrev)s (%(reponame)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:68
+#: trac/versioncontrol/templates/changeset_content.html:78
 #, python-format
 msgid "Changeset %(new_drev)s in %(reponame)s"
 msgstr "チェンジセット %(new_drev)s (%(reponame)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:77
+#: trac/versioncontrol/templates/changeset_content.html:87
 #, python-format
 msgid "Changeset %(newrev)s for %(newpath)s"
 msgstr "チェンジセット %(newrev)s (%(newpath)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:83
+#: trac/versioncontrol/templates/changeset_content.html:93
 #, python-format
 msgid "Changes in %(newpath)s %(logoldnew)s"
 msgstr "%(newpath)s %(logoldnew)s の変更内容"
 
-#: trac/versioncontrol/templates/changeset_content.html:89
+#: trac/versioncontrol/templates/changeset_content.html:99
 #, python-format
 msgid "Changes from %(oldpath)s at %(oldrrev)s to %(newpath)s at %(newrrev)s"
 msgstr "%(oldpath)s@%(oldrrev)s から %(newpath)s@%(newrrev)s 間の変更内容"
 
-#: trac/versioncontrol/templates/changeset_content.html:96
+#: trac/versioncontrol/templates/changeset_content.html:106
 #, python-format
 msgid "Changeset %(shortnewrev)s"
 msgstr "チェンジセット %(shortnewrev)s"
 
-#: trac/versioncontrol/templates/changeset_content.html:102
+#: trac/versioncontrol/templates/changeset_content.html:112
 #, python-format
 msgid "Changeset %(new_drev)s"
 msgstr "チェンジセット %(new_drev)s"
 
-#: trac/versioncontrol/templates/changeset_content.html:142
+#: trac/versioncontrol/templates/changeset_content.html:152
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr "削除された項目を表示する (リビジョン %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:148
+#: trac/versioncontrol/templates/changeset_content.html:158
 msgid "(root)"
 msgstr "(ルート)"
 
-#: trac/versioncontrol/templates/changeset_content.html:156
+#: trac/versioncontrol/templates/changeset_content.html:166
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
 msgstr "元のファイルを表示する (リビジョン %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:160
+#: trac/versioncontrol/templates/changeset_content.html:170
 #, python-format
 msgid "(%(kind)s from %(oldpath)s)"
 msgstr "(%(oldpath)s から%(kind)s)"
 
-#: trac/versioncontrol/templates/changeset_content.html:168
-#: trac/versioncontrol/templates/changeset_content.html:171
+#: trac/versioncontrol/templates/changeset_content.html:178
+#: trac/versioncontrol/templates/changeset_content.html:181
 msgid "Show differences"
 msgstr "差分を表示する"
 
-#: trac/versioncontrol/templates/changeset_content.html:169
+#: trac/versioncontrol/templates/changeset_content.html:179
 msgid "view diffs"
 msgstr "差分表示"
 
-#: trac/versioncontrol/templates/changeset_content.html:172
+#: trac/versioncontrol/templates/changeset_content.html:182
 #, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d個の差分"
 
-#: trac/versioncontrol/templates/changeset_content.html:176
+#: trac/versioncontrol/templates/changeset_content.html:186
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d個のプロパティ"
 
-#: trac/versioncontrol/templates/changeset_content.html:180
+#: trac/versioncontrol/templates/changeset_content.html:190
 msgid "Show previous version in browser"
 msgstr "前のバージョンをブラウザで表示する"
 
-#: trac/versioncontrol/templates/changeset_content.html:192
+#: trac/versioncontrol/templates/changeset_content.html:202
 msgid "(less than one hour ago)"
 msgstr "(1時間未満)"
 
-#: trac/versioncontrol/templates/changeset_content.html:194
+#: trac/versioncontrol/templates/changeset_content.html:204
 #, python-format
 msgid "(%(age)s ago)"
 msgstr "(%(age)s前)"
 
-#: trac/versioncontrol/templates/changeset_content.html:215
+#: trac/versioncontrol/templates/changeset_content.html:225
 msgid "Message:"
 msgstr "ログメッセージ:"
 
-#: trac/versioncontrol/templates/changeset_content.html:228
+#: trac/versioncontrol/templates/changeset_content.html:238
 msgid "Location:"
 msgstr "場所:"
 
-#: trac/versioncontrol/templates/changeset_content.html:235
+#: trac/versioncontrol/templates/changeset_content.html:245
 msgid "(No files)"
 msgstr "(ファイルなし)"
 
-#: trac/versioncontrol/templates/changeset_content.html:246
+#: trac/versioncontrol/templates/changeset_content.html:256
 #, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d個の追加"
 
-#: trac/versioncontrol/templates/changeset_content.html:250
+#: trac/versioncontrol/templates/changeset_content.html:260
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d個の削除"
 
-#: trac/versioncontrol/templates/changeset_content.html:254
+#: trac/versioncontrol/templates/changeset_content.html:264
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d個の更新"
 
-#: trac/versioncontrol/templates/changeset_content.html:258
+#: trac/versioncontrol/templates/changeset_content.html:268
 #, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d個のコピー"
 
-#: trac/versioncontrol/templates/changeset_content.html:261
+#: trac/versioncontrol/templates/changeset_content.html:271
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d個の移動"
 
-#: trac/versioncontrol/templates/changeset_content.html:272
+#: trac/versioncontrol/templates/changeset_content.html:282
 #: trac/versioncontrol/templates/revisionlog.txt:13
 msgid "added"
 msgstr "追加"
 
-#: trac/versioncontrol/templates/changeset_content.html:274
+#: trac/versioncontrol/templates/changeset_content.html:284
 #: trac/versioncontrol/templates/revisionlog.txt:13
 msgid "deleted"
 msgstr "削除"
 
-#: trac/versioncontrol/templates/changeset_content.html:276
+#: trac/versioncontrol/templates/changeset_content.html:286
 #: trac/versioncontrol/templates/revisionlog.txt:14
 msgid "copied"
 msgstr "コピー"
 
-#: trac/versioncontrol/templates/changeset_content.html:278
+#: trac/versioncontrol/templates/changeset_content.html:288
 #: trac/versioncontrol/templates/revisionlog.txt:14
 msgid "moved"
 msgstr "移動"
 
-#: trac/versioncontrol/templates/changeset_content.html:317
+#: trac/versioncontrol/templates/changeset_content.html:327
 #, python-format
 msgid ""
 "<strong>Changeset view not shown</strong>, since the total size "
@@ -6415,7 +6407,7 @@ msgstr ""
 "合計サイズ (%(pretty_diff_bytes)s) が %(pretty_max_bytes)s "
 "を超えているため、<strong>チェンジセットは表示されません</strong>。"
 
-#: trac/versioncontrol/templates/changeset_content.html:335
+#: trac/versioncontrol/templates/changeset_content.html:345
 #, python-format
 msgid ""
 "<strong>Changeset view not shown</strong>, since the number of files "
@@ -6424,7 +6416,7 @@ msgstr ""
 "合計ファイル数 (%(diff_files)s) が %(pretty_max_files)s "
 "を超えているため、<strong>チェンジセットは表示されません</strong>。"
 
-#: trac/versioncontrol/templates/changeset_content.html:351
+#: trac/versioncontrol/templates/changeset_content.html:361
 #, python-format
 msgid "%(note)s See %(page)s for help on using the changeset viewer."
 msgstr "%(note)s チェンジセットについて詳しくは %(page)s を参照してください。"
@@ -6998,17 +6990,17 @@ msgstr "Invalid chrome path %(path)s は正しくない chrome パスです。"
 msgid "anonymous"
 msgstr "匿名"
 
-#: trac/web/chrome.py:1446
+#: trac/web/chrome.py:1448
 msgid ""
 "Legacy Genshi template needs the 'genshi' package to be installed. Please"
 " contact your Trac administrator."
 msgstr "旧来の Genshi テンプレートは 'genshi' パッケージをインストールする必要があります。Trac 管理者に連絡してください。"
 
-#: trac/web/chrome.py:1849
+#: trac/web/chrome.py:1851
 msgid "(unknown template location)"
 msgstr "(ファイル名不明)"
 
-#: trac/web/chrome.py:1850
+#: trac/web/chrome.py:1852
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
@@ -7164,62 +7156,48 @@ msgstr "デフォルトハンドラ '%(val)s' は不正です"
 msgid "Session '%(sid)s' not found"
 msgstr "セッション '%(sid)s' が見つかりません"
 
-#: trac/wiki/admin.py:108
+#: trac/wiki/admin.py:107
 #, python-format
 msgid "Page '%(page)s' not found"
 msgstr "ページ '%(page)s' が見つかりません"
 
-#: trac/wiki/admin.py:113 trac/wiki/model.py:150 trac/wiki/model.py:197
-#: trac/wiki/web_ui.py:122
-#, python-format
-msgid "Invalid Wiki page name '%(name)s'"
-msgstr "Wiki ページ名 '%(name)s' は正しくありません"
-
-#: trac/wiki/admin.py:118
+#: trac/wiki/admin.py:113
 #, python-format
 msgid "'%(name)s' is not a file"
 msgstr "'%(name)s' はファイルではありません。"
 
-#: trac/wiki/admin.py:130
-#, python-format
-msgid "  %(title)s already exists"
-msgstr "  %(title)s はすでに存在しています"
-
-#: trac/wiki/admin.py:133
-#, python-format
-msgid "  %(title)s is already up to date"
-msgstr "  %(title)s はすでに最新です"
-
-#: trac/wiki/admin.py:195
+#: trac/wiki/admin.py:178
 msgid "Edits"
 msgstr "編集"
 
-#: trac/wiki/admin.py:201 trac/wiki/web_ui.py:326
-msgid "A new name is mandatory for a rename."
-msgstr "変更後の新しい名前が必要です。"
-
-#: trac/wiki/admin.py:203
-msgid "The new name is invalid."
-msgstr "新しい名前が不正です。"
-
-#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:333
+#: trac/wiki/admin.py:186
 #, python-format
-msgid "The page %(name)s already exists."
-msgstr "ページ %(name)s はすでに存在しています。"
+msgid " '%(name1)s' renamed to '%(name2)s'"
+msgstr " '%(name1)s' を '%(name2)s' に変更しました。"
 
-#: trac/wiki/admin.py:219
+#: trac/wiki/admin.py:196
 msgid "Deleted pages"
 msgstr "削除されたページ"
 
-#: trac/wiki/admin.py:239
+#: trac/wiki/admin.py:200
+#, python-format
+msgid " '%(page)s' deleted"
+msgstr " '%(page)s' を削除しました"
+
+#: trac/wiki/admin.py:219
 #, python-format
 msgid "'%(name)s' is not a directory"
 msgstr "'%(name)s' はディレクトリではありません。"
 
-#: trac/wiki/admin.py:258
+#: trac/wiki/admin.py:239
 #, python-format
-msgid "  %(page)s imported from %(filename)s"
-msgstr "  %(page)s を %(filename)s からインポートしました"
+msgid "Upgrade done: %(count)s pages upgraded."
+msgstr "アップグレード完了: %(count)sページを更新しました。"
+
+#: trac/wiki/admin.py:245
+#, python-format
+msgid " '%(title)s' is already up to date"
+msgstr " '%(title)s' はすでに最新です"
 
 #: trac/wiki/api.py:452
 msgid "no permission to view this wiki page"
@@ -7254,36 +7232,36 @@ msgstr "!#%(name)s には少なくとも1つテーブルのセルがないとい
 msgid "Error: Failed to load processor %(name)s"
 msgstr "エラー: プロセッサ %(name)s のロードに失敗しました"
 
-#: trac/wiki/formatter.py:717
+#: trac/wiki/formatter.py:721
 #, python-format
 msgid "Trac project %(name)s"
 msgstr "Trac プロジェクト %(name)s"
 
-#: trac/wiki/formatter.py:720 trac/wiki/intertrac.py:110
+#: trac/wiki/formatter.py:724 trac/wiki/intertrac.py:110
 msgid "The Trac Project"
 msgstr "Trac プロジェクト"
 
-#: trac/wiki/formatter.py:725 trac/wiki/interwiki.py:106
+#: trac/wiki/formatter.py:729 trac/wiki/interwiki.py:106
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(name)s の %(target)s"
 
-#: trac/wiki/formatter.py:820
+#: trac/wiki/formatter.py:824
 #, python-format
 msgid "Macro %(name)s(%(args)s) failed"
 msgstr "マクロ %(name)s(%(args)s) が失敗しました"
 
-#: trac/wiki/formatter.py:826
+#: trac/wiki/formatter.py:830
 #, python-format
 msgid "Error: Macro %(name)s(%(args)s) failed"
 msgstr "エラー: マクロ %(name)s(%(args)s) が失敗しました"
 
-#: trac/wiki/formatter.py:1224
+#: trac/wiki/formatter.py:1231
 #, python-format
 msgid "Processor %(name)s failed"
 msgstr "プロセッサ %(name)s が失敗しました"
 
-#: trac/wiki/formatter.py:1230
+#: trac/wiki/formatter.py:1237
 #, python-format
 msgid "Error: Processor %(name)s failed"
 msgstr "エラー: プロセッサ %(name)s が失敗しました"
@@ -7721,20 +7699,33 @@ msgstr "%(expr)s は不正なマクロの引数です"
 msgid "Cannot delete non-existent page"
 msgstr "存在しないページは削除できません"
 
+#: trac/wiki/model.py:150 trac/wiki/model.py:208 trac/wiki/web_ui.py:122
+#, python-format
+msgid "Invalid Wiki page name '%(name)s'"
+msgstr "Wiki ページ名 '%(name)s' は正しくありません"
+
 #: trac/wiki/model.py:155
 msgid "Page not modified"
 msgstr "ページは更新されませんでした"
 
-#: trac/wiki/model.py:194
+#: trac/wiki/model.py:199
 msgid "Cannot rename non-existent page"
 msgstr "存在しないページでは名前の変更を行えません"
 
-#: trac/wiki/model.py:204
-#, python-format
-msgid "Can't rename to existing %(name)s page."
-msgstr "存在している %(name)s ページに名前を変更できません。"
+#: trac/wiki/model.py:202 trac/wiki/web_ui.py:326
+msgid "A new name is mandatory for a rename."
+msgstr "変更後の新しい名前が必要です。"
 
-#: trac/wiki/model.py:225
+#: trac/wiki/model.py:205
+msgid "Page name is unchanged."
+msgstr "ページ名は変更されていません。"
+
+#: trac/wiki/model.py:215
+#, python-format
+msgid "The page '%(name)s' already exists."
+msgstr "ページ '%(name)s' はすでに存在しています。"
+
+#: trac/wiki/model.py:236
 msgid "Cannot edit comment of non-existent page"
 msgstr "存在しないページのコメントは変更できません"
 
@@ -7800,6 +7791,11 @@ msgstr "新しい名前が正しくありません (スラッシュで分割し�
 #: trac/wiki/web_ui.py:331
 msgid "The new name must be different from the old name."
 msgstr "新しい名前は元の名前とは違うものにしてください。"
+
+#: trac/wiki/web_ui.py:333
+#, python-format
+msgid "The page %(name)s already exists."
+msgstr "ページ %(name)s はすでに存在しています。"
 
 #: trac/wiki/web_ui.py:342
 #, python-format
