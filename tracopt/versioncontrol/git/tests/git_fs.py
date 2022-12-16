@@ -57,6 +57,8 @@ class GitCommandMixin(object):
         return Popen(args, close_fds=close_fds, **kwargs)
 
     def _git(self, *args, **kwargs):
+        args = ('-c', 'init.defaultBranch=master',
+                '-c', 'protocol.file.allow=always') + args
         with self._spawn_git(*args, **kwargs) as proc:
             stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
