@@ -480,9 +480,13 @@ try:
         from xml.etree import ElementTree
 
         def count_tags(text):
-            text = '<html>\n%s\n</html>' % text.encode('utf-8')
+            buf = io.StringIO()
+            buf.write('<html>\n')
+            buf.write(text)
+            buf.write('</html>')
+            buf.seek(0, 0)
             counts = {}
-            for event in ElementTree.iterparse(io.BytesIO(text)):
+            for event in ElementTree.iterparse(buf):
                 tag = event[1].tag
                 counts.setdefault(tag, 0)
                 counts[tag] += 1
