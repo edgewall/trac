@@ -17,6 +17,7 @@
 from abc import ABCMeta, abstractmethod
 from base64 import b64decode, b64encode
 from hashlib import md5, sha1
+import hmac
 import os
 import re
 import sys
@@ -349,15 +350,17 @@ class BasicAuthentication(PasswordFileAuthentication):
             return False
 
         if the_hash.startswith('{SHA}'):
-            return str(b64encode(sha1(password.encode('utf-8')).digest()),
-                       'ascii') == the_hash[5:]
+            hash_ = str(b64encode(sha1(password.encode('utf-8')).digest()),
+                        'ascii')
+            return hmac.compare_digest(hash_, the_hash[5:])
 
         if '$' not in the_hash:
-            return self.crypt(password, the_hash[:2]) == the_hash
+            return hmac.compare_digest(self.crypt(password, the_hash[:2]),
+                                       the_hash)
 
         magic, salt = the_hash[1:].split('$')[:2]
         magic = '$' + magic + '$'
-        return md5crypt(password, salt, magic) == the_hash
+        return hmac.compare_digest(md5crypt(password, salt, magic), the_hash)
 
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
