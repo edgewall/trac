@@ -37,6 +37,13 @@ from trac.util.html import tag
 from trac.util.translation import _, tag_
 
 
+try:
+    from hmac import compare_digest
+except ImportError:
+    def compare_digest(a, b):
+        return a == b
+
+
 class LoginModule(Component):
     """User authentication manager.
 
@@ -353,14 +360,15 @@ class BasicAuthentication(PasswordFileAuthentication):
             return False
 
         if the_hash.startswith('{SHA}'):
-            return b64encode(sha1(password).digest()) == the_hash[5:]
+            return compare_digest(b64encode(sha1(password).digest()),
+                                  the_hash[5:])
 
         if '$' not in the_hash:
-            return self.crypt(password, the_hash[:2]) == the_hash
+            return compare_digest(self.crypt(password, the_hash[:2]), the_hash)
 
         magic, salt = the_hash[1:].split('$')[:2]
         magic = '$' + magic + '$'
-        return md5crypt(password, salt, magic) == the_hash
+        return compare_digest(md5crypt(password, salt, magic), the_hash)
 
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
