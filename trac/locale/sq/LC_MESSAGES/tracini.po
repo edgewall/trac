@@ -6,25 +6,26 @@
 # Besnik <besnik@programeshqip.org>, 2019
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.4.1\n"
+"Project-Id-Version: Trac 1.4.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-02-11 04:45+0000\n"
-"PO-Revision-Date: 2019-08-22 05:57+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
+"PO-Revision-Date: 2022-12-20 02:38+0000\n"
 "Last-Translator: Besnik <besnik@programeshqip.org>, 2019\n"
 "Language: sq\n"
-"Language-Team: Albanian (https://www.transifex.com/cboos/teams/16191/sq/)"
-"\n"
+"Language-Team: sq <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/perm/authz_policy.py:131
 msgid ""
 "Location of authz policy configuration file. Non-absolute paths are "
 "relative to the Environment `conf` directory."
 msgstr ""
+"Vendndodhje e kartelës së formësimit të rregullave të mirëfilltësimit. "
+"Shtigjet jo absolutë janë relativë te drejtoria `conf` e Mjedisit."
 
 #: tracopt/perm/config_perm_provider.py:27
 msgid ""
@@ -86,7 +87,7 @@ msgstr ""
 
 #: tracopt/ticket/commit_updater.py:137
 msgid "Send ticket change notification when updating a ticket."
-msgstr ""
+msgstr "Dërgo njoftim ndryshimi çështjeje, kur përditësohet një e tillë."
 
 #: tracopt/versioncontrol/git/git_fs.py:303
 msgid "Enable persistent caching of commit tree."
@@ -94,19 +95,24 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:306
 msgid "Wrap `GitRepository` in `CachedRepository`."
-msgstr ""
+msgstr "Mbështill `GitRepository` në `CachedRepository`."
 
 #: tracopt/versioncontrol/git/git_fs.py:309
 msgid ""
 "The length at which a sha1 is abbreviated (must be >= 4\n"
 "and <= 40)."
 msgstr ""
+"Gjatësia në të cilën shkurtohet një kyç sha1 (duhet të jetë >= 4\n"
+"dhe <= 40)."
 
 #: tracopt/versioncontrol/git/git_fs.py:314
 msgid ""
 "The minimum length at which a hex-string in wiki content\n"
 "is formatted as a changeset TracLink (must be >= 4 and <= 40)."
 msgstr ""
+"Gjatësi minimum në të cilën një varg gjashtëmbëdhjetësh te\n"
+"lëndë wiki formatohet si një TracLink grupi ndryshimesh (duhet\n"
+"të jetë >= 4 dhe <= 40)."
 
 #: tracopt/versioncontrol/git/git_fs.py:319
 msgid ""
@@ -123,12 +129,16 @@ msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
+"Për fushëm ''Autor'' të grupit të ndryshimeve përdor\n"
+"ID git-committer, në vend se ID git-author."
 
 #: tracopt/versioncontrol/git/git_fs.py:333
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
+"Për fushën ''Vulë kohore'' të grupit të ndryshimeve përdor vulë\n"
+"kohore të git-committer, në vend se vulë kohore të git-author."
 
 #: tracopt/versioncontrol/git/git_fs.py:338
 msgid "Define charset encoding of paths within git repositories."
@@ -144,7 +154,7 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:945
 msgid "Path to the base of your git projects"
-msgstr ""
+msgstr "Shteg për te baza e projekteve tuaj git"
 
 #: tracopt/versioncontrol/git/git_fs.py:948
 #, python-format
@@ -152,12 +162,16 @@ msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr ""
+"Gjedhe për URL projektesh. `%s` do të zëvendësohet me emrin\n"
+"e depos"
 
 #: tracopt/versioncontrol/git/git_fs.py:952
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
 msgstr ""
+"Depo për t’u njëkohësuar gjatë çdo kërkese\n"
+"(nuk rekomandohet)."
 
 #: tracopt/versioncontrol/svn/svn_fs.py:267
 msgid ""
@@ -232,7 +246,7 @@ msgstr ""
 
 #: trac/attachment.py:143
 msgid "Maximum allowed file size (in bytes) for attachments."
-msgstr ""
+msgstr "Madhësi maksimum e lejuar për kartela (në bajte) për bashkëngjitje."
 
 #: trac/attachment.py:146
 msgid ""
@@ -471,19 +485,19 @@ msgid ""
 "The paths may be absolute or relative to the Trac environment."
 msgstr ""
 
-#: trac/mimeview/api.py:617
+#: trac/mimeview/api.py:618
 msgid "Charset to be used when in doubt."
-msgstr ""
+msgstr "Kodim shkronjash për t’u përdorur, në rast mëdyshjeje."
 
-#: trac/mimeview/api.py:620
+#: trac/mimeview/api.py:621
 msgid "Displayed tab width in file preview."
 msgstr ""
 
-#: trac/mimeview/api.py:623
+#: trac/mimeview/api.py:624
 msgid "Maximum file size for HTML preview."
 msgstr "Madhësi maksimum kartele për paraparje HTML."
 
-#: trac/mimeview/api.py:626
+#: trac/mimeview/api.py:627
 msgid ""
 "List of additional MIME types and keyword mappings.\n"
 "Mappings are comma-separated, and for each MIME type,\n"
@@ -491,7 +505,7 @@ msgid ""
 "or file extensions."
 msgstr ""
 
-#: trac/mimeview/api.py:634
+#: trac/mimeview/api.py:635
 msgid ""
 "List of additional MIME types associated to filename patterns.\n"
 "Mappings are comma-separated, and each mapping consists of a MIME type\n"
@@ -499,7 +513,7 @@ msgid ""
 "(\":\"). (''since 1.0'')"
 msgstr ""
 
-#: trac/mimeview/api.py:642
+#: trac/mimeview/api.py:643
 msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data."
@@ -727,17 +741,17 @@ msgid ""
 "be manually enabled by the user on the search page."
 msgstr ""
 
-#: trac/ticket/api.py:213
+#: trac/ticket/api.py:216
 msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
 
-#: trac/ticket/api.py:217
+#: trac/ticket/api.py:220
 msgid "Ordered list of workflow controllers to use for ticket actions."
 msgstr ""
 
-#: trac/ticket/api.py:223
+#: trac/ticket/api.py:226
 msgid ""
 "Make the owner field of tickets use a drop-down menu.\n"
 "Be sure to understand the performance implications before activating\n"
@@ -749,73 +763,77 @@ msgid ""
 "e-mail addresses must remain protected."
 msgstr ""
 
-#: trac/ticket/api.py:234
-msgid "Default version for newly created tickets."
-msgstr ""
-
 #: trac/ticket/api.py:237
-msgid "Default type for newly created tickets."
-msgstr ""
+msgid "Default version for newly created tickets."
+msgstr "Version parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:240
+msgid "Default type for newly created tickets."
+msgstr "Lloj parazgjedhje për çështje të krijuara rishtas."
+
+#: trac/ticket/api.py:243
 msgid "Default priority for newly created tickets."
 msgstr "Përparësi parazgjedhje për çështje të krijuara rishtas."
 
-#: trac/ticket/api.py:243
+#: trac/ticket/api.py:246
 msgid "Default milestone for newly created tickets."
 msgstr ""
 
-#: trac/ticket/api.py:246
+#: trac/ticket/api.py:249
 msgid "Default component for newly created tickets."
 msgstr "Përbërë parazgjedhje për çështje të krijuara rishtas."
 
-#: trac/ticket/api.py:249
-msgid "Default severity for newly created tickets."
-msgstr ""
-
 #: trac/ticket/api.py:252
-msgid "Default summary (title) for newly created tickets."
-msgstr ""
+msgid "Default severity for newly created tickets."
+msgstr "Rëndësi parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:255
+msgid "Default summary (title) for newly created tickets."
+msgstr "Përmbledhje (titull) parazgjedhje për çështje të krijuara rishtas."
+
+#: trac/ticket/api.py:258
 msgid "Default description for newly created tickets."
 msgstr "Përshkrim parazgjedhje për çështje të krijuara rishtas."
 
-#: trac/ticket/api.py:258
+#: trac/ticket/api.py:261
 msgid "Default keywords for newly created tickets."
 msgstr "Fjalëkyçe parazgjedhje për çështje të krijuara rishtas."
 
-#: trac/ticket/api.py:261
+#: trac/ticket/api.py:264
 msgid ""
 "Default owner for newly created tickets. The component owner\n"
 "is used when set to the value `< default >`."
 msgstr ""
-
-#: trac/ticket/api.py:266
-msgid "Default cc: list for newly created tickets."
-msgstr ""
+"Pronar parazgjedhje për çështje të krijuara rishtas. Përdoret i zoti\n"
+"i përbërësit, kur i është caktuar vlera `< parazgjedhje >`."
 
 #: trac/ticket/api.py:269
-msgid "Default resolution for resolving (closing) tickets."
-msgstr ""
+msgid "Default cc: list for newly created tickets."
+msgstr "Listë cc: parazgjedhje për çështje të krijuara rishtas."
 
 #: trac/ticket/api.py:272
+msgid "Default resolution for resolving (closing) tickets."
+msgstr "Zgjidhje parazgjedhje për zgjidhje (mbyllje) çështjesh."
+
+#: trac/ticket/api.py:275
 msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr ""
-
-#: trac/ticket/api.py:277
-msgid "Maximum allowed comment size in characters."
-msgstr ""
+"Listë e ndarë me presje fushash `select` që mund të kenë\n"
+"një vlerë të zbrazët. (//që prej 1.1.2//)"
 
 #: trac/ticket/api.py:280
-msgid "Maximum allowed description size in characters."
-msgstr ""
+msgid "Maximum allowed comment size in characters."
+msgstr "Madhësi maksimum e lejuar për komente, në shenja."
 
 #: trac/ticket/api.py:283
+msgid "Maximum allowed description size in characters."
+msgstr "Madhësi maksimum e lejuar për përshkrime, në shenja."
+
+#: trac/ticket/api.py:286
 msgid "Maximum allowed summary size in characters. (//since 1.0.2//)"
-msgstr ""
+msgstr "Madhësi maksimum e lejuar për përmbledhje, në shenja. (//që prej 1.0.2//)"
 
 #: trac/ticket/default_workflow.py:126
 msgid ""
@@ -824,6 +842,10 @@ msgid ""
 "That component allows the workflow to be configured via this section\n"
 "in the `trac.ini` file. See TracWorkflow for more details."
 msgstr ""
+"Rrjedha e punës për çështjet kontrollohet nga shtojca. Si parazgjedhje,\n"
+"ka vetëm një përbërë `ConfigurableTicketWorkflow` që drejton.\n"
+"Ai përbërës lejon formësim të rrjedhës së punës përmes kësaj ndarjeje\n"
+"te kartela `trac.ini`. Për më tepër hollësi, shihni TracWorkflow."
 
 #: trac/ticket/notification.py:104
 msgid ""
@@ -840,6 +862,8 @@ msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
+"Si `ticket_subject_template`, por për ndryshime në grup.\n"
+"(''që prej 1.0'')"
 
 #: trac/ticket/notification.py:119
 msgid ""
@@ -849,6 +873,11 @@ msgid ""
 "The template variables are documented on the\n"
 "[TracNotification#Customizingthee-mailsubject TracNotification] page."
 msgstr ""
+"Një copëz gjedheje teksti Jinja2 e përdorur për të marrë subjektin\n"
+"e njoftimit.\n"
+"\n"
+"Ndryshoret e gjedhes dokumentohen te faqja\n"
+"[TracNotification#Customizingthee-mailsubject TracNotification]."
 
 #: trac/ticket/query.py:882
 msgid ""
@@ -857,6 +886,10 @@ msgid ""
 "string starting with `?` as used in `query:`\n"
 "[TracQuery#UsingTracLinks Trac links]."
 msgstr ""
+"Kërkimi parazgjedhje për përdorues të mirëfilltësuar. Kërkimi është ose\n"
+"në sintaksën [TracQuery#QueryLanguage query language], ose një varg\n"
+"kërkese URL që fillon me `?`, siç përdoret te `query:`\n"
+"[lidhje Trac TracQuery#UsingTracLinks]."
 
 #: trac/ticket/query.py:890
 msgid ""
@@ -1009,23 +1042,25 @@ msgstr ""
 
 #: trac/timeline/web_ui.py:52
 msgid "Default number of days displayed in the Timeline, in days."
-msgstr ""
+msgstr "Numër parazgjedhje ditësh të shfaqur te Rrjedha kohore, në ditë."
 
 #: trac/timeline/web_ui.py:56
 msgid ""
 "Maximum number of days (-1 for unlimited) displayable in the\n"
 "Timeline."
 msgstr ""
+"Numër maksimum ditësh (-1 për të pakufizuar) që mund të shfaqen\n"
+"te Rrjedha kohore."
 
 #: trac/timeline/web_ui.py:61
 msgid ""
 "Whether wiki-formatted event messages should be truncated or not.\n"
 "\n"
-"This only affects the default rendering, and can be overriden by\n"
+"This only affects the default rendering, and can be overridden by\n"
 "specific event providers, see their own documentation."
 msgstr ""
 
-#: trac/versioncontrol/admin.py:213
+#: trac/versioncontrol/admin.py:216
 msgid ""
 "Comma-separated list of allowed prefixes for repository\n"
 "directories when adding and editing repositories in the repository\n"
@@ -1398,7 +1433,7 @@ msgstr ""
 
 #: trac/web/chrome.py:563
 msgid "URL to link to, from the header logo."
-msgstr ""
+msgstr "URL te e cila të lidhet, prej stemës së kryeve."
 
 #: trac/web/chrome.py:566
 msgid ""
@@ -1415,15 +1450,15 @@ msgstr ""
 
 #: trac/web/chrome.py:577
 msgid "Alternative text for the header logo."
-msgstr ""
+msgstr "Tekst alternativ për stemën e kryeve."
 
 #: trac/web/chrome.py:581
 msgid "Width of the header logo image in pixels."
-msgstr ""
+msgstr "Gjerësi e figurës së stemës së kryeve, në piksel."
 
 #: trac/web/chrome.py:584
 msgid "Height of the header logo image in pixels."
-msgstr ""
+msgstr "Lartësi e figurës së stemës së kryeve, në piksel."
 
 #: trac/web/chrome.py:587
 msgid ""
@@ -1494,7 +1529,7 @@ msgstr ""
 
 #: trac/web/main.py:144
 msgid "The default timezone to use"
-msgstr ""
+msgstr "Zonë kohore parazgjedhje për t’u përdorur"
 
 #: trac/web/main.py:147
 msgid "The preferred language to use if no user preference has been set."
@@ -1616,4 +1651,11 @@ msgid ""
 "Default height of the textarea on the wiki edit page.\n"
 "(//Since 1.1.5//)"
 msgstr ""
+
+#~ msgid ""
+#~ "Whether wiki-formatted event messages should be truncated or not.\n"
+#~ "\n"
+#~ "This only affects the default rendering, and can be overriden by\n"
+#~ "specific event providers, see their own documentation."
+#~ msgstr ""
 

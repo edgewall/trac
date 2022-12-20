@@ -6,32 +6,31 @@
 # Besnik <besnik@programeshqip.org>, 2019
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.4.1\n"
+"Project-Id-Version: Trac 1.4.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2020-02-11 04:45+0000\n"
-"PO-Revision-Date: 2019-08-22 05:56+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
+"PO-Revision-Date: 2022-12-20 02:38+0000\n"
 "Last-Translator: Besnik <besnik@programeshqip.org>, 2019\n"
 "Language: sq\n"
-"Language-Team: Albanian (https://www.transifex.com/cboos/teams/16191/sq/)"
-"\n"
+"Language-Team: sq <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/ticket/htdocs/ticketclone.js:22
 msgid "Clone"
-msgstr ""
+msgstr "Klonoje"
 
 #: tracopt/ticket/htdocs/ticketclone.js:34
 msgid "Create a new ticket from this comment"
-msgstr ""
+msgstr "Krijoni një çështje të re prej këtij komenti"
 
 #: tracopt/ticket/htdocs/ticketclone.js:41
 #, python-format
 msgid "(part of #%(ticketid)s) %(summary)s"
-msgstr ""
+msgstr "(pjesë e #%(ticketid)s) %(summary)s"
 
 #: tracopt/ticket/htdocs/ticketclone.js:47
 #, python-format
@@ -39,15 +38,17 @@ msgid ""
 "Copied from [%(source)s]:\n"
 "%(description)s"
 msgstr ""
+"Kopjuar nga [%(source)s]:\n"
+"%(description)s"
 
 #: tracopt/ticket/htdocs/ticketclone.js:59
 msgid "Create a copy of this ticket"
-msgstr ""
+msgstr "Krijoni një kopje të kësaj çështjeje"
 
 #: tracopt/ticket/htdocs/ticketclone.js:60
 #, python-format
 msgid "%(summary)s (cloned)"
-msgstr ""
+msgstr "%(summary)s (klonuar)"
 
 #: tracopt/ticket/htdocs/ticketclone.js:65
 #, python-format
@@ -55,6 +56,8 @@ msgid ""
 "Cloned from #%(id)s:\n"
 "%(description)s"
 msgstr ""
+"Klonuar nga #%(id)s:\n"
+"%(description)s"
 
 #: tracopt/ticket/htdocs/ticketdeleter.js:16
 #: tracopt/ticket/htdocs/ticketdeleter.js:22
@@ -68,19 +71,19 @@ msgstr "Fshijeni çështjen"
 #: tracopt/ticket/htdocs/ticketdeleter.js:22
 #, python-format
 msgid "Delete comment %(num)s"
-msgstr ""
+msgstr "Fshije komentin %(num)s"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
-msgstr ""
+msgstr "Shfaqi/Fshihi krejt"
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
-msgstr ""
+msgstr "(pa hollësi grupi ndryshimesh)"
 
 #: trac/htdocs/js/blame.js:87
 msgid "Close"
-msgstr ""
+msgstr "Mbylle"
 
 #: trac/htdocs/js/diff.js:117
 msgid "Tabular"
@@ -92,16 +95,16 @@ msgstr ""
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr ""
+msgstr "Zgjero nëndrejtori te vendi"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr ""
+msgstr "Rizgjero drejtori"
 
 #: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr ""
+msgstr "Po ngarkohet %(entry)s…"
 
 #: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
@@ -109,43 +112,43 @@ msgstr "(i zbrazët)"
 
 #: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
-msgstr ""
+msgstr "(gabim)"
 
 #: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
-msgstr ""
+msgstr "Palose drejtorinë"
 
 #: trac/htdocs/js/folding.js:61
 #, python-format
 msgid "Show %(title)s"
-msgstr ""
+msgstr "Shfaq %(title)s"
 
 #: trac/htdocs/js/folding.js:73
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr ""
+msgstr "%(title)s (klikoni që të fshihet shtylla)"
 
 #. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
 #. and showMonthAfterYear
 #: trac/htdocs/js/jquery-ui-i18n.js:4
 msgid "$month$year"
-msgstr ""
+msgstr "$month$year"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr ""
+msgstr "U bë"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr ""
+msgstr "I mëparshmi"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr ""
+msgstr "Pauesi"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
@@ -155,12 +158,12 @@ msgstr "Sot"
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr ""
+msgstr "Jv"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
-msgstr ""
+msgstr "Zgjidhni Kohën"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:33
@@ -170,32 +173,32 @@ msgstr "Kohë"
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
-msgstr ""
+msgstr "Orë"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
-msgstr ""
+msgstr "Minutë"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
-msgstr ""
+msgstr "Sekondë"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
-msgstr ""
+msgstr "Zonë Kohe"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
-msgstr ""
+msgstr "Tani"
 
 #: trac/htdocs/js/query.js:160
 msgid "A filter already exists for that property"
-msgstr ""
+msgstr "Ka tashmë një filtër për atë veti"
 
 #: trac/htdocs/js/query.js:187
 msgid "or"
-msgstr ""
+msgstr "ose"
 
 #: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
 msgid "yes"
@@ -203,7 +206,7 @@ msgstr "po"
 
 #: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
 msgid "no"
-msgstr ""
+msgstr "po"
 
 #: trac/htdocs/js/query.js:218
 #, python-format
@@ -212,96 +215,98 @@ msgstr "<label>mes %(start)s</label> <label>dhe %(end)s</label>"
 
 #: trac/htdocs/js/query.js:381
 msgid " remove:"
-msgstr ""
+msgstr " hiqe:"
 
 #: trac/htdocs/js/query.js:391
 msgid " add:"
-msgstr ""
+msgstr " shtoje:"
 
 #: trac/htdocs/js/query.js:425
 #, python-format
 msgid "Select ticket #%(id)s for modification"
-msgstr ""
+msgstr "Përzgjidhni #%(id)s çështjeje për ndryshim"
 
 #: trac/htdocs/js/timeline_multirepos.js:4
 msgid "Show all repositories"
-msgstr ""
+msgstr "Shfaq krejt depot"
 
 #: trac/htdocs/js/timeline_multirepos.js:5
 msgid "Hide all repositories"
-msgstr ""
+msgstr "Fshihi krejt depot"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr ""
+msgstr "Lidhe këtu"
 
 #: trac/htdocs/js/trac.js:31
 msgid "Toggle group"
-msgstr ""
+msgstr "Shfaq/Fshih grup"
 
 #: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
-msgstr ""
+msgstr "Duhet përzgjedhur të paktën një objekt"
 
 #: trac/htdocs/js/trac.js:244
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
 msgstr ""
+"Keni ndryshime të paruajtura. Ndryshimet tuaja do të humbin, nëse e "
+"braktisni këtë faqe para se të ruani ndryshimet tuaja."
 
-#: trac/htdocs/js/wiki.js:73
+#: trac/htdocs/js/wiki.js:75
 #: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:4
 msgid "Link to this section"
-msgstr ""
+msgstr "Lidhje në këtë seksion"
 
-#: trac/htdocs/js/wiki.js:75
+#: trac/htdocs/js/wiki.js:77
 #, python-format
 msgid "Link to #%(id)s"
-msgstr ""
+msgstr "Lidhje për te #%(id)s"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
-msgstr ""
+msgstr "Tekst me të trasha: **Shembull**"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
-msgstr ""
+msgstr "Tekst me të pjerrëta: ''Shembull''"
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example"
-msgstr ""
+msgstr "Krye: == Shembull"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
-msgstr ""
+msgstr "Lidhje: [http://www.example.com/ Shembull]"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
-msgstr ""
+msgstr "Bllok kodi: {{{shembull}}}"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
-msgstr ""
+msgstr "Vizore horizontale: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
-msgstr ""
+msgstr "Paragraf i ri"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: \\\\"
-msgstr ""
+msgstr "Ndërprerje rreshti: \\\\"
 
 #: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
-msgstr ""
+msgstr "Figurë: [[Image()]]"
 
 #: trac/notification/templates/prefs_notification.html:57
 #: trac/notification/templates/prefs_notification.html:77
 msgid "Drag rule to reorder"
-msgstr ""
+msgstr "Që të renditni rregull, tërhiqeni dhe vëreni ku doni."
 
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
-msgstr ""
+msgstr "Lidhje për te ky diff"
 

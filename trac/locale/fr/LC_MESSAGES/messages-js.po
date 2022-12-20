@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 1.0\n"
+"Project-Id-Version: Trac 1.4.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2018-07-06 09:44+0000\n"
+"POT-Creation-Date: 2022-12-14 19:54-0500\n"
 "PO-Revision-Date: 2011-01-25 20:28+0100\n"
 "Last-Translator: Christian Boos <cboos@edgewall.org>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/ticket/htdocs/ticketclone.js:22
 msgid "Clone"
@@ -241,7 +241,7 @@ msgstr "Basculer le groupe"
 msgid "At least one item must be selected"
 msgstr "Au moins un élément doit être sélectionné"
 
-#: trac/htdocs/js/trac.js:243
+#: trac/htdocs/js/trac.js:244
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
@@ -250,13 +250,13 @@ msgstr ""
 "seront perdus si vous quittez cette page avant d'avoir sauvegardé vos "
 "changements."
 
-#: trac/htdocs/js/wiki.js:73
+#: trac/htdocs/js/wiki.js:75
 #: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:4
 msgid "Link to this section"
 msgstr "Lien vers cette section"
 
-#: trac/htdocs/js/wiki.js:75
+#: trac/htdocs/js/wiki.js:77
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Lien vers #%(id)s"
