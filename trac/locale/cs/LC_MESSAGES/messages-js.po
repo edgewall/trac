@@ -1,5 +1,5 @@
-# Turkish translations for Trac.
-# Copyright (C) 2010-2022 Edgewall Software
+# Czech translations for Trac.
+# Copyright (C) 2022 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 msgid ""
@@ -7,11 +7,11 @@ msgstr ""
 "Project-Id-Version: Trac 1.5.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2022-12-14 22:34-0500\n"
-"PO-Revision-Date: 2022-12-20 02:59+0000\n"
-"Last-Translator: Aranel Surion <aranel@aranelsurion.org>\n"
-"Language: tr\n"
-"Language-Team: tr <trac-dev@googlegroups.com>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"PO-Revision-Date: 2022-12-20 02:52+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: cs\n"
+"Language-Team: cs <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -69,58 +69,58 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
-msgstr "Tümüne geç"
+msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
-msgstr "(değişimset bilgisi yok)"
+msgstr "(žádné informace o sadě změn)"
 
 #: trac/htdocs/js/blame.js:87
 msgid "Close"
-msgstr "Kapat"
+msgstr "Zavřít"
 
 #: trac/htdocs/js/diff.js:117
 msgid "Tabular"
-msgstr "Tablolu"
+msgstr "Tabulkové"
 
 #: trac/htdocs/js/diff.js:123
 msgid "Unified"
-msgstr "Birleşik"
+msgstr "Sjednocené"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr "Klasörü genişlet"
+msgstr "Rozbalit podadresář na místě"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr "Klasörü yeniden genişlet"
+msgstr "Znovu rozbalit adresář"
 
 #: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
-msgstr "Yükleniyor %(entry)s..."
+msgstr "Načítání %(entry)s..."
 
 #: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
-msgstr "(boş)"
+msgstr "(prázdné)"
 
 #: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
-msgstr "(hata)"
+msgstr "(chyba)"
 
 #: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
-msgstr "Klasörü katla"
+msgstr "Sbalit adresář"
 
 #: trac/htdocs/js/folding.js:61
 #, python-format
 msgid "Show %(title)s"
-msgstr "Göster %(title)s"
+msgstr "Zobrazit %(title)s"
 
 #: trac/htdocs/js/folding.js:73
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr "%(title)s (sütunu gizlemek için tıklayın)"
+msgstr "%(title)s (klikněte pro skrytí sloupce)"
 
 #. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
 #. and showMonthAfterYear
@@ -132,75 +132,75 @@ msgstr "$month$year"
 #. TRANSLATOR: Link that closes the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
-msgstr "Bitti"
+msgstr "Hotovo"
 
 #. TRANSLATOR: Link to the previous month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:9
 msgid "Prev"
-msgstr "Önceki"
+msgstr "Předchozí"
 
 #. TRANSLATOR: Link to the next month in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:11
 msgid "Next"
-msgstr "Sonraki"
+msgstr "Další"
 
 #. TRANSLATOR: Link to the current day in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:13
 msgid "Today"
-msgstr "Bugün"
+msgstr "Dnes"
 
 #. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:20
 msgid "Wk"
-msgstr "Hf"
+msgstr "Tý"
 
 #. TRANSLATOR: Heading of the standalone timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
-msgstr "Zaman Seç"
+msgstr "Zvolte čas"
 
 #. TRANSLATOR: Time selector label
 #: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
-msgstr "Zaman"
+msgstr "Čas"
 
 #. TRANSLATOR: Time labels in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
-msgstr "Saat"
+msgstr "Hodina"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
-msgstr "Dakika"
+msgstr "Minuta"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
-msgstr "Saniye"
+msgstr "Vteřina"
 
 #: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
-msgstr "Zaman Dilimi"
+msgstr "Časové pásmo"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
 #: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
-msgstr "Şimdi"
+msgstr "Nyní"
 
 #: trac/htdocs/js/query.js:160
 msgid "A filter already exists for that property"
-msgstr "Bu özellik için zaten bir filtre mevcut"
+msgstr "Filtr již pro tuto vlastnost existuje"
 
 #: trac/htdocs/js/query.js:187
 msgid "or"
-msgstr "veya"
+msgstr "nebo"
 
 #: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
 msgid "yes"
-msgstr "evet"
+msgstr "ano"
 
 #: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
 msgid "no"
-msgstr "hayır"
+msgstr "ne"
 
 #: trac/htdocs/js/query.js:218
 #, python-format
@@ -209,119 +209,96 @@ msgstr ""
 
 #: trac/htdocs/js/query.js:381
 msgid " remove:"
-msgstr " kaldır:"
+msgstr "odstranit"
 
 #: trac/htdocs/js/query.js:391
 msgid " add:"
-msgstr " ekle:"
+msgstr "přidat:"
 
 #: trac/htdocs/js/query.js:425
 #, python-format
 msgid "Select ticket #%(id)s for modification"
-msgstr "Değiştirmek için #%(id)s bilet seçin"
+msgstr ""
 
 #: trac/htdocs/js/timeline_multirepos.js:4
 msgid "Show all repositories"
-msgstr "Tüm depoları göster"
+msgstr ""
 
 #: trac/htdocs/js/timeline_multirepos.js:5
 msgid "Hide all repositories"
-msgstr "Tüm depoları gizle"
+msgstr ""
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr "Buraya bağlantı"
+msgstr "Odkaz zde"
 
 #: trac/htdocs/js/trac.js:31
 msgid "Toggle group"
-msgstr "Gruba geç"
+msgstr ""
 
 #: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
-msgstr "En az bir öğe seçilmelidir"
+msgstr ""
 
 #: trac/htdocs/js/trac.js:243
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
 msgstr ""
-"Kaydedilmemiş değişiklikleriniz var. Değişikliklerinizi kaydetmeden önce "
-"bu sayfadan çıkarsanız tüm değişiklikleriniz kaybolacak."
 
 #: trac/htdocs/js/wiki.js:75
 #: trac/notification/templates/prefs_notification.html:16
 #: trac/ticket/templates/ticket.html:4
 msgid "Link to this section"
-msgstr "Bu bölüme bağlantı"
+msgstr "Odkaz na tuto část"
 
 #: trac/htdocs/js/wiki.js:77
 #, python-format
 msgid "Link to #%(id)s"
-msgstr "#%(id)s için bağlantı"
+msgstr "Odkaz na č.%(id)s"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
-msgstr "Kalın metin: **Örnek**"
+msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Italic text: ''Example''"
-msgstr "İtalik metin: ''Örnek''"
+msgstr "Kurzíva: ''Příklad''"
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Heading: == Example"
-msgstr "Başlık: == Örnek"
+msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Link: [http://www.example.com/ Example]"
-msgstr "Bağlantı: [http://www.ornek.com/ Örnek]"
+msgstr "Odkaz: [http://www.priklad.cz/ Příklad]"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Code block: {{{ example }}}"
-msgstr "Kod bloğu: {{{ örnek }}}"
+msgstr "Blok kódu: {{{ příklad }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "Horizontal rule: ----"
-msgstr "Yatay çizgi: ----"
+msgstr "Vodorovná čára: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "New paragraph"
-msgstr "Yeni paragraf"
+msgstr "Nový odstavec"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Line break: \\\\"
-msgstr "Satır sonu: \\\\"
+msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:83
 msgid "Image: [[Image()]]"
-msgstr "Resim: [[Image()]]"
+msgstr "Obrázek: [[Image()]]"
 
 #: trac/notification/templates/prefs_notification.html:57
 #: trac/notification/templates/prefs_notification.html:77
 msgid "Drag rule to reorder"
-msgstr "Düzenlemek için kuralı sürükleyin"
+msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
-msgstr "Bu diff için bağlantı"
-
-#~ msgid "between"
-#~ msgstr "arasında"
-
-#~ msgid "and"
-#~ msgstr "ve"
-
-#~ msgid "Select ticket %(id)s for modification"
-#~ msgstr ""
-
-#~ msgid "Toggle selection of all tickets shown in this group"
-#~ msgstr ""
-
-#~ msgid "Bold text: '''Example'''"
-#~ msgstr "Kalın metin: '''Örnek'''"
-
-#~ msgid "Heading: == Example =="
-#~ msgstr "Başlık: == Örnek =="
-
-#~ msgid "Line break: [[BR]]"
-#~ msgstr "Satır sonu: [[BR]]"
+msgstr "Odkaz na tento rozdíl"
 

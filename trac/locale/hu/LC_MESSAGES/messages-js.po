@@ -1,21 +1,78 @@
-# Hungarian (Hungary) translations for Trac.
+# Hungarian translations for Trac.
 # Copyright (C) 2010-2022 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Trac 0.12\n"
+"Project-Id-Version: Trac 1.5.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2013-02-02 15:20+0100\n"
-"PO-Revision-Date: 2012-05-11 22:09+0200\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:56+0000\n"
 "Last-Translator: Nagy Zoltán <nzoltan@freemail.hu>\n"
-"Language-Team: hu_HU <trac-dev@googlegroups.com>\n"
-"Plural-Forms: nplurals=2; plural=(n!=1)\n"
+"Language: hu\n"
+"Language-Team: hu <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6dev-r0\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr "Új jegy készítése ebből a hozzászólásból"
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+"[1 %(source)s] másolata:\n"
+"2 %(description)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Jegy másolatának létrehozása"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Törlés"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Jegy törlése"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "1%(num)s hozzászólás törlése"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
@@ -25,11 +82,11 @@ msgstr "(nincs változtatás)"
 msgid "Close"
 msgstr "Bezár"
 
-#: trac/htdocs/js/diff.js:119
+#: trac/htdocs/js/diff.js:117
 msgid "Tabular"
 msgstr "Táblázatos"
 
-#: trac/htdocs/js/diff.js:125
+#: trac/htdocs/js/diff.js:123
 msgid "Unified"
 msgstr "Egyben"
 
@@ -41,29 +98,29 @@ msgstr "Alkönyvtár kibontása helyben"
 msgid "Re-expand directory"
 msgstr "Könyvtár ismételt kibontása"
 
-#: trac/htdocs/js/expand_dir.js:121
+#: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "A(z) %(entry)s betöltése..."
 
-#: trac/htdocs/js/expand_dir.js:149
+#: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
 msgstr "(üres)"
 
-#: trac/htdocs/js/expand_dir.js:157
+#: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
 msgstr "(hiba)"
 
-#: trac/htdocs/js/expand_dir.js:164
+#: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
 msgstr "Könyvtár összehajtása"
 
-#: trac/htdocs/js/folding.js:62
+#: trac/htdocs/js/folding.js:61
 #, python-format
 msgid "Show %(title)s"
 msgstr "A(z) %(title)s megjelenítése"
 
-#: trac/htdocs/js/folding.js:78
+#: trac/htdocs/js/folding.js:73
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (kattintson az oszlop elrejtéséhez)"
@@ -76,7 +133,7 @@ msgstr "$year$month"
 
 #. TRANSLATOR: Link that closes the datepicker
 #. TRANSLATOR: Link that closes the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:39
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
 msgid "Done"
 msgstr "Kész"
 
@@ -101,128 +158,173 @@ msgid "Wk"
 msgstr "Hét"
 
 #. TRANSLATOR: Heading of the standalone timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:30
+#: trac/htdocs/js/jquery-ui-i18n.js:31
 msgid "Choose Time"
 msgstr "Időpont"
 
 #. TRANSLATOR: Time selector label
-#: trac/htdocs/js/jquery-ui-i18n.js:32
+#: trac/htdocs/js/jquery-ui-i18n.js:33
 msgid "Time"
 msgstr "Idő"
 
 #. TRANSLATOR: Time labels in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Hour"
 msgstr "Óra"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Minute"
 msgstr "Perc"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:34
+#: trac/htdocs/js/jquery-ui-i18n.js:35
 msgid "Second"
 msgstr "Másodperc"
 
-#: trac/htdocs/js/jquery-ui-i18n.js:35
+#: trac/htdocs/js/jquery-ui-i18n.js:36
 msgid "Time Zone"
 msgstr "Időzóna"
 
 #. TRANSLATOR: Link to pick the current time in the timepicker
-#: trac/htdocs/js/jquery-ui-i18n.js:37
+#: trac/htdocs/js/jquery-ui-i18n.js:38
 msgid "Now"
 msgstr "Most"
 
-#: trac/htdocs/js/query.js:132
+#: trac/htdocs/js/query.js:160
 msgid "A filter already exists for that property"
 msgstr "A jellemzőhöz már létezik szűrő"
 
-#: trac/htdocs/js/query.js:159
+#: trac/htdocs/js/query.js:187
 msgid "or"
 msgstr "vagy"
 
-#: trac/htdocs/js/query.js:182 trac/htdocs/js/query.js:318
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
 msgid "yes"
 msgstr "igen"
 
-#: trac/htdocs/js/query.js:185 trac/htdocs/js/query.js:321
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
 msgid "no"
 msgstr "nem"
 
-#: trac/htdocs/js/query.js:196
-msgid "between"
-msgstr "között"
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr ""
 
-#: trac/htdocs/js/query.js:198
-msgid "and"
-msgstr "és"
-
-#: trac/htdocs/js/query.js:350
+#: trac/htdocs/js/query.js:381
 msgid " remove:"
 msgstr "eltávolít:"
 
-#: trac/htdocs/js/query.js:360
+#: trac/htdocs/js/query.js:391
 msgid " add:"
 msgstr "hozzáad:"
 
-#: trac/htdocs/js/query.js:389
+#: trac/htdocs/js/query.js:425
 #, python-format
-msgid "Select ticket %(id)s for modification"
-msgstr "Válassza a %(id)s jegyet a módosításhoz"
+msgid "Select ticket #%(id)s for modification"
+msgstr "A(z) #%(id)s jegy kijelölése módosításhoz"
 
-#: trac/htdocs/js/query.js:400
-msgid "Toggle selection of all tickets shown in this group"
-msgstr "Kijelölés megfordítása az összes jegyen ebben a csoportban"
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr "Az összes tároló megjelenítése"
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr "Az összes tároló elrejtése"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "Hivatkozás ide"
 
-#: trac/htdocs/js/wikitoolbar.js:56
-msgid "Bold text: '''Example'''"
-msgstr "Félkövér szöveg: '''Példa'''"
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr ""
 
-#: trac/htdocs/js/wikitoolbar.js:59
-msgid "Italic text: ''Example''"
-msgstr "Dőlt szöveg: ''Példa''"
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "Legalább egy elemet ki kell választani"
 
-#: trac/htdocs/js/wikitoolbar.js:62
-msgid "Heading: == Example =="
-msgstr "Fejléc: == Példa =="
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Mentetlen változtatásai vannak. A változtatások el fognak veszni, ha "
+"elhagyja ezt az oldalt, mielőtt elmentené a változtatásokat."
 
-#: trac/htdocs/js/wikitoolbar.js:65
-msgid "Link: [http://www.example.com/ Example]"
-msgstr "Hivatkozás: [http://www.example.com/ Példa]"
-
-#: trac/htdocs/js/wikitoolbar.js:68
-msgid "Code block: {{{ example }}}"
-msgstr "Kódblokk: {{{ példa }}}"
-
-#: trac/htdocs/js/wikitoolbar.js:71
-msgid "Horizontal rule: ----"
-msgstr "Vízszintes elválasztás: ----"
-
-#: trac/htdocs/js/wikitoolbar.js:74
-msgid "New paragraph"
-msgstr "Új bekezdés"
-
-#: trac/htdocs/js/wikitoolbar.js:77
-msgid "Line break: [[BR]]"
-msgstr "Sortörés: [[BR]]"
-
-#: trac/htdocs/js/wikitoolbar.js:80
-msgid "Image: [[Image()]]"
-msgstr "Kép: [[Image()]]"
-
-#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
 msgid "Link to this section"
 msgstr "Hivatkozás erre a bekezdésre"
 
-#: trac/versioncontrol/templates/changeset.html:7
-msgid "Link to this diff"
-msgstr "Hivatkozás erre az eltérésre"
-
-#: trac/wiki/templates/wiki_view.html:5
+#: trac/htdocs/js/wiki.js:77
 #, python-format
 msgid "Link to #%(id)s"
 msgstr "Hivatkozás erre: #%(id)s"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Félkövér szöveg: **példa**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr "Dőlt szöveg: ''Példa''"
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Címsor: == Példa"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Hivatkozás: [http://www.example.com/ Példa]"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr "Kódblokk: {{{ példa }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr "Vízszintes elválasztás: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr "Új bekezdés"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Sortörés: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr "Kép: [[Image()]]"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "Fogja meg a vonalat az átrendezéshez"
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
+msgstr "Hivatkozás erre az eltérésre"
+
+#~ msgid "between"
+#~ msgstr "között"
+
+#~ msgid "and"
+#~ msgstr "és"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr "Válassza a %(id)s jegyet a módosításhoz"
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr "Kijelölés megfordítása az összes jegyen ebben a csoportban"
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "Félkövér szöveg: '''Példa'''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "Fejléc: == Példa =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "Sortörés: [[BR]]"
 

@@ -6,18 +6,68 @@
 # Lele Gaifax <lele@metapensiero.it>, 2010-2015.
 msgid ""
 msgstr ""
-"Project-Id-Version:  Trac\n"
-"Report-Msgid-Bugs-To: http://trac.edgewall.org/\n"
-"POT-Creation-Date: 2015-09-03 03:17-0700\n"
-"PO-Revision-Date: 2015-09-30 19:06+0200\n"
+"Project-Id-Version: Trac 1.5.4\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:56+0000\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
-"Language-Team: Italian "
-"(http://www.transifex.com/projects/p/trac/language/it/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: it\n"
+"Language-Team: it <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr "Clona"
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Crea una copia di questa segnalazione"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Elimina"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Cancella segnalazione"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Elimina commento %(num)s"
 
 #: trac/admin/templates/admin_perms.html:10
 msgid "Toggle all"
@@ -31,11 +81,11 @@ msgstr "(nessuna informazione sul changeset)"
 msgid "Close"
 msgstr "Chiudi"
 
-#: trac/htdocs/js/diff.js:119
+#: trac/htdocs/js/diff.js:117
 msgid "Tabular"
 msgstr "Tabellare"
 
-#: trac/htdocs/js/diff.js:125
+#: trac/htdocs/js/diff.js:123
 msgid "Unified"
 msgstr "Unificato"
 
@@ -47,29 +97,29 @@ msgstr "Espandi sotto-directory"
 msgid "Re-expand directory"
 msgstr "Ri-espandi la directory"
 
-#: trac/htdocs/js/expand_dir.js:121
+#: trac/htdocs/js/expand_dir.js:122
 #, python-format
 msgid "Loading %(entry)s..."
 msgstr "Caricamento di %(entry)s..."
 
-#: trac/htdocs/js/expand_dir.js:149
+#: trac/htdocs/js/expand_dir.js:150
 msgid "(empty)"
 msgstr "(vuoto)"
 
-#: trac/htdocs/js/expand_dir.js:157
+#: trac/htdocs/js/expand_dir.js:158
 msgid "(error)"
 msgstr "(errore)"
 
-#: trac/htdocs/js/expand_dir.js:164
+#: trac/htdocs/js/expand_dir.js:165
 msgid "Fold directory"
 msgstr "Collassa directory"
 
-#: trac/htdocs/js/folding.js:62
+#: trac/htdocs/js/folding.js:61
 #, python-format
 msgid "Show %(title)s"
 msgstr "Mostra %(title)s"
 
-#: trac/htdocs/js/folding.js:78
+#: trac/htdocs/js/folding.js:73
 #, python-format
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (clicca per nascondere la colonna)"
@@ -138,39 +188,36 @@ msgstr "Fuso Orario"
 msgid "Now"
 msgstr "Adesso"
 
-#: trac/htdocs/js/query.js:169
+#: trac/htdocs/js/query.js:160
 msgid "A filter already exists for that property"
 msgstr "Esiste già un filtro su quella proprietà"
 
-#: trac/htdocs/js/query.js:196
+#: trac/htdocs/js/query.js:187
 msgid "or"
 msgstr "oppure"
 
-#: trac/htdocs/js/query.js:219 trac/htdocs/js/query.js:355
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
 msgid "yes"
 msgstr "sì"
 
-#: trac/htdocs/js/query.js:222 trac/htdocs/js/query.js:358
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
 msgid "no"
 msgstr "no"
 
-#: trac/htdocs/js/query.js:234
-msgid "between"
-msgstr "tra"
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr ""
 
-#: trac/htdocs/js/query.js:236
-msgid "and"
-msgstr "e"
-
-#: trac/htdocs/js/query.js:387
+#: trac/htdocs/js/query.js:381
 msgid " remove:"
 msgstr " rimuovi:"
 
-#: trac/htdocs/js/query.js:397
+#: trac/htdocs/js/query.js:391
 msgid " add:"
 msgstr " aggiungi:"
 
-#: trac/htdocs/js/query.js:430
+#: trac/htdocs/js/query.js:425
 #, python-format
 msgid "Select ticket #%(id)s for modification"
 msgstr "Seleziona la segnalazione #%(id)s per la modifica"
@@ -191,17 +238,28 @@ msgstr "Collega qui"
 msgid "Toggle group"
 msgstr "Inverti la selezione del gruppo"
 
-#: trac/htdocs/js/trac.js:70
+#: trac/htdocs/js/trac.js:96
 msgid "At least one item must be selected"
 msgstr "Devi selezionare almeno una voce"
 
-#: trac/htdocs/js/trac.js:217
+#: trac/htdocs/js/trac.js:243
 msgid ""
 "You have unsaved changes. Your changes will be lost if you leave this "
 "page before saving your changes."
 msgstr ""
 "Ci sono delle modifiche non confermate, che verranno perse se lasci "
 "questa pagina prima di confermarle."
+
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
+msgid "Link to this section"
+msgstr "Collegamento a questa sezione"
+
+#: trac/htdocs/js/wiki.js:77
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Collegamento a #%(id)s"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Bold text: **Example**"
@@ -239,22 +297,18 @@ msgstr "A capo: \\\\"
 msgid "Image: [[Image()]]"
 msgstr "Immagine: [[Image()]]"
 
-#: trac/notification/templates/prefs_notification.html:16
-#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
-msgid "Link to this section"
-msgstr "Collegamento a questa sezione"
-
 #: trac/notification/templates/prefs_notification.html:57
 #: trac/notification/templates/prefs_notification.html:77
 msgid "Drag rule to reorder"
 msgstr "Trascina la regola per cambiarne l'ordine"
 
-#: trac/versioncontrol/templates/changeset.html:7
+#: trac/versioncontrol/templates/changeset.html:8
 msgid "Link to this diff"
 msgstr "Collegamento a questo confronto"
 
-#: trac/wiki/templates/wiki_view.html:5
-#, python-format
-msgid "Link to #%(id)s"
-msgstr "Collegamento a #%(id)s"
+#~ msgid "between"
+#~ msgstr "tra"
+
+#~ msgid "and"
+#~ msgstr "e"
 
