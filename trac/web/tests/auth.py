@@ -16,7 +16,7 @@ import os
 import tempfile
 
 from trac.core import TracError
-from trac.util.compat import crypt
+from trac.util.compat import verify_hash
 from trac.util.text import unicode_to_base64
 from trac.test import EnvironmentStub, MockRequest, rmtree
 from trac.web.auth import BasicAuthentication, DigestAuthentication, LoginModule
@@ -172,7 +172,20 @@ class DigestAuthenticationTestCase(unittest.TestCase):
         self.assertIn('97a40f5b8d13962839f664534aa573ef', auth.hash['user2'])
 
 
+@unittest.skipUnless(verify_hash, 'verify_hash is unavailable')
 class BasicAuthenticationTestCase(unittest.TestCase):
+
+    _HASH_CRYPT= 'PgjnZnmDQ8S7w'
+    _HASH_MD5 = '$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/'
+    _HASH_SHA = '{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY='
+    _HASH_BCRYPT = ('$2b$05$b6vmJqKFbMa9k0EYTbPn4OmniMo2cHULRX3C4FxbI2iijv1.qB'
+                    't.e')
+    _HASH_SHA256 = ('$5$GoITETngL2iA/Mkl$zOQuOlD10PvoELd9wQaV5YLWNun.iAm.pS8cK'
+                    'XlUjO.')
+    _HASH_SHA512 = ('$6$K0aa86U7nBj4rbxv$BI70lxTsmw9aN6OrUOrSb4h/CjZ0t5rCQMUY1'
+                    'ag0UMQZceHkb8tgqn9X6WxjcXEpKfzE.sOeDz6qIeBQMUdXG/')
+    _HASH_COLON = '$apr1$YMlTTmM3$01fy1fQDi4sc48d/FaohC/'
+    _HASH_UNKNOWN = '$unknown$hash'
 
     def setUp(self):
         self.dir = tempfile.mkdtemp()
@@ -183,10 +196,14 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 
     def _write_default_htpasswd(self):
         with open(self.filename, 'w', encoding='utf-8') as fd:
-            fd.write("crypt:PgjnZnmDQ8S7w\n")
-            fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/\n")
-            fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=\n")
-            fd.write("colon:$apr1$YMlTTmM3$01fy1fQDi4sc48d/FaohC/\n")
+            fd.write('crypt:{}\n'.format(self._HASH_CRYPT))
+            fd.write('md5:{}\n'.format(self._HASH_MD5))
+            fd.write('sha:{}\n'.format(self._HASH_SHA))
+            fd.write('bcrypt:{}\n'.format(self._HASH_BCRYPT))
+            fd.write('sha256:{}\n'.format(self._HASH_SHA256))
+            fd.write('sha512:{}\n'.format(self._HASH_SHA512))
+            fd.write('colon:{}\n'.format(self._HASH_COLON))
+            fd.write('unknown:{}\n'.format(self._HASH_UNKNOWN))
 
     def test_crypt(self):
         self._write_default_htpasswd()
@@ -220,12 +237,39 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.assertIsNone(do_auth('colon', 'blah:blah:'))
         self.assertIsNone(do_auth('colon', 'blah:blah:blah'))
 
+    def test_bcrypt(self):
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('bcrypt', 'bcrypt'))
+        self.assertFalse(auth.test('bcrypt', 'other'))
+
+    def test_sha256(self):
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('sha256', 'sha256'))
+        self.assertFalse(auth.test('sha256', 'other'))
+
+    def test_sha512(self):
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertTrue(auth.test('sha512', 'sha512'))
+        self.assertFalse(auth.test('sha512', 'other'))
+
+    def test_unknown(self):
+        self._write_default_htpasswd()
+        auth = BasicAuthentication(self.filename, 'realm')
+        self.assertFalse(auth.test('unknown', 'unknown'))
+
     def test_extra_entries_ignored(self):
         """Extra entries and comments are ignored."""
         with open(self.filename, 'w', encoding='utf-8') as fd:
-            fd.write("crypt:PgjnZnmDQ8S7w:User One #comment\n")
-            fd.write("md5:$apr1$PjxHNVvY$41a7qPozEZ1b47OomFoos/:User Two \n")
-            fd.write("sha:{SHA}2PRZAyDhNDqRW2OUFwZQqPNdaSY=:User Three #\n")
+            fd.write('crypt:{}:User One #comment\n'.format(self._HASH_CRYPT))
+            fd.write('md5:{}:User Two \n'.format(self._HASH_MD5))
+            fd.write('sha:{}:User Three #\n'.format(self._HASH_SHA))
+            fd.write('bcrypt:{}:User Four\n'.format(self._HASH_BCRYPT))
+            fd.write('sha256:{}:User Five\n'.format(self._HASH_SHA256))
+            fd.write('sha512:{}:User Six\n'.format(self._HASH_SHA512))
+            fd.write('unknown:{}:User Unknown ?\n'.format(self._HASH_UNKNOWN))
 
         auth = BasicAuthentication(self.filename, 'realm')
         self.assertTrue(auth.test('crypt', 'crypt'))
@@ -234,14 +278,20 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.assertFalse(auth.test('md5', 'other'))
         self.assertTrue(auth.test('sha', 'sha'))
         self.assertFalse(auth.test('sha', 'other'))
+        self.assertTrue(auth.test('bcrypt', 'bcrypt'))
+        self.assertFalse(auth.test('bcrypt', 'other'))
+        self.assertTrue(auth.test('sha256', 'sha256'))
+        self.assertFalse(auth.test('sha256', 'other'))
+        self.assertTrue(auth.test('sha512', 'sha512'))
+        self.assertFalse(auth.test('sha512', 'other'))
+        self.assertFalse(auth.test('unknown', 'unknown'))
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(LoginModuleTestCase))
     suite.addTest(unittest.makeSuite(DigestAuthenticationTestCase))
-    if crypt:
-        suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
+    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
     return suite
 
 

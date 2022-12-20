@@ -14,6 +14,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import errno
+import hmac
 import os
 import subprocess
 import time
@@ -24,16 +25,20 @@ try:
     from crypt import crypt
 except ImportError:
     try:
-        from passlib.hash import des_crypt
+        from passlib.context import CryptContext
     except ImportError:
-        crypt = None
+        verify_hash = None
     else:
-        def crypt(secret, salt):
-            # encrypt method deprecated in favor of hash in passlib 1.7
-            if hasattr(des_crypt, 'hash'):
-                return des_crypt.using(salt=salt).hash(secret)
-            else:
-                return des_crypt.encrypt(secret, salt=salt)
+        def verify_hash(secret, the_hash):
+            ctx = CryptContext(schemes=['bcrypt', 'sha256_crypt',
+                                        'sha512_crypt', 'des_crypt'])
+            try:
+                return ctx.verify(secret, the_hash)
+            except ValueError:
+                return False
+else:
+    def verify_hash(secret, the_hash):
+        return hmac.compare_digest(crypt(secret, the_hash), the_hash)
 
 
 def rpartition(s, sep):

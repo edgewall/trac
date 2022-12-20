@@ -29,10 +29,11 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import Chrome, INavigationContributor
 from trac.util import hex_entropy, md5crypt
-from trac.util.compat import crypt
+from trac.util.compat import verify_hash
 from trac.util.concurrency import threading
 from trac.util.datefmt import time_now
 from trac.util.html import tag
+from trac.util.text import exception_to_unicode
 from trac.util.translation import _, tag_
 
 
@@ -314,7 +315,7 @@ class BasicAuthentication(PasswordFileAuthentication):
     def __init__(self, htpasswd, realm):
         # FIXME pass a logger
         self.realm = realm
-        self.crypt = crypt
+        self.verify = verify_hash
         self.hash = {}
         PasswordFileAuthentication.__init__(self, htpasswd)
 
@@ -332,7 +333,7 @@ class BasicAuthentication(PasswordFileAuthentication):
                     print("Warning: invalid password line in %s: %s"
                           % (filename, line), file=sys.stderr)
                     continue
-                if '$' in h or h.startswith('{SHA}') or self.crypt:
+                if h.startswith(('$apr1$', '{SHA}')) or self.verify:
                     self.hash[u] = h
                 else:
                     print('Warning: cannot parse password for user "%s" '
@@ -349,18 +350,26 @@ class BasicAuthentication(PasswordFileAuthentication):
         if the_hash is None:
             return False
 
+        # SHA-1
         if the_hash.startswith('{SHA}'):
             hash_ = str(b64encode(sha1(password.encode('utf-8')).digest()),
                         'ascii')
             return hmac.compare_digest(hash_, the_hash[5:])
 
-        if '$' not in the_hash:
-            return hmac.compare_digest(self.crypt(password, the_hash[:2]),
+        # MD5
+        if the_hash.startswith('$apr1$'):
+            magic, salt = the_hash[1:].split('$')[:2]
+            magic = '$' + magic + '$'
+            return hmac.compare_digest(md5crypt(password, salt, magic),
                                        the_hash)
 
-        magic, salt = the_hash[1:].split('$')[:2]
-        magic = '$' + magic + '$'
-        return hmac.compare_digest(md5crypt(password, salt, magic), the_hash)
+        # crypt compatible
+        try:
+            return self.verify(password, the_hash)
+        except RuntimeError as e:
+            print('Warning: cannot verify password for user "%s" (%s)' %
+                  (user, exception_to_unicode(e)), file=sys.stderr)
+            return False
 
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')

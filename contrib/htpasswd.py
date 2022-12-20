@@ -17,11 +17,62 @@ import argparse
 import getpass
 import sys
 
-from trac.util import salt
-from trac.util.compat import crypt, wait_for_file_mtime_change
+try:
+    import crypt
+except ImportError:
+    crypt = None
+    try:
+        import passlib
+    except ImportError:
+        passlib = None
+else:
+    passlib = None
+
+from trac.util.compat import wait_for_file_mtime_change
 from trac.util.text import printerr
 
-if crypt is None:
+
+if crypt:
+    _crypt_methods = {
+        'sha256': crypt.METHOD_SHA256,
+        'sha512': crypt.METHOD_SHA512,
+        'md5': None,  # use md5crypt
+        'des': crypt.METHOD_CRYPT,
+    }
+    if hasattr(crypt, 'METHOD_BLOWFISH'):
+        _crypt_methods['bcrypt'] = crypt.METHOD_BLOWFISH
+    _hash_methods = sorted(_crypt_methods)
+    from trac.util import salt, md5crypt
+    def hash_password(word, method):
+        if method == 'md5':
+            return md5crypt(word, salt(), '$apr1$')
+        else:
+            return crypt.crypt(word, crypt.mksalt(_crypt_methods[method]))
+elif passlib:
+    from passlib.context import CryptContext
+    _crypt_schemes = {
+        'sha256': 'sha256_crypt',
+        'sha512': 'sha512_crypt',
+        'md5': 'apr_md5_crypt',
+        'des': 'des_crypt',
+    }
+    from passlib.hash import bcrypt
+    try:
+        bcrypt.get_backend()
+    except passlib.exc.MissingBackendError:
+        pass
+    else:
+        _crypt_schemes['bcrypt'] = 'bcrypt'
+    _crypt_context = CryptContext(schemes=sorted(_crypt_schemes.values()))
+    _hash_methods = sorted(_crypt_schemes)
+    def hash_password(word, method):
+        scheme = _crypt_schemes[method]
+        if hasattr(_crypt_context, 'hash'):  # passlib 1.7+
+            hash_ = _crypt_context.hash
+        else:
+            hash_ = _crypt_context.encrypt
+        return hash_(word, scheme=scheme)
+else:
     printerr("The crypt module is not found. Install the passlib package "
              "from PyPI.", newline=True)
     sys.exit(1)
@@ -61,9 +112,9 @@ class HtpasswdFile(object):
             f.writelines("%s:%s\n" % (entry[0], entry[1])
                          for entry in self.entries)
 
-    def update(self, username, password):
+    def update(self, username, password, method):
         """Replace the entry for the given user, or add it if new."""
-        pwhash = crypt(password, salt())
+        pwhash = hash_password(password, method)
         matching_entries = [entry for entry in self.entries
                             if entry[0] == username]
         if matching_entries:
@@ -95,6 +146,9 @@ def main():
     parser_group.add_argument('-D', action='store_true', dest='delete_user',
                               help="remove the given user from the password "
                                    "file")
+    parser.add_argument('-t', dest='method', choices=_hash_methods,
+                        default='md5', help='hash method for passwords '
+                                            '(default: %(default)s)')
     parser.add_argument('passwordfile', help=argparse.SUPPRESS)
     parser.add_argument('username', help=argparse.SUPPRESS)
     parser.add_argument('password', nargs='?', help=argparse.SUPPRESS)
@@ -121,7 +175,7 @@ def main():
         else:
             if password is None:
                 password = ask_pass()
-            passwdfile.update(args.username, password)
+            passwdfile.update(args.username, password, args.method)
         passwdfile.save()
 
 

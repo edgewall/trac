@@ -59,6 +59,7 @@ $pipPackages = @(
     'babel',
     'docutils',
     'passlib',
+    'bcrypt',
     'pygments',
     'pytz',
     'textile',
