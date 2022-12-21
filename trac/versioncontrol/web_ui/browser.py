@@ -770,7 +770,13 @@ class BrowserModule(Component):
             quality = renderer.match_property(name, mode)
             if quality > 0:
                 candidates.append((quality, renderer))
-        candidates.sort(reverse=True)
+        def keyfunc(candidate):
+            quality, renderer = candidate
+            # Prefer non-default renderer if the renderers have same quality
+            return quality, \
+                   0 if isinstance(renderer, DefaultPropertyRenderer) else 1, \
+                   renderer.__class__.__name__
+        candidates.sort(reverse=True, key=keyfunc)
         for (quality, renderer) in candidates:
             try:
                 rendered = renderer.render_property(name, mode, context, props)

@@ -26,7 +26,7 @@ from trac.util.text import to_utf8
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node, NoSuchNode,
     Repository, RepositoryManager)
-from trac.versioncontrol.web_ui.browser import BrowserModule
+from trac.versioncontrol.web_ui.browser import BrowserModule, IPropertyRenderer
 from trac.web.api import RequestDone
 from trac.web.tests.api import RequestHandlerPermissionsTestCaseBase
 
@@ -59,11 +59,15 @@ class MockRepositoryConnector(Component):
                     entries = ['dir1', 'dir2']
                 entries = [posixpath.join(path, entry) for entry in entries]
             content = b'Contents for %s' % to_utf8(path)
+            properties = {}
+            if 'properties' in path:
+                properties['mock-1'] = 1
+                properties['mock-9'] = 9
             node = Mock(Node, repos, path, rev, kind,
                         created_path=path, created_rev=rev,
                         get_entries=lambda: iter(get_node(entry, rev)
                                                  for entry in entries),
-                        get_properties=lambda: {},
+                        get_properties=lambda: properties,
                         get_content=lambda: io.BytesIO(content),
                         get_content_length=lambda: len(content),
                         get_content_type=lambda: 'application/octet-stream',
@@ -80,6 +84,19 @@ class MockRepositoryConnector(Component):
                          previous_rev=lambda rev, path='': None,
                          next_rev=lambda rev, path='': None)
         return repos
+
+
+class MockPropertyRenderer(Component):
+
+    implements(IPropertyRenderer)
+
+    def match_property(self, name, mode):
+        if name.startswith('mock-'):
+            return int(name[5:])
+        return 0
+
+    def render_property(self, name, mode, context, props):
+        return '<name=%(name)r, mode=%(mode)r>' % locals()
 
 
 class BrowserModulePermissionsTestCase(RequestHandlerPermissionsTestCaseBase):
@@ -422,6 +439,15 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
         self.assertEqual(b'Contents for trunk/dir2/file.txt',
                          z.read('trunk/dir2/file.txt'))
         self.assertEqual((2017, 3, 31, 12, 34, 56), zi.date_time)
+
+    def test_properties_with_property_renderer(self):
+        req = MockRequest(self.env, path_info='/browser/properties/file.txt')
+        rv = self.process_request(req)
+        self.assertEqual([{'name': 'mock-1', 'rendered': None,
+                           'value': "<name='mock-1', mode='browser'>"},
+                          {'name': 'mock-9', 'rendered': None,
+                           'value': "<name='mock-9', mode='browser'>"}],
+                         rv[1]['properties'])
 
 
 def test_suite():
