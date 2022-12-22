@@ -1822,7 +1822,7 @@ class TicketModule(Component):
                 diff = tag.a(_("diff"), href=href)
                 rendered = tag_("modified (%(diff)s)", diff=diff)
         elif type_ == 'text' and field_info.get('format') == 'list':
-            tl = functools.partial(to_list, sep='[,;\s]+')
+            tl = functools.partial(to_list, sep=r'[,;\s]+')
             rendered = render_list(None, tl, old, new)
         elif type_ == 'time':
             format_ = field_info.get('format')

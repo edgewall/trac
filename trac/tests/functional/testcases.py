@@ -260,7 +260,7 @@ class RegressionTestTicket3663(FunctionalTestCaseSetup):
             resp = b''.join(resp)
             if not resp:
                 raise RuntimeError('No response')
-            match = re.match(b'HTTP\/[0-9]\.[0-9] +([0-9]{3}) +.*\r\n', resp)
+            match = re.match(br'HTTP/[0-9]\.[0-9] +([0-9]{3}) +.*\r\n', resp)
             if not match:
                 raise RuntimeError('No status line: %r' % resp)
             status = int(match.group(1))
@@ -381,8 +381,8 @@ class RegressionTestTicket11503b(FunctionalTestCaseSetup):
 
             self._tester.go_to_front()
             tc.notfind(internal_error)
-            tc.find(' href="/wiki/S%C3%A4ndB%C3%B5x\?'
-                    'action=history&amp;blah=%252F"')
+            tc.find(r' href="/wiki/S%C3%A4ndB%C3%B5x\?'
+                    r'action=history&amp;blah=%252F"')
         finally:
             env.config.remove('mainnav', 'wiki.href')
             env.config.save()

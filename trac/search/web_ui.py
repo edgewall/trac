@@ -210,7 +210,7 @@ class SearchModule(Component):
         or double) quotes.
         """
         terms = []
-        for term in re.split('(".*?")|(\'.*?\')|(\s+)', query):
+        for term in re.split(r'''(".*?")|('.*?')|(\s+)''', query):
             if term is not None and term.strip():
                 if term[0] == term[-1] and term[0] in "'\"":
                     term = term[1:-1]

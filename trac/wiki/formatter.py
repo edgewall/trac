@@ -127,7 +127,7 @@ class ProcessorError(TracError):
 
 class WikiProcessor(object):
 
-    _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
+    _code_block_re = re.compile(r'^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
     _block_elem_re = re.compile(r'^\s*<(?:div|table)(?:\s+[^>]+)?>',
                                 re.I | re.M)
 

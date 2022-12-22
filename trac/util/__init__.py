@@ -667,7 +667,7 @@ def get_lines_from_file(filename, lineno, context=0, globals=None):
     ubound = lineno + 1 + context
 
     charset = None
-    rep = re.compile('coding[=:]\s*([-\w.]+)')
+    rep = re.compile(r'coding[=:]\s*([-\w.]+)')
     for linestr in lines[:2]:
         match = rep.search(linestr)
         if match:
@@ -1407,7 +1407,7 @@ def pathjoin(*args):
 
 
 def to_list(splittable, sep=','):
-    """Split a string at `sep` and return a list without any empty items.
+    r"""Split a string at `sep` and return a list without any empty items.
 
     >>> to_list('1,2, 3,4 ')
     ['1', '2', '3', '4']

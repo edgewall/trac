@@ -185,8 +185,8 @@ class MaySetOwnerOperationRestrictOwnerFalse(FunctionalTestCaseSetup):
                                                info={'owner': ''})
         self._tester.go_to_ticket(ticket_id)
         tc.find("The ticket will remain with no owner.")
-        tc.find('The owner will be changed from '
-                '<span class="trac-author-none">\(none\)</span>')
+        tc.find(r'The owner will be changed from '
+                r'<span class="trac-author-none">\(none\)</span>')
         tc.find('<input id="action_reassign_reassign_owner"'
                 ' name="action_reassign_reassign_owner" type="text" />')
 
@@ -310,9 +310,9 @@ class MaySetOwnerOperationDefaultRestrictOwnerNone(FunctionalTestCaseSetup):
 
             self._tester.go_to_ticket(ticket_id)
             tc.find("The ticket will remain with no owner.")
-            tc.find('The owner will be changed from '
-                    '<span class="trac-author-none">\(none\)</span>')
-            tc.find('<option selected="selected">\(none\)</option>')
+            tc.find(r'The owner will be changed from '
+                    r'<span class="trac-author-none">\(none\)</span>')
+            tc.find(r'<option selected="selected">\(none\)</option>')
         finally:
             env.config.set('ticket-workflow', 'reassign.operations',
                            reassign_operations)

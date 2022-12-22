@@ -136,7 +136,7 @@ class TracAdminTestCaseBase(unittest.TestCase):
         if '[...]' in expected_result:
             m = re.match('.*'.join(map(re.escape,
                                        expected_result.split('[...]'))) +
-                         '\Z',
+                         r'\Z',
                          output, re.DOTALL)
             self.assertTrue(m, msg)
         else:

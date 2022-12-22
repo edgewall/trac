@@ -58,8 +58,8 @@ EMAIL_LOOKALIKE_PATTERN = (
         # the local part
         r"[a-zA-Z0-9.'+_-]+" '@'
         # the domain name part (RFC:1035)
-        '(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
-        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?'  # TLD
+        r'(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
+        r'[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?'  # TLD
         )
 
 _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)

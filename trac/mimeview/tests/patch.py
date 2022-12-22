@@ -72,7 +72,7 @@ class PatchRendererTestCase(unittest.TestCase):
         """
         Simple regression test for #4027 ("No newline at end of file")
         """
-        result = self.patch.render(self.context, None, """
+        result = self.patch.render(self.context, None, r"""
 --- nonewline   2006-10-27 08:36:48.453125000 +0200
 +++ newline     2006-10-27 08:36:57.187500000 +0200
 @@ -1 +1 @@
@@ -87,7 +87,7 @@ class PatchRendererTestCase(unittest.TestCase):
         """
         Another simple regression test for #4027 ("No newline at end of file")
         """
-        result = self.patch.render(self.context, None, """
+        result = self.patch.render(self.context, None, r"""
 --- newline     2006-10-27 08:36:57.187500000 +0200
 +++ nonewline   2006-10-27 08:36:48.453125000 +0200
 @@ -1 +1 @@

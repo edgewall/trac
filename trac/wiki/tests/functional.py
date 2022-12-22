@@ -14,6 +14,7 @@
 
 import http.client
 import os
+import re
 import unittest
 import urllib.parse
 
@@ -93,10 +94,10 @@ class TestWikiAddAttachment(FunctionalTestCaseSetup):
 
         self._tester.go_to_wiki(name)
         tc.find("Attach another file")
-        tc.find('Attachments[ \n]+<span class="trac-count">\(1\)</span>')
-        tc.find(filename)
-        tc.find('Download all attachments as:\s+<a rel="nofollow" '
-                'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
+        tc.find(r'Attachments[ \n]+<span class="trac-count">\(1\)</span>')
+        tc.find(re.escape(filename))
+        tc.find(r'Download all attachments as:\s+<a rel="nofollow" '
+                r'href="/zip-attachment/wiki/%s/">.zip</a>' % name)
 
 
 _plugin_py = """\
@@ -154,10 +155,10 @@ class TestWikiHistory(FunctionalTestCaseSetup):
         url = self._tester.url
         tc.follow(r"\bHistory\b")
         tc.url('%s/wiki/%s?action=history' % (url, pagename), regexp=False)
-        version_link = ('<td class="version">[ \n]*'
-                        '<a href="/wiki/%(pagename)s\?version=%%(version)s"'
-                        '[ \n]*title="View this version">%%(version)s[ \n]*</a>'
-                        % {'pagename': pagename})
+        version_link = (r'<td class="version">[ \n]*'
+                        r'<a href="/wiki/{pagename}\?version=%(version)s"'
+                        r'[ \n]*title="View this version">'
+                        r'%(version)s[ \n]*</a>').format(pagename=pagename)
         tc.find(version_link % {'version': 1})
         tc.find(version_link % {'version': 2})
         tc.find(r'<th class="comment">Comment</th>')

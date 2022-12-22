@@ -59,8 +59,8 @@ class TestDefaultHandler(FunctionalTestCaseSetup):
 
         try:
             # Project default handler still selected after value is changed.
-            hint = "SearchModule is not a valid IRequestHandler or is not" \
-                   " enabled\."
+            hint = r"SearchModule is not a valid IRequestHandler or is not" \
+                   r" enabled\."
             self._testenv.set_config('trac', 'default_handler',
                                      'SearchModule')
             self._tester.go_to_preferences("User Interface")
@@ -84,7 +84,7 @@ class TestDefaultHandler(FunctionalTestCaseSetup):
         # Set session default handler and navigate to base URL.
         tc.formvalue('userprefs', 'default_handler', 'TimelineModule')
         tc.submit()
-        tc.find("Your preferences have been saved\.")
+        tc.find(r"Your preferences have been saved\.")
         tc.find('<option[^>]+selected="selected"[^>]+TimelineModule')
         self._tester.go_to_front()
         tc.find("<h1>Timeline</h1>")
@@ -93,7 +93,7 @@ class TestDefaultHandler(FunctionalTestCaseSetup):
         self._tester.go_to_preferences("User Interface")
         tc.formvalue('userprefs', 'default_handler', '')
         tc.submit()
-        tc.find("Your preferences have been saved\.")
+        tc.find(r"Your preferences have been saved\.")
         tc.notfind(r'<option[^>]+selected="selected"')
         tc.find("Default: WikiModule")
 

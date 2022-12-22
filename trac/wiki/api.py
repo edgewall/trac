@@ -201,7 +201,7 @@ class IWikiSyntaxProvider(Interface):
         """
 
 def parse_args(args, strict=True):
-    """Utility for parsing macro "content" and splitting them into arguments.
+    r"""Utility for parsing macro "content" and splitting them into arguments.
 
     The content is split along commas, unless they are escaped with a
     backquote (see example below).

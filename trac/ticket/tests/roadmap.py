@@ -385,15 +385,15 @@ class RoadmapTestCase(unittest.TestCase):
         self.assertRegex(req.response_sent.getvalue(), b"""\
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Edgewall Software//NONSGML Trac [\.\w]+//EN
+PRODID:-//Edgewall Software//NONSGML Trac [.\\w]+//EN
 METHOD:PUBLISH
 X-WR-CALNAME:My Project - Roadmap
 X-WR-CALDESC:My example project
 X-WR-TIMEZONE:UTC
 BEGIN:VEVENT
 UID:</trac.cgi/milestone/milestone1@example.org/trac.cgi>
-DTSTAMP:\w+
-DTSTART;VALUE=DATE:\w+
+DTSTAMP:\\w+
+DTSTART;VALUE=DATE:\\w+
 SUMMARY:Milestone milestone1
 URL:http://example.org/trac.cgi/milestone/milestone1
 END:VEVENT

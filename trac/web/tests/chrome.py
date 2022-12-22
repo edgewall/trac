@@ -1105,12 +1105,12 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                 <body>
                 <ul>
                 <li></li>
-                <li><span title="Jul 1, 2007, 12:34:56 PM">\d+ years ago</span></li>
-                <li><span title="Jul 1, 2007, 12:34:56 PM">\d+ years ago</span></li>
-                <li><span title="\d+ years ago">on Jul 1, 2007</span></li>
-                <li><span title="\d+ years ago">on Jul 1, 2007 at 12:34:56 PM</span></li>
-                <li><span title="\d+ years ago">Jul 1, 2007</span></li>
-                <li><span title="\d+ years ago">Jul 1, 2007, 12:34:56 PM</span></li>
+                <li><span title="Jul 1, 2007, 12:34:56 PM">[0-9]+ years ago</span></li>
+                <li><span title="Jul 1, 2007, 12:34:56 PM">[0-9]+ years ago</span></li>
+                <li><span title="[0-9]+ years ago">on Jul 1, 2007</span></li>
+                <li><span title="[0-9]+ years ago">on Jul 1, 2007 at 12:34:56 PM</span></li>
+                <li><span title="[0-9]+ years ago">Jul 1, 2007</span></li>
+                <li><span title="[0-9]+ years ago">Jul 1, 2007, 12:34:56 PM</span></li>
                 </ul>
                 </body>
                 </html>"""), content)
@@ -1121,12 +1121,12 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                 <body>
                 <ul>
                 <li></li>
-                <li><span title="07/01/(20)?07 12:34:56">\d+ years ago</span></li>
-                <li><span title="07/01/(20)?07 12:34:56">\d+ years ago</span></li>
-                <li><span title="\d+ years ago">on 07/01/(20)?07</span></li>
-                <li><span title="\d+ years ago">on 07/01/(20)?07 at 12:34:56</span></li>
-                <li><span title="\d+ years ago">07/01/(20)?07</span></li>
-                <li><span title="\d+ years ago">07/01/(20)?07 12:34:56</span></li>
+                <li><span title="07/01/(20)?07 12:34:56">[0-9]+ years ago</span></li>
+                <li><span title="07/01/(20)?07 12:34:56">[0-9]+ years ago</span></li>
+                <li><span title="[0-9]+ years ago">on 07/01/(20)?07</span></li>
+                <li><span title="[0-9]+ years ago">on 07/01/(20)?07 at 12:34:56</span></li>
+                <li><span title="[0-9]+ years ago">07/01/(20)?07</span></li>
+                <li><span title="[0-9]+ years ago">07/01/(20)?07 12:34:56</span></li>
                 </ul>
                 </body>
                 </html>"""), content)

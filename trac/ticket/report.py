@@ -67,19 +67,20 @@ def _expand_with_space(m):
 
 
 def sql_skeleton(sql):
-    """Strip an SQL query to leave only its toplevel structure.
+    r"""Strip an SQL query to leave only its toplevel structure.
 
     This is probably not 100% robust but should be enough for most
     needs.
 
-    >>> re.sub(r'\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton('''\\n\
-        SELECT a FROM (SELECT x FROM z ORDER BY COALESCE(u, ')/*(')) ORDER \\n\
-          /* SELECT a FROM (SELECT x /* FROM z                             \\n\
-                        ORDER BY */ COALESCE(u, ')X(')) ORDER */           \\n\
-          BY c, (SELECT s FROM f WHERE v in ('ORDER BY', '(\\')')          \\n\
-                 ORDER BY (1), '') -- LIMIT                                \\n\
-         '''))
-    '<9>SELECT<1>a<1>FROM<48>ORDER<164>BY<1>c,<144>'
+    >>> sql = r'''
+    ... SELECT a FROM (SELECT x FROM z ORDER BY COALESCE(u, ')/*(')) ORDER
+    ...   /* SELECT a FROM (SELECT x /* FROM z
+    ...                 ORDER BY */ COALESCE(u, ')X(')) ORDER */
+    ...   BY c, (SELECT s FROM f WHERE v in ('ORDER BY', '(\')')
+    ...          ORDER BY (1), '') -- LIMIT
+    ... '''
+    >>> re.sub(r'\s+', lambda m: '<%d>' % len(m.group(0)), sql_skeleton(sql))
+    '<1>SELECT<1>a<1>FROM<48>ORDER<99>BY<1>c,<86>'
     """
     old = None
     while sql != old:

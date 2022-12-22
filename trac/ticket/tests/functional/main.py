@@ -13,6 +13,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import os
+import re
 import textwrap
 import time
 import unittest
@@ -100,9 +101,9 @@ class TestTicketAddAttachment(FunctionalTestCaseSetup):
 
         self._tester.go_to_ticket(id)
         tc.find("Attach another file")
-        tc.find('Attachments[ \n]+<span class="trac-count">\(1\)</span>')
-        tc.find(filename)
-        tc.find('Download all attachments as:\s+<a rel="nofollow" '
+        tc.find(r'Attachments[ \n]+<span class="trac-count">\(1\)</span>')
+        tc.find(re.escape(filename))
+        tc.find(r'Download all attachments as:\s+<a rel="nofollow" '
                 'href="/zip-attachment/ticket/%s/">.zip</a>' % id)
 
 
@@ -429,7 +430,7 @@ class TestTicketQueryLinksQueryModuleDisabled(FunctionalTestCaseSetup):
                          % ('+' if enable else '-'))
             tc.submit(formname='edit-plugin-trac')
             tc.find("The following component has been %s:"
-                    ".*QueryModule.*\(trac\.ticket\.query\.\*\)"
+                    r".*QueryModule.*\(trac\.ticket\.query\.\*\)"
                     % ("enabled" if enable else "disabled"))
         props = {'cc': 'user1, user2',
                  'component': 'component1',
@@ -503,7 +504,7 @@ class TestTicketCustomFieldTextNoFormat(FunctionalTestCaseSetup):
 
         val = "%s %s" % (random_unique_camel(), random_word())
         self._tester.create_ticket(info={'newfield': val})
-        tc.find('<td headers="h_newfield">\s*%s\s*</td>' % val)
+        tc.find(r'<td headers="h_newfield">\s*%s\s*</td>' % val)
 
 
 class TestTicketCustomFieldTextAreaNoFormat(FunctionalTestCaseSetup):
@@ -520,7 +521,7 @@ class TestTicketCustomFieldTextAreaNoFormat(FunctionalTestCaseSetup):
 
         val = "%s %s" % (random_unique_camel(), random_word())
         self._tester.create_ticket(info={'newfield': val})
-        tc.find('<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % val)
+        tc.find(r'<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % val)
 
 
 class TestTicketCustomFieldTextWikiFormat(FunctionalTestCaseSetup):
@@ -540,8 +541,8 @@ class TestTicketCustomFieldTextWikiFormat(FunctionalTestCaseSetup):
         word2 = random_word()
         val = "%s %s" % (word1, word2)
         self._tester.create_ticket(info={'newfield': val})
-        wiki = '<a [^>]*>%s\??</a> %s' % (word1, word2)
-        tc.find('<td headers="h_newfield">\s*%s\s*</td>' % wiki)
+        wiki = r'<a [^>]*>%s\??</a> %s' % (word1, word2)
+        tc.find(r'<td headers="h_newfield">\s*%s\s*</td>' % wiki)
 
 
 class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTestCaseSetup):
@@ -560,8 +561,8 @@ class TestTicketCustomFieldTextAreaWikiFormat(FunctionalTestCaseSetup):
         word2 = random_word()
         val = "%s %s" % (word1, word2)
         self._tester.create_ticket(info={'newfield': val})
-        wiki = '<p>\s*<a [^>]*>%s\??</a> %s<br />\s*</p>' % (word1, word2)
-        tc.find('<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % wiki)
+        wiki = r'<p>\s*<a [^>]*>%s\??</a> %s<br />\s*</p>' % (word1, word2)
+        tc.find(r'<td colspan="3" headers="h_newfield">\s*%s\s*</td>' % wiki)
 
 
 class TestTicketCustomFieldTextReferenceFormat(FunctionalTestCaseSetup):
@@ -582,9 +583,9 @@ class TestTicketCustomFieldTextReferenceFormat(FunctionalTestCaseSetup):
         word2 = random_word()
         val = "%s %s" % (word1, word2)
         self._tester.create_ticket(info={'newfield': val})
-        query = 'newfield=%s\+%s&amp;status=!closed' % (word1, word2)
-        querylink = '<a href="/query\?%s">%s</a>' % (query, val)
-        tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylink)
+        query = r'newfield=%s\+%s&amp;status=!closed' % (word1, word2)
+        querylink = r'<a href="/query\?%s">%s</a>' % (query, val)
+        tc.find(r'<td headers="h_newfield">\s*%s\s*</td>' % querylink)
 
 
 class TestTicketCustomFieldTextListFormat(FunctionalTestCaseSetup):
@@ -607,10 +608,10 @@ class TestTicketCustomFieldTextListFormat(FunctionalTestCaseSetup):
         self._tester.create_ticket(info={'newfield': val})
         query1 = 'newfield=~%s&amp;status=!closed' % word1
         query2 = 'newfield=~%s&amp;status=!closed' % word2
-        querylink1 = '<a href="/query\?%s">%s</a>' % (query1, word1)
-        querylink2 = '<a href="/query\?%s">%s</a>' % (query2, word2)
+        querylink1 = r'<a href="/query\?%s">%s</a>' % (query1, word1)
+        querylink2 = r'<a href="/query\?%s">%s</a>' % (query2, word2)
         querylinks = '%s %s' % (querylink1, querylink2)
-        tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
+        tc.find(r'<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
 
 
 class RegressionTestTicket10828(FunctionalTestCaseSetup):
@@ -657,11 +658,11 @@ class RegressionTestTicket10828(FunctionalTestCaseSetup):
         query1 = 'newfield=~%s&amp;status=!closed' % word1
         query2 = 'newfield=~%s&amp;status=!closed' % word2
         query3 = 'newfield=~%s&amp;status=!closed' % word3
-        querylink1 = '<a href="/query\?%s">%s</a>' % (query1, word1)
-        querylink2 = '<a href="/query\?%s">%s</a>' % (query2, word2)
-        querylink3 = '<a href="/query\?%s">%s</a>' % (query3, word3)
+        querylink1 = r'<a href="/query\?%s">%s</a>' % (query1, word1)
+        querylink2 = r'<a href="/query\?%s">%s</a>' % (query2, word2)
+        querylink3 = r'<a href="/query\?%s">%s</a>' % (query3, word3)
         querylinks = '%s %s, %s' % (querylink1, querylink2, querylink3)
-        tc.find('<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
+        tc.find(r'<td headers="h_newfield">\s*%s\s*</td>' % querylinks)
 
 
 class TestTicketTimeline(FunctionalTestCaseSetup):
@@ -809,8 +810,8 @@ class TestReportSorting(FunctionalTestCaseSetup):
         """
         tid = (self._tester.create_ticket(),
                self._tester.create_ticket())
-        sort_href_desc = 'href="/report/1\?sort=ticket"'
-        sort_href_asc = 'href="/report/1\?asc=1&amp;sort=ticket"'
+        sort_href_desc = r'href="/report/1\?sort=ticket"'
+        sort_href_asc = r'href="/report/1\?asc=1&amp;sort=ticket"'
         sort_text = r'(?<!New )\bTicket\b'
 
         def find_table_entries(tid):
@@ -828,8 +829,8 @@ class TestReportSorting(FunctionalTestCaseSetup):
         tc.find(sort_href_asc)
         find_table_entries(tuple(reversed(tid)))
         # Sort order preserved when submitting preferences form.
-        sort_href_desc = 'href="/report/1\?sort=summary"'
-        sort_href_asc = 'href="/report/1\?asc=1&amp;sort=summary"'
+        sort_href_desc = r'href="/report/1\?sort=summary"'
+        sort_href_asc = r'href="/report/1\?asc=1&amp;sort=summary"'
         tc.find(sort_href_asc)
         tc.follow(r'\bSummary\b')
         tc.find(sort_href_desc)
@@ -877,9 +878,9 @@ class TestMilestoneAddAttachment(FunctionalTestCaseSetup):
 
         self._tester.go_to_milestone(name)
         tc.find("Attach another file")
-        tc.find('Attachments[ \n]+<span class="trac-count">\(1\)</span>')
-        tc.find(filename)
-        tc.find('Download all attachments as:\s+<a rel="nofollow" '
+        tc.find(r'Attachments[ \n]+<span class="trac-count">\(1\)</span>')
+        tc.find(re.escape(filename))
+        tc.find(r'Download all attachments as:\s+<a rel="nofollow" '
                 'href="/zip-attachment/milestone/%s/">.zip</a>' % name)
 
 
@@ -953,7 +954,7 @@ class TestMilestoneDelete(FunctionalTestCaseSetup):
                 tc.find(retarget_notice)
                 self._tester.go_to_ticket(tid)
                 tc.find('by <span class="trac-author-user">admin</span>,'
-                        '[ \n]+<a .*>\d+ seconds? ago</a>')
+                        r'[ \n]+<a .*>\d+ seconds? ago</a>')
                 if retarget_to is not None:
                     tc.find('<a class="milestone" href="/milestone/%(name)s" '
                             'title="No date set">%(name)s</a>'
@@ -1046,7 +1047,7 @@ class TestMilestoneRename(FunctionalTestCaseSetup):
         tc.find(r"<h1>Milestone %s</h1>" % new_name)
         self._tester.go_to_ticket(tid)
         tc.find('by <span class="trac-author-user">admin</span>,'
-                '[ \n]+<a .*>\d+ seconds? ago</a>')
+                r'[ \n]+<a .*>\d+ seconds? ago</a>')
         tc.find('<a class="milestone" href="/milestone/%(name)s" '
                 'title="No date set">%(name)s</a>' % {'name': new_name})
         find_field_change(name, new_name)
@@ -1554,7 +1555,7 @@ class RegressionTestTicket8247(FunctionalTestCaseSetup):
         tc.go(ticket_url)
         find_field_deleted(name)
         tc.find('by <span class="trac-author-user">admin</span>,'
-                '[ \n]+<a .*>\d+ seconds? ago</a>')
+                r'[ \n]+<a .*>\d+ seconds? ago</a>')
         tc.notfind('</a> ago by anonymous')
 
 
@@ -1695,7 +1696,7 @@ class RegressionTestTicket11028(FunctionalTestCaseSetup):
             # MILESTONE_VIEW is revoked
             self._testenv.revoke_perm('anonymous', 'MILESTONE_VIEW')
             tc.reload()
-            tc.notfind('Milestone: +<em>milestone\d+</em>')
+            tc.notfind(r'Milestone: +<em>milestone\d+</em>')
 
             # Check that roadmap can't be viewed without ROADMAP_VIEW
 

@@ -607,7 +607,7 @@ class TracHTMLSanitizer(object):
     # IE6 <http://openmya.hacker.jp/hasegawa/security/expression.txt>
     #     7) Particular bit of Unicode characters
     _URL_FINDITER = re.compile(
-        '[Uu][Rr\u0280][Ll\u029F]\s*\(([^)]+)').finditer
+        '[Uu][Rr\u0280][Ll\u029F]\\s*\\(([^)]+)').finditer
 
     def sanitize(self, html):
         """Transforms the incoming HTML by removing anything's that deemed

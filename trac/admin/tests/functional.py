@@ -291,7 +291,7 @@ class TestCopyPermissions(FunctionalTestCaseSetup):
         added in https://trac.edgewall.org/ticket/11099."""
         checkbox_value = lambda s, p: '%s:%s' % (unicode_to_base64(s),
                                                  unicode_to_base64(p))
-        grant_msg = "The subject %s has been granted the permission %s\."
+        grant_msg = r"The subject %s has been granted the permission %s\."
         def grant_permission(subject, action):
             tc.formvalue('addperm', 'gp_subject', subject)
             tc.formvalue('addperm', 'action', action)
@@ -312,7 +312,7 @@ class TestCopyPermissions(FunctionalTestCaseSetup):
         tc.formvalue('copyperm', 'cp_target', 'user1')
         tc.submit()
         for perm in anon_perms:
-            tc.find("The subject user1 has been granted the permission %s\."
+            tc.find(r"The subject user1 has been granted the permission %s\."
                     % perm)
             tc.find(checkbox_value('user1', perm))
 
@@ -321,32 +321,32 @@ class TestCopyPermissions(FunctionalTestCaseSetup):
         tc.formvalue('copyperm', 'cp_subject', 'noperms')
         tc.formvalue('copyperm', 'cp_target', 'user1')
         tc.submit()
-        tc.find("The subject noperms does not have any permissions\.")
+        tc.find(r"The subject noperms does not have any permissions\.")
 
         # Subject belongs to group but doesn't directly have any permissions
         grant_permission('group1', 'TICKET_VIEW')
         tc.formvalue('addsubj', 'sg_subject', 'noperms')
         tc.formvalue('addsubj', 'sg_group', 'group1')
         tc.submit()
-        tc.find("The subject noperms has been added to the group group1\.")
+        tc.find(r"The subject noperms has been added to the group group1\.")
 
         tc.formvalue('copyperm', 'cp_subject', 'noperms')
         tc.formvalue('copyperm', 'cp_target', 'user1')
         tc.submit()
-        tc.find("The subject noperms does not have any permissions\.")
+        tc.find(r"The subject noperms does not have any permissions\.")
 
         # Target uses reserved all upper-case form
         tc.formvalue('copyperm', 'cp_subject', 'noperms')
         tc.formvalue('copyperm', 'cp_target', 'USER1')
         tc.submit()
-        tc.find("All upper-cased tokens are reserved for permission names\.")
+        tc.find(r"All upper-cased tokens are reserved for permission names\.")
         self._tester.go_to_admin("Permissions")
 
         # Subject users reserved all upper-case form
         tc.formvalue('copyperm', 'cp_subject', 'USER1')
         tc.formvalue('copyperm', 'cp_target', 'noperms')
         tc.submit()
-        tc.find("All upper-cased tokens are reserved for permission names\.")
+        tc.find(r"All upper-cased tokens are reserved for permission names\.")
         self._tester.go_to_admin("Permissions")
 
         # Target already possess one of the permissions
@@ -360,9 +360,9 @@ class TestCopyPermissions(FunctionalTestCaseSetup):
         tc.submit()
 
         tc.notfind("The subject <em>user2</em> has been granted the "
-                   "permission %s\." % anon_perms[0])
+                   r"permission %s\." % anon_perms[0])
         for perm in anon_perms[1:]:
-            tc.find("The subject user2 has been granted the permission %s\."
+            tc.find(r"The subject user2 has been granted the permission %s\."
                     % perm)
             tc.find(checkbox_value('user2', perm))
 
@@ -410,9 +410,8 @@ class TestCopyPermissions(FunctionalTestCaseSetup):
                                  if perm[0] == 'user3'
                                  and perm[1] != 'TRAC_ADMIN']:
                 tc.find(grant_msg % ('user4', perm))
-            tc.notfind("The permission TRAC_ADMIN was not granted to user4 "
-                       "because users cannot grant permissions they don't "
-                       "possess.")
+            tc.notfind(r"The\s+permission\s+TRAC_ADMIN\s+was\s+not\s+granted"
+                       r"\s+to\s+user4\s+")
         finally:
             self._testenv.revoke_perm('anonymous', 'PERMISSION_GRANT')
             self._tester.login('admin')

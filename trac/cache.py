@@ -115,7 +115,7 @@ class CachedProperty(CachedPropertyBase):
 
 
 def cached(fn_or_attr=None):
-    """Method decorator creating a cached attribute from a data
+    r"""Method decorator creating a cached attribute from a data
     retrieval method.
 
     Accessing the cached attribute gives back the cached value.  The
