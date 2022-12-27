@@ -23,20 +23,22 @@ except ImportError:
 try:
     import passlib
 except ImportError:
+    passlib = None
     has_method_sha256 = crypt and crypt.METHOD_SHA256 in crypt.methods
     has_method_sha512 = crypt and crypt.METHOD_SHA512 in crypt.methods
-    has_method_bcrypt = crypt and crypt.METHOD_BLOWFISH in crypt.methods
 else:
     has_method_sha256 = True
     has_method_sha512 = True
-    has_method_bcrypt = crypt and crypt.METHOD_BLOWFISH in crypt.methods
-    if not has_method_bcrypt:
-        try:
-            import bcrypt
-        except ImportError:
-            pass
-        else:
-            has_method_bcrypt = True
+
+has_method_bcrypt = crypt and hasattr(crypt, 'METHOD_BLOWFISH') and \
+                    crypt.METHOD_BLOWFISH in crypt.methods
+if not has_method_bcrypt and passlib:
+    try:
+        import bcrypt
+    except ImportError:
+        pass
+    else:
+        has_method_bcrypt = True
 
 from trac.core import TracError
 from trac.util.compat import verify_hash
