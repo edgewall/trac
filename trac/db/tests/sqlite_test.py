@@ -18,6 +18,7 @@ import unittest
 from trac.config import ConfigurationError
 from trac.db.api import DatabaseManager
 from trac.db.schema import Column, Index, Table
+from trac.db.sqlite_backend import sqlite_version
 from trac.env import Environment
 from trac.test import EnvironmentStub, MockRequest, get_dburi, rmtree
 from trac.util import translation
@@ -86,6 +87,13 @@ class DatabaseFileTestCase(unittest.TestCase):
 
 class SQLiteConnectionTestCase(unittest.TestCase):
 
+    if sqlite_version < (3, 37, 0):
+        DATATYPE_INTEGER = 'integer'
+        DATATYPE_TEXT = 'text'
+    else:
+        DATATYPE_INTEGER = 'INTEGER'
+        DATATYPE_TEXT = 'TEXT'
+
     def setUp(self):
         self.env = EnvironmentStub()
         self.schema = [
@@ -152,15 +160,15 @@ class SQLiteConnectionTestCase(unittest.TestCase):
 
     def test_remove_simple_keys(self):
         coldef = {
-            'id':       {'column': 'id', 'type': 'integer', 'notnull': 0,
-                         'default': None, 'pk': 1},
-            'username': {'column': 'username', 'type': 'text',
+            'id':       {'column': 'id', 'type': self.DATATYPE_INTEGER,
+                         'notnull': 0, 'default': None, 'pk': 1},
+            'username': {'column': 'username', 'type': self.DATATYPE_TEXT,
                          'notnull': 0, 'default': None, 'pk': 0},
-            'email':    {'column': 'email', 'type': 'text', 'notnull': 0,
-                         'default': None, 'pk': 0},
-            'enabled':  {'column': 'enabled', 'type': 'integer',
+            'email':    {'column': 'email', 'type': self.DATATYPE_TEXT,
                          'notnull': 0, 'default': None, 'pk': 0},
-            'extra':    {'column': 'extra', 'type': 'text',
+            'enabled':  {'column': 'enabled', 'type': self.DATATYPE_INTEGER,
+                         'notnull': 0, 'default': None, 'pk': 0},
+            'extra':    {'column': 'extra', 'type': self.DATATYPE_TEXT,
                          'notnull': 0, 'default': None, 'pk': 0},
         }
         columns_0 = self._table_info('test_simple')
