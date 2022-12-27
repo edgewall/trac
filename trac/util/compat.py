@@ -20,25 +20,25 @@ import subprocess
 import time
 
 
-# Windows doesn't have a crypt module by default.
 try:
-    from crypt import crypt
+    from passlib.context import CryptContext
 except ImportError:
+    # Windows doesn't have a crypt module by default.
     try:
-        from passlib.context import CryptContext
+        from crypt import crypt
     except ImportError:
         verify_hash = None
     else:
         def verify_hash(secret, the_hash):
-            ctx = CryptContext(schemes=['bcrypt', 'sha256_crypt',
-                                        'sha512_crypt', 'des_crypt'])
-            try:
-                return ctx.verify(secret, the_hash)
-            except ValueError:
-                return False
+            return hmac.compare_digest(crypt(secret, the_hash), the_hash)
 else:
     def verify_hash(secret, the_hash):
-        return hmac.compare_digest(crypt(secret, the_hash), the_hash)
+        ctx = CryptContext(schemes=['bcrypt', 'sha256_crypt',
+                                    'sha512_crypt', 'des_crypt'])
+        try:
+            return ctx.verify(secret, the_hash)
+        except ValueError:
+            return False
 
 
 def rpartition(s, sep):

@@ -15,6 +15,29 @@ import base64
 import os
 import tempfile
 
+try:
+    import crypt
+except ImportError:
+    crypt = None
+
+try:
+    import passlib
+except ImportError:
+    has_method_sha256 = crypt and crypt.METHOD_SHA256 in crypt.methods
+    has_method_sha512 = crypt and crypt.METHOD_SHA512 in crypt.methods
+    has_method_bcrypt = crypt and crypt.METHOD_BLOWFISH in crypt.methods
+else:
+    has_method_sha256 = True
+    has_method_sha512 = True
+    has_method_bcrypt = crypt and crypt.METHOD_BLOWFISH in crypt.methods
+    if not has_method_bcrypt:
+        try:
+            import bcrypt
+        except ImportError:
+            pass
+        else:
+            has_method_bcrypt = True
+
 from trac.core import TracError
 from trac.util.compat import verify_hash
 from trac.util.text import unicode_to_base64
@@ -237,18 +260,21 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.assertIsNone(do_auth('colon', 'blah:blah:'))
         self.assertIsNone(do_auth('colon', 'blah:blah:blah'))
 
+    @unittest.skipUnless(has_method_bcrypt, 'bcrypt unavailable')
     def test_bcrypt(self):
         self._write_default_htpasswd()
         auth = BasicAuthentication(self.filename, 'realm')
         self.assertTrue(auth.test('bcrypt', 'bcrypt'))
         self.assertFalse(auth.test('bcrypt', 'other'))
 
+    @unittest.skipUnless(has_method_sha256, 'sha256 hash unavailable')
     def test_sha256(self):
         self._write_default_htpasswd()
         auth = BasicAuthentication(self.filename, 'realm')
         self.assertTrue(auth.test('sha256', 'sha256'))
         self.assertFalse(auth.test('sha256', 'other'))
 
+    @unittest.skipUnless(has_method_sha512, 'sha512 hash unavailable')
     def test_sha512(self):
         self._write_default_htpasswd()
         auth = BasicAuthentication(self.filename, 'realm')
@@ -278,12 +304,15 @@ class BasicAuthenticationTestCase(unittest.TestCase):
         self.assertFalse(auth.test('md5', 'other'))
         self.assertTrue(auth.test('sha', 'sha'))
         self.assertFalse(auth.test('sha', 'other'))
-        self.assertTrue(auth.test('bcrypt', 'bcrypt'))
-        self.assertFalse(auth.test('bcrypt', 'other'))
-        self.assertTrue(auth.test('sha256', 'sha256'))
-        self.assertFalse(auth.test('sha256', 'other'))
-        self.assertTrue(auth.test('sha512', 'sha512'))
-        self.assertFalse(auth.test('sha512', 'other'))
+        if has_method_bcrypt:
+            self.assertTrue(auth.test('bcrypt', 'bcrypt'))
+            self.assertFalse(auth.test('bcrypt', 'other'))
+        if has_method_sha256:
+            self.assertTrue(auth.test('sha256', 'sha256'))
+            self.assertFalse(auth.test('sha256', 'other'))
+        if has_method_sha512:
+            self.assertTrue(auth.test('sha512', 'sha512'))
+            self.assertFalse(auth.test('sha512', 'other'))
         self.assertFalse(auth.test('unknown', 'unknown'))
 
 
