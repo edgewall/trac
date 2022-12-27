@@ -447,7 +447,9 @@ class SQLiteConnection(ConnectionBase, ConnectionWrapper):
             column = row[1]
             type_ = row[2]
             pk = row[5]
-            if pk == 1 and type_ == 'integer':
+            # PRAGMA table_info() returns 'INTEGER' instead of 'integer'
+            # since SQLite 3.37. See https://www.sqlite.org/stricttables.html
+            if pk == 1 and type_.upper() == 'INTEGER':
                 key = [column]
                 auto_increment = True
             else:
