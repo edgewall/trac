@@ -106,8 +106,12 @@ class PygmentsRenderer(Component):
     # IHTMLPreviewRenderer methods
 
     def get_extra_mimetypes(self):
+        # Prefer text/* type in order to prevent wrongly rendering as an image
+        # because Pygments 2.11+ returns text/* and image/* types for *.c
+        # filename.
+        keyfunc = lambda type_: (int(type_.startswith('text/')), type_)
         for _, aliases, _, mimetypes in get_all_lexers():
-            for mimetype in mimetypes:
+            for mimetype in sorted(mimetypes, key=keyfunc):
                 yield mimetype, aliases
 
     def get_quality_ratio(self, mimetype):

@@ -18,7 +18,7 @@ import textwrap
 import unittest
 from pkg_resources import parse_version
 
-from trac.mimeview.api import LineNumberAnnotator, Mimeview
+from trac.mimeview.api import ImageRenderer, LineNumberAnnotator, Mimeview
 from trac.test import EnvironmentStub, MockRequest
 from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
@@ -39,8 +39,8 @@ class PygmentsRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(enable=[Chrome, LineNumberAnnotator,
-                                           PygmentsRenderer])
-        self.pygments = Mimeview(self.env).renderers[0]
+                                           PygmentsRenderer, ImageRenderer])
+        self.pygments = PygmentsRenderer(self.env)
         self.req = MockRequest(self.env)
         self.context = web_context(self.req)
         self.pygments_html = {}
@@ -259,6 +259,20 @@ class PygmentsRendererTestCase(unittest.TestCase):
                        'text/inf; charset=utf-8'))  # Pygment 2.1+
         self.assertEqual('text/x-ini; charset=utf-8',
                          mimeview.get_mimetype('file.text/x-ini'))
+
+    def test_mimetype_for_c(self):
+        """Test for regression of https://trac.edgewall.org/ticket/13483"""
+        filename = 'foo.c'
+        url = 'https://localhost/' + filename
+        content = b'int main() { return 0; }\n'
+        mimeview = Mimeview(self.env)
+        mimetype = mimeview.get_mimetype(filename, content)
+        self.assertEqual('text/x-csrc; charset=utf-8', mimetype)
+        rendered = str(mimeview.render(self.context, mimetype, content,
+                                       filename=filename, url=url))
+        self.assertNotIn('<img ', rendered)
+        self.assertIn('<div class="code"><pre><span class="kt">int</span>',
+                      rendered)
 
 
 def test_suite():
