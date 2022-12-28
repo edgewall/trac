@@ -26,6 +26,7 @@ import os.path
 import socketserver
 import sys
 import tempfile
+import time
 import threading
 from urllib.parse import urljoin
 from urllib.request import HTTPBasicAuthHandler, Request, build_opener, \
@@ -136,8 +137,18 @@ if selenium:
             options.log.level = 'debug'
             log_path = 'geckodriver.log'
             open(log_path, 'w').close()
-            return webdriver.Firefox(options=options,
-                                     service_log_path=log_path)
+
+            n = 1
+            startts = time.time()
+            while time.time() - startts < 60:
+                try:
+                    return webdriver.Firefox(options=options,
+                                             service_log_path=log_path)
+                except TimeoutException:
+                    if n >= 20:
+                        raise
+                    n += 1
+                    time.sleep(3)
 
         def close(self):
             if self.tmpdir:
