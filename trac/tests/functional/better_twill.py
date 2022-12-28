@@ -132,11 +132,11 @@ if selenium:
                 options.set_preference('helpers.private_mime_types_file',
                                        mime_types)
             options.headless = True
-            options.add_argument('--width=1536')
+            options.add_argument('--width=1280')
             options.add_argument('--height=2048')
-            options.log.level = 'debug'
+            options.log.level = 'info'
             log_path = 'geckodriver.log'
-            open(log_path, 'w').close()
+            open(log_path, 'wb').close()
 
             n = 1
             startts = time.time()
