@@ -18,37 +18,21 @@ import getpass
 import sys
 
 try:
-    import crypt
+    import passlib
 except ImportError:
-    crypt = None
-    try:
-        import passlib
-    except ImportError:
-        passlib = None
-else:
     passlib = None
+    try:
+        import crypt
+    except ImportError:
+        crypt = None
+else:
+    crypt = None
 
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.text import printerr
 
 
-if crypt:
-    _crypt_methods = {
-        'sha256': crypt.METHOD_SHA256,
-        'sha512': crypt.METHOD_SHA512,
-        'md5': None,  # use md5crypt
-        'des': crypt.METHOD_CRYPT,
-    }
-    if hasattr(crypt, 'METHOD_BLOWFISH'):
-        _crypt_methods['bcrypt'] = crypt.METHOD_BLOWFISH
-    _hash_methods = sorted(_crypt_methods)
-    from trac.util import salt, md5crypt
-    def hash_password(word, method):
-        if method == 'md5':
-            return md5crypt(word, salt(), '$apr1$')
-        else:
-            return crypt.crypt(word, crypt.mksalt(_crypt_methods[method]))
-elif passlib:
+if passlib:
     from passlib.context import CryptContext
     _crypt_schemes = {
         'sha256': 'sha256_crypt',
@@ -72,6 +56,22 @@ elif passlib:
         else:
             hash_ = _crypt_context.encrypt
         return hash_(word, scheme=scheme)
+elif crypt:
+    _crypt_methods = {
+        'sha256': crypt.METHOD_SHA256,
+        'sha512': crypt.METHOD_SHA512,
+        'md5': None,  # use md5crypt
+        'des': crypt.METHOD_CRYPT,
+    }
+    if hasattr(crypt, 'METHOD_BLOWFISH'):
+        _crypt_methods['bcrypt'] = crypt.METHOD_BLOWFISH
+    _hash_methods = sorted(_crypt_methods)
+    from trac.util import salt, md5crypt
+    def hash_password(word, method):
+        if method == 'md5':
+            return md5crypt(word, salt(), '$apr1$')
+        else:
+            return crypt.crypt(word, crypt.mksalt(_crypt_methods[method]))
 else:
     printerr("The crypt module is not found. Install the passlib package "
              "from PyPI.", newline=True)
