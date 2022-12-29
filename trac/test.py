@@ -528,19 +528,20 @@ def rmtree(path):
         if function not in (os.unlink, os.remove):
             raise
         e = excinfo[1]
-        if isinstance(e, PermissionError):
-            mode = os.stat(path).st_mode
-            os.chmod(path, mode | 0o666)
-            try:
-                function(path)
-            except Exception:
-                # print "%d: %s %o" % (retry, path, os.stat(path).st_mode)
-                if retry > 10:
-                    raise
-                time.sleep(0.1)
-                onerror(function, path, excinfo, retry + 1)
-        else:
+        if not isinstance(e, PermissionError):
             raise
+        mode = os.stat(path).st_mode
+        os.chmod(path, mode | 0o666)
+        try:
+            function(path)
+        except Exception:
+            # print "%d: %s %o" % (retry, path, os.stat(path).st_mode)
+            if retry > 10:
+                raise
+            time.sleep(0.1)
+        else:
+            return
+        onerror(function, path, excinfo, retry + 1)
     if os.name == 'nt' and isinstance(path, bytes):
         # Use unicode characters in order to allow non-ansi characters
         # on Windows.
