@@ -17,7 +17,7 @@ import unittest
 from trac.core import Component, TracValueError, implements
 from trac.prefs.api import IPreferencePanelProvider
 from trac.prefs.web_ui import PreferencesModule
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, MockRequest, makeSuite, mkdtemp
 from trac.util import create_file
 from trac.util.html import Markup
 from trac.web.api import RequestDone
@@ -313,9 +313,9 @@ class PreferencesModuleTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AdvancedPreferencePanelTestCase))
-    suite.addTest(unittest.makeSuite(UserInterfacePreferencePanelTestCase))
-    suite.addTest(unittest.makeSuite(PreferencesModuleTestCase))
+    suite.addTest(makeSuite(AdvancedPreferencePanelTestCase))
+    suite.addTest(makeSuite(UserInterfacePreferencePanelTestCase))
+    suite.addTest(makeSuite(PreferencesModuleTestCase))
     return suite
 
 if __name__ == '__main__':

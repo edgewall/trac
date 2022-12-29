@@ -16,7 +16,7 @@ import unittest
 from trac.admin.web_ui import AdminModule
 from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceExistsError, ResourceNotFound
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.admin import ComponentAdminPanel, MilestoneAdminPanel, \
                               PriorityAdminPanel, ResolutionAdminPanel, \
                               SeverityAdminPanel, TicketTypeAdminPanel, \
@@ -722,13 +722,13 @@ class VersionAdminPanelTestCase(BaseTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ComponentAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(MilestoneAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(PriorityAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(ResolutionAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(SeverityAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(TicketTypeAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(VersionAdminPanelTestCase))
+    suite.addTest(makeSuite(ComponentAdminPanelTestCase))
+    suite.addTest(makeSuite(MilestoneAdminPanelTestCase))
+    suite.addTest(makeSuite(PriorityAdminPanelTestCase))
+    suite.addTest(makeSuite(ResolutionAdminPanelTestCase))
+    suite.addTest(makeSuite(SeverityAdminPanelTestCase))
+    suite.addTest(makeSuite(TicketTypeAdminPanelTestCase))
+    suite.addTest(makeSuite(VersionAdminPanelTestCase))
 
     return suite
 

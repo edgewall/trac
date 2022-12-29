@@ -19,7 +19,7 @@ from trac.admin.api import console_date_format, get_console_locale
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.core import Component, ComponentMeta, TracError, implements
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.util.datefmt import format_date, get_datetime_format_hint, \
                               time_now, to_datetime
 from trac.web.api import IRequestHandler
@@ -1064,9 +1064,9 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SessionDictTestCase))
-    suite.addTest(unittest.makeSuite(SessionTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(SessionDictTestCase))
+    suite.addTest(makeSuite(SessionTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 

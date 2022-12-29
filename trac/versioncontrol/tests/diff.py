@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 import textwrap
 
+from trac.test import makeSuite
 from trac.versioncontrol import diff
 
 import unittest
@@ -257,7 +258,7 @@ class DiffTestCase(unittest.TestCase):
                          'aa<ins>x</ins>b')
 
 def test_suite():
-    return unittest.makeSuite(DiffTestCase)
+    return makeSuite(DiffTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

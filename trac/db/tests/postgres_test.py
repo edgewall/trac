@@ -17,7 +17,7 @@ import unittest
 
 from trac.db.api import DatabaseManager
 from trac.db.schema import Table, Column, Index
-from trac.test import EnvironmentStub, get_dburi
+from trac.test import EnvironmentStub, get_dburi, makeSuite
 try:
     from trac.db.postgres_backend import (PostgreSQLConnector, _version_tuple,
                                           assemble_pg_dsn)
@@ -333,10 +333,10 @@ class PostgresConnectionTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if PostgreSQLConnector:
-        suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest))
-        suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest))
+        suite.addTest(makeSuite(PostgresTableCreationSQLTest))
+        suite.addTest(makeSuite(PostgresTableAlterationSQLTest))
         if get_dburi().startswith('postgres:'):
-            suite.addTest(unittest.makeSuite(PostgresConnectionTestCase))
+            suite.addTest(makeSuite(PostgresConnectionTestCase))
     return suite
 
 

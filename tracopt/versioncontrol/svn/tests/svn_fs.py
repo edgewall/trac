@@ -26,7 +26,8 @@ try:
 except ImportError:
     has_svn = False
 
-from trac.test import EnvironmentStub, MockRequest, TestSetup, mkdtemp
+from trac.test import EnvironmentStub, MockRequest, TestSetup, makeSuite, \
+                      mkdtemp
 from trac.core import TracError
 from trac.mimeview.api import RenderingContext
 from trac.resource import Resource, resource_exists
@@ -1628,16 +1629,16 @@ def test_suite():
             tc = type('SubversionRepository' + test.__name__,
                       (SubversionRepositoryTestCase, test),
                       {'path': REPOS_PATH + scope, 'maxDiff': None})
-            suite.addTest(unittest.makeSuite(
+            suite.addTest(makeSuite(
                 tc, suiteClass=SubversionRepositoryTestSetup))
             tc = type('SvnCachedRepository' + test.__name__,
                       (SvnCachedRepositoryTestCase, test),
                       {'path': REPOS_PATH + scope, 'maxDiff': None})
             for skip in skipped.get(tc.__name__, []):
                 setattr(tc, skip, lambda self: None)  # no skip, so we cheat...
-            suite.addTest(unittest.makeSuite(
+            suite.addTest(makeSuite(
                 tc, suiteClass=SubversionRepositoryTestSetup))
-        suite.addTest(unittest.makeSuite(SubversionConnectorTestCase))
+        suite.addTest(makeSuite(SubversionConnectorTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/svn/tests/svn_fs.py (no svn "
               "bindings)")

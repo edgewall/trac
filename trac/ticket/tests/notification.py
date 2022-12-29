@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 from trac.attachment import Attachment
 from trac.notification.api import NotificationSystem
 from trac.perm import PermissionSystem
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, MockRequest, makeSuite, mkdtemp
 from trac.tests.notification import SMTP_TEST_PORT, SMTPThreadedServer, \
                                     parse_smtp_message
 from trac.ticket.model import Ticket
@@ -1882,11 +1882,11 @@ class BatchTicketNotificationTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RecipientTestCase))
-    suite.addTest(unittest.makeSuite(NotificationTestCase))
-    suite.addTest(unittest.makeSuite(FormatSubjectTestCase))
-    suite.addTest(unittest.makeSuite(AttachmentNotificationTestCase))
-    suite.addTest(unittest.makeSuite(BatchTicketNotificationTestCase))
+    suite.addTest(makeSuite(RecipientTestCase))
+    suite.addTest(makeSuite(NotificationTestCase))
+    suite.addTest(makeSuite(FormatSubjectTestCase))
+    suite.addTest(makeSuite(AttachmentNotificationTestCase))
+    suite.addTest(makeSuite(BatchTicketNotificationTestCase))
     return suite
 
 

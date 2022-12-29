@@ -27,7 +27,7 @@ from trac.attachment import Attachment, AttachmentModule, \
 from trac.core import Component, ComponentMeta, implements, TracError
 from trac.perm import IPermissionPolicy, PermissionCache
 from trac.resource import IResourceManager, Resource, resource_exists
-from trac.test import EnvironmentStub, Mock, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, Mock, MockRequest, makeSuite, mkdtemp
 from trac.util.datefmt import format_datetime, to_utimestamp, utc
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
@@ -767,10 +767,10 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AttachmentTestCase))
-    suite.addTest(unittest.makeSuite(AttachmentModuleTestCase))
-    suite.addTest(unittest.makeSuite(LegacyAttachmentPolicyTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(AttachmentTestCase))
+    suite.addTest(makeSuite(AttachmentModuleTestCase))
+    suite.addTest(makeSuite(LegacyAttachmentPolicyTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 if __name__ == '__main__':

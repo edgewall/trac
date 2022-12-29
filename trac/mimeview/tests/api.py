@@ -17,7 +17,7 @@ import io
 import unittest
 
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.mimeview import api
 from trac.mimeview.api import (IContentConverter, Mimeview, RenderingContext,
                                get_mimetype)
@@ -249,10 +249,10 @@ Some text.
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(api))
-    suite.addTest(unittest.makeSuite(GetMimeTypeTestCase))
-    suite.addTest(unittest.makeSuite(MimeviewTestCase))
-    suite.addTest(unittest.makeSuite(MimeviewConverterTestCase))
-    suite.addTest(unittest.makeSuite(MimeviewRenderTestCase))
+    suite.addTest(makeSuite(GetMimeTypeTestCase))
+    suite.addTest(makeSuite(MimeviewTestCase))
+    suite.addTest(makeSuite(MimeviewConverterTestCase))
+    suite.addTest(makeSuite(MimeviewRenderTestCase))
     return suite
 
 if __name__ == '__main__':

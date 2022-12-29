@@ -17,7 +17,7 @@ import unittest
 from trac.core import Component, TracError, implements
 from trac.perm import IPermissionPolicy
 from trac.resource import Resource
-from trac.test import MockRequest
+from trac.test import MockRequest, makeSuite
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import (
     Changeset, DbRepositoryProvider, IRepositoryConnector, Node,
@@ -520,7 +520,7 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LogModuleTestCase))
+    suite.addTest(makeSuite(LogModuleTestCase))
     return suite
 
 

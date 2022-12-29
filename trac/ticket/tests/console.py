@@ -17,7 +17,7 @@ import trac.ticket.admin
 from trac.admin.api import get_console_locale
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, makeSuite
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import get_datetime_format_hint
 
@@ -954,7 +954,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 

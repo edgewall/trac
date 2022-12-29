@@ -15,7 +15,7 @@ import os
 import unittest
 
 from trac.config import UnicodeConfigParser
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.upgrades import db45
 
 
@@ -75,7 +75,7 @@ class UpgradeTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UpgradeTestCase)
+    return makeSuite(UpgradeTestCase)
 
 
 if __name__ == '__main__':

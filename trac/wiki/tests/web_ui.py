@@ -15,7 +15,7 @@ import re
 import unittest
 
 from trac.perm import DefaultPermissionStore, PermissionCache
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.web.api import HTTPBadRequest, RequestDone
 from trac.web.chrome import Chrome
 from trac.wiki.model import WikiPage
@@ -213,8 +213,8 @@ class WikiModuleTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DefaultWikiPolicyTestCase))
-    suite.addTest(unittest.makeSuite(WikiModuleTestCase))
+    suite.addTest(makeSuite(DefaultWikiPolicyTestCase))
+    suite.addTest(makeSuite(WikiModuleTestCase))
     return suite
 
 

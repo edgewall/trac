@@ -13,6 +13,7 @@
 
 import unittest
 
+from trac.test import makeSuite
 from trac.upgrades import db44
 
 
@@ -30,7 +31,7 @@ class UpgradeTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UpgradeTestCase)
+    return makeSuite(UpgradeTestCase)
 
 
 if __name__ == '__main__':

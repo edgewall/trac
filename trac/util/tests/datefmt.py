@@ -21,7 +21,7 @@ import time
 import unittest
 
 from trac.core import TracError
-from trac.test import locale_en
+from trac.test import locale_en, makeSuite
 from trac.util import datefmt
 
 try:
@@ -2067,24 +2067,24 @@ class LocalTimezoneStrTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
-        suite.addTest(unittest.makeSuite(PytzTestCase))
+        suite.addTest(makeSuite(PytzTestCase))
     else:
         print("SKIP: utils/tests/datefmt.py (no pytz installed)")
-    suite.addTest(unittest.makeSuite(DateFormatTestCase))
-    suite.addTest(unittest.makeSuite(UTimestampTestCase))
-    suite.addTest(unittest.makeSuite(ISO8601TestCase))
+    suite.addTest(makeSuite(DateFormatTestCase))
+    suite.addTest(makeSuite(UTimestampTestCase))
+    suite.addTest(makeSuite(ISO8601TestCase))
     if I18nDateFormatTestCase:
-        suite.addTest(unittest.makeSuite(I18nDateFormatTestCase))
+        suite.addTest(makeSuite(I18nDateFormatTestCase))
     else:
         print("SKIP: utils/tests/datefmt.py (no babel installed)")
-    suite.addTest(unittest.makeSuite(ParseISO8601TestCase))
-    suite.addTest(unittest.makeSuite(ParseDateWithoutBabelTestCase))
-    suite.addTest(unittest.makeSuite(ParseRelativeDateTestCase))
-    suite.addTest(unittest.makeSuite(ParseDateValidRangeTestCase))
-    suite.addTest(unittest.makeSuite(HttpDateTestCase))
+    suite.addTest(makeSuite(ParseISO8601TestCase))
+    suite.addTest(makeSuite(ParseDateWithoutBabelTestCase))
+    suite.addTest(makeSuite(ParseRelativeDateTestCase))
+    suite.addTest(makeSuite(ParseDateValidRangeTestCase))
+    suite.addTest(makeSuite(HttpDateTestCase))
     if hasattr(time, 'tzset'):
-        suite.addTest(unittest.makeSuite(LocalTimezoneTestCase))
-    suite.addTest(unittest.makeSuite(LocalTimezoneStrTestCase))
+        suite.addTest(makeSuite(LocalTimezoneTestCase))
+    suite.addTest(makeSuite(LocalTimezoneStrTestCase))
     return suite
 
 if __name__ == '__main__':

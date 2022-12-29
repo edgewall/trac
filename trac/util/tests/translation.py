@@ -24,7 +24,7 @@ else:
     except ImportError:
         from babel.localedata import list as locale_identifiers
 
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.util import translation
 
 
@@ -73,7 +73,7 @@ class TranslationsProxyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TranslationsProxyTestCase))
+    suite.addTest(makeSuite(TranslationsProxyTestCase))
     return suite
 
 if __name__ == '__main__':

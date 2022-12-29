@@ -31,7 +31,7 @@ from trac.admin.api import IAdminCommandProvider, get_console_locale
 from trac.admin.console import TracAdmin, TracAdminHelpMacro
 from trac.admin.test import TracAdminTestCaseBase
 from trac.core import Component, ComponentMeta, implements
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, makeSuite
 from trac.util.datefmt import get_date_format_hint
 from trac.util.translation import Locale, get_available_locales, has_babel
 from trac.wiki.formatter import MacroError
@@ -220,9 +220,9 @@ class TracAdminHelpMacroTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TracadminTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminNoEnvTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminHelpMacroTestCase))
+    suite.addTest(makeSuite(TracadminTestCase))
+    suite.addTest(makeSuite(TracAdminNoEnvTestCase))
+    suite.addTest(makeSuite(TracAdminHelpMacroTestCase))
     return suite
 
 

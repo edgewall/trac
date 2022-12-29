@@ -21,7 +21,7 @@ from trac.notification.api import (
 )
 from trac.notification.mail import RecipientMatcher
 from trac.notification.model import Subscription
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, makeSuite
 from trac.ticket.model import _fixup_cc_list
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import escape
@@ -659,8 +659,8 @@ class RecipientMatcherTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EmailDistributorTestCase))
-    suite.addTest(unittest.makeSuite(RecipientMatcherTestCase))
+    suite.addTest(makeSuite(EmailDistributorTestCase))
+    suite.addTest(makeSuite(RecipientMatcherTestCase))
     return suite
 
 

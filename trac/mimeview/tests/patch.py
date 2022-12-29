@@ -16,7 +16,7 @@ import unittest
 
 from trac.mimeview.api import Mimeview
 from trac.mimeview.patch import PatchRenderer
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.web.chrome import Chrome, web_context
 
 
@@ -138,7 +138,7 @@ Index: filename.txt
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PatchRendererTestCase))
+    suite.addTest(makeSuite(PatchRendererTestCase))
     return suite
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ import unittest
 from trac.db.api import DatabaseManager, get_column_names
 from trac.db.mysql_backend import MySQLConnector
 from trac.db.schema import Table, Column, Index
-from trac.test import EnvironmentStub, Mock, get_dburi
+from trac.test import EnvironmentStub, Mock, get_dburi, makeSuite
 
 
 class MySQLTableAlterationSQLTest(unittest.TestCase):
@@ -207,9 +207,9 @@ class MySQLConnectionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(MySQLTableAlterationSQLTest))
+    suite.addTest(makeSuite(MySQLTableAlterationSQLTest))
     if get_dburi().startswith('mysql:'):
-        suite.addTest(unittest.makeSuite(MySQLConnectionTestCase))
+        suite.addTest(makeSuite(MySQLConnectionTestCase))
     return suite
 
 

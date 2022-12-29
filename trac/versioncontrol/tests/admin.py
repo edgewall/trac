@@ -14,7 +14,7 @@
 import unittest
 
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.versioncontrol.api import DbRepositoryProvider, IRepositoryConnector
 from trac.versioncontrol.admin import RepositoryAdminPanel
 
@@ -99,8 +99,8 @@ class VersionControlAdminTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RepositoryAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(VersionControlAdminTestCase))
+    suite.addTest(makeSuite(RepositoryAdminPanelTestCase))
+    suite.addTest(makeSuite(VersionControlAdminTestCase))
     return suite
 
 

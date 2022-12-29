@@ -16,7 +16,7 @@ import unittest
 from trac.notification.model import Subscription
 from trac.notification.prefs import NotificationPreferences
 from trac.prefs.web_ui import PreferencesModule
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.web.api import RequestDone
 
 
@@ -260,7 +260,7 @@ class NotificationPreferencesTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(NotificationPreferencesTestCase))
+    suite.addTest(makeSuite(NotificationPreferencesTestCase))
     return suite
 
 

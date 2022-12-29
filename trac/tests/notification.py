@@ -31,7 +31,7 @@ from email.header import decode_header as _email_decode_header
 
 from trac.config import ConfigurationError
 from trac.notification import SendmailEmailSender, SmtpEmailSender
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, makeSuite
 
 LF = '\n'
 CR = '\r'
@@ -476,8 +476,8 @@ class SmtpEmailSenderTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SendmailEmailSenderTestCase))
-    suite.addTest(unittest.makeSuite(SmtpEmailSenderTestCase))
+    suite.addTest(makeSuite(SendmailEmailSenderTestCase))
+    suite.addTest(makeSuite(SmtpEmailSenderTestCase))
     return suite
 
 

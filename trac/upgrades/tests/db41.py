@@ -14,7 +14,7 @@
 import os
 import unittest
 
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.upgrades import db41
 
 VERSION = 41
@@ -80,7 +80,7 @@ class UpgradeTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UpgradeTestCase)
+    return makeSuite(UpgradeTestCase)
 
 
 if __name__ == '__main__':

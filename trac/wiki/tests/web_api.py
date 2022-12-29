@@ -14,7 +14,7 @@ import textwrap
 import unittest
 
 from trac.mimeview.patch import PatchRenderer
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.web.api import RequestDone
 from trac.wiki.web_api import WikiRenderer
 
@@ -51,7 +51,7 @@ class WikiRendererTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(WikiRendererTestCase)
+    return makeSuite(WikiRendererTestCase)
 
 
 if __name__ == '__main__':

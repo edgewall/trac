@@ -16,7 +16,7 @@ import unittest
 
 from trac import resource
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.util.html import tag
 from trac.web.chrome import web_context
 
@@ -115,8 +115,8 @@ class RenderResourceLinkTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(resource))
-    suite.addTest(unittest.makeSuite(ResourceTestCase))
-    suite.addTest(unittest.makeSuite(RenderResourceLinkTestCase))
+    suite.addTest(makeSuite(ResourceTestCase))
+    suite.addTest(makeSuite(RenderResourceLinkTestCase))
     return suite
 
 if __name__ == '__main__':

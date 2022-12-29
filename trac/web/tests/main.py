@@ -23,7 +23,7 @@ from trac.core import Component, TracError, implements
 from trac.db.api import DatabaseManager
 from trac.perm import PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, MockRequest, makeSuite, mkdtemp
 from trac.util import create_file
 from trac.web.api import (HTTPForbidden, HTTPInternalServerError,
     HTTPNotFound, IRequestFilter, IRequestHandler, RequestDone)
@@ -942,15 +942,15 @@ class SendErrorUseChunkedEncodingTestCase(SendErrorTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthenticateTestCase))
-    suite.addTest(unittest.makeSuite(EnvironmentsTestCase))
-    suite.addTest(unittest.makeSuite(PreProcessRequestTestCase))
-    suite.addTest(unittest.makeSuite(ProcessRequestTestCase))
-    suite.addTest(unittest.makeSuite(PostProcessRequestTestCase))
-    suite.addTest(unittest.makeSuite(RequestDispatcherTestCase))
-    suite.addTest(unittest.makeSuite(HdfdumpTestCase))
-    suite.addTest(unittest.makeSuite(SendErrorTestCase))
-    suite.addTest(unittest.makeSuite(SendErrorUseChunkedEncodingTestCase))
+    suite.addTest(makeSuite(AuthenticateTestCase))
+    suite.addTest(makeSuite(EnvironmentsTestCase))
+    suite.addTest(makeSuite(PreProcessRequestTestCase))
+    suite.addTest(makeSuite(ProcessRequestTestCase))
+    suite.addTest(makeSuite(PostProcessRequestTestCase))
+    suite.addTest(makeSuite(RequestDispatcherTestCase))
+    suite.addTest(makeSuite(HdfdumpTestCase))
+    suite.addTest(makeSuite(SendErrorTestCase))
+    suite.addTest(makeSuite(SendErrorUseChunkedEncodingTestCase))
     return suite
 
 

@@ -18,7 +18,7 @@ import unittest
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource, ResourceNotFound
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.api import (ITicketActionController, ITicketManipulator,
                              TicketSystem)
 from trac.ticket.model import Milestone, Ticket, Version
@@ -1399,9 +1399,9 @@ class DefaultTicketPolicyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TicketModuleTestCase))
-    suite.addTest(unittest.makeSuite(CustomFieldMaxSizeTestCase))
-    suite.addTest(unittest.makeSuite(DefaultTicketPolicyTestCase))
+    suite.addTest(makeSuite(TicketModuleTestCase))
+    suite.addTest(makeSuite(CustomFieldMaxSizeTestCase))
+    suite.addTest(makeSuite(DefaultTicketPolicyTestCase))
     return suite
 
 

@@ -16,7 +16,7 @@ import unittest
 
 from trac.db.api import DatabaseManager
 from trac.db.schema import Column, Index, Table
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.upgrades import db42
 from trac.util.datefmt import datetime_now, to_utimestamp, utc
 
@@ -125,7 +125,7 @@ class UpgradeTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UpgradeTestCase)
+    return makeSuite(UpgradeTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

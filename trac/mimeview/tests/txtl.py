@@ -14,7 +14,7 @@ import textwrap
 import unittest
 from xml.etree import ElementTree
 
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.mimeview.txtl import TextileRenderer, has_textile
 from trac.util.html import Markup
 from trac.web.chrome import web_context
@@ -97,7 +97,7 @@ class TextileRendererTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if has_textile:
-        suite.addTest(unittest.makeSuite(TextileRendererTestCase))
+        suite.addTest(makeSuite(TextileRendererTestCase))
     else:
         print('SKIP: mimeview/tests/txtl (no textile installed)')
     return suite

@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.mimeview.rst import ReStructuredTextRenderer, has_docutils
 from trac.web.chrome import web_context
 
@@ -102,7 +102,7 @@ class ReStructuredTextRendererTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if has_docutils:
-        suite.addTest(unittest.makeSuite(ReStructuredTextRendererTestCase))
+        suite.addTest(makeSuite(ReStructuredTextRendererTestCase))
     else:
         print('SKIP: mimeview/tests/rst (no docutils installed)')
     return suite

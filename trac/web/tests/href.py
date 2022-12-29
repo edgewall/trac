@@ -15,6 +15,7 @@
 import doctest
 import unittest
 
+from trac.test import makeSuite
 from trac.util.text import jinja2template
 import trac.web.href
 
@@ -141,7 +142,7 @@ class HrefTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.web.href))
-    suite.addTest(unittest.makeSuite(HrefTestCase))
+    suite.addTest(makeSuite(HrefTestCase))
     return suite
 
 if __name__ == '__main__':

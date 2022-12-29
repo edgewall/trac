@@ -19,7 +19,7 @@ from datetime import datetime
 
 from trac.core import TracError
 from trac.resource import Resource, get_resource_description, get_resource_url
-from trac.test import EnvironmentStub, Mock, MockRequest
+from trac.test import EnvironmentStub, Mock, MockRequest, makeSuite
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     EmptyChangeset, Node, Repository, \
@@ -265,10 +265,10 @@ class RepositoryManagerTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ApiTestCase))
-    suite.addTest(unittest.makeSuite(ResourceManagerTestCase))
-    suite.addTest(unittest.makeSuite(DbRepositoryProviderTestCase))
-    suite.addTest(unittest.makeSuite(RepositoryManagerTestCase))
+    suite.addTest(makeSuite(ApiTestCase))
+    suite.addTest(makeSuite(ResourceManagerTestCase))
+    suite.addTest(makeSuite(DbRepositoryProviderTestCase))
+    suite.addTest(makeSuite(RepositoryManagerTestCase))
     return suite
 
 

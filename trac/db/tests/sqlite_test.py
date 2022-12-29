@@ -21,7 +21,8 @@ from trac.db.api import DatabaseManager
 from trac.db.schema import Column, Index, Table
 from trac.db.sqlite_backend import sqlite_version
 from trac.env import Environment
-from trac.test import EnvironmentStub, MockRequest, get_dburi, mkdtemp, rmtree
+from trac.test import EnvironmentStub, MockRequest, get_dburi, makeSuite, \
+                      mkdtemp, rmtree
 from trac.util import translation
 
 
@@ -257,9 +258,9 @@ class SQLiteConnectionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DatabaseFileTestCase))
+    suite.addTest(makeSuite(DatabaseFileTestCase))
     if get_dburi().startswith('sqlite:'):
-        suite.addTest(unittest.makeSuite(SQLiteConnectionTestCase))
+        suite.addTest(makeSuite(SQLiteConnectionTestCase))
     return suite
 
 

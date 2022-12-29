@@ -20,7 +20,7 @@ from trac.admin.web_ui import AdminModule, PermissionAdminPanel, \
 from trac.core import Component, TracError
 from trac.perm import PermissionError, PermissionSystem
 from trac.loader import load_components
-from trac.test import EnvironmentStub, MockRequest, mkdtemp
+from trac.test import EnvironmentStub, MockRequest, makeSuite, mkdtemp
 from trac.util import create_file
 from trac.web.api import RequestDone
 
@@ -398,9 +398,9 @@ class LoggingAdminPanelTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PermissionAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(PluginAdminPanelTestCase))
-    suite.addTest(unittest.makeSuite(LoggingAdminPanelTestCase))
+    suite.addTest(makeSuite(PermissionAdminPanelTestCase))
+    suite.addTest(makeSuite(PluginAdminPanelTestCase))
+    suite.addTest(makeSuite(LoggingAdminPanelTestCase))
     return suite
 
 

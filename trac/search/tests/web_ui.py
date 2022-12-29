@@ -16,7 +16,7 @@ import pkg_resources
 import unittest
 
 from trac.search.web_ui import SearchModule
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.model import Ticket
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
@@ -151,7 +151,7 @@ class SearchModuleTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SearchModuleTestCase))
+    suite.addTest(makeSuite(SearchModuleTestCase))
     return suite
 
 

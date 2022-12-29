@@ -21,7 +21,7 @@ from trac.db.api import DatabaseManager, get_column_names, \
 from trac.db_default import (schema as default_schema,
                              db_version as default_db_version)
 from trac.db.schema import Column, Table
-from trac.test import EnvironmentStub, get_dburi
+from trac.test import EnvironmentStub, get_dburi, makeSuite
 
 
 class ParseConnectionStringTestCase(unittest.TestCase):
@@ -608,11 +608,11 @@ class ModifyTableTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase))
-    suite.addTest(unittest.makeSuite(StringsTestCase))
-    suite.addTest(unittest.makeSuite(ConnectionTestCase))
-    suite.addTest(unittest.makeSuite(DatabaseManagerTestCase))
-    suite.addTest(unittest.makeSuite(ModifyTableTestCase))
+    suite.addTest(makeSuite(ParseConnectionStringTestCase))
+    suite.addTest(makeSuite(StringsTestCase))
+    suite.addTest(makeSuite(ConnectionTestCase))
+    suite.addTest(makeSuite(DatabaseManagerTestCase))
+    suite.addTest(makeSuite(ModifyTableTestCase))
     return suite
 
 

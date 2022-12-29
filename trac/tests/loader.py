@@ -21,7 +21,7 @@ import unittest
 
 from trac import loader
 from trac.core import ComponentMeta
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.util import create_file
 from trac.util.compat import close_fds
 
@@ -178,7 +178,7 @@ class RegressionTestRev6017Macro(WikiMacroBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LoadComponentsTestCase))
+    suite.addTest(makeSuite(LoadComponentsTestCase))
     return suite
 
 

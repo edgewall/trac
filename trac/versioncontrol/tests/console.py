@@ -18,7 +18,7 @@ import trac.versioncontrol.admin
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, makeSuite
 from trac.util.datefmt import utc
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     IRepositoryConnector, NoSuchChangeset, \
@@ -107,7 +107,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 

@@ -15,7 +15,7 @@ import unittest
 from datetime import datetime
 
 from trac.notification.model import Subscription
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.util.datefmt import to_utimestamp, utc
 
 
@@ -273,7 +273,7 @@ class SubscriptionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SubscriptionTestCase))
+    suite.addTest(makeSuite(SubscriptionTestCase))
     return suite
 
 

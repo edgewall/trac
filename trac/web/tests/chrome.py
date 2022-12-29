@@ -23,7 +23,7 @@ from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
 from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.test import EnvironmentStub, MockPerm, MockRequest, locale_en, \
-                      mkdtemp
+                      makeSuite, mkdtemp
 from trac.tests.contentgen import random_sentence
 from trac.resource import Resource
 from trac.util import create_file
@@ -1168,13 +1168,13 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ChromeTestCase))
-    suite.addTest(unittest.makeSuite(ChromeTestCase2))
-    suite.addTest(unittest.makeSuite(NavigationContributorTestCase))
-    suite.addTest(unittest.makeSuite(NavigationCustomizationTestCase))
-    suite.addTest(unittest.makeSuite(FormatAuthorTestCase))
-    suite.addTest(unittest.makeSuite(AuthorInfoTestCase))
-    suite.addTest(unittest.makeSuite(ChromeTemplateRenderingTestCase))
+    suite.addTest(makeSuite(ChromeTestCase))
+    suite.addTest(makeSuite(ChromeTestCase2))
+    suite.addTest(makeSuite(NavigationContributorTestCase))
+    suite.addTest(makeSuite(NavigationCustomizationTestCase))
+    suite.addTest(makeSuite(FormatAuthorTestCase))
+    suite.addTest(makeSuite(AuthorInfoTestCase))
+    suite.addTest(makeSuite(ChromeTemplateRenderingTestCase))
     return suite
 
 

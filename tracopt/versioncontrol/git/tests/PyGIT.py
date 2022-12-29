@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from trac.test import EnvironmentStub, mkdtemp, rmtree
+from trac.test import EnvironmentStub, makeSuite, mkdtemp, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import Changeset, DbRepositoryProvider, \
                                     RepositoryManager
@@ -632,14 +632,14 @@ class SizedDictTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if GitCommandMixin.git_bin:
-        suite.addTest(unittest.makeSuite(GitTestCase))
-        suite.addTest(unittest.makeSuite(TestParseCommit))
-        suite.addTest(unittest.makeSuite(NormalTestCase))
-        suite.addTest(unittest.makeSuite(UnicodeNameTestCase))
+        suite.addTest(makeSuite(GitTestCase))
+        suite.addTest(makeSuite(TestParseCommit))
+        suite.addTest(makeSuite(NormalTestCase))
+        suite.addTest(makeSuite(UnicodeNameTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")
-    suite.addTest(unittest.makeSuite(SizedDictTestCase))
+    suite.addTest(makeSuite(SizedDictTestCase))
     return suite
 
 

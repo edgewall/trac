@@ -14,7 +14,7 @@
 import unittest
 
 from trac.core import TracError
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 
 
@@ -32,7 +32,7 @@ class ChangesetModuleTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ChangesetModuleTestCase))
+    suite.addTest(makeSuite(ChangesetModuleTestCase))
     return suite
 
 

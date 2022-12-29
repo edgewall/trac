@@ -21,7 +21,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket.query import QueryModule
 from trac.ticket.report import Report, ReportModule
 from trac.timeline.web_ui import TimelineModule
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import time_now, to_utimestamp, utc
 from trac.web.api import HTTPBadRequest, RequestDone
@@ -961,10 +961,10 @@ class NavContribReportModuleDisabledTestCase(NavigationContributorTestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
-    suite.addTest(unittest.makeSuite(ReportModuleTestCase))
-    suite.addTest(unittest.makeSuite(ExecuteReportTestCase))
-    suite.addTest(unittest.makeSuite(NavContribReportModuleEnabledTestCase))
-    suite.addTest(unittest.makeSuite(NavContribReportModuleDisabledTestCase))
+    suite.addTest(makeSuite(ReportModuleTestCase))
+    suite.addTest(makeSuite(ExecuteReportTestCase))
+    suite.addTest(makeSuite(NavContribReportModuleEnabledTestCase))
+    suite.addTest(makeSuite(NavContribReportModuleDisabledTestCase))
     return suite
 
 if __name__ == '__main__':

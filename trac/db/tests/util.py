@@ -14,6 +14,7 @@
 import unittest
 
 from trac.db.util import sql_escape_percent
+from trac.test import makeSuite
 
 # TODO: test IterableCursor, ConnectionWrapper
 
@@ -65,7 +66,7 @@ class SQLEscapeTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SQLEscapeTestCase))
+    suite.addTest(makeSuite(SQLEscapeTestCase))
     return suite
 
 if __name__ == '__main__':

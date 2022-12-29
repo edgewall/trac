@@ -19,7 +19,7 @@ from trac import core
 from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import Resource, ResourceExistsError, ResourceNotFound
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.ticket.api import (
     IMilestoneChangeListener, ITicketChangeListener, TicketSystem
 )
@@ -1841,14 +1841,14 @@ class VersionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TicketTestCase))
-    suite.addTest(unittest.makeSuite(TicketCommentEditTestCase))
-    suite.addTest(unittest.makeSuite(TicketCommentDeleteTestCase))
-    suite.addTest(unittest.makeSuite(EnumTestCase))
-    suite.addTest(unittest.makeSuite(MilestoneTestCase))
-    suite.addTest(unittest.makeSuite(ComponentTestCase))
-    suite.addTest(unittest.makeSuite(ReportTestCase))
-    suite.addTest(unittest.makeSuite(VersionTestCase))
+    suite.addTest(makeSuite(TicketTestCase))
+    suite.addTest(makeSuite(TicketCommentEditTestCase))
+    suite.addTest(makeSuite(TicketCommentDeleteTestCase))
+    suite.addTest(makeSuite(EnumTestCase))
+    suite.addTest(makeSuite(MilestoneTestCase))
+    suite.addTest(makeSuite(ComponentTestCase))
+    suite.addTest(makeSuite(ReportTestCase))
+    suite.addTest(makeSuite(VersionTestCase))
     return suite
 
 if __name__ == '__main__':

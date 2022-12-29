@@ -16,7 +16,7 @@ import unittest
 from trac.core import ComponentManager
 from trac.perm import PermissionSystem
 from trac.resource import Resource, ResourceNotFound, render_resource_link
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.roadmap import (
     DefaultTicketGroupStatsProvider, Milestone, MilestoneModule,
     RoadmapModule, TicketGroupStats, get_tickets_for_all_milestones,
@@ -453,12 +453,12 @@ def in_tlist(ticket, list):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TicketGroupStatsTestCase))
-    suite.addTest(unittest.makeSuite(DefaultTicketGroupStatsProviderTestCase))
-    suite.addTest(unittest.makeSuite(MilestoneModuleTestCase))
-    suite.addTest(unittest.makeSuite(MilestoneModulePermissionsTestCase))
-    suite.addTest(unittest.makeSuite(RoadmapTestCase))
-    suite.addTest(unittest.makeSuite(ResourceTestCase))
+    suite.addTest(makeSuite(TicketGroupStatsTestCase))
+    suite.addTest(makeSuite(DefaultTicketGroupStatsProviderTestCase))
+    suite.addTest(makeSuite(MilestoneModuleTestCase))
+    suite.addTest(makeSuite(MilestoneModulePermissionsTestCase))
+    suite.addTest(makeSuite(RoadmapTestCase))
+    suite.addTest(makeSuite(ResourceTestCase))
     return suite
 
 

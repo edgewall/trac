@@ -24,7 +24,8 @@ from trac.admin.test import TracAdminTestCaseBase
 from trac.config import *
 from trac.config import UnicodeConfigParser
 from trac.core import Component, ComponentMeta, Interface, implements
-from trac.test import Configuration, EnvironmentStub, mkdtemp, rmtree
+from trac.test import Configuration, EnvironmentStub, makeSuite, mkdtemp, \
+                      rmtree
 from trac.util import create_file, read_file
 from trac.util.compat import wait_for_file_mtime_change
 from trac.util.datefmt import time_now
@@ -1469,18 +1470,18 @@ class TracAdminComponentTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(UnicodeParserTestCase))
-    suite.addTest(unittest.makeSuite(ConfigurationTestCase))
-    suite.addTest(unittest.makeSuite(IntegrationTestCase))
+    suite.addTest(makeSuite(UnicodeParserTestCase))
+    suite.addTest(makeSuite(ConfigurationTestCase))
+    suite.addTest(makeSuite(IntegrationTestCase))
     if __name__ == 'trac.tests.config':
-        suite.addTest(unittest.makeSuite(ConfigurationSetDefaultsTestCase))
+        suite.addTest(makeSuite(ConfigurationSetDefaultsTestCase))
     else:
         print("SKIP: trac.tests.config.ConfigurationSetDefaultsTestCase "
               "(__name__ is not trac.tests.config)")
-    suite.addTest(unittest.makeSuite(OptionDocTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(OptionDocTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     if __name__ == 'trac.tests.config':
-        suite.addTest(unittest.makeSuite(TracAdminComponentTestCase))
+        suite.addTest(makeSuite(TracAdminComponentTestCase))
     else:
         print("SKIP: trac.tests.config.TracAdminComponentTestCase "
               "(__name__ is not trac.tests.config)")

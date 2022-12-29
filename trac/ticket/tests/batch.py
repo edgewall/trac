@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 from trac.core import Component, implements
 from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore, \
                       PermissionSystem
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket import api, default_workflow, model, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.test import insert_ticket
@@ -782,8 +782,8 @@ class BatchModifyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ChangeListTestCase))
-    suite.addTest(unittest.makeSuite(BatchModifyTestCase))
+    suite.addTest(makeSuite(ChangeListTestCase))
+    suite.addTest(makeSuite(BatchModifyTestCase))
     return suite
 
 

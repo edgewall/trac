@@ -17,6 +17,7 @@ import sys
 import unittest
 
 from trac.core import TracError
+from trac.test import makeSuite
 from trac.util import html
 from trac.util.html import (
     Element, FormTokenInjector, Fragment, Markup, TracHTMLSanitizer,
@@ -561,16 +562,16 @@ class ToFragmentTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(html))
-    suite.addTest(unittest.makeSuite(EscapeFragmentTestCase))
-    suite.addTest(unittest.makeSuite(HtmlAttributeTestCase))
-    suite.addTest(unittest.makeSuite(FragmentTestCase))
-    suite.addTest(unittest.makeSuite(XMLElementTestCase))
-    suite.addTest(unittest.makeSuite(ElementTestCase))
-    suite.addTest(unittest.makeSuite(FormTokenInjectorTestCase))
-    suite.addTest(unittest.makeSuite(TracHTMLSanitizerTestCase))
-    suite.addTest(unittest.makeSuite(FindElementTestCase))
-    suite.addTest(unittest.makeSuite(IsSafeOriginTestCase))
-    suite.addTest(unittest.makeSuite(ToFragmentTestCase))
+    suite.addTest(makeSuite(EscapeFragmentTestCase))
+    suite.addTest(makeSuite(HtmlAttributeTestCase))
+    suite.addTest(makeSuite(FragmentTestCase))
+    suite.addTest(makeSuite(XMLElementTestCase))
+    suite.addTest(makeSuite(ElementTestCase))
+    suite.addTest(makeSuite(FormTokenInjectorTestCase))
+    suite.addTest(makeSuite(TracHTMLSanitizerTestCase))
+    suite.addTest(makeSuite(FindElementTestCase))
+    suite.addTest(makeSuite(IsSafeOriginTestCase))
+    suite.addTest(makeSuite(ToFragmentTestCase))
     return suite
 
 

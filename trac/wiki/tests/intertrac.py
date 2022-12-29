@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.util.html import Markup
 from trac.web.api import RequestDone
 from trac.wiki.intertrac import InterTracDispatcher
@@ -69,7 +69,7 @@ class InterTracDispatcherTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(InterTracDispatcherTestCase)
+    return makeSuite(InterTracDispatcherTestCase)
 
 
 if __name__ == '__main__':

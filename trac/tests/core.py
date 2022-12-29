@@ -16,6 +16,7 @@
 
 from trac.core import *
 from trac.core import ComponentManager
+from trac.test import makeSuite
 
 import unittest
 
@@ -364,8 +365,8 @@ class ComponentTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TracErrorTestCase))
-    suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(makeSuite(TracErrorTestCase))
+    suite.addTest(makeSuite(ComponentTestCase))
     return suite
 
 

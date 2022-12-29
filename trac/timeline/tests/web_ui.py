@@ -17,7 +17,7 @@ from xml.dom import minidom
 
 from trac.core import Component, ComponentMeta, implements
 from trac.perm import PermissionError, PermissionSystem
-from trac.test import EnvironmentStub, Mock, MockRequest, locale_en
+from trac.test import EnvironmentStub, Mock, MockRequest, locale_en, makeSuite
 from trac.timeline.api import ITimelineEventProvider
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
@@ -320,10 +320,10 @@ class TimelineEventProviderTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(PrettyDateinfoTestCase))
-    suite.addTest(unittest.makeSuite(TimelinePermissionsTestCase))
-    suite.addTest(unittest.makeSuite(TimelineModuleTestCase))
-    suite.addTest(unittest.makeSuite(TimelineEventProviderTestCase))
+    suite.addTest(makeSuite(PrettyDateinfoTestCase))
+    suite.addTest(makeSuite(TimelinePermissionsTestCase))
+    suite.addTest(makeSuite(TimelineModuleTestCase))
+    suite.addTest(makeSuite(TimelineEventProviderTestCase))
     return suite
 
 if __name__ == '__main__':

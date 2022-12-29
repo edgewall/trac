@@ -15,7 +15,7 @@ from datetime import timedelta
 
 from trac.perm import PermissionCache, PermissionSystem
 from trac.resource import Resource
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket import model
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Ticket, Version
@@ -504,7 +504,7 @@ class TicketSystemTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(TicketSystemTestCase)
+    return makeSuite(TicketSystemTestCase)
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ import unittest
 from trac.attachment import Attachment
 from trac.core import *
 from trac.resource import Resource
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
@@ -345,7 +345,7 @@ class WikiPageTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(WikiPageTestCase)
+    return makeSuite(WikiPageTestCase)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 
 import unittest
 
-from trac.test import Mock
+from trac.test import Mock, makeSuite
 from trac.versioncontrol.api import EmptyChangeset, NoSuchChangeset
 from trac.versioncontrol.web_ui import util
 
@@ -36,7 +36,7 @@ class UtilTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(UtilTestCase))
+    suite.addTest(makeSuite(UtilTestCase))
     return suite
 
 

@@ -19,7 +19,7 @@ import unittest
 from trac.admin.api import console_datetime_format
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
-from trac.test import EnvironmentStub, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp
 from trac.tests.contentgen import random_unique_camel, random_paragraph
 from trac.util import create_file
 from trac.util.datefmt import format_datetime
@@ -603,8 +603,8 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(WikiAdminTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(WikiAdminTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 

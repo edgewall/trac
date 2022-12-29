@@ -13,13 +13,15 @@
 
 import unittest
 
+from trac.test import makeSuite
+
 
 class CGIRequestTestCase(unittest.TestCase):
     pass
 
 
 def test_suite():
-    return unittest.makeSuite(CGIRequestTestCase)
+    return makeSuite(CGIRequestTestCase)
 
 
 if __name__ == '__main__':

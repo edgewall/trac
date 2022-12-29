@@ -18,7 +18,7 @@ import unittest
 
 from trac.config import ConfigurationError
 from trac.perm import PermissionSystem
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket.api import TicketSystem
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
@@ -789,12 +789,12 @@ class SetResolutionAttributeTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ConfigurableTicketWorkflowTestCase))
-    suite.addTest(unittest.makeSuite(ResetActionTestCase))
-    suite.addTest(unittest.makeSuite(SetOwnerAttributeTestCase))
-    suite.addTest(unittest.makeSuite(SetOwnerToSelfAttributeTestCase))
-    suite.addTest(unittest.makeSuite(RestrictOwnerTestCase))
-    suite.addTest(unittest.makeSuite(SetResolutionAttributeTestCase))
+    suite.addTest(makeSuite(ConfigurableTicketWorkflowTestCase))
+    suite.addTest(makeSuite(ResetActionTestCase))
+    suite.addTest(makeSuite(SetOwnerAttributeTestCase))
+    suite.addTest(makeSuite(SetOwnerToSelfAttributeTestCase))
+    suite.addTest(makeSuite(RestrictOwnerTestCase))
+    suite.addTest(makeSuite(SetResolutionAttributeTestCase))
     return suite
 
 

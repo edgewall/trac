@@ -20,7 +20,7 @@ from datetime import datetime
 from trac.core import Component, TracError, implements
 from trac.perm import PermissionError
 from trac.resource import ResourceNotFound
-from trac.test import Mock, MockRequest
+from trac.test import Mock, MockRequest, makeSuite
 from trac.util.datefmt import utc
 from trac.util.text import to_utf8
 from trac.versioncontrol.api import (
@@ -452,7 +452,7 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(BrowserModulePermissionsTestCase))
+    suite.addTest(makeSuite(BrowserModulePermissionsTestCase))
     return suite
 
 

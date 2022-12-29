@@ -14,7 +14,7 @@ import textwrap
 import unittest
 from datetime import datetime
 
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, makeSuite
 from trac.tests.contentgen import random_sentence
 from trac.ticket.test import insert_ticket
 from trac.util.datefmt import utc
@@ -161,7 +161,7 @@ MACRO_NEWTICKET_TEST_CASES = """\
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CommitTicketUpdaterTestCase))
+    suite.addTest(makeSuite(CommitTicketUpdaterTestCase))
     suite.addTest(formatter.test_suite(MACRO_TICKET_TEST_CASES,
                                        macro_setup, __file__,
                                        context=('ticket', 1)))

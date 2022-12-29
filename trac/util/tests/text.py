@@ -20,6 +20,7 @@ import unittest
 
 import jinja2
 
+from trac.test import makeSuite
 from trac.util.text import (
     _get_default_ambiwidth, empty, exception_to_unicode, expandtabs, fix_eol,
     javascript_quote, jinja2template, levenshtein_distance,
@@ -570,26 +571,26 @@ ValueError: test""", result)
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ToUnicodeTestCase))
-    suite.addTest(unittest.makeSuite(ExpandtabsTestCase))
-    suite.addTest(unittest.makeSuite(UnicodeQuoteTestCase))
-    suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase))
-    suite.addTest(unittest.makeSuite(ToJsStringTestCase))
-    suite.addTest(unittest.makeSuite(QuoteQueryStringTestCase))
-    suite.addTest(unittest.makeSuite(ToUtf8TestCase))
-    suite.addTest(unittest.makeSuite(WhitespaceTestCase))
-    suite.addTest(unittest.makeSuite(TextWidthTestCase))
-    suite.addTest(unittest.makeSuite(PrintTableTestCase))
-    suite.addTest(unittest.makeSuite(WrapTestCase))
-    suite.addTest(unittest.makeSuite(FixEolTestCase))
-    suite.addTest(unittest.makeSuite(UnicodeBase64TestCase))
-    suite.addTest(unittest.makeSuite(StripwsTestCase))
-    suite.addTest(unittest.makeSuite(Jinja2TemplateTestCase))
-    suite.addTest(unittest.makeSuite(LevenshteinDistanceTestCase))
-    suite.addTest(unittest.makeSuite(SubVarsTestCase))
-    suite.addTest(unittest.makeSuite(ShortenLineTestCase))
-    suite.addTest(unittest.makeSuite(DefaultAmbiwidthTestCase))
-    suite.addTest(unittest.makeSuite(ExceptionToUnicodeTestCase))
+    suite.addTest(makeSuite(ToUnicodeTestCase))
+    suite.addTest(makeSuite(ExpandtabsTestCase))
+    suite.addTest(makeSuite(UnicodeQuoteTestCase))
+    suite.addTest(makeSuite(JavascriptQuoteTestCase))
+    suite.addTest(makeSuite(ToJsStringTestCase))
+    suite.addTest(makeSuite(QuoteQueryStringTestCase))
+    suite.addTest(makeSuite(ToUtf8TestCase))
+    suite.addTest(makeSuite(WhitespaceTestCase))
+    suite.addTest(makeSuite(TextWidthTestCase))
+    suite.addTest(makeSuite(PrintTableTestCase))
+    suite.addTest(makeSuite(WrapTestCase))
+    suite.addTest(makeSuite(FixEolTestCase))
+    suite.addTest(makeSuite(UnicodeBase64TestCase))
+    suite.addTest(makeSuite(StripwsTestCase))
+    suite.addTest(makeSuite(Jinja2TemplateTestCase))
+    suite.addTest(makeSuite(LevenshteinDistanceTestCase))
+    suite.addTest(makeSuite(SubVarsTestCase))
+    suite.addTest(makeSuite(ShortenLineTestCase))
+    suite.addTest(makeSuite(DefaultAmbiwidthTestCase))
+    suite.addTest(makeSuite(ExceptionToUnicodeTestCase))
     return suite
 
 

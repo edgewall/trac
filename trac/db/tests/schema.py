@@ -14,6 +14,7 @@
 import unittest
 
 from trac.db.schema import Column, Table
+from trac.test import makeSuite
 
 
 class TableTestCase(unittest.TestCase):
@@ -37,7 +38,7 @@ class TableTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TableTestCase))
+    suite.addTest(makeSuite(TableTestCase))
     return suite
 
 

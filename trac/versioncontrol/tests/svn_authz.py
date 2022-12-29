@@ -17,7 +17,7 @@ import unittest
 
 from trac.config import ConfigurationError
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock, mkdtemp, rmtree
+from trac.test import EnvironmentStub, Mock, makeSuite, mkdtemp, rmtree
 from trac.util import create_file
 from trac.versioncontrol.api import RepositoryManager
 from trac.versioncontrol.svn_authz import AuthzSourcePolicy, parse
@@ -540,8 +540,8 @@ class AuthzSourcePolicyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthzParserTestCase))
-    suite.addTest(unittest.makeSuite(AuthzSourcePolicyTestCase))
+    suite.addTest(makeSuite(AuthzParserTestCase))
+    suite.addTest(makeSuite(AuthzSourcePolicyTestCase))
     return suite
 
 

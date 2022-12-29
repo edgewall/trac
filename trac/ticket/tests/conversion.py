@@ -15,7 +15,7 @@ import os
 import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.test import EnvironmentStub, MockPerm, MockRequest
+from trac.test import EnvironmentStub, MockPerm, MockRequest, makeSuite
 from trac.ticket.test import insert_ticket
 from trac.ticket.web_ui import TicketModule
 
@@ -156,7 +156,7 @@ Bar
 
 
 def test_suite():
-    return unittest.makeSuite(TicketConversionTestCase)
+    return makeSuite(TicketConversionTestCase)
 
 
 if __name__ == '__main__':

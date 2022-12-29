@@ -17,7 +17,7 @@ import re
 import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest
+from trac.test import Mock, EnvironmentStub, MockPerm, MockRequest, makeSuite
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Milestone, Severity, Ticket, Version
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
@@ -1875,9 +1875,9 @@ def ticket_teardown(tc):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(QueryTestCase))
-    suite.addTest(unittest.makeSuite(QueryLinksTestCase))
-    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase))
+    suite.addTest(makeSuite(QueryTestCase))
+    suite.addTest(makeSuite(QueryLinksTestCase))
+    suite.addTest(makeSuite(TicketQueryMacroTestCase))
     suite.addTest(formatter.test_suite(QUERY_TEST_CASES, ticket_setup,
                                        __file__, ticket_teardown))
     return suite

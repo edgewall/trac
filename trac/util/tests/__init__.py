@@ -23,7 +23,7 @@ import unittest
 
 import trac
 from trac import util
-from trac.test import mkdtemp, rmtree
+from trac.test import makeSuite, mkdtemp, rmtree
 from trac.util.tests import (concurrency, datefmt, presentation, text,
                              translation, html)
 
@@ -435,15 +435,15 @@ class UtilitiesTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AtomicFileTestCase))
-    suite.addTest(unittest.makeSuite(PathTestCase))
-    suite.addTest(unittest.makeSuite(RandomTestCase))
-    suite.addTest(unittest.makeSuite(ContentDispositionTestCase))
-    suite.addTest(unittest.makeSuite(SafeReprTestCase))
-    suite.addTest(unittest.makeSuite(SetuptoolsUtilsTestCase))
-    suite.addTest(unittest.makeSuite(LazyTestCase))
-    suite.addTest(unittest.makeSuite(FileTestCase))
-    suite.addTest(unittest.makeSuite(UtilitiesTestCase))
+    suite.addTest(makeSuite(AtomicFileTestCase))
+    suite.addTest(makeSuite(PathTestCase))
+    suite.addTest(makeSuite(RandomTestCase))
+    suite.addTest(makeSuite(ContentDispositionTestCase))
+    suite.addTest(makeSuite(SafeReprTestCase))
+    suite.addTest(makeSuite(SetuptoolsUtilsTestCase))
+    suite.addTest(makeSuite(LazyTestCase))
+    suite.addTest(makeSuite(FileTestCase))
+    suite.addTest(makeSuite(UtilitiesTestCase))
     suite.addTest(concurrency.test_suite())
     suite.addTest(datefmt.test_suite())
     suite.addTest(presentation.test_suite())

@@ -19,7 +19,7 @@ import unittest
 from pkg_resources import parse_version
 
 from trac.mimeview.api import ImageRenderer, LineNumberAnnotator, Mimeview
-from trac.test import EnvironmentStub, MockRequest
+from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.util import get_pkginfo
 from trac.web.chrome import Chrome, web_context
 from trac.wiki.formatter import format_to_html
@@ -278,7 +278,7 @@ class PygmentsRendererTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if pygments:
-        suite.addTest(unittest.makeSuite(PygmentsRendererTestCase))
+        suite.addTest(makeSuite(PygmentsRendererTestCase))
     else:
         print('SKIP: mimeview/tests/pygments (no pygments installed)')
     return suite

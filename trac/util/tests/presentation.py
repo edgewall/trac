@@ -17,7 +17,7 @@ import doctest
 import unittest
 
 from trac.core import TracError
-from trac.test import Mock
+from trac.test import Mock, makeSuite
 from trac.util import datefmt, presentation
 
 
@@ -93,9 +93,9 @@ class PaginatorTestCase(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(presentation))
-    suite.addTest(unittest.makeSuite(FiltersTestCase))
-    suite.addTest(unittest.makeSuite(ToJsonTestCase))
-    suite.addTest(unittest.makeSuite(PaginatorTestCase))
+    suite.addTest(makeSuite(FiltersTestCase))
+    suite.addTest(makeSuite(ToJsonTestCase))
+    suite.addTest(makeSuite(PaginatorTestCase))
     return suite
 
 

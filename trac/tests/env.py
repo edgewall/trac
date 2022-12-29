@@ -30,7 +30,7 @@ from trac.config import ConfigurationError, Option
 from trac.core import Component, TracError, implements
 from trac.db.api import DatabaseManager, get_column_names
 from trac.env import Environment, EnvironmentAdmin, open_environment
-from trac.test import EnvironmentStub, get_dburi, mkdtemp, rmtree
+from trac.test import EnvironmentStub, get_dburi, makeSuite, mkdtemp, rmtree
 from trac.util import create_file, extract_zipfile, hex_entropy, read_file
 from trac.util.compat import close_fds
 from trac.util import create_file
@@ -1063,17 +1063,17 @@ class TracAdminInitenvTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EnvironmentWithoutDataTestCase))
-    suite.addTest(unittest.makeSuite(EnvironmentDataTestCase))
-    suite.addTest(unittest.makeSuite(EnvironmentTestCase))
-    suite.addTest(unittest.makeSuite(EnvironmentAttributesTestCase))
-    suite.addTest(unittest.makeSuite(EnvironmentUpgradeTestCase))
-    suite.addTest(unittest.makeSuite(KnownUsersTestCase))
-    suite.addTest(unittest.makeSuite(SystemInfoTestCase))
-    suite.addTest(unittest.makeSuite(ConvertDatabaseTestCase))
-    suite.addTest(unittest.makeSuite(SystemInfoProviderTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminDeployTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminInitenvTestCase))
+    suite.addTest(makeSuite(EnvironmentWithoutDataTestCase))
+    suite.addTest(makeSuite(EnvironmentDataTestCase))
+    suite.addTest(makeSuite(EnvironmentTestCase))
+    suite.addTest(makeSuite(EnvironmentAttributesTestCase))
+    suite.addTest(makeSuite(EnvironmentUpgradeTestCase))
+    suite.addTest(makeSuite(KnownUsersTestCase))
+    suite.addTest(makeSuite(SystemInfoTestCase))
+    suite.addTest(makeSuite(ConvertDatabaseTestCase))
+    suite.addTest(makeSuite(SystemInfoProviderTestCase))
+    suite.addTest(makeSuite(TracAdminDeployTestCase))
+    suite.addTest(makeSuite(TracAdminInitenvTestCase))
     return suite
 
 if __name__ == '__main__':

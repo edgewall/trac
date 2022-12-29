@@ -20,7 +20,7 @@ from trac.core import Component, ComponentMeta, implements
 from trac.config import ConfigurationError
 from trac.perm import IPermissionRequestor, PermissionCache
 from trac.resource import Resource
-from trac.test import EnvironmentStub, Mock, mkdtemp
+from trac.test import EnvironmentStub, Mock, makeSuite, mkdtemp
 from trac.util import create_file
 from trac.versioncontrol.api import Repository
 from tracopt.perm.authz_policy import AuthzPolicy
@@ -335,7 +335,7 @@ class AuthzPolicyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(AuthzPolicyTestCase))
+    suite.addTest(makeSuite(AuthzPolicyTestCase))
     return suite
 
 

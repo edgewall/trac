@@ -18,7 +18,7 @@ import unittest
 
 from trac import perm
 from trac.core import TracError
-from trac.test import EnvironmentStub, MockPerm, mkdtemp, rmtree
+from trac.test import EnvironmentStub, MockPerm, makeSuite, mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.datefmt import utc
 from trac.util.html import tag
@@ -805,10 +805,10 @@ class HTTPExceptionTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RequestTestCase))
-    suite.addTest(unittest.makeSuite(RequestSendFileTestCase))
-    suite.addTest(unittest.makeSuite(ParseArgListTestCase))
-    suite.addTest(unittest.makeSuite(HTTPExceptionTestCase))
+    suite.addTest(makeSuite(RequestTestCase))
+    suite.addTest(makeSuite(RequestSendFileTestCase))
+    suite.addTest(makeSuite(ParseArgListTestCase))
+    suite.addTest(makeSuite(HTTPExceptionTestCase))
     return suite
 
 

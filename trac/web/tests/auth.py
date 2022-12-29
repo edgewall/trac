@@ -43,7 +43,7 @@ if not has_method_bcrypt and passlib:
 from trac.core import TracError
 from trac.util.compat import verify_hash
 from trac.util.text import unicode_to_base64
-from trac.test import EnvironmentStub, MockRequest, rmtree
+from trac.test import EnvironmentStub, MockRequest, makeSuite, rmtree
 from trac.web.auth import BasicAuthentication, DigestAuthentication, LoginModule
 
 from http.cookies import SimpleCookie as Cookie
@@ -320,9 +320,9 @@ class BasicAuthenticationTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LoginModuleTestCase))
-    suite.addTest(unittest.makeSuite(DigestAuthenticationTestCase))
-    suite.addTest(unittest.makeSuite(BasicAuthenticationTestCase))
+    suite.addTest(makeSuite(LoginModuleTestCase))
+    suite.addTest(makeSuite(DigestAuthenticationTestCase))
+    suite.addTest(makeSuite(BasicAuthenticationTestCase))
     return suite
 
 

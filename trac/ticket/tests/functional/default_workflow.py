@@ -14,6 +14,7 @@
 
 import unittest
 
+from trac.test import makeSuite
 from trac.tests.functional import FunctionalTestCaseSetup, tc
 
 
@@ -393,8 +394,8 @@ def functionalSuite(suite=None):
         import trac.tests.functional
         suite = trac.tests.functional.functionalSuite()
 
-    suite.addTests(unittest.makeSuite(SetOwnerOperation))
-    suite.addTests(unittest.makeSuite(MaySetOwnerOperationRestrictOwnerFalse))
+    suite.addTests(makeSuite(SetOwnerOperation))
+    suite.addTests(makeSuite(MaySetOwnerOperationRestrictOwnerFalse))
     suite.addTest(MaySetOwnerOperationDefaultRestrictOwnerNone())
     suite.addTest(MaySetOwnerOperationDefaultRestrictOwnerAnonymous())
     suite.addTest(RegressionTestTicket11930())

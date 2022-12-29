@@ -18,7 +18,7 @@ from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
 from trac.core import Component, ComponentMeta, TracError, implements
 from trac.resource import Resource
-from trac.test import EnvironmentStub
+from trac.test import EnvironmentStub, makeSuite
 
 # IPermissionRequestor implementations
 import trac.about
@@ -865,13 +865,13 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase))
-    suite.addTest(unittest.makeSuite(PermissionErrorTestCase))
-    suite.addTest(unittest.makeSuite(PermissionSystemTestCase))
-    suite.addTest(unittest.makeSuite(PermissionCacheTestCase))
-    suite.addTest(unittest.makeSuite(PermissionPolicyTestCase))
-    suite.addTest(unittest.makeSuite(RecursivePolicyTestCase))
-    suite.addTest(unittest.makeSuite(TracAdminTestCase))
+    suite.addTest(makeSuite(DefaultPermissionStoreTestCase))
+    suite.addTest(makeSuite(PermissionErrorTestCase))
+    suite.addTest(makeSuite(PermissionSystemTestCase))
+    suite.addTest(makeSuite(PermissionCacheTestCase))
+    suite.addTest(makeSuite(PermissionPolicyTestCase))
+    suite.addTest(makeSuite(RecursivePolicyTestCase))
+    suite.addTest(makeSuite(TracAdminTestCase))
     return suite
 
 

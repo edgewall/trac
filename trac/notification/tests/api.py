@@ -14,6 +14,7 @@
 import unittest
 
 from trac.notification.api import parse_subscriber_config
+from trac.test import makeSuite
 
 
 class ParseSubscriberConfigTestCase(unittest.TestCase):
@@ -121,7 +122,7 @@ class ParseSubscriberConfigTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ParseSubscriberConfigTestCase))
+    suite.addTest(makeSuite(ParseSubscriberConfigTestCase))
     return suite
 
 

@@ -14,6 +14,7 @@
 import threading
 import unittest
 
+from trac.test import makeSuite
 from trac.util.concurrency import ThreadLocal
 
 
@@ -37,7 +38,7 @@ class ThreadLocalTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ThreadLocalTestCase))
+    suite.addTest(makeSuite(ThreadLocalTestCase))
     return suite
 
 if __name__ == '__main__':

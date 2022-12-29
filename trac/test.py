@@ -288,6 +288,12 @@ class TestCaseSetup(unittest.TestCase):
         self.fixture = fixture
 
 
+def makeSuite(testCaseClass, suiteClass=unittest.TestSuite):
+    loader = unittest.TestLoader()
+    loader.suiteClass = suiteClass
+    return loader.loadTestsFromTestCase(testCaseClass)
+
+
 # -- Database utilities
 
 def get_dburi():

@@ -19,7 +19,8 @@ from datetime import datetime, timedelta
 from subprocess import DEVNULL, PIPE, Popen
 
 from trac.core import TracError
-from trac.test import EnvironmentStub, MockRequest, locate, mkdtemp, rmtree
+from trac.test import EnvironmentStub, MockRequest, locate, makeSuite, \
+                      mkdtemp, rmtree
 from trac.util import create_file
 from trac.util.compat import close_fds
 from trac.util.datefmt import to_timestamp, utc
@@ -1265,14 +1266,14 @@ class GitConnectorTestCase(BaseTestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if GitCommandMixin.git_bin:
-        suite.addTest(unittest.makeSuite(SanityCheckingTestCase))
-        suite.addTest(unittest.makeSuite(PersistentCacheTestCase))
-        suite.addTest(unittest.makeSuite(HistoryTimeRangeTestCase))
-        suite.addTest(unittest.makeSuite(GitNormalTestCase))
-        suite.addTest(unittest.makeSuite(GitRepositoryTestCase))
-        suite.addTest(unittest.makeSuite(GitCachedRepositoryTestCase))
-        suite.addTest(unittest.makeSuite(GitConnectorTestCase))
-        suite.addTest(unittest.makeSuite(GitwebProjectsRepositoryProviderTestCase))
+        suite.addTest(makeSuite(SanityCheckingTestCase))
+        suite.addTest(makeSuite(PersistentCacheTestCase))
+        suite.addTest(makeSuite(HistoryTimeRangeTestCase))
+        suite.addTest(makeSuite(GitNormalTestCase))
+        suite.addTest(makeSuite(GitRepositoryTestCase))
+        suite.addTest(makeSuite(GitCachedRepositoryTestCase))
+        suite.addTest(makeSuite(GitConnectorTestCase))
+        suite.addTest(makeSuite(GitwebProjectsRepositoryProviderTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/git_fs.py (git cli "
               "binary, 'git', not found)")

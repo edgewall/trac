@@ -16,7 +16,7 @@
 
 from datetime import datetime
 
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, makeSuite
 from trac.util.datefmt import to_utimestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
@@ -345,7 +345,7 @@ class CacheTestCase(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(CacheTestCase)
+    return makeSuite(CacheTestCase)
 
 
 if __name__ == '__main__':
