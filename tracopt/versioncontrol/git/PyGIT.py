@@ -332,7 +332,12 @@ class Storage(object):
     @staticmethod
     def git_version(git_bin='git'):
         GIT_VERSION_MIN_REQUIRED = (1, 5, 6)
-        version = str(GitCore(git_bin=git_bin).version(), 'utf-8')
+        try:
+            version = GitCore(git_bin=git_bin).version()
+        except OSError as e:
+            raise GitError("Could not retrieve GIT version. '%s --version' "
+                           "(%s)" % (git_bin, exception_to_unicode(e)))
+        version = str(version, 'latin1')
         # 'version' should have at least 3 numeric version components:
         #  1.5.6
         #  1.5.6.windows.1
