@@ -57,11 +57,11 @@ install:
 - |
   if [ "$TRAVIS_BUILD_STAGE_NAME" = Test ]; then
     requires='Jinja2 selenium pytidylib'
-    if [ "$build" != minimum ]; then requires="$requires Babel Pygments docutils textile pytz"; fi
+    if [ "$build" != minimum ]; then requires="$requires 'Babel<2.10' Pygments docutils textile pytz"; fi
     if [ "$tracdb" = postgresql ]; then requires="$requires psycopg2"; fi
     if [ "$tracdb" = mysql ]; then requires="$requires PyMySQL"; fi
   else
-    requires='Jinja2 Babel'
+    requires='Jinja2 Babel<2.10'
   fi
   pip install $requires
   python -c 'import sys, pkg_resources as p; p.require(sys.argv[1:])' $requires

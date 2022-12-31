@@ -56,7 +56,7 @@ $firefoxHome = 'C:\Program Files\Mozilla Firefox'
 $pipPackages = @(
     'setuptools',
     'jinja2',
-    'babel',
+    'babel<2.10',
     'docutils',
     'passlib',
     'bcrypt',
