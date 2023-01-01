@@ -681,6 +681,11 @@ class ReverseProxyServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         self.response_dir = kwargs.pop('response_dir')
         super().__init__(*args, **kwargs)
 
+    def get_connection(self):
+        conn = http.client.HTTPConnection('127.0.0.1', self.proxy_port)
+        conn.connect()
+        return conn
+
     def get_response(self, path):
         filename = self._response_path(path)
         with open(filename, 'rb') as f:
@@ -702,9 +707,9 @@ class ReverseProxyServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 class ReverseProxyRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def _do(self):
-        conn = http.client.HTTPConnection('127.0.0.1', self.server.proxy_port)
+        self.server.save_response(self.path, b'')
+        conn = self.server.get_connection()
         try:
-            conn.connect()
             conn.putrequest(self.command, self.path, skip_host=True,
                             skip_accept_encoding=True)
             for name, value in self.headers.raw_items():
@@ -730,8 +735,11 @@ class ReverseProxyRequestHandler(http.server.BaseHTTPRequestHandler):
             else:
                 for chunk in resp_body:
                     self.wfile.write(chunk)
-        except OSError:
-            self.server.save_response(self.path, b'')
+        except BrokenPipeError:
+            self.close_connection = True
+        except:
+            self.close_connection = True
+            raise
         finally:
             conn.close()
 

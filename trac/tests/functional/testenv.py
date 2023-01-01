@@ -17,6 +17,7 @@ Provides some Trac environment-wide utility functions, and a way to call
 
 import contextlib
 import hashlib
+import http.client
 import io
 import locale
 import os
@@ -33,7 +34,7 @@ from trac.perm import PermissionAdmin
 from trac.test import EnvironmentStub, get_dburi, rmtree
 from trac.tests.contentgen import random_unique_camel
 from trac.tests.functional import trac_source_tree
-from trac.tests.functional.better_twill import tc, ConnectError
+from trac.tests.functional.better_twill import tc
 from trac.util import create_file, terminate
 from trac.util.compat import close_fds, wait_for_file_mtime_change
 
@@ -291,17 +292,22 @@ class FunctionalTestEnvironment(object):
                             stdout=self.logfile, stderr=self.logfile,
                             close_fds=close_fds,
                             cwd=self.command_cwd)
-        # Verify that the url is ok
-        timeout = 30
-        while timeout:
-            try:
-                tc.go(self.url)
-                break
-            except ConnectError:
-                time.sleep(1)
-            timeout -= 1
-        else:
-            raise Exception('Timed out waiting for server to start.')
+        # Verify that the server is listening
+        conn = http.client.HTTPConnection('127.0.0.1', self.port)
+        try:
+            timeout = 30
+            while timeout:
+                try:
+                    conn.connect()
+                    break
+                except OSError:
+                    time.sleep(1)
+                timeout -= 1
+            else:
+                raise Exception('Timed out waiting for server to start.')
+        finally:
+            conn.close()
+        tc.go(self.url)
         tc.url(self.url, regexp=False)
 
     def stop(self):
