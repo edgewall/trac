@@ -397,12 +397,11 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                 value = value.lower()
                 if value in ('utf8', 'utf8mb4'):
                     opts[key] = value
-                else:
-                    self.log.warning("Invalid connection string parameter "
-                                     "'%s=%s'", name, value)
-            else:
-                self.log.warning("Invalid connection string parameter '%s'",
-                                 name)
+                elif log:
+                    log.warning("Invalid connection string parameter '%s=%s'",
+                                name, value)
+            elif log:
+                log.warning("Invalid connection string parameter '%s'", name)
         cnx = pymysql.connect(db=path, user=user, passwd=password, host=host,
                               port=port, **opts)
         cursor = cnx.cursor()
