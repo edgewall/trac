@@ -391,8 +391,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
             elif name in ('compress', 'named_pipe'):
                 opts[key] = as_int(value, 0)
             else:
-                self.log.warning("Invalid connection string parameter '%s'",
-                                 name)
+                log.warning("Invalid connection string parameter '%s'", name)
         cnx = MySQLdb.connect(db=path, user=user, passwd=password, host=host,
                               port=port, charset='utf8', **opts)
         self.schema = path
