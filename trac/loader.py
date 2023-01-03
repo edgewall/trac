@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from glob import glob
-import imp
+import importlib.util
 import os.path
 import pkg_resources
 from pkg_resources import working_set, DistributionNotFound, \
@@ -93,6 +93,14 @@ def load_py_files():
     which simply get imported, thereby registering them with the component
     manager if they define any components.
     """
+
+    def load_source(name, filename):
+        spec = importlib.util.spec_from_file_location(name, filename)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules[name] = module
+        return module
+
     def _load_py_files(env, search_path, auto_enable=None):
         for path in search_path:
             plugin_files = glob(os.path.join(path, '*.py'))
@@ -102,7 +110,7 @@ def load_py_files():
                               plugin_name, plugin_file)
                 try:
                     if plugin_name not in sys.modules:
-                        imp.load_source(plugin_name, plugin_file)
+                        load_source(plugin_name, plugin_file)
                 except (ImportError, VersionConflict) as e:
                     env.log.error('Skipping "%s": %s', plugin_name,
                                   exception_to_unicode(e))
