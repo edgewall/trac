@@ -38,7 +38,7 @@ before_install:
     # Link Subversion bindings to the virtualenv
     if [ "$build" != minimum ]; then
       python_global="$python_prefix/libexec/bin/python"
-      print_sitelib='from distutils.sysconfig import get_python_lib; print(get_python_lib())'
+      print_sitelib='import sysconfig as s; print(s.get_path("purelib"))'
       sitelib_global="$($python_global -c "$print_sitelib")"
       sitelib_venv="$(python -c "$print_sitelib")"
       ln -s "$sitelib_global/svn" "$sitelib_venv/svn"
