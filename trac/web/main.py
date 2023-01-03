@@ -841,7 +841,7 @@ def send_project_index(environ, start_response, parent_dir=None,
 
     data['projects'] = projects
 
-    jenv = jinja2env(loader=FileSystemLoader(loadpaths))
+    jenv = jinja2env(loader=FileSystemLoader(loadpaths), autoescape=True)
     jenv.globals.update(translation.functions)
     tmpl = jenv.get_template(template)
     output = valid_html_bytes(tmpl.render(**data).encode('utf-8'))
