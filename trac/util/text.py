@@ -52,11 +52,11 @@ def jinja2env(**kwargs):
     :rtype: `jinja.Environment`
 
     """
-    exts = ('html', 'rss', 'xml')
+    exts = ('.html', '.rss', '.xml')
     def filterout_none(v):
         return '' if v is None else v
     def autoescape_extensions(template):
-        return template and template.rsplit('.', 1)[1] in exts
+        return template and template.endswith(exts)
     defaults = dict(
         variable_start_string='${',
         variable_end_string='}',
