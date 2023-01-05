@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 1.5.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2022-12-14 22:34-0500\n"
-"PO-Revision-Date: 2022-12-20 02:53+0000\n"
+"PO-Revision-Date: 2023-01-05 12:25+0000\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language: de\n"
 "Language-Team: de <trac-dev@googlegroups.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: tracopt/ticket/commit_updater.py:293
 msgid ""
@@ -2357,7 +2357,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_userinterface.html:100
 msgid "Auto preview timeout:"
-msgstr ""
+msgstr "Zeitlimit für automatische Vorschau:"
 
 #: trac/prefs/templates/prefs_userinterface.html:106
 #, python-format
@@ -2466,9 +2466,8 @@ msgstr ""
 "        Ereignisse und Änderungen zu behalten."
 
 #: trac/templates/about.html:45
-#, fuzzy
 msgid "online"
-msgstr "untereinander"
+msgstr "Online"
 
 #: trac/templates/about.html:47
 #, python-format
@@ -3110,7 +3109,7 @@ msgstr "Meilensteine"
 
 #: trac/ticket/admin.py:272
 msgid "View Milestone"
-msgstr ""
+msgstr "Zeige Meilenstein"
 
 #: trac/ticket/admin.py:294 trac/ticket/roadmap.py:836
 #: trac/ticket/roadmap.py:849 trac/ticket/roadmap.py:883
@@ -3580,9 +3579,8 @@ msgid "Component %(name)s does not exist."
 msgstr "Es gibt keine Komponente %(name)s."
 
 #: trac/ticket/model.py:969
-#, fuzzy
 msgid "Cannot delete non-existent component."
-msgstr "Kann nicht vorhandene Seiten nicht löschen"
+msgstr "Kann nicht-existierende Komponente nicht löschen."
 
 #: trac/ticket/model.py:985 trac/ticket/model.py:998 trac/ticket/model.py:1022
 #, python-format
@@ -7540,7 +7538,7 @@ msgstr "Aliasnamen:"
 
 #: trac/wiki/macros.py:790
 msgid "No documentation found"
-msgstr ""
+msgstr "Keine Dokumentation gefunden"
 
 #: trac/wiki/macros.py:797
 #, fuzzy
