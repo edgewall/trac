@@ -773,12 +773,15 @@ else
 	      && echo 1), \
 	    sed --in-place= -r -e, \
 	    sed -i '' -E))
-	@PREFIX="\{\#\s+"; find . -type f -name "*.html" \
+	@PREFIX="\{\#\s+"; find . -type f \
+	    \( -name "*.html" -o -name "*.rss" \) \
 	    -exec $(SED) $(copyright_re) {} \;
 	@PREFIX="\# "; find . -type f \
 	    \( -name "*.py" -o -name "*.po" -o -name "*.pot" -o \
-	       -name "*.ps1" -o -name "*.cgi" -o -name "*.fcgi" \) \
+	       -name "*.ps1" -o -name "*.coffee" \) \
 	    -exec $(SED) $(copyright_re) {} \;
+	@PREFIX="\{\#\#\}\# "; $(SED) $(copyright_re) \
+	    trac/web/templates/deploy_trac.*
 	@PREFIX="\# "; $(SED) $(copyright_re) \
 	    contrib/trac-svn-hook contrib/trac-pre-commit-hook
 	@PREFIX=":: "; $(SED) $(copyright_re) \
