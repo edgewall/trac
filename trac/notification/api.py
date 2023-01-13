@@ -23,6 +23,7 @@ from trac.config import (BoolOption, ConfigSection, ExtensionOption,
                          ListOption, Option)
 from trac.core import Component, Interface, ExtensionPoint
 from trac.util import as_bool, lazy, to_list
+from trac.util.text import exception_to_unicode
 
 
 __all__ = ['IEmailAddressResolver', 'IEmailDecorator', 'IEmailSender',
@@ -209,6 +210,11 @@ class NotificationEvent(object):
         self.time = time
         self.author = author
 
+    def __repr__(self):
+        return '<%s realm=%r, category=%r, target=%r, time=%r, author=%r>' % \
+               (self.__class__.__name__, self.realm, self.category,
+                self.target, self.time, self.author)
+
 
 class NotificationSystem(Component):
 
@@ -370,7 +376,12 @@ class NotificationSystem(Component):
 
         :param event: a `NotificationEvent`
         """
-        self.distribute_event(event, self.subscriptions(event))
+        try:
+            self.distribute_event(event, self.subscriptions(event))
+        except Exception as e:
+            self.log.error("Failure distributing event %r%s", event,
+                           exception_to_unicode(e, traceback=True))
+            raise
 
     def distribute_event(self, event, subscriptions):
         """Distribute a event to all subscriptions.
