@@ -735,11 +735,8 @@ class ReverseProxyRequestHandler(http.server.BaseHTTPRequestHandler):
             else:
                 for chunk in resp_body:
                     self.wfile.write(chunk)
-        except BrokenPipeError:
+        except ConnectionError:
             self.close_connection = True
-        except:
-            self.close_connection = True
-            raise
         finally:
             conn.close()
 
