@@ -124,6 +124,66 @@ IMAGE_MACRO_TEST_CASES = u"""
 <p>
 <a href="/browser/%C2%AB%20test%C2%A0%C2%BB" style="padding:0; border:none"><img alt="source:« test »" src="/browser/%C2%AB%20test%C2%A0%C2%BB?format=raw" title="source:« test »" width="30%" /></a>
 </p>
+============================== source: Image, size arg (integer)
+[[Image(page:img.png, 42, nolink)]]
+[[Image(page:img.png, width=84, nolink)]]
+[[Image(page:img.png, height=26, nolink)]]
+------------------------------
+<p>
+<img alt="image in page" src="/raw-attachment/wiki/page/img.png" title="image in page" width="42" />
+<img alt="image in page" src="/raw-attachment/wiki/page/img.png" title="image in page" width="84" />
+<img alt="image in page" height="26" src="/raw-attachment/wiki/page/img.png" title="image in page" />
+</p>
+============================== source: Image, size arg (length units)
+[[Image(page:img.png, 42ch, nolink, alt="", title="")]]
+[[Image(page:img.png, 4.2ex, nolink, alt="", title="")]]
+[[Image(page:img.png, 0.42ic, nolink, alt="", title="")]]
+[[Image(page:img.png, .42rem, nolink, alt="", title="")]]
+[[Image(page:img.png, 42.0vb, nolink, alt="", title="")]]
+[[Image(page:img.png, width=42vw, nolink, alt="", title="")]]
+[[Image(page:img.png, height=42vh, nolink, alt="", title="")]]
+[[Image(page:img.png, width=42vmax, height=42vmin, nolink, alt="", title="")]]
+[[Image(page:img.png, 42vi, height=21vi, nolink, alt="", title="")]]
+------------------------------
+<p>
+<img src="/raw-attachment/wiki/page/img.png" style="width:42ch" />
+<img src="/raw-attachment/wiki/page/img.png" style="width:4.2ex" />
+<img src="/raw-attachment/wiki/page/img.png" style="width:0.42ic" />
+<img src="/raw-attachment/wiki/page/img.png" style="width:.42rem" />
+<img src="/raw-attachment/wiki/page/img.png" style="width:42.0vb" />
+<img src="/raw-attachment/wiki/page/img.png" style="width:42vw" />
+<img src="/raw-attachment/wiki/page/img.png" style="height:42vh" />
+<img src="/raw-attachment/wiki/page/img.png" style="height:42vmin; width:42vmax" />
+<img src="/raw-attachment/wiki/page/img.png" style="height:21vi; width:42vi" />
+</p>
+============================== source: Image, size arg (invalid)
+[[Image(page:img.png, 42xx, nolink, alt="", title=foo)]]
+[[Image(page:img.png, "42px;display:block", nolink, alt="", title=bar)]]
+[[Image(page:img.png, width="42px;display:block", height=84, nolink, alt="", title=baz)]]
+[[Image(page:img.png, width=84, height="42px;display:block", nolink, alt="", title=qux)]]
+------------------------------
+<p>
+<img src="/raw-attachment/wiki/page/img.png" title="foo" />
+<img src="/raw-attachment/wiki/page/img.png" title="bar" />
+<img height="84" src="/raw-attachment/wiki/page/img.png" title="baz" />
+<img src="/raw-attachment/wiki/page/img.png" title="qux" width="84" />
+</p>
+============================== No attachment, margins and border with lengths
+[[Image(page:img.png, margin=1.2%, nolink, alt="", title="")]]
+[[Image(page:img.png, margin-top=2.3ch, nolink, alt="", title="")]]
+[[Image(page:img.png, margin-right=3.4em, nolink, alt="", title="")]]
+[[Image(page:img.png, margin-bottom=4.5ex, nolink, alt="", title="")]]
+[[Image(page:img.png, margin-left=5.6ic, nolink, alt="", title="")]]
+[[Image(page:img.png, border=6.7rem, nolink, alt="", title="")]]
+------------------------------
+<p>
+<img src="/raw-attachment/wiki/page/img.png" style="margin:1.2%" />
+<img src="/raw-attachment/wiki/page/img.png" style="margin-top:2.3ch" />
+<img src="/raw-attachment/wiki/page/img.png" style="margin-right:3.4em" />
+<img src="/raw-attachment/wiki/page/img.png" style="margin-bottom:4.5ex" />
+<img src="/raw-attachment/wiki/page/img.png" style="margin-left:5.6ic" />
+<img src="/raw-attachment/wiki/page/img.png" style="border:6.7rem solid" />
+</p>
 ============================== source: Image, keyword alignment
 [[Image(source:« test », right)]]
 ------------------------------
@@ -214,7 +274,7 @@ IMAGE_MACRO_TEST_CASES = u"""
 [[Image(img.png, margin-bottom=-1)]]
 ------------------------------
 <p>
-<img alt="No image &#34;img.png&#34; attached to WikiStart" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" style="margin-bottom: 1px" title="No image &#34;img.png&#34; attached to WikiStart" />
+<img alt="No image &#34;img.png&#34; attached to WikiStart" crossorigin="anonymous" src="http://assets.example.org/common/attachment.png" style="margin-bottom:1px" title="No image &#34;img.png&#34; attached to WikiStart" />
 </p>
 ============================== No attachment, invalid arg
 [[Image(img.png, margin-bottom=--)]]
