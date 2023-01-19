@@ -550,7 +550,10 @@ class ImageMacro(WikiMacroBase):
     _split_re = r'''((?:[^%s"']|"[^"]*"|'[^']*')+)'''
     _split_args_re = re.compile(_split_re % ',')
     _split_filespec_re = re.compile(_split_re % ':')
-    _size_re = re.compile('[0-9]+(%|px)?$')
+    # https://developer.mozilla.org/en-US/docs/Web/CSS/length
+    _size_re = re.compile(r'(?:[0-9]+|'
+                          r'(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)(?:%|ch|em|ex|ic|'
+                          r'rem|vh|vw|vmax|vmin|vb|vi|px|cm|mm|Q|in|pc|pt))$')
     _attr_re = re.compile('(align|valign|border|width|height|alt'
                           '|margin(?:-(?:left|right|top|bottom))?'
                           '|title|longdesc|class|id|usemap)=(.+)')
@@ -616,12 +619,13 @@ class ImageMacro(WikiMacroBase):
                             val in ('top', 'middle', 'bottom')):
                         args.append(val)
                     elif key in ('margin-top', 'margin-bottom'):
-                        style[key] = ' %dpx' % _arg_as_int(val, key, min=1)
-                    elif key in ('margin', 'margin-left', 'margin-right') \
-                             and 'display' not in style:
-                        style[key] = ' %dpx' % _arg_as_int(val, key, min=1)
+                        style[key] = self._arg_as_length(val, key)
+                    elif key in ('margin', 'margin-left', 'margin-right') and \
+                            'display' not in style:
+                        style[key] = self._arg_as_length(val, key)
                     elif key == 'border':
-                        style['border'] = ' %dpx solid' % _arg_as_int(val, key)
+                        style['border'] = '%s solid' % \
+                                          self._arg_as_length(val, key)
                     else:
                         m = self._quoted_re.search(val)  # unquote "..." and '...'
                         if m:
@@ -714,12 +718,23 @@ class ImageMacro(WikiMacroBase):
                     raw_url = get_resource_url(self.env, attachment,
                                                formatter.href, format='raw')
 
-        for key in ('title', 'alt'):
-            if desc and key not in attr:
-                attr[key] = desc
+        if desc:
+            for key in ('title', 'alt'):
+                if key not in attr:
+                    attr[key] = desc
+        for key in ('width', 'height'):
+            if key not in attr:
+                continue
+            val = attr[key]
+            if not self._size_re.match(val):
+                del attr[key]
+                continue
+            if not val.endswith('%') and not val.isdigit():
+                style[key] = val
+                del attr[key]
         if style:
-            attr['style'] = '; '.join('%s:%s' % (k, escape(v))
-                                      for k, v in style.items())
+            attr['style'] = '; '.join('%s:%s' % (k, escape(style[k]))
+                                      for k in sorted(style))
         if not WikiSystem(self.env).is_safe_origin(raw_url,
                                                    formatter.context.req):
             attr['crossorigin'] = 'anonymous'  # avoid password prompt
@@ -728,6 +743,16 @@ class ImageMacro(WikiMacroBase):
             result = tag.a(result, href=link or url,
                            style='padding:0; border:none')
         return result
+
+    def _arg_as_length(self, val, key):
+        if val.isdigit():
+            return val + 'px'
+        if self._size_re.match(val):
+            return val
+        int_val = as_int(val, None, min=1)
+        if int_val is not None:
+            return '%dpx' % int_val
+        raise _invalid_macro_arg(val, key)
 
 
 class MacroListMacro(WikiMacroBase):
@@ -977,7 +1002,10 @@ class TracGuideTocMacro(WikiMacroBase):
 def _arg_as_int(val, key=None, min=None, max=None):
     int_val = as_int(val, None, min=min, max=max)
     if int_val is None:
-        raise MacroError(tag_("Invalid macro argument %(expr)s",
-                              expr=tag.code("%s=%s" % (key, val))
-                                   if key else tag.code(val)))
+        raise _invalid_macro_arg(val, key)
     return int_val
+
+
+def _invalid_macro_arg(val, key=None):
+    expr = tag.code("%s=%s" % (key, val)) if key else tag.code(val)
+    return MacroError(tag_("Invalid macro argument %(expr)s", expr=expr))
