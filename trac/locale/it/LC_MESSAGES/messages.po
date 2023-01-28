@@ -1,5 +1,5 @@
 # Italian translations for Trac.
-# Copyright (C) 2015-2022 Edgewall Software
+# Copyright (C) 2015-2023 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 #
 # Translators:
