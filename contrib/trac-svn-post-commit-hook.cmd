@@ -1,6 +1,6 @@
 @ECHO OFF
 ::
-:: Copyright (C) 2007-2022 Edgewall Software
+:: Copyright (C) 2007-2023 Edgewall Software
 :: Copyright (C) 2007 Markus Tacker <m@tacker.org>
 :: Copyright (C) 2007 Christian Boos <cboos@edgewall.org>
 :: All rights reserved.

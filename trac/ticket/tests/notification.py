@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2022 Edgewall Software
+# Copyright (C) 2005-2023 Edgewall Software
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # All rights reserved.
 #

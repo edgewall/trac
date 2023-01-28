@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2022 Edgewall Software
+# Copyright (C) 2012-2023 Edgewall Software
 # Copyright (C) 2006-2011, Herbert Valerio Riedel <hvr@gnu.org>
 # All rights reserved.
 #

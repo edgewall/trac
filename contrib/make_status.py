@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014-2022 Edgewall Software
+# Copyright (C) 2014-2023 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
