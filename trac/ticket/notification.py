@@ -687,6 +687,14 @@ class CarbonCopySubscriber(Component):
             # Harvest previous CC field
             if 'fields' in event.changes and 'cc' in event.changes['fields']:
                 cc_users.update(to_set(event.changes['fields']['cc']['old']))
+
+            # Get members of permission groups
+            groups = PermissionSystem(self.env).get_groups_dict()
+            for cc in sorted(cc_users):
+                if cc in groups:
+                    cc_users.discard(cc)
+                    cc_users.update(groups[cc])
+
         return _ticket_change_subscribers(self, cc_users)
 
     def description(self):
@@ -747,13 +755,6 @@ def _ticket_change_subscribers(subscriber, candidates):
         return
     if not isinstance(candidates, (list, set, tuple)):
         candidates = [candidates]
-
-    # Get members of permission groups
-    groups = PermissionSystem(subscriber.env).get_groups_dict()
-    for cc in set(candidates):
-        if cc in groups:
-            candidates.remove(cc)
-            candidates.update(groups[cc])
 
     matcher = RecipientMatcher(subscriber.env)
     klass = subscriber.__class__.__name__
