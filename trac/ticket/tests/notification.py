@@ -186,6 +186,37 @@ class RecipientTestCase(unittest.TestCase):
         for user in group1 + ('user1@example.net',):
             self.assertIn(user, recipients)
 
+    def test_all_subscribers_permission_group(self):
+        """Test for regression of https://trac.edgewall.org/ticket/13515"""
+
+        config_subscriber(self.env, reporter=True, owner=True, updater=True)
+        self.env.insert_users([
+            ('u-reporter', 'User Reporter', 'reporter@example.org', 1),
+            ('u-owner', 'User Owner', 'owner@example.org', 1),
+            ('u-updater', 'User Updater', 'updater@example.org', 1),
+            ('u-cc', 'User Cc', 'cc@example.org', 1),
+        ])
+        perm = PermissionSystem(self.env)
+        for name in ('reporter', 'owner', 'updater', 'cc'):
+            group = 'u-%s' % name
+            perm.grant_permission('%s-1@example.net' % name, group)
+            perm.grant_permission('%s-2@example.net' % name, group)
+
+        ticket = self._insert_ticket(reporter='u-reporter', owner='u-owner',
+                                     cc='u-cc',
+                                     summary='Subscribers w/ permission group')
+        notify_ticket_created(self.env, ticket)
+        self.assertEqual(['cc-1@example.net', 'cc-2@example.net',
+                          'owner@example.org', 'reporter@example.org',
+                         ], sorted(smtpd.get_recipients()))
+
+        ticket.save_changes('u-updater', 'This is a change')
+        notify_ticket_changed(self.env, ticket)
+        self.assertEqual(['cc-1@example.net', 'cc-2@example.net',
+                          'owner@example.org', 'reporter@example.org',
+                          'updater@example.org',
+                         ], sorted(smtpd.get_recipients()))
+
     def test_new_ticket_recipients(self):
         """Report and CC list should be in recipient list for new tickets."""
         config_subscriber(self.env, updater=True)
