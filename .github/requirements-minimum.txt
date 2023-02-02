@@ -1,0 +1,5 @@
+Jinja2
+selenium
+pytidylib
+passlib; python_version>='3.13' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'
+bcrypt; python_version>='3.13' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'
