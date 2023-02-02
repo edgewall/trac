@@ -1,0 +1,4 @@
+Genshi>=0.7
+lxml
+twill==0.9.1
+passlib; platform_system=='Windows'
