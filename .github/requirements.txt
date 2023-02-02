@@ -1,0 +1,13 @@
+Jinja2
+lxml
+twill==0.9.1
+Genshi>=0.7
+Babel
+pygments<2.6
+docutils
+textile<4.0
+pytz
+psycopg2
+PyMySQL
+cryptography
+passlib; platform_system=='Windows'

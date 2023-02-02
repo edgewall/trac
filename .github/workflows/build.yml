@@ -1,0 +1,344 @@
+---
+
+name: build
+
+on:
+  push:
+    branches: ['**']
+    tags: ['trac-*']
+  pull_request:
+    branches: ['**']
+
+concurrency:
+  group: ${{ github.workflow }}--${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  posix-test-minimum:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 30
+
+    needs: [posix-prepare]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:  [ubuntu-22.04, macos-12]
+        python-version: ['2.7']
+        tests: [functional]
+
+    env:
+      MATRIX_TESTS: ${{ matrix.tests }}
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements-minimum.txt') }}
+
+    - name: Run tests
+      run: . .github/posix-test-minimum.sh
+
+    - name: Upload log files
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: log-${{ matrix.os }}--py${{ matrix.python-version }}-minimum-${{ job.status }}
+        path: |
+          testenv/*.log
+          testenv/trac/log
+          geckodriver.log
+        if-no-files-found: ignore
+
+
+  posix-test:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 50
+
+    needs: [posix-prepare]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-22.04, python-version: '2.7', tracdb: '',         tests: functional}
+        - {os: ubuntu-22.04, python-version: '2.7', tracdb: sqlite,     tests: functional}
+        - {os: ubuntu-22.04, python-version: '2.7', tracdb: postgresql, tests: functional}
+        - {os: ubuntu-22.04, python-version: '2.7', tracdb: mysql,      tests: functional}
+        - {os: macos-12,     python-version: '2.7', tracdb: '',         tests: functional}
+        - {os: macos-12,     python-version: '2.7', tracdb: sqlite}
+        - {os: macos-12,     python-version: '2.7', tracdb: postgresql}
+        - {os: macos-12,     python-version: '2.7', tracdb: mysql}
+
+    env:
+      MATRIX_OS: ${{ matrix.os }}
+      MATRIX_TRACDB: ${{ matrix.tracdb }}
+      MATRIX_TESTS: ${{ matrix.tests }}
+      PIP_NO_PYTHON_VERSION_WARNING: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
+
+    - name: Set up svn python cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/venv/lib/libsvn_*
+          ~/venv/lib/python*.*/site-packages/svn
+          ~/venv/lib/python*.*/site-packages/libsvn
+        key: ${{ matrix.os }}--svn-py${{ matrix.python-version }}
+
+    - name: Run tests
+      run: . .github/posix-test.sh
+
+    - name: Upload log files
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: log-${{ matrix.os }}--py${{ matrix.python-version }}-${{ matrix.tracdb }}-${{ job.status }}
+        path: |
+          testenv/*.log
+          testenv/trac/log
+          geckodriver.log
+        if-no-files-found: ignore
+
+
+  posix-prepare:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 50
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - {os: ubuntu-22.04, python-version: '2.7'}
+        - {os: macos-12,     python-version: '2.7'}
+
+    env:
+      MATRIX_OS: ${{ matrix.os }}
+      PIP_NO_PYTHON_VERSION_WARNING: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Checkout py3c
+      uses: actions/checkout@v3
+      with:
+        repository: encukou/py3c
+        ref: v1.4
+        path: py3c
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
+
+    - name: Set up svn python cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/venv/lib/libsvn_*
+          ~/venv/lib/python*.*/site-packages/svn
+          ~/venv/lib/python*.*/site-packages/libsvn
+        key: ${{ matrix.os }}--svn-py${{ matrix.python-version }}
+
+    - name: Prepare dependencies
+      run: . .github/posix-prepare.sh
+
+
+  windows-test-minimum:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022]
+        architecture: [x64]
+        python-version: ['2.7']
+        tests: [functional]
+
+    env:
+      MATRIX_TESTS: ${{ matrix.tests }}
+      PIP_NO_PYTHON_VERSION_WARNING: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements-minimum.txt') }}
+
+    - name: Run tests
+      run: . .github\windows-test-minimum.ps1
+
+    - name: Upload log files
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: log-${{ matrix.os }}--py${{ matrix.python-version }}-minimum-${{ job.status }}
+        path: |
+          testenv/*.log
+          testenv/trac/log
+          geckodriver.log
+        if-no-files-found: ignore
+
+
+  windows-test:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 80
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022]
+        architecture: [x64]
+        python-version: ['2.7']
+        tracdb: ['', sqlite, postgresql, mysql]
+        include:
+        - {tracdb: '', tests: functional}
+
+    env:
+      MATRIX_TRACDB: ${{ matrix.tracdb }}
+      MATRIX_TESTS: ${{ matrix.tests }}
+      MATRIX_ARCH: ${{ matrix.architecture }}
+      MATRIX_PYVER: ${{ matrix.python-version }}
+      PIP_NO_PYTHON_VERSION_WARNING: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
+
+    - name: Run tests
+      run: . .github\windows-test.ps1
+
+    - name: Upload log files
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: log-${{ matrix.os }}--py${{ matrix.python-version }}-${{ matrix.tracdb }}-${{ job.status }}
+        path: |
+          testenv/*.log
+          testenv/trac/log
+          geckodriver.log
+        if-no-files-found: ignore
+
+
+  release:
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        python-version: ['2.7']
+
+    needs: [posix-test-minimum, posix-test, windows-test-minimum, windows-test]
+
+    env:
+      PIP_NO_PYTHON_VERSION_WARNING: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up pip cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
+
+    - name: Build release packages
+      run: . .github/release.sh
+
+    - name: Upload release packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: release
+        path: dist/Trac-*
+        if-no-files-found: ignore
+
+    - name: Upload release packages to edgewall.org
+      if: ${{ github.event_name == 'push' && github.repository == 'edgewall/trac' }}
+      env:
+        ENCRYPTED_C097E63A4DDF_KEY: ${{ secrets.ENCRYPTED_C097E63A4DDF_KEY }}
+        ENCRYPTED_C097E63A4DDF_IV: ${{ secrets.ENCRYPTED_C097E63A4DDF_IV }}
+      run: . .github/release-upload.sh
