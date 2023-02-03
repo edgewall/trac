@@ -58,6 +58,10 @@ Function Verify-Binary {
 if (-not (Verify-Binary)) {
     Write-Host "Building Subversion Python bindings using $svnurl"
 
+    Push-Location -LiteralPath $vcpkg_root
+    & git pull
+    Pop-Location
+    & vcpkg update
     & vcpkg install "--downloads-root=$vcpkg_downloads" `
                     "--triplet=$vcpkg_triplet" `
                     "@.github\vcpkg.txt"
@@ -69,7 +73,7 @@ if (-not (Verify-Binary)) {
     Invoke-WebRequest -Uri $sqlite_url -OutFile $sqlite_arc
     Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
     Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
-    Set-Location -Path "$workspace\subversion-$svnver"
+    Set-Location -LiteralPath "$workspace\subversion-$svnver"
     & $python gen-make.py --release `
                           --vsnet-version=2019 `
                           "--with-apr=$vcpkg_dir" `
@@ -121,5 +125,5 @@ if (-not (Verify-Binary)) {
     if (-not (Verify-Binary)) {
         exit 1
     }
-    Set-Location -Path "$workspace"
+    Set-Location -LiteralPath $workspace
 }
