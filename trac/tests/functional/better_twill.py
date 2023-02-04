@@ -131,7 +131,7 @@ if selenium:
             if mime_types:
                 options.set_preference('helpers.private_mime_types_file',
                                        mime_types)
-            options.headless = True
+            options.add_argument('-headless')
             options.add_argument('--width=1280')
             options.add_argument('--height=2048')
             options.log.level = 'info'
