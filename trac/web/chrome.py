@@ -465,7 +465,7 @@ class Chrome(Component):
         http://ajax.aspnetcdn.com/ajax/jQuery/jquery-%(version)s.min.js or
         https://ajax.googleapis.com/ajax/libs/jquery/%(version)s/jquery.min.js.
 
-        (''since 1.0'')""", doc_args={'version': '3.6.0'})
+        (''since 1.0'')""", doc_args={'version': '3.6.3'})
 
     jquery_ui_location = Option('trac', 'jquery_ui_location', '',
         """Location of the jQuery UI !JavaScript library (version %(version)s).
