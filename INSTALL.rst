@@ -22,9 +22,8 @@ If you're interested in contributing new translations for other
 languages or enhancing the existing translations, please have a look at
 `TracL10N <https://trac.edgewall.org/intertrac/wiki%3ATracL10N>`__.
 
-What follows are generic instructions for installing and setting up
-Trac. While you may find instructions for installing Trac on specific
-systems at
+These are generic instructions for installing and setting up Trac. While
+you may find instructions for installing Trac on specific systems at
 `TracInstallPlatforms <https://trac.edgewall.org/intertrac/TracInstallPlatforms>`__,
 please **first read through these general instructions** to get a good
 understanding of the tasks involved.
@@ -114,8 +113,8 @@ for more information.
 
    **Note:**
 
-   -  Trac **doesn't** use `PySVN <http://pysvn.tigris.org/>`__, nor
-      does it work yet with the newer ``ctype``-style bindings.
+   -  Trac **doesn't** use `PySVN <https://pypi.org/project/PySVN>`__,
+      nor does it work yet with the newer ``ctype``-style bindings.
    -  If using Subversion, Trac must be installed on the **same
       machine**. Remote repositories are `not
       supported <https://trac.edgewall.org/intertrac/ticket%3A493>`__.
@@ -480,7 +479,12 @@ Generating the Trac cgi-bin directory
 Application scripts for CGI, FastCGI and mod-wsgi can be generated using
 the `trac-admin <https://trac.edgewall.org/wiki/TracAdmin>`__ ``deploy``
 command:
-`TracAdminHelp(deploy) <https://trac.edgewall.org/wiki/TracAdminHelp(deploy)>`__
+
+.. code::
+
+   deploy <directory>
+
+       Extract static resources from Trac and all plugins
 
 Grant the web server execution right on scripts in the ``cgi-bin``
 directory.
@@ -684,7 +688,7 @@ variables.
 Configuring Authentication
 --------------------------
 
-Trac uses HTTP authentication. You'll need to configure your webserver
+Trac uses HTTP authentication. You'll need to configure your web server
 to request authentication when the ``.../login`` URL is hit (the virtual
 path of the "login" button). Trac will automatically pick the
 ``REMOTE_USER`` variable up after you provide your credentials.

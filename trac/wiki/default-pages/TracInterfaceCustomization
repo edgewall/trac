@@ -92,7 +92,7 @@ Say you want to add a link to a custom stylesheet, and then your own header and 
 }}}
 
 Notice that as Jinja2 is mostly content agnostic, you are free to open some `<div>` element in the `site_header.html` file and only close it in `site_footer.html` file.
-Besides, as in any other Trac Jinja2 template, you can use some Trac specific features, for example the `${href.chrome('site/style.css')}` attribute references `style.css` in the environment's `htdocs/` directory. In a similar fashion `${chrome.htdocs_location}` is used to specify the common `htdocs/` directory belonging to a Trac installation. That latter location can however be overriden using the [TracIni#trac-htdocs_location-option "[trac] htdocs_location"] setting.
+Besides, as in any other Trac Jinja2 template, you can use some Trac specific features, for example the `${href.chrome('site/style.css')}` attribute references `style.css` in the environment's `htdocs/` directory. In a similar fashion `${chrome.htdocs_location}` is used to specify the common `htdocs/` directory belonging to a Trac installation. That latter location can however be overridden using the [TracIni#trac-htdocs_location-option "[trac] htdocs_location"] setting.
 
 Example snippet of adding introduction text to the new ticket form (but not shown during preview):
 
@@ -193,7 +193,7 @@ $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 
 == Project Templates
 
-The appearance of each individual Trac environment, ie instance of a project, can be customized independently of other projects, even those hosted on the same server. The recommended way is to use `site_{head,header,footer}.html` templates whenever possible, see [#SiteAppearance]. Using `site_{head,header,footer}.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifiations to the newer version. If not, new Trac features or bug fixes may not work as expected.
+The appearance of each individual Trac environment, ie instance of a project, can be customized independently of other projects, even those hosted on the same server. The recommended way is to use `site_{head,header,footer}.html` templates whenever possible, see [#SiteAppearance]. Using `site_{head,header,footer}.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifications to the newer version. If not, new Trac features or bug fixes may not work as expected.
 
 With that word of caution, any Trac template may be copied and customized. The default Trac templates are located in the Trac egg or wheel, such as `/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, ../trac/ticket/templates, ../trac/wiki/templates`. The [#ProjectList] template file is called `index.html`, while the template responsible for main layout is called `theme.html`. Page assets such as images and CSS style sheets are located in the egg's or wheel's `trac/htdocs` directory.
 

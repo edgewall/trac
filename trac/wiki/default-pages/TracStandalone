@@ -176,7 +176,7 @@ Note that you can start tracd without the `--auth` argument, but if you click on
 
 Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd. Windows Python can grok MD5 password hashes just fine and you should use MD5.
 
-Trac also provides `htpasswd` and `htdigest` scripts in `contrib`:
+Trac also provides `htpasswd` and `htdigest` scripts in [https://trac.edgewall.org/browser/trunk/contrib contrib] (also available in the tar or zip archive):
 {{{#!sh
 $ ./contrib/htpasswd.py -cb htpasswd user1 user1
 $ ./contrib/htpasswd.py -b htpasswd user2 user2
@@ -213,7 +213,7 @@ usage: tracd [-h] [--version] [-e PARENTDIR | -s]
 positional arguments:
   envs                  path of the project environment(s)
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --version             show program's version number and exit
   -e PARENTDIR, --env-parent-dir PARENTDIR

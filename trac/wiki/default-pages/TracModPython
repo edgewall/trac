@@ -82,7 +82,7 @@ PythonOption TracEnvParentDir /var/trac/myprojects
 # For the index of multiple projects
 PythonOption TracEnvIndexTemplate /srv/www/htdocs/trac/project_list_template.html
 
-# A space delimitted list, with a "," between key and value pairs.
+# A space delimited list, with a "," between key and value pairs.
 PythonOption TracTemplateVars key1,val1 key2,val2
 
 # Useful to get the date in the wanted order

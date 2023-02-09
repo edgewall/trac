@@ -259,7 +259,7 @@ Configuration for [https://httpd.apache.org/docs/2.4/mod/mod_ldap.html mod_ldap]
 </Location>
 }}}
 
-Note 1: This is the case where the LDAP search will get around the multiple OUs, conecting to the Global Catalog Server portion of AD. Note the port is 3268, not the normal LDAP 389. The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
+Note 1: This is the case where the LDAP search will get around the multiple OUs, connecting to the Global Catalog Server portion of AD. Note the port is 3268, not the normal LDAP 389. The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
 
 Note 2: You can also require the user be a member of a certain LDAP group, instead of just having a valid login:
 {{{#!apache

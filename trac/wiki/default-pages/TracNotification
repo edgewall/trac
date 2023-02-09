@@ -19,7 +19,7 @@ To receive notification mails, you can either enter a full email address or your
 
 Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file, see [#ConfigurationOptions Configuration Options] below. In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
 
-When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to  ('''`ignore_domains`''').
+When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to ('''`ignore_domains`''').
 
 === Ticket attachment notifications
 
@@ -208,7 +208,7 @@ If notifications are not working, inspect the [TracLogging log] for error messag
 
 Notification errors are not always reported through the web interface, so the user who submits a change or creates a ticket may not get notified about a notification failure. The Trac administrator needs to look at the log to find the error message and traceback.
 
-=== ''Permission denied'' error
+=== Permission denied error
 
 Typical error message:
 {{{#!sh
@@ -239,13 +239,17 @@ For SELinux in Fedora 10:
 $ setsebool -P httpd_can_sendmail 1
 }}}
 
-=== ''Suspected spam'' error
+=== Suspected spam error
 
 Some SMTP servers may reject the notification email sent by Trac.
 
 The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' spam detection on sensitive email servers. In such an event, change the default encoding to "quoted-printable" using the `mime_encoding` option.
 
 Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, stick with the Base64 encoding.
+
+=== Emails not sent
+
+If you are switching back to using Trac to send emails from, say, the [https://trac-hacks.org/wiki/AnnouncerPlugin AnnouncerPlugin], be sure to enable `EmailDistributor` in your Trac configuration. It may have been disabled when using an email plugin. There may be no message in the Trac log when all is good to go, but the actual sending is disabled.
 
 ----
 See also: TracTickets, TracIni, TracGuide, [trac:TracDev/NotificationApi]
