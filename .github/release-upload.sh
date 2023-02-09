@@ -2,19 +2,15 @@
 
 set -ex
 
-keyfile="$GITHUB_WORKSPACE/id_rsa"
-known_hosts="$GITHUB_WORKSPACE/known_hosts"
+keyfile="$GITHUB_WORKSPACE/edgewall_github_key"
+known_hosts="$GITHUB_WORKSPACE/edgewall_host_key"
 
-openssl aes-256-cbc \
-     -d -base64 -in contrib/travis/id_rsa.enc -out "$keyfile" \
-     -K "$ENCRYPTED_C097E63A4DDF_KEY" -iv "$ENCRYPTED_C097E63A4DDF_IV" \
-|| rm -f "$keyfile"
-
-if [ -f "$keyfile" ]; then
-    cp contrib/travis/edgewall_host_key "$known_hosts"
+if [ -n "$EDGEWALL_KEY_BASE64" ]; then
+    echo "$EDGEWALL_KEY_BASE64" | base64 -d >"$keyfile"
+    echo "$EDGEWALL_HOST_KEY" >"$known_hosts"
     chmod 0600 "$keyfile"
     scp -i "$keyfile" -o "UserKnownHostsFile $known_hosts" \
-        dist/Trac-* travis@edgewall.org:/var/ftp/pub/trac/incoming
+        dist/Trac-* github@edgewall.org:/var/ftp/pub/trac/incoming
 else
     echo "::warning:: Skipped uploading package files to edgewall.org" 1>&2
 fi

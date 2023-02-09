@@ -450,6 +450,6 @@ jobs:
     - name: Upload release packages to edgewall.org
       if: ${{ github.event_name == 'push' && github.repository == 'edgewall/trac' }}
       env:
-        ENCRYPTED_C097E63A4DDF_KEY: ${{ secrets.ENCRYPTED_C097E63A4DDF_KEY }}
-        ENCRYPTED_C097E63A4DDF_IV: ${{ secrets.ENCRYPTED_C097E63A4DDF_IV }}
+        EDGEWALL_KEY_BASE64: ${{ secrets.EDGEWALL_KEY_BASE64 }}
+        EDGEWALL_HOST_KEY: ${{ secrets.EDGEWALL_HOST_KEY }}
       run: . .github/release-upload.sh
