@@ -6,6 +6,16 @@ To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
 == 1.5.x Releases
 
+=== 1.5.4
+
+//(Feb 11, 2023)//
+
+Fixed several compatibility issues with
+Python 3 releases and Jinja2. Upgraded jQuery
+to version 3.6.3 and jQuery UI to version 1.13.
+
+[trac:source:/tags/trac-1.5.4 View Tag] | [trac:milestone:1.5.4 View Milestone]
+
 === 1.5.3
 
 //(May 9, 2021)//
