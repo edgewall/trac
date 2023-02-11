@@ -101,7 +101,7 @@ class TicketGroupStats(object):
             'count': count,
             'qry_args': qry_args,
             'css_class': css_class,
-            'percent': None,
+            'percent': 0,
             'overall_completion': overall_completion,
         })
         self.count = self.count + count

@@ -1849,6 +1849,38 @@ QUERY_TEST_CASES = """
   </table></div><p>
 </p>
 ------------------------------
+============================== TicketQuery(format=progress)]] with no matched tickets
+[[TicketQuery(id=0, format=progress)]]
+------------------------------
+<p>
+</p><div class="trac-progress">
+  <table class="progress">
+    <tr>
+      <td class="closed" style="display: none">
+        <a href="/query?id=0&amp;status=closed&amp;group=resolution&amp;max=0&amp;order=time" title="0/0 closed"></a>
+      </td>
+      <td class="open" style="display: none">
+        <a href="/query?id=0&amp;status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;max=0&amp;order=id" title="0/0 active"></a>
+      </td>
+    </tr>
+  </table>
+
+  <p class="percent">0%</p>
+
+  <p class="legend">
+    <span class="first interval">
+      <a href="/query?id=0&amp;max=0&amp;order=id">Total number of tickets: 0</a>
+    </span>
+    <span class="interval">
+      - <a href="/query?id=0&amp;status=closed&amp;group=resolution&amp;max=0&amp;order=time">closed: 0</a>
+    </span>
+    <span class="interval">
+      - <a href="/query?id=0&amp;status=accepted&amp;status=assigned&amp;status=new&amp;status=reopened&amp;max=0&amp;order=id">active: 0</a>
+    </span>
+  </p>
+</div><p>
+</p>
+------------------------------
 """
 
 
