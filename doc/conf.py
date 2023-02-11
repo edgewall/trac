@@ -32,8 +32,7 @@ from datetime import datetime
 from trac.util import get_pkginfo
 
 try:
-    from pygments.lexers.templates import DjangoLexer
-    html_jinja_lexer = DjangoLexer()
+    from pygments.lexers.templates import DjangoLexer as html_jinja_lexer
 except ImportError:
     html_jinja_lexer = None
 
@@ -84,7 +83,7 @@ extensions.append('sphinx.ext.ifconfig')
 # -- Link to other Sphinx documentations
 extensions.append('sphinx.ext.intersphinx')
 
-intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # -- Keep track of :todo: items
 extensions.append('sphinx.ext.todo')

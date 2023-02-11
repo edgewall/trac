@@ -103,8 +103,6 @@ def htmlattr_filter(_eval_ctx, d, autospace=True):
               'style': {'border-radius': '3px' if rounded,
                         'background': '#f7f7f7'}
              }|htmlattr}>
-        ...
-        </ul>
 
     Results in something like this:
 
@@ -112,8 +110,6 @@ def htmlattr_filter(_eval_ctx, d, autospace=True):
 
         <ul class="my list" id="list-42" checked="checked" autocomplete="on"
             style="border-radius: 3px; background: #f7f7f7">
-        ...
-        </ul>
 
     As you can see it automatically prepends a space in front of the item
     if the filter returned something unless the second parameter is false.
