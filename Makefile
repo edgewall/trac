@@ -309,7 +309,7 @@ tx-merge-%:
 	    touch $(catalog.po); \
 	    mv $(catalog.po) $(catalog.po).orig; \
 	)
-	@tx pull --force --no-interactive -l $(*)
+	@tx pull --force --silent -l $(*)
 	@$(foreach catalog,$(catalogs), \
 	    [ -f $(catalog.po) ] && mv $(catalog.po) $(catalog.po).tx; \
 	    mv $(catalog.po).orig $(catalog.po); \
