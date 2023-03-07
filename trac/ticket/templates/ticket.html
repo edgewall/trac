@@ -34,6 +34,31 @@
     # endif
     <script>
       jQuery(function($) {
+        //Enables the paste image function in the description and comment fields.
+        function setSmartAttachmentsHandler(elementId) {
+             $("#"+elementId).bind('paste',function(e) {
+             
+              const dt = e.originalEvent.clipboardData || window.clipboardData;
+              if(dt.files.length > 0){
+              	
+              	var imgFile = dt.files[0];
+              	var extension = imgFile.name.split('.').pop();
+              	if(extension=="png"){
+              		var fileReader = new FileReader();
+              		fileReader.onloadend = function() {
+			          $("#"+elementId).val(function(i,text){ return text + " [[Image('"+fileReader.result+"')]]"});
+			        }
+			        fileReader.readAsDataURL(imgFile);
+              	}else{
+              		console.log("Extension '"+extension+"' not supported.");
+              	}
+              }
+             });
+            }
+            
+            setSmartAttachmentsHandler("field-description");
+            setSmartAttachmentsHandler("comment");
+            
         $("div.description").find("h1,h2,h3,h4,h5,h6")
           .addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
@@ -328,7 +353,7 @@
                       # trans wikiformatting = jmacros.wikiformatting_link()
 
                       You may use ${wikiformatting} here.
-
+					  
                       # endtrans
                     </label>
                   </td>
