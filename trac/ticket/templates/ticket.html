@@ -10,6 +10,7 @@
 #}
 
 # extends 'layout.html'
+# import 'macros.html' as jmacros with context
 
 <!DOCTYPE html>
 <html>
@@ -264,6 +265,47 @@
       </div>
       # endif
       ## end of the section we don't show for initial new tickets
+      
+      ## -----------------------------------------------------------------
+        ## Personalizzazione omega per mostrare le revisioni
+        # if ticket.exists:
+         <div id="trac-get-revisioni" class="field">
+	        <h3 class="foldable">${_("Revisioni")}</h3>
+	        <div>
+	        #if (not ticket.revisions_loaded):
+         		<p>Revisioni non caricate.</p>
+        	#else:
+		         # if ticket.revisions:
+		         <table class="trac-properties" style="border: 1px solid black;"> 
+		         <tr>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
+		         	<th span="1" style="width: 20%;border: 1px solid black;">Data</th>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Autore</th>
+		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
+		         </tr>
+		         # 	for revision in ticket.revisions:
+		         		<tr>
+		         			<td class="wikitext" style="border: 1px solid black;">	
+          					${wiki_to_html(context, revision.get_rev(), escape_newlines=preserve_newlines)}
+		         			</td>
+		         			<td style="border: 1px solid black;">${revision.get_time()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_author()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_message()}</td>
+		         		</tr>
+		         #		endfor
+		         </table>
+		         # else:
+			     	<p>
+			      		${"Nessuna revisione trovata per l'item"}
+			        </p>
+		         # endif
+		         
+        	#endif
+	         </div>
+	     </div>
+	     #endif
+        ## Fine personalizzazione omega
+        ## -----------------------------------------------------------------
 
       # if has_property_editor:
       <form method="post" id="propertyform"
