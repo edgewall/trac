@@ -35,9 +35,8 @@
     # endif
     <script>
       jQuery(function($) {
-        //Enables the paste image function in the description and comment fields.
         function setSmartAttachmentsHandler(elementId) {
-             $("#"+elementId).bind('paste',function(e) {
+             $("#"+elementId).bind('paste',function(e){
              
               const dt = e.originalEvent.clipboardData || window.clipboardData;
               if(dt.files.length > 0){
@@ -51,7 +50,7 @@
 			        }
 			        fileReader.readAsDataURL(imgFile);
               	}else{
-              		console.log("Extension '"+extension+"' not supported.");
+              		console.log("extension '"+extension+"' not supported.");
               	}
               }
              });
@@ -59,6 +58,7 @@
             
             setSmartAttachmentsHandler("field-description");
             setSmartAttachmentsHandler("comment");
+            
             
         $("div.description").find("h1,h2,h3,h4,h5,h6")
           .addAnchor(_("Link to this section"));
@@ -270,7 +270,7 @@
         ## Personalizzazione omega per mostrare le revisioni
         # if ticket.exists:
          <div id="trac-get-revisioni" class="field">
-	        <h3 class="foldable">${_("Revisioni")}</h3>
+	        <h3 class="foldable">${_("Revisioni")}<span class="trac-count">(${len(ticket.revisions)})</span></h3>
 	        <div>
 	        #if (not ticket.revisions_loaded):
          		<p>Revisioni non caricate.</p>
@@ -314,6 +314,7 @@
         ${jmacros.form_token_input()}
 
         <div>
+  
           # if ticket.exists:
           <h3 class="foldable">${_("Modify Ticket")}</h3>
           # endif
@@ -629,18 +630,6 @@
         </p>
         # endif
 
-        # if ticket.exists:
-        <div class="trac-nav">
-          # if attachments.attachments or attachments.can_create:
-          <a href="#attachments" id="trac-up-attachments"
-             title="${_('Go to the list of attachments')}">${
-            _("Attachments")}</a> &uarr;
-          # endif
-          <a href="#content" id="trac-up-view"
-             title="${_('View the ticket description')}">${
-            _("Description")}</a> &uarr;
-        </div>
-        # endif
         <div class="buttons">
           # if ticket.exists:
           <input type="hidden" name="start_time"
