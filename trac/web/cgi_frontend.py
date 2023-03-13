@@ -46,7 +46,7 @@ class CGIGateway(WSGIGateway):
             sys.stdout.write('\r\n')
             sys.stdout.flush()
 
-        sys.stdout.write(data)
+        sys.stdout.buffer.write(data)
         sys.stdout.flush()
 
 
