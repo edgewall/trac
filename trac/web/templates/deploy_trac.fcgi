@@ -15,9 +15,12 @@
 {##}#
 {##}# Author: Jonas Borgström <jonas@edgewall.com>
 
-try:
-    import os
-    import pkg_resources
+import os
+import pkg_resources
+
+from trac.web import fcgi_frontend
+
+def main():
     if 'TRAC_ENV' not in os.environ and \
        'TRAC_ENV_PARENT_DIR' not in os.environ:
         os.environ['TRAC_ENV'] = ${repr(env.path)}
@@ -28,18 +31,7 @@ try:
             egg_cache = os.path.join(os.environ['TRAC_ENV_PARENT_DIR'],
                                      '.egg-cache')
         pkg_resources.set_extraction_path(egg_cache)
-    from trac.web import fcgi_frontend
     fcgi_frontend.run()
-except SystemExit:
-    raise
-except Exception as e:
-    print("Content-Type: text/plain", end="\r\n")
-    print("", end="\r\n")
-    print("Oops...")
-    print("")
-    print("Trac detected an internal error:")
-    print("")
-    print(e)
-    print("", flush=True)
-    import traceback
-    traceback.print_exc(file=sys.stdout)
+
+if __name__ == '__main__':
+    main()
