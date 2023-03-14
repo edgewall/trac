@@ -17,7 +17,7 @@ import unittest
 
 from trac.test import makeSuite, mkdtemp, rmtree
 from trac.web.cgi_frontend import CGIGateway
-from trac.web.main import dispatch_request
+from trac.web.main import send_project_index
 
 
 class CGIRequestTestCase(unittest.TestCase):
@@ -39,6 +39,13 @@ class CGIRequestTestCase(unittest.TestCase):
         rmtree(self.tmpdir)
 
     def test_write_project_index(self):
+
+        # XXX invoke directly send_project_index() to avoid call of
+        #     locale.setlocale() from dispatch_request
+        def dispatch_request(environ, start_response):
+            send_project_index(environ, start_response)
+            return []
+
         gateway = CGIGateway()
         gateway.environ.update({
             'trac.env_parent_dir': self.tmpdir,
