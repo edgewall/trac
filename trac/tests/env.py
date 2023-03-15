@@ -887,7 +887,15 @@ class TracAdminDeployTestCase(TracAdminTestCaseBase):
     def test_deploy(self):
         target = os.path.join(self.env.path, 'www')
         shebang = ('#!' + sys.executable).encode('utf-8')
-        rv, output = self.execute('deploy %s' % target)
+        posix = os.name == 'posix'
+        if posix:
+            saved = os.umask(0o27)
+        try:
+            rv, output = self.execute('deploy %s' % target)
+        finally:
+            if posix:
+                os.umask(saved)
+
         self.assertEqual(0, rv, output)
         self.assertExpectedResult(output)
         self.assertTrue(os.path.exists(os.path.join(target, 'cgi-bin')))
@@ -901,11 +909,13 @@ class TracAdminDeployTestCase(TracAdminTestCaseBase):
         self.assertTrue(os.path.isfile(os.path.join(
             target, 'htdocs', 'common', 'css', 'trac.css')))
         for ext in ('cgi', 'fcgi', 'wsgi'):
-            content = read_file(os.path.join(target, 'cgi-bin',
-                                             'trac.%s' % ext), 'rb')
+            filename = os.path.join(target, 'cgi-bin', 'trac.%s' % ext)
+            content = read_file(filename, 'rb')
             self.assertIn(shebang, content)
             self.assertEqual(0, content.index(shebang))
             self.assertIn(repr(self.env.path).encode('ascii'), content)
+            if posix:
+                self.assertEqual(0o750, os.stat(filename).st_mode & 0o7777)
 
     def test_deploy_to_invalid_target_raises_error(self):
         """Running deploy with target directory equal to or below the source

@@ -995,7 +995,13 @@ class EnvironmentAdmin(Component):
             template = chrome.load_template('deploy_trac.' + script, text=True)
             text = chrome.render_template_string(template, data, text=True)
 
-            with open(dest, 'w') as out:
+            fd = os.open(dest, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o777)
+            try:
+                out = os.fdopen(fd, 'w')
+            except:
+                os.close(fd)
+                raise
+            with out:
                 out.write(text.encode('utf-8'))
 
     def _do_hotcopy(self, dest, no_db=None):
