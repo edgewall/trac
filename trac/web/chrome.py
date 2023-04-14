@@ -33,6 +33,12 @@ import re
 from functools import partial
 
 from jinja2 import FileSystemLoader
+try:
+    import babel
+except ImportError:
+    babel = LazyProxy = None
+else:
+    from babel.support import LazyProxy
 
 from trac.api import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.config import *
@@ -640,10 +646,6 @@ class Chrome(Component):
         info = get_pkginfo(jinja2).get('version')
         yield 'Jinja2', info
         # Optional Babel
-        try:
-            import babel
-        except ImportError:
-            babel = None
         if babel is not None:
             info = get_pkginfo(babel).get('version')
             if not get_available_locales():
@@ -877,6 +879,8 @@ class Chrome(Component):
             label = section.get(name + '.label')
             if href and href.startswith('/'):
                 href = req.href + href
+            if LazyProxy and isinstance(text, LazyProxy):
+                text = text.value
             if isinstance(text, Element) and text.tag == 'a':
                 link = text
                 if label:

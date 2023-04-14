@@ -18,6 +18,10 @@ import textwrap
 import unittest
 
 import jinja2
+try:
+    from babel.support import LazyProxy
+except ImportError:
+    LazyProxy = None
 
 from trac.config import ConfigurationError
 from trac.core import Component, TracError, implements
@@ -727,6 +731,45 @@ class NavigationCustomizationTestCase(unittest.TestCase):
         self.assertTrue(mainnav[1]['active'])
 
 
+@unittest.skipUnless(LazyProxy, 'Babel unavailable')
+class NavigationLazyProxyTestCase(unittest.TestCase):
+
+    navigation_contributors = []
+
+    @classmethod
+    def setUpClass(cls):
+        class TestNavigationContributor1(Component):
+            implements(INavigationContributor)
+
+            def get_active_navigation_item(self, req):
+                return None
+
+            def get_navigation_items(self, req):
+                yield 'metanav', 'test1', LazyProxy(lambda: 'Test 1')
+                yield 'metanav', 'test2', LazyProxy(tag, 'Test ', tag.b('2'))
+
+        cls.navigation_contributors = [TestNavigationContributor1]
+
+    def setUp(self):
+        self.env = EnvironmentStub(enable=self.navigation_contributors)
+
+    @classmethod
+    def tearDownClass(cls):
+        from trac.core import ComponentMeta
+        for class_ in cls.navigation_contributors:
+            ComponentMeta.deregister(class_)
+
+    def test_lazyproxy_items(self):
+        req = MockRequest(self.env)
+        metanav = req.chrome['nav']['metanav']
+        self.assertEqual({'name': 'test1', 'label': 'Test 1',
+                          'active': False}, metanav[0])
+        self.assertEqual('test2', metanav[1]['name'])
+        self.assertEqual('Test <b>2</b>', str(metanav[1]['label']))
+        self.assertEqual(False, metanav[1]['active'])
+        self.assertEqual(2, len(metanav))
+
+
 class FormatAuthorTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -1172,6 +1215,7 @@ def test_suite():
     suite.addTest(makeSuite(ChromeTestCase2))
     suite.addTest(makeSuite(NavigationContributorTestCase))
     suite.addTest(makeSuite(NavigationCustomizationTestCase))
+    suite.addTest(makeSuite(NavigationLazyProxyTestCase))
     suite.addTest(makeSuite(FormatAuthorTestCase))
     suite.addTest(makeSuite(AuthorInfoTestCase))
     suite.addTest(makeSuite(ChromeTemplateRenderingTestCase))
