@@ -18,11 +18,16 @@ import io
 import sys
 import unittest
 
+try:
+    from babel.support import LazyProxy
+except ImportError:
+    LazyProxy = None
+
 from trac.core import TracError
 from trac.util import html
 from trac.util.html import (
     Element, FormTokenInjector, Fragment, HTML, Markup, TracHTMLSanitizer,
-    escape, find_element, genshi, html_attribute, is_safe_origin,
+    escape, find_element, genshi, html_attribute, is_safe_origin, plaintext,
     tag, to_fragment, xml
 )
 from trac.util.translation import gettext, tgettext
@@ -43,6 +48,29 @@ class EscapeFragmentTestCase(unittest.TestCase):
         self.assertEqual(Markup('<b class="em&#34;ph&#34;">"1 &lt; 2"</b>'),
                          escape(tag(tag.b('"1 < 2"', class_='em"ph"')),
                                     quotes=False))
+
+    @unittest.skipUnless(LazyProxy, 'Babel unavailable')
+    def test_escape_laxyproxy_string(self):
+        lazyproxy = gettext('Back to %(parent)s', parent='a&b<c>d"e\'f')
+        self.assertEqual(Markup('Back to a&amp;b&lt;c&gt;d&#34;e\'f'),
+                         escape(lazyproxy))
+        self.assertEqual(Markup('Back to a&amp;b&lt;c&gt;d"e\'f'),
+                         escape(lazyproxy, quotes=False))
+
+    @unittest.skipUnless(LazyProxy, 'Babel unavailable')
+    def test_escape_laxyproxy_fragment(self):
+        lazyproxy = tgettext('Back to %(parent)s',
+                             parent=tag.a('a&b<c>d"e\'f',
+                                          href='/a&b<c>d"e\'f'))
+        self.assertEqual(Markup('Back to <a '
+                                'href="/a&amp;b&lt;c&gt;d&#34;e\'f">'
+                                'a&amp;b&lt;c&gt;d"e\'f</a>'),
+                         escape(lazyproxy))
+        self.assertEqual(Markup('Back to <a '
+                                'href="/a&amp;b&lt;c&gt;d&#34;e\'f">'
+                                'a&amp;b&lt;c&gt;d"e\'f</a>'),
+                         escape(lazyproxy, quotes=False))
+
 
 class HtmlAttributeTestCase(unittest.TestCase):
 
@@ -403,10 +431,29 @@ class FindElementTestCase(unittest.TestCase):
                    tag.a('link', href='http://www.edgewall.org'),
                    ' and some ', tag.strong('strong text')))
         self.assertIsNotNone(find_element(frag, tag='p'))
-        self.assertIsNotNone(find_element(frag, tag='a'))
-        self.assertIsNotNone(find_element(frag, tag='strong'))
+        result = find_element(frag, tag='a')
+        self.assertIsNotNone(result)
+        self.assertEqual('<a href="http://www.edgewall.org">link</a>',
+                         str(result))
+        result = find_element(frag, tag='strong')
+        self.assertIsNotNone(result)
+        self.assertEqual('<strong>strong text</strong>', str(result))
         self.assertIsNone(find_element(frag, tag='input'))
         self.assertIsNone(find_element(frag, tag='textarea'))
+
+    @unittest.skipUnless(LazyProxy, 'Babel unavailable')
+    def test_find_laxyproxy_element_with_tag(self):
+        lazyproxy = tgettext('Text with a %(a)s and some %(b)s',
+                             a=tag.a('link', href='http://www.edgewall.org'),
+                             b=tag.strong('strong text'))
+        self.assertIsNotNone(find_element(lazyproxy, tag='a'))
+        self.assertEqual('<a href="http://www.edgewall.org">link</a>',
+                         str(find_element(lazyproxy, tag='a')))
+        result = find_element(lazyproxy, tag='strong')
+        self.assertIsNotNone(result)
+        self.assertEqual('<strong>strong text</strong>', str(result))
+        self.assertIsNone(find_element(lazyproxy, tag='input'))
+        self.assertIsNone(find_element(lazyproxy, tag='textarea'))
 
 
 class IsSafeOriginTestCase(unittest.TestCase):
@@ -464,6 +511,31 @@ class IsSafeOriginTestCase(unittest.TestCase):
         self.assertFalse(is_safe_origin(uris, 'blob:'))
         self.assertTrue(is_safe_origin(uris, '/path/to'))
         self.assertTrue(is_safe_origin(uris, 'file.txt'))
+
+
+class PlaintextTestCase(unittest.TestCase):
+
+    def test_plaintext_string(self):
+        self.assertEqual('Back to &<>"\'',
+                         plaintext('Back to &amp;&lt;&gt;&#34;&#39;'))
+
+    def test_plaintext_fragment(self):
+        fragment = tag('Back to ', tag.span('&amp;&lt;&gt;&#34;&#39;'))
+        self.assertEqual('Back to &amp;&lt;&gt;&#34;&#39;',
+                         plaintext(fragment))
+
+    @unittest.skipUnless(LazyProxy, 'Babel unavailable')
+    def test_plaintext_laxyproxy_string(self):
+        lazyproxy = gettext('Back to %(parent)s',
+                            parent='&amp;&lt;&gt;&#34;&#39;')
+        self.assertEqual('Back to &<>"\'', plaintext(lazyproxy))
+
+    @unittest.skipUnless(LazyProxy, 'Babel unavailable')
+    def test_plaintext_laxyproxy_fragment(self):
+        lazyproxy = tgettext('Back to %(parent)s',
+                             parent=tag.span('&amp;&lt;&gt;&#34;&#39;'))
+        self.assertEqual('Back to &amp;&lt;&gt;&#34;&#39;',
+                         plaintext(lazyproxy))
 
 
 class ToFragmentTestCase(unittest.TestCase):
@@ -601,6 +673,7 @@ def test_suite():
         suite.addTest(unittest.makeSuite(TracHTMLSanitizerLegacyGenshiTestCase))
     suite.addTest(unittest.makeSuite(FindElementTestCase))
     suite.addTest(unittest.makeSuite(IsSafeOriginTestCase))
+    suite.addTest(unittest.makeSuite(PlaintextTestCase))
     suite.addTest(unittest.makeSuite(ToFragmentTestCase))
     return suite
 
