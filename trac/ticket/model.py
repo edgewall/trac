@@ -755,19 +755,24 @@ class Ticket(object):
         
         with self.env.db_query as db:
             for row in db("""
-                    SELECT time, author, message, rev FROM revision
+                    SELECT time, author, message, rev, (case (coalesce(repository.value,'')) when '' then 'Xsolving' else repository.value end) as repname FROM revision
+					INNER JOIN repository on repository.id = revision.repos and repository.name='name'
                     WHERE itemid = %s
                     """, (str(self.id),)):
-                revis = Revision(row[0],row[1],row[2],row[3])
+                revis = Revision(row[0],row[1],row[2],row[3],row[4])
                 self.revisions.append(revis)
 
 
 class Revision(object):
-    def __init__(self, time, author, message, rev):
+    def __init__(self, time, author, message, rev, repname):
         self._time = from_utimestamp(time).strftime("%d/%m/%Y, %H:%M:%S")
         self._author = author
         self._message = message
+        self._repname = repname
         self._rev = "r" + str(int(rev))
+        if repname != 'Xsolving':
+            self._rev = self._rev + '/' + self._repname
+		
         
     def get_time(self):
         return self._time
@@ -792,7 +797,12 @@ class Revision(object):
 
     def set_rev(rev, value):
         self._rev= value
+		
+    def get_repname(self):
+        return self._repname
 
+    def set_repname(rev, value):
+        self._repname= value
     
     #--------------------------------------------------
     # Fine personalizzazione omega

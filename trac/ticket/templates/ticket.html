@@ -281,6 +281,7 @@
 		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
 		         	<th span="1" style="width: 20%;border: 1px solid black;">Data</th>
 		         	<th span="1" style="width: 10%;border: 1px solid black;">Autore</th>
+					<th span="1" style="width: 10%;border: 1px solid black;">Repository</th>
 		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
 		         </tr>
 		         # 	for revision in ticket.revisions:
@@ -290,6 +291,7 @@
 		         			</td>
 		         			<td style="border: 1px solid black;">${revision.get_time()}</td>
 		         			<td style="border: 1px solid black;">${revision.get_author()}</td>
+							<td style="border: 1px solid black;">${revision.get_repname()}</td>
 		         			<td style="border: 1px solid black;">${revision.get_message()}</td>
 		         		</tr>
 		         #		endfor
