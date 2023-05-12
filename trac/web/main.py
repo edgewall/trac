@@ -611,11 +611,9 @@ def dispatch_request(environ, start_response):
         except RequestDone as req_done:
             resp = req_done.iterable
     except HTTPException as e:
-        if not req.response_started:
-            _send_user_error(req, env, e)
+        _send_user_error(req, env, e)
     except Exception:
-        if not req.response_started:
-            send_internal_error(env, req, sys.exc_info())
+        send_internal_error(env, req, sys.exc_info())
     else:
         resp = resp or req._response or []
     finally:
@@ -677,6 +675,8 @@ def _send_user_error(req, env, e):
         env.log.warning('[%s] %s, %r, referrer %r',
                         req.remote_addr, exception_to_unicode(e),
                         req, req.environ.get('HTTP_REFERER'))
+    if req.response_started:
+        return
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and not req.is_authenticated:
@@ -692,6 +692,8 @@ def send_internal_error(env, req, exc_info):
         env.log.error("[%s] Internal Server Error: %r, referrer %r%s",
                       req.remote_addr, req, req.environ.get('HTTP_REFERER'),
                       exception_to_unicode(exc_info[1], traceback=True))
+    if req.response_started:
+        return
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()
 
