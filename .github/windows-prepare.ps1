@@ -61,10 +61,11 @@ if (-not (Verify-Binary)) {
     Push-Location -LiteralPath $vcpkg_root
     & git pull
     Pop-Location
-    & vcpkg update
-    & vcpkg install "--downloads-root=$vcpkg_downloads" `
-                    "--triplet=$vcpkg_triplet" `
-                    "@.github\vcpkg.txt"
+    $vcpkg_opts = @("--downloads-root=$vcpkg_downloads",
+                    "--triplet=$vcpkg_triplet")
+    $vcpkg_targets = Get-Content -LiteralPath .github\vcpkg.txt
+    & vcpkg $vcpkg_opts update
+    & vcpkg $vcpkg_opts install $vcpkg_targets
     if ($LASTEXITCODE) {
         Write-Error "vcpkg install exited with $LASTEXITCODE"
         exit 1
