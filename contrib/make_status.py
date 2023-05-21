@@ -62,6 +62,7 @@ PACKAGES = [
     ("Textile",           'textile.__version__'),
     ("Pytz",              'pytz.__version__'),
     ("Docutils",          'docutils.__version__'),
+    ("aiosmtpd",          'aiosmtpd.__version__'),
     ("Selenium",          'selenium.__version__'),
     ("PyTidyLib",         '__main__._pytidylib_version()'),
     ("LXML",              'lxml.etree.__version__'),

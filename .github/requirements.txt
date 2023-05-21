@@ -1,4 +1,5 @@
 Jinja2
+aiosmtpd; python_version>='3.10'
 selenium
 pytidylib
 Babel<2.10
