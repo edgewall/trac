@@ -1282,24 +1282,26 @@ class WSGIServer(Server):
 if __name__ == '__main__':
     def test_app(environ, start_response):
         """Probably not the most efficient example."""
-        import cgi
+        import html
+        from trac.web.api import parse_form_data
+
         start_response('200 OK', [('Content-Type', 'text/html')])
         yield b'<html><head><title>Hello World!</title></head>\n' \
               b'<body>\n' \
               b'<p>Hello World!</p>\n' \
               b'<table border="1">'
         for name in sorted(environ):
-            yield b'<tr><td>%s</td><td>%s</td></tr>\n' % \
-                  (name, cgi.escape(environ[name]))
+            yield '<tr><td>{}</td><td>{}</td></tr>\n' \
+                  .format(html.escape(name), html.escape(environ[name])) \
+                  .encode('utf-8')
 
-        form = cgi.FieldStorage(fp=environ['wsgi.input'], environ=environ,
-                                keep_blank_values=1)
-        if form.list:
+        pairs = list(parse_form_data(environ))
+        if pairs:
             yield b'<tr><th colspan="2">Form data</th></tr>'
-
-        for field in form.list:
-            yield b'<tr><td>%s</td><td>%s</td></tr>\n' % \
-                  (field.name, field.value)
+        for name, value in pairs:
+            yield '<tr><td>{}</td><td>{}</td></tr>\n' \
+                  .format(html.escape(name), html.escape(value)) \
+                  .encode('utf-8')
 
         yield b'</table>\n' \
               b'</body></html>\n'

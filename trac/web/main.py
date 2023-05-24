@@ -16,7 +16,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
-import cgi
 import fnmatch
 from functools import partial
 import gc
@@ -54,7 +53,7 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalServerError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, TracNotImplementedError, \
-                         is_valid_default_handler
+                         is_valid_default_handler, parse_header
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice, \
                             add_stylesheet, add_warning
 from trac.web.href import Href
@@ -232,7 +231,7 @@ class RequestDispatcher(Component):
             if req.method == 'POST':
                 ctype = req.get_header('Content-Type')
                 if ctype:
-                    ctype, options = cgi.parse_header(ctype)
+                    ctype, options = parse_header(ctype)
                 if ctype in ('application/x-www-form-urlencoded',
                              'multipart/form-data') and \
                         req.args.get('__FORM_TOKEN') != req.form_token:

@@ -49,6 +49,7 @@ PACKAGES = [
     ("Pip",               'pip.__version__'),
     ("Wheel",             'wheel.__version__'),
     ("Jinja2",            'jinja2.__version__'),
+    ("multipart",         'multipart.__version__'),
     ("Babel",             'babel.__version__'),
     ("sqlite3",           ('sqlite3.version',
                            'sqlite3.sqlite_version')),
