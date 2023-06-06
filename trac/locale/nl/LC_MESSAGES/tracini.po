@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 1.4.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2022-12-14 19:54-0500\n"
-"PO-Revision-Date: 2022-12-20 02:37+0000\n"
+"PO-Revision-Date: 2023-06-06 23:18+0000\n"
 "Last-Translator: M A <marco.awater@acq.nl>\n"
 "Language: nl\n"
 "Language-Team: nl <trac-dev@googlegroups.com>\n"
@@ -55,6 +55,37 @@ msgid ""
 "_perms = EXTRA_VIEW, EXTRA_MODIFY\n"
 "}}}"
 msgstr ""
+"Deze sectie biedt een manier om willekeurige permissies toe te voegen aan"
+"\n"
+"een Trac-omgeving. Dit kan handig zijn voor het toevoegen van nieuwe "
+"permissies \n"
+"voor bijvoorbeeld werkstroomacties.\n"
+"\n"
+"Om nieuwe permissies toe te voegen, maakt u een nieuwe sectie `[extra-"
+"permissions]` aan in uw `trac.ini`. \n"
+"Elk item in die sectie definieert een meta-machtiging en een door komma's"
+" gescheiden lijst met permissies. \n"
+"Bijvoorbeeld:\n"
+"{{{#!ini\n"
+"[extra-permissions]\n"
+"EXTRA_ADMIN = EXTRA_VIEW, EXTRA_MODIFY, EXTRA_DELETE\n"
+"}}}\n"
+"\n"
+"Dit item definieert drie nieuwe permissies `EXTRA_VIEW`, `EXTRA_MODIFY` "
+"en `EXTRA_DELETE`, evenals een meta-permissies\n"
+"`EXTRA_ADMIN` die alle drie permissies verleent.\n"
+"\n"
+"De permissies worden gemaakt in hoofdletters, ongeacht het "
+"hoofdlettergebruik van de \n"
+"definities in `trac.ini`. De definitie `extra_view` zou bijvoorbeeld de "
+"permissies `EXTRA_VIEW` creëren.\n"
+"\n"
+"Als u geen meta-permissie wilt, begin dan de meta-naam met een underscore"
+" (`_`):\n"
+"{{{#!ini\n"
+"[extra-permissions]\n"
+"_perms = EXTRA_VIEW, EXTRA_MODIFY\n"
+"}}}"
 
 #: tracopt/ticket/commit_updater.py:112
 msgid ""
@@ -63,6 +94,9 @@ msgid ""
 "Must be empty or contain two characters. For example, if set to `[]`,\n"
 "then commands must be in the form of `[closes #4]`."
 msgstr ""
+"Moet leeg zijn of tenminste 2 tekens bevatten. Bijvoorbeeld, wanneer "
+"gelijk aan `[]`,\n"
+"dan moet het commando het volgende formaat hebben `[closes #4]`."
 
 #: tracopt/ticket/commit_updater.py:118
 msgid "Commands that close tickets, as a space-separated list."
@@ -75,6 +109,12 @@ msgid ""
 "If set to the special value `<ALL>`, all tickets referenced by the\n"
 "message will get a reference to the changeset."
 msgstr ""
+"Commando's die een verwijzing toevoegen, als een door spaties gescheiden "
+"lijst.\n"
+"\n"
+"Indien ingesteld op de speciale waarde `<ALL>`, krijgen alle tickets "
+"waarnaar in het bericht wordt verwezen \n"
+"een verwijzing naar de wijzigingenset."
 
 #: tracopt/ticket/commit_updater.py:129
 msgid ""
@@ -93,23 +133,27 @@ msgstr ""
 
 #: tracopt/versioncontrol/git/git_fs.py:303
 msgid "Enable persistent caching of commit tree."
-msgstr ""
+msgstr "Schakel permanente caching van commit-boom in."
 
 #: tracopt/versioncontrol/git/git_fs.py:306
 msgid "Wrap `GitRepository` in `CachedRepository`."
-msgstr ""
+msgstr "Verpak `GitRepository` in `CachedRepository`."
 
 #: tracopt/versioncontrol/git/git_fs.py:309
 msgid ""
 "The length at which a sha1 is abbreviated (must be >= 4\n"
 "and <= 40)."
 msgstr ""
+"De lengte waartoe sha1 moet worden afgekort, moet groter zijn dan 4\n"
+"en kleiner dan 40."
 
 #: tracopt/versioncontrol/git/git_fs.py:314
 msgid ""
 "The minimum length at which a hex-string in wiki content\n"
 "is formatted as a changeset TracLink (must be >= 4 and <= 40)."
 msgstr ""
+"De minimale lengte waarop een hex-tekenreeks in wiki-inhoud \n"
+"wordt opgemaakt als een wijzigingenset TracLink (moet >= 4 en <= 40 zijn)."
 
 #: tracopt/versioncontrol/git/git_fs.py:319
 msgid ""
@@ -120,34 +164,45 @@ msgid ""
 "A repository resync is required after changing the value of this\n"
 "option."
 msgstr ""
+"Schakel reverse mapping van git emailadressen naar Trac gebruiker-ID's.\n"
+"De prestaties zullen afnemen als er veel gebruikers zijn en de optie "
+"`cached_repository` op `disabled` staat.\n"
+"\n"
+"Een hersynchronisatie van de repository is vereist na het wijzigen van de"
+" waarde van deze \n"
+"optie."
 
 #: tracopt/versioncontrol/git/git_fs.py:328
 msgid ""
 "Use git-committer id instead of git-author id for the\n"
 "changeset ''Author'' field."
 msgstr ""
+"Gebruik git-committer id in plaats van git-author id voor het  \n"
+"changeset ''Author'-veld'."
 
 #: tracopt/versioncontrol/git/git_fs.py:333
 msgid ""
 "Use git-committer timestamp instead of git-author timestamp\n"
 "for the changeset ''Timestamp'' field."
 msgstr ""
+"Gebruik git-committer timestamp in plaats van git-author timestamp \n"
+"voor het changeset ''Timestamp''-veld."
 
 #: tracopt/versioncontrol/git/git_fs.py:338
 msgid "Define charset encoding of paths within git repositories."
-msgstr ""
+msgstr "Definieer tekensetcodering van paden binnen git-repository's."
 
 #: tracopt/versioncontrol/git/git_fs.py:341
 msgid "Path to the git executable."
-msgstr ""
+msgstr "Pad naar de git executable."
 
 #: tracopt/versioncontrol/git/git_fs.py:942
 msgid "Path to a gitweb-formatted projects.list"
-msgstr ""
+msgstr "Pad naar een gitweb-geformatteerde projects.list"
 
 #: tracopt/versioncontrol/git/git_fs.py:945
 msgid "Path to the base of your git projects"
-msgstr ""
+msgstr "Pad naar de basis van uw git projecten"
 
 #: tracopt/versioncontrol/git/git_fs.py:948
 #, python-format
@@ -155,12 +210,16 @@ msgid ""
 "Template for project URLs. `%s` will be replaced with the repo\n"
 "name"
 msgstr ""
+"Sjabloon voor project URLs. `%s` zal worden vervangen door de repo\n"
+"naam"
 
 #: tracopt/versioncontrol/git/git_fs.py:952
 msgid ""
 "Repositories to sync on every request\n"
 "(not recommended)."
 msgstr ""
+"Repositories te synchroniseren bij ieder verzoek\n"
+"(niet aanbevolen)."
 
 #: tracopt/versioncontrol/svn/svn_fs.py:267
 msgid ""
@@ -243,6 +302,10 @@ msgid ""
 "downloadable as a `.zip`. Set this to -1 to disable download as\n"
 "`.zip`. (''since 1.0'')"
 msgstr ""
+"Maximum toegestane totale grootte (in bytes) voor een bijlage lijst om te"
+"\n"
+"downloaden als een`.zip` bestand. Zet dit op -1 om een download als\n"
+"`.zip` bestand te deactiveren. (''sinds 1.0'')"
 
 #: trac/attachment.py:152
 msgid ""
@@ -336,6 +399,12 @@ msgid ""
 "are only sent to the server on HTTPS connections. Use this if\n"
 "your Trac instance is only accessible through HTTPS."
 msgstr ""
+"Beperk cookies tot HTTPS-verbindingen.\n"
+"\n"
+"Als dit waar is, stelt u de vlag `secure` in op alle cookies zodat ze\n"
+"alleen via HTTPS-verbindingen naar de server worden verzonden. Gebruik "
+"dit als\n"
+"uw Trac-instantie is alleen toegankelijk via HTTPS."
 
 #: trac/env.py:162
 msgid ""
@@ -344,14 +413,19 @@ msgid ""
 "Set the option to 0 to disable purging old anonymous sessions.\n"
 "(''since 1.0.17'')"
 msgstr ""
+"Duur van de anonieme sessie, in dagen.\n"
+"\n"
+"Zet de optie op 0 om het verwijderen van oude anonime sessies te "
+"deactiveren.\n"
+"(''sinds versie 1.0.17'')"
 
 #: trac/env.py:169
 msgid "Name of the project."
-msgstr ""
+msgstr "Naam van het project."
 
 #: trac/env.py:172
 msgid "Short description of the project."
-msgstr ""
+msgstr "Korte beschrijving van het project."
 
 #: trac/env.py:175
 msgid ""
@@ -390,6 +464,9 @@ msgid ""
 "\n"
 "Should be one of (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 msgstr ""
+"Logging faciliteit die gebruikt kan worden.\n"
+"\n"
+"Een van de waarden (`none`, `file`, `stderr`, `syslog`, `winlog`)."
 
 #: trac/env.py:208
 msgid ""
@@ -397,6 +474,9 @@ msgid ""
 "log-file.  Relative paths are resolved relative to the `log`\n"
 "directory of the environment."
 msgstr ""
+"Als de `log_type` de waarde `file` heeft, moet dit het pas naar de\n"
+"log-file zijn.  Relatieve paden zijn naar de `log`\n"
+"directory van de omgeving."
 
 #: trac/env.py:213
 msgid ""
@@ -404,6 +484,9 @@ msgid ""
 "\n"
 "Should be one of (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`)."
 msgstr ""
+"Verbositeits-niveau in log.\n"
+"\n"
+"Een van de waarden (`CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`)."
 
 #: trac/env.py:220
 msgid ""
@@ -433,6 +516,9 @@ msgid ""
 "Name of the component implementing `IPermissionStore`, which is\n"
 "used for managing user and group permissions."
 msgstr ""
+"Naam van de component die `IPermissionStore` implementeert, welek wordt "
+"gebruikt\n"
+"voor het beheren van permissies voor gebruikers en groepen."
 
 #: trac/perm.py:342
 msgid ""
@@ -440,6 +526,10 @@ msgid ""
 "in which they will be applied. These components manage fine-grained\n"
 "access control to Trac resources."
 msgstr ""
+"Lijst van componenten welke `IPermissionPolicy` implementeren, in de "
+"volgorde\n"
+"waarin ze worden toegepast. Deze componenten beheren de toegang to de\n"
+"Trac resources."
 
 #: trac/db/api.py:262
 msgid ""
@@ -447,42 +537,49 @@ msgid ""
 "[wiki:TracEnvironment#DatabaseConnectionStrings string] for this\n"
 "project"
 msgstr ""
+"Database connectie\n"
+"[wiki:TracEnvironment#DatabaseConnectionStrings string] voor dit\n"
+"project"
 
 #: trac/db/api.py:267
 msgid "Database backup location"
-msgstr ""
+msgstr "Database back-up locatie"
 
 #: trac/db/api.py:270
 msgid ""
 "Timeout value for database connection, in seconds.\n"
 "Use '0' to specify ''no timeout''."
 msgstr ""
+"Timeout waarde voor de database verbinding, in seconden. Gebruik '0' om "
+"geen timeout op te geven."
 
 #: trac/db/api.py:274
 msgid "Show the SQL queries in the Trac log, at DEBUG level."
-msgstr ""
+msgstr "Toon de SQL queries in het Trac log bestand, op DEBUG niveau."
 
 #: trac/db/mysql_backend.py:100
 msgid "Location of mysqldump for MySQL database backups"
-msgstr ""
+msgstr "Locatie van mysqldump voor MySQL database backups"
 
 #: trac/db/postgres_backend.py:132
 msgid "Location of pg_dump for Postgres database backups"
-msgstr ""
+msgstr "Locatie van pg_dump voor PostgreSQL database backups"
 
 #: trac/db/sqlite_backend.py:155
 msgid ""
 "Paths to [https://sqlite.org/loadext.html sqlite extensions].\n"
 "The paths may be absolute or relative to the Trac environment."
 msgstr ""
+"Paden naar [https://sqlite.org/loadext.html sqlite extensies].\n"
+"De paden kunnen absoluut of relatief aan de Trac omgeving zijn."
 
 #: trac/mimeview/api.py:618
 msgid "Charset to be used when in doubt."
-msgstr ""
+msgstr "Karakterset te gebruiken bij twijfel."
 
 #: trac/mimeview/api.py:621
 msgid "Displayed tab width in file preview."
-msgstr ""
+msgstr "Getoonde tab breedte in bestands-preview. "
 
 #: trac/mimeview/api.py:624
 msgid "Maximum file size for HTML preview."
@@ -509,6 +606,8 @@ msgid ""
 "Comma-separated list of MIME types that should be treated as\n"
 "binary data."
 msgstr ""
+"Comma-gespareerde lijst van MIME types die moeten worden behandeld als\n"
+"binaire data."
 
 #: trac/mimeview/pygments.py:50
 #, python-format
@@ -531,7 +630,7 @@ msgstr ""
 
 #: trac/mimeview/pygments.py:67
 msgid "The default style to use for Pygments syntax highlighting."
-msgstr ""
+msgstr "De default stijl te gebruiken voor Pygments syntax weergave."
 
 #: trac/mimeview/pygments.py:70
 msgid ""
@@ -595,12 +694,16 @@ msgid ""
 "notifications to. Addresses can be seen by all recipients\n"
 "(Cc:)."
 msgstr ""
+"Comma-gesepareerde lijst van email addressen naar wie altijd\n"
+"notificaties gestuurd moeten worden. Addressen zijn zichtbaar (Cc:)."
 
 #: trac/notification/api.py:257
 msgid ""
 "Comma-separated list of email addresses to always send\n"
 "notifications to. Addresses are not public (Bcc:)."
 msgstr ""
+"Comma-gesepareerde lijst van email addressen naar wie altijd\n"
+"notificaties gestuurd moeten worden. Addressen zijn niet zichtbaar (Bcc:)."
 
 #: trac/notification/api.py:262
 msgid ""
@@ -615,12 +718,16 @@ msgid ""
 "Comma-separated list of domains that should not be considered\n"
 "part of email addresses (for usernames with Kerberos domains)."
 msgstr ""
+"Comma-gespareerde lijst van domeinnamen die moeten worden behandeld als\n"
+"zijnde geldig voor email addressen (zoals Kerberos domeinnamen)."
 
 #: trac/notification/api.py:272
 msgid ""
 "Comma-separated list of domains that should be considered as\n"
 "valid for email addresses (such as localdomain)."
 msgstr ""
+"Comma-gespareerde lijst van domeinen die moeten worden behandeld als\n"
+"zijnde geldig voor email addressen (zoals localdomain)."
 
 #: trac/notification/api.py:276
 msgid ""
@@ -640,6 +747,10 @@ msgid ""
 "\n"
 "If this option is disabled, recipients are put in the Bcc list."
 msgstr ""
+"Addressen in de To en Cc velden zijn zichtbaar voor alle ontvangers.\n"
+"\n"
+"Wanneer deze optie gedeactiveerd is, dan worden alle ontvangers "
+"toegevoegd aan de Bcc lijst."
 
 #: trac/notification/api.py:293
 msgid ""
@@ -664,6 +775,8 @@ msgid ""
 "Hash algorithm to create unique Message-ID header.\n"
 "''(since 1.0.13)''"
 msgstr ""
+"Hash algorithm om de unieke Message-ID header te genereren.\n"
+"''(sinds versie 1.0.13)''"
 
 #: trac/notification/api.py:314
 msgid ""
@@ -714,10 +827,15 @@ msgid ""
 "\n"
 "The sendmail program must accept the `-i` and `-f` options."
 msgstr ""
+"Pad naar de sendmail executable.\n"
+"\n"
+"Het sendmail programma moet de `-i` and `-f` opties wel ondersteunen."
 
 #: trac/search/web_ui.py:47
 msgid "Minimum length of query string allowed when performing a search."
 msgstr ""
+"Minimum lengte van een query string toegestaan wanneer een zoekopdracht "
+"wordt uitgevoerd."
 
 #: trac/search/web_ui.py:51
 msgid ""
@@ -737,10 +855,12 @@ msgid ""
 "In this section, you can define additional fields for tickets. See\n"
 "TracTicketsCustomFields for more details."
 msgstr ""
+"Definieer hier additionele velden voor tickets. Zie\n"
+"TracTicketsCustomFields voor meer details."
 
 #: trac/ticket/api.py:220
 msgid "Ordered list of workflow controllers to use for ticket actions."
-msgstr ""
+msgstr "Gesorteerde lijst van workflow controllers voor ticket acties."
 
 #: trac/ticket/api.py:226
 msgid ""
@@ -795,6 +915,8 @@ msgid ""
 "Default owner for newly created tickets. The component owner\n"
 "is used when set to the value `< default >`."
 msgstr ""
+"Standaard eigenaar voor nieuwe tickets. De component eigenaar\n"
+"wordt gebruikt wanneer de waarde `< default >` is."
 
 #: trac/ticket/api.py:269
 msgid "Default cc: list for newly created tickets."
@@ -809,6 +931,8 @@ msgid ""
 "Comma-separated list of `select` fields that can have\n"
 "an empty value. (//since 1.1.2//)"
 msgstr ""
+"Komma-gesepareerde lijst van `select` velden die een lege waarde\n"
+"kunnen hebben. (//sinds versie 1.1.2//)"
 
 #: trac/ticket/api.py:280
 msgid "Maximum allowed comment size in characters."
@@ -847,6 +971,8 @@ msgid ""
 "Like `ticket_subject_template` but for batch modifications.\n"
 "(''since 1.0'')"
 msgstr ""
+"Zoals `ticket_subject_template` maar dan voor batch modificaties.\n"
+"(''sinds versie 1.0'')"
 
 #: trac/ticket/notification.py:119
 msgid ""
@@ -878,18 +1004,24 @@ msgid ""
 "Number of tickets displayed per page in ticket queries,\n"
 "by default. Set to `0` to specify no limit."
 msgstr ""
+"Het standaard te tonen aantal tickets op een pagina in ticket queries.\n"
+"Zet op `0` om geen limiet te specificeren."
 
 #: trac/ticket/report.py:118
 msgid ""
 "Number of tickets displayed per page in ticket reports,\n"
 "by default. Set to `0` to specify no limit."
 msgstr ""
+"Het standaard te tonen aantal tickets op een pagina in ticket rapporten.\n"
+"Zet op `0` om geen limiet te specificeren."
 
 #: trac/ticket/report.py:123
 msgid ""
 "Number of tickets displayed in the rss feeds for reports.\n"
 "Set to `0` to specify no limit."
 msgstr ""
+"Het standaard te tonen aantal tickets in RSS output.\n"
+"Zet op `0` om geen limiet te specificeren."
 
 #: trac/ticket/roadmap.py:146
 msgid ""
@@ -989,7 +1121,7 @@ msgstr ""
 msgid ""
 "Enable the display of component of tickets in the timeline.\n"
 "(''since 1.1.1'')"
-msgstr ""
+msgstr "Activeer het tonen van de component bij de tickets in de tijdslijn."
 
 #: trac/ticket/web_ui.py:89
 msgid ""
@@ -1019,11 +1151,10 @@ msgid "Default number of days displayed in the Timeline, in days."
 msgstr "Standaard aantal dagen getoond in de Tijdlijn, in dagen."
 
 #: trac/timeline/web_ui.py:56
-#, fuzzy
 msgid ""
 "Maximum number of days (-1 for unlimited) displayable in the\n"
 "Timeline."
-msgstr "Standaard aantal dagen getoond in de Tijdlijn, in dagen."
+msgstr "Maximum aantal dagen getoond in de Tijdlijn (-1 voor ongelimiteerd)."
 
 #: trac/timeline/web_ui.py:61
 msgid ""
@@ -1086,12 +1217,18 @@ msgid ""
 "Comma-separated list of version control properties to render\n"
 "as wiki content in the repository browser."
 msgstr ""
+"Komma-gesepareerde lijst van versie beheer kenmerken die moeten worden "
+"weergegeven \n"
+"in de wiki van de repository browser."
 
 #: trac/versioncontrol/web_ui/browser.py:121
 msgid ""
 "Comma-separated list of version control properties to render\n"
 "as oneliner wiki content in the repository browser."
 msgstr ""
+"Komma-gesepareerde lijst van versie beheer kenmerken die moeten worden "
+"weergegeven voor\n"
+"in een enkele regel in de wiki van de repository browser."
 
 #: trac/versioncontrol/web_ui/browser.py:181
 msgid ""
@@ -1143,6 +1280,11 @@ msgid ""
 "If not set, the intermediate color between `oldest_color` and\n"
 "`newest_color` will be used."
 msgstr ""
+"(r,g,b) kleur triple om te gebruiken voor de corresponderende kleur\n"
+" naar de tussenkleur, als twee lineaire interpolaties worden gebruikt \n"
+"voor de kleurenschaal (zie `intermediate_point`). \n"
+"Indien niet ingesteld, zal de tussenkleur tussen `oldest_color` en \n"
+"`newest_color`  worden gebruikt."
 
 #: trac/versioncontrol/web_ui/browser.py:231
 msgid ""
@@ -1162,6 +1304,9 @@ msgid ""
 "Comma-separated list of version control properties to hide from\n"
 "the repository browser."
 msgstr ""
+"Komma-gesepareerde lijst van versie beheer kenmerken die moeten worden "
+"verborgen voor\n"
+"de repository browser."
 
 #: trac/versioncontrol/web_ui/changeset.py:129
 msgid ""
@@ -1211,23 +1356,28 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/log.py:47
 msgid "Default value for the limit argument in the TracRevisionLog."
-msgstr ""
+msgstr "Standaard waarde voor het limit argument in de TracRevisionLog."
 
 #: trac/versioncontrol/web_ui/log.py:51
 msgid ""
 "Comma-separated list of colors to use for the TracRevisionLog\n"
 "graph display. (''since 1.0'')"
 msgstr ""
+"Komma-gesepareerde lijst van kleuren om te gebruiken voor de "
+"TracRevisionLog\n"
+"grafische weergave. (''sinds versie 1.0'')"
 
 #: trac/web/auth.py:60
 msgid ""
 "Whether the IP address of the user should be checked for\n"
 "authentication."
 msgstr ""
+"Of het IP adres van de gebruiker moet worden gecontroleerd op \n"
+"authenticatie."
 
 #: trac/web/auth.py:64
 msgid "Whether login names should be converted to lower case."
-msgstr ""
+msgstr "Of login namen moeten worden geconverteerd naar kleine letters."
 
 #: trac/web/auth.py:67
 msgid ""
@@ -1283,7 +1433,7 @@ msgstr ""
 
 #: trac/web/chrome.py:460
 msgid "Automatically reload template files after modification."
-msgstr ""
+msgstr "Automatisch laden van de sjabloon bestanden na wijziging."
 
 #: trac/web/chrome.py:463
 msgid ""
@@ -1326,6 +1476,17 @@ msgid ""
 "\n"
 "(''since 1.0'')"
 msgstr ""
+"Locatie van de jQuery !JavaScript library (versie %(version)s).\n"
+"\n"
+"Een lege waarde laadt jQuery van de kopie die met Trac wordt meegeleverd."
+"\n"
+"\n"
+"Anders kan jQuery worden geladen van een CDN, bijvoorbeeld:\n"
+"http://code.jquery.com/jquery-%(version)s.min.js,\n"
+"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-%(version)s.min.js of\n"
+"https://ajax.googleapis.com/ajax/libs/jquery/%(version)s/jquery.min.js.\n"
+"\n"
+"(''sinds versie 1.0'')"
 
 #: trac/web/chrome.py:499
 #, python-format
@@ -1342,6 +1503,18 @@ msgid ""
 "\n"
 "(''since 1.0'')"
 msgstr ""
+"Locatie van de jQuery UI !JavaScript library (versie %(version)s).\n"
+"\n"
+"Een lege waarde laadt jQuery UI van de kopie die met Trac wordt "
+"meegeleverd.\n"
+"\n"
+"Anders kan jQuery worden geladen van een CDN, bijvoorbeeld:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/%(version)s/jquery-"
+"ui.min.js\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/%(version)s/jquery-ui.min.js.\n"
+"\n"
+"(''sinds versie 1.0'')"
 
 #: trac/web/chrome.py:511
 #, python-format
@@ -1362,6 +1535,20 @@ msgid ""
 "\n"
 "(''since 1.0'')"
 msgstr ""
+"Locatie van de van het them van de jQuery UI !JavaScript library (versie "
+"%(version)s).\n"
+"\n"
+"Een lege waarde laadt het jQuery UI thema van de kopie die met Trac wordt"
+" meegeleverd.\n"
+"\n"
+"Anders kan jQuery UI thema worden geladen van een CDN, bijvoorbeeld:\n"
+"https://ajax.googleapis.com/ajax/libs/jqueryui/%(version)s/themes/start"
+"/jquery-ui.css\n"
+"or\n"
+"http://ajax.aspnetcdn.com/ajax/jquery.ui/%(version)s/themes/start/jquery-"
+"ui.css.\n"
+"\n"
+"(''sinds versie 1.0'')"
 
 #: trac/web/chrome.py:526
 msgid ""
@@ -1406,7 +1593,7 @@ msgstr ""
 
 #: trac/web/chrome.py:563
 msgid "URL to link to, from the header logo."
-msgstr ""
+msgstr "URL op het logo."
 
 #: trac/web/chrome.py:566
 msgid ""
@@ -1423,15 +1610,15 @@ msgstr ""
 
 #: trac/web/chrome.py:577
 msgid "Alternative text for the header logo."
-msgstr ""
+msgstr "Alternatieve tekst van het logo."
 
 #: trac/web/chrome.py:581
 msgid "Width of the header logo image in pixels."
-msgstr ""
+msgstr "Breedte van het logo gemeten in pixels."
 
 #: trac/web/chrome.py:584
 msgid "Height of the header logo image in pixels."
-msgstr ""
+msgstr "Hoogte van het logo gemeten in pixels."
 
 #: trac/web/chrome.py:587
 msgid ""
@@ -1439,10 +1626,14 @@ msgid ""
 "addresses are obfuscated for users that don't have EMAIL_VIEW\n"
 "permission."
 msgstr ""
+"Toon email addressen in plaats van gebruikersnamen. Indien 'false', dan "
+"worden email\n"
+"addressen verborgen voor gebruikers die geen EMAIL_VIEW\n"
+"permissie hebben."
 
 #: trac/web/chrome.py:593
 msgid "Show full names instead of usernames. (//since 1.2//)"
-msgstr ""
+msgstr "Toon volledige namen in plaats van gebruikersnamen. (//sinds versie 1.2//)"
 
 #: trac/web/chrome.py:596
 msgid ""
@@ -1453,13 +1644,15 @@ msgstr ""
 
 #: trac/web/chrome.py:603
 msgid "Make `<textarea>` fields resizable. Requires !JavaScript."
-msgstr ""
+msgstr "Maak `<textarea>` velden vergrootbaar. Vereist !JavaScript."
 
 #: trac/web/chrome.py:607
 msgid ""
 "Add a simple toolbar on top of Wiki <textarea>s.\n"
 "(''since 1.0.2'')"
 msgstr ""
+"Toon een eenvoudige toolbar bovenop de Wiki <textarea>s.\n"
+"(''sinds versie 1.0.2'')"
 
 #: trac/web/chrome.py:611
 msgid ""
@@ -1475,6 +1668,10 @@ msgid ""
 "displaying relative format and 'absolute' for displaying absolute\n"
 "format. (''since 1.0'')"
 msgstr ""
+"Het datum informatie formaat. Geldige opties zijn 'relative' voor\n"
+"het tonen van het relatieve formaat en 'absolute' voor het tonen van het "
+"absolute\n"
+"formaat."
 
 #: trac/web/chrome.py:624
 msgid ""
@@ -1486,6 +1683,8 @@ msgstr ""
 #: trac/web/main.py:127
 msgid "Ordered list of filters to apply to all requests."
 msgstr ""
+"Gesorteerde lijst van alle filters die op alle verzoeken moeten worden "
+"toegepast."
 
 #: trac/web/main.py:131
 msgid ""
@@ -1506,7 +1705,7 @@ msgstr "De standaard gebruikte tijdzone"
 
 #: trac/web/main.py:147
 msgid "The preferred language to use if no user preference has been set."
-msgstr ""
+msgstr "De gewenste taal te gebruiken wanneer geen voorkeur is opgegeven."
 
 #: trac/web/main.py:152
 msgid ""
@@ -1529,6 +1728,9 @@ msgid ""
 "The header to use if `use_xsendfile` is enabled. If Nginx is used,\n"
 "set `X-Accel-Redirect`. (''since 1.0.6'')"
 msgstr ""
+"De header welke gebruikt moet worden als `use_xsendfile` geactiveerd is. "
+"Wanneer Nginx gebruyikt wordt,\n"
+"gebruik dan `X-Accel-Redirect`."
 
 #: trac/web/main.py:170
 msgid ""
@@ -1542,10 +1744,12 @@ msgstr ""
 #: trac/wiki/api.py:265
 msgid "Enable/disable highlighting CamelCase links to missing pages."
 msgstr ""
+"Activeer/deactiveer het verduidelijken van CamelCase links naar "
+"ontbrekende pagina's."
 
 #: trac/wiki/api.py:269
 msgid "Enable/disable splitting the WikiPageNames with space characters."
-msgstr ""
+msgstr "Activeer/deactiveer het splitsen van WikiPageNames met spaties."
 
 #: trac/wiki/api.py:273
 msgid ""
@@ -1561,6 +1765,9 @@ msgid ""
 "List of URI schemes considered \"safe\", that will be rendered as\n"
 "external links even if `[wiki] render_unsafe_content` is `false`."
 msgstr ""
+"Lijst van URI schemas die als \"veilig\" worden beschouwd, en worden\n"
+"weergegeven als externe links, zelfs als `[wiki] render_unsafe_content` "
+"op `false` staat."
 
 #: trac/wiki/api.py:288
 msgid ""
@@ -1614,6 +1821,21 @@ msgid ""
 "tsvn = tsvn: Interact with TortoiseSvn\n"
 "}}}"
 msgstr ""
+"Elke optie in de sectie `[interwiki]` definieert één InterWiki "
+"voorvoegsel. \n"
+"De optienaam definieert het voorvoegsel. De optiewaarde definieert de "
+"URL, eventueel gevolgd door een beschrijving gescheiden van de URL door "
+"een spatie. \n"
+"Parametrische URL's worden ook ondersteund.\n"
+"\n"
+"'''Voorbeeld:'''\n"
+"{{{\n"
+"[interwiki]\n"
+"MeatBall = http://www.usemod.com/cgi-bin/mb.pl?\n"
+"PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal "
+"$1\n"
+"tsvn = tsvn: Interact with TortoiseSvn\n"
+"}}}"
 
 #: trac/wiki/web_ui.py:56
 msgid "Maximum allowed wiki page size in characters."
@@ -1624,6 +1846,8 @@ msgid ""
 "Default height of the textarea on the wiki edit page.\n"
 "(//Since 1.1.5//)"
 msgstr ""
+"Default hoogte van het vrije tekstveld op de wiki edit pagina.\n"
+"(//sinds versie 1.1.5//)"
 
 #~ msgid "Path to the Enscript executable."
 #~ msgstr ""
