@@ -651,7 +651,6 @@ class WorkflowMacro(WikiMacroBase):
                     raise ProcessorError("Invalid argument(s).")
 
             if file:
-                print(file)
                 text = RepositoryManager(self.env).read_file_by_path(file)
                 if text is None:
                     raise ProcessorError(
