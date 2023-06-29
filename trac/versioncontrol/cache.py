@@ -149,7 +149,7 @@ class CachedRepository(Repository):
             else:
                 try:
                     next_youngest = self.repos.oldest_rev
-                    # Ugly hack needed because doing that everytime in
+                    # Ugly hack needed because doing that every time in
                     # oldest_rev suffers from horrendeous performance (#5213)
                     if self.repos.scope != '/' and not \
                             self.repos.has_node('/', next_youngest):

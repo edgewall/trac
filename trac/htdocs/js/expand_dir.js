@@ -11,7 +11,7 @@
   //  - `parent_tr`, the logical parent row (`null` if there's no ancestor)
   //  - a `rows` jQuery object matching the newly created entry rows
   //  - `qargs`, additional parameters to send to the server when expanding
-  //  - `autoexpand`, an optional array corresponding to a splitted sub-path
+  //  - `autoexpand`, an optional array corresponding to a split sub-path
   //    of entries that will be expanded automatically.
 
   window.enableExpandDir = function(parent_tr, rows, qargs, autoexpand) {

@@ -827,7 +827,7 @@ class MultiplexedConnection(Connection):
         # Used to arbitrate access to self._requests.
         lock = threading.RLock()
 
-        # Notification is posted everytime a request completes, allowing us
+        # Notification is posted every time a request completes, allowing us
         # to quit cleanly.
         self._lock = threading.Condition(lock)
 
