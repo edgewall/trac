@@ -743,14 +743,17 @@ class Ticket(object):
     #--------------------------------------------------
     # Personalizzazione omega
     # Carico le revisioni legate all' item per poi mostrarle.
-    revisions = []
+    std_revisions = []
+    nonstd_revisions = []
+
     revisions_loaded = False
 
     def load_revisions(self):
         if self.revisions_loaded:
             return
         
-        self.revisions.clear()
+        self.std_revisions.clear()
+        self.nonstd_revisions.clear()
         self.revisions_loaded = True
         
         with self.env.db_query as db:
@@ -760,7 +763,10 @@ class Ticket(object):
                     WHERE itemid = %s
                     """, (str(self.id),)):
                 revis = Revision(row[0],row[1],row[2],row[3],row[4])
-                self.revisions.append(revis)
+                if revis.get_repname() == 'Xsolving':
+                    self.std_revisions.append(revis)
+                else:
+                    self.nonstd_revisions.append(revis)
 
 
 class Revision(object):

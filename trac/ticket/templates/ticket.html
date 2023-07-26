@@ -270,12 +270,12 @@
         ## Personalizzazione omega per mostrare le revisioni
         # if ticket.exists:
          <div id="trac-get-revisioni" class="field">
-	        <h3 class="foldable">${_("Revisioni")}<span class="trac-count">(${len(ticket.revisions)})</span></h3>
+	        <h3 class="foldable">${_("Revisioni std")}<span class="trac-count">(${len(ticket.std_revisions)})</span></h3>
 	        <div>
 	        #if (not ticket.revisions_loaded):
          		<p>Revisioni non caricate.</p>
         	#else:
-		         # if ticket.revisions:
+		         # if ticket.std_revisions:
 		         <table class="trac-properties" style="border: 1px solid black;"> 
 		         <tr>
 		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
@@ -284,7 +284,7 @@
 					<th span="1" style="width: 10%;border: 1px solid black;">Repository</th>
 		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
 		         </tr>
-		         # 	for revision in ticket.revisions:
+		         # 	for revision in ticket.std_revisions:
 		         		<tr>
 		         			<td class="wikitext" style="border: 1px solid black;">	
           					${wiki_to_html(context, revision.get_rev(), escape_newlines=preserve_newlines)}
@@ -298,7 +298,46 @@
 		         </table>
 		         # else:
 			     	<p>
-			      		${"Nessuna revisione trovata per l'item"}
+			      		${"Nessuna revisione standard trovata per l'item"}
+			        </p>
+		         # endif
+		         
+        	#endif
+	         </div>
+	     </div>
+	     #endif
+
+       # if ticket.exists:
+         <div id="trac-get-revisioni" class="field">
+	        <h3 class="foldable">${_("Revisioni non std")}<span class="trac-count">(${len(ticket.nonstd_revisions)})</span></h3>
+	        <div>
+	        #if (not ticket.revisions_loaded):
+         		<p>Revisioni non caricate.</p>
+        	#else:
+		         # if ticket.nonstd_revisions:
+		         <table class="trac-properties" style="border: 1px solid black;"> 
+		         <tr>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
+		         	<th span="1" style="width: 20%;border: 1px solid black;">Data</th>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Autore</th>
+					<th span="1" style="width: 10%;border: 1px solid black;">Repository</th>
+		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
+		         </tr>
+		         # 	for revision in ticket.nonstd_revisions:
+		         		<tr>
+		         			<td class="wikitext" style="border: 1px solid black;">	
+          					${wiki_to_html(context, revision.get_rev(), escape_newlines=preserve_newlines)}
+		         			</td>
+		         			<td style="border: 1px solid black;">${revision.get_time()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_author()}</td>
+							<td style="border: 1px solid black;">${revision.get_repname()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_message()}</td>
+		         		</tr>
+		         #		endfor
+		         </table>
+		         # else:
+			     	<p>
+			      		${"Nessuna revisione non standard trovata per l'item"}
 			        </p>
 		         # endif
 		         
