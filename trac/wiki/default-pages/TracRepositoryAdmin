@@ -3,6 +3,7 @@
 
 == Quick start #QuickStart
 
+Trac is primarily used as an issue tracking and project planning system, but can also be used to connect to and maintain source code repositories. This page describes the guidelines and caveats when connecting Trac to a repository. 
  * Enable the repository connector(s) for the version control system(s) that you will use.
  * Add repositories through the //Repositories// admin page, using `trac-admin` or by editing the `[repositories]` section of [[wiki:TracIni#repositories-section|trac.ini]].
  * Synchronize the repositories with the cache, if using cached repositories.
@@ -10,7 +11,7 @@
 
 == Enabling the components
 
-Support for version control systems is provided by optional components distributed with Trac, which are disabled by default //(since 1.0)//. Subversion and Git must be explicitly enabled if you wish to use them.
+Support for version control systems is provided by optional components distributed with Trac, which are disabled by default. Subversion and Git must be explicitly enabled if you wish to use them.
 
 The version control systems can be enabled by adding the following to the `[components]` section of your [TracIni#components-section trac.ini], or enabling the components through the //Plugins// admin page.
 
@@ -38,9 +39,7 @@ From the Repository Admin page, the default repository is specified by leaving t
 
 === Repository Attributes
 
-There are a number of attributes that can be specified for each repository, and additional attributes may be available through plugins. A repository `name` and one of the `alias` or `dir` attributes are mandatory. All others are optional.
-
-The following attributes are supported:
+A repository is defined through the attribute `name` and one of the `alias` or `dir` attributes, all other attributes are optional:
 
 ||='''Attribute''' =||='''Description''' =||
 ||`alias` ||\
@@ -50,15 +49,19 @@ The following attributes are supported:
 ||`description` ||\
 ||The text specified in the `description` attribute is displayed below the top-level entry for the repository in the source browser. It supports WikiFormatting. ||
 ||`dir` ||\
-||The `dir` attribute specifies the location of the repository in the filesystem. The `alias` and `dir` attributes are mutually exclusive. ||
+|| Specifies the location of the repository in the filesystem. The `alias` and `dir` attributes are mutually exclusive. ||
 ||`hidden` ||\
 || When set to `true`, the repository is hidden from the repository index page in the source browser. Browsing the repository is still possible, and links referencing the repository remain valid. ||
+||`name` ||\
+|| Identifies the version control system used by the repository. This field is mandatory. ||
 ||`sync_per_request`||\
 || When set to `true` the repository will be synchronized on every request (implicit synchronization). This is generally not recommended. See [#Synchronization repository synchronization] for a comparison of explicit and implicit synchronization. The attribute defaults to `false`. ||
 ||`type` ||\
-|| The `type` attribute specifies the version control system used by the repository. Trac provides support for Subversion and Git, and plugins add support for several other systems. If `type` is not specified, it defaults to the value of the `[versioncontrol]` [wiki:TracIni#versioncontrol-default_repository_type-option default_repository_type] option. ||
+|| Specifies the version control system used by the repository. Trac provides support for Subversion and Git, and plugins add support for several other systems. If `type` is not specified, it defaults to the value of the `[versioncontrol]` [wiki:TracIni#versioncontrol-default_repository_type-option default_repository_type] option. ||
 ||`url` ||\
-|| The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
+|| Specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
+
+Additional attributes may be available through plugins.
 
 === Scoped Repository
 
@@ -273,13 +276,13 @@ See [trac:CommitTicketUpdater#Troubleshooting] for more troubleshooting tips.
 
 === Git control files missing
 
-If your repository is not browseable and you find a message in the log that looks like:
+If your repository is not browsable and you find a message in the log that looks like:
 {{{
 2017-08-08 10:49:17,339 Trac[PyGIT] ERROR: GIT control files missing in '/path/to/git-repository'
 2017-08-08 10:49:17,339 Trac[git_fs] ERROR: GitError: GIT control files not found, maybe wrong directory?
 }}}
 
-First check that the path to your repository is correct. If the path is correct, you may have a permission problem whereby the web server cannot access the repository. You can use Git to verify the repository. On a Debian-like Linux OS, the following command should help:
+First check that the path to your repository is correct. If the path is correct, you may not have the permission to have the web server access the repository. You can use Git to verify the repository. On a Debian-like Linux OS, the following command should help:
 {{{#!sh
 $ sudo -u www-data git --git-dir=/path/to/git-repository fsck
 }}}

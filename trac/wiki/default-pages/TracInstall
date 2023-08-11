@@ -59,7 +59,7 @@ There are [https://subversion.apache.org/packages.html pre-compiled SWIG binding
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
 **Note:**
-* Trac '''doesn't''' use [http://pysvn.tigris.org/ PySVN], nor does it work yet with the newer `ctype`-style bindings.
+* Trac '''doesn't''' use [https://pypi.org/project/PySVN PySVN], nor does it work yet with the newer `ctype`-style bindings.
 * If using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are [trac:ticket:493 not supported].
 }}}
 

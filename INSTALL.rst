@@ -747,7 +747,7 @@ See also: `TracInstallPlatforms`_, `TracGuide`_, `TracUpgrade`_
 .. _pyreadline: https://pypi.org/project/pyreadline
 .. _PySqlite*: https://trac.edgewall.org/intertrac/PySqlite%23ThePysqlite2bindings
 .. _pysqlite: https://pypi.org/project/pysqlite
-.. _PySVN: http://pysvn.tigris.org/
+.. _PySVN: https://pypi.org/project/PySVN
 .. _Python: https://www.python.org/
 .. _pytz: http://pytz.sourceforge.net
 .. _Running the Standalone Server: https://trac.edgewall.org/wiki/TracInstall#RunningtheStandaloneServer

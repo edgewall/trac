@@ -64,7 +64,7 @@ For more details on the available options, see the configuration section at the 
 
 == !PlanetForge
 
-[https://trac-hacks.org/wiki/PlanetForgeImportExportPlugin PlanetForgeImportExportPlugin]: this plugin exports Trac data (wiki, tickets, compoments, permissions, repositories, etc.) using the open format designed by the [https://gforge.inria.fr/projects/coclico/ COCLICO] project. It extends the webadmin panel and the 'trac admin ...' command. Has no 'import' feature.
+[https://trac-hacks.org/wiki/PlanetForgeImportExportPlugin PlanetForgeImportExportPlugin]: this plugin exports Trac data (wiki, tickets, components, permissions, repositories, etc.) using the open format designed by the [https://gforge.inria.fr/projects/coclico/ COCLICO] project. It extends the webadmin panel and the 'trac admin ...' command. Has no 'import' feature.
 
 == Scarab
 

@@ -4,7 +4,7 @@
 
 Trac backups are a copied snapshot of the entire [TracEnvironment project environment] directory, including the database. Backups can be created using the `hotcopy` command of [TracAdmin trac-admin].
 
-'''Note''': Trac uses the `hotcopy` nomenclature to match that of [http://subversion.tigris.org/ Subversion], to make it easier to remember when managing both Trac and Subversion servers.
+'''Note''': Trac uses the `hotcopy` nomenclature to match that of [https://subversion.apache.org/ Subversion].
 
 == Creating a Backup
 

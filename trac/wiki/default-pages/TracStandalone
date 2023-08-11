@@ -3,27 +3,25 @@
 Tracd is a lightweight standalone Trac web server.
 It can be used in a variety of situations, from a test or development server to a multiprocess setup behind another web server used as a load balancer.
 
-== Pros
-
+'''Pros'''
  * Fewer dependencies: You don't need to install Apache or any other web-server.
  * Fast: Should be almost as fast as the [wiki:TracModWSGI mod_wsgi] version (and much faster than the [wiki:TracCgi CGI]), especially since the HTTP/1.1 version of the protocol is enabled by default.
  * Automatic reloading: For development, Tracd can be used in ''auto_reload'' mode, which will automatically restart the server whenever you make a change to the code, for example in Trac itself or in a plugin.
 
-== Cons
-
+'''Cons'''
  * Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache httpd.
 
 == Usage examples
 
-A single project on port 8080. (http://localhost:8080/)
+A single project on port 8080, such as `http://localhost:8080/`:
 {{{#!sh
  $ tracd -p 8080 /path/to/project
 }}}
-Strictly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use the `--hostname` option.
+Strictly speaking this will make your Trac accessible to everybody from your network rather than `localhost` only. To truly limit it use the `--hostname` option.
 {{{#!sh
  $ tracd --hostname=localhost -p 8080 /path/to/project
 }}}
-With more than one project. (http://localhost:8080/project1/ and http://localhost:8080/project2/)
+With more than one project, for example `http://localhost:8080/project1/` and `http://localhost:8080/project2/`:
 {{{#!sh
  $ tracd -p 8080 /path/to/project1 /path/to/project2
 }}}
@@ -62,7 +60,7 @@ If you want tracd to start automatically when you boot Windows, do:
 The spacing here is important.
 
 {{{#!div
-Once the service is installed, it might be simpler to run the Registry Editor rather than use the `reg add` command documented above.  Navigate to:[[BR]]
+Once the service is installed, it might be simpler to run the Registry Editor rather than use the `reg add` command documented above. Navigate to:[[BR]]
 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\tracd\Parameters`
 
 Three (string) parameters are provided:
@@ -97,7 +95,7 @@ $ net start tracd
 Tracd allows you to run Trac without the need for Apache, but you can take advantage of Apache's password tools (`htpasswd` and `htdigest`) to easily create a password file in the proper format for tracd to use in authentication. It is also possible to create the password file without `htpasswd` or `htdigest`; see below for alternatives.
 
 {{{#!div style="border: 1pt dotted; margin: 1em"
-**Attention:** Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution (like `ext2` or `ext3` on Linux, or HFS+ on OSX).
+**Attention:** Make sure you place the generated password files on a filesystem which supports sub-second timestamps, as Trac will monitor their modified time and changes happening on a filesystem with too coarse-grained timestamp resolution, like `ext2` or `ext3` on Linux, or HFS+ on OSX.
 }}}
 
 Tracd provides support for both Basic and Digest authentication. Digest is considered more secure. The examples below use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the command line.
@@ -115,7 +113,7 @@ where:
  * '''realm''': the realm name (can be anything)
  * '''project_path''': path of the project
 
- * **`--auth`** in the above means use Digest authentication, replace `--auth` with `--basic-auth` if you want to use Basic auth.  Although Basic authentication does not require a "realm", the command parser does, so the second comma is required, followed directly by the closing quote for an empty realm name.
+ * **`--auth`** in the above means use Digest authentication, replace `--auth` with `--basic-auth` if you want to use Basic auth. Although Basic authentication does not require a "realm", the command parser does, so the second comma is required, followed directly by the closing quote for an empty realm name.
 
 Examples:
 
@@ -143,7 +141,7 @@ Another way to share the password file is to specify "*" for the project name:
 
 This section describes how to use `tracd` with Apache .htpasswd files.
 
-'''Note''': On Windows It is necessary to install the [https://pypi.python.org/pypi/passlib passlib] package in order to decode some htpasswd formats. Only `SHA-1` passwords (since Trac 1.0) work without this module.
+'''Note''': On Windows It is necessary to install the [https://pypi.python.org/pypi/passlib passlib] package in order to decode some htpasswd formats. Only `SHA-1` passwords work without this module (since Trac 1.0).
 
 To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
 {{{#!sh
@@ -168,15 +166,15 @@ For example:
 
 === Digest authentication: Using a htdigest password file
 
-If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [https://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
+If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [https://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions. You will be prompted for a password to enter for each user that you create. For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
 
 Note that you can start tracd without the `--auth` argument, but if you click on the ''Login'' link you will get an error.
 
 === Generating Passwords Without Apache
 
-Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`.  Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd. Windows Python can grok MD5 password hashes just fine and you should use MD5.
+Basic Authorization can be accomplished via this [http://aspirine.org/htpasswd_en.html online HTTP Password generator] which also supports `SHA-1`. Copy the generated password-hash line to the .htpasswd file on your system. Note that Windows Python lacks the "crypt" module that is the default hash type for htpasswd. Windows Python can grok MD5 password hashes just fine and you should use MD5.
 
-Trac also provides `htpasswd` and `htdigest` scripts in `contrib`:
+Trac also provides `htpasswd` and `htdigest` scripts in `contrib` (in the Tar package):
 {{{#!sh
 $ ./contrib/htpasswd.py -cb htpasswd user1 user1
 $ ./contrib/htpasswd.py -b htpasswd user2 user2
@@ -339,7 +337,7 @@ file = /srv/trac/conf/trac.ini
 
 === Serving a different base path than /
 
-Tracd supports serving projects with different base urls than /<project>. The parameter name to change this is:
+Tracd supports serving projects with different base urls than `/<project>` with the `base_path` parameter:
 {{{#!sh
  $ tracd --base-path=/some/path
 }}}

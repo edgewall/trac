@@ -14,8 +14,8 @@ The changeset view consists of two parts, the ''header'' and the ''diff views''.
 The header shows an overview of the whole changeset.
 Here you will find metadata:
 
- * Timestamp — When the changeset was commited
- * Author — Who commited the changeset
+ * Timestamp — When the changeset was committed
+ * Author — Who committed the changeset
  * Message — A brief description from the author (the commit log message)
  * Location — Parent directory of all files affected by this changeset
  * Files — A list of files affected by this changeset
