@@ -1,9 +1,11 @@
 Release Notes for Trac 1.6 'Py3' Release
 ===========================================
-Not yet released
+September 23, 2023
 
 Highlights
 ----------
+* Supports Python 3.5 and later.
+* Drop support for Python 2.
 
 Detailed User Visible Changes
 -----------------------------

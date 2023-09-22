@@ -84,7 +84,10 @@ MediaWiki    https://www.mediawiki.org/wiki/
 
 SO  https://stackoverflow.com/questions/ # Question $1 in StackOverflow
 
-Transifex https://www.transifex.com/projects/p/trac/
+Transifex         https://www.transifex.com/cboos/trac/
+TransifexLang     https://www.transifex.com/cboos/trac/language/$1/
+TransifexResource https://www.transifex.com/cboos/trac/$1/
+TransifexView     https://www.transifex.com/cboos/trac/viewstrings/#$1/$2
 
 kwquery      /query?group=status&keywords=~  # Custom query for tickets matching keyword $1
 
