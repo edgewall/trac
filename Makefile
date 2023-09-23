@@ -721,7 +721,7 @@ sdist:
 sdist+wheel = $(sdist_gztar) $(bdist_wheel)
 
 sdist_gztar = dist/Trac-$(version).tar.gz
-bdist_wheel = dist/Trac-$(version)-py2-none-any.whl
+bdist_wheel = dist/Trac-$(version)-py3-none-any.whl
 
 
 ifeq "$(OS)" "Windows_NT"
