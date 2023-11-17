@@ -79,6 +79,7 @@
         var comment_focused = false;
         $("#comment").focus(function() { comment_focused = true; })
                      .blur(function() { comment_focused = false; });
+      #   if not disable_submit:
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           var items = $(reply);
           // Update ticket box
@@ -113,8 +114,9 @@
             .next("div.comment").html(reply);
           comment.toggle(comment.children().length != 0);
         }, "#changelog .trac-loading");
+      #   endif
 
-      # else:
+      # elif not disable_submit:
         $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
           $('#ticket').replaceWith(reply);
         }, "#ticket .trac-loading");

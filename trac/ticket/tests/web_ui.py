@@ -119,6 +119,9 @@ class TicketModuleTestCase(unittest.TestCase):
                    in s['attrs']['src']
                    for s in req.chrome['scripts'])
 
+    def _render_fragment(self, req, template, data):
+        return Chrome(self.env).render_fragment(req, template, data)
+
     def _insert_ticket(self, **kw):
         """Helper for inserting a ticket into the database"""
         return insert_ticket(self.env, **kw)
@@ -702,7 +705,7 @@ class TicketModuleTestCase(unittest.TestCase):
         def timefield_text():
             self.assertTrue(self.ticket_module.match_request(req))
             template, data = self.ticket_module.process_request(req)
-            content = Chrome(self.env).render_fragment(req, template, data)
+            content = self._render_fragment(req, template, data)
             # select('//td[@headers="h_timefield"') replacement
             class TimefieldExtractor(HTMLTransform):
                 pick_next_text = False
@@ -870,9 +873,11 @@ class TicketModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', path_info='/newticket')
 
         self.assertTrue(self.ticket_module.match_request(req))
-        self.ticket_module.process_request(req)
+        template, data = self.ticket_module.process_request(req)
 
         self.assertTrue(self._has_auto_preview(req))
+        content = self._render_fragment(req, template, data)
+        self.assertIn('.autoSubmit(', content)
 
     def test_newticket_autopreview_disabled_when_no_workflow_actions(self):
         """Newticket autopreview disabled when no workflow actions."""
@@ -882,11 +887,13 @@ class TicketModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', path_info='/newticket')
 
         self.assertTrue(self.ticket_module.match_request(req))
-        data = self.ticket_module.process_request(req)[1]
+        template, data = self.ticket_module.process_request(req)
 
         self.assertEqual([], data['action_controls'])
         self.assertFalse(self._has_auto_preview(req))
         self.assertTrue(data['disable_submit'])
+        content = self._render_fragment(req, template, data)
+        self.assertNotIn('.autoSubmit(', content)
 
     def test_ticket_autopreview_disabled_when_no_workflow_actions(self):
         """Ticket autopreview disabled when no workflow actions."""
@@ -898,11 +905,13 @@ class TicketModuleTestCase(unittest.TestCase):
         req = MockRequest(self.env, method='GET', path_info='/ticket/1')
 
         self.assertTrue(self.ticket_module.match_request(req))
-        data = self.ticket_module.process_request(req)[1]
+        template, data = self.ticket_module.process_request(req)
 
         self.assertEqual([], data['action_controls'])
         self.assertFalse(self._has_auto_preview(req))
         self.assertTrue(data['disable_submit'])
+        content = self._render_fragment(req, template, data)
+        self.assertNotIn('.autoSubmit(', content)
 
     def test_new_ticket_without_ticket_edit_cc(self):
         """User without TICKET_EDIT_CC can only add themselves to CC.
