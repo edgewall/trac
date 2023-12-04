@@ -17,7 +17,6 @@
 from abc import ABCMeta
 from http.cookies import CookieError, BaseCookie, SimpleCookie
 from http.server import BaseHTTPRequestHandler
-import cgi
 from datetime import datetime
 import hashlib
 import io
@@ -27,6 +26,14 @@ import re
 import sys
 import tempfile
 import urllib.parse
+
+try:
+    import multipart
+except ImportError:
+    multipart = None
+    import cgi
+else:
+    cgi = None
 
 from trac.core import Interface, TracBaseError, TracError
 from trac.util import as_bool, as_int, get_last_traceback, lazy, \
@@ -260,22 +267,6 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
 del code, exc_name
 
 
-class _FieldStorage(cgi.FieldStorage):
-    """Our own version of cgi.FieldStorage, with tweaks."""
-
-    def make_file(self):
-        # We always use binary mode even if filename parameter is missing
-        return tempfile.TemporaryFile('wb+')
-
-    def read_multi(self, *args, **kwargs):
-        try:
-            cgi.FieldStorage.read_multi(self, *args, **kwargs)
-        except ValueError:
-            # Most likely "Invalid boundary in multipart form",
-            # possibly an upload of a .mht file? See #9880.
-            self.read_single()
-
-
 class _RequestArgs(dict):
     """Dictionary subclass that provides convenient access to request
     parameters that may contain multiple values."""
@@ -450,6 +441,7 @@ def parse_arg_list(query_string):
     args = []
     if not query_string:
         return args
+    unquote_plus = urllib.parse.unquote_plus
     query_string = query_string.lstrip('?')
     for arg in query_string.split('&'):
         nv = arg.split('=', 1)
@@ -457,12 +449,8 @@ def parse_arg_list(query_string):
             (name, value) = nv
         else:
             (name, value) = (nv[0], empty)
-        name = urllib.parse.unquote(name.replace('+', ' '))
-        if isinstance(name, bytes):
-            name = str(name, 'utf-8')
-        value = urllib.parse.unquote(value.replace('+', ' '))
-        if isinstance(value, bytes):
-            value = str(value, 'utf-8')
+        name = unquote_plus(name, encoding='utf-8', errors='strict')
+        value = unquote_plus(value, encoding='utf-8', errors='strict')
         args.append((name, value))
     return args
 
@@ -479,6 +467,110 @@ def arg_list_to_args(arg_list):
         else:
             args[name] = value
     return args
+
+
+def _raise_if_null_bytes(value):
+    if value and '\x00' in value:
+        raise HTTPBadRequest(_("Invalid request arguments."))
+
+
+if multipart:
+    def parse_header(header):
+        return multipart.parse_options_header(header)
+
+    def parse_form_data(environ):
+        if environ['REQUEST_METHOD'] != 'POST':
+            query_string = environ.get('QUERY_STRING', '')
+            for name, value in parse_arg_list(query_string):
+                _raise_if_null_bytes(name)
+                _raise_if_null_bytes(value)
+                yield name, value
+            return
+
+        ctype = environ.get('CONTENT_TYPE')
+        if ctype:
+            ctype, options = parse_header(ctype)
+
+        if ctype == 'application/x-www-form-urlencoded':
+            length = int(environ.get('CONTENT_LENGTH', -1))
+            data = environ['wsgi.input'].read(length)
+            pairs = urllib.parse.parse_qsl(
+                str(data, 'utf-8'), keep_blank_values=True,
+                strict_parsing=True, encoding='utf-8', errors='strict')
+            for name, value in pairs:
+                _raise_if_null_bytes(name)
+                _raise_if_null_bytes(value)
+                yield name, value
+            return
+
+        if ctype == 'multipart/form-data':
+            forms, files = multipart.parse_form_data(environ, charset='utf-8',
+                                                     strict=True)
+            try:
+                for name in forms:
+                    _raise_if_null_bytes(name)
+                    for value in forms.getall(name):
+                        _raise_if_null_bytes(value)
+                        yield name, value
+                for name in files:
+                    _raise_if_null_bytes(name)
+                    for item in files.getall(name):
+                        _raise_if_null_bytes(item.filename)
+                        yield name, item
+            except:
+                for name in files:
+                    for item in files.getall(name):
+                        item.close()
+                raise
+            return
+
+else:
+    parse_header = cgi.parse_header
+
+    class _FieldStorage(cgi.FieldStorage):
+        """Our own version of cgi.FieldStorage, with tweaks."""
+
+        def make_file(self):
+            # We always use binary mode even if filename parameter is missing
+            return tempfile.TemporaryFile('wb+')
+
+        def read_multi(self, *args, **kwargs):
+            try:
+                super().read_multi(*args, **kwargs)
+            except ValueError:
+                # Most likely "Invalid boundary in multipart form",
+                # possibly an upload of a .mht file? See #9880.
+                self.read_single()
+
+    def parse_form_data(environ):
+        environ = environ.copy()
+        fp = environ['wsgi.input']
+
+        # Avoid letting cgi.FieldStorage consume the input stream when the
+        # request does not contain form data
+        ctype = environ.get('CONTENT_TYPE')
+        if ctype:
+            ctype, options = parse_header(ctype)
+        if ctype not in ('application/x-www-form-urlencoded',
+                         'multipart/form-data'):
+            fp = io.BytesIO()
+
+        # Python 2.6 introduced a backwards incompatible change for
+        # FieldStorage where QUERY_STRING is no longer ignored for POST
+        # requests. We'll keep the pre 2.6 behaviour for now...
+        if environ['REQUEST_METHOD'] == 'POST':
+            environ.pop('QUERY_STRING', '')
+        fs = _FieldStorage(fp, environ=environ, keep_blank_values=True,
+                           errors='strict')
+        for value in fs.list or ():
+            name = value.name
+            _raise_if_null_bytes(name)
+            if value.filename:
+                _raise_if_null_bytes(value.filename)
+            else:
+                value = value.value
+                _raise_if_null_bytes(value)
+            yield name, value
 
 
 class RequestDone(TracBaseError):
@@ -737,8 +829,6 @@ class Request(object):
             self.end_headers()
             raise RequestDone
 
-    _trident_re = re.compile(r' Trident/([0-9]+)')
-
     def redirect(self, url, permanent=False):
         """Send a redirect to the client, forwarding to the specified URL.
 
@@ -761,14 +851,6 @@ class Request(object):
             scheme, host = urllib.parse.urlparse(self.base_url)[:2]
             url = urllib.parse.urlunparse((scheme, host, url, None, None,
                                            None))
-
-        # Workaround #10382, IE6-IE9 bug when post and redirect with hash
-        if status == 303 and '#' in url:
-            user_agent = self.environ.get('HTTP_USER_AGENT', '')
-            match_trident = self._trident_re.search(user_agent)
-            if ' MSIE ' in user_agent and \
-                    (not match_trident or int(match_trident.group(1)) < 6):
-                url = url.replace('#', '#__msie303:')
 
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
@@ -923,25 +1005,8 @@ class Request(object):
         """Parse the supplied request parameters into a list of
         `(name, value)` tuples.
         """
-        fp = self.environ['wsgi.input']
-
-        # Avoid letting cgi.FieldStorage consume the input stream when the
-        # request does not contain form data
-        ctype = self.get_header('Content-Type')
-        if ctype:
-            ctype, options = cgi.parse_header(ctype)
-        if ctype not in ('application/x-www-form-urlencoded',
-                         'multipart/form-data'):
-            fp = io.BytesIO()
-
-        # Python 2.6 introduced a backwards incompatible change for
-        # FieldStorage where QUERY_STRING is no longer ignored for POST
-        # requests. We'll keep the pre 2.6 behaviour for now...
-        if self.method == 'POST':
-            qs_on_post = self.environ.pop('QUERY_STRING', '')
         try:
-            fs = _FieldStorage(fp, environ=self.environ,
-                               keep_blank_values=True, errors='strict')
+            return list(parse_form_data(self.environ))
         except UnicodeDecodeError as e:
             raise HTTPBadRequest(_("Invalid encoding in form data: %(msg)s",
                                    msg=exception_to_unicode(e)))
@@ -951,24 +1016,6 @@ class Request(object):
                     _("Exception caught while reading request: %(msg)s",
                       msg=exception_to_unicode(e)))
             raise
-        if self.method == 'POST':
-            self.environ['QUERY_STRING'] = qs_on_post
-
-        def raise_if_null_bytes(value):
-            if value and '\x00' in value:
-                raise HTTPBadRequest(_("Invalid request arguments."))
-
-        args = []
-        for value in fs.list or ():
-            name = value.name
-            raise_if_null_bytes(name)
-            if value.filename:
-                raise_if_null_bytes(value.filename)
-            else:
-                value = value.value
-                raise_if_null_bytes(value)
-            args.append((name, value))
-        return args
 
     def _parse_cookies(self):
         cookies = Cookie()
@@ -994,7 +1041,7 @@ class Request(object):
         header = self.get_header('Accept-Language') or 'en-us'
         langs = []
         for i, lang in enumerate(header.split(',')):
-            code, params = cgi.parse_header(lang)
+            code, params = parse_header(lang)
             q = 1
             if 'q' in params:
                 try:

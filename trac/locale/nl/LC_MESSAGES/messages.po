@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: Trac 1.5.4\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2022-12-14 22:34-0500\n"
-"PO-Revision-Date: 2022-12-20 02:57+0000\n"
+"PO-Revision-Date: 2023-06-06 23:28+0000\n"
 "Last-Translator: Pander <pander@users.sourceforge.net>\n"
 "Language: nl\n"
 "Language-Team: nl <trac-dev@googlegroups.com>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: tracopt/ticket/commit_updater.py:293
 msgid ""
@@ -1514,6 +1514,8 @@ msgid ""
 "Copy all of subject's permissions to target. Subject and target can be "
 "either users or groups."
 msgstr ""
+"Kopieer alle permissies van het onderwerp om te targeten. Onderwerp en "
+"doel kunnen gebruikers of groepen zijn."
 
 #: trac/admin/templates/admin_perms.html:100
 msgid "Add Subject to Group:"
@@ -4953,6 +4955,8 @@ msgid ""
 "Continue browsing through the current list of results, from the last "
 "selected report or custom query."
 msgstr ""
+"Blader verder door de huidige lijst met resultaten, van het laatst "
+"geselecteerde rapport of aangepaste zoekopdracht."
 
 #: trac/ticket/templates/report_list.html:89
 msgid "Compose a new ticket query by selecting filters and columns to display."
@@ -5375,6 +5379,9 @@ msgid ""
 "<label>View changes from %(fromdate)s</label> <br /> <label>going back "
 "%(daysback)s days</label> <br /> <label>by author %(authors)s</label>"
 msgstr ""
+"<label>Bekijk wijzigingen van %(fromdate)s</label> <br /> <label>tot "
+"%(daysback)s dagen terug</label> <br /> <label>door auteur "
+"%(authors)s</label>"
 
 #: trac/timeline/templates/timeline.html:70
 msgid "Today"
@@ -6025,7 +6032,7 @@ msgstr "Ga naar het gekozen voorgeselecteerde pad"
 #: trac/versioncontrol/templates/browser.html:148
 #: trac/versioncontrol/templates/revisionlog.html:254
 msgid "Branch head"
-msgstr ""
+msgstr "Branch hoofd"
 
 #: trac/versioncontrol/templates/browser.html:148
 #: trac/versioncontrol/templates/revisionlog.html:254
@@ -7426,6 +7433,11 @@ msgid ""
 "Can be given an optional argument which is interpreted as mime-type "
 "filter."
 msgstr ""
+"Maak een lijst van alle bekende mime-types die kunnen worden gebruikt als"
+" WikiProcessors.\n"
+"\n"
+"Kan een optioneel argument worden meegegeven dat wordt geïnterpreteerd "
+"als mime-type filter."
 
 #: trac/wiki/macros.py:907
 msgid "MIME Types"

@@ -31,11 +31,6 @@
     ## jinjacheck: "attribute content" OK
     #   endfor
 
-    <!--[if IE]><script>
-        if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-        </script><![endif]-->
-
     #   if chrome.links:
     #     for rel, links in chrome.links.items():
     #       for link in links:

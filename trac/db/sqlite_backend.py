@@ -210,16 +210,20 @@ class SQLiteConnector(Component):
             # this direct connect will create the database if needed
             cnx = sqlite.connect(path, isolation_level=None,
                                  timeout=int(params.get('timeout', 10000)))
-            with closing(cnx.cursor()) as cursor:
-                _set_journal_mode(cursor, params.get('journal_mode'))
-                set_synchronous(cursor, params.get('synchronous'))
-                insert_schema(cursor, schema)
-            cnx.isolation_level = 'DEFERRED'
+            try:
+                with closing(cnx.cursor()) as cursor:
+                    _set_journal_mode(cursor, params.get('journal_mode'))
+                    set_synchronous(cursor, params.get('synchronous'))
+                    insert_schema(cursor, schema)
+                cnx.isolation_level = 'DEFERRED'
+                cnx.commit()
+            finally:
+                cnx.close()
         else:
             cnx = self.get_connection(path, log, params)
             with closing(cnx.cursor()) as cursor:
                 insert_schema(cursor, schema)
-        cnx.commit()
+            cnx.commit()
 
     def destroy_db(self, path, log=None, params={}):
         if path != ':memory:':

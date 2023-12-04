@@ -137,13 +137,13 @@ if selenium:
             options.log.level = 'info'
             log_path = 'geckodriver.log'
             open(log_path, 'wb').close()
+            service = webdriver.firefox.service.Service(log_path=log_path)
 
             n = 1
             startts = time.time()
             while time.time() - startts < 60:
                 try:
-                    return webdriver.Firefox(options=options,
-                                             service_log_path=log_path)
+                    return webdriver.Firefox(options=options, service=service)
                 except TimeoutException:
                     if n >= 20:
                         raise

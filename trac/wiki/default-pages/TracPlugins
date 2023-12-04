@@ -6,11 +6,11 @@ Trac is extensible with [trac:PluginList plugins]. Plugin functionality is based
 
 == Plugin discovery
 
-A plugin is either a single .py file or a package (.egg or .whl). Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Plugins installed to the project environment `plugins` directory are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file.  Plugins installed elsewhere must be explicitly enabled in the [TracIni#components-section "[components]"] section of the `trac.ini` file.
+A plugin is either a single .py file or a package (.egg or .whl). Trac looks for plugins in Python's `site-packages` directory, the [TracIni#GlobalConfiguration global shared] `plugins` directory and the [TracEnvironment project environment] `plugins` directory. Plugins installed to the project environment `plugins` directory are enabled, unless explicitly disabled in the `[components]` section of the `trac.ini` file. Plugins installed elsewhere must be explicitly enabled in the [TracIni#components-section "[components]"] section of the `trac.ini` file.
 
 == Installing a Trac plugin
 
-The instructions below are applicable to a plugins installed as packages. Plugins implemented as a single `py` file should be downloaded and copied to the [TracEnvironment project environment] `plugins` directory or the [TracIni#GlobalConfiguration global shared] plugins directory.
+The instructions below are applicable to plugins installed as packages. Plugins implemented as a single `py` file should be downloaded and copied to the [TracEnvironment project environment] `plugins` directory or the [TracIni#GlobalConfiguration global shared] plugins directory.
 
 === For a single project
 
@@ -24,7 +24,7 @@ $ python setup.py bdist_egg
  The egg file will be created in the `dist` subdirectory.
 * Copy the egg file to the `plugins` directory of the [TracEnvironment project environment].
 
-Make sure the web server has sufficient permissions to read the plugin egg and restart the web server. If you are running as a [TracStandalone "tracd" standalone server], restart tracd (i.e. kill the process and run again).
+Make sure the web server has sufficient permissions to read the plugin egg and restart the web server. If you are running as a [TracStandalone "tracd" standalone server], restart tracd, i.e. kill the process and run again.
 
 Trac also searches for plugins installed in the [TracIni#GlobalConfiguration global shared] plugins directory. This is a convenient way to share the installation of plugins across several, but not all, environments.
 
@@ -42,9 +42,7 @@ Remove the egg from the `plugins` directory and restart the web server.
 
 The modern Python package manager, `pip`, is included in Python 2.7.9 and later. In earlier versions of Python it can be installed through the package manager of your OS (e.g. `apt-get install python-pip`) or using [https://pip.pypa.io/en/latest/installing.html#install-pip get_pip.py].
 
-Using `pip`, the plugin will be installed
-in the [https://pythonwheels.com/ wheel format], which is the modern standard for Python and a
-replacement for the egg format.
+Using `pip`, the plugin will be installed in the [https://pythonwheels.com/ wheel format], which is the modern standard for Python and a replacement for the egg format.
 
 ==== From PyPI
 
@@ -55,7 +53,7 @@ $ pip install TracTags
 
 The version can be specified, which can be useful if you don't want to install the latest:
 {{{#!sh
-$ pip install TracTags==0.10
+$ pip install TracTags==1.2
 }}}
 
 ==== From source
@@ -65,8 +63,7 @@ You can install directly from a source repository:
 $ pip install svn+https://trac-hacks.org/svn/tagsplugin/trunk
 }}}
 
-Replace the `svn+` prefix with `git+` if installing
-from a Git repository.
+Replace the `svn+` prefix with `git+` if installing from a Git repository.
 
 Or from the path or URL of a tar.gz or zip archive:
 {{{#!sh
@@ -97,7 +94,7 @@ After installing the plugin, you must restart your web server.
 
 ==== Upgrading the environment
 
-Some plugins require an environment upgrade. This will typically be necessary for plugins that implement `IEnvironmentSetupParticipant`. Common reasons for requiring an environment upgrade are to add tables to the database or add configuration parameters to trac.ini. A notification will be displayed when accessing Trac for the first time after installing a plugin and restarting the web server. To upgrade the environment, run the command:
+Some plugins require an environment upgrade. This will typically be necessary for plugins that implement `IEnvironmentSetupParticipant`. Common reasons for requiring an environment upgrade are to add tables to the database or add configuration parameters to `trac.ini`. A notification will be displayed when accessing Trac for the first time after installing a plugin and restarting the web server. To upgrade the environment, run the command:
 
 {{{#!sh
 $ trac-admin /path/to/env upgrade
@@ -107,7 +104,7 @@ A database backup will be made before upgrading the environment, unless the `--n
 
 ==== Redeploying static resources
 
-If you [TracInstall#MappingStaticResources mapped static resources] so they are served by the web server, and the plugin contains static resources (CSS, !JavaScript and image files), the resources will need to be deployed to the location on the filesystem that is served by the web server.
+If you [TracInstall#MappingStaticResources mapped static resources] so they are served by the web server, and the plugin contains static resources, such as stylesheets, !JavaScript and image files, the resources will need to be deployed to the location on the filesystem that is served by the web server.
 
 Execute the `deploy` command, as is done during install and [TracUpgrade#a5.Refreshstaticresources upgrade]:
 
@@ -189,7 +186,7 @@ Or for mod_python:
 
 '''Note''': !SetEnv requires the `mod_env` module, which needs to be activated for Apache. In this case the !SetEnv directive can also be used in the `mod_python` Location block.
 
-For [TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
+For [TracFastCgi FastCGI], you will need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
 
 '''Note''': if you already use -initial-env to set the project directory for either a single project or parent, you will need to add an additional -initial-env directive to the !FastCgiConfig directive:
 
@@ -212,7 +209,7 @@ You can write your own Trac plugin using the following resources:
 
 === Did you get the correct version of the Python egg?
 
-Python eggs have the Python version encoded in their filename. For example, `MyPlugin-1.0-py2.5.egg` is an egg for Python 2.5, and will '''not''' be loaded if you're running a different Python version (such as 2.4 or 2.6).
+Python eggs have the Python version encoded in their filename. For example, `MyPlugin-1.0-py2.5.egg` is an egg for Python 2.5, and will '''not''' be loaded if you're running a different Python version, such as 2.4 or 2.6.
 
 Also, verify that the egg file you downloaded is indeed a .zip archive. If you downloaded it from a Trac site, you may have downloaded the HTML preview page instead.
 
@@ -243,7 +240,7 @@ If you put your plugins in one of the `plugins` directories, and certainly if yo
 
 * Only one version of the plugin can be loaded for each running Trac server, i.e. each Python process. The Python namespaces and module list will be shared, and it cannot handle duplicates. Whether a plugin is `enabled` or `disabled` makes no difference.
 * A globally installed plugin will override any version in the global or project plugins directories. A plugin from the global plugins directory will be discovered ''before'' any project plugins directory.
-* If your Trac server hosts more than one project (as with `TRAC_ENV_PARENT_DIR` setups), having two versions of a plugin in two different projects will give unpredicatable results. Only one of them will load, and the one loaded will be shared by both projects. Trac will load the first plugin found, usually from the project that receives the first request.
+* If your Trac server hosts more than one project (as with `TRAC_ENV_PARENT_DIR` setups), having two versions of a plugin in two different projects will give unpredictable results. Only one of them will load, and the one loaded will be shared by both projects. Trac will load the first plugin found, usually from the project that receives the first request.
 * Having more than one version listed inside Python site-packages is fine, because setuptools will make sure you get the version installed most recently. However, don't store more than one version inside a global or project plugins directory: neither the version number nor the installed date will matter at all. There is no way to determine which one will be located first when Trac searches the directory for plugins.
 
 === If all of the above failed

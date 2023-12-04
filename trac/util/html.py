@@ -93,6 +93,8 @@ def escape(text, quotes=True):
     :rtype: `Markup`
 
     """
+    if LazyProxy and isinstance(text, LazyProxy):
+        text = text.value
     if isinstance(text, Markup):
         return text
     if isinstance(text, Fragment):
@@ -968,6 +970,8 @@ def plaintext(text, keeplinebreaks=True):
     :param keeplinebreaks: optionally keep linebreaks
 
     """
+    if LazyProxy and isinstance(text, LazyProxy):
+        text = text.value
     if isinstance(text, Fragment):
         text = text.as_text()
     else:
@@ -982,6 +986,8 @@ def find_element(frag, attr=None, cls=None, tag=None):
     attribute, class or tag, using a preorder depth-first search.
 
     """
+    if LazyProxy and isinstance(frag, LazyProxy):
+        frag = frag.value
     if isinstance(frag, Element):
         if attr is not None and attr in frag.attrib:
             return frag

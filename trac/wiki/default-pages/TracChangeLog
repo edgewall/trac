@@ -4,6 +4,22 @@ This is a rough list of changes between released versions.
 
 To see where Trac is going in future releases, see the [trac:roadmap Roadmap].
 
+== 1.6.x Releases
+
+=== '''1.6 'Py3''''
+
+//(September 23, 2023)//
+
+Trac 1.6 is the first major release of Trac in almost 4 years.
+
+This is the first release to support Python 3, supporting Python
+3.5 and later. Python 2 is no longer supported.
+
+For more information see the [trac:wiki:TracDev/ApiChanges/1.6 API changes] and the detailed
+release notes for [[trac:wiki:TracDev/ReleaseNotes/1.6|1.6]] and the change log for [#a1.5.xReleases 1.5.x Releases] below.
+
+[trac:source:/tags/trac-1.6 View Tag] | [trac:milestone:1.6 View Milestone]
+
 == 1.5.x Releases
 
 === 1.5.4
@@ -55,6 +71,38 @@ releases will support Python 3.5+.
 [trac:source:/tags/trac-1.5.1 View Tag] | [trac:milestone:1.5.1 View Milestone]
 
 == 1.4.x Releases
+
+=== 1.4.4
+
+//(August 11, 2023)//
+
+Trac 1.4.4 contains about a dozen minor fixes
+and improvements.
+
+[trac:source:/tags/trac-1.4.4 View Tag] | [trac:milestone:1.4.4 View Milestone]
+
+=== 1.4.3
+
+//(May 9, 2021)//
+
+Trac 1.4.3 contains about a dozen minor fixes
+and improvements.
+
+[trac:source:/tags/trac-1.4.3 View Tag] | [trac:milestone:1.4.3 View Milestone]
+
+=== 1.4.2
+
+//(June 17, 2020)//
+
+Trac 1.4.2 has more than a dozen minor fixes and
+improvements, including the following highlights:
+
+* Batch modify has autopreview for comment textarea
+  and better form styling ([trac:#13285]).
+* TracAdmin `config remove <section>` command
+  deletes a configuration section ([trac:#13305]).
+
+[trac:source:/tags/trac-1.4.2 View Tag] | [trac:milestone:1.4.2 View Milestone]
 
 === 1.4.1
 

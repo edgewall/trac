@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2014-2023 Edgewall Software
@@ -49,6 +49,7 @@ PACKAGES = [
     ("Pip",               'pip.__version__'),
     ("Wheel",             'wheel.__version__'),
     ("Jinja2",            'jinja2.__version__'),
+    ("multipart",         'multipart.__version__'),
     ("Babel",             'babel.__version__'),
     ("sqlite3",           ('sqlite3.version',
                            'sqlite3.sqlite_version')),
@@ -62,6 +63,7 @@ PACKAGES = [
     ("Textile",           'textile.__version__'),
     ("Pytz",              'pytz.__version__'),
     ("Docutils",          'docutils.__version__'),
+    ("aiosmtpd",          'aiosmtpd.__version__'),
     ("Selenium",          'selenium.__version__'),
     ("PyTidyLib",         '__main__._pytidylib_version()'),
     ("LXML",              'lxml.etree.__version__'),

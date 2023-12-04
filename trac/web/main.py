@@ -16,7 +16,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Matthew Good <trac@matt-good.net>
 
-import cgi
 import fnmatch
 from functools import partial
 import gc
@@ -54,7 +53,7 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalServerError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, TracNotImplementedError, \
-                         is_valid_default_handler
+                         is_valid_default_handler, parse_header
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice, \
                             add_stylesheet, add_warning
 from trac.web.href import Href
@@ -232,7 +231,7 @@ class RequestDispatcher(Component):
             if req.method == 'POST':
                 ctype = req.get_header('Content-Type')
                 if ctype:
-                    ctype, options = cgi.parse_header(ctype)
+                    ctype, options = parse_header(ctype)
                 if ctype in ('application/x-www-form-urlencoded',
                              'multipart/form-data') and \
                         req.args.get('__FORM_TOKEN') != req.form_token:
@@ -611,11 +610,9 @@ def dispatch_request(environ, start_response):
         except RequestDone as req_done:
             resp = req_done.iterable
     except HTTPException as e:
-        if not req.response_started:
-            _send_user_error(req, env, e)
+        _send_user_error(req, env, e)
     except Exception:
-        if not req.response_started:
-            send_internal_error(env, req, sys.exc_info())
+        send_internal_error(env, req, sys.exc_info())
     else:
         resp = resp or req._response or []
     finally:
@@ -677,6 +674,8 @@ def _send_user_error(req, env, e):
         env.log.warning('[%s] %s, %r, referrer %r',
                         req.remote_addr, exception_to_unicode(e),
                         req, req.environ.get('HTTP_REFERER'))
+    if req.response_started:
+        return
     data = {'title': e.title, 'type': 'TracError', 'message': e.message,
             'frames': [], 'traceback': None}
     if e.code == 403 and not req.is_authenticated:
@@ -692,6 +691,8 @@ def send_internal_error(env, req, exc_info):
         env.log.error("[%s] Internal Server Error: %r, referrer %r%s",
                       req.remote_addr, req, req.environ.get('HTTP_REFERER'),
                       exception_to_unicode(exc_info[1], traceback=True))
+    if req.response_started:
+        return
     message = exception_to_unicode(exc_info[1])
     traceback = get_last_traceback()
 

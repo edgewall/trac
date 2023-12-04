@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005-2023 Edgewall Software
@@ -46,7 +46,7 @@ class CGIGateway(WSGIGateway):
             sys.stdout.write('\r\n')
             sys.stdout.flush()
 
-        sys.stdout.write(data)
+        sys.stdout.buffer.write(data)
         sys.stdout.flush()
 
 

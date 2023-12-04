@@ -1,5 +1,7 @@
 Jinja2
-selenium
+multipart; python_version>='3.11'
+aiosmtpd; python_version>='3.10'
+selenium!=4.10.0
 pytidylib
 Babel<2.10
 Pygments
@@ -9,5 +11,5 @@ pytz
 PyMySQL
 cryptography
 psycopg2
-passlib; python_version>='3.13' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'
-bcrypt; python_version>='3.13' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'
+passlib; python_version>='3.11' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'
+bcrypt; python_version>='3.11' or python_version<'3.7' or platform_system=='Darwin' or platform_system=='Windows'

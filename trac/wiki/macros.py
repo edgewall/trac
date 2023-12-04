@@ -85,7 +85,7 @@ class WikiMacroBase(Component):
         if description:
             return (domain, description) if domain else description
         # For pre-0.12 compatibility
-        # don't use inspect.getdoc() to avoid retreiving from the inheritance
+        # don't use inspect.getdoc() to avoid retrieving from the inheritance
         # hierarchy
         return inspect.cleandoc(self.__doc__) if self.__doc__ else ''
 
@@ -184,7 +184,7 @@ class TitleIndexMacro(WikiMacroBase):
         def split_pages_group(pages):
             """Return a list of (path elements, page_name) pairs,
             where path elements correspond to the page name (without prefix)
-            splitted at Camel Case word boundaries, numbers and '/'.
+            split at Camel Case word boundaries, numbers and '/'.
             """
             page_paths = []
             for page in pages:
@@ -197,7 +197,7 @@ class TitleIndexMacro(WikiMacroBase):
         def split_pages_hierarchy(pages):
             """Return a list of (path elements, page_name) pairs,
             where path elements correspond to the page name (without prefix)
-            splitted according to the '/' hierarchy.
+            split according to the '/' hierarchy.
             """
             return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
                     for page in pages]

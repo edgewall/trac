@@ -187,7 +187,7 @@ class Configuration(object):
         """Return the specified option as boolean value.
 
         If the value of the option is one of "yes", "true", "enabled", "on",
-        or "1", this method wll return `True`, otherwise `False`.
+        or "1", this method will return `True`, otherwise `False`.
 
         Valid default input is a string or a bool. Returns a bool.
         """

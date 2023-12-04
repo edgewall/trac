@@ -200,11 +200,6 @@ if [ -z "$REPOS" -o -z "$REV" ]; then
     exit 2
 fi
 
-if ! python -V 2>/dev/null; then
-    >&2 echo "python is not in the PATH ($PATH), check TRAC_PATH."
-    exit 2
-fi
-
 if ! trac-admin -v 2>/dev/null; then
     >&2 echo "trac-admin is not in the PATH ($PATH), check TRAC_PATH."
     exit 2

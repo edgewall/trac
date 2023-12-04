@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2023 Edgewall Software
@@ -527,32 +527,47 @@ def locate(fn):
     return None
 
 
+if hasattr(inspect, 'getfullargspec'):  # Python 3.11+
+    _rmtree_argspec = inspect.getfullargspec(shutil.rmtree)
+    # onexc is added in Python 3.12 and onerror is deprecated
+    _rmtree_has_onexc = 'onexc' in getattr(_rmtree_argspec, 'kwonlyargs', [])
+    del _rmtree_argspec
+else:
+    _rmtree_has_onexc = False
+
+
 def rmtree(path):
-    def onerror(function, path, excinfo, retry=1):
+    def onexc(function, path, e):
         # `os.unlink` and `os.remove` fail for a readonly file on Windows.
         # Then, it attempts to be writable and remove.
         if function not in (os.unlink, os.remove):
             raise
-        e = excinfo[1]
         if not isinstance(e, PermissionError):
             raise
-        mode = os.stat(path).st_mode
-        os.chmod(path, mode | 0o666)
-        try:
-            function(path)
-        except Exception:
+        for retry in range(10):
+            mode = os.stat(path).st_mode
+            os.chmod(path, mode | 0o666)
+            try:
+                function(path)
+            except OSError:
+                pass
+            else:
+                return
             # print "%d: %s %o" % (retry, path, os.stat(path).st_mode)
-            if retry > 10:
-                raise
             time.sleep(0.1)
-        else:
-            return
-        onerror(function, path, excinfo, retry + 1)
+        raise
+    if _rmtree_has_onexc:
+        kwargs = {'onexc': onexc}
+    else:
+        def onerror(function, path, excinfo):
+            onexc(function, path, excinfo[1])
+        kwargs = {'onerror': onerror}
+
     if os.name == 'nt' and isinstance(path, bytes):
         # Use unicode characters in order to allow non-ansi characters
         # on Windows.
         path = str(path, sys.getfilesystemencoding())
-    shutil.rmtree(path, onerror=onerror)
+    shutil.rmtree(path, **kwargs)
 
 
 INCLUDE_FUNCTIONAL_TESTS = True
