@@ -715,15 +715,18 @@ class Environment(Component, ComponentManager):
 
     @cached
     def _known_users(self):
-        return self.db_query("""
-                SELECT DISTINCT s.sid, n.value, e.value
+        # Use sorted() instead of "ORDER BY s.sid" in order to avoid filesort
+        # caused by indexing only a prefix of column values on MySQL.
+        users = self.db_query("""
+                SELECT s.sid, n.value, e.value
                 FROM session AS s
                  LEFT JOIN session_attribute AS n ON (n.sid=s.sid
                   AND n.authenticated=1 AND n.name = 'name')
                  LEFT JOIN session_attribute AS e ON (e.sid=s.sid
                   AND e.authenticated=1 AND e.name = 'email')
-                WHERE s.authenticated=1 ORDER BY s.sid
+                WHERE s.authenticated=1
         """)
+        return sorted(users, key=lambda u: u[0])
 
     @cached
     def _known_users_dict(self):
