@@ -10,6 +10,7 @@
 #}
 
 # extends 'layout.html'
+# import 'macros.html' as jmacros with context
 
 <!DOCTYPE html>
 <html>
@@ -34,6 +35,31 @@
     # endif
     <script>
       jQuery(function($) {
+        function setSmartAttachmentsHandler(elementId) {
+             $("#"+elementId).bind('paste',function(e){
+             
+              const dt = e.originalEvent.clipboardData || window.clipboardData;
+              if(dt.files.length > 0){
+              	
+              	var imgFile = dt.files[0];
+              	var extension = imgFile.name.split('.').pop();
+              	if(extension=="png"){
+              		var fileReader = new FileReader();
+              		fileReader.onloadend = function() {
+			          $("#"+elementId).val(function(i,text){ return text + " [[Image('"+fileReader.result+"')]]"});
+			        }
+			        fileReader.readAsDataURL(imgFile);
+              	}else{
+              		console.log("extension '"+extension+"' not supported.");
+              	}
+              }
+             });
+            }
+            
+            setSmartAttachmentsHandler("field-description");
+            setSmartAttachmentsHandler("comment");
+            
+            
         $("div.description").find("h1,h2,h3,h4,h5,h6")
           .addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
@@ -241,6 +267,88 @@
       </div>
       # endif
       ## end of the section we don't show for initial new tickets
+      
+      ## -----------------------------------------------------------------
+        ## Personalizzazione omega per mostrare le revisioni
+        # if ticket.exists:
+         <div id="trac-get-revisioni" class="field">
+	        <h3 class="foldable">${_("Revisioni std")}<span class="trac-count">(${len(ticket.std_revisions)})</span></h3>
+	        <div>
+	        #if (not ticket.revisions_loaded):
+         		<p>Revisioni non caricate.</p>
+        	#else:
+		         # if ticket.std_revisions:
+		         <table class="trac-properties" style="border: 1px solid black;"> 
+		         <tr>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
+		         	<th span="1" style="width: 20%;border: 1px solid black;">Data</th>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Autore</th>
+					<th span="1" style="width: 10%;border: 1px solid black;">Repository</th>
+		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
+		         </tr>
+		         # 	for revision in ticket.std_revisions:
+		         		<tr>
+		         			<td class="wikitext" style="border: 1px solid black;">	
+          					${wiki_to_html(context, revision.get_rev(), escape_newlines=preserve_newlines)}
+		         			</td>
+		         			<td style="border: 1px solid black;">${revision.get_time()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_author()}</td>
+							<td style="border: 1px solid black;">${revision.get_repname()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_message()}</td>
+		         		</tr>
+		         #		endfor
+		         </table>
+		         # else:
+			     	<p>
+			      		${"Nessuna revisione standard trovata per l'item"}
+			        </p>
+		         # endif
+		         
+        	#endif
+	         </div>
+	     </div>
+	     #endif
+
+       # if ticket.exists:
+         <div id="trac-get-revisioni" class="field">
+	        <h3 class="foldable">${_("Revisioni non std")}<span class="trac-count">(${len(ticket.nonstd_revisions)})</span></h3>
+	        <div>
+	        #if (not ticket.revisions_loaded):
+         		<p>Revisioni non caricate.</p>
+        	#else:
+		         # if ticket.nonstd_revisions:
+		         <table class="trac-properties" style="border: 1px solid black;"> 
+		         <tr>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Revisione</th>
+		         	<th span="1" style="width: 20%;border: 1px solid black;">Data</th>
+		         	<th span="1" style="width: 10%;border: 1px solid black;">Autore</th>
+					<th span="1" style="width: 10%;border: 1px solid black;">Repository</th>
+		         	<th span="1" style="width: 60%;border: 1px solid black;">Messaggio</th>
+		         </tr>
+		         # 	for revision in ticket.nonstd_revisions:
+		         		<tr>
+		         			<td class="wikitext" style="border: 1px solid black;">	
+          					${wiki_to_html(context, revision.get_rev(), escape_newlines=preserve_newlines)}
+		         			</td>
+		         			<td style="border: 1px solid black;">${revision.get_time()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_author()}</td>
+							<td style="border: 1px solid black;">${revision.get_repname()}</td>
+		         			<td style="border: 1px solid black;">${revision.get_message()}</td>
+		         		</tr>
+		         #		endfor
+		         </table>
+		         # else:
+			     	<p>
+			      		${"Nessuna revisione non standard trovata per l'item"}
+			        </p>
+		         # endif
+		         
+        	#endif
+	         </div>
+	     </div>
+	     #endif
+        ## Fine personalizzazione omega
+        ## -----------------------------------------------------------------
 
       # if has_property_editor:
       <form method="post" id="propertyform"
@@ -249,6 +357,7 @@
         ${jmacros.form_token_input()}
 
         <div>
+  
           # if ticket.exists:
           <h3 class="foldable">${_("Modify Ticket")}</h3>
           # endif
@@ -330,7 +439,7 @@
                       # trans wikiformatting = jmacros.wikiformatting_link()
 
                       You may use ${wikiformatting} here.
-
+					  
                       # endtrans
                     </label>
                   </td>
@@ -564,18 +673,6 @@
         </p>
         # endif
 
-        # if ticket.exists:
-        <div class="trac-nav">
-          # if attachments.attachments or attachments.can_create:
-          <a href="#attachments" id="trac-up-attachments"
-             title="${_('Go to the list of attachments')}">${
-            _("Attachments")}</a> &uarr;
-          # endif
-          <a href="#content" id="trac-up-view"
-             title="${_('View the ticket description')}">${
-            _("Description")}</a> &uarr;
-        </div>
-        # endif
         <div class="buttons">
           # if ticket.exists:
           <input type="hidden" name="start_time"

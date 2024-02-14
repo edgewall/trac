@@ -30,6 +30,7 @@ from trac.util.datefmt import (datetime_now, from_utimestamp, parse_date,
                                to_utimestamp, utc, utcmax)
 from trac.util.text import empty, stripws
 from trac.util.translation import _, N_, gettext
+import time
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version']
@@ -226,6 +227,7 @@ class Ticket(object):
                 default = self._custom_field_default(field)
                 if default:
                     self[name] = default
+        self.load_revisions()
 
     def __getitem__(self, name):
         return self.values.get(name)
@@ -736,9 +738,80 @@ class Ticket(object):
                         """ % db.prefix_match(),
                         (self.id, ts, db.prefix_match_value('_'))):
                     break
-            return ts, author, comment
+            return ts, author, comments
+        
+    #--------------------------------------------------
+    # Personalizzazione omega
+    # Carico le revisioni legate all' item per poi mostrarle.
+    std_revisions = []
+    nonstd_revisions = []
+
+    revisions_loaded = False
+
+    def load_revisions(self):
+        if self.revisions_loaded:
+            return
+        
+        self.std_revisions.clear()
+        self.nonstd_revisions.clear()
+        self.revisions_loaded = True
+        
+        with self.env.db_query as db:
+            for row in db("""
+                    SELECT time, author, message, rev, (case (coalesce(repository.value,'')) when '' then 'Xsolving' else repository.value end) as repname FROM revision
+					INNER JOIN repository on repository.id = revision.repos and repository.name='name'
+                    WHERE itemid = %s
+                    """, (str(self.id),)):
+                revis = Revision(row[0],row[1],row[2],row[3],row[4])
+                if revis.get_repname() == 'Xsolving':
+                    self.std_revisions.append(revis)
+                else:
+                    self.nonstd_revisions.append(revis)
 
 
+class Revision(object):
+    def __init__(self, time, author, message, rev, repname):
+        self._time = from_utimestamp(time).strftime("%d/%m/%Y, %H:%M:%S")
+        self._author = author
+        self._message = message
+        self._repname = repname
+        self._rev = "r" + str(int(rev))
+        if repname != 'Xsolving':
+            self._rev = self._rev + '/' + self._repname
+		
+        
+    def get_time(self):
+        return self._time
+
+    def set_time(self, value):
+        self._time= value
+        
+    def get_author(self):
+        return self._author
+
+    def set_author(self, value):
+        self._author= value
+        
+    def get_message(self):
+        return self._message
+
+    def set_message(self, value):
+        self._message= value
+        
+    def get_rev(self):
+        return self._rev
+
+    def set_rev(rev, value):
+        self._rev= value
+		
+    def get_repname(self):
+        return self._repname
+
+    def set_repname(rev, value):
+        self._repname= value
+    
+    #--------------------------------------------------
+    # Fine personalizzazione omega
 class AbstractEnum(object):
     type = None
     ticket_col = None
