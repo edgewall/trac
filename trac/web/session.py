@@ -463,9 +463,12 @@ class SessionAdmin(Component):
         sids = {self._split_sid(sid)
                 for sid in sids
                 if sid not in ('anonymous', 'authenticated', '*')}
+        # Use sort() instead of "ORDER BY s.sid, s.authenticated" in order to
+        # avoid filesort caused by indexing only a prefix of column values on
+        # MySQL.
         rows = self.env.db_query("""
-            SELECT DISTINCT s.sid, s.authenticated, s.last_visit,
-                            n.value, e.value, h.value
+            SELECT s.sid, s.authenticated, s.last_visit, n.value, e.value,
+                   h.value
             FROM session AS s
               LEFT JOIN session_attribute AS n
                 ON (n.sid=s.sid AND n.authenticated=s.authenticated
@@ -476,8 +479,8 @@ class SessionAdmin(Component):
               LEFT JOIN session_attribute AS h
                 ON (h.sid=s.sid AND h.authenticated=s.authenticated
                     AND h.name='default_handler')
-            ORDER BY s.sid, s.authenticated
             """)
+        rows.sort(key=lambda u: (u[0], u[1]))
         for sid, authenticated, last_visit, name, email, handler in rows:
             if all_anon and not authenticated or all_auth and authenticated \
                     or (sid, authenticated) in sids:
