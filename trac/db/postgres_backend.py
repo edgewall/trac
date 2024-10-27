@@ -44,32 +44,7 @@ else:
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(str(markup)))
     register_adapter(type(empty), lambda empty: AsIs("''"))
-    psycopg2_version = get_pkginfo(psycopg).get('version',
-                                                psycopg.__version__)
-    _libpq_pathname = None
-    if not hasattr(psycopg, 'libpq_version'):
-        # search path of libpq only if it is dynamically linked
-        _f = _match = None
-        try:
-            with open(psycopg._psycopg.__file__, 'rb') as _f:
-                if os.name != 'nt':
-                    _match = re.search(
-                        r'''
-                            \0(
-                            (?:/[^/\0]+)*/?
-                            libpq\.(?:so\.[0-9]+|[0-9]+\.dylib)
-                            )\0
-                        '''.encode('utf-8'),
-                        _f.read(), re.VERBOSE)
-                    if _match:
-                        _libpq_pathname = _match.group(1).decode('utf-8')
-                else:
-                    if re.search(r'\0libpq\.dll\0'.encode('utf-8'), _f.read(),
-                                 re.IGNORECASE):
-                        _libpq_pathname = find_library('libpq')
-        except AttributeError:
-            pass
-        del _f, _match
+    psycopg2_version = get_pkginfo(psycopg).get('version', psycopg.__version__)
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -92,6 +67,36 @@ def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
            'port': port}
     return ' '.join("%s=%s" % (name, quote(value))
                     for name, value in dsn.items() if value)
+
+
+def _get_client_version():
+    if hasattr(psycopg2.extensions, 'libpq_version'):  # psycopg2 2.7+
+        return psycopg2.extensions.libpq_version()
+
+    if hasattr(psycopg, 'libpq_version'):
+        return psycopg.libpq_version()
+
+    # search path of libpq only if it is dynamically linked
+    libpq_path = None
+    with open(psycopg._psycopg.__file__, 'rb') as f:
+        data = f.read()
+        if os.name != 'nt':
+            match = re.search(
+                br'''
+                    \0(
+                    (?:/[^/\0]+)*/?
+                    libpq\.(?:so\.[0-9]+|[0-9]+\.dylib)
+                    )\0
+                ''',
+                data, re.VERBOSE)
+            if match:
+                libpq_path = str(match.group(1), 'utf-8')
+        else:
+            if re.search(br'\0libpq\.dll\0', data, re.IGNORECASE):
+                libpq_path = find_library('libpq')
+    if libpq_path:
+        lib = ctypes.CDLL(libpq_path)
+        return lib.PQlibVersion()
 
 
 def _quote(identifier):
@@ -291,17 +296,13 @@ class PostgreSQLConnector(Component):
 
     @lazy
     def _client_version(self):
-        version = None
-        if hasattr(psycopg, 'libpq_version'):
-            version = psycopg.libpq_version()
-        elif _libpq_pathname:
-            try:
-                lib = ctypes.CDLL(_libpq_pathname)
-                version = lib.PQlibVersion()
-            except Exception as e:
-                self.log.warning("Exception caught while retrieving libpq's "
-                                 "version%s",
-                                 exception_to_unicode(e, traceback=True))
+        try:
+            version = _get_client_version()
+        except Exception as e:
+            self.log.warning("Exception caught while retrieving libpq's "
+                             "version%s",
+                             exception_to_unicode(e, traceback=True))
+            version = None
         return _version_tuple(version)
 
     def _pgdump_version(self):
