@@ -62,7 +62,7 @@ else:
                         '''.encode('utf-8'),
                         _f.read(), re.VERBOSE)
                     if _match:
-                        _libpq_pathname = _match.group(1)
+                        _libpq_pathname = _match.group(1).decode('utf-8')
                 else:
                     if re.search(r'\0libpq\.dll\0'.encode('utf-8'), _f.read(),
                                  re.IGNORECASE):
