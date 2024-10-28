@@ -23,20 +23,18 @@
     ${ super() }
     <script>
       jQuery(function($) {
-        $("#anydiff input[name$='_path']").autocomplete({
-          source: window.location.pathname
-        }).each(function() {
-          $(this).data("ui-autocomplete")._renderItem = function(ul, item) {
-            return $("<li>")
-              .data("ui-autocomplete-item", item.value)
-              .addClass(function() {
-                return item.isdir ? "trac-autocomplete-dir"
-                                  : "trac-autocomplete-file";
-              })
-              .append(item.label)
-              .appendTo(ul);
-          }
-        })
+        var _renderItem = function(ul, item) {
+          return $("<li>")
+            .addClass(item.isdir ? "trac-autocomplete-dir"
+                                 : "trac-autocomplete-file")
+            .append($("<div>").append(item.label))  // ui-menu-item-wrapper
+            .appendTo(ul);
+        };
+        $("#anydiff input[name$='_path']")
+          .autocomplete({source: window.location.pathname})
+          .each(function() {
+            $(this).autocomplete("instance")._renderItem = _renderItem;
+          });
       });
     </script>
     # endblock head
