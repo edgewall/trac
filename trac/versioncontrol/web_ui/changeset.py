@@ -1189,7 +1189,8 @@ class AnyDiffModule(Component):
             if not reponame:
                 entries.extend((True, repos.reponame, '/' + repos.reponame)
                                for repos in rm.get_real_repositories()
-                               if repos.is_viewable(req.perm))
+                               if repos.reponame and
+                                  repos.is_viewable(req.perm))
 
             paths = [{'label': path + ('/' if isdir else ''), 'value': path,
                       'isdir': isdir}
