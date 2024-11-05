@@ -16,58 +16,77 @@
     }).prependTo($wikipage);
 
     // Auto-centering of top-level elements larger than #wikipage's max-width
-    var wpow = $wikipage.outerWidth();
-    var large_elements = [];
+    var wpow;
+    var large_elements;
     var detectLargeElement = function() {
-      var rol = $(this).offset().left - $wikipage.offset().left;
-      var excess = $(this).outerWidth() + rol - wpow;
+      var $e = $(this);
+      if ($e.css('float') !== 'none')
+        return 0;
+      switch ($e.css('position')) {
+        case 'absolute':
+        case 'fixed':
+          return 0;
+      }
+      var rol = $e.offset().left - $wikipage.offset().left;
+      var excess = $e.outerWidth() + rol - wpow;
       if (excess > 0) {
-        $(this).data('excess', excess);
-        $(this).data('rol', rol);
+        $e.data('excess', excess);
+        $e.data('rol', rol);
         large_elements.push(this);
       }
       return excess;
     };
     var centerLargeElement = function($e, wpleft) {
-        var shift_left;
-        var excess = $e.data('excess');
-        var rol = $e.data('rol');
-        if (excess > rol)
-            shift_left = rol + (excess - rol) / 2;
-        else
-            shift_left = excess;
-        if (shift_left > wpleft)
-          shift_left = wpleft;
+      var shift_left;
+      var excess = $e.data('excess');
+      var rol = $e.data('rol');
+      if (excess > rol)
+        shift_left = rol + (excess - rol) / 2;
+      else
+        shift_left = excess;
+      if (shift_left > wpleft)
+        shift_left = wpleft;
 
-        $e.css({'margin-left': -shift_left,
-                'background': 'rgba(255, 255, 255, .8)'});
+      $e.css('margin-left', -shift_left).addClass('trac-wiki-center');
     };
     var resetLargeElements = function() {
-      for (var i = 0; i < large_elements.length; i++) {
-        $(large_elements[i]).css({'margin-left': 0, 'background': 'none'});
-      }
+      if (large_elements === undefined)
+        return;
+      $(large_elements)
+        .css('margin-left', '')
+        .removeClass('trac-wiki-center');
     };
     var detectLargeImage = function() {
       var excess = detectLargeElement.apply(this);
       if (excess > 0)
         centerLargeElement($(this), $wikipage.offset().left);
     };
-    $("#wikipage > table").each(detectLargeElement);
-    $("#wikipage > div").each(detectLargeElement);
-    $("#wikipage > p > a > img").one("load", detectLargeImage).each(
-      function() {
-        if (this.complete)
-          detectLargeImage.apply(this);
-      }
-    );
-
-    var centerLargeElements = function() {
-      var wikipage_left = $wikipage.offset().left;
-      for (var i = 0; i < large_elements.length; i++)
-        centerLargeElement($(large_elements[i]), wikipage_left);
+    var detectLargeElements = function() {
+      $wikipage.find("> table, > div").each(detectLargeElement);
+      $wikipage.find("> p > a > img").one("load", detectLargeImage).each(
+        function() {
+          if (this.complete)
+            detectLargeImage.apply(this);
+        }
+      );
     };
-    $(window).resize(centerLargeElements);
-    centerLargeElements();
+    var centerLargeElements = function() {
+      if (large_elements === undefined) {
+        wpow = $wikipage.outerWidth();
+        large_elements = [];
+        detectLargeElements();
+      }
+      var wikipage_left = $wikipage.offset().left;
+      $.each(large_elements, function() {
+        centerLargeElement($(this), wikipage_left);
+      });
+    };
+    var centerLargeElementsIfNarrow = function() {
+      if ($content.hasClass('narrow'))
+        centerLargeElements();
+    };
+    $(window).resize(centerLargeElementsIfNarrow);
+    centerLargeElementsIfNarrow();
   };
 
 
