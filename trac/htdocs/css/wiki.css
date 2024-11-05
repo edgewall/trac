@@ -107,9 +107,16 @@ h3.section:target {
 }
 
 
+@media screen {
+ #content.narrow .trac-wiki-center {
+  background: #fff;
+  opacity: 0.8;
+ }
+}
 @media print {
  #content.narrow #wikipage { max-width: none }
- #content.narrow #trac-wiki-expander:before, #content #trac-wiki-expander { display: none }
+ #content.narrow .trac-wiki-center { margin-left: unset !important }
+ #content #trac-wiki-expander { display: none }
  h2.section:target {
   background: linear-gradient(to top,
    #fff 0,
