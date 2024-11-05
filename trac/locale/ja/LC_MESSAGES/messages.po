@@ -6189,11 +6189,11 @@ msgstr "差分表示の指定"
 
 #: trac/versioncontrol/templates/diff_form.html:56
 msgid "Select the base and the target for the diff:"
-msgstr "差分を取る元と対象を指定して下さい:"
+msgstr "比較対象の選択:"
 
 #: trac/versioncontrol/templates/diff_form.html:60
 msgid "From:"
-msgstr "元のパス:"
+msgstr "比較元:"
 
 #: trac/versioncontrol/templates/diff_form.html:64
 #: trac/versioncontrol/templates/diff_form.html:74
@@ -6202,7 +6202,7 @@ msgstr "リビジョン:"
 
 #: trac/versioncontrol/templates/diff_form.html:70
 msgid "To:"
-msgstr "対象のパス:"
+msgstr "比較先:"
 
 #: trac/versioncontrol/templates/diff_form.html:81
 msgid ""
