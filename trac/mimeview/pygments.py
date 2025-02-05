@@ -37,6 +37,20 @@ from trac.web.chrome import (
 __all__ = ['PygmentsRenderer']
 
 
+if hasattr(HtmlFormatter, 'get_background_style_defs') and \
+        hasattr(HtmlFormatter, 'get_token_style_defs'):
+    def _get_style_defs(style, arg):
+        lines = []
+        formatter = HtmlFormatter(style=style)
+        lines.extend(formatter.get_background_style_defs(arg))
+        lines.extend(formatter.get_token_style_defs(arg))
+        return '\n'.join(lines)
+else:
+    def _get_style_defs(style, arg):
+        formatter = HtmlFormatter(style=style)
+        return formatter.get_style_defs(arg)
+
+
 class PygmentsRenderer(Component):
     """HTML renderer for syntax highlighting based on Pygments."""
 
@@ -186,8 +200,7 @@ class PygmentsRenderer(Component):
             req.end_headers()
             return
 
-        formatter = HtmlFormatter(style=style_cls)
-        content = formatter.get_style_defs(['div.code pre', 'table.code td'])
+        content = _get_style_defs(style_cls, ['div.code pre', 'table.code td'])
         content = content.encode('utf-8')
 
         req.send_response(200)
