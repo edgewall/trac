@@ -24,22 +24,21 @@
       div.code pre { border: 1px solid #999; font-size: 90%; margin: 1em 2em;
         padding: 5px; width: 60%;
       }
+      # for style_ in styles:
+      ${- style_defs(style_)|safe}
+      # endfor
     </style>
     <script>
-      (function($){
-        window.switchStyleSheet = function(title) {
-          $('link[rel="stylesheet"][title]').each(function() {
-            this.disabled = true; // needed to force correct behavior for WebKit (see #10923)
-            this.disabled = this.getAttribute('title') != title;
-          });
-        }
-      })(jQuery);
       jQuery(function($) {
-        $("#pygment_theme").attr("autocomplete", "off").on('change keypress', function() {
-          var idx = this.selectedIndex;
-          var text = this.options[idx].text;
-          var stylesheet = idx > 0 ? text : default_style;
-          switchStyleSheet(stylesheet);
+        var selection = window.selection;
+        var default_style = window.default_style;
+        var $theme = $('#pygment_theme');
+        var $field = $theme.closest('div.field');
+        $theme.attr("autocomplete", "off").on('change keypress', function() {
+          var style = this.value || default_style;
+          $field.removeClass('trac-pygments-' + selection)
+                .addClass('trac-pygments-' + style);
+          selection = style;
         }).change();
       });
     </script>
@@ -48,12 +47,12 @@
 
   <body>
     # block prefpanel
-    <div class="field">
+    <div class="field trac-pygments-${selection}">
       <label>${_("Style:")}
         <select id="pygment_theme" name="style">
           <option value="">${_("Default: %(default)s",
                                default=default_style.title())}</option>
-          # for style in sorted(styles):
+          # for style in styles:
           <option${{'value': style,
                     'selected': selection == style
                    }|htmlattr}>${style.title()}</option>
