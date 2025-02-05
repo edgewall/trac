@@ -87,9 +87,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_hello', result)
+            expected_id = 'python_hello'
+        elif pygments_version < parse_version('2.19'):
+            expected_id = 'python_hello_pygments_2.1plus'
         else:
-            self._test('python_hello_pygments_2.1plus', result)
+            expected_id = 'python_hello_pygments_2.19plus'
+        self._test(expected_id, result)
 
     def test_python_hello_mimeview(self):
         """
@@ -102,9 +105,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_hello_mimeview', result)
+            expected_id = 'python_hello_mimeview'
+        elif pygments_version < parse_version('2.19'):
+            expected_id = 'python_hello_mimeview_pygments_2.1plus'
         else:
-            self._test('python_hello_mimeview_pygments_2.1plus', result)
+            expected_id = 'python_hello_mimeview_pygments_2.19plus'
+        self._test(expected_id, result)
 
     def test_python_with_lineno(self):
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
