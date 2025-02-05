@@ -154,7 +154,7 @@ class PygmentsRenderer(Component):
         yield 'pygments', _('Syntax Highlighting')
 
     def render_preference_panel(self, req, panel):
-        styles = list(get_all_styles())
+        styles = set(get_all_styles())
 
         if req.method == 'POST':
             style = req.args.get('style')
@@ -165,15 +165,25 @@ class PygmentsRenderer(Component):
             add_notice(req, _("Your preferences have been saved."))
             req.redirect(req.href.prefs(panel or None))
 
-        for style in sorted(styles):
-            add_stylesheet(req, '/pygments/%s.css' % style, title=style.title())
+        def style_defs(style):
+            cls = get_style_by_name(style)
+            selector = '.trac-pygments-%s div.code pre' % style
+            return _get_style_defs(cls, selector)
+
+        default_style = self.default_style
+        if default_style not in styles:
+            default_style = 'trac'
+        selection = req.session.get('pygments_style')
+        if selection not in styles:
+            selection = default_style
         output = self._generate('html', self.EXAMPLE)
-        add_script_data(req, default_style=self.default_style.title())
+        add_script_data(req, default_style=default_style, selection=selection)
         return 'prefs_pygments.html', {
             'output': output,
-            'selection': req.session.get('pygments_style'),
-            'default_style': self.default_style,
-            'styles': styles
+            'selection': selection,
+            'default_style': default_style,
+            'styles': sorted(styles),
+            'style_defs': style_defs,
         }
 
     # IRequestHandler methods
