@@ -62,7 +62,7 @@
   # endmacro
 
   <table class="listing tickets">
-    # if len(groups) > 0:
+    # if len(groups) > 0 and groups[0][0] is not none:
     <caption class="trac-group">
       ${group_heading(*groups[0])}
     </caption>
