@@ -187,10 +187,8 @@ class PygmentsRenderer(Component):
             return
 
         formatter = HtmlFormatter(style=style_cls)
-        content = '\n\n'.join([
-            formatter.get_style_defs('div.code pre'),
-            formatter.get_style_defs('table.code td')
-        ]).encode('utf-8')
+        content = formatter.get_style_defs(['div.code pre', 'table.code td'])
+        content = content.encode('utf-8')
 
         req.send_response(200)
         req.send_header('Content-Type', 'text/css; charset=utf-8')
