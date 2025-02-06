@@ -174,7 +174,9 @@ class PygmentsRenderer(Component):
         if default_style not in styles:
             default_style = 'trac'
         selection = req.session.get('pygments_style')
-        if selection not in styles:
+        if not selection:
+            selection = ''
+        elif selection not in styles:
             selection = default_style
         output = self._generate('html', self.EXAMPLE)
         add_script_data(req, default_style=default_style, selection=selection)
