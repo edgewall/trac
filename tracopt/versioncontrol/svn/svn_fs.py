@@ -834,9 +834,10 @@ class SubversionNode(Node):
 
         (wraps ``fs.revision_root_revision(fs.closest_copy)``)
         """
-        root_and_path = fs.closest_copy(self.root, self._scoped_path_utf8)
-        if root_and_path:
-            return fs.revision_root_revision(root_and_path[0])
+        root, path = fs.closest_copy(self.root, self._scoped_path_utf8) or \
+                     (None, None)
+        if root is not None:
+            return fs.revision_root_revision(root)
 
     def get_copy_ancestry(self):
         """Retrieve the list of `(path,rev)` copy ancestors of this node.
@@ -849,9 +850,9 @@ class SubversionNode(Node):
         while previous:
             (previous_path, previous_rev, previous_root) = previous
             previous = None
-            root_path = fs.closest_copy(previous_root, previous_path)
-            if root_path:
-                (root, path) = root_path
+            root, path = fs.closest_copy(previous_root, previous_path) or \
+                         (None, None)
+            if root is not None:
                 path = path.lstrip(b'/')
                 rev = fs.revision_root_revision(root)
                 relpath = None
