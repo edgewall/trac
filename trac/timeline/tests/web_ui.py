@@ -169,7 +169,7 @@ class TimelineModuleTestCase(unittest.TestCase):
 
         data = TimelineModule(self.env).process_request(req)[1]
 
-        self.assertEqual(1, data['daysback'])
+        self.assertEqual(0, data['daysback'])
 
     def test_daysback_greater_than_max(self):
         """Daysback is limited to [timeline] max_daysback."""
@@ -219,13 +219,15 @@ class TimelineEventProviderTestCase(unittest.TestCase):
             implements(ITimelineEventProvider)
 
             def __init__(self):
-                self._events = None
+                self._events = ()
 
             def get_timeline_filters(self, req):
                 yield ('test', 'Test')
 
             def get_timeline_events(self, req, start, stop, filters):
-                return iter(self._events or ())
+                for event in self._events:
+                    if start <= event[1] <= stop:
+                        yield event
 
             def render_timeline_event(self, context, field, event):
                 return event[3].render(context, field, event)
@@ -263,15 +265,16 @@ class TimelineEventProviderTestCase(unittest.TestCase):
                 if field == 'description':
                     return tag(tag.h1('Title 2nd'), tag.p('body & < >'))
 
-        provider = self.timeline_event_providers['normal'](self.env)
+        provider = self._get_event_provider('normal')
         provider._events = [
             ('test&1', datetime(2018, 4, 27, 12, 34, 56, 123456, utc),
              'jo&hn', Mock(render=render)),
             ('test&2', datetime(2018, 3, 19, 23, 56, 12, 987654, utc),
              'Joe <joe@example.org>', Mock(render=render)),
         ]
-        req = MockRequest(self.env, path_info='/timeline',
-                          args={'format': 'rss'})
+        req = MockRequest(self.env, path_info='/timeline', tz=utc,
+                          args={'format': 'rss', 'daysback': '90',
+                                'from': '2018-04-30T00:00:00Z'})
         rv = self._process_request(req)
         self.assertEqual('timeline.rss', rv[0])
         self.assertEqual({'content_type': 'application/rss+xml'}, rv[2])
@@ -307,10 +310,49 @@ class TimelineEventProviderTestCase(unittest.TestCase):
         self.assertEqual('<?xml version="1.0"?>', output[:21])
         minidom.parseString(output)  # verify valid xml
 
+    def test_daysback(self):
+        provider = self._get_event_provider('normal')
+        base_datetime = datetime(2025, 2, 20, 12, tzinfo=utc)
+        provider._events = [
+            ('test', base_datetime - timedelta(days=days), 'trac', None)
+            for days in range(-30, 120)
+        ]
+
+        def render_and_get_events(daysback):
+            req = MockRequest(self.env, path_info='/timeline', tz=utc,
+                              args={'from': '2025-02-19T12:34:56.012345Z',
+                                    'daysback': daysback})
+            rv = self._process_request(req)
+            data = rv[1]
+            return data['events']
+
+        def get_datetimes(events):
+            return [event['datetime'] for event in events]
+
+        events = render_and_get_events('0')
+        self.assertEqual([datetime(2025, 2, 19, 12, tzinfo=utc)],
+                         get_datetimes(events))
+
+        events = render_and_get_events('1')
+        self.assertEqual([datetime(2025, 2, 19, 12, tzinfo=utc),
+                          datetime(2025, 2, 18, 12, tzinfo=utc)],
+                         get_datetimes(events))
+
+        events = render_and_get_events('90')
+        self.assertEqual(datetime(2024, 11, 21, 12, tzinfo=utc),
+                         get_datetimes(events)[-1])
+        self.assertEqual(91, len(events))
+
+        events = render_and_get_events('91')
+        self.assertEqual(datetime(2024, 11, 21, 12, tzinfo=utc),
+                         get_datetimes(events)[-1])
+        self.assertEqual(91, len(events))
+
+    def _get_event_provider(self, name):
+        return self.timeline_event_providers[name](self.env)
+
     def _process_request(self, req):
         mod = TimelineModule(self.env)
-        req = MockRequest(self.env, path_info='/timeline',
-                          args={'format': 'rss'})
         self.assertTrue(mod.match_request(req))
         return mod.process_request(req)
 
