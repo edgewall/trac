@@ -41,7 +41,7 @@ class InterWikiMap(Component):
         '''Example:'''
         {{{
         [interwiki]
-        MeatBall = http://www.usemod.com/cgi-bin/mb.pl?
+        MeatBall = http://meatballwiki.org/wiki/
         PEP = http://www.python.org/peps/pep-$1.html Python Enhancement Proposal $1
         tsvn = tsvn: Interact with TortoiseSvn
         }}}

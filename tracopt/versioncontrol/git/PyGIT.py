@@ -845,7 +845,7 @@ class Storage(object):
 
         try:
             srevs = _rev_cache.srev_dict[self.__rev_key(rev)]
-        except KeyError:
+        except (KeyError, IndexError):
             return None
 
         resolved = None

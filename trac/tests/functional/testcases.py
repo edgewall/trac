@@ -304,6 +304,7 @@ class RegressionTestTicket6318(FunctionalTestCaseSetup):
             # are used and the req.perm has no permissions.
             tc.notfind(internal_error)
             tc.notfind("You don't have the required permissions")
+            tc.find('>logged in as <span class="trac-author-user">joé</span>')
             self._tester.logout()
             # finally restore expected 'admin' login
             self._tester.login('admin')

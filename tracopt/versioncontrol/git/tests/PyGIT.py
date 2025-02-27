@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import os
+import subprocess
 import tempfile
 import unittest
 from datetime import datetime
@@ -474,6 +475,64 @@ class UnicodeNameTestCase(unittest.TestCase, GitCommandMixin):
         validate(paths[1], 'false')
 
 
+class StorageTestCase(unittest.TestCase, GitCommandMixin):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.repos_path = mkdtemp()
+        self._git('init', '--bare')
+
+    def tearDown(self):
+        self.env.reset_db()
+        if os.path.isdir(self.repos_path):
+            rmtree(self.repos_path)
+
+    def _storage(self):
+        return Storage(self.repos_path, self.env.log, self.git_bin, 'utf-8')
+
+    def _test_srev_dict(self, n_revs, type_):
+        with self._spawn_git('fast-import', stdin=subprocess.PIPE) as proc:
+            write = proc.stdin.write
+            write(b'blob\n')
+            write(b'mark :1\n')
+            write(b'data 0\n')
+            write(b'\n')
+            write(b'reset refs/heads/master\n')
+            for i in range(n_revs):
+                ts = 1000000000 + i
+                write(b'commit refs/heads/master\n')
+                write(b'mark :2\n')
+                write(b'author Joe <joe@example.com> %d +0000\n' % ts)
+                write(b'committer Joe <joe@example.com> %d +0000\n' % ts)
+                write(b'data 2\n')
+                write(b'.\n')
+                write(b'M 100644 :1 .gitignore\n')
+                write(b'\n')
+            stdout, stderr = proc.communicate()
+        self.assertEqual(0, proc.returncode,
+                         'git exits with %r, stdout %r, stderr %r' %
+                         (proc.returncode, stdout, stderr))
+
+        storage = self._storage()
+        self.assertIsInstance(storage.rev_cache.srev_dict, type_)
+        for i in range(0x10000):
+            srev_b = b'%04x' % i
+            frev_b = storage.fullrev(srev_b)
+            if frev_b is None:
+                continue
+            self.assertEqual(frev_b[:4], srev_b)
+            frev_u = frev_b.decode('ascii')
+            srev_u = storage.shortrev(frev_u)
+            self.assertTrue(frev_u.startswith(srev_u),
+                            'frev_u %(frev_u)r, srev_u %(srev_u)r' % locals())
+
+    def test_srev_dict_a_dict(self):
+        self._test_srev_dict(4500, dict)
+
+    def test_srev_dict_a_list(self):
+        self._test_srev_dict(5500, list)
+
+
 class SizedDictTestCase(unittest.TestCase):
 
     def test_setdefault_raises(self):
@@ -636,6 +695,7 @@ def test_suite():
         suite.addTest(makeSuite(TestParseCommit))
         suite.addTest(makeSuite(NormalTestCase))
         suite.addTest(makeSuite(UnicodeNameTestCase))
+        suite.addTest(makeSuite(StorageTestCase))
     else:
         print("SKIP: tracopt/versioncontrol/git/tests/PyGIT.py (git cli "
               "binary, 'git', not found)")

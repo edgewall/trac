@@ -11,6 +11,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
 
+from datetime import datetime
 import io
 import os.path
 import textwrap
@@ -20,7 +21,7 @@ from trac import perm
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockPerm, makeSuite, mkdtemp, rmtree
 from trac.util import create_file
-from trac.util.datefmt import utc
+from trac.util.datefmt import timezone, utc
 from trac.util.html import tag
 from trac.web.api import HTTPBadRequest, HTTPInternalServerError, Request, \
                          RequestDone, parse_arg_list
@@ -71,8 +72,24 @@ def _make_environ(scheme='http', server_name='example.org',
     environ.update(kwargs)
     for key, value in environ.items():
         if isinstance(value, bytes):
-            environ[key] = str(value, 'utf-8')
+            environ[key] = str(value, 'iso-8859-1')  # WSGI "bytes-as-unicode"
     return environ
+
+
+def _make_environ_qs(method='GET', query_string=b'', **kwargs):
+    if isinstance(query_string, str):
+        query_string = query_string.encode('utf-8')
+    if method == 'GET':
+        kw = {'QUERY_STRING': str(query_string, 'iso-8859-1')} \
+             if query_string else {}
+    elif method == 'POST':
+        kw = {'wsgi.input': io.BytesIO(query_string),
+              'CONTENT_LENGTH': str(len(query_string)),
+              'CONTENT_TYPE': 'application/x-www-form-urlencoded'}
+    else:
+        raise AssertionError('Wrong method {!r}'.format(method))
+    kw.update(kwargs)
+    return _make_environ(method=method, **kw)
 
 
 def _make_req(environ, authname='admin', chrome=None, form_token='A' * 40,
@@ -267,7 +284,7 @@ new\r\n\
         file_ = req.args.getfile('attachment')
 
         self.assertEqual(str(file_name, 'utf-8'), file_[0])
-        self.assertEqual(file_content, file_[1].getvalue())
+        self.assertEqual(file_content, file_[1].read())
         self.assertEqual(len(file_content), file_[2])
 
     def test_getfilelist(self):
@@ -310,9 +327,9 @@ new\r\n\
 
         self.assertEqual(2, len(file_))
         self.assertEqual(str(file_name[0], 'utf-8'), file_[0][0])
-        self.assertEqual(file_content[0], file_[0][1].getvalue())
+        self.assertEqual(file_content[0], file_[0][1].read())
         self.assertEqual(str(file_name[1], 'utf-8'), file_[1][0])
-        self.assertEqual(file_content[1], file_[1][1].getvalue())
+        self.assertEqual(file_content[1], file_[1][1].read())
         self.assertEqual(len(file_content[1]), file_[1][2])
 
     def test_require(self):
@@ -424,7 +441,22 @@ new\r\n\
         with self.assertRaises(ValueError):
             req.write('Föö')
         with self.assertRaises(ValueError):
+            req.write('')
+        with self.assertRaises(ValueError):
             req.write((b'F', 'öo'))
+        with self.assertRaises(ValueError):
+            req.write(('Föo'.encode('utf-8'), ''))
+
+    def test_send_bytes(self):
+        req = _make_req(_make_environ(method='GET'))
+        with self.assertRaises(RequestDone):
+            req.send(b'\xef\xbb\xbf')
+        self.assertEqual('3', req.headers_sent.get('Content-Length'))
+
+    def test_send_unicode(self):
+        req = _make_req(_make_environ(method='GET'))
+        with self.assertRaises(ValueError):
+            req.send(u'\ufeff')
 
     def test_send_iterable(self):
         def iterable():
@@ -469,7 +501,8 @@ new\r\n\
         req = Request(environ, None)
         self.assertEqual(b'test', req.read(size=4))
 
-    def _test_qs_with_null_bytes(self, environ):
+    def _test_qs_with_null_bytes(self, method, qs):
+        environ = _make_environ_qs(method=method, query_string=qs)
         req = Request(environ, None)
         try:
             req.args['action']
@@ -480,12 +513,23 @@ new\r\n\
             self.fail("HTTPBadRequest not raised.")
 
     def test_qs_with_null_bytes_for_name(self):
-        environ = _make_environ(method='GET', QUERY_STRING='acti\x00n=fOO')
-        self._test_qs_with_null_bytes(environ)
+        qs = b'acti\x00n=fOO'
+        self._test_qs_with_null_bytes('GET', qs)
+        self._test_qs_with_null_bytes('POST', qs)
 
     def test_qs_with_null_bytes_for_value(self):
-        environ = _make_environ(method='GET', QUERY_STRING='action=f\x00O')
-        self._test_qs_with_null_bytes(environ)
+        qs = b'action=f\x00O'
+        self._test_qs_with_null_bytes('GET', qs)
+        self._test_qs_with_null_bytes('POST', qs)
+
+    def test_non_strict_qs(self):
+        qs = b'type=defect&owner=&or&type=&owner=john&=unnamed'
+        expected = [('type', 'defect'), ('owner', ''), ('or', ''),
+                    ('type', ''), ('owner', 'john'), ('', 'unnamed')]
+        req = Request(_make_environ_qs('GET', qs), None)
+        self.assertEqual(expected, req.arg_list)
+        req = Request(_make_environ_qs('POST', qs), None)
+        self.assertEqual(expected, req.arg_list)
 
     def test_post_with_unnamed_value(self):
         boundary = '_BOUNDARY_'
@@ -509,13 +553,15 @@ new\r\n\
         environ = _make_environ(method='POST', **{
             'wsgi.input': io.BytesIO(form_data),
             'CONTENT_LENGTH': str(len(form_data)),
-            'CONTENT_TYPE': content_type
+            'CONTENT_TYPE': content_type,
         })
         req = Request(environ, None)
 
         self.assertEqual('named value', req.args['foo'])
-        self.assertEqual([('foo', 'named value'), ('', 'name is empty'),
-                          (None, 'unnamed value')], req.arg_list)
+        self.assertEqual([('foo', 'named value'), ('', 'name is empty')],
+                         req.arg_list[:2])
+        self.assertIn(req.arg_list[2][0], [None, ''])
+        self.assertEqual('unnamed value', req.arg_list[2][1])
 
     def _test_post_with_null_bytes(self, form_data):
         boundary = '_BOUNDARY_'
@@ -631,6 +677,117 @@ new\r\n\
         self.assertFalse(Request.is_valid_header('X-Custom-:2:', 'custom2'))
         self.assertTrue(Request.is_valid_header('Aa0-!#$%&\'*+.^_`|~',
                                                 'custom2'))
+
+    def _test_check_modified_etag(self, expected, authname, *args, **kwargs):
+        req = _make_req(_make_environ(), authname=authname)
+        req.check_modified(*args, **kwargs)
+        with self.assertRaises(RequestDone):
+            req.send(b'')
+        self.assertEqual(expected, req.headers_sent['ETag'])
+
+    def test_check_modified_authname(self):
+        t = datetime(2024, 4, 22, 12, 34, 56, 12345, utc)
+        self._test_check_modified_etag(
+            'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-22T12:34:56.012345Z/"',
+            'admin', datetime=t)
+        self._test_check_modified_etag(
+            'W/"3sAdZcyug-g4CG4Hw22qbDsNFZg/2024-04-22T12:34:56.012345Z/"',
+            'föøbär', datetime=t)
+        self._test_check_modified_etag(
+            'W/"XbsQF2sFKvX58cq-6LFkEsrM7x8/2024-04-22T12:34:56.012345Z/"',
+            'ad"min', datetime=t)
+        self._test_check_modified_etag(
+            'W/"9KeuwlhgoBlSlcYC2HT5CioCp6A/2024-04-22T12:34:56.012345Z/"',
+            'adm\x7fin', datetime=t)
+        self._test_check_modified_etag(
+            'W/"N3PeplFWkJg4-mwiglyv4JD_gDA/2024-04-22T12:34:56.012345Z/"',
+            'foo bar', datetime=t)
+
+    def test_check_modified_datetime(self):
+        tz = timezone('GMT -11:00')
+        self._test_check_modified_etag(
+            'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-22T23:34:56Z/"',
+            'admin', datetime=datetime(2024, 4, 22, 12, 34, 56, 0, tz))
+        self._test_check_modified_etag(
+            'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-22T22:34:56.012345Z/"',
+            'admin', datetime=datetime(2024, 4, 22, 11, 34, 56, 12345, tz))
+        self._test_check_modified_etag(
+            'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-22T21:34:56.987000Z/"',
+            'admin', datetime=datetime(2024, 4, 22, 10, 34, 56, 987000, tz))
+
+    def test_check_modified_extra(self):
+        t = datetime(2024, 4, 21, 13, 45, 34, 98765, utc)
+        self._test_check_modified_etag(
+            'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-21T13:45:34.098765Z'
+            '/x9K8LITGtvCTPiKASe2O827raFs"',
+            'admin', datetime=t, extra=[None, 42, [42], {42: 42}])
+
+    def test_check_modified_if_none_match(self):
+        etag = 'W/"0DPiKuNIrrVmD8IUCuw1hQxNqZc/2024-04-19T15:12:23.012345Z/"'
+        t = datetime(2024, 4, 19, 15, 12, 23, 12345, utc)
+
+        req = _make_req(_make_environ(HTTP_IF_NONE_MATCH=etag),
+                        authname='admin')
+        with self.assertRaises(RequestDone):
+            req.check_modified(t)
+        self.assertEqual(['304 Not Modified'], req.status_sent)
+        self.assertEqual('0', req.headers_sent['Content-Length'])
+
+        req = _make_req(_make_environ(HTTP_IF_NONE_MATCH='XXXXX'),
+                        authname='admin')
+        req.check_modified(t)
+        with self.assertRaises(RequestDone):
+            req.send(b'')
+        self.assertEqual(etag, req.headers_sent['ETag'])
+
+        # No If-None-Match header
+        req = _make_req(_make_environ(), authname='admin')
+        req.check_modified(t)
+        with self.assertRaises(RequestDone):
+            req.send(b'')
+        self.assertEqual(etag, req.headers_sent['ETag'])
+
+    def test_path_info(self):
+
+        def test(expected, value):
+            environ = _make_environ(PATH_INFO=value)
+            self.assertEqual(expected, _make_req(environ).path_info)
+
+        test('', '')
+        test('/wiki/WikiStart', '/wiki/WikiStart')
+        test('/wiki/TæstPäge', '/wiki/T\xc3\xa6stP\xc3\xa4ge')
+
+    def test_query_string(self):
+
+        def test(expected, value):
+            environ = _make_environ(QUERY_STRING=value)
+            self.assertEqual(expected, _make_req(environ).query_string)
+
+        test('', '')
+        test('status=defect&milestone=milestone1',
+             'status=defect&milestone=milestone1')
+        test('status=defećt&milestóne=milestone1',
+             'status=defe\xc4\x87t&milest\xc3\xb3ne=milestone1')
+
+    def test_base_path(self):
+
+        def test(expected, value):
+            environ = _make_environ(SCRIPT_NAME=value)
+            self.assertEqual(expected, _make_req(environ).base_path)
+
+        test('', '')
+        test('/1.6-stable', '/1.6-stable')
+        test('/Prøjeçt-42', '/Pr\xc3\xb8je\xc3\xa7t-42')
+
+    def test_remote_user(self):
+
+        def test(expected, value):
+            environ = _make_environ(REMOTE_USER=value)
+            self.assertEqual(expected, _make_req(environ).remote_user)
+
+        test('', '')
+        test('joe', 'joe')
+        test('jöhn', 'j\xc3\xb6hn')
 
 
 class RequestSendFileTestCase(unittest.TestCase):

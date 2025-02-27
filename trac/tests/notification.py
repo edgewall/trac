@@ -19,7 +19,10 @@ import os
 import re
 import threading
 import unittest
-from email.header import decode_header as _email_decode_header
+from email.header import (
+    decode_header as _email_decode_header,
+    make_header as _email_make_header,
+)
 
 try:
     from ._aiosmtpd import SMTPThreadedServer
@@ -86,14 +89,7 @@ def strip_address(address):
 
 def decode_header(header):
     """ Decode a MIME-encoded header value """
-    l = []
-    for s, charset in _email_decode_header(header):
-        if charset:
-            s = str(s, charset)
-        elif isinstance(s, bytes):
-            s = str(s, 'utf-8')
-        l.append(s)
-    return ''.join(l)
+    return str(_email_make_header(_email_decode_header(header)))
 
 
 def parse_smtp_message(msg, decode=True):

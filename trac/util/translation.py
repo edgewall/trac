@@ -292,6 +292,8 @@ try:
         def wrapdomain(symbol):
             if symbol == 'N_':
                 return _noop
+            if symbol not in _functions:
+                raise KeyError(symbol)
             return lambda *args, **kw: _functions[symbol](domain, *args, **kw)
         return [wrapdomain(s) for s in symbols]
 
@@ -455,4 +457,7 @@ functions = {
     'gettext': s_gettext,
     'ngettext': ngettext,
     'tag_': tag_,
+    'tagn_': tagn_,
+    'dtgettext': dtgettext,
+    'dtngettext': dtngettext,
 }

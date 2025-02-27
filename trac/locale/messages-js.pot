@@ -21,6 +21,10 @@ msgstr ""
 msgid "Clone"
 msgstr ""
 
+#: trac/htdocs/js/admin_enums.js:11
+msgid "Revert changes"
+msgstr ""
+
 #: tracopt/ticket/htdocs/ticketclone.js:34
 msgid "Create a new ticket from this comment"
 msgstr ""

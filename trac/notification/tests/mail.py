@@ -509,6 +509,22 @@ class EmailDistributorTestCase(unittest.TestCase):
         self._assert_equal_sets(['cc@example.org'],
                                 self._cclist(message['Cc']))
 
+    def test_replyto(self):
+        config = self.env.config
+        config.set('notification', 'smtp_replyto', 'replyto@example.org')
+        self._notify_event('blah')
+        history = self.sender.history
+        from_addr, recipients, message = history[0]
+        self.assertEqual('replyto@example.org', message['Reply-To'])
+
+    def test_replyto_empty(self):
+        config = self.env.config
+        config.set('notification', 'smtp_replyto', '')
+        self._notify_event('blah')
+        history = self.sender.history
+        from_addr, recipients, message = history[0]
+        self.assertNotIn('Reply-To', message)
+
 
 class RecipientMatcherTestCase(unittest.TestCase):
 

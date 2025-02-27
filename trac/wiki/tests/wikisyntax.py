@@ -304,7 +304,7 @@ NoLink:
 NoLink: ...
 ------------------------------
 <p>
-This is the original <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt</a> wiki page.
+This is the original <a class="ext-link" href="http://meatballwiki.org/wiki/InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt</a> wiki page.
 Checkout the <a class="ext-link" href="tsvn:http://svn.edgewall.com/repos/trac" title="http://svn.edgewall.com/repos/trac in tsvn"><span class="icon"></span>Trac Repository</a>.
 </p>
 <p>
@@ -329,8 +329,8 @@ and MeatBall:InterMapTxt?format=txt#there wiki page.
 complex link complex:a:test?go#there with positional arguments
 ------------------------------
 <p>
-See also <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt#there" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt#there</a> wiki page
-and <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt&amp;format=txt#there" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt?format=txt#there</a> wiki page.
+See also <a class="ext-link" href="http://meatballwiki.org/wiki/InterMapTxt#there" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt#there</a> wiki page
+and <a class="ext-link" href="http://meatballwiki.org/wiki/InterMapTxt?format=txt#there" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt?format=txt#there</a> wiki page.
 </p>
 <p>
 complex link <a class="ext-link" href="http://server/a/page/test?format=txt&amp;go#there" title="resource test in a"><span class="icon"></span>complex:a:test?go#there</a> with positional arguments
@@ -674,7 +674,7 @@ complex link complex:a:test with positional arguments.
 js:"alert(1)" javasc:"ript:alert(1)"
 ------------------------------
 <p>
-This is the original <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt</a> wiki page.
+This is the original <a class="ext-link" href="http://meatballwiki.org/wiki/InterMapTxt" title="InterMapTxt in MeatBall..."><span class="icon"></span>MeatBall:InterMapTxt</a> wiki page.
 </p>
 <p>
 Checkout the <a class="ext-link" href="tsvn:http://svn.edgewall.com/repos/trac" title="http://svn.edgewall.com/repos/trac in tsvn"><span class="icon"></span>Trac Repository</a>.
@@ -718,7 +718,7 @@ def wiki_setup(tc):
 This is the InterMapTxt
 ----
 {{{
-MeatBall        http://www.usemod.com/cgi-bin/mb.pl? # $1 in MeatBall...
+MeatBall        http://meatballwiki.org/wiki/ # $1 in MeatBall...
 tsvn            tsvn:
 complex         http://server/$1/page/$2?format=txt  # resource $2 in $1
 over            http://unused/? # Overridden in trac.ini

@@ -757,6 +757,7 @@ class TicketModule(Component):
                               'changes': data['changes'],
                               })
         add_stylesheet(req, 'common/css/ticket.css')
+        add_script(req, 'common/js/threaded_comments.js')
         chrome = Chrome(self.env)
         chrome.add_wiki_toolbars(req)
         if not data['disable_submit']:

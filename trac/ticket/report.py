@@ -938,10 +938,11 @@ class ReportModule(Component):
         req.perm(self.realm, id).require('REPORT_SQL_VIEW')
 
         out = io.BytesIO()
-        out.write(b'-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))
+        out.write(b'-- ## %d: %s ## --\n\n' % (id, title.encode('utf-8')))
         if description:
-            lines = description.encode('utf-8').splitlines()
-            out.write(b'-- %s\n\n' % '\n-- '.join(lines))
+            for line in description.encode('utf-8').splitlines():
+                out.write(b'-- %s\n' % line)
+            out.write(b'\n')
         out.write(sql.encode('utf-8'))
         data = out.getvalue()
 

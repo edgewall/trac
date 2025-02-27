@@ -33,7 +33,7 @@ from trac.resource import Resource
 from trac.util import create_file
 from trac.util.datefmt import pytz, timezone, utc
 from trac.util.html import Markup, tag
-from trac.util.translation import has_babel
+from trac.util.translation import get_available_locales, has_babel
 from trac.web.api import IRequestHandler
 from trac.web.chrome import (
     Chrome, INavigationContributor, add_link, add_meta, add_notice,
@@ -287,6 +287,28 @@ class ChromeTestCase(unittest.TestCase):
     def test_add_jquery_ui_default_format(self):
         data = self._get_jquery_ui_script_data(locale_en)
         self.assertIsNone(data['timezone_list'])
+
+    @unittest.skipUnless(has_babel, 'Babel unavailable')
+    def test_add_jquery_ui_time_format(self):
+        from babel.core import Locale
+        data = self._get_jquery_ui_script_data(locale_en)
+        self.assertEqual(True, data['ampm'])
+        self.assertIn(data['time_format'], ('h:mm:ss TT', 'h:mm:ss\u202fTT'))
+        locale_ja = Locale.parse('ja')
+        data = self._get_jquery_ui_script_data(locale_ja)
+        self.assertEqual(False, data['ampm'])
+        self.assertEqual('H:mm:ss', data['time_format'])
+        locale_zh_tw = Locale.parse('zh_TW')
+        data = self._get_jquery_ui_script_data(locale_zh_tw)
+        self.assertEqual(True, data['ampm'])
+        self.assertEqual('tth:mm:ss', data['time_format'])
+
+    @unittest.skipUnless(has_babel, 'Babel unavailable')
+    def test_add_jquery_ui_available_locales(self):
+        from babel.core import Locale
+        for locale in get_available_locales():
+            locale = Locale.parse(locale)
+            data = self._get_jquery_ui_script_data(locale)
 
     def test_invalid_default_dateinfo_format_raises_exception(self):
         self.env.config.set('trac', 'default_dateinfo_format', 'ābšolute')
@@ -1148,12 +1170,12 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
                 <body>
                 <ul>
                 <li></li>
-                <li><span title="Jul 1, 2007, 12:34:56 PM">[0-9]+ years ago</span></li>
-                <li><span title="Jul 1, 2007, 12:34:56 PM">[0-9]+ years ago</span></li>
+                <li><span title="Jul 1, 2007, 12:34:56\\sPM">[0-9]+ years ago</span></li>
+                <li><span title="Jul 1, 2007, 12:34:56\\sPM">[0-9]+ years ago</span></li>
                 <li><span title="[0-9]+ years ago">on Jul 1, 2007</span></li>
-                <li><span title="[0-9]+ years ago">on Jul 1, 2007 at 12:34:56 PM</span></li>
+                <li><span title="[0-9]+ years ago">on Jul 1, 2007 at 12:34:56\\sPM</span></li>
                 <li><span title="[0-9]+ years ago">Jul 1, 2007</span></li>
-                <li><span title="[0-9]+ years ago">Jul 1, 2007, 12:34:56 PM</span></li>
+                <li><span title="[0-9]+ years ago">Jul 1, 2007, 12:34:56\\sPM</span></li>
                 </ul>
                 </body>
                 </html>"""), content)
@@ -1207,6 +1229,62 @@ class ChromeTemplateRenderingTestCase(unittest.TestCase):
         self.assertIn(b' jQuery.loadStyleSheet("/trac.cgi/chrome/'
                       b'common/css/blahblah.css", "text/css");', content)
         self.assertIn(b' var blahblah=42;', content)
+
+    def test_render_template_i18n_domain(self):
+        """Regression test for #13745"""
+
+        template = textwrap.dedent("""\
+            ${_("anonymous")}
+            ${gettext("Admin")}
+            ${ngettext("%(num)d byte", "%(num)d bytes", num=num)}
+            ${tag_("You may use %(wikiformatting)s here.",
+                   wikiformatting=tag.b('WikiFormatting'))}
+            ${tagn_("%(value)s added", "%(value)s added", len(values),
+                    value=values|join(' '))}
+            ${dgettext("messages", "Timeline")}
+            ${dngettext("messages", "%(num)d day", "%(num)d days", num)}
+            ${dtgettext("messages", "Quickjump to %(name)s",
+                        name=tag.b('WikiStart'))}
+            ${dtngettext("messages", "%(value)s removed", "%(value)s removed",
+                         len(values), value=values|join(' '))}
+        """)
+        filename = 'ticket13745.html'
+        filepath = os.path.join(self.env.templates_dir, filename)
+        create_file(filepath, template)
+
+        def test(domain=None):
+            req = MockRequest(self.env)
+            data = {'num': 42, 'values': ['foo', 'bar']}
+            metadata = {'iterable': False}
+            if domain:
+                metadata['domain'] = domain
+            content = str(self.chrome.render_template(req, filename, data,
+                                                      metadata), 'utf-8')
+            self.assertEqual([
+                'anonymous', 'Admin', '42 bytes',
+                'You may use <b>WikiFormatting</b> here.', 'foo bar added',
+                'Timeline', '42 days', 'Quickjump to <b>WikiStart</b>',
+                'foo bar removed'], content.splitlines())
+
+        test(domain=None)
+        test(domain='messages')
+
+    def test_filters_max_min(self):
+        template = textwrap.dedent("""\
+            ${names|map('capitalize')|max(default='(max)')}
+            ${names|map('capitalize')|min(default='(min)')}
+            ${names|reject('string')|max(default='(max)')}
+            ${names|reject('string')|min(default='(min)')}
+        """)
+        filename = 'ticket13773.html'
+        create_file(os.path.join(self.env.templates_dir, filename), template)
+
+        req = MockRequest(self.env)
+        data = {'names': ['alpha', 'beta', 'gamma']}
+        content = self.chrome.render_template(req, filename, data,
+                                              {'iterable': False})
+        self.assertEqual(['Gamma', 'Alpha', '(max)', '(min)'],
+                         str(content, 'utf-8').splitlines())
 
 
 def test_suite():

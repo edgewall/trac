@@ -32,6 +32,7 @@ from socketserver import ThreadingMixIn
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
 from trac.util.text import printerr
+from trac.web.api import wsgi_string_encode
 from trac.web.auth import BasicAuthentication, DigestAuthentication
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIServer, WSGIRequestHandler
@@ -59,7 +60,7 @@ class AuthenticationMiddleware(object):
                     remote_user = auth.do_auth(environ, start_response)
                     if not remote_user:
                         return []
-                    environ['REMOTE_USER'] = remote_user
+                    environ['REMOTE_USER'] = wsgi_string_encode(remote_user)
         return self.application(environ, start_response)
 
 
@@ -336,16 +337,20 @@ def main():
                 print("[Errno %s] %s" % e.args)
                 sys.exit(1)
 
-            print("Server starting in PID %s." % os.getpid())
-            print("Serving on %s" % loc)
-            if args.http11:
-                print("Using HTTP/1.1 protocol version")
-            if args.protocol == 'https':
-                httpd.socket = ssl.wrap_socket(httpd.socket, server_side=True,
-                                               certfile=args.certfile,
-                                               keyfile=args.keyfile)
-                httpd.environ['HTTPS'] = 'yes'
-            httpd.serve_forever()
+            with httpd:
+                print("Server starting in PID %s." % os.getpid())
+                print("Serving on %s" % loc)
+                if args.http11:
+                    print("Using HTTP/1.1 protocol version")
+                if args.protocol == 'https':
+                    ctxt = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+                    ctxt.load_cert_chain(certfile=args.certfile,
+                                         keyfile=args.keyfile)
+                    httpd.socket = ctxt.wrap_socket(httpd.socket,
+                                                    server_side=True)
+                    httpd.environ['HTTPS'] = 'yes'
+                httpd.serve_forever()
+
     elif args.protocol in ('scgi', 'ajp', 'fcgi'):
         def serve():
             module = 'flup.server.%s' % args.protocol

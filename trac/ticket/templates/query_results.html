@@ -34,7 +34,9 @@
   #   endset
   <h2 class="report-result">${tag_("Results %(num)s", num=numresults)}</h2>
   # endif
-  # include 'page_index.html' if paginator.show_index
+  # if paginator.show_index:
+  #   include 'page_index.html'
+  # endif
 
   # macro group_heading(groupname, results)
   #   if groupname is not none:
@@ -60,7 +62,7 @@
   # endmacro
 
   <table class="listing tickets">
-    # if len(groups) > 0:
+    # if len(groups) > 0 and groups[0][0] is not none:
     <caption class="trac-group">
       ${group_heading(*groups[0])}
     </caption>
@@ -199,5 +201,7 @@
     #   endfor
   </table>
   #   endwith
-  #   include 'page_index.html' if paginator.show_index
+  #   if paginator.show_index:
+  #     include 'page_index.html'
+  #   endif
 </div>

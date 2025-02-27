@@ -59,7 +59,7 @@ EMAIL_LOOKALIKE_PATTERN = (
         r"[a-zA-Z0-9.'+_-]+" '@'
         # the domain name part (RFC:1035)
         r'(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
-        r'[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?'  # TLD
+        r'[a-zA-Z](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?'  # TLD
         )
 
 _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
@@ -646,7 +646,8 @@ class EmailDistributor(Component):
             set_header(message, 'Cc', addresses=cc_addrs)
         if bcc_addrs:
             set_header(message, 'Bcc', addresses=bcc_addrs)
-        set_header(message, 'Reply-To', addresses=[smtp_replyto])
+        if smtp_replyto:
+            set_header(message, 'Reply-To', addresses=[smtp_replyto])
 
         for decorator in self.decorators:
             decorator.decorate_message(event, message, self._charset)

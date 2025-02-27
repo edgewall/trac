@@ -53,7 +53,8 @@ from trac.web.api import HTTPBadRequest, HTTPException, HTTPForbidden, \
                          HTTPInternalServerError, HTTPNotFound, IAuthenticator, \
                          IRequestFilter, IRequestHandler, Request, \
                          RequestDone, TracNotImplementedError, \
-                         is_valid_default_handler, parse_header
+                         is_valid_default_handler, parse_header, \
+                         wsgi_string_decode, wsgi_string_encode
 from trac.web.chrome import Chrome, ITemplateProvider, add_notice, \
                             add_stylesheet, add_warning
 from trac.web.href import Href
@@ -535,14 +536,14 @@ def dispatch_request(environ, start_response):
             # the remaining path in the `PATH_INFO` variable.
             script_name = environ.get('SCRIPT_NAME', '')
             try:
-                if isinstance(script_name, str):
-                    script_name = script_name.encode('iso-8859-1')  # PEP 3333
-                script_name = str(script_name, 'utf-8')
+                script_name = wsgi_string_decode(script_name)
+                env_name = wsgi_string_decode(env_name)
             except UnicodeDecodeError:
                 errmsg = 'Invalid URL encoding (was %r)' % script_name
             else:
                 # (as Href expects unicode parameters)
-                environ['SCRIPT_NAME'] = Href(script_name)(env_name)
+                script_name = wsgi_string_encode(Href(script_name)(env_name))
+                environ['SCRIPT_NAME'] = script_name
                 environ['PATH_INFO'] = '/' + '/'.join(path_info)
 
                 if env_parent_dir:

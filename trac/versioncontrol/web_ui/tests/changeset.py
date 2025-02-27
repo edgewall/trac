@@ -15,7 +15,8 @@ import unittest
 
 from trac.core import TracError
 from trac.test import EnvironmentStub, MockRequest, makeSuite
-from trac.versioncontrol.web_ui.changeset import ChangesetModule
+from trac.versioncontrol.web_ui.changeset import AnyDiffModule, ChangesetModule
+from trac.web.api import RequestDone
 
 
 class ChangesetModuleTestCase(unittest.TestCase):
@@ -30,9 +31,35 @@ class ChangesetModuleTestCase(unittest.TestCase):
         self.assertRaises(TracError, self.cm.process_request, req)
 
 
+class AnyDiffModuleTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.mod = AnyDiffModule(self.env)
+
+    def test_normal(self):
+        req = MockRequest(self.env, path_info='/diff', args={'term': '/'})
+        req.environ['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
+        self.assertTrue(self.mod.match_request(req))
+        self.assertRaises(RequestDone, self.mod.process_request, req)
+        self.assertEqual(b'[]', req.response_sent.getvalue())
+        self.assertEqual('application/json;charset=utf-8',
+                         req.headers_sent.get('Content-Type'))
+
+    def test_without_term(self):
+        req = MockRequest(self.env, path_info='/diff')
+        req.environ['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
+        self.assertTrue(self.mod.match_request(req))
+        self.assertRaises(RequestDone, self.mod.process_request, req)
+        self.assertEqual(b'[]', req.response_sent.getvalue())
+        self.assertEqual('application/json;charset=utf-8',
+                         req.headers_sent.get('Content-Type'))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(makeSuite(ChangesetModuleTestCase))
+    suite.addTest(makeSuite(AnyDiffModuleTestCase))
     return suite
 
 

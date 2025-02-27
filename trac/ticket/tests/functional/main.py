@@ -690,26 +690,36 @@ class TestTicketTimeline(FunctionalTestCaseSetup):
 class TestNewReport(FunctionalTestCaseSetup):
     def runTest(self):
         """Create a new report"""
+        env = self._testenv.get_trac_environment()
+        schema = env.config.get('trac', 'database').split(':', 1)[0]
+        if schema == 'sqlite':
+            delta_days = "julianday('now') - " \
+                         "julianday(changetime / 1000000, 'unixepoch')"
+        elif schema == 'postgres':
+            delta_days = \
+                "(date_part('epoch', now()) - changetime / 1000000) / 86400"
+        elif schema == 'mysql':
+            delta_days = "(unix_timestamp() - changetime / 1000000) / 86400"
+        else:
+            raise AssertionError(repr(schema))
         self._tester.create_report(
             'Closed tickets, modified in the past 7 days by owner.', """
               SELECT DISTINCT p.value AS __color__,
                id AS ticket,
                summary, component, milestone, t.type AS type,
                reporter, time AS created,
-               changetime AS modified, description AS _description,
+               changetime AS modified, t.description AS _description,
                priority,
-               round(julianday('now') -
-                     julianday(changetime, 'unixepoch')) as days,
+               round({delta_days}) as days,
                resolution,
                owner as __group__
               FROM ticket t
               LEFT JOIN enum p ON p.name = t.priority AND
                                   p.type = 'priority'
-              WHERE ((julianday('now') -
-                      julianday(changetime, 'unixepoch')) < 7)
+              WHERE {delta_days} < 7
                AND status = 'closed'
               ORDER BY __group__, changetime, p.value
-            """,
+            """.format(delta_days=delta_days),
             'List of all tickets that are closed, and have been modified in'
             ' the past 7 days, grouped by owner.\n\n(So they have probably'
             ' been closed this week.)')

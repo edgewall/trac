@@ -20,6 +20,7 @@ import base64
 import io
 import quopri
 import re
+import sys
 import unittest
 from datetime import datetime, timedelta
 
@@ -715,6 +716,8 @@ class NotificationTestCase(unittest.TestCase):
                           'joe.user@example.net', 'joe.bar@example.net'},
                          cclist)
 
+    @unittest.skipIf(sys.version_info[:3] == (3, 12, 4),
+                     'python/cpython#120930')
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
         self.env.config.set('notification', 'mime_encoding', 'qp')

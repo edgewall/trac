@@ -13,13 +13,12 @@
 
 import os.path
 import sys
-import tempfile
 import unittest
 
 from trac.admin.api import console_datetime_format
 from trac.admin.console import TracAdmin
 from trac.admin.test import TracAdminTestCaseBase
-from trac.test import EnvironmentStub, makeSuite, mkdtemp
+from trac.test import EnvironmentStub, makeSuite, mkdtemp, rmtree
 from trac.tests.contentgen import random_unique_camel, random_paragraph
 from trac.util import create_file
 from trac.util.datefmt import format_datetime
@@ -125,6 +124,7 @@ class TracAdminTestCase(TracAdminTestCaseBase):
 
     def tearDown(self):
         self.env = None
+        rmtree(self.tempdir)
 
     def _insert_page(self, name=None):
         page = WikiPage(self.env)

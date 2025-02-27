@@ -686,7 +686,7 @@ class ChangesetModule(Component):
         if Chrome(self.env).use_chunked_encoding:
             length = None
         else:
-            output = ''.join(output)
+            output = b''.join(output)
             length = len(output)
 
         req.send_response(200)
@@ -1173,7 +1173,7 @@ class AnyDiffModule(Component):
         rm = RepositoryManager(self.env)
 
         if req.is_xhr:
-            dirname, prefix = posixpath.split(req.args.get('term'))
+            dirname, prefix = posixpath.split(req.args.get('term') or '')
             prefix = prefix.lower()
             reponame, repos, path = rm.get_repository_by_path(dirname)
             # an entry is a (isdir, name, path) tuple
@@ -1189,14 +1189,15 @@ class AnyDiffModule(Component):
             if not reponame:
                 entries.extend((True, repos.reponame, '/' + repos.reponame)
                                for repos in rm.get_real_repositories()
-                               if repos.is_viewable(req.perm))
+                               if repos.reponame and
+                                  repos.is_viewable(req.perm))
 
             paths = [{'label': path + ('/' if isdir else ''), 'value': path,
                       'isdir': isdir}
                      for isdir, name, path in sorted(entries, key=kind_order)
                                            if name.lower().startswith(prefix)]
 
-            content = to_json(paths)
+            content = to_json(paths).encode('utf-8')
             req.send(content, 'application/json', 200)
 
         # -- retrieve arguments

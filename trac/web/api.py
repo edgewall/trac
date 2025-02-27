@@ -18,6 +18,7 @@ from abc import ABCMeta
 from http.cookies import CookieError, BaseCookie, SimpleCookie
 from http.server import BaseHTTPRequestHandler
 from datetime import datetime
+import base64
 import hashlib
 import io
 import mimetypes
@@ -38,7 +39,7 @@ else:
 from trac.core import Interface, TracBaseError, TracError
 from trac.util import as_bool, as_int, get_last_traceback, lazy, \
                       normalize_filename
-from trac.util.datefmt import http_date, localtz
+from trac.util.datefmt import http_date, localtz, to_datetime, utc
 from trac.util.html import Fragment, tag
 from trac.util.text import empty, exception_to_unicode, to_unicode
 from trac.util.translation import _, N_, tag_
@@ -469,6 +470,33 @@ def arg_list_to_args(arg_list):
     return args
 
 
+if hasattr(str, 'isascii'):
+    _isascii = lambda value: value.isascii()
+else:
+    _is_non_ascii_re = re.compile(r'[^\x00-\x7f]')
+    _isascii = lambda value: not _is_non_ascii_re.search(value)
+
+
+def wsgi_string_decode(value):
+    """Convert from a WSGI "bytes-as-unicode" string to an unicode string.
+    """
+    if not isinstance(value, str):
+        raise TypeError('Must a str instance rather than %s' % type(value))
+    if not _isascii(value):
+        value = value.encode('iso-8859-1').decode('utf-8')
+    return value
+
+
+def wsgi_string_encode(value):
+    """Convert from an unicode string to a WSGI "bytes-as-unicode" string.
+    """
+    if not isinstance(value, str):
+        raise TypeError('Must a str instance rather than %s' % type(value))
+    if not _isascii(value):
+        value = value.encode('utf-8').decode('iso-8859-1')
+    return value
+
+
 def _raise_if_null_bytes(value):
     if value and '\x00' in value:
         raise HTTPBadRequest(_("Invalid request arguments."))
@@ -496,7 +524,7 @@ if multipart:
             data = environ['wsgi.input'].read(length)
             pairs = urllib.parse.parse_qsl(
                 str(data, 'utf-8'), keep_blank_values=True,
-                strict_parsing=True, encoding='utf-8', errors='strict')
+                strict_parsing=False, encoding='utf-8', errors='strict')
             for name, value in pairs:
                 _raise_if_null_bytes(name)
                 _raise_if_null_bytes(value)
@@ -665,7 +693,7 @@ class Request(object):
 
     def __repr__(self):
         uri = self.environ.get('PATH_INFO', '')
-        qs = self.query_string
+        qs = self.environ.get('QUERY_STRING', '')
         if qs:
             uri += '?' + qs
         return '<%s "%s %r">' % (self.__class__.__name__, self.method, uri)
@@ -697,21 +725,16 @@ class Request(object):
     def path_info(self):
         """Path inside the application"""
         path_info = self.environ.get('PATH_INFO', '')
-        if isinstance(path_info, str):
-            # According to PEP 3333, the value is decoded by iso-8859-1
-            # encoding when it is a unicode string. However, we need
-            # decoded unicode string by utf-8 encoding.
-            path_info = path_info.encode('iso-8859-1')
         try:
-            return str(path_info, 'utf-8')
-        except UnicodeDecodeError:
+            return wsgi_string_decode(path_info)
+        except UnicodeError:
             raise HTTPNotFound(_("Invalid URL encoding (was %(path_info)r)",
                                  path_info=path_info))
 
     @property
     def query_string(self):
         """Query part of the request"""
-        return self.environ.get('QUERY_STRING', '')
+        return wsgi_string_decode(self.environ.get('QUERY_STRING', ''))
 
     @property
     def remote_addr(self):
@@ -726,7 +749,7 @@ class Request(object):
         """
         user = self.environ.get('REMOTE_USER')
         if user is not None:
-            return to_unicode(user)
+            return wsgi_string_decode(user)
 
     @property
     def request_path(self):
@@ -744,7 +767,7 @@ class Request(object):
     @property
     def base_path(self):
         """The root path of the application"""
-        return self.environ.get('SCRIPT_NAME', '')
+        return wsgi_string_decode(self.environ.get('SCRIPT_NAME', ''))
 
     @property
     def server_name(self):
@@ -814,12 +837,24 @@ class Request(object):
         Otherwise, it adds the entity tag as an "ETag" header to the response
         so that consecutive requests can be cached.
         """
-        if isinstance(extra, list):
+
+        # In <RFC9110 8.8.3. ETag>, the value enclosed with double quotes
+        # allows %x21 / %x23-7E / %x80-FF bytes (except SPACE, <">, DEL).
+        # However, WSGI requires latin-1 encoding in the headers. We use sha1
+        # and urlsafe-base64 encoded for the value.
+        def digest_base64(iterable):
             m = hashlib.sha1()
-            for elt in extra:
-                m.update(repr(elt).encode('utf-8'))
-            extra = m.hexdigest()
-        etag = 'W/"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
+            for item in iterable:
+                m.update(item.encode('utf-8'))
+            digest = m.digest()
+            encoded = base64.urlsafe_b64encode(digest).rstrip(b'=')
+            return str(encoded, 'ascii')
+
+        if isinstance(extra, list):
+            extra = digest_base64(map(repr, extra))
+        authname = digest_base64([self.authname])
+        ts = to_datetime(datetime, utc).isoformat().replace('+00:00', 'Z')
+        etag = 'W/"%s/%s/%s"' % (authname, ts, extra)
         inm = self.get_header('If-None-Match')
         if not inm or inm != etag:
             self.send_header('ETag', etag)
@@ -947,6 +982,8 @@ class Request(object):
         there are multiple calls to `write`, to the cumulative length
         of the *data* arguments.
         """
+        if isinstance(data, str):
+            raise ValueError("Can't send str content")
         if not self._write:
             self.end_headers()
         try:
@@ -993,7 +1030,7 @@ class Request(object):
         self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
-        if isinstance(content, str):
+        if isinstance(content, bytes):
             self.send_header('Content-Length', len(content))
         self.end_headers(exc_info)
 

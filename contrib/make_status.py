@@ -30,13 +30,19 @@ def _pytidylib_version():
         info = 'not installed'
     else:
         import ctypes
-        cdll = tidy._tidy
-        fn = cdll.tidyLibraryVersion
-        fn.restype = ctypes.c_char_p
-        libver = fn()
-        if isinstance(libver, bytes):
-            libver = str(libver, 'utf-8')
-        info = '%s %s' % (libver, cdll._name)
+        try:
+            cdll = tidy._tidy
+            try:
+                fn = cdll.tidyLibraryVersion
+                fn.restype = ctypes.c_char_p
+                libver = fn()
+                if isinstance(libver, bytes):
+                    libver = str(libver, 'utf-8')
+            except Exception as e:
+                libver = repr(e)
+            info = '%s %s' % (libver, cdll._name)
+        except Exception as e:
+            info = repr(e)
     return '%s (%s)' % (version, info) if info else version
 
 def _pysqlite3_version():

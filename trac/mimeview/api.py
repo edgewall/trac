@@ -821,7 +821,7 @@ class Mimeview(Component):
                           renderer=renderer.__class__.__name__,
                           err=exception_to_unicode(e)))
             else:
-                if not result:
+                if result is None:
                     continue
 
                 if not (force_source or getattr(renderer, 'returns_source',

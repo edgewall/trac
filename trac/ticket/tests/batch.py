@@ -15,15 +15,18 @@ import unittest
 from datetime import datetime, timedelta
 
 from trac.core import Component, implements
-from trac.perm import DefaultPermissionPolicy, DefaultPermissionStore, \
-                      PermissionSystem
+from trac.perm import (
+    DefaultPermissionPolicy, DefaultPermissionGroupProvider,
+    DefaultPermissionStore, PermissionSystem,
+)
 from trac.test import EnvironmentStub, MockRequest, makeSuite
 from trac.ticket import api, default_workflow, model, web_ui
 from trac.ticket.batch import BatchModifyModule
 from trac.ticket.test import insert_ticket
+from trac.ticket.query import QueryModule
 from trac.util.datefmt import datetime_now, utc
 from trac.web.api import HTTPBadRequest, RequestDone
-from trac.web.chrome import web_context
+from trac.web.chrome import Chrome, web_context
 from trac.web.session import DetachedSession
 
 
@@ -183,8 +186,9 @@ class BatchModifyTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True, enable=[
             default_workflow.ConfigurableTicketWorkflow,
-            DefaultPermissionPolicy, DefaultPermissionStore,
-            BatchModifyModule, api.TicketSystem, web_ui.TicketModule
+            DefaultPermissionPolicy, DefaultPermissionGroupProvider,
+            DefaultPermissionStore, Chrome, QueryModule,
+            BatchModifyModule, api.TicketSystem, web_ui.TicketModule,
         ])
         self.env.config.set('trac', 'permission_policies',
                             'DefaultPermissionPolicy')
@@ -233,6 +237,17 @@ class BatchModifyTestCase(unittest.TestCase):
         component = model.Component(self.env)
         component.name = name
         component.insert()
+
+    def _process_query_request(self, req):
+        query_mod = QueryModule(self.env)
+        self.assertTrue(query_mod.match_request(req))
+        batch_mod = BatchModifyModule(self.env)
+        batch_mod.pre_process_request(req, query_mod)
+        template, data = query_mod.process_request(req)
+        return batch_mod.post_process_request(req, template, data, {})
+
+    def _render_fragment(self, req, template, data):
+        return Chrome(self.env).render_fragment(req, template, data)
 
     def test_require_post_method(self):
         """Request must use POST method."""
@@ -778,6 +793,23 @@ class BatchModifyTestCase(unittest.TestCase):
         req = MockRequest(self.env, path_info='/query')
         self.assertEqual((None, None, None),
                          module.post_process_request(req, None, None, None))
+
+    def test_view_without_batch_modify(self):
+        req = MockRequest(self.env, path_info='/query', authname='user1',
+                          args={'status': '!closed'})
+        template, data, metadata = self._process_query_request(req)
+        self.assertNotIn('batch_modify', data)
+        fragment = self._render_fragment(req, template, data)
+        self.assertNotIn('<form id="batchmod_form"', fragment)
+
+    def test_view_with_batch_modify(self):
+        req = MockRequest(self.env, path_info='/query', authname='has_bm',
+                          args={'status': '!closed'})
+        template, data, metadata = self._process_query_request(req)
+        self.assertIn('batch_modify', set(data))
+        self.assertTrue(data['batch_modify'])
+        fragment = self._render_fragment(req, template, data)
+        self.assertIn('<form id="batchmod_form"', fragment)
 
 
 def test_suite():

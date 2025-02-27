@@ -22,7 +22,7 @@ from trac.tests.functional import internal_error
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
                                   random_unique_camel
-from trac.util.html import tag
+from trac.util.html import escape_quotes, tag
 from trac.util.text import to_utf8, unicode_quote
 
 
@@ -422,11 +422,33 @@ class FunctionalTester(object):
         tc.formvalue('edit_report', 'description', description)
         tc.formvalue('edit_report', 'query', query)
         tc.submit()
-        reportnum = b.get_url().split('/')[-1]
-        # TODO: verify the url is correct
-        # TODO: verify the report number is correct
-        # TODO: verify the report does not cause an internal error
-        # TODO: verify the title appears on the report list
+        tc.notfind(internal_error)
+        tc.find(r'>\s*The report has been created\.\s*<')
+
+        url = b.get_url()
+        reportnum = None
+        is_query = '/query?' in url
+        if is_query:
+            for pair in url.split('?', 1)[1].split('&'):
+                if pair.startswith('report='):
+                    reportnum = pair.split('=', 1)[1]
+                    break
+        else:
+            values = url.split('/')
+            if values[-2] == 'report':
+                reportnum = values[-1]
+        if reportnum is None or not reportnum.isdigit():
+            raise AssertionError('Unexpected {!r}'.format(url))
+        reportnum = int(reportnum)
+        if is_query:
+            tc.find(r'<h1>%s\s*<' % re.escape(escape_quotes(title)))
+        else:
+            tc.notfind('<div class="system-message">')
+            title_re = ''.join(
+                re.escape(escape_quotes(item)) if idx % 2 == 0 else r'[^<]*?'
+                for idx, item
+                in enumerate(re.split(r'(\$[A-Z_][A-Z0-9_]*)', title)))
+            tc.find(r'<h1>\{%d\} %s\s*<' % (reportnum, title_re))
         return reportnum
 
     def ticket_set_milestone(self, ticketid, milestone):

@@ -75,9 +75,9 @@ if (-not (Verify-Binary)) {
     Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
     Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
     Set-Location -LiteralPath "$workspace\subversion-$svnver"
-    # for Subversion 1.14.2 with SWIG 4.1
-    & svn diff -c1905173 https://svn.apache.org/repos/asf/subversion/branches/1.14.x/subversion/ `
-      | & "C:\Program Files\Git\usr\bin\patch.exe" -d subversion -p0
+    & git apply -v -p0 --whitespace=fix `
+                "$workspace\.github\svn-swig41.patch" `
+                "$workspace\.github\svn-py312.patch"
     & $python gen-make.py --release `
                           --vsnet-version=2019 `
                           "--with-apr=$vcpkg_dir" `

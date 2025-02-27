@@ -856,7 +856,7 @@ def get_pkginfo(dist):
                     if any('.'.join(names[:n + 1]) in provides
                            for n in range(len(names))):
                         return True
-                except (IOError, email.Errors.MessageError):
+                except (IOError, email.errors.MessageError):
                     pass
             toplevel = resource_name.split('/')[0]
             if dist.has_metadata('top_level.txt'):

@@ -218,3 +218,4 @@ pre.diff .add { background: #dfd; }
 
 /* Styles for the diff page */
 .trac-autocomplete-dir { font-weight: bold }
+.trac-autocomplete-dir .ui-state-active { font-weight: inherit }

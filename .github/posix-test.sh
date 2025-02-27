@@ -8,14 +8,12 @@ init_postgresql() {
         sudo systemctl start postgresql.service
         ;;
       macos-*)
-        rm -rf /usr/local/var/postgres
-        pg_ctl initdb --pgdata /usr/local/var/postgres
-        pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
-            echo "Exited with $?"
-            cat /usr/local/var/postgres/postgresql.log
-            exit 1
-        }
-        createuser -s postgres
+        brew install -q postgresql@14
+        brew services start postgresql@14
+        for i in $(seq 1 15); do
+            psql -U "$LOGNAME" postgres -t -c 'SELECT version()' && break
+            sleep 1
+        done
         ;;
     esac
     {
@@ -24,7 +22,7 @@ init_postgresql() {
             sudo -u postgres psql -e
             ;;
           macos-*)
-            psql -U postgres -e
+            psql -U "$LOGNAME" postgres -e
             ;;
         esac
     } <<_EOS_
@@ -45,7 +43,7 @@ init_mysql() {
         } >~/.my.cnf
         ;;
       macos-*)
-        brew install mysql
+        brew install -q mysql
         mysql.server start
         {
             echo '[client]'
@@ -75,8 +73,11 @@ run_tests() {
     (
         case "$MATRIX_OS" in
           macos-*)
-            LDFLAGS='-L/usr/local/opt/openssl/lib'
-            export LDFLAGS
+            brew install -q libpq openssl
+            PATH="$PATH:$(brew --prefix libpq)/bin"
+            CFLAGS="-L$(brew --prefix openssl)/include"
+            LDFLAGS="-L$(brew --prefix openssl)/lib"
+            export CFLAGS LDFLAGS
             ;;
         esac
         pip install -r .github/requirements.txt
@@ -118,10 +119,8 @@ case "$MATRIX_OS" in
     sudo apt-get install -qq -y subversion
     ;;
   macos-*)
-    HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-    export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK
-    brew update || :
-    brew install subversion
+    brew update -q || :
+    brew install -q subversion tidy-html5
     ;;
 esac
 

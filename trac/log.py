@@ -40,7 +40,7 @@ def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
     logger = logging.getLogger(logid)
     logtype = logtype.lower()
     if logtype == 'file':
-        hdlr = logging.FileHandler(logfile)
+        hdlr = logging.FileHandler(logfile, encoding='utf-8')
     elif logtype in ('eventlog', 'winlog', 'nteventlog'):
         # Requires win32 extensions
         hdlr = logging.handlers.NTEventLogHandler(logid,

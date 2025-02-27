@@ -1166,7 +1166,9 @@ else:
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz,
                                                   locale=locale_en),
                           ('Aug 28, 2010 1:45:56 PM',
-                           'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
+                           'Aug 28, 2010, 1:45:56 PM',       # CLDR 23
+                           'Aug 28, 2010, 1:45:56\u202fPM',  # CLDR 42
+                          ))
             en_GB = Locale.parse('en_GB')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=en_GB),
                           ('28 Aug 2010 13:45:56',    # Babel < 2.2.0
@@ -1174,18 +1176,21 @@ else:
             fr = Locale.parse('fr')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=fr),
                           ('28 août 2010 13:45:56',           # Babel < 2.2.0
-                           '28 ao\xfbt 2010 \xe0 13:45:56'))  # Babel 2.2.0
+                           '28 ao\xfbt 2010 \xe0 13:45:56',   # Babel 2.2.0
+                           '28 août 2010, 13:45:56'))         # Babel 2.10.0
             ja = Locale.parse('ja')
             self.assertEqual('2010/08/28 13:45:56',
                              datefmt.format_datetime(t, tzinfo=tz, locale=ja))
             vi = Locale.parse('vi')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=vi),
                           ('13:45:56 28-08-2010',        # Babel < 2.2.0
-                           '13:45:56, 28 thg 8, 2010'))  # Babel 2.2.0
+                           '13:45:56, 28 thg 8, 2010',   # Babel >= 2.2.0
+                           '13:45:56 28 thg 8, 2010'))   # Babel >= 2.15.0
             zh_CN = Locale.parse('zh_CN')
             self.assertIn(datefmt.format_datetime(t, tzinfo=tz, locale=zh_CN),
                           ('2010-8-28 下午01:45:56',
-                           '2010年8月28日 下午1:45:56'))
+                           '2010年8月28日 下午1:45:56',
+                           '2010年8月28日 13:45:56'))       # Babel 2.10.0
 
         def test_i18n_format_date(self):
             tz = datefmt.timezone('GMT +2:00')
@@ -1219,9 +1224,10 @@ else:
             vi = Locale.parse('vi')
             zh_CN = Locale.parse('zh_CN')
 
-            self.assertEqual('1:45:56 PM',
-                             datefmt.format_time(t, tzinfo=tz,
-                                                 locale=locale_en))
+            self.assertIn(datefmt.format_time(t, tzinfo=tz, locale=locale_en),
+                          ('1:45:56 PM',
+                           '1:45:56\u202fPM',  # CLDR 42
+                          ))
             self.assertEqual('13:45:56',
                              datefmt.format_time(t, tzinfo=tz, locale=en_GB))
             self.assertEqual('13:45:56',
@@ -1231,7 +1237,8 @@ else:
             self.assertEqual('13:45:56',
                              datefmt.format_time(t, tzinfo=tz, locale=vi))
             self.assertIn(datefmt.format_time(t, tzinfo=tz, locale=zh_CN),
-                          ('下午01:45:56', '下午1:45:56'))
+                          ('下午01:45:56', '下午1:45:56',
+                           '13:45:56'))                     # Babel 2.10.0
 
         def test_i18n_datetime_hint(self):
             en_GB = Locale.parse('en_GB')
@@ -1241,8 +1248,11 @@ else:
             zh_CN = Locale.parse('zh_CN')
 
             self.assertIn(datefmt.get_datetime_format_hint(locale_en),
-                          ('MMM d, yyyy h:mm:ss a', 'MMM d, y h:mm:ss a',
-                           'MMM d, y, h:mm:ss a'))
+                ('MMM d, yyyy h:mm:ss a',
+                 'MMM d, y h:mm:ss a',
+                 'MMM d, y, h:mm:ss a',
+                 'MMM d, y, h:mm:ss\u202fa',  # Babel 2.12.0 (CLDR 42)
+                ))
             self.assertIn(datefmt.get_datetime_format_hint(en_GB),
                           ('d MMM yyyy HH:mm:ss',
                            'd MMM y HH:mm:ss',
@@ -1250,15 +1260,19 @@ else:
             self.assertIn(datefmt.get_datetime_format_hint(fr),
                           ('d MMM yyyy HH:mm:ss',
                            'd MMM y HH:mm:ss',
-                           "d MMM y '\xe0' HH:mm:ss"))  # Babel 2.2.0
+                           "d MMM y '\xe0' HH:mm:ss",   # Babel 2.2.0
+                           'd MMM y, HH:mm:ss'))        # Babel 2.10.0
             self.assertIn(datefmt.get_datetime_format_hint(ja),
                           ('yyyy/MM/dd H:mm:ss', 'y/MM/dd H:mm:ss'))
             self.assertIn(datefmt.get_datetime_format_hint(vi),
                           ('HH:mm:ss dd-MM-yyyy',
                            'HH:mm:ss dd-MM-y',
-                           'HH:mm:ss, d MMM, y'))  # Babel 2.2.0
+                           'HH:mm:ss, d MMM, y',   # Babel >= 2.2.0
+                           'HH:mm:ss d MMM, y'))   # Babel >= 2.15.0
             self.assertIn(datefmt.get_datetime_format_hint(zh_CN),
-                          ('yyyy-M-d ahh:mm:ss', 'y年M月d日 ah:mm:ss'))
+                          ('yyyy-M-d ahh:mm:ss',
+                           'y年M月d日 ah:mm:ss',
+                           'y年M月d日 HH:mm:ss'))       # Babel 2.10.0
 
         def test_i18n_date_hint(self):
             en_GB = Locale.parse('en_GB')
@@ -1468,15 +1482,55 @@ else:
             # Converting default format to babel's format
             self.assertIn(datefmt.format_datetime(t, '%x %X', tz, locale_en),
                           ('Aug 28, 2010 1:45:56 PM',
-                           'Aug 28, 2010, 1:45:56 PM'))  # CLDR 23
+                           'Aug 28, 2010, 1:45:56 PM',       # CLDR 23
+                           'Aug 28, 2010, 1:45:56\u202fPM',  # CLDR 42
+                          ))
             self.assertEqual('Aug 28, 2010',
                              datefmt.format_datetime(t, '%x', tz, locale_en))
-            self.assertEqual('1:45:56 PM',
-                             datefmt.format_datetime(t, '%X', tz, locale_en))
-            self.assertEqual('Aug 28, 2010',
+            self.assertEqual(datefmt.format_datetime(t, '%x', tz, locale_en),
                              datefmt.format_date(t, '%x', tz, locale_en))
-            self.assertEqual('1:45:56 PM',
+            self.assertIn(datefmt.format_datetime(t, '%X', tz, locale_en),
+                          ('1:45:56 PM',
+                           '1:45:56\u202fPM',  # CLDR 42
+                          ))
+            self.assertEqual(datefmt.format_datetime(t, '%X', tz, locale_en),
                              datefmt.format_time(t, '%X', tz, locale_en))
+
+        def test_format_a_period_instead_of_b_periods(self):
+            zh_TW = Locale.parse('zh_TW')
+
+            t = datetime.datetime(2024, 4, 18, 23, 45, 56, 123456, datefmt.utc)
+            self.assertEqual(
+                '2024年4月18日',
+                datefmt.format_date(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '下午11:45:56',
+                datefmt.format_time(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '2024年4月18日 下午11:45:56',
+                datefmt.format_datetime(t, tzinfo=datefmt.utc, locale=zh_TW))
+
+            t = datetime.datetime(2024, 4, 19, 1, 45, 56, 123456, datefmt.utc)
+            self.assertEqual(
+                '2024年4月19日',
+                datefmt.format_date(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '上午1:45:56',
+                datefmt.format_time(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '2024年4月19日 上午1:45:56',
+                datefmt.format_datetime(t, tzinfo=datefmt.utc, locale=zh_TW))
+
+            t = datetime.datetime(2024, 4, 19, 12, 45, 56, 123456, datefmt.utc)
+            self.assertEqual(
+                '2024年4月19日',
+                datefmt.format_date(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '下午12:45:56',
+                datefmt.format_time(t, tzinfo=datefmt.utc, locale=zh_TW))
+            self.assertEqual(
+                '2024年4月19日 下午12:45:56',
+                datefmt.format_datetime(t, tzinfo=datefmt.utc, locale=zh_TW))
 
         def test_parse_invalid_date(self):
             tz = datefmt.timezone('GMT +2:00')
@@ -1960,27 +2014,6 @@ class LocalTimezoneTestCase(unittest.TestCase):
             self._compare_pytz_localize_and_normalize(tz, dt_naive)
 
     if datefmt.pytz:
-        def test_pytz_choibalsan(self):
-            tz = datefmt.timezone('Asia/Choibalsan')
-            self._tzset('Asia/Choibalsan')
-            self._compare_pytz(tz, '1977-01-01T00:00')  # No DST
-            self._compare_pytz(tz, '1978-01-01T01:00')  # +1:00 (TZ change)
-            self._compare_pytz(tz, '1978-01-01T02:00')  #       (TZ change)
-            self._compare_pytz(tz, '1982-04-01T00:00')  # No DST
-            self._compare_pytz(tz, '1983-04-01T00:00')  # +2:00 (TZ change)
-            self._compare_pytz(tz, '1983-04-01T02:00')  #       (TZ change)
-            self._compare_pytz(tz, '1983-10-01T00:00',  # -1:00 (DST end)
-                               localize=False)
-            self._compare_pytz(tz, '2006-03-25T02:00')  # +1:00 (DST start)
-            self._compare_pytz(tz, '2006-09-30T02:00',  # -1:00 (DST end)
-                               localize=False)
-            self._compare_pytz(tz, '2007-07-01T00:00')  # No DST in 2007
-            self._compare_pytz(tz, '2008-03-30T23:00',  #       (TZ change)
-                               localize=False)
-            self._compare_pytz(tz, '2008-03-31T00:00',  # -1:00 (TZ change)
-                               localize=False)
-            self._compare_pytz(tz, '2009-07-01T00:00')  # No DST
-
         def test_pytz_guatemala(self):
             tz = datefmt.timezone('America/Guatemala')
             self._tzset('America/Guatemala')

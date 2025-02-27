@@ -109,7 +109,7 @@ gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion
 gmessage         https://groups.google.com/g/$1/c/$2 # Message $2 in $1 Google Group
 gforum           https://groups.google.com/forum/#!forum/$1 # Forum $1 in Google Groups
 JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
-MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
+MeatBall         http://meatballwiki.org/wiki/
 MetaWiki         http://sunir.org/apps/meta.pl?
 MetaWikiPedia    https://meta.wikipedia.org/wiki/
 MoinMoin         https://moinmo.in/

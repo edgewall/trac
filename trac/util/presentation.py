@@ -50,7 +50,7 @@ def jinja2_update(jenv):
         groupattr=groupattr_filter,
         htmlattr=htmlattr_filter,
         max=max_filter,
-        mix=min_filter,
+        min=min_filter,
         trim=trim_filter,
     )
     jenv.tests.update(
@@ -138,15 +138,11 @@ def htmlattr_filter(_eval_ctx, d, autospace=True):
 
 def max_filter(seq, default=None):
     """Returns the max value from the sequence."""
-    if len(seq):
-        return max(seq)
-    return default
+    return max(seq, default=default)
 
 def min_filter(seq, default=None):
     """Returns the min value from the sequence."""
-    if len(seq):
-        return min(seq)
-    return default
+    return min(seq, default=default)
 
 
 def trim_filter(value, what=None):

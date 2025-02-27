@@ -3,7 +3,7 @@ multipart; python_version>='3.11'
 aiosmtpd; python_version>='3.10'
 selenium!=4.10.0
 pytidylib
-Babel<2.10
+Babel
 Pygments
 docutils
 textile

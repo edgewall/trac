@@ -16,6 +16,7 @@ import os
 import tempfile
 import unittest
 
+from trac.util import create_file, read_file
 from trac.admin.tests.functional import AuthorizationTestCaseSetup
 from trac.tests.contentgen import random_page, random_word, \
                                   random_unique_camel
@@ -418,6 +419,40 @@ class RegressionTestTicket13401(FunctionalTestCaseSetup):
         tc.find(r'No node missing.txt at revision 2\b')
 
 
+class RegressionTestTicket13625(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Test for regression of https://trac.edgewall.org/ticket/13625
+        fix for rendering diff with use_chunked_encoding option disabled.
+        """
+        env = self._testenv.get_trac_environment()
+        rev = self._testenv.svn_add('ticket13625.txt', 'New file\n')
+        tc.go(self._tester.url + '/changeset/%d' % rev)
+
+        expected = b"""\
+Index: /ticket13625.txt\r
+===================================================================\r
+--- /ticket13625.txt\t(revision %(rev)d)\r
++++ /ticket13625.txt\t(revision %(rev)d)\r
+@@ -0,0 +1,1 @@\r
++New file\r
+""" % {b'rev': rev}
+
+        def test_diff(**options):
+            for option, value in options.items():
+                env.config.set('trac', option, value)
+            env.config.save()
+            code, content = tc.download_link('Unified Diff')
+            self.assertEqual(200, code)
+            self.assertEqual(expected, content)
+
+        saved = read_file(env.config.filename, 'rb')
+        try:
+            test_diff(use_chunked_encoding='enabled')
+            test_diff(use_chunked_encoding='disabled')
+        finally:
+            create_file(env.config.filename, saved, 'wb')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional
@@ -440,6 +475,7 @@ def functionalSuite(suite=None):
         suite.addTest(RegressionTestTicket11618())
         suite.addTest(RegressionTestTicket11777())
         suite.addTest(RegressionTestTicket13401())
+        suite.addTest(RegressionTestTicket13625())
         suite.addTest(RegressionTestRev5877())
     else:
         print("SKIP: versioncontrol/tests/functional.py (no svn bindings)")

@@ -63,7 +63,7 @@
             });
       # elif file:
       #   if file.annotate == 'blame':
-            enableBlame("${href.changeset()}/", "${reponame}", "${path}");
+            enableBlame(${to_json(href.changeset() + '/')|safe}, ${to_json(reponame)|safe}, ${to_json(path)|safe});
       #   endif
           $('#preview table.code').enableCollapsibleColumns(
              $('#preview table.code thead th.content'));

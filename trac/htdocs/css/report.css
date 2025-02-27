@@ -165,8 +165,11 @@ h2.report-result {
 .reports td.title { width: 100%; white-space: normal; }
 .tickets tbody:first-child tr.trac-group h2 { margin-top: 0; }
 .tickets tr.trac-group { border: none; }
-.tickets tr.trac-group:hover { background: none !important; }
+.tickets tr.trac-group:hover, .tickets tr.trac-group:hover td {
+ background: none !important;
+}
 .tickets tr.trac-group th { background: none; border: none; padding: 0 0 1em; }
+.tickets tr.trac-group td { padding: 0 !important }
 .tickets tr.trac-columns th { background: #f7f7f0 }
 .tickets tr.trac-columns th {
  border: 1px solid #d7d7d7;
@@ -221,7 +224,7 @@ h2.report-result {
 /* Query results table */
 
 table.tickets caption.trac-group {
- padding: .1em .5em; /* same as .tickets tbody td */
+ padding: .1em 0; /* same as .tickets tbody td */
  border: 1px dotted #ddd;
  text-align: left;
 }

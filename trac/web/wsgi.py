@@ -16,6 +16,7 @@
 
 from abc import ABCMeta, abstractmethod
 import errno
+import re
 import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
@@ -139,6 +140,23 @@ class WSGIGateway(object, metaclass=ABCMeta):
                 exc_info = None # avoid dangling circular ref
         else:
             assert not self.headers_set, 'Response already started'
+
+        def check_header(item, label):
+            if not isinstance(item, str):
+                raise TypeError('Expected str instance in %s' % label)
+            try:
+                item.encode('iso-8859-1')
+            except UnicodeEncodeError:
+                raise ValueError('Non latin-1 characters are used in %s' %
+                                 label) from None
+            if control_re.search(item):
+                raise ValueError('Control characters are used in %s' % label)
+
+        control_re = re.compile(r'[\x00-\x1f\x7f]')
+        check_header(status, 'status')
+        for name, value in headers:
+            check_header(name, 'headers')
+            check_header(value, 'headers')
 
         self.headers_set = [status, headers]
         return self._write
@@ -285,3 +303,11 @@ class WSGIServer(HTTPServer):
         self.environ = {'SERVER_NAME': self.server_name,
                         'SERVER_PORT': str(self.server_port),
                         'SCRIPT_NAME': ''}
+
+    if not hasattr(HTTPServer, '__enter__'):
+        def __enter__(self):
+            return self
+
+    if not hasattr(HTTPServer, '__exit__'):
+        def __exit__(self, *args):
+            self.server_close()

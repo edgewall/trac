@@ -14,11 +14,19 @@ build_svnpy() {
         sudo apt-get install -qq -y libsvn-dev libapr1-dev libaprutil1-dev liblz4-dev libutf8proc-dev
         with_apr=/usr/bin/apr-1-config
         with_apr_util=/usr/bin/apu-1-config
+        with_lz4=std
+        with_utf8proc=std
+        cflags=''
+        ldflags=''
         ;;
       macos-*)
-        brew install apr apr-util lz4 utf8proc
+        brew install -q apr apr-util lz4 utf8proc
         with_apr="$(brew --prefix apr)/bin/apr-1-config"
         with_apr_util="$(brew --prefix apr-util)/bin/apu-1-config"
+        with_lz4="$(brew --prefix lz4)"
+        with_utf8proc="$(brew --prefix utf8proc)"
+        cflags="$(pkg-config --cflags-only-I libsvn_subr)"
+        ldflags="$(pkg-config --libs-only-L libsvn_subr)"
         ;;
     esac
     installed_libs="$(pkg-config --list-all |
@@ -26,15 +34,33 @@ build_svnpy() {
                       sort |
                       tr '\n' ',' |
                       sed -e 's/,$//')"
+    if grep -q 'with-swig-python' configure; then
+        opt_swig_python="--with-swig-python=$python"
+        opt_swig_perl='--without-swig-perl'
+        opt_swig_ruby='--without-swig-ruby'
+    else
+        opt_swig_python="PYTHON=$python"
+        opt_swig_perl='PERL=none'
+        opt_swig_ruby='RUBY=none'
+    fi
 
     test -d "$HOME/arc" || mkdir "$HOME/arc"
     curl -s -o "$svntarball" "$svnurl"
     tar xjf "$svntarball" -C "$GITHUB_WORKSPACE"
     cd "$GITHUB_WORKSPACE/subversion-$svnver"
+    case "$svnver" in
+    1.14.[012])
+        git apply -v -p0 --whitespace=fix \
+            "$GITHUB_WORKSPACE/.github/svn-swig41.patch" \
+            "$GITHUB_WORKSPACE/.github/svn-py312.patch"
+        ;;
+    esac
     "$python" gen-make.py --release --installed-libs "$installed_libs"
     ./configure --prefix="$venvdir" \
                 --with-apr="$with_apr" \
                 --with-apr-util="$with_apr_util" \
+                --with-lz4="$with_lz4" \
+                --with-utf8proc="$with_utf8proc" \
                 --with-py3c="$GITHUB_WORKSPACE/py3c" \
                 --without-apxs \
                 --without-doxygen \
@@ -43,9 +69,12 @@ build_svnpy() {
                 --without-gnome-keyring \
                 --without-kwallet \
                 --without-jdk \
-                PERL=none \
-                RUBY=none \
-                PYTHON="$python"
+                "$opt_swig_python" \
+                "$opt_swig_perl" \
+                "$opt_swig_ruby" \
+                PYTHON="$python" \
+                CFLAGS="$cflags" \
+                LDFLAGS="$ldflags"
     make -j3 swig_pydir="${sitedir}/libsvn" \
              swig_pydir_extra="${sitedir}/svn" \
              swig-py
@@ -56,76 +85,14 @@ build_svnpy() {
     cd "$OLDPWD"
 }
 
-init_postgresql() {
-    case "$MATRIX_OS" in
-      ubuntu-*)
-        sudo systemctl start postgresql.service
-        ;;
-      macos-*)
-        rm -rf /usr/local/var/postgres
-        pg_ctl initdb --pgdata /usr/local/var/postgres
-        pg_ctl -w start --pgdata /usr/local/var/postgres --log /usr/local/var/postgres/postgresql.log || {
-            echo "Exited with $?"
-            cat /usr/local/var/postgres/postgresql.log
-            exit 1
-        }
-        createuser -s postgres
-        ;;
-    esac
-    {
-        case "$MATRIX_OS" in
-          ubuntu-*)
-            sudo -u postgres psql -e
-            ;;
-          macos-*)
-            psql -U postgres -e
-            ;;
-        esac
-    } <<_EOS_
-CREATE USER tracuser NOSUPERUSER NOCREATEDB CREATEROLE PASSWORD 'password';
-CREATE DATABASE trac OWNER tracuser;
-_EOS_
-}
-
-init_mysql() {
-    case "$MATRIX_OS" in
-      ubuntu-*)
-        sudo systemctl start mysql.service
-        {
-            echo '[client]'
-            echo 'host = localhost'
-            echo 'user = root'
-            echo 'password = root'
-        } >~/.my.cnf
-        ;;
-      macos-*)
-        brew install mysql
-        mysql.server start
-        {
-            echo '[client]'
-            echo 'host = localhost'
-            echo 'user = root'
-        } >~/.my.cnf
-        ;;
-    esac
-    mysql -v <<_EOS_
-CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-CREATE USER tracuser@'%' IDENTIFIED BY 'password';
-GRANT ALL ON trac.* TO tracuser@'%';
-FLUSH PRIVILEGES;
-_EOS_
-}
-
 case "$MATRIX_OS" in
   ubuntu-*)
     sudo apt-get update -qq
     sudo apt-get install -qq -y subversion
     ;;
   macos-*)
-    HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-    export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK
-    brew update || :
-    brew install subversion
+    brew update -q || :
+    brew install -q subversion
     ;;
 esac
 

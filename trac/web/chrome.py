@@ -1477,13 +1477,16 @@ class Chrome(Component):
                      (see `populate_data`)
         :param text: in text mode (``True``) XML/HTML auto-escape of
                      variable expansion is disabled.
+        :param domain: domain to be adapted to the translation helper functions
 
         :rtype: a pair of Jinja2 `Template` and a `dict`.
 
         """
         template = self.load_template(filename, text)
         if domain:
-            symbols = list(translation.functions)
+            symbols = [s for s in translation.functions
+                         if s not in ('dgettext', 'dngettext', 'dtgettext',
+                                      'dtngettext')]
             domain_functions = translation.domain_functions(domain, symbols)
             data.update(dict(zip(symbols, domain_functions)))
         data = self.populate_data(req, data)

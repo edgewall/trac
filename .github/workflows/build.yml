@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:  [ubuntu-22.04, macos-12]
-        python-version: ['3.11']
+        os:  [ubuntu-22.04, macos-14]
+        python-version: ['3.12']
         tests: [functional]
 
     env:
@@ -35,15 +35,15 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements-minimum.txt') }}
@@ -52,7 +52,7 @@ jobs:
       run: . .github/posix-test-minimum.sh
 
     - name: Upload log files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: log-${{ matrix.os }}--py${{ matrix.python-version }}-minimum-${{ job.status }}
@@ -74,21 +74,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-22.04, python-version: '3.11', tracdb: '',         tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.11', tracdb: sqlite,     tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.11', tracdb: postgresql, tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.11', tracdb: mysql,      tests: functional}
+        - {os: ubuntu-22.04, python-version: '3.12', tracdb: sqlite,     tests: functional}
+        - {os: ubuntu-22.04, python-version: '3.12', tracdb: postgresql, tests: functional}
+        - {os: ubuntu-22.04, python-version: '3.12', tracdb: mysql,      tests: functional}
+        - {os: ubuntu-22.04, python-version: '3.12', tracdb: ''}
+        - {os: ubuntu-22.04, python-version: '3.11', tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.10', tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.9',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.8',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.7',  tracdb: ''}
         - {os: ubuntu-20.04, python-version: '3.6',  tracdb: ''}
         - {os: ubuntu-20.04, python-version: '3.5',  tracdb: ''}
-        - {os: macos-12,     python-version: '3.11', tracdb: '',         tests: functional}
-        - {os: macos-12,     python-version: '3.11', tracdb: sqlite}
-        - {os: macos-12,     python-version: '3.11', tracdb: postgresql}
-        - {os: macos-12,     python-version: '3.11', tracdb: mysql}
-        - {os: macos-12,     python-version: '3.10', tracdb: ''}
+        - {os: macos-14,     python-version: '3.12', tracdb: sqlite,     tests: functional}
+        - {os: macos-14,     python-version: '3.12', tracdb: postgresql}
+        - {os: macos-14,     python-version: '3.12', tracdb: mysql}
+        - {os: macos-14,     python-version: '3.12', tracdb: ''}
+        - {os: macos-14,     python-version: '3.11', tracdb: ''}
 
     env:
       MATRIX_OS: ${{ matrix.os }}
@@ -100,21 +101,26 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+
+    - name: Workaround for certificate verify failed from pip with Python 3.5
+      if: ${{ matrix.python-version == '3.5' }}
+      run: |
+        echo 'PIP_TRUSTED_HOST=pypi.python.org pypi.org files.pythonhosted.org' >>"$GITHUB_ENV"
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
 
     - name: Set up svn python cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/venv/lib/libsvn_*
@@ -126,7 +132,7 @@ jobs:
       run: . .github/posix-test.sh
 
     - name: Upload log files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: log-${{ matrix.os }}--py${{ matrix.python-version }}-${{ matrix.tracdb }}-${{ job.status }}
@@ -146,6 +152,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - {os: ubuntu-22.04, python-version: '3.12'}
         - {os: ubuntu-22.04, python-version: '3.11'}
         - {os: ubuntu-22.04, python-version: '3.10'}
         - {os: ubuntu-22.04, python-version: '3.9'}
@@ -153,8 +160,8 @@ jobs:
         - {os: ubuntu-22.04, python-version: '3.7'}
         - {os: ubuntu-20.04, python-version: '3.6'}
         - {os: ubuntu-20.04, python-version: '3.5'}
-        - {os: macos-12,     python-version: '3.11'}
-        - {os: macos-12,     python-version: '3.10'}
+        - {os: macos-14,     python-version: '3.12'}
+        - {os: macos-14,     python-version: '3.11'}
 
     env:
       MATRIX_OS: ${{ matrix.os }}
@@ -164,28 +171,33 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Checkout py3c
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: encukou/py3c
         ref: v1.4
         path: py3c
 
+    - name: Workaround for certificate verify failed from pip with Python 3.5
+      if: ${{ matrix.python-version == '3.5' }}
+      run: |
+        echo 'PIP_TRUSTED_HOST=pypi.python.org pypi.org files.pythonhosted.org' >>"$GITHUB_ENV"
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
 
     - name: Set up svn python cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/venv/lib/libsvn_*
@@ -209,7 +221,7 @@ jobs:
       matrix:
         os: [windows-2022]
         architecture: [x64]
-        python-version: ['3.11']
+        python-version: ['3.12']
         tests: [functional]
 
     env:
@@ -222,15 +234,15 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\pip\Cache
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements-minimum.txt') }}
@@ -239,7 +251,7 @@ jobs:
       run: . .github\windows-test-minimum.ps1
 
     - name: Upload log files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: log-${{ matrix.os }}--py${{ matrix.python-version }}-minimum-${{ job.status }}
@@ -262,7 +274,7 @@ jobs:
       matrix:
         os: [windows-2022]
         architecture: [x64]
-        python-version: ['3.11']
+        python-version: ['3.12']
         subversion-version: ['1.14.3']
         tracdb: ['', sqlite, postgresql, mysql]
         include:
@@ -284,21 +296,21 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\pip\Cache
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
 
     - name: Set up svn cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\subversion-${{ matrix.subversion-version }}\${{ matrix.architecture }}
         key: ${{ matrix.os }}--${{ matrix.architecture }}-svn${{ matrix.subversion-version }}-py${{ matrix.python-version }}
@@ -307,7 +319,7 @@ jobs:
       run: . .github\windows-test.ps1
 
     - name: Upload log files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: log-${{ matrix.os }}--py${{ matrix.python-version }}-${{ matrix.tracdb }}-${{ job.status }}
@@ -328,7 +340,7 @@ jobs:
       matrix:
         os: [windows-2022]
         architecture: [x64]
-        python-version: ['3.11']
+        python-version: ['3.12']
         subversion-version: ['1.14.3']
 
     env:
@@ -345,34 +357,34 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Checkout py3c
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: encukou/py3c
         ref: v1.4
         path: py3c
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\pip\Cache
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
 
     - name: Set up svn cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\subversion-${{ matrix.subversion-version }}\${{ matrix.architecture }}
         key: ${{ matrix.os }}--${{ matrix.architecture }}-svn${{ matrix.subversion-version }}-py${{ matrix.python-version }}
 
     - name: Set up vcpkg cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~\AppData\Local\vcpkg\archives
@@ -380,13 +392,13 @@ jobs:
         key: ${{ matrix.os }}--${{ matrix.architecture }}-vcpkg--${{ hashFiles('.github/vcpkg.txt') }}
 
     - name: Set up msbuild
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v2
 
     - name: Prepare dependencies
       run: . .github\windows-prepare.ps1
 
     - name: Upload log files
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: svnlog-${{ matrix.os }}-${{ matrix.architecture }}--${{ matrix.subversion-version }}-py${{ matrix.python-version }}
@@ -394,7 +406,7 @@ jobs:
         if-no-files-found: ignore
 
     - name: Upload Subversion binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: svnbin-${{ matrix.os }}-${{ matrix.architecture }}--${{ matrix.subversion-version }}-py${{ matrix.python-version }}
@@ -410,7 +422,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        python-version: ['3.11']
+        python-version: ['3.12']
 
     needs: [posix-test-minimum, posix-test, windows-test-minimum, windows-test]
 
@@ -421,15 +433,15 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up pip cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ matrix.os }}--pip-py${{ matrix.python-version }}--${{ hashFiles('.github/requirements.txt') }}
@@ -438,7 +450,7 @@ jobs:
       run: . .github/release.sh
 
     - name: Upload release packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release
         path: dist/Trac-*

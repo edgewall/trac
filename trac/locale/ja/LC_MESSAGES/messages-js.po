@@ -16,11 +16,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.15.0\n"
 
 #: tracopt/ticket/htdocs/ticketclone.js:22
 msgid "Clone"
 msgstr "コピー"
+
+#: trac/htdocs/js/admin_enums.js:11
+msgid "Revert changes"
+msgstr "変更を元に戻す"
 
 #: tracopt/ticket/htdocs/ticketclone.js:34
 msgid "Create a new ticket from this comment"

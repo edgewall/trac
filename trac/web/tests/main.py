@@ -90,7 +90,7 @@ class AuthenticateTestCase(unittest.TestCase):
             def process_request(self, req):
                 self.calls += 1
                 req.authname
-                req.send('')
+                req.send(b'')
 
         cls.authenticators['success1'] = SuccessfulAuthenticator1
         cls.authenticators['success2'] = SuccessfulAuthenticator2

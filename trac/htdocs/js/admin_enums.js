@@ -6,8 +6,10 @@ jQuery(function($) {
   $enumlist.addSelectAllCheckboxes();
 
   // Insert 'Revert changes' button after the 'Apply changes' button
-  var $revert_button = $('<input type="submit" name="revert" value="Revert changes" disabled="disabled" />')
-                       .insertAfter($apply_button);
+  var $revert_button = $($.htmlFormat(
+    '<input type="submit" name="revert" value="$1" disabled="disabled" />',
+    _("Revert changes")));
+  $revert_button.insertAfter($apply_button);
 
   // Disable the 'Apply changes' button until there is a change
   $apply_button.prop('disabled', true);

@@ -429,6 +429,10 @@ trac+devel@another-site.fr,
 T_r+a-c1.23@yet_another-site.edu.au
 !not@an.email.com
 someone@louvre.museum-
+local@exa६ple.org (U+096c)
+local@example.or೬ (U+0cec)
+local@example.o６g (U+ff16)
+local@example.or𝟨 (U+1d7e8)
 ------------------------------
 <p>
 Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>,
@@ -440,6 +444,10 @@ i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></
 <a class="mail-link" href="mailto:T_r+a-c1.23@yet_another-site.edu.au"><span class="icon"></span>T_r+a-c1.23@yet_another-site.edu.au</a>
 not@an.email.com
 <a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"></span>someone@louvre.museum</a>-
+local@exa६ple.org (U+096c)
+<a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>೬ (U+0cec)
+<a class="mail-link" href="mailto:local@example.o"><span class="icon"></span>local@example.o</a>６g (U+ff16)
+<a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>𝟨 (U+1d7e8)
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link
