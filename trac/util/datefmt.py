@@ -184,7 +184,10 @@ def to_datetime(t, tzinfo=None):
 
 def truncate_datetime(dt):
     """Truncate a datetime object to the start of the day."""
-    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    truncated = datetime(dt.year, dt.month, dt.day)
+    if dt.tzinfo:
+        truncated = to_datetime(truncated, dt.tzinfo)
+    return truncated
 
 
 def to_timestamp(dt):
