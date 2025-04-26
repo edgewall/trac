@@ -83,8 +83,6 @@ jobs:
         - {os: ubuntu-22.04, python-version: '3.9',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.8',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.7',  tracdb: ''}
-        - {os: ubuntu-20.04, python-version: '3.6',  tracdb: ''}
-        - {os: ubuntu-20.04, python-version: '3.5',  tracdb: ''}
         - {os: macos-14,     python-version: '3.12', tracdb: sqlite,     tests: functional}
         - {os: macos-14,     python-version: '3.12', tracdb: postgresql}
         - {os: macos-14,     python-version: '3.12', tracdb: mysql}
@@ -102,11 +100,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v4
-
-    - name: Workaround for certificate verify failed from pip with Python 3.5
-      if: ${{ matrix.python-version == '3.5' }}
-      run: |
-        echo 'PIP_TRUSTED_HOST=pypi.python.org pypi.org files.pythonhosted.org' >>"$GITHUB_ENV"
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -158,8 +151,6 @@ jobs:
         - {os: ubuntu-22.04, python-version: '3.9'}
         - {os: ubuntu-22.04, python-version: '3.8'}
         - {os: ubuntu-22.04, python-version: '3.7'}
-        - {os: ubuntu-20.04, python-version: '3.6'}
-        - {os: ubuntu-20.04, python-version: '3.5'}
         - {os: macos-14,     python-version: '3.12'}
         - {os: macos-14,     python-version: '3.11'}
 
@@ -179,11 +170,6 @@ jobs:
         repository: encukou/py3c
         ref: v1.4
         path: py3c
-
-    - name: Workaround for certificate verify failed from pip with Python 3.5
-      if: ${{ matrix.python-version == '3.5' }}
-      run: |
-        echo 'PIP_TRUSTED_HOST=pypi.python.org pypi.org files.pythonhosted.org' >>"$GITHUB_ENV"
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
