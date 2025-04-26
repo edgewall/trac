@@ -41,6 +41,12 @@ class GitCommandMixin(object):
 
     git_bin = locate('git')
 
+    _git_opts = (
+        '-c', 'init.defaultBranch=master',
+        '-c', 'protocol.file.allow=always',
+        '-c', 'core.protectNTFS=false',
+    )
+
     def _git_commit(self, *args, **kwargs):
         env = kwargs.get('env') or os.environ.copy()
         if 'date' in kwargs:
@@ -50,7 +56,7 @@ class GitCommandMixin(object):
         return self._git(*args, **kwargs)
 
     def _spawn_git(self, *args, **kwargs):
-        args = (self.git_bin,) + args
+        args = (self.git_bin,) + self._git_opts + args
         kwargs.setdefault('stdin', DEVNULL)
         kwargs.setdefault('stdout', PIPE)
         kwargs.setdefault('stderr', PIPE)
@@ -58,8 +64,6 @@ class GitCommandMixin(object):
         return Popen(args, close_fds=close_fds, **kwargs)
 
     def _git(self, *args, **kwargs):
-        args = ('-c', 'init.defaultBranch=master',
-                '-c', 'protocol.file.allow=always') + args
         with self._spawn_git(*args, **kwargs) as proc:
             stdout, stderr = proc.communicate()
         self.assertEqual(0, proc.returncode,
