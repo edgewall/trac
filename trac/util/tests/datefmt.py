@@ -1025,6 +1025,44 @@ class DateFormatTestCase(unittest.TestCase):
                              datefmt.format_time(t, f, tz))
 
 
+class TruncateDatetimeTestCase(unittest.TestCase):
+
+    def test_without_tz(self):
+        dt = datetime.datetime(2025, 4, 26, 12, 34, 56, 987654)
+        result = datefmt.truncate_datetime(dt)
+        self.assertEqual(datetime.datetime(2025, 4, 26), result)
+        self.assertEqual(None, result.tzinfo)
+        self.assertEqual('2025-04-26T00:00:00', result.isoformat())
+
+    def test_fixed_tz(self):
+        tz = datefmt.timezone('GMT +7:00')
+        dt = datetime.datetime(2025, 4, 26, 12, 34, 56, 987654, tz)
+        result = datefmt.truncate_datetime(dt)
+        self.assertEqual(datetime.datetime(2025, 4, 25, 17,
+                                           tzinfo=datefmt.utc), result)
+        self.assertEqual('2025-04-26T00:00:00+07:00', result.isoformat())
+
+    @unittest.skipUnless(datefmt.pytz, 'pytz unavailable')
+    def test_forward_across_dst(self):
+        # DST start at 2025-03-30 02:00
+        tz = datefmt.get_timezone('Europe/Berlin')
+        dt = datetime.datetime(2025, 3, 30, 12, 34, 56, 987654, tz)
+        result = datefmt.truncate_datetime(dt)
+        self.assertEqual(datetime.datetime(2025, 3, 29, 23,
+                                           tzinfo=datefmt.utc), result)
+        self.assertEqual('2025-03-30T00:00:00+01:00', result.isoformat())
+
+    @unittest.skipUnless(datefmt.pytz, 'pytz unavailable')
+    def test_back_across_dst(self):
+        # DST end at 2024-10-27 03:00
+        tz = datefmt.get_timezone('Europe/Berlin')
+        dt = datetime.datetime(2024, 10, 27, 12, 34, 56, 987654, tz)
+        result = datefmt.truncate_datetime(dt)
+        self.assertEqual(datetime.datetime(2024, 10, 26, 22,
+                                           tzinfo=datefmt.utc), result)
+        self.assertEqual('2024-10-27T00:00:00+02:00', result.isoformat())
+
+
 class UTimestampTestCase(unittest.TestCase):
 
     def test_sub_second(self):
@@ -2104,6 +2142,7 @@ def test_suite():
     else:
         print("SKIP: utils/tests/datefmt.py (no pytz installed)")
     suite.addTest(makeSuite(DateFormatTestCase))
+    suite.addTest(makeSuite(TruncateDatetimeTestCase))
     suite.addTest(makeSuite(UTimestampTestCase))
     suite.addTest(makeSuite(ISO8601TestCase))
     if I18nDateFormatTestCase:

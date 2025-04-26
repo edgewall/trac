@@ -10,6 +10,7 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at https://trac.edgewall.org/log/.
+import itertools
 import textwrap
 import unittest
 from datetime import datetime, timedelta
@@ -22,7 +23,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.timeline.web_ui import TimelineModule
 from trac.util.datefmt import (
     datetime_now, format_date, format_datetime, format_time,
-    get_date_format_hint, pretty_timedelta, utc,
+    get_date_format_hint, get_timezone, pretty_timedelta, pytz, utc,
 )
 from trac.util.html import plaintext, tag
 from trac.web.chrome import Chrome
@@ -265,13 +266,12 @@ class TimelineEventProviderTestCase(unittest.TestCase):
                 if field == 'description':
                     return tag(tag.h1('Title 2nd'), tag.p('body & < >'))
 
-        provider = self._get_event_provider('normal')
-        provider._events = [
+        self._set_events([
             ('test&1', datetime(2018, 4, 27, 12, 34, 56, 123456, utc),
              'jo&hn', Mock(render=render)),
             ('test&2', datetime(2018, 3, 19, 23, 56, 12, 987654, utc),
              'Joe <joe@example.org>', Mock(render=render)),
-        ]
+        ])
         req = MockRequest(self.env, path_info='/timeline', tz=utc,
                           args={'format': 'rss', 'daysback': '90',
                                 'from': '2018-04-30T00:00:00Z'})
@@ -311,12 +311,11 @@ class TimelineEventProviderTestCase(unittest.TestCase):
         minidom.parseString(output)  # verify valid xml
 
     def test_daysback(self):
-        provider = self._get_event_provider('normal')
         base_datetime = datetime(2025, 2, 20, 12, tzinfo=utc)
-        provider._events = [
+        self._set_events([
             ('test', base_datetime - timedelta(days=days), 'trac', None)
             for days in range(-30, 120)
-        ]
+        ])
 
         def render_and_get_events(daysback):
             req = MockRequest(self.env, path_info='/timeline', tz=utc,
@@ -348,8 +347,86 @@ class TimelineEventProviderTestCase(unittest.TestCase):
                          get_datetimes(events)[-1])
         self.assertEqual(91, len(events))
 
-    def _get_event_provider(self, name):
-        return self.timeline_event_providers[name](self.env)
+    @unittest.skipUnless(pytz, 'pytz unavailable')
+    def test_forward_across_dst(self):
+        tz = get_timezone('Europe/Berlin')  # DST start at 2025-03-30 02:00
+        base = datetime(2025, 3, 30, 12, 30, tzinfo=utc)
+        self._set_events([
+            ('test', base - timedelta(hours=hours), 'trac', None)
+            for hours in range(-48, 48)
+        ])
+        req = MockRequest(self.env, path_info='/timeline', tz=tz,
+                          args={'from': '2025-03-31T12:34:56Z',
+                                'daysback': '2'})
+        rv = self._process_request(req)
+        events = rv[1]['events']
+        grouped_events = {
+            str(key): list(map(str, sorted(e['datetime'] for e in g)))
+            for key, g in itertools.groupby(events, key=lambda e: e['date'])
+        }
+        self.assertEqual(
+            ['2025-03-30 00:30:00+01:00', '2025-03-30 01:30:00+01:00',
+             '2025-03-30 03:30:00+02:00', '2025-03-30 04:30:00+02:00',
+             '2025-03-30 05:30:00+02:00', '2025-03-30 06:30:00+02:00',
+             '2025-03-30 07:30:00+02:00', '2025-03-30 08:30:00+02:00',
+             '2025-03-30 09:30:00+02:00', '2025-03-30 10:30:00+02:00',
+             '2025-03-30 11:30:00+02:00', '2025-03-30 12:30:00+02:00',
+             '2025-03-30 13:30:00+02:00', '2025-03-30 14:30:00+02:00',
+             '2025-03-30 15:30:00+02:00', '2025-03-30 16:30:00+02:00',
+             '2025-03-30 17:30:00+02:00', '2025-03-30 18:30:00+02:00',
+             '2025-03-30 19:30:00+02:00', '2025-03-30 20:30:00+02:00',
+             '2025-03-30 21:30:00+02:00', '2025-03-30 22:30:00+02:00',
+             '2025-03-30 23:30:00+02:00'],
+            grouped_events['2025-03-30 00:00:00+01:00'])
+        self.assertEqual(
+            ['2025-03-29 00:00:00+01:00', '2025-03-30 00:00:00+01:00',
+             '2025-03-31 00:00:00+02:00'], sorted(grouped_events))
+        self.assertEqual(24, len(grouped_events['2025-03-29 00:00:00+01:00']))
+        self.assertEqual(23, len(grouped_events['2025-03-30 00:00:00+01:00']))
+        self.assertEqual(24, len(grouped_events['2025-03-31 00:00:00+02:00']))
+
+    @unittest.skipUnless(pytz, 'pytz unavailable')
+    def test_back_across_dst(self):
+        tz = get_timezone('Europe/Berlin')  # DST end at 2024-10-27 03:00
+        base = datetime(2024, 10, 27, 12, 30, tzinfo=utc)
+        self._set_events([
+            ('test', base - timedelta(hours=hours), 'trac', None)
+            for hours in range(-48, 48)
+        ])
+        req = MockRequest(self.env, path_info='/timeline', tz=tz,
+                          args={'from': '2024-10-28T12:34:56Z',
+                                'daysback': '2'})
+        rv = self._process_request(req)
+        events = rv[1]['events']
+        grouped_events = {
+            str(key): list(map(str, sorted(e['datetime'] for e in g)))
+            for key, g in itertools.groupby(events, key=lambda e: e['date'])
+        }
+        self.assertEqual(
+            ['2024-10-27 00:30:00+02:00', '2024-10-27 01:30:00+02:00',
+             '2024-10-27 02:30:00+02:00', '2024-10-27 02:30:00+01:00',
+             '2024-10-27 03:30:00+01:00', '2024-10-27 04:30:00+01:00',
+             '2024-10-27 05:30:00+01:00', '2024-10-27 06:30:00+01:00',
+             '2024-10-27 07:30:00+01:00', '2024-10-27 08:30:00+01:00',
+             '2024-10-27 09:30:00+01:00', '2024-10-27 10:30:00+01:00',
+             '2024-10-27 11:30:00+01:00', '2024-10-27 12:30:00+01:00',
+             '2024-10-27 13:30:00+01:00', '2024-10-27 14:30:00+01:00',
+             '2024-10-27 15:30:00+01:00', '2024-10-27 16:30:00+01:00',
+             '2024-10-27 17:30:00+01:00', '2024-10-27 18:30:00+01:00',
+             '2024-10-27 19:30:00+01:00', '2024-10-27 20:30:00+01:00',
+             '2024-10-27 21:30:00+01:00', '2024-10-27 22:30:00+01:00',
+             '2024-10-27 23:30:00+01:00'],
+            grouped_events['2024-10-27 00:00:00+02:00'])
+        self.assertEqual(
+            ['2024-10-26 00:00:00+02:00', '2024-10-27 00:00:00+02:00',
+             '2024-10-28 00:00:00+01:00'], sorted(grouped_events))
+        self.assertEqual(24, len(grouped_events['2024-10-26 00:00:00+02:00']))
+        self.assertEqual(25, len(grouped_events['2024-10-27 00:00:00+02:00']))
+        self.assertEqual(24, len(grouped_events['2024-10-28 00:00:00+01:00']))
+
+    def _set_events(self, events):
+        provider = self.timeline_event_providers['normal'](self.env)
+        provider._events = tuple(events)
 
     def _process_request(self, req):
         mod = TimelineModule(self.env)
