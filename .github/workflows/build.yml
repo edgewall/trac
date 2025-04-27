@@ -439,7 +439,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: release
-        path: dist/Trac-*
+        path: dist/trac-*
         if-no-files-found: ignore
 
     - name: Upload release packages to edgewall.org
