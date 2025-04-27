@@ -10,7 +10,7 @@ if [ -n "$EDGEWALL_KEY_BASE64" ]; then
     echo "$EDGEWALL_HOST_KEY" >"$known_hosts"
     chmod 0600 "$keyfile"
     scp -i "$keyfile" -o "UserKnownHostsFile $known_hosts" \
-        dist/Trac-* github@edgewall.org:/var/ftp/pub/trac/incoming
+        dist/trac-* github@edgewall.org:/var/ftp/pub/trac/incoming
 else
     echo "::warning:: Skipped uploading package files to edgewall.org" 1>&2
 fi

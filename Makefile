@@ -712,11 +712,11 @@ sdist:
 
 sdist+wheel = $(sdist_gztar) $(bdist_wheel)
 
-sdist_gztar = dist/Trac-$(version).tar.gz
-bdist_wheel = dist/Trac-$(version)-py3-none-any.whl
+sdist_gztar = dist/trac-$(version).tar.gz
+bdist_wheel = dist/trac-$(version)-py3-none-any.whl
 
 
-packages = $(wildcard $(sdist+wheel)
+packages = $(wildcard $(sdist+wheel))
 
 checksum:
 ifeq "$(version)" ""
