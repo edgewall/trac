@@ -676,9 +676,7 @@ define HELP_release
 
  ---------------- Release tasks
 
-  release             release-exe on Windows, release-src otherwise
-  release-src         generate the .tar.gz and .whl packages
-  release-exe         generate the Windows installers (32- and 64-bits)
+  release             generate the .tar.gz and .whl packages
   release-clean       remove the packages
 
   update-help         fetches latest help/guide from Edgewall
@@ -691,27 +689,21 @@ define HELP_release
 endef
 export HELP_release
 
-.PHONY: release release-src wheel dist release-exe wininst
+.PHONY: release wheel dist
 .PHONY: release-clean checksum update-copyright update-help upload
 
-ifeq "$(OS)" "Windows_NT"
-release: release-exe
-else # !Windows_NT
-release: release-src
-endif # Windows_NT
+release: wheel sdist
 
 release-clean:
 ifeq "$(version)" ""
 	$(error "specify version= on the make command-line")
 else
-	@rm $(sdist+wheel) $(wininst)
+	@rm $(sdist+wheel)
 endif
 
 user ?= $(or $(USER),$(LOGNAME),$(USERNAME))
 lynx = $(user)@lynx.edgewall.com:/home/$(user)/dist
 SCP ?= scp
-
-release-src: wheel sdist
 
 wheel:
 	@$(PYTHON) setup.py bdist_wheel
@@ -724,29 +716,7 @@ sdist_gztar = dist/Trac-$(version).tar.gz
 bdist_wheel = dist/Trac-$(version)-py3-none-any.whl
 
 
-ifeq "$(OS)" "Windows_NT"
-release-exe:
-ifdef python.x86
-	make python=x86 wininst
-else
-	$(error "define python.x86 in Makefile.cfg for building $(wininst.x86)")
-endif
-ifdef python.x64
-	make python=x64 wininst
-else
-	$(error "define python.x64 in Makefile.cfg for building $(wininst.x64)")
-endif
-
-wininst = $(wininst.x86) $(wininst.x64)
-
-wininst.x86 = dist/Trac-$(version).win32.exe
-wininst.x64 = dist/Trac-$(version).win-amd64.exe
-
-wininst:
-	@$(PYTHON) setup.py bdist_wininst
-endif # Windows_NT
-
-packages = $(wildcard $(sdist+wheel) $(wininst))
+packages = $(wildcard $(sdist+wheel)
 
 checksum:
 ifeq "$(version)" ""
@@ -757,7 +727,7 @@ else
 	@$(if $(packages), \
 	    $(PYTHON) contrib/checksum.py md5:sha256 $(packages) \
 	, \
-	    echo "No packages found: $(sdist+wheel) $(wininst)" \
+	    echo "No packages found: $(sdist+wheel)" \
 	)
 endif
 
