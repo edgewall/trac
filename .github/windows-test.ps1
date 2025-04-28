@@ -42,11 +42,22 @@ switch -Exact ($env:MATRIX_TRACDB) {
                   -Verbose
     }
     'mysql' {
-        & choco install -y --no-progress mysql
-        & mysql -u root -v -e "CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"
-        & mysql -u root -v -e "CREATE USER tracuser@localhost IDENTIFIED BY 'password'"
-        & mysql -u root -v -e "GRANT ALL ON trac.* TO tracuser@localhost; FLUSH PRIVILEGES"
-        $tracdb_uri = 'mysql://tracuser:password@localhost/trac?charset=utf8mb4'
+        $datadir = Join-Path $env:RUNNER_TEMP 'mysql'
+        New-Item $datadir -ItemType Directory -ErrorAction SilentlyContinue
+        & choco install -y --no-progress mysql --params "/dataLocation:$datadir"
+        @('innodb_doublewrite = 0',
+          'skip-log-bin') `
+          | Out-File 'C:\tools\mysql\current\my.ini' -Append -Encoding ASCII
+        Restart-Service -Name MySQL
+        & mysql -u root -v -e (@(
+            'SET GLOBAL innodb_flush_log_at_trx_commit = 2',
+            'SET GLOBAL sync_binlog = 0',
+            'CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin',
+            "CREATE USER tracuser@'%' IDENTIFIED BY 'password'",
+            "GRANT ALL ON trac.* TO tracuser@'%'",
+            'FLUSH PRIVILEGES') `
+            -Join '; ')
+        $tracdb_uri = 'mysql://tracuser:password@127.0.0.1/trac?charset=utf8mb4'
     }
 }
 
