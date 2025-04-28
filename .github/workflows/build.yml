@@ -25,8 +25,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:  [ubuntu-22.04, macos-14]
-        python-version: ['3.12']
+        os:  [ubuntu-24.04, macos-14]
+        python-version: ['3.13']
         tests: [functional]
 
     env:
@@ -74,18 +74,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-22.04, python-version: '3.12', tracdb: sqlite,     tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.12', tracdb: postgresql, tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.12', tracdb: mysql,      tests: functional}
-        - {os: ubuntu-22.04, python-version: '3.12', tracdb: ''}
-        - {os: ubuntu-22.04, python-version: '3.11', tracdb: ''}
-        - {os: ubuntu-22.04, python-version: '3.10', tracdb: ''}
-        - {os: ubuntu-22.04, python-version: '3.9',  tracdb: ''}
-        - {os: ubuntu-22.04, python-version: '3.8',  tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.13', tracdb: sqlite,     tests: functional}
+        - {os: ubuntu-24.04, python-version: '3.13', tracdb: postgresql, tests: functional}
+        - {os: ubuntu-24.04, python-version: '3.13', tracdb: mysql,      tests: functional}
+        - {os: ubuntu-24.04, python-version: '3.13', tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.12', tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.11', tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.10', tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.9',  tracdb: ''}
+        - {os: ubuntu-24.04, python-version: '3.8',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.7',  tracdb: ''}
-        - {os: macos-14,     python-version: '3.12', tracdb: sqlite,     tests: functional}
-        - {os: macos-14,     python-version: '3.12', tracdb: postgresql}
-        - {os: macos-14,     python-version: '3.12', tracdb: mysql}
+        - {os: macos-14,     python-version: '3.13', tracdb: sqlite,     tests: functional}
+        - {os: macos-14,     python-version: '3.13', tracdb: postgresql}
+        - {os: macos-14,     python-version: '3.13', tracdb: mysql}
+        - {os: macos-14,     python-version: '3.13', tracdb: ''}
         - {os: macos-14,     python-version: '3.12', tracdb: ''}
         - {os: macos-14,     python-version: '3.11', tracdb: ''}
 
@@ -145,12 +147,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-22.04, python-version: '3.12'}
-        - {os: ubuntu-22.04, python-version: '3.11'}
-        - {os: ubuntu-22.04, python-version: '3.10'}
-        - {os: ubuntu-22.04, python-version: '3.9'}
-        - {os: ubuntu-22.04, python-version: '3.8'}
+        - {os: ubuntu-24.04, python-version: '3.13'}
+        - {os: ubuntu-24.04, python-version: '3.12'}
+        - {os: ubuntu-24.04, python-version: '3.11'}
+        - {os: ubuntu-24.04, python-version: '3.10'}
+        - {os: ubuntu-24.04, python-version: '3.9'}
+        - {os: ubuntu-24.04, python-version: '3.8'}
         - {os: ubuntu-22.04, python-version: '3.7'}
+        - {os: macos-14,     python-version: '3.13'}
         - {os: macos-14,     python-version: '3.12'}
         - {os: macos-14,     python-version: '3.11'}
 
@@ -261,7 +265,7 @@ jobs:
         os: [windows-2022]
         architecture: [x64]
         python-version: ['3.12']
-        subversion-version: ['1.14.3']
+        subversion-version: ['1.14.5']
         tracdb: ['', sqlite, postgresql, mysql]
         include:
         - {tracdb: '', tests: functional}
@@ -327,7 +331,7 @@ jobs:
         os: [windows-2022]
         architecture: [x64]
         python-version: ['3.12']
-        subversion-version: ['1.14.3']
+        subversion-version: ['1.14.5']
 
     env:
       MATRIX_ARCH: ${{ matrix.architecture }}
@@ -407,8 +411,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04]
-        python-version: ['3.12']
+        os: [ubuntu-24.04]
+        python-version: ['3.13']
 
     needs: [posix-test-minimum, posix-test, windows-test-minimum, windows-test]
 
