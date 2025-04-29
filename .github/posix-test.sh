@@ -34,6 +34,11 @@ _EOS_
 init_mysql() {
     case "$MATRIX_OS" in
       ubuntu-*)
+        {
+            echo '[mysqld]'
+            echo 'innodb_doublewrite = 0'
+            echo 'skip-log-bin'
+        } | sudo tee /etc/mysql/mysql.conf.d/mysqld_trac.cnf
         sudo systemctl start mysql.service
         {
             echo '[client]'
@@ -44,6 +49,11 @@ init_mysql() {
         ;;
       macos-*)
         brew install -q mysql
+        {
+            echo '[mysqld]'
+            echo 'innodb_doublewrite = 0'
+            echo 'skip-log-bin'
+        } | sudo tee /etc/my.cnf
         mysql.server start
         {
             echo '[client]'
@@ -53,6 +63,8 @@ init_mysql() {
         ;;
     esac
     mysql -v <<_EOS_
+SET GLOBAL innodb_flush_log_at_trx_commit = 2;
+SET GLOBAL sync_binlog = 0;
 CREATE DATABASE trac DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 CREATE USER tracuser@'%' IDENTIFIED BY 'password';
 GRANT ALL ON trac.* TO tracuser@'%';
