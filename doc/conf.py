@@ -372,6 +372,23 @@ def setup(app):
         return [node], []
     roles.register_canonical_role('extensionpoints', extensionpoints_role)
 
+    import inspect
+    from sphinx.ext import autodoc
+    from sphinx.util.inspect import stringify_signature
+
+    class MethodDocumenter(autodoc.MethodDocumenter):
+
+        def format_args(self, **kwargs):
+            if isinstance(self.parent, type):
+                if any(base.__module__ == 'trac.core' and
+                        base.__name__ == 'Interface'
+                        for base in self.parent.__bases__):
+                    sig = inspect.signature(self.object)
+                    return stringify_signature(sig)
+            return super().format_args(**kwargs)
+
+    app.add_autodocumenter(MethodDocumenter, override=True)
+
     # ifconfig variables
     app.add_config_value('devel', True, '')
     if html_jinja_lexer:
