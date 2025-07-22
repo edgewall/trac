@@ -1,0 +1,15 @@
+{#  This file allows customizing the appearance of the Trac installation.
+
+    Add your customizations to the the end of the HTML <head> here
+    and rename the file to site_head.html.
+
+    Note that it will take precedence over a global site_head.html placed
+    in the directory specified by [inherit] templates_dir.
+
+    More information about site appearance customization can be found here:
+
+      https://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+#}
+
+<link rel="stylesheet" type="text/css" href="${href.chrome('site/style.css')}"/>
+

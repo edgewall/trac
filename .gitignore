@@ -37,6 +37,8 @@ env/
 venv/
 ENV/
 VENV/
+trac-env/
+
 
 # IDE and Editor Configuration
 #
@@ -68,3 +70,6 @@ local_settings.py
 
 # cursor rules
 .cursor/
+
+# documemnts
+.doc/
