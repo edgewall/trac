@@ -67,4 +67,4 @@ local_settings.py
 
 
 # cursor rules
-.cursorrules
+.cursor/
